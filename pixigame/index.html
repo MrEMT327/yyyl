@@ -5,29 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="theme-color" content="#06151c" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <title>少女航线 · 战区出击</title>
+    <title>彼方之遥 · 战区出击</title>
     <style>
       html[data-boot] { background: #06151c; }
       html[data-boot] .arcade { visibility: hidden !important; }
       #bootLoading { position:fixed;inset:0;background:#06151c;color:#e2f6ff; }
     </style>
     <link rel="stylesheet" href="/src/ui/entry-screens.css" />
-    <link rel="preload" as="image" href="/art/entry-screens-v1/startup.webp" />
+    <link rel="preload" as="image" href="/art/entry-screens-v2/startup-clean-v3.png" />
     <script src="/cpsdk.js"></script>
     <script src="https://h.api.4399.com/h5mini-2.0/h5api-interface.php"></script>
   </head>
   <body>
-    <div id="bootLoading" class="entry-screen startup" role="dialog" aria-modal="true" aria-label="少女航线启动">
+    <div id="bootLoading" class="entry-screen startup" role="dialog" aria-modal="true" aria-label="彼方之遥启动">
       <section class="entry-screen__portrait">
-        <img class="startup__art" src="/art/entry-screens-v1/startup.webp" alt="" fetchpriority="high" />
-        <div class="startup__shade"></div>
-        <small class="startup__version"></small>
-        <h1 class="startup__title"><strong>少女航线</strong><span>战区出击</span></h1>
+        <img class="startup__art" src="/art/entry-screens-v2/startup-clean-v3.png" alt="" fetchpriority="high" />
+        <h1 class="startup__title">彼方之遥 · 战区出击</h1>
         <div class="startup__footer">
-          <button id="bootStart" class="entry-screen__button" type="button" hidden disabled>开始游戏</button>
-          <button id="bootRetry" class="entry-screen__button" type="button" hidden>重新加载</button>
-          <p id="bootMessage" class="startup__status" role="status" aria-live="polite">正在加载…</p>
-          <progress class="entry-screen__progress" max="3" value="0" aria-label="启动准备进度"></progress>
+          <div class="startup__load">
+            <p id="bootMessage" class="startup__status" role="status" aria-live="polite">正在加载…</p>
+            <progress class="entry-screen__progress" max="3" value="0" aria-label="启动准备进度"></progress>
+          </div>
+          <div class="startup__actions">
+            <button id="bootStart" class="entry-screen__button" type="button" hidden disabled>开始游戏</button>
+            <button id="bootRetry" class="entry-screen__button" type="button" hidden>重新加载</button>
+          </div>
         </div>
       </section>
     </div>

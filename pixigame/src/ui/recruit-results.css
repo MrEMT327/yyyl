@@ -48,6 +48,23 @@
   display:block;width:min(82cqw,calc((100cqh - 65px) * .5555555556),360px);max-width:100%;margin:auto;
 }
 #gui-casual-lobby .recruit-result-dialog .pl-card-result {min-width:0;width:100%;perspective:1000px}
+#gui-casual-lobby .rr-result-slot.rr-conversion {position:relative;display:block;min-width:0;aspect-ratio:5/7}
+#gui-casual-lobby .rr-conversion-source,#gui-casual-lobby .rr-conversion-target {position:absolute;inset:0;transform-origin:center;animation-duration:1.25s;animation-timing-function:ease-in-out;animation-fill-mode:both;animation-delay:var(--reveal-delay,0ms)}
+#gui-casual-lobby .rr-conversion-source {animation-name:recruit-conversion-away;pointer-events:none}
+#gui-casual-lobby .rr-conversion-source>.pilot-holo-card {width:100%;max-width:none;margin:0}
+#gui-casual-lobby .rr-conversion-target {animation-name:recruit-conversion-arrive}
+#gui-casual-lobby .rr-conversion .rr-conversion-target>.pl-reward-item {display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box;width:100%;height:100%;min-height:0;padding:8px;gap:8px;border:0;background:none;box-shadow:none;color:#edf7ff}
+#gui-casual-lobby .rr-conversion-target .common-reward-item-frame {width:82%;max-width:160px}
+#gui-casual-lobby .rr-conversion-target .pl-reward-item>b {font-size:clamp(10px,3cqw,16px);line-height:1.25;text-align:center;overflow-wrap:anywhere}
+#gui-casual-lobby .draw-summary-covered :is(.rr-conversion-source,.rr-conversion-target) {animation-play-state:paused}
+#gui-casual-lobby .rr-conversion.is-conversion-complete .rr-conversion-source {animation:none;opacity:0}
+#gui-casual-lobby .rr-conversion.is-conversion-complete .rr-conversion-target {animation:none;opacity:1}
+@keyframes recruit-conversion-away {0%,28%{opacity:1;transform:scale(1)}60%,100%{opacity:0;transform:scale(.35)}}
+@keyframes recruit-conversion-arrive {0%,42%{opacity:0;transform:scale(.35)}76%,100%{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){
+ #gui-casual-lobby .rr-conversion-source {animation:none;opacity:0}
+ #gui-casual-lobby .rr-conversion-target {animation:none;opacity:1}
+}
 #gui-casual-lobby .recruit-result-dialog .pl-card-result>.pilot-holo-card {width:100%;max-width:none;margin:0}
 #gui-casual-lobby .recruit-result-dialog .pl-card-result>p {
   min-height:32px;margin:10px 0 0;padding:0 2px;color:var(--rr-muted);text-align:center;

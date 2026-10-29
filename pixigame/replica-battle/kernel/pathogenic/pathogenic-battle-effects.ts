@@ -167,10 +167,7 @@ export class PathogenicBattleEffects {
     if(isConstructWeapon(b)||isCorrectedEnemyProjectile(b)){
       const category=isConstructWeapon(b)?'construct':'enemy-projectile';
       const meshes=isConstructWeapon(b)?constructWeaponScreenMeshes(b,screen):correctedEnemyProjectileMeshes(b,screen);
-      // The brick already has a red, shaded body; the shared full-red tint
-      // clips its bevel highlights and erases the recessed-face contrast.
-      const palette=category==='enemy-projectile'&&b.modelId!==1100014?projectilePalette(b,element):undefined;
-      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,palette,{presentationDepth:category==='enemy-projectile'?COMBAT_LAYERS.enemyShot:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
+      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,category==='enemy-projectile'&&b.modelId!==1100014?projectilePalette(b,element):undefined,{presentationDepth:category==='enemy-projectile'?COMBAT_LAYERS.enemyShot:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
       return;
     }
     if(isAreaWeaponPresentation(b)||isAircraftPulse(b)||isDimensionSword(b)){

@@ -6,7 +6,7 @@ export const PORTRAIT_FRAMING=Object.freeze({
   'pilot-07':profile([.290,.030,.760,.980],.049,.624,.956),
   'pilot-09':profile([.365,.020,.755,.980],.037,.590,.963),
   // Seated subject scale aligned with the other pilots; retain the measured motion bounds.
-  'pilot-01':profile([.225,.105,.892,.914],.131,.560,.895,80,.86),
+  'pilot-01':profile([.225,.105,.892,.914],.131,.560,.895,80,.96),
   'pilot-02':profile([.300,.005,.665,.990],.011,.524,.984),
   'pilot-03':profile([.160,.005,.840,.955],.013,.538,.945),
   // Bare-foot contact in the current export; the train extends below it.

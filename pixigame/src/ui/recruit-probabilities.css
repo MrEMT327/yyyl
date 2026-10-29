@@ -1,4 +1,21 @@
 /* Full-frame probability reference, with explicit ink colors instead of inherited popup text. */
+#gui-casual-lobby .pl-modal.recruit-preview-dialog[data-psd-popup] {--popup-width:90cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:88%}
+#gui-casual-lobby .recruit-preview-backdrop {padding:0}
+#gui-casual-lobby .recruit-reward-summary {color:#203c55;font-family:'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .recruit-preview-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 8px}
+#gui-casual-lobby .recruit-preview-item {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;padding:8px 2px;text-align:center}
+#gui-casual-lobby .recruit-preview-icon {width:clamp(28px,10cqw,44px);height:clamp(28px,10cqw,44px);object-fit:contain}
+#gui-casual-lobby .recruit-preview-item>span {font-size:clamp(10px,3cqw,14px);line-height:1.3;white-space:nowrap}
+#gui-casual-lobby .recruit-preview-item>strong {font-size:clamp(13px,4cqw,18px);line-height:1.2;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .recruit-preview-rules {margin:8px 0;padding-top:8px;border-top:1px solid #637e9766;text-align:center}
+#gui-casual-lobby .recruit-preview-rules p {margin:3px 0;color:#304b65;font-size:clamp(11px,3cqw,14px);line-height:1.4}
+#gui-casual-lobby .recruit-preview-back.wc-button {width:100%;--wc-button-height:44px;margin-top:5px;font-size:clamp(14px,4cqw,18px)}
+#gui-casual-lobby .recruit-reward-summary[data-recruit-mode='direct'] h3 {margin:4px 0;color:#203c55;font-size:13px;line-height:1.2}
+#gui-casual-lobby .recruit-reward-summary[data-recruit-mode='direct'] .recruit-preview-grid {grid-template-columns:repeat(4,minmax(0,1fr));gap:3px 4px}
+#gui-casual-lobby .recruit-reward-summary[data-recruit-mode='direct'] .recruit-preview-item {gap:2px;padding:3px 1px}
+#gui-casual-lobby .recruit-reward-summary[data-recruit-mode='direct'] .recruit-preview-icon {width:clamp(25px,8cqw,38px);height:clamp(25px,8cqw,38px)}
+#gui-casual-lobby .recruit-reward-summary[data-recruit-mode='direct'] .recruit-preview-item>span {font-size:clamp(9px,2.6cqw,12px);white-space:normal;overflow-wrap:anywhere}
+#gui-casual-lobby .recruit-reward-summary[data-recruit-mode='direct'] .recruit-preview-item>strong {font-size:clamp(10px,2.8cqw,13px)}
 #gui-casual-lobby .recruit-info-dialog>.recruit-result-scroll {padding:16px 16px 24px}
 #gui-casual-lobby .recruit-info-dialog .recruit-probability-content {display:grid;gap:20px;color:#edf5fc;font:400 14px/1.5 "PingFang SC","Microsoft YaHei",sans-serif}
 #gui-casual-lobby .recruit-info-dialog :is(.recruit-rate-section,.recruit-reward-section)>header {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}

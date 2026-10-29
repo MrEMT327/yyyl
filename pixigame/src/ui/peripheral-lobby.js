@@ -1,3 +1,5 @@
+import {attachRecruitStripDrag} from './recruit-strip-drag.js';
+import { isResourceShortage, shortageToast } from './resource-availability.js';
 import './interface-clarity.css';
 import { developerSkillsEnabled, setDeveloperSkillsEnabled } from '../developer-battle-settings.js';
 import { researchArt } from './research-art.js';
@@ -45,7 +47,7 @@ import { nativeLabProgressGate } from '../replica/native-client-rules.js';
 import { nativeLabPage, nativeLabDetail, nativeStatsDetail } from './native-lab-page.js';
 import { researchPage, researchModal, researchHeader } from './research-page.js';
 import './research-page.css';
-import { shopPage, shopHeader, shopModal, shopSectionId } from './shop-page.js';
+import { shopPage, shopHeader, shopModal, shopSectionId, shopPurchaseMax, shopOfferQuote, reconcileShopReview } from './shop-page.js';
 import { hasLobbyGrowthFeedback, showLobbyGrowthFeedback } from './lobby-growth-feedback.js';
 import { createActionFeedback } from './action-feedback.js';
 import { actionRewards, rewardReturnModal } from './reward-feedback-policy.js';
@@ -161,7 +163,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   const uiMotion = createUiMotion(root);
   let tab = TABS.some(t => t.id === bridge.activeLobbyTab) ? bridge.activeLobbyTab : 'battle';
   let snapshot, signature = '', visible = true, destroyed = false, busy = false, elapsed = 0, toastTimer, debugClearTimer = 0, modal = null;
-  let preview3dId=null;
   let browsePilot, browseAircraft, selectedWeapon, selectedSlot = 'W3', growthKind = 'aircraft', pool = 'pilot', tabScroll = {};
   let shopSection = 'boxes';
   let equipmentFilter = 'owned', equipmentSort = 'quality', equipmentPickingSlot = false, equipmentScroll = 0;
@@ -189,15 +190,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   const releaseHoloCards = bindPilotHoloCards(root);
   const releaseEquipmentChoices = bindEquipmentChoices(root);
   const portraitPlayer = createCharacterPortraits();
-  const models = createPeripheralModels({ onReady: () => {
-    // Readiness only reveals the canvas already mounted at this host. It must
-    // never rebuild a list, steal its pointer or change its scroll position.
-    if(destroyed)return;
-    for(const canvas of root.querySelectorAll('.ui-aircraft-live>.pl-model-canvas')){
-      canvas.parentElement.setAttribute('aria-busy','false');
-      canvas.closest('.ui-aircraft-preview')?.classList.add('is-preview-ready');
-    }
-  } });
+  const models = createPeripheralModels();
 
   function read() {
     const raw = bridge.getPeripheralSnapshot?.() || system?.snapshot?.() || {};
@@ -221,7 +214,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   const thumbnail = (id, cls = '') => {
     return img(COMMON_WEAPONS[id] ? weaponIcon(id) : aircraftUiImage(id,'thumbnail'), '', `pl-model-thumb ${COMMON_WEAPONS[id] ? `pl-weapon-emblem pl-weapon-icon-${id.slice(4)}` : ''} ${cls}`);
   };
-  const preview=(id,options={})=>aircraftPreview(id,{...options,live:preview3dId===id});
+  const preview=(id,options={})=>aircraftPreview(id,options);
   const referenceContext = () => ({ snapshot, helpers: { escape, number, icon, img, thumbnail, preview, button, asset, researchArt }, sortDescending: equipmentSortDescending, workshopKind,gearWorkshop,workshopId, workshopFilter, workshopMode, workshopBackLabel:catalogWorkshopReturn ? '返回武器目录' : '返回装备' });
 
   const onboarding=createLobbyOnboarding({root,
@@ -229,7 +222,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     mark:async(group,uid)=>{const handler=bridge.peripheralAction||system?.action;const result=await handler?.call(system||bridge,'onboardingComplete',{group,uid});render(true);return result;}
   });
   function toast(message) {
-    const node = root.querySelector('.pl-toast'); node.textContent = message; node.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => node.classList.remove('is-visible'), 2600);
+    if(isResourceShortage(message))message=shortageToast(message);
+    const node = root.querySelector('.pl-toast'); node.classList.remove('is-visible'); node.textContent = message; void node.offsetWidth; node.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => node.classList.remove('is-visible'), 2667);
   }
   async function act(action, payload = {}) {
     if (busy) return null; busy = true; root.classList.add('is-busy');
@@ -245,13 +239,15 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       const handler = bridge.peripheralAction || system?.action;
       const result = handler ? await handler.call(system || bridge, action, payload) : { ok: false, message: '当前功能尚未开放' };
       if(result?.ok&&result.recruitToken)await handler.call(system||bridge,'fleetRecruitSeen',{token:result.recruitToken});
-      if (result?.message && !(result.ok && growthBefore)) toast(result.message);
+      if (result?.message && !(result.ok && growthBefore)) toast(action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message);
       if (result?.ok === false && !result.message) toast('暂时无法进行此操作');
       const rewards = actionRewards(result,snapshot,result?.ok?read():snapshot);
       if (result?.ok && action==='claimActivity' && modal?.type==='tasks') delete modal.milestoneId;
+      const completedShopOrder=result?.ok&&action==='shopBuy'&&modal?.type==='shopConfirm';
       const rewardParent=rewardReturnModal(modal);
-      const rewardReturn=rewardParent?{...rewardParent,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0}:null;
+      const rewardReturn=rewardParent&&!completedShopOrder?{...rewardParent,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0}:null;
       if (rewards.length) modal = { type: 'rewards', title: result.title || (action === 'recruit'||result.recruitPool ? '招募结果' : '获得奖励'), rewards:rewards.map(r=>({...r,isNew:r.isNew ?? ((r.type||r.kind)==='weapon' && !snapshot.weapons.some(w=>w.id===(r.id||r.itemId)&&w.owned))})), recruit: result.recruitPool==='pilot'||action === 'recruit' && (payload.poolId || pool) === 'pilot', recruitPool: result.recruitPool||(action === 'recruit' ? payload.poolId || pool : null), ...(resourceReturn?{returnTo:resourceReturn}:patrolReturn ? {returnTo:patrolReturn,patrol:true} : rewardReturn?{returnTo:rewardReturn}:{}) };
+      else if(completedShopOrder)modal=resourceReturn||null;
       if (result?.ok && result.researchResult) {
         modal = { type: 'researchResult', result };
         pendingResearchFocus = result.cardId || null;
@@ -288,7 +284,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (tab === 'assembly' && !subpage) { setUiMarkup(header,equipmentHeader(referenceContext())); return; }
     if (tab === 'battle' && !subpage) { setUiMarkup(header,battleHeader(referenceContext(), snapshot.playerName)); return; }
     if (tab === 'shop' || tab === 'supply') {
-      let markup=shopHeader(referenceContext(), snapshot.playerName, tab === 'shop' ? '商城' : '驾驶员补给');
+      let markup=shopHeader(referenceContext(), snapshot.playerName, tab === 'shop' ? '商城' : '招募');
       if(tab==='supply'&&fleetSupplyReturn){
         const template=document.createElement('template');template.innerHTML=markup;
         const heading=template.content.querySelector('.lobby-page-heading');
@@ -408,6 +404,12 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     modal=parent;renderModal();if(scroll!=null){const content=modalHost.querySelector('.pl-modal-content');if(content)content.scrollTop=scroll;}restoreFocus(modalHost,opener);return true;
   }
   function renderModal() {
+    if(modal&&isResourceShortage(modal.error))modal={...modal,error:''};
+    if(modal?.type==='shopConfirm'){
+      const result=reconcileShopReview(modal,snapshot);
+      if(result.invalidated){modal=modal.returnTo?{...modal.returnTo}:null;toast('商品已更新');}
+      else modal=result.review;
+    }
     // Keep the last portrait image behind a modal without rendering both UI layers.
     portraitPlayer.setVisible(visible&&!modal);
     const modalKey = modal ? `${modal.type}:${modal.id || ''}:${modal.view || ''}` : '';
@@ -594,8 +596,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         // Reward/time polling must not restart the scrolling sky or detach the aircraft.
         const next = document.createElement('template'); next.innerHTML = content;
         const nextScene = next.content.querySelector('.pt-scene');
+        const nextPanel=next.content.querySelector('.pt-panel'), currentPanel=existingStableModal.querySelector('.pt-panel');
+        currentPanel.className=nextPanel.className;currentPanel.dataset.patrolState=nextPanel.dataset.patrolState;
         patrolScene.querySelector('.pt-route').textContent = nextScene.querySelector('.pt-route').textContent;
-        patrolScene.querySelector('[data-model-aircraft]').dataset.modelAircraft = nextScene.querySelector('[data-model-aircraft]').dataset.modelAircraft;
+        const currentAircraft=patrolScene.querySelector('[data-model-aircraft]'), nextAircraft=nextScene.querySelector('[data-model-aircraft]');
+        currentAircraft.dataset.modelAircraft=nextAircraft.dataset.modelAircraft;currentAircraft.setAttribute('aria-label',nextAircraft.getAttribute('aria-label'));
+        const currentStill=patrolScene.querySelector('.pt-aircraft-still'),nextStill=nextScene.querySelector('.pt-aircraft-still');
+        if(currentStill&&nextStill)currentStill.src=nextStill.src;
         nextScene.remove();
         const scroll = patrolScene.parentElement;
         for (const child of [...scroll.children]) if (child !== patrolScene) child.remove();
@@ -667,7 +674,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     pendingModalBackgroundRefresh = false;
     signature = nextSignature; snapshot = next;
     const oldScroll = body.scrollTop, oldShopScroll = body.querySelector('.shop-scroll')?.scrollTop || 0;
-    const oldShopSection = body.querySelector('[data-shop-active]')?.dataset.shopActive;
     const previousEquipment = body.querySelector('.eq-inventory');
     if (previousEquipment && pendingEquipmentScroll===null) equipmentScroll = previousEquipment.scrollTop;
     const previousCatalogScroll = body.querySelector('[data-catalog-scroll]');
@@ -717,11 +723,24 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       }
     }
     const recruitScroller=body.querySelector('.rc-preview-strip');
-    if(recruitScroller)recruitScroller.scrollLeft=oldRecruitScroll;
+    if(recruitScroller){recruitScroller.scrollLeft=oldRecruitScroll;attachRecruitStripDrag(recruitScroller);}
     const nextRecruitBrowse = body.querySelector('.rc-browse');
     if (nextRecruitBrowse) nextRecruitBrowse.scrollTop = recruitScroll;
     const shopScroll = body.querySelector('.shop-scroll');
-    if (shopScroll && bodyChanged) shopScroll.scrollTop = oldShopSection === body.querySelector('[data-shop-active]')?.dataset.shopActive ? oldShopScroll : 0;
+    if (shopScroll && bodyChanged) {
+      shopScroll.scrollTop = oldShopScroll;
+      shopScroll.addEventListener('scroll', () => {
+        const sections = [...shopScroll.querySelectorAll('[data-shop-section]')];
+        const atEnd = shopScroll.scrollHeight > shopScroll.clientHeight + 2 && shopScroll.scrollTop + shopScroll.clientHeight >= shopScroll.scrollHeight - 2;
+        shopSection = shopSectionId((atEnd ? sections.at(-1) : sections.filter(section => section.offsetTop <= shopScroll.scrollTop + 24).at(-1))?.dataset.shopSection);
+        body.querySelector('[data-shop-active]').dataset.shopActive = shopSection;
+        body.querySelectorAll('.store-category').forEach(button => {
+          const active = button.dataset.section === shopSection;
+          button.classList.toggle('is-active', active);
+          button.setAttribute('aria-current', String(active));
+        });
+      }, {passive:true});
+    }
     const host = modalHost.querySelector('[data-model-view="patrol"]') || body.querySelector('[data-model-aircraft]');
     models.attach(host || null);
     if (host) models.showAircraft(host.dataset.modelAircraft, snapshot);
@@ -730,6 +749,12 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     stateFeedback.counters(snapshot);
     stateFeedback.progressionFeedback(snapshot);
     uiMotion.page(`${tab}:${subpage}:${catalogSkillTab}:${workshopMode}:${pool}:${equipmentFilter}:${gearFilter}`,body);
+  }
+  function scrollShopSection(value) {
+    shopSection = shopSectionId(value);
+    const scroller = body.querySelector('.shop-scroll');
+    const section = scroller?.querySelector(`[data-shop-section="${shopSection === 'stamina' ? 'coins' : shopSection}"]`);
+    if (section) scroller.scrollTop = section.offsetTop;
   }
   function switchTab(value, requestedShopSection) {
     const previousTab = tab, previousSubpage = subpage;
@@ -745,13 +770,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       else if (tab !== 'shop') shopSection = 'boxes';
     }
     tabScroll[tab] = body.scrollTop; tab = value; modal = null; browseAircraft = null;
-    subpage = ''; catalogSkillTab = false; catalogWorkshopReturn = null; preview3dId=null;
+    subpage = ''; catalogSkillTab = false; catalogWorkshopReturn = null;
     bridge.switchLobbyTab?.(value); render(true); body.scrollTop = tabScroll[value] || 0;
+    if (value === 'shop') scrollShopSection(shopSection);
     if (value==='assembly' && previousSubpage) { focusEquipmentSource(equipmentReturnFocus); equipmentReturnFocus=null; }
     if(previousTab !== tab) stateFeedback.selection('.lobby-nav-tab.is-active .lobby-nav-icon');
   }
   function returnFromCatalog() {
-    preview3dId=null;
     if(subpage==='workshop'&&workshopKind==='gear'&&gearWorkshopOrigin){
       const previous=gearWorkshopOrigin;gearWorkshopOrigin=null;gearWorkshop=null;
       tab=previous.tab;subpage=previous.subpage;modal=previous.modal;
@@ -789,7 +814,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (tab==='assembly' && !subpage) equipmentReturnFocus=captureFocus(root);
     if (equipmentPickingSlot) { restoreEquipmentContext(equipmentPickContext); equipmentPickingSlot=false; equipmentPickContext=null; }
     nativeAppearanceOnly = false;
-    tab = 'assembly'; subpage = kind; modal = null; catalogSkillTab = false; catalogFilter = 'all'; preview3dId=null;
+    tab = 'assembly'; subpage = kind; modal = null; catalogSkillTab = false; catalogFilter = 'all';
     if(fleetUi[kind])Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false});
     if (kind === 'aircraft') browseAircraft = snapshot.aircraftId;
     if (kind === 'pilot') browsePilot = snapshot.pilotId;
@@ -858,6 +883,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   const actionFeedback = createActionFeedback(root);
   root.addEventListener('click', async event => {
     const target = event.target.closest('[data-action]'); if (!target || !root.contains(target) || target.disabled || busy) return;
+    if(target.dataset.resourceShort){event.preventDefault();if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(target.dataset.resourceShort));return;}
     actionFeedback.capture(target);
     if (target.dataset.action !== 'dismiss') bridge.playUiClick?.();
     const action = target.dataset.action, id = target.dataset.id;
@@ -887,7 +913,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       await act('pilotSupply',{action:'collection',kind:modal.kind,id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
     }
     if(action==='collectionSupplyDetail'){
-      if(target.dataset.kind!=='skins')return;
+      if(!['guns','skins'].includes(target.dataset.kind))return;
       modal={type:'nativeCollectionDetail',kind:target.dataset.kind,id:Number(id),returnTo:{...modal}};renderModal();return;
     }
     if(action==='bagOpen'){
@@ -903,13 +929,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(action==='pilotSupply'){
       await act('pilotSupply',{action:target.dataset.operation,count:target.dataset.count===undefined?undefined:Number(target.dataset.count),
         id:target.dataset.operation==='task'?id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
-    }
-    if(action==='nativeWeaponSkinSelect'){
-      const rows=snapshot.replicaCollection?.guns||[],current=rows.find(row=>row.id===Number(modal?.id)),next=rows.find(row=>row.id===Number(id));
-      if(modal?.type==='nativeCollectionDetail'&&modal.kind==='guns'&&current&&next&&(current.baseGunId||current.id)===(next.baseGunId||next.id)){
-        modal={...modal,id:next.id};renderModal();
-      }
-      return;
     }
     if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
     if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
@@ -963,7 +982,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       }
       return;
     }
-    if(action==='aircraft3d'){preview3dId=preview3dId===id?null:id;render(true);return;}
     if(action.startsWith('workshopGear')){
       const gear=snapshot.equipment,draft=gearMergeDraft(gear,gearWorkshop);
       if(action==='workshopGearPick'){
@@ -1053,7 +1071,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         const result=await act('backpackUse',{id:item.nativeId,count,targetId,...(target.dataset.useOperation?{action:target.dataset.useOperation}:{}),
           expectedRevision:Number(target.dataset.revision),expectedGearRevision:Number(target.dataset.gearRevision)});
         if(result?.ok&&rule?.kind==='equipmentKey') {
-          modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(row=>row.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards||[],returnTo:origin};renderModal();
+          modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(row=>row.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:[],returnTo:origin};renderModal();
         }
         return;
       }
@@ -1215,7 +1233,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (action === 'shopRecruit') {pool='pilot';switchTab('supply');return;}
     if(action==='nativeEquipmentBoxLast'){
       const receipt=snapshot.equipmentBoxReceipt;
-      if(receipt){modal={type:'shopBoxResult',history:true,receipt,drawn:receipt.uids,pilots:receipt.pilotRewards||[],weapons:receipt.weaponRewards||[],...(modal?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();}
+      if(receipt){modal={type:'shopBoxResult',history:true,receipt,drawn:receipt.uids,pilots:receipt.pilotRewards||[],weapons:[],...(modal?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();}
       return;
     }
     if(action==='shopBoxConfirm'||action==='shopBoxRates'){
@@ -1234,15 +1252,16 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(action==='shopRefreshAdConfirm'){const token=modal?.token;if(token){modal=null;await act('shopRefresh',{token,refreshWithAd:true});}return;}
     if(action==='shopQuantity'){
       const offer=snapshot.shop.items.find(item=>item.id===modal?.id);if(!offer)return;
-      modal.quantity=Math.max(1,Math.min(offer.maxQuantity,(modal.quantity||1)+Number(target.dataset.step)));renderModal();return;
+      const max=shopPurchaseMax(offer,snapshot.wallet),next=target.dataset.step==='max'?max:(modal.quantity||1)+Number(target.dataset.step);
+      modal.quantity=Math.max(1,Math.min(Math.max(1,max),next));renderModal();return;
     }
     if (action === 'shopSection') {
-      shopSection=shopSectionId(target.dataset.section);render(true);
+      scrollShopSection(target.dataset.section);
       return;
     }
     if (action === 'shopOffer') {
       const item=snapshot.shop.items.find(o=>o.id===id);if(!item?.available)return;
-      if(item.cost.amount){modal={type:'shopConfirm',id,token:snapshot.shop.token,quantity:1,...(modal?.type==='stamina'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();return;}
+      if(item.cost.amount){modal={type:'shopConfirm',id,token:snapshot.shop.token,quoteKey:shopOfferQuote(item),quantity:1,...(modal?.type==='stamina'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();return;}
       if(item.cost.type==='ad')toast('正在请求广告，完整观看后领取');
       target.disabled=true;target.setAttribute('aria-busy','true');
       const label=target.querySelector('.shop-button-label');
@@ -1251,7 +1270,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       finally { render(true); }
       return;
     }
-    if (action === 'shopConfirm') {const review=modal,token=review?.type==='shopConfirm'?review.token:null;if(token){const result=await act('shopBuy',{id,token,quantity:review.quantity||1});if(!result?.ok){modal={...review,error:result?.message};renderModal();}}return;}
+    if (action === 'shopConfirm') {const review=modal,token=review?.type==='shopConfirm'?review.token:null;if(token){const result=await act('shopBuy',{id,token,quantity:review.quantity||1});if(!result?.ok&&modal?.type==='shopConfirm')renderModal();}return;}
     if (action === 'playerInfo') {modal={type:'playerInfo',profileTab:'equipment'};renderModal();return;}
     if (action === 'playerRename' && modal?.type === 'playerInfo') {
       modal.editingName=true;modal.nameDraft=snapshot.playerName;modal.nameError='';renderModal();
@@ -1292,7 +1311,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if (!weaponCatalogSkillDetail({weapon:weaponFor(id),key:target.dataset.skill,helpers:referenceContext().helpers})) return;
       modal={type:'weaponSkill',id,skillKey:target.dataset.skill,opener:captureFocus(root,target)}; renderModal(); return;
     }
-    if (action === 'catalogSelect') { preview3dId=null; if (subpage === 'weapon') selectedWeapon = id; else if (subpage === 'aircraft') browseAircraft = id; else browsePilot = id; render(true); return; }
+    if (action === 'catalogSelect') { if (subpage === 'weapon') selectedWeapon = id; else if (subpage === 'aircraft') browseAircraft = id; else browsePilot = id; render(true); return; }
     if (action === 'catalogMode') { catalogSkillTab = target.dataset.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false});render(true); return; }
     if(action==='catalogFilter'&&fleetUi[subpage]){fleetUi[subpage].filterOpen=!fleetUi[subpage].filterOpen;render(true);if(fleetUi[subpage].filterOpen)body.querySelector('.fc-filter-options [aria-checked="true"]')?.focus({preventScroll:true});return;}
     if(action==='fleetFilterClose'){if(fleetUi[subpage])fleetUi[subpage].filterOpen=false;render(true);body.querySelector('.fc-filter')?.focus({preventScroll:true});return;}
@@ -1450,7 +1469,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     setVisible(value) { visible = Boolean(value); root.hidden = !visible; root.setAttribute('aria-hidden', String(!visible)); portraitPlayer.setVisible(visible&&!modal); models.update(0, visible); if (!visible) { onboarding.hide(); actionFeedback.clear(); stateFeedback.clear(); uiMotion.clear(); } if (visible) render(); },
     update(ticker) { if (destroyed || !visible || document.hidden) return; performanceMonitor.frame('lobby'); return performanceMonitor.measure('ui',()=>{const dt = typeof ticker === 'number' ? ticker : (ticker?.deltaMS || 16.67) / 1000; elapsed += dt; onboarding.tick(dt);
       // Retain the last aircraft frame while its whole hangar is being scrolled.
-      if (!visible || !root.querySelector('.drag-scroll-active .pl-model-canvas')) models.update(dt, visible && (!modal || Boolean(modalHost.querySelector('.pl-model-canvas'))));
+      if (!visible || !root.querySelector('.drag-scroll-active .pl-model-canvas')) models.update(dt, visible && (!modal || Boolean(modalHost.querySelector('[data-model-aircraft],.pl-model-canvas'))));
       if (elapsed >= 1) { elapsed %= 1; render(); } }); },
     destroy() { destroyed = true; onboarding.destroy(); actionFeedback.destroy(); stateFeedback.clear(); uiMotion.destroy(); clearTimeout(toastTimer); clearTimeout(debugClearTimer); window.removeEventListener('keydown', keydown); releaseHoloCards(); releaseEquipmentChoices(); portraitPlayer.destroy(); models.destroy(); root.remove(); },
   };

@@ -10,7 +10,7 @@ export function nativeEquipmentBoxDetail(snapshot,h) {
     return `<section class="su-box-card" aria-label="${e(box.name)}">
       <header class="su-card-heading"><h3>${e(box.name)}</h3><span class="su-count">箱券 ×${n(box.keys)}</span></header>
       <p class="su-free">${c.freeAvailable?'免费开启可用':`免费开启 · ${n(hours)}小时后`}</p>
-      <div class="su-pity"><span>${box.id===3?'史诗':'优秀'}保底 <b>${n(c.qualityRemaining)}</b>件</span>${c.sRemaining?`<span>S级保底 <b>${n(c.sRemaining)}</b>件</span>`:''}</div>
+      <div class="su-pity"><span>${box.id===3?'史诗':'优秀'}保底 <b>${n(c.qualityRemaining)}</b>件</span>${c.sRemaining?`<span>圣环保底 <b>${n(c.sRemaining)}</b>件</span>`:''}</div>
       <p class="su-subtitle">${box.quotes.map(q=>`${q.count===1?'单次':'十次'} ${price(q)}`).join(' · ')}</p>${!box.canDraw?`<p>${e(box.unavailableReason)}</p>`:''}
       <details class="su-details su-box-probabilities"><summary>概率与规则</summary>
         <div class="su-rate-groups">${box.rates.map(group=>`<details><summary><span>${e(group.name)}</span><b>${group.weight/1000}%</b></summary>${group.items.map(item=>`<p class="su-item-rate">${h.img(nativeItemArt(item.id),'','su-item-art')}<span>${e(item.name)} ×${item.count}</span><b>${item.weight/1000}%</b></p>`).join('')}</details>`).join('')}</div>

@@ -1,3 +1,4 @@
+import { projectIcon } from './project-ui-art.js';
 import {nextLobbyGuide, guideFinished, reachedGuideProgress} from '../peripheral/onboarding.js';
 import './lobby-onboarding.css';
 import './guide-presentation.css';
@@ -5,7 +6,7 @@ import './guide-presentation.css';
 // DOM adapter: targets are re-resolved after every lobby/modal render.
 export function createLobbyOnboarding({root,context,mark}) {
   const layer=document.createElement('div');layer.className='lobby-guide';layer.hidden=true;
-  layer.innerHTML='<div class="guide-ring"></div><span class="guide-hand" aria-hidden="true">☝</span><div class="guide-caption psd-guide-panel" role="status" aria-live="polite"><span></span><button type="button">稍后</button></div>';
+  layer.innerHTML=`<div class="guide-ring"></div><span class="guide-hand" aria-hidden="true">${projectIcon('upgrade-arrow','guide-pointer-art')}</span><div class="guide-caption psd-guide-panel" role="status" aria-live="polite"><span></span><button type="button">稍后</button></div>`;
   document.body.append(layer);
   const ring=layer.querySelector('.guide-ring'),hand=layer.querySelector('.guide-hand'),caption=layer.querySelector('.guide-caption'),text=caption.querySelector('span'),later=caption.querySelector('button');
   let active=null,target=null,lastKey='',idle=0,weakChapter=null,marking=false;

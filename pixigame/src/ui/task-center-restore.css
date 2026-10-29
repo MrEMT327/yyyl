@@ -146,3 +146,26 @@
   min-height:36px;--wc-button-height:max(36px,9cqw);font-size:clamp(11px,3cqw,14px);
 }
 #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-progress>span {font-size:clamp(9px,2.4cqw,11px)}
+
+/* v0.1.43 task-row composition; present-day bonus entries share its density. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-task-list {padding-bottom:0}
+#gui-casual-lobby .pl-modal .dc-hub .dc-task .dc-first-rewards {display:contents}
+#gui-casual-lobby .pl-modal .dc-hub .dc-task .is-first::before,
+#gui-casual-lobby .pl-modal .dc-hub .dc-task .is-first::after {content:none}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras {gap:1.2cqw;padding:0}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card {
+ display:grid;grid-template-columns:minmax(0,1fr) 24cqw;grid-template-rows:auto auto auto;
+ gap:.6cqw 1cqw;padding:1.2cqw 1.6cqw;min-height:15cqw;align-items:center;
+}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card::before {content:none}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card>:not(.wc-button) {grid-column:1}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card>.wc-button {grid-column:2;grid-row:1 / span 3;width:100%;min-height:36px;--wc-button-height:36px;font-size:clamp(10px,2.8cqw,14px);padding:0 .5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-heading {display:flex;gap:1cqw;align-items:center;justify-content:space-between}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-heading h3 {font-size:clamp(11px,2.8cqw,14px);line-height:1.2}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.su-card-heading>span,.su-condition,.su-fragment-choice) {font-size:clamp(9px,2.5cqw,12px);line-height:1.2}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-bottom {display:contents}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-bottom>.wc-button {grid-column:2;grid-row:1 / span 3;min-height:36px;--wc-button-height:36px;font-size:clamp(10px,2.8cqw,14px);padding:0 .5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.su-rewards,.dc-supply-reward,.su-reward) {display:flex;align-items:center;gap:.6cqw;flex-wrap:wrap;line-height:1.2}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.dc-native-reward-icon,.su-item-art) {width:4cqw;height:4cqw;min-width:14px;min-height:14px;object-fit:contain}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.dc-supply-reward,.su-reward)>b {font-size:clamp(10px,2.6cqw,13px)}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.dc-supply-reward,.su-reward)>small {display:none}

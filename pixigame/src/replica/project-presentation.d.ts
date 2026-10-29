@@ -7,4 +7,7 @@ export function createProjectPresentation(options: {
   onFlightRoll?: () => void;
   onProgress?: (completed: number, total: number) => void;
   onGraphicsContext?: (canvas: HTMLCanvasElement, context: WebGLRenderingContext | WebGL2RenderingContext) => void;
-}): Promise<BattleAppearance & { dispose(): void }>;
+}): Promise<BattleAppearance & {
+  dispose(): void;
+  setLaunchPresentation(value:{time:number;thrust:number}|null):void;
+}>;

@@ -11,7 +11,7 @@ import { localBoxSnapshot } from './local-box-state.js';
 function equipmentRateName(group) {
   const entries=group.ItemsProbability.map(([id])=>nativeGearPresentation(id));
   if(!entries.length||entries.some(row=>!row))return null;
-  const labels=[...new Set(entries.map(row=>row.rank?`S级${row.qualityName}装备`:row.qualityName))];
+  const labels=[...new Set(entries.map(row=>`${row.rank?'圣环系列 · ':''}${row.qualityName}`))];
   return labels.length===1?labels[0]:null;
 }
 export function nativeEquipmentBoxPreview(items,gear,time=Date.now()) {

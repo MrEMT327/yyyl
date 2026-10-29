@@ -33,6 +33,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
   let disposed = false, fighter, scene, playerImage, playerTexture, worldTexture, pose, wingtipGraphics;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };
   let lastAircraftClock = -1, lastWorldKey = '', lastRollSerial = 0;
+  let launchPresentation=null,launchDirty=false;
   const flightVisual = createFlightVisualState();
   const phantomTrail = createPhantomTrailState(), phantomImages = [];
   function updatePhantom(flightPose) {
@@ -220,6 +221,10 @@ export async function createProjectPresentation({ content, appearance, onError, 
           .setAlpha(next.alpha).setVisible(next.visible);
       },
     },
+    setLaunchPresentation(value){
+      launchPresentation=value;launchDirty=true;
+      if(!value)flightVisual.clock=null;
+    },
     preload(phaser) { phaser.load.on('loaderror', file => onError(new Error(`关卡资源加载失败：${file.key}`))); },
     create(phaser) {
       scene = phaser;
@@ -251,7 +256,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
       updatePhantom(flightPose);
       const backgroundTime = selectedScene.id === 'coast-balanced' ? (frame.coastBackgroundTime ?? frame.time) : frame.time;
       const worldKey = `${backgroundTime}/${frame.camera.x}/${frame.camera.z}`;
-      if (lastWorldKey === worldKey && lastAircraftClock === frame.clock && !weaponsDirty) {
+      if (lastWorldKey === worldKey && lastAircraftClock === frame.clock && !weaponsDirty && !launchDirty) {
         updateWingtipTrails(flightPose); return;
       }
       const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
@@ -261,20 +266,22 @@ export async function createProjectPresentation({ content, appearance, onError, 
       // Render the native 3D model into a texture used at Phaser's original
       // player depth. Enemy bullets and pickups retain their original sorting.
       // The world is drawn last into this same Three surface, before paint.
-      if (pose && (lastAircraftClock !== frame.clock || lastAircraftClock < 0 || weaponsDirty)) {
+      if (pose && (lastAircraftClock !== frame.clock || lastAircraftClock < 0 || weaponsDirty || launchDirty)) {
         if (frame.clock < lastAircraftClock) {
           fighter._disposeVisuals(); fighter.setPilot(appearance.aircraft.id);
           applyWeaponSkins();
           Object.assign(fighter.runtime.config, { firing: false, cruise: false, trails: 0, particles: 0 });
         }
-        updateFlightFighter(fighter, frame.clock, flightPose);
+        const visualClock=frame.clock+(launchPresentation?.time||0);
+        const visualPose=launchPresentation?{...flightPose,bank:0,pitch:-.045*launchPresentation.thrust,thrust:launchPresentation.thrust}:flightPose;
+        updateFlightFighter(fighter, visualClock, visualPose);
         renderer.setScissorTest(true); renderer.setScissor(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
         renderer.setViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
         renderer.setClearColor(0x000000, 0); renderer.clear(); aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
         playerContext.clearRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-        drawCombatEngineWake(playerContext,sampleCombatEngineWake(fighter,aircraftCamera,{clock:frame.clock,displaySize:Math.max(pose.width,pose.height),textureSize:TEXTURE_SIZE,thrust:flightPose.thrust}));
+        drawCombatEngineWake(playerContext,sampleCombatEngineWake(fighter,aircraftCamera,{clock:visualClock,displaySize:Math.max(pose.width,pose.height),textureSize:TEXTURE_SIZE,thrust:visualPose.thrust}));
         playerContext.drawImage(surface, 0, HEIGHT - TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-        playerTexture.refresh(); lastAircraftClock = frame.clock; weaponsDirty = false;
+        playerTexture.refresh(); lastAircraftClock = frame.clock; weaponsDirty = false;launchDirty=false;
       }
       updateWingtipTrails(flightPose);
       if (!replaceTerrain) { lastWorldKey = worldKey; return; }

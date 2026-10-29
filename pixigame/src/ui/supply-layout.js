@@ -111,7 +111,7 @@ export function renderSupplyLayout({ surface, bridge, art, state, actions }) {
     diamond(x + 102, 1111, 18);
     text(String(cost), x + 121, 1111, { size: 22, color: '#496777', weight: 800 });
   });
-  if(bridge.profileState.diamonds<20)text('钻石不足',300,1170,{size:17,color:MUTED,align:'center'});
+
   renderMobileHeader(ui, bridge, art, actions); renderMobileNav(ui, actions, 'supply');
   if (!state.modal) return null;
   // Modal hit regions replace the underlying controls, including navigation.

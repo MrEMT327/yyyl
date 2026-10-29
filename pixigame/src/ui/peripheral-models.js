@@ -172,6 +172,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
       try{batcher.update();renderer.clear();renderer.render(scene,camera);}finally{batcher.restore();for(const [node,wasVisible]of hiddenFx)node.visible=wasVisible;}
     });
     lastFrame=Math.floor((viewProfile==='patrol'&&!reducedMotion.matches?elapsed:0)*30);
+    if(canvas.dataset.modelReady!=='true')canvas.dataset.modelReady='true';
   }
   function drawAircraft(id, notify = true, snapshot = requestedSnapshot) {
     const loadout = peripheralModelLoadout(id, snapshot), fitKey = peripheralModelLoadoutKey(loadout);

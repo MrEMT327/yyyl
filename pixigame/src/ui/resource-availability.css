@@ -1,0 +1,44 @@
+/* One visual treatment for unaffordable costs; action names stay stable. */
+#gui-casual-lobby {--resource-short-color:#ffaaaa}
+#gui-casual-lobby :is(.sn-price.is-short,.lobby-cost[data-cost-state="short"],.native-lab-shortage,.research-awaken .is-short,.fc-card-cost .is-short) {color:var(--resource-short-color)}
+#gui-casual-lobby :is(.sn-price.is-short,.lobby-cost[data-cost-state="short"]) b {color:inherit}
+
+#gui-casual-lobby .recruit-draw .is-short b {color:var(--resource-short-color)}
+
+#gui-casual-lobby :is(.sn-box-actions,.pt-button) .is-short {color:var(--resource-short-color)}
+
+#gui-casual-lobby button.is-resource-short {cursor:pointer}
+#gui-casual-lobby button.is-resource-short:active {transform:none}
+#gui-casual-lobby .sn-button.is-resource-short {border-image-source:url('/art/psd-buttons-v1/button-gray.png')}
+#gui-casual-lobby.peripheral-lobby .pl-toast {display:block!important;z-index:13000;pointer-events:none}
+
+/* APK UI_Tip/TextTipNodeRun: 1080-unit canvas, 0.8/1.1/1 pop,
+   upward travel 200 units, fade from 1.85s, finish at 2.667s.
+   The backing is project CSS, not extracted competitor artwork. */
+#gui-casual-lobby.peripheral-lobby .pl-toast {
+ display:block!important;left:50%;top:46.296cqw;bottom:auto;
+ width:92.59cqw;max-width:94%;box-sizing:border-box;min-height:6.94cqw;
+ padding:1cqw 2cqw;border:0;border-radius:0;box-shadow:none;
+ background:linear-gradient(90deg,transparent,rgba(4,13,23,.7) 14%,rgba(4,13,23,.7) 86%,transparent);
+ color:#fff;font:600 clamp(12px,4.26cqw,23px)/1.5 'Microsoft YaHei',sans-serif;
+ text-align:center;text-shadow:1px 1px 1px #000,-1px -1px 1px #000;
+ opacity:0;transform:translateX(-50%);transition:none;pointer-events:none;
+}
+#gui-casual-lobby.peripheral-lobby .pl-toast.is-visible {animation:project-text-tip 2.667s linear both}
+@keyframes project-text-tip {
+ 0% {opacity:1;transform:translate(-50%,0) scale(.8)}
+ 6.25% {transform:translate(-50%,0) scale(1.1)}
+ 12.5%,44.375% {transform:translate(-50%,0) scale(1)}
+ 69.375% {opacity:1}
+ 97.5%,100% {opacity:0;transform:translate(-50%,-18.519cqw) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+ #gui-casual-lobby.peripheral-lobby .pl-toast.is-visible {animation:project-tip-fade 2.667s linear both}
+ @keyframes project-tip-fade {0%,69.375%{opacity:1}97.5%,100%{opacity:0}}
+}
+
+/* Generated project metal frame, sliced so the angular ends keep their shape. */
+#gui-casual-lobby.peripheral-lobby .pl-toast {
+ background:none;border:0;border-radius:0;min-height:9.8cqw;padding:2cqw 5cqw;
+ border-image:url('/art/project-toast-v1/toast-frame.svg') 48 130 fill / 8px 22px stretch;
+}

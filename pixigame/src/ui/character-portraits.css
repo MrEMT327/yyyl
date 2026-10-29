@@ -17,19 +17,20 @@
   position:absolute;inset:auto;left:calc(50% - var(--portrait-ground-x) * var(--portrait-frame));top:calc(50% - 22.6cqw - var(--portrait-ground-y) * var(--portrait-frame));
   width:var(--portrait-frame);height:var(--portrait-frame);aspect-ratio:1;transform:none;filter:none;
 }
-/* 750x1624 main canvas: head at 21%, lowest artwork before 80%. */
+/* Fill the usable home stage while keeping each character's feet or prop
+   near the same lower edge. Extra-wide artwork may use the side margins. */
 .battle-psd-main .psd-main-portrait.character-portrait[data-portrait-framed]{
-  --portrait-frame:calc(min(calc(127.75cqw / var(--portrait-body-rise)),calc(100cqw / var(--portrait-visible-width))) * var(--portrait-display-scale,1));
-  position:absolute;inset:auto;left:calc(50% - var(--portrait-center-x) * var(--portrait-frame));top:calc(21% - var(--portrait-head-y) * var(--portrait-frame));
+  --portrait-frame:min(calc(136cqw / var(--portrait-ground-rise)),calc(98cqw / var(--portrait-visible-width)));
+  position:absolute;inset:auto;left:calc(50% - var(--portrait-center-x) * var(--portrait-frame));top:calc(var(--portrait-home-ground,81.5%) - var(--portrait-ground-y) * var(--portrait-frame));
   width:var(--portrait-frame);height:var(--portrait-frame);aspect-ratio:1;transform:none;mask-image:none;pointer-events:auto;
 }
-/* The horizontal card gesture sits below the mail action in the larger seated framing. */
-.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-01"][data-portrait-framed]{top:calc(23.5% - var(--portrait-head-y) * var(--portrait-frame))}
-/* Home only: give the seated Astra portrait more room below the top actions. */
-.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-08"][data-portrait-framed]{left:calc(52% - var(--portrait-center-x) * var(--portrait-frame));top:calc(24% - var(--portrait-head-y) * var(--portrait-frame))}
-/* Match the standing pilots' head-to-foot height. The wide train may extend
-   past the viewport sides instead of making the whole character smaller. */
-.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-04"][data-portrait-framed]{--portrait-frame:calc(126cqw / var(--portrait-ground-rise))}
+/* Seated characters stay low enough to fill the scene without cutting off
+   hands or feet; the motorcycle's wheel is above its rider's hanging heel. */
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-01"][data-portrait-framed]{--portrait-home-ground:80%}
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-08"][data-portrait-framed]{--portrait-home-ground:77%;--portrait-frame:min(calc(136cqw / var(--portrait-ground-rise)),calc(106cqw / var(--portrait-visible-width)));left:calc(49% - var(--portrait-center-x) * var(--portrait-frame))}
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-10"][data-portrait-framed]{--portrait-home-ground:75.5%}
+/* Keep the person full-sized; her wide train may extend beyond the stage. */
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-04"][data-portrait-framed]{--portrait-frame:calc(136cqw / var(--portrait-ground-rise))}
 .battle-psd-main .psd-main-avatar{position:absolute;z-index:3;left:2.8%;top:1.9%;width:9.7%;height:4.5%;overflow:hidden;pointer-events:none;background:#324451}
 .battle-psd-main .psd-main-avatar>img{display:block;width:100%;height:100%;object-fit:cover}
 .psd-main-avatar>img[src*="pilot-06-v09c/portrait.png"],.ref-catalog-card-art>img[src*="pilot-06-v09c/portrait.png"],.pl-commander-avatar[src*="pilot-06-v09c/portrait.png"],.rc-preview-card>img[src*="pilot-06-v09c/portrait.png"]{object-view-box:inset(7% 34% 75% 47%);object-position:center 20%}

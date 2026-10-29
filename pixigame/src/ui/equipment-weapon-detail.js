@@ -39,7 +39,7 @@ export function equipmentWeaponDetail({ snapshot, weapon, selectedSlot, helpers,
   const showNext = showGrowth && hasCost && damage !== null && nextDamage !== null && nextDamage > damage;
   const canUpgrade = Boolean(weapon.owned && weapon.canUpgrade && hasCost);
   const reachedLimit = weapon.cost === null;
-  const upgradeLabel = reachedLimit ? '等级上限' : !hasCost ? '暂不可强化' : !weapon.canUpgrade ? '材料不足' : '升级';
+  const upgradeLabel = reachedLimit ? '等级上限' : !hasCost ? '暂不可强化' : '升级';
   const equipHelpers={...helpers,button:(action,label,cls,attrs='',disabled=false)=>button(action,action==='equipWeapon'&&weapon.owned?'装备':action==='unequipWeapon'?'卸下':label,cls,`${attrs} aria-label="${e(label)}"`,disabled)};
   const resourceCost = (key, label, amount) => {
     const balance = finiteValue(snapshot.wallet?.[key]);

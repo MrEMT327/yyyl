@@ -1,3 +1,5 @@
+import {createBattleLaunch} from './battle-launch.js';
+import './battle-launch.css';
 import { developerSkillsEnabled } from '../src/developer-battle-settings.js';
 import { buildDeveloperSkillCatalog } from './kernel/developer-skill-catalog';
 import { mountDeveloperSkills } from './developer-skills-ui';
@@ -49,6 +51,7 @@ let started = false;
 let acknowledgeGuide: ((message:any)=>void)|undefined;
 let applySettlement: ((receipt: any) => void) | undefined;
 let receiveReviveAd: ((message: any) => void) | undefined;
+let revealLaunch: (()=>void)|undefined;
 
 function fail(error: unknown) {
   if (lifetime.disposed) return;
@@ -82,7 +85,7 @@ async function initialize(appearance: any) {
     const chapter = replicaChapter(Number(row.id));
     if (chapter) row.name = chapterPresentationForStage(chapter.stageIndex).name;
   }
-  document.title=`少女航线 · ${chapterPresentation.chapterName}`;
+  document.title=`彼方之遥 · ${chapterPresentation.chapterName}`;
   installEnemyFireEffects(content);
   localAssetUrls(content);
   memoryCheckpoint('battle-data-ready');
@@ -113,6 +116,15 @@ async function initialize(appearance: any) {
   reportLoading('appearance',0);
   const skin = await createAppearance(content, appearance, fail, graphics.watch, (completed,total)=>reportLoading('appearance',completed/total), ()=>audio.effect('project:flight-roll',.22,.5));
   lifetime.add(() => skin.dispose());
+  const launch=createBattleLaunch({
+    stage,player:()=>sim.player,bounds:()=>sim.cameraWorldBounds,
+    reducedMotion:()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    clearInput:()=>{controls?.clear();accumulated=0;sim.playerMotion={x:0,z:0,rawX:0};},
+    onVisual:value=>skin.setLaunchPresentation(value),
+    onComplete:()=>{audio.resume();ui.update();send('control-ready',{runId:currentRunId});},
+  });
+  revealLaunch=()=>launch.reveal();
+  lifetime.add(()=>{revealLaunch=undefined;launch.destroy();});
   if (!lifetime.disposed) memoryCheckpoint('battle-skin-ready');
   if (lifetime.disposed) return;
   reportLoading('appearance',1);
@@ -171,11 +183,11 @@ async function initialize(appearance: any) {
   const developerSkills = mountDeveloperSkills(stage, sim, audio, ui);
   lifetime.add(() => developerSkills.destroy());
   const configureDeveloperSkills = () => { sim.developerSkillCatalog = developerSkillsEnabled() ? buildDeveloperSkillCatalog(content, catalog) : []; };
-  controls = new Controls(stage, () => sim.phase === 'playing' && sim.player.hp > 0, () => ui.togglePause());
+  controls = new Controls(stage, () => !launch.active && sim.phase === 'playing' && sim.player.hp > 0, () => {if(!launch.active)ui.togglePause();});
   lifetime.add(() => controls.clear());
   activity = createBattleActivity({
     allowParentFocus: !researchMode, signal: lifetime.signal,
-    suspend: () => { sim.pause(); controls.clear(); audio.pause(); },
+    suspend: () => { if(!launch.active)sim.pause(); controls.clear(); audio.pause(); },
     refresh: () => ui.update(), blocked: graphics.blocked,
   });
   const updateUi = ui.update.bind(ui);
@@ -218,6 +230,7 @@ async function initialize(appearance: any) {
     configureDeveloperSkills();
     pendingGuides.clear();guideRetryAt=0;waitingForMovement=onboarding.movement===true;
     controls.clear(); audio.unlock().catch(() => {}); sim.start(onboarding, defeatCount); syncWeaponSkins();
+    launch.begin();
     audio.startMusic(content.chapter.musicKey); audio.restart(); ui.update();
     stage.removeAttribute('data-awaiting-start');
     document.getElementById('battle-notice')!.hidden = true;
@@ -253,6 +266,10 @@ async function initialize(appearance: any) {
     if (backgroundRunId !== sim.runId) { backgroundRunId = sim.runId; scene.coastBackgroundTime = 0; }
     if (!activity!.enforce()) { accumulated = 0; return; }
     delta = activity!.frameDelta(delta);
+    if(launch.active){
+      accumulated=0;controls.clear();movementGuide.show(false);
+      launch.update(delta/1000);ui.update();return;
+    }
     if(sim.tutorialChoiceCompleted){pendingGuides.add(4);sim.tutorialChoiceCompleted=false;guideRetryAt=0;}
     flushGuides();movementGuide.show(waitingForMovement&&sim.phase==='playing');
     if (sim.phase !== 'playing') {
@@ -310,6 +327,7 @@ window.addEventListener('message', event => {
   if (message?.channel !== CHANNEL || message.session !== session) return;
   if (message.type === 'initialize' && !started) { started = true; initialize(message.appearance).catch(fail); }
   try {
+    if (message.type === 'launch-visible' && message.runId === currentRunId) revealLaunch?.();
     if (message.type === 'settled' && message.runId === currentRunId) applySettlement?.(message);
     if (message.type === 'revive-ad-result') receiveReviveAd?.(message);
     if (message.type === 'onboarding-saved') acknowledgeGuide?.(message);

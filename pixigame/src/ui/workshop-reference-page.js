@@ -1,3 +1,4 @@
+import { availabilityMessage } from './resource-availability.js';
 import { equipmentWeaponCard } from './equipment-page.js';
 import { gearWorkshopPage } from './gear-workshop-page.js';
 import { projectIconUrl } from './project-ui-art.js';
@@ -40,6 +41,7 @@ export function workshopReferencePage({snapshot:s,helpers:h,workshopId,workshopF
       reason=short.length?short.join('与')+'不足':'材料不足';
     } else reason=item.qualityRank>=5?'已满星':s.workshop?.universalFragments<item.universalCost?'通用零件不足':item.reason||'材料不足';
   }
+  reason=availabilityMessage(reason);
   const qualityEffect=(item?.nextEffect||item?.currentEffect||'').replace('；等级上限 ',' · 上限 ');
   const effect=item?(leveling?growth.cost?`基础伤害 ${workshopNumber(growth.damage)} → ${workshopNumber(growth.nextDamage??growth.damage)}`:`基础伤害 ${workshopNumber(growth.damage)}`:qualityEffect):'';
   const cost=(label,icon,amount,available)=>amount>0?lobbyCost(h,{label,icon,amount,available,showAvailable:true}):'';

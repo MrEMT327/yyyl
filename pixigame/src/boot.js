@@ -6,7 +6,10 @@ import './build-info.css';
 import { createStartupScreen } from './ui/startup-screen.js';
 import { installLocalRewardedAd } from './platform/local-rewarded-ad-runtime.js';
 import { startGameSession } from './platform/game-session-runtime.js';
+// Keep the browser title player-facing; build details remain in the developer panel.
+const playerFacingTitle=document.title;
 mountBuildIdentity();
+document.title=playerFacingTitle;
 memoryCheckpoint('host-boot');
 const startup=createStartupScreen();
 let activeBridge, loadingRuntime, session;

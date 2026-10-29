@@ -1,30 +1,171 @@
-:root{--entry-ink:#04101c;--entry-white:#f2f7ff;--entry-cyan:#81d7f1}
-.entry-screen{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:var(--entry-ink);color:var(--entry-white);font-family:"Microsoft YaHei","PingFang SC",sans-serif;overflow:hidden;overscroll-behavior:contain;touch-action:none}
-.entry-screen [hidden]{display:none!important}
-.entry-screen__portrait{position:relative;width:min(100vw,46.26dvh);height:100dvh;container-type:inline-size;overflow:hidden;isolation:isolate}
-.entry-screen__button{box-sizing:border-box;display:block;min-height:48px;padding:12px 22px;border:0;border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / 13px stretch;background:none;color:#fff;font:900 clamp(20px,6cqw,30px)/1.2 "Microsoft YaHei",sans-serif;text-shadow:0 2px 2px #82500a;cursor:pointer;touch-action:manipulation}
-.entry-screen__button:active{filter:brightness(1.16)}
-.entry-screen__button:focus-visible{outline:2px solid #e1faff;outline-offset:4px}
-.entry-screen__button:disabled{filter:grayscale(.8);cursor:wait}
-.entry-screen__button--secondary{border-image-source:url('/art/psd-buttons-v1/button-gray.png');border-image-slice:32;border-image-width:15px;font-size:17px;text-shadow:0 1px #172a3c}
-.entry-screen__progress{display:block;appearance:none;width:100%;height:7px;border:1px solid #a1c3d27a;border-radius:0;background:#05111f;overflow:hidden}
-.entry-screen__progress::-webkit-progress-bar{background:#05111f}
-.entry-screen__progress::-webkit-progress-value{background:linear-gradient(90deg,#3089b6,#a3eeff);transition:width .18s ease}
-.entry-screen__progress::-moz-progress-bar{background:linear-gradient(90deg,#3089b6,#a3eeff)}
-#bootLoading{z-index:2147483647}
-.startup__art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
-.startup__shade{position:absolute;inset:0;background:linear-gradient(#06172d25 0%,transparent 36%,transparent 68%,#06172d8c 86%,#06172ddd 100%);z-index:-1}
-.startup__title{position:absolute;top:11%;left:5%;right:5%;margin:0;text-align:center;filter:drop-shadow(0 4px 2px #00132d)}
-.startup__title strong{display:block;font-size:14cqw;font-weight:1000;line-height:1.25;letter-spacing:.02em;transform:skew(-9deg);color:#e9f8ff;text-shadow:1px 2px #1d6689,-1px -1px #fff,0 5px #183d61}
-.startup__title span{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:8px;font-size:4.3cqw;font-weight:800;letter-spacing:.34em;color:#c8e8f7}
-.startup__title span::before,.startup__title span::after{content:"";width:32px;height:1px;background:#9fd4e9}
-.startup__footer{position:absolute;bottom:max(7%,env(safe-area-inset-bottom));left:10%;right:10%;text-align:center}
-.startup__footer .entry-screen__button{width:75%;margin:0 auto 22px;height:16cqw;max-height:76px}
-.startup__status{font-size:clamp(12px,3.3cqw,16px);line-height:1.5;min-height:24px;margin:0 0 12px;color:#d1e7f3;text-shadow:0 1px 3px #000}
-.startup__version{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;font-size:11px;color:#c4d9e9a6}
-.startup__hint{font-size:11px;color:#a8bdce;margin:12px 0 0;letter-spacing:.1em}
-.entry-screen.is-leaving{opacity:0;transition:opacity .3s ease}
-.startup.is-failed .startup__status{color:#ffd5cc}
+:root {
+  --entry-ink: #071520;
+  --entry-white: #effaff;
+  --entry-cyan: #a9e8f4;
+}
+
+.entry-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--entry-ink);
+  color: var(--entry-white);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+.entry-screen [hidden] { display: none !important; }
+.entry-screen__portrait {
+  position: relative;
+  width: min(100vw, 46.26dvh);
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  container-type: inline-size;
+  background: #122b3d;
+}
+.entry-screen__button {
+  box-sizing: border-box;
+  display: block;
+  min-height: 48px;
+  padding: 9px 20px;
+  border: 0;
+  border-image: url('/art/psd-equipment-v1/button-gold.png') 18 fill / 12px stretch;
+  background: none;
+  color: #fff;
+  font: 800 clamp(17px, 5cqw, 22px)/1.2 "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: .12em;
+  text-shadow: 0 2px 3px #81500a;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.entry-screen__button:active { filter: brightness(1.16); transform: translateY(1px); }
+.entry-screen__button:focus-visible { outline: none; filter: brightness(1.18) drop-shadow(0 0 5px #b7f4ff); }
+.entry-screen__button:disabled { filter: grayscale(.8); cursor: wait; }
+.entry-screen__button--secondary {
+  border-image-source: url('/art/psd-buttons-v1/button-gray.png');
+  border-image-slice: 32;
+  border-image-width: 13px;
+  font-size: clamp(14px, 4cqw, 18px);
+  text-shadow: 0 1px #172a3c;
+}
+.entry-screen__progress {
+  display: block;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: #6f95a64d;
+}
+.entry-screen__progress::-webkit-progress-bar { background: #6f95a64d; }
+.entry-screen__progress::-webkit-progress-value {
+  background: linear-gradient(90deg, #4fb6d2, #d3fbff);
+  box-shadow: 0 0 9px #83e9ff;
+  transition: width .18s ease;
+}
+.entry-screen__progress::-moz-progress-bar { background: linear-gradient(90deg, #4fb6d2, #d3fbff); }
+#bootLoading { z-index: 2147483647; }
+.sortie-loading__backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -3;
+}
+.sortie-loading__shade {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: linear-gradient(180deg, #122c44e8 0%, #284d6999 24%, #173d5470 50%, #061521a6 75%, #06131ff5 100%);
+}
+.sortie-loading__state {
+  padding: 12px 14px 13px;
+  background: linear-gradient(110deg, #0a2637df, #102e40c9);
+  box-shadow: inset 0 1px #e4fcff20;
+}
+.sortie-loading__status { min-width: 0; margin: 0; color: #f0faff; font-size: clamp(10px, 2.8cqw, 13px); line-height: 1.35; text-align: right; }
+.entry-screen.is-leaving { opacity: 0; transition: opacity .3s ease; }
+:is(html[data-boot], html.sortie-loading-active, html.replica-launch-active) :is(.build-identity, .performance-tools, .performance-hud, #replicaResearchToggle) { visibility: hidden !important; }
+
+.sortie-loading__backdrop { opacity: .76; }
+.sortie-loading__shade { background: linear-gradient(180deg, #102c41e8, #1c526b94 43%, #061824de 75%, #06131ff5); }
+.sortie-loading__heading { position: absolute; top: 13%; left: 9%; right: 9%; text-align: center; }
+.sortie-loading__heading h2 { margin: 9px 0 0; color: #f5fdff; font-size: clamp(19px, 5.5cqw, 26px); line-height: 1.35; text-shadow: 0 2px 4px #071a28; }
+.sortie-loading__state { position: absolute; left: 9%; right: 9%; bottom: 15%; }
+.sortie-loading__actions { display: flex; justify-content: center; gap: 10px; margin-top: 22px; }
+.sortie-loading__actions button { flex: 1; min-width: 0; font-size: clamp(14px, 4cqw, 18px); }
+.sortie-loading.is-failed .sortie-loading__status { color: #ffd2c8; }
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .entry-screen__portrait { width: min(100vw, 850px); }
+  .sortie-loading__heading { top: 18%; left: 6%; right: auto; width: 40%; }
+  .sortie-loading__state { box-sizing: border-box; left: 6%; right: auto; bottom: 20%; width: 40%; }
+  .sortie-loading__actions button { padding-inline: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .entry-screen, .entry-screen * { animation: none !important; transition: none !important; } }
+
+/* Selected illustrated startup: pixels supply all decorative artwork.
+   The only live overlays are status, PSD progress slices and PSD buttons. */
+.startup .entry-screen__portrait {
+  width: min(100vw, 46.26dvh);
+  height: min(100dvh, 216.18vw);
+}
+.startup__art { position:absolute;inset:0;width:100%;height:100%;object-fit:contain; }
+.startup__title { position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap; }
+.startup__footer { position:absolute;left:15%;right:15%;bottom:max(8%,env(safe-area-inset-bottom));text-align:center; }
+.startup__load { padding:0;background:none;box-shadow:none; }
+.startup__status { margin:0 0 8px;min-height:1.4em;color:#fff;font:500 clamp(12px,4cqw,20px)/1.4 "Songti SC","STSong","SimSun",serif;text-shadow:0 1px 4px #143c73,0 1px 1px #143c73; }
+.startup .entry-screen__progress { height:clamp(8px,2.6cqw,12px);background:none;border:0;border-image:url('/art/psd-combat-v1/progress-track.png') 5 8 fill / 3px 5px stretch; }
+.startup .entry-screen__progress::-webkit-progress-bar { background:none;border-image:url('/art/psd-combat-v1/progress-track.png') 5 8 fill / 3px 5px stretch; }
+.startup .entry-screen__progress::-webkit-progress-value { background:none;box-shadow:none;border-image:url('/art/psd-combat-v1/progress-fill.png') 5 8 fill / 3px 5px stretch; }
+.startup .entry-screen__progress::-moz-progress-bar { background:none;border-image:url('/art/psd-combat-v1/progress-fill.png') 5 8 fill / 3px 5px stretch; }
+.startup__actions { margin-top:clamp(22px,5.5cqw,30px);min-height:44px; }
+.startup__actions .entry-screen__button { width:72%;height:clamp(44px,12.8cqw,64px);min-height:44px;margin:0 auto;padding:7px 12px;font:700 clamp(17px,6cqw,30px)/1.2 "Songti SC","STSong","SimSun",serif;letter-spacing:.08em; }
+.startup.is-failed .startup__status { color:#fff; }
+@media (orientation:landscape) and (max-height:500px) {
+  .startup .entry-screen__portrait { width:min(100vw,850px);height:100dvh; }
+  .startup__art { width:50%;object-position:center; }
+  .startup__footer { left:54%;right:6%;bottom:25%; }
+  .startup__status { font-size:16px; }
+  .startup__actions .entry-screen__button { width:85%;font-size:22px; }
+}
+
+/* A following camera stays inside the elevator shaft throughout preparation. */
+.sortie-loading__backdrop { opacity:.8;object-position:52% center; }
+.sortie-loading__shade { background:linear-gradient(#071520aa 0%,#07152000 28%,#07152000 72%,#071520b3 100%); }
+.sortie-hangar { position:absolute;left:0;top:20%;width:100%;height:54%;isolation:isolate;pointer-events:none; }
+.sortie-hangar__elevator { position:absolute;left:7%;bottom:calc(var(--elevator-lift,0) * 32.5%);width:86%;height:auto;z-index:1; }
+.sortie-hangar__model { position:absolute;inset:0;z-index:1; }
+.sortie-hangar__canvas { display:block;width:100%;height:100%; }
+.sortie-hangar__fallback { position:absolute;left:0;top:0;width:100%;height:70%;object-fit:contain;opacity:0; }
+.sortie-hangar__model[data-phase='fallback'] .sortie-hangar__fallback { opacity:1; }
+.sortie-hangar__model.has-model .sortie-hangar__fallback { display:none; }
+.sortie-loading.is-failed .sortie-hangar { top:23%;height:30%; }
+.sortie-loading__state { background:none;box-shadow:none;padding:12px 0; }
+.sortie-loading__heading { transition:opacity .5s ease; }
+.sortie-loading__heading.is-muted { opacity:0;pointer-events:none; }
+.sortie-loading.is-failed .sortie-loading__status { text-align:center;font-size:16px; }
+.sortie-loading__shaft { position:absolute;inset:0;overflow:hidden;z-index:-3; }
+.sortie-loading__shaft-strip { position:absolute;inset:0; }
+.sortie-loading__shaft .sortie-loading__backdrop { position:absolute;inset:0;display:block;width:100%;height:160%;object-fit:cover;animation:sortie-shaft-up 12s linear infinite; }
+.sortie-loading__shaft .sortie-loading__backdrop:first-child { animation-delay:-6s; }
+.sortie-loading.is-failed .sortie-loading__backdrop { animation-play-state:paused; }
+@keyframes sortie-shaft-up {
+  0% {transform:translateY(-37.5%);opacity:0}
+  10%,50% {opacity:1}
+  60%,100% {opacity:0}
+  100% {transform:translateY(0)}
+}
+@media (orientation:landscape) and (max-height:500px) {
+  .sortie-hangar,.sortie-loading.is-failed .sortie-hangar { left:48%;top:15%;width:50%;height:58%; }
+}
+
 .sortie-loading__panel{background:radial-gradient(ellipse at 50% 44%,#102c45 0%,#081928 35%,#04101c 73%)}
 .sortie-loading__heading{position:absolute;top:28%;left:8%;right:8%;text-align:center}
 .sortie-loading__heading small{display:block;color:#819dae;font-size:3.3cqw;letter-spacing:.2em;margin-bottom:13px}
@@ -46,3 +187,6 @@
 .sortie-loading__meter{position:relative;overflow:hidden}
 .sortie-loading.is-pending .sortie-loading__meter{box-sizing:border-box;height:7px;border:1px solid #a1c3d27a;background:#05111f}
 .sortie-loading.is-pending .entry-screen__progress{opacity:0}
+
+.sortie-loading__state{bottom:auto}
+.sortie-loading .entry-screen__progress{height:7px;border:1px solid #a1c3d27a;background:#05111f}

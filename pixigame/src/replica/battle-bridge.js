@@ -19,6 +19,12 @@ const LOADING_PHASES = Object.freeze({
   interface: [.62,.68,'正在准备战斗界面…'],
   textures: [.68,.95,'正在加载战斗资源…'],
 });
+const chapterNumberText = value => {
+  const digits = ['零','一','二','三','四','五','六','七','八','九'];
+  if (value < 10) return digits[value];
+  if (value < 100) return `${value < 20 ? '' : digits[Math.floor(value / 10)]}十${value % 10 ? digits[value % 10] : ''}`;
+  return String(value);
+};
 
 // Appearance is separate from native progression IDs. Never forward legacy
 // statModifiers, fixed-parts builds, difficulty multipliers or passive formulas.
@@ -59,6 +65,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     session.frame.src = 'about:blank';
     session.host.remove(); active = null;
     document.documentElement.classList.remove('replica-battle-active');
+    document.documentElement.classList.remove('replica-launch-active');
     onLeave(); session.resolve?.(false); session.focus?.focus?.({ preventScroll: true });
   }
 
@@ -130,13 +137,24 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     const chapterLabel = chapterPresentationForStage(chapter.stageIndex).chapterName;
     const snapshot = peripheral()?.snapshot();
     if (!snapshot) return false;
+    const scene = peripheralSceneForStage(chapter.stageIndex);
+    const appearance = appearanceOf(snapshot, chapter);
+    const aircraft = appearance.aircraft;
+    const loadingOptions = {
+      stageName: chapterLabel,
+      aircraftId: aircraft.id,
+      aircraftName: aircraft.name,
+      sceneImage: scene.depthUrl || scene.artUrl,
+      resourceCount: 1,
+      indeterminate: true,
+    };
     const host = document.createElement('section'); host.className = 'replica-battle-host';
     host.setAttribute('aria-label', chapterLabel + '战斗');
     const frame = document.createElement('iframe');
     const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('-');
     const url = new URL(`${import.meta.env.BASE_URL}replica-battle/index.html`, document.baseURI);
     url.searchParams.set('chapter', String(chapter.id)); url.searchParams.set('session', id);
-    frame.src = url.href; frame.title = '少女航线 · ' + chapterLabel;
+    frame.src = url.href; frame.title = '彼方之遥 · ' + chapterLabel;
     frame.allow = 'autoplay; fullscreen'; frame.className = 'replica-battle-frame';
     host.append(frame);
     const session = { id, host, frame, loading:null, trial, chapter, run: null, settled: false,
@@ -161,7 +179,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       catch (error) { onError(error.message); failLoading(); }
     };
     const failLoading = () => {
-      session.loading ||= showSortieLoading({stageName:chapterLabel,aircraftId:snapshot.aircraftId,indeterminate:true,onDismiss:dismissLoading});
+      session.loading ||= showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
       session.loading.fail();
     };
     const failPreparation = () => {
@@ -225,7 +243,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     if (session.focus instanceof HTMLElement) session.focus.blur();
     onEnter(); document.documentElement.classList.add('replica-battle-active');
     document.body.append(host);
-    session.loading=showSortieLoading({stageName:chapterLabel,aircraftId:snapshot.aircraftId,indeterminate:true,onDismiss:dismissLoading});
+    session.loading=showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
     const started = new Promise(resolve => {
       session.resolve = resolve;
       session.receive = event => {
@@ -238,7 +256,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
             case 'boot':
               if (session.run) throw new Error('战斗页面已重新载入，请返回后重新出击');
               session.loading?.update(.03,'正在读取关卡…');
-              send(session, 'initialize', { appearance: appearanceOf(snapshot, chapter) }); break;
+              send(session, 'initialize', { appearance }); break;
             case 'loading-progress': {
               if(session.startAcknowledged||session.run||!Object.hasOwn(LOADING_PHASES,message.phase)||!Number.isFinite(message.progress))break;
               const [from,to,label]=LOADING_PHASES[message.phase];
@@ -263,8 +281,15 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
                 throw new Error('战斗启动配置不一致，请刷新页面后重新出击');
               clearTimeout(session.timer); session.timer = null; session.startAcknowledged = true;
               session.loading?.update(1,'准备完成');
-              session.loading?.close({restoreFocus:false}); session.loading=null;
+              document.documentElement.classList.add('replica-launch-active');
+              const covering=session.loading;session.loading=null;
+              void Promise.resolve(covering?.close({restoreFocus:false})).then(()=>{
+                if(active===session&&!session.preparationFailed)send(session,'launch-visible',{runId:session.run.snapshot.id});
+              });
               onState('playing'); resolve(true); break;
+            case 'control-ready':
+              if(message.runId===session.run?.snapshot.id)document.documentElement.classList.remove('replica-launch-active');
+              break;
             case 'onboarding': {
               const group=message.group;
               if(session.settled||session.trial||message.runId!==session.run?.snapshot.id||![1,4].includes(group))break;

@@ -1,6 +1,5 @@
 import { battleSkillIconUrl } from '../ui/battle-skill-art.js';
 import { projectIconUrl } from '../ui/project-ui-art.js';
-import { weaponCatalogThemeArt } from '../ui/weapon-theme-art.js';
 
 const weaponFamilies = Object.freeze({
   '01': '10000701', '02': '10000601', '03': '10000201',
@@ -26,6 +25,6 @@ const specialSkills = Object.freeze({
 export function projectCollectionIcon(icon) {
   const key = String(icon || '').split('/').pop().replace(/\.(png|webp)$/, '');
   const weapon = /^(?:stg_skillLab_icon|stg_AirPlaneGun_icon)_(\d+)$/.exec(key);
-  if (weapon) return weaponCatalogThemeArt(weapon[1]) || battleSkillIconUrl(weaponFamilies[weapon[1]]);
+  if (weapon) return battleSkillIconUrl(weaponFamilies[weapon[1]]);
   return battleSkillIconUrl(key) || (specialSkills[key] ? projectIconUrl(specialSkills[key]) : null);
 }
