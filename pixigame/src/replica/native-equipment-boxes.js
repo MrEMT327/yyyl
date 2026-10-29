@@ -21,14 +21,13 @@ export function equipmentBoxRules(id) {
   const groups=box.DrawBoxRateInfo.map(id=>source.boxRates.find(row=>row.ID===id));
   if(groups.some(row=>!row))return {supported:false,reason:'宝箱概率表缺失'};
   let items=groups.flatMap(row=>row.ItemsProbability);
-  // Local pool: restore original random-weapon item 902 (50/100000),
-  // retain pilots 3%, and deduct the 0.05% from green equipment.
+  // Local pool: random weapons 10%, pilots 3%, green equipment 43%.
+  // Blue, purple and S equipment retain their existing weights.
   if(id===3){
     const green=items.filter(([item])=>rows.get(item)?.quality===20);
     if(green.length!==20||pilots.size!==10)throw Error('高级箱自定义奖池配置变化');
-    let greenIndex=0;
     items=items.filter(([item])=>rows.has(item)||item===902).map(([item,count,weight])=>
-      [item,count,rows.get(item)?.quality===20?2647+(greenIndex++<10?1:0):weight]);
+      [item,count,item===902?10000:rows.get(item)?.quality===20?2150:weight]);
     items.push(...[...pilots.keys()].map(id=>[id,1,300]));
   }
   const valid=items.every(([id,count,weight])=>(rows.has(id)||id===902&&RANDOM_WEAPONS.length===11||(id>=40000&&pilots.has(id)))&&Number.isSafeInteger(count)&&count>0

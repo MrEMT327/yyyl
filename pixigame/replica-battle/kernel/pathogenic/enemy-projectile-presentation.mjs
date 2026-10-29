@@ -56,14 +56,37 @@ function fist(body, glow, age) {
   body.polygon([[.48,.03],[.7,.25],[.91,.1],[.94,-.16],[.7,-.35],[.49,-.22]],rgba(0x7c9bb9));
   body.quad(-.45,-.23,.36,-.17,rgba(0xabc8df));
 }
-function brick(body) {
-  body.polygon([[-.9,-.9],[.71,-1],[.96,-.8],[.96,.82],[.67,1],[-.9,.85]],rgba(0x58261f));
-  body.polygon([[-.76,-.8],[.7,-.9],[.7,.8],[-.76,.71]],rgba(0xc66b4e));
-  body.polygon([[.7,-.9],[.87,-.74],[.87,.75],[.7,.8]],rgba(0x8f3a2b));
-  body.polygon([[-.76,.71],[.7,.8],[.87,.75],[.65,.91],[-.76,.81]],rgba(0xe58a62));
-  body.quad(-.66,-.68,-.57,.58,rgba(0xdc8a69));
-  for(const [x,y] of [[-.42,-.51],[.33,-.6],[.47,.43],[-.15,.26],[.18,-.05]])
-    body.polygon([[x-.04,y],[x,y+.05],[x+.06,y+.015],[x+.03,y-.05]],rgba(0x9a4c3b));
+function brick(body, glow, b) {
+  // A bevelled solid with recessed grooves. Keep the readable red hazard hue,
+  // but author its light/dark faces here instead of flattening them in a tint.
+  body.polygon([[-.91,-.84],[-.73,-.98],[.7,-.98],[.96,-.76],[.96,.75],[.7,.98],[-.72,.98],[-.91,.8]],rgba(0x30202b));
+  body.polygon([[-.84,-.78],[-.69,-.91],[.66,-.91],[.87,-.72],[.87,.71],[.65,.9],[-.68,.9],[-.84,.75]],rgba(0x8c3542));
+  body.polygon([[.61,-.83],[.87,-.72],[.87,.71],[.61,.82]],rgba(0x652432));
+  body.polygon([[-.74,-.72],[-.6,-.83],[.57,-.83],[.7,-.68],[.7,.65],[.57,.8],[-.61,.8],[-.74,.66]],rgba(0xc45154));
+  body.polygon([[-.61,.8],[.57,.8],[.87,.71],[.65,.9],[-.68,.9],[-.84,.75]],rgba(0xf08b7c));
+  body.polygon([[-.74,-.72],[-.6,-.83],[-.54,-.76],[-.59,.68],[-.74,.66]],rgba(0xe47a70));
+  body.polygon([[.4,-.8],[.57,-.83],[.7,-.68],[.7,.65],[.57,.8],[.4,.75]],rgba(0x9c3542));
+  body.quad(-.57,-.75,.41,-.64,rgba(0x752b38));
+  body.quad(-.54,-.74,.4,-.7,rgba(0xf19d86));
+  // The three inset chambers read at the normal 25–50 px bullet size.
+  for(const y of [-.48,-.05,.38]){
+    body.polygon([[-.35,y-.1],[.32,y-.1],[.41,y-.02],[.32,y+.1],[-.35,y+.1],[-.43,y+.02]],rgba(0x6f2a37));
+    body.quad(-.3,y-.045,.28,y+.045,rgba(0x8d3440));
+    body.quad(-.32,y-.13,.31,y-.1,rgba(0xf08c79));
+  }
+  body.polygon([[-.08,.8],[-.14,.65],[-.04,.53],[-.08,.68],[.02,.8]],rgba(0x7d303b));
+  body.polygon([[.7,-.47],[.57,-.38],[.7,-.28]],rgba(0x722b37));
+  body.polygon([[-.73,-.26],[-.58,-.19],[-.73,-.1]],rgba(0xf1aa8e));
+  body.quad(-.65,.67,-.2,.705,rgba(0xffc3a0));
+  // A compact wake, not a second hit body. No particles, random state or
+  // persistent history; pausing or retiring the projectile freezes/removes it.
+  const speed=Math.hypot(b.vx??0,b.vz??0);
+  if(Number.isFinite(speed)&&speed>.05){
+    const fade=Math.min(1,b.age/.08,(b.lifetime-b.age)/.08);
+    const reach=Math.min(.68,speed*.035);
+    glow.polygon([[-.5,-.77],[.5,-.77],[.16,-1-reach],[-.16,-1-reach]],rgba(0xe84358,.12*fade));
+    glow.polygon([[-.2,-.82],[.2,-.82],[0,-1-reach*.72]],rgba(0xffa18b,.18*fade));
+  }
 }
 function missile(body, glow, age) {
   const flare=.92+.08*Math.sin(age*42);
@@ -110,7 +133,7 @@ export function correctedEnemyProjectileMeshes(b, screen) {
   }
   const body=painter(point,'body','body',3),glow=painter(point,'glow','exhaust',2);
   if(b.modelId===1100013)fist(body,glow,b.age);
-  else if(b.modelId===1100014)brick(body);
+  else if(b.modelId===1100014)brick(body,glow,b);
   else missile(body,glow,b.age);
   return [glow.mesh,body.mesh].filter(mesh=>mesh.indices.length);
 }
