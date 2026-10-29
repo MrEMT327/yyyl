@@ -752,9 +752,16 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   }
   function scrollShopSection(value) {
     shopSection = shopSectionId(value);
-    const scroller = body.querySelector('.shop-scroll');
-    const section = scroller?.querySelector(`[data-shop-section="${shopSection === 'stamina' ? 'coins' : shopSection}"]`);
-    if (section) scroller.scrollTop = section.offsetTop;
+    let scroller = body.querySelector('.shop-scroll');
+    const target = shopSection === 'stamina' ? 'coins' : shopSection;
+    let section = scroller?.querySelector(`[data-shop-section="${target}"]`);
+    if (!section && tab === 'shop') {
+      // Only the active section is mounted; switch pages before scrolling.
+      render(true);
+      scroller = body.querySelector('.shop-scroll');
+      section = scroller?.querySelector(`[data-shop-section="${target}"]`);
+    }
+    if (section) scroller.scrollTop = 0;
   }
   function switchTab(value, requestedShopSection) {
     const previousTab = tab, previousSubpage = subpage;
@@ -929,6 +936,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(action==='pilotSupply'){
       await act('pilotSupply',{action:target.dataset.operation,count:target.dataset.count===undefined?undefined:Number(target.dataset.count),
         id:target.dataset.operation==='task'?id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
+    }
+    if(action==='nativeWeaponSkinSelect'){
+      const rows=snapshot.replicaCollection?.guns||[],current=rows.find(row=>row.id===Number(modal?.id)),next=rows.find(row=>row.id===Number(id));
+      if(modal?.type==='nativeCollectionDetail'&&modal.kind==='guns'&&current&&next&&(current.baseGunId||current.id)===(next.baseGunId||next.id)){
+        modal={...modal,id:next.id};renderModal();
+      }
+      return;
     }
     if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
     if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}

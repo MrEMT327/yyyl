@@ -9,7 +9,7 @@ import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { nativeCollectionArt } from './native-collection-art.js';
 import { collectionQualityRank } from './native-quality.js';
 import { nativeGearPresentation, nativeItemDisplayName } from './native-item-names.js';
-import { equipmentBlueprintArtPath } from './equipment-art.js';
+import { equipmentBlueprintArtPath, equipmentArtPath, equipmentArtFamily } from './equipment-art.js';
 import { researchBlueprintArt } from './research-blueprint-art.js';
 const base=import.meta.env?.BASE_URL||'/';
 const units=new Map([...catalog.guns,...catalog.skins,...catalog.pilots].map(row=>[row.id,row]));
@@ -24,7 +24,7 @@ export function nativeItemArt(id) {
   const research=researchBlueprintArt(id);
   if(research)return research;
   const gear=nativeGearPresentation(id);
-  if(gear)return base+'art/project-flight-gear-v1/'+gear.art+'.webp';
+  if(gear)return base+equipmentArtPath(gear.art);
   const fragment=nativePilotFragment(id),unit=units.get(fragment?.pilotId??Number(id));
   if(unit)return nativeCollectionArt(unit);
   return null;
@@ -54,6 +54,13 @@ export function nativeItemPresentation(id) {
 // Resolve persisted receipts by canonical ID, without changing their quantities.
 export function nativeRewardPresentation(reward) {
   const type=reward.type||reward.kind;
+  if(type==='gear'||type==='equipment') {
+    const id=reward.nativeItemId??reward.nativeId??reward.id;
+    if(nativeGearPresentation(id))return nativeItemPresentation(id);
+    const family=equipmentArtFamily(reward.family)??equipmentArtFamily(reward.art)??equipmentArtFamily(reward.image);
+    const gear=family==null?null:nativeGearPresentation(family+10);
+    if(gear)return {name:gear.name,image:base+equipmentArtPath(family)};
+  }
   const id=reward.nativeItemId??(type==='gearKey'?(reward.pool==='basic'?113:reward.pool==='advanced'?112:null)
     :type==='gearBlueprint'?GEAR_PARTS.find(part=>part.type===Number(reward.gearType))?.blueprintId
     :!type||['nativeItem','native-item','item','aircraft','pilot','weapon','guns','skins','pilots'].includes(type)?reward.id??reward.itemId:null);

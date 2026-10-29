@@ -1,3 +1,4 @@
+import {equipmentArtPath} from '../replica/equipment-art.js';
 import {nativeCollectionArt} from '../replica/native-collection-art.js';
 import {aircraftUiImage} from '../aircraft-ui-images.js';
 import {supplyWeaponArt} from './supply-visuals.js';
@@ -18,7 +19,7 @@ export function playerInfoPanel(snapshot,modal,h,callsign='') {
   const empty=emptySlotMark();
   const portrait=item=>item?.id==='pilot-06'?`${base}art/psd-equipment-v1/pilot-06-crew-portrait.png`:item?.image;
   const avatar=item=>item?.avatar||item?.image;
-  const gearArt=item=>img(`${base}art/project-flight-gear-v1/${e(item.art)}.webp`,'','pi-item-art');
+  const gearArt=item=>img(base+equipmentArtPath(item.art),'','pi-item-art');
   const weaponArt=item=>item.nativeRow?img(nativeCollectionArt(item.nativeRow),item.name,'pi-item-art'):supplyWeaponArt(item,thumbnail);
   const tile=(item,label,art,cls='')=>`<div class="pi-slot ${cls} ${item?'':'is-empty'}" data-psd-quality="${count(item?.qualityRank)}"><span class="pi-slot-label">${e(label)}</span>${item?art(item):empty}<span class="pi-slot-level">${item?(item.nativeRow?`${n(item.stars)} 星`:`Lv.${n(item.level||1)}`):'未装配'}</span><span class="pi-sr">${e(item?.name||'')}</span></div>`;
   const plane=()=>img(aircraftUiImage(m.aircraft?.id,'equipment'),m.aircraft?.name||'当前战机','pi-plane');
@@ -33,7 +34,7 @@ export function playerInfoPanel(snapshot,modal,h,callsign='') {
   const renameLabel=renameReady?(rename.free?'免费保存':`保存${n(rename.cost)}钻`):'改名费用待同步';
   const renameHint=renameReady?(rename.free?`首次改名免费；之后每次${n(rename.paidCost)}钻石。`:`本次改名消耗 ${n(rename.cost)} 钻石。`):'改名费用待同步，请重新打开。';
   const identityName=modal.editingName?`<div class="pi-rename"><label for="player-name">玩家名字</label><input id="player-name" data-player-name value="${e(modal.nameDraft??m.name)}" maxlength="24" autocomplete="off" spellcheck="false" enterkeyhint="done" aria-describedby="player-name-hint" ${modal.nameError?'aria-invalid="true"':''}><small id="player-name-hint">${e(modal.nameError||`2–12 个字符。${renameHint}`)}</small><div><button type="button" class="wc-button" data-action="playerRenameCancel">取消</button><button type="button" class="wc-button" data-action="playerRenameSave" data-rename-revision="${renameReady?rename.revision:''}" data-rename-cost="${renameReady?rename.cost:''}" data-rename-name="${e(snapshot.playerName||m.name)}" ${!renameReady||!rename.canRename?'disabled':''}>${renameLabel}</button></div></div>`:`<h3>${e(m.name)}</h3><button type="button" class="wc-button pi-rename-button" data-action="playerRename" aria-label="修改玩家名字">改名</button>`;
-  if(tab==='equipment') content=`<section class="pi-loadout" aria-label="当前机体装备"><div class="pi-loadout-plane">${plane()}<strong>${e(m.aircraft?.aircraftName||m.aircraft?.name||'未选择战机')}</strong></div>${tile(m.main,'主武器',weaponArt,'pi-pos-0')}${m.gear.map(({item,label},i)=>tile(item,label,gearArt,`pi-pos-${i+1}`)).join('')}</section>${stats()}`;
+  if(tab==='equipment') content=`<section class="pi-loadout" aria-label="当前装备"><div class="pi-loadout-plane">${plane()}<strong>${e(m.aircraft?.aircraftName||m.aircraft?.name||'未选择战机')}</strong></div>${tile(m.main,'主武器',weaponArt,'pi-pos-0')}${m.gear.map(({item,label},i)=>tile(item,label,gearArt,`pi-pos-${i+1}`)).join('')}</section>${stats()}`;
   if(tab==='weapon') content=`<section class="pi-primary-weapon">${tile(m.main,'主武器',weaponArt)}<div><small>${m.native?'出战主武器':'本机专武'}</small><h3>${e(m.main?.name||'尚未选择')}</h3></div></section>`;
   if(tab==='aircraft') content=`<section class="pi-aircraft-hero">${plane()}<h3>${e(m.aircraft?.aircraftName||m.aircraft?.name||'未选择战机')}</h3><div>${m.native?'':`Lv.${n(m.aircraft?.level||1)}`} ${stars(m.aircraft)}</div></section>${stats()}${skills('aircraft')}${roster(m.aircraftOwned,'aircraft')}`;
   if(tab==='pilot') content=`<section class="pi-pilot-hero">${img(portrait(m.pilot),m.pilot?.name||'','pi-pilot-art')}<div><small>当前驾驶员${m.pilot?.temporaryUnlocked?' · 试玩':''}</small><h3>${e(m.pilot?.name||'未选择驾驶员')}</h3>${stars(m.pilot)}<strong>${e(m.pilot?.skillName||'')}</strong><p>${e(m.pilot?.passiveDescription||m.pilot?.description||'')}</p></div></section>${skills('pilot')}${roster(m.pilotsOwned,'pilot')}`;

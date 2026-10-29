@@ -1,3 +1,4 @@
+import {equipmentArtPath} from './equipment-art.js';
 import {captureBattleCheckpoint} from './battle-checkpoint.js';
 import {battleOnboarding} from '../peripheral/onboarding.js';
 import { replicaChapter } from './chapter-contract.js';
@@ -37,7 +38,7 @@ export function appearanceOf(snapshot, chapter) {
     aircraft: { id: aircraft.id, name: aircraft.aircraft, image: absolute(aircraft.airframe.image) },
     pilot: { id: pilot.id, name: pilot.name, image: absolute(pilot.image) },
     equipment: (snapshot.equipment?.items || []).filter(row => row.equipped).map(row => ({
-      id: row.id, type: row.type, name: row.name, image: absolute(row.image || `art/project-flight-gear-v1/${row.art}.webp`),
+      id: row.id, type: row.type, name: row.name, image: absolute(row.image || equipmentArtPath(row.art)),
     })),
     assetBase: absolute('./'),
     map: { id: peripheralSceneForStage(chapter.stageIndex).id, terrain: chapter.terrain },

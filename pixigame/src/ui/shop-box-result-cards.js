@@ -1,3 +1,4 @@
+import {equipmentArtPath} from '../replica/equipment-art.js';
 import { equipmentBoxReceiptItems } from '../replica/native-equipment-box-receipt.js';
 import { nativeItemArt } from '../replica/native-item-presentation.js';
 
@@ -12,7 +13,7 @@ export function shopBoxEquipmentCards(modal,s,h) {
     const current=recorded?(owned?.family===item.family?owned:null):item;
     const tag=current?'button':'div';
     const action=current?`type="button" data-action="gearDetail" data-id="${e(item.uid)}" aria-label="${e(item.name)}，查看当前装备"`:'';
-    const image=recorded?nativeItemArt(item.nativeId):`${import.meta.env?.BASE_URL??'/'}art/project-flight-gear-v1/${item.art}.webp`;
+    const image=recorded?nativeItemArt(item.nativeId):(import.meta.env?.BASE_URL??'/')+equipmentArtPath(item.art);
     const status=modal.history&&recorded&&item.uid&&!current?'已消耗':'';
     return `<${tag} class="sn-result" data-psd-quality="${Math.max(0,Math.min(5,Math.floor(item.quality/10)-1))}" ${action}>
       <img src="${e(image)}" alt=""><b>${e(item.name)}</b>${status?`<small>${e(status)}</small>`:''}</${tag}>`;

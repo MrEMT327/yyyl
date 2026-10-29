@@ -1,0 +1,941 @@
+{
+  "name": "少女航线 · 制服装甲装备",
+  "version": 3,
+  "generator": "built-in image_gen",
+  "style": "统一机械二次元画风，各系列独立配色、少量结构差异",
+  "normalization": "Preserved RGBA artwork; aspect-preserving packaging in a 448px box inside a 512px transparent WebP.",
+  "palettes": {
+    "航卫": "白蓝",
+    "猎隼": "墨绿灰银",
+    "雷霆": "赤红深灰",
+    "星盾": "紫银",
+    "圣环": "白金"
+  },
+  "assets": [
+    {
+      "family": 4100100,
+      "slot": 1,
+      "part": "cockpit",
+      "wearable": "helmet",
+      "name": "航卫飞行头盔",
+      "series": "航卫",
+      "palette": "白蓝",
+      "file": "4100100.webp",
+      "sha256": "f8931da1c461b437708ea1ca64d98738150284cfb65c5d008e4f033f54a8a9d1",
+      "sourceSha256": "4d3eb58d6e5019ab8c69c71bd6416ba0974c27fb39fbe88154f26e9bc25473e2",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        123,
+        86,
+        1159,
+        1191
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        46,
+        32,
+        466,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3656,
+        "palettePixels": 3574,
+        "paletteRatio": 0.9776
+      }
+    },
+    {
+      "family": 4200100,
+      "slot": 2,
+      "part": "fire-control",
+      "wearable": "gauntlet",
+      "name": "航卫战术护手",
+      "series": "航卫",
+      "palette": "白蓝",
+      "file": "4200100.webp",
+      "sha256": "bfea0b70f25682eb0c0f0851b6757f9ae9713e5645856edb8fcba5fd396f0528",
+      "sourceSha256": "f7e3d227609d58742a902a923750d2fec7293cadc7f47f4b60754d6076534063",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        110,
+        59,
+        1225,
+        1200
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        37,
+        32,
+        475,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2341,
+        "palettePixels": 2320,
+        "paletteRatio": 0.991
+      }
+    },
+    {
+      "family": 4300100,
+      "slot": 3,
+      "part": "fuselage",
+      "wearable": "armor",
+      "name": "航卫轻型胸甲",
+      "series": "航卫",
+      "palette": "白蓝",
+      "file": "4300100.webp",
+      "sha256": "de1fed80798fdaf23217642de9e5bdb455fd643afc3edb234ddd3afe25e86284",
+      "sourceSha256": "2c572da3e8112831b744cd927f8f876e4829171a1a4a7cc2c39b8421800ce6f5",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        122,
+        71,
+        1189,
+        1207
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        45,
+        32,
+        466,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2121,
+        "palettePixels": 2080,
+        "paletteRatio": 0.9807
+      }
+    },
+    {
+      "family": 4400100,
+      "slot": 4,
+      "part": "amplifier",
+      "wearable": "necklace",
+      "name": "航卫战术铭牌",
+      "series": "航卫",
+      "palette": "白蓝",
+      "file": "4400100.webp",
+      "sha256": "83b97c3d0e5d17204530672bb83cc1c069627063ad9c8b4eb7dc260b0681f8af",
+      "sourceSha256": "36350f52f63c1a87d68d8cb4170b01cf2eb29b50ef3f49fc8c2993cd9350fad0",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        225,
+        91,
+        1097,
+        1198
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        79,
+        32,
+        432,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2371,
+        "palettePixels": 2346,
+        "paletteRatio": 0.9895
+      }
+    },
+    {
+      "family": 4500100,
+      "slot": 5,
+      "part": "engine-armor",
+      "wearable": "boot",
+      "name": "航卫助力战靴",
+      "series": "航卫",
+      "palette": "白蓝",
+      "file": "4500100.webp",
+      "sha256": "15ca0ac57b9a019db37eeb3044c59f1705185ff741fedeb2b874811780080eb5",
+      "sourceSha256": "eff78582d8b163ae3b44d6a227bb3d507a6f20a9e4affaff36edc487d61f8a3b",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        140,
+        60,
+        1177,
+        1222
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        56,
+        32,
+        456,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2380,
+        "palettePixels": 2281,
+        "paletteRatio": 0.9584
+      }
+    },
+    {
+      "family": 4100200,
+      "slot": 1,
+      "part": "cockpit",
+      "wearable": "helmet",
+      "name": "猎隼飞行头盔",
+      "series": "猎隼",
+      "palette": "墨绿灰银",
+      "file": "4100200.webp",
+      "sha256": "6eba21fd1c9aac4c377913a24a55c2411c1ad7b3139a54ebf61672c506d6e0f0",
+      "sourceSha256": "ad398eb69488f995839aec44afcf8d381a04068faf8a85e31de5a07008eb163d",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        126,
+        73,
+        1224,
+        1193
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        36,
+        32,
+        475,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3430,
+        "palettePixels": 1866,
+        "paletteRatio": 0.544
+      }
+    },
+    {
+      "family": 4200200,
+      "slot": 2,
+      "part": "fire-control",
+      "wearable": "gauntlet",
+      "name": "猎隼战术护手",
+      "series": "猎隼",
+      "palette": "墨绿灰银",
+      "file": "4200200.webp",
+      "sha256": "e2c9932e2031ec1b3a4f9dc137ee401a3d5732a65fffed0a60562ee6021d301e",
+      "sourceSha256": "9a1a5ced036d0d2e0b558929480ae63259e6429de71acf1bd69ef015a08e99f3",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        104,
+        46,
+        1233,
+        1204
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        37,
+        32,
+        474,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3268,
+        "palettePixels": 3193,
+        "paletteRatio": 0.9771
+      }
+    },
+    {
+      "family": 4300200,
+      "slot": 3,
+      "part": "fuselage",
+      "wearable": "armor",
+      "name": "猎隼轻型胸甲",
+      "series": "猎隼",
+      "palette": "墨绿灰银",
+      "file": "4300200.webp",
+      "sha256": "b2106d826bd30829b1941e84a70a237d7d8e11fd69091ba3b38b7c4e2f84bc8f",
+      "sourceSha256": "6936d6717a8e8aca482186e5d2344e9d6d8cb34961853412324d289b06753372",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        68,
+        60,
+        1208,
+        1214
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        34,
+        32,
+        477,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3474,
+        "palettePixels": 3404,
+        "paletteRatio": 0.9799
+      }
+    },
+    {
+      "family": 4400200,
+      "slot": 4,
+      "part": "amplifier",
+      "wearable": "necklace",
+      "name": "猎隼战术铭牌",
+      "series": "猎隼",
+      "palette": "墨绿灰银",
+      "file": "4400200.webp",
+      "sha256": "c0f73e17f85babb1c8f534ed99ded88c5976999cdc5bf0eec9443d29c42f72f9",
+      "sourceSha256": "96b95bad320d92f30c3e4a8c8772fa29f34b44a7dfb5d73e29fe83973e03615e",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        273,
+        88,
+        1102,
+        1190
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        87,
+        32,
+        424,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2161,
+        "palettePixels": 2054,
+        "paletteRatio": 0.9505
+      }
+    },
+    {
+      "family": 4500200,
+      "slot": 5,
+      "part": "engine-armor",
+      "wearable": "boot",
+      "name": "猎隼助力战靴",
+      "series": "猎隼",
+      "palette": "墨绿灰银",
+      "file": "4500200.webp",
+      "sha256": "79193b7e452e63288601f2be0ce5fe1fdb8e6206b9e56463af349546a03d07c1",
+      "sourceSha256": "b68c27d99ac0868125bb8b9b15c40f16fca0541a7b7370a29b94be00ec5e0538",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        135,
+        56,
+        1179,
+        1223
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        55,
+        32,
+        456,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2220,
+        "palettePixels": 2073,
+        "paletteRatio": 0.9338
+      }
+    },
+    {
+      "family": 4100300,
+      "slot": 1,
+      "part": "cockpit",
+      "wearable": "helmet",
+      "name": "雷霆飞行头盔",
+      "series": "雷霆",
+      "palette": "赤红深灰",
+      "file": "4100300.webp",
+      "sha256": "f62cd9f605211618e4e77eecbbfe75d0f7364dd5b1b9c2253b10da80144a1c40",
+      "sourceSha256": "c8fc135cce350260cac9056ef15020c5377d66a7e43f7124679e3eb79b2b747b",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        115,
+        32,
+        1205,
+        1218
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        50,
+        32,
+        462,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 5656,
+        "palettePixels": 5269,
+        "paletteRatio": 0.9316
+      }
+    },
+    {
+      "family": 4200300,
+      "slot": 2,
+      "part": "fire-control",
+      "wearable": "gauntlet",
+      "name": "雷霆战术护手",
+      "series": "雷霆",
+      "palette": "赤红深灰",
+      "file": "4200300.webp",
+      "sha256": "c10f7a8ff65973ba1688d6e50b2a5b9e8b51acbeccd38d7e075b32f92fa527c0",
+      "sourceSha256": "860b14332f14941b5c6f80e05a6cd97c0425bc99749d5976d3760c90e0072319",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        87,
+        48,
+        1239,
+        1222
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        36,
+        32,
+        476,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 4897,
+        "palettePixels": 3721,
+        "paletteRatio": 0.7599
+      }
+    },
+    {
+      "family": 4300300,
+      "slot": 3,
+      "part": "fuselage",
+      "wearable": "armor",
+      "name": "雷霆轻型胸甲",
+      "series": "雷霆",
+      "palette": "赤红深灰",
+      "file": "4300300.webp",
+      "sha256": "dee545ff3ac58b9adb50c34b7042a0feefb315b46df8e54e9eb219dfa818162c",
+      "sourceSha256": "0a94417dd943b0a485801d2ea93e241d2262be6ebf6ac3668f656cf25b6604f3",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        59,
+        69,
+        1216,
+        1207
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        32,
+        35,
+        480,
+        476
+      ],
+      "colorAudit": {
+        "saturatedPixels": 4380,
+        "palettePixels": 4216,
+        "paletteRatio": 0.9626
+      }
+    },
+    {
+      "family": 4400300,
+      "slot": 4,
+      "part": "amplifier",
+      "wearable": "necklace",
+      "name": "雷霆战术铭牌",
+      "series": "雷霆",
+      "palette": "赤红深灰",
+      "file": "4400300.webp",
+      "sha256": "02e4cb3ac4a89515f41ef37ea1a557f143e1546b7cbf1c79a43b53ea3491c687",
+      "sourceSha256": "c6bef959a747957d37927f318deef45c05f22c36b03510bc0066f81772811b2b",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        218,
+        65,
+        1128,
+        1217
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        79,
+        32,
+        433,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2845,
+        "palettePixels": 2392,
+        "paletteRatio": 0.8408
+      }
+    },
+    {
+      "family": 4500300,
+      "slot": 5,
+      "part": "engine-armor",
+      "wearable": "boot",
+      "name": "雷霆助力战靴",
+      "series": "雷霆",
+      "palette": "赤红深灰",
+      "file": "4500300.webp",
+      "sha256": "e8896776ce58e41c2075ef9e4cb30448ba20864a5fec056a64269a1bf34c84f1",
+      "sourceSha256": "d71df8d91fc37430c66ac6bf7b08f3eca468262af770c801c425316c5bcaba3c",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        125,
+        51,
+        1198,
+        1228
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        52,
+        32,
+        460,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3585,
+        "palettePixels": 3360,
+        "paletteRatio": 0.9372
+      }
+    },
+    {
+      "family": 4100400,
+      "slot": 1,
+      "part": "cockpit",
+      "wearable": "helmet",
+      "name": "星盾飞行头盔",
+      "series": "星盾",
+      "palette": "紫银",
+      "file": "4100400.webp",
+      "sha256": "4285ecf9b25c1ba15e29b07b3e0f24f1ab1cddebae94b50df6d336300f212794",
+      "sourceSha256": "d1f8b7a611f5b6197aadee5e806ca20e72fa40acaf978021e44a9d51514a534d",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        111,
+        64,
+        1209,
+        1195
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        38,
+        32,
+        473,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3575,
+        "palettePixels": 3574,
+        "paletteRatio": 0.9997
+      }
+    },
+    {
+      "family": 4200400,
+      "slot": 2,
+      "part": "fire-control",
+      "wearable": "gauntlet",
+      "name": "星盾战术护手",
+      "series": "星盾",
+      "palette": "紫银",
+      "file": "4200400.webp",
+      "sha256": "e58534f9b15300a18a53232b976346640479ab7bd77a60af3c7db45d4313bc3f",
+      "sourceSha256": "a6a74cfdf2b9f9ff913968a89b60594fef4a5804c78ca8f5b421335a5548f962",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        91,
+        56,
+        1237,
+        1210
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        33,
+        32,
+        478,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3035,
+        "palettePixels": 3035,
+        "paletteRatio": 1.0
+      }
+    },
+    {
+      "family": 4300400,
+      "slot": 3,
+      "part": "fuselage",
+      "wearable": "armor",
+      "name": "星盾轻型胸甲",
+      "series": "星盾",
+      "palette": "紫银",
+      "file": "4300400.webp",
+      "sha256": "72882fcc57c26b6b167684c8ebda76ea3fa7efe74a9416a80333824112e069a8",
+      "sourceSha256": "992913a91b7b71bbba359ac1de1b4cd16de29f3af87e3c961b74ec99f17ac3c6",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        62,
+        68,
+        1228,
+        1211
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        32,
+        36,
+        480,
+        475
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3079,
+        "palettePixels": 3079,
+        "paletteRatio": 1.0
+      }
+    },
+    {
+      "family": 4400400,
+      "slot": 4,
+      "part": "amplifier",
+      "wearable": "necklace",
+      "name": "星盾战术铭牌",
+      "series": "星盾",
+      "palette": "紫银",
+      "file": "4400400.webp",
+      "sha256": "f427b3af698234a062dedc304d43d0065d801364e7e60ec85abfbc4490009e2a",
+      "sourceSha256": "fcf23f3e43dffdec48286069e249f1bf09698d297285295c69b97c6b714a2220",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        232,
+        86,
+        1101,
+        1190
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        79,
+        32,
+        432,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2102,
+        "palettePixels": 2102,
+        "paletteRatio": 1.0
+      }
+    },
+    {
+      "family": 4500400,
+      "slot": 5,
+      "part": "engine-armor",
+      "wearable": "boot",
+      "name": "星盾助力战靴",
+      "series": "星盾",
+      "palette": "紫银",
+      "file": "4500400.webp",
+      "sha256": "d07e45b30f2165876c15c75feb10a50c02839ae2fc96ddbcaa3e9ae1e66a430f",
+      "sourceSha256": "3fa9ef8203b761120a749ed8d9fe053f2a3b2735629f94791cf466cca27e6ff9",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        148,
+        56,
+        1190,
+        1220
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        55,
+        32,
+        456,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3381,
+        "palettePixels": 3381,
+        "paletteRatio": 1.0
+      }
+    },
+    {
+      "family": 4110100,
+      "slot": 1,
+      "part": "cockpit",
+      "wearable": "helmet",
+      "name": "圣环飞行头盔",
+      "series": "圣环",
+      "palette": "白金",
+      "file": "4110100.webp",
+      "sha256": "5374e2c6eac1299f180b52c80e7c2729563ad9effd44ab0da7b111edb887e26d",
+      "sourceSha256": "a890e0b0204d5cae929fb4cb1088650bdc30f49c6c8c3b29d67bef33491a0265",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        108,
+        65,
+        1180,
+        1199
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        44,
+        32,
+        468,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 3882,
+        "palettePixels": 2174,
+        "paletteRatio": 0.56
+      }
+    },
+    {
+      "family": 4210100,
+      "slot": 2,
+      "part": "fire-control",
+      "wearable": "gauntlet",
+      "name": "圣环战术护手",
+      "series": "圣环",
+      "palette": "白金",
+      "file": "4210100.webp",
+      "sha256": "2f9feb3c94f71322341c9049eb3b056a065dde9217e224263138dc7719b68c69",
+      "sourceSha256": "d22686f4b9e5121fb66c00aa56d70ee932aa75cd4439776cc46dbf9a6e9d8777",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        106,
+        53,
+        1227,
+        1203
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        37,
+        32,
+        474,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 1622,
+        "palettePixels": 1538,
+        "paletteRatio": 0.9482
+      }
+    },
+    {
+      "family": 4310100,
+      "slot": 3,
+      "part": "fuselage",
+      "wearable": "armor",
+      "name": "圣环轻型胸甲",
+      "series": "圣环",
+      "palette": "白金",
+      "file": "4310100.webp",
+      "sha256": "b6be1024847c20a6d03ae8ba6f80d6304678246c938ee3541aa0cf08dc9fddcd",
+      "sourceSha256": "4567c9df99c13ee7802d38751bf9fda8fc7bb7304370a1a3a22388fad35238ef",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        120,
+        68,
+        1191,
+        1208
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        45,
+        32,
+        466,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 2503,
+        "palettePixels": 2361,
+        "paletteRatio": 0.9433
+      }
+    },
+    {
+      "family": 4410100,
+      "slot": 4,
+      "part": "amplifier",
+      "wearable": "necklace",
+      "name": "圣环战术铭牌",
+      "series": "圣环",
+      "palette": "白金",
+      "file": "4410100.webp",
+      "sha256": "d91f5c250c87ae9b8b0514431544cf31e3884bc0f5174983f95bf3f26133d319",
+      "sourceSha256": "42a47afc841b75d819a1aa1eaaba753cb1888ca34522366008aecf80205d8c81",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        212,
+        65,
+        1113,
+        1198
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        78,
+        32,
+        434,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 1780,
+        "palettePixels": 1310,
+        "paletteRatio": 0.736
+      }
+    },
+    {
+      "family": 4510100,
+      "slot": 5,
+      "part": "engine-armor",
+      "wearable": "boot",
+      "name": "圣环助力战靴",
+      "series": "圣环",
+      "palette": "白金",
+      "file": "4510100.webp",
+      "sha256": "f7fced4fa0f8ed369017df7a0abd685bdd15c47c1e3f4058488ea3cd8d8f76ff",
+      "sourceSha256": "6306002e6aa47d6eaf25926fe60a08e77b48c08411eb8690bf8456b14d072a38",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        138,
+        60,
+        1178,
+        1222
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        55,
+        32,
+        456,
+        480
+      ],
+      "colorAudit": {
+        "saturatedPixels": 1955,
+        "palettePixels": 1836,
+        "paletteRatio": 0.9391
+      }
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import {nativeWeaponGroupId,nativeWeaponGroupRows} from './native-weapon-groups.js';
 import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import { nativeCollectionArt, nativeSkillArt } from './native-collection-art.js';
 import { NATIVE_PILOT_SKINS } from './native-pilot-roster.js';
@@ -31,8 +32,10 @@ export function cloudNativeCatalog(ctx){
     for(const node of t.content.querySelectorAll('[data-action="catalogMode"],[data-action="catalogBack"],[data-action="aircraftInfo"],[data-action="pilotInfo"]')){node.dataset.action='nativeAppearance';node.dataset.mode='progression';}
     return t.innerHTML;
   }
-  const rows=collection[group],byId=new Map(rows.map(row=>[String(row.id),row]));
-  const selected=byId.get(String(ctx.selectedId))||rows.find(row=>row.equipped)||rows[0];
+  const allRows=collection[group],rows=kind==='weapon'?nativeWeaponGroupRows(allRows):allRows;
+  const byId=new Map(rows.map(row=>[String(row.id),row]));
+  const requested=allRows.find(row=>String(row.id)===String(ctx.selectedId));
+  const selected=(kind==='weapon'&&requested?rows.find(row=>nativeWeaponGroupId(row)===nativeWeaponGroupId(requested)):byId.get(String(ctx.selectedId)))||rows.find(row=>row.equipped)||rows[0];
   if(!selected)return '';
   const e=h.escape;
   const items=rows.map(row=>({...row,id:String(row.id),stars:row.star,qualityRank:collectionQualityRank(row.quality),
@@ -133,7 +136,8 @@ function collectionDetailArtwork(row,h){
 export function cloudNativeWeaponPreview(id,mode,s,h){
   const row=s.replicaCollection.guns.find(row=>row.id===Number(id)),e=h.escape;
   if(!row)return {title:'武器',content:'<p>记录不存在</p>'};
-  const family=row.stage.skills.map(skill=>weaponPreview.families[skill.id]).find(Boolean);
+  const base=s.replicaCollection.guns.find(item=>item.id===nativeWeaponGroupId(row))||row;
+  const family=base.stage.skills.map(skill=>weaponPreview.families[skill.id]).find(Boolean);
   if(mode==='base'){
     const description=family?.description||row.stage.skills[0]?.description||row.description;
     return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${collectionDetailArtwork(row,h)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};

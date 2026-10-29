@@ -1,3 +1,4 @@
+import {equipmentArtPath} from '../replica/equipment-art.js';
 import * as THREE from 'three';
 import { createCanvasAssets, createCanvasSurface } from './canvas-surface.js';
 import { aircraftUiImage } from '../aircraft-ui-images.js';
@@ -152,11 +153,11 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
     p.image(aircraftUiImage(s.aircraftId,'equipment'), 160, 210, 430, 470);
     [[1,35,245],[2,575,245],[3,35,435],[4,575,435],[5,305,680]].forEach(([type,x,y])=>{
       const item=s.equipment.items.find(row=>row.uid===s.equipment.slots[type]);
-      if(item) card(item,x,y,140,152,`art/project-flight-gear-v1/${item.art}.webp`,()=>open('gear',{id:item.uid}),'Lv.'+item.level);
+      if(item) card(item,x,y,140,152,equipmentArtPath(item.art),()=>open('gear',{id:item.uid}),'Lv.'+item.level);
       else {p.nine('art/psd-equipment-v1/frame-empty.png',x,y,140,152,24,.7);p.image(EMPTY_SLOT_ART,x+52,y+50,36,36);p.hit('slot:'+type,x,y,140,152,()=>open('gearList',{part:type}));}
     });
     [['aircraft','战机'],['pilot','驾驶员'],['weapon','武器'],['workshop','改装间']].forEach(([id,label],i)=>button('catalog:'+id,label,22+i*181,980,164,()=>visit(id)));
-    p.text('机体部件',28,1120,29); list(s.equipment.items,(item,i,x,y,w)=>card(item,x,y,w,190,`art/project-flight-gear-v1/${item.art}.webp`,()=>open('gear',{id:item.uid})),4,200,1160,1455);
+    p.text('驾驶员装备',28,1120,29); list(s.equipment.items,(item,i,x,y,w)=>card(item,x,y,w,190,equipmentArtPath(item.art),()=>open('gear',{id:item.uid})),4,200,1160,1455);
   }
   function catalog(s, kind) {
     heading({aircraft:'战机',pilot:'驾驶员',weapon:'武器',workshop:'改装间'}[kind]);
@@ -233,7 +234,7 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
       const info=playerInfoModel(s,bridge.profileState?.playerName);p.text(info.name,375,405,35,'#fff','center');
       p.wrap(`战力 ${count(info.power)}\n攻击 ${count(info.attack)}\n耐久 ${count(info.hp)}\n航线进度：${info.progress}\n战机：${info.aircraft?.name}\n驾驶员：${info.pilot?.name}`,85,510,600,29);
     } else if(m.type==='wallet')modalList(s.shop.items.filter(item=>item.section===m.key||item.reward[m.key]),(item,i,x,y,w)=>{p.text(item.name,x+25,y+35,27);button('buy:'+item.id,item.cost.type==='ad'?'观看广告':item.cost.amount?`${item.cost.amount} 钻`:'免费领取',x+w-200,y+30,190,()=>act('shopBuy',{id:item.id,quantity:1}),!item.available);});
-    else if(m.type==='gearList')modalList(s.equipment.items.filter(item=>item.type===m.part),(item,i,x,y,w)=>card(item,x,y,w,220,`art/project-flight-gear-v1/${item.art}.webp`,()=>open('gear',{id:item.uid})),3,240);
+    else if(m.type==='gearList')modalList(s.equipment.items.filter(item=>item.type===m.part),(item,i,x,y,w)=>card(item,x,y,w,220,equipmentArtPath(item.art),()=>open('gear',{id:item.uid})),3,240);
     else if(m.type==='gear')gearDialog(s,m);
     else if(m.type==='aircraft'||m.type==='pilot')fleetDialog(s,m);
     else if(m.type==='weapon')weaponDialog(s,m);
@@ -241,7 +242,7 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
   }
   function gearDialog(s,m) {
     const item=s.equipment.items.find(row=>row.uid===m.id);if(!item){p.text('装备已变化，请返回',375,550,28,'#fff','center');return;}
-    p.image(`art/project-flight-gear-v1/${item.art}.webp`,265,360,220,220);p.text(item.name,375,625,32,'#fff','center');
+    p.image(equipmentArtPath(item.art),265,360,220,220);p.text(item.name,375,625,32,'#fff','center');
     p.text(`${item.qualityName} · Lv.${item.level} · 可强化至${item.maxLevel}`,375,680,27,'#ffd67a','center');
     p.text(`${item.attributeName} ${count(item.attribute)}${item.nextAttribute!=null?' → '+count(item.nextAttribute):''}`,375,745,28,'#bce4e7','center');
     const args={id:item.uid,expectedRevision:s.equipment.revision};

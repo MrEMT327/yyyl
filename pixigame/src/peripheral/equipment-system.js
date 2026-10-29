@@ -4,13 +4,13 @@ import { nativeBoxProgress } from '../replica/native-box-progress.js';
 import {normalizeEquipmentPartLevel,NATIVE_EQUIPMENT_LEVEL_MAX} from '../replica/native-equipment-level.js';
 import {equipmentArtKey,equipmentBlueprintArtPath} from '../replica/equipment-art.js';
 
-// 1.1.6 numerical tables; original aircraft parts replace the reference art.
+// Keep the 1.1.6 numerical tables and legacy slot IDs; display original wearable armor.
 export const GEAR_PARTS=[
- {type:1,id:'cockpit',name:'座舱装甲',attribute:'HPMax',attributeName:'耐久',blueprintId:105},
- {type:2,id:'fire-control',name:'火控模组',attribute:'Attack',attributeName:'攻击',blueprintId:106},
- {type:3,id:'fuselage',name:'机身装甲',attribute:'HPMax',attributeName:'耐久',blueprintId:107},
- {type:4,id:'amplifier',name:'增幅核心',attribute:'Attack',attributeName:'攻击',blueprintId:109},
- {type:5,id:'engine-armor',name:'引擎装甲',attribute:'HPMax',attributeName:'耐久',blueprintId:108},
+ {type:1,id:'cockpit',name:'飞行头盔',attribute:'HPMax',attributeName:'耐久',blueprintId:105},
+ {type:2,id:'fire-control',name:'战术护手',attribute:'Attack',attributeName:'攻击',blueprintId:106},
+ {type:3,id:'fuselage',name:'轻型胸甲',attribute:'HPMax',attributeName:'耐久',blueprintId:107},
+ {type:4,id:'amplifier',name:'战术铭牌',attribute:'Attack',attributeName:'攻击',blueprintId:109},
+ {type:5,id:'engine-armor',name:'助力战靴',attribute:'HPMax',attributeName:'耐久',blueprintId:108},
 ];
 export const GEAR_QUALITY_NAMES={10:'普通',20:'优秀',30:'精良',40:'史诗',41:'史诗+1',42:'史诗+2',50:'传说',51:'传说+1',52:'传说+2',53:'传说+3',60:'神话'};
 export const GEAR_INVENTORY_CAPACITY=10000;

@@ -29,6 +29,9 @@ for (const [kind, rows] of [['guns',catalog.guns],['skins',catalog.planes.filter
     const record = { id: row.id, name: row.name, description: row.description, icon: row.icon,
       appearance, quality: row.quality, qualityName: row.qualityName, closed: row.closed, hidden: row.hidden,
       defaultStar: row.defaultStar, unlockCost: row.raw.UnlockCost, stages };
+    if (kind === 'guns') Object.assign(record, { baseGunId: row.baseGunId,
+      weaponType: row.raw.SecondWeaponType, skinNumber: row.raw.skinNumber,
+      defaultAppearance: row.raw.IsShow === 1, sortOrder: row.raw.Order });
     for (const cost of [record.unlockCost,...stages.map(stage=>stage.cost)]) {
       if (!Array.isArray(cost)) throw new Error(`Missing cost ${row.id}`);
       for (const [id,count] of cost) {

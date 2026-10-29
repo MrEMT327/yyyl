@@ -1,3 +1,4 @@
+import { legacyWeaponThemeArt } from './weapon-theme-art.js';
 import { equippedSlots } from './equipment-labels.js';
 import { projectIcon } from './project-ui-art.js';
 import { weaponCatalogSkills } from './weapon-catalog-skills.js';
@@ -10,7 +11,8 @@ const rankOf = item => Math.max(0, Math.min(5, Math.floor(Number(item.qualityRan
 const sprite = projectIcon;
 const stars = rank => `<span class="wc-stars" aria-hidden="true">${Array.from({length:5},(_,index)=>sprite('star',index < rank ? '' : 'is-icon-muted')).join('')}</span>`;
 function artwork(weapon, helpers, extra = '') {
-  const crop = iconCrops[weapon.appearance || weapon.id]?.crop;
+  const key = weapon.appearance || weapon.id;
+  const crop = legacyWeaponThemeArt(key) ? null : iconCrops[key]?.crop;
   const style = crop ? ` style="--crop-left:${-crop[0]/crop[2]*100}%;--crop-top:${-crop[1]/crop[3]*100}%;--crop-width:${100/crop[2]}%;--crop-height:${100/crop[3]}%;--crop-aspect:${crop[2]/crop[3]}"` : '';
   return `<span class="wc-art ${extra}"${style}><span>${helpers.thumbnail(weapon.id)}</span></span>`;
 }

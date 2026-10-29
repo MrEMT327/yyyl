@@ -730,7 +730,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20101,
+      "weaponType": 13,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 100
     },
     {
       "id": 20201,
@@ -880,7 +885,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20201,
+      "weaponType": 1,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 200
     },
     {
       "id": 20301,
@@ -1030,7 +1040,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20301,
+      "weaponType": 11,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 300
     },
     {
       "id": 20401,
@@ -1180,7 +1195,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20401,
+      "weaponType": 10,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 400
     },
     {
       "id": 20501,
@@ -1330,7 +1350,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20501,
+      "weaponType": 14,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 500
     },
     {
       "id": 20601,
@@ -1480,7 +1505,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20601,
+      "weaponType": 6,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 600
     },
     {
       "id": 20701,
@@ -1630,7 +1660,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20701,
+      "weaponType": 15,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 700
     },
     {
       "id": 20801,
@@ -1780,7 +1815,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20801,
+      "weaponType": 4,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 800
     },
     {
       "id": 20901,
@@ -1930,7 +1970,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20901,
+      "weaponType": 8,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 900
     },
     {
       "id": 21001,
@@ -2080,7 +2125,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 21001,
+      "weaponType": 9,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 1000
     },
     {
       "id": 21101,
@@ -2230,7 +2280,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 21101,
+      "weaponType": 12,
+      "skinNumber": 0,
+      "defaultAppearance": true,
+      "sortOrder": 1100
     },
     {
       "id": 20102,
@@ -2350,7 +2405,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20101,
+      "weaponType": 13,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 101
     },
     {
       "id": 20202,
@@ -2470,7 +2530,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20201,
+      "weaponType": 1,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 201
     },
     {
       "id": 20302,
@@ -2590,7 +2655,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20301,
+      "weaponType": 11,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 301
     },
     {
       "id": 20402,
@@ -2710,7 +2780,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20401,
+      "weaponType": 10,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 401
     },
     {
       "id": 20502,
@@ -2830,7 +2905,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20501,
+      "weaponType": 14,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 501
     },
     {
       "id": 20602,
@@ -2950,7 +3030,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20601,
+      "weaponType": 6,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 601
     },
     {
       "id": 20702,
@@ -3070,7 +3155,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20701,
+      "weaponType": 15,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 701
     },
     {
       "id": 20802,
@@ -3190,7 +3280,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20801,
+      "weaponType": 4,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 801
     },
     {
       "id": 20902,
@@ -3310,7 +3405,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 20901,
+      "weaponType": 8,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 901
     },
     {
       "id": 21002,
@@ -3430,7 +3530,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 21001,
+      "weaponType": 9,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 1001
     },
     {
       "id": 21102,
@@ -3550,7 +3655,12 @@
             }
           ]
         }
-      ]
+      ],
+      "baseGunId": 21101,
+      "weaponType": 12,
+      "skinNumber": 1,
+      "defaultAppearance": false,
+      "sortOrder": 1101
     }
   ],
   "skins": [

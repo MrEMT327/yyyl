@@ -1,3 +1,4 @@
+import {GEAR_PARTS} from '../peripheral/equipment-system.js';
 import { NATIVE_AIRCRAFT_SKINS } from '../replica/native-aircraft-skins.js';
 import { NATIVE_PILOT_SKINS } from '../replica/native-pilot-roster.js';
 import {DEFAULT_PLAYER_NAME} from '../player-identity.js';
@@ -18,7 +19,7 @@ export function playerInfoModel(snapshot={},callsign='') {
     cleared:cleared.length,progress:latest?`第 ${latest.index+1} 章`:'尚未通关',
     gear:Array.from({length:5},(_,index)=>{
       const type=index+1;
-      return {type,label:snapshot.equipment?.blueprints?.find(part=>part.type===type)?.name||['座舱装甲','火控模组','机身装甲','增幅核心','引擎装甲'][index],
+      return {type,label:snapshot.equipment?.blueprints?.find(part=>part.type===type)?.name||GEAR_PARTS[index].name,
         item:snapshot.equipment?.items?.find(item=>item.uid===snapshot.equipment?.slots?.[type])};
     }),
     weapons:['W3','W4','W5','W6'].map(slot=>({slot,item:weapon(snapshot.loadout?.[slot])})),
