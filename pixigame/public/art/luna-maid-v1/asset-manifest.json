@@ -1,0 +1,211 @@
+{
+  "schema": "luna-maid-local-assets-v1",
+  "originalReferenceColourAtlasPublished": false,
+  "files": [
+    {
+      "path": "avatar.png",
+      "bytes": 111164,
+      "sha256": "804394b5f8ebb50d78a046b4ac0e8f775a350b07e845757791438fff51e268e1"
+    },
+    {
+      "path": "layers/apron.png",
+      "bytes": 105921,
+      "sha256": "81d66b671f218188adef31a105189f0aac1b7dfdfe6457634ced075b0ad29d96"
+    },
+    {
+      "path": "layers/back_ankle_underlap.png",
+      "bytes": 3574,
+      "sha256": "9d3e4979d7b6c3fe7e163ba5e76754d14a45169847b185bd201d09171f60ace2"
+    },
+    {
+      "path": "layers/back_shoe.png",
+      "bytes": 8846,
+      "sha256": "099612c996b75a44b92950ef358787de0e1717e2256cff82d697d3991122184d"
+    },
+    {
+      "path": "layers/back_thigh_complete.png",
+      "bytes": 21894,
+      "sha256": "87741c9c9b349a429defe166210c9ffbfd317b06652585ffe132b1398f7e72fe"
+    },
+    {
+      "path": "layers/eye_left_iris.png",
+      "bytes": 5585,
+      "sha256": "2fec7ea54711bae5746548979df58443f190c7fe716d8193966539ffbe90673e"
+    },
+    {
+      "path": "layers/eye_left_lower_lid.png",
+      "bytes": 5585,
+      "sha256": "2fec7ea54711bae5746548979df58443f190c7fe716d8193966539ffbe90673e"
+    },
+    {
+      "path": "layers/eye_left_upper_lid.png",
+      "bytes": 3535,
+      "sha256": "fb7cbb3c4cb4e4b39060b01431eeac755e6e245a9d7012770ebf98f2e1a6d4c1"
+    },
+    {
+      "path": "layers/eye_right_iris.png",
+      "bytes": 5313,
+      "sha256": "ba4c7314380d431a6b596c64163ec2a8c70e6d37d48a83ea78f23d624292ec66"
+    },
+    {
+      "path": "layers/eye_right_lower_lid.png",
+      "bytes": 5313,
+      "sha256": "ba4c7314380d431a6b596c64163ec2a8c70e6d37d48a83ea78f23d624292ec66"
+    },
+    {
+      "path": "layers/eye_right_upper_lid.png",
+      "bytes": 3625,
+      "sha256": "4dbe06528c7062aca569a510d2978182d793c1d62836f95fdb519fdd696dfec7"
+    },
+    {
+      "path": "layers/front_leg.png",
+      "bytes": 87299,
+      "sha256": "e4f4c9ea4eb7305b66201d06f08b37ed1ba6f725647d0bd2adfdab6252137701"
+    },
+    {
+      "path": "layers/front_shoe.png",
+      "bytes": 25013,
+      "sha256": "f407e5a5a35196e66451fdaea70706f125527fb5dc0577c64ef4698ba4c6e0e6"
+    },
+    {
+      "path": "layers/glove_open_continuous.png",
+      "bytes": 31093,
+      "sha256": "52625994c9ed44ed92f715f95b3e9170fa898e30d49b39c28939769d96862a7c"
+    },
+    {
+      "path": "layers/glove_raised_continuous.png",
+      "bytes": 15688,
+      "sha256": "0d55a3bc4f0bd9ca65da17d4790a8317ee52c400015331240567f891e3a548f7"
+    },
+    {
+      "path": "layers/hair_underlap.png",
+      "bytes": 49823,
+      "sha256": "1073d43c42d13ac7aabaeffcd7d4913034026e1c618b8a23b59153d06c80274f"
+    },
+    {
+      "path": "layers/head.png",
+      "bytes": 125705,
+      "sha256": "d94cc20ff837a89852f6167360f1ada517a31146ee3012fa76662d03186e1021"
+    },
+    {
+      "path": "layers/mouth.png",
+      "bytes": 2768,
+      "sha256": "d9280ff75856a9a6b1246be0c371cf0530b0da674a618d842402fddeaf832bdd"
+    },
+    {
+      "path": "layers/neck.png",
+      "bytes": 10049,
+      "sha256": "50dbea77a2bd142f7364c35ccaa2f294fb9b8fee97a3df8d96aeddfe58cf14f7"
+    },
+    {
+      "path": "layers/reach_fore_paint.png",
+      "bytes": 2156,
+      "sha256": "a486ed460dfd913ed5f1c91cffababcc2ca109f09b1598ca1d7fe8eff287c375"
+    },
+    {
+      "path": "layers/reach_fore_support.png",
+      "bytes": 5254,
+      "sha256": "afb097ff66f99458ecb1ff60eef794b21e5888e7731fd42843dc24c576bdc193"
+    },
+    {
+      "path": "layers/reach_sleeve.png",
+      "bytes": 38471,
+      "sha256": "8cfc02f937c348caf9c90ca23e4291a40897485e2fac541a944c3c2e7c95d5aa"
+    },
+    {
+      "path": "layers/reach_upper_paint.png",
+      "bytes": 3409,
+      "sha256": "ee2f2d21b919dfa9a513f3a45614c09362b6f685e832f88f52814f6889b57463"
+    },
+    {
+      "path": "layers/reach_upper_support.png",
+      "bytes": 8368,
+      "sha256": "4e84d0484c316835fce946c1dc515acf6ac1e86143119be44f143dff4e19b41f"
+    },
+    {
+      "path": "layers/side_arm_root.png",
+      "bytes": 8047,
+      "sha256": "b6deec5391ba7a5a6dcaea48d322199d7b627e3c09d21dcf7e78a54859c56cb0"
+    },
+    {
+      "path": "layers/side_foreground.png",
+      "bytes": 20782,
+      "sha256": "c79806fb4f652c12e4589e77db90c2bfb2a65f724fa79bc739c3f399a66860bd"
+    },
+    {
+      "path": "layers/skirt.png",
+      "bytes": 103426,
+      "sha256": "6b49781d912a8337147c82568d030f436e59ce66db403f73633b604ede267bb9"
+    },
+    {
+      "path": "layers/skirt_back_hem.png",
+      "bytes": 23634,
+      "sha256": "8c77d81f882cba89b2024a676291d162688d622482a20f4f309a03c901b2e4ad"
+    },
+    {
+      "path": "layers/torso.png",
+      "bytes": 44527,
+      "sha256": "72c04c80a5688d1e13bdd9671f7a09e416646a85fca345dab07d9cdeeb5b9d81"
+    },
+    {
+      "path": "layers/torso_support.png",
+      "bytes": 96152,
+      "sha256": "0356efeaadbbfca52a6b0ea58ce16dc8a8e7c3f644b6ba0c3415f71653ec4087"
+    },
+    {
+      "path": "portrait.png",
+      "bytes": 678683,
+      "sha256": "8573cc5e17f149a8dab7bf1309c8c65e929ceee3f1f27fa91d40fdef1fd5a9b7"
+    },
+    {
+      "path": "runtime.json",
+      "bytes": 11843,
+      "sha256": "eb9d55ae51c1bfe43c80ba7d8c3e5930676d09162175dd9d388b41b31e106be1"
+    },
+    {
+      "path": "source/heitaizi_2.moc3",
+      "bytes": 867648,
+      "sha256": "309586c4383565149c22f34ba9a982f9a636fc84fa7589a9964eb3fa656907bd"
+    },
+    {
+      "path": "source/heitaizi_2.model3.json",
+      "bytes": 959,
+      "sha256": "81f4e2ec1084c01de0d6875615d6ea0e3199cfa0803f1fce97ee8a0b1c23537c"
+    },
+    {
+      "path": "source/heitaizi_2.physics3.json",
+      "bytes": 11290,
+      "sha256": "cb08d8e79d0902572a45bcbc5c8299e26edb55eb97ed0ce0cab7a3a3210f6d09"
+    },
+    {
+      "path": "source/motions/idle.motion3.json",
+      "bytes": 65332,
+      "sha256": "ca59f6e08fa9ff43af9eb690e835c5c04f33c93c846b069fe77feb588656d65b"
+    },
+    {
+      "path": "source/motions/touch_head.motion3.json",
+      "bytes": 75423,
+      "sha256": "085c064ea1a020e9f2a034333de40c9ae14d645de7b9ac810a8af600701e9aed"
+    },
+    {
+      "path": "source/textures/texture_00.png",
+      "bytes": 70,
+      "sha256": "c2153f77e11087fcb078ae38527fa83bef29791e3700e30cc87fec4405a66d0f"
+    },
+    {
+      "path": "source-notes.json",
+      "bytes": 720,
+      "sha256": "adaeab157bd2a80911ad2a08b1509ed6a455ac4bf8998632259e43b8d3a2244d"
+    },
+    {
+      "path": "target-atlas.png",
+      "bytes": 928187,
+      "sha256": "84df6dcc9ddc171dab20a89d2b0e474bf62ef161b105e2447d6cfa049d4e5926"
+    },
+    {
+      "path": "target-bindings.json",
+      "bytes": 2231825,
+      "sha256": "553f5639cd39aeb57d6d0f5d19af1e111248dbb4653a841ea90d0fe6904a37dd"
+    }
+  ]
+}

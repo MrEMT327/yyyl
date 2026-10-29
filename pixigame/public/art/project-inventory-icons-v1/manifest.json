@@ -1,0 +1,82 @@
+{
+  "method": "Built-in imagegen; transparent originals retained; alpha-bound trim and resize for runtime export only",
+  "prompts": [
+    "art/project-inventory-icons-v1/prompts.json"
+  ],
+  "usage": {
+    "aircraftShards": "aircraft-shard.png",
+    "weaponParts": "weapon-parts.png",
+    "cores": "technology-core.png"
+  },
+  "assets": [
+    {
+      "file": "aircraft-shard.png",
+      "source": "art/project-inventory-icons-v1/source-aircraft-shard.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaCrop": {
+        "left": 61,
+        "top": 56,
+        "width": 1132,
+        "height": 1144
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "placement": [
+        13,
+        12
+      ],
+      "sha256": "44fdfc5ad7ce7245aa4f8adffb2171d2c97f26e91eecbfcc723e2be9acb8cff2"
+    },
+    {
+      "file": "weapon-parts.png",
+      "source": "art/project-inventory-icons-v1/source-weapon-parts.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaCrop": {
+        "left": 54,
+        "top": 44,
+        "width": 1142,
+        "height": 1166
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "placement": [
+        14,
+        12
+      ],
+      "sha256": "ae0f72eea2e248c23d83db71f667fcb07cddf2740921be9e952f7d5bfb45820c"
+    },
+    {
+      "file": "technology-core.png",
+      "source": "art/project-inventory-icons-v1/source-technology-core.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaCrop": {
+        "left": 40,
+        "top": 15,
+        "width": 1175,
+        "height": 1224
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "placement": [
+        16,
+        12
+      ],
+      "sha256": "fed653b1d80a5c9ed26ac50293970c61f7c60e7264e3f871bc5b13d106fcce33"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "source": "assets/FullRes/prefab-gamehover_assets_assets/_resources/prefab/gamehover/urgencytip.prefab_7e05db2f1a2ddc04c46ba2de33269fb3.bundle",
+  "hoverType": 113,
+  "modelId": 53,
+  "attachmentType": 0,
+  "fadeSeconds": 0.15,
+  "fadeWaitSeconds": 0,
+  "nodes": [
+    {
+      "id": "-3891750720520396807",
+      "parent": "-2627058181861613575",
+      "name": "bg",
+      "active": true,
+      "position": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "size": {
+        "x": 144.0,
+        "y": 135.0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "anchorMin": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "anchorMax": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "spritePathId": "4085327274823060859",
+      "color": {
+        "r": 1.0,
+        "g": 1.0,
+        "b": 1.0,
+        "a": 1.0
+      },
+      "sprite": "UrgencyTip"
+    },
+    {
+      "id": "-2627058181861613575",
+      "parent": "0",
+      "name": "UrgencyTip",
+      "active": true,
+      "position": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "size": {
+        "x": 200.0,
+        "y": 50.0
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "anchorMin": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "anchorMax": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "spritePathId": "0",
+      "color": null,
+      "sprite": null
+    }
+  ]
+}

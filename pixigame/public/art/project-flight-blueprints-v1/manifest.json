@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "generator": "OpenAI built-in image_gen",
+  "sourceFile": "exec-52a3af20-2fa6-4ca7-9ee6-1804fd91b286.png",
+  "sourceSha256": "7a929a9299b4e455322b6101aca5737ee3d5ebe932e98641f048b0e57b31e99d",
+  "prompt": "One original sci-fi aircraft equipment blueprint atlas, transparent RGBA, three columns and two rows with bottom-right empty. Five blue/cyan folded technical sheets with rolled bottom edges, bold navy outlines, flat large color blocks, readable at 48px, no text or UI frames. Ivory/cyan original module silhouettes: cockpit capsule; twin-barrel fire control; wing-shaped fuselage armor; hexagonal amplifier core with three lugs; cylindrical engine armor/nozzle. Consistent blueprint color for cross-set materials, distinct module shapes, minimal detail, no competitor artwork input.",
+  "normalization": "Crop the five nonempty cells to alpha bounds plus 2px, preserve alpha, fit within 224px on transparent 256px canvas; lossless WebP.",
+  "scope": "Presentation only; IDs, inventory, costs, drop rates, rewards and equipment effects unchanged.",
+  "assets": [
+    {
+      "part": "cockpit",
+      "nativeItemId": 105,
+      "file": "cockpit.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "d68761aee2c6b425fc14293e0b593832591ec4fc4ffe90cff43cac8e9b842b79",
+      "sourceBounds": {
+        "left": 30,
+        "top": 29,
+        "width": 451,
+        "height": 440
+      }
+    },
+    {
+      "part": "fire-control",
+      "nativeItemId": 106,
+      "file": "fire-control.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "ea375165425a46801796e09e84dc479873f8d88db1766f2638afd40eb46480a9",
+      "sourceBounds": {
+        "left": 543,
+        "top": 28,
+        "width": 450,
+        "height": 438
+      }
+    },
+    {
+      "part": "fuselage",
+      "nativeItemId": 107,
+      "file": "fuselage.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "2f452849453eded59c5f6c30be719bfe1dd22a1a139763f810beda6c6ca155ea",
+      "sourceBounds": {
+        "left": 1052,
+        "top": 30,
+        "width": 454,
+        "height": 438
+      }
+    },
+    {
+      "part": "amplifier",
+      "nativeItemId": 109,
+      "file": "amplifier.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "ef0f62fb8db91d334e99411d675c1e0ea49122c74272edaef529a07c92f95adf",
+      "sourceBounds": {
+        "left": 31,
+        "top": 531,
+        "width": 451,
+        "height": 440
+      }
+    },
+    {
+      "part": "engine-armor",
+      "nativeItemId": 108,
+      "file": "engine-armor.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "09c1268681b26f8114dffa60c97deef5da8fcd6453351c5b0c2db59571de2b97",
+      "sourceBounds": {
+        "left": 541,
+        "top": 530,
+        "width": 454,
+        "height": 441
+      }
+    }
+  ]
+}

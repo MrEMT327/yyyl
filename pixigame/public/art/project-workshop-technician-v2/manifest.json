@@ -1,0 +1,24 @@
+{
+  "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-ee42d9c7-9c97-4fd0-a10d-37b06d4a643e.png",
+  "tool": "built-in image_gen",
+  "original": "art/project-workshop-technician-v2/master.png",
+  "masterSha256": "42991e9143cef6a9938a5e8cd0259125bd617dc0d04b0739b78520ad46808f1d",
+  "size": [
+    1024,
+    1536
+  ],
+  "alphaRange": [
+    0,
+    254
+  ],
+  "fullyTransparentPixels": 1120448,
+  "totalPixels": 1572864,
+  "style": "2D anime adult military technician",
+  "normalization": "runtime lossless WebP, same dimensions and alpha; UI mirrors pose and crops below hips using CSS",
+  "prompt": "art/project-workshop-technician-v2/prompt.json",
+  "alphaEditPrompt": "art/project-workshop-technician-v2/alpha-prompt.json",
+  "runtime": "art/project-workshop-technician-v2/technician-v2.webp",
+  "runtimeSha256": "5b76f0ca68e2fe002464103bc861f8f22960e1ed8d2d7401f49440f7d6edc2e8",
+  "runtimeBytes": 606988,
+  "alphaPreserved": true
+}

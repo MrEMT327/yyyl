@@ -1,0 +1,43 @@
+@import './recruit-dossier.css';
+/* Content within the existing PSD modal shell. */
+#gui-casual-lobby .recruit-modal-surface {color:#1d3852;font-size:13px;line-height:1.65}
+#gui-casual-lobby .recruit-modal-surface :is(h3,p) {margin:0;color:inherit;text-shadow:none}
+#gui-casual-lobby .recruit-modal-surface h3 {margin:8px 0;font-size:15px;line-height:1.4;font-weight:800}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-summary {display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:4px 0 12px;border-bottom:1px solid #6f8aa4}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-summary small {color:#46617a;font-size:10px}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-entries {list-style:none;display:grid;gap:10px;margin:12px 0;padding:0}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-entries>li {padding:9px;border:1px solid #7c96ad;background:#d6e2ec88}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-entries header {display:flex;flex-wrap:wrap;justify-content:space-between;gap:3px 6px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #7c96ad;color:#3f5c75;font-size:10px}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-entries p {display:flex;justify-content:space-between;gap:8px;margin:3px 0;font-size:12px}
+#gui-casual-lobby .recruit-modal-surface .recruit-history-entries p>b {color:#216a48;font-size:10px;white-space:nowrap}
+#gui-casual-lobby .recruit-modal-surface .recruit-modal-empty {padding:35px 5px;text-align:center;color:#46617a}
+#gui-casual-lobby .recruit-modal-surface .recruit-rate-section dl {margin:0;padding:4px 10px;border:1px solid #7c96ad;background:#d6e2ec88}
+#gui-casual-lobby .recruit-modal-surface .recruit-rate-section dl>div {display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid #7c96ad66}
+#gui-casual-lobby .recruit-modal-surface .recruit-rate-section dl>div:last-child {border:0}
+#gui-casual-lobby .recruit-modal-surface .recruit-rate-section dd {margin:0;color:#153c60;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .recruit-modal-surface .recruit-modal-guarantee {margin:10px 0;padding:9px;background:#d6eaf0;color:#224c66;font-size:12px;border-left:3px solid #397c9f}
+#gui-casual-lobby .recruit-modal-surface .recruit-reward-collection {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 7px;align-items:start}
+#gui-casual-lobby .recruit-modal-surface .recruit-reward-collection>button {display:flex;flex-direction:column;min-width:0;margin:0;padding:0;border:0;background:none;color:#1d3852;box-shadow:none}
+#gui-casual-lobby .recruit-modal-surface .recruit-reward-collection .pilot-holo-card {width:100%;margin:0}
+#gui-casual-lobby .recruit-modal-surface .recruit-reward-collection .supply-weapon-art {height:68px;padding:7px;background:#48637d;border:1px solid #6e8ba5}
+#gui-casual-lobby .recruit-modal-surface .recruit-reward-collection button>b {margin-top:4px;font-size:11px;line-height:1.35}
+#gui-casual-lobby .recruit-modal-surface .recruit-owned-state {margin-top:3px;color:#365e78;font-size:10px;line-height:1.4}
+#gui-casual-lobby .recruit-modal-surface .recruit-rule-details {margin-top:16px;border-top:1px solid #7c96ad;padding-top:6px}
+#gui-casual-lobby .recruit-modal-surface .recruit-rule-details summary {min-height:40px;padding:8px 0;color:#183b59;font-weight:800;cursor:pointer}
+#gui-casual-lobby .recruit-modal-surface .recruit-rule-details p {margin:7px 0;font-size:12px;line-height:1.8;color:#3b566d}
+#gui-casual-lobby .recruit-modal-surface .recruit-modal-back {position:relative;isolation:isolate;width:100%;min-height:46px;margin-top:15px;padding:8px 12px;border:0;background:none;color:white;font:400 16px/1.2 PsdPopup,"Microsoft YaHei",sans-serif;text-shadow:0 1px #061526}
+#gui-casual-lobby .recruit-modal-surface .recruit-modal-back::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 15px stretch}
+#gui-casual-lobby[data-tab='supply'][data-subpage=''] .pl-shell {
+  --lobby-nav-gap:0px;
+  --lobby-nav-height:calc(var(--lobby-frame-width) * .201333333333 + var(--lobby-safe-bottom,0px));
+  --lobby-nav-reserve:var(--lobby-nav-height);
+  grid-template-rows:auto minmax(0,1fr) var(--lobby-nav-reserve)!important;
+}
+
+#gui-casual-lobby .recruit-reference {--gui-button-shadow:0 1px #061526;--gui-button-ink:#fff}
+
+/* Keep a failed reward save recoverable from the supply landing page. */
+#gui-casual-lobby .recruit-reference .recruit-recovery {display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:8px;color:#f4d698;font-size:12px}
+#gui-casual-lobby .recruit-reference .recruit-recovery .wc-button {--wc-button-height:42px;min-width:104px;padding:0 10px;font-size:14px}
+
+#gui-casual-lobby .recruit-pool-origin {display:block;margin-top:3px;color:#3c6076;font-size:10px;line-height:1.3}

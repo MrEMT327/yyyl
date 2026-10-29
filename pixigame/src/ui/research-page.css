@@ -1,0 +1,57 @@
+/* Four-column talent content inside the shared PSD 750×1624 game viewport. */
+#gui-casual-lobby[data-tab='research'][data-subpage=''] .pl-body {padding:0!important;min-height:0;overflow:hidden!important;background:#24222b}
+#gui-casual-lobby[data-tab='research'] .research-page.rg-page {container-type:inline-size;position:relative;width:100%;height:100%;min-height:0;display:grid;grid-template-rows:max(44px,11cqw) minmax(0,1fr) auto;overflow:hidden;background:#24222b;color:#edf6fa;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+#gui-casual-lobby[data-tab='research'] .rg-page :is(h2,p) {margin:0;text-shadow:none}
+#gui-casual-lobby[data-tab='research'] .research-banner {position:relative;display:flex;align-items:center;justify-content:center;padding:0 2cqw;background:var(--project-heading-background)}
+#gui-casual-lobby[data-tab='research'] .research-banner h2 {font:400 clamp(16px,4.7cqw,23px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby[data-tab='research'] .research-summary {position:absolute;right:2cqw;top:0;width:31cqw;--wc-button-height:max(44px,11cqw);font-size:clamp(10px,3cqw,14px)}
+#gui-casual-lobby[data-tab='research'] .research-scroll {min-height:0;overflow:auto;overscroll-behavior:contain;padding:2cqw;scroll-padding-bottom:2cqw;background:var(--project-lab-background);scrollbar-width:thin}
+#gui-casual-lobby[data-tab='research'] .research-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2cqw 1.5cqw;align-content:start}
+#gui-casual-lobby[data-tab='research'] .research-card {display:block;position:relative;isolation:isolate;min-width:0;width:100%;height:auto;aspect-ratio:3/4;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;cursor:pointer}
+#gui-casual-lobby[data-tab='research'] .research-card.is-locked {cursor:default}
+#gui-casual-lobby[data-tab='research'] .research-card-shell {display:block;position:relative;isolation:isolate;width:100%;height:100%;overflow:hidden;border-radius:0}
+#gui-casual-lobby[data-tab='research'] .research-card-artbox {position:absolute;inset:5% 4% 25%;display:block;overflow:hidden}
+#gui-casual-lobby[data-tab='research'] .research-card-shell.is-preview .research-card-artbox {inset:5%}
+#gui-casual-lobby[data-tab='research'] .research-card-artbox>img {position:absolute;inset:0;display:block;width:100%!important;height:100%!important;min-height:0;max-width:none;object-fit:contain;filter:none}
+#gui-casual-lobby[data-tab='research'] .is-concealed .research-card-artbox {inset:25% 32%}
+#gui-casual-lobby[data-tab='research'] .research-card-artbox>.research-card-mystery {filter:brightness(0) invert(1);opacity:.9}
+#gui-casual-lobby[data-tab='research'] .research-card-caption {position:absolute;left:6%;right:6%;bottom:8%;height:22%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;background:none;border-radius:0;color:#fff;text-shadow:0 1px 2px #142431}
+#gui-casual-lobby[data-tab='research'] .research-card-caption b {font-size:clamp(9px,2.65cqw,12px);font-weight:600;line-height:1.1;white-space:nowrap;text-shadow:0 1px 2px #142431}
+#gui-casual-lobby[data-tab='research'] .research-card-caption strong {font-size:clamp(11px,3.2cqw,15px);font-weight:700;line-height:1.2;color:#ffe58a;text-shadow:0 1px 2px #142431}
+#gui-casual-lobby[data-tab='research'] .research-footer {position:relative;z-index:5;padding:1cqw 3cqw 3cqw;background:#10212f;border:0;border-radius:0;box-shadow:none}
+#gui-casual-lobby[data-tab='research'] .research-footer button {pointer-events:auto}
+#gui-casual-lobby[data-tab='research'] .research-core-progress {display:flex;justify-content:center;align-items:center;gap:3px;width:100%;min-height:24px;font-size:clamp(9px,2.6cqw,12px);line-height:1.4;font-weight:400;text-shadow:none;background:none}
+#gui-casual-lobby[data-tab='research'] .research-core-icon {width:5cqw;height:5cqw;max-width:24px;max-height:24px;object-fit:contain}
+#gui-casual-lobby[data-tab='research'] .research-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2cqw}
+#gui-casual-lobby[data-tab='research'] .research-awaken {--wc-button-height:max(64px,15cqw);height:var(--wc-button-height);min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 6px;background:none!important;box-shadow:none!important;border:0!important;border-radius:0!important;clip-path:none;filter:none;color:#eef6fa!important}
+#gui-casual-lobby[data-tab='research'] .research-awaken::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;border:0;filter:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch}
+#gui-casual-lobby[data-tab='research'] .research-awaken::after {content:none}
+#gui-casual-lobby[data-tab='research'] .research-awaken strong {font:400 clamp(16px,4.5cqw,22px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;text-shadow:none}
+#gui-casual-lobby[data-tab='research'] .research-awaken>span {display:flex;align-items:center;justify-content:center;gap:2px;min-height:16px;background:none;font:600 clamp(11px,3.2cqw,15px)/1.2 "Microsoft YaHei",sans-serif;text-shadow:none}
+#gui-casual-lobby[data-tab='research'] .research-awaken>span>i {font:inherit;opacity:.8}
+#gui-casual-lobby[data-tab='research'] .research-awaken>span>:is(img,.research-icon,.resource-icon) {width:4.7cqw;height:4.7cqw;max-width:21px;max-height:21px;margin:0;flex:none;object-fit:contain}
+#gui-casual-lobby[data-tab='research'] .research-awaken:disabled {opacity:1;cursor:default;color:#bacad3!important}
+#gui-casual-lobby[data-tab='research'] .research-awaken:disabled::before {filter:brightness(.75)}
+#gui-casual-lobby[data-tab='research'] .research-awaken .is-short b {color:#ffb59a}
+#gui-casual-lobby[data-tab='research'] .research-warning {margin-top:4px;color:#ffd4b7;font-size:11px;line-height:1.4}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(:is(.research-copy,.research-result,.research-detail)) {--popup-width:88cqw;--popup-height:auto;--popup-max-height:85%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal[data-modal-kind^='research'] :is(.research-copy,.research-detail,.research-result) {color:#20384e;font-size:14px;line-height:1.65;text-shadow:none}
+#gui-casual-lobby .research-copy p {margin:5px 0}
+#gui-casual-lobby .research-copy h4 {margin:12px 0 3px;font-size:15px;color:#20384e}
+#gui-casual-lobby .research-effect {color:#28664e}
+#gui-casual-lobby .research-detail {text-align:center}
+#gui-casual-lobby .research-detail-card {position:relative;width:120px;height:160px;margin:0 auto 10px}
+#gui-casual-lobby .research-detail-card .research-card-caption b {font-size:12px}
+#gui-casual-lobby .research-detail-card .research-card-caption strong {font-size:14px}
+#gui-casual-lobby .research-detail .research-copy {text-align:left}
+#gui-casual-lobby .research-level {margin:5px 0;font-size:13px;color:#49677c}
+#gui-casual-lobby .research-close {width:100%;--wc-button-height:46px;margin-top:14px;font-size:17px}
+#gui-casual-lobby .research-result {text-align:center}
+#gui-casual-lobby .research-result h3 {margin:12px 0;font-size:18px;color:#20384e}
+#gui-casual-lobby .research-core-reward {display:block;width:80px;height:80px;object-fit:contain;margin:15px auto}
+#gui-casual-lobby .research-rules {margin-top:16px;border-top:1px solid #7e97a666;padding-top:8px;font-size:12px;color:#486378}
+#gui-casual-lobby .research-rules summary {cursor:pointer;min-height:32px;font-size:14px;font-weight:600;color:#20384e}
+#gui-casual-lobby .research-extra-core {color:#28664e;font-size:13px}
+#gui-casual-lobby .research-result progress {width:100%;height:18px}
+#gui-casual-lobby[data-tab='research'] :is(.research-card,.research-scroll,.research-summary,.research-awaken):focus-visible {outline:2px solid #b9f4ff;outline-offset:-3px}
+#gui-casual-lobby[data-tab='research'][aria-busy='true'] .research-awaken {opacity:.6;pointer-events:none}

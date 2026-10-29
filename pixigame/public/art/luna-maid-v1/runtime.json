@@ -1,0 +1,625 @@
+{
+  "schema": "luna-maid-layered-runtime-v1",
+  "character": "pilot-07",
+  "representation": "Original project RGBA target meshes driven by real heitaizi_2 Cubism motion and physics; not a new native moc3.",
+  "sourceModel": "source/heitaizi_2.model3.json",
+  "atlas": "target-atlas.png",
+  "camera": {
+    "width": 1200,
+    "height": 1600,
+    "scaleNdc": [
+      0.13333333333333333,
+      0.1
+    ],
+    "translateNdc": [
+      0,
+      0
+    ]
+  },
+  "width": 1200,
+  "height": 1600,
+  "vertices": 9468,
+  "triangles": 16140,
+  "layers": [
+    {
+      "name": "hair_underlap",
+      "index": 0,
+      "image": "layers/hair_underlap.png",
+      "rect": [
+        550,
+        200,
+        340,
+        220
+      ],
+      "tile": [
+        4,
+        4,
+        340,
+        220
+      ],
+      "feature": null,
+      "vertices": 314,
+      "triangles": 514
+    },
+    {
+      "name": "skirt_back_hem",
+      "index": 1,
+      "image": "layers/skirt_back_hem.png",
+      "rect": [
+        290,
+        680,
+        270,
+        180
+      ],
+      "tile": [
+        348,
+        4,
+        270,
+        180
+      ],
+      "feature": null,
+      "vertices": 187,
+      "triangles": 288
+    },
+    {
+      "name": "back_ankle_underlap",
+      "index": 2,
+      "image": "layers/back_ankle_underlap.png",
+      "rect": [
+        660,
+        890,
+        100,
+        70
+      ],
+      "tile": [
+        622,
+        4,
+        100,
+        70
+      ],
+      "feature": null,
+      "vertices": 47,
+      "triangles": 66
+    },
+    {
+      "name": "back_shoe",
+      "index": 3,
+      "image": "layers/back_shoe.png",
+      "rect": [
+        670,
+        910,
+        90,
+        130
+      ],
+      "tile": [
+        726,
+        4,
+        90,
+        130
+      ],
+      "feature": null,
+      "vertices": 71,
+      "triangles": 104
+    },
+    {
+      "name": "back_thigh_complete",
+      "index": 4,
+      "image": "layers/back_thigh_complete.png",
+      "rect": [
+        660,
+        790,
+        150,
+        200
+      ],
+      "tile": [
+        820,
+        4,
+        150,
+        200
+      ],
+      "feature": null,
+      "vertices": 218,
+      "triangles": 364
+    },
+    {
+      "name": "front_leg",
+      "index": 5,
+      "image": "layers/front_leg.png",
+      "rect": [
+        500,
+        720,
+        310,
+        650
+      ],
+      "tile": [
+        974,
+        4,
+        310,
+        650
+      ],
+      "feature": null,
+      "vertices": 757,
+      "triangles": 1322
+    },
+    {
+      "name": "front_shoe",
+      "index": 6,
+      "image": "layers/front_shoe.png",
+      "rect": [
+        720,
+        1340,
+        130,
+        190
+      ],
+      "tile": [
+        1288,
+        4,
+        130,
+        190
+      ],
+      "feature": null,
+      "vertices": 173,
+      "triangles": 288
+    },
+    {
+      "name": "side_arm_root",
+      "index": 7,
+      "image": "layers/side_arm_root.png",
+      "rect": [
+        710,
+        510,
+        110,
+        120
+      ],
+      "tile": [
+        1422,
+        4,
+        110,
+        120
+      ],
+      "feature": null,
+      "vertices": 78,
+      "triangles": 116
+    },
+    {
+      "name": "torso_support",
+      "index": 8,
+      "image": "layers/torso_support.png",
+      "rect": [
+        580,
+        290,
+        260,
+        420
+      ],
+      "tile": [
+        1536,
+        4,
+        260,
+        420
+      ],
+      "feature": null,
+      "vertices": 736,
+      "triangles": 1328
+    },
+    {
+      "name": "skirt",
+      "index": 9,
+      "image": "layers/skirt.png",
+      "rect": [
+        290,
+        550,
+        590,
+        300
+      ],
+      "tile": [
+        4,
+        658,
+        590,
+        300
+      ],
+      "feature": null,
+      "vertices": 754,
+      "triangles": 1268
+    },
+    {
+      "name": "torso",
+      "index": 10,
+      "image": "layers/torso.png",
+      "rect": [
+        460,
+        300,
+        410,
+        300
+      ],
+      "tile": [
+        598,
+        658,
+        410,
+        300
+      ],
+      "feature": null,
+      "vertices": 381,
+      "triangles": 576
+    },
+    {
+      "name": "apron",
+      "index": 11,
+      "image": "layers/apron.png",
+      "rect": [
+        530,
+        420,
+        340,
+        380
+      ],
+      "tile": [
+        1012,
+        658,
+        340,
+        380
+      ],
+      "feature": null,
+      "vertices": 817,
+      "triangles": 1478
+    },
+    {
+      "name": "reach_upper_support",
+      "index": 12,
+      "image": "layers/reach_upper_support.png",
+      "rect": [
+        520,
+        300,
+        120,
+        120
+      ],
+      "tile": [
+        1356,
+        658,
+        120,
+        120
+      ],
+      "feature": null,
+      "vertices": 99,
+      "triangles": 154
+    },
+    {
+      "name": "reach_upper_paint",
+      "index": 13,
+      "image": "layers/reach_upper_paint.png",
+      "rect": [
+        530,
+        330,
+        70,
+        90
+      ],
+      "tile": [
+        1480,
+        658,
+        70,
+        90
+      ],
+      "feature": null,
+      "vertices": 40,
+      "triangles": 54
+    },
+    {
+      "name": "reach_sleeve",
+      "index": 14,
+      "image": "layers/reach_sleeve.png",
+      "rect": [
+        500,
+        260,
+        180,
+        230
+      ],
+      "tile": [
+        1554,
+        658,
+        180,
+        230
+      ],
+      "feature": null,
+      "vertices": 266,
+      "triangles": 450
+    },
+    {
+      "name": "reach_fore_support",
+      "index": 15,
+      "image": "layers/reach_fore_support.png",
+      "rect": [
+        470,
+        350,
+        110,
+        90
+      ],
+      "tile": [
+        1738,
+        658,
+        110,
+        90
+      ],
+      "feature": null,
+      "vertices": 63,
+      "triangles": 92
+    },
+    {
+      "name": "reach_fore_paint",
+      "index": 16,
+      "image": "layers/reach_fore_paint.png",
+      "rect": [
+        510,
+        350,
+        60,
+        90
+      ],
+      "tile": [
+        1852,
+        658,
+        60,
+        90
+      ],
+      "feature": null,
+      "vertices": 31,
+      "triangles": 38
+    },
+    {
+      "name": "side_foreground",
+      "index": 17,
+      "image": "layers/side_foreground.png",
+      "rect": [
+        790,
+        540,
+        200,
+        140
+      ],
+      "tile": [
+        4,
+        1042,
+        200,
+        140
+      ],
+      "feature": null,
+      "vertices": 144,
+      "triangles": 226
+    },
+    {
+      "name": "neck",
+      "index": 18,
+      "image": "layers/neck.png",
+      "rect": [
+        670,
+        310,
+        140,
+        110
+      ],
+      "tile": [
+        208,
+        1042,
+        140,
+        110
+      ],
+      "feature": null,
+      "vertices": 89,
+      "triangles": 130
+    },
+    {
+      "name": "head",
+      "index": 19,
+      "image": "layers/head.png",
+      "rect": [
+        560,
+        60,
+        320,
+        360
+      ],
+      "tile": [
+        352,
+        1042,
+        320,
+        360
+      ],
+      "feature": null,
+      "vertices": 706,
+      "triangles": 1270
+    },
+    {
+      "name": "eye_left_iris",
+      "index": 20,
+      "image": "layers/eye_left_iris.png",
+      "rect": [
+        670,
+        190,
+        90,
+        80
+      ],
+      "tile": [
+        676,
+        1042,
+        90,
+        80
+      ],
+      "feature": null,
+      "vertices": 168,
+      "triangles": 270
+    },
+    {
+      "name": "eye_left_lower_lid",
+      "index": 21,
+      "image": "layers/eye_left_lower_lid.png",
+      "rect": [
+        670,
+        190,
+        90,
+        80
+      ],
+      "tile": [
+        770,
+        1042,
+        90,
+        80
+      ],
+      "feature": null,
+      "vertices": 84,
+      "triangles": 108
+    },
+    {
+      "name": "eye_left_upper_lid",
+      "index": 22,
+      "image": "layers/eye_left_upper_lid.png",
+      "rect": [
+        670,
+        190,
+        80,
+        70
+      ],
+      "tile": [
+        864,
+        1042,
+        80,
+        70
+      ],
+      "feature": null,
+      "vertices": 84,
+      "triangles": 108
+    },
+    {
+      "name": "eye_right_iris",
+      "index": 23,
+      "image": "layers/eye_right_iris.png",
+      "rect": [
+        740,
+        230,
+        80,
+        70
+      ],
+      "tile": [
+        948,
+        1042,
+        80,
+        70
+      ],
+      "feature": null,
+      "vertices": 138,
+      "triangles": 220
+    },
+    {
+      "name": "eye_right_lower_lid",
+      "index": 24,
+      "image": "layers/eye_right_lower_lid.png",
+      "rect": [
+        740,
+        230,
+        80,
+        70
+      ],
+      "tile": [
+        1032,
+        1042,
+        80,
+        70
+      ],
+      "feature": null,
+      "vertices": 69,
+      "triangles": 88
+    },
+    {
+      "name": "eye_right_upper_lid",
+      "index": 25,
+      "image": "layers/eye_right_upper_lid.png",
+      "rect": [
+        750,
+        230,
+        70,
+        70
+      ],
+      "tile": [
+        1116,
+        1042,
+        70,
+        70
+      ],
+      "feature": null,
+      "vertices": 69,
+      "triangles": 88
+    },
+    {
+      "name": "mouth",
+      "index": 26,
+      "image": "layers/mouth.png",
+      "rect": [
+        708,
+        264,
+        60,
+        54
+      ],
+      "tile": [
+        1190,
+        1042,
+        60,
+        54
+      ],
+      "feature": "mouth",
+      "vertices": 63,
+      "triangles": 94
+    },
+    {
+      "name": "glove_open_continuous",
+      "index": 27,
+      "image": "layers/glove_open_continuous.png",
+      "rect": [
+        372,
+        351,
+        174,
+        171
+      ],
+      "tile": [
+        1254,
+        1042,
+        174,
+        171
+      ],
+      "feature": null,
+      "vertices": 1816,
+      "triangles": 3262
+    },
+    {
+      "name": "glove_raised_continuous",
+      "index": 28,
+      "image": "layers/glove_raised_continuous.png",
+      "rect": [
+        465,
+        318,
+        150,
+        114
+      ],
+      "tile": [
+        1432,
+        1042,
+        150,
+        114
+      ],
+      "feature": null,
+      "vertices": 1006,
+      "triangles": 1776
+    }
+  ],
+  "motionDurations": {
+    "idle": 3.82,
+    "touch_head": 3.833
+  },
+  "master": "portrait.png",
+  "masterSha256": "8573cc5e17f149a8dab7bf1309c8c65e929ceee3f1f27fa91d40fdef1fd5a9b7",
+  "sampleFps": 30,
+  "sourceColourAtlasOnTarget": false,
+  "candidateStatus": "Source-motion retarget V10: continuous painted shoulder surface and complete connected glove meshes; calibrated finger joints and independent arm length limits.",
+  "artRevision": "2026-10-26-continuous-shoulder-hands-v10",
+  "motionPolicy": {
+    "idle": "Complete original source timing with calibrated arm, hand and rear-leg articulation; head/hair/body from original evaluated surfaces and physics.",
+    "touch_head": "Original wrist trajectory, hand-family opacity and gesture timing; elbow solved against target arm dimensions with continuous bend projection.",
+    "bodice": "Front panel follows torso translation, rotation and uniform body scale with smooth collar/waist blending; source surface shear removed.",
+    "eyes": "Native eye opening, smile and gaze control independent iris aperture and upper/lower lids; no whole-eye opacity crossfade or pupil compression.",
+    "rearFoot": "Complete shoe/sock follows the calibrated native ankle and foot angle with uniform body scale; rear knee belongs to the rear thigh and the concealed calf joins both surfaces.",
+    "reachingArm": "Native shoulder/wrist trajectories and hand timing retained; elbow is projected inside separate upper/forearm length bounds. Puff root follows the body and the opening follows the arm, with a continuous cloth underlap.",
+    "hands": "One connected mesh per gesture; source palm rotation and opacity timing retained, fingers pivot at shared palm roots with calibrated local articulation."
+  },
+  "sourceMasterSha256": "dccb092cb07631f096fcd431d1d0d249a0310b2224c01c3af82007dbd1c3380c"
+}

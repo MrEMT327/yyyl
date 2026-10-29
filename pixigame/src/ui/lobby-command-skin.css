@@ -1,0 +1,203 @@
+/* These four command dialogs inherit the shipped lobby palette and button art.
+   Keep this scope: other dialogs, the main lobby and game state are unchanged. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal {
+  --command-face: #122333;
+  --command-rim: linear-gradient(135deg,#b6cbd7,#456177 28%,#152736 50%,#7894a6 80%,#b6cbd7);
+  border: 3px solid transparent;
+  border-radius: 8px 2px 8px 2px;
+  background: linear-gradient(var(--ui-panel-deep),var(--ui-panel-deep)) padding-box,var(--command-rim) border-box;
+  box-shadow: inset 0 0 0 1px var(--ui-ink),0 4px 0 var(--ui-ink),0 16px 45px #0009;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .pl-modal-heading {
+  padding: 8px 10px 8px 20px;
+  border-bottom: 2px solid var(--ui-ink);
+  background: linear-gradient(115deg,transparent 70%,#ffffff08 70%,#ffffff08 83%,transparent 83%),linear-gradient(#243c50,#102333);
+  box-shadow: inset 0 1px #b6d2e340,0 1px #7894a680;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .pl-modal-heading::before {
+  content: '';
+  left: 9px;
+  top: 20px;
+  bottom: 20px;
+  width: 4px;
+  background: var(--ui-yellow);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .pl-modal-heading h2 {
+  font-weight: 900;
+  letter-spacing: .5px;
+  text-shadow: var(--ui-outline),0 2px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .pl-modal-content {
+  background: var(--ui-panel-deep);
+  box-shadow: inset 0 3px 6px #0003;
+  padding: 14px 12px;
+}
+
+/* Actual primary/secondary art shared with Start, research and recruitment. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.pl-close,.lc-claim,.lc-tabs>.subpage-tab,.lc-event-cta) {
+  --ui-button-art: var(--ui-button-blue);
+  border: 0!important;
+  border-radius: 0!important;
+  background: transparent var(--ui-button-art) center/100% 100% no-repeat!important;
+  box-shadow: none!important;
+  color: var(--ui-text)!important;
+  font-weight: 900;
+  text-shadow: var(--ui-outline);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .pl-close {
+  padding: 11px;
+  filter: saturate(.7);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.lc-claim:not(:disabled),.lc-tabs>.subpage-tab[aria-pressed=true],.lc-event.is-gold .lc-event-cta) {
+  --ui-button-art: var(--ui-button-yellow);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-tabs>.subpage-tab {
+  min-height: 46px;
+  padding: 8px 14px 12px;
+  font-size: 14px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-tabs>.subpage-tab::after { content: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-tabs>.subpage-tab[aria-pressed=false] { filter: saturate(.4) brightness(.85); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-claim {
+  min-height: 48px;
+  padding: 0 6px 4px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-claim:disabled {
+  position: relative;
+  isolation: isolate;
+  background: none!important;
+  filter: none!important;
+  color: #c6d3dc!important;
+  text-shadow: 0 1px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-claim:disabled::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ui-button-blue) center/100% 100% no-repeat;
+  filter: grayscale(1) brightness(.45);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.pl-close,.lc-tabs>.subpage-tab):active { transform: translateY(1px); filter: brightness(1.1); }
+
+/* Quiet summary and inset icon frames keep the information denser than the art. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-summary {
+  padding: 0 0 12px;
+  margin-bottom: 14px;
+  border-bottom-color: #6d899c70;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.lc-emblem,.lc-task-icon,.lc-event-icon) {
+  border: 2px solid transparent;
+  border-radius: 5px 1px;
+  background: linear-gradient(#263f53,#102331) padding-box,var(--command-rim) border-box;
+  box-shadow: inset 0 0 0 1px var(--ui-ink),0 2px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-summary h3 { font-weight: 900; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-summary-stat { text-shadow: 0 2px var(--ui-ink); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-task {
+  border: 1px solid #5e7a8f;
+  border-left: 3px solid #7099af;
+  background: linear-gradient(115deg,#23394a,var(--command-face));
+  box-shadow: inset 0 1px #d5e7f015,0 2px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-task.is-ready {
+  border-color: #968449;
+  border-left-color: var(--ui-yellow);
+  background: linear-gradient(110deg,#3d3b29,var(--command-face) 80%);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-task.is-claimed {
+  border-color: #3d5261;
+  background: #10212e;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-task.is-claimed progress::-webkit-progress-value { background: #658294; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-task.is-claimed progress::-moz-progress-bar { background: #658294; }
+
+/* Scene illustrations link the cards to the hangar; dark backing protects copy. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.lc-event,.lc-chapter) {
+  border: 2px solid;
+  border-color: #9cb8c9 #425d72 #30475a #7896a9;
+  border-radius: 7px 2px;
+  background-color: #101c2c;
+  background-image: linear-gradient(90deg,#091825f5,#0b1c2dc9 47%,#0b1c2d28),var(--lc-scene);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 0 1px var(--ui-ink),0 3px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.lc-event,.lc-chapter)::after {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  background: linear-gradient(90deg,#c7dce9,transparent) left top/20px 1px no-repeat,linear-gradient(#c7dce9,transparent) left top/1px 12px no-repeat;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-event {
+  min-height: 168px;
+  padding: 38px 12px 60px;
+  gap: 9px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-event-copy strong {
+  font-size: 20px;
+  text-shadow: var(--ui-outline),0 2px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-event-copy small { color: #d1e0ea; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-event-badge {
+  padding: 4px 12px;
+  border-radius: 0 0 7px 0;
+  font-size: 10px;
+  background: var(--event-accent);
+  color: var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-event-cta {
+  box-sizing: border-box;
+  min-height: 44px;
+  min-width: 106px;
+  justify-content: center;
+  bottom: 8px;
+  right: 10px;
+  padding: 8px 14px 12px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-route { padding-left: 0; gap: 12px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-route::before { display: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter { min-height: 108px; padding: 14px 10px; gap: 9px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter.is-selected {
+  border-color: var(--ui-yellow);
+  box-shadow: inset 3px 0 var(--ui-yellow),inset 0 0 0 1px var(--ui-ink),0 3px var(--ui-ink);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter-number { color: #d3e4ef; font-size: 31px; min-width: 38px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter.is-selected .lc-chapter-number { color: var(--ui-yellow); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter-info>strong { font-size: 18px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter-status { background: #081522e8; border-color: #6b889e; padding: 6px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter.is-selected .lc-chapter-status { color: var(--ui-yellow); border-color: #bfab53; }
+
+/* Mail remains an empty state, not a fake reward card. Match the neutral metal. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-folder {
+  border: 1px solid #718a9b;
+  border-bottom: 2px solid var(--ui-ink);
+  background: linear-gradient(#2b4153,#182b3c);
+  color: var(--ui-text);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-empty {
+  min-height: 290px;
+  border: 1px solid #526c80;
+  background: radial-gradient(ellipse at 50% 35%,#27435955,transparent 65%),#0c1b29;
+  box-shadow: inset 0 3px 8px #0003;
+  border-radius: 0 0 5px 2px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-orbit { display: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-art { width: 140px; height: 120px; transform: rotate(-4deg); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-art path:nth-child(1) { fill: #182b3b; stroke: #8ba7ba; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-art path:nth-child(4) { fill: #30495e; stroke: #aac7d9; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-art path:nth-child(5) { stroke: #7590a5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-mail-empty h3 { color: var(--ui-text); font-size: 18px; }
+@container (max-width:340px) {
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .pl-modal-content { padding: 12px 10px; }
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter { gap: 6px; padding: 12px 8px; }
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter-number { min-width: 30px; font-size: 26px; }
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter-info>strong { font-size: 16px; }
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-chapter-status { padding: 5px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal button { transition: none; animation: none; }
+}

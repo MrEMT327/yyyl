@@ -1,0 +1,24 @@
+{
+  "pilot_id": "pilot-06",
+  "default_lobby_pilot": true,
+  "idle": {
+    "name": "idle",
+    "loop": true,
+    "duration_seconds": 8
+  },
+  "click_feedback": {
+    "name": "touch_head",
+    "loop": false,
+    "duration_seconds": 6.166666666666667,
+    "on_complete": "idle"
+  },
+  "preview_page": "tools/gm.html",
+  "preview_motion_count": 15,
+  "fallback": {
+    "file": "portrait.png",
+    "method": "Transparent 1024x1024 WebGL render from the actual Cubism model in the idle pose; no image repainting.",
+    "motion_time_seconds": 0.3,
+    "sha256": "7d70a6a1be55ee3d6a77dac70bed8e0cf1dc2aef368ff6ded12801035d3c1743"
+  },
+  "temporary_access": "src/pilot-preview-access.js; session selection and permissions only"
+}

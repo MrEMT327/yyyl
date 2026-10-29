@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#101b27" />
+  <title>原版试射 · 少女航线</title>
+</head>
+<body>
+  <main class="range-app">
+    <header><a href="./?lobby-tab=assembly&ui=v2" aria-label="返回固定件">‹ 固定件</a><h1>原版试射</h1><button id="reset">重置</button></header>
+    <section class="weapons" aria-label="切换武器">
+      <button class="equipment selected" data-weapon="twin"><img data-icon="twin" alt="双联机炮原模型" /><span><b>脉冲腺</b><small>双联机炮原型 · 三连点射</small></span></button>
+      <button class="equipment" data-weapon="rail"><img data-icon="rail" alt="长钉轨道炮原模型" /><span><b>高压棘刺</b><small>轨道炮原型 · 高速重弹</small></span></button>
+    </section>
+    <section class="range-stage" aria-label="试射场">
+      <canvas id="battle" aria-label="点击或拖动改变瞄准方向" tabindex="0"></canvas>
+      <div class="stage-top"><span id="attack-stats"></span><button id="pause">暂停</button></div>
+      <div class="stage-bottom"><span>点击 / 拖动瞄准</span><span id="hit-stats">命中 0 · 伤害 0</span></div>
+    </section>
+    <section class="connectors" aria-label="连接器开关">
+      <button class="equipment" id="hit-charge" aria-pressed="false"><img data-icon="capacitor" alt="储能连接器原模型" /><span><b>恢复线粒体 <em>关</em></b><small>每次命中供能，逐渐衰减</small></span></button>
+      <button class="equipment" id="homing" aria-pressed="false"><img data-icon="focus" alt="聚焦连接器原模型" /><span><b>引力器 <em>关</em></b><small>飞行中的子弹持续追踪</small></span></button>
+    </section>
+    <section class="charge-panel"><div><span>过载 <strong id="charge-value">0%</strong></span><small id="charge-effect">开启恢复线粒体后，命中即可供能</small></div><div class="charge-track"><i id="charge-fill"></i></div></section>
+    <section class="controls">
+      <label>品质 <select id="rarity" aria-label="全部装备品质"><option value="0">普通</option><option value="1">优秀</option><option value="2">稀有</option><option value="3">史诗</option><option value="4">传说</option><option value="5">神话</option></select></label>
+      <button id="moving" aria-pressed="false">移动靶 关</button><button id="sound" aria-pressed="false">声音 关</button>
+    </section>
+    <p class="tip" id="tip">先看裸武器，再打开引力器，瞄准敌人旁边试试。</p>
+    <details><summary>试射说明</summary><p>武器数值、散布、品质成长、命中供能和追踪公式来自本地原版源码。这里只缩放画面，子弹使用原版速度、寿命、伤害和碰撞大小。</p><p>两个连接器与武器直连，也相互连接。品质选择同时作用于三件装备。试射不叠加正式关卡的自创升级。</p><p>圆形靶体、牵引回位、自由瞄准和自动开火是试射设施。以每秒 60 次更新模拟，未移植原版软体敌人、Godot 完整物理解算、耐力及闪避禁射；因此不是原游戏的逐帧复现。</p><p>高压棘刺的“允许一次碰撞后继续存在”不等于固定角度反弹；实际轨迹取决于质量、速度和碰撞材质。紫色轨迹线仅帮助观察转弯。</p></details>
+  </main>
+  <script type="module" src="/src/pathogenic-range/main.js"></script>
+</body>
+</html>

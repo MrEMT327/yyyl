@@ -1,0 +1,52 @@
+{
+  "Version": 3,
+  "Parameters": [
+    {
+      "Id": "ParamTouchHeadTime",
+      "GroupId": "",
+      "Name": "摸头与回位时间"
+    },
+    {
+      "Id": "ParamFanOpen",
+      "GroupId": "",
+      "Name": "折扇展开"
+    },
+    {
+      "Id": "ParamFaceTurn",
+      "GroupId": "",
+      "Name": "原版转角采样"
+    },
+    {
+      "Id": "ParamEyeLOpen",
+      "GroupId": "",
+      "Name": "双眼开合"
+    },
+    {
+      "Id": "ParamIdleTime",
+      "GroupId": "",
+      "Name": "待机时间"
+    },
+    {
+      "Id": "ParamIdleWeight",
+      "GroupId": "",
+      "Name": "待机权重"
+    },
+    {
+      "Id": "ParamPoseTime",
+      "GroupId": "",
+      "Name": "双动作连续姿态时间"
+    },
+    {
+      "Id": "ParamHemSwing",
+      "GroupId": "",
+      "Name": "Skirt sway"
+    },
+    {
+      "Id": "ParamHemFlutter",
+      "GroupId": "",
+      "Name": "Skirt trailing ripple"
+    }
+  ],
+  "ParameterGroups": [],
+  "Parts": []
+}

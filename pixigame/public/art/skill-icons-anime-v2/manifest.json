@@ -1,0 +1,159 @@
+{
+  "schema": 1,
+  "generator": "tools/pack-skill-icons.py",
+  "entries": [
+    {
+      "id": "rail-piercer",
+      "gameId": "aux_rail",
+      "file": "rail-piercer.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 1921783,
+      "bytes": 35448,
+      "sourceSha256": "2a4831cc3efca2958643c3cf1864593ab1ced37ed7f41d8669587b771d493ec5",
+      "sha256": "c005b93266f839bb0b982528060d3779cd4c59c8899aa94417633db59b8fa53a"
+    },
+    {
+      "id": "electromagnetic-spread",
+      "gameId": "aux_scatter",
+      "file": "electromagnetic-spread.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 1932349,
+      "bytes": 36486,
+      "sourceSha256": "9701c2ccb593833d52b55b25dbecaa3986cfef464304320e44108d8632af9721",
+      "sha256": "43bf91f4fe6d6fde88a6e41e94aaefcb3a089bb12a15af03331f09d220ae25c3"
+    },
+    {
+      "id": "broadside-burst",
+      "gameId": "aux_sidegun",
+      "file": "broadside-burst.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 1983669,
+      "bytes": 32784,
+      "sourceSha256": "1338f1af968b216995ba75b344fa92cf8498a3c6a808e3cb862653d593702adc",
+      "sha256": "a6d9a0f716f86cdbbd10830ad808dcccc0d99320f37cc896c3ec75e82a9d54f8"
+    },
+    {
+      "id": "bouncing-grenade",
+      "gameId": "aux_grenade",
+      "file": "bouncing-grenade.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 1958829,
+      "bytes": 32232,
+      "sourceSha256": "d908a1613a2fe252fc1654d85e62c24e2c1ef471953c3c8ea4167b0605a999df",
+      "sha256": "3d05e41c51a54dcc999e9393e126a5e98a5bf8accc634f451b7f2eab99b2d4a1"
+    },
+    {
+      "id": "proximity-mine",
+      "gameId": "aux_mine",
+      "file": "proximity-mine.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 1936432,
+      "bytes": 31552,
+      "sourceSha256": "68e6860da00f71bd44cc635017f7be11781a0e919e0910e86e21bb7cea0feaf9",
+      "sha256": "fb5f65327d4fae757d7ece36246dc41a0b99322ba7e7f07eff9bda75e246bac1"
+    },
+    {
+      "id": "cross-laser-mine",
+      "gameId": "aux_lightmine",
+      "file": "cross-laser-mine.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 1729827,
+      "bytes": 20996,
+      "sourceSha256": "630185792abc9298c36bb99c22d2f749978c021d16e2df846cfaa6bb1a42d45f",
+      "sha256": "d9dd795406aca802210518c86f805372301b608448dc6a7fe452e74831afa255"
+    },
+    {
+      "id": "molten-core",
+      "gameId": "aux_pyro",
+      "file": "molten-core.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 2073459,
+      "bytes": 40092,
+      "sourceSha256": "b5c750d786cbb3233251889e76111372e16cd7e43d8f2c350db33da95c11f614",
+      "sha256": "639dda6e354efebceaacb302891c3138a593b769666b23002a7111509f101efe"
+    },
+    {
+      "id": "rear-counterfire",
+      "gameId": "aux_tail",
+      "file": "rear-counterfire.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 2011663,
+      "bytes": 30652,
+      "sourceSha256": "5d0cb2e425aa16b4dcece46f6d4193fc45da7ef5c9a244d9010d19d2dfcf7f46",
+      "sha256": "884a70c47a82074967bd28a250fdd9a3bb08bfb75a95fe5fc84b7dc6f8a45ad5"
+    },
+    {
+      "id": "replicating-drones",
+      "gameId": "aux_drone",
+      "file": "replicating-drones.webp",
+      "size": [
+        384,
+        384
+      ],
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBytes": 2000136,
+      "bytes": 38680,
+      "sourceSha256": "7cce4db3f5e0bc3fcb534bc5d4dd170b555d213a8d8ba7d26e2a568e52ba6b3d",
+      "sha256": "d1562b50c703f368d6c42d252e2a266337f41a6358aec170360b03c8520255b9"
+    }
+  ]
+}

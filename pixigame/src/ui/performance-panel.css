@@ -1,0 +1,29 @@
+/* Diagnostics own a layout cell outside the game, including the reopen button. */
+.arcade.has-performance-tools{grid-template-columns:minmax(0,min(750px,46.182dvh)) auto;grid-template-rows:minmax(0,1fr);gap:12px;padding:8px;align-items:start}
+.performance-game-stage{width:100%;height:100%;min-width:0;min-height:0;display:grid;place-items:center;container-type:size}
+.performance-game-stage>#gameShell{width:min(100cqw,46.182cqh)!important;height:auto!important;aspect-ratio:750/1624!important;max-height:100%!important}
+.performance-tools{width:236px;max-width:100%;max-height:100%;min-height:0;overflow:auto;font:12px/1.4 system-ui;color:#deebef}
+.performance-tools:has(.perf-panel:not(.is-compact):not([hidden])){width:330px}
+.performance-tools button{font:inherit;color:inherit;background:#1c3542;border:1px solid #7196a5;border-radius:5px;padding:4px 8px;cursor:pointer;min-height:28px}
+.performance-tools button:focus-visible{outline:2px solid #d4f6ff;outline-offset:2px}
+.performance-tools [hidden]{display:none!important}
+.perf-panel{width:100%;box-sizing:border-box;border:1px solid #526d7c;border-radius:7px;background:#0e1c27;padding:10px;contain:layout style}
+.perf-panel header,.perf-panel footer{display:flex;align-items:center;gap:6px}
+.perf-panel header>strong{flex:1;font-size:12px;color:#a7c3cf}
+.perf-panel header button{font-size:11px;line-height:1;min-height:24px}
+.perf-panel header>[data-perf='close']{font-size:18px;padding:0 7px}
+.perf-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 0;font-variant-numeric:tabular-nums}
+.perf-summary>div{display:block;min-width:0;padding:0;border:0}.perf-summary dt{font-size:10px;color:#a7c3cf;white-space:nowrap}
+.perf-summary dd{margin:2px 0 0;font:600 19px/1.2 ui-monospace,Consolas,monospace;color:#edf8fb;white-space:nowrap}
+.perf-summary [data-value='fps']{color:#80ebc7}.perf-summary [data-value='frame-ms']{font-size:16px}
+.perf-panel.is-compact .perf-details{display:none}.perf-panel p{margin:7px 0;color:#a7c3cf}.perf-panel .perf-build{font-size:10px}
+.perf-panel canvas{width:100%;height:50px;display:block;margin:8px 0;background:#152c39}
+.perf-values{margin:8px 0;font-variant-numeric:tabular-nums}.perf-values>div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #38556366;padding:3px 0}
+.perf-values dt{color:#b1c8d2}.perf-values dd{margin:0;color:#edf8fb}.perf-note{font-size:10px}.perf-panel footer button{flex:1}
+@media(max-width:760px){
+  .arcade.has-performance-tools{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:6px;padding:max(6px,env(safe-area-inset-top)) 0 0}
+  .has-performance-tools>.performance-tools{grid-row:1;justify-self:center;width:calc(100% - 12px);max-height:45dvh}
+  .has-performance-tools>.performance-game-stage{grid-row:2}
+  .perf-panel{padding:6px 8px}.perf-summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:5px}
+  .perf-summary dd{font-size:16px}.perf-summary [data-value='frame-ms']{font-size:13px}
+}

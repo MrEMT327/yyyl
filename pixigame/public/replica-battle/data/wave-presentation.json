@@ -1,0 +1,52 @@
+{
+  "source": {
+    "prefab": "research/ui-prefabs.json:ui-world_:/UI_World_Main/Root/AlphaGroup/Top/UIFX_Warning",
+    "animationClip": "Anim_UIFX_Warning",
+    "animationClipPathId": "7318139466264634404",
+    "nativeShow": "HotFix.FXUIMain.Show@0x7d97158",
+    "nativeEnd": "HotFix.FXUIMain.OnAnimatorEvent@0x7d96f88",
+    "nativeCommand": "WaterfallProgressFinishCommand.Exec@0x6a1eae0"
+  },
+  "hudProgress": {
+    "source": "UIBattleWaterfallCtrl.RefreshUI/OnAnimListen; WaterfallAnimatorCtrl",
+    "controllerPathId": "-5371105190949204218",
+    "animationClip": "WaterfallProgressMoveIn",
+    "animationClipPathId": "-3848850811889620809",
+    "speed": 1,
+    "preDelay": { "normal": 0.2, "previousMissionType2": 0.5 },
+    "preDelaySource": "Consts.WaterfallProgressDelayShowTime_Monster/Boss",
+    "finishEvent": { "time": 0.2666666805744171, "functionName": "Listen", "data": "MoveBackEnd", "commandId": 22 },
+    "laterVisualEvent": { "time": 0.5333333611488342, "functionName": "Listen", "data": "MoveInFinish" }
+  },
+  "duration": 3.0,
+  "finishEvent": {
+    "time": 2.7666666507720947,
+    "functionName": "Listen",
+    "data": "WarningEnd",
+    "commandId": 22
+  },
+  "types": {
+    "2": {
+      "languageKey": "FXUIMain_Text1",
+      "text": "首领来袭",
+      "soundId": 100007,
+      "atlasId": 10114,
+      "bgIcon": "stg_fx_bg_1",
+      "starIcon": "stg_fx_bg_3",
+      "centerIcon": "stg_fx_bossIcon",
+      "leftIcon": "stg_fx_arrow",
+      "rightIcon": "stg_fx_arrow"
+    },
+    "5": {
+      "languageKey": "FXUIMain_Text2",
+      "text": "强敌来袭",
+      "soundId": 100007,
+      "atlasId": 10114,
+      "bgIcon": "stg_fx_bg_1",
+      "starIcon": "stg_fx_bg_3",
+      "centerIcon": "stg_fx_exclamation",
+      "leftIcon": "stg_fx_plane",
+      "rightIcon": "stg_fx_plane"
+    }
+  }
+}

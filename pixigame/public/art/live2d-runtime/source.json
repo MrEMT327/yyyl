@@ -1,0 +1,19 @@
+{
+  "framework": {
+    "repository": "https://github.com/Live2D/CubismWebFramework",
+    "tag": "5-r.4",
+    "commit": "8df84780f2aa1298f3b30965cdae143e049f3c8e",
+    "source_bytes_unchanged": true
+  },
+  "core": {
+    "source": "/Users/liweitang/工作/D03/character-editor-prototype/public/vendor/live2dcubismcore.min.js",
+    "version": "5.1.0",
+    "version_hex": "0x05010000",
+    "latest_moc_version": 5,
+    "sha256": "25ae938cb4fe282ce189b357bcc97e603d1e1f7ec78bf04150d401c23cdc792f",
+    "bytes": 207155,
+    "license_url": "https://www.live2d.com/eula/live2d-proprietary-software-license-agreement_en.html",
+    "bytes_unchanged": true
+  },
+  "new_agreement_accepted": false
+}

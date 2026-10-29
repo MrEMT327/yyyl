@@ -1,0 +1,253 @@
+{
+  "source_file": "psd/主界面.psd",
+  "live_profile": {
+    "frame": "profile-live-frame.png",
+    "source_group_index": 16,
+    "source_bounds": [22, 27, 221, 105],
+    "export_script": "tools/export-live-profile-frame.py",
+    "description": "Original PSD profile group with placeholder text layers hidden; the corresponding rectangle is clipped from the foreground. Player name and calculated power are live HTML, and the existing selected-pilot avatar remains on top."
+  },
+  "source_size": [
+    750,
+    1624
+  ],
+  "runtime_image": "main-background.png",
+  "runtime_image_is_flattened_psd_composite": false,
+  "runtime_image_composite_excludes": [
+    "组 2 (top-level PSD layer 7): persistent global bottom navigation"
+  ],
+  "interactive_regions": "transparent HTML buttons aligned to source PSD coordinates; bottom navigation rendered by the global shell",
+  "navigation": {
+    "source_group": "组 2 (top-level PSD layer 7)",
+    "source_bounds": [
+      0,
+      1473,
+      750,
+      1624
+    ],
+    "runtime_assets": {
+      "icons": {
+        "shop": "navigation/shop.png",
+        "assembly": "navigation/assembly.png",
+        "battle": "navigation/battle.png",
+        "research": "navigation/research.png",
+        "supply": "navigation/supply.png"
+      },
+      "background": "../project-navigation-v2/background.png",
+      "horizontal_frame": "navigation/horizontal-frame.png",
+      "divider": "navigation/divider.png"
+    },
+    "icon_bounds": {
+      "shop": [
+        28,
+        1507,
+        112,
+        1591
+      ],
+      "assembly": [
+        174,
+        1510,
+        243,
+        1596
+      ],
+      "battle": [
+        323,
+        1483,
+        437,
+        1582
+      ],
+      "research": [
+        493,
+        1507,
+        585,
+        1603
+      ],
+      "supply": [
+        647,
+        1512,
+        727,
+        1603
+      ]
+    },
+    "label_bounds": {
+      "shop": [
+        39,
+        1573,
+        96,
+        1601
+      ],
+      "assembly": [
+        183,
+        1573,
+        240,
+        1601
+      ],
+      "battle": [
+        352,
+        1580,
+        409,
+        1608
+      ]
+    },
+    "icon_effect": "cyan outer glow matched from PSD layer styles in the runtime CSS",
+    "background_bounds": [
+      0,
+      1473,
+      750,
+      1624
+    ],
+    "background_note": "Independent opaque graphite material. Replaces old flattened background-clean.png which included character legs.",
+    "tab_width_weights": {
+      "normal": 140.5,
+      "selected": 188
+    }
+  },
+  "runtime_layered_scene": {
+    "canvas_size": [
+      750,
+      1624
+    ],
+    "background": {
+      "image": "main-background.png",
+      "source_top_level_layer_indices": [
+        0,
+        1,
+        2
+      ],
+      "description": "Opaque base, hangar and original overlay scanlines, composited without the original heroine or bottom navigation."
+    },
+    "character": {
+      "source_top_level_layer_index": 3,
+      "original_bounds": [
+        -85,
+        230,
+        844,
+        1653
+      ],
+      "description": "Replaceable character surface between the background and foreground; source heroine is omitted from both runtime layer images.",
+      "original_extracted_source": "pixigame/art/psd-main-v1/layers/heroine.png",
+      "default_pilot": "pilot-06",
+      "variants": {
+        "pilot-06": {
+          "runtime_manifest": "../pilot-06-v09c/bulaimodun_2/bulaimodun_2.model3.json",
+          "source_commit": "27cf5efdd9f41384b276de0e56079e367ff6b5a8",
+          "fallback": "../pilot-06-v09c/portrait.png",
+          "display": {
+            "left": "-30%",
+            "top": "9%",
+            "width": "160%",
+            "aspect_ratio": "1/1"
+          }
+        },
+        "pilot-10": {
+          "runtime_manifest": "../white-gold-luoen-r13/runtime-r13.json",
+          "source_commit": "fb4017b28278ec0850af61d20ed67c7a7d2b1d99",
+          "fallback": "../white-gold-luoen-r13/portrait-refined-v1.png",
+          "display": {
+            "left": "-15%",
+            "top": "17.5%",
+            "width": "130%",
+            "aspect_ratio": "1/1"
+          },
+          "asset_commit": "797828cb59a2d64a96f71b7460c95e022e4012eb"
+        }
+      }
+    },
+    "foreground": {
+      "image": "main-foreground-current-live-wallet.png",
+      "source_top_level_layer_indices": [
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "description": "Transparent PSD overlays for chapter selection, alerts, task/mail/map/activity, patrol, backpack, star progress, role switching, profile and start; resource groups are live HTML."
+    },
+    "excluded_top_level_layer_indices": [
+      3,
+      4,
+      7,
+      12,
+      13,
+      14,
+      15
+    ],
+    "exclusion_note": "Layer 3 is replaced by the selected live character; 4 and 12 are hidden source alternatives; 7 is the persistent global bottom navigation; 13–15 are live resource bars.",
+    "static_fallback": {
+      "pilot-06": "../pilot-06-v09c/portrait.png",
+      "pilot-10": "../white-gold-luoen-r13/portrait-refined-v1.png"
+    },
+    "validation": {
+      "method": "Alpha-composite the new background, the unchanged extracted heroine at original bounds, and the new foreground; compare against the source PSD composite.",
+      "maximum_channel_difference": 2,
+      "mean_absolute_channel_difference": 0.295889,
+      "note": "At most 2/255 per channel from RGBA compositing quantization."
+    }
+  },
+  "resources": {
+    "source_groups": {
+      "stamina": "组 1",
+      "coins": "组 1 拷贝",
+      "diamonds": "组 1 拷贝 2"
+    },
+    "artboard_bounds": {
+      "stamina": [
+        234,
+        46,
+        397,
+        92
+      ],
+      "coins": [
+        404,
+        46,
+        567,
+        92
+      ],
+      "diamonds": [
+        574,
+        46,
+        737,
+        92
+      ]
+    },
+    "runtime_assets": {
+      "stamina": {
+        "background": "resources/stamina-background.png",
+        "icon": "resources/stamina-icon.png",
+        "plus": "resources/stamina-plus.png"
+      },
+      "coins": {
+        "background": "resources/coins-background.png",
+        "icon": "resources/coins-icon.png",
+        "plus": "resources/coins-plus.png"
+      },
+      "diamonds": {
+        "background": "resources/diamonds-background.png",
+        "icon": "resources/diamonds-icon.png",
+        "plus": "resources/diamonds-plus.png"
+      }
+    },
+    "values": "Live wallet amounts rendered over the extracted PSD panel and icon assets.",
+    "source_group_indices": {
+      "stamina": 13,
+      "coins": 14,
+      "diamonds": 15
+    }
+  },
+  "runtime_layers": {
+    "background": "main-background.png",
+    "foreground": "main-foreground-current-live-wallet.png",
+    "foreground_note": "Latest PSD foreground controls with the static wallet groups, chapter strings, and star total cleared for live rendering."
+  },
+  "canonical_source": "psd/主界面.psd"
+}

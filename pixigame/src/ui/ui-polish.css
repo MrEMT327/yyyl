@@ -1,0 +1,87 @@
+/* Compact item cards share one visual grammar in inventory, slots and dialogs.
+   Full names/quality live in the detail heading and the accessible card label. */
+#gui-casual-lobby .ag-card:not(.ag-weapon)>strong {display:none}
+#gui-casual-lobby .ag-card:not(.ag-weapon)>img,
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:not(.ag-weapon)>img {left:8%;top:9%;width:84%;height:69%}
+#gui-casual-lobby .ag-card .ag-tier {
+  position:absolute;right:7%;bottom:6%;z-index:2;padding:1px 2px;
+  font:bold clamp(9px,2.35cqw,12px)/1 'Microsoft YaHei',sans-serif;
+  color:#fff2bd;background:#263748e8;text-shadow:0 1px #132334;
+}
+#gui-casual-lobby .ag-card:has(.ag-tier)>b,
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:has(.ag-tier)>b {right:24%}
+#gui-casual-lobby .ag-card :is(.ag-tag,.ag-lock,.ag-ready) {
+  position:absolute;top:5%;z-index:2;padding:2px 3px;
+  font:600 clamp(8px,2.1cqw,11px)/1 'Microsoft YaHei',sans-serif;
+  text-shadow:0 1px #142d3f;pointer-events:none;
+}
+#gui-casual-lobby .ag-card .ag-tag {left:5%;color:#d9fff2;background:#205355}
+#gui-casual-lobby .ag-card .ag-lock {right:5%;color:#f1e4c3;background:#344350}
+#gui-casual-lobby .ag-card .ag-ready {right:5%;color:#d9ffcc;background:#294d37}
+#gui-casual-lobby .ag-card .ag-selected {
+  right:5%;top:5%;bottom:auto;display:grid;place-items:center;width:19px;height:19px;
+  font:bold 15px/1 sans-serif;color:#183e35;background:#d9ffd8;
+}
+#gui-casual-lobby .ag-card.is-selected {outline:2px solid #d9ffd8;outline-offset:-2px}
+#gui-casual-lobby .ag-modal .ag-grid {gap:8px}
+#gui-casual-lobby [data-modal-type^='gear']>.pl-modal-content:has(.ag-modal-footer) {display:flex;overflow:hidden}
+#gui-casual-lobby .ag-modal:has(.ag-modal-footer) {display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;padding-bottom:0}
+#gui-casual-lobby .ag-modal-scroll {min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:0 2px 8px}
+#gui-casual-lobby .ag-modal-footer {flex:none;border-top:1px solid #8198ac;padding:6px 0 0;background:#a6b8cc}
+#gui-casual-lobby .ag-modal-footer .ag-actions {margin-top:0}
+#gui-casual-lobby .ag-modal-footer .ag-links {margin-top:6px}
+#gui-casual-lobby .ag-modal-footer .ag-merge-count {margin:0 0 6px}
+#gui-casual-lobby .ag-modal-footer .ag-cost {margin:0 0 6px;gap:6px}
+#gui-casual-lobby .ag-modal-footer .ag-cost>span {padding:5px 6px}
+#gui-casual-lobby .ag-modal-footer .ag-cost small {margin-top:2px}
+
+
+/* Mobile readability repairs, keeping the existing PSD artwork and slices. */
+#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {position:relative;isolation:isolate;min-width:0}
+#gui-casual-lobby[data-tab='research'] .research-tabs .research-tab {position:relative;isolation:isolate;min-width:0}
+#gui-casual-lobby .research-tab small {font-size:max(9px,2cqw)}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-tier {top:5%;right:5%;bottom:auto;min-width:17px;text-align:center}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:has(.ag-tier)>b {left:6%;right:6%}
+#gui-casual-lobby .pl-modal .dc-signin-scroll-hint {display:block;margin-top:2px;color:#3f6077;font-size:12px;line-height:1.25}
+#gui-casual-lobby .dc-prize-art.is-equipment>.dc-signin-art {transform:scale(1.9)!important}
+#gui-casual-lobby .cd-actions .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch}
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab>span {display:block!important;top:14.2cqw!important;font-size:clamp(10px,3cqw,13px)!important;font-weight:700!important;color:#d9edf5!important}
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab.is-active>span {color:#fff!important;font-weight:900!important}
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab:not(.is-active) .psd-nav-icon {top:1.5cqw!important;height:11.4cqw!important}
+#gui-casual-lobby.psd-nav-global .lobby-resource-bar>b {left:7cqw!important;top:1.2cqw!important;width:10.8cqw!important;height:3.8cqw!important;font-size:clamp(10px,3.2cqw,14px)!important}
+#gui-casual-lobby.psd-nav-global .lobby-resource-bar>b.is-long {font-size:clamp(9px,2.75cqw,12px)!important}
+#gui-casual-lobby .shop-native-v2 .sn-box-copy :is(p,small) {font-size:clamp(10px,2.8cqw,13px)}
+
+/* Keep the development version stamp clear of the navigation labels. */
+body:has(#gui-casual-lobby:not([hidden])) #buildIdentity {top:3px!important;bottom:auto!important}
+
+/* Give vehicle rewards a larger preview without crowding their label. */
+#gui-casual-lobby .dc-signin-reward:has(.dc-prize-art.is-equipment) {grid-template-columns:14cqw minmax(0,1fr)}
+#gui-casual-lobby .dc-signin-rewards.is-single .dc-prize-art.is-equipment {width:14cqw;height:14cqw}
+#gui-casual-lobby .dc-signin-day:not(.is-final) .dc-prize-art.is-equipment>.dc-signin-art {transform:scale(1.6)!important}
+
+/* Follow-up: keep the same PSD surfaces while making compact states readable. */
+#gui-casual-lobby .gm-page .ag-card .ag-tier {top:5%;right:5%;bottom:auto;min-width:16px;text-align:center}
+#gui-casual-lobby .gm-page .ag-card:has(.ag-tier)>b {left:6%;right:6%}
+#gui-casual-lobby .gm-page .ag-card.is-selected .ag-tier {right:auto;left:5%}
+#gui-casual-lobby .fc-hero-actions .wc-button[data-shortage='true']::before,
+#gui-casual-lobby .fc-detail .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch}
+#gui-casual-lobby .pi-roster-list>.pi-note {grid-column:1/-1}
+#gui-casual-lobby .pi-scroll-hint,#gui-casual-lobby .dc-scroll-hint {flex:none;margin:0!important;color:#365571;font-size:12px;line-height:1.3;text-align:right}
+#gui-casual-lobby .pi-profile .pi-content {padding-bottom:12px}
+#gui-casual-lobby .pi-primary-weapon {padding-bottom:10px}
+#gui-casual-lobby .pi-primary-weapon .pi-slot,#gui-casual-lobby .pi-loadout>.pi-pos-0 {overflow:hidden}
+#gui-casual-lobby .pi-primary-weapon .pi-slot img,#gui-casual-lobby .pi-loadout>.pi-pos-0 img {transform:scale(1.55)}
+#gui-casual-lobby .pi-slot-label,#gui-casual-lobby .pi-slot-level {position:relative;z-index:1}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-item-wrap {padding-bottom:4.5cqw}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-item-name {height:4.5cqw;line-height:4.5cqw;font-size:clamp(11px,3.2cqw,14px)}
+#gui-casual-lobby .su-task .wc-button:not(:disabled)::before {filter:brightness(1.25)}
+#gui-casual-lobby .su-card .wc-button:disabled::before {filter:brightness(.75)}
+#gui-casual-lobby .pl-modal .bc-reward-group>summary {color:#1a3f58;background:#dce9f2a8;padding:8px 10px;min-height:42px}
+#gui-casual-lobby .pl-modal .bc-reward-group>details {margin-left:6px}
+#gui-casual-lobby .weapon-skill-modal .wc-growth-detail details {background:#d9e9f1a8;border:1px solid #86a4ba;border-left:3px solid #63889f}
+
+#gui-casual-lobby .pi-profile .pi-primary-weapon {grid-template-columns:26% minmax(0,1fr);gap:10px;padding:4px 0 8px}
+#gui-casual-lobby .pi-profile .pi-section-title {padding:8px 0 5px}
+
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] {--popup-height:180cqw!important}

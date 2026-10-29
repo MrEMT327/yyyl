@@ -1,0 +1,16 @@
+Model_P9_L2.png
+size:252,40
+filter:Linear,Linear
+pma:true
+cang_m_u
+bounds:0,6,150,34
+offsets:0,0,150,156
+cang_yzb
+bounds:152,0,65,14
+offsets:1,12,66,27
+cang_yzu
+bounds:152,16,69,24
+offsets:0,1,69,26
+gg
+bounds:223,11,29,29
+offsets:2,2,33,33

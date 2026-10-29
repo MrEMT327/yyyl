@@ -1,0 +1,426 @@
+{
+  "version": 1,
+  "sourceRevision": "b23e8c8a43c00b585ea4cae385feeaf84d917dfe3831b4fc947d2044090bce9a",
+  "chapters": [
+    {
+      "id": 1,
+      "stageIndex": 0,
+      "name": "暗影基地",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 2,
+      "stageIndex": 1,
+      "name": "远古遗迹",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 3,
+      "stageIndex": 2,
+      "name": "天幕之巅",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 4,
+      "stageIndex": 3,
+      "name": "腐潮水道",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 5,
+      "stageIndex": 4,
+      "name": "岩裂深窟",
+      "waveCount": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 6,
+      "stageIndex": 5,
+      "name": "夜幕林境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 7,
+      "stageIndex": 6,
+      "name": "缠生藤域",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 8,
+      "stageIndex": 7,
+      "name": "浊渊暗渠",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 9,
+      "stageIndex": 8,
+      "name": "深渊海底",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 10,
+      "stageIndex": 9,
+      "name": "萤火毒域",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 11,
+      "stageIndex": 10,
+      "name": "幽冥矿洞",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 12,
+      "stageIndex": 11,
+      "name": "回响古城",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 13,
+      "stageIndex": 12,
+      "name": "静寂海洞",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 14,
+      "stageIndex": 13,
+      "name": "地核指挥",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 15,
+      "stageIndex": 14,
+      "name": "高空云岭",
+      "waveCount": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 16,
+      "stageIndex": 15,
+      "name": "浑流深层",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 17,
+      "stageIndex": 16,
+      "name": "荒毒丛谷",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 18,
+      "stageIndex": 17,
+      "name": "地底世界",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 19,
+      "stageIndex": 18,
+      "name": "藤潮秘境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 20,
+      "stageIndex": 19,
+      "name": "裂隙地核",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 21,
+      "stageIndex": 20,
+      "name": "星际外环",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 22,
+      "stageIndex": 21,
+      "name": "暗域深空",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 23,
+      "stageIndex": 22,
+      "name": "星环前哨",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 24,
+      "stageIndex": 23,
+      "name": "星核基地",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 25,
+      "stageIndex": 24,
+      "name": "炽核深渊",
+      "waveCount": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 26,
+      "stageIndex": 25,
+      "name": "菌潮星域",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 27,
+      "stageIndex": 26,
+      "name": "地外遗迹",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 28,
+      "stageIndex": 27,
+      "name": "星际工港",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 29,
+      "stageIndex": 28,
+      "name": "虚空航域",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 30,
+      "stageIndex": 29,
+      "name": "烈焰行星",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 31,
+      "stageIndex": 30,
+      "name": "环带边境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 32,
+      "stageIndex": 31,
+      "name": "天核设施",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 33,
+      "stageIndex": 32,
+      "name": "星心要塞",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 34,
+      "stageIndex": 33,
+      "name": "烈核深井",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 35,
+      "stageIndex": 34,
+      "name": "孢潮禁区",
+      "waveCount": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 36,
+      "stageIndex": 35,
+      "name": "失落遗城",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 37,
+      "stageIndex": 36,
+      "name": "轨道工坞",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 38,
+      "stageIndex": 37,
+      "name": "深空黑幕",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 39,
+      "stageIndex": 38,
+      "name": "熔火星球",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 40,
+      "stageIndex": 39,
+      "name": "菌蚀宙域",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 41,
+      "stageIndex": 40,
+      "name": "月面前哨",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 42,
+      "stageIndex": 41,
+      "name": "环形工站",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 43,
+      "stageIndex": 42,
+      "name": "月海荒原",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 44,
+      "stageIndex": 43,
+      "name": "银穹营地",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 45,
+      "stageIndex": 44,
+      "name": "月核设施",
+      "waveCount": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 46,
+      "stageIndex": 45,
+      "name": "静海边境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 47,
+      "stageIndex": 46,
+      "name": "月壤研究站",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 48,
+      "stageIndex": 47,
+      "name": "月面主基地",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 49,
+      "stageIndex": 48,
+      "name": "陨坑地带",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 50,
+      "stageIndex": 49,
+      "name": "深月中枢",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 51,
+      "stageIndex": 50,
+      "name": "烈砂边境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 52,
+      "stageIndex": 51,
+      "name": "回响古城",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 53,
+      "stageIndex": 52,
+      "name": "静寂海洞",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 54,
+      "stageIndex": 53,
+      "name": "地核指挥",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 55,
+      "stageIndex": 54,
+      "name": "高空云岭",
+      "waveCount": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 56,
+      "stageIndex": 55,
+      "name": "浑流深层",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 57,
+      "stageIndex": 56,
+      "name": "荒毒丛谷",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 58,
+      "stageIndex": 57,
+      "name": "寒霜雪境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 59,
+      "stageIndex": 58,
+      "name": "藤潮秘境",
+      "waveCount": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 60,
+      "stageIndex": 59,
+      "name": "裂隙地核",
+      "waveCount": 15,
+      "terrain": "cloud"
+    }
+  ]
+}

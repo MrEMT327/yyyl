@@ -1,0 +1,17 @@
+/* Transient light sits above PSD frames; the source art and its nine-slice
+   geometry are unchanged. Every effect is decorative and pointer transparent. */
+#gui-casual-lobby.ui-motion-active {--ui-motion-fast:160ms;--ui-motion-normal:260ms;--ui-motion-ease:cubic-bezier(.16,1,.3,1)}
+#gui-casual-lobby.ui-motion-active .pl-modal-host :is(.pl-modal,.bag-detail) {animation:none!important}
+#gui-casual-lobby .ui-fx-layer {position:absolute;inset:0;z-index:95;overflow:hidden;pointer-events:none;contain:strict}
+#gui-casual-lobby .ui-fx-layer * {pointer-events:none!important}
+#gui-casual-lobby .ui-fx-ring {position:absolute;border:1px solid var(--fx-color);box-shadow:inset 0 0 12px color-mix(in srgb,var(--fx-color) 28%,transparent),0 0 9px color-mix(in srgb,var(--fx-color) 45%,transparent);border-radius:3px}
+#gui-casual-lobby .ui-fx-sweep {position:absolute;overflow:hidden;clip-path:polygon(10% 0,100% 0,100% 90%,90% 100%,0 100%,0 10%)}
+#gui-casual-lobby .ui-fx-sweep>i {position:absolute;inset:-40% -80%;background:linear-gradient(110deg,transparent 42%,color-mix(in srgb,var(--fx-color) 55%,transparent) 49%,#fff9 50%,transparent 58%)}
+#gui-casual-lobby .ui-fx-spark {position:absolute;width:4px;height:10px;background:var(--fx-color);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 6px var(--fx-color)}
+#gui-casual-lobby .ui-fx-flight {position:absolute;width:36px;height:36px;object-fit:contain;filter:drop-shadow(0 0 5px #98eaff)}
+/* Short accents only when a reward is actually being revealed. */
+#gui-casual-lobby .draw-stage.is-spotlight::after {content:'';position:absolute;inset:12% 4% 18%;z-index:0;pointer-events:none;background:conic-gradient(from 15deg,transparent 0deg 26deg,#a7eaff12 26deg 32deg,transparent 32deg 78deg,#a7eaff15 78deg 84deg,transparent 84deg 180deg,#a7eaff15 180deg 188deg,transparent 188deg 360deg);mask:radial-gradient(ellipse,#000 15%,transparent 70%);animation:ui-prize-rays 900ms ease-out both}
+#gui-casual-lobby .draw-stage.is-spotlight[data-rank='4']::after {background:conic-gradient(transparent 0deg 32deg,#ffe9a633 32deg 42deg,transparent 42deg 110deg,#ffe9a622 110deg 125deg,transparent 125deg 210deg,#ffe9a622 210deg 220deg,transparent 220deg 360deg)}
+#gui-casual-lobby .draw-stage-heading,#gui-casual-lobby .draw-stage-body,#gui-casual-lobby .draw-stage-footer {position:relative;z-index:1}
+@keyframes ui-prize-rays {from{opacity:0;rotate:-12deg;scale:.8}35%{opacity:1}to{opacity:0;rotate:12deg;scale:1.08}}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby .ui-fx-layer{display:none}#gui-casual-lobby .draw-stage.is-spotlight::after{display:none;animation:none}}

@@ -1,0 +1,148 @@
+{
+  "archive": "IceSwordSkyfall_V34_CyberpunkSignatureNodes_All10_LAN.zip",
+  "sha256": "3c6555f2b81cf03325a4ee9a01322466c46c065e36fc25bda5d697d7f769acc5",
+  "aircraft": [
+    {
+      "id": "fighter",
+      "slug": "kestrel",
+      "name": "游隼战机",
+      "manifestHash": "99d7ebbf0985f2fb724a7a47dde5599399a65c0a16fd41202e9b2072fb083804"
+    },
+    {
+      "id": "halo",
+      "slug": "verdant",
+      "name": "碧环战机",
+      "manifestHash": "3cad5b00592c314507daed192c61582906a3037b5424be1ef9937f3654ca3c53"
+    },
+    {
+      "id": "crimson",
+      "slug": "crimson",
+      "name": "赤刃战机",
+      "manifestHash": "46d4af2b741948a7ca9629e92ca0cfc68b48d75514f61ad086ad1ae60ca9f65e"
+    },
+    {
+      "id": "azure",
+      "slug": "azure",
+      "name": "苍锋战机",
+      "manifestHash": "a2e35be00cf4fc2f6b32eea119db7effe690cf8ab79527779b9bf44deace8cc8"
+    },
+    {
+      "id": "prism",
+      "slug": "prism",
+      "name": "棱脉战机",
+      "manifestHash": "c6f4a00dfbe3bffe4c96d886bc99ea72aa984f26aff67ed3aa5c8a511cc3ea58"
+    },
+    {
+      "id": "scarlet",
+      "slug": "scarlet",
+      "name": "赤曜战机",
+      "manifestHash": "647a32292683ac945530664ee4830848642196b70759127c4faeebe72f1dfb3c"
+    },
+    {
+      "id": "verdure",
+      "slug": "verdure",
+      "name": "翠核战机",
+      "manifestHash": "100b9c8c3eaf835f1e7f15070e3e14cbc0a27656b24ce9760d36eb7c24ae49f5"
+    },
+    {
+      "id": "bastion",
+      "slug": "bastion",
+      "name": "苍垒战机",
+      "manifestHash": "45355f4d2a7e802723d9c0ba4b8488078a2884848d6d36f8fb629f32627a5056"
+    },
+    {
+      "id": "wraith",
+      "slug": "wraith",
+      "name": "白矛战机",
+      "manifestHash": "72c675f600d58f395d033a22274860282fa5f2010604e50fb32a59c2eab05239"
+    },
+    {
+      "id": "auric",
+      "slug": "auric",
+      "name": "曜金战机",
+      "manifestHash": "cb9ce0178301bed9967ad0404da23565c5deb7d10dbdbdb3d0af36de6a36d76e"
+    }
+  ],
+  "localRevisions": [
+    {
+      "id": "kestrel-volume-v1",
+      "slug": "kestrel",
+      "date": "2026-09-29",
+      "baseManifestHash": "99d7ebbf0985f2fb724a7a47dde5599399a65c0a16fd41202e9b2072fb083804",
+      "manifestHash": "d7421c606512f7d3043c3e9f5b1cb3e5c477ff6c51ba07d65e45d16fcfec144a",
+      "authoring": "art/kestrel-volume/kestrel-volume.blend"
+    },
+    {
+      "id": "verdant-volume-v1",
+      "slug": "verdant",
+      "date": "2026-09-29",
+      "baseManifestHash": "3cad5b00592c314507daed192c61582906a3037b5424be1ef9937f3654ca3c53",
+      "manifestHash": "eb20814486964b48bd23bb1375540586a3653be8f6ea304b9860d6e4ae3478cc",
+      "authoring": "art/fleet-volume/verdant/verdant-volume.blend"
+    },
+    {
+      "id": "crimson-volume-v1",
+      "slug": "crimson",
+      "date": "2026-09-29",
+      "baseManifestHash": "46d4af2b741948a7ca9629e92ca0cfc68b48d75514f61ad086ad1ae60ca9f65e",
+      "manifestHash": "5539b8f46f9fbea158647076f9334924b9fbf7a116b8911313e3e054e9bd5e30",
+      "authoring": "art/fleet-volume/crimson/crimson-volume.blend"
+    },
+    {
+      "id": "azure-volume-v1",
+      "slug": "azure",
+      "date": "2026-09-29",
+      "baseManifestHash": "a2e35be00cf4fc2f6b32eea119db7effe690cf8ab79527779b9bf44deace8cc8",
+      "manifestHash": "f7a23da1d6a0d22048568b97d9bea2b9b4747b3a14e52e2826ebfbae0a2b7708",
+      "authoring": "art/fleet-volume/azure/azure-volume.blend"
+    },
+    {
+      "id": "prism-volume-v1",
+      "slug": "prism",
+      "date": "2026-09-29",
+      "baseManifestHash": "c6f4a00dfbe3bffe4c96d886bc99ea72aa984f26aff67ed3aa5c8a511cc3ea58",
+      "manifestHash": "5665cfde84ec0428bbab8d6161fe45e199ea0d2380751a495904278daab8888f",
+      "authoring": "art/fleet-volume/prism/prism-volume.blend"
+    },
+    {
+      "id": "scarlet-volume-v1",
+      "slug": "scarlet",
+      "date": "2026-09-29",
+      "baseManifestHash": "647a32292683ac945530664ee4830848642196b70759127c4faeebe72f1dfb3c",
+      "manifestHash": "a587967b3d834dadecae74b53a2bfe85e18ac3d0bd060b62b274fa6501463bfd",
+      "authoring": "art/fleet-volume/scarlet/scarlet-volume.blend"
+    },
+    {
+      "id": "verdure-volume-v1",
+      "slug": "verdure",
+      "date": "2026-09-29",
+      "baseManifestHash": "100b9c8c3eaf835f1e7f15070e3e14cbc0a27656b24ce9760d36eb7c24ae49f5",
+      "manifestHash": "fd4bb626feb317da21a834c9eaab118220e2cfc1b3b300d1234e6c95e894fe05",
+      "authoring": "art/fleet-volume/verdure/verdure-volume.blend"
+    },
+    {
+      "id": "bastion-volume-v1",
+      "slug": "bastion",
+      "date": "2026-09-29",
+      "baseManifestHash": "45355f4d2a7e802723d9c0ba4b8488078a2884848d6d36f8fb629f32627a5056",
+      "manifestHash": "bb1fe296811dfb030e04915e2b67950c927aa2dccc6cab553e952a271f2f5ffa",
+      "authoring": "art/fleet-volume/bastion/bastion-volume.blend"
+    },
+    {
+      "id": "wraith-volume-v1",
+      "slug": "wraith",
+      "date": "2026-09-29",
+      "baseManifestHash": "72c675f600d58f395d033a22274860282fa5f2010604e50fb32a59c2eab05239",
+      "manifestHash": "da6ef98d873b115aa59b550c8c865874fa311babfcd0528941784c85f4967775",
+      "authoring": "art/fleet-volume/wraith/wraith-volume.blend"
+    },
+    {
+      "id": "auric-volume-v1",
+      "slug": "auric",
+      "date": "2026-09-29",
+      "baseManifestHash": "cb9ce0178301bed9967ad0404da23565c5deb7d10dbdbdb3d0af36de6a36d76e",
+      "manifestHash": "68141858abfadd07281b8019546cd5282f063f98811e27e2293ca72735fde078",
+      "authoring": "art/fleet-volume/auric/auric-volume.blend"
+    }
+  ]
+}

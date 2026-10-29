@@ -1,0 +1,10 @@
+.lobby-guide{position:fixed;inset:0;z-index:12000;pointer-events:none;color:#fff;font-family:inherit}
+.lobby-guide[hidden]{display:none}
+.guide-ring{position:absolute;border:2px solid #f6df83;border-radius:9px;filter:drop-shadow(0 0 5px #e8be42);box-sizing:border-box}
+.is-strong .guide-ring{filter:none;box-shadow:0 0 0 200vmax #020b13aa,0 0 10px #e8be42}
+.guide-hand{position:absolute;font-size:36px;line-height:1;transform:translateX(-50%) rotate(180deg);filter:drop-shadow(0 2px 2px #001);animation:guide-tap 1s ease-in-out infinite}
+.guide-caption{position:absolute;display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}
+.guide-hand.points-up{transform:translateX(-50%);animation-name:guide-tap-up}
+@keyframes guide-tap{50%{transform:translate(-50%,6px) rotate(180deg)}}
+@keyframes guide-tap-up{50%{transform:translate(-50%,-6px)}}
+@media(prefers-reduced-motion:reduce){.guide-hand{animation:none}}

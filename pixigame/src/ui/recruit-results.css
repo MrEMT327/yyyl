@@ -1,0 +1,115 @@
+/* Recruitment results occupy the complete game frame, above its HUD and footer. */
+#gui-casual-lobby .pl-modal-host:has(.recruit-result-dialog) {z-index:100!important}
+#gui-casual-lobby .pl-modal-backdrop.recruit-result-backdrop {
+  inset:0;padding:0!important;background:#0a1728;backdrop-filter:none;
+}
+#gui-casual-lobby .pl-modal.recruit-result-dialog {
+  --rr-ink:#f2f7ff;--rr-muted:#bbcede;--rr-line:#6d8aa0;
+  position:relative;isolation:isolate;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  width:100%!important;height:100%!important;min-width:0;min-height:0!important;
+  max-width:none!important;max-height:none!important;margin:0;padding:0!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 32%,#10273bb8,#0b192bea 85%),var(--project-logistics-image) center/cover no-repeat!important;
+  color:var(--rr-ink);transform:none;animation:none;
+}
+#gui-casual-lobby .recruit-result-dialog::before,
+#gui-casual-lobby .recruit-result-dialog::after {content:none!important}
+#gui-casual-lobby .recruit-result-dialog>.recruit-result-heading {
+  position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-height:76px;margin:0;padding:calc(14px + var(--lobby-safe-top,0px)) 18px 14px!important;
+  border:0;border-bottom:1px solid #718da34d;background:#0b1b2d99;box-shadow:none;
+}
+#gui-casual-lobby .recruit-result-dialog>.recruit-result-heading h2 {
+  flex:1;margin:0;padding:0;color:var(--rr-ink);font:400 clamp(23px,6.2cqw,32px)/1.25 PsdPopup,"Microsoft YaHei",sans-serif;
+  letter-spacing:1px;text-shadow:0 2px #081a2b;text-align:left;-webkit-text-stroke:0;
+}
+#gui-casual-lobby .recruit-result-dialog .pl-close {
+  position:static;display:grid;place-items:center;flex:none;width:44px;height:44px;min-width:44px;min-height:44px;
+  padding:0;border:1px solid #7895ac80;border-radius:0;background:#1e344b;box-shadow:none;clip-path:none;
+  color:#d2e5f4;font:300 32px/1 system-ui,sans-serif;text-shadow:none;transform:none;cursor:pointer;
+}
+#gui-casual-lobby .recruit-result-dialog .pl-close::before,
+#gui-casual-lobby .recruit-result-dialog .pl-close::after {content:none}
+#gui-casual-lobby .recruit-result-heading .reward-reveal-skip {
+  position:static;flex:none;min-height:44px;margin:0;padding:0 8px;
+  border:0;background:transparent;color:var(--rr-muted);font-size:13px;
+}
+#gui-casual-lobby .recruit-result-dialog>.recruit-result-scroll {
+  container-type:size;min-height:0;min-width:0;margin:0;padding:22px 18px 26px;
+  overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:transparent;box-shadow:none;
+  scrollbar-width:thin;scrollbar-gutter:auto;scrollbar-color:#7593ae transparent;
+}
+#gui-casual-lobby .recruit-result-dialog.is-single>.recruit-result-scroll {display:grid;place-items:center}
+#gui-casual-lobby .recruit-result-dialog :is(.pl-card-results,.pl-rewards-grid) {
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px;
+  width:100%;max-width:650px;margin:0 auto;padding:0;align-items:start;
+}
+#gui-casual-lobby .recruit-result-dialog.is-single :is(.pl-card-results,.pl-rewards-grid) {
+  display:block;width:min(82cqw,calc((100cqh - 65px) * .5555555556),360px);max-width:100%;margin:auto;
+}
+#gui-casual-lobby .recruit-result-dialog .pl-card-result {min-width:0;width:100%;perspective:1000px}
+#gui-casual-lobby .recruit-result-dialog .pl-card-result>.pilot-holo-card {width:100%;max-width:none;margin:0}
+#gui-casual-lobby .recruit-result-dialog .pl-card-result>p {
+  min-height:32px;margin:10px 0 0;padding:0 2px;color:var(--rr-muted);text-align:center;
+  font:500 12px/1.5 "PingFang SC","Microsoft YaHei",sans-serif;letter-spacing:0;text-shadow:none;
+}
+#gui-casual-lobby .recruit-result-dialog.is-single .pl-card-result>p {font-size:14px;line-height:1.5}
+#gui-casual-lobby .recruit-result-dialog .pl-reward-item {
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  width:100%;min-height:145px;padding:12px 8px;aspect-ratio:auto;border:1px solid var(--quality,#6d8aa0);
+  border-radius:2px;background:linear-gradient(145deg,#3c526e,#192d43);box-shadow:inset 0 0 0 2px #142436;
+}
+#gui-casual-lobby .recruit-result-dialog .pl-reward-item>:is(.pl-model-thumb,.pl-icon) {
+  width:86%;height:80px;margin:0;padding:0;object-fit:contain;flex:none;
+}
+#gui-casual-lobby .recruit-result-dialog .pl-reward-item>b {margin:0;max-width:100%;font-size:14px;line-height:1.4;color:var(--rr-ink);text-shadow:none;text-align:center}
+#gui-casual-lobby .recruit-result-dialog .pl-reward-item>span {color:#ffdf98;font-size:19px;line-height:1.3}
+#gui-casual-lobby .recruit-result-dialog.is-single .pl-reward-item {min-height:330px;padding:28px 16px;gap:12px}
+#gui-casual-lobby .recruit-result-dialog.is-single .pl-reward-item>:is(.pl-model-thumb,.pl-icon) {height:180px}
+#gui-casual-lobby .recruit-result-dialog.is-single .pl-reward-item>b {font-size:20px}
+#gui-casual-lobby .recruit-result-dialog.is-single .pl-reward-item>span {font-size:28px}
+/* Mixed pilot/material pulls share both tracks: a 5:7 face and its status line. */
+#gui-casual-lobby .recruit-result-dialog .rr-result-slot {
+  display:grid;grid-template-rows:auto 36px;gap:10px;min-width:0;align-self:start;
+}
+#gui-casual-lobby .recruit-result-dialog .rr-result-slot>.rr-result-note {
+  display:block;min-height:0;height:36px;margin:0;padding:0 2px;
+  color:var(--rr-muted);font:500 12px/18px "PingFang SC","Microsoft YaHei",sans-serif;text-align:center;
+}
+#gui-casual-lobby .recruit-result-dialog .rr-result-slot>.pl-reward-item {
+  display:grid;grid-template-rows:minmax(0,1fr) auto auto;justify-items:center;align-items:center;
+  box-sizing:border-box;aspect-ratio:5/7;min-height:0;width:100%;padding:18px 12px;gap:6px;
+  border-radius:8px;border-color:#7f99b2;
+  background:radial-gradient(ellipse at 50% 35%,#54749455,transparent 70%),linear-gradient(145deg,#2b435c,#162a40);
+}
+#gui-casual-lobby .recruit-result-dialog .rr-result-slot>.pl-reward-item>:is(.pl-model-thumb,.pl-icon) {
+  width:85%;height:100%;min-height:0;max-height:160px;margin:0;object-fit:contain;
+}
+#gui-casual-lobby .recruit-result-dialog .rr-result-slot>.pl-reward-item>b {font-size:14px;line-height:20px}
+#gui-casual-lobby .recruit-result-dialog .rr-result-slot>.pl-reward-item>span {font-size:23px;line-height:28px}
+#gui-casual-lobby .recruit-result-dialog>.recruit-result-actions {
+  display:flex;justify-content:center;padding:14px 20px calc(16px + var(--lobby-safe-bottom,0px));
+  border-top:1px solid #718da34d;background:#0c1c2ee6;
+}
+#gui-casual-lobby .recruit-result-dialog .recruit-result-confirm {
+  position:relative;isolation:isolate;display:grid;place-items:center;width:min(100%,340px);min-height:52px;
+  margin:0;padding:10px 16px;border:0!important;border-radius:0!important;background:none!important;
+  box-shadow:none!important;clip-path:none!important;color:#f4fbff!important;
+  font:400 clamp(18px,4.8cqw,25px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif!important;
+  letter-spacing:1px;text-shadow:0 2px #153650;transform:none;cursor:pointer;
+}
+#gui-casual-lobby .recruit-result-dialog .recruit-result-confirm::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;
+  border-image:url('/art/psd-choice-v1/reroll.png') 17 fill / 10px stretch;
+}
+#gui-casual-lobby .recruit-result-dialog .recruit-result-confirm::after {content:none}
+#gui-casual-lobby .recruit-result-dialog button:focus-visible {outline:2px solid #a4ecff;outline-offset:-3px}
+#gui-casual-lobby .recruit-result-dialog .recruit-result-confirm:active {translate:0 1px}
+@container(max-width:350px) {
+  #gui-casual-lobby .recruit-result-dialog>.recruit-result-scroll {padding:18px 12px 24px}
+  #gui-casual-lobby .recruit-result-dialog :is(.pl-card-results,.pl-rewards-grid) {gap:18px 10px}
+  #gui-casual-lobby .recruit-result-dialog .pl-card-result>p {font-size:11px}
+  #gui-casual-lobby .recruit-result-dialog .pl-reward-item>b {font-size:12px}
+  #gui-casual-lobby .recruit-result-dialog.is-single .pl-reward-item {min-height:0;padding:18px 12px}
+  #gui-casual-lobby .recruit-result-dialog.is-single .pl-reward-item>:is(.pl-model-thumb,.pl-icon) {height:130px}
+}

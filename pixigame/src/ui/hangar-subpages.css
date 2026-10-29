@@ -1,0 +1,108 @@
+/* Compact hangar subpages: one subject, one action, an image-first collection. */
+.peripheral-lobby.reference-layout :is(.ref-catalog,.ref-workshop){--sub-cut:polygon(5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px),0 5px);background:#0b1c2b;color:#eef6ff;overflow:hidden}
+.peripheral-lobby.reference-layout :is(.ref-catalog-list-heading,.ref-workshop .ref-divider){min-height:0;background:#142c40;border-top:1px solid #50738c;border-bottom:2px solid #07131e;box-shadow:none;color:#eef6ff}
+.peripheral-lobby.reference-layout .ref-catalog-list-heading h2{font-size:16px;letter-spacing:0}
+.peripheral-lobby.reference-layout :is(.ref-catalog-scroll,.ref-workshop .ref-warehouse){padding:10px 9px;background:#0b1c2b;background-image:none;scrollbar-color:#476d88 transparent;overscroll-behavior:contain}
+.peripheral-lobby.reference-layout :is(.ref-workshop-tabs .pl-button,.ref-catalog-bottom-tabs>.ref-catalog-button,.ref-combine,.ref-yellow,.ref-small,.ref-back,.ref-catalog-primary,.ref-catalog-mini-upgrade,.ref-catalog-filter,.ref-catalog-back){border:2px solid #06121d!important;border-radius:3px!important;clip-path:var(--sub-cut);background:#17354d;color:#eaf6ff!important;box-shadow:inset 0 0 0 1px #628aa5,inset 0 -3px #0b2032;font-weight:800}
+.peripheral-lobby.reference-layout :is(.ref-workshop-tabs .pl-button.is-active,.ref-catalog-bottom-tabs>.ref-catalog-button.is-active,.ref-combine,.ref-yellow,.ref-catalog-primary,.ref-catalog-filter){background:#ffdb32;color:#102030!important;box-shadow:inset 0 0 0 1px #ffe980,inset 0 -3px #c59b24}
+.peripheral-lobby.reference-layout:not(.lobby-theme) .pl-body :is(.ref-catalog,.ref-workshop) button:disabled{background:#294052!important;color:#adbfce!important;box-shadow:inset 0 0 0 1px #536f85;filter:none;opacity:1}
+.peripheral-lobby.reference-layout :is(.ref-catalog,.ref-workshop) button:focus-visible{outline:2px solid #ffe883;outline-offset:-5px}
+.peripheral-lobby.reference-layout :is(.ref-catalog-bottom,.ref-workshop-footer){background:#102536;border-top:2px solid #50738c;box-shadow:none;padding-inline:9px;gap:8px}
+.peripheral-lobby.reference-layout :is(.ref-catalog-back,.ref-back){width:46px;height:46px;flex:none;transform:none}
+.peripheral-lobby.reference-layout :is(.ref-catalog-back,.ref-back)>.pl-icon{width:27px;height:27px;transform:rotate(180deg);filter:brightness(0) invert(1)}
+.peripheral-lobby.reference-layout :is(.ref-catalog,.ref-workshop) .card-selection>em{display:none}
+.peripheral-lobby.reference-layout :is(.ref-catalog,.ref-workshop) .card-selection{color:#ffe33a}
+
+/* Fixed showcase. The collection and skill description scroll independently. */
+.peripheral-lobby.reference-layout .ref-catalog{grid-template-rows:minmax(250px,50%) 38px minmax(0,1fr) calc(62px + var(--ref-catalog-bottom-space))}
+.peripheral-lobby.reference-layout .ref-catalog-hero{background:#20344c url('/art/equipment-comic-v1/hangar.png') center/cover no-repeat;border:0;border-bottom:2px solid #06131f}
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-hero{background-image:url('/art/recruit-comic-v1/hangar.png');background-position:center 53%}
+.peripheral-lobby.reference-layout .ref-catalog-identity{inset:12px 14px auto;z-index:3}
+.peripheral-lobby.reference-layout .ref-catalog-identity h1{width:max-content;max-width:100%;margin:0;padding:3px 7px;background:#0a1b2cc9;border:0;border-radius:2px;font-size:clamp(17px,5cqw,23px);line-height:1.3;color:#fff;letter-spacing:0}
+.peripheral-lobby.reference-layout .ref-catalog-identity p{width:max-content;margin:3px 0 0;padding:2px 7px;background:#0a1b2cb8;font-size:11px;line-height:17px;color:#e5effa}
+.peripheral-lobby.reference-layout .ref-catalog-identity>.ref-catalog-stars{width:95px;height:19px;margin:3px 0 0;padding:1px 4px;background:#0a1b2cb8}
+.peripheral-lobby.reference-layout .ref-catalog-aircraft-model{inset:64px -5% 63px;transform:none;z-index:2}
+.peripheral-lobby.reference-layout .ref-catalog-weapon-art{inset:60px 20% 63px;transform:none}
+.peripheral-lobby.reference-layout .ref-catalog-portrait{inset:32px 8% 48px;height:calc(100% - 80px);width:84%;object-fit:contain;object-position:center bottom;filter:drop-shadow(2px 3px 1px #06152355)}
+.peripheral-lobby.reference-layout .ref-catalog[data-catalog-mode="skills"] .ref-catalog-aircraft-model{bottom:18px}
+.peripheral-lobby.reference-layout .ref-catalog[data-catalog-mode="skills"] .ref-catalog-portrait{bottom:14px;height:calc(100% - 46px)}
+.peripheral-lobby.reference-layout .ref-catalog-hero-actions{inset:auto 0 12px;display:flex;justify-content:center;gap:8px;height:48px;pointer-events:none}
+.peripheral-lobby.reference-layout .ref-catalog-hero-actions :is(.ref-catalog-primary,.ref-catalog-mini-upgrade){position:static;flex:0 1 160px;width:160px;min-width:0;min-height:0;height:48px;padding:3px 10px;display:flex;flex-direction:column;justify-content:center;gap:1px;pointer-events:auto}
+.peripheral-lobby.reference-layout .ref-catalog-primary strong{font-size:18px;line-height:21px}
+.peripheral-lobby.reference-layout .ref-catalog-primary small{font-size:10px;line-height:13px;color:inherit}
+.peripheral-lobby.reference-layout .ref-catalog-cost{gap:9px}
+.peripheral-lobby.reference-layout .ref-catalog-cost .pl-icon{width:12px;height:12px}
+.peripheral-lobby.reference-layout:not(.lobby-theme) .pl-body .ref-catalog .ref-catalog-primary.is-current:disabled{background:#278c78!important;color:#f0fff9!important;box-shadow:inset 0 0 0 1px #6ad2ae,inset 0 -3px #176654}
+.peripheral-lobby.reference-layout .ref-catalog-filter{inset:3px auto 3px 8px;min-width:64px;padding:0 6px;font-size:11px}
+.peripheral-lobby.reference-layout .ref-catalog-filter .pl-icon{width:15px;height:15px;filter:brightness(0)}
+.peripheral-lobby.reference-layout .ref-catalog-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 6px}
+.peripheral-lobby.reference-layout .ref-catalog-card-wrap{margin:0;padding:0;background:none}
+.peripheral-lobby.reference-layout .ref-catalog-card{aspect-ratio:.91;width:100%;height:auto;border:0!important;border-radius:3px!important;padding:0;background:#07111c;clip-path:var(--sub-cut)}
+.peripheral-lobby.reference-layout .ref-catalog-card::before{inset:2px;border:2px solid var(--ref-quality);background:color-mix(in srgb,var(--ref-quality) 30%,#102235);box-shadow:inset 0 0 0 1px #06121f}
+.peripheral-lobby.reference-layout .ref-catalog-card-art{inset:6px 5px 17px}
+.peripheral-lobby.reference-layout .ref-catalog-aircraft .ref-catalog-card-art{inset:5px}
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-card-art{inset:5px 5px 18px}
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-card-art img{object-position:center 20%}
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-card>.ref-catalog-stars{bottom:3px;height:15px;gap:0;background:none}
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-card>.ref-catalog-stars i{width:14px;height:14px}
+.peripheral-lobby.reference-layout .ref-catalog-equipped{top:5px;left:5px;border:0;padding:0;background:#0715229e}
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-equipped{top:5px;left:5px;right:auto;bottom:auto}
+.peripheral-lobby.reference-layout .ref-catalog-card-lock{right:6px;top:6px}
+.peripheral-lobby.reference-layout .ref-catalog-bottom{padding-top:4px;justify-content:space-between}
+.peripheral-lobby.reference-layout .ref-catalog-bottom-tabs{flex:0 0 auto;gap:5px}
+.peripheral-lobby.reference-layout .ref-catalog-bottom-tabs>.ref-catalog-button{width:62px;flex:none;flex-direction:column;gap:1px}
+.peripheral-lobby.reference-layout .ref-catalog-bottom-tabs>.ref-catalog-button>span{font-size:11px;line-height:14px}
+.peripheral-lobby.reference-layout .ref-catalog-bottom-tabs>.ref-catalog-button>.pl-icon{width:23px;height:23px;opacity:1;filter:brightness(0) invert(1)}
+.peripheral-lobby.reference-layout .ref-catalog-bottom-tabs>.ref-catalog-button.is-active>.pl-icon{filter:brightness(0)}
+
+/* Each skill appears once; optional growth rules stay collapsed. */
+.peripheral-lobby.reference-layout .ref-catalog-scroll.is-skills{padding:12px}
+.peripheral-lobby.reference-layout .ref-catalog-rule{min-height:76px;align-items:center;gap:10px;padding:12px;margin-bottom:10px;background:#183148;border:1px solid #45657d;border-radius:4px;box-shadow:none;color:#e8f1fa}
+.peripheral-lobby.reference-layout .ref-catalog-rule>span{width:42px;height:42px;background:#102738;border:1px solid #557b97;border-radius:4px;opacity:1;box-shadow:none}
+.peripheral-lobby.reference-layout .ref-catalog-rule>span>img{width:100%;height:100%;object-fit:contain}
+.peripheral-lobby.reference-layout .ref-catalog-rule h3{font-size:14px;line-height:20px;color:#ffe576;margin:0 0 4px}
+.peripheral-lobby.reference-layout .ref-catalog-rule p{font-size:12px;line-height:1.6;color:#ccdbe8}
+.peripheral-lobby.reference-layout .ref-catalog-rule .catalog-next-star{margin-top:7px;color:#90acc2;font-size:11px}
+.catalog-skill-details{font-size:11px;line-height:1.65;color:#99b1c5;padding:4px 2px}
+.catalog-skill-details summary{cursor:pointer;padding:5px 0;width:max-content}
+.catalog-skill-details p{margin:5px 0!important}
+
+/* Workshop removes the guide and dialogue, keeping a single before/after comparison. */
+.peripheral-lobby.reference-layout .ref-workshop{grid-template-rows:44px minmax(240px,39%) 40px minmax(0,1fr) calc(66px + var(--workshop-bottom-space));overflow:hidden}
+.peripheral-lobby.reference-layout .ref-workshop-tabs{gap:7px;padding:3px 9px;background:#102536;box-shadow:none;border-bottom:1px solid #53738b}
+.peripheral-lobby.reference-layout .ref-workshop-tabs .pl-button{min-height:0;padding:3px 8px;font-size:16px;line-height:22px;letter-spacing:0}
+.peripheral-lobby.reference-layout .ref-workshop .workshop-scene{margin:0;border:0;border-bottom:2px solid #071421;border-radius:0;box-shadow:none;background:#23394f url('/art/equipment-comic-v1/hangar.png') center/cover no-repeat}
+.peripheral-lobby.reference-layout .workshop-scene-title{inset:12px 14px auto;min-height:0;padding:0;background:none;border:0;display:block}
+.peripheral-lobby.reference-layout .workshop-scene-title h1{position:static;width:max-content;max-width:100%;margin:0;padding:3px 7px;background:#0a1b2ccc;border:0;border-radius:2px;color:#fff;font-size:20px;line-height:26px}
+.peripheral-lobby.reference-layout .workshop-recipe-stack{top:58px;bottom:72px;left:12%;width:76%;display:grid;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"current arrow result";align-items:center;gap:4px}
+.peripheral-lobby.reference-layout .workshop-scene-slot{grid-area:current;width:100%;max-width:150px;max-height:160px;height:100%;min-height:0;grid-template-rows:17px minmax(0,1fr) 20px;padding:5px;background:#12334cec;border:2px solid #071321;border-radius:4px;clip-path:var(--sub-cut);box-shadow:inset 0 0 0 1px #658daa}
+.peripheral-lobby.reference-layout .workshop-scene-slot.is-result{grid-area:result;background:#2a3e43ec;box-shadow:inset 0 0 0 2px #ffdc3f}
+.peripheral-lobby.reference-layout .workshop-scene-slot>small{font-size:11px;line-height:17px;color:#bcd0df}
+.peripheral-lobby.reference-layout .workshop-scene-slot>span{font-size:12px;line-height:20px;color:#fff}
+.peripheral-lobby.reference-layout .workshop-scene-slot>img{transform:none;min-height:0}
+.peripheral-lobby.reference-layout .workshop-scene-arrow{grid-area:arrow;position:relative;display:block;width:30px;height:30px;filter:none;font-size:0;line-height:1}
+.peripheral-lobby.reference-layout .workshop-scene-arrow .pl-icon{width:30px;height:30px;transform:none;filter:brightness(0) invert(1)}
+.peripheral-lobby.reference-layout .workshop-readout{inset:auto 14px 12px;min-height:0;max-height:58px;padding:7px 9px;background:#0a1c2cdb;border:0;border-radius:3px;box-shadow:none;text-align:center;font-size:12px;line-height:18px;color:#eff5fc;overscroll-behavior:contain}
+.peripheral-lobby.reference-layout .workshop-readout>small{display:block;font-size:11px;line-height:17px;color:#f2cb87;margin-top:2px}
+.peripheral-lobby.reference-layout .ref-workshop .ref-divider{min-height:0;padding:3px 8px;gap:6px}
+.peripheral-lobby.reference-layout .ref-workshop .ref-divider>button{height:31px;min-height:0!important;min-width:60px;padding:0 6px!important;font-size:11px!important;border-radius:3px!important;clip-path:var(--sub-cut)}
+.peripheral-lobby.reference-layout .ref-workshop .ref-divider>strong{font-size:16px}
+.peripheral-lobby.reference-layout .ref-workshop .ref-item-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 6px}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card{aspect-ratio:.86}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-inner{grid-template-rows:minmax(0,1fr) 15px 16px;border-width:2px;box-shadow:none}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-name{display:none}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-stars{height:14px}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-level{font-size:10px;line-height:16px}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-equipped{font-size:8px;top:6px;left:6px;line-height:11px}
+.peripheral-lobby.reference-layout .ref-workshop-footer .ref-combine{height:54px;min-height:0;flex:0 1 210px;width:210px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:3px 8px;font-size:19px;line-height:21px;letter-spacing:0;margin-inline:auto}
+.workshop-cost{display:flex;justify-content:center;gap:9px;font-size:10px;line-height:14px;font-weight:700}
+.workshop-cost>span{display:flex;align-items:center;gap:3px;white-space:nowrap}
+.workshop-cost .pl-icon{width:13px;height:13px}
+@media(max-height:660px){
+ .peripheral-lobby.reference-layout .ref-catalog{grid-template-rows:minmax(240px,49%) 36px minmax(0,1fr) calc(58px + var(--ref-catalog-bottom-space))}
+ .peripheral-lobby.reference-layout .ref-catalog-aircraft-model{inset:61px -8% 57px}
+ .peripheral-lobby.reference-layout .ref-workshop{grid-template-rows:42px 240px 38px minmax(0,1fr) calc(62px + var(--workshop-bottom-space))}
+ .peripheral-lobby.reference-layout .workshop-recipe-stack{top:51px;bottom:70px;left:11%;width:78%}
+}
+.peripheral-lobby.reference-layout .workshop-scene-arrow::before{content:"";position:absolute;left:3px;top:14px;width:23px;height:3px;background:#fff}
+.peripheral-lobby.reference-layout .workshop-scene-arrow::after{content:"";position:absolute;right:4px;top:9px;width:10px;height:10px;border-top:3px solid #fff;border-right:3px solid #fff;transform:rotate(45deg)}

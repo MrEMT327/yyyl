@@ -1,0 +1,128 @@
+{
+  "schema": 1,
+  "source": "src/three/aircraft/v34/catalog.json + current premium finish + equipment style",
+  "generator": "tools/bake-aircraft-ui.js",
+  "generatedAt": "2026-10-19T04:02:51.500Z",
+  "renderSourceHashes": {
+    "src/fixed-parts/mounts.js": "4d733a82e265031735c592424e6b7456e0a8a6334087eda5177a27b16a9b90f8",
+    "src/three/aircraft/aircraft-details.js": "f60c98003791bb3f1d110e57bfc5eb29c37d7da9af78e0d3eb39cfbbdbd420c7",
+    "src/three/aircraft/kestrel-equipment.js": "54e183ecf998a76bfb3f3f461fa5d2afc348dd3e2faa57a3dacbcdf9517c7b05",
+    "src/three/aircraft/premium-finish.js": "deb83a2f81db5c1e78153f9af83d70fa40d83bfe669f3e408e231e9e0b6be725",
+    "src/three/aircraft/v34/aircraft/ConfigFighter.js": "87a2cfee721bde7d318d2e7775044663c36f5ae7d841569dc40922938eb60a72",
+    "src/ui/equipment-aircraft-style.js": "a4f05532d6e536313a8829c176042b110f531f36ac67b6bdd589b933cca56f1f",
+    "src/ui/peripheral-models.js": "80eddab6e55e9226caddbe5f8a94d8104366f57d548939e2ac8be5f6b64ff4e6",
+    "src/ui/preview-batcher.js": "2faae4861afacc1a420c527f577c8f3f5604e0961cdb4273650d715a9c82bb59"
+  },
+  "entries": {
+    "pilot-01": {
+      "slug": "kestrel",
+      "modelVersion": "1.3.1",
+      "manifestHash": "d7421c606512f7d3043c3e9f5b1cb3e5c477ff6c51ba07d65e45d16fcfec144a",
+      "card": "pilot-01.webp",
+      "preview": "pilot-01-preview.webp",
+      "hangar": "pilot-01-hangar.webp",
+      "cardBytes": 7140,
+      "previewBytes": 22436,
+      "hangarBytes": 86466
+    },
+    "pilot-02": {
+      "slug": "verdant",
+      "modelVersion": "1.0.1",
+      "manifestHash": "eb20814486964b48bd23bb1375540586a3653be8f6ea304b9860d6e4ae3478cc",
+      "card": "pilot-02.webp",
+      "preview": "pilot-02-preview.webp",
+      "hangar": "pilot-02-hangar.webp",
+      "cardBytes": 7208,
+      "previewBytes": 22158,
+      "hangarBytes": 86186
+    },
+    "pilot-03": {
+      "slug": "crimson",
+      "modelVersion": "1.0.1",
+      "manifestHash": "5539b8f46f9fbea158647076f9334924b9fbf7a116b8911313e3e054e9bd5e30",
+      "card": "pilot-03.webp",
+      "preview": "pilot-03-preview.webp",
+      "hangar": "pilot-03-hangar.webp",
+      "cardBytes": 6348,
+      "previewBytes": 18744,
+      "hangarBytes": 83390
+    },
+    "pilot-04": {
+      "slug": "azure",
+      "modelVersion": "1.0.1",
+      "manifestHash": "f7a23da1d6a0d22048568b97d9bea2b9b4747b3a14e52e2826ebfbae0a2b7708",
+      "card": "pilot-04.webp",
+      "preview": "pilot-04-preview.webp",
+      "hangar": "pilot-04-hangar.webp",
+      "cardBytes": 6326,
+      "previewBytes": 18992,
+      "hangarBytes": 83000
+    },
+    "pilot-05": {
+      "slug": "wraith",
+      "modelVersion": "2.0.1",
+      "manifestHash": "da6ef98d873b115aa59b550c8c865874fa311babfcd0528941784c85f4967775",
+      "card": "pilot-05.webp",
+      "preview": "pilot-05-preview.webp",
+      "hangar": "pilot-05-hangar.webp",
+      "cardBytes": 6368,
+      "previewBytes": 19074,
+      "hangarBytes": 80682
+    },
+    "pilot-06": {
+      "slug": "scarlet",
+      "modelVersion": "2.0.1",
+      "manifestHash": "a587967b3d834dadecae74b53a2bfe85e18ac3d0bd060b62b274fa6501463bfd",
+      "card": "pilot-06.webp",
+      "preview": "pilot-06-preview.webp",
+      "hangar": "pilot-06-hangar.webp",
+      "cardBytes": 9126,
+      "previewBytes": 28304,
+      "hangarBytes": 81544
+    },
+    "pilot-07": {
+      "slug": "verdure",
+      "modelVersion": "2.0.1",
+      "manifestHash": "fd4bb626feb317da21a834c9eaab118220e2cfc1b3b300d1234e6c95e894fe05",
+      "card": "pilot-07.webp",
+      "preview": "pilot-07-preview.webp",
+      "hangar": "pilot-07-hangar.webp",
+      "cardBytes": 11674,
+      "previewBytes": 34954,
+      "hangarBytes": 89112
+    },
+    "pilot-08": {
+      "slug": "prism",
+      "modelVersion": "1.0.1",
+      "manifestHash": "5665cfde84ec0428bbab8d6161fe45e199ea0d2380751a495904278daab8888f",
+      "card": "pilot-08.webp",
+      "preview": "pilot-08-preview.webp",
+      "hangar": "pilot-08-hangar.webp",
+      "cardBytes": 5840,
+      "previewBytes": 16366,
+      "hangarBytes": 79070
+    },
+    "pilot-09": {
+      "slug": "bastion",
+      "modelVersion": "2.0.1",
+      "manifestHash": "bb1fe296811dfb030e04915e2b67950c927aa2dccc6cab553e952a271f2f5ffa",
+      "card": "pilot-09.webp",
+      "preview": "pilot-09-preview.webp",
+      "hangar": "pilot-09-hangar.webp",
+      "cardBytes": 7570,
+      "previewBytes": 23690,
+      "hangarBytes": 83802
+    },
+    "pilot-10": {
+      "slug": "auric",
+      "modelVersion": "2.0.1",
+      "manifestHash": "68141858abfadd07281b8019546cd5282f063f98811e27e2293ca72735fde078",
+      "card": "pilot-10.webp",
+      "preview": "pilot-10-preview.webp",
+      "hangar": "pilot-10-hangar.webp",
+      "cardBytes": 8124,
+      "previewBytes": 25208,
+      "hangarBytes": 85516
+    }
+  }
+}

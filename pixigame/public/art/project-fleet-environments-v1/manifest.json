@@ -1,0 +1,27 @@
+{
+  "method": "Built-in imagegen; background-only redesign using existing environment, actual rendered aircraft and PSD material references",
+  "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-8e4633fb-7186-4f8f-ae64-0469daacd7e7.png",
+  "runtime_file": "aircraft-hangar-v1.png",
+  "size": [
+    1309,
+    1201
+  ],
+  "mode": "RGB",
+  "sha256": "afdd9d1e2c281951cd67a0e9b0316456563fa26be40a6fe64deceb53e701f3dc",
+  "prompt": "pixigame/art/project-fleet-environments-v1/prompt-v1.txt",
+  "references": [
+    {
+      "path": "pixigame/public/art/fleet-reference-v1/aircraft-background.png",
+      "sha256": "bfd77ce0eb7b49d14a1940518bd672753b8fc4a30bf3120b651c6d7dfe336c1a"
+    },
+    {
+      "path": "pixigame/art/project-fleet-environments-v1/reference-current-aircraft.png",
+      "sha256": "5f1378de3d66c48acf6291839cc424f92c930c42e2c49c8d05861c420a1bb71d"
+    },
+    {
+      "path": "pixigame/public/art/psd-buttons-v1/button-gray.png",
+      "sha256": "1369cbefbb712c426ba47c5eb2a5fd1658e270fb95ee3c103eaa145fad2b05eb"
+    }
+  ],
+  "scope": "Aircraft catalog background; original 3D models, shaders and character identities unchanged"
+}

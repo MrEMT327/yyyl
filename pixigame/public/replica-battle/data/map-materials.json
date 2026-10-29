@@ -1,0 +1,147 @@
+{
+  "materials": {
+    "-7848691820860823769": {
+      "name": "map14_lgiht01",
+      "shader": "Effects/Particle",
+      "srcBlend": 5.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 14.0
+    },
+    "-1353217905540084118": {
+      "name": "UI_Add 2",
+      "shader": "Particles/Standard Unlit",
+      "srcBlend": 5.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 2.0,
+      "blendOpAlpha": 2.0,
+      "colMask": 14.0
+    },
+    "6268660369502694442": {
+      "name": "UIFX_yw_2",
+      "shader": "Effects/UVFlow",
+      "srcBlend": 5.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    },
+    "-7327567638638611726": {
+      "name": "UIFX_desert_ripple 6_1",
+      "shader": "ArcheroII/UI/Noise",
+      "srcBlend": 5.0,
+      "destBlend": 10.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 10.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    },
+    "-5829995645451525345": {
+      "name": "UI_Add 1",
+      "shader": "Particles/SpriteAdditiveLit",
+      "srcBlend": 5.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 14.0
+    },
+    "-3998401630207869498": {
+      "name": "UI_Add 3",
+      "shader": "Particles/SpriteAdditiveLit",
+      "srcBlend": 5.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 14.0
+    },
+    "-2981692207062110327": {
+      "name": "Ring_bland",
+      "shader": "Effects/Particle",
+      "srcBlend": 5.0,
+      "destBlend": 10.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 10.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 14.0
+    },
+    "5629412903130580183": {
+      "name": "light_1",
+      "shader": "Effects/Particle",
+      "srcBlend": 5.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 14.0
+    },
+    "-4473658946414187318": {
+      "name": "UIFX_desert_ripple 2",
+      "shader": "ArcheroII/UI/RollTwoTextures",
+      "srcBlend": 5.0,
+      "destBlend": 10.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 10.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    },
+    "7620336948534903805": {
+      "name": "UIFX_desert_ripple 14",
+      "shader": "ArcheroII/UI/Roll",
+      "srcBlend": 5.0,
+      "destBlend": 10.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 10.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    },
+    "-8140259917608375606": {
+      "name": "UIFX_S2_Bian_2",
+      "shader": "ArcheroII/UI/NoiseAdd",
+      "srcBlend": 1.0,
+      "destBlend": 1.0,
+      "srcBlendAlpha": 1.0,
+      "destBlendAlpha": 1.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    },
+    "-7504259843138580660": {
+      "name": "Sprites-Default",
+      "shader": "Sprites/Default",
+      "srcBlend": 1.0,
+      "destBlend": 10.0,
+      "srcBlendAlpha": 1.0,
+      "destBlendAlpha": 10.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    },
+    "3275837631689296338": {
+      "name": "UIFX_desert_ripple 6",
+      "shader": "ArcheroII/UI/Noise",
+      "srcBlend": 5.0,
+      "destBlend": 10.0,
+      "srcBlendAlpha": 5.0,
+      "destBlendAlpha": 10.0,
+      "blendOp": 0.0,
+      "blendOpAlpha": 0.0,
+      "colMask": 15.0
+    }
+  }
+}

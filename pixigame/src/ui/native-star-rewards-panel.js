@@ -1,0 +1,9 @@
+import { nativeItemArt } from '../replica/native-item-presentation.js';
+const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function nativeStarRewardsDialog(snapshot) {
+  const view=snapshot.starRewards,track=view?.modes?.find(row=>row.id==='easy');
+  if(!view?.native||!track)return {title:'星级奖励',content:'<p>奖励记录尚未就绪。</p>'};
+  const blocked=Boolean(snapshot.rewardPending||snapshot.rewardBusy);
+  const reward=item=>{const image=nativeItemArt(item.id);const name=String(item.name||'').replace('（离线逐张均匀分配）','');return `${image?`<img class="pl-icon" src="${escape(image)}" alt="" draggable="false">`:''}${escape(name)} ×${item.count}`;};
+  return {title:'星级奖励',content:`<section class="bc-star-rewards clarity-page"><p>累计 ${track.total}/${track.maxStars} 星 · 各档独立领取</p>${blocked?'<p role="status">请先完成当前奖励保存。</p>':''}<div class="bc-star-reward-list">${Array.from({length:Math.ceil(track.items.length/10)},(_,group)=>{const items=track.items.slice(group*10,group*10+10),next=track.items.find(row=>row.stars>track.total)||track.items.at(-1),open=items.some(row=>row.claimable)||(!track.items.some(row=>row.claimable)&&items.includes(next));return `<details class="bc-reward-group"${open?' open':''}><summary>${items[0].stars}–${items.at(-1).stars} 星${items.some(row=>row.claimable)?' · 可领取':''}</summary>${items.map(row=>`<section class="bc-star-reward ${row.claimed?'is-claimed':''}"><b>累计 ${row.stars} 星</b><span>${row.rewardItems.map(reward).join('<br>')}</span><button type="button" class="wc-button" data-action="claimStarReward" data-mode="easy" data-id="${row.id}" data-revision="${view.revision}" ${blocked||!row.claimable?'disabled':''}>${row.claimed?'已领取':!row.supported?'暂不可领取':row.claimable?'领取':'星数不足'}</button></section>`).join('')}</details>`;}).join('')}</div></section>`};
+}

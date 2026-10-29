@@ -1,0 +1,131 @@
+/* Storefront: daily goods, resource supply and exchange.
+   Recruitment owns its separate page; PSD resources and navigation own the shell. */
+#gui-casual-lobby[data-tab='shop'][data-subpage=''] .pl-header {
+  background:var(--project-header-background);box-shadow:none;
+}
+#gui-casual-lobby[data-tab='shop'] .store-reference {
+  display:grid;grid-template-rows:52px minmax(0,1fr);height:100%;min-height:0;
+  padding:0;overflow:hidden;background:#132434;color:#f0f6fd;
+  font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+  --gui-button-shadow:0 1px #061526;--gui-button-ink:#fff;
+}
+#gui-casual-lobby .store-reference :is(h1,h2,h3,p) {margin:0;letter-spacing:0;-webkit-text-stroke:0;text-shadow:none}
+#gui-casual-lobby .store-reference .store-categories {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:4px 12px;
+  background:#1d3042;border-top:1px solid #496174;border-bottom:1px solid #091825;
+  box-shadow:0 2px 6px #07121c60;z-index:1;
+}
+#gui-casual-lobby .store-reference .store-category {
+  position:relative;display:flex;align-items:center;justify-content:center;gap:5px;
+  min-width:0;min-height:44px;padding:0 4px;border:0;border-radius:0;
+  background:transparent;color:#a8bfce;box-shadow:none;transform:none;
+  font:400 clamp(13px,3.6cqw,18px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;
+  white-space:nowrap;cursor:pointer;
+}
+#gui-casual-lobby .store-reference .store-category+.store-category {border-left:1px solid #58718440}
+#gui-casual-lobby .store-reference .store-category.is-active {background:linear-gradient(transparent,#4082a82b);color:#f2fbff}
+#gui-casual-lobby .store-reference .store-category::after {content:"";position:absolute;bottom:0;left:15%;right:15%;height:2px;background:transparent}
+#gui-casual-lobby .store-reference .store-category.is-active::after {background:#8ce8f7;box-shadow:0 -2px 8px #68cde344}
+#gui-casual-lobby .store-reference .store-free-dot {flex:none;width:6px;height:6px;background:#ff6570;border-radius:50%;box-shadow:0 0 0 1px #092032}
+#gui-casual-lobby .store-reference .store-scroll {
+  position:relative;min-height:0;height:auto;padding:0;overflow-x:hidden;overflow-y:auto;
+  background:var(--project-store-background);
+  overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#5c7f9a transparent;
+}
+#gui-casual-lobby .store-reference .store-content {display:grid;gap:22px;padding:10px 12px 24px}
+#gui-casual-lobby .store-reference .store-section {display:grid;gap:10px;min-width:0;scroll-margin-top:10px}
+#gui-casual-lobby .store-reference .store-section-heading {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px;
+  padding:0 2px 5px;border-bottom:1px solid #526b7e80;
+}
+#gui-casual-lobby .store-reference .store-section-heading h2 {
+  display:flex;align-items:center;gap:8px;color:#edf5fb;
+  font:400 clamp(16px,4.2cqw,21px)/1.25 PsdPopup,"Microsoft YaHei",sans-serif;
+}
+#gui-casual-lobby .store-reference .store-section-heading h2::before {content:"";display:block;width:3px;height:15px;background:#86d9ed}
+#gui-casual-lobby .store-reference .store-section-heading small {color:#9cb4c6;font-size:11px;line-height:1.4;white-space:nowrap}
+#gui-casual-lobby .store-reference .store-offer {
+  position:relative;isolation:isolate;display:grid;align-items:center;min-width:0;
+  color:#edf5fb;
+}
+#gui-casual-lobby .store-reference .store-offer-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#gui-casual-lobby .store-reference :is(.store-offer.is-tile,.store-offer.is-featured) {
+  padding:12px;background:#273d50 url('/art/weapon-catalog-psd-v1/triangles-blue.png') right bottom/160px auto no-repeat;
+}
+#gui-casual-lobby .store-reference :is(.store-offer.is-tile,.store-offer.is-featured)::before {
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 8px 8px 12px 8px stretch;
+}
+#gui-casual-lobby .store-reference .store-offer.is-featured {
+  grid-template-columns:64px minmax(0,1fr) 104px;gap:10px;min-height:104px;
+  background-color:#2b4659;
+}
+#gui-casual-lobby .store-reference .store-offer.is-tile {
+  grid-template-columns:56px minmax(0,1fr);grid-template-rows:minmax(72px,1fr) 44px;gap:8px;
+}
+#gui-casual-lobby .store-reference .store-offer.is-tile>.store-action {grid-column:1/-1;width:100%}
+#gui-casual-lobby .store-reference .store-offer-list {
+  min-width:0;padding:0 12px;border:1px solid #526a7d;
+  background:#203548;box-shadow:inset 0 0 0 2px #142637;
+}
+#gui-casual-lobby .store-reference .store-offer.is-row {grid-template-columns:54px minmax(0,1fr) 104px;gap:10px;min-height:91px;padding:11px 0}
+#gui-casual-lobby .store-reference .store-offer.is-row+.store-offer.is-row {border-top:1px solid #68849a40}
+#gui-casual-lobby .store-reference .store-offer-art {
+  display:grid;place-items:center;min-width:0;width:100%;height:64px;
+  background:radial-gradient(ellipse,#74bcdf20,transparent 70%);
+}
+#gui-casual-lobby .store-reference .store-offer-art :is(img,svg) {
+  width:100%;height:60px;max-width:78px;object-fit:contain;margin:0;
+  filter:drop-shadow(0 3px 3px #07121c80);
+}
+#gui-casual-lobby .store-reference .store-offer-copy {min-width:0;display:grid;gap:3px;align-content:center}
+#gui-casual-lobby .store-reference .store-offer-copy h3 {color:#e0edf6;font-size:13px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+#gui-casual-lobby .store-reference .store-quantity {display:block;color:#fff3cd;font-size:23px;line-height:1.15;letter-spacing:0;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .store-reference .store-allowance {color:#a6bece;font-size:10px;line-height:1.4;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .store-reference .store-action {
+  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;gap:5px;
+  min-width:0;min-height:44px;padding:6px 8px;border:0!important;border-radius:0!important;
+  background:none!important;box-shadow:none!important;clip-path:none!important;color:#f7fbff!important;
+  font:400 clamp(12px,3.2cqw,16px)/1.15 PsdPopup,"Microsoft YaHei",sans-serif!important;
+  text-shadow:0 1px 1px #061526!important;letter-spacing:0;transform:none;cursor:pointer;
+}
+#gui-casual-lobby .store-reference .store-action.has-cost {flex-direction:column;gap:1px}
+#gui-casual-lobby .store-reference .store-action::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none!important;
+  border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch!important;
+}
+#gui-casual-lobby .store-reference .store-action.is-primary::before {border-image:url('/art/psd-choice-v1/reroll.png') 17 fill / 8px stretch!important}
+#gui-casual-lobby .store-reference .store-action::after {content:none!important}
+#gui-casual-lobby .store-reference .store-action :is(.shop-button-label,.store-cost) {color:inherit;line-height:1.15;font:inherit;text-shadow:inherit;-webkit-text-stroke:0}
+#gui-casual-lobby .store-reference .store-action.has-cost .shop-button-label {font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:10px}
+#gui-casual-lobby .store-reference .store-cost {display:inline-flex;align-items:center;gap:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .store-reference .store-cost b {font-weight:400}
+#gui-casual-lobby .store-reference .store-cost-icon {width:15px;height:15px;object-fit:contain}
+#gui-casual-lobby .store-reference .shop-icon {filter:none}
+#gui-casual-lobby .store-reference .store-action>.shop-icon {width:14px;height:14px}
+#gui-casual-lobby .store-reference .store-action:disabled {opacity:1;filter:none;color:#c0ced9!important;cursor:default}
+#gui-casual-lobby .store-reference .store-action:disabled::before {filter:grayscale(.9) brightness(.65)}
+#gui-casual-lobby .store-reference .store-action:active:not(:disabled) {translate:0 1px;filter:brightness(1.12)}
+#gui-casual-lobby .store-reference .store-notice {padding:8px;border:1px solid #ac7d4f;color:#ffdb8e;background:#3c2e22;font-size:12px;line-height:1.4}
+#gui-casual-lobby .store-reference button:focus-visible {outline:2px solid #b4f2ff;outline-offset:-2px}
+@container(max-width:350px) {
+  #gui-casual-lobby .store-reference .store-content {padding-inline:8px}
+  #gui-casual-lobby .store-reference .store-offer-grid {gap:8px}
+  #gui-casual-lobby .store-reference .store-offer.is-tile {grid-template-columns:44px minmax(0,1fr);padding:10px;gap:6px}
+  #gui-casual-lobby .store-reference .store-offer.is-featured {grid-template-columns:48px minmax(0,1fr) 90px;gap:7px;padding:10px}
+  #gui-casual-lobby .store-reference .store-offer.is-row {grid-template-columns:42px minmax(0,1fr) 90px;gap:7px}
+  #gui-casual-lobby .store-reference .store-offer-list {padding-inline:9px}
+  #gui-casual-lobby .store-reference .store-quantity {font-size:21px}
+  #gui-casual-lobby .store-reference .store-offer-art :is(img,svg) {height:50px}
+}
+/* Reserve the full PSD resource hit area above this page's controls. */
+#gui-casual-lobby[data-tab='shop'][data-subpage=''] .pl-shell {
+  --lobby-nav-gap:0px;
+  --lobby-nav-height:calc(var(--lobby-frame-width) * .201333333333 + var(--lobby-safe-bottom,0px));
+  --lobby-nav-reserve:var(--lobby-nav-height);
+  grid-template-rows:calc(var(--lobby-frame-width) * .061333333333 + 44px) minmax(0,1fr) var(--lobby-nav-reserve)!important;
+}
+#gui-casual-lobby[data-tab='shop'][data-subpage=''] .pl-shell::before {background:#15273a!important}
+#gui-casual-lobby .lobby-paper-modal :is(.shop-confirm-item-art,.shop-pool-item-art) {border:1px solid #708da7;border-radius:3px;background:linear-gradient(#3b617e,#18344d);box-shadow:inset 0 0 0 2px #172d42}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-item-art>.supply-weapon-art {width:100%;height:70px}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-cost .shop-icon {filter:none}

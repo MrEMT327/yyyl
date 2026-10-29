@@ -1,0 +1,3273 @@
+{
+  "mode": "A",
+  "sources": {
+    "public/replica-battle/data/combat.json": "b39cfc4b04e6461340338e65dc9e4eb04cd0edc71bced8f119bc02ea35c3e7c2",
+    "public/replica-battle/data/loadout-catalog.json": "074c0edb71635ea575a0f398fa5cfdac22d023c0100cb1395c661ac4de2d89e5",
+    "public/replica-battle/data/skill-selection.json": "47c701ce93714ae0bba58ed8c9959b65627a08d66e02b14d3582ceebb344233c"
+  },
+  "families": {
+    "10000101": {
+      "id": 10000101,
+      "name": "速射机炮",
+      "description": "开启速射机炮，攻击正前方的敌人。",
+      "stages": [
+        {
+          "id": 10000101,
+          "star": 1,
+          "kind": "direct",
+          "description": "开启速射机炮，攻击正前方的敌人。",
+          "options": []
+        },
+        {
+          "id": 10000102,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000102",
+          "options": [
+            {
+              "id": 10400101,
+              "name": "速射机炮",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400102,
+              "name": "速射机炮",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400105,
+              "name": "速射机炮",
+              "description": "暴击率 + 10%\n攻击力 + 40%"
+            }
+          ]
+        },
+        {
+          "id": 10000103,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100101,
+              "name": "正向弹幕",
+              "description": "增加2条正向弹道"
+            },
+            {
+              "id": 10100102,
+              "name": "穿透弹",
+              "description": "子弹可以穿透敌人"
+            },
+            {
+              "id": 10100103,
+              "name": "斜向弹幕",
+              "description": "增加2条斜向弹道"
+            },
+            {
+              "id": 10100104,
+              "name": "爆裂弹",
+              "description": "大幅提升暴击率，并在暴击时爆炸"
+            },
+            {
+              "id": 10100105,
+              "name": "连续射击",
+              "description": "增加2发连续子弹"
+            },
+            {
+              "id": 10100106,
+              "name": "巨型弹",
+              "description": "子弹变大并提升伤害"
+            },
+            {
+              "id": 10100109,
+              "name": "射速强化",
+              "description": "射击速度大幅提升"
+            },
+            {
+              "id": 10100107,
+              "name": "撕裂弹",
+              "description": "提升子弹伤害，并有概率撕裂敌方的护甲，使其受到所有伤害增加"
+            },
+            {
+              "id": 10100113,
+              "name": "弹射弹",
+              "description": "子弹可以在敌人之间弹跳"
+            },
+            {
+              "id": 10100110,
+              "name": "火力全开",
+              "description": "弹幕数量翻倍，爆炸范围和暴击伤害提升"
+            }
+          ]
+        },
+        {
+          "id": 10000104,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000104",
+          "options": [
+            {
+              "id": 10400101,
+              "name": "速射机炮",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400102,
+              "name": "速射机炮",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400105,
+              "name": "速射机炮",
+              "description": "暴击率 + 10%\n攻击力 + 40%"
+            }
+          ]
+        },
+        {
+          "id": 10000105,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000105",
+          "options": [
+            {
+              "id": 10400101,
+              "name": "速射机炮",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400102,
+              "name": "速射机炮",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400105,
+              "name": "速射机炮",
+              "description": "暴击率 + 10%\n攻击力 + 40%"
+            }
+          ]
+        },
+        {
+          "id": 10000106,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100101,
+              "name": "正向弹幕",
+              "description": "增加2条正向弹道"
+            },
+            {
+              "id": 10100102,
+              "name": "穿透弹",
+              "description": "子弹可以穿透敌人"
+            },
+            {
+              "id": 10100103,
+              "name": "斜向弹幕",
+              "description": "增加2条斜向弹道"
+            },
+            {
+              "id": 10100104,
+              "name": "爆裂弹",
+              "description": "大幅提升暴击率，并在暴击时爆炸"
+            },
+            {
+              "id": 10100105,
+              "name": "连续射击",
+              "description": "增加2发连续子弹"
+            },
+            {
+              "id": 10100106,
+              "name": "巨型弹",
+              "description": "子弹变大并提升伤害"
+            },
+            {
+              "id": 10100109,
+              "name": "射速强化",
+              "description": "射击速度大幅提升"
+            },
+            {
+              "id": 10100107,
+              "name": "撕裂弹",
+              "description": "提升子弹伤害，并有概率撕裂敌方的护甲，使其受到所有伤害增加"
+            },
+            {
+              "id": 10100113,
+              "name": "弹射弹",
+              "description": "子弹可以在敌人之间弹跳"
+            },
+            {
+              "id": 10100110,
+              "name": "火力全开",
+              "description": "弹幕数量翻倍，爆炸范围和暴击伤害提升"
+            }
+          ]
+        },
+        {
+          "id": 10000107,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000107",
+          "options": [
+            {
+              "id": 10400101,
+              "name": "速射机炮",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400102,
+              "name": "速射机炮",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400105,
+              "name": "速射机炮",
+              "description": "暴击率 + 10%\n攻击力 + 40%"
+            }
+          ]
+        },
+        {
+          "id": 10000108,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000108",
+          "options": [
+            {
+              "id": 10400101,
+              "name": "速射机炮",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400102,
+              "name": "速射机炮",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400105,
+              "name": "速射机炮",
+              "description": "暴击率 + 10%\n攻击力 + 40%"
+            }
+          ]
+        },
+        {
+          "id": 10000109,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100101,
+              "name": "正向弹幕",
+              "description": "增加2条正向弹道"
+            },
+            {
+              "id": 10100102,
+              "name": "穿透弹",
+              "description": "子弹可以穿透敌人"
+            },
+            {
+              "id": 10100103,
+              "name": "斜向弹幕",
+              "description": "增加2条斜向弹道"
+            },
+            {
+              "id": 10100104,
+              "name": "爆裂弹",
+              "description": "大幅提升暴击率，并在暴击时爆炸"
+            },
+            {
+              "id": 10100105,
+              "name": "连续射击",
+              "description": "增加2发连续子弹"
+            },
+            {
+              "id": 10100106,
+              "name": "巨型弹",
+              "description": "子弹变大并提升伤害"
+            },
+            {
+              "id": 10100109,
+              "name": "射速强化",
+              "description": "射击速度大幅提升"
+            },
+            {
+              "id": 10100107,
+              "name": "撕裂弹",
+              "description": "提升子弹伤害，并有概率撕裂敌方的护甲，使其受到所有伤害增加"
+            },
+            {
+              "id": 10100113,
+              "name": "弹射弹",
+              "description": "子弹可以在敌人之间弹跳"
+            },
+            {
+              "id": 10100110,
+              "name": "火力全开",
+              "description": "弹幕数量翻倍，爆炸范围和暴击伤害提升"
+            }
+          ]
+        }
+      ]
+    },
+    "10000201": {
+      "id": 10000201,
+      "name": "酸液枪",
+      "description": "持续释放可以在四周反弹的酸液弹",
+      "stages": [
+        {
+          "id": 10000201,
+          "star": 1,
+          "kind": "direct",
+          "description": "持续释放可以在四周反弹的酸液弹",
+          "options": []
+        },
+        {
+          "id": 10000202,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000202",
+          "options": [
+            {
+              "id": 10400201,
+              "name": "酸液枪",
+              "description": "攻击力 + 40%\n体积 + 15%"
+            },
+            {
+              "id": 10400203,
+              "name": "酸液枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400204,
+              "name": "酸液枪",
+              "description": "反弹次数 + 2\n飞行速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000203,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100201,
+              "name": "酸性雨云",
+              "description": "酸液弹击杀概率会留下雨云。敌人进入酸雨会被【腐蚀】"
+            },
+            {
+              "id": 10100202,
+              "name": "酸液连发",
+              "description": "增加1发酸液弹"
+            },
+            {
+              "id": 10100204,
+              "name": "酸液弹分裂",
+              "description": "击杀敌人有概率分裂2枚小酸液弹"
+            },
+            {
+              "id": 10100207,
+              "name": "酸液激光",
+              "description": "酸液弹在碰撞边缘时有概率发射伽马射线"
+            },
+            {
+              "id": 10100217,
+              "name": "浓缩酸液弹",
+              "description": "击中敌人有概率释放酸液爆炸，酸液弹体型减小25%"
+            },
+            {
+              "id": 10100219,
+              "name": "吞噬酸液",
+              "description": "每次击中敌人会提升伤害，最大提升200%"
+            },
+            {
+              "id": 10100220,
+              "name": "酸液速射炮",
+              "description": "变成高速炮台，高频发射酸液弹，但是酸液弹不再反弹"
+            },
+            {
+              "id": 10100213,
+              "name": "强效酸液",
+              "description": "变成巨大的酸液弹，伤害大幅提升，并对首个目标暴击率翻倍"
+            }
+          ]
+        },
+        {
+          "id": 10000204,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000204",
+          "options": [
+            {
+              "id": 10400201,
+              "name": "酸液枪",
+              "description": "攻击力 + 40%\n体积 + 15%"
+            },
+            {
+              "id": 10400203,
+              "name": "酸液枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400204,
+              "name": "酸液枪",
+              "description": "反弹次数 + 2\n飞行速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000205,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000205",
+          "options": [
+            {
+              "id": 10400201,
+              "name": "酸液枪",
+              "description": "攻击力 + 40%\n体积 + 15%"
+            },
+            {
+              "id": 10400203,
+              "name": "酸液枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400204,
+              "name": "酸液枪",
+              "description": "反弹次数 + 2\n飞行速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000206,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100201,
+              "name": "酸性雨云",
+              "description": "酸液弹击杀概率会留下雨云。敌人进入酸雨会被【腐蚀】"
+            },
+            {
+              "id": 10100202,
+              "name": "酸液连发",
+              "description": "增加1发酸液弹"
+            },
+            {
+              "id": 10100204,
+              "name": "酸液弹分裂",
+              "description": "击杀敌人有概率分裂2枚小酸液弹"
+            },
+            {
+              "id": 10100207,
+              "name": "酸液激光",
+              "description": "酸液弹在碰撞边缘时有概率发射伽马射线"
+            },
+            {
+              "id": 10100217,
+              "name": "浓缩酸液弹",
+              "description": "击中敌人有概率释放酸液爆炸，酸液弹体型减小25%"
+            },
+            {
+              "id": 10100219,
+              "name": "吞噬酸液",
+              "description": "每次击中敌人会提升伤害，最大提升200%"
+            },
+            {
+              "id": 10100220,
+              "name": "酸液速射炮",
+              "description": "变成高速炮台，高频发射酸液弹，但是酸液弹不再反弹"
+            },
+            {
+              "id": 10100213,
+              "name": "强效酸液",
+              "description": "变成巨大的酸液弹，伤害大幅提升，并对首个目标暴击率翻倍"
+            }
+          ]
+        },
+        {
+          "id": 10000207,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000207",
+          "options": [
+            {
+              "id": 10400201,
+              "name": "酸液枪",
+              "description": "攻击力 + 40%\n体积 + 15%"
+            },
+            {
+              "id": 10400203,
+              "name": "酸液枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400204,
+              "name": "酸液枪",
+              "description": "反弹次数 + 2\n飞行速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000208,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000208",
+          "options": [
+            {
+              "id": 10400201,
+              "name": "酸液枪",
+              "description": "攻击力 + 40%\n体积 + 15%"
+            },
+            {
+              "id": 10400203,
+              "name": "酸液枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400204,
+              "name": "酸液枪",
+              "description": "反弹次数 + 2\n飞行速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000209,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100201,
+              "name": "酸性雨云",
+              "description": "酸液弹击杀概率会留下雨云。敌人进入酸雨会被【腐蚀】"
+            },
+            {
+              "id": 10100202,
+              "name": "酸液连发",
+              "description": "增加1发酸液弹"
+            },
+            {
+              "id": 10100204,
+              "name": "酸液弹分裂",
+              "description": "击杀敌人有概率分裂2枚小酸液弹"
+            },
+            {
+              "id": 10100207,
+              "name": "酸液激光",
+              "description": "酸液弹在碰撞边缘时有概率发射伽马射线"
+            },
+            {
+              "id": 10100217,
+              "name": "浓缩酸液弹",
+              "description": "击中敌人有概率释放酸液爆炸，酸液弹体型减小25%"
+            },
+            {
+              "id": 10100219,
+              "name": "吞噬酸液",
+              "description": "每次击中敌人会提升伤害，最大提升200%"
+            },
+            {
+              "id": 10100220,
+              "name": "酸液速射炮",
+              "description": "变成高速炮台，高频发射酸液弹，但是酸液弹不再反弹"
+            },
+            {
+              "id": 10100213,
+              "name": "强效酸液",
+              "description": "变成巨大的酸液弹，伤害大幅提升，并对首个目标暴击率翻倍"
+            }
+          ]
+        }
+      ]
+    },
+    "10000301": {
+      "id": 10000301,
+      "name": "电弧枪",
+      "description": "获得电弧枪，发射在敌人之间弹射的闪电链",
+      "stages": [
+        {
+          "id": 10000301,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得电弧枪，发射在敌人之间弹射的闪电链",
+          "options": []
+        },
+        {
+          "id": 10000302,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000302",
+          "options": [
+            {
+              "id": 10400301,
+              "name": "电弧枪",
+              "description": "攻击力 + 30%\n弹射次数 + 1"
+            },
+            {
+              "id": 10400302,
+              "name": "电弧枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400303,
+              "name": "电弧枪",
+              "description": "攻击速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000303,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100301,
+              "name": "高速射击",
+              "description": "大幅提升闪电链的攻击频率"
+            },
+            {
+              "id": 10100302,
+              "name": "连锁攻击",
+              "description": "闪电链弹跳次数+3"
+            },
+            {
+              "id": 10100305,
+              "name": "电磁护盾",
+              "description": "加载电磁护盾，有概率抵挡子弹，受到攻击时会发射额外的闪电链"
+            },
+            {
+              "id": 10100307,
+              "name": "狂暴电流",
+              "description": "大幅提升伤害，并有小概率使敌人【感电】"
+            },
+            {
+              "id": 10100308,
+              "name": "电弧汲能",
+              "description": "闪电链暴击时，恢复少量生命值"
+            },
+            {
+              "id": 10100309,
+              "name": "电磁干扰",
+              "description": "闪电链命中敌人时，概率消除附近的敌方弹幕"
+            },
+            {
+              "id": 10100321,
+              "name": "暴击落雷",
+              "description": "提升暴击率。闪电链暴击时，在目标位置释放落雷"
+            },
+            {
+              "id": 10100313,
+              "name": "电磁分裂",
+              "description": "闪电链弹射伤害提高，有概率分裂1个次级闪电链"
+            },
+            {
+              "id": 10100316,
+              "name": "电流火花",
+              "description": "闪电链产生高热，伤害提升，并有概率引燃敌人"
+            }
+          ]
+        },
+        {
+          "id": 10000304,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000304",
+          "options": [
+            {
+              "id": 10400301,
+              "name": "电弧枪",
+              "description": "攻击力 + 30%\n弹射次数 + 1"
+            },
+            {
+              "id": 10400302,
+              "name": "电弧枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400303,
+              "name": "电弧枪",
+              "description": "攻击速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000305,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000305",
+          "options": [
+            {
+              "id": 10400301,
+              "name": "电弧枪",
+              "description": "攻击力 + 30%\n弹射次数 + 1"
+            },
+            {
+              "id": 10400302,
+              "name": "电弧枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400303,
+              "name": "电弧枪",
+              "description": "攻击速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000306,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100301,
+              "name": "高速射击",
+              "description": "大幅提升闪电链的攻击频率"
+            },
+            {
+              "id": 10100302,
+              "name": "连锁攻击",
+              "description": "闪电链弹跳次数+3"
+            },
+            {
+              "id": 10100305,
+              "name": "电磁护盾",
+              "description": "加载电磁护盾，有概率抵挡子弹，受到攻击时会发射额外的闪电链"
+            },
+            {
+              "id": 10100307,
+              "name": "狂暴电流",
+              "description": "大幅提升伤害，并有小概率使敌人【感电】"
+            },
+            {
+              "id": 10100308,
+              "name": "电弧汲能",
+              "description": "闪电链暴击时，恢复少量生命值"
+            },
+            {
+              "id": 10100309,
+              "name": "电磁干扰",
+              "description": "闪电链命中敌人时，概率消除附近的敌方弹幕"
+            },
+            {
+              "id": 10100321,
+              "name": "暴击落雷",
+              "description": "提升暴击率。闪电链暴击时，在目标位置释放落雷"
+            },
+            {
+              "id": 10100313,
+              "name": "电磁分裂",
+              "description": "闪电链弹射伤害提高，有概率分裂1个次级闪电链"
+            },
+            {
+              "id": 10100316,
+              "name": "电流火花",
+              "description": "闪电链产生高热，伤害提升，并有概率引燃敌人"
+            }
+          ]
+        },
+        {
+          "id": 10000307,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000307",
+          "options": [
+            {
+              "id": 10400301,
+              "name": "电弧枪",
+              "description": "攻击力 + 30%\n弹射次数 + 1"
+            },
+            {
+              "id": 10400302,
+              "name": "电弧枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400303,
+              "name": "电弧枪",
+              "description": "攻击速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000308,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000308",
+          "options": [
+            {
+              "id": 10400301,
+              "name": "电弧枪",
+              "description": "攻击力 + 30%\n弹射次数 + 1"
+            },
+            {
+              "id": 10400302,
+              "name": "电弧枪",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400303,
+              "name": "电弧枪",
+              "description": "攻击速度 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000309,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100301,
+              "name": "高速射击",
+              "description": "大幅提升闪电链的攻击频率"
+            },
+            {
+              "id": 10100302,
+              "name": "连锁攻击",
+              "description": "闪电链弹跳次数+3"
+            },
+            {
+              "id": 10100305,
+              "name": "电磁护盾",
+              "description": "加载电磁护盾，有概率抵挡子弹，受到攻击时会发射额外的闪电链"
+            },
+            {
+              "id": 10100307,
+              "name": "狂暴电流",
+              "description": "大幅提升伤害，并有小概率使敌人【感电】"
+            },
+            {
+              "id": 10100308,
+              "name": "电弧汲能",
+              "description": "闪电链暴击时，恢复少量生命值"
+            },
+            {
+              "id": 10100309,
+              "name": "电磁干扰",
+              "description": "闪电链命中敌人时，概率消除附近的敌方弹幕"
+            },
+            {
+              "id": 10100321,
+              "name": "暴击落雷",
+              "description": "提升暴击率。闪电链暴击时，在目标位置释放落雷"
+            },
+            {
+              "id": 10100313,
+              "name": "电磁分裂",
+              "description": "闪电链弹射伤害提高，有概率分裂1个次级闪电链"
+            },
+            {
+              "id": 10100316,
+              "name": "电流火花",
+              "description": "闪电链产生高热，伤害提升，并有概率引燃敌人"
+            }
+          ]
+        }
+      ]
+    },
+    "10000401": {
+      "id": 10000401,
+      "name": "磁暴枪",
+      "description": "加载一把巨型磁暴枪，持续攻击前方扇形范围。",
+      "stages": [
+        {
+          "id": 10000401,
+          "star": 1,
+          "kind": "direct",
+          "description": "加载一把巨型磁暴枪，持续攻击前方扇形范围。",
+          "options": []
+        },
+        {
+          "id": 10000402,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000402",
+          "options": [
+            {
+              "id": 10400401,
+              "name": "磁暴枪",
+              "description": "攻击力 + 30%\n攻击范围 + 15%"
+            },
+            {
+              "id": 10400402,
+              "name": "磁暴枪",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400403,
+              "name": "磁暴枪",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000403,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100401,
+              "name": "毁灭之心",
+              "description": "大幅提升伤害和暴击伤害"
+            },
+            {
+              "id": 10100403,
+              "name": "近距离攻击",
+              "description": "对近距离的敌人伤害非常高"
+            },
+            {
+              "id": 10100405,
+              "name": "扩散射击",
+              "description": "扩大喷射范围，并提升暴击概率"
+            },
+            {
+              "id": 10100406,
+              "name": "威能喷射",
+              "description": "攻击范围缩小，伤害大幅度提升"
+            },
+            {
+              "id": 10100408,
+              "name": "集束射流",
+              "description": "攻击区域更长但是两侧范围变窄"
+            },
+            {
+              "id": 10100409,
+              "name": "高能雷爆弹",
+              "description": "攻击时会额外发射3颗电浆弹，电浆弹有概率使敌人感电"
+            },
+            {
+              "id": 10100404,
+              "name": "连续射击",
+              "description": "连续发射2次"
+            },
+            {
+              "id": 10100412,
+              "name": "汲能喷射",
+              "description": "攻击敌人时有概率恢复少量生命"
+            },
+            {
+              "id": 10100411,
+              "name": "庇护射击",
+              "description": "磁暴枪每次射击时会顶起一个护盾，可以抵挡一次子弹"
+            }
+          ]
+        },
+        {
+          "id": 10000404,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000404",
+          "options": [
+            {
+              "id": 10400401,
+              "name": "磁暴枪",
+              "description": "攻击力 + 30%\n攻击范围 + 15%"
+            },
+            {
+              "id": 10400402,
+              "name": "磁暴枪",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400403,
+              "name": "磁暴枪",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000405,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000405",
+          "options": [
+            {
+              "id": 10400401,
+              "name": "磁暴枪",
+              "description": "攻击力 + 30%\n攻击范围 + 15%"
+            },
+            {
+              "id": 10400402,
+              "name": "磁暴枪",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400403,
+              "name": "磁暴枪",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000406,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100401,
+              "name": "毁灭之心",
+              "description": "大幅提升伤害和暴击伤害"
+            },
+            {
+              "id": 10100403,
+              "name": "近距离攻击",
+              "description": "对近距离的敌人伤害非常高"
+            },
+            {
+              "id": 10100405,
+              "name": "扩散射击",
+              "description": "扩大喷射范围，并提升暴击概率"
+            },
+            {
+              "id": 10100406,
+              "name": "威能喷射",
+              "description": "攻击范围缩小，伤害大幅度提升"
+            },
+            {
+              "id": 10100408,
+              "name": "集束射流",
+              "description": "攻击区域更长但是两侧范围变窄"
+            },
+            {
+              "id": 10100409,
+              "name": "高能雷爆弹",
+              "description": "攻击时会额外发射3颗电浆弹，电浆弹有概率使敌人感电"
+            },
+            {
+              "id": 10100404,
+              "name": "连续射击",
+              "description": "连续发射2次"
+            },
+            {
+              "id": 10100412,
+              "name": "汲能喷射",
+              "description": "攻击敌人时有概率恢复少量生命"
+            },
+            {
+              "id": 10100411,
+              "name": "庇护射击",
+              "description": "磁暴枪每次射击时会顶起一个护盾，可以抵挡一次子弹"
+            }
+          ]
+        },
+        {
+          "id": 10000407,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000407",
+          "options": [
+            {
+              "id": 10400401,
+              "name": "磁暴枪",
+              "description": "攻击力 + 30%\n攻击范围 + 15%"
+            },
+            {
+              "id": 10400402,
+              "name": "磁暴枪",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400403,
+              "name": "磁暴枪",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000408,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000408",
+          "options": [
+            {
+              "id": 10400401,
+              "name": "磁暴枪",
+              "description": "攻击力 + 30%\n攻击范围 + 15%"
+            },
+            {
+              "id": 10400402,
+              "name": "磁暴枪",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400403,
+              "name": "磁暴枪",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000409,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100401,
+              "name": "毁灭之心",
+              "description": "大幅提升伤害和暴击伤害"
+            },
+            {
+              "id": 10100403,
+              "name": "近距离攻击",
+              "description": "对近距离的敌人伤害非常高"
+            },
+            {
+              "id": 10100405,
+              "name": "扩散射击",
+              "description": "扩大喷射范围，并提升暴击概率"
+            },
+            {
+              "id": 10100406,
+              "name": "威能喷射",
+              "description": "攻击范围缩小，伤害大幅度提升"
+            },
+            {
+              "id": 10100408,
+              "name": "集束射流",
+              "description": "攻击区域更长但是两侧范围变窄"
+            },
+            {
+              "id": 10100409,
+              "name": "高能雷爆弹",
+              "description": "攻击时会额外发射3颗电浆弹，电浆弹有概率使敌人感电"
+            },
+            {
+              "id": 10100404,
+              "name": "连续射击",
+              "description": "连续发射2次"
+            },
+            {
+              "id": 10100412,
+              "name": "汲能喷射",
+              "description": "攻击敌人时有概率恢复少量生命"
+            },
+            {
+              "id": 10100411,
+              "name": "庇护射击",
+              "description": "磁暴枪每次射击时会顶起一个护盾，可以抵挡一次子弹"
+            }
+          ]
+        }
+      ]
+    },
+    "10000601": {
+      "id": 10000601,
+      "name": "冰刃弹",
+      "description": "获得冰刃弹，可以自动追踪敌人。",
+      "stages": [
+        {
+          "id": 10000601,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得冰刃弹，可以自动追踪敌人。",
+          "options": []
+        },
+        {
+          "id": 10000602,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000602",
+          "options": [
+            {
+              "id": 10400601,
+              "name": "冰刃弹",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400602,
+              "name": "冰刃弹",
+              "description": "穿透次数 + 2\n追踪强度 + 20%"
+            },
+            {
+              "id": 10400603,
+              "name": "冰刃弹",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000603,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100601,
+              "name": "巨大冰刃",
+              "description": "变成巨大的冰刃弹"
+            },
+            {
+              "id": 10100602,
+              "name": "月影霜华",
+              "description": "变成月光形态，大幅提升伤害和暴击伤害"
+            },
+            {
+              "id": 10100603,
+              "name": "极速冷却",
+              "description": "可以更高频率释放冰刃弹"
+            },
+            {
+              "id": 10100605,
+              "name": "双重冰刃",
+              "description": "每次多发射一轮冰刃弹"
+            },
+            {
+              "id": 10100607,
+              "name": "分裂冰刃",
+              "description": "冰刃弹击中敌人时有概率分裂成2个小型冰刃弹"
+            },
+            {
+              "id": 10100618,
+              "name": "冰刃乱舞",
+              "description": "冰刃弹数量+2，并有概率使敌人冰冻"
+            },
+            {
+              "id": 10100625,
+              "name": "破灭之刃",
+              "description": "提升穿透能力，并且穿透敌人时伤害不再衰减伤害"
+            },
+            {
+              "id": 10100609,
+              "name": "致命追踪",
+              "description": "飞行速度加快，拥有极强的追踪效果"
+            },
+            {
+              "id": 10100617,
+              "name": "冰霜爆裂",
+              "description": "冰刃弹结束时会爆裂，产生一次冰爆"
+            }
+          ]
+        },
+        {
+          "id": 10000604,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000604",
+          "options": [
+            {
+              "id": 10400601,
+              "name": "冰刃弹",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400602,
+              "name": "冰刃弹",
+              "description": "穿透次数 + 2\n追踪强度 + 20%"
+            },
+            {
+              "id": 10400603,
+              "name": "冰刃弹",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000605,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000605",
+          "options": [
+            {
+              "id": 10400601,
+              "name": "冰刃弹",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400602,
+              "name": "冰刃弹",
+              "description": "穿透次数 + 2\n追踪强度 + 20%"
+            },
+            {
+              "id": 10400603,
+              "name": "冰刃弹",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000606,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100601,
+              "name": "巨大冰刃",
+              "description": "变成巨大的冰刃弹"
+            },
+            {
+              "id": 10100602,
+              "name": "月影霜华",
+              "description": "变成月光形态，大幅提升伤害和暴击伤害"
+            },
+            {
+              "id": 10100603,
+              "name": "极速冷却",
+              "description": "可以更高频率释放冰刃弹"
+            },
+            {
+              "id": 10100605,
+              "name": "双重冰刃",
+              "description": "每次多发射一轮冰刃弹"
+            },
+            {
+              "id": 10100607,
+              "name": "分裂冰刃",
+              "description": "冰刃弹击中敌人时有概率分裂成2个小型冰刃弹"
+            },
+            {
+              "id": 10100618,
+              "name": "冰刃乱舞",
+              "description": "冰刃弹数量+2，并有概率使敌人冰冻"
+            },
+            {
+              "id": 10100625,
+              "name": "破灭之刃",
+              "description": "提升穿透能力，并且穿透敌人时伤害不再衰减伤害"
+            },
+            {
+              "id": 10100609,
+              "name": "致命追踪",
+              "description": "飞行速度加快，拥有极强的追踪效果"
+            },
+            {
+              "id": 10100617,
+              "name": "冰霜爆裂",
+              "description": "冰刃弹结束时会爆裂，产生一次冰爆"
+            }
+          ]
+        },
+        {
+          "id": 10000607,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000607",
+          "options": [
+            {
+              "id": 10400601,
+              "name": "冰刃弹",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400602,
+              "name": "冰刃弹",
+              "description": "穿透次数 + 2\n追踪强度 + 20%"
+            },
+            {
+              "id": 10400603,
+              "name": "冰刃弹",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000608,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000608",
+          "options": [
+            {
+              "id": 10400601,
+              "name": "冰刃弹",
+              "description": "攻击速度 + 15%"
+            },
+            {
+              "id": 10400602,
+              "name": "冰刃弹",
+              "description": "穿透次数 + 2\n追踪强度 + 20%"
+            },
+            {
+              "id": 10400603,
+              "name": "冰刃弹",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10000609,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100601,
+              "name": "巨大冰刃",
+              "description": "变成巨大的冰刃弹"
+            },
+            {
+              "id": 10100602,
+              "name": "月影霜华",
+              "description": "变成月光形态，大幅提升伤害和暴击伤害"
+            },
+            {
+              "id": 10100603,
+              "name": "极速冷却",
+              "description": "可以更高频率释放冰刃弹"
+            },
+            {
+              "id": 10100605,
+              "name": "双重冰刃",
+              "description": "每次多发射一轮冰刃弹"
+            },
+            {
+              "id": 10100607,
+              "name": "分裂冰刃",
+              "description": "冰刃弹击中敌人时有概率分裂成2个小型冰刃弹"
+            },
+            {
+              "id": 10100618,
+              "name": "冰刃乱舞",
+              "description": "冰刃弹数量+2，并有概率使敌人冰冻"
+            },
+            {
+              "id": 10100625,
+              "name": "破灭之刃",
+              "description": "提升穿透能力，并且穿透敌人时伤害不再衰减伤害"
+            },
+            {
+              "id": 10100609,
+              "name": "致命追踪",
+              "description": "飞行速度加快，拥有极强的追踪效果"
+            },
+            {
+              "id": 10100617,
+              "name": "冰霜爆裂",
+              "description": "冰刃弹结束时会爆裂，产生一次冰爆"
+            }
+          ]
+        }
+      ]
+    },
+    "10000701": {
+      "id": 10000701,
+      "name": "爆燃导弹",
+      "description": "获得爆燃导弹，追踪敌人并造成大范围爆炸。",
+      "stages": [
+        {
+          "id": 10000701,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得爆燃导弹，追踪敌人并造成大范围爆炸。",
+          "options": []
+        },
+        {
+          "id": 10000702,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000702",
+          "options": [
+            {
+              "id": 10400701,
+              "name": "爆燃导弹",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400702,
+              "name": "爆燃导弹",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400703,
+              "name": "爆燃导弹",
+              "description": "爆炸范围 + 20%\n攻击力 + 30%"
+            }
+          ]
+        },
+        {
+          "id": 10000703,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100701,
+              "name": "导弹连射",
+              "description": "多发射1发导弹"
+            },
+            {
+              "id": 10100702,
+              "name": "燃烧弹",
+              "description": "大幅提升爆炸范围，爆炸有概率点燃"
+            },
+            {
+              "id": 10100703,
+              "name": "爆破弹",
+              "description": "导弹暴击率+10%，爆炸的伤害+100%。"
+            },
+            {
+              "id": 10100706,
+              "name": "集束爆弹",
+              "description": "变成蜂巢导弹，连续释放7发小型导弹，释放频率小幅降低"
+            },
+            {
+              "id": 10100708,
+              "name": "核弹",
+              "description": "变成超大爆炸范围的核弹"
+            },
+            {
+              "id": 10100709,
+              "name": "导弹分裂",
+              "description": "导弹会分裂成2个次级导弹"
+            },
+            {
+              "id": 10100710,
+              "name": "导弹弹射",
+              "description": "导弹击中敌人后会再次攻击附近的敌人"
+            },
+            {
+              "id": 10100711,
+              "name": "导弹齐射",
+              "description": "每次发射2轮导弹"
+            },
+            {
+              "id": 10100718,
+              "name": "眼镜蛇导弹",
+              "description": "导弹不再追踪，速度提升100%，伤害提升100%"
+            }
+          ]
+        },
+        {
+          "id": 10000704,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000704",
+          "options": [
+            {
+              "id": 10400701,
+              "name": "爆燃导弹",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400702,
+              "name": "爆燃导弹",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400703,
+              "name": "爆燃导弹",
+              "description": "爆炸范围 + 20%\n攻击力 + 30%"
+            }
+          ]
+        },
+        {
+          "id": 10000705,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000705",
+          "options": [
+            {
+              "id": 10400701,
+              "name": "爆燃导弹",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400702,
+              "name": "爆燃导弹",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400703,
+              "name": "爆燃导弹",
+              "description": "爆炸范围 + 20%\n攻击力 + 30%"
+            }
+          ]
+        },
+        {
+          "id": 10000706,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100701,
+              "name": "导弹连射",
+              "description": "多发射1发导弹"
+            },
+            {
+              "id": 10100702,
+              "name": "燃烧弹",
+              "description": "大幅提升爆炸范围，爆炸有概率点燃"
+            },
+            {
+              "id": 10100703,
+              "name": "爆破弹",
+              "description": "导弹暴击率+10%，爆炸的伤害+100%。"
+            },
+            {
+              "id": 10100706,
+              "name": "集束爆弹",
+              "description": "变成蜂巢导弹，连续释放7发小型导弹，释放频率小幅降低"
+            },
+            {
+              "id": 10100708,
+              "name": "核弹",
+              "description": "变成超大爆炸范围的核弹"
+            },
+            {
+              "id": 10100709,
+              "name": "导弹分裂",
+              "description": "导弹会分裂成2个次级导弹"
+            },
+            {
+              "id": 10100710,
+              "name": "导弹弹射",
+              "description": "导弹击中敌人后会再次攻击附近的敌人"
+            },
+            {
+              "id": 10100711,
+              "name": "导弹齐射",
+              "description": "每次发射2轮导弹"
+            },
+            {
+              "id": 10100718,
+              "name": "眼镜蛇导弹",
+              "description": "导弹不再追踪，速度提升100%，伤害提升100%"
+            }
+          ]
+        },
+        {
+          "id": 10000707,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000707",
+          "options": [
+            {
+              "id": 10400701,
+              "name": "爆燃导弹",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400702,
+              "name": "爆燃导弹",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400703,
+              "name": "爆燃导弹",
+              "description": "爆炸范围 + 20%\n攻击力 + 30%"
+            }
+          ]
+        },
+        {
+          "id": 10000708,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000708",
+          "options": [
+            {
+              "id": 10400701,
+              "name": "爆燃导弹",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400702,
+              "name": "爆燃导弹",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10400703,
+              "name": "爆燃导弹",
+              "description": "爆炸范围 + 20%\n攻击力 + 30%"
+            }
+          ]
+        },
+        {
+          "id": 10000709,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100701,
+              "name": "导弹连射",
+              "description": "多发射1发导弹"
+            },
+            {
+              "id": 10100702,
+              "name": "燃烧弹",
+              "description": "大幅提升爆炸范围，爆炸有概率点燃"
+            },
+            {
+              "id": 10100703,
+              "name": "爆破弹",
+              "description": "导弹暴击率+10%，爆炸的伤害+100%。"
+            },
+            {
+              "id": 10100706,
+              "name": "集束爆弹",
+              "description": "变成蜂巢导弹，连续释放7发小型导弹，释放频率小幅降低"
+            },
+            {
+              "id": 10100708,
+              "name": "核弹",
+              "description": "变成超大爆炸范围的核弹"
+            },
+            {
+              "id": 10100709,
+              "name": "导弹分裂",
+              "description": "导弹会分裂成2个次级导弹"
+            },
+            {
+              "id": 10100710,
+              "name": "导弹弹射",
+              "description": "导弹击中敌人后会再次攻击附近的敌人"
+            },
+            {
+              "id": 10100711,
+              "name": "导弹齐射",
+              "description": "每次发射2轮导弹"
+            },
+            {
+              "id": 10100718,
+              "name": "眼镜蛇导弹",
+              "description": "导弹不再追踪，速度提升100%，伤害提升100%"
+            }
+          ]
+        }
+      ]
+    },
+    "10000901": {
+      "id": 10000901,
+      "name": "酸性黑洞",
+      "description": "获得酸性黑洞，朝前方发射酸系属性的黑洞。",
+      "stages": [
+        {
+          "id": 10000901,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得酸性黑洞，朝前方发射酸系属性的黑洞。",
+          "options": []
+        },
+        {
+          "id": 10000902,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10000902",
+          "options": [
+            {
+              "id": 10400901,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400902,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 40%\n黑洞范围 + 10%"
+            },
+            {
+              "id": 10400903,
+              "name": "酸性黑洞",
+              "description": "飞行速度 - 20%"
+            },
+            {
+              "id": 10400904,
+              "name": "酸性黑洞",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000903,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100904,
+              "name": "吸收黑洞",
+              "description": "黑洞初始体型减少25%。吸引的敌人越多体型越大，最高提升50%"
+            },
+            {
+              "id": 10100905,
+              "name": "重粒子黑洞",
+              "description": "压缩黑洞大小，失去引力，转化为更高的伤害和攻击频率"
+            },
+            {
+              "id": 10100906,
+              "name": "弹力黑洞",
+              "description": "朝向最近的敌人发射快速黑洞，可以在屏幕边缘反弹。小幅增加冷却时间"
+            },
+            {
+              "id": 10100908,
+              "name": "分裂黑洞",
+              "description": "黑洞撞墙时会分裂成2个无吸引力的次级黑洞"
+            },
+            {
+              "id": 10100910,
+              "name": "引力腐蚀",
+              "description": "黑洞会对进入其中的敌方子弹减速，并有概率【腐蚀】其中的敌人"
+            },
+            {
+              "id": 10100907,
+              "name": "传送黑洞",
+              "description": "每次造成伤害时有概率将敌人传送到屏幕顶部，并眩晕1秒"
+            },
+            {
+              "id": 10100918,
+              "name": "高频黑洞",
+              "description": "大幅提升伤害频率，失去吸引力，并提高伤害和暴击率"
+            },
+            {
+              "id": 10100909,
+              "name": "巨大黑洞",
+              "description": "范围变大，吸引力变强，伤害大幅降低。"
+            },
+            {
+              "id": 10100917,
+              "name": "黑洞粒子",
+              "description": "黑洞在飞行过程种会持续发射黑洞粒子"
+            }
+          ]
+        },
+        {
+          "id": 10000904,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10000904",
+          "options": [
+            {
+              "id": 10400901,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400902,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 40%\n黑洞范围 + 10%"
+            },
+            {
+              "id": 10400903,
+              "name": "酸性黑洞",
+              "description": "飞行速度 - 20%"
+            },
+            {
+              "id": 10400904,
+              "name": "酸性黑洞",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000905,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10000905",
+          "options": [
+            {
+              "id": 10400901,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400902,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 40%\n黑洞范围 + 10%"
+            },
+            {
+              "id": 10400903,
+              "name": "酸性黑洞",
+              "description": "飞行速度 - 20%"
+            },
+            {
+              "id": 10400904,
+              "name": "酸性黑洞",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000906,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100904,
+              "name": "吸收黑洞",
+              "description": "黑洞初始体型减少25%。吸引的敌人越多体型越大，最高提升50%"
+            },
+            {
+              "id": 10100905,
+              "name": "重粒子黑洞",
+              "description": "压缩黑洞大小，失去引力，转化为更高的伤害和攻击频率"
+            },
+            {
+              "id": 10100906,
+              "name": "弹力黑洞",
+              "description": "朝向最近的敌人发射快速黑洞，可以在屏幕边缘反弹。小幅增加冷却时间"
+            },
+            {
+              "id": 10100908,
+              "name": "分裂黑洞",
+              "description": "黑洞撞墙时会分裂成2个无吸引力的次级黑洞"
+            },
+            {
+              "id": 10100910,
+              "name": "引力腐蚀",
+              "description": "黑洞会对进入其中的敌方子弹减速，并有概率【腐蚀】其中的敌人"
+            },
+            {
+              "id": 10100907,
+              "name": "传送黑洞",
+              "description": "每次造成伤害时有概率将敌人传送到屏幕顶部，并眩晕1秒"
+            },
+            {
+              "id": 10100918,
+              "name": "高频黑洞",
+              "description": "大幅提升伤害频率，失去吸引力，并提高伤害和暴击率"
+            },
+            {
+              "id": 10100909,
+              "name": "巨大黑洞",
+              "description": "范围变大，吸引力变强，伤害大幅降低。"
+            },
+            {
+              "id": 10100917,
+              "name": "黑洞粒子",
+              "description": "黑洞在飞行过程种会持续发射黑洞粒子"
+            }
+          ]
+        },
+        {
+          "id": 10000907,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10000907",
+          "options": [
+            {
+              "id": 10400901,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400902,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 40%\n黑洞范围 + 10%"
+            },
+            {
+              "id": 10400903,
+              "name": "酸性黑洞",
+              "description": "飞行速度 - 20%"
+            },
+            {
+              "id": 10400904,
+              "name": "酸性黑洞",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000908,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10000908",
+          "options": [
+            {
+              "id": 10400901,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10400902,
+              "name": "酸性黑洞",
+              "description": "攻击力 + 40%\n黑洞范围 + 10%"
+            },
+            {
+              "id": 10400903,
+              "name": "酸性黑洞",
+              "description": "飞行速度 - 20%"
+            },
+            {
+              "id": 10400904,
+              "name": "酸性黑洞",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10000909,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10100904,
+              "name": "吸收黑洞",
+              "description": "黑洞初始体型减少25%。吸引的敌人越多体型越大，最高提升50%"
+            },
+            {
+              "id": 10100905,
+              "name": "重粒子黑洞",
+              "description": "压缩黑洞大小，失去引力，转化为更高的伤害和攻击频率"
+            },
+            {
+              "id": 10100906,
+              "name": "弹力黑洞",
+              "description": "朝向最近的敌人发射快速黑洞，可以在屏幕边缘反弹。小幅增加冷却时间"
+            },
+            {
+              "id": 10100908,
+              "name": "分裂黑洞",
+              "description": "黑洞撞墙时会分裂成2个无吸引力的次级黑洞"
+            },
+            {
+              "id": 10100910,
+              "name": "引力腐蚀",
+              "description": "黑洞会对进入其中的敌方子弹减速，并有概率【腐蚀】其中的敌人"
+            },
+            {
+              "id": 10100907,
+              "name": "传送黑洞",
+              "description": "每次造成伤害时有概率将敌人传送到屏幕顶部，并眩晕1秒"
+            },
+            {
+              "id": 10100918,
+              "name": "高频黑洞",
+              "description": "大幅提升伤害频率，失去吸引力，并提高伤害和暴击率"
+            },
+            {
+              "id": 10100909,
+              "name": "巨大黑洞",
+              "description": "范围变大，吸引力变强，伤害大幅降低。"
+            },
+            {
+              "id": 10100917,
+              "name": "黑洞粒子",
+              "description": "黑洞在飞行过程种会持续发射黑洞粒子"
+            }
+          ]
+        }
+      ]
+    },
+    "10001101": {
+      "id": 10001101,
+      "name": "能量光剑",
+      "description": "获得能量光剑，自动攻击近处180度范围的敌人。",
+      "stages": [
+        {
+          "id": 10001101,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得能量光剑，自动攻击近处180度范围的敌人。",
+          "options": []
+        },
+        {
+          "id": 10001102,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10001102",
+          "options": [
+            {
+              "id": 10401101,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n剑的数量上限 + 1"
+            },
+            {
+              "id": 10401102,
+              "name": "能量光剑",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10401103,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n攻击范围 + 10%"
+            },
+            {
+              "id": 10401105,
+              "name": "能量光剑",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001103,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101101,
+              "name": "反向剑",
+              "description": "每次攻击，额外反向斩击一次"
+            },
+            {
+              "id": 10101102,
+              "name": "狂暴一击",
+              "description": "攻击范围缩小，伤害大幅度提升"
+            },
+            {
+              "id": 10101103,
+              "name": "巨剑",
+              "description": "变成巨大的剑，并提升伤害"
+            },
+            {
+              "id": 10101104,
+              "name": "剑气",
+              "description": "每次攻击可以额外释放1道【剑气】"
+            },
+            {
+              "id": 10101105,
+              "name": "逆流剑",
+              "description": "挥砍可以抵消子弹，每次抵挡可以恢复少量生命"
+            },
+            {
+              "id": 10101107,
+              "name": "迅影剑",
+              "description": "剑的恢复速度翻倍，小幅降低伤害，剑的数量上限+2"
+            },
+            {
+              "id": 10101110,
+              "name": "虚空斩",
+              "description": "每次挥砍有概率释放【次元斩】"
+            },
+            {
+              "id": 10101117,
+              "name": "剑气回复",
+              "description": "获得维修箱后获得1-3把剑，剑的存储上限+3"
+            },
+            {
+              "id": 10101118,
+              "name": "无敌斩",
+              "description": "大幅提升暴击伤害。在攻击精英怪和首领时，多攻击一轮。"
+            },
+            {
+              "id": 10101106,
+              "name": "剑气连斩",
+              "description": "剑气进阶为3道剑气"
+            },
+            {
+              "id": 10101111,
+              "name": "顺势斩",
+              "description": "每次挥砍，会强化下一次挥砍，最多可连续强化5次"
+            }
+          ]
+        },
+        {
+          "id": 10001104,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10001104",
+          "options": [
+            {
+              "id": 10401101,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n剑的数量上限 + 1"
+            },
+            {
+              "id": 10401102,
+              "name": "能量光剑",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10401103,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n攻击范围 + 10%"
+            },
+            {
+              "id": 10401105,
+              "name": "能量光剑",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001105,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10001105",
+          "options": [
+            {
+              "id": 10401101,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n剑的数量上限 + 1"
+            },
+            {
+              "id": 10401102,
+              "name": "能量光剑",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10401103,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n攻击范围 + 10%"
+            },
+            {
+              "id": 10401105,
+              "name": "能量光剑",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001106,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101101,
+              "name": "反向剑",
+              "description": "每次攻击，额外反向斩击一次"
+            },
+            {
+              "id": 10101102,
+              "name": "狂暴一击",
+              "description": "攻击范围缩小，伤害大幅度提升"
+            },
+            {
+              "id": 10101103,
+              "name": "巨剑",
+              "description": "变成巨大的剑，并提升伤害"
+            },
+            {
+              "id": 10101104,
+              "name": "剑气",
+              "description": "每次攻击可以额外释放1道【剑气】"
+            },
+            {
+              "id": 10101105,
+              "name": "逆流剑",
+              "description": "挥砍可以抵消子弹，每次抵挡可以恢复少量生命"
+            },
+            {
+              "id": 10101107,
+              "name": "迅影剑",
+              "description": "剑的恢复速度翻倍，小幅降低伤害，剑的数量上限+2"
+            },
+            {
+              "id": 10101110,
+              "name": "虚空斩",
+              "description": "每次挥砍有概率释放【次元斩】"
+            },
+            {
+              "id": 10101117,
+              "name": "剑气回复",
+              "description": "获得维修箱后获得1-3把剑，剑的存储上限+3"
+            },
+            {
+              "id": 10101118,
+              "name": "无敌斩",
+              "description": "大幅提升暴击伤害。在攻击精英怪和首领时，多攻击一轮。"
+            },
+            {
+              "id": 10101106,
+              "name": "剑气连斩",
+              "description": "剑气进阶为3道剑气"
+            },
+            {
+              "id": 10101111,
+              "name": "顺势斩",
+              "description": "每次挥砍，会强化下一次挥砍，最多可连续强化5次"
+            }
+          ]
+        },
+        {
+          "id": 10001107,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10001107",
+          "options": [
+            {
+              "id": 10401101,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n剑的数量上限 + 1"
+            },
+            {
+              "id": 10401102,
+              "name": "能量光剑",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10401103,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n攻击范围 + 10%"
+            },
+            {
+              "id": 10401105,
+              "name": "能量光剑",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001108,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10001108",
+          "options": [
+            {
+              "id": 10401101,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n剑的数量上限 + 1"
+            },
+            {
+              "id": 10401102,
+              "name": "能量光剑",
+              "description": "冷却时间缩短 + 15%"
+            },
+            {
+              "id": 10401103,
+              "name": "能量光剑",
+              "description": "攻击力 + 40%\n攻击范围 + 10%"
+            },
+            {
+              "id": 10401105,
+              "name": "能量光剑",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001109,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101101,
+              "name": "反向剑",
+              "description": "每次攻击，额外反向斩击一次"
+            },
+            {
+              "id": 10101102,
+              "name": "狂暴一击",
+              "description": "攻击范围缩小，伤害大幅度提升"
+            },
+            {
+              "id": 10101103,
+              "name": "巨剑",
+              "description": "变成巨大的剑，并提升伤害"
+            },
+            {
+              "id": 10101104,
+              "name": "剑气",
+              "description": "每次攻击可以额外释放1道【剑气】"
+            },
+            {
+              "id": 10101105,
+              "name": "逆流剑",
+              "description": "挥砍可以抵消子弹，每次抵挡可以恢复少量生命"
+            },
+            {
+              "id": 10101107,
+              "name": "迅影剑",
+              "description": "剑的恢复速度翻倍，小幅降低伤害，剑的数量上限+2"
+            },
+            {
+              "id": 10101110,
+              "name": "虚空斩",
+              "description": "每次挥砍有概率释放【次元斩】"
+            },
+            {
+              "id": 10101117,
+              "name": "剑气回复",
+              "description": "获得维修箱后获得1-3把剑，剑的存储上限+3"
+            },
+            {
+              "id": 10101118,
+              "name": "无敌斩",
+              "description": "大幅提升暴击伤害。在攻击精英怪和首领时，多攻击一轮。"
+            },
+            {
+              "id": 10101106,
+              "name": "剑气连斩",
+              "description": "剑气进阶为3道剑气"
+            },
+            {
+              "id": 10101111,
+              "name": "顺势斩",
+              "description": "每次挥砍，会强化下一次挥砍，最多可连续强化5次"
+            }
+          ]
+        }
+      ]
+    },
+    "10001501": {
+      "id": 10001501,
+      "name": "高能激光",
+      "description": "获得高能激光，周期性朝前方发射可穿透敌人的激光。",
+      "stages": [
+        {
+          "id": 10001501,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得高能激光，周期性朝前方发射可穿透敌人的激光。",
+          "options": []
+        },
+        {
+          "id": 10001502,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10001502",
+          "options": [
+            {
+              "id": 10401501,
+              "name": "高能激光",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401502,
+              "name": "高能激光",
+              "description": "持续时间 + 20%\n激光变大 + 15%"
+            },
+            {
+              "id": 10401504,
+              "name": "高能激光",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10001503,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101502,
+              "name": "奔流激光",
+              "description": "变成巨型激光"
+            },
+            {
+              "id": 10101503,
+              "name": "机翼激光",
+              "description": "激光将改为由2翼发射，伤害减少20%"
+            },
+            {
+              "id": 10101507,
+              "name": "激光追踪",
+              "description": "激光可以追踪敌人，但是伤害会衰减"
+            },
+            {
+              "id": 10101511,
+              "name": "光辉脉动",
+              "description": "激光变为持续释放，冷却期间变为次级激光"
+            },
+            {
+              "id": 10101512,
+              "name": "蓄能激光",
+              "description": "激光对同一个目标造成的伤害会持续提高"
+            },
+            {
+              "id": 10101513,
+              "name": "聚焦激光",
+              "description": "激光变成有限长度，伤害大幅提升"
+            },
+            {
+              "id": 10101519,
+              "name": "高频激光",
+              "description": "冷却时间和持续时间均缩短，伤害频率提升"
+            },
+            {
+              "id": 10101521,
+              "name": "激光扫射",
+              "description": "激光进入冷却时，发射一次交叉扫射"
+            },
+            {
+              "id": 10101518,
+              "name": "火力全开",
+              "description": "生命越高，激光越强"
+            },
+            {
+              "id": 10101520,
+              "name": "聚焦增幅",
+              "description": "激光变细且不再穿透敌人，但伤害和暴击率提升"
+            }
+          ]
+        },
+        {
+          "id": 10001504,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10001504",
+          "options": [
+            {
+              "id": 10401501,
+              "name": "高能激光",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401502,
+              "name": "高能激光",
+              "description": "持续时间 + 20%\n激光变大 + 15%"
+            },
+            {
+              "id": 10401504,
+              "name": "高能激光",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10001505,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10001505",
+          "options": [
+            {
+              "id": 10401501,
+              "name": "高能激光",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401502,
+              "name": "高能激光",
+              "description": "持续时间 + 20%\n激光变大 + 15%"
+            },
+            {
+              "id": 10401504,
+              "name": "高能激光",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10001506,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101502,
+              "name": "奔流激光",
+              "description": "变成巨型激光"
+            },
+            {
+              "id": 10101503,
+              "name": "机翼激光",
+              "description": "激光将改为由2翼发射，伤害减少20%"
+            },
+            {
+              "id": 10101507,
+              "name": "激光追踪",
+              "description": "激光可以追踪敌人，但是伤害会衰减"
+            },
+            {
+              "id": 10101511,
+              "name": "光辉脉动",
+              "description": "激光变为持续释放，冷却期间变为次级激光"
+            },
+            {
+              "id": 10101512,
+              "name": "蓄能激光",
+              "description": "激光对同一个目标造成的伤害会持续提高"
+            },
+            {
+              "id": 10101513,
+              "name": "聚焦激光",
+              "description": "激光变成有限长度，伤害大幅提升"
+            },
+            {
+              "id": 10101519,
+              "name": "高频激光",
+              "description": "冷却时间和持续时间均缩短，伤害频率提升"
+            },
+            {
+              "id": 10101521,
+              "name": "激光扫射",
+              "description": "激光进入冷却时，发射一次交叉扫射"
+            },
+            {
+              "id": 10101518,
+              "name": "火力全开",
+              "description": "生命越高，激光越强"
+            },
+            {
+              "id": 10101520,
+              "name": "聚焦增幅",
+              "description": "激光变细且不再穿透敌人，但伤害和暴击率提升"
+            }
+          ]
+        },
+        {
+          "id": 10001507,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10001507",
+          "options": [
+            {
+              "id": 10401501,
+              "name": "高能激光",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401502,
+              "name": "高能激光",
+              "description": "持续时间 + 20%\n激光变大 + 15%"
+            },
+            {
+              "id": 10401504,
+              "name": "高能激光",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10001508,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10001508",
+          "options": [
+            {
+              "id": 10401501,
+              "name": "高能激光",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401502,
+              "name": "高能激光",
+              "description": "持续时间 + 20%\n激光变大 + 15%"
+            },
+            {
+              "id": 10401504,
+              "name": "高能激光",
+              "description": "冷却时间缩短 + 15%"
+            }
+          ]
+        },
+        {
+          "id": 10001509,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101502,
+              "name": "奔流激光",
+              "description": "变成巨型激光"
+            },
+            {
+              "id": 10101503,
+              "name": "机翼激光",
+              "description": "激光将改为由2翼发射，伤害减少20%"
+            },
+            {
+              "id": 10101507,
+              "name": "激光追踪",
+              "description": "激光可以追踪敌人，但是伤害会衰减"
+            },
+            {
+              "id": 10101511,
+              "name": "光辉脉动",
+              "description": "激光变为持续释放，冷却期间变为次级激光"
+            },
+            {
+              "id": 10101512,
+              "name": "蓄能激光",
+              "description": "激光对同一个目标造成的伤害会持续提高"
+            },
+            {
+              "id": 10101513,
+              "name": "聚焦激光",
+              "description": "激光变成有限长度，伤害大幅提升"
+            },
+            {
+              "id": 10101519,
+              "name": "高频激光",
+              "description": "冷却时间和持续时间均缩短，伤害频率提升"
+            },
+            {
+              "id": 10101521,
+              "name": "激光扫射",
+              "description": "激光进入冷却时，发射一次交叉扫射"
+            },
+            {
+              "id": 10101518,
+              "name": "火力全开",
+              "description": "生命越高，激光越强"
+            },
+            {
+              "id": 10101520,
+              "name": "聚焦增幅",
+              "description": "激光变细且不再穿透敌人，但伤害和暴击率提升"
+            }
+          ]
+        }
+      ]
+    },
+    "10001601": {
+      "id": 10001601,
+      "name": "冰冻锯盘",
+      "description": "获得2个冰冻锯盘，围绕自身旋转并切割敌人。",
+      "stages": [
+        {
+          "id": 10001601,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得2个冰冻锯盘，围绕自身旋转并切割敌人。",
+          "options": []
+        },
+        {
+          "id": 10001602,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10001602",
+          "options": [
+            {
+              "id": 10401601,
+              "name": "冰冻锯盘",
+              "description": "锯盘变大 + 15%\n攻击力 + 40%"
+            },
+            {
+              "id": 10401602,
+              "name": "冰冻锯盘",
+              "description": "旋转速度 + 20%"
+            },
+            {
+              "id": 10401603,
+              "name": "冰冻锯盘",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001603,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101601,
+              "name": "范围扩大",
+              "description": "旋转的范围变大，锯盘数量+1，伤害小幅提升"
+            },
+            {
+              "id": 10101604,
+              "name": "高速旋转",
+              "description": "大幅提升旋转速度"
+            },
+            {
+              "id": 10101605,
+              "name": "威力锯盘",
+              "description": "大幅提升锯盘的伤害"
+            },
+            {
+              "id": 10101607,
+              "name": "急冻射线",
+              "description": "锯盘与飞机之间产生急冻射线，有概率冰冻敌人"
+            },
+            {
+              "id": 10101608,
+              "name": "巨型锯盘",
+              "description": "锯盘变得很大"
+            },
+            {
+              "id": 10101609,
+              "name": "复仇协议",
+              "description": "锯盘会飞出去攻击对你造成伤害的敌人，锯盘数量+1"
+            },
+            {
+              "id": 10101610,
+              "name": "锯盘+2",
+              "description": "增加2个冰冻锯盘，旋转范围提升20%"
+            },
+            {
+              "id": 10101614,
+              "name": "坚硬锯盘",
+              "description": "锯盘概率抵挡子弹"
+            },
+            {
+              "id": 10101616,
+              "name": "冰霜爆破",
+              "description": "锯盘每命中15次，释放一次小型爆炸"
+            }
+          ]
+        },
+        {
+          "id": 10001604,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10001604",
+          "options": [
+            {
+              "id": 10401601,
+              "name": "冰冻锯盘",
+              "description": "锯盘变大 + 15%\n攻击力 + 40%"
+            },
+            {
+              "id": 10401602,
+              "name": "冰冻锯盘",
+              "description": "旋转速度 + 20%"
+            },
+            {
+              "id": 10401603,
+              "name": "冰冻锯盘",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001605,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10001605",
+          "options": [
+            {
+              "id": 10401601,
+              "name": "冰冻锯盘",
+              "description": "锯盘变大 + 15%\n攻击力 + 40%"
+            },
+            {
+              "id": 10401602,
+              "name": "冰冻锯盘",
+              "description": "旋转速度 + 20%"
+            },
+            {
+              "id": 10401603,
+              "name": "冰冻锯盘",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001606,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101601,
+              "name": "范围扩大",
+              "description": "旋转的范围变大，锯盘数量+1，伤害小幅提升"
+            },
+            {
+              "id": 10101604,
+              "name": "高速旋转",
+              "description": "大幅提升旋转速度"
+            },
+            {
+              "id": 10101605,
+              "name": "威力锯盘",
+              "description": "大幅提升锯盘的伤害"
+            },
+            {
+              "id": 10101607,
+              "name": "急冻射线",
+              "description": "锯盘与飞机之间产生急冻射线，有概率冰冻敌人"
+            },
+            {
+              "id": 10101608,
+              "name": "巨型锯盘",
+              "description": "锯盘变得很大"
+            },
+            {
+              "id": 10101609,
+              "name": "复仇协议",
+              "description": "锯盘会飞出去攻击对你造成伤害的敌人，锯盘数量+1"
+            },
+            {
+              "id": 10101610,
+              "name": "锯盘+2",
+              "description": "增加2个冰冻锯盘，旋转范围提升20%"
+            },
+            {
+              "id": 10101614,
+              "name": "坚硬锯盘",
+              "description": "锯盘概率抵挡子弹"
+            },
+            {
+              "id": 10101616,
+              "name": "冰霜爆破",
+              "description": "锯盘每命中15次，释放一次小型爆炸"
+            }
+          ]
+        },
+        {
+          "id": 10001607,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10001607",
+          "options": [
+            {
+              "id": 10401601,
+              "name": "冰冻锯盘",
+              "description": "锯盘变大 + 15%\n攻击力 + 40%"
+            },
+            {
+              "id": 10401602,
+              "name": "冰冻锯盘",
+              "description": "旋转速度 + 20%"
+            },
+            {
+              "id": 10401603,
+              "name": "冰冻锯盘",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001608,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10001608",
+          "options": [
+            {
+              "id": 10401601,
+              "name": "冰冻锯盘",
+              "description": "锯盘变大 + 15%\n攻击力 + 40%"
+            },
+            {
+              "id": 10401602,
+              "name": "冰冻锯盘",
+              "description": "旋转速度 + 20%"
+            },
+            {
+              "id": 10401603,
+              "name": "冰冻锯盘",
+              "description": "攻击力 + 60%"
+            }
+          ]
+        },
+        {
+          "id": 10001609,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101601,
+              "name": "范围扩大",
+              "description": "旋转的范围变大，锯盘数量+1，伤害小幅提升"
+            },
+            {
+              "id": 10101604,
+              "name": "高速旋转",
+              "description": "大幅提升旋转速度"
+            },
+            {
+              "id": 10101605,
+              "name": "威力锯盘",
+              "description": "大幅提升锯盘的伤害"
+            },
+            {
+              "id": 10101607,
+              "name": "急冻射线",
+              "description": "锯盘与飞机之间产生急冻射线，有概率冰冻敌人"
+            },
+            {
+              "id": 10101608,
+              "name": "巨型锯盘",
+              "description": "锯盘变得很大"
+            },
+            {
+              "id": 10101609,
+              "name": "复仇协议",
+              "description": "锯盘会飞出去攻击对你造成伤害的敌人，锯盘数量+1"
+            },
+            {
+              "id": 10101610,
+              "name": "锯盘+2",
+              "description": "增加2个冰冻锯盘，旋转范围提升20%"
+            },
+            {
+              "id": 10101614,
+              "name": "坚硬锯盘",
+              "description": "锯盘概率抵挡子弹"
+            },
+            {
+              "id": 10101616,
+              "name": "冰霜爆破",
+              "description": "锯盘每命中15次，释放一次小型爆炸"
+            }
+          ]
+        }
+      ]
+    },
+    "10001701": {
+      "id": 10001701,
+      "name": "灼热射线",
+      "description": "获得灼热射线，持续灼烧最近的敌人",
+      "stages": [
+        {
+          "id": 10001701,
+          "star": 1,
+          "kind": "direct",
+          "description": "获得灼热射线，持续灼烧最近的敌人",
+          "options": []
+        },
+        {
+          "id": 10001702,
+          "star": 2,
+          "kind": "minor",
+          "description": "SkillDesc_10001702",
+          "options": [
+            {
+              "id": 10401702,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n持续时间 + 10%"
+            },
+            {
+              "id": 10401703,
+              "name": "灼热射线",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401704,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n攻击距离 + 25%"
+            }
+          ]
+        },
+        {
+          "id": 10001703,
+          "star": 3,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101701,
+              "name": "火焰折射",
+              "description": "射线可以折射2次"
+            },
+            {
+              "id": 10101703,
+              "name": "灼热裂变",
+              "description": "灼热射线折射击中敌人后，向周围敌人发射瞬间射线"
+            },
+            {
+              "id": 10101704,
+              "name": "灼烧翻倍",
+              "description": "增加1道灼热射线"
+            },
+            {
+              "id": 10101707,
+              "name": "爆炸射线",
+              "description": "触发暴击时会爆炸"
+            },
+            {
+              "id": 10101712,
+              "name": "超远视距",
+              "description": "全屏范围攻击，提升少量暴击率"
+            },
+            {
+              "id": 10101713,
+              "name": "威力强化",
+              "description": "灼热射线大幅提升威力，并有概率点燃敌人"
+            },
+            {
+              "id": 10101715,
+              "name": "均衡射线",
+              "description": "降低来自连线敌人的伤害。受到伤害时，对连线中的敌人触发一次伤害反击"
+            },
+            {
+              "id": 10101706,
+              "name": "瞬闪射线",
+              "description": "变成瞬间发射，伤害极高并且攻击频率较高"
+            },
+            {
+              "id": 10101710,
+              "name": "超级射线",
+              "description": "灼热射线结束时，对最近的敌人释放一次超级射线"
+            }
+          ]
+        },
+        {
+          "id": 10001704,
+          "star": 4,
+          "kind": "minor",
+          "description": "SkillDesc_10001704",
+          "options": [
+            {
+              "id": 10401702,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n持续时间 + 10%"
+            },
+            {
+              "id": 10401703,
+              "name": "灼热射线",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401704,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n攻击距离 + 25%"
+            }
+          ]
+        },
+        {
+          "id": 10001705,
+          "star": 5,
+          "kind": "minor",
+          "description": "SkillDesc_10001705",
+          "options": [
+            {
+              "id": 10401702,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n持续时间 + 10%"
+            },
+            {
+              "id": 10401703,
+              "name": "灼热射线",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401704,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n攻击距离 + 25%"
+            }
+          ]
+        },
+        {
+          "id": 10001706,
+          "star": 6,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101701,
+              "name": "火焰折射",
+              "description": "射线可以折射2次"
+            },
+            {
+              "id": 10101703,
+              "name": "灼热裂变",
+              "description": "灼热射线折射击中敌人后，向周围敌人发射瞬间射线"
+            },
+            {
+              "id": 10101704,
+              "name": "灼烧翻倍",
+              "description": "增加1道灼热射线"
+            },
+            {
+              "id": 10101707,
+              "name": "爆炸射线",
+              "description": "触发暴击时会爆炸"
+            },
+            {
+              "id": 10101712,
+              "name": "超远视距",
+              "description": "全屏范围攻击，提升少量暴击率"
+            },
+            {
+              "id": 10101713,
+              "name": "威力强化",
+              "description": "灼热射线大幅提升威力，并有概率点燃敌人"
+            },
+            {
+              "id": 10101715,
+              "name": "均衡射线",
+              "description": "降低来自连线敌人的伤害。受到伤害时，对连线中的敌人触发一次伤害反击"
+            },
+            {
+              "id": 10101706,
+              "name": "瞬闪射线",
+              "description": "变成瞬间发射，伤害极高并且攻击频率较高"
+            },
+            {
+              "id": 10101710,
+              "name": "超级射线",
+              "description": "灼热射线结束时，对最近的敌人释放一次超级射线"
+            }
+          ]
+        },
+        {
+          "id": 10001707,
+          "star": 7,
+          "kind": "minor",
+          "description": "SkillDesc_10001707",
+          "options": [
+            {
+              "id": 10401702,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n持续时间 + 10%"
+            },
+            {
+              "id": 10401703,
+              "name": "灼热射线",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401704,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n攻击距离 + 25%"
+            }
+          ]
+        },
+        {
+          "id": 10001708,
+          "star": 8,
+          "kind": "minor",
+          "description": "SkillDesc_10001708",
+          "options": [
+            {
+              "id": 10401702,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n持续时间 + 10%"
+            },
+            {
+              "id": 10401703,
+              "name": "灼热射线",
+              "description": "攻击力 + 60%"
+            },
+            {
+              "id": 10401704,
+              "name": "灼热射线",
+              "description": "攻击力 + 40%\n攻击距离 + 25%"
+            }
+          ]
+        },
+        {
+          "id": 10001709,
+          "star": 9,
+          "kind": "breakthrough",
+          "description": "对武器进行突破",
+          "options": [
+            {
+              "id": 10101701,
+              "name": "火焰折射",
+              "description": "射线可以折射2次"
+            },
+            {
+              "id": 10101703,
+              "name": "灼热裂变",
+              "description": "灼热射线折射击中敌人后，向周围敌人发射瞬间射线"
+            },
+            {
+              "id": 10101704,
+              "name": "灼烧翻倍",
+              "description": "增加1道灼热射线"
+            },
+            {
+              "id": 10101707,
+              "name": "爆炸射线",
+              "description": "触发暴击时会爆炸"
+            },
+            {
+              "id": 10101712,
+              "name": "超远视距",
+              "description": "全屏范围攻击，提升少量暴击率"
+            },
+            {
+              "id": 10101713,
+              "name": "威力强化",
+              "description": "灼热射线大幅提升威力，并有概率点燃敌人"
+            },
+            {
+              "id": 10101715,
+              "name": "均衡射线",
+              "description": "降低来自连线敌人的伤害。受到伤害时，对连线中的敌人触发一次伤害反击"
+            },
+            {
+              "id": 10101706,
+              "name": "瞬闪射线",
+              "description": "变成瞬间发射，伤害极高并且攻击频率较高"
+            },
+            {
+              "id": 10101710,
+              "name": "超级射线",
+              "description": "灼热射线结束时，对最近的敌人释放一次超级射线"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

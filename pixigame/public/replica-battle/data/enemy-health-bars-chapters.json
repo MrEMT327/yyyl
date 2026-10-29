@@ -1,0 +1,2904 @@
+{
+  "source": "APK verified Character_entity tables; original StateBar UI bindings; UnityPy prefab world TRS mounts",
+  "uiReferenceWidth": 1080,
+  "sprites": {
+    "original_hp_progress_fg_white": {
+      "url": "assets/health-bars/progress_fg_white.png",
+      "width": 30,
+      "height": 44,
+      "pathId": "-6370264741659591012",
+      "sourceName": "progress_fg_white",
+      "border": {
+        "x": 13,
+        "y": 0,
+        "z": 13,
+        "w": 0
+      },
+      "pixelsToUnits": 100
+    },
+    "original_hp_progress_bg_black3": {
+      "url": "assets/health-bars/progress_bg_black3.png",
+      "width": 228,
+      "height": 56,
+      "pathId": "1268355537290945912",
+      "sourceName": "progress_bg_black3",
+      "border": {
+        "x": 103,
+        "y": 27,
+        "z": 95,
+        "w": 26
+      },
+      "pixelsToUnits": 100
+    },
+    "original_hp_progress_icon_EliteMonster": {
+      "url": "assets/health-bars/progress_icon_EliteMonster.png",
+      "width": 57,
+      "height": 53,
+      "pathId": "4171075806470857841",
+      "sourceName": "progress_icon_EliteMonster",
+      "border": {
+        "x": 0,
+        "y": 0,
+        "z": 0,
+        "w": 0
+      },
+      "pixelsToUnits": 100
+    },
+    "original_hp_progress_EliteMonster_white": {
+      "url": "assets/health-bars/progress_EliteMonster_white.png",
+      "width": 105,
+      "height": 30,
+      "pathId": "121766950760865326",
+      "sourceName": "progress_EliteMonster_white",
+      "border": {
+        "x": 40,
+        "y": 0,
+        "z": 43,
+        "w": 0
+      },
+      "pixelsToUnits": 100
+    },
+    "original_hp_progress_EliteMonster_di": {
+      "url": "assets/health-bars/progress_EliteMonster_di.png",
+      "width": 119,
+      "height": 43,
+      "pathId": "4249925416714041615",
+      "sourceName": "progress_EliteMonster_di",
+      "border": {
+        "x": 46,
+        "y": 0,
+        "z": 49,
+        "w": 0
+      },
+      "pixelsToUnits": 100
+    }
+  },
+  "bars": {
+    "normal": {
+      "prefab": "StateBarMonster",
+      "stateBarId": 2,
+      "layers": [
+        {
+          "role": "background",
+          "path": "/StateBarMonster/child/size/Image_Background",
+          "sprite": "original_hp_progress_bg_black3",
+          "x": 0,
+          "y": 0,
+          "width": 420,
+          "height": 80,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 126.00000500679016,
+          "displayHeight": 24.000000953674316,
+          "color": [
+            1,
+            1,
+            1,
+            0.8156862854957581
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "nextHp",
+          "path": "/StateBarMonster/child/size/Image_Background/Hp_bg/Image_HpBG",
+          "sprite": "original_hp_progress_fg_white",
+          "x": 0,
+          "y": 0,
+          "width": 388,
+          "height": 48,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 116.40000462532043,
+          "displayHeight": 14.40000057220459,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "reduce",
+          "path": "/StateBarMonster/child/size/Image_Background/Reduce/Image_Reduce",
+          "sprite": "original_hp_progress_fg_white",
+          "x": 0,
+          "y": 0,
+          "width": 388,
+          "height": 48,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 116.40000462532043,
+          "displayHeight": 14.40000057220459,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "hp",
+          "path": "/StateBarMonster/child/size/Image_Background/Hp/Image_Hp",
+          "sprite": "original_hp_progress_fg_white",
+          "x": 0,
+          "y": 0,
+          "width": 388,
+          "height": 48,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 116.40000462532043,
+          "displayHeight": 14.40000057220459,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        }
+      ]
+    },
+    "elite": {
+      "prefab": "StateBarMonsterElite",
+      "stateBarId": 4,
+      "layers": [
+        {
+          "role": "background",
+          "path": "/StateBarMonsterElite/child/size/Image_Background",
+          "sprite": "original_hp_progress_EliteMonster_di",
+          "x": 25.503000259399414,
+          "y": 1,
+          "width": 249,
+          "height": 42.79999923706055,
+          "scale": [
+            1,
+            1
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 249,
+          "displayHeight": 42.79999923706055,
+          "color": [
+            1,
+            1,
+            1,
+            0.8156862854957581
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "nextHp",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Hp_bg/Image_HpBg",
+          "sprite": "original_hp_progress_EliteMonster_white",
+          "x": 25.50296974182129,
+          "y": 0.7700004577636719,
+          "width": 217,
+          "height": 29.309999465942383,
+          "scale": [
+            1,
+            1
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 217,
+          "displayHeight": 29.309999465942383,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "reduce",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Reduce/Image_Reduce",
+          "sprite": "original_hp_progress_EliteMonster_white",
+          "x": 25.503000259399414,
+          "y": 0.7700004577636719,
+          "width": 217,
+          "height": 29.309999465942383,
+          "scale": [
+            1,
+            1
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 217,
+          "displayHeight": 29.309999465942383,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "hp",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Hp/Image_Hp",
+          "sprite": "original_hp_progress_EliteMonster_white",
+          "x": 25.50296974182129,
+          "y": 0.7700004577636719,
+          "width": 217,
+          "height": 29.309999465942383,
+          "scale": [
+            1,
+            1
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 217,
+          "displayHeight": 29.309999465942383,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        },
+        {
+          "role": "icon",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Image",
+          "sprite": "original_hp_progress_icon_EliteMonster",
+          "x": -102.49699974060059,
+          "y": 3.5,
+          "width": 57,
+          "height": 53,
+          "scale": [
+            1,
+            1
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 57,
+          "displayHeight": 53,
+          "color": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "imageType": 0,
+          "pixelsPerUnitMultiplier": 1,
+          "active": true
+        }
+      ]
+    }
+  },
+  "behavior": {
+    "showHpType": {
+      "0": "never create",
+      "1": "hidden on CharacterCreate; visible on CharacterBeHit",
+      "2": "always visible"
+    },
+    "showFadeSeconds": 0.25,
+    "hideFadeSeconds": 0.5,
+    "deathFadeSeconds": 0.05000000074505806,
+    "barColors": [
+      [
+        1,
+        0.13725490868091583,
+        0.13725490868091583,
+        1
+      ],
+      [
+        1,
+        0.4274509847164154,
+        0.14509804546833038,
+        1
+      ],
+      [
+        1,
+        0.729411780834198,
+        0.14509804546833038,
+        1
+      ]
+    ],
+    "follow": "world CenterFollow position + Vector3.forward * distance(Health, CenterFollow); screen-space upright UI",
+    "singleBarHidesNextHpAndIndex": true,
+    "hpTweenSeconds": 0.08,
+    "reduceTweenSeconds": 0.33,
+    "interpolation": "linear; on fresh damage restart from current display values",
+    "fillMode": "resize-sliced-image-fixed-left-edge",
+    "initialHpColor": "#ff2323",
+    "reduceColor": "#ffffff",
+    "deadFadeAfterReduceComplete": true
+  },
+  "entities": {
+    "310008": {
+      "modelId": 122003,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 2,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310009": {
+      "modelId": 122004,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.3000030517578125,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310010": {
+      "modelId": 122008,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.100006103515625,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310011": {
+      "modelId": 122007,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.3000030517578125,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310012": {
+      "modelId": 122023,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.100006103515625,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310013": {
+      "modelId": 122024,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.1999969482421875,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310014": {
+      "modelId": 122009,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.8000030517578125,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310015": {
+      "modelId": 122012,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 2,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310016": {
+      "modelId": 122005,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.600006103515625,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310017": {
+      "modelId": 122013,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 2,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310018": {
+      "modelId": 122010,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.5,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310019": {
+      "modelId": 122006,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.5,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310020": {
+      "modelId": 122014,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 2,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310022": {
+      "modelId": 122022,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 1.5,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "310023": {
+      "modelId": 122011,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "320005": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320007": {
+      "modelId": 120151,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320012": {
+      "modelId": 120179,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320013": {
+      "modelId": 120199,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 0.850006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320014": {
+      "modelId": 120144,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.1999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320016": {
+      "modelId": 120197,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320017": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320018": {
+      "modelId": 120132,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320019": {
+      "modelId": 120135,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320021": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320022": {
+      "modelId": 120135,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320023": {
+      "modelId": 120133,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320024": {
+      "modelId": 120133,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320025": {
+      "modelId": 120151,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320026": {
+      "modelId": 120156,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320027": {
+      "modelId": 120216,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320028": {
+      "modelId": 120166,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320029": {
+      "modelId": 120198,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.1999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320030": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320034": {
+      "modelId": 120179,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320035": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320037": {
+      "modelId": 120169,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.100006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320038": {
+      "modelId": 120184,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.100006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320039": {
+      "modelId": 120184,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.100006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320044": {
+      "modelId": 120163,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.8000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320045": {
+      "modelId": 120163,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.8000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320046": {
+      "modelId": 120181,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320047": {
+      "modelId": 120181,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320048": {
+      "modelId": 120160,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320049": {
+      "modelId": 120160,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320050": {
+      "modelId": 120217,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320051": {
+      "modelId": 120158,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320052": {
+      "modelId": 120177,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320055": {
+      "modelId": 120175,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320056": {
+      "modelId": 120171,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320057": {
+      "modelId": 120171,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320058": {
+      "modelId": 120178,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320059": {
+      "modelId": 120178,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320060": {
+      "modelId": 120182,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.6999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320061": {
+      "modelId": 120210,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320062": {
+      "modelId": 120200,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320063": {
+      "modelId": 120196,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320064": {
+      "modelId": 120160,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320065": {
+      "modelId": 120160,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320068": {
+      "modelId": 120186,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320069": {
+      "modelId": 120186,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320070": {
+      "modelId": 120180,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.6999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320072": {
+      "modelId": 120183,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.6999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320073": {
+      "modelId": 120134,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320074": {
+      "modelId": 120180,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.6999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320075": {
+      "modelId": 120196,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320081": {
+      "modelId": 120195,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320083": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320094": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330005": {
+      "modelId": 120136,
+      "type": 2,
+      "showHp": 0,
+      "showHpType": 0,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": false
+    },
+    "330006": {
+      "modelId": 120130,
+      "type": 2,
+      "showHp": 0,
+      "showHpType": 0,
+      "modelScale": 1,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": false
+    },
+    "330007": {
+      "modelId": 120131,
+      "type": 2,
+      "showHp": 0,
+      "showHpType": 0,
+      "modelScale": 1,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": false
+    },
+    "330008": {
+      "modelId": 120153,
+      "type": 2,
+      "showHp": 0,
+      "showHpType": 0,
+      "modelScale": 1,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": false
+    },
+    "330013": {
+      "modelId": 120139,
+      "type": 2,
+      "showHp": 0,
+      "showHpType": 0,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": false
+    },
+    "330016": {
+      "modelId": 120149,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.1999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330017": {
+      "modelId": 120173,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.399993896484375,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330018": {
+      "modelId": 120172,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.100006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330019": {
+      "modelId": 120176,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330020": {
+      "modelId": 120176,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330021": {
+      "modelId": 120201,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 0.6999969482421875,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330022": {
+      "modelId": 120131,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330023": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330024": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330025": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330026": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330027": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330028": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330029": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330030": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330031": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330032": {
+      "modelId": 120202,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340001": {
+      "modelId": 121001,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340002": {
+      "modelId": 121002,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340003": {
+      "modelId": 121003,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.399993896484375,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340004": {
+      "modelId": 121004,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.4499969482421875,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340005": {
+      "modelId": 121005,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.399993896484375,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340008": {
+      "modelId": 121010,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340009": {
+      "modelId": 121009,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340011": {
+      "modelId": 122016,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.100006103515625,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340014": {
+      "modelId": 121004,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5500030517578125,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340015": {
+      "modelId": 121011,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.399993896484375,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340017": {
+      "modelId": 121012,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340018": {
+      "modelId": 121013,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.600006103515625,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340019": {
+      "modelId": 121011,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.399993896484375,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340020": {
+      "modelId": 121003,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.399993896484375,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340021": {
+      "modelId": 121010,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340022": {
+      "modelId": 122015,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340025": {
+      "modelId": 122019,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340028": {
+      "modelId": 120177,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 3,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "340035": {
+      "modelId": 122020,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360005": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360017": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360019": {
+      "modelId": 120135,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360021": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360022": {
+      "modelId": 120135,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360044": {
+      "modelId": 120163,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.8000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360045": {
+      "modelId": 120163,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.8000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    }
+  },
+  "models": {
+    "1001": {
+      "prefab": "Airplane_0",
+      "center": [
+        0,
+        0.6000000238418579,
+        0.25
+      ],
+      "health": [
+        0.6399999856948853,
+        0,
+        0.5299999713897705
+      ],
+      "healthDistance": 0.9208691515508355,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120130": {
+      "prefab": "Plane1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.2259999513626099
+      ],
+      "healthDistance": 1.2259999513626099,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120131": {
+      "prefab": "Plane3",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.4715000092983246
+      ],
+      "healthDistance": 1.4715000092983246,
+      "centerTransformPathId": "-4916854461879817883",
+      "healthTransformPathId": "-2327272067979679387",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane3.prefab_7189204a091bee9f567e2a1db0263d7c.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120132": {
+      "prefab": "Plane2",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -0.699999988079071
+      ],
+      "healthDistance": 0.699999988079071,
+      "centerTransformPathId": "781161096498109885",
+      "healthTransformPathId": "6210512856041184701",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane2.prefab_cb6cd4943776df2766e7d3cd94146a5c.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120133": {
+      "prefab": "Plane10",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.1770000457763672
+      ],
+      "healthDistance": 1.1770000457763672,
+      "centerTransformPathId": "7977404485207322919",
+      "healthTransformPathId": "-7824848154745245401",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane10.prefab_fbc5009bdd1498c46ce63a4f417e73d2.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120134": {
+      "prefab": "Plane7",
+      "center": [
+        0.014000000432133675,
+        0.609000027179718,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.5549999475479126
+      ],
+      "healthDistance": 1.6700604390233929,
+      "centerTransformPathId": "7858456293328464549",
+      "healthTransformPathId": "-4107239392065312091",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane7.prefab_351afc511d2835230dbe0790568f7042.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120135": {
+      "prefab": "Plane13",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.3600000143051147
+      ],
+      "healthDistance": 1.3600000143051147,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120136": {
+      "prefab": "Plane5",
+      "center": [
+        0.014000000432133675,
+        0.609000027179718,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -0.9269999861717224
+      ],
+      "healthDistance": 1.1092366778462432,
+      "centerTransformPathId": "8026321341145512146",
+      "healthTransformPathId": "1383677445994215634",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane5.prefab_37b0f6f67b9026e67dac1e9af385c0f1.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120137": {
+      "prefab": "Plane4",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.2300000190734863
+      ],
+      "healthDistance": 1.2300000190734863,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120139": {
+      "prefab": "Plane6",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.0800000429153442
+      ],
+      "healthDistance": 1.0800000429153442,
+      "centerTransformPathId": "2528538512461898403",
+      "healthTransformPathId": "3477704968757813923",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane6.prefab_d77d910136251dd9fa23feba686fe501.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120143": {
+      "prefab": "Plane11",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.1430000066757202
+      ],
+      "healthDistance": 1.1430000066757202,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120144": {
+      "prefab": "Plane15",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.4769999980926514
+      ],
+      "healthDistance": 1.4769999980926514,
+      "centerTransformPathId": "-4648347423111165310",
+      "healthTransformPathId": "-3200935648679343486",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane15.prefab_043a99e99ce9b23dbba3bf7a75d917c9.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120149": {
+      "prefab": "Plane17",
+      "center": [
+        0.014000000432133675,
+        0.609000027179718,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -2.259999990463257
+      ],
+      "healthDistance": 2.340657384157476,
+      "centerTransformPathId": "1668406214645814848",
+      "healthTransformPathId": "6592092891288868416",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane17.prefab_97b331cf9cedf69c7951cd5b3d871ed5.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120151": {
+      "prefab": "Plane18",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.3009999990463257
+      ],
+      "healthDistance": 1.3009999990463257,
+      "centerTransformPathId": "-563184360489740002",
+      "healthTransformPathId": "-7096134802592753378",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane18.prefab_301ed81d6a0cdc8c0ae1df1c80f874dc.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120153": {
+      "prefab": "Plane20",
+      "center": [
+        0.014000000432133675,
+        0.609000027179718,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.2139999866485596
+      ],
+      "healthDistance": 1.3582610208276242,
+      "centerTransformPathId": "-5591010263675332847",
+      "healthTransformPathId": "2074418053465347857",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane20.prefab_dea33a68e28968df9fcc3818a9c1978e.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120156": {
+      "prefab": "Plane23",
+      "center": [
+        0.014000000432133675,
+        0.609000027179718,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.843000054359436
+      ],
+      "healthDistance": 1.9410631709158466,
+      "centerTransformPathId": "3809098901262141872",
+      "healthTransformPathId": "2076679868144585136",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane23.prefab_591efeecfb8ca80cbbe9d0453b1e8275.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120158": {
+      "prefab": "Plane25",
+      "center": [
+        0,
+        0,
+        0.03999999910593033
+      ],
+      "health": [
+        0,
+        0,
+        -1.7000000476837158
+      ],
+      "healthDistance": 1.7400000467896461,
+      "centerTransformPathId": "6433547856142761670",
+      "healthTransformPathId": "8782783047071268550",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane25.prefab_6e6c3d212055346b54c59ad193b7826a.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120160": {
+      "prefab": "Plane27",
+      "center": [
+        0.009999999776482582,
+        0,
+        0.7300000190734863
+      ],
+      "health": [
+        0,
+        0,
+        -1.590000033378601
+      ],
+      "healthDistance": 2.3200216040746726,
+      "centerTransformPathId": "7374438574164965410",
+      "healthTransformPathId": "8102750553963984930",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane27.prefab_ce3348c0e2c75051e569ae0cde8d7a61.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120163": {
+      "prefab": "Plane30",
+      "center": [
+        0,
+        0,
+        -0.18000000715255737
+      ],
+      "health": [
+        0,
+        0,
+        -1.6299999952316284
+      ],
+      "healthDistance": 1.449999988079071,
+      "centerTransformPathId": "5460017271449380465",
+      "healthTransformPathId": "2120433944041481841",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane30.prefab_07781706dd64fdb7be501fd58050ef7f.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120166": {
+      "prefab": "Plane33",
+      "center": [
+        0,
+        0,
+        -0.3499999940395355
+      ],
+      "health": [
+        0,
+        0,
+        -1.75
+      ],
+      "healthDistance": 1.4000000059604645,
+      "centerTransformPathId": "-6938920745020660305",
+      "healthTransformPathId": "3086213257572607407",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane33.prefab_c86accf45a54d466f39a2e9e325bcc8a.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120169": {
+      "prefab": "Plane34",
+      "center": [
+        0,
+        0,
+        -0.05900000035762787
+      ],
+      "health": [
+        0,
+        0,
+        -1.4550000429153442
+      ],
+      "healthDistance": 1.3960000425577164,
+      "centerTransformPathId": "1206464340718406609",
+      "healthTransformPathId": "2213846059402939345",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane34.prefab_3c22e357664bd2865cae6e59d86ee3c1.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120171": {
+      "prefab": "Plane11_1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.121000051498413
+      ],
+      "healthDistance": 1.121000051498413,
+      "centerTransformPathId": "-6623535702292042615",
+      "healthTransformPathId": "-5748282073649124215",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane11_1.prefab_70c01af80946ece5be7abcfaaf404d4a.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120172": {
+      "prefab": "Plane17_1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -0.6690000295639038
+      ],
+      "healthDistance": 0.6690000295639038,
+      "centerTransformPathId": "-552308878284010328",
+      "healthTransformPathId": "-6402036075988628312",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane17_1.prefab_8a830fef538487a3d0bcec45f817d932.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120173": {
+      "prefab": "Plane22_1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.1130000352859497
+      ],
+      "healthDistance": 1.1130000352859497,
+      "centerTransformPathId": "1509539400820125323",
+      "healthTransformPathId": "656853872761499275",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane22_1.prefab_2421a90d63afea5801a336beaa85a617.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120175": {
+      "prefab": "Plane2_1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -0.6779999732971191
+      ],
+      "healthDistance": 0.6779999732971191,
+      "centerTransformPathId": "5706197551577950719",
+      "healthTransformPathId": "7286994603370801663",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane2_1.prefab_34b0a7699579a895e95ac1beb6b10dd0.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120176": {
+      "prefab": "Plane3_1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.6490000486373901
+      ],
+      "healthDistance": 1.6490000486373901,
+      "centerTransformPathId": "8626961259266969677",
+      "healthTransformPathId": "-8157479307590168499",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane3_1.prefab_2da78be177966d6696456ccf847452cb.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120177": {
+      "prefab": "Plane36",
+      "center": [
+        0,
+        0,
+        -0.004999999888241291
+      ],
+      "health": [
+        0,
+        0,
+        -1.406999945640564
+      ],
+      "healthDistance": 1.4019999457523227,
+      "centerTransformPathId": "6414361652335843043",
+      "healthTransformPathId": "8838316640897308387",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane36.prefab_e11c0d2aa2f238c368eb8fd13259fb9a.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120178": {
+      "prefab": "Plane13_4",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.309000015258789
+      ],
+      "healthDistance": 1.309000015258789,
+      "centerTransformPathId": "9107835237862730878",
+      "healthTransformPathId": "-7142502133287621506",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane13_4.prefab_d5f4da5bb2fa7f628754f860f44d2627.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120179": {
+      "prefab": "Plane37",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -1.3819999694824219
+      ],
+      "healthDistance": 1.3909999690949917,
+      "centerTransformPathId": "-8846228970577741484",
+      "healthTransformPathId": "512518832521001300",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane37.prefab_b58233a86c3fc9b149b79cb607202ffa.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120180": {
+      "prefab": "Plane38",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -1.4490000009536743
+      ],
+      "healthDistance": 1.4580000005662441,
+      "centerTransformPathId": "4322355001107189955",
+      "healthTransformPathId": "-3469901100471250749",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane38.prefab_0e68ba7368bae9d92f150d0a96f2513e.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120181": {
+      "prefab": "Plane39",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -1.6130000352859497
+      ],
+      "healthDistance": 1.6220000348985195,
+      "centerTransformPathId": "-7055020387558577546",
+      "healthTransformPathId": "2113408705982474870",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane39.prefab_a831aa6d23589bc7c1bfc897f73ab58c.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120182": {
+      "prefab": "Plane40",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -2.450000047683716
+      ],
+      "healthDistance": 2.4590000472962856,
+      "centerTransformPathId": "3993341447967040834",
+      "healthTransformPathId": "-9136669878278527678",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane40.prefab_fa1e102ef592b1dc3af2268803e96519.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120183": {
+      "prefab": "Plane41",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -2.0799999237060547
+      ],
+      "healthDistance": 2.0889999233186245,
+      "centerTransformPathId": "8526443645716735724",
+      "healthTransformPathId": "-536318163783571732",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane41.prefab_1902b92c50272ba78cc1eb04eebd4e72.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120184": {
+      "prefab": "Plane42",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -1.9450000524520874
+      ],
+      "healthDistance": 1.9540000520646572,
+      "centerTransformPathId": "-5928437126932807989",
+      "healthTransformPathId": "-333208942376665397",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane42.prefab_7aeff17e44eb27575c8773a374349aa3.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120186": {
+      "prefab": "Plane44",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -1.0670000314712524
+      ],
+      "healthDistance": 1.0760000310838223,
+      "centerTransformPathId": "-7928387652893586590",
+      "healthTransformPathId": "-6196717498816378014",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane44.prefab_083b6f46b6c6b9b813c7fb450b3e857d.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120195": {
+      "prefab": "Plane45",
+      "center": [
+        0,
+        0,
+        -0.8700000047683716
+      ],
+      "health": [
+        0,
+        0,
+        -1.3140000104904175
+      ],
+      "healthDistance": 0.4440000057220459,
+      "centerTransformPathId": "-6839946533044955417",
+      "healthTransformPathId": "5433631463928944359",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane45.prefab_0f396bc3d26d632521d9a5044bf50536.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120196": {
+      "prefab": "Plane46",
+      "center": [
+        0,
+        0,
+        -0.41999998688697815
+      ],
+      "health": [
+        0,
+        0,
+        -4.329999923706055
+      ],
+      "healthDistance": 3.9099999368190765,
+      "centerTransformPathId": "-5122838687712081669",
+      "healthTransformPathId": "-3520732455133771525",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane46.prefab_30b896424328e5c6335e90e8863ca68f.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120197": {
+      "prefab": "Plane47",
+      "center": [
+        0,
+        0,
+        -0.11999999731779099
+      ],
+      "health": [
+        0,
+        0,
+        -4.090000152587891
+      ],
+      "healthDistance": 3.9700001552700996,
+      "centerTransformPathId": "5577263626025434620",
+      "healthTransformPathId": "-4756099689791226372",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane47.prefab_e19b494b5b821a99609d16ac3480ed72.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120198": {
+      "prefab": "Plane48",
+      "center": [
+        0,
+        0,
+        -0.18000000715255737
+      ],
+      "health": [
+        0,
+        0,
+        -3.1600000858306885
+      ],
+      "healthDistance": 2.980000078678131,
+      "centerTransformPathId": "1013369119096964751",
+      "healthTransformPathId": "1915751351815046799",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane48.prefab_74c1e9b1888a4fedcc309c00dc3963c0.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120199": {
+      "prefab": "Plane49",
+      "center": [
+        0,
+        0,
+        -0.49000000953674316
+      ],
+      "health": [
+        0,
+        0,
+        -2.880000114440918
+      ],
+      "healthDistance": 2.390000104904175,
+      "centerTransformPathId": "-8145727219686054723",
+      "healthTransformPathId": "2481472820473750717",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane49.prefab_864f9f5240526ce5c239b9102fdd0302.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120200": {
+      "prefab": "Plane50",
+      "center": [
+        0,
+        0,
+        -0.1599999964237213
+      ],
+      "health": [
+        0,
+        0,
+        -3.609999895095825
+      ],
+      "healthDistance": 3.449999898672104,
+      "centerTransformPathId": "-6136202513686888889",
+      "healthTransformPathId": "5618077391549267527",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane50.prefab_98c134b1eccf8c8a600071fbf88330f2.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120201": {
+      "prefab": "Plane51",
+      "center": [
+        0,
+        0,
+        -0.029999999329447746
+      ],
+      "health": [
+        0,
+        0,
+        -2.369999885559082
+      ],
+      "healthDistance": 2.3399998862296343,
+      "centerTransformPathId": "-1828320186231346819",
+      "healthTransformPathId": "-4872165855705224835",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane51.prefab_b957248cac773a73246ed6fb9a7a1e61.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120202": {
+      "prefab": "Plane52",
+      "center": [
+        0,
+        0,
+        -0.1599999964237213
+      ],
+      "health": [
+        0,
+        0,
+        -2.259999990463257
+      ],
+      "healthDistance": 2.0999999940395355,
+      "centerTransformPathId": "7223217512455642624",
+      "healthTransformPathId": "-2012794204736741888",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane52.prefab_8cc31f2ca5b2548f0b35c4e336f1766c.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120210": {
+      "prefab": "Plane53",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -2.259999990463257
+      ],
+      "healthDistance": 2.259999990463257,
+      "centerTransformPathId": "-3134940480393476735",
+      "healthTransformPathId": "-2855500729850690175",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane53.prefab_c5a2c45d5d1323f474bb59353ff91050.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120216": {
+      "prefab": "Plane59",
+      "center": [
+        0,
+        0,
+        0.20000000298023224
+      ],
+      "health": [
+        0,
+        0,
+        -1.7899999618530273
+      ],
+      "healthDistance": 1.9899999648332596,
+      "centerTransformPathId": "-3900076591715659190",
+      "healthTransformPathId": "-5666873035912916406",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane59.prefab_3cccd5384f7a732a3ba38efa0455c3d9.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "120217": {
+      "prefab": "Plane60",
+      "center": [
+        0,
+        0,
+        -0.20000000298023224
+      ],
+      "health": [
+        0,
+        0,
+        -2
+      ],
+      "healthDistance": 1.7999999970197678,
+      "centerTransformPathId": "1993367171677304171",
+      "healthTransformPathId": "-5670968261843274389",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane60.prefab_d6a6dab136b9c509e74e66483ec82228.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121001": {
+      "prefab": "Plane_boss_1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1,
+      "centerTransformPathId": "932818189247631162",
+      "healthTransformPathId": "1924553644286201658",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_1.prefab_6cd0aa1d44f69488cd6159a5e026f2d6.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121002": {
+      "prefab": "Plane_boss_2",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "121003": {
+      "prefab": "Plane_boss_3",
+      "center": [
+        0,
+        0,
+        -0.6000000238418579
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 0.3999999761581421,
+      "centerTransformPathId": "-5156111643116168670",
+      "healthTransformPathId": "4845217897877608994",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_3.prefab_7d86f1e122319b80b2111aafcfcf93b8.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121004": {
+      "prefab": "Plane_boss_4",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1,
+      "centerTransformPathId": "5560458505913750793",
+      "healthTransformPathId": "5321497399831876873",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_4.prefab_554b153dce691e330c46ffbc12d18a97.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121005": {
+      "prefab": "Plane_boss_5",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1,
+      "centerTransformPathId": "-1843311906140898190",
+      "healthTransformPathId": "-8157788591437890446",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_5.prefab_ef3323096d3b1a0c559875f5d6111c4b.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121009": {
+      "prefab": "Plane_boss_9",
+      "center": [
+        0,
+        0,
+        -1.2999999523162842
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 0.2999999523162842,
+      "centerTransformPathId": "5603887672301815640",
+      "healthTransformPathId": "6958464955727382360",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_9.prefab_d4e076980d0e90d6eed5d72b520a925a.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121010": {
+      "prefab": "Plane_boss_10",
+      "center": [
+        0,
+        0,
+        -0.8399999737739563
+      ],
+      "health": [
+        0,
+        0,
+        -1.9299999475479126
+      ],
+      "healthDistance": 1.0899999737739563,
+      "centerTransformPathId": "257998767939341489",
+      "healthTransformPathId": "5601934608383888561",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_10.prefab_7b34ca9fcb2868acafd9d847168f0f93.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121011": {
+      "prefab": "Plane_boss_11",
+      "center": [
+        0,
+        0,
+        -0.6200000047683716
+      ],
+      "health": [
+        0,
+        0,
+        -1.9299999475479126
+      ],
+      "healthDistance": 1.309999942779541,
+      "centerTransformPathId": "-5581876030922343438",
+      "healthTransformPathId": "-7952370121468724238",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_11.prefab_8c7306392c4ce4d6001bdde7f7833733.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121012": {
+      "prefab": "Plane_boss_12",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1,
+      "centerTransformPathId": "-5245819134743653004",
+      "healthTransformPathId": "-665193065214487180",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_12.prefab_902a26850c011d7e9008551d59d51259.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "121013": {
+      "prefab": "Plane_boss_13",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1,
+      "centerTransformPathId": "-4404119496830761809",
+      "healthTransformPathId": "-5712570126388706129",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_13.prefab_52809454cb85a3e7fc408aac364ecb0c.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122003": {
+      "prefab": "Plane11_elite1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1.9800000190734863
+      ],
+      "healthDistance": 1.9800000190734863,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "122004": {
+      "prefab": "Plane15_elite1",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -3.7300000190734863
+      ],
+      "healthDistance": 3.7300000190734863,
+      "centerTransformPathId": "7778115582425656068",
+      "healthTransformPathId": "-2859278370011714812",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane15_elite1.prefab_e183f19efbc57347617e5caacd709282.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122005": {
+      "prefab": "Plane25_elite1",
+      "center": [
+        0,
+        0,
+        0.03999999910593033
+      ],
+      "health": [
+        0,
+        0,
+        -2.2799999713897705
+      ],
+      "healthDistance": 2.319999970495701,
+      "centerTransformPathId": "-1207909696865496082",
+      "healthTransformPathId": "-5043581486894803986",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane25_elite1.prefab_ad2be807787cb56b28428e7baa59129f.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122006": {
+      "prefab": "Plane28_elite1",
+      "center": [
+        0,
+        0,
+        -0.14000000059604645
+      ],
+      "health": [
+        0,
+        0,
+        -2.8299999237060547
+      ],
+      "healthDistance": 2.6899999231100082,
+      "centerTransformPathId": "-582487224477808102",
+      "healthTransformPathId": "-4005635920093902310",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane28_elite1.prefab_411260aeecffc4e0b57999f6c02d4493.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122007": {
+      "prefab": "Plane30_elite1",
+      "center": [
+        0,
+        0,
+        -0.18000000715255737
+      ],
+      "health": [
+        0,
+        0,
+        -2.140000104904175
+      ],
+      "healthDistance": 1.9600000977516174,
+      "centerTransformPathId": "-6986544256519162117",
+      "healthTransformPathId": "-4693426714285295877",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane30_elite1.prefab_affd8b95b5dd9aa403544d6f488e25ef.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122008": {
+      "prefab": "Plane32_elite1",
+      "center": [
+        -0.007000000216066837,
+        0.609000027179718,
+        0.1899999976158142
+      ],
+      "health": [
+        0,
+        0,
+        -3.75
+      ],
+      "healthDistance": 3.9867944534827147,
+      "centerTransformPathId": "6816976114273139372",
+      "healthTransformPathId": "4936556076462946988",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane32_elite1.prefab_82cb9f1855dc3d87a1a332c80c4c9dd4.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122009": {
+      "prefab": "Plane33_elite1",
+      "center": [
+        0,
+        0,
+        -0.3499999940395355
+      ],
+      "health": [
+        0,
+        0,
+        -2.1700000762939453
+      ],
+      "healthDistance": 1.8200000822544098,
+      "centerTransformPathId": "-357268325653711149",
+      "healthTransformPathId": "-7113965349697915181",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane33_elite1.prefab_e8343dab8225f86e1b9f0972b7571320.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122010": {
+      "prefab": "Plane50_elite1",
+      "center": [
+        0,
+        0,
+        -0.1599999964237213
+      ],
+      "health": [
+        0,
+        0,
+        -3.609999895095825
+      ],
+      "healthDistance": 3.449999898672104,
+      "centerTransformPathId": "-1223775499896564320",
+      "healthTransformPathId": "-1158563179983612512",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane50_elite1.prefab_0081e711278b6d6b7e2dad1e775edec3.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122011": {
+      "prefab": "Plane38_elite1",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -2.2679998874664307
+      ],
+      "healthDistance": 2.2769998870790005,
+      "centerTransformPathId": "6546067394067108054",
+      "healthTransformPathId": "-2766559755250364202",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane38_elite1.prefab_f00d73319caf941837ab9e4550f8ee12.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122012": {
+      "prefab": "Plane39_elite1",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -2.069999933242798
+      ],
+      "healthDistance": 2.0789999328553677,
+      "centerTransformPathId": "-56809990904131376",
+      "healthTransformPathId": "4573918771097718992",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane39_elite1.prefab_19443f01290ef2d4a8df714cab6e0204.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122013": {
+      "prefab": "Plane40_elite1",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -3.180000066757202
+      ],
+      "healthDistance": 3.189000066369772,
+      "centerTransformPathId": "4400243785747439055",
+      "healthTransformPathId": "6506379041210211791",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane40_elite1.prefab_c494399451bb308964e6ac0940bb9887.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122014": {
+      "prefab": "Plane41_elite1",
+      "center": [
+        0,
+        0,
+        0.008999999612569809
+      ],
+      "health": [
+        0,
+        0,
+        -2.5199999809265137
+      ],
+      "healthDistance": 2.5289999805390835,
+      "centerTransformPathId": "-8525353106814779737",
+      "healthTransformPathId": "3719896666878852775",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane41_elite1.prefab_4dd8ccf4c6dbbf570f66cdb0b756dbbc.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122015": {
+      "prefab": "Plane_boss_14",
+      "center": [
+        0,
+        0,
+        -0.4000000059604645
+      ],
+      "health": [
+        0,
+        0,
+        -4.289999961853027
+      ],
+      "healthDistance": 3.889999955892563,
+      "centerTransformPathId": "5382914457671452881",
+      "healthTransformPathId": "-7757176342527981359",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_14.prefab_df1c3dfedd11c8a0d3259f7b49d6671f.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122016": {
+      "prefab": "Plane_boss_15",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -4.260000228881836
+      ],
+      "healthDistance": 4.260000228881836,
+      "centerTransformPathId": "-1579733828868748414",
+      "healthTransformPathId": "2077749086416358274",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_15.prefab_03ac5bb7648a9be311f3ae724e6c6b58.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122019": {
+      "prefab": "Plane_boss_18",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -4.849999904632568
+      ],
+      "healthDistance": 4.849999904632568,
+      "centerTransformPathId": "-9134048242571506908",
+      "healthTransformPathId": "-9199565654899389660",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_18.prefab_ce79eada24c47089bea95158310615e0.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122020": {
+      "prefab": "Plane_boss_19",
+      "center": [
+        0,
+        0,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -4.78000020980835
+      ],
+      "healthDistance": 4.78000020980835,
+      "centerTransformPathId": "7799519951513371240",
+      "healthTransformPathId": "7151565402102415976",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane_boss_19.prefab_8fda7c09393277ac7eaed6c5790a2051.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122022": {
+      "prefab": "Plane36_elite1",
+      "center": [
+        0,
+        0,
+        -0.004999999888241291
+      ],
+      "health": [
+        0,
+        0,
+        -2.3499999046325684
+      ],
+      "healthDistance": 2.344999904744327,
+      "centerTransformPathId": "-3189323743354087219",
+      "healthTransformPathId": "2934688033838930125",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane36_elite1.prefab_7887193dc42fde8d0e5cb2a8b0dc2c98.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122023": {
+      "prefab": "Plane47_elite1",
+      "center": [
+        0,
+        0,
+        -0.11999999731779099
+      ],
+      "health": [
+        0,
+        0,
+        -4.559999942779541
+      ],
+      "healthDistance": 4.43999994546175,
+      "centerTransformPathId": "3114186783699759810",
+      "healthTransformPathId": "-3819627602165632318",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane47_elite1.prefab_cd6ca700a74106a397b755554512a84f.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "122024": {
+      "prefab": "Plane48_elite1",
+      "center": [
+        0,
+        0,
+        -0.18000000715255737
+      ],
+      "health": [
+        0,
+        0,
+        -4.010000228881836
+      ],
+      "healthDistance": 3.8300002217292786,
+      "centerTransformPathId": "-4187064215291704529",
+      "healthTransformPathId": "3195393682371300143",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/plane48_elite1.prefab_5431af1e51b61b0fb76ccd230950bf1f.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    },
+    "400010": {
+      "prefab": "Battle_Treasure_Chest_1",
+      "center": [
+        0.014000000432133675,
+        0.609000027179718,
+        0
+      ],
+      "health": [
+        0,
+        0,
+        -1
+      ],
+      "healthDistance": 1.1709299864283078,
+      "centerTransformPathId": "5223380634562612355",
+      "healthTransformPathId": "-8895684878763209597",
+      "sourceBundle": "assets/FullRes/prefab-entity_assets_assets/_resources/prefab/entity/battle_treasure_chest_1.prefab_334909ec92b60034d6b8ed2146b4d8cf.bundle",
+      "note": "Prefab transformed coordinates. Apply runtime model scale once; follow offset is world Vector3.forward * distance(Health, Center), not rotated health position."
+    }
+  },
+  "missingSprites": [],
+  "missingModels": []
+}

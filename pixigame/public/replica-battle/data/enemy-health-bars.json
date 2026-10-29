@@ -1,0 +1,601 @@
+{
+  "source": "APK StateBarMonster/StateBarMonsterElite serialized Image bindings and RectTransforms; native follow/show/color functions",
+  "uiReferenceWidth": 1080,
+  "sprites": {
+    "original_hp_progress_fg_white": {
+      "url": "assets/health-bars/progress_fg_white.png",
+      "width": 30,
+      "height": 44,
+      "pathId": "-6370264741659591012",
+      "sourceName": "progress_fg_white",
+      "border": {
+        "x": 13.0,
+        "y": 0.0,
+        "z": 13.0,
+        "w": 0.0
+      },
+      "pixelsToUnits": 100.0
+    },
+    "original_hp_progress_bg_black3": {
+      "url": "assets/health-bars/progress_bg_black3.png",
+      "width": 228,
+      "height": 56,
+      "pathId": "1268355537290945912",
+      "sourceName": "progress_bg_black3",
+      "border": {
+        "x": 103.0,
+        "y": 27.0,
+        "z": 95.0,
+        "w": 26.0
+      },
+      "pixelsToUnits": 100.0
+    },
+    "original_hp_progress_icon_EliteMonster": {
+      "url": "assets/health-bars/progress_icon_EliteMonster.png",
+      "width": 57,
+      "height": 53,
+      "pathId": "4171075806470857841",
+      "sourceName": "progress_icon_EliteMonster",
+      "border": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+      },
+      "pixelsToUnits": 100.0
+    },
+    "original_hp_progress_EliteMonster_white": {
+      "url": "assets/health-bars/progress_EliteMonster_white.png",
+      "width": 105,
+      "height": 30,
+      "pathId": "121766950760865326",
+      "sourceName": "progress_EliteMonster_white",
+      "border": {
+        "x": 40.0,
+        "y": 0.0,
+        "z": 43.0,
+        "w": 0.0
+      },
+      "pixelsToUnits": 100.0
+    },
+    "original_hp_progress_EliteMonster_di": {
+      "url": "assets/health-bars/progress_EliteMonster_di.png",
+      "width": 119,
+      "height": 43,
+      "pathId": "4249925416714041615",
+      "sourceName": "progress_EliteMonster_di",
+      "border": {
+        "x": 46.0,
+        "y": 0.0,
+        "z": 49.0,
+        "w": 0.0
+      },
+      "pixelsToUnits": 100.0
+    }
+  },
+  "bars": {
+    "normal": {
+      "prefab": "StateBarMonster",
+      "stateBarId": 2,
+      "layers": [
+        {
+          "role": "background",
+          "path": "/StateBarMonster/child/size/Image_Background",
+          "sprite": "original_hp_progress_bg_black3",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 420.0,
+          "height": 80.0,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 126.00000500679016,
+          "displayHeight": 24.000000953674316,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            0.8156862854957581
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "nextHp",
+          "path": "/StateBarMonster/child/size/Image_Background/Hp_bg/Image_HpBG",
+          "sprite": "original_hp_progress_fg_white",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 388.0,
+          "height": 48.0,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 116.40000462532043,
+          "displayHeight": 14.40000057220459,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "reduce",
+          "path": "/StateBarMonster/child/size/Image_Background/Reduce/Image_Reduce",
+          "sprite": "original_hp_progress_fg_white",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 388.0,
+          "height": 48.0,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 116.40000462532043,
+          "displayHeight": 14.40000057220459,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "hp",
+          "path": "/StateBarMonster/child/size/Image_Background/Hp/Image_Hp",
+          "sprite": "original_hp_progress_fg_white",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 388.0,
+          "height": 48.0,
+          "scale": [
+            0.30000001192092896,
+            0.30000001192092896
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 116.40000462532043,
+          "displayHeight": 14.40000057220459,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        }
+      ]
+    },
+    "elite": {
+      "prefab": "StateBarMonsterElite",
+      "stateBarId": 4,
+      "layers": [
+        {
+          "role": "background",
+          "path": "/StateBarMonsterElite/child/size/Image_Background",
+          "sprite": "original_hp_progress_EliteMonster_di",
+          "x": 25.503000259399414,
+          "y": 1.0,
+          "width": 249.0,
+          "height": 42.79999923706055,
+          "scale": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 249.0,
+          "displayHeight": 42.79999923706055,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            0.8156862854957581
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "nextHp",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Hp_bg/Image_HpBg",
+          "sprite": "original_hp_progress_EliteMonster_white",
+          "x": 25.50296974182129,
+          "y": 0.7700004577636719,
+          "width": 217.0,
+          "height": 29.309999465942383,
+          "scale": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 217.0,
+          "displayHeight": 29.309999465942383,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "reduce",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Reduce/Image_Reduce",
+          "sprite": "original_hp_progress_EliteMonster_white",
+          "x": 25.503000259399414,
+          "y": 0.7700004577636719,
+          "width": 217.0,
+          "height": 29.309999465942383,
+          "scale": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 217.0,
+          "displayHeight": 29.309999465942383,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "hp",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Hp/Image_Hp",
+          "sprite": "original_hp_progress_EliteMonster_white",
+          "x": 25.50296974182129,
+          "y": 0.7700004577636719,
+          "width": 217.0,
+          "height": 29.309999465942383,
+          "scale": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 217.0,
+          "displayHeight": 29.309999465942383,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 1,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        },
+        {
+          "role": "icon",
+          "path": "/StateBarMonsterElite/child/size/Image_Background/Image",
+          "sprite": "original_hp_progress_icon_EliteMonster",
+          "x": -102.49699974060059,
+          "y": 3.5,
+          "width": 57.0,
+          "height": 53.0,
+          "scale": [
+            1.0,
+            1.0
+          ],
+          "pivot": [
+            0.5,
+            0.5
+          ],
+          "displayWidth": 57.0,
+          "displayHeight": 53.0,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "imageType": 0,
+          "pixelsPerUnitMultiplier": 1.0,
+          "active": true
+        }
+      ]
+    }
+  },
+  "models": {
+    "1001": {
+      "prefab": "Airplane_0",
+      "center": [
+        0.0,
+        0.6000000238418579,
+        0.25
+      ],
+      "health": [
+        0.6399999856948853,
+        0.0,
+        0.5299999713897705
+      ],
+      "healthDistance": 0.9208691515508355,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120130": {
+      "prefab": "Plane1",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "health": [
+        0.0,
+        0.0,
+        -1.2259999513626099
+      ],
+      "healthDistance": 1.2259999513626099,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120135": {
+      "prefab": "Plane13",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "health": [
+        0.0,
+        0.0,
+        -1.3600000143051147
+      ],
+      "healthDistance": 1.3600000143051147,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120137": {
+      "prefab": "Plane4",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "health": [
+        0.0,
+        0.0,
+        -1.2300000190734863
+      ],
+      "healthDistance": 1.2300000190734863,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "120143": {
+      "prefab": "Plane11",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "health": [
+        0.0,
+        0.0,
+        -1.1430000066757202
+      ],
+      "healthDistance": 1.1430000066757202,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "121002": {
+      "prefab": "Plane_boss_2",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "health": [
+        0.0,
+        0.0,
+        -1.0
+      ],
+      "healthDistance": 1.0,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    },
+    "122003": {
+      "prefab": "Plane11_elite1",
+      "center": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "health": [
+        0.0,
+        0.0,
+        -1.9800000190734863
+      ],
+      "healthDistance": 1.9800000190734863,
+      "note": "Prefab transformed coordinates; use same runtime model-scale multiplier as model geometry. Follow adds Vector3.forward * healthDistance; it does not rotate this offset with the enemy."
+    }
+  },
+  "entities": {
+    "310008": {
+      "modelId": 122003,
+      "type": 201,
+      "showHp": 1,
+      "showHpType": 2,
+      "modelScale": 2.0,
+      "bar": "elite",
+      "initiallyVisible": true,
+      "showOnHit": false
+    },
+    "320005": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.0,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320030": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "320035": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.0,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "330006": {
+      "modelId": 120130,
+      "type": 2,
+      "showHp": 0,
+      "showHpType": 0,
+      "modelScale": 1.0,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": false
+    },
+    "340002": {
+      "modelId": 121002,
+      "type": 3,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "boss",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360005": {
+      "modelId": 120143,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 2.0,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360017": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360019": {
+      "modelId": 120135,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360021": {
+      "modelId": 120137,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.5,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    },
+    "360022": {
+      "modelId": 120135,
+      "type": 2,
+      "showHp": 1,
+      "showHpType": 1,
+      "modelScale": 1.3000030517578125,
+      "bar": "normal",
+      "initiallyVisible": false,
+      "showOnHit": true
+    }
+  },
+  "behavior": {
+    "showHpType": {
+      "0": "never create",
+      "1": "hidden on CharacterCreate; visible on CharacterBeHit",
+      "2": "always visible"
+    },
+    "showFadeSeconds": 0.25,
+    "hideFadeSeconds": 0.5,
+    "deathFadeSeconds": 0.05000000074505806,
+    "barColors": [
+      [
+        1.0,
+        0.13725490868091583,
+        0.13725490868091583,
+        1.0
+      ],
+      [
+        1.0,
+        0.4274509847164154,
+        0.14509804546833038,
+        1.0
+      ],
+      [
+        1.0,
+        0.729411780834198,
+        0.14509804546833038,
+        1.0
+      ]
+    ],
+    "follow": "world CenterFollow position + Vector3.forward * distance(Health, CenterFollow); screen-space upright UI",
+    "singleBarHidesNextHpAndIndex": true,
+    "hpTweenSeconds": 0.08,
+    "reduceTweenSeconds": 0.33,
+    "interpolation": "linear; on fresh damage restart from current display values",
+    "fillMode": "resize-sliced-image-fixed-left-edge",
+    "initialHpColor": "#ff2323",
+    "reduceColor": "#ffffff",
+    "deadFadeAfterReduceComplete": true
+  },
+  "missingSprites": []
+}

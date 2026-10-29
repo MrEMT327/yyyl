@@ -1,0 +1,152 @@
+{
+  "generator": "Blender 5.2.1 LTS",
+  "source": "art/common-weapons/common-weapons.blend",
+  "workbookSha256": "8c6d5f22d3aa43d39bac0e8c38423cea1a78581258de174230bfe2cc20dd1419",
+  "forward": "-Y in Blender",
+  "assets": [
+    {
+      "id": "cannon",
+      "file": "cannon.glb",
+      "bytes": 18264,
+      "sha256": "1173efa561e8d43938f2a5284d1526dbbaf011f5b1ae1b36a861c1551c014da4",
+      "triangles": 308,
+      "primitives": 3
+    },
+    {
+      "id": "rail",
+      "file": "rail.glb",
+      "bytes": 50508,
+      "sha256": "f2f059ba50657d6463715b4d1c34fe8c3af4c8cd49a69950786f259082dcf11c",
+      "triangles": 952,
+      "primitives": 9
+    },
+    {
+      "id": "rocket",
+      "file": "rocket.glb",
+      "bytes": 48400,
+      "sha256": "b1bc25977547ac2184ab13a1e972138a9fc8a62e47879b67c0377051b8e68d19",
+      "triangles": 928,
+      "primitives": 5
+    },
+    {
+      "id": "scatter",
+      "file": "scatter.glb",
+      "bytes": 12836,
+      "sha256": "f9fe83349db405df173e5c45991e4c53984550543e2190aa90bcdb5f8f5cbab9",
+      "triangles": 324,
+      "primitives": 3
+    },
+    {
+      "id": "sidegun",
+      "file": "sidegun.glb",
+      "bytes": 18284,
+      "sha256": "ddbd0af75aaff3e3486126c9096bc0ebe8f149a11e69b8e350bf4187860b8455",
+      "triangles": 308,
+      "primitives": 3
+    },
+    {
+      "id": "grenade",
+      "file": "grenade.glb",
+      "bytes": 34120,
+      "sha256": "797ce419cd95824ebc9f5accb00188f03beffcf35cf6e6946a877a736d09b113",
+      "triangles": 776,
+      "primitives": 5
+    },
+    {
+      "id": "mine",
+      "file": "mine.glb",
+      "bytes": 58664,
+      "sha256": "716bda7142fb128e576b5e3ccc17a9d730177ee97bd5227c293ee94c2e8d8f44",
+      "triangles": 1020,
+      "primitives": 4
+    },
+    {
+      "id": "mine_core",
+      "file": "mine_core.glb",
+      "bytes": 47068,
+      "sha256": "54b24414f356c3f60803e87572dff671e91679f6514bf854a0bed218cddbc056",
+      "triangles": 804,
+      "primitives": 4
+    },
+    {
+      "id": "lightmine",
+      "file": "lightmine.glb",
+      "bytes": 33388,
+      "sha256": "0af68264bb7354f38c6ec5f255d60865d0a858c2cc2e20a1c8f3b6b97e9d90d4",
+      "triangles": 648,
+      "primitives": 3
+    },
+    {
+      "id": "pyro",
+      "file": "pyro.glb",
+      "bytes": 50436,
+      "sha256": "4ec670f7cec9b717c282de43c09199ff3393e1d719383db45b4eadb3c045cb4b",
+      "triangles": 1000,
+      "primitives": 2
+    },
+    {
+      "id": "ember",
+      "file": "ember.glb",
+      "bytes": 21636,
+      "sha256": "5ae042fb723c898e39353a3101633c14862ee93f437a556e772c8cd303df3b30",
+      "triangles": 520,
+      "primitives": 2
+    },
+    {
+      "id": "orb",
+      "file": "orb.glb",
+      "bytes": 24980,
+      "sha256": "962a8d90010dc301c3792e97736ce1b7600970eb6da10017cb8f83a55dc87ae9",
+      "triangles": 960,
+      "primitives": 1
+    },
+    {
+      "id": "shield",
+      "file": "shield.glb",
+      "bytes": 305076,
+      "sha256": "31627d3357086f2ec5acc8b15cf470b2fb9600d77dbbeeada05ed8176feca883",
+      "triangles": 9180,
+      "primitives": 3
+    },
+    {
+      "id": "blade",
+      "file": "blade.glb",
+      "bytes": 16668,
+      "sha256": "68d15dd23c46fb0b3ee3b29b74787da2687ba0dc45d8cce70bb8cbac1d7017ad",
+      "triangles": 368,
+      "primitives": 3
+    },
+    {
+      "id": "tail",
+      "file": "tail.glb",
+      "bytes": 18256,
+      "sha256": "3dc45f905671cacb7e09a62d06f025df66ed1f0b3db39ca1b936c63dbca7d51c",
+      "triangles": 308,
+      "primitives": 3
+    },
+    {
+      "id": "drone",
+      "file": "drone.glb",
+      "bytes": 61516,
+      "sha256": "5476ab7539370e476106916f4a65ab5619cff6ce9988e48865b1a4d300552c84",
+      "triangles": 1172,
+      "primitives": 8
+    },
+    {
+      "id": "mother",
+      "file": "mother.glb",
+      "bytes": 85200,
+      "sha256": "f0f0f1e1a7dd2d7f2e5c99e6bc20cc4457a88560bb5d896ca0992ee69a1cada9",
+      "triangles": 1692,
+      "primitives": 8
+    },
+    {
+      "id": "ice",
+      "file": "ice.glb",
+      "bytes": 3680,
+      "sha256": "99ad88ad295d82c20af6f483a8a5a0f74e55d0612b853e9af5942d74dbdf4f0c",
+      "triangles": 44,
+      "primitives": 1
+    }
+  ]
+}

@@ -1,0 +1,336 @@
+{
+  "source": "APK 1.1.6 Chapter_MainChapter + Chapter_ProtectTemplate; ordinary mainline only. Server StartCombatResponse.DefeatCount is the input; no server count lifecycle inferred.",
+  "nativeSha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+  "tableHashes": {
+    "Chapter_MainChapter": "f28c4840284c587c0f2859c38ab4a5a0c5a5f7d12495f24067277c3151c4e5d9",
+    "Chapter_ProtectTemplate": "df973f1c3f316fbec8ac0bc7756b49ddd7f98da2276bcf139b96c9db89f8c932"
+  },
+  "chapters": {
+    "1": {
+      "templateId": 1,
+      "templateB": 1
+    },
+    "2": {
+      "templateId": 2,
+      "templateB": 2
+    },
+    "3": {
+      "templateId": 3,
+      "templateB": 3
+    },
+    "4": {
+      "templateId": 4,
+      "templateB": 4
+    },
+    "5": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "6": {
+      "templateId": 6,
+      "templateB": 6
+    },
+    "7": {
+      "templateId": 7,
+      "templateB": 7
+    },
+    "8": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "9": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "10": {
+      "templateId": 10,
+      "templateB": 10
+    },
+    "11": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "12": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "13": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "14": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "15": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "16": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "17": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "18": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "19": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "20": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "21": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "22": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "23": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "24": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "25": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "26": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "27": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "28": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "29": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "30": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "31": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "32": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "33": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "34": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "35": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "36": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "37": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "38": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "39": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "40": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "41": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "42": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "43": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "44": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "45": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "46": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "47": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "48": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "49": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "50": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "51": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "52": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "53": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "54": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "55": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "56": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "57": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "58": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "59": {
+      "templateId": 0,
+      "templateB": 0
+    },
+    "60": {
+      "templateId": 0,
+      "templateB": 0
+    }
+  },
+  "templates": {
+    "1": [
+      65536,
+      52429,
+      52429,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875
+    ],
+    "2": [
+      65536,
+      58982,
+      58982,
+      52429,
+      52429,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875
+    ],
+    "3": [
+      65536,
+      65536,
+      52429,
+      52429,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875
+    ],
+    "4": [
+      65536,
+      65536,
+      65536,
+      52429,
+      52429,
+      45875,
+      45875,
+      45875,
+      45875,
+      45875
+    ],
+    "6": [
+      65536,
+      65536,
+      62259,
+      62259,
+      58982,
+      58982,
+      55706,
+      55706,
+      55706,
+      55706
+    ],
+    "7": [
+      65536,
+      65536,
+      62259,
+      62259,
+      58982,
+      58982,
+      55706,
+      55706,
+      55706,
+      55706
+    ],
+    "10": [
+      65536,
+      65536,
+      62259,
+      62259,
+      58982,
+      58982,
+      55706,
+      55706,
+      55706,
+      55706
+    ]
+  }
+}

@@ -1,0 +1,178 @@
+/* Supply surfaces share the existing PSD frame and nine-slice controls. */
+#gui-casual-lobby .pl-modal[data-psd-popup]:is([data-modal-type='nativeEquipmentBoxes'],[data-modal-type='pilotSupplyTasks'],[data-modal-type='pilotSupplyBoxes'],[data-modal-type='nativeRecruitInfo'],[data-modal-type='growthSupplyChoice'],[data-modal-type='collectionSupplyChoice']) {
+  --popup-width:92cqw;--popup-height:84%;--popup-max-height:88%;
+}
+#gui-casual-lobby .pl-modal-backdrop:has(>.pl-modal:is([data-modal-type='nativeEquipmentBoxes'],[data-modal-type='pilotSupplyTasks'],[data-modal-type='pilotSupplyBoxes'],[data-modal-type='nativeRecruitInfo'],[data-modal-type='growthSupplyChoice'],[data-modal-type='collectionSupplyChoice'])) {padding:0!important}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(.supply-ui)>.pl-modal-heading h2 {font-size:clamp(20px,5.6cqw,25px)!important}
+#gui-casual-lobby .pl-modal .supply-ui {--su-ink:#203b51;--su-muted:#486278;--su-line:#8ba0b4;--su-panel:#dce6edb8;display:grid;align-content:start;gap:14px;padding:2px 6px 12px;color:var(--su-ink);font:400 16px/1.5 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .pl-modal .supply-ui :is(p,h3,h4) {margin:0;color:inherit;text-shadow:none}
+#gui-casual-lobby .pl-modal .supply-ui h3 {font-size:18px;line-height:1.35;font-weight:700}
+#gui-casual-lobby .pl-modal .supply-ui h4 {font-size:16px;margin-top:14px}
+#gui-casual-lobby .pl-modal .supply-ui :is(.su-card,.su-box-card) {padding:14px;background:var(--su-panel);border:1px solid var(--su-line);color:var(--su-ink)}
+#gui-casual-lobby .pl-modal .supply-ui .su-card-heading {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+#gui-casual-lobby .pl-modal .supply-ui .su-card-heading>span {font-size:14px;color:var(--su-muted);white-space:nowrap}
+#gui-casual-lobby .pl-modal .supply-ui .su-card-heading>strong {font-size:18px;white-space:nowrap}
+#gui-casual-lobby .pl-modal .supply-ui .wc-button {min-width:0;min-height:48px;margin:0;padding:10px 12px;font-size:17px;line-height:1.25;--psd-button-corner:12px}
+#gui-casual-lobby .pl-modal .supply-ui .su-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+#gui-casual-lobby .pl-modal .supply-ui .su-draw-actions .wc-button {display:grid;gap:5px;min-height:68px}
+#gui-casual-lobby .pl-modal .supply-ui .su-draw-actions strong {font-size:18px;font-weight:400}
+#gui-casual-lobby .pl-modal .supply-ui .su-draw-actions small {font:500 14px/1.3 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .pl-modal .supply-ui .su-pity {display:flex;flex-wrap:wrap;gap:8px 16px;margin:10px 0;font-size:14px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui .su-pity b {font-size:20px;color:var(--su-ink);margin:0 3px}
+#gui-casual-lobby .pl-modal .supply-ui .su-free {font-size:15px;color:#236b51}
+#gui-casual-lobby .pl-modal .supply-ui .su-details {padding:0 12px;border:1px solid var(--su-line);background:#cbd9e5a8;color:var(--su-ink)}
+#gui-casual-lobby .pl-modal .supply-ui .su-card>.su-details,#gui-casual-lobby .pl-modal .supply-ui .su-box-card>.su-details {margin-top:12px}
+#gui-casual-lobby .pl-modal .supply-ui .su-details>summary {display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:46px;padding:10px 0;font-size:15px;font-weight:600;cursor:pointer;list-style:none}
+#gui-casual-lobby .pl-modal .supply-ui .su-details>summary::after {content:'＋';flex:none;font-size:18px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui .su-details[open]>summary::after {content:'−'}
+#gui-casual-lobby .pl-modal .supply-ui .su-details>summary>b {margin-left:auto;font-size:14px}
+#gui-casual-lobby .pl-modal .supply-ui .su-details p {margin:0 0 10px;font-size:15px;line-height:1.65}
+#gui-casual-lobby .pl-modal .supply-ui .su-details .wc-button {margin-bottom:10px}
+#gui-casual-lobby .pl-modal .supply-ui .su-rate-groups>details>summary {display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:46px;border-bottom:1px solid var(--su-line);font-size:15px;cursor:pointer}
+#gui-casual-lobby .pl-modal .supply-ui .su-rate-groups>details>summary b {font-size:18px}
+#gui-casual-lobby .pl-modal .supply-ui .su-item-rate {display:grid;grid-template-columns:32px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 0}
+#gui-casual-lobby .pl-modal .supply-ui .su-item-art {width:38px;height:38px;object-fit:contain;flex:none}
+#gui-casual-lobby .pl-modal .supply-ui .su-item-rate .su-item-art {width:32px;height:32px}
+#gui-casual-lobby .pl-modal .supply-ui .su-reward {display:inline-grid;grid-template-columns:auto auto;align-items:center;justify-content:start;gap:3px 6px;min-width:0;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .pl-modal .supply-ui .su-reward>b {font-size:19px}
+#gui-casual-lobby .pl-modal .supply-ui .su-reward>small {grid-column:1/-1;font-size:13px;color:var(--su-muted);line-height:1.3}
+#gui-casual-lobby .pl-modal .supply-ui .su-rewards {display:flex;flex-wrap:wrap;gap:14px;margin:10px 0}
+#gui-casual-lobby .pl-modal .supply-ui .su-tabs {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:sticky;top:-2px;z-index:2;background:#a6b8cc;padding:0 0 5px}
+#gui-casual-lobby .pl-modal .supply-ui .su-reset {margin:-8px 0 0;color:var(--su-muted);font-size:13px;text-align:right}
+#gui-casual-lobby .pl-modal .supply-ui .su-progress {height:10px;overflow:hidden;border:1px solid #7798ac;background:#94abbd;margin:4px 0 12px}
+#gui-casual-lobby .pl-modal .supply-ui .su-progress>i {display:block;height:100%;background:#42a8c7}
+#gui-casual-lobby .pl-modal .supply-ui .su-card-bottom {display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 0}
+#gui-casual-lobby .pl-modal .supply-ui .su-card-bottom>.wc-button {min-width:96px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task-list {display:grid;gap:10px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task {display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:10px;align-items:center;padding:12px;background:var(--su-panel);border:1px solid var(--su-line);color:var(--su-ink)}
+#gui-casual-lobby .pl-modal .supply-ui .su-task h3 {display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;font-size:16px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task h3>small {font:400 14px/1.3 'Microsoft YaHei',sans-serif;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui .su-task-reward {display:flex;align-items:center;gap:10px;margin-top:6px;font-size:13px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui .su-task-reward .su-item-art {width:26px;height:26px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task-reward .su-reward>b {font-size:16px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task-copy>small {display:block;font-size:13px;margin-top:5px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task .su-details {margin-top:8px;padding-inline:8px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task .su-details>summary {min-height:40px;font-size:13px}
+#gui-casual-lobby .pl-modal .supply-ui .su-task .su-details .su-rewards {gap:8px}
+#gui-casual-lobby .pl-modal .supply-ui .su-inventory {display:flex;align-items:center;justify-content:space-between;gap:10px}
+#gui-casual-lobby .pl-modal .supply-ui .su-inventory>span {display:flex;align-items:center;gap:10px;min-width:0}
+#gui-casual-lobby .pl-modal .supply-ui .su-box-art {width:48px;height:48px;object-fit:contain}
+#gui-casual-lobby .pl-modal .supply-ui .su-inventory strong {font-size:18px}
+#gui-casual-lobby .pl-modal .supply-ui .su-inventory>b {font-size:26px;white-space:nowrap}
+#gui-casual-lobby .pl-modal .supply-ui .su-inventory>b>small {font-size:15px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui :is(.su-guarantee,.su-subtitle) {margin-top:8px;font-size:15px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui .ps-exchange {padding:12px 0;gap:10px;border-color:var(--su-line);font-size:16px}
+#gui-casual-lobby .pl-modal .supply-ui .ps-exchange small {font-size:13px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .supply-ui .ps-exchange>.wc-button {min-width:88px;margin:0}
+#gui-casual-lobby .pl-modal .supply-ui .su-credit-key {border-top:1px solid var(--su-line);padding:14px 0}
+#gui-casual-lobby .pl-modal .supply-ui .su-credit-key>div {display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+#gui-casual-lobby .pl-modal .supply-ui .su-credit-key>.wc-button {width:100%;margin:0}
+#gui-casual-lobby .pl-modal .supply-ui .su-footer-actions {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#gui-casual-lobby .pl-modal .supply-ui .su-footer-actions>.wc-button:only-child {grid-column:1/-1}
+#gui-casual-lobby .pl-modal .supply-ui .su-supply-entry>.wc-button {width:100%;margin-top:12px}
+#gui-casual-lobby .pl-modal .supply-ui .su-supply-entry .su-condition {margin:5px 0 10px;font-size:14px;color:var(--su-muted)}
+/* The odds page is already full-frame: simplify its rows without shrinking type. */
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-probability-content {gap:16px;font-size:16px}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rate-section dl>div {min-height:60px;padding:10px 0;gap:14px}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rate-section dt {display:flex;align-items:center;gap:10px;font-size:16px}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rate-section dt img {width:38px;height:38px;object-fit:contain;flex:none}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rate-section dt>span {display:grid;gap:4px}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rate-section dt small {font-size:14px;color:#b2c9da}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rate-section dd {font-size:26px}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-modal-guarantee {display:flex;align-items:center;gap:10px;font-size:16px;line-height:1.4}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-modal-guarantee img {width:44px;height:44px;object-fit:contain}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-modal-preview-note {font-size:14px;margin:0;color:#bbd2e1}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rule-details summary {font-size:16px;min-height:48px}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-rule-details p {font-size:15px;line-height:1.6}
+#gui-casual-lobby .pl-modal.recruit-info-dialog .recruit-roster-details .recruit-reward-section {padding-bottom:14px}
+
+/* Modal controls must remain above the canvas navigation, including the footer. */
+#gui-casual-lobby .pl-modal-host:has(.pl-modal:is([data-modal-type='nativeEquipmentBoxes'],[data-modal-type='pilotSupplyTasks'],[data-modal-type='pilotSupplyBoxes'],[data-modal-type='nativeRecruitInfo'],[data-modal-type='growthSupplyChoice'],[data-modal-type='collectionSupplyChoice'])) {z-index:70!important}
+#gui-casual-lobby .pl-modal .supply-ui .su-tabs [aria-pressed='true']::after {content:'';position:absolute;inset:auto 18% 3px;height:2px;background:#b2efff;pointer-events:none}
+#gui-casual-lobby .pl-modal .supply-ui .su-fragment-choice {align-self:center;font-size:14px}
+
+/* Supply selection and role boxes: readable navy panels inside the existing PSD frame. */
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) {
+  --su-ink:#e7f2f8;--su-muted:#b4cbd8;--su-line:#56798d;--su-panel:#152d3e;
+  gap:12px;padding:2px 4px 12px;
+}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-card {
+  padding:14px;border:1px solid var(--su-line);border-top:2px solid #93becb;
+  background:linear-gradient(145deg,#213f50,#142b3a);box-shadow:0 3px 8px #122b4126;
+}
+#gui-casual-lobby .pl-modal .su-selection .su-selection-intro {display:flex;align-items:center;justify-content:space-between;gap:8px;color:#203b51;font-size:14px}
+#gui-casual-lobby .pl-modal .su-selection .su-selection-intro b {font-size:15px;white-space:nowrap}
+#gui-casual-lobby .pl-modal .su-selection .su-card-heading {margin-bottom:12px}
+#gui-casual-lobby .pl-modal .su-selection .su-choice-hint {margin-top:12px;font-size:14px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .su-selection .su-choice-status {font-size:14px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .su-selection .su-selection-claim {width:100%;margin-top:14px}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-primary::before {filter:brightness(1.3)}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-primary:disabled::before {filter:brightness(.75)}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-details {padding:0 12px;background:#294659;border-color:#5b7b8f;color:#e4eff5}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-details>summary {font-size:15px;font-weight:500;min-height:44px;padding:10px 0}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-details>summary::after {color:#b9d5df}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-details p {font-size:14px;color:#c3d6e1}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory {display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:10px;align-items:center}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-box-art {width:56px;height:56px;filter:drop-shadow(0 3px 4px #07172280)}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory-copy {display:grid;gap:3px;min-width:0}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory-copy strong {font-size:18px;line-height:1.3}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory-copy small {font-size:13px;color:var(--su-muted)}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory>b {font-size:26px;color:#f6df9d}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory>b small {display:block;text-align:right;font-size:13px;color:#b4cbd8}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-guarantee {margin-top:10px;padding-top:10px;border-top:1px solid #4b6e81;font-size:14px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-progress {margin:12px 0 0;height:6px;border:0;background:#091d2b}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-progress>i {background:#8ed6e9}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-role-links {display:grid;gap:0;background:#294659;border:1px solid #5b7b8f}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-role-links>.su-details {border:0;background:none}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-role-links>.su-details+.su-details {border-top:1px solid #5b7b8f}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .su-footer-actions {gap:10px}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-selection,.su-role-boxes) .wc-button {white-space:nowrap;padding-inline:6px;font-size:16px}
+#gui-casual-lobby .pl-modal .su-selection .su-choice-rewards {display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+#gui-casual-lobby .pl-modal .su-selection .su-choice-rewards .ps-resource {font-size:14px;gap:6px}
+#gui-casual-lobby .pl-modal .su-selection .su-choice-rewards .ps-item-art {width:34px;height:34px}
+/* In-flow roster with the same nine-slice button art and controller as equipment. */
+#gui-casual-lobby .pl-modal .cs-choice {position:relative;min-width:0}
+#gui-casual-lobby .pl-modal .cs-choice .eq-choice-trigger {display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;min-height:86px;height:auto;padding:12px;--psd-button-corner:12px;text-align:left}
+#gui-casual-lobby .pl-modal .cs-choice .cs-choice-art {width:52px;height:52px;object-fit:contain;visibility:visible}
+#gui-casual-lobby .pl-modal .cs-choice .cs-choice-copy {display:grid;gap:5px;min-width:0;white-space:normal;overflow:visible}
+#gui-casual-lobby .pl-modal .cs-choice-copy strong {font:700 16px/1.4 'Microsoft YaHei',sans-serif;overflow-wrap:anywhere;color:#f0f8fc}
+#gui-casual-lobby .pl-modal .cs-choice-copy small {font:400 13px/1.4 'Microsoft YaHei',sans-serif;white-space:normal;color:#abc7d6}
+#gui-casual-lobby .pl-modal .cs-choice-tail {display:grid;justify-items:center;gap:8px;overflow:visible}
+#gui-casual-lobby .pl-modal .cs-choice-tail b {font-size:16px;color:#f6df9d}
+#gui-casual-lobby .pl-modal .cs-choice-tail .eq-choice-chevron {width:13px;height:13px;margin:0}
+#gui-casual-lobby .pl-modal .cs-choice-menu {position:relative;inset:auto!important;display:grid;width:100%;max-height:min(272px,38dvh)!important;margin-top:6px;padding:6px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;background:#102738;box-shadow:0 4px 8px #07172255;scrollbar-width:thin;scrollbar-color:#719dae #102738}
+#gui-casual-lobby .pl-modal .cs-choice-menu[hidden] {display:none}
+#gui-casual-lobby .pl-modal .cs-choice-menu .eq-choice-option {display:grid;grid-template-columns:40px minmax(0,1fr) 16px;gap:9px;width:100%;min-height:70px;height:auto;padding:9px 8px;white-space:normal;--psd-button-corner:8px;text-align:left}
+#gui-casual-lobby .pl-modal .cs-choice-menu .cs-choice-art {width:40px;height:40px}
+#gui-casual-lobby .pl-modal .cs-choice-check {visibility:hidden;color:#b9f6ff;font-size:18px}
+#gui-casual-lobby .pl-modal .eq-choice-option[aria-selected='true'] .cs-choice-check {visibility:visible}
+#gui-casual-lobby .pl-modal .eq-choice-option:disabled .cs-choice-copy {opacity:.65}
+#gui-casual-lobby .pl-modal .cs-choice :is(.eq-choice-trigger,.eq-choice-option):focus-visible {outline:2px solid #b9f6ff;outline-offset:-3px}
+
+#gui-casual-lobby .pl-modal .su-selection-claim .wc-button{width:100%}
+#gui-casual-lobby .pl-modal .su-selection-claim .wc-button:not(:disabled)::before{filter:brightness(1.3)}
+
+#gui-casual-lobby .pl-modal[data-psd-popup]:is([data-modal-type='collectionSupplyChoice'],[data-modal-type='growthSupplyChoice'],[data-modal-type='pilotSupplyBoxes']){--popup-height:auto;--popup-min-height:0px;--popup-max-height:88%}
+
+/* Keep the role-box footer visible without reducing label size. */
+#gui-casual-lobby .pl-modal .supply-ui.su-role-boxes{gap:10px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-card{padding:12px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-inventory{grid-template-columns:48px minmax(0,1fr) auto;gap:8px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-box-art{width:48px;height:48px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-guarantee{margin-top:6px;padding-top:8px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-actions>.wc-button:only-child{grid-column:1/-1;width:100%}
+#gui-casual-lobby .pl-modal .su-role-boxes .wc-button{min-height:44px;padding-block:8px}
+#gui-casual-lobby .pl-modal .su-role-boxes .su-details>summary{min-height:42px;padding-block:9px}
+#gui-casual-lobby .pl-modal .su-selection .su-footer-actions>.wc-button:last-child:nth-child(odd){grid-column:1/-1}
+
+/* Source/info panels navigate to the existing shop and backpack operations. */
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-gear-sources,.su-equipment-boxes) .su-actions>.wc-button:only-child,
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-gear-sources,.su-equipment-boxes) .su-footer-actions>.wc-button:only-child{grid-column:1/-1;width:100%}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-gear-sources,.su-equipment-boxes) .wc-button{font-size:16px;white-space:nowrap;padding-inline:6px}
+#gui-casual-lobby .pl-modal[data-psd-popup]:is([data-modal-type='gearSources'],[data-modal-type='nativeEquipmentBoxes']){--popup-height:auto;--popup-min-height:0px;--popup-max-height:88%}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-gear-sources,.su-equipment-boxes){gap:10px}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-gear-sources,.su-equipment-boxes) :is(.su-card,.su-box-card){padding:12px}
+#gui-casual-lobby .pl-modal .supply-ui:is(.su-gear-sources,.su-equipment-boxes) .wc-button{min-height:44px;padding-block:8px}
+#gui-casual-lobby .pl-modal .su-equipment-boxes .su-actions{margin-top:0}
+#gui-casual-lobby .pl-modal .su-equipment-boxes .su-pity{margin:6px 0}
+#gui-casual-lobby .pl-modal .su-equipment-boxes .su-details>summary{min-height:42px;padding-block:8px}

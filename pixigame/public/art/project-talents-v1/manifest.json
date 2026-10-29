@@ -1,0 +1,393 @@
+{
+  "version": 1,
+  "generator": "OpenAI built-in image_gen; one independent generation per talent symbol",
+  "reference": "Local stg_card source images inspected for subject meaning only; no competitor pixels used in generated artwork.",
+  "normalization": "Alpha-bounds crop plus 2px, fit 224px inside transparent 256px canvas, lossless WebP; no generated alpha removed.",
+  "scope": "Dedicated talent presentation only. Card frames, effects, levels, costs, probabilities and progression unchanged.",
+  "assets": [
+    {
+      "key": "airframe",
+      "file": "airframe.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "f2300a9cc804e4941fab5e88a5097bf9fc858fe278eedb84736fcca5cea577b7",
+      "sourceFile": "exec-8d99c725-1179-48f9-8a56-a634228484d6.png",
+      "sourceSha256": "d1f9b80fb251cb0e45093a8d39c0c3c4a78d54b1b14d56e82046b16b12bb473b",
+      "sourceBounds": {
+        "left": 92,
+        "top": 174,
+        "width": 1071,
+        "height": 916
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A bright red heart with a small ivory highlight and a simple navy edge, permanent maximum health. Not an engine or mechanical core."
+    },
+    {
+      "key": "armor",
+      "file": "armor.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "6d53d5fb2dcbc1fd812f093b0c495efefafcd82d5f2972d57247bfcee85f39c8",
+      "sourceFile": "exec-d70f1002-a2ef-4d20-bed6-00ee821cb728.png",
+      "sourceSha256": "7fd725105be1e5e8652b27aa421b78354018600f215c41821fc6d732985b27cf",
+      "sourceBounds": {
+        "left": 95,
+        "top": 65,
+        "width": 1064,
+        "height": 1127
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A single ivory-gray armored chest plate with four teal corner fasteners, two large plates only. Permanent collision armor."
+    },
+    {
+      "key": "attack-defense",
+      "file": "attack-defense.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "1bd926b2cefba755096c263defa62bea12b3844af9a6b39203bbe66d68e8c9d0",
+      "sourceFile": "exec-4df6c11d-c6c2-4b8f-a573-8e2fb4f9309f.png",
+      "sourceSha256": "322dc348003682c1ac14eea2dcc23a303dc64e0be88399ae24940dee76f7a39b",
+      "sourceBounds": {
+        "left": 118,
+        "top": 10,
+        "width": 1018,
+        "height": 1196
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An original red-and-gold guardian helmet, broad face plate with swept angular brow, no horns, no familiar character. Permanent attack and defense."
+    },
+    {
+      "key": "barrier",
+      "file": "barrier.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "6bae4c832a5cde6bf252217e3340ad0093b0b181072dddc3074b35dbe015e966",
+      "sourceFile": "exec-6cf88e11-26ef-4159-aaea-f823ae5ac4bd.png",
+      "sourceSha256": "6a206ea448dd88330cd443694604bd625639bce9ced11069ebcad228b34686c5",
+      "sourceBounds": {
+        "left": 132,
+        "top": 64,
+        "width": 1015,
+        "height": 1142
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A cluster of three connected cyan hexagonal shield cells, one large and two small, permanent projectile defense. No shield pickup."
+    },
+    {
+      "key": "bio-hunter",
+      "file": "bio-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "8428679aea0c41576ef7b6a5ac944b60b44f5de79e62673b5e021acaf4ddb16b",
+      "sourceFile": "exec-7aada520-cf3d-45ed-a4a3-c258007c4e17.png",
+      "sourceSha256": "52c266f38e31c62c828b48453d01dd210b18bc242da5868be3fb93551dac871d",
+      "sourceBounds": {
+        "left": 101,
+        "top": 30,
+        "width": 1080,
+        "height": 1185
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An orange spiky alien organism head, asymmetric triangular ivory horns and one dark eye slit, original nonhuman biological enemy taxonomy emblem."
+    },
+    {
+      "key": "boss-hunter",
+      "file": "boss-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "5517d9f490c7852a068f06ecf2071da629168ad61295da63ba4c09f26757f982",
+      "sourceFile": "exec-ceb6cc20-7618-403d-a3ba-1fa644bad5a7.png",
+      "sourceSha256": "7caef65288b979ff275e97c39858ee6442c11481567abbc761d76cfd536a39f8",
+      "sourceBounds": {
+        "left": 36,
+        "top": 28,
+        "width": 1182,
+        "height": 1198
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An ivory enemy skull with two large swept red horns and golden angry brow, original boss taxonomy emblem, no flames, no copied character."
+    },
+    {
+      "key": "coins",
+      "file": "coins.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "3c8efc2f7b1e47fd64bcd72d0a7a22d9225f3e63295a09b9894add0549e1cc4c",
+      "sourceFile": "exec-514cab06-f91a-4a0d-808d-c9a5b59421be.png",
+      "sourceSha256": "2292b387d21cc34900a630efdb495a017d7fe545427a4364e884c37a86774161",
+      "sourceBounds": {
+        "left": 15,
+        "top": 176,
+        "width": 1225,
+        "height": 918
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: Three simple chunky golden coins, one in front and two behind, stamped with a plain angular diamond instead of currency text."
+    },
+    {
+      "key": "combat-supply",
+      "file": "combat-supply.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "ed2a54c79d2dfdb8a2f8299553c37c5b5efb904b5420af9a895b05daf88d98a5",
+      "sourceFile": "exec-a806bc62-198d-478d-b366-9a4ecf5ab955.png",
+      "sourceSha256": "c907a0593e3cbd56ac1e4d112ab17dd354067b0bd74e84b4e4d20d4f1ea57f03",
+      "sourceBounds": {
+        "left": 36,
+        "top": 54,
+        "width": 1189,
+        "height": 1159
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: One green first aid box with a bold white medical cross in foreground and a small ivory/red horned enemy skull behind it. Permanent kill-triggered supply talent; no airdrop capsule, no cannon."
+    },
+    {
+      "key": "common-hunter",
+      "file": "common-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "10f82fe3999ee7c7a0f28a7052b332e7df74d5aba622267c48ec1ef346063ef8",
+      "sourceFile": "exec-67e2774d-9f3b-4ee3-a544-3e68e6c9b94d.png",
+      "sourceSha256": "317680545ad79a99b985ea188f6ed42775b1a510aa751583fdbd5570d1d73bd0",
+      "sourceBounds": {
+        "left": 162,
+        "top": 64,
+        "width": 929,
+        "height": 1128
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A pale steel stylized small enemy skull with one angular brow notch and dark eye sockets. Simple original enemy taxonomy emblem."
+    },
+    {
+      "key": "critical-damage",
+      "file": "critical-damage.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "db644b399993935860ea52e6c68bf0bf05bc8fb6016184ae0e08d2ddab91fb0a",
+      "sourceFile": "exec-7964804f-952c-41a4-ad01-dd60eee21f04.png",
+      "sourceSha256": "1eca5becab31f087a283116310eb6d132c956a4f36105a2ad8fe5fb02c8a6e1f",
+      "sourceBounds": {
+        "left": 50,
+        "top": 54,
+        "width": 1154,
+        "height": 1142
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A round orange targeting scope lens with ivory crosshair, dark navy rim, permanent critical damage. No weapon."
+    },
+    {
+      "key": "draw",
+      "file": "draw.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "d461959c4c77309836689930988188f9bbe02a8b42771f95822c2a7cadaf2266",
+      "sourceFile": "exec-2eb5879c-6c3f-4536-b838-83fc5311a37f.png",
+      "sourceSha256": "fdd4d1b1dda7f98fba9ca97bf60dc6477abec8830cba10754c821ebebc658ec3",
+      "sourceBounds": {
+        "left": 63,
+        "top": 84,
+        "width": 1163,
+        "height": 1105
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An original small purple selection console with a red side lever, four cyan squares and one gold diamond tile highlighted in its screen. No numbers, no words. Permanent draw talent."
+    },
+    {
+      "key": "elite-hunter",
+      "file": "elite-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "991ce5bc2ff8b38167777270c18675c4b5ef4f4564ff97e0ac4ec4e5a941bce2",
+      "sourceFile": "exec-e5c6f35e-1c55-4ca4-80fd-9ad3bc7c6a0e.png",
+      "sourceSha256": "adb9e3d59bc96393987137672ddaf94c3693457d3eda7a62574da46a5ada895a",
+      "sourceBounds": {
+        "left": 74,
+        "top": 25,
+        "width": 1106,
+        "height": 1206
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An ivory angular enemy skull with two short purple side horns, distinct from plain common skull. Original elite enemy taxonomy emblem."
+    },
+    {
+      "key": "emergency-shield",
+      "file": "emergency-shield.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "791ff03b6f23694d19abf8c6b00b39e8fe1f3ae6ab513da361a3cc54fed226cb",
+      "sourceFile": "exec-5897c6b3-a67f-4d56-bbf9-f2f70dfcacbf.png",
+      "sourceSha256": "afb78f0f09d3270de80748b2b6a8f5b5ff3c6a598ccc020329c7a025fe19dc5a",
+      "sourceBounds": {
+        "left": 52,
+        "top": 65,
+        "width": 1148,
+        "height": 1143
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A tiny golden aircraft silhouette enclosed in one circular cyan hexagonal energy barrier, permanent emergency defense talent, no pickup capsule."
+    },
+    {
+      "key": "firepower",
+      "file": "firepower.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "3d96cf9167f4f011232dd4215f1dd0b439231aafe2d3409acad84d0e0fc12ca6",
+      "sourceFile": "exec-64ee3790-6ab2-416d-8fa3-65715235bd8a.png",
+      "sourceSha256": "7ef9ac9887e5331a91801101c8b794c4aa096f6ed4de642bec941d3d1451169e",
+      "sourceBounds": {
+        "left": 67,
+        "top": 58,
+        "width": 1118,
+        "height": 1158
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol, not a weapon upgrade icon. Subject: one chunky golden ammunition bullet, tilted diagonally upward right, with a simple ivory rim and orange casing stripe, symbolizing permanent firepower. NO gun, cannon, turret, missile exhaust or muzzle flash. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art."
+    },
+    {
+      "key": "glory",
+      "file": "glory.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "5ced6ae7a0cece31e7e85375a85215fa479e1f16fe91b50b7f2e04067ddc07b9",
+      "sourceFile": "exec-3c40fbd7-a61d-4b5d-b669-8c4164a91d43.png",
+      "sourceSha256": "691cd88a322d92053672ed73b877f6be7acfec220ccc96835338da626b63d0e2",
+      "sourceBounds": {
+        "left": 23,
+        "top": 78,
+        "width": 1208,
+        "height": 1101
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An original golden trophy cup with two angular wing-shaped handles and a small pink star on its bowl, ivory rim, simple gold pedestal. No medals."
+    },
+    {
+      "key": "heavy-hunter",
+      "file": "heavy-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "1f24c1605c6428ff44a7c55749a3ae241682faed03a49553216e2b2daa08478a",
+      "sourceFile": "exec-6948cde9-c331-4cc8-ba9e-f95bb1890384.png",
+      "sourceSha256": "c0ea2d32ff1c381a3e81596dcf09132e08dd099fdf45a92897c0a8430919885e",
+      "sourceBounds": {
+        "left": 123,
+        "top": 43,
+        "width": 1007,
+        "height": 1167
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An original purple creature head wearing a large blue-gray heavy metal helmet with three ivory armor studs, small yellow eyes beneath."
+    },
+    {
+      "key": "machine-hunter",
+      "file": "machine-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "757ea6601f5b52c6bc0c89b925a428327a49737f68584d66ac00355c18866ee2",
+      "sourceFile": "exec-77eded79-c744-443f-aace-d3328aa69de5.png",
+      "sourceSha256": "9c9de13e421e0da5adbc6d103d9cba14b7dc3f9888418bf7c93018a04a0e58ec",
+      "sourceBounds": {
+        "left": 73,
+        "top": 56,
+        "width": 1108,
+        "height": 1149
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A silver robot enemy head with magenta side plates and two rectangular cyan eyes, simple original mechanical enemy taxonomy emblem."
+    },
+    {
+      "key": "patrol",
+      "file": "patrol.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "96d41dd0c54ca0a32649fb96a0a229124ec5b601ed4f4474582e37050e2e7cba",
+      "sourceFile": "exec-e1f7f690-0539-47c5-8cd3-8bb329e8c3a9.png",
+      "sourceSha256": "79f1654e1913ff47695978bfdb94e5923ed59c9bcdcee5b62df960a3fd62c8d6",
+      "sourceBounds": {
+        "left": 43,
+        "top": 78,
+        "width": 1171,
+        "height": 1025
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A tiny original golden scout aircraft angled right with blue cockpit, one small gold coin and one pink gem beside it, permanent patrol reward emblem. Not a combat weapon."
+    },
+    {
+      "key": "precision",
+      "file": "precision.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "06804da81f3e47429fc08287775d5cf5bd6d8b3cb106fc2da0e686fedc3ffd50",
+      "sourceFile": "exec-ba52e4e2-1278-49dd-8357-31a3c533b331.png",
+      "sourceSha256": "3e6d8ea16b229dbb8a5e245a0ef104062860eafb1a3b6899f49b94349bda6e9e",
+      "sourceBounds": {
+        "left": 54,
+        "top": 51,
+        "width": 1147,
+        "height": 1145
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: One upright gold bullet surrounded by a single thin ivory aiming ring with four short ticks. Critical chance. No gun."
+    },
+    {
+      "key": "repair",
+      "file": "repair.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "250c0afa6096fbf510ad19eda4ef162a4700409892ee7109c4ab5bbc1d2a4736",
+      "sourceFile": "exec-9f44f615-8111-47b5-894d-d66562bb550e.png",
+      "sourceSha256": "9ed593564898c54f4448e9abb2e7d90ac5cc10948043a69dc97d78239690f10f",
+      "sourceBounds": {
+        "left": 62,
+        "top": 85,
+        "width": 1131,
+        "height": 1084
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A bold green medical plus cross with a small ivory highlight, permanent enhanced repair. No box, no drone, no capsule."
+    },
+    {
+      "key": "repair-yield",
+      "file": "repair-yield.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "392afcd423c67ac44452add9dfae7d9f13055e7c2a8c99e84f84d70933ba187b",
+      "sourceFile": "exec-7a1c6db0-ca2c-4668-914a-16e0e29012e5.png",
+      "sourceSha256": "a7cedbbe943f18a5e042e25f74553aed60778059a777cd892491ba2d2c7e7184",
+      "sourceBounds": {
+        "left": 78,
+        "top": 53,
+        "width": 1102,
+        "height": 1169
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: Two green first aid boxes with ivory metal corner caps and white medical crosses, one smaller behind the other, plus a small upward arrow. Not an airdrop capsule."
+    },
+    {
+      "key": "rewind",
+      "file": "rewind.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "8e0623b2a30182d15e844ea4bf3ff7e631c8465c3767a7fbbd568692bd995599",
+      "sourceFile": "exec-3504cc59-f1ea-4547-85a7-0a87c4206ea1.png",
+      "sourceSha256": "9e8c1580b93073644b93bcd6409892cbcfeba26e1912f43827e90b9a55a52d11",
+      "sourceBounds": {
+        "left": 45,
+        "top": 48,
+        "width": 1164,
+        "height": 1163
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: An original round blue clock face with two red hands and a purple rim, one small curved counterclockwise arrow along its upper edge. Not a computer chip."
+    },
+    {
+      "key": "upgrade-repair",
+      "file": "upgrade-repair.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "4b12d2ba44bbdcf78f494d2f90d3c8b75126944dc7e0d819afec1d3471f491bc",
+      "sourceFile": "exec-0e39383a-002e-446f-b32b-a0af38e6ce00.png",
+      "sourceSha256": "1356a50de6ea02b5cc6ce7f6eecb259396f8258ef2770abf76cbaf7843367d53",
+      "sourceBounds": {
+        "left": 69,
+        "top": 70,
+        "width": 1117,
+        "height": 1109
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A broad ivory wrench with a golden-yellow handle and a small green plus beside the jaw, level-up repair."
+    },
+    {
+      "key": "zombie-hunter",
+      "file": "zombie-hunter.webp",
+      "width": 256,
+      "height": 256,
+      "sha256": "6f8265159e43065ca1cf1464ee298feb3da98a316ac2033fc8e40ef0c00703f8",
+      "sourceFile": "exec-0154e898-ae35-4340-acb7-d7172e31d786.png",
+      "sourceSha256": "e43fe9475cd560f8ba7e8f84065afd9807576aa4f61c2c125e9ff3a036fefa82",
+      "sourceBounds": {
+        "left": 83,
+        "top": 71,
+        "width": 1084,
+        "height": 1124
+      },
+      "prompt": "Use case: stylized-concept. Create ONE original 2D mobile sci-fi game TALENT symbol. Flat graphic illustration, bold dark navy outline, only 2 cel-shaded color tones per surface, large simple silhouette readable at 48px, restrained angular sci-fi styling. Centered isolated symbol fills 80% of square canvas. Genuine transparent RGBA background. No text, no card frame, no panel, no badge background, no gradients, no realistic 3D detail, no drop shadow. Original drawing, not copied game art. Do not depict a combat weapon upgrade or an airdrop module. Subject: A green undead enemy head with one stitched brow and dark hollow eyes, no gore, original rounded-square silhouette."
+    }
+  ]
+}

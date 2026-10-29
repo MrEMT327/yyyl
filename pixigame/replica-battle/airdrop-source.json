@@ -1,0 +1,395 @@
+{
+  "sourceHashes": {
+    "Skill_Trigger": "67d581bfb14e6e14b62626f5b9b279ae9baaa30cb57370809a485e5f0d9a3be4",
+    "Weapon_Weapon": "0e319eedad93c270e51074b5eb0470a50bc58464f03a4fa85a523c0d45724062",
+    "Bullet_Bullet": "a6428749e2b32603d639df6a7f3c7639c58f44fd411ca7f9bbdef61711071b53",
+    "Buff_buff": "9ba3db12c7cb7bd813b24372dfe97f42e3b211b59fc4a463a62b3c3fab9aeb94"
+  },
+  "triggers": {
+    "11001711": {
+      "id": 11001711,
+      "TriggerFlag": 0,
+      "TriggerType": 0,
+      "TriggerParam": "",
+      "TriggerCd": 0,
+      "FirstTriggerCd": 0,
+      "TriggerNow": 0,
+      "TriggerRate": 0,
+      "TriggerRateType": 0,
+      "TriggerCount": 0,
+      "TriggerAction": 40,
+      "ActionParam": "",
+      "TriggerAction2": 0,
+      "ActionParam2": "",
+      "TriggerEffect": 0,
+      "RecoverWhenRemove": 0
+    },
+    "11002108": {
+      "id": 11002108,
+      "TriggerFlag": 0,
+      "TriggerType": 0,
+      "TriggerParam": "",
+      "TriggerCd": 0,
+      "FirstTriggerCd": 0,
+      "TriggerNow": 0,
+      "TriggerRate": 0,
+      "TriggerRateType": 0,
+      "TriggerCount": 0,
+      "TriggerAction": 3,
+      "ActionParam": "{\"WeaponId\":10001,\"FirePosType\":2}",
+      "TriggerAction2": 0,
+      "ActionParam2": "",
+      "TriggerEffect": 0,
+      "RecoverWhenRemove": 0
+    },
+    "11002208": {
+      "id": 11002208,
+      "TriggerFlag": 0,
+      "TriggerType": 0,
+      "TriggerParam": "",
+      "TriggerCd": 0,
+      "FirstTriggerCd": 0,
+      "TriggerNow": 0,
+      "TriggerRate": 0,
+      "TriggerRateType": 0,
+      "TriggerCount": 0,
+      "TriggerAction": 14,
+      "ActionParam": "{\"Percent\":0.15}",
+      "TriggerAction2": 0,
+      "ActionParam2": "",
+      "TriggerEffect": 0,
+      "RecoverWhenRemove": 0
+    }
+  },
+  "weapons": {
+    "10001": {
+      "ID": 10001,
+      "HoldEffect": 0,
+      "HoldCompleteEffect": 0,
+      "weaponModelId": 0,
+      "DeputyModelId": 0,
+      "EntityId": 0,
+      "EntityBodyPosType": [],
+      "FirePosRotations": [],
+      "IsFirePosSymmetry": 0,
+      "animationId": 1,
+      "WeaponAttr": [],
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": [],
+      "BulletId": 10001,
+      "Trajectory": "MoveStraight",
+      "TrajectoryParams": "",
+      "BulletMod1": [
+        "ThroughMod",
+        "{\"ThroughCount\":999,\"AttackPercent\":-0,\"ThroughProbability\":1}"
+      ],
+      "BulletMod2": [
+        "ScaleOnlyColliderMod",
+        "{\"StartScale\":1,\"TargetScale\":50,\"ScaleTime\":0.3}"
+      ],
+      "BulletMod3": [],
+      "BulletMod4": [],
+      "BulletMod5": [],
+      "FireEffectId": 0,
+      "FireRotation": 0,
+      "BulletRotate2Target": 0,
+      "DisableRealTimeTarget": 0,
+      "RealTimeEntityRotation": 0,
+      "BulletToAlarmPos": 0,
+      "AttackAlarmEffect": 0,
+      "AttackAlarmtTime": 0
+    },
+    "110001": {
+      "ID": 110001,
+      "HoldEffect": 0,
+      "HoldCompleteEffect": 0,
+      "weaponModelId": 0,
+      "DeputyModelId": 0,
+      "EntityId": 0,
+      "EntityBodyPosType": [],
+      "FirePosRotations": [],
+      "IsFirePosSymmetry": 0,
+      "animationId": 0,
+      "WeaponAttr": [],
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": [],
+      "BulletId": 110001,
+      "Trajectory": "MoveStraight",
+      "TrajectoryParams": "",
+      "BulletMod1": [
+        "FollowMod",
+        "{\"RotateSpeed\":100}"
+      ],
+      "BulletMod2": [
+        "ScaleAnimMod",
+        "{\"StartScale\":1.5,\"TargetScale\":1.5,\"ScaleTime\":0.01}"
+      ],
+      "BulletMod3": [
+        "ExplosionUponDeathMod",
+        "{\"EffectId\":210016,\"Radius\":2,\"UseScale\":true,\"HurtScale\":0.25}"
+      ],
+      "BulletMod4": [],
+      "BulletMod5": [],
+      "FireEffectId": 0,
+      "FireRotation": 0,
+      "BulletRotate2Target": 0,
+      "DisableRealTimeTarget": 0,
+      "RealTimeEntityRotation": 0,
+      "BulletToAlarmPos": 0,
+      "AttackAlarmEffect": 0,
+      "AttackAlarmtTime": 0
+    }
+  },
+  "bullets": {
+    "10001": {
+      "ID": 10001,
+      "AttackPercent": 0,
+      "hurtAttributes": [
+        "Attack=1*4000%"
+      ],
+      "MinBulletHurtTime": 0.1999969482421875,
+      "LifeTime": 0.3000030517578125,
+      "Scale": 1,
+      "Element": 0,
+      "RandomDeflectionAngle": 0,
+      "Flag": 0,
+      "BulletTrait": 0,
+      "MoveSpeed": 0,
+      "RotateSpeed": 0,
+      "ModelId": 1200001,
+      "bulletStartEffectPosType": [],
+      "bulletStartPrefabId": 0,
+      "BornEffectDirType": 0,
+      "KeepPreviousBornEffects": 0,
+      "bulletBornEffectAngle": [
+        0,
+        0,
+        0
+      ],
+      "hitEffectPosType": [
+        0,
+        1
+      ],
+      "hitCharacterPrefabId": 0,
+      "hitCharacterPrefabId_resist": 0,
+      "hitCharacterPrefabId_weakness": 0,
+      "hitOtherPrefabId": 0,
+      "bulletHitEffectAngleType": [
+        180,
+        0,
+        0
+      ],
+      "bulletDestroyEffectAngleType": [
+        0,
+        0,
+        0
+      ],
+      "bulletDestroyPrefabId": 0,
+      "bulletStartSoundId": 330006,
+      "HitCharacterSoundId": 0,
+      "HitOtherSoundId": 0,
+      "TimeLimitDieSoundId": 0,
+      "loopSoundId": 0,
+      "Type": 0,
+      "Shape": [
+        1
+      ],
+      "SplitOffset": 0,
+      "HitCamp": [
+        2
+      ],
+      "ShapeOffset": [
+        0
+      ],
+      "HitBackPower": 0,
+      "OnlyShowHurt": 0,
+      "WingShape": [
+        1,
+        0.2899932861328125
+      ],
+      "WingCoordinate": [
+        0.561004638671875,
+        -0.5619964599609375,
+        0
+      ],
+      "WingEffect": 170007,
+      "IceEffect": [
+        180103,
+        2
+      ],
+      "FireEffect": [
+        180102,
+        2
+      ],
+      "LightingEffect": [
+        180104,
+        2
+      ],
+      "PoisonEffect": [
+        180201,
+        2
+      ],
+      "CritEffect": [
+        180106,
+        1
+      ],
+      "ReaperEffect": [
+        180105,
+        1
+      ],
+      "viscosityEffect": [
+        181000,
+        0
+      ],
+      "DieOnFireHold": 0,
+      "Order": 0,
+      "DulBulletSpaceOffset": 0,
+      "OutsideBulletHurtGrowth": 0
+    },
+    "110001": {
+      "ID": 110001,
+      "AttackPercent": 0,
+      "hurtAttributes": [
+        "Attack=1*1000%"
+      ],
+      "MinBulletHurtTime": 0.100006103515625,
+      "LifeTime": 0,
+      "Scale": 1,
+      "Element": 0,
+      "RandomDeflectionAngle": 0,
+      "Flag": 0,
+      "BulletTrait": 2,
+      "MoveSpeed": 35,
+      "RotateSpeed": 120,
+      "ModelId": 200234,
+      "bulletStartEffectPosType": [],
+      "bulletStartPrefabId": 0,
+      "BornEffectDirType": 0,
+      "KeepPreviousBornEffects": 0,
+      "bulletBornEffectAngle": [
+        0,
+        0,
+        0
+      ],
+      "hitEffectPosType": [
+        0,
+        1
+      ],
+      "hitCharacterPrefabId": 140005,
+      "hitCharacterPrefabId_resist": 0,
+      "hitCharacterPrefabId_weakness": 0,
+      "hitOtherPrefabId": 140005,
+      "bulletHitEffectAngleType": [
+        180,
+        0,
+        0
+      ],
+      "bulletDestroyEffectAngleType": [
+        0,
+        0,
+        0
+      ],
+      "bulletDestroyPrefabId": 110001,
+      "bulletStartSoundId": 230002,
+      "HitCharacterSoundId": 230009,
+      "HitOtherSoundId": 230009,
+      "TimeLimitDieSoundId": 0,
+      "loopSoundId": 0,
+      "Type": 1,
+      "Shape": [
+        0.3000030517578125,
+        0.5
+      ],
+      "SplitOffset": 2,
+      "HitCamp": [
+        2,
+        32
+      ],
+      "ShapeOffset": [
+        0,
+        -0.25
+      ],
+      "HitBackPower": 0,
+      "OnlyShowHurt": 0,
+      "WingShape": [
+        1,
+        0.2899932861328125
+      ],
+      "WingCoordinate": [
+        0.600006103515625,
+        0,
+        0
+      ],
+      "WingEffect": 170007,
+      "IceEffect": [
+        180103,
+        2
+      ],
+      "FireEffect": [
+        180102,
+        2
+      ],
+      "LightingEffect": [
+        180104,
+        2
+      ],
+      "PoisonEffect": [
+        180101,
+        2
+      ],
+      "CritEffect": [
+        180106,
+        1
+      ],
+      "ReaperEffect": [
+        180105,
+        1
+      ],
+      "viscosityEffect": [
+        181000,
+        0
+      ],
+      "DieOnFireHold": 0,
+      "Order": 0,
+      "DulBulletSpaceOffset": 0,
+      "OutsideBulletHurtGrowth": 0
+    }
+  },
+  "buffs": {
+    "100211": {
+      "ID": 100211,
+      "prefabId": 210031,
+      "posType": 0,
+      "buffFlag": 0,
+      "BuffShowGroup": 0,
+      "prefabAliveType": 0,
+      "buffType": 0,
+      "buffClassName": 1,
+      "parameters": "",
+      "clearEvent": 1,
+      "clearParam": 5,
+      "triggerInterval": 0,
+      "clearWeapon": 0,
+      "stackingType": 1,
+      "maxStackCount": 1,
+      "damageType": 0,
+      "triggerType": 1,
+      "triggerCount": 0,
+      "triggerAttributes": [],
+      "triggerAddAttributes": [],
+      "AddAttributes": [
+        "AllFireCDReduce%=20",
+        "Attack%=25",
+        "ScalePercent%=20",
+        "AllBulletSpeed%=30"
+      ],
+      "IconAtlas": 0,
+      "IconName": "",
+      "IconBgStep": 0,
+      "AddSound": 0,
+      "EndBuffIds": []
+    }
+  }
+}

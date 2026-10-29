@@ -1,0 +1,80 @@
+/* Task content only. The paper dialog frame is shared with the backpack family. */
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-tasks {
+  color:var(--paper-ink,#252527);text-shadow:none;font-size:13px;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-tabs {
+  gap:8px;margin:0 0 10px;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-tabs>.subpage-tab {
+  min-height:46px;padding:7px 12px 11px;font-size:16px;filter:none;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-tabs>.subpage-tab[aria-pressed=false] {
+  --gui-face:var(--gui-button-secondary);--gui-button-ink:#fff;filter:none;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-tabs i {
+  width:9px;height:9px;right:8px;top:6px;background:#ec4f66;border:1px solid #6c2636;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .task-plan-header {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  margin:0 1px 12px;color:#615b50;line-height:1.5;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .task-plan-header b {color:#615030;font-weight:800}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .task-plan-header small {font-size:11px;text-align:right;color:#6f695d}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-list {gap:10px}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task {
+  display:flex;align-items:center;gap:12px;min-height:105px;padding:11px 10px;
+  border:2px solid #b8ae98;border-radius:7px;background:#f8f4e9;
+  box-shadow:0 2px #c1b8a3;min-width:0;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-ready {
+  border-color:#ab8424;background:#fff3bc;box-shadow:0 2px #c4a94e;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-claimed {
+  border-color:#bbb5a6;background:#ddd9ce;box-shadow:0 2px #c1baab;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-body {flex:1;min-width:0}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-title h3 {
+  margin:0;color:#302f2b;font-size:14px;font-weight:800;line-height:1.4;text-shadow:none;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards {
+  display:flex;flex-wrap:wrap;gap:4px 12px;margin:7px 0 8px;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards>span {
+  display:inline-flex;align-items:center;gap:4px;padding:0;border:0;background:none;box-shadow:none;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards :is(.pl-icon,.gui-icon) {width:25px;height:25px;filter:none}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards b {font-size:14px;color:#624c24;font-weight:800;text-shadow:none}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .task-progress {
+  display:flex;align-items:center;gap:7px;min-width:0;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .task-progress>span {
+  flex:none;color:#696356;font-size:11px;line-height:1;font-variant-numeric:tabular-nums;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task progress {
+  flex:1;min-width:0;width:100%;height:8px;border:1px solid #969183;
+  border-radius:4px;background:#cfc9b8;box-shadow:none;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task progress::-webkit-progress-bar {background:#cfc9b8}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task progress::-webkit-progress-value {background:#39a9d9}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task progress::-moz-progress-bar {background:#39a9d9}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-ready progress::-webkit-progress-value {background:#ddb323}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-ready progress::-moz-progress-bar {background:#ddb323}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-claimed progress::-webkit-progress-value {background:#8d9b87}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-claimed progress::-moz-progress-bar {background:#8d9b87}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-claim {
+  flex:0 0 75px;width:75px;min-height:46px;height:46px;padding:0 6px 5px;font-size:14px;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-claim:disabled {
+  --gui-button-ink:#f9f7f0;--gui-button-shadow:0 1px #514e5c;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-claimed .lc-claim:disabled {
+  color:#567047!important;background:none!important;text-shadow:none!important;cursor:default;
+}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task.is-claimed .lc-claim:disabled::before {display:none}
+#gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] button:focus-visible {outline:3px solid #7951bd;outline-offset:2px}
+@container(max-width:340px) {
+  #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task {gap:8px;padding:10px 8px}
+  #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-claim {flex-basis:66px;width:66px;font-size:13px}
+  #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards {gap:4px 7px}
+  #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-title h3 {font-size:13px}
+}

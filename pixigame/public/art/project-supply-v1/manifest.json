@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-15",
+  "source": "imagegen built-in",
+  "file": "supply-bay.png",
+  "generation_file": "/Users/liweitang/.codex/generated_images/01a11e4f-111e-7d41-b84a-30ccb81ee583/exec-72b64182-5828-4159-b2df-1ee8f9f6f688.png",
+  "purpose": "Empty project-style supply bay for store and recruitment; live items and holographic cards overlay it",
+  "references": [
+    "../dkzj-shop-ui-v1/supply-blue.png",
+    "../shop-comic-v1/weapon-crate-v2.png"
+  ],
+  "size": [
+    1706,
+    922
+  ],
+  "sha256": "f6df61ab5e8f06c01bdf64cc0cceb188eb74b154bdae72ed0fd631c8ab7b2221",
+  "prompt": "Use case: stylized-concept. Asset type: one reusable illustrated background for a vertical science-fiction flight mobile game's shop supply panels and recruitment showcase. Input image 1 is composition reference only: the original game's wide supply card; input image 2 is the current project's existing navy supply crate, used only to match materials, cel shading and palette. Create a NEW single wide 1.85:1 rectangular environment illustration, no frame or user interface. A clean futuristic naval aircraft-carrier supply bay with an EMPTY raised circular holographic display pad placed in the left 40% of the image. Three-quarter view, shallow depth, readable at a small phone size. Keep the pad empty because the game will overlay the existing crate or an interactive holographic character card. A dark calm navy blue and slate metal wall to the right with generous uncluttered space for live text and buttons. Cyan light around the display pad, restrained warm orange maintenance lights, ivory metal accents matching the existing crate. Crisp anime game / cel shaded painted illustration, controlled outlines, broad clear planes, slight atmospheric depth. Foreground should separate from a darker background. No characters, no weapons, no crates, no floating item icons, no text, no letters, no numbers, no logos, no watermark, no buttons, no price tags. The output is the background art only; preserve an empty center-left subject zone and a quiet right text zone.",
+  "prompt_file": "pixigame/art/project-supply-v1/prompt.txt"
+}

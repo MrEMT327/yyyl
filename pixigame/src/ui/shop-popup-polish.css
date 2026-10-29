@@ -1,0 +1,90 @@
+/* Store popup content sits inside the shared blue-grey PSD shell. */
+#gui-casual-lobby .lobby-paper-modal :is(.shop-paper-confirm,.shop-paper-pool) {
+  --shop-paper-ink:#1d3852;--shop-paper-muted:#46617a;--shop-paper-line:#7c96ad;
+  color:var(--shop-paper-ink);font-size:13px;line-height:1.6;text-shadow:none;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-paper-confirm {text-align:left}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-head {
+  display:grid;grid-template-columns:82px minmax(0,1fr);align-items:center;
+  gap:13px;padding:8px 0 16px;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-head>div {min-width:0}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-item-art,
+#gui-casual-lobby .lobby-paper-modal .shop-pool-item-art {
+  display:grid;place-items:center;aspect-ratio:1;min-width:0;padding:7px;
+  border:2px solid #20354b;border-radius:6px;
+  background:#67c5f9 url('/art/gui-casual/bag-item-blue.png') center/100% 100% no-repeat;
+  box-shadow:inset 0 0 0 1px #c6efff,0 2px #b6ac92;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-item-art>:is(img,svg) {
+  width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;filter:none;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-head h3 {
+  margin:0 0 5px;color:var(--shop-paper-ink);font-size:18px;font-weight:900;line-height:1.4;
+  overflow-wrap:anywhere;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-head h3 b {white-space:nowrap}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-head p {margin:0 0 3px;color:#294b66;font-size:13px;font-weight:700}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-head small {color:var(--shop-paper-muted);font-size:12px;line-height:1.5}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-price {
+  padding:11px 12px;background:#ded8c6;border:1px solid var(--shop-paper-line);border-radius:5px;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-cost {
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  margin:0!important;padding:0;border:0;background:none;box-shadow:none;color:#46617a;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-cost strong {
+  display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:5px;
+  min-width:0;color:#1d3852;font-size:13px;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-cost b {color:#1d3852;font-size:23px;line-height:1.3;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-cost .shop-icon {width:25px;height:25px;object-fit:contain;filter:none}
+#gui-casual-lobby .lobby-paper-modal .shop-confirm-balance {
+  margin:6px 0 0;text-align:right;color:var(--shop-paper-muted);font-size:12px;
+  overflow-wrap:anywhere;font-variant-numeric:tabular-nums;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-paper-confirm .dialog-actions {
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);
+  gap:10px;margin-top:17px;padding-top:0;border:0;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-paper-confirm .dialog-actions>.pl-button {min-height:48px;font-size:15px}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-section h3 {
+  display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:3px 8px;
+  margin:0 0 8px;color:var(--shop-paper-ink);font-size:16px;font-weight:900;line-height:1.5;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-section h3 small {color:var(--shop-paper-muted);font-size:11px;font-weight:600}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rates {
+  margin:0;padding:0 10px;border:1px solid var(--shop-paper-line);border-radius:5px;background:#d6e2ec88;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rates>div {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;
+  border-bottom:1px solid #7c96ad66;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rates>div:last-child {border-bottom:0}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rates dt {display:flex;align-items:center;gap:7px;color:#294b66;font-size:13px;font-weight:700}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rates dd {margin:0;color:#153c60;font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .lobby-paper-modal .shop-tier-mark {width:11px;height:11px;flex:none;border:1px solid #7c7567;border-radius:2px;background:#d1d0ca}
+#gui-casual-lobby .lobby-paper-modal [data-tier="green"] .shop-tier-mark {background:#54c77c;border-color:#358653}
+#gui-casual-lobby .lobby-paper-modal [data-tier="blue"] .shop-tier-mark {background:#4bb6ed;border-color:#2c7ca6}
+#gui-casual-lobby .lobby-paper-modal [data-tier="purple"] .shop-tier-mark {background:#b46be5;border-color:#7a479f}
+#gui-casual-lobby .lobby-paper-modal [data-tier="gold"] .shop-tier-mark {background:#ffd648;border-color:#a68924}
+#gui-casual-lobby .lobby-paper-modal .shop-paper-pool .shop-pool-note {margin:8px 0 12px;color:var(--shop-paper-muted);font-size:12px;line-height:1.6}
+#gui-casual-lobby .lobby-paper-modal .shop-paper-pool .shop-pool-guarantee {
+  margin:0 0 16px;padding:9px 10px;border-left:3px solid #397c9f;border-radius:3px;
+  background:#d6eaf0;color:#224c66;font-size:12px;font-weight:700;
+}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px 9px;margin:0 0 14px}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-grid>div {display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-grid .shop-pool-item-art {width:100%;padding:7px}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-grid .shop-pool-item-art>:is(img,svg) {width:100%;height:100%;max-height:76px;object-fit:contain;filter:none}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-grid .shop-pool-item-name {color:#1d3852;font-size:12px;font-weight:800;line-height:1.4;text-align:center;overflow-wrap:anywhere}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rules {border-top:1px solid var(--shop-paper-line);padding-top:5px;color:var(--shop-paper-muted)}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rules summary {min-height:44px;padding:11px 0;cursor:pointer;color:#183b59;font-size:13px;font-weight:800}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rules p {margin:0 0 10px;font-size:12px;line-height:1.65}
+#gui-casual-lobby .lobby-paper-modal .shop-pool-rules summary:focus-visible {outline:2px solid #285c87;outline-offset:2px;border-radius:3px}
+@container(max-width:340px) {
+  #gui-casual-lobby .lobby-paper-modal .shop-confirm-head {grid-template-columns:68px minmax(0,1fr);gap:10px}
+  #gui-casual-lobby .lobby-paper-modal .shop-confirm-head h3 {font-size:16px}
+  #gui-casual-lobby .lobby-paper-modal .shop-pool-grid {gap:10px 6px}
+  #gui-casual-lobby .lobby-paper-modal .shop-pool-grid .shop-pool-item-name {font-size:11px}
+}

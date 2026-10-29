@@ -1,0 +1,71 @@
+#gui-casual-lobby .pl-modal-host:has(.draw-stage){z-index:110!important}
+#gui-casual-lobby .draw-summary-covered{visibility:hidden!important;pointer-events:none!important}
+#gui-casual-lobby .draw-stage {
+  --draw-accent:#8bdbef;position:absolute;inset:0;z-index:5;isolation:isolate;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden;color:#eefaff;pointer-events:auto;
+  background:linear-gradient(#08101e33,#08101e55),url('/art/project-draw-stage-v1/receiver.png') center/cover no-repeat,#07131e;
+}
+#gui-casual-lobby .draw-stage[data-rank='3']{--draw-accent:#d5adff}
+#gui-casual-lobby .draw-stage[data-rank='4']{--draw-accent:#ffda8a}
+#gui-casual-lobby .draw-stage-heading{display:flex;align-items:center;gap:12px;padding:18px 18px 10px;min-height:70px;background:linear-gradient(#07121ccc,transparent)}
+#gui-casual-lobby .draw-stage-heading h2{margin:0;flex:1;font:400 24px/1.2 PsdPopup,sans-serif;color:#f3f9ff;text-shadow:0 2px #08131f}
+#gui-casual-lobby .draw-control{position:relative;flex:none;min-height:44px;margin:0;padding:8px 14px;border:1px solid #839ba266;border-radius:0;background:#132936aa;color:#dceef8;font:500 14px/1.2 'PingFang SC',sans-serif;cursor:pointer;box-shadow:none}
+#gui-casual-lobby .draw-control:focus-visible{outline:2px solid #c2edff;outline-offset:-3px}
+#gui-casual-lobby :is(.draw-skip,.draw-review-all){isolation:isolate;border:0;background:transparent}
+#gui-casual-lobby :is(.draw-skip,.draw-review-all)::before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch}
+#gui-casual-lobby .draw-stage-count{font:500 12px/1.4 sans-serif;color:#b4cbd6;white-space:nowrap}
+#gui-casual-lobby .draw-stage-body{position:relative;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;padding:16px 24px}
+#gui-casual-lobby .draw-stage-body::before{content:'';position:absolute;inset:5%;z-index:-1;background:radial-gradient(ellipse,color-mix(in srgb,var(--draw-accent) 16%,transparent),transparent 65%);pointer-events:none}
+#gui-casual-lobby .draw-stage-footer{padding:18px 30px calc(24px + var(--lobby-safe-bottom,0px));display:flex;justify-content:center;background:linear-gradient(transparent,#07121ccc)}
+#gui-casual-lobby .draw-primary{isolation:isolate;width:100%;max-width:340px;min-height:52px;border:0;background:none;font:400 20px/1.2 PsdPopup,sans-serif;color:#fff}
+#gui-casual-lobby .draw-primary::before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 18px stretch}
+#gui-casual-lobby .draw-spotlight{position:relative;flex:none;width:min(68cqw,310px);margin:0;animation:draw-appear .42s ease-out both}
+#gui-casual-lobby .draw-spotlight>.pilot-holo-card{width:100%;max-width:none;margin:0}
+#gui-casual-lobby .draw-spotlight .rr-result-note{color:#d5e8f4;font-size:14px;line-height:1.6;text-align:center;margin:14px 0 0;min-height:24px}
+#gui-casual-lobby .draw-spotlight:is(.pl-reward-item),#gui-casual-lobby .draw-spotlight>.pl-reward-item{display:flex;flex-direction:column;align-items:center;gap:18px;padding:24px 12px;min-height:280px;background:transparent;border:0;box-shadow:none;color:#f0faff}
+#gui-casual-lobby .draw-spotlight .pl-reward-item>:is(img,svg),#gui-casual-lobby .draw-spotlight.pl-reward-item>:is(img,svg){width:100%;height:200px;object-fit:contain}
+#gui-casual-lobby .draw-spotlight:is(.pl-reward-item)>b,#gui-casual-lobby .draw-spotlight .pl-reward-item>b{font-size:22px;color:#f0faff;text-shadow:0 2px #07121c;text-align:center}
+#gui-casual-lobby .draw-spotlight:is(.pl-reward-item)>span,#gui-casual-lobby .draw-spotlight .pl-reward-item>span{font-size:22px;color:#ffe2a7}
+#gui-casual-lobby .draw-new{padding:6px 18px;color:#f8e4aa;border-block:1px solid #e3c27a77;font-size:14px;letter-spacing:2px}
+#gui-casual-lobby .draw-receiver{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+#gui-casual-lobby .draw-door{position:absolute;top:0;bottom:0;width:50%;background-size:200% 100%;background-repeat:no-repeat;will-change:transform}
+#gui-casual-lobby .draw-door-left{left:0;background-position:left center}
+#gui-casual-lobby .draw-door-right{right:0;background-position:right center}
+#gui-casual-lobby .draw-receiver.is-ready .draw-door-left{animation:draw-gate-left 1.5s cubic-bezier(.55,0,.3,1) forwards}
+#gui-casual-lobby .draw-receiver.is-ready .draw-door-right{animation:draw-gate-right 1.5s cubic-bezier(.55,0,.3,1) forwards}
+#gui-casual-lobby .draw-stage.is-opening>:is(.draw-stage-heading,.draw-stage-footer){position:relative;z-index:3}
+#gui-casual-lobby .draw-stage.is-opening>.draw-stage-body{z-index:2;justify-content:flex-end;padding-bottom:8cqw;pointer-events:none}
+#gui-casual-lobby .draw-opening-label{margin:0;color:#b2d7e4;font-size:16px;letter-spacing:3px}
+#gui-casual-lobby .draw-review-all{margin-left:auto;font-size:12px}
+#gui-casual-lobby .rr-result-slot{position:relative}
+#gui-casual-lobby .draw-card-review{display:block;margin:4px auto 0;min-height:32px;padding:4px 14px;font-size:12px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] :is(.pl-card-results,.pl-rewards-grid){grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 8px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .rr-result-slot{grid-template-rows:auto 32px auto;gap:4px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .rr-result-note{height:32px;font-size:10px;line-height:15px;overflow:hidden}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .pl-reward-item{min-height:0;padding:8px 5px;gap:3px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .pl-reward-item>b{font-size:11px;line-height:15px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .pl-reward-item>span{font-size:15px;line-height:18px}
+#gui-casual-lobby .draw-stage .research-awakening-result{display:flex;flex-direction:column;align-items:stretch;width:100%;max-width:340px;text-align:center;color:#f0f7ff}
+#gui-casual-lobby .draw-stage .research-result-emblem{width:34cqw;height:34cqw;margin:0 auto 20px}
+#gui-casual-lobby .draw-stage .research-result-icon{width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .draw-stage .research-result-name{font:400 28px/1.4 PsdPopup,sans-serif;margin:0;color:#fff}
+#gui-casual-lobby .draw-stage .research-result-quality{font-size:14px;color:var(--draw-accent);margin:8px 0}
+#gui-casual-lobby .draw-stage .research-result-level{display:flex;gap:24px;justify-content:center;align-items:center;margin:14px 0 22px;font-size:18px;color:#d9ecf6}
+#gui-casual-lobby .draw-stage .research-result-stat{display:flex;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid #8aaebe55;color:#d9ecf6;font-size:14px}
+#gui-casual-lobby .draw-stage .research-result-stat>div{display:flex;gap:14px}
+#gui-casual-lobby .draw-stage :is(.research-result-level,.research-result-stat) i{font-style:normal;color:#9cbecb}
+#gui-casual-lobby .draw-stage :is(.research-result-level,.research-result-stat) strong{color:var(--draw-accent)}
+#gui-casual-lobby .draw-stage .research-result-core{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:14px}
+#gui-casual-lobby .draw-stage .research-result-core img{width:28px;height:28px;object-fit:contain}
+@keyframes draw-appear{from{opacity:0;transform:translateY(15px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes draw-gate-left{0%,22%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+@keyframes draw-gate-right{0%,22%{transform:translateX(0)}100%{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby :is(.draw-spotlight,.draw-door){animation:none!important}}
+
+#gui-casual-lobby .draw-spotlight .phc-status{display:none}
+/* The card itself is the touch target; details reopen the full foil surface. */
+#gui-casual-lobby .recruit-result-dialog .draw-card-review{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;padding:0;border:0;z-index:5}
+#gui-casual-lobby .recruit-result-dialog :is(.rr-result-slot,.pl-reward-item):has(>.draw-card-review:focus-visible){outline:2px solid #b3e8ff;outline-offset:2px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .rr-result-slot{grid-template-rows:auto 32px}
+#gui-casual-lobby .recruit-result-dialog.is-multiple[data-draw-count='10'] .phc-status{display:none}
+#gui-casual-lobby .recruit-result-dialog .pl-reward-item{position:relative}

@@ -1,0 +1,181 @@
+{
+  "status": "COMPLETE_MODEL_DEPENDENCIES_WITH_COMPATIBILITY_REQUIREMENTS_NOT_THREEJS_ACCEPTED",
+  "model_entry": "bulaimodun_2/bulaimodun_2.model3.json",
+  "texture_version": "v09c",
+  "asset_file_count": 19,
+  "dependency_reference_count": 18,
+  "missing_dependencies": [],
+  "unchanged_source_files": 18,
+  "only_replaced_file": "bulaimodun_2/textures/texture_00.png",
+  "contains_SDK_or_Core_binary": false,
+  "no_new_rig": true,
+  "moc3_is_not_editable_cubism_source": true,
+  "source_model_id": "bulaimodun_2",
+  "rights_note": "Third-party source binding, motions, physics and configuration; derivative texture retains third-party image pixels. Public availability and private repository upload do not grant redistribution or commercial rights. No new license is granted.",
+  "files": [
+    {
+      "path": "bulaimodun_2/bulaimodun_2.moc3",
+      "bytes": 1350656,
+      "sha256": "7c4d0a1780ed0eed9e79550aaf358ae9385616c15f28308b968392dec8d1d47c",
+      "git_blob_sha": "66cf1f6ed2fff957a40c405f1d35848b536b66f8",
+      "source_sha256": "7c4d0a1780ed0eed9e79550aaf358ae9385616c15f28308b968392dec8d1d47c",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/bulaimodun_2.model3.json",
+      "bytes": 2239,
+      "sha256": "e82b4ca9e563ae1f93154721f91d4d9936645d04223231fcad01d0dfd3030be5",
+      "git_blob_sha": "aadee6a02fb826de6d645269f429a93db2d45237",
+      "source_sha256": "e82b4ca9e563ae1f93154721f91d4d9936645d04223231fcad01d0dfd3030be5",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/bulaimodun_2.physics3.json",
+      "bytes": 55204,
+      "sha256": "8ffe845702f0a88cb325a292bfe9cee5a02c830ba1e10ed1e846a08353c26495",
+      "git_blob_sha": "9a67a7c5cb949d144d9289d2e67cb616480b6cd4",
+      "source_sha256": "8ffe845702f0a88cb325a292bfe9cee5a02c830ba1e10ed1e846a08353c26495",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/complete.motion3.json",
+      "bytes": 139970,
+      "sha256": "257d4a2ba51769f641931a3f2acbfe6726268185b1b98e06cec5423f64ab3e99",
+      "git_blob_sha": "22f806e1aacaad2ad27c536037396375eaf2f94a",
+      "source_sha256": "257d4a2ba51769f641931a3f2acbfe6726268185b1b98e06cec5423f64ab3e99",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/effect.motion3.json",
+      "bytes": 4018,
+      "sha256": "303ce199af3fbe4bf999235b56ac37f33d0136bdf3aeb00da10838a6f94e5538",
+      "git_blob_sha": "b5d00b6309f9be62341d08861adb16bdd081685a",
+      "source_sha256": "303ce199af3fbe4bf999235b56ac37f33d0136bdf3aeb00da10838a6f94e5538",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/home.motion3.json",
+      "bytes": 182612,
+      "sha256": "6ef86f550d9ce1a2b5ea9f864a23cceb63f590210d5f91ab7a7fcd6e3aadc4c5",
+      "git_blob_sha": "65aff20e61ccb54ef5aeb0465bb9ef441d2e0749",
+      "source_sha256": "6ef86f550d9ce1a2b5ea9f864a23cceb63f590210d5f91ab7a7fcd6e3aadc4c5",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/idle.motion3.json",
+      "bytes": 136353,
+      "sha256": "255190b42648116e5f86abc4d0eefc736fc2c26255e48c811f8d142ff7faf240",
+      "git_blob_sha": "6ab8975ae0f26978c84c7aafed8a4fe454a7236a",
+      "source_sha256": "255190b42648116e5f86abc4d0eefc736fc2c26255e48c811f8d142ff7faf240",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/login.motion3.json",
+      "bytes": 184021,
+      "sha256": "2c7a09fb7d5f4d9ab69a5f4197e11401704b4e3e2e2276e3268c746a75030707",
+      "git_blob_sha": "17b79913be9f79224134fadc6921d27094f51d74",
+      "source_sha256": "2c7a09fb7d5f4d9ab69a5f4197e11401704b4e3e2e2276e3268c746a75030707",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/mail.motion3.json",
+      "bytes": 123781,
+      "sha256": "25995c25cb4a0e024bb3f60a50ba164941c68515ac4f6fb55715cfcc010bdc3b",
+      "git_blob_sha": "d5ff149462267b457217070a8be6dcad2b738b84",
+      "source_sha256": "25995c25cb4a0e024bb3f60a50ba164941c68515ac4f6fb55715cfcc010bdc3b",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/main_1.motion3.json",
+      "bytes": 164918,
+      "sha256": "1bbf9d080b1d346b530914ed380b124ab5d8ed2837852bd26ab74541d05a2143",
+      "git_blob_sha": "51997ce1f87e09158c02509a380682ffa8f4f8fb",
+      "source_sha256": "1bbf9d080b1d346b530914ed380b124ab5d8ed2837852bd26ab74541d05a2143",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/main_2.motion3.json",
+      "bytes": 196313,
+      "sha256": "cf12429a16d096adde10a4756a1a7e445e90211e649bf20d725a541329824463",
+      "git_blob_sha": "3ae6e6d29dcac1216ebb50bb6b93d3bcc1aefa2f",
+      "source_sha256": "cf12429a16d096adde10a4756a1a7e445e90211e649bf20d725a541329824463",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/main_3.motion3.json",
+      "bytes": 191838,
+      "sha256": "bd6a5a8ff3e10a3400ef2acd893ac55a91a74bfc23894a9088441061cc21e467",
+      "git_blob_sha": "e8627ee40c48d4ff6b1e5efce57787f8c1b09fed",
+      "source_sha256": "bd6a5a8ff3e10a3400ef2acd893ac55a91a74bfc23894a9088441061cc21e467",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/mission.motion3.json",
+      "bytes": 160360,
+      "sha256": "b92c67672de6e0b4717c79c8e34dc9ab3e621597afadaebd462256437059d8f9",
+      "git_blob_sha": "1acfd87df6d8464596485e6ff4efd57209e827fc",
+      "source_sha256": "b92c67672de6e0b4717c79c8e34dc9ab3e621597afadaebd462256437059d8f9",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/mission_complete.motion3.json",
+      "bytes": 150028,
+      "sha256": "f9bc94bc713045620a1f0b4124f0bbaaa43bccc7977205401b7b806f53662b12",
+      "git_blob_sha": "47958702da73c7626cc101c1edf436cf86ebd33a",
+      "source_sha256": "f9bc94bc713045620a1f0b4124f0bbaaa43bccc7977205401b7b806f53662b12",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/touch_body.motion3.json",
+      "bytes": 203810,
+      "sha256": "d56f8e9f98f303b7f278d7c48842673da6b7b7e434bc69acf10e7b0a25dd1da7",
+      "git_blob_sha": "eacb4db81387d00e7298676639675453cf9dadc3",
+      "source_sha256": "d56f8e9f98f303b7f278d7c48842673da6b7b7e434bc69acf10e7b0a25dd1da7",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/touch_head.motion3.json",
+      "bytes": 136367,
+      "sha256": "60e891cce4c377b8a77cd7e3ccf9345fac84bc44292420b9dc32db8e510933c4",
+      "git_blob_sha": "74cc1f619ecebce81171fb47ade1ab236998e379",
+      "source_sha256": "60e891cce4c377b8a77cd7e3ccf9345fac84bc44292420b9dc32db8e510933c4",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/touch_special.motion3.json",
+      "bytes": 216734,
+      "sha256": "797f0077e3617c1847af6699a7d417449ae1e3efb737acd43a96dfcbd79bcb0f",
+      "git_blob_sha": "87c91ff39a3d7a3d982b1e7e0c1ff88f9b495c8b",
+      "source_sha256": "797f0077e3617c1847af6699a7d417449ae1e3efb737acd43a96dfcbd79bcb0f",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/motions/wedding.motion3.json",
+      "bytes": 254911,
+      "sha256": "8f96728124f787a3cb3532727d6dd08d45141dbe5bec8f21ecdcab691e48628f",
+      "git_blob_sha": "cd56c7d8eaaebd3790694e9d09eef5d3af402d5e",
+      "source_sha256": "8f96728124f787a3cb3532727d6dd08d45141dbe5bec8f21ecdcab691e48628f",
+      "replaced": false
+    },
+    {
+      "path": "bulaimodun_2/textures/texture_00.png",
+      "bytes": 3418754,
+      "sha256": "8bcb027b9ddefeb646a7d00c0ef69c6240eba5703833db7bb23b5f2375165bb4",
+      "git_blob_sha": "d8c331f4a9b6ef9a91349c8fbe901c7f46e0ba90",
+      "source_sha256": "3fe90de623b72bc47efcc79c4303e0626acbf6e181272c28b66c9ab97543591c",
+      "replaced": true
+    }
+  ],
+  "compatibility": {
+    "normalizer": "compatibility/motion_compat.py",
+    "source_function_copied_verbatim": true,
+    "normalizer_original_source_sha256": "4a7fe975f6fcc5e35451c871a75dc7765cb45745d717501376e8b59d1fb1853a",
+    "motion_count_repairs": 15,
+    "stable_target_order_repairs": 5,
+    "source_motion_bytes_unchanged": true,
+    "source_curve_values_unchanged": true,
+    "part_opacity_compat_required_for_this_model": false,
+    "browser_runtime_tested": false
+  },
+  "existing_validation": "15 complete clips, 4907 frames, native Core/Framework plus project EGL; see sibling v09c-texture-candidate/verification/FINAL-REVIEW.json. Existing result, not rerendered by this upload."
+}

@@ -1,0 +1,24 @@
+{
+  "method": "Built-in imagegen from project original hangar; source alpha retained; only empty margins and resolution normalized",
+  "prompt": "art/project-fleet-stage-v2/prompt.json",
+  "source": "art/project-fleet-stage-v2/source-platform.png",
+  "sourceSize": [
+    1635,
+    962
+  ],
+  "crop": {
+    "left": 13,
+    "top": 174,
+    "width": 1609,
+    "height": 660
+  },
+  "alphaRange": [
+    0,
+    255
+  ],
+  "size": [
+    1024,
+    420
+  ],
+  "sha256": "803db3993bd2f58f190a86c5b56510c441878566689f262333f6d63edf307f0e"
+}

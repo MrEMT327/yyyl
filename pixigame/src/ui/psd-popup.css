@@ -1,0 +1,237 @@
+/* Shared popup shell from psd/弹窗.psd. Nine-slice keeps corners and title tab
+   intact as content grows; only the inner content scrolls. */
+@font-face{font-family:PsdPopup;src:url('/art/psd-combat-v1/FZY4JW.ttf') format('truetype');font-display:swap}
+#gui-casual-lobby .pl-modal-backdrop {
+  padding:5%;background:rgba(0,0,0,.55);backdrop-filter:none;
+}
+#gui-casual-lobby [data-psd-popup] {
+  --popup-unit:.133333cqw;
+  --paper:#a6b8cc;--paper-raised:#c1ccd8;--paper-inset:#8ea3bc;
+  --paper-ink:#172c40;--paper-muted:#304b65;--paper-outline:#64788d;
+  --ui-text:#172c40;--ui-muted:#304b65;--ui-panel:#bdc9d8;--ui-panel-deep:#a6b8cc;
+  --bag-paper:#a6b8cc;--bag-ink:#172c40;--bag-outline:#64788d;
+  --popup-art:url('/art/psd-popup-v1/primary.png');
+  --popup-slice:110 44 55 255;
+  --popup-border:calc(110 * var(--popup-unit)) calc(44 * var(--popup-unit)) calc(55 * var(--popup-unit)) calc(255 * var(--popup-unit));
+  --popup-width:75.6cqw;--popup-height:95.2cqw;
+  --popup-min-height:0px;--popup-max-height:85%;
+  position:relative;display:flex;flex-direction:column;isolation:isolate;
+  width:var(--popup-width)!important;max-width:none!important;height:var(--popup-height)!important;
+  min-height:var(--popup-min-height)!important;max-height:var(--popup-max-height)!important;padding:0!important;
+  border:0!important;border-radius:0!important;background:none!important;
+  box-shadow:none!important;color:var(--paper-ink);overflow:visible!important;
+}
+#gui-casual-lobby [data-psd-popup]::before {
+  content:""!important;position:absolute;inset:0!important;z-index:-1;pointer-events:none;
+  background:none!important;border:0 solid transparent!important;border-radius:0!important;
+  border-image:var(--popup-art) var(--popup-slice) fill / var(--popup-border) stretch!important;
+  box-shadow:none!important;opacity:1!important;transform:none!important;
+}
+#gui-casual-lobby [data-psd-popup]::after {content:none!important}
+#gui-casual-lobby [data-psd-popup]>.pl-modal-heading {
+  position:relative;display:flex;align-items:center;justify-content:flex-start;flex:none;
+  height:calc(125 * var(--popup-unit));min-height:0!important;
+  margin:0!important;padding:calc(32 * var(--popup-unit)) calc(100 * var(--popup-unit)) calc(18 * var(--popup-unit)) calc(58 * var(--popup-unit))!important;
+  border:0!important;background:none!important;box-shadow:none!important;
+}
+#gui-casual-lobby [data-psd-popup]>.pl-modal-heading::before,
+#gui-casual-lobby [data-psd-popup]>.pl-modal-heading::after {content:none!important}
+#gui-casual-lobby [data-psd-popup]>.pl-modal-heading h2 {
+  width:100%;margin:0!important;color:#fff!important;font:400 calc(40 * var(--popup-unit))/1.15 PsdPopup,"Microsoft YaHei",sans-serif!important;
+  text-align:left!important;letter-spacing:0!important;transform:none!important;
+  -webkit-text-stroke:0!important;text-shadow:0 2px 0 #57677a!important;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#gui-casual-lobby [data-psd-popup]>.pl-modal-content {
+  flex:1;min-height:0;margin:0 calc(28 * var(--popup-unit)) calc(40 * var(--popup-unit))!important;
+  padding:0 calc(12 * var(--popup-unit)) calc(12 * var(--popup-unit))!important;
+  background:transparent!important;color:var(--paper-ink);border:0!important;box-shadow:none!important;
+  overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#627e9e transparent;
+}
+#gui-casual-lobby [data-psd-popup] :is(.pl-close,.bag-close) {
+  position:absolute!important;inset:calc(6 * var(--popup-unit)) calc(-16 * var(--popup-unit)) auto auto!important;
+  width:calc(94 * var(--popup-unit))!important;height:calc(95 * var(--popup-unit))!important;
+  min-width:44px!important;min-height:44px!important;padding:0!important;z-index:3;
+  border:0!important;border-radius:0!important;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat!important;
+  box-shadow:none!important;filter:none!important;transform:none!important;clip-path:none!important;
+}
+#gui-casual-lobby [data-psd-popup] :is(.pl-close,.bag-close)::before,
+#gui-casual-lobby [data-psd-popup] :is(.pl-close,.bag-close)::after {content:none!important}
+#gui-casual-lobby [data-psd-popup] :is(.pl-close,.bag-close)>* {visibility:hidden}
+#gui-casual-lobby [data-psd-popup='secondary'] {
+  --popup-art:url('/art/psd-popup-v1/secondary.png');--popup-slice:48 38 38 220;
+  --popup-border:calc(48 * var(--popup-unit)) calc(38 * var(--popup-unit)) calc(38 * var(--popup-unit)) calc(220 * var(--popup-unit));
+  --popup-width:64.933333cqw;--popup-height:auto;--popup-min-height:46.8cqw;
+}
+#gui-casual-lobby [data-psd-popup='secondary']>.pl-modal-heading {
+  height:calc(112 * var(--popup-unit));padding-left:calc(38 * var(--popup-unit))!important;
+  padding-right:calc(116 * var(--popup-unit))!important;
+}
+#gui-casual-lobby [data-psd-popup='secondary'] :is(.pl-close,.bag-close) {top:calc(-21 * var(--popup-unit))!important}
+#gui-casual-lobby [data-psd-popup='secondary']>.pl-modal-heading h2 {
+  font-size:calc(32 * var(--popup-unit))!important;color:#1c334c!important;text-shadow:0 1px #e3edf5!important;
+}
+/* Entry pages need the game canvas, rather than the compact detail dimensions. */
+#gui-casual-lobby .pl-modal[data-psd-popup]:is([data-modal-type='chapters'],[data-modal-type='stages'],[data-modal-type='activities']) {
+  --popup-width:94cqw;--popup-height:90%;--popup-max-height:90%;
+  flex:none;
+}
+#gui-casual-lobby .pl-modal-backdrop:has(>.pl-modal:is([data-modal-type='patrol'],[data-modal-type='chapters'],[data-modal-type='stages'],[data-modal-type='activities'])) {
+  padding:0!important;
+}
+#gui-casual-lobby .pl-modal-host:has(.pl-modal:is([data-modal-type='patrol'],[data-modal-type='chapters'],[data-modal-type='stages'],[data-modal-type='activities'])) {
+  z-index:70!important;
+}
+/* Remove cream/purple outer sub-panels; preserve item art, rarity, progress and actions. */
+#gui-casual-lobby [data-psd-popup] :is(.lc-task,.pl-signin-day,.weapon-equip-slot,.rc-history-list>li,.shop-confirm-head,.shop-confirm-price,.research-copy,.pl-rule-copy,.paper-quick-rewards,.bc-star-reward) {
+  background:#d9e3edb8!important;border-color:#7188a0!important;box-shadow:inset 0 0 0 1px #edf4fb66!important;color:#1c334c;
+}
+#gui-casual-lobby [data-psd-popup] :is(.lc-task.is-ready,.pl-signin-day.is-today,.weapon-equip-slot.is-selected) {background:#d6edf6!important;border-color:#3b789b!important}
+#gui-casual-lobby [data-psd-popup] :is(.pl-modal-description,.bc-modal-empty,.pl-rule-copy,.pl-rule-copy dd,.research-copy,.research-copy p,.rc-modal-copy,.shop-rules,.shop-pool-copy,.lc-rewards b,.task-progress>span,.pl-stage-list p,.pl-aircraft-detail p,.pl-stamina-detail p,.bc-chest-copy) {color:#243f59!important;text-shadow:none}
+#gui-casual-lobby [data-psd-popup] .bag-content {overflow:hidden!important}
+#gui-casual-lobby [data-psd-popup] .bag-grid {gap:7px 5px;padding:4px;grid-template-columns:repeat(4,minmax(0,1fr))}
+#gui-casual-lobby [data-psd-popup] .bag-tabs {padding-left:0;background:transparent;border-color:#6b8198}
+#gui-casual-lobby [data-psd-popup] .bag-tab {background:#8fa6bf;color:#172c40;border-color:#6b8198;box-shadow:none;font-size:14px}
+#gui-casual-lobby [data-psd-popup] .bag-tab.is-selected {background:#d1efff;color:#174764}
+#gui-casual-lobby .bag-detail-backdrop {padding:0;background:#0006}
+#gui-casual-lobby .bag-detail[data-psd-popup] {padding:calc(35 * var(--popup-unit))!important}
+#gui-casual-lobby [data-psd-popup] .bag-detail-header {
+  position:static;background:transparent;border:0;padding:15px 0 12px;min-height:0;gap:10px;
+  grid-template-columns:55px minmax(0,1fr);
+}
+#gui-casual-lobby [data-psd-popup] .bag-detail-info {padding-right:22px}
+#gui-casual-lobby [data-psd-popup] .bag-detail-info :is(h3,p) {color:#172c40;-webkit-text-stroke:0;text-shadow:none;font-size:14px}
+#gui-casual-lobby [data-psd-popup] .bag-detail-body {margin:0;padding:10px 0;background:transparent;min-height:0;overflow:auto}
+#gui-casual-lobby [data-psd-popup] .bag-detail-body :is(h4,p) {color:#263e58;font-size:14px}
+#gui-casual-lobby [data-psd-popup] .lc-task {flex-wrap:wrap;gap:8px;padding:10px}
+#gui-casual-lobby [data-psd-popup] .lc-task-body {min-width:120px}
+#gui-casual-lobby [data-psd-popup] .lc-claim {margin-left:auto}
+/* Native combat details and HTML fallback dialogs use the same source assets.
+   Their lifecycle remains with the existing pause/revive/result controllers. */
+.combat-detail-dialog[data-psd-popup],
+.game-shell :is(.pause-card,.revive-card,.result-card) {
+  --popup-unit:min(.133333vw,.061576vh,1px);
+  --popup-art:url('/art/psd-popup-v1/secondary.png');--popup-slice:48 38 38 220;
+  --popup-border:calc(48 * var(--popup-unit)) calc(38 * var(--popup-unit)) calc(38 * var(--popup-unit)) calc(220 * var(--popup-unit));
+  position:relative;isolation:isolate;box-sizing:border-box;border:0;border-radius:0;
+  background:transparent;clip-path:none;box-shadow:none;color:#1b3048;
+  padding:24px;overflow:visible;
+}
+.combat-detail-dialog[data-psd-popup]::before,
+.game-shell :is(.pause-card,.revive-card,.result-card)::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-image:var(--popup-art) var(--popup-slice) fill / var(--popup-border) stretch;
+  background:none;box-shadow:none;height:auto;
+}
+.combat-detail-dialog[data-psd-popup] {
+  --detail-ink:#17314a;--detail-text:#1b3048;--detail-muted:#30465c;--detail-gold:#215978;
+  width:min(64.933333vw,30vh,487px);min-width:min(280px,calc(100vw - 32px));
+  min-height:201px;max-height:calc(100dvh - 64px);padding:28px 20px 18px;
+  filter:none;
+}
+.combat-detail-dialog[data-psd-popup] .combat-detail-heading {padding-right:28px}
+.combat-detail-dialog[data-psd-popup] .combat-detail-level {background:#d5e3ed;color:#30465c}
+.combat-detail-dialog[data-psd-popup] .combat-detail-eyebrow {background:#314c67;color:white}
+.combat-detail-dialog[data-psd-popup] button:not(.psd-popup-close) {color:#fff}
+.combat-detail-dialog[data-psd-popup] .psd-popup-close {
+  position:absolute;right:-9px;top:-12px;width:54px;min-height:54px;height:54px;
+  padding:0;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat;
+}
+.game-shell :is(.pause-card,.revive-card,.result-card) p {color:#30465c}
+.game-shell .result-card {
+  --popup-art:url('/art/psd-popup-v1/primary.png');--popup-slice:110 44 55 255;
+  --popup-border:calc(110 * var(--popup-unit)) calc(44 * var(--popup-unit)) calc(55 * var(--popup-unit)) calc(255 * var(--popup-unit));
+}
+#gui-casual-lobby [data-psd-popup] .pl-stamina-detail>.pl-icon {margin-inline:auto}
+#gui-casual-lobby [data-psd-popup] .bc-star-rewards {--lobby-text:#203b56;--lobby-gold:#72551e;color:#203b56}
+#gui-casual-lobby [data-psd-popup] :is(.bc-star-total small,.bc-star-total>span,.bc-star-note) {color:#304b65}
+.combat-detail-dialog[data-psd-popup] .combat-detail-heading {display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+.combat-detail-dialog[data-psd-popup] .combat-detail-heading h3 {margin:0}
+#gui-casual-lobby [data-psd-popup] .pl-detail-facts {background:#d9e3edb8!important;border-color:#7188a0!important;color:#243f59!important}
+#gui-casual-lobby [data-psd-popup] .research-detail>p {color:#304b65!important;opacity:1}
+
+/* UI_HangUp: 1002/1080 width; scene 974/342. Keep a compact stack on tall phones. */
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='patrol'] {
+  --popup-width:92.8cqw;--popup-height:132cqw;--popup-max-height:85%;flex:none;
+}
+
+/* Avoid fractional border-image tile gaps: overlap interior tiles by one CSS pixel.
+   PSD art, frame dimensions and modal layout remain unchanged. */
+#gui-casual-lobby [data-psd-popup] {
+  --psd-st:calc(110 * var(--popup-unit));
+  --psd-sr:calc(44 * var(--popup-unit));
+  --psd-sb:calc(55 * var(--popup-unit));
+  --psd-sl:calc(255 * var(--popup-unit));
+  --psd-t00:url('/art/psd-popup-v1/primary-0-0.png');
+  --psd-t01:url('/art/psd-popup-v1/primary-0-1.png');
+  --psd-t02:url('/art/psd-popup-v1/primary-0-2.png');
+  --psd-t10:url('/art/psd-popup-v1/primary-1-0.png');
+  --psd-t11:url('/art/psd-popup-v1/primary-1-1.png');
+  --psd-t12:url('/art/psd-popup-v1/primary-1-2.png');
+  --psd-t20:url('/art/psd-popup-v1/primary-2-0.png');
+  --psd-t21:url('/art/psd-popup-v1/primary-2-1.png');
+  --psd-t22:url('/art/psd-popup-v1/primary-2-2.png');
+}
+#gui-casual-lobby [data-psd-popup='secondary'],
+.combat-detail-dialog[data-psd-popup],
+.game-shell :is(.pause-card,.revive-card) {
+  --psd-st:calc(48 * var(--popup-unit));
+  --psd-sr:calc(38 * var(--popup-unit));
+  --psd-sb:calc(38 * var(--popup-unit));
+  --psd-sl:calc(220 * var(--popup-unit));
+  --psd-t00:url('/art/psd-popup-v1/secondary-0-0.png');
+  --psd-t01:url('/art/psd-popup-v1/secondary-0-1.png');
+  --psd-t02:url('/art/psd-popup-v1/secondary-0-2.png');
+  --psd-t10:url('/art/psd-popup-v1/secondary-1-0.png');
+  --psd-t11:url('/art/psd-popup-v1/secondary-1-1.png');
+  --psd-t12:url('/art/psd-popup-v1/secondary-1-2.png');
+  --psd-t20:url('/art/psd-popup-v1/secondary-2-0.png');
+  --psd-t21:url('/art/psd-popup-v1/secondary-2-1.png');
+  --psd-t22:url('/art/psd-popup-v1/secondary-2-2.png');
+}
+.game-shell .result-card {
+  --psd-st:calc(110 * var(--popup-unit));
+  --psd-sr:calc(44 * var(--popup-unit));
+  --psd-sb:calc(55 * var(--popup-unit));
+  --psd-sl:calc(255 * var(--popup-unit));
+  --psd-t00:url('/art/psd-popup-v1/primary-0-0.png');
+  --psd-t01:url('/art/psd-popup-v1/primary-0-1.png');
+  --psd-t02:url('/art/psd-popup-v1/primary-0-2.png');
+  --psd-t10:url('/art/psd-popup-v1/primary-1-0.png');
+  --psd-t11:url('/art/psd-popup-v1/primary-1-1.png');
+  --psd-t12:url('/art/psd-popup-v1/primary-1-2.png');
+  --psd-t20:url('/art/psd-popup-v1/primary-2-0.png');
+  --psd-t21:url('/art/psd-popup-v1/primary-2-1.png');
+  --psd-t22:url('/art/psd-popup-v1/primary-2-2.png');
+}
+#gui-casual-lobby .weapon-detail-modal {
+  --psd-st:calc(48 * calc(2.04273 * var(--du)));
+  --psd-sr:calc(38 * calc(2.04273 * var(--du)));
+  --psd-sb:calc(38 * calc(2.04273 * var(--du)));
+  --psd-sl:calc(220 * calc(2.04273 * var(--du)));
+  --psd-t00:url('/art/psd-popup-v1/secondary-0-0.png');
+  --psd-t01:url('/art/psd-popup-v1/secondary-0-1.png');
+  --psd-t02:url('/art/psd-popup-v1/secondary-0-2.png');
+  --psd-t10:url('/art/psd-popup-v1/secondary-1-0.png');
+  --psd-t11:url('/art/psd-popup-v1/secondary-1-1.png');
+  --psd-t12:url('/art/psd-popup-v1/secondary-1-2.png');
+  --psd-t20:url('/art/psd-popup-v1/secondary-2-0.png');
+  --psd-t21:url('/art/psd-popup-v1/secondary-2-1.png');
+  --psd-t22:url('/art/psd-popup-v1/secondary-2-2.png');
+}
+#gui-casual-lobby [data-psd-popup]::before,
+#gui-casual-lobby .weapon-detail-modal::before,
+.combat-detail-dialog[data-psd-popup]::before,
+.game-shell :is(.pause-card,.revive-card,.result-card)::before {
+  border-image:none!important;
+  background:
+    var(--psd-t00) left top / var(--psd-sl) var(--psd-st) no-repeat,
+    var(--psd-t02) right top / var(--psd-sr) var(--psd-st) no-repeat,
+    var(--psd-t20) left bottom / var(--psd-sl) var(--psd-sb) no-repeat,
+    var(--psd-t22) right bottom / var(--psd-sr) var(--psd-sb) no-repeat,
+    var(--psd-t01) left calc(var(--psd-sl) - 1px) top / calc(100% - var(--psd-sl) - var(--psd-sr) + 2px) var(--psd-st) no-repeat,
+    var(--psd-t21) left calc(var(--psd-sl) - 1px) bottom / calc(100% - var(--psd-sl) - var(--psd-sr) + 2px) var(--psd-sb) no-repeat,
+    var(--psd-t10) left top calc(var(--psd-st) - 1px) / var(--psd-sl) calc(100% - var(--psd-st) - var(--psd-sb) + 2px) no-repeat,
+    var(--psd-t12) right top calc(var(--psd-st) - 1px) / var(--psd-sr) calc(100% - var(--psd-st) - var(--psd-sb) + 2px) no-repeat,
+    var(--psd-t11) left calc(var(--psd-sl) - 1px) top calc(var(--psd-st) - 1px) / calc(100% - var(--psd-sl) - var(--psd-sr) + 2px) calc(100% - var(--psd-st) - var(--psd-sb) + 2px) no-repeat!important;
+}

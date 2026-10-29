@@ -1,0 +1,58 @@
+.tap-feedback-layer {
+  --tap-edge: #e6fcff;
+  --tap-glow: #79dfff;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.tap-feedback-pulse {
+  position: absolute;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  margin-left: calc(var(--tap-size) / -2);
+  margin-top: calc(var(--tap-size) / -2);
+  pointer-events: none;
+}
+
+.tap-feedback-pulse::before,
+.tap-feedback-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.tap-feedback-pulse::before {
+  border: 2px solid var(--tap-edge);
+  box-shadow: 0 0 8px var(--tap-glow), inset 0 0 5px #79dfff99;
+  animation: tap-ring-expand 440ms cubic-bezier(.16, .65, .25, 1) both;
+}
+
+.tap-feedback-pulse::after {
+  background: radial-gradient(circle, #ffffffee 0%, #b8efff99 22%, #79dfff00 68%);
+  animation: tap-core-fade 260ms ease-out both;
+}
+
+@keyframes tap-ring-expand {
+  0% { transform: scale(.22); opacity: 1; }
+  40% { opacity: .85; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+@keyframes tap-core-fade {
+  from { transform: scale(.4); opacity: 1; }
+  to { transform: scale(.75); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tap-feedback-pulse::before { animation: tap-still-fade 120ms ease-out both; }
+  .tap-feedback-pulse::after { display: none; }
+  @keyframes tap-still-fade {
+    from { transform: scale(.5); opacity: .7; }
+    to { transform: scale(.5); opacity: 0; }
+  }
+}

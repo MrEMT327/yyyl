@@ -1,0 +1,9 @@
+.psd-empty-mark {width:1em;height:1em}
+#gui-casual-lobby .psd-empty-mark {
+  display:block;flex:none;
+  background-color:#a8c3d0;
+  mask:url('/art/psd-main-v1/resources/diamonds-plus.png') center / clamp(13px,3.6cqw,18px) auto no-repeat;
+  opacity:.85;
+}
+#gui-casual-lobby button:hover .psd-empty-mark,
+#gui-casual-lobby button:focus-visible .psd-empty-mark {background-color:#d5f4fb;opacity:1}

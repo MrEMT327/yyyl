@@ -1,0 +1,198 @@
+/* Shared peripheral UI. Illustration and aircraft assets keep their own art. */
+.peripheral-lobby.reference-layout {
+  --ui-line:#121521;
+  --ui-panel:#292934;
+  --ui-bar:linear-gradient(#4d4d53,#36363c);
+  --ui-gold:linear-gradient(#ffe377,#ffbf32);
+  --ui-blue:linear-gradient(#62d8fb,#2498d8);
+  --ui-gray:linear-gradient(#bbbcc2,#858994);
+  --ui-radius:4px;
+  --ui-text:#f5f6fc;
+  --ui-muted:#bac6da;
+  --ui-grid:linear-gradient(#77718112 1px,transparent 1px),linear-gradient(90deg,#77718112 1px,transparent 1px);
+  color:var(--ui-text);
+  font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+}
+.reference-layout .pl-body,.reference-layout .ref-missions,.reference-layout .ref-recruit-scroll {
+  background-color:var(--ui-panel);background-image:var(--ui-grid);background-size:28px 28px;
+}
+.reference-layout .pl-button.pl-primary,.reference-layout .pl-button.ref-yellow,
+.reference-layout .ref-yellow,.reference-layout .ref-catalog-primary:not(.is-current),
+.reference-layout .ref-catalog-mini-upgrade,.reference-layout .ref-catalog-card-upgrade,
+.reference-layout .ref-catalog-skills-action,.reference-layout .ref-catalog-filter {
+  background:var(--ui-gold);border:2px solid var(--ui-line);border-radius:var(--ui-radius)!important;
+  color:#fff!important;box-shadow:inset 0 2px #fff4b9,inset 0 -3px #d38f25,0 2px #0b1121;
+  text-shadow:0 2px #705025,-1px 0 #705025,1px 0 #705025;font-weight:900;
+}
+.reference-layout .pl-button.pl-secondary {
+  background:var(--ui-blue);border:2px solid var(--ui-line);border-radius:var(--ui-radius);
+  color:#fff!important;box-shadow:inset 0 2px #b6f8ff,inset 0 -3px #217bab,0 2px #0b1121;
+  text-shadow:0 2px #225574;
+}
+.reference-layout .pl-button:disabled,.reference-layout .ref-catalog-primary:disabled:not(.is-current) {
+  opacity:1;filter:none;background:var(--ui-gray);border-color:var(--ui-line);
+  color:#e5e7ed!important;box-shadow:inset 0 2px #dddfe4,inset 0 -2px #666b75;
+  text-shadow:0 1px #565b65;
+}
+.reference-layout .pl-text-button { box-shadow:none;text-shadow:none;border:0;background:none; }
+.reference-layout .ref-divider,.reference-layout .ref-catalog-list-heading,
+.reference-layout .ref-missions>h2,.reference-layout .pl-modal-heading {
+  background:var(--ui-bar);border-top:1px solid #777983;border-bottom:3px solid var(--ui-line);
+  box-shadow:inset 0 1px #ffffff15;color:#fff;text-shadow:0 2px #171925;
+}
+.reference-layout .ref-divider strong,.reference-layout .ref-catalog-list-heading h2,
+.reference-layout .ref-missions>h2 { font-size:16px;font-weight:900; }
+.reference-layout .pl-tab>span { display:block!important;font-size:10px;line-height:14px; }
+.reference-layout .pl-tab.is-active>span { font-size:12px; }
+.reference-layout .pl-tab.is-active>.pl-icon { width:38px;height:39px;transform:none; }
+.reference-layout .pl-tab.is-active>.pl-nav-emblem { margin-top:-4px; }
+.reference-layout .pl-tab:disabled { color:#92949a; }
+.reference-layout .pl-tab:disabled>.pl-icon { opacity:.6; }
+.reference-layout .pl-currency .pl-icon { filter:drop-shadow(0 1px #070d19); }
+.reference-layout .pl-commander>span { overflow:hidden;text-overflow:ellipsis; }
+.reference-layout .pl-header .pl-commander small { font-size:10px; }
+.reference-layout .pl-button.pl-debug-entry {
+  flex:none;min-height:24px;padding:2px 5px;margin:0;
+  border:1px solid #71a5ca;border-radius:4px;background:#19314c;
+  color:#d9efff;font-size:10px;font-weight:800;line-height:1;
+  box-shadow:inset 0 1px #ffffff30,0 1px #0b1121;text-shadow:none;
+}
+.reference-layout .pl-debug-panel { display:grid;gap:8px; }
+.reference-layout .pl-debug-panel .pl-modal-description { margin:0!important; }
+.reference-layout .pl-debug-panel .pl-button { width:100%;min-height:38px;margin:0; }
+.reference-layout .pl-debug-balance { display:flex;justify-content:space-between;gap:8px;color:#ffe39a;font-size:12px;font-weight:800; }
+.reference-layout .pl-debug-panel .pl-debug-danger { background:#713c45;border-color:#291c2a;color:#fff;box-shadow:inset 0 1px #ffffff35,0 2px #160e1a; }
+
+/* Preserve the restored island route, while using the common chrome. */
+.reference-layout[data-tab="battle"] .pl-body { overflow:auto; }
+.reference-layout .pl-sortie-page { min-height:100%; }
+.reference-layout .pl-route { bottom:max(23%,78px); }
+.reference-layout .pl-chapter-banner { background:var(--ui-bar);border-bottom:2px solid var(--ui-line); }
+.reference-layout .pl-sortie-footer { background:linear-gradient(#243749,#182835); }
+.reference-layout .pl-quick { border-radius:var(--ui-radius);background:linear-gradient(#4b88ae,#28516e); }
+.reference-layout .pl-power-strip { border:2px solid var(--ui-line);border-radius:var(--ui-radius);background:#26333e; }
+.reference-layout .pl-team-weapon,.reference-layout .pl-pilot-mini>img { border-radius:var(--ui-radius); }
+.reference-layout .pl-launch { border-radius:var(--ui-radius); }
+
+/* Tasks occupy the first navigation slot and share rewards with the lobby. */
+.reference-layout .ref-missions { padding:0 10px 15px; }
+.ref-missions-overview { display:flex;align-items:center;gap:10px;min-height:94px;margin:0 -10px;padding:14px 13px;background:linear-gradient(120deg,#145b9b,#182b67);border-bottom:3px solid var(--ui-line); }
+.ref-missions-overview>.pl-icon { width:40px;height:45px;filter:drop-shadow(0 3px #111c38); }
+.ref-missions-overview>div { flex:1; }
+.ref-missions-overview h1 { font-size:20px;text-shadow:0 2px #12192e; }
+.reference-layout .ref-missions-overview p { color:#b9e1f8;font-size:11px; }
+.reference-layout .ref-missions-overview>.pl-button { min-height:36px; }
+.reference-layout .ref-missions>h2 { display:flex;align-items:center;justify-content:space-between;margin:0 -10px 8px!important;padding:6px 12px;min-height:35px; }
+.reference-layout .ref-missions>h2:not(:first-of-type) { margin-top:15px!important; }
+.ref-missions>h2 small { font-size:10px;font-weight:500;color:#d5d8e4;text-shadow:none; }
+.reference-layout .ref-missions article { padding:12px 9px;margin-bottom:7px;min-height:88px;border:2px solid var(--ui-line);border-radius:var(--ui-radius);background:linear-gradient(#3b4154,#2b3042);box-shadow:inset 0 1px #777f953b; }
+.reference-layout .ref-missions article.is-claimable { border-color:#bd9d51; }
+.reference-layout .ref-missions article.is-claimed { background:#2d303b; }
+.ref-task-icon { width:36px;height:39px;display:grid;place-items:center;border:2px solid #192337;border-radius:4px;background:#245782;flex:none; }
+.ref-task-icon>.pl-icon { width:27px;height:30px; }
+.reference-layout .ref-missions article h3 { font-size:12px; }
+.reference-layout .ref-missions article p { color:#c5d0e4;font-size:10px;line-height:1.5; }
+.ref-task-progress { display:flex;align-items:center;gap:6px;margin-top:5px; }
+.reference-layout .ref-task-progress progress { min-width:0;flex:1;height:7px;border:1px solid #131c30;border-radius:3px;background:#141d31;overflow:hidden;appearance:none; }
+.ref-task-progress progress::-webkit-progress-bar { background:#141d31; }
+.ref-task-progress progress::-webkit-progress-value { background:#7cdf8f; }
+.ref-task-progress progress::-moz-progress-bar { background:#7cdf8f; }
+.ref-task-progress small { white-space:nowrap;color:#cbd2df; }
+.reference-layout .ref-missions article>.pl-button { min-width:58px;min-height:34px;flex:none; }
+
+/* Recruitment keeps both original pools, prices, guarantees and collectible art. */
+.reference-layout[data-tab="supply"] .pl-body { overflow:hidden; }
+.reference-layout .pl-supply-page.ref-supply { height:100%;min-height:0;padding:0;background:none;display:grid;grid-template-rows:44px 29% 35px minmax(0,1fr) 105px;overflow:hidden; }
+.ref-pool-tabs { display:flex;gap:7px;padding:5px 10px;background:linear-gradient(#253972,#17284f);border-bottom:2px solid var(--ui-line); }
+.reference-layout .ref-pool-tabs .pl-button { min-width:0;flex:1;min-height:30px;padding:3px 6px;background:#17283e;border:2px solid #0e1627;box-shadow:inset 0 1px #5f7497;color:#a5bbd3;text-shadow:0 1px #112; }
+.reference-layout .ref-pool-tabs .pl-button.is-active { background:var(--ui-gold);color:#fff;text-shadow:0 2px #705025;box-shadow:inset 0 1px #fff1ac,inset 0 -2px #d0932e; }
+.pl-illustrated-icon { object-fit:contain; }
+.ref-pool-tabs .pl-icon { width:24px;height:24px; }
+.ref-recruit-showcase { position:relative;min-height:0;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 65% 60%,#148ecd88,#11316c 74%),var(--recruit-scene) center 40%/cover; }
+.ref-recruit-showcase:after { content:"";position:absolute;inset:0;pointer-events:none;border-bottom:3px solid #16386b;background:linear-gradient(90deg,#0c1c4977,transparent 65%);z-index:-1; }
+.ref-recruit-copy { position:absolute;z-index:2;left:14px;top:50%;transform:translateY(-50%);width:49%;text-shadow:0 2px #132347; }
+.ref-recruit-copy>small { color:#91d5f5;font-size:10px; }
+.ref-recruit-copy h1 { font-size:22px;line-height:1.35;margin:4px 0; }
+.ref-recruit-copy p { font-size:10px;line-height:1.5;color:#d0e1f4;max-width:160px; }
+.reference-layout .ref-recruit-copy>.pl-button { min-height:29px;padding:3px 9px;font-size:11px;margin-top:10px; }
+.ref-recruit-art { position:absolute;inset:0 -2% -20% 43%;pointer-events:none; }
+.ref-recruit-art>img { width:100%;height:100%;object-fit:contain;object-position:center top;filter:drop-shadow(0 4px 4px #10194388); }
+.ref-recruit-art.is-weapon { inset:8% 4% 4% 48%;display:grid;place-items:center; }
+.ref-recruit-art.is-weapon>img { object-position:center; }
+.ref-recruit-heading { gap:6px;justify-content:space-between;padding:3px 10px; }
+.ref-recruit-heading>span { font-size:10px;font-weight:500;margin-left:auto;color:#d1d4e0; }
+.reference-layout .ref-recruit-heading .pl-button { min-height:24px;padding:1px 9px;font-size:11px; }
+.ref-recruit-scroll { min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:10px; }
+.reference-layout .ref-recruit-scroll .pl-pilot-collection,.ref-recruit-scroll .pl-weapon-grid { grid-template-columns:repeat(4,minmax(0,1fr));gap:9px 7px;padding:0; }
+.ref-recruit-scroll .pl-collection-card { border:2px solid var(--ui-line);border-radius:var(--ui-radius);overflow:hidden;background:#343345; }
+.ref-recruit-scroll .pl-collection-card.is-owned { border-color:#d6ba60; }
+.ref-recruit-scroll .pl-weapon-card { border:2px solid var(--ui-line);border-radius:var(--ui-radius);background:linear-gradient(130deg,color-mix(in srgb,var(--quality) 65%,#273040),#383548);box-shadow:inset 0 0 0 2px #c4cbdd30; }
+.ref-recruit-scroll .pl-weapon-picture { height:70px; }
+.ref-recruit-footer { padding:5px 10px 10px;border-top:3px solid var(--ui-line);background:linear-gradient(#30313f,#242634); }
+.ref-recruit-guarantee { min-height:23px;display:flex;align-items:center;justify-content:center;gap:3px;font-size:9px;white-space:nowrap;color:#ffdf89; }
+.ref-recruit-guarantee>.pl-icon { width:17px;height:19px; }
+.ref-recruit-guarantee>small { font-size:9px;color:#b2c2d7;margin-left:auto; }
+.reference-layout .ref-recruit-footer .pl-recruit-actions { margin:2px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+.reference-layout .ref-recruit-footer .pl-button { display:flex;flex-direction:column;gap:2px;padding:5px;min-height:57px; }
+.reference-layout .ref-recruit-footer .pl-button>strong { font-size:18px;letter-spacing:0;line-height:22px; }
+.ref-recruit-footer .pl-button>span { display:flex;align-items:center;gap:4px;font-size:12px; }
+.ref-recruit-footer .pl-button .pl-icon { width:16px;height:17px; }
+
+/* All dialogs use one frame, heading, close button, spacing and reward cards. */
+.reference-layout .pl-modal,.reference-layout .pl-modal:has(.pl-card-results),.reference-layout .pl-modal:has(.pl-pilot-card-detail) {
+  border:3px solid var(--ui-line);border-radius:6px;background:#2c3041;box-shadow:inset 0 0 0 1px #8088a84d,0 5px #080c18,0 18px 55px #0008;
+}
+.reference-layout .pl-modal .pl-modal-heading { min-height:48px;padding:7px 10px;background:var(--ui-bar);border-bottom:3px solid var(--ui-line); }
+.reference-layout .pl-modal .pl-modal-heading h2 { font-size:18px;letter-spacing:0;font-weight:900;color:#fff; }
+.reference-layout .pl-modal-content { padding:12px; }
+.reference-layout .pl-close { border:2px solid var(--ui-line);border-radius:var(--ui-radius);width:31px;height:31px;background:linear-gradient(#fe827e,#c34656); }
+.reference-layout .pl-modal-description,.reference-layout .pl-rule-copy,.reference-layout .pl-card-lore { color:#c7d2e3;font-size:12px;line-height:1.75; }
+.reference-layout .pl-rule-copy dl,.reference-layout .pl-detail-facts,.reference-layout .pl-formation-pilot { border:2px solid var(--ui-line);border-radius:var(--ui-radius);background:#222a3d; }
+.reference-layout .pl-weapon-detail,.reference-layout .pl-reward-item,.reference-layout .pl-signin-day { border-radius:var(--ui-radius);border-width:2px;background:linear-gradient(130deg,#485771,#2d334a); }
+.reference-layout .pl-stage-option { border-color:var(--ui-line);border-radius:var(--ui-radius);background:#363e53; }
+.reference-layout .pl-stage-option.is-selected { border-color:#ffdb64; }
+.reference-layout .pl-signin-day.is-today { border-color:#ffe479;background:linear-gradient(#65573c,#3d4146); }
+.reference-layout .pl-slot-picker>.pl-button { border-color:var(--ui-line);border-radius:var(--ui-radius);background:#26354b;box-shadow:inset 0 1px #8093b733; }
+.reference-layout .pl-slot-picker>.pl-button.is-active { border-color:#ffe479;color:#fff2b9;background:#505148; }
+.reference-layout .pl-reveal-caption { font:900 14px/1.5 "Microsoft YaHei","PingFang SC",system-ui,sans-serif;letter-spacing:0; }
+.reference-layout .pl-toast { background:#11192eef;border:2px solid #628cb3;border-radius:var(--ui-radius);bottom:85px; }
+.reference-layout .ref-catalog-back,.reference-layout .ref-back { border-radius:var(--ui-radius)!important;transform:none; }
+
+/* Equipped labels occupy a reserved footer, leaving the weapon art visible. */
+.reference-layout .ref-item.is-equipped { padding-bottom:25px; }
+.reference-layout .ref-item-equipped,
+.reference-layout .pl-weapon-card>.pl-equipped,
+.reference-layout .ref-catalog-equipped.is-weapon {
+  position:absolute;top:auto;bottom:0;left:0;right:0;height:23px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;line-height:23px;font-style:normal;font-weight:900;letter-spacing:1px;
+  color:#fff;background:#183d4f;border:0;border-top:1px solid #78adbb;
+  border-radius:0 0 2px 2px;text-shadow:0 1px #102433;z-index:2;
+}
+.reference-layout .pl-weapon-card:has(>.pl-equipped) { padding-bottom:23px; }
+.reference-layout .ref-catalog-card:has(.ref-catalog-equipped.is-weapon) { padding-bottom:36px; }
+.reference-layout .ref-catalog-card:has(.ref-catalog-equipped.is-weapon) .ref-catalog-card-art { bottom:38px; }
+.reference-layout .ref-catalog-card:has(.ref-catalog-equipped.is-weapon)>.ref-catalog-stars { bottom:24px; }
+.reference-layout .ref-catalog-weapon .ref-catalog-card-wrap.is-selected { padding-bottom:8px; }
+.reference-layout .ref-mount>small { font-size:11px;font-weight:900; }
+
+@media(max-height:700px) {
+  .reference-layout .pl-sortie-page { min-height:100%; }
+  .reference-layout .pl-island-scene { min-height:193px; }
+  .reference-layout .pl-chapter-banner { height:32px;min-height:32px; }
+  .reference-layout .pl-sortie-footer { padding-top:4px;padding-bottom:4px; }
+  .reference-layout .pl-supply-page.ref-supply { grid-template-rows:40px 28% 32px minmax(0,1fr) 96px; }
+  .reference-layout .ref-recruit-footer .pl-button { min-height:51px; }
+  .ref-recruit-copy h1 { font-size:19px; }
+  .ref-recruit-guarantee { font-size:8px; }
+  .ref-recruit-guarantee>small { font-size:8px; }
+  .ref-recruit-scroll .pl-weapon-picture { height:60px; }
+  .ref-missions-overview { min-height:82px; }
+}
+@media(max-width:370px) {
+  .reference-layout .pl-commander>span { font-size:9px; }
+  .ref-recruit-copy { left:10px; }
+  .ref-recruit-guarantee { gap:2px;font-size:8px; }
+  .ref-recruit-guarantee>.pl-icon { width:14px; }
+  .ref-recruit-guarantee>small { font-size:8px; }
+}

@@ -1,0 +1,936 @@
+{
+  "skillRows": {
+    "3010104": {
+      "id": 3010104,
+      "Triggers": [
+        3010101,
+        3010102,
+        3010103,
+        3010104
+      ]
+    },
+    "3010105": {
+      "id": 3010105,
+      "Triggers": [
+        3010101,
+        3010102,
+        3010103,
+        3010104,
+        3010105
+      ]
+    },
+    "3010205": {
+      "id": 3010205,
+      "Triggers": [
+        3010202,
+        3010203,
+        3010204,
+        3010205
+      ]
+    },
+    "3020101": {
+      "id": 3020101,
+      "Triggers": [
+        3020101
+      ]
+    },
+    "3020201": {
+      "id": 3020201,
+      "Triggers": [
+        3020201
+      ]
+    },
+    "3020205": {
+      "id": 3020205,
+      "Triggers": [
+        3020202,
+        30202031,
+        30202032,
+        3020206
+      ]
+    },
+    "3020301": {
+      "id": 3020301,
+      "Triggers": [
+        3020301
+      ]
+    },
+    "10802013": {
+      "id": 10802013,
+      "Triggers": [
+        10802011,
+        10802013
+      ]
+    },
+    "10802014": {
+      "id": 10802014,
+      "Triggers": [
+        10802011,
+        10802014
+      ]
+    },
+    "10802015": {
+      "id": 10802015,
+      "Triggers": [
+        10802011,
+        10802015
+      ]
+    },
+    "10804011": {
+      "id": 10804011,
+      "Triggers": [
+        10804011
+      ]
+    },
+    "10804012": {
+      "id": 10804012,
+      "Triggers": [
+        10804012
+      ]
+    },
+    "10804013": {
+      "id": 10804013,
+      "Triggers": [
+        10804013
+      ]
+    },
+    "10804014": {
+      "id": 10804014,
+      "Triggers": [
+        10804014
+      ]
+    },
+    "10804015": {
+      "id": 10804015,
+      "Triggers": [
+        10804015
+      ]
+    },
+    "10806013": {
+      "id": 10806013,
+      "Triggers": [
+        10806011,
+        10806013
+      ]
+    },
+    "10806014": {
+      "id": 10806014,
+      "Triggers": [
+        10806011,
+        10806014
+      ]
+    },
+    "10806015": {
+      "id": 10806015,
+      "Triggers": [
+        10806011,
+        10806015
+      ]
+    },
+    "10807011": {
+      "id": 10807011,
+      "Triggers": [
+        10807011
+      ]
+    },
+    "10807013": {
+      "id": 10807013,
+      "Triggers": [
+        10807011,
+        10807013
+      ]
+    },
+    "10807014": {
+      "id": 10807014,
+      "Triggers": [
+        10807011,
+        10807014
+      ]
+    },
+    "10807015": {
+      "id": 10807015,
+      "Triggers": [
+        10807015
+      ]
+    },
+    "10811011": {
+      "id": 10811011,
+      "Triggers": [
+        10811011
+      ]
+    },
+    "10815013": {
+      "id": 10815013,
+      "Triggers": [
+        10815011,
+        10815013
+      ]
+    },
+    "10815014": {
+      "id": 10815014,
+      "Triggers": [
+        10815011,
+        10815014
+      ]
+    },
+    "10815015": {
+      "id": 10815015,
+      "Triggers": [
+        10815011,
+        10815015
+      ]
+    },
+    "10816013": {
+      "id": 10816013,
+      "Triggers": [
+        10816011,
+        10816013
+      ]
+    },
+    "10816014": {
+      "id": 10816014,
+      "Triggers": [
+        10816011,
+        10816014
+      ]
+    },
+    "10816015": {
+      "id": 10816015,
+      "Triggers": [
+        10816015,
+        108160151
+      ]
+    },
+    "10817011": {
+      "id": 10817011,
+      "Triggers": [
+        10817011
+      ]
+    },
+    "10817012": {
+      "id": 10817012,
+      "Triggers": [
+        10817012
+      ]
+    },
+    "10817013": {
+      "id": 10817013,
+      "Triggers": [
+        10817013
+      ]
+    },
+    "10817014": {
+      "id": 10817014,
+      "Triggers": [
+        10817014
+      ]
+    },
+    "10817015": {
+      "id": 10817015,
+      "Triggers": [
+        10817015
+      ]
+    }
+  },
+  "triggers": {
+    "3010101": {
+      "id": 3010101,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 154,
+      "ActionParam": "{\"WeaponId\":400002,\"FireInterval\":15}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010102": {
+      "id": 3010102,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 96,
+      "ActionParam": "{\"WeaponIds\":[400002],\"ExAttacks\":[0.5]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010103": {
+      "id": 3010103,
+      "TriggerCd": 1,
+      "TriggerParam": "{\"WeaponIds\":[400002]}",
+      "TriggerAction": 155,
+      "ActionParam": "",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010104": {
+      "id": 3010104,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 156,
+      "ActionParam": "{\"WeaponId\":400002,\"DeltaScalePercent\":0.4,\"DeltaFireCount\":5}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010105": {
+      "id": 3010105,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 156,
+      "ActionParam": "{\"WeaponId\":400002,\"DeltaThroughCount\":2}",
+      "TriggerAction2": 96,
+      "ActionParam2": "{\"WeaponIds\":[400002],\"ExAttacks\":[-0.25]}"
+    },
+    "3010202": {
+      "id": 3010202,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 186,
+      "ActionParam": "{\"WeaponId\":400018}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010203": {
+      "id": 3010203,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"AllowedWeaponIds\":[400018]}",
+      "TriggerAction": 2,
+      "ActionParam": "{\"BuffId\":250005}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010204": {
+      "id": 3010204,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 187,
+      "ActionParam": "{\"WeaponIds\": [400018],\"Attr\": \"CommonDamageAdd%\",\"MaxAttrValue\": 0.8}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3010205": {
+      "id": 3010205,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 188,
+      "ActionParam": "{\"HpPercentThreshold\":0.35,\"WeaponIds\":[400018],\"Mods\":[{\"ModName\":\"BuffMod\",\"ModParam\":\"{\\\"BuffId\\\":250006,\\\"Rate\\\":1}\"}]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3020101": {
+      "id": 3020101,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 154,
+      "ActionParam": "{\"WeaponId\":400004,\"FireInterval\":12}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3020201": {
+      "id": 3020201,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 154,
+      "ActionParam": "{\"WeaponId\":400006,\"FireInterval\":15}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3020202": {
+      "id": 3020202,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 96,
+      "ActionParam": "{\"WeaponIds\":[400006,400019],\"ExAttacks\":[0.5,0.5]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3020206": {
+      "id": 3020206,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 154,
+      "ActionParam": "{\"WeaponId\":400019,\"FireInterval\":12}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "3020301": {
+      "id": 3020301,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 163,
+      "ActionParam": "{\"UnrealCD\":21,\"UnrealInterval\":5,\"UnrealBuffId\":250004}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10802011": {
+      "id": 10802011,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"FireCount\":15}",
+      "TriggerAction": 3,
+      "ActionParam": "{\"WeaponId\":360006,\"FirePosType\":2,\"IsDynamicFirePos\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10802013": {
+      "id": 10802013,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360006],\"Attrs\":[\"CommonDamageAdd%|0.6\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10802014": {
+      "id": 10802014,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360006],\"Attrs\":[\"CommonDamageAdd%|0.9\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10802015": {
+      "id": 10802015,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 97,
+      "ActionParam": "{\"WeaponIds\":[360006],\"Mods\":[{\"ModName\":\"ThroughMod\",\"ModParam\":\"{\\\"AttackPercent\\\":0,\\\"ThroughCount\\\":0,\\\"ThroughProbability\\\":1}\"}]}",
+      "TriggerAction2": 176,
+      "ActionParam2": "{\"WeaponIds\":[360006],\"Attrs\":[\"CommonDamageAdd%|1.2\"]}"
+    },
+    "10804011": {
+      "id": 10804011,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"FireCount\":7}",
+      "TriggerAction": 211,
+      "ActionParam": "{\"Attrs\":[\"AllShotgunRadius%|0.12\",\"CritValue%|1\"],\"BoostType\":4}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10804012": {
+      "id": 10804012,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"FireCount\":7}",
+      "TriggerAction": 211,
+      "ActionParam": "{\"Attrs\":[\"AllShotgunRadius%|0.12\",\"CritValue%|2\"],\"BoostType\":4}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10804013": {
+      "id": 10804013,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"FireCount\":7}",
+      "TriggerAction": 211,
+      "ActionParam": "{\"Attrs\":[\"AllShotgunRadius%|0.15\",\"CritValue%|2\"],\"BoostType\":4}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10804014": {
+      "id": 10804014,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"FireCount\":7}",
+      "TriggerAction": 211,
+      "ActionParam": "{\"Attrs\":[\"AllShotgunRadius%|0.2\",\"CritValue%|3\"],\"BoostType\":4}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10804015": {
+      "id": 10804015,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"FireCount\":5}",
+      "TriggerAction": 211,
+      "ActionParam": "{\"Attrs\":[\"AllShotgunRadius%|0.2\",\"CritValue%|3\"],\"BoostType\":4}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10806011": {
+      "id": 10806011,
+      "TriggerCd": 18,
+      "TriggerParam": "",
+      "TriggerAction": 219,
+      "ActionParam": "{\"WeaponId\":360005,\"BulletCount\":10}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10806013": {
+      "id": 10806013,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360005],\"Attrs\":[\"CommonDamageAdd%|0.6\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10806014": {
+      "id": 10806014,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360005],\"Attrs\":[\"CommonDamageAdd%|0.9\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10806015": {
+      "id": 10806015,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 97,
+      "ActionParam": "{\"WeaponIds\":[360005],\"Mods\":[{\"ModName\":\"CriticalThroughMod\",\"ModParam\":\"{\\\"ThroughCount\\\":2}\"}]}",
+      "TriggerAction2": 176,
+      "ActionParam2": "{\"WeaponIds\":[360005],\"Attrs\":[\"CommonDamageAdd%|1.2\"]}"
+    },
+    "10807011": {
+      "id": 10807011,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 250,
+      "ActionParam": "{\"CreateInterval\":22,\"WeaponID\":200042,\"CreateCount\":7,\"IgnoreMaxLimit\":true,\"CheckCountType\":1,\"CreateOnInit\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10807013": {
+      "id": 10807013,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[200042],\"Attrs\":[\"CommonDamageAdd%|0.6\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10807014": {
+      "id": 10807014,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[200042],\"Attrs\":[\"CommonDamageAdd%|0.9\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10807015": {
+      "id": 10807015,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 250,
+      "ActionParam": "{\"CreateInterval\":22,\"WeaponID\":200042,\"CreateCount\":9,\"IgnoreMaxLimit\":true,\"CheckCountType\":1,\"CreateOnInit\":true}",
+      "TriggerAction2": 176,
+      "ActionParam2": "{\"WeaponIds\":[200042],\"Attrs\":[\"CommonDamageAdd%|1.2\"]}"
+    },
+    "10811011": {
+      "id": 10811011,
+      "TriggerCd": 16,
+      "TriggerParam": "",
+      "TriggerAction": 90,
+      "ActionParam": "{\"WeaponId\":360011,\"Count\":3,\"FireInterval\":0.15,\"Range\":1}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10815011": {
+      "id": 10815011,
+      "TriggerCd": 22,
+      "TriggerParam": "",
+      "TriggerAction": 3,
+      "ActionParam": "{\"WeaponId\":360016,\"FirePosType\":2,\"FireDirType\":0}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10815013": {
+      "id": 10815013,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360017],\"Attrs\":[\"WeaponDamageAdd%|0.6\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10815014": {
+      "id": 10815014,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360017],\"Attrs\":[\"WeaponDamageAdd%|0.9\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10815015": {
+      "id": 10815015,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 97,
+      "ActionParam": "{\"WeaponIds\":[360016],\"Mods\":[{\"ModName\":\"LaserPrismMainLaserReactionMod\",\"ModParam\":\"{}\"}]}",
+      "TriggerAction2": 176,
+      "ActionParam2": "{\"WeaponIds\":[360017],\"Attrs\":[\"WeaponDamageAdd%|1.2\"]}"
+    },
+    "10816011": {
+      "id": 10816011,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 251,
+      "ActionParam": "{\"RoundInterval\":16,\"FireImmediately\":true,\"WeaponId\":360002,\"FireIntervalType\":1,\"FireIntervalMin\":0.2,\"FireIntervalMax\":0.3,\"FireCountType\":2,\"IsSyncBallScale\":true,\"FanRadius\":50,\"FanAngle\":120,\"TargetType\":2,\"RandomDirDistance\":25}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10816013": {
+      "id": 10816013,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360002,360003],\"Attrs\":[\"CommonDamageAdd%|0.4\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10816014": {
+      "id": 10816014,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360002,360003],\"Attrs\":[\"CommonDamageAdd%|0.6\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10816015": {
+      "id": 10816015,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 251,
+      "ActionParam": "{\"RoundInterval\":16,\"FireImmediately\":true,\"WeaponId\":360003,\"FireIntervalType\":1,\"FireIntervalMin\":0.2,\"FireIntervalMax\":0.3,\"FireCountType\":2,\"IsSyncBallScale\":true,\"FanRadius\":50,\"FanAngle\":120,\"TargetType\":2,\"RandomDirDistance\":25}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10817011": {
+      "id": 10817011,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 252,
+      "ActionParam": "{\"BuffId\":280001,\"Interval\":21,\"Immediate\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10817012": {
+      "id": 10817012,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 252,
+      "ActionParam": "{\"BuffId\":280002,\"Interval\":22,\"Immediate\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10817013": {
+      "id": 10817013,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 252,
+      "ActionParam": "{\"BuffId\":280003,\"Interval\":23,\"Immediate\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10817014": {
+      "id": 10817014,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 252,
+      "ActionParam": "{\"BuffId\":280004,\"Interval\":24,\"Immediate\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "10817015": {
+      "id": 10817015,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 252,
+      "ActionParam": "{\"BuffId\":280005,\"Interval\":25,\"Immediate\":true}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "30202031": {
+      "id": 30202031,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"WeaponIds\":[400006,400019]}",
+      "TriggerAction": 158,
+      "ActionParam": "{\"WeaponId\":400007,\"CreateBulletOffsetPosZ\":0.3}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "30202032": {
+      "id": 30202032,
+      "TriggerCd": 0,
+      "TriggerParam": "{\"WeaponIds\":[400007],\"HitCount\":1}",
+      "TriggerAction": 2,
+      "ActionParam": "{\"BuffId\":250001}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    },
+    "108160151": {
+      "id": 108160151,
+      "TriggerCd": 0,
+      "TriggerParam": "",
+      "TriggerAction": 176,
+      "ActionParam": "{\"WeaponIds\":[360002,360003],\"Attrs\":[\"CommonDamageAdd%|0.8\"]}",
+      "TriggerAction2": 0,
+      "ActionParam2": ""
+    }
+  },
+  "weapons": {
+    "200042": {
+      "ID": 200042,
+      "BulletId": 200042,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360002": {
+      "ID": 360002,
+      "BulletId": 360002,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360003": {
+      "ID": 360003,
+      "BulletId": 360003,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360005": {
+      "ID": 360005,
+      "BulletId": 360005,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360006": {
+      "ID": 360006,
+      "BulletId": 360006,
+      "WeaponMod": [
+        "WeaponSalvoMod",
+        "{\"Count\":3,\"TotalAngle\":60}"
+      ],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360011": {
+      "ID": 360011,
+      "BulletId": 360011,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360016": {
+      "ID": 360016,
+      "BulletId": 360016,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "360017": {
+      "ID": 360017,
+      "BulletId": 360017,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "400002": {
+      "ID": 400002,
+      "BulletId": 400002,
+      "WeaponMod": [
+        "WeaponSalvoMod",
+        "{\"Count\":16,\"TotalAngle\":60,\"StartAngle\":0,\"Confusion\":0,\"FireInterval\":0.04,\"IsClockWise\":1}"
+      ],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "400004": {
+      "ID": 400004,
+      "BulletId": 400004,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "400006": {
+      "ID": 400006,
+      "BulletId": 400006,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "400007": {
+      "ID": 400007,
+      "BulletId": 400007,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "400018": {
+      "ID": 400018,
+      "BulletId": 400018,
+      "WeaponMod": [],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    },
+    "400019": {
+      "ID": 400019,
+      "BulletId": 400019,
+      "WeaponMod": [
+        "WeaponMultiMod",
+        "{\"FireHoldTime\":0.3,\"FireCount\":1,\"FireInterval\":0.25}"
+      ],
+      "WeaponMod2": [],
+      "WeaponMod3": []
+    }
+  },
+  "bullets": {
+    "200042": {
+      "ID": 200042,
+      "LifeTime": 0,
+      "hurtAttributes": [
+        "Attack=1*500%"
+      ]
+    },
+    "360002": {
+      "ID": 360002,
+      "LifeTime": 0,
+      "hurtAttributes": [
+        "Attack=1*1000%"
+      ]
+    },
+    "360003": {
+      "ID": 360003,
+      "LifeTime": 0,
+      "hurtAttributes": [
+        "Attack=1*1000%"
+      ]
+    },
+    "360005": {
+      "ID": 360005,
+      "LifeTime": 3,
+      "hurtAttributes": [
+        "Attack=1*270%"
+      ]
+    },
+    "360006": {
+      "ID": 360006,
+      "LifeTime": 8,
+      "hurtAttributes": [
+        "Attack=1*1000%"
+      ]
+    },
+    "360011": {
+      "ID": 360011,
+      "LifeTime": 0.5,
+      "hurtAttributes": [
+        "Attack=1*2000%"
+      ]
+    },
+    "360016": {
+      "ID": 360016,
+      "LifeTime": 15,
+      "hurtAttributes": []
+    },
+    "360017": {
+      "ID": 360017,
+      "LifeTime": 1.5,
+      "hurtAttributes": [
+        "Attack=1*400%"
+      ]
+    },
+    "400002": {
+      "ID": 400002,
+      "LifeTime": 8,
+      "hurtAttributes": [
+        "Attack=1*600%"
+      ]
+    },
+    "400004": {
+      "ID": 400004,
+      "LifeTime": 5,
+      "hurtAttributes": [
+        "Attack=1*250%"
+      ]
+    },
+    "400006": {
+      "ID": 400006,
+      "LifeTime": 4,
+      "hurtAttributes": [
+        "Attack=1*2000%"
+      ]
+    },
+    "400007": {
+      "ID": 400007,
+      "LifeTime": 0.5,
+      "hurtAttributes": [
+        "Attack=1*1000%"
+      ]
+    },
+    "400018": {
+      "ID": 400018,
+      "LifeTime": 0.1999969482421875,
+      "hurtAttributes": [
+        "Attack=1*1400%"
+      ]
+    },
+    "400019": {
+      "ID": 400019,
+      "LifeTime": 4,
+      "hurtAttributes": [
+        "Attack=1*1500%"
+      ]
+    }
+  },
+  "buffs": {
+    "250001": {
+      "ID": 250001,
+      "AddAttributes": [
+        "Attack%=5"
+      ],
+      "clearParam": 10
+    },
+    "250004": {
+      "ID": 250004,
+      "AddAttributes": [
+        "CommonDamageAdd%=50",
+        "Miss%=30"
+      ],
+      "clearParam": 0
+    },
+    "250005": {
+      "ID": 250005,
+      "AddAttributes": [
+        "PickDistanceHp%=500"
+      ],
+      "clearParam": 2
+    },
+    "280001": {
+      "ID": 280001,
+      "AddAttributes": [
+        "ReflectionCount=1"
+      ],
+      "clearParam": 4
+    },
+    "280002": {
+      "ID": 280002,
+      "AddAttributes": [
+        "ReflectionCount=1"
+      ],
+      "clearParam": 5
+    },
+    "280003": {
+      "ID": 280003,
+      "AddAttributes": [
+        "ReflectionCount=1"
+      ],
+      "clearParam": 6
+    },
+    "280004": {
+      "ID": 280004,
+      "AddAttributes": [
+        "ReflectionCount=1"
+      ],
+      "clearParam": 7
+    },
+    "280005": {
+      "ID": 280005,
+      "AddAttributes": [
+        "ReflectionCount=1",
+        "CritRate%=5"
+      ],
+      "clearParam": 8
+    }
+  }
+}

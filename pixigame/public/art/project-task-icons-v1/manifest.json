@@ -1,0 +1,85 @@
+{
+  "method": "Built-in imagegen; transparent originals retained; alpha-bound trim and resize for runtime export only",
+  "prompts": [
+    "art/project-task-icons-v1/prompts.json",
+    "art/project-task-icons-v1/open-prompt.txt"
+  ],
+  "states": {
+    "locked": "chest-closed.png",
+    "ready": "chest-closed.png with existing state indicator and CSS glow",
+    "claimed": "chest-open.png",
+    "dailyActivity": "activity-medal.png",
+    "weeklyActivity": "activity-medal.png"
+  },
+  "assets": [
+    {
+      "file": "chest-closed.png",
+      "source": "art/project-task-icons-v1/source-chest-closed.png",
+      "sourceSize": [
+        1430,
+        1100
+      ],
+      "alphaCrop": {
+        "left": 40,
+        "top": 111,
+        "width": 1359,
+        "height": 927
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "placement": [
+        12,
+        86
+      ],
+      "sha256": "9c2c717d6b0c7225f351ef3b430eb1ed79b0177b6a8ec830306f9bbd080df645"
+    },
+    {
+      "file": "chest-open.png",
+      "source": "art/project-task-icons-v1/source-chest-open.png",
+      "sourceSize": [
+        1430,
+        1100
+      ],
+      "alphaCrop": {
+        "left": 72,
+        "top": 41,
+        "width": 1314,
+        "height": 1049
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "placement": [
+        12,
+        59
+      ],
+      "sha256": "9d5a3e6f4e6058dcf497bfeedbcc7400662edea8fcd3f43eff1072f5bac5259f"
+    },
+    {
+      "file": "activity-medal.png",
+      "source": "art/project-task-icons-v1/source-activity-medal.png",
+      "sourceSize": [
+        1214,
+        1296
+      ],
+      "alphaCrop": {
+        "left": 208,
+        "top": 121,
+        "width": 796,
+        "height": 1019
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "placement": [
+        37,
+        12
+      ],
+      "sha256": "5a774f455e8bd83cd43a2c3e1b96edcd10bcfd2562f6a7b09faa2e6c74de328e"
+    }
+  ]
+}

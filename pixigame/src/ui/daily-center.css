@@ -1,0 +1,167 @@
+/* UI_Task hierarchy with the current PSD shell, buttons and equipment plates. */
+#gui-casual-lobby [data-modal-type='tasks'] {
+  --popup-width:92cqw;--popup-height:min(154cqw,90%);--popup-max-height:90%;
+}
+#gui-casual-lobby [data-modal-type='tasks']>.pl-modal-content {overflow:hidden!important;display:flex;flex-direction:column}
+#gui-casual-lobby .dc-hub {display:flex;flex-direction:column;min-height:0;height:100%;gap:2cqw;color:var(--paper-ink);font-family:'Microsoft YaHei','PingFang SC',sans-serif}
+#gui-casual-lobby .dc-hub :is(h3,p) {margin:0;text-shadow:none;-webkit-text-stroke:0;letter-spacing:0}
+#gui-casual-lobby .dc-tabs {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1cqw;flex:none;padding-top:1cqw}
+#gui-casual-lobby .dc-tabs .dc-tab {position:relative;width:100%;--wc-button-height:max(42px,11cqw);font-size:clamp(14px,4cqw,20px);padding:0;min-width:0}
+#gui-casual-lobby .dc-tab[aria-pressed='true'] {filter:brightness(1.35);color:#bceeff}
+#gui-casual-lobby .dc-tab>i,#gui-casual-lobby .dc-chest>i {position:absolute;top:7%;right:8%;width:8px;height:8px;border:1px solid #641f27;border-radius:50%;background:#ee5767}
+#gui-casual-lobby .dc-scroll {flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#536e87 transparent;padding:0 .6cqw 1cqw}
+#gui-casual-lobby .dc-button {--wc-button-height:max(42px,10cqw);font-size:clamp(12px,3.5cqw,17px);min-width:0;padding:0 2cqw;white-space:nowrap}
+#gui-casual-lobby .dc-button:disabled {filter:grayscale(.65);opacity:.65}
+#gui-casual-lobby .dc-rewards {display:flex;flex-wrap:wrap;align-items:center;gap:1.5cqw;font:500 clamp(10px,2.8cqw,14px)/1.25 'Microsoft YaHei',sans-serif;color:#263d53}
+#gui-casual-lobby .dc-rewards>span {display:inline-flex;align-items:center;gap:.5cqw;white-space:nowrap}
+#gui-casual-lobby .dc-rewards :is(.pl-icon,.resource-icon) {width:4.4cqw!important;height:4.4cqw!important;min-width:14px;min-height:14px;max-width:23px;max-height:23px;flex:none}
+#gui-casual-lobby .dc-activity {position:relative;flex:none;padding:1cqw 2cqw .8cqw;background:#c9d5df8c;border:1px solid #859eb3}
+#gui-casual-lobby .dc-activity-meter {display:flex;align-items:center;gap:2cqw;padding:0 2cqw}
+#gui-casual-lobby .dc-activity-value {display:grid;grid-template-columns:6cqw auto;align-items:center;gap:1cqw;font-size:clamp(13px,3.7cqw,18px)}
+#gui-casual-lobby .dc-activity-value img {width:6cqw;height:6cqw;object-fit:contain}
+#gui-casual-lobby .dc-activity-meter progress {width:100%;height:2.8cqw;min-height:8px;accent-color:#52b9e0}
+#gui-casual-lobby .dc-chests {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1cqw}
+#gui-casual-lobby .dc-chest {position:relative;display:grid;grid-template-rows:11.5cqw auto;place-items:center;min-height:44px;padding:0 0 1cqw;border:0;background:transparent;color:#203b53;font-size:clamp(11px,3.1cqw,16px);cursor:pointer}
+#gui-casual-lobby .dc-chest img {display:block;width:12cqw;height:11.5cqw;object-fit:contain}
+#gui-casual-lobby .dc-chest.is-ready>img {filter:drop-shadow(0 0 3px #ffe08b) drop-shadow(0 0 1px #fff0bb)}
+#gui-casual-lobby .dc-chest.is-claimed img {opacity:.65}
+#gui-casual-lobby .dc-chest>span {position:absolute;top:5cqw;left:0;right:0;font-size:clamp(9px,2.8cqw,13px);font-weight:700;text-shadow:0 1px #dbeaf2}
+#gui-casual-lobby .dc-chest[aria-pressed='true'] {outline:2px solid #367a9d;outline-offset:-1px}
+#gui-casual-lobby .dc-box-preview {position:absolute;z-index:4;left:0;right:0;top:100%;display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding:3cqw 6cqw 3cqw 3cqw;background:#d6e4ef;border:2px solid #5c7a92;box-shadow:0 3px 6px #14283b66;font-size:clamp(11px,3.2cqw,16px)}
+#gui-casual-lobby .dc-box-preview>div {display:grid;gap:2cqw}
+#gui-casual-lobby .dc-preview-close {position:absolute;right:0;top:0;width:28px;height:28px;padding:0;border:0;background:none;color:#243e54;font-size:22px;cursor:pointer}
+#gui-casual-lobby .dc-reset {flex:none;text-align:right;color:#425c72;font:400 clamp(10px,2.9cqw,14px)/1.3 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .dc-task-list {display:flex;flex-direction:column;gap:1.2cqw}
+#gui-casual-lobby .dc-task {display:grid;grid-template-columns:11cqw minmax(0,1fr) 17cqw;align-items:center;gap:2cqw;flex:none;min-height:14.8cqw;padding:1.2cqw 1.4cqw;background:#d7e3ed;border:1px solid #829caf;box-shadow:inset 0 -2px #b4c6d3}
+#gui-casual-lobby .dc-task-badge {display:grid;place-items:center;gap:.5cqw;color:#2f5872;font-size:clamp(10px,3cqw,15px);line-height:1}
+#gui-casual-lobby .dc-task-badge img {display:block;width:8cqw;height:8cqw;object-fit:contain}
+#gui-casual-lobby .dc-task-body {display:grid;gap:.8cqw;min-width:0}
+#gui-casual-lobby .dc-hub h3 {color:#1b354d;font:700 clamp(12px,3.4cqw,17px)/1.35 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .dc-hub .dc-task h3 {font-size:clamp(12px,3.2cqw,16px);line-height:1.25}
+#gui-casual-lobby .dc-task .dc-rewards :is(.pl-icon,.resource-icon) {width:3.6cqw!important;height:3.6cqw!important}
+#gui-casual-lobby .dc-task .dc-progress {height:3cqw}
+#gui-casual-lobby .dc-progress {position:relative;display:grid;place-items:center;height:4cqw;min-height:13px}
+#gui-casual-lobby .dc-progress progress {position:absolute;inset:0;width:100%;height:100%;accent-color:#48a6ce}
+#gui-casual-lobby .dc-hub progress::-webkit-progress-bar {background:#9eb6c9;border:1px solid #6e8ca4;border-radius:2px}
+#gui-casual-lobby .dc-hub progress::-webkit-progress-value {background:#53b7db;border-radius:1px}
+#gui-casual-lobby .dc-hub .dc-progress progress {height:100%!important;min-height:13px;appearance:none;border:0;border-radius:2px}
+#gui-casual-lobby .dc-progress>span {position:relative;z-index:1;color:#17334d;font-size:clamp(9px,2.7cqw,13px);line-height:1;font-weight:700;text-shadow:0 1px #e4f4ffb3}
+#gui-casual-lobby .dc-claimed {display:inline-flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;color:#315f50;font-size:clamp(11px,2.8cqw,14px);font-weight:700;line-height:1.3;text-shadow:none}
+#gui-casual-lobby .dc-claimed>.pl-icon {width:18px;height:18px;flex:none;color:inherit;filter:none}
+#gui-casual-lobby .dc-claimed>small {font:inherit}
+#gui-casual-lobby .dc-task .dc-claimed {flex-direction:column;gap:1px}
+#gui-casual-lobby .dc-task.is-claimed {background:#b9cbd6;box-shadow:none}
+#gui-casual-lobby .dc-task.is-claimed .dc-task-badge {opacity:.6}
+#gui-casual-lobby .dc-categories {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2cqw;flex:none}
+#gui-casual-lobby .dc-categories .is-selected {color:#bceeff;filter:brightness(1.25)}
+#gui-casual-lobby .dc-achievements {display:flex;flex-direction:column;gap:2cqw}
+#gui-casual-lobby .dc-achievement {flex:none;padding:3cqw;background:#d7e3ed;border:1px solid #829caf}
+#gui-casual-lobby .dc-achievement-heading {display:flex;justify-content:space-between;gap:2cqw;align-items:center;margin-bottom:2cqw}
+#gui-casual-lobby .dc-achievement-action {display:flex;justify-content:flex-end;margin-top:2cqw}
+#gui-casual-lobby .dc-achievement-action .dc-button {min-width:19cqw}
+#gui-casual-lobby .dc-achievement.is-claimed {background:#b9cbd6}
+#gui-casual-lobby .dc-signin-count {text-align:center;color:#304b62;font-size:clamp(12px,3.4cqw,17px);padding-bottom:2cqw}
+#gui-casual-lobby .dc-signin-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2cqw}
+#gui-casual-lobby .dc-signin-day {position:relative;display:flex;flex-direction:column;align-items:stretch;gap:1.5cqw;min-width:0;min-height:31cqw;border:1px solid #6c889f;border-radius:0;padding:2cqw 1.2cqw;background:#d1dfeb;color:#243e54;opacity:1;font-family:'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .dc-signin-day>strong {width:100%;text-align:center;font-size:clamp(11px,3.3cqw,16px);font-weight:700}
+#gui-casual-lobby .dc-signin-day.is-today {border:2px solid #297c9e;background:#e0f0fa;cursor:pointer}
+#gui-casual-lobby .dc-signin-rewards {display:grid;align-content:center;gap:1.5cqw;min-width:0;width:100%;flex:1}
+#gui-casual-lobby .dc-signin-reward {display:grid;grid-template-columns:8cqw minmax(0,1fr);align-items:center;gap:1cqw;min-width:0;text-align:left}
+#gui-casual-lobby .dc-signin-reward-copy {display:flex;flex-direction:column;gap:.5cqw;min-width:0;font-size:clamp(10px,2.8cqw,14px);line-height:1.3;white-space:normal;overflow-wrap:anywhere}
+#gui-casual-lobby .dc-signin-reward-copy>b {font:700 clamp(10px,2.8cqw,14px)/1.25 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .dc-prize-art {position:relative;display:grid;place-items:center;min-width:0;width:8cqw;height:8cqw}
+#gui-casual-lobby .dc-prize-art>:is(img,svg,.pl-icon,.pl-model-thumb) {position:static!important;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;margin:0!important;transform:none!important}
+#gui-casual-lobby .dc-prize-art.is-equipment {background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;padding:1.2cqw}
+#gui-casual-lobby .dc-prize-art.is-equipment::after {content:'';position:absolute;inset:0;pointer-events:none;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 5px 5px 8px 5px stretch}
+#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward {grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
+#gui-casual-lobby .dc-signin-rewards.is-single .dc-prize-art {width:14cqw;height:14cqw}
+#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward-copy {align-items:center}
+#gui-casual-lobby .dc-signin-day.is-claimed {background:#afc3d2}
+#gui-casual-lobby .dc-signin-day.is-claimed .dc-prize-art {opacity:.7}
+#gui-casual-lobby .dc-signin-status {display:flex;align-items:center;justify-content:center;gap:.5cqw;min-height:4.5cqw;flex:none;color:#4d687e;font-size:clamp(10px,2.8cqw,14px);line-height:1.3}
+#gui-casual-lobby .dc-signin-day.is-today .dc-signin-status {color:#286282;font-weight:700}
+#gui-casual-lobby .dc-signin-stamp {color:#286849;font-weight:700}
+#gui-casual-lobby .dc-signin-stamp>.pl-icon {width:4cqw!important;height:4cqw!important;min-width:14px;min-height:14px;flex:none;color:inherit;filter:none}
+#gui-casual-lobby .dc-signin-day.is-final {grid-column:1/-1;min-height:32cqw;padding:2cqw 3cqw;background:#bcd3e5}
+#gui-casual-lobby .dc-signin-day.is-final .dc-signin-rewards {grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:2cqw}
+#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward {grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;align-self:start}
+#gui-casual-lobby .dc-signin-day.is-final .dc-prize-art {width:14cqw;height:14cqw}
+#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward-copy {align-items:center}
+#gui-casual-lobby .dc-signin-footer {flex:none;display:grid;grid-template-columns:1fr 25cqw;gap:2cqw;align-items:center;padding-top:2cqw;border-top:1px solid #7c96ab}
+#gui-casual-lobby .dc-signin-footer>div {display:grid;gap:1cqw;font-size:clamp(10px,2.8cqw,14px);color:#425c72}
+#gui-casual-lobby .dc-signin-footer .dc-button {white-space:normal;line-height:1.2}
+#gui-casual-lobby .dc-pending {display:flex;align-items:center;justify-content:space-between;flex:none;font-size:12px;color:#7c4729}
+#gui-casual-lobby [data-modal-type='formation'] {--popup-width:92cqw;--popup-height:auto;--popup-max-height:90%}
+#gui-casual-lobby .pl-modal-host:has(.pl-modal[data-modal-type='formation']) {z-index:70!important}
+#gui-casual-lobby .fm-summary {display:grid;gap:2.5cqw;padding-top:2cqw;color:#203b53}
+#gui-casual-lobby .fm-power {text-align:center;font-size:clamp(13px,3.8cqw,19px)}
+#gui-casual-lobby .fm-power>b {font-size:clamp(20px,6cqw,30px);margin-left:2cqw;color:#285b7e}
+#gui-casual-lobby .fm-stats {display:flex;justify-content:center;gap:8cqw;font-size:clamp(12px,3.4cqw,17px)}
+#gui-casual-lobby .fm-units {display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
+#gui-casual-lobby .fm-units>article {min-width:0;text-align:center}
+#gui-casual-lobby .fm-units :is(.fm-portrait,.fm-aircraft) {display:grid;place-items:center;height:23cqw;margin-bottom:1cqw}
+#gui-casual-lobby [data-modal-type='formation'] .fm-units :is(.fm-portrait,.fm-aircraft) {overflow:hidden}
+#gui-casual-lobby [data-modal-type='formation'] .fm-units .fm-portrait>img {width:auto!important;height:100%!important;max-height:100%!important;max-width:100%!important;min-height:0!important;min-width:0!important;aspect-ratio:auto!important;object-fit:contain!important;margin:0!important}
+#gui-casual-lobby [data-modal-type='formation'] .fm-units .fm-aircraft>img {width:100%!important;height:100%!important;max-height:100%!important;max-width:100%!important;min-height:0!important;min-width:0!important;aspect-ratio:auto!important;object-fit:contain!important;margin:0!important}
+#gui-casual-lobby .fm-portrait>img {height:100%;width:auto;max-width:100%;object-fit:contain}
+#gui-casual-lobby .fm-aircraft>img {position:static!important;width:100%!important;height:100%!important;margin:0!important;transform:none!important;object-fit:contain!important;max-height:none!important}
+#gui-casual-lobby .fm-units h3 {font-size:clamp(12px,3.5cqw,18px);margin:1cqw 0 0;color:#203b53}
+#gui-casual-lobby .fm-units small {font-size:clamp(10px,2.9cqw,14px);color:#465f74}
+#gui-casual-lobby .fm-passive {padding:2.5cqw;background:#c3d5e2;border-block:1px solid #809bb0}
+#gui-casual-lobby .fm-passive h3 {font-size:clamp(12px,3.4cqw,17px);margin:0 0 1cqw;color:#203b53}
+#gui-casual-lobby .fm-passive p {font-size:clamp(11px,3.1cqw,16px);line-height:1.5;margin:0;color:#304d64}
+#gui-casual-lobby .fm-weapons {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5cqw}
+#gui-casual-lobby .fm-weapon {display:grid;grid-template-rows:auto 13cqw auto auto;gap:1cqw;place-items:center;position:relative;min-width:0;padding:1.5cqw 1cqw 2cqw;background:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100%;color:#e5f3fb}
+#gui-casual-lobby .fm-weapon::after {content:'';position:absolute;inset:0;pointer-events:none;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 5px 5px 8px 5px stretch}
+#gui-casual-lobby .fm-weapon>div {width:100%;height:100%;min-height:0;min-width:0}
+#gui-casual-lobby .fm-weapon :is(strong,b,small) {max-width:100%;font-size:clamp(9px,2.7cqw,14px);white-space:nowrap;line-height:1.2;text-shadow:0 1px #061320}
+#gui-casual-lobby .fm-weapon>small {color:#aac7dc}
+#gui-casual-lobby .fm-weapons .fm-weapon>b {white-space:normal;text-align:center;line-height:1.25}
+#gui-casual-lobby .fm-weapon.is-empty>div {display:grid;place-items:center;opacity:.5}
+#gui-casual-lobby .fm-plus {font:400 7cqw/1 sans-serif;color:#badbea}
+#gui-casual-lobby .fm-innate .fm-weapon {display:grid;grid-template-columns:16cqw 1fr auto;grid-template-rows:auto auto;padding:2cqw 3cqw}
+#gui-casual-lobby .fm-innate .fm-weapon>div {grid-column:1;grid-row:1/3;height:15cqw}
+#gui-casual-lobby .fm-innate .fm-weapon>strong {grid-column:2;grid-row:1;align-self:end;color:#aac7dc;font-size:clamp(10px,2.9cqw,14px)}
+#gui-casual-lobby .fm-innate .fm-weapon>b {grid-column:2;grid-row:2;align-self:start;font-size:clamp(12px,3.4cqw,17px)}
+#gui-casual-lobby .fm-innate .fm-weapon>small {grid-column:3;grid-row:1/3;font-size:clamp(11px,3.1cqw,16px)}
+#gui-casual-lobby .fm-edit {width:100%;--wc-button-height:max(44px,12cqw)}
+#gui-casual-lobby .dc-activities {display:grid;grid-auto-rows:minmax(29cqw,1fr);height:100%;gap:3cqw;padding-top:3cqw}
+#gui-casual-lobby .dc-event {display:grid;grid-template-columns:13cqw minmax(0,1fr) 18cqw;align-items:center;gap:2cqw;min-height:29cqw;padding:3cqw 2cqw;background:#cbdce9;border:1px solid #819bb0;color:#243f56}
+#gui-casual-lobby .dc-event-art {display:grid;place-items:center;width:13cqw;height:13cqw}
+#gui-casual-lobby .dc-event-art>:is(img,.pl-icon) {width:100%!important;height:100%!important;max-width:none;max-height:none;object-fit:contain}
+#gui-casual-lobby .dc-event-copy {min-width:0;display:grid;gap:1.5cqw}
+#gui-casual-lobby .dc-event-copy h3 {margin:0;font-size:clamp(13px,3.9cqw,19px);color:#243f56;text-shadow:none}
+#gui-casual-lobby .dc-event-copy p {margin:0;font-size:clamp(10px,2.8cqw,14px);color:#3d5b72;line-height:1.4}
+#gui-casual-lobby .dc-event-copy small {font-size:clamp(10px,2.9cqw,14px);color:#526b7f}
+#gui-casual-lobby .dc-event-copy small.is-ready {color:#25634a;font-weight:700}
+#gui-casual-lobby .eq-page button.eq-stat-row {width:auto;min-height:30px;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;pointer-events:auto;color:inherit;cursor:pointer}
+#gui-casual-lobby .dc-hub button:focus-visible,#gui-casual-lobby .fm-summary button:focus-visible,#gui-casual-lobby button.eq-stat-row:focus-visible {outline:2px solid #fcf0a0;outline-offset:-1px}
+/* Native active-box states: ready claims on tap; claimed boxes have no action. */
+#gui-casual-lobby .dc-chest:disabled {cursor:default;opacity:1}
+#gui-casual-lobby .dc-box-preview {padding-right:12cqw}
+#gui-casual-lobby .dc-preview-close {width:44px;height:44px}
+
+/* Native achievement sheets retain their actual five equipment identities. */
+#gui-casual-lobby .dc-achievement-heading .dc-rewards {flex-wrap:wrap;justify-content:flex-end;max-width:55%}
+#gui-casual-lobby .dc-native-reward-icon {width:18px;height:18px;object-fit:contain;vertical-align:middle}
+#gui-casual-lobby .dc-achievement-action .dc-button.is-ready:not(:disabled) {color:#fff;filter:brightness(1.15)}
+
+/* Reward cards share one icon size and readable rows on phone screens. */
+#gui-casual-lobby .dc-signin-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:2.4cqw}
+#gui-casual-lobby .dc-signin-day {padding:2.5cqw;gap:2cqw;min-height:31cqw;filter:none}
+#gui-casual-lobby .dc-signin-day>strong {text-align:left;padding-bottom:1.5cqw;border-bottom:1px solid #90a9bd;font-size:clamp(13px,3.5cqw,17px)}
+#gui-casual-lobby .dc-signin-reward,#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward {grid-template-columns:10cqw minmax(0,1fr);gap:2cqw;justify-items:stretch;text-align:left}
+#gui-casual-lobby .dc-signin-rewards {gap:2.5cqw}
+#gui-casual-lobby .dc-prize-art,#gui-casual-lobby .dc-signin-rewards.is-single .dc-prize-art {width:10cqw;height:10cqw}
+#gui-casual-lobby .dc-prize-art.is-equipment {background:none;padding:0}
+#gui-casual-lobby .dc-prize-art.is-equipment::after {content:none}
+#gui-casual-lobby .dc-signin-reward-copy,#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward-copy {align-items:flex-start;font-size:clamp(11px,3.1cqw,15px);line-height:1.45;overflow-wrap:break-word}
+#gui-casual-lobby .dc-signin-reward-copy>b {font-size:clamp(12px,3.3cqw,16px);color:#173b53}
+#gui-casual-lobby .dc-signin-status {justify-content:flex-start;padding-top:1cqw;font-size:clamp(11px,3cqw,15px)}
+#gui-casual-lobby .dc-signin-day.is-final {min-height:31cqw;padding:2.5cqw}
+#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward {grid-template-columns:1fr;justify-items:center;text-align:center}
+#gui-casual-lobby .dc-signin-day.is-final .dc-prize-art {width:12cqw;height:12cqw}
+#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward-copy {align-items:center}
+
+#gui-casual-lobby .dc-prize-art.is-equipment {overflow:hidden}
+#gui-casual-lobby .dc-prize-art.is-equipment>.dc-signin-art {transform:scale(1.65)!important}

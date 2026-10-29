@@ -1,0 +1,21 @@
+{
+  "asset": "technician-v1.png",
+  "purpose": "Workshop helper; composition follows the reference menu, identity is new project art.",
+  "method": "Built-in imagegen, transparent_background=true; original PNG copied unchanged.",
+  "original": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-da9951d1-e8f4-426d-8edf-fec8be654bdd.png",
+  "size": [
+    1024,
+    1536
+  ],
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "alpha_bbox": [
+    0,
+    0,
+    1014,
+    1522
+  ],
+  "sha256": "4511ace58f26f93a3780e8d6ec9c891ea2fea638358de78fb9fa53a792794c7c"
+}

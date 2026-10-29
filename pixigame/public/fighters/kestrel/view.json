@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "defaultDirection": [
+    17,
+    21,
+    -24
+  ],
+  "topDirection": [
+    0,
+    1,
+    0.001
+  ],
+  "bounds": {
+    "min": [
+      -7.877546310424805,
+      -1.5776426690837013,
+      -7.199999809265137
+    ],
+    "max": [
+      7.877546310424805,
+      3.345929450905124,
+      4.679444864019752
+    ]
+  },
+  "cruiseMargin": [
+    3.6,
+    1.25,
+    2.2
+  ],
+  "padding": 1.1,
+  "minDistance": 4.8,
+  "maxDistance": 200,
+  "targetOffset": [
+    0,
+    0.38,
+    -0.3
+  ],
+  "fov": 43,
+  "followFlight": true,
+  "opticsPreview": {
+    "bloomThreshold": 1.25,
+    "bloomStrengthScale": 0.53
+  }
+}

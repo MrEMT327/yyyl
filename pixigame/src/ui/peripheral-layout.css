@@ -1,0 +1,112 @@
+/* One frame and one navigation row for every lobby page. */
+/* Shop/recruit need a page label and wallet, not a second commander panel. */
+.peripheral-lobby.reference-layout:is([data-tab="shop"],[data-tab="supply"]) .pl-header:has(.lobby-page-title){display:grid;grid-template-columns:24% minmax(0,1fr);align-items:center;gap:2cqw;height:auto;min-height:52px;padding:1.5cqw 2cqw;border:0;background:#091521c9;box-shadow:none}
+.peripheral-lobby.reference-layout .lobby-page-title{margin:0;padding:4px 6px;min-width:0;color:#f3f6f8;font-size:clamp(21px,6cqw,28px);line-height:1.2;font-weight:900;letter-spacing:1px;text-shadow:0 2px 0 #0009;background:linear-gradient(90deg,#050c16a8,transparent)}
+.peripheral-lobby.reference-layout:is([data-tab="shop"],[data-tab="supply"]) .pl-header:has(.lobby-page-title) .lobby-resources{padding-top:0}
+.peripheral-lobby.reference-layout[data-tab="shop"] .shop-title-plate,
+.peripheral-lobby.reference-layout[data-tab="supply"] .rc-title{display:none}
+.peripheral-lobby.reference-layout{--lobby-frame-width:min(460px,100vw)}
+.peripheral-lobby.reference-layout .pl-shell{border:0;padding:0;container-type:inline-size;--lobby-safe-bottom:var(--ui-safe-bottom,env(safe-area-inset-bottom,0px));--lobby-nav-gap:calc(var(--lobby-frame-width) * .03950617);--lobby-nav-height:calc(var(--lobby-frame-width) * .19753086 + var(--lobby-safe-bottom));--lobby-nav-reserve:calc(var(--lobby-nav-height) + var(--lobby-nav-gap))}
+@media(min-width:1081px),(orientation:landscape){
+  .peripheral-lobby.reference-layout{--lobby-frame-width:min(540px,56.25dvh,100vw)}
+  .game-shell:has(.peripheral-lobby:not([hidden])){width:min(540px,56.25dvh,100vw);height:min(960px,100dvh,177.7778vw);aspect-ratio:9/16;min-height:0;min-width:0;border:0}
+  .game-shell .peripheral-lobby.reference-layout .pl-shell{width:100%;height:100%;aspect-ratio:auto;max-width:540px;max-height:100%;min-height:0;border:0}
+}
+@media(max-width:1080px) and (max-aspect-ratio:1/1){
+  .peripheral-lobby.reference-layout .pl-shell{--lobby-nav-gap:0px}
+}
+.peripheral-lobby.reference-layout[data-subpage=""]:not(.battle-psd-main) .pl-shell{grid-template-rows:auto minmax(0,1fr) var(--lobby-nav-reserve)}
+.peripheral-lobby.reference-layout[data-subpage=""]:not(.battle-psd-main) .pl-body{min-height:0;max-height:100%;overflow:hidden}
+
+/* Override each old page skin with the same atlas navigation used by home. */
+.peripheral-lobby.reference-layout[data-subpage=""] .pl-nav.lobby-nav{position:absolute;inset:auto 0 var(--lobby-nav-gap);width:100%;height:var(--lobby-nav-height);min-height:0;max-height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:stretch;gap:0;padding:0 0 var(--lobby-safe-bottom);border:0;border-radius:0;background:#102131;background-image:none;box-shadow:none;z-index:8}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav:before,.peripheral-lobby.reference-layout .pl-nav.lobby-nav:after{content:none;display:none}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab{position:relative;display:block;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:#102131;box-shadow:none;clip-path:none;overflow:hidden;isolation:isolate;opacity:1;transform:none;transition:filter .12s}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab:before,.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab:after{content:none;display:none}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab>.lobby-nav-art{display:block;width:100%;height:100%;margin:0;filter:none;transform:none;overflow:hidden;pointer-events:none}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab>span{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab:active{filter:brightness(1.2)}
+.peripheral-lobby.reference-layout .pl-nav.lobby-nav>.lobby-nav-tab:focus-visible{outline:2px solid #fff;outline-offset:-3px}
+
+
+/* Keep every page and dialog inside the same safe viewport as home. */
+.peripheral-lobby.reference-layout .pl-shell{--lobby-safe-top:var(--ui-safe-top,env(safe-area-inset-top,0px))}
+.peripheral-lobby.reference-layout:not(.battle-psd-main) .pl-shell{padding-top:var(--lobby-safe-top)}
+.peripheral-lobby.reference-layout .pl-modal-backdrop{padding:max(12px,var(--lobby-safe-top)) 12px max(12px,calc(var(--lobby-safe-bottom) + var(--lobby-nav-gap)))}
+.peripheral-lobby.reference-layout .pl-modal{min-width:0;max-height:100%}
+.peripheral-lobby.reference-layout .pl-modal-heading h2{min-width:0;flex:1;overflow-wrap:anywhere}
+.peripheral-lobby.reference-layout .pl-close{flex:none}
+.peripheral-lobby.reference-layout .pl-modal-content{min-width:0;min-height:0;overflow:auto}
+
+/* Flexible card artwork leaves room for names, stars and levels at narrow widths. */
+.peripheral-lobby.reference-layout.equipment-comic .eq-card-inner{display:grid;grid-template-rows:minmax(0,1fr) auto auto auto;justify-items:center}
+.peripheral-lobby.reference-layout.equipment-comic .eq-card-art{height:auto;min-height:0;align-self:stretch}
+.peripheral-lobby.reference-layout.equipment-comic .eq-card-name{min-height:28px;font-size:clamp(11px,3.2cqw,13px);line-height:14px;padding:0;text-wrap:balance}
+.peripheral-lobby.reference-layout.equipment-comic .eq-card-stars{height:12px;width:auto;gap:1px;margin-top:0}
+.peripheral-lobby.reference-layout.equipment-comic .eq-card-stars>.eq-icon{width:11px;height:12px}
+.peripheral-lobby.reference-layout.equipment-comic .eq-card-level{min-height:0;font-size:12px;line-height:15px;font-variant-numeric:tabular-nums}
+
+/* Draw buttons keep their labels inside their faces even in a landscape frame. */
+.peripheral-lobby.reference-layout .rc-draw{height:clamp(65px,19.7cqw,80px)}
+.peripheral-lobby.reference-layout .rc-draw>strong{font-size:clamp(12px,5.4cqw,24px);white-space:nowrap}
+.peripheral-lobby.reference-layout .rc-draw>span{font-size:clamp(10px,4.2cqw,17px)}
+.peripheral-lobby.reference-layout .rc-draw>small{font-size:clamp(8px,2.7cqw,11px)}
+
+/* Workshop inventory scrolls above a footer with the same bottom clearance. */
+.peripheral-lobby.reference-layout .ref-workshop{--workshop-bottom-space:calc(var(--lobby-safe-bottom) + var(--lobby-nav-gap));min-height:0;grid-template-rows:44px 40% 42px minmax(0,1fr) calc(clamp(58px,17cqw,78px) + var(--workshop-bottom-space))}
+.peripheral-lobby.reference-layout .ref-workshop-footer{min-height:0;padding-bottom:calc(3px + var(--workshop-bottom-space))}
+.peripheral-lobby.reference-layout .ref-workshop-footer .ref-back,.peripheral-lobby.reference-layout .ref-workshop-footer .ref-combine{min-height:0;height:min(54px,100%)}
+.peripheral-lobby.reference-layout .ref-recipe-output,.peripheral-lobby.reference-layout .ref-recipe-input{min-width:0;min-height:0;padding:1cqw;border-width:clamp(1px,.6cqw,3px)}
+.peripheral-lobby.reference-layout .ref-recipe-output>b,.peripheral-lobby.reference-layout .ref-recipe-input>b{font-size:clamp(18px,9cqw,45px)}
+.peripheral-lobby.reference-layout .ref-recipe-arrow{font-size:clamp(16px,6cqw,34px)}
+@media(max-height:700px){.peripheral-lobby.reference-layout .ref-workshop{grid-template-rows:44px 40% 37px minmax(0,1fr) calc(clamp(58px,17cqw,78px) + var(--workshop-bottom-space))}}
+
+/* Respond to the game frame's width, which can be much smaller than the browser. */
+@container(max-width:300px){
+  .peripheral-lobby.reference-layout[data-tab="shop"] .shop-feature-grid,.peripheral-lobby.reference-layout[data-tab="shop"] .shop-resource-grid{grid-template-columns:minmax(0,1fr)}
+  .peripheral-lobby.reference-layout[data-tab="shop"] .shop-resource-card{flex-direction:column;gap:2px}
+  .peripheral-lobby.reference-layout[data-tab="shop"] .shop-resource-copy{width:100%;text-align:center}
+}
+
+
+.peripheral-lobby.reference-layout .shop-wallet-bar{gap:0;padding-inline:0}
+.peripheral-lobby.reference-layout .ref-workshop{width:100%;min-width:0;grid-template-columns:minmax(0,1fr)}
+@container(max-width:300px){
+  .peripheral-lobby.reference-layout[data-tab="shop"] .pl-header,.peripheral-lobby.reference-layout[data-tab="supply"] .pl-header{grid-template-columns:38% minmax(0,1fr)}
+  .peripheral-lobby.reference-layout :is(.shop-wallet,.eq-wallet,.research-wallet) b{font-size:clamp(5px,2.4cqw,12px)}
+  .peripheral-lobby.reference-layout :is(.eq-wallet,.research-wallet)>span{gap:0;padding-right:0}
+  .peripheral-lobby.reference-layout .research-banner h1{height:8cqw;min-height:28px;font-size:clamp(16px,6cqw,24px)}
+  .peripheral-lobby.reference-layout .research-tools{min-height:28px;gap:4px;margin-top:1px}
+  .peripheral-lobby.reference-layout .research-tools button,.peripheral-lobby.reference-layout .research-tools button:last-child{min-width:28px;min-height:28px;font-size:8px;padding-inline:3px}
+  .peripheral-lobby.reference-layout .research-tools img{width:20px;height:20px}
+  .peripheral-lobby.reference-layout .research-browse-hint{font-size:8px}
+  .peripheral-lobby.reference-layout .research-footer{padding:2px 6px 5px}
+  .peripheral-lobby.reference-layout .research-awaken{height:52px;padding:4px 4px 5px;gap:1px}
+  .peripheral-lobby.reference-layout .research-awaken>strong{font-size:clamp(10px,4.4cqw,17px)}
+  .peripheral-lobby.reference-layout .research-awaken>span{width:100%;min-height:16px;font-size:clamp(7px,2.7cqw,12px)}
+  .peripheral-lobby.reference-layout .research-awaken small{font-size:8px}
+  .peripheral-lobby.reference-layout .research-awaken>span img,.peripheral-lobby.reference-layout .research-awaken .research-icon{width:4cqw;height:4cqw;margin-right:1px}
+  .peripheral-lobby.reference-layout .rc-preview-heading{flex-wrap:wrap;min-height:0;padding:3px}
+  .peripheral-lobby.reference-layout .rc-preview-heading h2{flex:1 0 100%;font-size:12px}
+  .peripheral-lobby.reference-layout .rc-preview-heading>button{flex:1;min-width:0;font-size:clamp(8px,3cqw,11px);padding-inline:3px}
+  .peripheral-lobby.reference-layout .ref-divider{min-width:0;padding-inline:6px;gap:4px}
+  .peripheral-lobby.reference-layout .ref-divider strong{font-size:clamp(12px,4.3cqw,19px)}
+  .peripheral-lobby.reference-layout .ref-divider>button{padding-inline:5px!important;font-size:clamp(8px,3cqw,12px)!important;gap:3px}
+  .peripheral-lobby.reference-layout .ref-divider .pl-icon{width:clamp(10px,4.6cqw,19px);height:clamp(10px,4.6cqw,19px)}
+}
+
+.peripheral-lobby.reference-layout .rc-page{width:100%;min-width:0;grid-template-columns:minmax(0,1fr)}
+.peripheral-lobby.reference-layout .rc-browse,.peripheral-lobby.reference-layout .rc-hero{min-width:0}
+@container(min-width:301px){
+  .peripheral-lobby.reference-layout[data-tab="shop"] .shop-wallet b,.peripheral-lobby.reference-layout[data-tab="supply"] .shop-wallet b{font-size:clamp(9px,2.4cqw,12px)}
+}
+
+/* One stationary scene behind the HUD and scrollport; elastic content must not split it. */
+.peripheral-lobby.reference-layout[data-tab="shop"][data-subpage=""] .pl-shell,
+.peripheral-lobby.reference-layout.equipment-comic .pl-shell{isolation:isolate}
+.peripheral-lobby.reference-layout[data-tab="shop"][data-subpage=""] .pl-shell::before,
+.peripheral-lobby.reference-layout.equipment-comic .pl-shell::before{content:"";position:absolute;inset:var(--lobby-safe-top,0px) 0 0;z-index:-1;pointer-events:none;background-repeat:no-repeat}
+.peripheral-lobby.reference-layout[data-tab="shop"][data-subpage=""] .pl-shell::before{background-color:#0d1a27;background-image:url('/art/shop-comic-v1/hero-header-v3-clean.webp');background-position:-4cqw 4.15cqw;background-size:108cqw 58.572cqw}
+.peripheral-lobby.reference-layout.equipment-comic .pl-shell::before{background:#102335 url('/art/equipment-comic-v1/hangar.png') left top/100cqw 82.9cqw no-repeat}
+.peripheral-lobby.reference-layout[data-tab="shop"][data-subpage=""] :is(.pl-header,.shop-hero),
+.peripheral-lobby.reference-layout.equipment-comic :is(.pl-header,.pl-body,.eq-page,.eq-hangar){background:transparent}

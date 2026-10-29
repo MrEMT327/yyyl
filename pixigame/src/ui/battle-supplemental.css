@@ -1,0 +1,15 @@
+/* Functional dialogs retained alongside the canonical PSD home. */
+.bc-modal-empty{padding:48px 12px;text-align:center;color:#a7becf}
+.bc-modal-actions{display:grid;gap:4px}
+.bc-star-rewards {display:grid;gap:14px;color:var(--lobby-text,#edf5fa)}
+.bc-star-goals {list-style:none;display:grid;gap:7px;padding:0;margin:0;font-size:13px;line-height:1.5}
+.bc-star-goals li {display:flex;gap:9px;align-items:center}
+.bc-star-goals li>span,.bc-star-reward>b {color:var(--lobby-gold,#ffdc58)}
+.bc-star-total {display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px solid #36546a;padding-bottom:10px}
+.bc-star-total strong {font-size:20px}.bc-star-total small,.bc-star-total>span {font-size:11px;color:#aac1d1;font-weight:500}
+.bc-star-reward-list {display:grid;gap:8px}
+.bc-star-reward {display:grid;grid-template-columns:minmax(0,1fr) 76px;grid-template-rows:auto auto;align-items:center;gap:4px 10px;padding:10px 8px;border:1px solid #304c60;background:#102637}
+.bc-star-reward>b {grid-column:1;grid-row:1;min-width:0;font-size:15px;line-height:1.4;white-space:normal}
+.bc-star-reward>span {grid-column:1;grid-row:2;min-width:0;font-size:12px;line-height:1.65;overflow-wrap:anywhere}
+.peripheral-lobby .bc-star-reward .pl-button {grid-column:2;grid-row:1 / 3;width:100%;min-width:0;min-height:44px;height:auto;box-sizing:border-box;font-size:12px;line-height:1.4;padding:6px;white-space:normal;overflow-wrap:anywhere}
+.bc-star-reward.is-claimed {opacity:.65}.bc-star-note {margin:0;color:#9cb4c5;font-size:11px;line-height:1.6}

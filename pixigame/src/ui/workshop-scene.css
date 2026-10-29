@@ -1,0 +1,50 @@
+/* Workshop uses the equipment hangar artwork and equipmentWeaponCard template. */
+.peripheral-lobby.reference-layout .ref-workshop{
+  --eq-cut:polygon(7% 0,93% 0,100% 8%,100% 92%,93% 100%,7% 100%,0 92%,0 8%);
+  --eq-yellow:#ffdb29;
+  grid-template-rows:46px minmax(320px,47%) 52px minmax(100px,1fr) calc(64px + var(--workshop-bottom-space));
+}
+.peripheral-lobby.reference-layout .ref-workshop .workshop-scene{
+  position:relative;isolation:isolate;display:block;padding:0;margin:0 6px 6px;overflow:hidden;
+  border:2px solid #607f93;border-radius:2px;
+  background:linear-gradient(90deg,#0b20364d,#0b203614 55%,#0b203659),url('/art/equipment-comic-v1/hangar.png') center 42%/cover no-repeat;
+  box-shadow:inset 0 0 0 2px #071724;min-height:0;
+}
+.workshop-scene-title{position:absolute;inset:0 0 auto;min-height:39px;padding:5px 12px;display:flex;align-items:center;justify-content:space-between;z-index:5;background:#0c2237e8;border-bottom:2px solid #7191a5}
+.peripheral-lobby.reference-layout .workshop-scene-title h1{position:static;margin:0;font-size:20px;line-height:27px;color:#e9f1fc;padding-left:8px;border-left:3px solid #ffca59}
+.workshop-scene-title>span{font-size:11px;color:#ffdb81}
+.workshop-recipe-stack{position:absolute;z-index:4;top:49px;bottom:126px;left:5%;width:25%;display:grid;grid-template-rows:minmax(0,1fr) 24px minmax(0,1fr);justify-items:center}
+.peripheral-lobby.reference-layout .workshop-scene-slot{position:relative;display:grid;grid-template-rows:14px minmax(0,1fr) 17px;justify-items:center;width:100%;max-width:106px;min-height:0;padding:3px 6px;border:3px solid #08131f;border-radius:0;clip-path:var(--eq-cut);background:#143a55;box-shadow:inset 0 0 0 2px #55a2cb,inset 0 -5px #092238;color:#e2f2ff;overflow:hidden;cursor:pointer}
+.peripheral-lobby.reference-layout .workshop-scene-slot.is-result{background:#204052;box-shadow:inset 0 0 0 2px #ffcf55,inset 0 -5px #182936}
+.workshop-scene-slot>img{width:100%;height:100%;object-fit:contain;min-height:0}
+.workshop-scene-slot>small{font-size:10px;line-height:14px;color:#bfd9e8}.workshop-scene-slot>span{font-size:11px;line-height:17px;white-space:nowrap;font-weight:700}
+.workshop-scene-slot>b{font-size:30px;line-height:1}
+.workshop-scene-arrow{font-size:24px;line-height:24px;color:#a4ef40;filter:drop-shadow(0 2px 0 #112434)}
+.workshop-scene-dialog{position:absolute;z-index:4;top:52px;left:34%;width:27%;padding:9px;background:#0c2539f5;border:2px solid #7995a7;border-radius:4px;box-shadow:0 3px #071726;color:#e3edf8}
+.workshop-scene-dialog:after{content:"";position:absolute;left:100%;top:18px;border-left:10px solid #7995a7;border-top:8px solid transparent;border-bottom:8px solid transparent}
+.workshop-scene-dialog p{margin:0;font-size:12px;line-height:1.6}
+.workshop-scene-girl{position:absolute;z-index:3;right:-1%;top:43px;bottom:119px;width:39%;pointer-events:none;overflow:hidden}
+.workshop-scene-portrait{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 4%;filter:drop-shadow(3px 3px 1px #06152355)}
+.workshop-readout{position:absolute;inset:auto 7px 7px;z-index:6;min-height:106px;max-height:117px;overflow-y:auto;padding:8px 11px;background:#0c2235f5;border:2px solid #071522;box-shadow:inset 0 0 0 1px #52768e;color:#c3d7e3;font-size:12px;line-height:1.6}
+.workshop-readout h2{margin:0 0 3px;font-size:15px;line-height:21px;color:#ffdb81}
+.workshop-readout>span,.workshop-readout>small{display:block}.workshop-readout>small{font-size:11px;color:#9fb9ca}
+.peripheral-lobby.reference-layout .ref-workshop .ref-divider{min-height:52px;padding:4px 8px;gap:8px;background:#142d40;border-top:1px solid #7491a3;border-bottom:3px solid #07131e}
+.peripheral-lobby.reference-layout .ref-workshop .ref-divider>button{min-height:40px!important;height:40px;padding:0 12px!important;min-width:88px;font-size:13px!important;line-height:20px;flex:none;clip-path:none;border-radius:4px!important}
+.peripheral-lobby.reference-layout .ref-workshop .ref-divider>strong{font-size:14px;white-space:nowrap}
+.peripheral-lobby.reference-layout .ref-workshop .ref-item-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 6px}
+.peripheral-lobby.reference-layout .ref-workshop .ref-warehouse{padding:8px;background:#102335}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card{height:auto;aspect-ratio:.76;min-height:0;display:block;padding:3px;border:0;background:#050d15;box-shadow:none;border-radius:0}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-inner{display:grid;grid-template-rows:minmax(0,1fr) 30px 16px 14px;justify-items:center;border-width:4px}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-art{height:auto;min-height:0;align-self:stretch;width:100%;overflow:hidden}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-art>.pl-model-thumb{width:100%;height:100%;object-fit:contain;padding:0!important}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-art>.pl-weapon-icon-cannon{transform:scale(1.6)}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-name{font-size:11px;line-height:15px;min-height:0;align-self:center;text-align:center;padding:0 2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-stars{height:16px;margin:0;width:84%}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-level{font-size:11px;line-height:14px;min-height:0}
+.peripheral-lobby.reference-layout .ref-workshop .eq-card-equipped{font-size:9px;line-height:13px;top:8px;left:8px;padding:0 3px}
+@container(max-width:360px){
+  .peripheral-lobby.reference-layout .ref-workshop .ref-item-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .workshop-scene-dialog{left:34%;width:27%;padding:6px}.workshop-scene-dialog p{font-size:11px}
+  .peripheral-lobby.reference-layout .ref-workshop .ref-divider>button{min-width:74px;padding:0 7px!important;font-size:12px!important}
+  .peripheral-lobby.reference-layout .ref-workshop .ref-divider>strong{font-size:12px}
+}

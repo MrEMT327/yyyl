@@ -1,0 +1,157 @@
+/* GUI Pro — Casual Game 4.1.1. Presentation only: no progression or route changes.
+   The id scopes this skin above the previous page-specific material overrides.
+   Narrow Unity sprites are horizontally sliced, never stretched as full images. */
+#gui-casual-lobby {
+  --ui-ink:#0b1730;--ui-panel:#142747;--ui-panel-deep:#0d1c35;
+  --ui-edge:#3b5c82;--ui-text:#fff;--ui-muted:#bbcbe0;
+  --ui-yellow:#ffdc24;--ui-blue:#1ab8fa;--ui-warning:#ffb0a4;
+  --gui-topbar-tint:#002b55;--gui-bottom-tint:#0e233d;
+  --ui-button-blue:url('/art/gui-casual/button-secondary.png');
+  --ui-button-yellow:url('/art/gui-casual/button-primary.png');
+  --gui-button-primary:url('/art/gui-casual/button-primary.png');
+  --gui-button-secondary:url('/art/gui-casual/button-secondary.png');
+  --gui-button-dark:url('/art/gui-casual/button-dark.png');
+  --gui-button-disabled:url('/art/gui-casual/button-disabled.png');
+  --gui-nav-height:calc(var(--lobby-frame-width) * .19 + var(--ui-safe-bottom,env(safe-area-inset-bottom,0px)));
+  --lobby-chrome-height:54px;--eq-topbar:54px;
+  --gui-text-shadow:0 1px #07122966;
+  --gui-button-ink:#fff;--gui-button-shadow:var(--gui-text-shadow);
+  font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+  color:var(--ui-text);
+  /* Only the inner inventory/preview regions scroll, never the fixed shell. */
+  overflow:clip;
+}
+#gui-casual-lobby .gui-icon{object-fit:contain;image-rendering:auto;flex:none;filter:none}
+#gui-casual-lobby button{font-family:inherit;touch-action:manipulation}
+#gui-casual-lobby button:focus-visible{outline:2px solid #fff2a5;outline-offset:-3px}
+#gui-casual-lobby .gui-chevron{display:block;flex:none;width:20px;height:32px;object-fit:contain;pointer-events:none;filter:none;transform:translate(-10%,var(--gui-chevron-y,0px))}
+#gui-casual-lobby .is-prev>.gui-chevron{transform:translate(10%,var(--gui-chevron-y,0px)) rotate(180deg)}
+
+/* Shared press faces. Three backgrounds retain the original end caps and sample
+   only the flat central column. A zero-height border-image slice produced thin
+   vertical seams, so all three regions now use one continuous background box. */
+#gui-casual-lobby :is(.pl-button,.shop-button,.eq-workshop-button,.rc-draw,.research-awaken,.ref-catalog-button,.ref-yellow,.ref-small,.ref-back,.ref-combine,.lc-claim,.rc-pool-tab,.rc-history):disabled {
+  --gui-face:var(--gui-button-disabled)!important;
+  --gui-button-ink:#e5e8ef;--gui-button-shadow:none;
+  opacity:1;filter:none!important;color:var(--gui-button-ink)!important;cursor:not-allowed;
+}
+#gui-casual-lobby :is(.pl-button,.shop-button,.rc-draw,.research-awaken,.eq-workshop-button,.ref-catalog-primary,.ref-yellow,.ref-combine,.lc-claim)>:is(strong,span,small,b),
+#gui-casual-lobby :is(.shop-button,.rc-draw,.research-awaken)>span>:is(b,i) {
+  color:inherit;text-shadow:var(--gui-button-shadow)!important;-webkit-text-stroke:0;
+}
+/* Shortage cues remain distinct from the disabled label and button face. */
+#gui-casual-lobby .research-awaken:disabled>.is-short>b,
+#gui-casual-lobby .rc-draw:disabled>span>b,
+#gui-casual-lobby .shop-button:disabled:is([title*="不足"],[data-action="shopWeaponOrder"])>:is(.shop-button-label,.shop-button-cost){color:var(--ui-warning)}
+#gui-casual-lobby :is(.pl-button,.shop-button,.rc-draw,.research-awaken):active:not(:disabled){
+  transform:translateY(2px);filter:brightness(1.06)!important;
+}
+#gui-casual-lobby :is(.rc-pool-tab,.research-summary,.rc-feature-name>button){padding-inline:12px;min-height:44px}
+
+/* A compact resource rail like the APK, with a real hit target around each bar. */
+#gui-casual-lobby[data-subpage=""] .pl-header:has(>.lobby-resources) {
+  --hud-wallet-width:61cqw;display:grid;grid-template-columns:minmax(0,1fr) var(--hud-wallet-width);
+  align-items:center;gap:2cqw;padding:2px 2cqw;height:54px;min-height:54px;
+  /* Original graphite material matches the PSD navigation and gray controls. */
+  background:var(--project-header-background,#182126);
+  background-blend-mode:normal;
+  border:0;box-shadow:none;
+}
+#gui-casual-lobby[data-subpage=""] .lobby-page-heading {
+  width:100%;height:44px;min-height:44px;margin:0;padding:0;
+  display:flex;align-items:center;gap:6px;border:0;background:none;clip-path:none;
+  box-shadow:none;color:white;font-size:clamp(17px,4.7cqw,22px);font-weight:800;
+  text-shadow:var(--gui-text-shadow);white-space:nowrap;
+}
+#gui-casual-lobby .lobby-heading-icon{width:26px;height:28px;opacity:1}
+#gui-casual-lobby .lobby-heading-icon :is(img,svg){filter:none;object-fit:contain}
+#gui-casual-lobby[data-subpage=""] .lobby-profile {
+  gap:5px;height:46px;padding:3px 2px;border:0;border-radius:0;background:none;clip-path:none;box-shadow:none;
+}
+#gui-casual-lobby .lobby-avatar{width:35px;height:39px;border:2px solid #e9b547;border-radius:7px;background:#17284a}
+#gui-casual-lobby .lobby-profile-copy{gap:3px}
+#gui-casual-lobby .lobby-profile-copy>strong{font-size:clamp(11px,2.8cqw,12px);line-height:1.2}
+#gui-casual-lobby .lobby-power{gap:3px;color:#ffdf3b}
+#gui-casual-lobby .lobby-power b{font-size:14px}
+#gui-casual-lobby .lobby-power small{font-size:10px}
+#gui-casual-lobby[data-subpage=""] .lobby-resources {
+  display:grid;grid-template-columns:1.12fr 1fr 1fr;gap:5px;width:100%;height:44px;padding:0;align-items:center;
+}
+#gui-casual-lobby .lobby-resource {min-height:44px;height:44px;background:none!important;border:0;padding:0;box-shadow:none}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-bar {
+  position:relative;display:flex;align-items:center;gap:0;width:100%;height:26px;
+  padding:0 2px;border:1px solid #354b6b;border-radius:7px;background:#0a1529;
+  box-shadow:0 2px #050d1b;overflow:visible;
+}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-icon {position:static;width:23px;height:29px;margin-left:-6px;transform:none}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-bar>b{font-size:clamp(11px,3cqw,13px);font-weight:700;letter-spacing:-.2px;min-width:0;text-shadow:none;line-height:1}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-bar small{font-size:9px}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-bar>i{width:10px;height:18px;border:0;color:#8ae052;background:none}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-bar>i::before{width:8px;height:2px}
+#gui-casual-lobby[data-subpage=""] .lobby-resource-bar>i::after{width:2px;height:8px}
+
+/* Actual APK behavior: whichever tab is selected expands, not always battle.
+   The five existing data-action routes and accessibility names are unchanged. */
+#gui-casual-lobby[data-subpage=""] .pl-shell{grid-template-rows:54px minmax(0,1fr) var(--gui-nav-height)}
+#gui-casual-lobby[data-subpage=""] .pl-nav {
+  position:absolute;inset:auto 0 0;width:100%;display:flex;align-items:stretch;gap:3px;min-height:0;height:var(--gui-nav-height);
+  padding:5px 4px calc(3px + env(safe-area-inset-bottom,0px));box-sizing:border-box;
+  /* Keep the source's 2px top rule and tint its white body, including the
+     safe-area fill. Blending backgrounds never recolors child icons/text. */
+  background:var(--gui-bottom-tint) url('/art/gui-casual/panel-bottom.png') top/100% 6px no-repeat;
+  background-blend-mode:multiply;
+  border:0;box-shadow:none;overflow:visible;
+}
+#gui-casual-lobby .lobby-nav-tab {
+  --gui-face:var(--gui-button-dark);
+  position:relative;isolation:isolate;display:flex;flex:1 1 0;flex-direction:column;
+  align-items:center;justify-content:center;gap:1px;min-width:0;min-height:44px;
+  height:100%;padding:5px 2px 7px;margin:0;border:0;border-radius:8px;
+  background:none!important;clip-path:none;box-shadow:none;overflow:visible;
+  color:white;transform:none;transition:flex-grow .18s ease;
+}
+#gui-casual-lobby .lobby-nav-tab::before {
+  content:"";display:block;position:absolute;inset:0;width:auto;height:auto;z-index:-1;pointer-events:none;
+  border:0 solid transparent;border-inline-width:12px;border-radius:0;border-image:none;
+  /* Clear the legacy selected-tab fill beneath the sprite's transparent corners. */
+  background-color:transparent;
+  background-image:var(--gui-face),var(--gui-face),var(--gui-face);
+  background-size:5500% 100%,24px 100%,24px 100%;
+  background-position:center,left center,right center;background-repeat:no-repeat;
+  background-origin:padding-box,border-box,border-box;background-clip:padding-box,border-box,border-box;
+  clip-path:none;box-shadow:none;
+}
+#gui-casual-lobby .lobby-nav-tab::after{content:none}
+#gui-casual-lobby .lobby-nav-tab>.lobby-nav-icon{position:relative;width:10cqw;height:10cqw;max-width:46px;max-height:46px;margin:0;filter:drop-shadow(0 2px 1px #07112799);transform:none}
+#gui-casual-lobby .lobby-nav-tab>span{display:none!important;position:static;width:auto;height:auto;clip-path:none;margin:0;overflow:visible;font-size:13px;font-weight:800;line-height:16px;letter-spacing:0;text-shadow:none;-webkit-text-stroke:0;color:#122142}
+#gui-casual-lobby .lobby-nav-tab.is-active{--gui-face:var(--gui-button-primary);flex-grow:1.96;padding-top:0}
+#gui-casual-lobby .lobby-nav-tab.is-active::before{inset:-3px 0 0}
+#gui-casual-lobby .lobby-nav-tab.is-active>.lobby-nav-icon{width:12cqw;height:12cqw;max-width:52px;max-height:52px;margin-top:-12px}
+#gui-casual-lobby .lobby-nav-tab.is-active>span{display:block!important}
+#gui-casual-lobby .lobby-nav-tab:active{transform:translateY(1px)}
+
+/* Common dialogs use the same pack, not a second flat component style. */
+#gui-casual-lobby .pl-modal-host{z-index:20}
+#gui-casual-lobby .pl-modal{position:relative;background:#112644;border:0;border-radius:16px;padding:14px;box-shadow:0 12px 44px #02081399;isolation:isolate}
+#gui-casual-lobby .pl-modal::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:0 solid transparent;border-image:url('/art/gui-casual/panel-popup.png') 24 25 37 25 fill / 16px 16px 22px 16px stretch}
+#gui-casual-lobby .pl-modal-heading{background:none;border-bottom:1px solid #41658d;padding:3px 1px 12px;margin-bottom:10px}
+#gui-casual-lobby .pl-modal-heading h2{font-size:21px;text-shadow:var(--gui-text-shadow)}
+#gui-casual-lobby .pl-modal-heading::before{content:none}
+#gui-casual-lobby .pl-modal-content{box-shadow:none}
+#gui-casual-lobby .rc-arrow{--gui-chevron-y:-2px;display:flex;align-items:center;justify-content:center;top:calc(56% - 24px);width:44px;height:48px;padding:0;border:0;border-radius:10px;background:url('/art/gui-casual/button-utility.png') center/100% 100% no-repeat;box-shadow:none;clip-path:none;min-height:44px;min-width:44px}
+#gui-casual-lobby .rc-arrow.is-prev{left:10px}
+#gui-casual-lobby .rc-arrow.is-next{right:10px}
+#gui-casual-lobby .rc-arrow:disabled>.gui-chevron{opacity:.4}
+#gui-casual-lobby :is(.rc-history,.shop-hero-caption){position:absolute}
+#gui-casual-lobby .pl-close{width:36px;height:36px;min-height:36px;border:0;border-radius:10px;background:url('/art/gui-casual/button-utility.png') center/100% 100% no-repeat;color:white}
+#gui-casual-lobby .pl-close>.pl-icon{width:19px;height:19px;filter:brightness(0) invert(1)}
+#gui-casual-lobby .pl-toast{z-index:30;border:1px solid #436894;background:#0c1b33f5;border-radius:10px;color:#fff;box-shadow:0 4px 12px #0004}
+@container(max-width:340px){
+  #gui-casual-lobby[data-subpage=""] .lobby-resource-icon{width:19px;height:26px;margin-left:-4px}
+  #gui-casual-lobby[data-subpage=""] .lobby-resource-bar>b{font-size:10px}
+  #gui-casual-lobby[data-subpage=""] .lobby-resource-bar small{font-size:8px}
+  #gui-casual-lobby .lobby-avatar{width:29px;height:35px}
+  #gui-casual-lobby .lobby-power small{font-size:8px}
+  #gui-casual-lobby .lobby-profile-copy>strong{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby .lobby-nav-tab{transition:none}}

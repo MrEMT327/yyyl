@@ -1,0 +1,36 @@
+{
+  "source": "Mixkit, user-downloaded WAV",
+  "license": "https://mixkit.co/license/modal/sfxFree/",
+  "assets": [
+    {
+      "source": "mixkit-magic-sparkle-whoosh-2350.wav",
+      "file": "ice-sparkle-2350.wav",
+      "sha256": "321d550c25ec93fa49e7c2a03bbbe99f2a483575109700e589dd3eb4d2e781c6"
+    },
+    {
+      "source": "mixkit-liquid-bubble-3000.wav",
+      "file": "acid-bubble-3000.wav",
+      "sha256": "18f6c5fbd0d1d099b97636dd40b152776302c5d47b2ac1e3de7e42adbf2426c9"
+    },
+    {
+      "source": "mixkit-sci-fi-plasma-gun-power-up-1679.wav",
+      "file": "shield-power-1679.wav",
+      "sha256": "427711d03001c0c06c3f1919a5c52dcac9cde731e6e25f2b159419e302b0facb"
+    },
+    {
+      "source": "mixkit-arcade-game-explosion-2759.wav",
+      "file": "boss-explosion-2759.wav",
+      "sha256": "8ef5db0ab460151f23a495a1cf2ea45e4bd8ebb7a2ac952d294b8b53cbfc2199"
+    },
+    {
+      "source": "mixkit-completion-of-a-level-2063.wav",
+      "file": "victory-2063.wav",
+      "sha256": "f31efc9f074b1da87f9b73bad81800bb4ea2979d132bc217c13f9558833e1ed0"
+    },
+    {
+      "source": "mixkit-player-losing-or-failing-2042.wav",
+      "file": "defeat-2042.wav",
+      "sha256": "01fa604c84ea0a24e7508d1d109537f6c28e3db0d58ab79a76cf60892067eb99"
+    }
+  ]
+}

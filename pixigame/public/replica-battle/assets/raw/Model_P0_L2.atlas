@@ -1,0 +1,9 @@
+Model_P0_L2.png
+size:52,42
+filter:Linear,Linear
+pma:true
+scale:0.8
+p_yizi
+bounds:0,18,52,24
+p_yizib
+bounds:0,0,50,16

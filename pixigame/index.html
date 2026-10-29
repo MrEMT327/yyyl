@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="zh-CN" data-boot="loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#06151c" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>少女航线 · 战区出击</title>
+    <style>
+      html[data-boot] { background: #06151c; }
+      html[data-boot] .arcade { visibility: hidden !important; }
+      #bootLoading { position:fixed;inset:0;background:#06151c;color:#e2f6ff; }
+    </style>
+    <link rel="stylesheet" href="/src/ui/entry-screens.css" />
+    <link rel="preload" as="image" href="/art/entry-screens-v1/startup.webp" />
+    <script src="/cpsdk.js"></script>
+    <script src="https://h.api.4399.com/h5mini-2.0/h5api-interface.php"></script>
+  </head>
+  <body>
+    <div id="bootLoading" class="entry-screen startup" role="dialog" aria-modal="true" aria-label="少女航线启动">
+      <section class="entry-screen__portrait">
+        <img class="startup__art" src="/art/entry-screens-v1/startup.webp" alt="" fetchpriority="high" />
+        <div class="startup__shade"></div>
+        <small class="startup__version"></small>
+        <h1 class="startup__title"><strong>少女航线</strong><span>战区出击</span></h1>
+        <div class="startup__footer">
+          <button id="bootStart" class="entry-screen__button" type="button" hidden disabled>开始游戏</button>
+          <button id="bootRetry" class="entry-screen__button" type="button" hidden>重新加载</button>
+          <p id="bootMessage" class="startup__status" role="status" aria-live="polite">正在加载…</p>
+          <progress class="entry-screen__progress" max="3" value="0" aria-label="启动准备进度"></progress>
+        </div>
+      </section>
+    </div>
+    <div class="performance-hud" id="performanceHud" data-level="good" role="status" aria-live="off" aria-label="实时渲染帧率" hidden>
+      <span>帧率</span>
+      <strong id="performanceFps">--</strong>
+      <small id="performanceFrameTime">--.- 毫秒</small>
+    </div>
+
+    <main class="arcade">
+      <aside class="side-panel briefing">
+        <span class="kicker">任务 01</span>
+        <h1>雷霆<br />异变</h1>
+        <p>在随机敌潮中回收能量，组合成你的火力流派，撑过异化封锁并摧毁旗舰。</p>
+        <div class="line"></div>
+        <dl>
+          <div><dt>战区</dt><dd>北纬 23° 暮海</dd></div>
+          <div><dt>威胁</dt><dd>随机敌潮 / 精英</dd></div>
+          <div><dt>旗舰</dt><dd>03:00 接战 / 单局约 04:00</dd></div>
+        </dl>
+      </aside>
+
+      <section class="game-shell" id="gameShell">
+        <div id="game" aria-label="少女航线游戏画布"></div>
+        <button class="language-toggle" id="languageToggle" type="button" aria-label="切换为英文" hidden>EN</button>
+        <header class="hud-top">
+          <div class="hud-block">
+            <span>积分</span>
+            <strong id="score">000000</strong>
+          </div>
+          <div class="flight-quality" id="flightQuality" data-grade="C">
+            <span>品质</span><b id="flightGrade">C</b>
+          </div>
+          <div class="mission-chip">
+            <b id="runTimer">00:00</b>
+          </div>
+          <div class="hud-block align-right">
+            <span>击破</span>
+            <strong id="killCount">000</strong>
+          </div>
+          <strong id="highScore" hidden>025000</strong>
+        </header>
+
+        <div class="combat-controls" aria-label="战斗控制">
+          <button id="exitButton" aria-label="离开本局">离</button>
+        </div>
+
+        <div class="combat-stats" id="combatStats" aria-label="战斗实时数据">
+          <div><span>积分</span><b id="liveScore">0</b></div>
+          <div><span>击破</span><b id="liveKills">0</b></div>
+        </div>
+
+        <aside class="evolution-tracker" id="evolutionTracker" aria-label="终极蓝图进度" aria-live="polite" aria-atomic="true">
+          <div class="evolution-tracker-task">
+            <small>当前任务</small>
+            <span id="evolutionRequirement">获得主武器后生成终极蓝图</span>
+          </div>
+          <div class="evolution-pips" id="evolutionPips" aria-label="蓝图进度 0 / 4">
+            <i></i><i></i><i></i><i></i>
+          </div>
+        </aside>
+
+        <div class="run-progress">
+          <div><b id="runLevel">等级1</b><span><i id="xpText">0 / 5</i></span></div>
+          <div class="xp-track"><i id="xpBar"></i></div>
+          <small id="stageLabel">经验</small>
+        </div>
+
+        <div class="campaign-progress">
+          <div><span>关卡</span><b id="campaignProgressText">0%</b></div>
+          <div class="campaign-progress-track"><i id="campaignProgressBar"></i></div>
+        </div>
+
+        <div class="player-health" id="playerHealth">
+          <div><span id="playerHealthLabel">耐久 · ↻1</span><b id="playerHealthText">100 / 100</b></div>
+          <div class="player-health-track"><i id="playerHealthBar"></i></div>
+        </div>
+
+        <div class="boss-wrap" id="bossWrap">
+          <div class="boss-label"><span id="bossName">旗舰</span><b id="bossPercent">100%</b></div>
+          <div class="boss-track"><i id="bossBar"></i></div>
+        </div>
+
+        <div class="combo" id="combo">连击 × <b>2</b></div>
+        <div class="flight-feed" id="flightFeed" aria-live="polite">
+          <div>
+            <strong id="flightFeedCombo">0</strong>
+            <b id="flightFeedPoints">×1</b>
+          </div>
+          <span id="flightFeedAction">漂亮切线 +0</span>
+        </div>
+        <div class="shield-status" id="shieldStatus">护盾就绪</div>
+        <div class="seal-status" id="sealStatus">清缴封印</div>
+        <aside class="combat-pilot-avatar" id="combatPilotAvatar" aria-label="当前机甲少女">
+          <i class="combat-pilot-avatar-art"><img id="combatPilotAvatarImage" alt="" /><small id="combatPilotAvatarLevel">等级1</small><b id="combatPilotAvatarResonance">共鸣 0</b></i>
+          <span><b id="combatPilotAvatarName">夜莺·零</b></span>
+        </aside>
+        <aside class="pilot-skill-cut-in" id="pilotSkillCutIn" aria-live="polite">
+          <div class="pilot-skill-cut-in-art"><img id="pilotSkillCutInImage" alt="" /></div>
+          <div><small id="pilotSkillCutInCode">夜幕零式</small><strong id="pilotSkillCutInName">夜莺·零</strong><b id="pilotSkillCutInSkill">零域相位</b></div>
+        </aside>
+        <button class="rank-toggle" id="rankButton" aria-label="查看排行榜">榜</button>
+
+        <footer class="hud-bottom">
+          <div class="lives" id="lives" aria-label="剩余战机">◆ ◆ ◆</div>
+          <div class="skill-dock" id="skillDock" aria-label="本局已选择的子弹和技能">
+            <div class="combat-skill base" style="--skill-color:#eefbf7" aria-label="基础白弹 1级">
+              <i>│</i><b>1</b>
+            </div>
+          </div>
+          <nav class="active-weapon-dock" id="activeWeaponDock" aria-label="自动被动武器挂载">
+            <button class="active-weapon-slot empty" type="button" data-active-slot="1" aria-label="自动挂点 1，空"><kbd>挂1</kbd><span>＋</span><b>--</b></button>
+            <button class="active-weapon-slot empty" type="button" data-active-slot="2" aria-label="自动挂点 2，空"><kbd>挂2</kbd><span>＋</span><b>--</b></button>
+            <button class="active-weapon-slot empty" type="button" data-active-slot="3" aria-label="自动挂点 3，空"><kbd>挂3</kbd><span>＋</span><b>--</b></button>
+          </nav>
+        </footer>
+
+        <div class="toast" id="toast"></div>
+
+        <div class="stage-banner" id="stageBanner">
+          <small id="stageBannerArc">黄道十二宫</small>
+          <strong id="stageBannerName">白羊座</strong>
+          <span id="stageBannerTitle">金羊冲锋</span>
+        </div>
+
+        <div class="evolution-overlay" id="evolutionOverlay" role="status" aria-live="assertive" aria-atomic="true">
+          <div class="evolution-overlay-sigil" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="evolution-overlay-content">
+            <small>终极进化</small>
+            <i id="evolutionOverlayIcon" aria-hidden="true">✦</i>
+            <strong id="evolutionOverlayName">终极武装完成</strong>
+            <span id="evolutionOverlayCopy">弹道协议已重构</span>
+          </div>
+        </div>
+
+        <div class="upgrade-overlay" id="upgradeOverlay">
+          <div class="upgrade-heading">
+            <span id="upgradeEyebrow">已选 0 / 11</span>
+            <h3 id="upgradeTitle">选择一项升级</h3>
+            <p id="upgradeCopy">开局保底 1 张强化 · 高等级强化更稀有</p>
+          </div>
+          <div class="upgrade-cards" id="upgradeCards"></div>
+          <button class="take-all-button" id="takeAllButton" data-ad-badge>看广告 · 我全要</button>
+          <button class="reroll-button" id="rerollButton" data-ad-badge>看广告 · 重选</button>
+        </div>
+
+        <div class="pause-overlay" id="pauseOverlay" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+          <div class="pause-card">
+            <span id="pauseEyebrow">战斗暂停</span>
+            <h3 id="pauseTitle">作战已暂停</h3>
+            <p id="pauseCopy">计时、敌机与弹幕均已冻结</p>
+            <div class="pause-actions">
+              <button id="pauseSecondary">退出本局</button>
+              <button id="pausePrimary">继续战斗</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="revive-overlay" id="reviveOverlay" role="dialog" aria-modal="true" aria-labelledby="reviveTitle">
+          <div class="revive-card">
+            <span>紧急救援</span>
+            <div class="revive-countdown"><b id="reviveCountdown">10</b><small>秒</small></div>
+            <h3 id="reviveTitle">是否复活？</h3>
+            <p>恢复 50% 耐久 · 本局仅一次</p>
+            <div class="revive-actions">
+              <button id="declineRevive">放弃</button>
+              <button id="acceptRevive" data-ad-badge>看广告复活</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="death-sequence" id="deathSequence" aria-live="assertive">
+          <i class="death-reticle"></i>
+          <span>失去信号</span>
+          <strong id="deathTitle">机体失控</strong>
+          <small id="deathStatus">迫降程序启动</small>
+          <em id="deathCause" aria-live="polite"></em>
+        </div>
+
+        <div class="victory-sequence" id="victorySequence" aria-live="assertive">
+          <div class="victory-sigil"><i></i><i></i><i></i></div>
+          <span id="victoryEyebrow">旗舰核心摧毁</span>
+          <strong id="victoryTitle">旗舰击破</strong>
+          <small id="victoryStatus">正在确认战区肃清状态</small>
+        </div>
+
+        <div class="result-overlay" id="resultOverlay">
+          <div class="result-card">
+            <div class="result-grade">S</div>
+            <span>任务完成</span>
+            <h3 id="resultTitle">白羊座战区肃清</h3>
+            <p id="resultSubtitle">旗舰核心已彻底摧毁</p>
+            <div class="result-stats">
+              <div><small>作战时间</small><b id="resultTime">04:00</b></div>
+              <div><small>击破数量</small><b id="resultKills">000</b></div>
+              <div><small>最终等级</small><b id="resultLevel">等级1</b></div>
+              <div><small>战区得分</small><b id="resultScore">000000</b></div>
+            </div>
+            <div class="result-stars" id="resultStars" aria-label="通关星级">☆☆☆</div>
+            <div class="result-reward"><span>首次肃清奖励</span><b id="resultReward">下一战区已解锁 · 战利品已回收</b></div>
+            <button id="resultContinue"><span>返回航母</span></button>
+          </div>
+        </div>
+
+        <section class="gacha-overlay" id="gachaOverlay" aria-live="polite">
+          <div class="gacha-sky">
+            <i></i><i></i><i></i><i></i>
+            <div class="gacha-core"><span>SSR</span></div>
+          </div>
+          <div class="gacha-results" id="gachaResults"></div>
+          <div class="gacha-result-actions">
+            <button id="gachaSkipButton" type="button">跳过演出</button>
+            <button id="gachaCloseButton" type="button">确认收下</button>
+          </div>
+        </section>
+
+        <section class="pilot-art-overlay" id="pilotArtOverlay" role="dialog" aria-modal="true" aria-labelledby="pilotArtTitle">
+          <button class="pilot-art-close" id="pilotArtClose" type="button" aria-label="关闭角色全图">×</button>
+          <figure class="pilot-art-figure">
+            <img id="pilotArtImage" alt="" />
+            <figcaption>
+              <small id="pilotArtCallsign">SSR 飞行员</small>
+              <strong id="pilotArtTitle">角色全图</strong>
+              <span id="pilotArtSubtitle">机甲少女档案</span>
+              <div class="pilot-art-skill">
+                <i id="pilotArtSkillIcon">◒</i>
+                <div>
+                  <small>专属技能</small>
+                  <b id="pilotArtSkillName">零域相位</b>
+                  <p id="pilotArtSkillDescription">技能说明</p>
+                  <em id="pilotArtStatus">尚未获得</em>
+                </div>
+              </div>
+            </figcaption>
+          </figure>
+        </section>
+
+        <div class="game-overlay visible mobile-home" id="gameOverlay">
+          <header class="lobby-header">
+            <div class="pilot-profile">
+              <i id="pilotLevel">等级1</i>
+              <div><small>当前战机</small><b id="pilotName">雷隼 NX-07</b></div>
+            </div>
+            <div class="lobby-wallet" aria-label="货币">
+              <span class="diamond"><i>◆</i><b id="diamondBalance">60</b><button data-ad-badge="small" aria-label="看广告获取 20 钻石">＋20</button></span>
+              <span class="coin"><i>●</i><b id="coinBalance">2800</b><button aria-label="获取金币">＋</button></span>
+            </div>
+          </header>
+
+          <div class="lobby-main">
+            <section class="battle-home" id="battleHome">
+              <div class="growth-head battle-head">
+                <div><small>主线战役</small><h3>战区出击</h3></div>
+                <b id="battlePower">战力 1,280</b>
+              </div>
+              <section class="chapter-card">
+                <div class="chapter-card-head">
+                  <span>主线章节</span>
+                  <div class="chapter-card-actions">
+                    <button id="debugUnlockButton" type="button" hidden>调试 · 正常</button>
+                    <button id="menuRankButton" type="button">榜</button>
+                  </div>
+                </div>
+                <div class="stage-picker">
+                  <b id="stagePickerLabel">第 01 / 17 关</b>
+                </div>
+                <div class="difficulty-tabs" id="difficultyTabs" aria-label="关卡难度">
+                  <button class="active" data-difficulty="easy"><span>简单</span><small>基础</small></button>
+                  <button data-difficulty="hard"><span>困难</span><small>通关简单</small></button>
+                  <button data-difficulty="hell"><span>地狱</span><small>通关困难</small></button>
+                </div>
+                <div class="chapter-cover" id="chapterCover">
+                  <button class="chapter-turn chapter-turn-prev" id="stagePrev" type="button" aria-label="上一章">‹</button>
+                  <span id="chapterArc">黄道十二宫 · 01/17</span>
+                  <strong id="chapterName">白羊座 · 金羊冲锋</strong>
+                  <small id="chapterPower">简单 · 约 04:00</small>
+                  <em>两侧翻章 · 支持滑动</em>
+                  <button class="chapter-turn chapter-turn-next" id="stageNext" type="button" aria-label="下一章">›</button>
+                </div>
+                <div class="star-rewards" id="starRewards" aria-label="三星目标与奖励"></div>
+                <p id="overlayCopy">通关 · 耐久保持 60% · 满血通关 = 三星</p>
+              </section>
+              <button id="startButton"><span>挑战第 01 关</span><small>最高 ◆ 4</small></button>
+              <button class="stage-details-button" id="stageDetailsButton" type="button">
+                <span>关卡详情</span><small>查看全部 17 个关卡</small>
+              </button>
+            </section>
+
+            <section class="growth-view" id="growthView" hidden>
+              <div class="growth-head">
+                <div><small id="growthEyebrow"></small><h3 id="growthTitle">战机强化</h3></div>
+                <b id="growthPower">战力 1,280</b>
+              </div>
+              <div class="growth-content" id="growthContent"></div>
+            </section>
+          </div>
+
+          <nav class="lobby-nav" id="lobbyNav" aria-label="大厅功能">
+            <button data-lobby-tab="loadout"><i>机</i><span>战姬</span></button>
+            <button data-lobby-tab="assembly"><i>▲</i><span>固定件</span></button>
+            <button class="active primary" data-lobby-tab="battle"><i>ϟ</i><span>出击</span></button>
+            <button data-lobby-tab="upgrade"><i>↥</i><span>升级</span></button>
+            <button data-lobby-tab="supply"><i>◇</i><span>招募</span><em id="supplyDot"></em></button>
+          </nav>
+
+          <section class="lobby-page-overlay" id="stageDetailsPage" role="dialog" aria-modal="true" aria-labelledby="stageDetailsTitle">
+            <header>
+              <div><small>战役档案</small><h3 id="stageDetailsTitle">关卡详情</h3></div>
+              <button id="stageDetailsClose" type="button" aria-label="关闭关卡详情">×</button>
+            </header>
+            <p>上下滑动浏览全部战区 · 已解锁关卡可直接选择</p>
+            <div class="stage-details-list" id="stageDetailsList"></div>
+          </section>
+
+          <section class="lobby-page-overlay debug-page" id="debugPage" role="dialog" aria-modal="true" aria-labelledby="debugPageTitle" hidden>
+            <header>
+              <div><small>调试控制台</small><h3 id="debugPageTitle">调试页面</h3></div>
+              <button id="debugPageClose" type="button" aria-label="关闭调试页面">×</button>
+            </header>
+            <p>调试功能只影响当前设备；全开模式下的战斗不会写入正常进度。</p>
+            <div class="debug-settings">
+              <a class="debug-grant-weapons" href="./tools/gm.html"><span>06 角色动作预览</span><small>GM 面板 · 待机与点击反馈检查</small></a>
+              <button class="debug-setting" id="debugUnlockToggle" type="button">
+                <span><b>开放所有关卡</b><small>同时开放全部难度、装备与技能池</small></span>
+                <i aria-hidden="true"></i>
+              </button>
+              <div class="debug-resource-actions" aria-label="调试货币">
+                <button class="debug-resource-button coin" id="debugAddCoins" type="button">
+                  <i>●</i>
+                  <span><b>金币 +1,000</b><small>当前 <em id="debugCoinBalance">0</em></small></span>
+                </button>
+                <button class="debug-resource-button diamond" id="debugAddDiamonds" type="button">
+                  <i>◆</i>
+                  <span><b>钻石 +1,000</b><small>当前 <em id="debugDiamondBalance">0</em></small></span>
+                </button>
+              </div>
+              <button class="debug-grant-weapons" id="debugGrantWeapons" type="button">
+                <span>获得所有武器</span><small>解锁新 20 把武器 · 保留现有养成</small>
+              </button>
+              <div class="debug-save-summary">
+                <span>本机存档</span>
+                <b>关卡、货币、升级、装配、补给与本机战绩</b>
+              </div>
+              <button class="debug-clear-save" id="clearSaveButton" type="button">
+                <span>清空存档并重启</span><small>恢复全新飞行员状态</small>
+              </button>
+            </div>
+          </section>
+        </div>
+
+        <div class="leaderboard-overlay" id="leaderboardOverlay">
+          <div class="leaderboard-head">
+            <div><h3>暮海防线排行榜</h3></div>
+            <button id="leaderboardClose" aria-label="关闭排行榜">×</button>
+          </div>
+          <p id="leaderboardStatus">正在读取战绩……</p>
+          <ol id="leaderboardList"></ol>
+          <small class="leaderboard-rule">通关 ＞ 时间 ＞ 得分</small>
+        </div>
+
+      </section>
+
+      <aside class="side-panel loadout">
+        <span class="kicker">战斗配置</span>
+        <div class="loadout-item white">
+          <i></i>
+          <div><strong>基础白弹</strong><small>开局唯一武器 · 单发自动射击</small></div>
+          <b>01</b>
+        </div>
+        <div class="controls">
+          <span>移动</span><b>拖动 / 方向键</b>
+          <span>技能</span><b>12 条主武器路线</b>
+          <span>挂载</span><b>装配武器 / 数字键 1–6</b>
+        </div>
+        <div class="run-build">
+          <span class="kicker">当前构筑</span>
+          <div class="route-badge" id="routeBadge">
+            <small>核心路线</small>
+            <b id="routeName">基础白弹</b>
+            <span id="routeChain">升级时从普通三选一中逐步激活技能</span>
+          </div>
+          <div class="build-list" id="buildList"><p class="build-empty">本局升级后将自动记录构筑</p></div>
+        </div>
+      </aside>
+    </main>
+    <script type="module" src="/src/boot.js"></script>
+  </body>
+</html>

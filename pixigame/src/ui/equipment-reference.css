@@ -1,0 +1,105 @@
+/* Equipment content follows the reference layout; PSD chrome stays untouched. */
+#gui-casual-lobby.equipment-reference { --eq-text:#edf6fc; --eq-muted:#a8c1d2; }
+#gui-casual-lobby.equipment-reference .eq-hangar {
+  height:min(88cqw,54%);max-height:none;min-height:190px;
+  border-bottom:0;
+}
+#gui-casual-lobby.equipment-reference .eq-aircraft-stage { inset:7% 18% 23%; }
+#gui-casual-lobby.equipment-reference .eq-mount { width:20%;height:23%; }
+#gui-casual-lobby.equipment-reference .eq-mount:is(.is-main,.is-aux-one,.is-aux-two) { left:2.5%; }
+#gui-casual-lobby.equipment-reference .eq-mount:is(.is-aircraft,.is-aux-three,.is-aux-four) { right:2.5%; }
+#gui-casual-lobby.equipment-reference .eq-mount:is(.is-main,.is-aircraft) { top:8%; }
+#gui-casual-lobby.equipment-reference .eq-mount:is(.is-aux-one,.is-aux-three) { top:36%; }
+#gui-casual-lobby.equipment-reference .eq-mount:is(.is-aux-two,.is-aux-four) { top:64%; }
+#gui-casual-lobby.equipment-reference .eq-stat-row { left:25%;right:25%;bottom:21%;gap:8px; }
+#gui-casual-lobby.equipment-reference .eq-stat-row>span { gap:4px;padding:3px 5px;background:#091b2ab8; }
+#gui-casual-lobby.equipment-reference .eq-stat-row b { font-size:clamp(11px,3cqw,14px); }
+#gui-casual-lobby.equipment-reference .eq-catalog-row { left:26%;right:26%;bottom:2%;gap:6px; }
+#gui-casual-lobby.equipment-reference .eq-catalog-row>button { width:12cqw;height:12cqw;min-width:44px;min-height:44px; }
+#gui-casual-lobby.equipment-reference .eq-catalog-row strong { font-size:clamp(11px,2.8cqw,13px); }
+#gui-casual-lobby.equipment-reference .eq-upgrade-ready>.eq-icon { width:100%;height:100%;transform:rotate(-90deg);filter:brightness(0) saturate(100%) invert(86%) sepia(33%) saturate(1060%) hue-rotate(62deg); }
+#gui-casual-lobby.equipment-reference .eq-inventory-toolbar {
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr) minmax(0,1.18fr);
+  gap:8px;min-height:48px;padding:3px 8px;background:#25384b;
+  border-top:1px solid #61778d;border-bottom:1px solid #091625;box-shadow:none;
+}
+#gui-casual-lobby.equipment-reference .eq-select { width:100%;min-width:0;height:40px; }
+#gui-casual-lobby.equipment-reference .eq-select select { font-size:clamp(12px,3.2cqw,14px);font-weight:600;border-color:#638098;box-shadow:none;background:#142b3e; }
+#gui-casual-lobby.equipment-reference .eq-workshop-button { grid-column:auto;min-width:0;width:100%;min-height:40px;margin:0;padding:0 8px; }
+#gui-casual-lobby.equipment-reference .eq-workshop-button strong { font-size:clamp(15px,4cqw,18px);-webkit-text-stroke:0;text-shadow:0 1px #172536; }
+#gui-casual-lobby.equipment-reference .eq-inventory { padding:9px 8px 12px;background:#101c2c; }
+#gui-casual-lobby.equipment-reference .eq-card-grid { gap:8px 7px; }
+#gui-casual-lobby.equipment-reference .eq-card { aspect-ratio:.73; }
+#gui-casual-lobby.equipment-reference .eq-card-inner { grid-template-rows:minmax(28px,1fr) 28px 11px 15px;gap:1px; }
+#gui-casual-lobby.equipment-reference .eq-card-name { font-size:clamp(11px,2.9cqw,13px);line-height:14px;min-height:0;align-self:center; }
+#gui-casual-lobby.equipment-reference .eq-card-art>.pl-model-thumb { padding:0!important;transform:none; }
+#gui-casual-lobby.equipment-reference .eq-card-stars { height:11px; }
+#gui-casual-lobby.equipment-reference .eq-card-stars>.eq-icon { width:10px;height:10px; }
+#gui-casual-lobby.equipment-reference .eq-card-level { font-size:12px;line-height:15px;min-height:0; }
+#gui-casual-lobby.equipment-reference .eq-card-equipped { top:4%;left:5%;font-size:10px;padding:1px 3px; }
+#gui-casual-lobby.equipment-reference .eq-pick-hint { min-height:40px;padding:0 9px;background:#243c4c;color:#e0f4ff;border-bottom:1px solid #52778d; }
+#gui-casual-lobby.equipment-reference .eq-pick-hint button { min-height:40px;text-decoration:underline;text-underline-offset:3px; }
+#gui-casual-lobby.equipment-reference .eq-inventory-footer { min-height:36px;font-size:11px;color:var(--eq-muted); }
+@container (max-width:360px) {
+  #gui-casual-lobby.equipment-reference .eq-card {aspect-ratio:.62}
+  #gui-casual-lobby.equipment-reference .eq-card-inner {grid-template-rows:minmax(26px,1fr) 24px 9px 12px;gap:1px}
+  #gui-casual-lobby.equipment-reference .eq-card-name {font-size:11px;line-height:12px}
+  #gui-casual-lobby.equipment-reference .eq-card-stars {height:9px}
+  #gui-casual-lobby.equipment-reference .eq-card-stars>.eq-icon {width:8px;height:8px}
+  #gui-casual-lobby.equipment-reference .eq-card-level {font-size:11px;line-height:12px}
+}
+@media(max-height:640px) {
+  #gui-casual-lobby.equipment-reference .eq-hangar { height:50%;min-height:185px; }
+  #gui-casual-lobby.equipment-reference .eq-inventory-toolbar { min-height:44px;gap:5px;padding-inline:6px; }
+  #gui-casual-lobby.equipment-reference .eq-select,
+  #gui-casual-lobby.equipment-reference .eq-workshop-button { height:38px;min-height:38px; }
+}
+
+/* Reference layout with an original carrier hangar and the confirmed PSD card. */
+#gui-casual-lobby.equipment-reference .eq-hangar {
+  height:min(79cqw,56%);min-height:216px;
+  background:#1a2e40 var(--project-hangar-image) center 55%/cover no-repeat;
+}
+#gui-casual-lobby.equipment-reference .eq-aircraft-stage {inset:5% 12% 25%}
+#gui-casual-lobby.equipment-reference .eq-aircraft-stage>.pl-model-canvas {transform:none;filter:none}
+#gui-casual-lobby.equipment-reference .eq-inventory {background:var(--project-list-background);padding:9px 8px 12px}
+#gui-casual-lobby.equipment-reference .eq-inventory-footer {background:none;border:0}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) :is(.eq-card,.eq-mount) {
+  border-radius:0!important;clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)!important;
+  filter:none;
+}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) :is(.eq-card,.eq-mount)::before {
+  background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,
+    url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;
+  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 8px 8px 12px 8px stretch;
+  filter:none!important;
+}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card.is-locked {filter:brightness(.6)}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-inner {
+  inset:7% 8% 8%;display:grid;grid-template-rows:minmax(28px,1fr) 14px 11px 14px;gap:2px;
+  border:0;background:none!important;box-shadow:none!important;clip-path:none;
+}
+#gui-casual-lobby.equipment-reference .eq-card {aspect-ratio:276/356}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-art {width:100%;height:100%;min-height:0}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-art>.wc-art {width:100%;height:100%}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-name {display:block;min-height:0;height:14px;padding:0;font-size:clamp(9px,2.8cqw,12px);font-weight:600;line-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-stars {width:90%;height:11px;justify-self:center;margin:0}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-stars>.eq-icon {width:18%;height:11px}
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card-level {min-height:0;height:14px;font-size:clamp(10px,3cqw,13px);line-height:14px;color:#e5f7fb;text-shadow:none}
+#gui-casual-lobby.equipment-reference .eq-mount-inner {inset:8%;border:0;background:none;box-shadow:none}
+#gui-casual-lobby.equipment-reference .eq-mount-inner>strong {min-height:0;height:14px;padding:0;background:none;border-radius:0;font-size:clamp(9px,2.7cqw,12px);line-height:14px;font-weight:600}
+#gui-casual-lobby.equipment-reference .eq-mount-art {width:100%;height:100%;min-height:0;margin:0 0 12px;border:0;clip-path:none;background:none;box-shadow:none}
+#gui-casual-lobby.equipment-reference .eq-mount-art>.wc-art {width:100%;height:100%}
+#gui-casual-lobby.equipment-reference .eq-mount-inner>b {color:#e5f7fb;font-size:10px;text-shadow:none}
+#gui-casual-lobby.equipment-reference .eq-catalog-row>button {background:none;border:0;border-radius:0;box-shadow:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+#gui-casual-lobby.equipment-reference .eq-workshop-button {position:relative;isolation:isolate;background:none!important;border:0!important;border-radius:0;box-shadow:none!important;clip-path:none;color:#edf6fa;padding:0 7px}
+#gui-casual-lobby.equipment-reference .eq-workshop-button::before {content:"";position:absolute;inset:0;z-index:-1;background:none;border:0;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch;filter:none}
+#gui-casual-lobby.equipment-reference .eq-workshop-button::after {content:none}
+#gui-casual-lobby.equipment-reference .eq-workshop-button strong {color:#edf6fa;-webkit-text-stroke:0;text-shadow:none;font:400 clamp(14px,4cqw,18px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby.equipment-reference .eq-select {position:relative;isolation:isolate}
+#gui-casual-lobby.equipment-reference .eq-select::before {content:"";position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+#gui-casual-lobby.equipment-reference .eq-select select {background:transparent;border:0;border-radius:0;box-shadow:none;color:#edf6fa;font-size:clamp(11px,3.2cqw,14px)}
+#gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button) {min-height:44px;background:none!important;border:0!important;border-radius:0!important;box-shadow:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch!important;text-decoration:none;color:#edf6fa;padding:8px 14px;font-family:PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby.equipment-reference .eq-pick-hint button {min-width:60px;margin-left:8px}
+#gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button)::before,
+#gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button)::after {content:none!important}

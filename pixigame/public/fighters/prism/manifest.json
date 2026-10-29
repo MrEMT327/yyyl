@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "id": "prism",
+  "slug": "prism",
+  "version": "1.0.1",
+  "name": "棱脉战机",
+  "continuous": true,
+  "rendererRevision": "185",
+  "ui": {
+    "title": "棱脉<span>战机</span>",
+    "subtitle": "PX–11 PRISM / SPLIT-WING STRIKER",
+    "label": "棱脉战机",
+    "cast": "棱核加力",
+    "continuous": true,
+    "phases": [
+      "悬停",
+      "巡航",
+      "棱核加力",
+      "双联脉冲炮",
+      "护盾"
+    ],
+    "flash": "#bbff72",
+    "glyph": "<path d=\"M16 2l4 5v8l8 3-8 3-4 9-4-9-8-3 8-3V7zM9 15h14\"/>"
+  },
+  "stats": {
+    "model": 8156,
+    "vfx": 8364,
+    "total": 16520,
+    "submitted": 14248,
+    "objects": 110
+  },
+  "files": {
+    "structure": "structure.json",
+    "effects": "effects.json",
+    "view": "view.json",
+    "defaults": "defaults.json",
+    "buffers": "buffers.bin"
+  },
+  "hashes": {
+    "buffers.bin": "7663321aafccbaede210fb47f7850545bbae648ecc659272ba7b5447b752b79f",
+    "structure.json": "38262376f6faa602af518bc7a9a26a0a7651f37a47c28d1501226482f87445dd",
+    "effects.json": "54642f90e3c9f064362dd27585b02666f12c95193467e975afe03f6d8780997a",
+    "view.json": "44951fc9f904669899829aaa55ae81dfcf8d536a879353bed7ee12f5f32b41aa",
+    "defaults.json": "4be38e3ed05bca0577e8f32edbb8f84cbb93709a3454007157bf24cac000e9f8",
+    "nameplate-8109937e.png": "6e78e67702e0ea10fd157db89ca417750573e97074235a77608662812a0e47ee"
+  },
+  "source": "V12 except restored V9 Crimson + upper nacelle assembly; local Blender fleet volume refinement",
+  "parameters": [
+    {
+      "key": "cruise",
+      "type": "boolean",
+      "label": "巡航摆动",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "boost",
+      "type": "boolean",
+      "label": "加力推进",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "firing",
+      "type": "boolean",
+      "label": "双联脉冲炮",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "shield",
+      "type": "boolean",
+      "label": "能量护盾",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "scale",
+      "type": "number",
+      "min": 0.7,
+      "max": 1.4,
+      "step": 0.01,
+      "label": "机体尺寸",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "altitude",
+      "type": "number",
+      "min": 4,
+      "max": 12,
+      "step": 0.1,
+      "label": "飞行高度",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "exhaustLength",
+      "type": "number",
+      "min": 0.4,
+      "max": 1.6,
+      "step": 0.01,
+      "label": "体积喷焰长度",
+      "group": "引擎与拖尾"
+    },
+    {
+      "key": "engineGlow",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "喷口亮度",
+      "group": "引擎与拖尾"
+    },
+    {
+      "key": "trails",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "拖尾强度",
+      "group": "引擎与拖尾"
+    },
+    {
+      "key": "trailLength",
+      "type": "number",
+      "min": 0.3,
+      "max": 1.7,
+      "step": 0.01,
+      "label": "拖尾长度",
+      "group": "引擎与拖尾"
+    },
+    {
+      "key": "particles",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "离子粒子",
+      "group": "引擎与拖尾"
+    },
+    {
+      "key": "weaponGlow",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "武器光效",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "shieldGlow",
+      "type": "number",
+      "min": 0,
+      "max": 1.5,
+      "step": 0.01,
+      "label": "护盾强度",
+      "group": "飞行与武器"
+    },
+    {
+      "key": "bodyFx",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "机体附着特效",
+      "group": "机体能量系统"
+    },
+    {
+      "key": "coreGlow",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "环核亮度",
+      "group": "机体能量系统"
+    },
+    {
+      "key": "arcGain",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "附着电弧",
+      "group": "机体能量系统"
+    },
+    {
+      "key": "surfaceGlow",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "装甲扫光",
+      "group": "机体能量系统"
+    },
+    {
+      "key": "ringSpeed",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.01,
+      "label": "环轨转速",
+      "group": "机体能量系统"
+    },
+    {
+      "key": "lightIntensity",
+      "type": "number",
+      "min": 0,
+      "max": 180,
+      "step": 1,
+      "label": "动态灯强度",
+      "group": "引擎与拖尾"
+    },
+    {
+      "key": "engineColor",
+      "type": "color",
+      "label": "等离子颜色",
+      "group": "配色"
+    },
+    {
+      "key": "accentColor",
+      "type": "color",
+      "label": "副能量色",
+      "group": "配色"
+    },
+    {
+      "key": "hullColor",
+      "type": "color",
+      "label": "机身装甲",
+      "group": "配色"
+    }
+  ],
+  "reviewStatus": "fleet-volume-refinement-local",
+  "revision": 9,
+  "localRevision": {
+    "id": "prism-volume-v1",
+    "baseManifestHash": "c6f4a00dfbe3bffe4c96d886bc99ea72aa984f26aff67ed3aa5c8a511cc3ea58",
+    "authoring": "art/fleet-volume/prism/prism-volume.blend",
+    "intent": "增厚细长龙骨与大翼根，座舱和反应环连贯抬升"
+  }
+}

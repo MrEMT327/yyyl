@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "generator": "OpenAI built-in image_gen",
+  "date": "2026-10-26",
+  "normalization": "Original generated transparent PNG copied without pixel edits; native alpha and HD dimensions retained.",
+  "scope": "Research blueprint art only; native item IDs, quality, quantities, costs and gameplay remain unchanged.",
+  "assets": [
+    {
+      "nativeItemId": 801,
+      "labId": 1,
+      "skillKey": "10000101",
+      "file": "801.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-882eda90-acd5-4651-8a4b-798d878412c9.png",
+      "sourceBounds": [
+        0,
+        45,
+        1208,
+        1222
+      ],
+      "sha256": "18291e24c79ad28bc6dbb571d628df75cfd5a87c412a9b4932b69517afa03a95",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with RAPID CANNON: a white and navy twin-barrel compact gun with two small yellow-orange muzzle tips. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 802,
+      "labId": 2,
+      "skillKey": "10000701",
+      "file": "802.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-7c50b440-a8c7-42a0-b73b-e23660c2afac.png",
+      "sourceBounds": [
+        156,
+        45,
+        1224,
+        1222
+      ],
+      "sha256": "4d49e1e3aa1edf4dc5b1b16e80c7d7d335fa97e4d1995bedbe5f7153c8e89e74",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with EXPLOSIVE MISSILE: one diagonal white missile with a red nose and fins, a small orange exhaust. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 803,
+      "labId": 3,
+      "skillKey": "10001501",
+      "file": "803.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-fab7a400-7c24-4401-8c82-250cb40dfb41.png",
+      "sourceBounds": [
+        0,
+        39,
+        1222,
+        1222
+      ],
+      "sha256": "6acd4ad5ddbd49e9cb9651f3273bb2e4846ae5ed13ff149145c90d4d1712fcfa",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with HIGH ENERGY LASER: a white and navy short cannon emitting a straight narrow cyan-white beam. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 804,
+      "labId": 4,
+      "skillKey": "10000201",
+      "file": "804.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-800d8e32-3070-4e80-a26b-bcf8755c7d96.png",
+      "sourceBounds": [
+        0,
+        39,
+        1214,
+        1236
+      ],
+      "sha256": "2f9b00e438554b2876fcb5951f7aac30f3c3cfe50a5e8b212c73ee88c128939a",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with ACID GUN: a white navy acid projector with a vivid green fluid chamber and one large green droplet. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 805,
+      "labId": 5,
+      "skillKey": "10000601",
+      "file": "805.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-5a102932-b8c5-42b4-9c2c-918d69969b05.png",
+      "sourceBounds": [
+        0,
+        23,
+        1218,
+        1254
+      ],
+      "sha256": "a5a8310bdc645607df5ce164599ba60b93af07a4944e6aac70ceca4a9486bae5",
+      "prompt": "Create one original production-ready transparent PNG inventory icon for a sci-fi vertical shooter: an ICE CRESCENT BLADE RESEARCH BLUEPRINT. Square composition, one object only. A nearly front-facing rigid navy-blue engineering sheet, subtly clipped lower corners, small folded white-cyan upper-right paper corner, thin crisp pale-cyan edge, sparse quiet technical guide lines. A large unmistakable single crescent-shaped crystalline ice blade drawn in white and vivid icy cyan dominates the center, with a sharp dark-navy outline and two clean flat shading tones; the crescent must remain clear at 48 pixels. The engineering sheet occupies about 82% of the canvas, ample fully transparent margin around it. Visual style: polished flat cartoon sci-fi game inventory art, clean deliberate geometry, minimal detail, readable silhouette, restrained bevel, no blur, no diffuse glow, no realistic paper texture, no thick ornament or badge. No letters, numbers, labels, currency, quantity, rarity stars, hexagonal frame or UI card border. It must read as a technical blueprint consumable, not a standalone skill badge. Output real alpha transparency outside the sheet."
+    },
+    {
+      "nativeItemId": 806,
+      "labId": 6,
+      "skillKey": "10000401",
+      "file": "806.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-2f616adf-40d7-457a-b39c-fb682e9ca0fc.png",
+      "sourceBounds": [
+        0,
+        22,
+        1144,
+        1236
+      ],
+      "sha256": "a7ecb82649323d78c6c03caf485a8a8fdf9f7659c8dc99770f77104975acf06c",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with MAGNETIC STORM: a compact white navy ring generator containing a violet-white electrical orb with two short visible lightning arcs. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 807,
+      "labId": 7,
+      "skillKey": "10001701",
+      "file": "807.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-a49de6f9-6869-47e4-ba05-20679f160546.png",
+      "sourceBounds": [
+        0,
+        32,
+        1238,
+        1230
+      ],
+      "sha256": "3c54c5a197736b4bf212aec375dc2bc4ec9e47e3399b051b6722945a88e1eb42",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with SCORCHING RAY: a white and navy projector firing a narrow long gold-white heat ray with orange edges; it must read as a concentrated beam, not a fan-shaped flame. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 808,
+      "labId": 8,
+      "skillKey": "10001101",
+      "file": "808.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-0af3760c-2330-49a4-be9e-e8d069f87bb3.png",
+      "sourceBounds": [
+        160,
+        41,
+        1180,
+        1220
+      ],
+      "sha256": "79daceaff42bc09c9f7835cb048afde8b98c59cc353a5cdf80e5cf9c66d45349",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with ENERGY SWORD: a single diagonal long cyan-blue energy blade with a white navy mechanical hilt. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 809,
+      "labId": 9,
+      "skillKey": "10001601",
+      "file": "809.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-96c72511-b426-4855-aba9-9b30f43ab6f6.png",
+      "sourceBounds": [
+        0,
+        57,
+        1206,
+        1230
+      ],
+      "sha256": "93655d6f5c11367dbb6140d904eb0806233cca8ccf61e881b2f4b08283aecec2",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with ICE SAW DISC: a solid circular toothed ice-crystal saw with a cyan hub and white icy teeth, not a halo. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 810,
+      "labId": 10,
+      "skillKey": "10000301",
+      "file": "810.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-b28b4fc0-4c75-48fa-8ab3-326bb1697ffb.png",
+      "sourceBounds": [
+        98,
+        33,
+        1202,
+        1228
+      ],
+      "sha256": "e56cbbce91872904adca94992db72cafe336ffd8b0af5f2cd9ce67490f31e91c",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with ARC GUN: a white navy twin-prong lightning emitter with a bold yellow electric zigzag bridging the two prongs. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    },
+    {
+      "nativeItemId": 811,
+      "labId": 11,
+      "skillKey": "10000901",
+      "file": "811.png",
+      "width": 1254,
+      "height": 1254,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceFile": "exec-dc9cdb76-d8e9-4018-9de9-50e3ed8f3dc7.png",
+      "sourceBounds": [
+        162,
+        27,
+        1218,
+        1200
+      ],
+      "sha256": "3603cea766d6cbb3c16f44182f8fedbb90d19cfa715e9a50739d2375034a7918",
+      "prompt": "Edit the FIRST image into another icon of exactly the same original sci-fi research-blueprint inventory set. Preserve the entire first image's blue engineering sheet silhouette, clipped corners, cyan rim, upper-right white folded corner, quiet technical grid, alpha-transparent margins, front-facing composition, canvas size and crisp flat rendering. Replace ONLY the central ice crescent illustration with ACID BLACK HOLE: a deep black-green circular core with three slim bright lime-green spiral arms and a few tiny inward flecks. The SECOND image is only a reference for the weapon's identity and colors; simplify it to a large very readable emblem integrated into the first blueprint sheet. The center emblem should occupy about 65% of the sheet and must remain unmistakable at 48px. Use clean dark-navy outlines, bold flat white highlights, just two or three shading tones, restrained detail. No blur, no hazy glow, no extra text, letters, numbers, rarity badges, currency, quantities, additional UI border, or isolated loose objects outside the sheet. Keep the exterior truly transparent. This is one single icon asset, not an atlas."
+    }
+  ]
+}

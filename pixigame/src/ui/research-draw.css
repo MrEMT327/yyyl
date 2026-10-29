@@ -1,0 +1,57 @@
+/* Reference: current page under a 2/3 black mask; original PSD mystery cards. */
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] {
+  background:rgba(0,0,0,.667);outline:none;
+}
+#gui-casual-lobby .draw-stage[data-rank='0'] {--draw-accent:#d6e8f2}
+#gui-casual-lobby .draw-stage[data-rank='1'] {--draw-accent:#92e3b1}
+#gui-casual-lobby .draw-stage[data-rank='2'] {--draw-accent:#81cfff}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-heading {padding-top:max(18px,var(--lobby-safe-top,0px));background:none;justify-content:flex-end}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-heading h2 {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-body {justify-content:center;gap:18px;padding:16px 7cqw;pointer-events:auto}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'].is-opening .draw-stage-body {justify-content:center;padding-bottom:calc(16px + 32cqw);pointer-events:auto}
+#gui-casual-lobby .research-draw-charge {position:relative;flex:none;width:clamp(108px,34cqw,150px);aspect-ratio:240/308;perspective:800px}
+#gui-casual-lobby :is(.research-draw-back,.research-draw-echo) {position:absolute;inset:0;z-index:1;display:grid;place-items:center;border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;filter:brightness(.85)}
+#gui-casual-lobby .research-draw-question {width:32%;height:48%;object-fit:contain;filter:invert(1);opacity:.85}
+#gui-casual-lobby .research-draw-echo {opacity:0;z-index:0}
+#gui-casual-lobby .research-draw-charge.is-ready .research-draw-echo {animation:research-card-gather 1100ms cubic-bezier(.25,.6,.3,1) both}
+#gui-casual-lobby :is(.research-draw-flow,.research-draw-residue,.research-draw-pulse,.research-draw-burst) {position:absolute;pointer-events:none;background:var(--draw-accent);mask-image:var(--light-texture);mask-position:center;mask-size:100% 100%;mask-repeat:no-repeat;opacity:0}
+#gui-casual-lobby :is(.research-draw-flow,.research-draw-residue,.research-draw-pulse) {left:-39%;top:-10%;width:178%;height:120%}
+#gui-casual-lobby .research-draw-pulse {z-index:2;animation:research-charge-pulse 330ms ease-out both;animation-play-state:paused}
+#gui-casual-lobby .research-draw-charge.is-ready .research-draw-flow {animation:research-charge-flow calc(var(--charge-duration) - var(--charge-start)) ease-in both;animation-delay:var(--charge-start)}
+#gui-casual-lobby .research-draw-charge.is-ready .research-draw-pulse {animation-play-state:running}
+#gui-casual-lobby .research-draw-reveal-anchor {position:relative;isolation:isolate;flex:none;width:clamp(108px,34cqw,150px);height:clamp(138px,43.63cqw,192px);margin:0 auto 22px}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-draw-reveal-anchor .research-result-emblem {position:relative;z-index:1;width:100%;height:100%;margin:0;filter:none}
+#gui-casual-lobby .research-draw-burst {left:-65%;top:-35%;width:230%;height:170%;max-width:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'].is-spotlight::after,#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-body::before {content:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-opening-label {display:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-opening-label::before {content:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'].is-opening .draw-primary {font:500 13px/1.5 'Microsoft YaHei',sans-serif;color:#a7bfce;min-height:44px}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'].is-opening .draw-primary::before {content:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-awakening-result {width:100%;max-width:360px;gap:0}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-emblem {display:grid;place-items:center;position:relative;width:clamp(108px,34cqw,150px);height:clamp(138px,43.63cqw,192px);margin:0 auto 22px;flex:none;filter:drop-shadow(0 0 16px color-mix(in srgb,var(--draw-accent) 22%,transparent))}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-icon {display:block;width:78%;height:78%;object-fit:contain}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-name {font-size:clamp(24px,7cqw,32px);line-height:1.35}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-level {margin:12px 0 20px;gap:20px;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-level strong {font-size:26px}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-changes {padding:10px 14px;background:linear-gradient(90deg,transparent,#83bbdc14,transparent);border-block:1px solid #88b5d03d}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-stat {display:grid;grid-template-columns:minmax(0,1fr);gap:8px;border:0;padding:10px 0;text-align:left;font-size:14px;line-height:1.5}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-stat>div {display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:10px;align-items:center;text-align:center;font-variant-numeric:tabular-nums;white-space:normal;min-width:0}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-stat :is(span,strong) {min-width:0;overflow-wrap:anywhere}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-stat strong {font-size:16px}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-footer {padding:12px 8cqw max(6vh,var(--lobby-safe-bottom,0px));background:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-primary {max-width:360px;min-height:44px;font:500 14px/1.5 'Microsoft YaHei',sans-serif;color:#d0dce3;letter-spacing:1px}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-primary::before {content:none}
+#gui-casual-lobby .draw-stage[data-draw-kind='research'].is-instant::after {animation:none;display:none}
+@keyframes research-card-gather {0%{opacity:0;transform:translate(var(--echo-x),var(--echo-y)) rotate(var(--echo-angle)) scale(.7)}22%{opacity:.85}70%{opacity:.9;transform:translate(calc(var(--echo-x) * .24),calc(var(--echo-y) * .24)) rotate(calc(var(--echo-angle) * .2)) scale(.95)}99%{opacity:.6;transform:none}100%{opacity:0;transform:none}}
+@keyframes research-charge-flow {from{opacity:0;transform:scale(.94)}70%{opacity:.28}to{opacity:.55;transform:scale(1.06)}}
+@keyframes research-charge-pulse {from{opacity:0;transform:scale(.94)}18%{opacity:.68}to{opacity:0;transform:scale(1.3)}}
+@media(max-height:650px){
+  #gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-heading {min-height:52px;padding:10px 16px}
+  #gui-casual-lobby .draw-stage[data-draw-kind='research'] .draw-stage-body {justify-content:flex-start;padding-top:8px}
+  #gui-casual-lobby .draw-stage[data-draw-kind='research'].is-opening .draw-stage-body {justify-content:center}
+  #gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-emblem {width:104px;height:132px;margin-bottom:12px}
+  #gui-casual-lobby .research-draw-reveal-anchor {width:104px;height:132px;margin-bottom:12px}
+  #gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-level {margin:8px 0 10px}
+  #gui-casual-lobby .draw-stage[data-draw-kind='research'] .research-result-stat {padding:6px 0}
+}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby :is(.research-draw-back,.research-draw-echo,.research-draw-flow,.research-draw-pulse){animation:none!important}#gui-casual-lobby :is(.research-draw-echo,.research-draw-flow,.research-draw-pulse,.research-draw-burst,.research-draw-residue){display:none}}

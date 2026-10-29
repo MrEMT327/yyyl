@@ -1,0 +1,22 @@
+{
+  "bodies": {
+    "method": "Built-in image_gen; user-approved original ice crescent and solid ice saw, revision 2",
+    "files": [
+      "ice-crescent-v2.png",
+      "ice-saw-v2.png"
+    ],
+    "prompts": "weapon-art-20261023/prompts-v2.json"
+  },
+  "particles": {
+    "title": "Kenney Particle Pack 1.1",
+    "source": "https://kenney.nl/assets/particle-pack",
+    "license": "CC0",
+    "files": [
+      "trace_01.png",
+      "dirt_01.png"
+    ],
+    "download": "https://kenney.nl/media/pages/assets/particle-pack/f8fe0f8cb8-1677578741/kenney_particle-pack.zip",
+    "sourceZipSha256": "b631d4b07f7002549fdcf155f01141ad482f79f3440e4e301eed49ce5f1d8958",
+    "adaptation": "Source PNG bytes unchanged. Runtime cyan tint, world-space emission, spin and fade. No baked particle layer in body textures."
+  }
+}

@@ -1,0 +1,6 @@
+/* Geometry and appearance come from the cloud's actual combat renderer. */
+.cloud-combat-canvas{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none;touch-action:none}
+.cloud-ui-mode>#ui,.cloud-ui-mode>#ui *{visibility:hidden!important;pointer-events:none!important}
+.cloud-ui-mode[data-awaiting-start]>.cloud-combat-canvas{visibility:hidden}
+/* Results use the whole battle viewport, independently of the narrower UI canvas. */
+.cloud-ui-mode.cloud-result-visible::after,.cloud-ui-mode.cloud-pause-visible::after,.cloud-ui-mode.cloud-upgrade-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(18,22,28,.68);pointer-events:none}

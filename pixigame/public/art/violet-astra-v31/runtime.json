@@ -1,0 +1,252 @@
+{
+  "schema": "rgba-portrait-video-v1",
+  "character": "pilot-08",
+  "version": "violet-astra-v31",
+  "representation": "Reviewed Godot assembly rendered to portable colour + alpha video; not a new Cubism MOC.",
+  "source": {
+    "repository": "live2d-character-assets",
+    "baseRevision": "0e99ac3c3ccffc4fd808e1be49bf7575bd9907e0",
+    "assembly": "Violet V31: close the lower ankle handoff slit with two additional native pixels of coverage; V30 mesh, source RGB, toe tips, timing and UI framing retained",
+    "engine": "Godot 4.6.3 Metal Mobile",
+    "sampleClock": "Original cached native idle and application click / return sequence",
+    "componentSha256": {
+      "native_legs_v02.gd": "07898b50bcb68ab81604de91758e0413f53bf33fcb88586f76317134ff759ec5",
+      "pants_contour_v12.gd": "3a7871304a7b72e00ee01327c6afc41d7e819d65a4548d56db1903de132b2564",
+      "hand_material_shared_v10.gd": "5e0e142494022595fbb90b3d264e088953b76f207a107cd4b358cd94061da7fa",
+      "detail_ownership_v14.gd": "4c8152742f131f9b1fdbc34eabc7a6d18b506f611fc88dc4930597aa7127ac17",
+      "hair_edge_owner_v12.gd": "71303aede8a971bf9aa841d9209b13fd37b0798a5ee90837ed2e1b491aa033cd",
+      "hair_shared_source_v13.gd": "b0537512420178c2654008f8444c458e340cb0d5955179d86e8ea27ca1371997",
+      "foot_color_v15.gd": "72ecefb4ccac5ac38387ff5a02e0cad7ff53291a081da8503cf95a885b10c984",
+      "foot-v15/raised-foot-source.png": "db5f2279142f9d74c8b19eba067147a50a747fa7f21f66b52619fee9caecb5b6",
+      "hair_unified_v16.gd": "3e392e0870336497d2c177e137f86824690b80269cc15224d757c395341d6fdb",
+      "assets/hidden-hair-underarm-imagegen-v01.png": "99ea0436b97e85d7ccf607139f02c47a42153d59b036df6ce635ba64d48f6399",
+      "hair_edge_v17.gd": "a33c3f995c24c6d66c905e28cb11822c48fa3aab42a7e24dac7af52c1ea61870",
+      "hair-edge-v17/coverage.rgf": "7161f3a3f1330feacc03ae595f8a995a1cf1ff19706145eb5e3b5a9e59baac21",
+      "hair_inner_contour_v18.gd": "8368b3035f3950130a8c936ee75c57b9f39830e827a9ededa1a8f2d6d9aa0444",
+      "hip_texture_edge_v18.gd": "401e52eed651e6abc12d150cd771833fcc6924fbaee036429a4b02bd23cfc073",
+      "contact-edge-v18/hair-contact.rgbaf": "6342710448fe5538c7d94777394cfe4ae0940210ee9a109f2004f8f0ae907345",
+      "contact-edge-v18/hip-coverage.rf": "0141a9d47e7ac48ef3faf8d1b599618199e123f4da3ee2c013d4b283eba888ac",
+      "hair_inner_contour_v19.gd": "3981f2bb744a5eb0f8057238704786ddf5b9b7a3fe5f36660ac9c0bf3d877312",
+      "hip_texture_edge_v19.gd": "5eddeea10d0a27635fc83200ee3c3d8ce02d13ec71cf17201d4b3bc3af8f3a90",
+      "contact-edge-v19/hair-contact.rgbaf": "e92d6aef448c693f3f39336b1ee42ad819a4c261bdbfb2acceda7e0e7ff75d84",
+      "contact-edge-v19/hip-coverage.rf": "eaa148ca2fad42ff2cffae8e7fef2c7bbccc8fb859649f65b829b4c80b709964",
+      "temporal_contact_v20.gd": "6e19aa1d1675add9737ae7b1f16549af44f28ee3d93ffdbed5527a65aa20fb7f",
+      "temporal-contact-v20/hip-click.f32": "ed8e6f0569635f51f2264e33703f2ba7b50f9f6d4a47aa1e174fb7302adf72b0",
+      "temporal-contact-v20/hair-click.f32": "4b91730b1392ce4acc3968c15d0b28fdab0e3535d94676a79843b5234e42a5d8",
+      "bag_cover_v21.gd": "060b78088394d6fd7bd95842223f53412c6836b0d69b71d110c1c55ea5dc3a5b",
+      "assets/bag-cover-v21/chanel-mini-bag.png": "45f45d1346c4af587eff3ae043c01ef80039164f02ba13b3262d1d7bd8c45794",
+      "bag_cover_v22.gd": "3ce4e6836f976bd9b3acebb552e9e777373e10674cdb5b9398b501e9f5ba40e6",
+      "foot_volume_v24.gd": "7918b2cb03731b44b85207d973797d4401159bd8320a7eb89d810dcc21e98a10",
+      "foot_shape_v25.gd": "dafdb37174c996740056c8b1e5c430269b9b2fbb45bcb45d510d02a9f9d03c77",
+      "toes_only_v30.gd": "eeb3d7411b627f83ee368328c89be631119f201d8c33f2fa8257d9d651c25def",
+      "assets/toes-only-v30/coverage.rf": "17e651f6ebee8e0021db3afce1a3c0488660310f5275b1fcb988169659a77cae",
+      "assets/toes-only-v30/config.json": "b964e6584e082213bbb15ce637fc53fe43529e871d112320b7f3636ef3a7da6a",
+      "cuff_continuity_v31.gd": "18a3c63112a29e743b6f580996364feefcbc78608f7e88ef0c1d97a2e9caaca5"
+    },
+    "exportSha256": "41cc9bc7f440ca49c591f59e027684b3a7e56eb4f3fea7fd9ff8386413598b3d",
+    "frameLedgerSha256": "cb8ece4009a98c21701c448596917fbe0612ce15a2aeb1dd7569abe1aa88a6ac",
+    "parentManifestSha256": "24be0ae19f8349fb707fb6c728e520207ec4862984072cf6674efd0778f8dfac",
+    "hairContinuity": {
+      "source": "existing under-arm hair artwork, one continuous UV sampling field",
+      "sourceRGBEdited": false,
+      "nativeVertexCount": 3198,
+      "nativeVerticesUnchanged": false,
+      "nativeUVsUnchanged": true,
+      "nativeMotionUnchanged": false,
+      "addedSupportTriangles": {
+        "idle": 0,
+        "click": 54
+      },
+      "validatedFrames": 615,
+      "reversedTriangles": 0,
+      "sourceOriginalAtlasHashesVerified": true,
+      "scope": "local click trajectory adaptation; native cached motion replay, not a new MOC"
+    },
+    "edgeCleanup": {
+      "alphaOnly": false,
+      "sourceRect": [
+        480,
+        532,
+        60,
+        101
+      ],
+      "sourceRGBEdited": false,
+      "nativeGeometryUnchangedFromV16": false,
+      "nativeMotionUnchanged": false,
+      "validatedFrames": 615,
+      "method": "continuous hair-gap and inner-strand coverage with original valid colour samples, plus matched hip contact matte",
+      "hairCoverageTexels": 470,
+      "hipCoverageTexels": 4821,
+      "clothingContactCoverageUpdated": true,
+      "sourceSamplingCorrected": true
+    },
+    "priorTemporalAdaptation": {
+      "hip": {
+        "maxCorrection": 0.5986202061307453,
+        "maxAccelerationBefore": 1.5873438119888306,
+        "maxAccelerationAfter": 0.6086263864859953,
+        "entryAndEndExact": true
+      },
+      "hair": {
+        "maxCorrection": 0.4558300160539345,
+        "maxAccelerationBefore": 5.8525848388671875,
+        "maxAccelerationAfter": 5.852585150662774,
+        "entryAndEndExact": true
+      },
+      "frames": 201,
+      "kernel": [
+        1,
+        4,
+        6,
+        4,
+        1
+      ],
+      "kernelDivisor": 16,
+      "idleChanged": false,
+      "geometry": {
+        "hair": {
+          "triangles": 2176,
+          "newWindingReversals": 0,
+          "newDegenerateTriangles": 0,
+          "entryEndExact": true,
+          "contactAccelerationBefore": 0.62961345911026,
+          "contactAccelerationAfter": 0.3252532482147217
+        },
+        "hip": {
+          "triangles": 67,
+          "newWindingReversals": 0,
+          "newDegenerateTriangles": 0,
+          "entryEndExact": true,
+          "contactAccelerationBefore": 2.43375301361084,
+          "contactAccelerationAfter": 0.8935391306877136
+        }
+      },
+      "uvTopologyUnchanged": true,
+      "idleFramesPixelIdentical": 414,
+      "clickEndpointPixelsIdentical": true,
+      "scope": "V19 to V20 base trajectory validation, before V21 handbag"
+    },
+    "foregroundOcclusion": {
+      "object": "Chanel-style black quilted mini handbag",
+      "renderType": "Sprite2D",
+      "meshDeformation": false,
+      "timeBasedSwitching": false,
+      "fixedDrawOrder": 5,
+      "handDrawOrder": 6,
+      "hipDrawOrder": 1,
+      "raisedThighDrawOrder": 4,
+      "idleForearm": "reuse original unchanged body mesh with local foreground draw, no new binding",
+      "validatedFrames": 615,
+      "allFramesVisible": true,
+      "timingUnchanged": true,
+      "position": [
+        400,
+        488
+      ],
+      "scale": 0.135,
+      "scope": "static sprite over cached native motion replay, not a new MOC"
+    },
+    "leftFootShape": {
+      "leg": "lowered",
+      "method": "shared continuous pose-local shape field for paint and native coverage",
+      "midfootTaper": true,
+      "distalShorteningFraction": 0.075,
+      "graduatedSmallToeSide": true,
+      "ankleAnchorFixed": true,
+      "UVsUnchanged": true,
+      "paintAndMaskShareTransform": true,
+      "validatedFrames": 615,
+      "newWindingReversals": 0,
+      "maximumMaskDisplacement": 25.6513233184814,
+      "raisedFootUnchanged": true
+    },
+    "restoredBaselineManifestSha256": "ebf7fa82938d1aaa84fd6c78fb4051c67bb6a75f57572125696843a851f99d7a",
+    "priorToeTipRefinement": {
+      "leg": "lowered",
+      "restoredBaseline": "violet-astra-v25",
+      "method": "original source RGB and V25 UV mesh; complete rounded toe-cap coverage replaces clipped distal alpha",
+      "sourceRect": [
+        532,
+        1025,
+        133,
+        80
+      ],
+      "transitionSourceY": [
+        1036,
+        1048
+      ],
+      "sourceRGBEdited": false,
+      "wholeFootRegenerationApplied": false,
+      "ankleMeshEdited": false,
+      "instepMeshEdited": false,
+      "motionTimingChanged": false,
+      "validatedFrames": 615,
+      "pixelComparedKeyframes": 33,
+      "protectedPartsPixelIdenticalToV25": true,
+      "protectionEvidenceSha256": "2ee173262b91c1d36469867acb49141b2b1857a097a38247771218cabd23b94f",
+      "validationScope": "V25 to V30 toe-only change, before the V31 cuff coverage fix"
+    },
+    "cuffContinuity": {
+      "leg": "lowered",
+      "parent": "violet-astra-v30",
+      "method": "extend existing foot colour coverage behind the native trouser cuff, with the same pose-driven handoff plane on every frame",
+      "underlapAddedNativePixels": 2,
+      "nativeMeshChanged": false,
+      "nativeUVsChanged": false,
+      "sourceRGBEdited": false,
+      "toePixelsUnchanged": true,
+      "footShapeUnchanged": true,
+      "motionTimingUnchanged": true,
+      "validatedFrames": 615,
+      "pixelComparedKeyframes": 33,
+      "outsideHandoffBandPixelIdentical": true,
+      "maximumInteriorEdgeIndentPixels": 0.7,
+      "silhouetteAlphaThreshold": 0.5,
+      "nearOpaqueAlphaThreshold": 0.95,
+      "maximumNearOpaqueEdgeIndentPixels": 0.6,
+      "protectionEvidenceSha256": "51015582cc4f9b07d1f8215474f813b2d50997ed096ffbfae4749099fdf5f144",
+      "edgeEvidenceSha256": "e46c447699f7908dfbb5f6056ea780bf4e7a0c7a6a533efb8d2fad473d463048"
+    }
+  },
+  "width": 1208,
+  "height": 1280,
+  "packedWidth": 2416,
+  "fps": 30,
+  "channelLayout": "left straight RGB / right alpha",
+  "crop": [
+    160,
+    0,
+    1208,
+    1280
+  ],
+  "lobbyMotion": "idle",
+  "clips": {
+    "idle": {
+      "file": "idle-rgba.mp4",
+      "frames": 414,
+      "decodedFrames": 414,
+      "duration": 13.8,
+      "loop": true,
+      "end": "loop",
+      "bytes": 11748489,
+      "sha256": "be73a5d9a6458663ce101ccd4a18d1b5a4e10e0769c8221ae9a2460fb17d8316",
+      "startFrame": 138
+    },
+    "touch_head": {
+      "file": "touch-head-rgba.mp4",
+      "frames": 201,
+      "decodedFrames": 201,
+      "duration": 6.7,
+      "loop": false,
+      "end": "return-to-idle",
+      "bytes": 6285380,
+      "sha256": "02c7b43b29d10a8bafadf8f5e7a6c8c0a5b7917ee1dbb85ca813b7f3dc1631c0",
+      "returnToIdleFrame": 64
+    }
+  },
+  "encoding": {
+    "codec": "H.264",
+    "crf": 12,
+    "pixelFormat": "yuv420p"
+  }
+}

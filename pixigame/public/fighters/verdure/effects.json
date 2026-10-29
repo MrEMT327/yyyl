@@ -1,0 +1,4904 @@
+{
+  "schemaVersion": 1,
+  "runtime": "config-flight/1",
+  "attachRoot": "a707da54-4638-5857-a64b-71c84d20e7a4",
+  "worldRoot": "338792e5-9f84-51b4-a3ff-20d0a20eadf7",
+  "bindings": [
+    {
+      "target": {
+        "material": "0dc37ff5-2be9-5efd-a567-23fdb1c83ad9"
+      },
+      "property": "color",
+      "value": [
+        "config",
+        "hullColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "0f0361f0-e04a-5529-a3e6-5e2f4f1fcd5b"
+      },
+      "property": "emissive",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "0f0361f0-e04a-5529-a3e6-5e2f4f1fcd5b"
+      },
+      "property": "emissiveIntensity",
+      "value": [
+        "*",
+        [
+          "config",
+          "engineGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.2,
+          0.6
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "e4dfad16-ef39-5d56-a59a-43a94c0c83d6"
+      },
+      "property": "emissive",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "e4dfad16-ef39-5d56-a59a-43a94c0c83d6"
+      },
+      "property": "emissiveIntensity",
+      "value": [
+        "*",
+        0.55,
+        [
+          "config",
+          "bodyFx"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "transmission",
+      "value": [
+        "config",
+        "glassTransmission"
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "roughness",
+      "value": [
+        "config",
+        "glassRoughness"
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "ior",
+      "value": [
+        "config",
+        "glassIor"
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "thickness",
+      "value": [
+        "config",
+        "glassThickness"
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "attenuationDistance",
+      "value": [
+        "config",
+        "glassAbsorptionDistance"
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "attenuationColor",
+      "value": [
+        "config",
+        "glassTint"
+      ]
+    },
+    {
+      "target": {
+        "material": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748"
+      },
+      "property": "envMapIntensity",
+      "value": [
+        "config",
+        "glassReflection"
+      ]
+    },
+    {
+      "target": {
+        "material": "0dc37ff5-2be9-5efd-a567-23fdb1c83ad9"
+      },
+      "property": "uniforms.uPhaseTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "0dc37ff5-2be9-5efd-a567-23fdb1c83ad9"
+      },
+      "property": "uniforms.uPhaseGain.value",
+      "value": [
+        "*",
+        [
+          "config",
+          "bodyFx"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "config",
+          "surfaceGlow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.22,
+          0.7
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "0dc37ff5-2be9-5efd-a567-23fdb1c83ad9"
+      },
+      "property": "uniforms.uPhaseColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "16c76234-c9d3-5fd3-a888-1182d8762e92"
+      },
+      "property": "uniforms.uPhaseTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "16c76234-c9d3-5fd3-a888-1182d8762e92"
+      },
+      "property": "uniforms.uPhaseGain.value",
+      "value": [
+        "*",
+        [
+          "config",
+          "bodyFx"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "config",
+          "surfaceGlow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.22,
+          0.7
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "16c76234-c9d3-5fd3-a888-1182d8762e92"
+      },
+      "property": "uniforms.uPhaseColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "631d0e25-4d58-562f-a666-bff348b6a365"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "631d0e25-4d58-562f-a666-bff348b6a365"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        [
+          "config",
+          "engineGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          0.84,
+          0.39
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "631d0e25-4d58-562f-a666-bff348b6a365"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "631d0e25-4d58-562f-a666-bff348b6a365"
+      },
+      "property": "uniforms.uThrottle.value",
+      "value": [
+        "if",
+        [
+          "config",
+          "boost"
+        ],
+        1,
+        0
+      ]
+    },
+    {
+      "target": {
+        "material": "631d0e25-4d58-562f-a666-bff348b6a365"
+      },
+      "property": "uniforms.uCoreColor.value",
+      "value": [
+        "colorMix",
+        [
+          "config",
+          "engineColor"
+        ],
+        "#ffffff",
+        0.77
+      ]
+    },
+    {
+      "target": {
+        "node": "92e5a241-b62a-57b1-afcb-703092b98f59"
+      },
+      "property": "scale.z",
+      "value": [
+        "*",
+        [
+          "config",
+          "exhaustLength"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          5.1,
+          3.4
+        ]
+      ]
+    },
+    {
+      "target": {
+        "node": "92e5a241-b62a-57b1-afcb-703092b98f59"
+      },
+      "property": "scale.x",
+      "value": 0.43
+    },
+    {
+      "target": {
+        "node": "92e5a241-b62a-57b1-afcb-703092b98f59"
+      },
+      "property": "scale.y",
+      "value": 0.43
+    },
+    {
+      "target": {
+        "material": "0ac72255-f4a7-5946-af8f-3c49bec09daf"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "*",
+        [
+          "time"
+        ],
+        [
+          "config",
+          "ringSpeed"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "0ac72255-f4a7-5946-af8f-3c49bec09daf"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.5,
+        [
+          "config",
+          "engineGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "0ac72255-f4a7-5946-af8f-3c49bec09daf"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "0ac72255-f4a7-5946-af8f-3c49bec09daf"
+      },
+      "property": "uniforms.uAccent.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "836f850b-d7bf-5aa5-a5c9-a4ebc7a9ee24"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "836f850b-d7bf-5aa5-a5c9-a4ebc7a9ee24"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.26,
+        [
+          "config",
+          "trails"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.28,
+          1
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "836f850b-d7bf-5aa5-a5c9-a4ebc7a9ee24"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        [
+          "config",
+          "engineGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          0.84,
+          0.39
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf"
+      },
+      "property": "uniforms.uThrottle.value",
+      "value": [
+        "if",
+        [
+          "config",
+          "boost"
+        ],
+        1,
+        0
+      ]
+    },
+    {
+      "target": {
+        "material": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf"
+      },
+      "property": "uniforms.uCoreColor.value",
+      "value": [
+        "colorMix",
+        [
+          "config",
+          "engineColor"
+        ],
+        "#ffffff",
+        0.77
+      ]
+    },
+    {
+      "target": {
+        "node": "cf780d08-d895-5bec-aa3e-b19d47857af7"
+      },
+      "property": "scale.z",
+      "value": [
+        "*",
+        [
+          "config",
+          "exhaustLength"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          5.1,
+          3.4
+        ]
+      ]
+    },
+    {
+      "target": {
+        "node": "cf780d08-d895-5bec-aa3e-b19d47857af7"
+      },
+      "property": "scale.x",
+      "value": 0.43
+    },
+    {
+      "target": {
+        "node": "cf780d08-d895-5bec-aa3e-b19d47857af7"
+      },
+      "property": "scale.y",
+      "value": 0.43
+    },
+    {
+      "target": {
+        "material": "48d93919-568b-5f6b-a453-8e571526e215"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "*",
+        [
+          "time"
+        ],
+        [
+          "config",
+          "ringSpeed"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "48d93919-568b-5f6b-a453-8e571526e215"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.5,
+        [
+          "config",
+          "engineGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "48d93919-568b-5f6b-a453-8e571526e215"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "48d93919-568b-5f6b-a453-8e571526e215"
+      },
+      "property": "uniforms.uAccent.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "ee0fcd41-a0a8-5988-a30e-7630ec560b1a"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "ee0fcd41-a0a8-5988-a30e-7630ec560b1a"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.26,
+        [
+          "config",
+          "trails"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.28,
+          1
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "ee0fcd41-a0a8-5988-a30e-7630ec560b1a"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "4dd814d3-18f0-55ed-a30c-1cb7ccf98d2d"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "*",
+        [
+          "time"
+        ],
+        [
+          "config",
+          "ringSpeed"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "4dd814d3-18f0-55ed-a30c-1cb7ccf98d2d"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.85,
+        [
+          "config",
+          "bodyFx"
+        ],
+        [
+          "config",
+          "coreGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.22,
+          1
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "4dd814d3-18f0-55ed-a30c-1cb7ccf98d2d"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "4dd814d3-18f0-55ed-a30c-1cb7ccf98d2d"
+      },
+      "property": "uniforms.uAccent.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "*",
+        [
+          "time"
+        ],
+        [
+          "config",
+          "ringSpeed"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.65,
+        [
+          "config",
+          "bodyFx"
+        ],
+        [
+          "config",
+          "coreGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          1.22,
+          1
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e"
+      },
+      "property": "uniforms.uAccent.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "799d8379-32a3-572e-ac31-340cd8345632"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "799d8379-32a3-572e-ac31-340cd8345632"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.58,
+        [
+          "config",
+          "particles"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "799d8379-32a3-572e-ac31-340cd8345632"
+      },
+      "property": "uniforms.uColor0.value",
+      "value": [
+        "colorMix",
+        [
+          "config",
+          "engineColor"
+        ],
+        "#ffffff",
+        0.8
+      ]
+    },
+    {
+      "target": {
+        "material": "799d8379-32a3-572e-ac31-340cd8345632"
+      },
+      "property": "uniforms.uColor1.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "799d8379-32a3-572e-ac31-340cd8345632"
+      },
+      "property": "uniforms.uColor2.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "799d8379-32a3-572e-ac31-340cd8345632"
+      },
+      "property": "uniforms.uColor3.value",
+      "value": [
+        "colorMix",
+        [
+          "config",
+          "engineColor"
+        ],
+        "#091723",
+        0.7
+      ]
+    },
+    {
+      "target": {
+        "node": "f0102300-93c2-5b2c-aec5-507ccd04b1da"
+      },
+      "property": "geometry.instanceCount",
+      "value": [
+        "floor",
+        [
+          "*",
+          384,
+          [
+            "global",
+            "particleCount"
+          ]
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        [
+          "if",
+          [
+            "config",
+            "firing"
+          ],
+          1,
+          0
+        ],
+        [
+          "config",
+          "weaponGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+      },
+      "property": "uniforms.uColor0.value",
+      "value": [
+        "colorMix",
+        [
+          "config",
+          "engineColor"
+        ],
+        "#ffffff",
+        0.8
+      ]
+    },
+    {
+      "target": {
+        "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+      },
+      "property": "uniforms.uColor1.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+      },
+      "property": "uniforms.uColor2.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+      },
+      "property": "uniforms.uColor3.value",
+      "value": [
+        "colorMix",
+        [
+          "config",
+          "engineColor"
+        ],
+        "#091723",
+        0.7
+      ]
+    },
+    {
+      "target": {
+        "node": "8c62477b-7c59-5ad9-a1fc-bd64efaf22b7"
+      },
+      "property": "geometry.instanceCount",
+      "value": [
+        "floor",
+        [
+          "*",
+          160,
+          [
+            "global",
+            "particleCount"
+          ]
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "b7259506-36fc-547a-a86d-9f68d36af909"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        [
+          "if",
+          [
+            "config",
+            "firing"
+          ],
+          1,
+          0
+        ],
+        [
+          "config",
+          "weaponGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "b7259506-36fc-547a-a86d-9f68d36af909"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "3335be2f-d7c0-55ee-ae79-1bb1ba616606"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        [
+          "if",
+          [
+            "config",
+            "firing"
+          ],
+          1,
+          0
+        ],
+        [
+          "config",
+          "weaponGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "3335be2f-d7c0-55ee-ae79-1bb1ba616606"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "37ed5846-b8bf-5070-a05d-cc73d98e50f3"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "37ed5846-b8bf-5070-a05d-cc73d98e50f3"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        0.42,
+        [
+          "config",
+          "arcGain"
+        ],
+        [
+          "config",
+          "bodyFx"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "37ed5846-b8bf-5070-a05d-cc73d98e50f3"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "37ed5846-b8bf-5070-a05d-cc73d98e50f3"
+      },
+      "property": "uniforms.uAccent.value",
+      "value": [
+        "config",
+        "accentColor"
+      ]
+    },
+    {
+      "target": {
+        "material": "37ed5846-b8bf-5070-a05d-cc73d98e50f3"
+      },
+      "property": "uniforms.uBoost.value",
+      "value": [
+        "if",
+        [
+          "config",
+          "boost"
+        ],
+        1,
+        0
+      ]
+    },
+    {
+      "target": {
+        "material": "7f7f24f5-b8b0-5bb8-a126-78d5b6a16e69"
+      },
+      "property": "uniforms.uTime.value",
+      "value": [
+        "time"
+      ]
+    },
+    {
+      "target": {
+        "material": "7f7f24f5-b8b0-5bb8-a126-78d5b6a16e69"
+      },
+      "property": "uniforms.uGain.value",
+      "value": [
+        "*",
+        [
+          "if",
+          [
+            "config",
+            "shield"
+          ],
+          1,
+          0
+        ],
+        [
+          "config",
+          "shieldGlow"
+        ],
+        [
+          "global",
+          "glow"
+        ]
+      ]
+    },
+    {
+      "target": {
+        "material": "7f7f24f5-b8b0-5bb8-a126-78d5b6a16e69"
+      },
+      "property": "uniforms.uColor.value",
+      "value": [
+        "config",
+        "engineColor"
+      ]
+    },
+    {
+      "target": {
+        "node": "ef011ef4-3cda-5fab-ac9b-aa1100cd8951"
+      },
+      "property": "visible",
+      "value": [
+        "config",
+        "shield"
+      ]
+    }
+  ],
+  "materialPatches": [
+    {
+      "material": "0dc37ff5-2be9-5efd-a567-23fdb1c83ad9",
+      "cacheKey": "foxpen-conformal-saved-v29",
+      "uniforms": {
+        "uPhaseTime": {
+          "value": 0
+        },
+        "uPhaseGain": {
+          "value": 0.92
+        },
+        "uPhaseColor": {
+          "type": "c",
+          "value": 4176895
+        }
+      },
+      "replacements": {
+        "vertexShader": [
+          {
+            "find": "#include <common>",
+            "replace": "#include <common>\nvarying vec3 vPhaseLocal;"
+          },
+          {
+            "find": "#include <begin_vertex>",
+            "replace": "#include <begin_vertex>\nvPhaseLocal=vec3(abs(position.x),position.y,position.z);"
+          }
+        ],
+        "fragmentShader": [
+          {
+            "find": "#include <common>",
+            "replace": "#include <common>\nvarying vec3 vPhaseLocal;uniform float uPhaseTime,uPhaseGain;uniform vec3 uPhaseColor;"
+          },
+          {
+            "find": "#include <emissivemap_fragment>",
+            "replace": "#include <emissivemap_fragment>\n     float phaseScan=fract((vPhaseLocal.z+7.0)/14.0-uPhaseTime*0.14);\n     float scanDist=(phaseScan-0.12)*34.0;\n     float scan=exp(-(scanDist*scanDist));\n     float backDist=(fract((vPhaseLocal.x+8.0)/16.0+uPhaseTime*0.08)-0.66)*22.0;\n     float backScan=exp(-(backDist*backDist));\n     float circuit=pow(max((0.5+0.5*sin(vPhaseLocal.x*15.0+vPhaseLocal.z*7.0)), 0.0), 28.0);\n     float filaments=pow(max((0.5+0.5*sin(vPhaseLocal.x*8.0-vPhaseLocal.y*26.0+vPhaseLocal.z*4.0-uPhaseTime*1.7)), 0.0), 12.0);\n     float fres=pow(max((1.0-max(dot(normal,normalize(vViewPosition)),0.0)), 0.0), 3.0);\n     float vent=smoothstep(-0.55,0.24,vPhaseLocal.y)*(1.0-smoothstep(0.62,1.45,vPhaseLocal.y));\n     float glowMask=max(vent*0.72,0.36);\n     vec3 phaseTint=mix(uPhaseColor,vec3(1.0),0.28+0.18*fres);\n     totalEmissiveRadiance+=phaseTint*uPhaseGain*(scan*(0.07+circuit*0.28)+backScan*0.08+filaments*0.05*glowMask+fres*0.22);\n    "
+          }
+        ]
+      }
+    },
+    {
+      "material": "16c76234-c9d3-5fd3-a888-1182d8762e92",
+      "cacheKey": "foxpen-conformal-saved-v29",
+      "uniforms": {
+        "uPhaseTime": {
+          "value": 0
+        },
+        "uPhaseGain": {
+          "value": 0.92
+        },
+        "uPhaseColor": {
+          "type": "c",
+          "value": 4176895
+        }
+      },
+      "replacements": {
+        "vertexShader": [
+          {
+            "find": "#include <common>",
+            "replace": "#include <common>\nvarying vec3 vPhaseLocal;"
+          },
+          {
+            "find": "#include <begin_vertex>",
+            "replace": "#include <begin_vertex>\nvPhaseLocal=vec3(abs(position.x),position.y,position.z);"
+          }
+        ],
+        "fragmentShader": [
+          {
+            "find": "#include <common>",
+            "replace": "#include <common>\nvarying vec3 vPhaseLocal;uniform float uPhaseTime,uPhaseGain;uniform vec3 uPhaseColor;"
+          },
+          {
+            "find": "#include <emissivemap_fragment>",
+            "replace": "#include <emissivemap_fragment>\n     float phaseScan=fract((vPhaseLocal.z+7.0)/14.0-uPhaseTime*0.14);\n     float scanDist=(phaseScan-0.12)*34.0;\n     float scan=exp(-(scanDist*scanDist));\n     float backDist=(fract((vPhaseLocal.x+8.0)/16.0+uPhaseTime*0.08)-0.66)*22.0;\n     float backScan=exp(-(backDist*backDist));\n     float circuit=pow(max((0.5+0.5*sin(vPhaseLocal.x*15.0+vPhaseLocal.z*7.0)), 0.0), 28.0);\n     float filaments=pow(max((0.5+0.5*sin(vPhaseLocal.x*8.0-vPhaseLocal.y*26.0+vPhaseLocal.z*4.0-uPhaseTime*1.7)), 0.0), 12.0);\n     float fres=pow(max((1.0-max(dot(normal,normalize(vViewPosition)),0.0)), 0.0), 3.0);\n     float vent=smoothstep(-0.55,0.24,vPhaseLocal.y)*(1.0-smoothstep(0.62,1.45,vPhaseLocal.y));\n     float glowMask=max(vent*0.72,0.36);\n     vec3 phaseTint=mix(uPhaseColor,vec3(1.0),0.28+0.18*fres);\n     totalEmissiveRadiance+=phaseTint*uPhaseGain*(scan*(0.07+circuit*0.28)+backScan*0.08+filaments*0.05*glowMask+fres*0.22);\n    "
+          }
+        ]
+      }
+    }
+  ],
+  "attachments": [
+    {
+      "node": "51f7a1a2-6f66-5981-a894-d3c13d872667",
+      "anchor": {
+        "node": "ef5f38f6-8f8e-5ee7-a3ec-cd6f9781d562",
+        "position": [
+          0,
+          0,
+          0.11000000000000032
+        ]
+      }
+    },
+    {
+      "node": "4cfe3d1d-fbdc-5ea5-a85d-a0ccd473f568",
+      "anchor": {
+        "node": "42af9d1e-dea5-5ed0-a898-af574cfb7a13",
+        "position": [
+          0,
+          0,
+          0.11000000000000032
+        ]
+      }
+    },
+    {
+      "node": "7eab342a-2004-5abe-a130-567cbe550286",
+      "anchor": {
+        "node": "3c043956-7a80-5a07-ab18-d590d45a27b9",
+        "position": [
+          0,
+          0,
+          -0.02200000000000024
+        ]
+      }
+    },
+    {
+      "node": "64738fcd-8290-59eb-abda-ab3c66a215cf",
+      "anchor": {
+        "node": "438bda13-a300-5a32-a092-1d7cee064ebd",
+        "position": [
+          0,
+          0,
+          -0.02200000000000024
+        ]
+      }
+    }
+  ],
+  "attributeBindings": [],
+  "jets": [
+    {
+      "node": "92e5a241-b62a-57b1-afcb-703092b98f59",
+      "anchor": {
+        "node": "ef5f38f6-8f8e-5ee7-a3ec-cd6f9781d562",
+        "position": [
+          0,
+          0,
+          0.11
+        ]
+      },
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "steps": {
+        "high": 24,
+        "medium": 20,
+        "low": 14
+      }
+    },
+    {
+      "node": "cf780d08-d895-5bec-aa3e-b19d47857af7",
+      "anchor": {
+        "node": "42af9d1e-dea5-5ed0-a898-af574cfb7a13",
+        "position": [
+          0,
+          0,
+          0.11
+        ]
+      },
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "steps": {
+        "high": 24,
+        "medium": 20,
+        "low": 14
+      }
+    }
+  ],
+  "trails": [
+    {
+      "node": "aedc6646-969d-5356-af6b-ae6493cd8cce",
+      "socket": {
+        "node": "ef5f38f6-8f8e-5ee7-a3ec-cd6f9781d562",
+        "position": [
+          0,
+          0,
+          0.11
+        ]
+      },
+      "segments": 48,
+      "baseLifetime": 1.1,
+      "width": 0.3913,
+      "speedFactor": 1,
+      "speed": {
+        "idle": 8.5,
+        "boost": 16.5
+      },
+      "noiseAmplitude": 0.045,
+      "widthProfile": [
+        0.7,
+        0.65
+      ]
+    },
+    {
+      "node": "02c5577b-f1ee-5ba1-a60a-5243cb8cdde5",
+      "socket": {
+        "node": "42af9d1e-dea5-5ed0-a898-af574cfb7a13",
+        "position": [
+          0,
+          0,
+          0.11
+        ]
+      },
+      "segments": 48,
+      "baseLifetime": 1.1,
+      "width": 0.3913,
+      "speedFactor": 1,
+      "speed": {
+        "idle": 8.5,
+        "boost": 16.5
+      },
+      "noiseAmplitude": 0.045,
+      "widthProfile": [
+        0.7,
+        0.65
+      ]
+    }
+  ],
+  "particles": [
+    {
+      "node": "f0102300-93c2-5b2c-aec5-507ccd04b1da",
+      "type": "ion-emission",
+      "capacity": 384,
+      "rate": 150,
+      "sockets": [
+        {
+          "node": "ef5f38f6-8f8e-5ee7-a3ec-cd6f9781d562",
+          "position": [
+            0,
+            0,
+            0.11
+          ]
+        },
+        {
+          "node": "42af9d1e-dea5-5ed0-a898-af574cfb7a13",
+          "position": [
+            0,
+            0,
+            0.11
+          ]
+        }
+      ],
+      "speed": {
+        "idle": 11,
+        "boost": 19
+      },
+      "jitter": 0.168,
+      "spreadVelocity": 0.12,
+      "life": [
+        0.8,
+        0.5
+      ],
+      "size": [
+        0.027,
+        0.0367
+      ]
+    },
+    {
+      "node": "8c62477b-7c59-5ad9-a1fc-bd64efaf22b7",
+      "type": "pulse-projectiles",
+      "capacity": 160,
+      "rate": 36,
+      "sockets": [
+        {
+          "node": "3c043956-7a80-5a07-ab18-d590d45a27b9",
+          "position": [
+            0,
+            0,
+            -0.022
+          ]
+        },
+        {
+          "node": "438bda13-a300-5a32-a092-1d7cee064ebd",
+          "position": [
+            0,
+            0,
+            -0.022
+          ]
+        }
+      ],
+      "speed": {
+        "idle": -32,
+        "boost": -42
+      },
+      "jitter": 0.16,
+      "spreadVelocity": 0.12,
+      "life": [
+        0.8,
+        0.5
+      ],
+      "size": [
+        0.065,
+        0.028
+      ]
+    }
+  ],
+  "lights": [
+    {
+      "name": "engine-0",
+      "position": {
+        "node": "ef5f38f6-8f8e-5ee7-a3ec-cd6f9781d562",
+        "position": [
+          0,
+          0,
+          0.11
+        ]
+      },
+      "color": [
+        "config",
+        "engineColor"
+      ],
+      "intensity": [
+        "*",
+        [
+          "config",
+          "lightIntensity"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          0.62,
+          0.23
+        ]
+      ],
+      "distance": 10
+    },
+    {
+      "name": "engine-1",
+      "position": {
+        "node": "42af9d1e-dea5-5ed0-a898-af574cfb7a13",
+        "position": [
+          0,
+          0,
+          0.11
+        ]
+      },
+      "color": [
+        "config",
+        "engineColor"
+      ],
+      "intensity": [
+        "*",
+        [
+          "config",
+          "lightIntensity"
+        ],
+        [
+          "if",
+          [
+            "config",
+            "boost"
+          ],
+          0.62,
+          0.23
+        ]
+      ],
+      "distance": 10
+    },
+    {
+      "position": [
+        0,
+        1.428,
+        0.02
+      ],
+      "color": "#f4ffe9",
+      "intensity": [
+        "*",
+        [
+          "config",
+          "lightIntensity"
+        ],
+        0.2,
+        [
+          "+",
+          1,
+          [
+            "*",
+            [
+              "sin",
+              [
+                "*",
+                [
+                  "time"
+                ],
+                1.6
+              ]
+            ],
+            0.15
+          ]
+        ]
+      ],
+      "distance": 6
+    },
+    {
+      "position": [
+        -0.9,
+        0.9998429824441379,
+        0.06
+      ],
+      "color": "#b7ff92",
+      "intensity": [
+        "*",
+        [
+          "config",
+          "lightIntensity"
+        ],
+        0.07,
+        [
+          "+",
+          1,
+          [
+            "*",
+            [
+              "sin",
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "time"
+                  ],
+                  2.2
+                ],
+                0.3
+              ]
+            ],
+            0.16
+          ]
+        ]
+      ],
+      "distance": 4
+    },
+    {
+      "position": [
+        0.9,
+        0.9998429824441379,
+        0.06
+      ],
+      "color": "#b7ff92",
+      "intensity": [
+        "*",
+        [
+          "config",
+          "lightIntensity"
+        ],
+        0.07,
+        [
+          "+",
+          1,
+          [
+            "*",
+            [
+              "sin",
+              [
+                "+",
+                [
+                  "*",
+                  [
+                    "time"
+                  ],
+                  2.2
+                ],
+                1
+              ]
+            ],
+            0.16
+          ]
+        ]
+      ],
+      "distance": 4
+    }
+  ],
+  "deck": {
+    "radius": 12,
+    "height": 0.18,
+    "color": "#16252d"
+  },
+  "motion": {
+    "speed": 0.46,
+    "sway": [
+      2.6,
+      0.28,
+      1.4
+    ],
+    "swayRate": [
+      1,
+      0.73,
+      0.62
+    ],
+    "bobAmplitude": 0.11,
+    "bobRate": 1.1,
+    "yawBase": -0.2,
+    "yawAmplitude": 0.3,
+    "yawRate": 0.72,
+    "pitchAmplitude": 0.045,
+    "pitchRate": 0.87,
+    "rollAmplitude": -0.115,
+    "flightDynamics": {
+      "path": "tangent-ellipse",
+      "radii": [
+        18,
+        30
+      ],
+      "phaseRate": 0.1,
+      "air": "still-world",
+      "velocitySource": "derivative-of-rendered-pose",
+      "description": "One trajectory for pose, sockets, trails and the relative-air solver. Inputs drive the path clock, never a fake wind scalar."
+    }
+  },
+  "audio": {
+    "template": "harmonic-flight-loop/1",
+    "duration": 4,
+    "sampleRate": 24000,
+    "oscillators": [
+      {
+        "frequency": 64.39999999999999,
+        "gain": 0.04
+      },
+      {
+        "frequency": 96.6,
+        "gain": 0.014
+      },
+      {
+        "frequency": 289.79999999999995,
+        "gain": 0.007,
+        "modFrequency": 0.5,
+        "modDepth": 0.3
+      },
+      {
+        "frequency": 579.5999999999999,
+        "gain": 0.003
+      }
+    ],
+    "amplitude": {
+      "base": 0.92,
+      "frequency": 0.25,
+      "gain": 0.08
+    }
+  },
+  "mathContract": {
+    "version": 1,
+    "positivePowerBase": "non-negative",
+    "signedSquares": "multiplication",
+    "zeroGain": "discard",
+    "reason": "Prevent driver-dependent pow domain NaNs from contaminating HDR/Bloom."
+  },
+  "cockpitOptics": {
+    "schemaVersion": 1,
+    "node": "6d78521f-ece6-5ae2-af09-9d980870142d",
+    "glassMaterial": "fd6ff90c-06e7-59c4-a3c6-f56b5b7c7748",
+    "interiorNodes": [
+      "9ca8817d-53d7-5a3a-a86d-a822ea00a38a",
+      "47afdaa7-c6bc-5fc4-a73f-a806dc491821",
+      "8228dbdb-63d7-5d8a-a087-86147db1c887",
+      "2462d84b-cec2-543b-a1d2-e4f59e967047",
+      "a1e13b40-ec6a-505a-a905-1442a5af374f",
+      "67b5c871-1cad-5e7c-ab2f-3b329a4a96f8"
+    ],
+    "source": {
+      "repository": "achrefelouafi/LinearAbilityExtThreeJS",
+      "commit": "bf58757ab9b6057515470aa074cdb4026bc54ed7",
+      "file": "src/materials/GlassMaterial.js",
+      "reuse": "MeshPhysicalMaterial transmission / IOR / thickness / attenuation model; canopy geometry and interior are local adaptation"
+    },
+    "geometryChange": "Fresh, fully exposed upper dome and interior for verdure"
+  },
+  "specialFx": {
+    "lenses": [
+      {
+        "anchor": [
+          0,
+          1.468,
+          0.02
+        ],
+        "radius": [
+          0.84,
+          1.18
+        ],
+        "ring": [
+          1.03,
+          1.22
+        ],
+        "sheen": [
+          1.78,
+          0.52
+        ],
+        "sheenTilt": 0.1,
+        "color": "#e2ffd3",
+        "haloColor": "#f6fff0",
+        "ringColor": "#b8ff84",
+        "scale": 1,
+        "pulse": 1.4,
+        "spin": 0.16,
+        "opacity": {
+          "core": 0.34,
+          "halo": 0.14,
+          "ring": 0.32,
+          "sheen": 0.14
+        }
+      },
+      {
+        "anchor": [
+          0,
+          1.498,
+          0.02
+        ],
+        "radius": [
+          1.08,
+          1.46
+        ],
+        "ring": [
+          1,
+          1.14
+        ],
+        "sheen": [
+          2.1,
+          0.58
+        ],
+        "sheenTilt": 0,
+        "color": "#b7ffd6",
+        "haloColor": "#e7fff2",
+        "ringColor": "#c7ff8d",
+        "scale": 1,
+        "pulse": 0.85,
+        "spin": -0.12,
+        "opacity": {
+          "core": 0.06,
+          "halo": 0.08,
+          "ring": 0.18,
+          "sheen": 0.08
+        }
+      }
+    ],
+    "panes": [
+      {
+        "anchor": [
+          -2.1,
+          0.6615838639546705,
+          -1.04
+        ],
+        "rotation": [
+          0,
+          0,
+          -0.28
+        ],
+        "scale": [
+          1.08,
+          0.42
+        ],
+        "color": "#b8ffd4",
+        "opacity": 0.16,
+        "pulse": 0.14
+      },
+      {
+        "anchor": [
+          2.1,
+          0.6615838639546705,
+          -1.04
+        ],
+        "rotation": [
+          0,
+          0,
+          0.28
+        ],
+        "scale": [
+          1.08,
+          0.42
+        ],
+        "color": "#b8ffd4",
+        "opacity": 0.16,
+        "pulse": 0.14
+      },
+      {
+        "anchor": [
+          -1.48,
+          0.8126477946275282,
+          1.12
+        ],
+        "rotation": [
+          0,
+          0,
+          -0.18
+        ],
+        "scale": [
+          0.82,
+          0.26
+        ],
+        "color": "#e6fff0",
+        "opacity": 0.1,
+        "pulse": 0.18
+      },
+      {
+        "anchor": [
+          1.48,
+          0.8126477946275282,
+          1.12
+        ],
+        "rotation": [
+          0,
+          0,
+          0.18
+        ],
+        "scale": [
+          0.82,
+          0.26
+        ],
+        "color": "#e6fff0",
+        "opacity": 0.1,
+        "pulse": 0.18
+      }
+    ],
+    "shards": [
+      {
+        "anchor": [
+          -1.15,
+          1.18988758969063,
+          -0.12
+        ],
+        "rotation": [
+          -1.57,
+          0,
+          -0.85
+        ],
+        "scale": [
+          0.9,
+          0.42,
+          1
+        ],
+        "points": [
+          [
+            0,
+            -0.12
+          ],
+          [
+            0,
+            0.12
+          ],
+          [
+            0.96,
+            0.1
+          ],
+          [
+            0.96,
+            -0.1
+          ]
+        ],
+        "color": "#caffd2",
+        "innerColor": "#f9fffb",
+        "glowColor": "#96f6bf",
+        "opacity": {
+          "panel": 0.12,
+          "glow": 0.11,
+          "inner": 0.16,
+          "rim": 0.05
+        },
+        "pulse": 0.16
+      },
+      {
+        "anchor": [
+          1.15,
+          1.18988758969063,
+          -0.12
+        ],
+        "rotation": [
+          -1.57,
+          0,
+          0.85
+        ],
+        "scale": [
+          0.9,
+          0.42,
+          1
+        ],
+        "points": [
+          [
+            0,
+            -0.12
+          ],
+          [
+            0,
+            0.12
+          ],
+          [
+            0.96,
+            0.1
+          ],
+          [
+            0.96,
+            -0.1
+          ]
+        ],
+        "color": "#caffd2",
+        "innerColor": "#f9fffb",
+        "glowColor": "#96f6bf",
+        "opacity": {
+          "panel": 0.12,
+          "glow": 0.11,
+          "inner": 0.16,
+          "rim": 0.05
+        },
+        "pulse": 0.16
+      }
+    ],
+    "sparks": [
+      {
+        "anchor": [
+          0,
+          1.428,
+          0.02
+        ],
+        "count": 24,
+        "radius": [
+          1,
+          0.16,
+          1
+        ],
+        "color": "#f2ffc0",
+        "size": 0.048,
+        "opacity": 0.3,
+        "spin": 0.22,
+        "wobble": 0.16
+      }
+    ],
+    "materialLibrary": {
+      "veil": {
+        "materialJSON": {
+          "uuid": "37102de8-98fe-5efb-a881-1ded17d5dfb2",
+          "type": "ShaderMaterial",
+          "blending": 2,
+          "side": 2,
+          "transparent": true,
+          "blendColor": 0,
+          "depthWrite": false,
+          "forceSinglePass": true,
+          "wireframeLinecap": null,
+          "wireframeLinejoin": null,
+          "toneMapped": false,
+          "fog": false,
+          "glslVersion": null,
+          "uniforms": {
+            "uTime": {
+              "value": 0
+            },
+            "uGain": {
+              "value": 0.98
+            },
+            "uColor": {
+              "type": "c",
+              "value": 7143375
+            },
+            "uAccent": {
+              "type": "c",
+              "value": 14155636
+            }
+          },
+          "vertexShader": "varying vec2 vUv;varying vec3 vN,vV,vP;void main(){vUv=uv;vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=cameraPosition-w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}",
+          "fragmentShader": "varying vec2 vUv;uniform vec3 uColor,uAccent;uniform float uTime,uGain;\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nvec2 p=vUv;float edge=max(exp(-p.y*60.),exp(-(1.-p.y)*60.));float dash=step(.75,fract(p.x*14.));\n float front=fract(uTime*.24);float sweep=exp(-(((p.x-front)*29.) * ((p.x-front)*29.)));float ribs=pow(max((.5+.5*sin(p.y*62.-p.x*19.)), 0.0), 17.);\n float a=(.028+edge*.40+dash*ribs*.07+sweep*.13)*smoothstep(0.,.10,p.x)*(1.-smoothstep(.92,1.,p.x))*uGain;\n gl_FragColor=vec4(mix(uColor,uAccent,ribs*.20)*(1.2+sweep*.65),a);}",
+          "lights": false,
+          "clipping": false
+        },
+        "gain": 0.78,
+        "uvChart": [
+          0,
+          1,
+          0,
+          0.72,
+          0.28
+        ],
+        "source": {
+          "file": "public/fighters/prism/effects.json",
+          "materialUUID": "4a0e1444-aae6-54db-b682-2af73bc6ca0a",
+          "nodeUUID": "b177603a-e3d1-5e6b-8127-b2f0d1655038",
+          "description": "Unchanged accepted Prism fin shader, hue-matched to verdure",
+          "vertexSHA256": "83d6c8ff296e39e2cd9b422c3729ea45c2a1de96a6d5e8d3306b6b79190f93ac",
+          "fragmentSHA256": "c1f96fce781b19a14cf86a2266c73cae5499189b113f644f5c5453033f0531ee"
+        }
+      }
+    },
+    "ribbons": [
+      {
+        "style": "hanging-veil/1",
+        "name": "veil-0--1",
+        "pair": "veil-0",
+        "side": -1,
+        "anchor": [
+          -1.63,
+          -0.7642521995509404,
+          3.45
+        ],
+        "segments": 28,
+        "width": 0.32,
+        "normal": [
+          0,
+          0.64,
+          0.77
+        ],
+        "phase": 0.4,
+        "material": "veil",
+        "restCurve": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.32,
+            -0.24,
+            0.44
+          ],
+          [
+            0.74,
+            -0.78,
+            1.06
+          ],
+          [
+            0.9,
+            -1.4,
+            1.52
+          ]
+        ],
+        "widthProfile": [
+          [
+            0,
+            0.86
+          ],
+          [
+            0.22,
+            1
+          ],
+          [
+            0.7,
+            0.55
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "wave": {
+          "speed": 1.5,
+          "cycles": 1.1,
+          "amplitude": 0.15,
+          "ripple": 0.03,
+          "sway": 0.1
+        },
+        "physics": {
+          "segments": 18,
+          "gravity": 9.81,
+          "drag": 8.5,
+          "bendCompliance": 0.008,
+          "iterations": 16,
+          "step": 0.008333333333333333,
+          "turbulence": 0.018
+        }
+      },
+      {
+        "style": "hanging-veil/1",
+        "name": "veil-0-1",
+        "pair": "veil-0",
+        "side": 1,
+        "anchor": [
+          1.63,
+          -0.7642521995509404,
+          3.45
+        ],
+        "segments": 28,
+        "width": 0.32,
+        "normal": [
+          0,
+          0.64,
+          0.77
+        ],
+        "phase": 0.4,
+        "material": "veil",
+        "restCurve": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.32,
+            -0.24,
+            0.44
+          ],
+          [
+            0.74,
+            -0.78,
+            1.06
+          ],
+          [
+            0.9,
+            -1.4,
+            1.52
+          ]
+        ],
+        "widthProfile": [
+          [
+            0,
+            0.86
+          ],
+          [
+            0.22,
+            1
+          ],
+          [
+            0.7,
+            0.55
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "wave": {
+          "speed": 1.5,
+          "cycles": 1.1,
+          "amplitude": 0.15,
+          "ripple": 0.03,
+          "sway": 0.1
+        },
+        "physics": {
+          "segments": 18,
+          "gravity": 9.81,
+          "drag": 8.5,
+          "bendCompliance": 0.008,
+          "iterations": 16,
+          "step": 0.008333333333333333,
+          "turbulence": 0.018
+        }
+      },
+      {
+        "style": "hanging-veil/1",
+        "name": "veil-1--1",
+        "pair": "veil-1",
+        "side": -1,
+        "anchor": [
+          -3.23,
+          0.08080710796238763,
+          3.31
+        ],
+        "segments": 28,
+        "width": 0.26,
+        "normal": [
+          0,
+          0.64,
+          0.77
+        ],
+        "phase": 1.2000000000000002,
+        "material": "veil",
+        "restCurve": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.2752,
+            -0.2064,
+            0.3784
+          ],
+          [
+            0.6364,
+            -0.6708000000000001,
+            0.9116000000000001
+          ],
+          [
+            0.774,
+            -1.204,
+            1.3072
+          ]
+        ],
+        "widthProfile": [
+          [
+            0,
+            0.86
+          ],
+          [
+            0.22,
+            1
+          ],
+          [
+            0.7,
+            0.55
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "wave": {
+          "speed": 1.5,
+          "cycles": 1.1,
+          "amplitude": 0.15,
+          "ripple": 0.03,
+          "sway": 0.1
+        },
+        "physics": {
+          "segments": 18,
+          "gravity": 9.81,
+          "drag": 8.5,
+          "bendCompliance": 0.008,
+          "iterations": 16,
+          "step": 0.008333333333333333,
+          "turbulence": 0.018
+        }
+      },
+      {
+        "style": "hanging-veil/1",
+        "name": "veil-1-1",
+        "pair": "veil-1",
+        "side": 1,
+        "anchor": [
+          3.23,
+          0.08080710796238763,
+          3.31
+        ],
+        "segments": 28,
+        "width": 0.26,
+        "normal": [
+          0,
+          0.64,
+          0.77
+        ],
+        "phase": 1.2000000000000002,
+        "material": "veil",
+        "restCurve": [
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0.2752,
+            -0.2064,
+            0.3784
+          ],
+          [
+            0.6364,
+            -0.6708000000000001,
+            0.9116000000000001
+          ],
+          [
+            0.774,
+            -1.204,
+            1.3072
+          ]
+        ],
+        "widthProfile": [
+          [
+            0,
+            0.86
+          ],
+          [
+            0.22,
+            1
+          ],
+          [
+            0.7,
+            0.55
+          ],
+          [
+            1,
+            0.22
+          ]
+        ],
+        "wave": {
+          "speed": 1.5,
+          "cycles": 1.1,
+          "amplitude": 0.15,
+          "ripple": 0.03,
+          "sway": 0.1
+        },
+        "physics": {
+          "segments": 18,
+          "gravity": 9.81,
+          "drag": 8.5,
+          "bendCompliance": 0.008,
+          "iterations": 16,
+          "step": 0.008333333333333333,
+          "turbulence": 0.018
+        }
+      }
+    ]
+  },
+  "designContract": {
+    "version": 1,
+    "origin": "design.json",
+    "oldAirframeCopied": false,
+    "legacyGeometryCount": 0,
+    "reference": {
+      "sheet": "84a91970-458d-483f-9149-8a863c6a4ffa.png",
+      "row": 2,
+      "column": 4,
+      "reading": "top to bottom, left to right"
+    },
+    "brand": "FOXPEN",
+    "materials": "Existing project adapters, not a newly claimed official airframe",
+    "shaderSources": [
+      {
+        "name": "jet-0",
+        "kind": "jet",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "dd8adda2-4e4c-5e1e-bef1-492ea5f582d6",
+        "vertexSHA256": "02c79304539c7e47edf54ca564495304c69c9935c96e00fc10e6fe23975f7098",
+        "fragmentSHA256": "78d3e7992bb0057c237babd82b8bf39cde6d9e78d3f5f8a8944bf5002956d0f5",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "nozzle-ring-0",
+        "kind": "ring",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "a94145f8-3ee2-587c-bb61-83fdbc60c15d",
+        "vertexSHA256": "83d6c8ff296e39e2cd9b422c3729ea45c2a1de96a6d5e8d3306b6b79190f93ac",
+        "fragmentSHA256": "922878f258d74114056b1a9cf2675d9e897f6eb4d88fe48b78bf41029077bc35",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "trail-0",
+        "kind": "trail",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "0bc0d603-39df-5908-bf8c-9045f40f834f",
+        "vertexSHA256": "f29705718f752dbcceeef90ce1f23b36044e2d99d9c260df645b41fe938198b4",
+        "fragmentSHA256": "4eb6f1496661f3e79f87e34644b3d7359e69b7fe13dcc61d92aa39304ef8af29",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "jet-1",
+        "kind": "jet",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "dd8adda2-4e4c-5e1e-bef1-492ea5f582d6",
+        "vertexSHA256": "02c79304539c7e47edf54ca564495304c69c9935c96e00fc10e6fe23975f7098",
+        "fragmentSHA256": "78d3e7992bb0057c237babd82b8bf39cde6d9e78d3f5f8a8944bf5002956d0f5",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "nozzle-ring-1",
+        "kind": "ring",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "a94145f8-3ee2-587c-bb61-83fdbc60c15d",
+        "vertexSHA256": "83d6c8ff296e39e2cd9b422c3729ea45c2a1de96a6d5e8d3306b6b79190f93ac",
+        "fragmentSHA256": "922878f258d74114056b1a9cf2675d9e897f6eb4d88fe48b78bf41029077bc35",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "trail-1",
+        "kind": "trail",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "0bc0d603-39df-5908-bf8c-9045f40f834f",
+        "vertexSHA256": "f29705718f752dbcceeef90ce1f23b36044e2d99d9c260df645b41fe938198b4",
+        "fragmentSHA256": "4eb6f1496661f3e79f87e34644b3d7359e69b7fe13dcc61d92aa39304ef8af29",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "energy-channel-0",
+        "kind": "ring",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "a94145f8-3ee2-587c-bb61-83fdbc60c15d",
+        "vertexSHA256": "83d6c8ff296e39e2cd9b422c3729ea45c2a1de96a6d5e8d3306b6b79190f93ac",
+        "fragmentSHA256": "922878f258d74114056b1a9cf2675d9e897f6eb4d88fe48b78bf41029077bc35",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "energy-channel-1",
+        "kind": "ring",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "a94145f8-3ee2-587c-bb61-83fdbc60c15d",
+        "vertexSHA256": "83d6c8ff296e39e2cd9b422c3729ea45c2a1de96a6d5e8d3306b6b79190f93ac",
+        "fragmentSHA256": "922878f258d74114056b1a9cf2675d9e897f6eb4d88fe48b78bf41029077bc35",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "ion-emission",
+        "kind": "particle",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "c7aedb22-c116-5fda-a27c-4f09e5e1d3a7",
+        "vertexSHA256": "1e514374d05d98ce2cd13e42ea0171535c2324d4c4b31c7449b2b0dd29c94a7f",
+        "fragmentSHA256": "02dccc8f94cce4a920fee147c8b8e40ee1e4995c0cd4c0960ccbd57c36eb0987",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "pulse-projectiles",
+        "kind": "particle",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "c7aedb22-c116-5fda-a27c-4f09e5e1d3a7",
+        "vertexSHA256": "1e514374d05d98ce2cd13e42ea0171535c2324d4c4b31c7449b2b0dd29c94a7f",
+        "fragmentSHA256": "02dccc8f94cce4a920fee147c8b8e40ee1e4995c0cd4c0960ccbd57c36eb0987",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "muzzle-flash-0",
+        "kind": "glint",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "65bd083f-942c-5406-9ca8-3be4de4c601d",
+        "vertexSHA256": "6256945daadf3f9867b1103a796a741ed8e917b66ebac3247555c59761e1966d",
+        "fragmentSHA256": "97996c66372c231215f16796ef92a5534a27d25172295df3d6936e41d1584db8",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "muzzle-flash-1",
+        "kind": "glint",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "65bd083f-942c-5406-9ca8-3be4de4c601d",
+        "vertexSHA256": "6256945daadf3f9867b1103a796a741ed8e917b66ebac3247555c59761e1966d",
+        "fragmentSHA256": "97996c66372c231215f16796ef92a5534a27d25172295df3d6936e41d1584db8",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "attached-arcs",
+        "kind": "arc",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "a3657a06-a4be-5f88-97be-c0c9e0b4a62f",
+        "vertexSHA256": "014b5a23d49f327bef71a2598d323a9ae753b8c9a83975968a2686902439c4ae",
+        "fragmentSHA256": "0deb74118ebbd88411261e4b67f389b99a69d4431b3c7036dc801c425d946c9b",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      },
+      {
+        "name": "shield",
+        "kind": "shield",
+        "from": "public/fighters/kestrel/effects.json",
+        "originalMaterial": "80f6b880-ca3f-5847-8afd-e2fa30ae4440",
+        "vertexSHA256": "369173b44c804bf1c0d4326d71ab9c71ae84961385627d4e740edf62c29b7496",
+        "fragmentSHA256": "a61a4e2f826867d468de4d4a02506977b63a2d116b3123d4d9632da3dda84375",
+        "reuse": "Unchanged shader; independently authored local geometry and sockets"
+      }
+    ]
+  },
+  "graph": {
+    "metadata": {
+      "version": 4.7,
+      "type": "Object",
+      "generator": "Object3D.toJSON"
+    },
+    "geometries": [
+      {
+        "uuid": "c5fc9768-6cc0-5344-a8ab-a4c06f90c937",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Jet-0"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 512112,
+                "length": 72,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 512400,
+                "length": 72,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 512688,
+                "length": 48,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 512880,
+              "length": 36,
+              "type": "Uint16Array"
+            }
+          },
+          "groups": [
+            {
+              "start": 0,
+              "count": 6,
+              "materialIndex": 0
+            },
+            {
+              "start": 6,
+              "count": 6,
+              "materialIndex": 1
+            },
+            {
+              "start": 12,
+              "count": 6,
+              "materialIndex": 2
+            },
+            {
+              "start": 18,
+              "count": 6,
+              "materialIndex": 3
+            },
+            {
+              "start": 24,
+              "count": 6,
+              "materialIndex": 4
+            },
+            {
+              "start": 30,
+              "count": 6,
+              "materialIndex": 5
+            }
+          ]
+        }
+      },
+      {
+        "uuid": "6786f778-c5ed-53c7-a01b-e2890c49a416",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Nozzle-ring-0"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 512952,
+                "length": 1107,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 517380,
+                "length": 1107,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 521808,
+                "length": 738,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 524760,
+              "length": 1920,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "91b66217-6406-5f9b-a980-79ec18b486a5",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Jet-1"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 528600,
+                "length": 72,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 528888,
+                "length": 72,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 529176,
+                "length": 48,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 529368,
+              "length": 36,
+              "type": "Uint16Array"
+            }
+          },
+          "groups": [
+            {
+              "start": 0,
+              "count": 6,
+              "materialIndex": 0
+            },
+            {
+              "start": 6,
+              "count": 6,
+              "materialIndex": 1
+            },
+            {
+              "start": 12,
+              "count": 6,
+              "materialIndex": 2
+            },
+            {
+              "start": 18,
+              "count": 6,
+              "materialIndex": 3
+            },
+            {
+              "start": 24,
+              "count": 6,
+              "materialIndex": 4
+            },
+            {
+              "start": 30,
+              "count": 6,
+              "materialIndex": 5
+            }
+          ]
+        }
+      },
+      {
+        "uuid": "70564e0d-1306-50ae-a022-d25fe0cb1be6",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Nozzle-ring-1"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 529440,
+                "length": 1107,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 533868,
+                "length": 1107,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 538296,
+                "length": 738,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 541248,
+              "length": 1920,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "8cbd661f-dbd4-5407-a59f-ac6233444a13",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/upper-containment-ring"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 545088,
+                "length": 2100,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 553488,
+                "length": 2100,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 561888,
+                "length": 1400,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 567488,
+              "length": 3564,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "2172c9bf-481d-5e07-a323-d3b6ac2b81b7",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/outer-wing-conduit"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 574616,
+                "length": 399,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 576212,
+                "length": 399,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 577808,
+                "length": 266,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 578872,
+              "length": 648,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "323e81b9-6c85-5e81-aa17-1bc586d64077",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/outer-wing-conduit/mirror"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 580168,
+                "length": 399,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 581764,
+                "length": 399,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 583360,
+                "length": 266,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 584424,
+              "length": 648,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "2568f2f1-fd42-5927-ac0a-a38ded42ab37",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Muzzle-0"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 585720,
+                "length": 12,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 585768,
+                "length": 12,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 585816,
+                "length": 8,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 585848,
+              "length": 6,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "d0f9706a-e94a-5bff-a030-8ff4840dd9ae",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Muzzle-1"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 585860,
+                "length": 12,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 585908,
+                "length": 12,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 585956,
+                "length": 8,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 585988,
+              "length": 6,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "e4891297-3efd-5ca1-a192-1c4d2f80e6b1",
+        "type": "InstancedBufferGeometry",
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586000,
+                "length": 150,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "iStart": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586600,
+                "length": 6,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "iEnd": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586624,
+                "length": 6,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "iSeed": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586648,
+                "length": 2,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 586656,
+              "length": 144,
+              "type": "Uint16Array"
+            }
+          }
+        },
+        "instanceCount": 2,
+        "isInstancedBufferGeometry": true
+      },
+      {
+        "uuid": "ffa66d0f-4fa0-5ff2-a028-d80ecbead79b",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Shield"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586944,
+                "length": 2079,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "normal": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 595260,
+                "length": 2079,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 603576,
+                "length": 1386,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 609120,
+              "length": 3648,
+              "type": "Uint16Array"
+            }
+          }
+        }
+      },
+      {
+        "uuid": "a23ee2ec-a150-5b6a-a35e-fe92279b51d5",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Trail-0"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 616416,
+                "length": 294,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "usage": 35048
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 617592,
+                "length": 196,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "usage": 35048
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 618376,
+              "length": 288,
+              "type": "Uint16Array"
+            }
+          },
+          "boundingSphere": {
+            "radius": 1000,
+            "center": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "uuid": "d1eea484-b218-5cf4-ab5a-20cb4c269385",
+        "type": "BufferGeometry",
+        "userData": {
+          "sourceType": "baked-v29",
+          "designNode": "FX/Trail-1"
+        },
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 618952,
+                "length": 294,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "usage": 35048
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 620128,
+                "length": 196,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "usage": 35048
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 620912,
+              "length": 288,
+              "type": "Uint16Array"
+            }
+          },
+          "boundingSphere": {
+            "radius": 1000,
+            "center": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "uuid": "4e196aa3-7ab2-562f-a894-2392f11d141b",
+        "type": "InstancedBufferGeometry",
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 621488,
+                "length": 12,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 621536,
+                "length": 8,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "aStart": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 621568,
+                "length": 1152,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aVelocity": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 626176,
+                "length": 1152,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aBirth": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 630784,
+                "length": 384,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aLife": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 632320,
+                "length": 384,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aSize": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 633856,
+                "length": 384,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aSeed": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 635392,
+                "length": 384,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 636928,
+              "length": 6,
+              "type": "Uint16Array"
+            }
+          }
+        },
+        "instanceCount": 384,
+        "isInstancedBufferGeometry": true
+      },
+      {
+        "uuid": "4bf1953a-8ba2-5eee-ae66-049510d8d0ed",
+        "type": "InstancedBufferGeometry",
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 636940,
+                "length": 12,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "uv": {
+              "itemSize": 2,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 636988,
+                "length": 8,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "aStart": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 637020,
+                "length": 480,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aVelocity": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 638940,
+                "length": 480,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aBirth": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 640860,
+                "length": 160,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aLife": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 641500,
+                "length": 160,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aSize": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 642140,
+                "length": 160,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "aSeed": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 642780,
+                "length": 160,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 643420,
+              "length": 6,
+              "type": "Uint16Array"
+            }
+          }
+        },
+        "instanceCount": 160,
+        "isInstancedBufferGeometry": true
+      },
+      {
+        "uuid": "268bf64f-691d-4345-a62e-d40856cc4651",
+        "type": "InstancedBufferGeometry",
+        "data": {
+          "attributes": {
+            "position": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586000,
+                "length": 150,
+                "type": "Float32Array"
+              },
+              "normalized": false
+            },
+            "iStart": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 929008,
+                "length": 6,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "iEnd": {
+              "itemSize": 3,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 929032,
+                "length": 6,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            },
+            "iSeed": {
+              "itemSize": 1,
+              "type": "Float32Array",
+              "array": {
+                "buffer": "buffers.bin",
+                "byteOffset": 586648,
+                "length": 2,
+                "type": "Float32Array"
+              },
+              "normalized": false,
+              "meshPerAttribute": 1,
+              "isInstancedBufferAttribute": true
+            }
+          },
+          "index": {
+            "type": "Uint16Array",
+            "array": {
+              "buffer": "buffers.bin",
+              "byteOffset": 586656,
+              "length": 144,
+              "type": "Uint16Array"
+            }
+          }
+        },
+        "instanceCount": 2,
+        "isInstancedBufferGeometry": true
+      }
+    ],
+    "materials": [
+      {
+        "uuid": "631d0e25-4d58-562f-a666-bff348b6a365",
+        "type": "ShaderMaterial",
+        "name": "verdure/jet-0",
+        "blending": 5,
+        "side": 1,
+        "transparent": true,
+        "blendSrc": 201,
+        "blendColor": 0,
+        "depthTest": false,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "jet"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.85
+          },
+          "uThrottle": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uCoreColor": {
+            "type": "c",
+            "value": 14678783
+          },
+          "uEye": {
+            "type": "v3",
+            "value": [
+              0,
+              0,
+              0
+            ]
+          },
+          "uObjectView": {
+            "type": "m4",
+            "value": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "uDepth": {
+            "value": null
+          },
+          "uResolution": {
+            "type": "v2",
+            "value": [
+              1,
+              1
+            ]
+          },
+          "uNear": {
+            "value": 0.12
+          },
+          "uFar": {
+            "value": 180
+          },
+          "uUseDepth": {
+            "value": 0
+          },
+          "uSteps": {
+            "value": 24
+          }
+        },
+        "vertexShader": "varying vec3 vLocal;void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+        "fragmentShader": "\n varying vec3 vLocal;uniform vec3 uEye,uColor,uCoreColor;uniform float uTime,uGain,uThrottle,uUseDepth,uNear,uFar;uniform sampler2D uDepth;uniform vec2 uResolution;uniform mat4 uObjectView;uniform int uSteps;\n \nfloat h12(vec2 p) { vec3 p3=fract(vec3(p.xyx)*.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }\nvec2 h22(vec2 p) { vec3 p3=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973)); p3+=dot(p3,p3.yzx+33.33); return fract((p3.xx+p3.yz)*p3.zy); }\nfloat n2(vec2 p) { vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(h12(i),h12(i+vec2(1,0)),f.x),mix(h12(i+vec2(0,1)),h12(i+1.),f.x),f.y); }\nfloat fbm(vec2 p) { return n2(p)*.57+n2(p*2.13+17.3)*.28+n2(p*4.31+8.4)*.15; }\nvec2 cell(vec2 p) {\n vec2 i=floor(p),f=fract(p); float a=8.,b=8.;\n for(int y=-1;y<=1;y++) for(int x=-1;x<=1;x++) {vec2 g=vec2(float(x),float(y)); vec2 d=g+h22(i+g)-f; float q=dot(d,d); if(q<a){b=a;a=q;} else b=min(b,q); }\n return vec2(sqrt(a),sqrt(b)-sqrt(a));\n}\n\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\n\n  vec3 rd=normalize(vLocal-uEye);vec3 ir=1./(rd+vec3(.000001));\n  vec3 a=(vec3(-1.3,-1.3,0.)-uEye)*ir,b=(vec3(1.3,1.3,1.)-uEye)*ir;\n  vec3 mn=min(a,b),mx=max(a,b);float lo=max(0.,max(mn.x,max(mn.y,mn.z))),hi=min(mx.x,min(mx.y,mx.z));if(hi<=lo)discard;\n  float depth=1e5;if(uUseDepth>.5){float d=texture2D(uDepth,gl_FragCoord.xy/uResolution).r;depth=(uNear*uFar)/(uFar-d*(uFar-uNear));}\n  vec3 color=vec3(0.);float trans=1.;float stepSize=(hi-lo)/float(uSteps);\n  for(int j=0;j<32;j++){if(j>=uSteps)break;vec3 p=uEye+rd*(lo+(float(j)+.5)*stepSize);\n   if(-(uObjectView*vec4(p,1.)).z>depth)continue;\n   float s=clamp(p.z,0.,1.);float rad=mix(.74,.06,pow(max((s), 0.0), .82));\n   float diamond=pow(max((.5+.5*cos(s*(32.+uThrottle*7.)-.30)), 0.0), 7.)*(1.-s);\n   rad+=diamond*.12;\n   vec2 curl=vec2(sin(s*13.-uTime*5.),cos(s*17.-uTime*4.))*.07*s;\n   float r=length(p.xy+curl)/max(.04,rad);\n   float n=fbm(p.xy*3.7+vec2(s*10.-uTime*4.1,s*21.-uTime*7.));\n   float turbulence=(n-.5)*.55*s;\n   float density=(1.-smoothstep(.1,1.09,r+turbulence))*(1.-smoothstep(.58,1.,s));\n   density*=smoothstep(0.,.016,s);\n   float core=exp(-r*r*7.)*(.6+diamond*.80)*(1.-s);\n   vec3 c=mix(uColor*.75,uCoreColor,clamp(core*.7+diamond*.1,0.,.78));\n   c*=1.9+core*2.7+diamond*1.8;\n   float opacity=1.-exp(-density*stepSize*2.9);\n   color+=trans*opacity*c*uGain;trans*=1.-opacity;if(trans<.02)break;\n  }\n  if(trans>.998)discard;gl_FragColor=vec4(color,1.-trans);\n }",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "0ac72255-f4a7-5946-af8f-3c49bec09daf",
+        "type": "ShaderMaterial",
+        "name": "verdure/nozzle-ring-0",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "ring"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.9
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uAccent": {
+            "type": "c",
+            "value": 14155636
+          }
+        },
+        "vertexShader": "varying vec2 vUv;varying vec3 vN,vV,vP;void main(){vUv=uv;vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=cameraPosition-w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}",
+        "fragmentShader": "varying vec2 vUv;uniform vec3 uColor,uAccent;uniform float uTime,uGain;\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat t=vUv.x,side=abs(vUv.y-.5)*2.;float pulse=pow(max((.5+.5*sin(t*18.84956-uTime*2.7)), 0.0), 8.);float tick=step(.77,fract(t*48.));\n float a=(.30+tick*.23+pulse*.53)*(1.-smoothstep(.65,1.,side))*uGain;\n gl_FragColor=vec4(mix(uColor,uAccent,.22+pulse*.35)*(1.1+pulse),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf",
+        "type": "ShaderMaterial",
+        "name": "verdure/jet-1",
+        "blending": 5,
+        "side": 1,
+        "transparent": true,
+        "blendSrc": 201,
+        "blendColor": 0,
+        "depthTest": false,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "jet"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.85
+          },
+          "uThrottle": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uCoreColor": {
+            "type": "c",
+            "value": 14678783
+          },
+          "uEye": {
+            "type": "v3",
+            "value": [
+              0,
+              0,
+              0
+            ]
+          },
+          "uObjectView": {
+            "type": "m4",
+            "value": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "uDepth": {
+            "value": null
+          },
+          "uResolution": {
+            "type": "v2",
+            "value": [
+              1,
+              1
+            ]
+          },
+          "uNear": {
+            "value": 0.12
+          },
+          "uFar": {
+            "value": 180
+          },
+          "uUseDepth": {
+            "value": 0
+          },
+          "uSteps": {
+            "value": 24
+          }
+        },
+        "vertexShader": "varying vec3 vLocal;void main(){vLocal=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+        "fragmentShader": "\n varying vec3 vLocal;uniform vec3 uEye,uColor,uCoreColor;uniform float uTime,uGain,uThrottle,uUseDepth,uNear,uFar;uniform sampler2D uDepth;uniform vec2 uResolution;uniform mat4 uObjectView;uniform int uSteps;\n \nfloat h12(vec2 p) { vec3 p3=fract(vec3(p.xyx)*.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }\nvec2 h22(vec2 p) { vec3 p3=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973)); p3+=dot(p3,p3.yzx+33.33); return fract((p3.xx+p3.yz)*p3.zy); }\nfloat n2(vec2 p) { vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(h12(i),h12(i+vec2(1,0)),f.x),mix(h12(i+vec2(0,1)),h12(i+1.),f.x),f.y); }\nfloat fbm(vec2 p) { return n2(p)*.57+n2(p*2.13+17.3)*.28+n2(p*4.31+8.4)*.15; }\nvec2 cell(vec2 p) {\n vec2 i=floor(p),f=fract(p); float a=8.,b=8.;\n for(int y=-1;y<=1;y++) for(int x=-1;x<=1;x++) {vec2 g=vec2(float(x),float(y)); vec2 d=g+h22(i+g)-f; float q=dot(d,d); if(q<a){b=a;a=q;} else b=min(b,q); }\n return vec2(sqrt(a),sqrt(b)-sqrt(a));\n}\n\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\n\n  vec3 rd=normalize(vLocal-uEye);vec3 ir=1./(rd+vec3(.000001));\n  vec3 a=(vec3(-1.3,-1.3,0.)-uEye)*ir,b=(vec3(1.3,1.3,1.)-uEye)*ir;\n  vec3 mn=min(a,b),mx=max(a,b);float lo=max(0.,max(mn.x,max(mn.y,mn.z))),hi=min(mx.x,min(mx.y,mx.z));if(hi<=lo)discard;\n  float depth=1e5;if(uUseDepth>.5){float d=texture2D(uDepth,gl_FragCoord.xy/uResolution).r;depth=(uNear*uFar)/(uFar-d*(uFar-uNear));}\n  vec3 color=vec3(0.);float trans=1.;float stepSize=(hi-lo)/float(uSteps);\n  for(int j=0;j<32;j++){if(j>=uSteps)break;vec3 p=uEye+rd*(lo+(float(j)+.5)*stepSize);\n   if(-(uObjectView*vec4(p,1.)).z>depth)continue;\n   float s=clamp(p.z,0.,1.);float rad=mix(.74,.06,pow(max((s), 0.0), .82));\n   float diamond=pow(max((.5+.5*cos(s*(32.+uThrottle*7.)-.30)), 0.0), 7.)*(1.-s);\n   rad+=diamond*.12;\n   vec2 curl=vec2(sin(s*13.-uTime*5.),cos(s*17.-uTime*4.))*.07*s;\n   float r=length(p.xy+curl)/max(.04,rad);\n   float n=fbm(p.xy*3.7+vec2(s*10.-uTime*4.1,s*21.-uTime*7.));\n   float turbulence=(n-.5)*.55*s;\n   float density=(1.-smoothstep(.1,1.09,r+turbulence))*(1.-smoothstep(.58,1.,s));\n   density*=smoothstep(0.,.016,s);\n   float core=exp(-r*r*7.)*(.6+diamond*.80)*(1.-s);\n   vec3 c=mix(uColor*.75,uCoreColor,clamp(core*.7+diamond*.1,0.,.78));\n   c*=1.9+core*2.7+diamond*1.8;\n   float opacity=1.-exp(-density*stepSize*2.9);\n   color+=trans*opacity*c*uGain;trans*=1.-opacity;if(trans<.02)break;\n  }\n  if(trans>.998)discard;gl_FragColor=vec4(color,1.-trans);\n }",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "48d93919-568b-5f6b-a453-8e571526e215",
+        "type": "ShaderMaterial",
+        "name": "verdure/nozzle-ring-1",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "ring"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.9
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uAccent": {
+            "type": "c",
+            "value": 14155636
+          }
+        },
+        "vertexShader": "varying vec2 vUv;varying vec3 vN,vV,vP;void main(){vUv=uv;vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=cameraPosition-w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}",
+        "fragmentShader": "varying vec2 vUv;uniform vec3 uColor,uAccent;uniform float uTime,uGain;\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat t=vUv.x,side=abs(vUv.y-.5)*2.;float pulse=pow(max((.5+.5*sin(t*18.84956-uTime*2.7)), 0.0), 8.);float tick=step(.77,fract(t*48.));\n float a=(.30+tick*.23+pulse*.53)*(1.-smoothstep(.65,1.,side))*uGain;\n gl_FragColor=vec4(mix(uColor,uAccent,.22+pulse*.35)*(1.1+pulse),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "4dd814d3-18f0-55ed-a30c-1cb7ccf98d2d",
+        "type": "ShaderMaterial",
+        "name": "verdure/energy-channel-0",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "ring"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.9
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uAccent": {
+            "type": "c",
+            "value": 14155636
+          }
+        },
+        "vertexShader": "varying vec2 vUv;varying vec3 vN,vV,vP;void main(){vUv=uv;vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=cameraPosition-w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}",
+        "fragmentShader": "varying vec2 vUv;uniform vec3 uColor,uAccent;uniform float uTime,uGain;\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat t=vUv.x,side=abs(vUv.y-.5)*2.;float pulse=pow(max((.5+.5*sin(t*18.84956-uTime*2.7)), 0.0), 8.);float tick=step(.77,fract(t*48.));\n float a=(.30+tick*.23+pulse*.53)*(1.-smoothstep(.65,1.,side))*uGain;\n gl_FragColor=vec4(mix(uColor,uAccent,.22+pulse*.35)*(1.1+pulse),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e",
+        "type": "ShaderMaterial",
+        "name": "verdure/energy-channel-1",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "ring"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.9
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uAccent": {
+            "type": "c",
+            "value": 14155636
+          }
+        },
+        "vertexShader": "varying vec2 vUv;varying vec3 vN,vV,vP;void main(){vUv=uv;vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=cameraPosition-w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}",
+        "fragmentShader": "varying vec2 vUv;uniform vec3 uColor,uAccent;uniform float uTime,uGain;\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat t=vUv.x,side=abs(vUv.y-.5)*2.;float pulse=pow(max((.5+.5*sin(t*18.84956-uTime*2.7)), 0.0), 8.);float tick=step(.77,fract(t*48.));\n float a=(.30+tick*.23+pulse*.53)*(1.-smoothstep(.65,1.,side))*uGain;\n gl_FragColor=vec4(mix(uColor,uAccent,.22+pulse*.35)*(1.1+pulse),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "b7259506-36fc-547a-a86d-9f68d36af909",
+        "type": "ShaderMaterial",
+        "name": "verdure/muzzle-flash-0",
+        "blending": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "glint"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uGain": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          }
+        },
+        "vertexShader": "varying vec2 vUv;void main(){vUv=uv;vec4 p=modelViewMatrix*vec4(0.,0.,0.,1.);p.xy+=position.xy;gl_Position=projectionMatrix*p;}",
+        "fragmentShader": "varying vec2 vUv;uniform float uGain;uniform vec3 uColor;void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nvec2 p=(vUv-.5)*2.;float r=length(p);float core=exp(-r*r*22.);float spike=exp(-abs(p.x)*44.)*exp(-abs(p.y)*3.)+exp(-abs(p.y)*44.)*exp(-abs(p.x)*3.);gl_FragColor=vec4(uColor*2.4,(core+spike*.3)*uGain);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "3335be2f-d7c0-55ee-ae79-1bb1ba616606",
+        "type": "ShaderMaterial",
+        "name": "verdure/muzzle-flash-1",
+        "blending": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "glint"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uGain": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          }
+        },
+        "vertexShader": "varying vec2 vUv;void main(){vUv=uv;vec4 p=modelViewMatrix*vec4(0.,0.,0.,1.);p.xy+=position.xy;gl_Position=projectionMatrix*p;}",
+        "fragmentShader": "varying vec2 vUv;uniform float uGain;uniform vec3 uColor;void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nvec2 p=(vUv-.5)*2.;float r=length(p);float core=exp(-r*r*22.);float spike=exp(-abs(p.x)*44.)*exp(-abs(p.y)*3.)+exp(-abs(p.y)*44.)*exp(-abs(p.x)*3.);gl_FragColor=vec4(uColor*2.4,(core+spike*.3)*uGain);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "37ed5846-b8bf-5070-a05d-cc73d98e50f3",
+        "type": "ShaderMaterial",
+        "name": "verdure/attached-arcs",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "arc"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.5695
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uAccent": {
+            "type": "c",
+            "value": 14155636
+          },
+          "uBoost": {
+            "value": 0
+          }
+        },
+        "vertexShader": "attribute vec3 iStart,iEnd;attribute float iSeed;uniform float uTime,uBoost;varying float vLive,vSide;\n    float hash(float x){return fract(sin(x*12.9898+71.1)*43758.5453);}\n    float kink(float x,float seed){float i=floor(x);return mix(hash(i+seed),hash(i+1.+seed),fract(x))*2.-1.;}\n    void main(){float t=position.x;vSide=position.y;float cycle=uTime*(2.8+uBoost*.8)+hash(iSeed);float life=fract(cycle);float seed=iSeed+floor(cycle)*17.71;\n     vLive=smoothstep(0.,.03,life)*(1.-smoothstep(.24+uBoost*.25,.70+uBoost*.16,life));\n     float pin=sin(t*3.14159265);vec3 axis=normalize(iEnd-iStart),side=normalize(cross(axis,vec3(.001,1.,.001)));\n     vec3 p=mix(iStart,iEnd,t);float width=.12+uBoost*.07;\n     p+=side*(kink(t*9.,seed)+.4*kink(t*23.,seed+4.))*width*pin;p.y+=(.18+kink(t*14.,seed+11.)*.10)*pin;\n     vec4 mv=modelViewMatrix*vec4(p,1.);vec3 dv=mat3(modelViewMatrix)*axis;vec2 screenSide=normalize(vec2(-dv.y,dv.x)+vec2(.00001));\n     mv.xy+=screenSide*position.y*(.055+uBoost*.015);gl_Position=projectionMatrix*mv;\n    }",
+        "fragmentShader": "uniform vec3 uColor,uAccent;uniform float uGain;varying float vLive,vSide;\n    void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat x=abs(vSide),core=exp(-x*x*88.),halo=exp(-x*x*5.)*.36;float a=(core+halo)*vLive*uGain;\n     gl_FragColor=vec4(mix(uColor*1.65,vec3(.79,1.,.98)*2.25,core),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "7f7f24f5-b8b0-5bb8-a126-78d5b6a16e69",
+        "type": "ShaderMaterial",
+        "name": "verdure/shield",
+        "blending": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "shield"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          }
+        },
+        "vertexShader": "varying vec3 vN,vV,vP;varying vec2 vUv;void main(){vUv=uv;vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=cameraPosition-w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}",
+        "fragmentShader": "varying vec3 vN,vV,vP;varying vec2 vUv;uniform float uTime,uGain;uniform vec3 uColor;\n float hex(vec2 p){p.x*=1.1547;vec2 r=vec2(1.,1.732),a=mod(p,r)-r*.5,b=mod(p-r*.5,r)-r*.5;vec2 q=dot(a,a)<dot(b,b)?a:b;return max(abs(q.x),dot(abs(q),normalize(vec2(1.,1.732))));}\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat fres=pow(max((1.-abs(dot(normalize(vN),normalize(vV)))), 0.0), 3.2);float h=hex(vec2(vUv.x*40.,vUv.y*21.));float edge=smoothstep(.45,.49,h);\n float scan=exp(-(((vP.y-sin(uTime*.6))/.08) * ((vP.y-sin(uTime*.6))/.08)));float a=(fres*.34+edge*(fres*.10+.012)+scan*.08)*uGain;\n gl_FragColor=vec4(uColor*(.65+fres*1.25+scan*.6),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "836f850b-d7bf-5aa5-a5c9-a4ebc7a9ee24",
+        "type": "ShaderMaterial",
+        "name": "verdure/trail-0",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "trail"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uGain": {
+            "value": 0.6
+          }
+        },
+        "vertexShader": "varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+        "fragmentShader": "varying vec2 vUv;uniform float uTime,uGain;uniform vec3 uColor;\nfloat h12(vec2 p) { vec3 p3=fract(vec3(p.xyx)*.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }\nvec2 h22(vec2 p) { vec3 p3=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973)); p3+=dot(p3,p3.yzx+33.33); return fract((p3.xx+p3.yz)*p3.zy); }\nfloat n2(vec2 p) { vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(h12(i),h12(i+vec2(1,0)),f.x),mix(h12(i+vec2(0,1)),h12(i+1.),f.x),f.y); }\nfloat fbm(vec2 p) { return n2(p)*.57+n2(p*2.13+17.3)*.28+n2(p*4.31+8.4)*.15; }\nvec2 cell(vec2 p) {\n vec2 i=floor(p),f=fract(p); float a=8.,b=8.;\n for(int y=-1;y<=1;y++) for(int x=-1;x<=1;x++) {vec2 g=vec2(float(x),float(y)); vec2 d=g+h22(i+g)-f; float q=dot(d,d); if(q<a){b=a;a=q;} else b=min(b,q); }\n return vec2(sqrt(a),sqrt(b)-sqrt(a));\n}\n\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat s=vUv.x,x=abs(vUv.y-.5)*2.;float n=fbm(vec2(s*25.-uTime*3.,vUv.y*6.+uTime*.7));\n float body=exp(-x*x*5.)*(.4+.6*n);float fine=exp(-(((x-.25-n*.22)*24.) * ((x-.25-n*.22)*24.)))*.26;\n float a=(body+fine)*pow(max((1.-s), 0.0), 1.3)*smoothstep(0.,.025,s)*uGain*.22;\n a*=1.-smoothstep(.62,1.,x);if(a<.001)discard;gl_FragColor=vec4(uColor*(1.2+.6*(1.-x)),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "ee0fcd41-a0a8-5988-a30e-7630ec560b1a",
+        "type": "ShaderMaterial",
+        "name": "verdure/trail-1",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "trail"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uColor": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uGain": {
+            "value": 0.6
+          }
+        },
+        "vertexShader": "varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}",
+        "fragmentShader": "varying vec2 vUv;uniform float uTime,uGain;uniform vec3 uColor;\nfloat h12(vec2 p) { vec3 p3=fract(vec3(p.xyx)*.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }\nvec2 h22(vec2 p) { vec3 p3=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973)); p3+=dot(p3,p3.yzx+33.33); return fract((p3.xx+p3.yz)*p3.zy); }\nfloat n2(vec2 p) { vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f); return mix(mix(h12(i),h12(i+vec2(1,0)),f.x),mix(h12(i+vec2(0,1)),h12(i+1.),f.x),f.y); }\nfloat fbm(vec2 p) { return n2(p)*.57+n2(p*2.13+17.3)*.28+n2(p*4.31+8.4)*.15; }\nvec2 cell(vec2 p) {\n vec2 i=floor(p),f=fract(p); float a=8.,b=8.;\n for(int y=-1;y<=1;y++) for(int x=-1;x<=1;x++) {vec2 g=vec2(float(x),float(y)); vec2 d=g+h22(i+g)-f; float q=dot(d,d); if(q<a){b=a;a=q;} else b=min(b,q); }\n return vec2(sqrt(a),sqrt(b)-sqrt(a));\n}\n\n void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nfloat s=vUv.x,x=abs(vUv.y-.5)*2.;float n=fbm(vec2(s*25.-uTime*3.,vUv.y*6.+uTime*.7));\n float body=exp(-x*x*5.)*(.4+.6*n);float fine=exp(-(((x-.25-n*.22)*24.) * ((x-.25-n*.22)*24.)))*.26;\n float a=(body+fine)*pow(max((1.-s), 0.0), 1.3)*smoothstep(0.,.025,s)*uGain*.22;\n a*=1.-smoothstep(.62,1.,x);if(a<.001)discard;gl_FragColor=vec4(uColor*(1.2+.6*(1.-x)),a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "799d8379-32a3-572e-ac31-340cd8345632",
+        "type": "ShaderMaterial",
+        "name": "verdure/ion-emission",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "particle"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.58
+          },
+          "uDrag": {
+            "value": 0.55
+          },
+          "uStretch": {
+            "value": 0.016
+          },
+          "uColor0": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uColor1": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uColor2": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uColor3": {
+            "type": "c",
+            "value": 7143375
+          }
+        },
+        "vertexShader": "attribute vec3 aStart,aVelocity;attribute float aBirth,aLife,aSize,aSeed;uniform float uTime,uDrag,uStretch;varying vec2 vUv;varying float vAge,vLive;\n   void main(){vUv=uv;float age=uTime-aBirth;vAge=clamp(age/max(.001,aLife),0.,1.);vLive=step(0.,age)*(1.-step(aLife,age));\n    float travel=uDrag>.001?(1.-exp(-age*uDrag))/uDrag:age;vec3 p=aStart+aVelocity*travel;\n    p.xy+=vec2(sin(age*4.+aSeed*6.),cos(age*3.+aSeed*6.))*age*.17;\n    vec4 mv=modelViewMatrix*vec4(p,1.);vec3 vv=mat3(modelViewMatrix)*aVelocity*exp(-age*uDrag);vec2 direction=normalize(vv.xy+vec2(.00001)),side=vec2(direction.y,-direction.x);\n    float size=aSize*mix(1.,.25,vAge);mv.xy+=side*position.x*size+direction*position.y*(size+length(vv)*uStretch);gl_Position=projectionMatrix*mv;if(vLive<.5)gl_Position=vec4(2.,2.,2.,1.);\n   }",
+        "fragmentShader": "varying vec2 vUv;varying float vAge,vLive;uniform float uGain;uniform vec3 uColor0,uColor1,uColor2,uColor3;\n   void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nvec2 p=abs(vUv-.5)*2.;float a=exp(-p.x*p.x*7.)*(1.-smoothstep(.35,1.,p.y))*vLive;\n    a*=smoothstep(0.,.02,vAge)*(1.-smoothstep(.25,1.,vAge))*uGain;\n    vec3 c=vAge<.333?mix(uColor0,uColor1,vAge*3.):vAge<.666?mix(uColor1,uColor2,(vAge-.333)*3.):mix(uColor2,uColor3,(vAge-.666)*3.);\n    gl_FragColor=vec4(c*1.4,a);}",
+        "lights": false,
+        "clipping": false
+      },
+      {
+        "uuid": "fc646de0-e793-5444-ab66-b472d05cd278",
+        "type": "ShaderMaterial",
+        "name": "verdure/pulse-projectiles",
+        "blending": 2,
+        "side": 2,
+        "transparent": true,
+        "blendColor": 0,
+        "depthWrite": false,
+        "forceSinglePass": true,
+        "wireframeLinecap": null,
+        "wireframeLinejoin": null,
+        "toneMapped": false,
+        "fog": false,
+        "userData": {
+          "sourceKind": "particle"
+        },
+        "glslVersion": null,
+        "uniforms": {
+          "uTime": {
+            "value": 0
+          },
+          "uGain": {
+            "value": 0.58
+          },
+          "uDrag": {
+            "value": 0.55
+          },
+          "uStretch": {
+            "value": 0.016
+          },
+          "uColor0": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uColor1": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uColor2": {
+            "type": "c",
+            "value": 7143375
+          },
+          "uColor3": {
+            "type": "c",
+            "value": 7143375
+          }
+        },
+        "vertexShader": "attribute vec3 aStart,aVelocity;attribute float aBirth,aLife,aSize,aSeed;uniform float uTime,uDrag,uStretch;varying vec2 vUv;varying float vAge,vLive;\n   void main(){vUv=uv;float age=uTime-aBirth;vAge=clamp(age/max(.001,aLife),0.,1.);vLive=step(0.,age)*(1.-step(aLife,age));\n    float travel=uDrag>.001?(1.-exp(-age*uDrag))/uDrag:age;vec3 p=aStart+aVelocity*travel;\n    p.xy+=vec2(sin(age*4.+aSeed*6.),cos(age*3.+aSeed*6.))*age*.17;\n    vec4 mv=modelViewMatrix*vec4(p,1.);vec3 vv=mat3(modelViewMatrix)*aVelocity*exp(-age*uDrag);vec2 direction=normalize(vv.xy+vec2(.00001)),side=vec2(direction.y,-direction.x);\n    float size=aSize*mix(1.,.25,vAge);mv.xy+=side*position.x*size+direction*position.y*(size+length(vv)*uStretch);gl_Position=projectionMatrix*mv;if(vLive<.5)gl_Position=vec4(2.,2.,2.,1.);\n   }",
+        "fragmentShader": "varying vec2 vUv;varying float vAge,vLive;uniform float uGain;uniform vec3 uColor0,uColor1,uColor2,uColor3;\n   void main(){\n if (uGain <= 0.0001) discard; // Zero-intensity effects must not write HDR pixels.\nvec2 p=abs(vUv-.5)*2.;float a=exp(-p.x*p.x*7.)*(1.-smoothstep(.35,1.,p.y))*vLive;\n    a*=smoothstep(0.,.02,vAge)*(1.-smoothstep(.25,1.,vAge))*uGain;\n    vec3 c=vAge<.333?mix(uColor0,uColor1,vAge*3.):vAge<.666?mix(uColor1,uColor2,(vAge-.333)*3.):mix(uColor2,uColor3,(vAge-.666)*3.);\n    gl_FragColor=vec4(c*1.4,a);}",
+        "lights": false,
+        "clipping": false
+      }
+    ],
+    "object": {
+      "uuid": "1a86ddaf-2bcb-5277-a3dd-cff871ca5335",
+      "type": "Group",
+      "name": "fx-root",
+      "layers": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "up": [
+        0,
+        1,
+        0
+      ],
+      "children": [
+        {
+          "uuid": "a707da54-4638-5857-a64b-71c84d20e7a4",
+          "type": "Group",
+          "name": "attached-effects",
+          "layers": 1,
+          "matrix": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ],
+          "children": [
+            {
+              "uuid": "92e5a241-b62a-57b1-afcb-703092b98f59",
+              "type": "Mesh",
+              "name": "FX/Jet-0",
+              "frustumCulled": false,
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Jet-0"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "c5fc9768-6cc0-5344-a8ab-a4c06f90c937",
+              "material": "631d0e25-4d58-562f-a666-bff348b6a365"
+            },
+            {
+              "uuid": "51f7a1a2-6f66-5981-a894-d3c13d872667",
+              "type": "Mesh",
+              "name": "FX/Nozzle-ring-0",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Nozzle-ring-0"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "6786f778-c5ed-53c7-a01b-e2890c49a416",
+              "material": "0ac72255-f4a7-5946-af8f-3c49bec09daf"
+            },
+            {
+              "uuid": "cf780d08-d895-5bec-aa3e-b19d47857af7",
+              "type": "Mesh",
+              "name": "FX/Jet-1",
+              "frustumCulled": false,
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Jet-1"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "91b66217-6406-5f9b-a980-79ec18b486a5",
+              "material": "2e022cc1-d0aa-592d-a5a7-b203fa1fe9bf"
+            },
+            {
+              "uuid": "4cfe3d1d-fbdc-5ea5-a85d-a0ccd473f568",
+              "type": "Mesh",
+              "name": "FX/Nozzle-ring-1",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Nozzle-ring-1"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "70564e0d-1306-50ae-a022-d25fe0cb1be6",
+              "material": "48d93919-568b-5f6b-a453-8e571526e215"
+            },
+            {
+              "uuid": "b183294d-55f3-5d73-ada5-3e9bd59554a5",
+              "type": "Mesh",
+              "name": "FX/upper-containment-ring",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/upper-containment-ring"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "8cbd661f-dbd4-5407-a59f-ac6233444a13",
+              "material": "4dd814d3-18f0-55ed-a30c-1cb7ccf98d2d"
+            },
+            {
+              "uuid": "3b95399d-1a59-5908-a257-285c60c861d9",
+              "type": "Mesh",
+              "name": "FX/outer-wing-conduit",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/outer-wing-conduit"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "2172c9bf-481d-5e07-a323-d3b6ac2b81b7",
+              "material": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e"
+            },
+            {
+              "uuid": "8e3ed2f5-4254-546d-a49d-960c2952e391",
+              "type": "Mesh",
+              "name": "FX/outer-wing-conduit/mirror",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/outer-wing-conduit/mirror"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "323e81b9-6c85-5e81-aa17-1bc586d64077",
+              "material": "4585d171-7d1d-5b92-a2ed-b8bf19f1a77e"
+            },
+            {
+              "uuid": "7eab342a-2004-5abe-a130-567cbe550286",
+              "type": "Mesh",
+              "name": "FX/Muzzle-0",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Muzzle-0"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "2568f2f1-fd42-5927-ac0a-a38ded42ab37",
+              "material": "b7259506-36fc-547a-a86d-9f68d36af909"
+            },
+            {
+              "uuid": "64738fcd-8290-59eb-abda-ab3c66a215cf",
+              "type": "Mesh",
+              "name": "FX/Muzzle-1",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Muzzle-1"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "d0f9706a-e94a-5bff-a030-8ff4840dd9ae",
+              "material": "3335be2f-d7c0-55ee-ae79-1bb1ba616606"
+            },
+            {
+              "uuid": "e524e779-696a-5581-a868-5809e975aadc",
+              "type": "Mesh",
+              "name": "FX/Attached-arcs",
+              "frustumCulled": false,
+              "userData": {
+                "triangleCategory": "vfx"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "268bf64f-691d-4345-a62e-d40856cc4651",
+              "material": "37ed5846-b8bf-5070-a05d-cc73d98e50f3"
+            },
+            {
+              "uuid": "ef011ef4-3cda-5fab-ac9b-aa1100cd8951",
+              "type": "Mesh",
+              "name": "FX/Shield",
+              "visible": false,
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Shield"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "ffa66d0f-4fa0-5ff2-a028-d80ecbead79b",
+              "material": "7f7f24f5-b8b0-5bb8-a126-78d5b6a16e69"
+            }
+          ]
+        },
+        {
+          "uuid": "338792e5-9f84-51b4-a3ff-20d0a20eadf7",
+          "type": "Group",
+          "name": "world-effects",
+          "layers": 1,
+          "matrix": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "up": [
+            0,
+            1,
+            0
+          ],
+          "children": [
+            {
+              "uuid": "aedc6646-969d-5356-af6b-ae6493cd8cce",
+              "type": "Mesh",
+              "name": "FX/Trail-0",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Trail-0"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "a23ee2ec-a150-5b6a-a35e-fe92279b51d5",
+              "material": "836f850b-d7bf-5aa5-a5c9-a4ebc7a9ee24"
+            },
+            {
+              "uuid": "02c5577b-f1ee-5ba1-a60a-5243cb8cdde5",
+              "type": "Mesh",
+              "name": "FX/Trail-1",
+              "userData": {
+                "triangleCategory": "vfx",
+                "designNode": "FX/Trail-1"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "d1eea484-b218-5cf4-ab5a-20cb4c269385",
+              "material": "ee0fcd41-a0a8-5988-a30e-7630ec560b1a"
+            },
+            {
+              "uuid": "f0102300-93c2-5b2c-aec5-507ccd04b1da",
+              "type": "Mesh",
+              "name": "FX/ion-emission",
+              "frustumCulled": false,
+              "userData": {
+                "triangleCategory": "vfx"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "4e196aa3-7ab2-562f-a894-2392f11d141b",
+              "material": "799d8379-32a3-572e-ac31-340cd8345632"
+            },
+            {
+              "uuid": "8c62477b-7c59-5ad9-a1fc-bd64efaf22b7",
+              "type": "Mesh",
+              "name": "FX/pulse-projectiles",
+              "frustumCulled": false,
+              "userData": {
+                "triangleCategory": "vfx"
+              },
+              "layers": 2,
+              "matrix": [
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "geometry": "4bf1953a-8ba2-5eee-ae66-049510d8d0ed",
+              "material": "fc646de0-e793-5444-ab66-b472d05cd278"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

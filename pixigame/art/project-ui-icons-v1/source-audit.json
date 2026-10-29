@@ -1,0 +1,833 @@
+{
+  "date": "2026-10-16",
+  "scope": "All player UI runtime references and shipping public art. Layout reference is allowed; raw competitor images are not.",
+  "forbiddenRoots": [
+    "art/dkzj-1.1.6-ui/",
+    "art/dkzj-shop-ui-v1/",
+    "art/fleet-reference-v1/",
+    "art/growth-reference-v1/",
+    "art/daily-reference-v1/",
+    "art/patrol-reference-v1/",
+    "art/research-reference/",
+    "art/shop-reference/"
+  ],
+  "archived": [
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-11.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-11.png",
+      "sha256": "5c81f0471be576384365ee8752da542758a51f76b5c2dc107d6e76849d94a6b4",
+      "bytes": 39742
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-05.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-05.png",
+      "sha256": "f5337fc1458ffe4b3d3a1501baad261b9d29742a7275479a74a8c8934aec3c4d",
+      "bytes": 44717
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/weapon-tab-active.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/weapon-tab-active.png",
+      "sha256": "74fb8f7d9f803229d568a19e3bc551313b88b3304729c209be0557a6bba2924b",
+      "bytes": 12488
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/check.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/check.png",
+      "sha256": "c1ca45f98a1ea58f801702384d37803c8f9e8603f28e5fd9e0cb1ef4dc23ac8a",
+      "bytes": 5507
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-04.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-04.png",
+      "sha256": "76d6eb1ac2c079ca5372c338656b53d26da1c54ac59e800f42f3d00ba5f3d62d",
+      "bytes": 35556
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-10.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-10.png",
+      "sha256": "84cf0a86f698c82a7d04552268a316f83dc60f886617e426eea284ca8c1e9f76",
+      "bytes": 38162
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/page-title.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/page-title.png",
+      "sha256": "85426a0564b992ffd6ef5c5a9881bea16e8fdd064fedab93a8dfb05076f3d5b6",
+      "bytes": 1290
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-06.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-06.png",
+      "sha256": "360d730e199787e9aa934a07411274dd3c24b6f542625c2666658316e30d19f0",
+      "bytes": 34337
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/frame-20.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/frame-20.png",
+      "sha256": "b2a2ef77ddb0ce93554e86ced37c4e5e8321fc323437a01e76c320d9744d4111",
+      "bytes": 28231
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-07.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-07.png",
+      "sha256": "c0e8c56aec9015953fd8c86c1eaffb939a8dcde000b47953324c821a0359b4aa",
+      "bytes": 31813
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-03.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-03.png",
+      "sha256": "e688518439c17e0243509c2df9482759f65c0b03ab238dbfdab2bcadf8ddc119",
+      "bytes": 32426
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/frame-30.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/frame-30.png",
+      "sha256": "2eb1174aa5ac5aa98e74fa4b2047d6be43833d7f1a69a81b54eea5729dbf71c3",
+      "bytes": 33273
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/list-grain.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/list-grain.png",
+      "sha256": "e9335d35e6f14c1fdce70d0a68dac037fb54c4407a6eca3b388aca80b56cae24",
+      "bytes": 1124
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/selection.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/selection.png",
+      "sha256": "ddd653e76418cce7006e65f5bd5ecb642485a22f9822529cf7c05886ced24f52",
+      "bytes": 4419
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-02.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-02.png",
+      "sha256": "5141570a0e9b3dd78bafb289b87ea79ba929840e8eee99e9ec0326c8c03bf785",
+      "bytes": 34619
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/glow-alpha.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/glow-alpha.png",
+      "sha256": "da87ba0fa1c33f1903079bf53c0d706e4cf401db2d8c809c7c84f470e32d3600",
+      "bytes": 8229
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/lock.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/lock.png",
+      "sha256": "d34bbad48a2e047ea575b662ace2aeb982a242fab8928701feeadf4a8cea9d4b",
+      "bytes": 1852
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-01.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-01.png",
+      "sha256": "51aa3f7e23b39bf42510b93771cb6339df49fc9bd87924a55caaef5d25a9d435",
+      "bytes": 39035
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/frame-40.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/frame-40.png",
+      "sha256": "8381e0d78bf23c273f38def314f4bb938e29df2ec6c4c36ee14dbf5116d041bf",
+      "bytes": 33397
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/light-strip.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/light-strip.png",
+      "sha256": "16304f8a468c6dce197bbc9b812a410c8657f025ce66e94a3469de895158e067",
+      "bytes": 8577
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/weapon-tab-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/weapon-tab-idle.png",
+      "sha256": "9515637f072d930be9efe84e92c84123ab331f539a1a42faf4193e6f55ef4cb3",
+      "bytes": 9395
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-tab-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-tab-idle.png",
+      "sha256": "ed36b4b80484b09840456d8d92a020c5cc94d0306e80b85b3c18c722280faa18",
+      "bytes": 8894
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/frame-50.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/frame-50.png",
+      "sha256": "de047ba6739a4dff3de13d354212b8e09a81ea0e30f386d089b9be3042262a94",
+      "bytes": 31112
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/frame-60.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/frame-60.png",
+      "sha256": "fc7691507e1f44a2176d7e8ca10c2e1b3108455e5000eb8fe72b732b2d418d47",
+      "bytes": 28176
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/star-empty.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/star-empty.png",
+      "sha256": "8d0cf74b6e585720828c5d6c993697e7b2bb0106d27b839160d4a7855998fcd6",
+      "bytes": 2317
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/screen-left.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/screen-left.png",
+      "sha256": "8dca24a67db47b8ea4082bb7bfce215e8b5134da48047142ccbcf67659db0e33",
+      "bytes": 22552
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/manifest.json",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/manifest.json",
+      "sha256": "ccf6241b756f36823450f8bff10cdd767133408ffd503656a7385b65649d76a0",
+      "bytes": 18970
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/list-title.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/list-title.png",
+      "sha256": "b528471635f6bcc1fdf2367167aae8f4d893378ab3668c0d07b5170332a75a76",
+      "bytes": 6187
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/screen-right.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/screen-right.png",
+      "sha256": "dfc0459bf8bc96959bf29854d64a690e3e0432487e0e2abcaf3dbd4b863d18bf",
+      "bytes": 34409
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/particle-tint.svg",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/particle-tint.svg",
+      "sha256": "28bccdd425e37642a13bc267aa03d2c6e66f9a7b07c6288530e50dfbcc8fcfd8",
+      "bytes": 210
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/star-lit.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/star-lit.png",
+      "sha256": "4c034b3ca59934576ab4118b7971bff521ff8ab983d0c53413863656bc2e8f41",
+      "bytes": 3803
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/weapon-background.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/weapon-background.png",
+      "sha256": "7dde81c340f9086eef3c6e3e91ff2d863cdfa345665a8964be4dc14ee4223cd6",
+      "bytes": 218664
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-tab-active.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-tab-active.png",
+      "sha256": "7e98fd0ac57b81e24bcd46357df876e991ee856ff432a1020c5a2f4308f30999",
+      "bytes": 11903
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/frame-10.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/frame-10.png",
+      "sha256": "81fea4073678bc2b4e9e84219beca75d703e386105af9d218c049bc93ec022b9",
+      "bytes": 34410
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/glow-blue.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/glow-blue.png",
+      "sha256": "b602c23af7ff786c668d5bf863fbc755c1e6d98beaf961077a135cb786531a12",
+      "bytes": 17795
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-09.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-09.png",
+      "sha256": "2bc1004b4df59eea9b5ef671b5d1d0ac678f118e9183d6cd80f3942a16923894",
+      "bytes": 42260
+    },
+    {
+      "oldPath": "public/art/dkzj-1.1.6-ui/skill-family-08.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-1.1.6-ui/skill-family-08.png",
+      "sha256": "05ab967d2185f4704be45206fd4a9b21cc2b161b145e981343a3a2bf8517b3e6",
+      "bytes": 33704
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/pilot-supply.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/pilot-supply.png",
+      "sha256": "79f6b10317323e01ecb2994db3619624726d5c7fa9a57b05affeb1533a253974",
+      "bytes": 542104
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/supply-purple.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/supply-purple.png",
+      "sha256": "8950eee5792084c99e5044678e10fe3c6cc734ee3c264e91eff01e0a69c6a3db",
+      "bytes": 311429
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/offer-green.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/offer-green.png",
+      "sha256": "49a5b3bb47e84a16143a6eb43ae54bccb94b2e5546a868944a5368fe62fdb597",
+      "bytes": 14553
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/pool-title-purple.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/pool-title-purple.png",
+      "sha256": "44601809042ba641c7729ee5a06a17c410005ec228f70bcc54fe3f742b2d26b0",
+      "bytes": 3837
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/offer-gold.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/offer-gold.png",
+      "sha256": "0174c15b6be662c1d3c48b72e875b9a2107012ec623715d2ec093778367b5d27",
+      "bytes": 39271
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/background-tile.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/background-tile.png",
+      "sha256": "04ff3de50debaa1923209b697c910f9c5b0dc1bbb46b868c1288bfd4d8db2dab",
+      "bytes": 215
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/pool-title-blue.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/pool-title-blue.png",
+      "sha256": "085d490410e399b225cd74c1595179decf2bc768edeaa8cea6133d93f3cbcdc8",
+      "bytes": 3641
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/coins-small.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/coins-small.png",
+      "sha256": "d7d944ad8991a1a56443bdbf6ae4cdc53ab218cc5f60c71565ab7bf4f7bce5d9",
+      "bytes": 20480
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/diamonds.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/diamonds.png",
+      "sha256": "b9cd941b1dbacd836305b85d9649539b783990d318b053fece152d0bd9f8bd74",
+      "bytes": 14596
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/coins-large.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/coins-large.png",
+      "sha256": "65149dc886c772e91731995f5f9daf11fb358e210956e5c0c7c0d7feed5989d7",
+      "bytes": 51882
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/manifest.json",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/manifest.json",
+      "sha256": "e379e7a9d3928c73cc794f1a017d895543447e7be4d0c5bcd6279f82fe15f34d",
+      "bytes": 7632
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/offer-purple.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/offer-purple.png",
+      "sha256": "0a160424b25c9852867569a2d66b5831895fbc3d428365fd8857aaf5baa86bed",
+      "bytes": 37761
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/section-title.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/section-title.png",
+      "sha256": "387079c1468e30550a4234e304844a7dc615839bba1a602f2dbcf98840ec715a",
+      "bytes": 13073
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/coins-medium.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/coins-medium.png",
+      "sha256": "15e24352214e0ddff41c7c44af8ead102a4dc4bfd5be9d234707bd83fb1bd882",
+      "bytes": 39908
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/offer-blue.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/offer-blue.png",
+      "sha256": "c0d01bdee0ae64a76806af57e256535c4da635e305684f76f99afbf3dd179b9a",
+      "bytes": 46693
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/shop-top.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/shop-top.png",
+      "sha256": "546e06b833972e6e8351c5c915b73c73201b14a2f18b925b7eb24f846920252e",
+      "bytes": 24778
+    },
+    {
+      "oldPath": "public/art/dkzj-shop-ui-v1/supply-blue.png",
+      "archive": "doc/ui-reference-remake/source-archive/dkzj-shop-ui-v1/supply-blue.png",
+      "sha256": "40b86302512054d347ac8790e2fe77039b06f1e73db2f35dc063a20ed7bb7629",
+      "bytes": 297731
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/info.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/info.png",
+      "sha256": "31c23ce34047116ba92ab2981b41811c14d256760ecfaee2e5e4df49262bdf2a",
+      "bytes": 1803
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/pilot-background.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/pilot-background.png",
+      "sha256": "a32cb7f36189a95fa3404d14bd513a04d87d9858100728778c963c52d893321b",
+      "bytes": 559478
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/pilot-tab-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/pilot-tab-idle.png",
+      "sha256": "94869d6f27fbd86d5aaa7660c79984b50ec60627aed53f32fb8d1762b979b28d",
+      "bytes": 10943
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/aircraft-tab-active.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/aircraft-tab-active.png",
+      "sha256": "33d10bd2bcc9d11b3e4067fdd52dfcbb61b8fbe2466d3917ad516263ca959793",
+      "bytes": 11384
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/pilot-skill-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/pilot-skill-idle.png",
+      "sha256": "2091029541baef4f5569b17e455a8553cb0e57f913ed5a04011c3e387ba399f1",
+      "bytes": 9814
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/aircraft-skill-active.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/aircraft-skill-active.png",
+      "sha256": "d229138581d24b9aa4a33ae064b152a424d876f92caea952ba8753ece73b85b9",
+      "bytes": 12873
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/pilot-skill-active.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/pilot-skill-active.png",
+      "sha256": "ed2a49b6c97d83d826837f4786b8ff754bfc51dada1522c69af06e1b79ac9dd1",
+      "bytes": 11717
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/aircraft-tab-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/aircraft-tab-idle.png",
+      "sha256": "34ab062166ea02d4f6f9edc540b853d536fbd89a54dfb8f1ad241032ea50093d",
+      "bytes": 8963
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/equipment-ring-outer.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/equipment-ring-outer.png",
+      "sha256": "0f7fe49dffaa8703ba4eae514fde464ddabe339c04882ee7d75daf56961633de",
+      "bytes": 56413
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/manifest.json",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/manifest.json",
+      "sha256": "8fee05bc1e798f16458492c89b93c78467de841f6f435dc329d72471cddad31e",
+      "bytes": 6819
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/aircraft-skill-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/aircraft-skill-idle.png",
+      "sha256": "5f8080dfae9b076fba8624a6a15722a33b4fe78077657e8ed9ec086844e3e1be",
+      "bytes": 10028
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/equipment-ring-inner.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/equipment-ring-inner.png",
+      "sha256": "6aa05c08f971b8a3ba898b1a600b02a6ff85aa9b5f8cfd1225d8870df8c948d6",
+      "bytes": 64457
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/pilot-tab-active.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/pilot-tab-active.png",
+      "sha256": "cbe2c178e4e27c4a22f43efe7c937d8874bae5f2d93da4aae57dbd089778047a",
+      "bytes": 14347
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/equipment-background.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/equipment-background.png",
+      "sha256": "de43e5d811ee3ae2dfbbab4515761b8a80980d335f02a0a4b3ca37637bdadc1f",
+      "bytes": 330705
+    },
+    {
+      "oldPath": "public/art/fleet-reference-v1/aircraft-background.png",
+      "archive": "doc/ui-reference-remake/source-archive/fleet-reference-v1/aircraft-background.png",
+      "sha256": "bfd77ce0eb7b49d14a1940518bd672753b8fc4a30bf3120b651c6d7dfe336c1a",
+      "bytes": 314260
+    },
+    {
+      "oldPath": "public/art/growth-reference-v1/workshop-plus.png",
+      "archive": "doc/ui-reference-remake/source-archive/growth-reference-v1/workshop-plus.png",
+      "sha256": "617d6f74fe355eb1822fc4fa7017a6d5d978ab5632fc3c11af15fecda8c2d28d",
+      "bytes": 1714
+    },
+    {
+      "oldPath": "public/art/growth-reference-v1/workshop-arrow.png",
+      "archive": "doc/ui-reference-remake/source-archive/growth-reference-v1/workshop-arrow.png",
+      "sha256": "20e7600223e75cf0ea4a880306a390ed41986059fa16b5bcf3a18e72c3e72bd1",
+      "bytes": 2502
+    },
+    {
+      "oldPath": "public/art/growth-reference-v1/workshop-bubble.png",
+      "archive": "doc/ui-reference-remake/source-archive/growth-reference-v1/workshop-bubble.png",
+      "sha256": "17b2e8d545a5e1abec8236679bb40a9df36eabbbcdd9efc10a8e81388e2e98c0",
+      "bytes": 3542
+    },
+    {
+      "oldPath": "public/art/growth-reference-v1/manifest.json",
+      "archive": "doc/ui-reference-remake/source-archive/growth-reference-v1/manifest.json",
+      "sha256": "ce068bb3685e6d1b4f4961d5978a0aec58f939175c70a84c581aaaa97c93a46b",
+      "bytes": 2287
+    },
+    {
+      "oldPath": "public/art/growth-reference-v1/workshop-stage.png",
+      "archive": "doc/ui-reference-remake/source-archive/growth-reference-v1/workshop-stage.png",
+      "sha256": "19ff7c3215ce64b24b04852037bdd118542631f79b6ea0eaa3e949237a59c284",
+      "bytes": 155235
+    },
+    {
+      "oldPath": "public/art/daily-reference-v1/chest-idle.png",
+      "archive": "doc/ui-reference-remake/source-archive/daily-reference-v1/chest-idle.png",
+      "sha256": "eef43e4a18191f37d0b48c8b49e6ef1d7d825591c255a6b9c4cefb143d02f0be",
+      "bytes": 5672
+    },
+    {
+      "oldPath": "public/art/daily-reference-v1/daily-activity.png",
+      "archive": "doc/ui-reference-remake/source-archive/daily-reference-v1/daily-activity.png",
+      "sha256": "1d151ec448cfc4dd2b1663f36ce90adfaa6a5f6c2624f38ef3e1aa5fe3c2f900",
+      "bytes": 19506
+    },
+    {
+      "oldPath": "public/art/daily-reference-v1/manifest.json",
+      "archive": "doc/ui-reference-remake/source-archive/daily-reference-v1/manifest.json",
+      "sha256": "2612a6bb2d43851c84fe00cd65e5406744d9d409363c638a2e77140bf9d31f2e",
+      "bytes": 2382
+    },
+    {
+      "oldPath": "public/art/daily-reference-v1/chest-open.png",
+      "archive": "doc/ui-reference-remake/source-archive/daily-reference-v1/chest-open.png",
+      "sha256": "ec83cd71c8b3cadff9986c1b97962b2ffccfb07756b75fc78ab9e8b35cab86be",
+      "bytes": 6076
+    },
+    {
+      "oldPath": "public/art/daily-reference-v1/weekly-activity.png",
+      "archive": "doc/ui-reference-remake/source-archive/daily-reference-v1/weekly-activity.png",
+      "sha256": "3bf25ebc4c764ccbaf023dfac6375b9c6cdd78bdc82a2de2b3eb015a42eea166",
+      "bytes": 17220
+    },
+    {
+      "oldPath": "public/art/daily-reference-v1/chest-ready.png",
+      "archive": "doc/ui-reference-remake/source-archive/daily-reference-v1/chest-ready.png",
+      "sha256": "37b4472bea4cb970ae76b4b1b6f0f0a46bb658981d9e4c51790e48392b3ad157",
+      "bytes": 6808
+    },
+    {
+      "oldPath": "public/art/patrol-reference-v1/tree-left.png",
+      "archive": "doc/ui-reference-remake/source-archive/patrol-reference-v1/tree-left.png",
+      "sha256": "d41ed926892877659d01829a4661447e91eac5160bf48203199cd5de99246471",
+      "bytes": 4029
+    },
+    {
+      "oldPath": "public/art/patrol-reference-v1/forest.png",
+      "archive": "doc/ui-reference-remake/source-archive/patrol-reference-v1/forest.png",
+      "sha256": "870656f5101073136a6653e38749bee6b9696745ccc29d8e713fb2e6432d90e0",
+      "bytes": 19066
+    },
+    {
+      "oldPath": "public/art/patrol-reference-v1/tree-right.png",
+      "archive": "doc/ui-reference-remake/source-archive/patrol-reference-v1/tree-right.png",
+      "sha256": "f9bb1d63959ede3d7348d553da88476b739bdf1113602588a889c474cfdc9760",
+      "bytes": 2974
+    },
+    {
+      "oldPath": "public/art/patrol-reference-v1/sky.png",
+      "archive": "doc/ui-reference-remake/source-archive/patrol-reference-v1/sky.png",
+      "sha256": "f1b5580a02a0c92cf7673e6f447bc03da95cffb8ac3ac6eb296ed7a411c57cc1",
+      "bytes": 4168
+    },
+    {
+      "oldPath": "public/art/patrol-reference-v1/manifest.json",
+      "archive": "doc/ui-reference-remake/source-archive/patrol-reference-v1/manifest.json",
+      "sha256": "00999e4dcb8d4429edcf720e00a4b3b77f0c74e7603ee288ca0c2aff5d011c60",
+      "bytes": 1478
+    },
+    {
+      "oldPath": "public/art/research-reference/Btn_Blue.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/Btn_Blue.png",
+      "sha256": "7631041d06af66861c82f7095eed89035d7ed0e92a73a20852876501b8acb493",
+      "bytes": 7864
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50022.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50022.png",
+      "sha256": "d3698803ba9796761d8461928df44273a9ca6ca702a1d336d677b9e6c8b642dd",
+      "bytes": 79818
+    },
+    {
+      "oldPath": "public/art/research-reference/card_main_bg_dot.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/card_main_bg_dot.png",
+      "sha256": "fc9c6fb206f3d679be3af982cd41276310b87117870f11f46f18ba1c401d8648",
+      "bytes": 15635
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50020.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50020.png",
+      "sha256": "66f71dfe9ac1d7423f4c7677a91831556d20e80269968bbfb921868c3e6b2bd6",
+      "bytes": 51922
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_icon_cardAdvanced.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_icon_cardAdvanced.png",
+      "sha256": "f7f747bda154e4a9204f621fa94b43b9018ca9bb24966b0c006081df7947ec89",
+      "bytes": 25991
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50019.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50019.png",
+      "sha256": "605ad7e1d22fa72d832f7db1c3aebc80fd580078bdd98e0bb98eb3c8061f7899",
+      "bytes": 57020
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50025.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50025.png",
+      "sha256": "6b35d9229d6f2f95383919edd8b873d29260e475d181daa95bd7138f0f9debad",
+      "bytes": 62552
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50026.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50026.png",
+      "sha256": "f8005f76fa08110d868e06f105aaa737072a6786f7709d8ed2c1df552481a8d6",
+      "bytes": 66014
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50027.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50027.png",
+      "sha256": "80d7ef720a6e1f30b7525dc66af8a3c9305520a8296d5dd47758edab3809f2f2",
+      "bytes": 69029
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50033.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50033.png",
+      "sha256": "a04d4a348a5a88a58879fa90ae8c5a868452da4973532daa94a3dd11f15786cc",
+      "bytes": 59346
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_common_i.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_common_i.png",
+      "sha256": "1e0a93fdedefc8d58c450bd132c344dd968989c0086bc8048447f08119e0f3cb",
+      "bytes": 1803
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_common_question.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_common_question.png",
+      "sha256": "00b848bf580fe1decd9590a42e53474b11181b1409de5cdfa627a1cb6ec91426",
+      "bytes": 3625
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50046.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50046.png",
+      "sha256": "e41f813137181296563bf74b70d3979c7364409927bbaf246c9275ce9c4d9e71",
+      "bytes": 82527
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50047.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50047.png",
+      "sha256": "b9e8d1bbdf8d175b5d4c8d03c8b18d2f6b256b0a608990313b79f440702f803b",
+      "bytes": 75109
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_main_card.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_main_card.png",
+      "sha256": "e344b5fb5d12d174ad9011524cccbdfbfe4f320063132dc1ef384165a287f30a",
+      "bytes": 11411
+    },
+    {
+      "oldPath": "public/art/research-reference/Btn_Yellow.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/Btn_Yellow.png",
+      "sha256": "a9d24db1f393d64d56558116ad41a260407f9d898accc5dfe3d696631c0a5170",
+      "bytes": 7286
+    },
+    {
+      "oldPath": "public/art/research-reference/README.md",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/README.md",
+      "sha256": "c848094a7409db22a84023ad20ae2ca98f1d128953d17fea6829a5da2f0f12f7",
+      "bytes": 647
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_icon_stamina.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_icon_stamina.png",
+      "sha256": "958ad077135869a88cbca04c7da3efb888e394fdb78bdb0819d90fddcb34be49",
+      "bytes": 8766
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_icon_diamond.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_icon_diamond.png",
+      "sha256": "ce5782ddf3274e8f34e187c72febeb6ebe33b48807f0608310df51f04f8a50e6",
+      "bytes": 10304
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50002.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50002.png",
+      "sha256": "44979d19e9af2e19436614910ff0abeef26e24e1108729351965a83ac4887689",
+      "bytes": 50318
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50001.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50001.png",
+      "sha256": "b6972d018e4af94db4ffbd54bff2c907fc3f07510d0283dba222d56a4195ccb5",
+      "bytes": 45173
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50029.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50029.png",
+      "sha256": "5427718e1e2b42d13c91f8d813ddd4448ecdd4d4a4d82992dc1b84e4e280189c",
+      "bytes": 87258
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50028.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50028.png",
+      "sha256": "264641932425b47812447f4f260e039582f5ba30ee951ac2a5b1cada0a2557ab",
+      "bytes": 69084
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50011.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50011.png",
+      "sha256": "e43ec2cc0d94c9b83f4678eb5280a96d0f84e33cd6862d1863f54a319789dffc",
+      "bytes": 73086
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50005.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50005.png",
+      "sha256": "de93fce2720372b411e8d363b5852250ac507e16a7bcaa14864daadf32a25ec9",
+      "bytes": 66653
+    },
+    {
+      "oldPath": "public/art/research-reference/Card_Back.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/Card_Back.png",
+      "sha256": "13bf6bbaff9357e17d68be4b8858c718e65f7c3bae6a86c4d4eceb6d57895aca",
+      "bytes": 44170
+    },
+    {
+      "oldPath": "public/art/research-reference/CardTop_BG.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/CardTop_BG.png",
+      "sha256": "41b9644322dd3a682fd844aa9c5381b73ad6136e0f0eee006fb552058b5f4df0",
+      "bytes": 472
+    },
+    {
+      "oldPath": "public/art/research-reference/stg_card_50006.png",
+      "archive": "doc/ui-reference-remake/source-archive/research-reference/stg_card_50006.png",
+      "sha256": "80364144551e37664a6a7e4348a9aeba39fdb8cc18c81c853b53e522093cc7d1",
+      "bytes": 67354
+    },
+    {
+      "oldPath": "public/art/shop-reference/stg_InventoryBox_bannerdi1.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/stg_InventoryBox_bannerdi1.png",
+      "sha256": "922f6371e51d667a853c26ee23796b31e29c7bffe2706b4dbf4f717fe3ef3313",
+      "bytes": 13078
+    },
+    {
+      "oldPath": "public/art/shop-reference/stg_common_i.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/stg_common_i.png",
+      "sha256": "1e0a93fdedefc8d58c450bd132c344dd968989c0086bc8048447f08119e0f3cb",
+      "bytes": 1803
+    },
+    {
+      "oldPath": "public/art/shop-reference/stg_main_store.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/stg_main_store.png",
+      "sha256": "7a1893f9a3afcbdb75a80db24a0095c8e0b4f3ff21508acc608656bb152e825c",
+      "bytes": 9204
+    },
+    {
+      "oldPath": "public/art/shop-reference/stg_icon_chest_box1.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/stg_icon_chest_box1.png",
+      "sha256": "4a6d4fa86cb16c66b67aa4f9c6686400c9a50e31b68a66533b26d3fa57815958",
+      "bytes": 47640
+    },
+    {
+      "oldPath": "public/art/shop-reference/BG_Store_blue.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/BG_Store_blue.png",
+      "sha256": "827194fbef27e3650b0a71e3c905dbb3bf3a50fa79bf39b7103f243a31296e10",
+      "bytes": 46703
+    },
+    {
+      "oldPath": "public/art/shop-reference/IconShopGem1.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/IconShopGem1.png",
+      "sha256": "2b33054001adf247372e99a4456fd7d5b36c144bd990762b449fd0fe8d9c9a18",
+      "bytes": 14595
+    },
+    {
+      "oldPath": "public/art/shop-reference/BG_Store_green.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/BG_Store_green.png",
+      "sha256": "b11942fc2a734cdd7c1956b669a028ed1a198a3c757c9457d9f2daa8b6ad9780",
+      "bytes": 14630
+    },
+    {
+      "oldPath": "public/art/shop-reference/stg_icon_stamina.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/stg_icon_stamina.png",
+      "sha256": "958ad077135869a88cbca04c7da3efb888e394fdb78bdb0819d90fddcb34be49",
+      "bytes": 8766
+    },
+    {
+      "oldPath": "public/art/shop-reference/BG_Store_purple.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/BG_Store_purple.png",
+      "sha256": "2c1d0005c3c993ef9b9d6225a5567c1f57d8deea693c3823cb36fc9c8ff0e861",
+      "bytes": 37760
+    },
+    {
+      "oldPath": "public/art/shop-reference/IconShopCoin1.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/IconShopCoin1.png",
+      "sha256": "bb89464e309bbf7371cea62a290805712ed51a2544131a652fb3b825317af8be",
+      "bytes": 20480
+    },
+    {
+      "oldPath": "public/art/shop-reference/IconShopCoin2.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/IconShopCoin2.png",
+      "sha256": "6d8073d69d4a5b13703e7f06070393f9b4411684c4a44ae3010f647b09c877d9",
+      "bytes": 39911
+    },
+    {
+      "oldPath": "public/art/shop-reference/IconShopCoin3.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/IconShopCoin3.png",
+      "sha256": "a6ec3ece2f0ad5223e91407a5f3477c0457c7b78ef699bd66b123c883a373a9c",
+      "bytes": 51897
+    },
+    {
+      "oldPath": "public/art/shop-reference/stg_common_icon_WatchVideos.png",
+      "archive": "doc/ui-reference-remake/source-archive/shop-reference/stg_common_icon_WatchVideos.png",
+      "sha256": "e6ee15104a880b0fb91fec93279f463d31bb8c18865be158c6ed6ba0cb54b992",
+      "bytes": 4694
+    }
+  ],
+  "preservedPsd": [
+    {
+      "path": "public/art/psd-main-v1/navigation/shop.png",
+      "sha256": "aaa85cabd6d6e1d4610621668327f8dde70a63f076302f1cf237809cbc439902",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/navigation/assembly.png",
+      "sha256": "572325371a1bd03e83f37bbb8ee7253b2077eca42936afa7a4512c9f51b5d342",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/navigation/battle.png",
+      "sha256": "9a87c0d2946809f0eb9dc6c7546cb6815a5243de75c5d1016b65826d130e9ada",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/navigation/research.png",
+      "sha256": "8845b848b3390754445646d5b05fd4bc1af6c6020dc7f8350d8e8834ab2210e3",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/navigation/supply.png",
+      "sha256": "55b1578e54da404c559ebe1782222840cb6c133b6d451d4bf04520523184dbcb",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/resources/coins-icon.png",
+      "sha256": "1a05931cb113812088aa5895975d094777c329ed5083968e90968bcceeb80722",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/resources/stamina-icon.png",
+      "sha256": "b171041513b086860200730bc770a80f9154d440fb9003bfc3d297d3941be9ad",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    },
+    {
+      "path": "public/art/psd-main-v1/resources/diamonds-icon.png",
+      "sha256": "0b7a0cca90f1fe15fe2c8ce06b50dcbefd66c6348014ae8e0a3eb20a1644ba89",
+      "reason": "User explicitly requested existing PSD identity unchanged"
+    }
+  ],
+  "retainedOriginals": [
+    {
+      "path": "public/art/research-original",
+      "evidence": "doc/peripheral-redesign/technology-research/IMPLEMENTATION.md: original project technology icons; no reference-directory fallback retained."
+    },
+    {
+      "path": "public/art/weapon-original",
+      "evidence": "Existing project ivory/navy weapon identities, predating this UI remake; retained by project subject protection. Hash comparison against archived competitor PNGs is part of the guard."
+    },
+    {
+      "path": "public/art/project-inventory-icons-v1",
+      "evidence": "Original built-in generation sources, prompts and export manifest."
+    },
+    {
+      "path": "public/art/project-task-icons-v1",
+      "evidence": "Original built-in generation sources, prompts and export manifest."
+    }
+  ],
+  "latestResourceRule": "User subsequently authorized new HD resources matching the stamina/diamond PSD style. Source PSD files remain intact; runtime resources now use project-resource-icons-v2. Bottom navigation remains unchanged."
+}

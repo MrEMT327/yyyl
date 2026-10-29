@@ -1,0 +1,35 @@
+# Upgrade icon credits
+
+Icons made by Lorc, Skoll and Delapouite. Available on https://game-icons.net.
+
+License: Creative Commons Attribution 3.0 Unported (CC BY 3.0)
+https://creativecommons.org/licenses/by/3.0/
+
+Original SVG artwork is retained in src/ui/upgrade-icons. Runtime presentation removes the black background, normalizes bounds, and tints foreground ivory. No icon badges or overlays. These are third-party assets, not original project artwork.
+
+- cannon: https://game-icons.net/1x1/skoll/machine-gun.html (source: https://github.com/game-icons/icons/blob/master/skoll/machine-gun.svg)
+- rail: https://game-icons.net/1x1/lorc/ion-cannon-blast.html (source: https://github.com/game-icons/icons/blob/master/lorc/ion-cannon-blast.svg)
+- rocket: https://game-icons.net/1x1/lorc/missile-pod.html (source: https://github.com/game-icons/icons/blob/master/lorc/missile-pod.svg)
+- laser: https://game-icons.net/1x1/lorc/laser-blast.html (source: https://github.com/game-icons/icons/blob/master/lorc/laser-blast.svg)
+- scatter: https://game-icons.net/1x1/lorc/bullets.html (source: https://github.com/game-icons/icons/blob/master/lorc/bullets.svg)
+- sidegun: https://game-icons.net/1x1/lorc/strafe.html (source: https://github.com/game-icons/icons/blob/master/lorc/strafe.svg)
+- grenade: https://game-icons.net/1x1/lorc/grenade.html (source: https://github.com/game-icons/icons/blob/master/lorc/grenade.svg)
+- mine: https://game-icons.net/1x1/lorc/land-mine.html (source: https://github.com/game-icons/icons/blob/master/lorc/land-mine.svg)
+- beam: https://game-icons.net/1x1/lorc/laserburn.html (source: https://github.com/game-icons/icons/blob/master/lorc/laserburn.svg)
+- lightning: https://game-icons.net/1x1/lorc/lightning-arc.html (source: https://github.com/game-icons/icons/blob/master/lorc/lightning-arc.svg)
+- freeze: https://game-icons.net/1x1/lorc/snowflake-1.html (source: https://github.com/game-icons/icons/blob/master/lorc/snowflake-1.svg)
+- orb: https://game-icons.net/1x1/lorc/double-ringed-orb.html (source: https://github.com/game-icons/icons/blob/master/lorc/double-ringed-orb.svg)
+- toxin: https://game-icons.net/1x1/lorc/poison-gas.html (source: https://github.com/game-icons/icons/blob/master/lorc/poison-gas.svg)
+- blades: https://game-icons.net/1x1/lorc/crossed-sabres.html (source: https://github.com/game-icons/icons/blob/master/lorc/crossed-sabres.svg)
+- gravity: https://game-icons.net/1x1/lorc/vortex.html (source: https://github.com/game-icons/icons/blob/master/lorc/vortex.svg)
+- lightmine: https://game-icons.net/1x1/lorc/laser-sparks.html (source: https://github.com/game-icons/icons/blob/master/lorc/laser-sparks.svg)
+- pyro: https://game-icons.net/1x1/delapouite/flamethrower.html (source: https://github.com/game-icons/icons/blob/master/delapouite/flamethrower.svg)
+- shield: https://game-icons.net/1x1/lorc/energy-shield.html (source: https://github.com/game-icons/icons/blob/master/lorc/energy-shield.svg)
+- tail: https://game-icons.net/1x1/delapouite/heavy-bullets.html (source: https://github.com/game-icons/icons/blob/master/delapouite/heavy-bullets.svg)
+- drone: https://game-icons.net/1x1/delapouite/delivery-drone.html (source: https://github.com/game-icons/icons/blob/master/delapouite/delivery-drone.svg)
+- power: https://game-icons.net/1x1/lorc/power-lightning.html (source: https://github.com/game-icons/icons/blob/master/lorc/power-lightning.svg)
+- cadence: https://game-icons.net/1x1/delapouite/reload-gun-barrel.html (source: https://github.com/game-icons/icons/blob/master/delapouite/reload-gun-barrel.svg)
+- coverage: https://game-icons.net/1x1/delapouite/expand.html (source: https://github.com/game-icons/icons/blob/master/delapouite/expand.svg)
+- evolve-1: https://game-icons.net/1x1/delapouite/upgrade.html (source: https://github.com/game-icons/icons/blob/master/delapouite/upgrade.svg)
+- evolve-2: https://game-icons.net/1x1/delapouite/armor-upgrade.html (source: https://github.com/game-icons/icons/blob/master/delapouite/armor-upgrade.svg)
+- evolve-3: https://game-icons.net/1x1/delapouite/swords-power.html (source: https://github.com/game-icons/icons/blob/master/delapouite/swords-power.svg)

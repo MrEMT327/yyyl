@@ -1,0 +1,357 @@
+/* The new 750 × 1624 equipment PSD supplies this page's scenery and controls.
+   The existing project heading/resources and global navigation remain live. */
+#gui-casual-lobby.equipment-reference[data-subpage=''] .pl-shell {
+  /* A query container cannot query its own width: cqw here falls back to the
+     viewport on desktop. Let the child header resolve cqw against this shell. */
+  grid-template-rows: auto minmax(0, 1fr) var(--lobby-nav-reserve) !important;
+  padding-top: 0;
+  background: #293b51;
+}
+#gui-casual-lobby.equipment-reference[data-subpage=''] .pl-shell::before {
+  content: '' !important;
+  position: absolute;
+  inset: 0 0 auto;
+  height: 89.5cqw;
+  background: url('/art/psd-equipment-v1/hangar-scenery.webp') center / 100% 100% no-repeat;
+  filter: none;
+  opacity: 1;
+  pointer-events: none;
+}
+#gui-casual-lobby.equipment-reference[data-subpage=''] .pl-header {
+  height: 12.5cqw;
+  min-height: 0;
+  background: transparent !important;
+  border: 0;
+  box-shadow: none;
+}
+#gui-casual-lobby.equipment-reference[data-subpage=''] .pl-body,
+#gui-casual-lobby.equipment-reference[data-subpage=''] .ag-page {
+  background: transparent !important;
+}
+#gui-casual-lobby.equipment-reference .ag-hangar.eq-hangar {
+  height: 77cqw;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  background: none;
+  border: 0;
+}
+#gui-casual-lobby.equipment-reference .ag-hangar::before,
+#gui-casual-lobby.equipment-reference .ag-hangar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 50%;
+  height: 8cqw;
+  background: url('/art/psd-equipment-v1/hangar-divider.png') left bottom / 200% 100% no-repeat;
+  pointer-events: none;
+}
+#gui-casual-lobby.equipment-reference .ag-hangar::before { left: 0; }
+#gui-casual-lobby.equipment-reference .ag-hangar::after { right: 0; transform: scaleX(-1); }
+#gui-casual-lobby.equipment-reference .ag-hangar .eq-aircraft-stage {
+  display: block;
+  /* Match A: a separate crew card above the enlarged, visually centered hull. */
+  inset: 16cqw auto auto 5%;
+  width: 92cqw;
+  height: 59.8cqw;
+  z-index: 1;
+}
+#gui-casual-lobby.equipment-reference .eq-aircraft-stage::before {
+  content: '';
+  position: absolute;
+  left: 14%;
+  top: 59%;
+  width: 66%;
+  height: 24%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse,#15395a66 5%,#2d63924d 42%,#6cabc833 62%,transparent 72%);
+  border: 1px solid #abdffa22;
+  filter: blur(.35cqw);
+  pointer-events: none;
+  z-index: -1;
+}
+#gui-casual-lobby.equipment-reference .ag-pilot-card {
+  position: absolute;
+  left: 23.4%;
+  top: 6.9cqw;
+  width: 53.4%;
+  height: 19.4cqw;
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  padding: .8cqw 2cqw .8cqw 1cqw;
+  border: 0;
+  border-radius: 0;
+  color: #f5faff;
+  background: radial-gradient(ellipse at 15% 25%,#456d89aa,transparent 65%),linear-gradient(115deg,#214767f2,#122d4df2);
+  box-shadow: 0 .8cqw 2cqw #0c24383d;
+  clip-path: polygon(2.2cqw 0,100% 0,100% calc(100% - 2.2cqw),calc(100% - 2.2cqw) 100%,0 100%,0 2.2cqw);
+  text-align: left;
+  cursor: pointer;
+  z-index: 3;
+}
+#gui-casual-lobby.equipment-reference .ag-pilot-card::before {
+  content: '';
+  position: absolute;
+  inset: 1.4cqw 2.2cqw 1.4cqw 25cqw;
+  border-top: 1px solid #81d8fc99;
+  border-bottom: 1px solid #81d8fc66;
+  background: repeating-linear-gradient(0deg,transparent 0 3cqw,#75bcdf0d 3cqw calc(3cqw + 1px));
+  pointer-events: none;
+}
+#gui-casual-lobby.equipment-reference .ag-pilot-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-image: url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 2.2cqw 2.2cqw 2.8cqw 2.2cqw stretch;
+  filter: drop-shadow(0 0 .35cqw #65b7f9);
+}
+/* Small labels must stay readable after fitting the PSD into a phone viewport.
+   Stack each stat so five-digit values fit without shrinking their glyphs. */
+#gui-casual-lobby.equipment-reference .ag-pilot-select:focus-visible,
+#gui-casual-lobby.equipment-reference .ag-pilot-stats:focus-visible { outline: 2px solid white; outline-offset: -3px; }
+#gui-casual-lobby.equipment-reference .ag-pilot-select { display:flex;align-items:center;gap:1.4cqw;width:100%;height:100%;padding:0;border:0;border-radius:0;box-shadow:none;background:none;color:inherit;text-align:left;min-width:0; }
+#gui-casual-lobby.equipment-reference .ag-pilot-select .ag-pilot-info { flex:1;align-self:flex-start;padding-top:0;padding-bottom:0;gap:1px; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats { position:absolute;left:24.4cqw;right:2cqw;bottom:1.4cqw;min-width:0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:1cqw;padding:2px 0 0;border:0;border-top:1px solid #81d8fc55;border-radius:0;background:none;box-shadow:none;color:#fff; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats>span { display:flex;flex-direction:column;align-items:flex-start;gap:0;min-width:0;white-space:nowrap; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats small { font-size:max(10px,2.2cqw);line-height:1.1;color:#b6d7ee; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats b { font-size:max(11px,2.6cqw);line-height:1.1;font-variant-numeric:tabular-nums; }
+#gui-casual-lobby.equipment-reference .ag-pilot-card:hover { background-color: #214661; }
+#gui-casual-lobby.equipment-reference .ag-pilot-avatar {
+  position: relative;
+  flex: 0 0 22cqw;
+  height: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg,#000 76%,transparent 100%);
+}
+#gui-casual-lobby.equipment-reference .ag-pilot-avatar-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center 20%;
+}
+#gui-casual-lobby.equipment-reference .ag-pilot-card[data-pilot-id='pilot-06'] .ag-pilot-avatar-art { object-view-box: inset(3% 3% 55% 12%); object-position: center top; }
+#gui-casual-lobby.equipment-reference .ag-pilot-card[data-pilot-id='pilot-10'] .ag-pilot-avatar-art { object-view-box: inset(0% 26% 63% 27%); }
+#gui-casual-lobby.equipment-reference .ag-pilot-info { min-width: 0; display: grid; gap: 1.4cqw; }
+#gui-casual-lobby.equipment-reference .ag-pilot-info small { color: #b6d7ee; font-size: max(11px,2.8cqw); line-height: 1.1; }
+#gui-casual-lobby.equipment-reference .ag-pilot-info strong { min-width:0;font-size:max(13px,3.2cqw);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+/* Restore the original compact icon entries inside the hangar. */
+#gui-casual-lobby.equipment-reference .ag-catalog {
+  position: absolute;
+  left: 26%;
+  right: 26%;
+  bottom: 1.5cqw;
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  align-items: stretch;
+  gap: 1.5cqw;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button {
+  --wc-button-height: 12cqw;
+  --psd-button-corner: 2.8cqw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .3cqw;
+  width: 100%;
+  height: var(--wc-button-height);
+  min-height: var(--wc-button-height);
+  min-width: 0;
+  padding: .5cqw;
+  font-size: clamp(10px,2.8cqw,14px);
+}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button>span {white-space:nowrap;line-height:1.2}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-preview-toggle {white-space:nowrap;font-size:clamp(10px,2.8cqw,14px)}
+#gui-casual-lobby.equipment-reference .ag-catalog .pl-icon {
+  width: 5cqw;
+  height: 5cqw;
+  min-height: 0;
+}
+#gui-casual-lobby.equipment-reference .ag-stats {
+  bottom: 12.5cqw;
+  height: 4.5cqw;
+  gap: 1cqw;
+}
+#gui-casual-lobby.equipment-reference .ag-stats > span {
+  gap: .6cqw;
+  padding: .4cqw 1cqw;
+  font-size: 2.6cqw;
+}
+#gui-casual-lobby.equipment-reference .ag-stats .pl-icon { width: 3cqw; height: 3cqw; }
+
+#gui-casual-lobby.equipment-reference .ag-hangar .ag-position,
+#gui-casual-lobby.equipment-reference .ag-hangar .ag-weapon {
+  position: absolute;
+  width: 15.1cqw !important;
+  height: 15.1cqw !important;
+  aspect-ratio: 1;
+}
+#gui-casual-lobby.equipment-reference .ag-weapon { left: 4.2cqw; top: 12.4cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-1 { right: 4cqw; top: 12.4cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-2 { left: 4.2cqw; top: 31.2cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-3 { right: 4cqw; top: 31.2cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-4 { left: 4.2cqw; top: 49.8cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-5 { right: 4cqw; top: 49.8cqw; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  overflow: visible;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  isolation: isolate;
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 0;
+  background: none !important;
+  border-image: var(--quality-plate, url('/art/psd-equipment-v1/frame-gray.png')) 18 fill / 2.4cqw stretch !important;
+  filter: none;
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card.is-empty::before {
+  background: none !important;
+  border-image: url('/art/psd-equipment-v1/frame-empty.png') 18 fill / 2.4cqw stretch !important;
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card > img {
+  position: absolute;
+  left: 8%;
+  top: 6%;
+  width: 84%;
+  height: 72%;
+  object-fit: contain;
+  padding: 0;
+  filter: none;
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card > strong,
+#gui-casual-lobby.equipment-reference .ag-page :is(.ag-weapon,.is-empty) > b { display: none; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:not(.ag-weapon):not(.is-empty) > b {
+  display: block;
+  left: 6%;
+  right: 6%;
+  bottom: 5%;
+  font-size: max(11px,2.5cqw);
+  line-height: 1;
+  text-shadow: 0 1px 0 #102538;
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card small { font-size: inherit; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-tag {
+  display: block;
+  top: 5%;
+  left: 5%;
+  font-size: max(9px,2.1cqw);
+  line-height: 1.1;
+  padding: .4cqw .6cqw;
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-lock { right: 8%; top: 8%; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-card.is-selected { outline: 2px solid #fff4a9; outline-offset: -2px; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-weapon > span { display: grid; place-items: center; width: 100%; height: 100%; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-weapon.is-filled > span {position:absolute;left:8%;top:6%;width:84%;height:72%}
+#gui-casual-lobby.equipment-reference .ag-page .ag-weapon.is-filled > b {display:block;position:absolute;left:6%;right:6%;bottom:5%;padding:0;text-align:center;font-size:max(11px,2.5cqw);line-height:1;text-shadow:0 1px 0 #102538}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card .psd-empty-mark {
+  position: absolute;
+  left: 35%;
+  top: 35%;
+  width: 30%;
+  height: 30%;
+  margin: 0;
+  background: #fff;
+  mask-size: 100% 100%;
+  opacity: 1;
+}
+
+#gui-casual-lobby.equipment-reference .ag-toolbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  height: 10.7cqw;
+  padding: 0 5.4cqw;
+  background: #38577555;
+  border: 0;
+  box-shadow: inset 0 -1px #94c6ed88;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  color: #f7fbff;
+  font: 800 4.4cqw/1 'Microsoft YaHei',sans-serif;
+  text-shadow: 0 1px 0 #22374b;
+  pointer-events: none;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar > :is(.ag-select,.ag-button) {
+  display: block;
+  width: 24cqw;
+  height: 8cqw;
+  min-height: 0;
+  padding: 0;
+  background: none;
+  border: 2.4cqw solid transparent !important;
+  border-image: url('/art/psd-equipment-v1/button-gold.png') 18 fill / 2.4cqw stretch !important;
+  box-shadow: none;
+  border-radius: 0;
+  filter: none;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar > .ag-button {
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font: 800 3.2cqw/1 'Microsoft YaHei',sans-serif;
+  text-shadow: 0 1px 0 #995514;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar > .ag-button::before,
+#gui-casual-lobby.equipment-reference .ag-toolbar > .ag-button::after { content: none !important; }
+#gui-casual-lobby.equipment-reference .ag-toolbar .ag-select select {
+  position: absolute;
+  inset: -2.4cqw;
+  width: calc(100% + 4.8cqw);
+  height: calc(100% + 4.8cqw);
+  padding: 0 4px;
+  text-align: center;
+  text-align-last: center;
+  appearance: none;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  font: 800 3.2cqw/1 'Microsoft YaHei',sans-serif;
+  text-shadow: 0 1px 0 #995514;
+  cursor: pointer;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar .ag-select::after { content: none; }
+
+#gui-casual-lobby.equipment-reference .ag-inventory.eq-inventory {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 2cqw 5cqw 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: url('/art/psd-equipment-v1/inventory-grid.webp') center top / 100% 100% no-repeat !important;
+}
+#gui-casual-lobby.equipment-reference .ag-inventory > .ag-sr { position: absolute; }
+#gui-casual-lobby.equipment-reference .ag-inventory .ag-grid {
+  display: grid;
+  grid-template-columns: repeat(5,16cqw);
+  grid-auto-rows: 16cqw;
+  justify-content: space-between;
+  align-content: start;
+  column-gap: 0;
+  row-gap: 1.733333cqw;
+  min-height: 100%;
+}
+#gui-casual-lobby.equipment-reference .ag-inventory-extra { padding: 8px 0 20px; }
+#gui-casual-lobby.equipment-reference .ag-inventory-extra h2 { margin-top: 10px; }

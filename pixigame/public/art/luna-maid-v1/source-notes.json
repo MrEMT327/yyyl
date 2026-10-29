@@ -1,0 +1,14 @@
+{
+  "sourceRepository": "https://github.com/Chaoray/AzurLane-Live2D-Viewer",
+  "sourceCommit": "88cb6e56a0ad472fe7e546509f096545d2bbc5b9",
+  "model": "heitaizi_2",
+  "sourceRole": "Compiled motion/physics driver, not target visible artwork.",
+  "originalColourAtlasIncluded": false,
+  "targetArtwork": "Approved maid design and recorded prior underpaint; V10 adds continuous shoulder cloth and reuses complete glove paint on connected meshes.",
+  "representation": "29 original RGBA layers and target meshes; not a newly compiled native moc3/cmo3.",
+  "motionsValidated": [
+    "idle",
+    "touch_head"
+  ],
+  "otherOriginalMotions": "Removed from the game runtime; idle and touch_head are the only retained motions."
+}

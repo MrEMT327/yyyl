@@ -1,0 +1,136 @@
+/* Reference composition with project-owned PSD surfaces and live inventory data. */
+#gui-casual-lobby .bag-backdrop {
+  --bag-paper:#e9e5d7;--bag-ink:#252527;--bag-purple:#8870cb;
+  --bag-outline:#161a25;--bag-detail-blue:#4eb8ee;
+  padding:3.5%;background:#0009;backdrop-filter:none;
+}
+#gui-casual-lobby .pl-modal.bag-modal {
+  width:100%;height:74%;min-height:min(420px,88%);max-height:88%;
+  padding:0;border:3px solid var(--bag-outline);border-radius:9px;
+  background:var(--bag-paper);color:var(--bag-ink);
+  box-shadow:0 5px 0 #080b12,0 14px 34px #0005;isolation:auto;
+}
+#gui-casual-lobby .bag-modal::before {content:none}
+#gui-casual-lobby .bag-modal .bag-heading {
+  position:relative;display:flex;justify-content:center;flex:none;
+  height:48px;min-height:48px;padding:0 49px;margin:0;
+  background:var(--bag-purple);border-bottom:3px solid var(--bag-outline);
+  box-shadow:inset 0 2px #d8c7ff80;
+}
+#gui-casual-lobby .bag-heading h2 {
+  margin:0;text-align:center;color:#fff;font-size:26px;font-weight:900;line-height:1.2;
+  letter-spacing:1px;paint-order:stroke fill;-webkit-text-stroke:3px #1e182b;
+  text-shadow:0 2px #1e182b;
+}
+#gui-casual-lobby .bag-close {
+  position:absolute;right:3px;top:1px;display:grid;place-items:center;
+  width:44px;height:44px;min-width:44px;min-height:44px;padding:10px;
+  border:0;border-radius:0;background:transparent;box-shadow:none;
+  isolation:isolate;cursor:pointer;
+}
+#gui-casual-lobby .bag-close::before {
+  content:"";position:absolute;inset:4px;z-index:-1;
+  background:url('/art/psd-popup-v1/close.png') center/100% 100% no-repeat;
+}
+#gui-casual-lobby .bag-close>.gui-icon {width:22px;height:22px;filter:none}
+#gui-casual-lobby .bag-modal .bag-content {
+  flex:1;display:flex;flex-direction:column;min-height:0;padding:0;
+  overflow:hidden;background:var(--bag-paper);scrollbar-gutter:auto;
+}
+#gui-casual-lobby .bag-grid {
+  flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-content:start;
+  gap:8px 6px;padding:14px 10px;scrollbar-width:thin;
+  scrollbar-color:#999182 transparent;
+}
+#gui-casual-lobby .bag-item,#gui-casual-lobby .bag-detail-icon {
+  position:relative;display:grid;place-items:center;aspect-ratio:1;min-width:0;
+  padding:5px;border:2px solid #142135;border-radius:5px;
+  background:#28455c url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;
+  box-shadow:inset 0 0 0 1px #c6efff,0 1px #7e9bb0;
+}
+#gui-casual-lobby .bag-item {width:100%;overflow:hidden;text-shadow:none;transition:transform .1s ease-out}
+#gui-casual-lobby .bag-item-art {display:grid;place-items:center;width:100%;height:100%;min-width:0}
+#gui-casual-lobby .bag-item-art>:is(img,svg),#gui-casual-lobby .bag-detail-icon>:is(img,svg) {
+  width:100%;height:100%;max-width:100%;max-height:100%;padding:2px;
+  object-fit:contain;filter:none;
+}
+#gui-casual-lobby .bag-item-count {
+  position:absolute;right:3px;bottom:1px;max-width:calc(100% - 4px);
+  color:#fff;font-size:clamp(12px,4cqw,17px);font-weight:900;line-height:1.3;
+  white-space:nowrap;paint-order:stroke fill;-webkit-text-stroke:2px #142135;
+  text-shadow:0 1px #142135;font-variant-numeric:tabular-nums;
+}
+#gui-casual-lobby .bag-empty {grid-column:1/-1;padding:48px 0;color:#787568;text-align:center;font-size:14px}
+#gui-casual-lobby .bag-tabs {
+  flex:none;display:flex;justify-content:flex-end;padding:0 0 0 23%;height:43px;
+  background:#3c3b42;border-top:2px solid var(--bag-outline);
+}
+#gui-casual-lobby .bag-tab {
+  position:relative;flex:1;min-width:0;padding:0 2px 3px;border:0;border-left:1px solid #40382f;
+  border-radius:0;background:#dfd1a7;color:#625335;font-size:17px;font-weight:800;
+  box-shadow:inset 0 -3px #b3a887;isolation:isolate;text-shadow:none;
+}
+#gui-casual-lobby .bag-tab.is-selected {background:#ffdf34;color:#735214;box-shadow:inset 0 -3px #e4ad20}
+#gui-casual-lobby .bag-detail-backdrop {
+  position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;
+  padding:12%;background:#0009;pointer-events:auto;
+}
+#gui-casual-lobby .bag-detail {
+  width:100%;max-height:80%;overflow:auto;border:3px solid var(--bag-outline);
+  border-radius:9px;background:var(--bag-paper);color:var(--bag-ink);
+  box-shadow:0 3px 0 #0005;scrollbar-width:thin;
+}
+#gui-casual-lobby .bag-detail-header {
+  position:relative;display:grid;grid-template-columns:66px minmax(0,1fr);align-items:center;
+  gap:10px;min-height:96px;padding:12px 12px 12px 14px;background:var(--bag-detail-blue);
+  border-bottom:3px solid #c4ecfb;
+}
+#gui-casual-lobby .bag-detail-header .bag-close {top:-1px;right:0;transform:scale(.82);transform-origin:top right}
+#gui-casual-lobby .bag-detail-info {min-width:0;padding-right:3px}
+#gui-casual-lobby .bag-detail-info h3 {
+  margin:0 16px 5px 0;color:#fff;font-size:19px;font-weight:900;line-height:1.35;
+  overflow-wrap:anywhere;paint-order:stroke fill;-webkit-text-stroke:2px #153651;text-shadow:0 1px #153651;
+}
+#gui-casual-lobby .bag-detail-info p {margin:0;color:#fff;font-size:14px;font-weight:700;line-height:1.5;overflow-wrap:anywhere;text-shadow:0 1px #194d78}
+#gui-casual-lobby .bag-detail-info strong {font-variant-numeric:tabular-nums}
+#gui-casual-lobby .bag-detail-body {min-height:118px;margin:5px;padding:0 8px 18px;background:#e1ddcf;border-radius:3px}
+#gui-casual-lobby .bag-detail-body h4 {margin:0 0 7px;padding:5px 0;color:#8c887a;font-size:14px;font-weight:800;text-align:center}
+#gui-casual-lobby .bag-detail-body p {margin:0;color:#41413d;font-size:15px;line-height:1.7;font-weight:700;text-align:left}
+#gui-casual-lobby .bag-item:active,#gui-casual-lobby .bag-close:active {translate:0 1px}
+#gui-casual-lobby :is(.bag-item,.bag-tab):focus-visible {outline:3px solid #ffe144;outline-offset:1px}
+#gui-casual-lobby .bag-tab:focus-visible {outline-color:#224d81;outline-offset:-4px}
+@container(max-width:340px) {
+  #gui-casual-lobby .bag-grid {padding:12px 7px;gap:7px 5px}
+  #gui-casual-lobby .bag-detail-backdrop {padding:9%}
+  #gui-casual-lobby .bag-detail-header {grid-template-columns:58px minmax(0,1fr);gap:8px;padding-left:10px}
+  #gui-casual-lobby .bag-detail-info h3 {font-size:17px}
+  #gui-casual-lobby .bag-detail-body p {font-size:14px}
+}
+@media(prefers-reduced-motion:reduce) {
+  #gui-casual-lobby .bag-item {transition:none}
+}
+
+/* Item actions reuse the common PSD nine-slice buttons. */
+#gui-casual-lobby .bag-use-controls{margin-top:12px;display:grid;gap:10px}
+#gui-casual-lobby .bag-use-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#gui-casual-lobby .bag-use-actions{align-items:start}
+#gui-casual-lobby .bag-use-actions>:only-child{grid-column:1/-1}
+#gui-casual-lobby .bag-item-sources .bag-use-actions{grid-template-columns:minmax(0,1fr)}
+#gui-casual-lobby .bag-batch-action{display:grid;gap:5px;min-width:0;text-align:center}
+#gui-casual-lobby .bag-batch-action>small{font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#gui-casual-lobby .bag-use-button.wc-button{width:100%;min-width:0;min-height:44px;padding:9px 7px;white-space:nowrap;font-size:13px;line-height:1.4}
+#gui-casual-lobby .bag-use-choice{display:grid;gap:6px;font-size:14px;font-weight:700}
+#gui-casual-lobby .bag-use-choice select{width:100%;min-width:0;min-height:42px;font-size:14px}
+#gui-casual-lobby .bag-use-controls details{font-size:13px;line-height:1.6}
+#gui-casual-lobby .bag-use-controls button:disabled{opacity:.55;cursor:default}
+
+/* Bounded batches retain the common PSD buttons and fixed-length corners. */
+#gui-casual-lobby .bag-use-quantity{display:grid;gap:8px;min-width:0;font-size:14px;font-weight:700}
+#gui-casual-lobby .bag-quantity-row{display:grid;grid-template-columns:44px minmax(0,1fr) 44px 56px;gap:5px;align-items:center}
+#gui-casual-lobby .bag-quantity-row .wc-button{min-height:44px;padding:6px 3px;--psd-button-corner:10px}
+#gui-casual-lobby .bag-quantity-row input{width:100%;min-width:0;min-height:44px;padding:5px 3px;box-sizing:border-box;text-align:center;font:inherit;font-variant-numeric:tabular-nums;color:#172c39;background:#fff9e9;border:2px solid #617681;border-radius:3px}
+#gui-casual-lobby .bag-use-quantity input:focus-visible{outline:3px solid #224d81;outline-offset:1px}
+#gui-casual-lobby .bag-use-quantity p{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+
+#gui-casual-lobby .bag-fragment-badge{position:absolute;left:3px;top:3px;padding:2px 4px;border:1px solid #122b41;border-radius:3px;background:#224b6de8;color:#fff;font-size:11px;font-weight:800;line-height:1.2;pointer-events:none}

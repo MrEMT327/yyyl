@@ -1,0 +1,4 @@
+.replica-battle-host{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;background:#050c12;overscroll-behavior:none}
+.replica-battle-frame{display:block;border:0;width:min(100vw,56.25dvh);height:min(100dvh,177.777778vw);background:#122334}
+.replica-battle-active{overflow:hidden}
+

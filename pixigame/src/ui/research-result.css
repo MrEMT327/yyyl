@@ -1,0 +1,25 @@
+/* UI_CardDrawResult hierarchy; own PSD frame/button and original talent icon. */
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='researchResult']:has(.research-awakening-result) {
+  --popup-width:84cqw;--popup-height:auto;--popup-max-height:85%;--popup-min-height:0px;
+}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-awakening-result {
+  display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0 2cqw 1cqw;
+  color:#20384e;text-align:center;
+}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-emblem {
+  position:relative;display:grid;place-items:center;width:22cqw;height:22cqw;max-width:100px;max-height:100px;
+  margin:1cqw auto 2cqw;background:none;border:0;box-shadow:none;
+}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-icon {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-name {margin:0;color:#19354c;font:400 5cqw/1.35 PsdPopup,sans-serif}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-level {display:flex;align-items:center;justify-content:center;gap:6cqw;margin:2cqw 0 4cqw;font-size:17px;line-height:1.5;font-variant-numeric:tabular-nums}
+#gui-casual-lobby [data-modal-type='researchResult'] :is(.research-result-level,.research-result-stat) i {font-style:normal;color:#486b82}
+#gui-casual-lobby [data-modal-type='researchResult'] :is(.research-result-level,.research-result-stat) strong {color:#125676;font-weight:700}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-changes {border-block:1px solid #6b879e88;padding:1cqw 0}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-stat {padding:2cqw 0;display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:2cqw;font-size:14px;line-height:1.5;text-align:left}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-stat+ .research-result-stat {border-top:1px solid #7c95aa44}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-stat>div {display:grid;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);align-items:center;gap:2cqw;text-align:center;white-space:normal;font-variant-numeric:tabular-nums;min-width:0}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-stat :is(span,strong) {min-width:0;overflow-wrap:anywhere}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-core {display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:14px}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-result-core img {width:26px;height:26px;object-fit:contain}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-awakening-result .research-close {width:100%;margin:5cqw 0 0;--wc-button-height:48px;flex:none}

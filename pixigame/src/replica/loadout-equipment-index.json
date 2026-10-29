@@ -1,0 +1,1388 @@
+{
+  "version": 1,
+  "sourceRevision": "b23e8c8a43c00b585ea4cae385feeaf84d917dfe3831b4fc947d2044090bce9a",
+  "slots": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "equipment": [
+    {
+      "id": 4100110,
+      "slot": 1,
+      "maxLevel": 10
+    },
+    {
+      "id": 4100120,
+      "slot": 1,
+      "maxLevel": 20
+    },
+    {
+      "id": 4100130,
+      "slot": 1,
+      "maxLevel": 40
+    },
+    {
+      "id": 4100140,
+      "slot": 1,
+      "maxLevel": 60
+    },
+    {
+      "id": 4100141,
+      "slot": 1,
+      "maxLevel": 80
+    },
+    {
+      "id": 4100142,
+      "slot": 1,
+      "maxLevel": 100
+    },
+    {
+      "id": 4100150,
+      "slot": 1,
+      "maxLevel": 120
+    },
+    {
+      "id": 4100151,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100152,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100153,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100160,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100210,
+      "slot": 1,
+      "maxLevel": 10
+    },
+    {
+      "id": 4100220,
+      "slot": 1,
+      "maxLevel": 20
+    },
+    {
+      "id": 4100230,
+      "slot": 1,
+      "maxLevel": 40
+    },
+    {
+      "id": 4100240,
+      "slot": 1,
+      "maxLevel": 60
+    },
+    {
+      "id": 4100241,
+      "slot": 1,
+      "maxLevel": 80
+    },
+    {
+      "id": 4100242,
+      "slot": 1,
+      "maxLevel": 100
+    },
+    {
+      "id": 4100250,
+      "slot": 1,
+      "maxLevel": 120
+    },
+    {
+      "id": 4100251,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100252,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100253,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100260,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100310,
+      "slot": 1,
+      "maxLevel": 10
+    },
+    {
+      "id": 4100320,
+      "slot": 1,
+      "maxLevel": 20
+    },
+    {
+      "id": 4100330,
+      "slot": 1,
+      "maxLevel": 40
+    },
+    {
+      "id": 4100340,
+      "slot": 1,
+      "maxLevel": 60
+    },
+    {
+      "id": 4100341,
+      "slot": 1,
+      "maxLevel": 80
+    },
+    {
+      "id": 4100342,
+      "slot": 1,
+      "maxLevel": 100
+    },
+    {
+      "id": 4100350,
+      "slot": 1,
+      "maxLevel": 120
+    },
+    {
+      "id": 4100351,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100352,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100353,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100360,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100410,
+      "slot": 1,
+      "maxLevel": 10
+    },
+    {
+      "id": 4100420,
+      "slot": 1,
+      "maxLevel": 20
+    },
+    {
+      "id": 4100430,
+      "slot": 1,
+      "maxLevel": 40
+    },
+    {
+      "id": 4100440,
+      "slot": 1,
+      "maxLevel": 60
+    },
+    {
+      "id": 4100441,
+      "slot": 1,
+      "maxLevel": 80
+    },
+    {
+      "id": 4100442,
+      "slot": 1,
+      "maxLevel": 100
+    },
+    {
+      "id": 4100450,
+      "slot": 1,
+      "maxLevel": 120
+    },
+    {
+      "id": 4100451,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100452,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100453,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4100460,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4110110,
+      "slot": 1,
+      "maxLevel": 10
+    },
+    {
+      "id": 4110120,
+      "slot": 1,
+      "maxLevel": 20
+    },
+    {
+      "id": 4110130,
+      "slot": 1,
+      "maxLevel": 40
+    },
+    {
+      "id": 4110140,
+      "slot": 1,
+      "maxLevel": 60
+    },
+    {
+      "id": 4110141,
+      "slot": 1,
+      "maxLevel": 80
+    },
+    {
+      "id": 4110142,
+      "slot": 1,
+      "maxLevel": 100
+    },
+    {
+      "id": 4110150,
+      "slot": 1,
+      "maxLevel": 120
+    },
+    {
+      "id": 4110151,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4110152,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4110153,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4110160,
+      "slot": 1,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200110,
+      "slot": 2,
+      "maxLevel": 10
+    },
+    {
+      "id": 4200120,
+      "slot": 2,
+      "maxLevel": 20
+    },
+    {
+      "id": 4200130,
+      "slot": 2,
+      "maxLevel": 40
+    },
+    {
+      "id": 4200140,
+      "slot": 2,
+      "maxLevel": 60
+    },
+    {
+      "id": 4200141,
+      "slot": 2,
+      "maxLevel": 80
+    },
+    {
+      "id": 4200142,
+      "slot": 2,
+      "maxLevel": 100
+    },
+    {
+      "id": 4200150,
+      "slot": 2,
+      "maxLevel": 120
+    },
+    {
+      "id": 4200151,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200152,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200153,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200160,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200210,
+      "slot": 2,
+      "maxLevel": 10
+    },
+    {
+      "id": 4200220,
+      "slot": 2,
+      "maxLevel": 20
+    },
+    {
+      "id": 4200230,
+      "slot": 2,
+      "maxLevel": 40
+    },
+    {
+      "id": 4200240,
+      "slot": 2,
+      "maxLevel": 60
+    },
+    {
+      "id": 4200241,
+      "slot": 2,
+      "maxLevel": 80
+    },
+    {
+      "id": 4200242,
+      "slot": 2,
+      "maxLevel": 100
+    },
+    {
+      "id": 4200250,
+      "slot": 2,
+      "maxLevel": 120
+    },
+    {
+      "id": 4200251,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200252,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200253,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200260,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200310,
+      "slot": 2,
+      "maxLevel": 10
+    },
+    {
+      "id": 4200320,
+      "slot": 2,
+      "maxLevel": 20
+    },
+    {
+      "id": 4200330,
+      "slot": 2,
+      "maxLevel": 40
+    },
+    {
+      "id": 4200340,
+      "slot": 2,
+      "maxLevel": 60
+    },
+    {
+      "id": 4200341,
+      "slot": 2,
+      "maxLevel": 80
+    },
+    {
+      "id": 4200342,
+      "slot": 2,
+      "maxLevel": 100
+    },
+    {
+      "id": 4200350,
+      "slot": 2,
+      "maxLevel": 120
+    },
+    {
+      "id": 4200351,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200352,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200353,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200360,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200410,
+      "slot": 2,
+      "maxLevel": 10
+    },
+    {
+      "id": 4200420,
+      "slot": 2,
+      "maxLevel": 20
+    },
+    {
+      "id": 4200430,
+      "slot": 2,
+      "maxLevel": 40
+    },
+    {
+      "id": 4200440,
+      "slot": 2,
+      "maxLevel": 60
+    },
+    {
+      "id": 4200441,
+      "slot": 2,
+      "maxLevel": 80
+    },
+    {
+      "id": 4200442,
+      "slot": 2,
+      "maxLevel": 100
+    },
+    {
+      "id": 4200450,
+      "slot": 2,
+      "maxLevel": 120
+    },
+    {
+      "id": 4200451,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200452,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200453,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4200460,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4210110,
+      "slot": 2,
+      "maxLevel": 10
+    },
+    {
+      "id": 4210120,
+      "slot": 2,
+      "maxLevel": 20
+    },
+    {
+      "id": 4210130,
+      "slot": 2,
+      "maxLevel": 40
+    },
+    {
+      "id": 4210140,
+      "slot": 2,
+      "maxLevel": 60
+    },
+    {
+      "id": 4210141,
+      "slot": 2,
+      "maxLevel": 80
+    },
+    {
+      "id": 4210142,
+      "slot": 2,
+      "maxLevel": 100
+    },
+    {
+      "id": 4210150,
+      "slot": 2,
+      "maxLevel": 120
+    },
+    {
+      "id": 4210151,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4210152,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4210153,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4210160,
+      "slot": 2,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300110,
+      "slot": 3,
+      "maxLevel": 10
+    },
+    {
+      "id": 4300120,
+      "slot": 3,
+      "maxLevel": 20
+    },
+    {
+      "id": 4300130,
+      "slot": 3,
+      "maxLevel": 40
+    },
+    {
+      "id": 4300140,
+      "slot": 3,
+      "maxLevel": 60
+    },
+    {
+      "id": 4300141,
+      "slot": 3,
+      "maxLevel": 80
+    },
+    {
+      "id": 4300142,
+      "slot": 3,
+      "maxLevel": 100
+    },
+    {
+      "id": 4300150,
+      "slot": 3,
+      "maxLevel": 120
+    },
+    {
+      "id": 4300151,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300152,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300153,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300160,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300210,
+      "slot": 3,
+      "maxLevel": 10
+    },
+    {
+      "id": 4300220,
+      "slot": 3,
+      "maxLevel": 20
+    },
+    {
+      "id": 4300230,
+      "slot": 3,
+      "maxLevel": 40
+    },
+    {
+      "id": 4300240,
+      "slot": 3,
+      "maxLevel": 60
+    },
+    {
+      "id": 4300241,
+      "slot": 3,
+      "maxLevel": 80
+    },
+    {
+      "id": 4300242,
+      "slot": 3,
+      "maxLevel": 100
+    },
+    {
+      "id": 4300250,
+      "slot": 3,
+      "maxLevel": 120
+    },
+    {
+      "id": 4300251,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300252,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300253,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300260,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300310,
+      "slot": 3,
+      "maxLevel": 10
+    },
+    {
+      "id": 4300320,
+      "slot": 3,
+      "maxLevel": 20
+    },
+    {
+      "id": 4300330,
+      "slot": 3,
+      "maxLevel": 40
+    },
+    {
+      "id": 4300340,
+      "slot": 3,
+      "maxLevel": 60
+    },
+    {
+      "id": 4300341,
+      "slot": 3,
+      "maxLevel": 80
+    },
+    {
+      "id": 4300342,
+      "slot": 3,
+      "maxLevel": 100
+    },
+    {
+      "id": 4300350,
+      "slot": 3,
+      "maxLevel": 120
+    },
+    {
+      "id": 4300351,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300352,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300353,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300360,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300410,
+      "slot": 3,
+      "maxLevel": 10
+    },
+    {
+      "id": 4300420,
+      "slot": 3,
+      "maxLevel": 20
+    },
+    {
+      "id": 4300430,
+      "slot": 3,
+      "maxLevel": 40
+    },
+    {
+      "id": 4300440,
+      "slot": 3,
+      "maxLevel": 60
+    },
+    {
+      "id": 4300441,
+      "slot": 3,
+      "maxLevel": 80
+    },
+    {
+      "id": 4300442,
+      "slot": 3,
+      "maxLevel": 100
+    },
+    {
+      "id": 4300450,
+      "slot": 3,
+      "maxLevel": 120
+    },
+    {
+      "id": 4300451,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300452,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300453,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4300460,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4310110,
+      "slot": 3,
+      "maxLevel": 10
+    },
+    {
+      "id": 4310120,
+      "slot": 3,
+      "maxLevel": 20
+    },
+    {
+      "id": 4310130,
+      "slot": 3,
+      "maxLevel": 40
+    },
+    {
+      "id": 4310140,
+      "slot": 3,
+      "maxLevel": 60
+    },
+    {
+      "id": 4310141,
+      "slot": 3,
+      "maxLevel": 80
+    },
+    {
+      "id": 4310142,
+      "slot": 3,
+      "maxLevel": 100
+    },
+    {
+      "id": 4310150,
+      "slot": 3,
+      "maxLevel": 120
+    },
+    {
+      "id": 4310151,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4310152,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4310153,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4310160,
+      "slot": 3,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400110,
+      "slot": 4,
+      "maxLevel": 10
+    },
+    {
+      "id": 4400120,
+      "slot": 4,
+      "maxLevel": 20
+    },
+    {
+      "id": 4400130,
+      "slot": 4,
+      "maxLevel": 40
+    },
+    {
+      "id": 4400140,
+      "slot": 4,
+      "maxLevel": 60
+    },
+    {
+      "id": 4400141,
+      "slot": 4,
+      "maxLevel": 80
+    },
+    {
+      "id": 4400142,
+      "slot": 4,
+      "maxLevel": 100
+    },
+    {
+      "id": 4400150,
+      "slot": 4,
+      "maxLevel": 120
+    },
+    {
+      "id": 4400151,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400152,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400153,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400160,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400210,
+      "slot": 4,
+      "maxLevel": 10
+    },
+    {
+      "id": 4400220,
+      "slot": 4,
+      "maxLevel": 20
+    },
+    {
+      "id": 4400230,
+      "slot": 4,
+      "maxLevel": 40
+    },
+    {
+      "id": 4400240,
+      "slot": 4,
+      "maxLevel": 60
+    },
+    {
+      "id": 4400241,
+      "slot": 4,
+      "maxLevel": 80
+    },
+    {
+      "id": 4400242,
+      "slot": 4,
+      "maxLevel": 100
+    },
+    {
+      "id": 4400250,
+      "slot": 4,
+      "maxLevel": 120
+    },
+    {
+      "id": 4400251,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400252,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400253,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400260,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400310,
+      "slot": 4,
+      "maxLevel": 10
+    },
+    {
+      "id": 4400320,
+      "slot": 4,
+      "maxLevel": 20
+    },
+    {
+      "id": 4400330,
+      "slot": 4,
+      "maxLevel": 40
+    },
+    {
+      "id": 4400340,
+      "slot": 4,
+      "maxLevel": 60
+    },
+    {
+      "id": 4400341,
+      "slot": 4,
+      "maxLevel": 80
+    },
+    {
+      "id": 4400342,
+      "slot": 4,
+      "maxLevel": 100
+    },
+    {
+      "id": 4400350,
+      "slot": 4,
+      "maxLevel": 120
+    },
+    {
+      "id": 4400351,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400352,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400353,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400360,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400410,
+      "slot": 4,
+      "maxLevel": 10
+    },
+    {
+      "id": 4400420,
+      "slot": 4,
+      "maxLevel": 20
+    },
+    {
+      "id": 4400430,
+      "slot": 4,
+      "maxLevel": 40
+    },
+    {
+      "id": 4400440,
+      "slot": 4,
+      "maxLevel": 60
+    },
+    {
+      "id": 4400441,
+      "slot": 4,
+      "maxLevel": 80
+    },
+    {
+      "id": 4400442,
+      "slot": 4,
+      "maxLevel": 100
+    },
+    {
+      "id": 4400450,
+      "slot": 4,
+      "maxLevel": 120
+    },
+    {
+      "id": 4400451,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400452,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400453,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4400460,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4410110,
+      "slot": 4,
+      "maxLevel": 10
+    },
+    {
+      "id": 4410120,
+      "slot": 4,
+      "maxLevel": 20
+    },
+    {
+      "id": 4410130,
+      "slot": 4,
+      "maxLevel": 40
+    },
+    {
+      "id": 4410140,
+      "slot": 4,
+      "maxLevel": 60
+    },
+    {
+      "id": 4410141,
+      "slot": 4,
+      "maxLevel": 80
+    },
+    {
+      "id": 4410142,
+      "slot": 4,
+      "maxLevel": 100
+    },
+    {
+      "id": 4410150,
+      "slot": 4,
+      "maxLevel": 120
+    },
+    {
+      "id": 4410151,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4410152,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4410153,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4410160,
+      "slot": 4,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500110,
+      "slot": 5,
+      "maxLevel": 10
+    },
+    {
+      "id": 4500120,
+      "slot": 5,
+      "maxLevel": 20
+    },
+    {
+      "id": 4500130,
+      "slot": 5,
+      "maxLevel": 40
+    },
+    {
+      "id": 4500140,
+      "slot": 5,
+      "maxLevel": 60
+    },
+    {
+      "id": 4500141,
+      "slot": 5,
+      "maxLevel": 80
+    },
+    {
+      "id": 4500142,
+      "slot": 5,
+      "maxLevel": 100
+    },
+    {
+      "id": 4500150,
+      "slot": 5,
+      "maxLevel": 120
+    },
+    {
+      "id": 4500151,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500152,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500153,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500160,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500210,
+      "slot": 5,
+      "maxLevel": 10
+    },
+    {
+      "id": 4500220,
+      "slot": 5,
+      "maxLevel": 20
+    },
+    {
+      "id": 4500230,
+      "slot": 5,
+      "maxLevel": 40
+    },
+    {
+      "id": 4500240,
+      "slot": 5,
+      "maxLevel": 60
+    },
+    {
+      "id": 4500241,
+      "slot": 5,
+      "maxLevel": 80
+    },
+    {
+      "id": 4500242,
+      "slot": 5,
+      "maxLevel": 100
+    },
+    {
+      "id": 4500250,
+      "slot": 5,
+      "maxLevel": 120
+    },
+    {
+      "id": 4500251,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500252,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500253,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500260,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500310,
+      "slot": 5,
+      "maxLevel": 10
+    },
+    {
+      "id": 4500320,
+      "slot": 5,
+      "maxLevel": 20
+    },
+    {
+      "id": 4500330,
+      "slot": 5,
+      "maxLevel": 40
+    },
+    {
+      "id": 4500340,
+      "slot": 5,
+      "maxLevel": 60
+    },
+    {
+      "id": 4500341,
+      "slot": 5,
+      "maxLevel": 80
+    },
+    {
+      "id": 4500342,
+      "slot": 5,
+      "maxLevel": 100
+    },
+    {
+      "id": 4500350,
+      "slot": 5,
+      "maxLevel": 120
+    },
+    {
+      "id": 4500351,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500352,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500353,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500360,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500410,
+      "slot": 5,
+      "maxLevel": 10
+    },
+    {
+      "id": 4500420,
+      "slot": 5,
+      "maxLevel": 20
+    },
+    {
+      "id": 4500430,
+      "slot": 5,
+      "maxLevel": 40
+    },
+    {
+      "id": 4500440,
+      "slot": 5,
+      "maxLevel": 60
+    },
+    {
+      "id": 4500441,
+      "slot": 5,
+      "maxLevel": 80
+    },
+    {
+      "id": 4500442,
+      "slot": 5,
+      "maxLevel": 100
+    },
+    {
+      "id": 4500450,
+      "slot": 5,
+      "maxLevel": 120
+    },
+    {
+      "id": 4500451,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500452,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500453,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4500460,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4510110,
+      "slot": 5,
+      "maxLevel": 10
+    },
+    {
+      "id": 4510120,
+      "slot": 5,
+      "maxLevel": 20
+    },
+    {
+      "id": 4510130,
+      "slot": 5,
+      "maxLevel": 40
+    },
+    {
+      "id": 4510140,
+      "slot": 5,
+      "maxLevel": 60
+    },
+    {
+      "id": 4510141,
+      "slot": 5,
+      "maxLevel": 80
+    },
+    {
+      "id": 4510142,
+      "slot": 5,
+      "maxLevel": 100
+    },
+    {
+      "id": 4510150,
+      "slot": 5,
+      "maxLevel": 120
+    },
+    {
+      "id": 4510151,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4510152,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4510153,
+      "slot": 5,
+      "maxLevel": 140
+    },
+    {
+      "id": 4510160,
+      "slot": 5,
+      "maxLevel": 140
+    }
+  ]
+}

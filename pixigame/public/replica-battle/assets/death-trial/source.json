@@ -1,0 +1,9 @@
+{
+  "purpose": "User-requested local ordinary-enemy death visual trial; not a statement of redistribution rights",
+  "source": "Pathogenic/gfx/environment/Explosion test.png",
+  "sourcePckSha256": "3f8ffd68ee199c60f2ab8af0d2d9527fb9a5facf2b0034af999f43e32c7a25b3",
+  "sourcePngSha256": "6a4ae82402621bf2bcf692af15df8463d7e35c1db5d468ed7e6c190519eec152",
+  "frames": 10,
+  "frameSize": 256,
+  "timing": "H5 trial timing 0.55s maximum, not claimed to be original Godot playback timing"
+}

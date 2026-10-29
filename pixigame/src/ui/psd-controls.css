@@ -1,0 +1,73 @@
+/* Shared control contract. Geometry belongs to each screen; material and
+   interaction states belong here. Keep HUD icons and portrait hit areas out. */
+#gui-casual-lobby {
+  --psd-control-art:url('/art/psd-buttons-v1/button-gray.png');
+  --psd-control-slice:32;
+  --psd-control-corner:clamp(10px,3.6cqw,16px);
+  --psd-selected-ink:#d2f8ff;
+}
+#gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option),
+#gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):not(.recruit-result-confirm) {
+  --psd-button-corner:var(--psd-control-corner);
+  position:relative;isolation:isolate;box-sizing:border-box;
+  min-width:0;min-height:44px;padding:8px 12px;
+  border:0!important;border-radius:0!important;clip-path:none!important;
+  background:none!important;box-shadow:none!important;
+  color:#edf4f7!important;text-shadow:0 1px 2px #07131f!important;
+  font-family:PsdPopup,'Microsoft YaHei',sans-serif;font-size:clamp(13px,3.8cqw,18px);
+  line-height:1.25;cursor:pointer;
+}
+#gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option)::before,
+#gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):not(.recruit-result-confirm)::before {
+  content:''!important;position:absolute;inset:0!important;z-index:-1;pointer-events:none;
+  width:auto;height:auto;border:0;background:none!important;box-shadow:none;
+  border-image:var(--psd-control-art) var(--psd-control-slice) fill / var(--psd-button-corner) stretch!important;
+}
+#gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option)::after,
+#gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):not(.recruit-result-confirm)::after {content:none}
+/* Disabled is a state of the same PSD face. Never fade prices or labels. */
+#gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):disabled,
+#gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):disabled {
+  opacity:1!important;filter:none!important;color:#bac8d2!important;
+  cursor:not-allowed;transform:none;
+}
+#gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):disabled::before,
+#gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):disabled::before {filter:grayscale(1) brightness(.65)!important}
+#gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):not(:disabled):active::before {filter:brightness(1.2)}
+#gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):is([aria-pressed='true'],[aria-selected='true'],[aria-checked='true'],.is-active):not(:disabled) {
+  color:var(--psd-selected-ink)!important;filter:none!important;
+}
+#gui-casual-lobby :is(.wc-button,.psd-tab,.psd-option):is([aria-pressed='true'],[aria-selected='true'],[aria-checked='true'],.is-active):not(:disabled)::before {filter:brightness(1.35)}
+/* The state marker is independent of rarity and remains visible without hover. */
+#gui-casual-lobby :is(.psd-tab,.psd-option,.wc-mode,.dc-tab,.ws-modes .wc-button,.ws-filter-options .wc-button):is([aria-pressed='true'],[aria-selected='true'],[aria-checked='true'],.is-active)::after {
+  content:''!important;position:absolute;inset:auto 16% 3px!important;
+  width:auto;height:2px;transform:none;background:#a5ebff;pointer-events:none;
+}
+#gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option,.wc-button):focus-visible {outline:2px solid #c1f3ff;outline-offset:-3px}
+#gui-casual-lobby .psd-option {--psd-button-corner:8px;font-family:'Microsoft YaHei',sans-serif;font-size:13px}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__upgrade {
+  --psd-control-art:url('/art/psd-equipment-v1/button-gold.png');
+  --psd-control-slice:18;--psd-button-corner:9px;
+}
+#gui-casual-lobby .eq-choice-trigger.psd-button {display:flex;align-items:center;justify-content:space-between;width:100%;height:44px;padding:0 12px}
+#gui-casual-lobby .eq-choice-option.psd-option {padding:0 12px}
+#gui-casual-lobby .eq-choice-trigger[aria-expanded='true']::before {filter:brightness(1.35)}
+#gui-casual-lobby .eq-choice-menu::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch!important}
+#gui-casual-lobby .recruit-reference :is(.recruit-history,.rc-arrow).psd-button {padding:7px;--psd-button-corner:10px}
+#gui-casual-lobby .recruit-reference .rc-arrow.psd-button {position:relative;inset:auto}
+#gui-casual-lobby .recruit-reference .rc-pool-tab.psd-tab {padding:5px 4px;font-size:clamp(12px,3.5cqw,17px)}
+#gui-casual-lobby .shop-native-v2 .store-category.psd-tab {min-height:0;padding:2px;font-size:calc(38 * var(--su));--psd-button-corner:9px}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab.psd-tab {padding:0 4px;--psd-button-corner:10px}
+/* Inset menus use the current metal plate; options retain the same 44px target. */
+#gui-casual-lobby .fc-filter-options {border:0;background:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch}
+#gui-casual-lobby .fc-filter-options>.psd-option {padding:4px 2px;font-size:clamp(10px,3cqw,14px)}
+#gui-casual-lobby .recruit-info-dialog .recruit-result-confirm::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-control-corner) stretch}
+#gui-casual-lobby .recruit-info-dialog .recruit-result-confirm:active::before {border-image-source:url('/art/psd-buttons-v1/button-gray.png');filter:brightness(1.2)}
+#gui-casual-lobby .recruit-result-dialog .pl-close {
+  border:0;border-radius:0;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat;
+  box-shadow:none;font-size:0;color:transparent;width:44px;height:44px;
+}
+#gui-casual-lobby .recruit-info-dialog .recruit-rate-section dl::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+@media(prefers-reduced-motion:reduce) {
+  #gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option) {transition:none}
+}

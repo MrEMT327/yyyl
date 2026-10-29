@@ -1,0 +1,687 @@
+{
+  "schema": "live2d-r13-game-runtime-v1",
+  "pilotId": "pilot-10",
+  "id": "luoen_4",
+  "model": "assets/luoen_4/luoen_4.model3.json",
+  "textures": [
+    "assets/luoen_4/textures/texture_00.png",
+    "assets/luoen_4/textures/texture_mouth.png",
+    "assets/luoen_4/textures/refinement-v1.png"
+  ],
+  "mouthTextureTargets": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    76
+  ],
+  "mouthInteriorOpacityTargets": [
+    14,
+    15,
+    16,
+    76
+  ],
+  "mouthOpenParameter": "ParamMouthOpenY",
+  "mouthOpenThreshold": 0.12,
+  "physics": "assets/luoen_4/luoen_4.physics3.json",
+  "motions": [
+    "idle",
+    "touch_head"
+  ],
+  "camera": {
+    "width": 900,
+    "height": 900,
+    "scaleNdc": [
+      0.09490938080305693,
+      0.09490938080305693
+    ],
+    "translateNdc": [
+      0.25472629407066444,
+      0.05078805677924641
+    ],
+    "sourceDefaultCharacterPixelBounds900x722": [
+      347,
+      155,
+      548,
+      609
+    ],
+    "sourceDefaultCharacterWorldBounds": [
+      [
+        -4.4633333503595995,
+        4.246666682866415
+      ],
+      [
+        8.924193939860272,
+        -10.743689791676449
+      ]
+    ],
+    "policy": "Original uniform scale and native model/motions, with fixed +80,+16 pixel character placement on the 900x900 sportbike composition.",
+    "originalTranslateNdc": [
+      0.07694851629288664,
+      0.08634361233480196
+    ],
+    "compositionOffsetPixels": [
+      80,
+      16
+    ]
+  },
+  "hiddenDrawableIndices": [
+    0,
+    37,
+    38,
+    42,
+    48,
+    49,
+    53,
+    58,
+    59,
+    78,
+    79,
+    265,
+    266,
+    267,
+    268,
+    269,
+    270,
+    271,
+    272,
+    273,
+    274,
+    275,
+    276,
+    277,
+    278,
+    279,
+    280,
+    281,
+    282,
+    283,
+    284,
+    285,
+    286,
+    287,
+    288,
+    290,
+    296,
+    297,
+    298,
+    299,
+    300,
+    301,
+    302,
+    303,
+    304,
+    305,
+    306,
+    307,
+    308,
+    309,
+    310,
+    317,
+    318,
+    319,
+    320,
+    321,
+    322,
+    323,
+    324,
+    344,
+    351,
+    352,
+    353
+  ],
+  "eyeSizeAdapter": {
+    "scale": 0.92,
+    "purpose": "Coherent eye group including masks, white, iris, lash and closed-expression pieces"
+  },
+  "renderAdapter": {
+    "enabled": true,
+    "contract": {
+      "schema": "luoen-continuous-leg-profile-r11",
+      "amount": 0.17,
+      "description": "Visible full-leg candidate, total peak coefficient0.17 with knee minimum0.0935 before gates. Not uniform17percent visual enlargement.",
+      "legs": [
+        {
+          "name": "front",
+          "indices": [
+            54,
+            55,
+            89,
+            90,
+            102
+          ],
+          "anchors": {
+            "hip": {
+              "index": 55,
+              "vertices": [
+                26,
+                40,
+                22
+              ],
+              "weights": [
+                0.375566693879,
+                0.044668088176,
+                0.579765217945
+              ]
+            },
+            "knee": {
+              "index": 102,
+              "vertices": [
+                31,
+                30,
+                29
+              ],
+              "weights": [
+                0.587690120565,
+                0.27810614938,
+                0.134203730056
+              ]
+            },
+            "ankle": {
+              "index": 102,
+              "vertices": [
+                12,
+                39,
+                38
+              ],
+              "weights": [
+                0.106025470948,
+                0.320537691002,
+                0.57343683805
+              ]
+            }
+          }
+        },
+        {
+          "name": "back",
+          "indices": [
+            56,
+            57,
+            96,
+            354,
+            355,
+            356
+          ],
+          "anchors": {
+            "hip": {
+              "index": 355,
+              "vertices": [
+                29,
+                38,
+                28
+              ],
+              "weights": [
+                0.364302719129,
+                0.589748917216,
+                0.045948363654
+              ]
+            },
+            "knee": {
+              "index": 96,
+              "vertices": [
+                20,
+                30,
+                29
+              ],
+              "weights": [
+                0.113037676013,
+                0.646559115218,
+                0.240403208768
+              ]
+            },
+            "ankle": {
+              "index": 96,
+              "vertices": [
+                12,
+                39,
+                38
+              ],
+              "weights": [
+                0.076487463139,
+                0.061276817571,
+                0.86223571929
+              ]
+            }
+          }
+        }
+      ],
+      "field": {
+        "centerline": "Two current-frame segments H\u2192K and K\u2192A, derived from unmodified Core XY through the listed barycentric anchors.",
+        "segmentRule": "Same two-segment source-frame centerline; bump=0.55+0.45*sin(pi*clamp(t,0,1))^2, including knee; x-only delta, source y exactly retained.",
+        "blend": "sigma=0.35 world units. w_i=exp(-(dist2_i-min(dist2))/(2*sigma^2)), normalize weights across the two segments. delta=amount*sum(w_i*bump_i*n_i). The same continuous world-coordinate function applies to every drawable in that leg, including overlap/shadow pieces.",
+        "topGate": "smoothstep01((H.y-0.10-p.y)/0.60)",
+        "shoeGate": "smoothstep01((p.y-(A.y+0.25))/0.55)",
+        "result": "Continuous horizontal widening with hip and shoe gates; source Y unchanged. Knee section no longer forced to zero; shoe and foot untouched.",
+        "sigma": 0.35,
+        "topZeroBelowHip": 0.1,
+        "topTransition": 0.6,
+        "shoeZeroAboveAnkle": 0.25,
+        "shoeTransition": 0.55
+      },
+      "unmodifiedIndices": [
+        53,
+        91,
+        92,
+        93,
+        94,
+        95,
+        97,
+        98,
+        99,
+        100,
+        101,
+        103,
+        104,
+        105,
+        106,
+        107,
+        349,
+        350
+      ],
+      "overlapPolicy": "Preserve original render order and original opacity. Do not expose currently hidden alternatives. Front/back legs are separate fields. Skirt liner92 stays original as foreground garment; shoe/foot/ornament groups stay original because lower field is zero above their top overlap.",
+      "acceptance": "First default and touch_head2s actual 900 frames before any general use; retain original and modified XY hashes, check all triangle signed-area ratios and finite vertices. Review crotch/hip clothing overlap, crossing knee order, stocking shadows, shoe mouths. Then complete original idle/touch sequence if parent accepts. Do not declare natural fit from positive area alone."
+    }
+  },
+  "handInputAdapter": {
+    "enabled": true,
+    "contractSha256": "41065629793a6cc73eda61932a24ea32fb35b213ab1a1348b287a0f41538299a",
+    "contract": {
+      "schema": "luoen-original-hand-small-bias-v1",
+      "status": "Candidate C default visually checked for slight closer overlap; full original-motion validation required before accepted integration",
+      "enabled": true,
+      "parameters": [
+        {
+          "id": "youshoubianhua",
+          "index": 58,
+          "delta": -3,
+          "min": -30,
+          "max": 30,
+          "originalDefault": 0,
+          "role": "small stable low-hand finger/palm curvature adjustment"
+        },
+        {
+          "id": "Param29",
+          "index": 84,
+          "delta": -1,
+          "min": -30,
+          "max": 30,
+          "originalDefault": 0,
+          "role": "small native upper-hand wrist turn toward low hand"
+        }
+      ],
+      "inputPolicy": "For each actual frame, read raw source-evaluated motion/physics parameter values afresh. Apply these deltas only to temporary consumer values before original Core evaluation. Never overwrite raw source or saved parameter arrays. Restore raw values in finally after model evaluation; no accumulation.",
+      "smoothstep": "S(u)=q*q*(3-2*q), q=clamp(u,0,1)",
+      "rangeGate": {
+        "margin": 5,
+        "formula": "g_i(x)=S((x-min_i)/5)*S((max_i-x)/5)",
+        "purpose": "C1 fade of small offset near original parameter endpoints; final clamp is numerical safety only"
+      },
+      "motionGate": {
+        "defaultOrIdle": 1,
+        "touchHead": {
+          "duration": 5.417,
+          "fadeSeconds": 0.4,
+          "formula": "w(t)=1-S(t/0.4)+S((t-(5.417-0.4))/0.4)",
+          "earlyFade": [
+            0,
+            0.4
+          ],
+          "unchangedTouchMiddle": [
+            0.4,
+            5.017
+          ],
+          "lateFade": [
+            5.017,
+            5.417
+          ]
+        },
+        "otherMotions": 0,
+        "reason": "Original Param86 is stepped: first switch to touch alternate at1.433s and back at4.383s. Offset is already zero before either switch, and remains zero across complete alternate-hand interval."
+      },
+      "outputFormula": "p_consumed_i=clamp(p_source_i+delta_i*motionGate*rangeGate_i(p_source_i),min_i,max_i)",
+      "doNotChange": [
+        "Param86 and opacity/render-order hand switch",
+        "Param97/112/113/114 four-finger values (rejected B)",
+        "Original MOC/UV/indices/bindings/motion files",
+        "Eye adapter and local leg adapter contracts",
+        "Core-owned source parameter values after frame"
+      ],
+      "offSwitch": "If disabled, consume raw source values exactly; source hash and complete actual render must match same-state hand-off control.",
+      "staticReference": {
+        "path": "runtime/luoen-revision-r09-v01/hand-parameter-probe-c/actual-two-controls",
+        "values": {
+          "58": -3,
+          "84": -1
+        },
+        "result": "Closer upper-hand fingertips, subtle low-hand curvature. Original cup-shaped topology still present. No claim of fully natural relaxed stacked hands.",
+        "nonhandRgbaChanged": 0,
+        "newZeroAlphaPoints": 12,
+        "alphaAttribution": "All twelve outer-contour retreats, four-connected to transparent exterior,1..sqrt(2)px from original transparent boundary; no new enclosed hand hole in this state."
+      },
+      "validation": [
+        "Render existing source idle11.45s, actual trusted click to touch_head5.417s, and return idle. Do not reset source on each frame.",
+        "Record source/render values for58/84, motion gate and range gates, restored source status every frame; clamp ranges and finite outputs.",
+        "Use actual checkpoints before/after t=.4, original hand switch near1.433 and4.383, final fade start5.017, touch endpoint and return idle.",
+        "Confirm zero hand deltas throughout touch [.4,5.017] and hand-off actual same-state equality where gate is zero.",
+        "Review actual palm/wrist/finger seams, fingertip overlap and stable low hand at native idle extrema; numerical source restoration alone is not visual acceptance.",
+        "Retain all raw/source versus consumed parameter and original Core evaluated XY hashes separately. Do not claim parameter or XY equality while enabled."
+      ],
+      "authoritativeEvidence": [
+        "runtime/luoen-revision-r09-v01/ORIGINAL-HAND-PARAMETER-CAUSALITY.json",
+        "runtime/luoen-revision-r09-v01/ORIGINAL-WRIST-PARAM29-PLUSMINUS1.json",
+        "atlas-work/hands-native-parameter-audit-v01/ACTUAL-A-B-REVIEW.json",
+        "atlas-work/hands-native-parameter-audit-v01/C-ALPHA-BOUNDARY-ATTRIBUTION.json",
+        "atlas-work/hands-native-parameter-audit-v01/original-hand-candidate-motion-curves.json"
+      ],
+      "expectedRangesAndChecks": {
+        "default": {
+          "youshoubianhua": {
+            "source": 0,
+            "consumed": -3
+          },
+          "Param29": {
+            "source": 0,
+            "consumed": -1
+          }
+        },
+        "idleSourceCurveDiagnostic": {
+          "youshoubianhua": {
+            "sourceApprox": [
+              -10,
+              0
+            ],
+            "consumedApprox": [
+              -13,
+              -3
+            ]
+          },
+          "Param29": {
+            "sourceApprox": [
+              -0.766985127992809,
+              0.7799998778918628
+            ],
+            "consumedApprox": [
+              -1.766985127992809,
+              -0.2200001221081372
+            ]
+          },
+          "note": "Original curve samples at approximately120Hz, before physics. Actual composed input may differ; per-frame maximum absolute bias is3/1 and original bounds still hold."
+        },
+        "touchHead": {
+          "source58": 0,
+          "consumed58Range": [
+            -3,
+            0
+          ],
+          "deltasExactlyZeroInterval": [
+            0.4,
+            5.017
+          ],
+          "nativeAlternateVisibleInterval": [
+            1.433,
+            4.383
+          ],
+          "noAdditionalTransitionJump": "motionGate equals1 at touch0 and5.417, matching default/idle; its first derivative is0 at fade boundaries."
+        },
+        "rangeSafety": {
+          "clamp": [
+            -30,
+            30
+          ],
+          "maxAbsBias58": 3,
+          "maxAbsBias84": 1,
+          "minimumAnalyticDerivativeAtFullGate58": 0.1,
+          "minimumAnalyticDerivativeAtFullGate84": 0.7,
+          "endpointExact": true
+        },
+        "requiredImplementationGuards": [
+          "Resolve parameter indices by exact ID each load; confirm min/max against original Core and fail closed if mismatch. Listed index is an audit aid, not authority to modify another parameter.",
+          "Compare current raw parameter values to saved copy on restore after each frame, including when errors occur.",
+          "When gate is0 or disabled, do not write a rounded replacement; pass raw Float32 input through exactly."
+        ]
+      }
+    }
+  },
+  "status": "R13 atlas candidate; upstream full visual acceptance is pending.",
+  "eyeOpenAdapter": {
+    "enabled": false,
+    "sourceDefault": 0.699999988079071,
+    "targetDefault": 0.6,
+    "mapping": "endpoint-preserving-quadratic"
+  },
+  "textureRegions": [
+    {
+      "index": 32,
+      "id": "ArtMesh41",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        775,
+        1157,
+        109,
+        331
+      ],
+      "target": [
+        4,
+        4,
+        327,
+        993
+      ],
+      "texture": 2
+    },
+    {
+      "index": 34,
+      "id": "ArtMesh43",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        847,
+        1215,
+        113,
+        324
+      ],
+      "target": [
+        339,
+        4,
+        339,
+        972
+      ],
+      "texture": 2
+    },
+    {
+      "index": 62,
+      "id": "ArtMesh92",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        510,
+        407,
+        230,
+        278
+      ],
+      "target": [
+        686,
+        4,
+        690,
+        834
+      ],
+      "texture": 2
+    },
+    {
+      "index": 36,
+      "id": "ArtMesh53",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        532,
+        176,
+        184,
+        232
+      ],
+      "target": [
+        1384,
+        4,
+        552,
+        696
+      ],
+      "texture": 2
+    },
+    {
+      "index": 52,
+      "id": "ArtMesh91",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        317,
+        1315,
+        420,
+        340
+      ],
+      "target": [
+        4,
+        1005,
+        840,
+        680
+      ],
+      "texture": 2
+    },
+    {
+      "index": 29,
+      "id": "ArtMesh38",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        840,
+        703,
+        166,
+        98
+      ],
+      "target": [
+        852,
+        1005,
+        498,
+        294
+      ],
+      "texture": 2
+    },
+    {
+      "index": 30,
+      "id": "ArtMesh39",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        1263,
+        1515,
+        163,
+        41
+      ],
+      "target": [
+        852,
+        1307,
+        489,
+        123
+      ],
+      "texture": 2
+    },
+    {
+      "index": 31,
+      "id": "ArtMesh40",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        1037,
+        685,
+        66,
+        163
+      ],
+      "target": [
+        1358,
+        1005,
+        198,
+        489
+      ],
+      "texture": 2
+    },
+    {
+      "index": 33,
+      "id": "ArtMesh42",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        1078,
+        576,
+        130,
+        154
+      ],
+      "target": [
+        1564,
+        1005,
+        390,
+        462
+      ],
+      "texture": 2
+    },
+    {
+      "index": 7,
+      "id": "ArtMesh17",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        1992,
+        1374,
+        28,
+        22
+      ],
+      "target": [
+        1384,
+        710,
+        224,
+        176
+      ],
+      "texture": 2
+    },
+    {
+      "index": 21,
+      "id": "ArtMesh35",
+      "sourceSize": 2048,
+      "targetSize": 2048,
+      "source": [
+        399,
+        521,
+        27,
+        23
+      ],
+      "target": [
+        1616,
+        710,
+        216,
+        184
+      ],
+      "texture": 2
+    }
+  ],
+  "refinement": "local-v1: reference-guided face, iris, hair and clean dress",
+  "drawableOpacityMultipliers": [
+    {
+      "index": 35,
+      "id": "ArtMesh52",
+      "value": 0.2
+    }
+  ],
+  "sceneBackground": "static-sportbike-v2.png",
+  "vehiclePlacement": {
+    "scale": 0.82,
+    "offsetPixels": [
+      101,
+      80
+    ],
+    "supportAnchorPixels": [
+      560,
+      446
+    ]
+  }
+}

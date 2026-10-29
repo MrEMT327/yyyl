@@ -1,0 +1,6 @@
+.native-weapon-skill-icon{object-fit:contain}
+.weapon-skill-icon{display:block;width:100%;height:100%;aspect-ratio:1;background-repeat:no-repeat;overflow:hidden}
+#gui-casual-lobby .wc-page .wc-skill-art{aspect-ratio:1}
+#gui-casual-lobby .wc-skill-art>.weapon-skill-icon{position:absolute;inset:5% 5% 9%;width:90%;height:86%}
+#gui-casual-lobby .wc-page[data-catalog-mode='skills'] .wc-hero-art{inset:20% auto auto 32%;width:36%;aspect-ratio:1;height:auto;padding:5px;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 7px 7px 10px 7px stretch}
+#gui-casual-lobby .wc-skill-detail-art:has(.weapon-skill-icon){width:66px;height:66px;padding:4px;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 9px 6px stretch}

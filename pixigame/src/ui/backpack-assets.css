@@ -1,0 +1,43 @@
+/* Project-owned item and tab art. Geometry is defined by backpack-reference.css. */
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item {
+  display:grid;grid-template-rows:auto 30px;align-content:start;gap:5px;aspect-ratio:auto;
+  padding:0;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art,
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon {
+  position:relative;isolation:isolate;display:grid;place-items:center;aspect-ratio:1;
+  width:100%;height:auto;padding:7px;border:0;border-radius:0;
+  background:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;box-shadow:none;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art::before,
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon::before {
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 10px 6px stretch;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>img,
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon>img {width:100%;height:100%;padding:4px;object-fit:contain;filter:none;min-height:0}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>.supply-weapon-art {width:100%;height:100%}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-count {
+  right:6px;bottom:5px;z-index:2;max-width:calc(100% - 12px);padding:1px 3px;
+  background:#102538e8;border-radius:2px;color:#f4f9ff;
+  font:700 clamp(11px,3.1cqw,14px)/1.2 "PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-text-stroke:0;text-shadow:none;white-space:nowrap;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-name {
+  display:block;min-width:0;max-height:30px;overflow:hidden;color:#203c55;
+  font:600 12px/15px "PingFang SC","Microsoft YaHei",sans-serif;text-shadow:none;text-align:center;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tabs {gap:6px;height:44px;padding:0;border:0;background:none}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab {
+  position:relative;isolation:isolate;min-height:44px;padding:0 4px;border:0;background:none;box-shadow:none;
+  color:#eff7ff;font:400 15px/1.2 PsdPopup,"Microsoft YaHei",sans-serif;text-shadow:0 1px #183146;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-image:url('/art/equipment-controls-v1/button-normal.png') 24 fill / 10px stretch;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab.is-selected {color:#f1fdff;background:none}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab.is-selected::before {border-image-source:url('/art/equipment-controls-v1/button-selected.png')}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab:active::before {border-image-source:url('/art/equipment-controls-v1/button-pressed.png')}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-empty {padding:38px 0;min-height:120px;color:#3e5d74;font-size:14px}
+#gui-casual-lobby .bag-modal[data-psd-popup] :is(.bag-item,.bag-tab):focus-visible {outline:2px solid #245c80;outline-offset:2px}

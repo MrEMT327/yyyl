@@ -1,0 +1,284 @@
+// Girl Flight supply policy. Native pilot IDs, star costs and battle values stay intact.
+import { normalizeGrowthSupplyClaims, growthSupplySnapshot, claimGrowthSupply } from './growth-supply.js';
+import { ITEM_USE_BATCH_LIMIT, isItemUseBatchCount } from './item-use-batches.js';
+import { grantPilotCards, pilotAtMaxStar, pilotCreditReward, PILOT_CREDIT_COST } from './pilot-copy-grants.js';
+import { collectionSupplySnapshot, claimCollectionSupply } from './collection-supply.js';
+import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
+import catalog from './native-economy-catalog.json' with {type:'json'};
+import { NATIVE_PILOT_SKINS, isRosterPilot } from './native-pilot-roster.js';
+import { nativePilotDisplayName } from './native-pilot-names.js';
+import { validateReplicaInventory } from './native-economy.js';
+import { validateReplicaProgression } from './native-progression.js';
+import { flightDay } from './flight-rewards.js';
+import { nativeItemArt } from './native-item-presentation.js';
+import { nativeItemDisplayName } from './native-item-names.js';
+
+export const PILOT_SUPPLY_POOL = Object.freeze([
+  {id:926,amount:3,weight:70,name:'角色箱碎片'},
+  {id:925,amount:1,weight:2,name:'角色箱'},
+  {id:113,amount:1,weight:10,name:'普通装备箱券'},
+  {id:112,amount:1,weight:3,name:'高级装备箱券'},
+  {id:1,amount:1000,weight:10,name:'金币'},
+  {id:'blueprint',amount:10,weight:5,name:'装备图纸（随机一种）'},
+]);
+const exchangeRoster=catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id));
+const roster=exchangeRoster.filter(row=>![40100,40101].includes(row.id));
+const blueprints=[105,106,107,108,109];
+const DAILY_ACTIVITY_FRAGMENTS=5, AD_FRAGMENTS=5, WEEKLY_FRAGMENTS=25;
+const INTRO_BATTLE_REWARDS=[{id:1,amount:300},{id:106,amount:5}];
+// Keep the existing reward identities and amounts while restoring the old
+// objectives. The battle3 key is retained so an old claim cannot pay twice.
+const tasks=[{id:'login',name:'每日报到',target:1,counter:'login',fragments:3,points:20,starter:40100},
+  {id:'battle1',name:'完成 1 次出击',target:1,counter:'battles',fragments:3,points:20,destination:'battle'},
+  {id:'battle3',name:'赢得 1 场战斗',target:1,counter:'victories',fragments:4,points:20,destination:'battle'},
+  {id:'upgrade',name:'完成 1 次基础强化',target:1,counter:'upgrades',fragments:0,points:20,destination:'equipment'},
+  {id:'recruit',name:'完成 1 次招募',target:1,counter:'recruits',fragments:0,points:20,destination:'supply'}];
+const weekTasks=[
+  {id:'weekly-sorties',name:'每周完成 5 次出击',target:5,counter:'battles',points:30,destination:'battle'},
+  {id:'weekly-victories',name:'每周取得 3 次胜利',target:3,counter:'victories',points:40,destination:'battle'},
+  {id:'weekly-upgrades',name:'每周完成 5 次强化',target:5,counter:'upgrades',points:30,destination:'equipment'},
+];
+const names={925:'角色箱',926:'角色箱碎片',113:'普通装备箱券',112:'高级装备箱券',1:'金币'};
+const safe=n=>Number.isSafeInteger(n)&&n>=0;
+const date=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value);
+const pilotName=row=>nativePilotDisplayName(row.id)||row.name;
+const maxStar=row=>Math.max(...row.stages.map(stage=>stage.star));
+function weekStart(day) {
+  const time=new Date(day+'T00:00:00Z');
+  time.setUTCDate(time.getUTCDate()-(time.getUTCDay()+6)%7);
+  return time.toISOString().slice(0,10);
+}
+function history(raw,box=false) {
+  if(!Array.isArray(raw))throw Error('补给记录无效');
+  return raw.slice(-50).map(row=>{
+    if(!row||!safe(row.at)||row.at>8.64e15||!safe(row.cost)||(box?!isItemUseBatchCount(row.count):![1,10].includes(row.count))||!Array.isArray(row.results)||row.results.length!==row.count)throw Error('补给记录无效');
+    return {...row,results:row.results.map(r=>{
+      if(!r||typeof r.name!=='string'||!safe(r.amount)||r.amount<1)throw Error('补给奖励记录无效');
+      return {...r,name:r.name.slice(0,100)};
+    })};
+  });
+}
+function ledger(raw,time) {
+  const today=flightDay(time),week=weekStart(today);
+  const l=structuredClone(raw??{version:1,total:0,newbieTenClaimed:false,history:[],boxOpened:0,boxMisses:0,
+    boxHistory:[],cardCredits:0,daily:{day:today,battles:0,claimed:[],activityClaimed:false,ads:0},
+    week:{start:week,activeDays:[],claimed:false}});
+  // Preserve points already earned under the previous three-task schedule.
+  if(l.daily&&l.daily.taskVersion===undefined){
+    const claimed=Array.isArray(l.daily.claimed)?l.daily.claimed:[];
+    l.daily.taskVersion=2;
+    l.daily.activityOffset=(claimed.includes('battle1')?20:0)+(claimed.includes('battle3')?20:0);
+  }
+  if(l.daily){l.daily.victories??=0;l.daily.upgrades??=0;l.daily.recruits??=0;}
+  if(l.week){l.week.battles??=0;l.week.victories??=0;l.week.upgrades??=0;}
+  // New one-time resource reward; existing daily claims and all granted pilots survive.
+  l.introBattleRewardClaimed ??= false;
+  if(typeof l.introBattleRewardClaimed!=='boolean')throw Error('新手出击奖励记录无效');
+  if(l.version!==1||![l.total,l.boxOpened,l.boxMisses,l.cardCredits].every(safe)||l.boxMisses>4||
+    typeof l.newbieTenClaimed!=='boolean'||!date(l.daily?.day)||!safe(l.daily.battles)||!safe(l.daily.ads)||l.daily.ads>2||
+    l.daily.taskVersion!==2||!safe(l.daily.activityOffset)||l.daily.activityOffset>40||
+    ![l.daily.victories,l.daily.upgrades,l.daily.recruits].every(safe)||
+    !Array.isArray(l.daily.claimed)||new Set(l.daily.claimed).size!==l.daily.claimed.length||l.daily.claimed.some(id=>!tasks.some(t=>t.id===id))||
+    typeof l.daily.activityClaimed!=='boolean'||!date(l.week?.start)||!Array.isArray(l.week.activeDays)||
+    l.week.activeDays.length>7||new Set(l.week.activeDays).size!==l.week.activeDays.length||l.week.activeDays.some(d=>!date(d)||weekStart(d)!==l.week.start)||
+    ![l.week.battles,l.week.victories,l.week.upgrades].every(safe)||
+    typeof l.week.claimed!=='boolean')throw Error('驾驶员补给存档无效，旧记录已保留');
+  // Retire the daily weapon allowance; keep earned inventory and weekly claims.
+  delete l.daily.collectionChoice;delete l.daily.collectionCount;
+  for(const [period,kind] of [['week','skins']]){
+    const record=l[period];record.collectionChoice??=null;
+    if(record.collectionChoice!==null&&record.collectionChoice!==0
+      &&!catalog[kind].some(row=>row.id===record.collectionChoice))throw Error('收藏自选领取记录无效');
+    record.collectionCount??=record.collectionChoice===null?0:1;
+    if(!Number.isSafeInteger(record.collectionCount)||record.collectionCount<0||record.collectionCount>5
+      ||(record.collectionCount===0)!==(record.collectionChoice===null))throw Error('收藏自选名额记录无效');
+  }
+  l.history=history(l.history);l.boxHistory=history(l.boxHistory,true);
+  if(today<l.daily.day||week<l.week.start)throw Error('日期异常，请恢复设备日期');
+  if(today>l.daily.day)l.daily={day:today,battles:0,victories:0,upgrades:0,recruits:0,taskVersion:2,activityOffset:0,claimed:[],activityClaimed:false,ads:0};
+  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,battles:0,victories:0,upgrades:0,collectionChoice:null};
+  normalizeGrowthSupplyClaims(l);
+  return l;
+}
+export function addPilotSupplyCredits(raw,time,amount) {
+  if(!Number.isSafeInteger(amount)||amount<0)throw Error('满星重复积分数量无效');
+  const l=ledger(raw,time);l.cardCredits+=amount;
+  if(!safe(l.cardCredits))throw Error('满星重复积分数量超限');
+  return l;
+}
+const counter=value=>safe(value)?value:0;
+function taskCount(task,l,external={},weekly=false) {
+  if(task.counter==='login')return 1;
+  const period=weekly?l.week:l.daily;
+  const legacyKey=task.counter==='battles'?'sorties':task.counter;
+  const history=task.counter==='recruits'&&!weekly
+    ? l.history.filter(row=>flightDay(row.at)===l.daily.day).reduce((sum,row)=>sum+row.count,0):0;
+  return Math.max(counter(period[task.counter]),counter(external[legacyKey]),history);
+}
+function weeklyTaskView(l,external={}) {
+  const rows=weekTasks.map(task=>({...task,progress:Math.min(task.target,taskCount(task,l,external,true))}));
+  const objectivePoints=rows.filter(task=>task.progress>=task.target).reduce((sum,task)=>sum+task.points,0);
+  return {rows,points:Math.min(100,Math.max(objectivePoints,l.week.activeDays.length*20))};
+}
+export function recordPilotSupplyBattle(raw,time,{won=false,taskCounters={}}={}) {
+  const l=ledger(raw,time),daily=taskCounters.daily||{},weekly=taskCounters.weekly||{};
+  l.daily.battles=Math.max(l.daily.battles,counter(daily.sorties))+1;
+  l.week.battles=Math.max(l.week.battles,counter(weekly.sorties))+1;
+  if(won){
+    l.daily.victories=Math.max(l.daily.victories,counter(daily.victories))+1;
+    l.week.victories=Math.max(l.week.victories,counter(weekly.victories))+1;
+  }
+  if(![l.daily.battles,l.week.battles,l.daily.victories,l.week.victories].every(safe))throw Error('出击次数超限');
+  return l;
+}
+export function recordPilotSupplyUpgrade(raw,time,amount=1,{taskCounters={}}={}) {
+  if(!safe(amount)||amount<1)throw Error('强化次数无效');
+  const l=ledger(raw,time),daily=taskCounters.daily||{},weekly=taskCounters.weekly||{};
+  l.daily.upgrades=Math.max(l.daily.upgrades,counter(daily.upgrades))+amount;
+  l.week.upgrades=Math.max(l.week.upgrades,counter(weekly.upgrades))+amount;
+  if(![l.daily.upgrades,l.week.upgrades].every(safe))throw Error('强化次数超限');
+  return l;
+}
+function points(l){return Math.min(100,l.daily.activityOffset+tasks.filter(t=>l.daily.claimed.includes(t.id)).reduce((sum,t)=>sum+t.points,0));}
+function ticket(limit) {
+  const value=new Uint32Array(1),ceiling=Math.floor(0x100000000/limit)*limit;
+  do{crypto.getRandomValues(value);}while(value[0]>=ceiling);
+  return value[0]%limit;
+}
+function itemReward(id,amount) {
+  return {id,nativeItemId:id,type:id===1?'coins':'nativeItem',amount,
+    name:nativeItemDisplayName(id)||names[id]||catalog.itemNames[id]||'装备图纸',image:nativeItemArt(id)};
+}
+export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaign={},taskCounters={}) {
+  const l=ledger(raw,time),inventory=validateReplicaInventory(rawInventory),progression=validateReplicaProgression(rawProgression);
+  const missing=roster.filter(row=>!progression.pilots.some(p=>p.id===row.id&&p.active));
+  const weekly=weeklyTaskView(l,taskCounters.weekly);
+  return {revision:inventory.revision,history:l.history,boxHistory:l.boxHistory,development:UNLOCK_ALL_CONTENT,
+    collection:collectionSupplySnapshot(progression,inventory,l,campaign),
+    growth:growthSupplySnapshot(progression,inventory,l,campaign),
+    pool:{id:'pilot',mixed:true,custom:true,originLabel:'驾驶员补给',development:UNLOCK_ALL_CONTENT,singleCost:UNLOCK_ALL_CONTENT?0:100,
+      tenCost:UNLOCK_ALL_CONTENT?0:1000,totalPulls:l.total,rookieAvailable:!l.newbieTenClaimed,
+      probabilities:Object.fromEntries(PILOT_SUPPLY_POOL.map(r=>[r.id,r.weight/100])),
+      probabilityLabels:Object.fromEntries(PILOT_SUPPLY_POOL.map(r=>[r.id,r.name+' ×'+r.amount])),
+      guaranteeText:l.newbieTenClaimed?'50 角色箱碎片合成 1 个角色箱；角色箱另行开启。':'首次十连至少获得 1 个角色箱（未出箱时第十份奖励替换为角色箱），消耗 1000 钻石。',
+      duplicateText:'角色箱首次获得激活驾驶员，重复获得发同名卡；满星重复转为兑换积分。',
+      rules:['补给获得资源，角色箱开出驾驶员。展示角色不改变概率。',
+        `普通补给单次 100 钻、十次 1000 钻；没有十连折扣。${UNLOCK_ALL_CONTENT?'开发模式免费。':''}`,
+        '普通／高级装备箱券分别存入对应补给券库存，每张可在商城免费开对应装备箱一次。',
+        '角色箱基础奖池 8 人等概率（各 12.5%）。前 2 次开箱优先未拥有；此后连续 4 次重复，第 5 次必得未拥有。提前获得新人重置计数，集齐后停止未拥有保底。',
+        '任意来源的满星驾驶员重复卡均转积分；3 积分可指定解锁 1 位未拥有驾驶员、兑换 1 张已拥有且未满星的同名卡，或兑换 1 张高级装备箱券。旧满星卡可在背包手动转换。']},
+    candidates:roster.map(row=>({id:row.id,skinId:NATIVE_PILOT_SKINS[row.id],name:pilotName(row),
+      owned:progression.pilots.some(p=>p.id===row.id&&p.active),
+      copies:inventory.items[row.id]||0,maxed:progression.pilots.some(p=>p.id===row.id&&p.active&&p.star>=maxStar(row))})),
+    exchanges:exchangeRoster.map(row=>({id:row.id,name:pilotName(row),
+      owned:progression.pilots.some(p=>p.id===row.id&&p.active),copies:inventory.items[row.id]||0,
+      maxed:pilotAtMaxStar(progression,row.id)})),creditCost:PILOT_CREDIT_COST,
+    box:{count:inventory.items[925]||0,fragments:inventory.items[926]||0,required:50,opened:l.boxOpened,
+      missing:missing.length,remaining:missing.length?(l.boxOpened<2?1:5-l.boxMisses):null,credits:l.cardCredits},
+    tasks:tasks.map(t=>{const progress=Math.min(t.target,taskCount(t,l,taskCounters.daily));return {...t,introRewards:t.id==='battle1'&&!l.introBattleRewardClaimed?INTRO_BATTLE_REWARDS.map(r=>itemReward(r.id,r.amount)):[],starterName:t.starter&&!progression.pilots.some(p=>p.id===t.starter&&p.active)?nativePilotDisplayName(t.starter):null,progress,claimed:l.daily.claimed.includes(t.id),
+      canClaim:!l.daily.claimed.includes(t.id)&&(UNLOCK_ALL_CONTENT||progress>=t.target)};}),
+    activity:{fragments:DAILY_ACTIVITY_FRAGMENTS,points:points(l),claimed:l.daily.activityClaimed,canClaim:!l.daily.activityClaimed&&points(l)>=100},
+    ad:{count:l.daily.ads,limit:2,canClaim:l.daily.ads<2,fragments:AD_FRAGMENTS},
+    week:{fragments:WEEKLY_FRAGMENTS,days:l.week.activeDays.length,points:weekly.points,tasks:weekly.rows,claimed:l.week.claimed,canClaim:!l.week.claimed&&(UNLOCK_ALL_CONTENT||weekly.points>=100)}};
+}
+export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,time,{adCompleted=false,campaign={},taskCounters={}}={}) {
+  const inventory=validateReplicaInventory(rawInventory),progression=validateReplicaProgression(rawProgression),l=ledger(rawRecord,time);
+  if(operation.expectedRevision!==inventory.revision)throw Error('库存已更新，请重新操作');
+  const rewards=[];
+  const add=(id,count)=>{inventory.items[id]=(inventory.items[id]||0)+count;rewards.push(itemReward(id,count));};
+  const debit=(id,count)=>{
+    if(!safe(count))throw Error('消耗数量无效');
+    const balance=inventory.items[id]??0;
+    if(balance<count)throw Error(id===2?'钻石不足':id===925?'角色箱不足':id===926?'角色箱碎片不足':'同名卡数量不足');
+    // Fresh normal inventories have no diamond entry. A free order must not
+    // turn an absent balance into NaN before the reward transaction is saved.
+    if(count>0)inventory.items[id]=balance-count;
+  };
+  let title='获得奖励',cost=0,taskActivityOnly=false;
+  if(operation.action==='draw') {
+    const count=operation.count;if(![1,10].includes(count))throw Error('请选择单次或十次补给');
+    const rookie=count===10&&!l.newbieTenClaimed;
+    cost=UNLOCK_ALL_CONTENT?0:count*100;debit(2,cost);
+    const drawn=Array.from({length:count},()=>{let cursor=ticket(100);return PILOT_SUPPLY_POOL.find(r=>(cursor-=r.weight)<0);});
+    if(rookie&&!drawn.some(r=>r.id===925))drawn[count-1]=PILOT_SUPPLY_POOL.find(r=>r.id===925);
+    for(const row of drawn)add(row.id==='blueprint'?blueprints[ticket(blueprints.length)]:row.id,row.amount);
+    if(rookie)l.newbieTenClaimed=true;
+    l.total+=count;l.daily.recruits+=count;title=rookie?'新手十连补给':'驾驶员补给结果';
+    l.history.push({at:time,count,cost,results:structuredClone(rewards)});l.history=l.history.slice(-50);
+  }else if(operation.action==='compose') {
+    const count=operation.count??1;
+    if(!Number.isSafeInteger(count)||count<1||!safe(count*50))throw Error('合成数量无效');
+    debit(926,count*50);add(925,count);title='角色箱合成完成';
+  }else if(operation.action==='open') {
+    const count=operation.count;if(!isItemUseBatchCount(count))throw Error(`每批可开启 1～${ITEM_USE_BATCH_LIMIT} 个角色箱`);
+    debit(925,count);
+    for(let i=0;i<count;i++){
+      const missing=roster.filter(row=>!progression.pilots.some(p=>p.id===row.id&&p.active));
+      const pool=missing.length&&(l.boxOpened<2||l.boxMisses>=4)?missing:roster;
+      const row=pool[ticket(pool.length)],owned=progression.pilots.find(p=>p.id===row.id),isNew=!owned?.active;
+      if(isNew)l.boxMisses=0;
+      else if(missing.length)l.boxMisses++;else l.boxMisses=0;
+      const grant=grantPilotCards(inventory,progression,row.id,1,{activate:true});
+      l.cardCredits+=grant.creditsAdded;
+      rewards.push({type:'pilot',id:NATIVE_PILOT_SKINS[row.id],nativeId:row.id,name:pilotName(row),amount:1,
+        ...grant,nativeRecruit:true});
+      l.boxOpened++;
+    }
+    l.boxHistory.push({at:time,count,cost:0,results:structuredClone(rewards)});l.boxHistory=l.boxHistory.slice(-50);title='角色箱开启结果';
+  }else if(operation.action==='growth') {
+    const result=claimGrowthSupply(progression,inventory,l,campaign,operation);
+    rewards.push(...result.rewards);title=result.title;
+  }else if(operation.action==='collection') {
+    const result=claimCollectionSupply(progression,inventory,l,operation,campaign);
+    rewards.push(...result.rewards);title=result.title;
+  }else if(operation.action==='task') {
+    const task=tasks.find(t=>t.id===operation.id);
+    if(!task||l.daily.claimed.includes(task.id)||!UNLOCK_ALL_CONTENT&&taskCount(task,l,taskCounters.daily)<task.target)throw Error('任务未完成或已领取');
+    l.daily.claimed.push(task.id);if(task.fragments)add(926,task.fragments);else taskActivityOnly=true;
+    if(task.id==='battle1'&&!l.introBattleRewardClaimed){
+      INTRO_BATTLE_REWARDS.forEach(r=>add(r.id,r.amount));l.introBattleRewardClaimed=true;
+    }
+    // Only the base pilot is granted at login; other pilots keep their acquisition routes.
+    if(task.starter&&!progression.pilots.some(p=>p.id===task.starter&&p.active)){
+      const row=catalog.pilots.find(p=>p.id===task.starter);
+      grantPilotCards(inventory,progression,row.id,1,{activate:true});
+      rewards.push({type:'pilot',id:NATIVE_PILOT_SKINS[row.id],nativeId:row.id,name:pilotName(row),
+        amount:1,isNew:true,stars:row.defaultStar,nativeRecruit:true});
+    }
+  }else if(operation.action==='activity') {
+    if(l.daily.activityClaimed||points(l)<100)throw Error('请先领取每日任务，达到 100 活跃');
+    l.daily.activityClaimed=true;add(926,DAILY_ACTIVITY_FRAGMENTS);
+    if(!l.week.activeDays.includes(l.daily.day))l.week.activeDays.push(l.daily.day);
+  }else if(operation.action==='weekly') {
+    if(l.week.claimed||!UNLOCK_ALL_CONTENT&&weeklyTaskView(l,taskCounters.weekly).points<100)throw Error('每周活跃未达 100，或奖励已领取');
+    l.week.claimed=true;add(926,WEEKLY_FRAGMENTS);
+  }else if(operation.action==='ad'||operation.action==='devAd') {
+    if(l.daily.ads>=2||!(operation.action==='devAd'?UNLOCK_ALL_CONTENT:adCompleted))throw Error('广告未完整完成或今日次数已用完');
+    l.daily.ads++;add(926,AD_FRAGMENTS);
+  }else if(operation.action==='convertCopies') {
+    const count=operation.count;
+    if(!exchangeRoster.some(row=>row.id===operation.id)||!pilotAtMaxStar(progression,operation.id))throw Error('仅已满星驾驶员的同名卡可转换积分');
+    if(!Number.isSafeInteger(count)||count<1)throw Error('转换数量无效');
+    debit(operation.id,count);l.cardCredits+=count;
+    rewards.push(pilotCreditReward(count,operation.id));title='满星同名卡转换完成';
+  }else if(operation.action==='exchangeKey') {
+    if(!UNLOCK_ALL_CONTENT&&l.cardCredits<PILOT_CREDIT_COST)throw Error('需 3 个满星重复积分');
+    if(!UNLOCK_ALL_CONTENT)l.cardCredits-=PILOT_CREDIT_COST;
+    add(112,1);title='积分兑换完成';
+  }else if(operation.action==='exchange') {
+    const row=exchangeRoster.find(r=>r.id===operation.id),owned=progression.pilots.find(p=>p.id===row?.id&&p.active);
+    if(!row||owned&&owned.star>=maxStar(row)||!UNLOCK_ALL_CONTENT&&l.cardCredits<PILOT_CREDIT_COST)throw Error('需 3 个积分并选择未拥有或未满星的驾驶员');
+    if(!UNLOCK_ALL_CONTENT)l.cardCredits-=PILOT_CREDIT_COST;
+    // Local compatibility: the same 3-credit exchange also grants the first
+    // card. This closes acquisition for open pilots outside the role-box pool.
+    const grant=grantPilotCards(inventory,progression,row.id,1,{activate:true});
+    l.cardCredits+=grant.creditsAdded;
+    rewards.push({type:'pilot',id:NATIVE_PILOT_SKINS[row.id],nativeId:row.id,
+      name:pilotName(row),amount:1,...grant,nativeRecruit:true});
+    title=grant.isNew?'指定驾驶员解锁完成':'驾驶员同名卡兑换完成';
+  }else throw Error('未知补给操作');
+  inventory.revision++;
+  if(![l.total,l.boxOpened,l.cardCredits,l.daily.recruits].every(safe))throw Error('补给数量超限');
+  return {pilotSupply:true,inventory:validateReplicaInventory(inventory),progression:validateReplicaProgression(progression),
+    ledger:l,rewards,title,...(taskActivityOnly?{taskActivityOnly:true}:{}),...(operation.action==='open'?{recruitPool:'pilot'}:{})};
+}

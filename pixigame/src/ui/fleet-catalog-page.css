@@ -1,0 +1,167 @@
+/* 1.1.6 UI_PilotMain / UI_PlaneMain, 1080 × 1920 reference canvas.
+   Midpoint offsets use width-scaled Unity units; fixed sprites never stretch vertically. */
+#gui-casual-lobby .ref-catalog.fc-page {position:relative;display:block;container-type:size;width:100%;height:100%;min-height:0;overflow:hidden;isolation:isolate;background:var(--project-list-background)}
+#gui-casual-lobby .fc-hero {position:absolute;inset:0 0 auto;height:calc(50% + 3.148148cqw);overflow:hidden;background:#142331 var(--project-hangar-image) center 50%/cover no-repeat;z-index:0}
+#gui-casual-lobby .fc-pilot .fc-hero {background-image:var(--project-ready-room-image);background-position:center 62%}
+#gui-casual-lobby .fc-hero::after {content:'';position:absolute;inset:0;background:linear-gradient(#07132377,transparent 35%,#07132322)}
+#gui-casual-lobby .fc-platform {position:absolute;left:26.85%;top:calc(50% - 32.1cqw);width:46.3%;height:19cqw;object-fit:contain;pointer-events:none;z-index:1}
+#gui-casual-lobby .fc-identity {position:absolute;left:5.56%;right:3%;top:2.5cqw;z-index:4;pointer-events:none}
+#gui-casual-lobby .fc-identity h1 {margin:0;font:400 clamp(14px,4.7cqw,24px)/1.4 PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-info {display:flex;align-items:center;gap:1.1cqw;min-height:32px;max-width:100%;padding:0;border:0;background:none;color:#fff;font:inherit;text-align:left;text-shadow:0 1px 2px #07121e;pointer-events:auto;cursor:pointer}
+#gui-casual-lobby .fc-info-icon {display:block;flex:none;width:5.1cqw;height:5.1cqw;object-fit:contain}
+#gui-casual-lobby .fc-identity>.fc-header-stars {position:static;display:flex;justify-content:flex-start;width:31cqw;height:5.5cqw;gap:0;margin-top:.2cqw}
+#gui-casual-lobby .fc-header-stats {display:grid;gap:.2cqw;margin-top:1.1cqw!important;color:#e9f5ff;font:600 clamp(10px,3.4cqw,17px)/1.3 "Microsoft YaHei",sans-serif;text-shadow:0 1px 2px #000!important}
+#gui-casual-lobby .fc-header-stats b {color:#b7f39a;font-weight:700}
+#gui-casual-lobby .fc-aircraft-model {position:absolute;left:8%;top:calc(50% - 88cqw);width:84%;height:63cqw;z-index:2;touch-action:none}
+#gui-casual-lobby .fc-aircraft-model>canvas {width:100%!important;height:100%!important;object-fit:contain;transform:none}
+#gui-casual-lobby .fc-pilot-portrait,#gui-casual-lobby .fc-pilot-portrait.character-portrait {position:absolute;left:19%;top:calc(50% - 92.7cqw);width:62%;height:69.5cqw;object-fit:contain;object-position:center bottom;z-index:2;filter:none}
+#gui-casual-lobby .fc-unlock-skill {position:absolute;left:0;top:calc(50% - 32.51cqw);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;width:17.8%;height:14.96cqw;min-height:50px;padding:0;border:0;background:none;color:#ecf5ff;font:400 clamp(8px,2.55cqw,13px)/1.25 "Microsoft YaHei",sans-serif;z-index:4;cursor:pointer}
+#gui-casual-lobby .fc-unlock-skill>.fc-skill-icon {width:11.1cqw;height:11.1cqw;object-fit:contain}
+#gui-casual-lobby .fc-unlock-skill>span {white-space:nowrap;text-shadow:0 1px #000}
+#gui-casual-lobby .fc-hero-actions {position:absolute;left:10.185%;top:calc(50% - 13.4444cqw);width:79.63%;height:13.7037cqw;display:flex;justify-content:center;align-items:center;gap:6.7963cqw;z-index:4}
+#gui-casual-lobby .fc-operation {flex:none;width:46.51%;min-width:0;min-height:0;height:100%;--wc-button-height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:clamp(13px,4.3cqw,22px)}
+#gui-casual-lobby .fc-operation strong {font-weight:400;line-height:1.15}
+#gui-casual-lobby .fc-operation small {display:flex;align-items:center;gap:.5cqw;font:600 clamp(9px,2.8cqw,14px)/1 Arial,sans-serif}
+#gui-casual-lobby .fc-operation small img {width:5.2cqw;height:5.2cqw;object-fit:contain;margin:0}
+#gui-casual-lobby .fc-operation.is-using {color:#bbf8d4!important;opacity:1!important;cursor:default}
+#gui-casual-lobby .fc-operation.is-using::before {filter:sepia(.35) hue-rotate(55deg) saturate(1.3)}
+#gui-casual-lobby .fc-skill-group {position:absolute;left:21.565%;top:calc(50% - 20.0926cqw);display:flex;justify-content:space-between;gap:5.26cqw;width:56.87%;height:17.0926cqw;z-index:4}
+#gui-casual-lobby .fc-aircraft .fc-skill-group {top:calc(50% - 23.4537cqw)}
+#gui-casual-lobby .fc-aircraft .fc-platform {top:calc(50% - 36.4cqw)}
+#gui-casual-lobby .fc-skill-slot {position:relative;isolation:isolate;display:grid;place-items:center;align-content:center;gap:.3cqw;flex:none;width:15.45cqw;height:100%;min-height:44px;min-width:44px;margin:0;padding:1.1cqw .8cqw;border:0;background:#1b3344;color:#e9f8ff;cursor:pointer;box-shadow:none}
+#gui-casual-lobby .fc-skill-slot::before {content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 5px 5px calc(5px * 40 / 24) 5px stretch}
+#gui-casual-lobby .fc-skill-slot.is-selected::before,#gui-casual-lobby .fc-skill-slot.is-replace-target::before {filter:brightness(1.7)}
+#gui-casual-lobby .fc-skill-slot.is-selected {outline:2px solid #f3da70;outline-offset:-2px}
+#gui-casual-lobby .fc-skill-slot .fc-skill-icon {width:10cqw;height:10cqw;object-fit:contain}
+#gui-casual-lobby .fc-slot-index {position:absolute;left:1.1cqw;top:.8cqw;color:#fff;font:700 clamp(8px,2.5cqw,12px)/1 Arial,sans-serif;text-shadow:0 1px #102132}
+#gui-casual-lobby .fc-slot-name {display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:500 clamp(8px,2.2cqw,11px)/1.2 "Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-worn-skills {position:absolute;left:83.5%;top:9.9074cqw;width:16.5%;display:grid;justify-items:center;align-content:start;gap:.6cqw;z-index:4}
+#gui-casual-lobby .fc-worn-skills>span {font-size:clamp(8px,2.7cqw,13px);line-height:1.2;color:#c6dce9;text-align:center}
+#gui-casual-lobby .fc-worn-skills .fc-skill-slot {width:13cqw;height:12.1cqw;min-width:40px;min-height:40px;padding:1.5cqw;border-radius:0}
+#gui-casual-lobby .fc-worn-skills .fc-skill-icon {width:9.3cqw;height:9.3cqw}
+#gui-casual-lobby .fc-skill-cancel-area {position:absolute;inset:0 0 auto;width:100%;height:calc(50% + 3.148148cqw);padding:0;border:0;background:transparent;z-index:3;cursor:default}
+#gui-casual-lobby .fc-heading {position:absolute;left:0;right:0;top:calc(50% + 3.148148cqw);height:10.648148cqw;z-index:5}
+#gui-casual-lobby .fc-heading:has(.fc-filter)>h2 {position:absolute;left:33%;right:3%;margin:0;text-align:center;white-space:nowrap}
+#gui-casual-lobby .fc-heading>.wc-button.fc-filter {position:absolute;left:3.78%;top:10%;width:26.71%;height:80%;min-height:0;box-sizing:border-box;padding:2px 5px;--wc-button-height:100%;font-size:clamp(10px,3.3cqw,16px)}
+#gui-casual-lobby .fc-scroll {position:absolute;left:0;right:0;top:calc(50% + 13.801cqw);bottom:calc(16.5926cqw + 18px + env(safe-area-inset-bottom,0px));margin:0;padding:.5cqw 0 4.63cqw!important;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;z-index:3}
+#gui-casual-lobby .fc-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:97.4074%;grid-auto-rows:27.777778cqw;column-gap:0;row-gap:0;align-content:start}
+#gui-casual-lobby .fc-item-wrap {position:relative;min-width:0;width:109.5057%;height:28.703704cqw;margin:0;padding:0}
+#gui-casual-lobby .fc-item-wrap.is-selected {z-index:4}
+#gui-casual-lobby .wc-item.fc-item {width:100%;height:100%;aspect-ratio:auto;overflow:hidden;filter:none;clip-path:none}
+#gui-casual-lobby .fc-item::before {border-image-width:6px 6px 10px 6px;filter:var(--fleet-frame-filter,none)}
+#gui-casual-lobby .fc-item[data-rarity='UR'] {--fleet-frame-filter:hue-rotate(60deg)}
+#gui-casual-lobby .fc-item[data-rarity='SSR'] {--fleet-frame-filter:hue-rotate(25deg)}
+#gui-casual-lobby .fc-item[data-rarity='SR'] {--fleet-frame-filter:hue-rotate(-75deg)}
+#gui-casual-lobby .fc-card-art {position:absolute;inset:8% 8% 24%;display:grid;place-items:center;overflow:hidden;z-index:1}
+#gui-casual-lobby .fc-card-art>img {position:absolute;inset:0;display:block;width:100%!important;height:100%!important;max-width:none;object-fit:contain}
+#gui-casual-lobby .fc-card-art:not(.fc-avatar)>img {object-view-box:inset(12% 18%)}
+#gui-casual-lobby .fc-card-art.fc-avatar {inset:7% 8% 23%}
+#gui-casual-lobby .fc-avatar>img {object-fit:cover;object-position:center 20%}
+#gui-casual-lobby .fc-avatar>img[src*='pilot-06-v09c/portrait.png'] {object-view-box:inset(7% 34% 75% 47%);object-position:center 20%}
+#gui-casual-lobby .fc-avatar>img[src*='white-gold-knight-v11/master.png'] {object-view-box:inset(0% 35% 77% 35%);object-position:center 20%}
+#gui-casual-lobby .fc-avatar>img[src*='white-gold-luoen-r13/portrait-refined-v1.png'] {object-view-box:inset(5% 38% 74% 42%);object-position:center 20%}
+#gui-casual-lobby .fc-item.is-locked .fc-card-art {filter:grayscale(.7) brightness(.52)}
+#gui-casual-lobby .fc-card-type {position:absolute;top:6%;left:7%;width:5.1cqw;height:5.1cqw;z-index:3}
+#gui-casual-lobby .fc-card-type>img {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-worn-check {position:absolute;right:8%;top:7%;width:4.8cqw;height:4.8cqw;z-index:3;object-fit:contain}
+#gui-casual-lobby .fc-item .wc-lock {top:7%;right:8%;z-index:3}
+#gui-casual-lobby .fc-item>.fc-stars {height:14%;bottom:8%;z-index:3}
+#gui-casual-lobby .fc-browse-corners {position:absolute;inset:5%;z-index:4;pointer-events:none;background:linear-gradient(#ffe36e,#ffe36e) left top/11px 3px no-repeat,linear-gradient(#ffe36e,#ffe36e) left top/3px 11px no-repeat,linear-gradient(#ffe36e,#ffe36e) right top/11px 3px no-repeat,linear-gradient(#ffe36e,#ffe36e) right top/3px 11px no-repeat,linear-gradient(#ffe36e,#ffe36e) left bottom/11px 3px no-repeat,linear-gradient(#ffe36e,#ffe36e) left bottom/3px 11px no-repeat,linear-gradient(#ffe36e,#ffe36e) right bottom/11px 3px no-repeat,linear-gradient(#ffe36e,#ffe36e) right bottom/3px 11px no-repeat}
+#gui-casual-lobby .fc-skill-list {padding:0 0 4.63cqw!important;color:#f1f7fb}
+#gui-casual-lobby .fc-skill-row {position:relative;isolation:isolate;display:block;width:100%;height:23.138889cqw;min-height:0;margin:0 0 -1.851852cqw;padding:0;color:#e6f3fb}
+#gui-casual-lobby .fc-skill-row::before {content:'';position:absolute;left:4.49%;top:14%;width:91.02%;height:82.43%;z-index:-1;background:#223a4c;border:1px solid #526e82}
+#gui-casual-lobby .fc-skill-row.is-equipped::before {border-color:#91d4e2;background:#274451}
+#gui-casual-lobby .fc-skill-row.is-pending::before {border-color:#e8cf68}
+#gui-casual-lobby .fc-row-preview {position:absolute;left:6.574%;top:23.19%;display:grid;place-items:center;width:14.444%;height:62.425%;min-height:0;padding:0;margin:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .fc-row-preview>.fc-skill-icon {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-row-preview>b {position:absolute;top:0;left:0;display:grid;place-items:center;width:5cqw;height:5cqw;background:#173e4c;color:#e7fbff;font:700 3cqw Arial,sans-serif}
+#gui-casual-lobby .fc-skill-row p {position:absolute;left:23.583%;top:25.59%;display:flex;align-items:center;width:50.778%;height:59.46%;margin:0;padding:0 5cqw 0 0!important;font:400 clamp(10px,3.25cqw,16px)/1.4 "Microsoft YaHei",sans-serif;text-shadow:none}
+#gui-casual-lobby .fc-skill-row.is-effect p {width:69.685%;padding-right:0!important}
+#gui-casual-lobby .fc-row-action {position:absolute;left:70.722%;top:29.97%;width:25.269%;height:48.82%;min-height:0;--wc-button-height:100%;font-size:clamp(12px,3.8cqw,19px)}
+#gui-casual-lobby .fc-footer {position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:block;height:16.5926cqw;z-index:5;padding:0;gap:0}
+#gui-casual-lobby .fc-footer>.wc-button {position:absolute;min-height:0;--wc-button-height:100%;font-size:clamp(11px,3.4cqw,17px)}
+#gui-casual-lobby .fc-footer>.wc-back {left:1.99%;top:-.1852cqw;width:17.13%;height:15.5556cqw}
+#gui-casual-lobby .fc-footer>.wc-mode {left:64%;top:1cqw;width:16%;height:14cqw;padding:1cqw;gap:.5cqw;box-sizing:border-box}
+#gui-casual-lobby .fc-footer>.wc-mode[data-mode='skills'] {left:82%}
+#gui-casual-lobby .fc-footer>.wc-mode>.wc-tab-icon {flex:none;width:5cqw;height:5cqw}
+#gui-casual-lobby .fc-footer>.wc-mode>span {flex:none;white-space:nowrap;font-size:clamp(9px,2.8cqw,13px);line-height:1.2}
+#gui-casual-lobby .fc-filter-dismiss {position:absolute;inset:0;z-index:6;display:block;width:100%;height:100%;margin:0;padding:0;border:0;background:transparent;cursor:default}
+#gui-casual-lobby .fc-filter-options {position:absolute;left:2.06%;top:calc(50% + 2.46cqw);width:max(32cqw,108px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;padding:6px;isolation:isolate;z-index:7;background:#1c3446;border:1px solid #8da9ba;box-shadow:0 4px 12px #0008}
+#gui-casual-lobby .fc-filter-options>button {min-width:44px;min-height:44px;margin:0;padding:4px 2px;border:1px solid #59798c;border-radius:0;background:#2d4c60;color:#eaf4fa;font:600 clamp(10px,3cqw,14px)/1.2 "Microsoft YaHei",sans-serif;cursor:pointer}
+#gui-casual-lobby .fc-filter-options>button[aria-checked='true'] {border-color:#eddb84;background:#49616d;color:#fff3bb}
+#gui-casual-lobby .fc-empty {margin:0;padding:9cqw 4cqw!important;text-align:center;font-size:clamp(12px,3.8cqw,18px);color:#a9c1d1}
+#gui-casual-lobby .fc-page button:focus-visible {outline:2px solid #f4e7a9;outline-offset:-2px}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(:is(.fc-detail,.fc-skill-preview,.fc-operation-preview)) {--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px}
+#gui-casual-lobby :is(.fc-detail,.fc-skill-preview,.fc-operation-preview) {color:#20384e;font:400 14px/1.6 "Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-detail-art {position:relative;width:100%;height:120px;overflow:hidden}
+#gui-casual-lobby .fc-detail-art>img {position:absolute;inset:0;width:100%!important;height:120px!important;max-width:none;object-fit:contain;object-view-box:inset(12% 18%)}
+#gui-casual-lobby .fc-detail-stats {margin:12px 0;border-block:1px solid #7890a477}
+#gui-casual-lobby .fc-detail-stats>div {display:flex;align-items:center;gap:10px;padding:6px 0}
+#gui-casual-lobby .fc-detail-stats>div>b {margin-left:auto}
+#gui-casual-lobby .fc-detail-next {color:#287b57}
+#gui-casual-lobby .fc-detail h3 {font-size:16px;margin:12px 0 4px}
+#gui-casual-lobby .fc-detail p {margin:4px 0}
+#gui-casual-lobby .fc-detail-cost {display:flex;gap:12px;margin:14px 0 6px}
+#gui-casual-lobby .fc-detail-button {width:100%;margin-top:8px;--wc-button-height:46px}
+#gui-casual-lobby .fc-skill-rule {display:flex;align-items:center;gap:12px;padding:12px 0}
+#gui-casual-lobby .fc-skill-rule-art {width:58px;height:58px;flex:none}
+#gui-casual-lobby .fc-skill-rule-art>img {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-skill-preview>header {display:flex;align-items:center;gap:14px;margin-bottom:12px}
+#gui-casual-lobby .fc-skill-preview>header>img {width:64px;height:64px;object-fit:contain}
+#gui-casual-lobby .fc-skill-preview h3 {margin:0;font-size:17px}
+#gui-casual-lobby .fc-skill-preview p {margin:0}
+#gui-casual-lobby .fc-current-effect {padding:10px;background:#d8e7ed;border:1px solid #96b0bf}
+#gui-casual-lobby .fc-skill-levels {margin-top:12px}
+#gui-casual-lobby .fc-skill-levels>section {display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid #8aa6b677}
+#gui-casual-lobby .fc-skill-levels>.is-locked {color:#647d8e}
+#gui-casual-lobby .fc-skill-levels>.is-unlocked {color:#17684a}
+#gui-casual-lobby .fc-operation-preview>header {display:flex;align-items:center;gap:12px;margin-bottom:12px}
+#gui-casual-lobby .fc-operation-portrait {position:relative;display:block;width:76px;height:82px;flex:none;overflow:hidden;background:#25465a}
+#gui-casual-lobby .fc-operation-portrait>img {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-operation-preview h3 {margin:0;font-size:17px;line-height:1.4}
+#gui-casual-lobby .fc-operation-preview p {margin:4px 0}
+#gui-casual-lobby .fc-operation-effect {padding:12px;background:#d5e4eb;border:1px solid #94adbd}
+#gui-casual-lobby .fc-operation-effect h4 {margin:0 0 4px;font-size:15px}
+#gui-casual-lobby .fc-operation-stats {border-block:1px solid #8da8b8;margin-bottom:12px;padding:5px 0}
+#gui-casual-lobby .fc-operation-stats>p {display:flex;justify-content:space-between;gap:12px}
+#gui-casual-lobby .fc-operation-stats b {color:#26714e}
+#gui-casual-lobby .fc-card-cost {display:flex;align-items:center;gap:8px;margin:14px 0 8px;padding:7px 10px;border:1px solid #8ea8b9;background:#d1e1e9}
+#gui-casual-lobby .fc-card-cost>img {width:36px;height:36px;object-fit:contain}
+#gui-casual-lobby .fc-card-cost>b {margin-left:auto}
+#gui-casual-lobby .fc-card-cost>.is-short,#gui-casual-lobby .fc-operation-error {color:#9c3e37}
+#gui-casual-lobby .fc-operation-actions {display:flex;gap:8px}
+#gui-casual-lobby .fc-operation-actions>.wc-button {flex:1;min-width:0}
+#gui-casual-lobby .fleet-supply-back {display:flex;align-items:center;gap:4px;min-height:36px;max-width:100%;margin:0;padding:0;border:0;background:none;color:#e9f5ff;font:600 13px/1.2 "Microsoft YaHei",sans-serif;cursor:pointer;white-space:nowrap}
+
+/* Expand touch targets without changing the versioned prefab silhouette. */
+#gui-casual-lobby :is(.fc-operation,.fc-row-action,.fc-row-preview,.fc-footer>.wc-button)::after {content:"";position:absolute;left:0;right:0;top:50%;height:max(100%,44px);transform:translateY(-50%);background:transparent}
+
+/* Aircraft cards reuse the original roster plate and nine-slice frame. */
+#gui-casual-lobby .fc-aircraft .wc-item.fc-item {
+  --aircraft-quality-color:#4ba2d0;--aircraft-frame-filter:none;
+  background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,
+    url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;
+}
+#gui-casual-lobby .fc-aircraft .fc-item[data-rarity='SR'] {--aircraft-quality-color:#a05bc4;--aircraft-frame-filter:hue-rotate(75deg) saturate(1.3)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-rarity='SSR'] {--aircraft-quality-color:#cc9f36;--aircraft-frame-filter:hue-rotate(200deg) saturate(1.4)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-rarity='UR'] {--aircraft-quality-color:#c95c69;--aircraft-frame-filter:hue-rotate(145deg) saturate(1.4)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-psd-quality='0'] {--aircraft-quality-color:#8b9daa;--aircraft-frame-filter:grayscale(1)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-psd-quality='1'] {--aircraft-quality-color:#55a572;--aircraft-frame-filter:hue-rotate(280deg) saturate(1.2)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-psd-quality='2'] {--aircraft-quality-color:#4ba2d0;--aircraft-frame-filter:none}
+#gui-casual-lobby .fc-aircraft .fc-item[data-psd-quality='3'] {--aircraft-quality-color:#a05bc4;--aircraft-frame-filter:hue-rotate(75deg) saturate(1.3)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-psd-quality='4'] {--aircraft-quality-color:#cc9f36;--aircraft-frame-filter:hue-rotate(200deg) saturate(1.4)}
+#gui-casual-lobby .fc-aircraft .fc-item[data-psd-quality='5'] {--aircraft-quality-color:#c95c69;--aircraft-frame-filter:hue-rotate(145deg) saturate(1.4)}
+#gui-casual-lobby .fc-aircraft .wc-item.fc-item::before {
+  z-index:2;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 10px 6px stretch;
+  filter:var(--aircraft-frame-filter)!important;
+}
+#gui-casual-lobby .fc-aircraft .wc-item.fc-item::after {
+  content:'';position:absolute;inset:auto 4% 3%;height:25%;z-index:0;pointer-events:none;
+  background:linear-gradient(transparent,color-mix(in srgb,var(--aircraft-quality-color) 70%,transparent));
+}
+/* Keep locked aircraft artwork and badges at their previous visible brightness
+   while allowing the quality-colored border to remain legible. */
+#gui-casual-lobby .fc-aircraft .wc-item.fc-item.is-locked {filter:none}
+#gui-casual-lobby .fc-aircraft .fc-item.is-locked .fc-card-art {filter:grayscale(.7) brightness(.286)}
+#gui-casual-lobby .fc-aircraft .fc-item.is-locked[aria-pressed='true'] .fc-card-art {filter:grayscale(.7) brightness(.52)}
+#gui-casual-lobby .fc-aircraft .fc-item.is-locked:not([aria-pressed='true']) :is(.fc-card-type,.fc-stars,.wc-lock,.fc-worn-check) {filter:brightness(.55)}

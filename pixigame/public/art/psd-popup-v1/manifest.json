@@ -1,0 +1,77 @@
+{
+  "source": "psd/弹窗.psd",
+  "sha256": "7f5a7d89a941cdb4d2d53d516b71ddfd647dd82105fb9460a990eff89d530d3f",
+  "canvas": [
+    750,
+    1624
+  ],
+  "assets": {
+    "primary": {
+      "layer_index": 3,
+      "layer_name": "1级",
+      "bounds_ltrb": [
+        95,
+        427,
+        662,
+        1141
+      ],
+      "size": [
+        567,
+        714
+      ],
+      "file": "primary.png",
+      "slice_trbl": [
+        110,
+        44,
+        55,
+        255
+      ]
+    },
+    "secondary": {
+      "layer_index": 6,
+      "layer_name": "组 2",
+      "bounds_ltrb": [
+        136,
+        602,
+        623,
+        953
+      ],
+      "size": [
+        487,
+        351
+      ],
+      "file": "secondary.png",
+      "slice_trbl": [
+        48,
+        38,
+        38,
+        220
+      ]
+    },
+    "close": {
+      "layer_index": 5,
+      "layer_name": "组 1",
+      "bounds_ltrb": [
+        584,
+        433,
+        678,
+        528
+      ],
+      "size": [
+        94,
+        95
+      ],
+      "file": "close.png"
+    }
+  },
+  "title": {
+    "box_xywh": [
+      153,
+      466,
+      158,
+      37
+    ],
+    "font_size": 40,
+    "fill": "#FFFFFF"
+  }
+}

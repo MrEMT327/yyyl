@@ -1,0 +1,469 @@
+{
+  "package": "GUI Pro - Casual Game 4.1.1",
+  "publisher": "Layer Lab",
+  "source": "User-supplied Unity package; original PNG bytes, no generated substitutes.",
+  "sprites": {
+    "button-primary": {
+      "source": "Button/Button01_145_Yellow.Png",
+      "width": 55,
+      "height": 145,
+      "border": {
+        "left": 28,
+        "bottom": 116,
+        "right": 27,
+        "top": 29
+      }
+    },
+    "button-secondary": {
+      "source": "Button/Button01_145_Sky.Png",
+      "width": 55,
+      "height": 145,
+      "border": {
+        "left": 28,
+        "bottom": 118,
+        "right": 27,
+        "top": 27
+      }
+    },
+    "button-green": {
+      "source": "Button/Button01_145_Green.Png",
+      "width": 55,
+      "height": 145,
+      "border": {
+        "left": 27,
+        "bottom": 117,
+        "right": 28,
+        "top": 28
+      }
+    },
+    "button-disabled": {
+      "source": "Button/Button01_145_Gray.Png",
+      "width": 55,
+      "height": 145,
+      "border": {
+        "left": 27,
+        "bottom": 115,
+        "right": 28,
+        "top": 30
+      }
+    },
+    "button-dark": {
+      "source": "Button/Button03_Blue.png",
+      "width": 58,
+      "height": 134,
+      "border": {
+        "left": 29,
+        "bottom": 102,
+        "right": 29,
+        "top": 32
+      }
+    },
+    "button-square": {
+      "source": "Button/Button_Square01_Sky.png",
+      "width": 71,
+      "height": 78,
+      "border": {
+        "left": 35,
+        "bottom": 41,
+        "right": 36,
+        "top": 37
+      }
+    },
+    "button-utility": {
+      "source": "Button/Button_Square06_Navy.png",
+      "width": 53,
+      "height": 100,
+      "border": {
+        "left": 26,
+        "bottom": 50,
+        "right": 26,
+        "top": 50
+      }
+    },
+    "button-round": {
+      "source": "Button/Button_Circle147_Navy.png",
+      "width": 132,
+      "height": 147,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "panel-banner": {
+      "source": "Frame/BannerFrame01_Single_Navy.png",
+      "width": 170,
+      "height": 124,
+      "border": {
+        "left": 150,
+        "bottom": 0,
+        "right": 20,
+        "top": 0
+      }
+    },
+    "panel-list": {
+      "source": "Frame/ListFrame02_Single_Navy.png",
+      "width": 403,
+      "height": 212,
+      "border": {
+        "left": 21,
+        "bottom": 0,
+        "right": 381,
+        "top": 0
+      }
+    },
+    "panel-header": {
+      "source": "Frame/PanelFrame03_Topbar.png",
+      "width": 6,
+      "height": 13,
+      "border": {
+        "left": 3,
+        "bottom": 10,
+        "right": 3,
+        "top": 3
+      }
+    },
+    "panel-bottom": {
+      "source": "Frame/PanelFrame05_Bottom.png",
+      "width": 4,
+      "height": 6,
+      "border": {
+        "left": 2,
+        "bottom": 2,
+        "right": 2,
+        "top": 4
+      }
+    },
+    "panel-popup": {
+      "source": "Popup/Popup01_Single_Navy.png",
+      "width": 52,
+      "height": 64,
+      "border": {
+        "left": 26,
+        "bottom": 39,
+        "right": 26,
+        "top": 25
+      }
+    },
+    "card-common": {
+      "source": "Frame/ItemFrame01_Single_Brown.png",
+      "width": 177,
+      "height": 188,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "card-green": {
+      "source": "Frame/ItemFrame01_Single_Green.png",
+      "width": 177,
+      "height": 188,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "card-blue": {
+      "source": "Frame/ItemFrame01_Single_Blue.png",
+      "width": 177,
+      "height": 188,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "card-purple": {
+      "source": "Frame/ItemFrame01_Single_Purple.png",
+      "width": 177,
+      "height": 188,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "card-yellow": {
+      "source": "Frame/ItemFrame01_Single_Yellow.png",
+      "width": 177,
+      "height": 188,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "card-red": {
+      "source": "Frame/ItemFrame01_Single_Red.png",
+      "width": 177,
+      "height": 188,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "card-focus": {
+      "source": "Frame/ItemFrame01_f.png",
+      "width": 181,
+      "height": 181,
+      "border": {
+        "left": 91,
+        "bottom": 90,
+        "right": 90,
+        "top": 91
+      }
+    },
+    "bag-item-blue": {
+      "source": "Frame/ItemFrame05_Single_Blue.png",
+      "width": 152,
+      "height": 152,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "bag-close": {
+      "source": "Button/Button01_145_Red.Png",
+      "width": 55,
+      "height": 145,
+      "border": {
+        "left": 26,
+        "bottom": 116,
+        "right": 29,
+        "top": 29
+      }
+    },
+    "bag-tab-white": {
+      "source": "Button/Button01_145_White.Png",
+      "width": 55,
+      "height": 145,
+      "border": {
+        "left": 28,
+        "bottom": 115,
+        "right": 27,
+        "top": 30
+      }
+    },
+    "icon-coin": {
+      "source": "Icon_ItemIcons/128/Icon_Gold.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-diamond": {
+      "source": "Icon_ItemIcons/128/Icon_Gem03_Diamond_Purple.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-energy": {
+      "source": "Icon_ItemIcons/128/Icon_Energy_Yellow.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-shop": {
+      "source": "Icon_ItemIcons/128/Icon_Shop.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-backpack": {
+      "source": "Icon_ItemIcons/128/Icon_Bag.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-research": {
+      "source": "Icon_ItemIcons/128/Icon_Cards.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-chest": {
+      "source": "Icon_ItemIcons/128/Icon_Chest.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-task": {
+      "source": "Icon_ItemIcons/128/Icon_Quest.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-mail": {
+      "source": "Icon_ItemIcons/128/Icon_Mail.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-plane": {
+      "source": "Icon_PictoIcons/128/Pictoicon_Airplane.Png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-equipment": {
+      "source": "Icon_PictoIcons/128/Pictoicon_Tool.Png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-recruit": {
+      "source": "Icon_PictoIcons/128/Pictoicon_Ticket.Png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-nav-equipment": {
+      "source": "Icon_ItemIcons/256/Icon_Hammer.png",
+      "width": 256,
+      "height": 256,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-nav-battle": {
+      "source": "Icon_ItemIcons/256/Icon_Missile.png",
+      "width": 256,
+      "height": 256,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-nav-research": {
+      "source": "Icon_ItemIcons/256/Icon_Book.png",
+      "width": 256,
+      "height": 256,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-nav-recruit": {
+      "source": "Icon_ItemIcons/256/Icon_Cards.png",
+      "width": 256,
+      "height": 256,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-map": {
+      "source": "Icon_ItemIcons/128/Icon_Compass.png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-star": {
+      "source": "Icon_PictoIcons/128/Pictoicon_Star.Png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    },
+    "icon-close": {
+      "source": "Icon_PictoIcons/128/Pictoicon_Close.Png",
+      "width": 128,
+      "height": 128,
+      "border": {
+        "left": 0,
+        "bottom": 0,
+        "right": 0,
+        "top": 0
+      }
+    }
+  }
+}

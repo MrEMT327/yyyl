@@ -1,0 +1,119 @@
+/* Readability pass: scoped to text-heavy menus; existing PSD slices remain intact. */
+#gui-casual-lobby .pl-modal[data-modal-kind][data-psd-popup]:is([data-modal-type='gearSources'],[data-modal-type='chapterChest'],[data-modal-type='chapterRewards'],[data-modal-type='chapterCoreRewards'],[data-modal-type='nativeStarRewards'],[data-modal-type='nativeMaterials'],[data-modal-type='nativeLab'],[data-modal-type='nativeStats'],[data-modal-type='activities'],[data-modal-type='researchSummary']) {--popup-width:92cqw;--popup-height:84%;--popup-max-height:88%;flex:none}
+#gui-casual-lobby .pl-modal-host:has(.pl-modal:is([data-modal-type='gearSources'],[data-modal-type='chapterChest'],[data-modal-type='chapterRewards'],[data-modal-type='chapterCoreRewards'],[data-modal-type='nativeStarRewards'],[data-modal-type='nativeMaterials'],[data-modal-type='nativeLab'],[data-modal-type='nativeStats'],[data-modal-type='activities'],[data-modal-type='researchSummary'],[data-modal-type='tasks'],[data-modal-type='patrol'])) {z-index:70!important}
+#gui-casual-lobby .pl-modal-backdrop:has(>.pl-modal:is([data-modal-type='gearSources'],[data-modal-type='chapterChest'],[data-modal-type='chapterRewards'],[data-modal-type='chapterCoreRewards'],[data-modal-type='nativeStarRewards'],[data-modal-type='nativeMaterials'],[data-modal-type='nativeLab'],[data-modal-type='nativeStats'],[data-modal-type='activities'],[data-modal-type='researchSummary'])) {padding:0!important}
+#gui-casual-lobby .pl-modal .clarity-page {color:#203b51;font:400 16px/1.55 'Microsoft YaHei',sans-serif;padding:2px 5px 14px;overflow-wrap:anywhere}
+#gui-casual-lobby .pl-modal .clarity-page :is(p,span,b,small,h3,h4) {color:inherit;text-shadow:none}
+#gui-casual-lobby .pl-modal .clarity-page p {font-size:16px;line-height:1.55;margin:10px 0}
+#gui-casual-lobby .pl-modal .clarity-page :is(h3,h4) {font-size:18px;margin:14px 0 8px}
+#gui-casual-lobby .pl-modal .clarity-page small {font-size:14px}
+#gui-casual-lobby .pl-modal .clarity-page .wc-button {min-height:48px;--wc-button-height:48px;min-width:0;max-width:100%;white-space:normal;font-size:16px;line-height:1.3;padding:8px 12px;--psd-button-corner:12px}
+#gui-casual-lobby .pl-modal .clarity-page details {border-top:1px solid #8ca3b5;margin-top:10px}
+#gui-casual-lobby .pl-modal .clarity-page summary {min-height:48px;padding:12px 2px;box-sizing:border-box;font-size:16px;font-weight:600;line-height:1.5;cursor:pointer}
+#gui-casual-lobby .pl-modal .clarity-page .clarity-summary {display:flex;flex-wrap:wrap;gap:10px 20px;padding:10px;background:#dce6edb8;font-size:15px}
+#gui-casual-lobby .pl-modal .clarity-page .clarity-summary b {font-size:20px;white-space:nowrap}
+#gui-casual-lobby .bc-star-rewards.clarity-page .bc-star-reward {display:grid;grid-template-columns:minmax(0,1fr) 86px;gap:10px;padding:12px;background:#dce6edb8;margin:10px 0;border:1px solid #8ca3b5}
+#gui-casual-lobby .bc-star-rewards.clarity-page .bc-star-reward>b {grid-column:1/-1;font-size:16px}
+#gui-casual-lobby .bc-star-rewards.clarity-page .bc-star-reward>span {font-size:15px;line-height:1.8;min-width:0}
+#gui-casual-lobby .bc-star-rewards.clarity-page .bc-star-reward>.wc-button {align-self:center;width:100%;font-size:15px;padding-inline:4px}
+#gui-casual-lobby .pl-modal .clarity-page .pl-icon {width:26px;height:26px;vertical-align:middle;object-fit:contain}
+#gui-casual-lobby .pl-modal .native-lab-detail .native-lab-shortage {color:#9c3434}
+#gui-casual-lobby .pl-modal .native-lab-detail .wc-skill-detail-head {float:right;width:76px;margin:0 0 10px 12px}
+#gui-casual-lobby .pl-modal .native-lab-detail .wc-skill-detail-art {width:72px;height:72px}
+#gui-casual-lobby .pl-modal .native-lab-detail .native-lab-operation {clear:both;background:#dce6edb8;border:1px solid #8ca3b5;padding:12px}
+#gui-casual-lobby .pl-modal .native-lab-detail .native-lab-operation .wc-button {margin-bottom:0}
+#gui-casual-lobby .pl-modal .native-lab-detail .clarity-rules .wc-button {width:100%;margin:8px 0}
+#gui-casual-lobby .pl-modal .ag-modal :is(p,.ag-hint,.ag-breakdown) {font-size:15px!important;line-height:1.55}
+#gui-casual-lobby .pl-modal .ag-modal :is(.ag-cost>span,.ag-equipment-manage>summary) {font-size:16px}
+#gui-casual-lobby .pl-modal .ag-modal .ag-cost small {font-size:14px}
+#gui-casual-lobby .pl-modal .ag-modal .ag-button {min-height:48px;font-size:16px}
+#gui-casual-lobby .pl-modal .ag-modal .ag-equipment-skills li {font-size:15px;line-height:1.5}
+#gui-casual-lobby .pl-modal .research-copy {font-size:16px;line-height:1.6;color:#203b51}
+#gui-casual-lobby .pl-modal .research-copy p {font-size:16px}
+#gui-casual-lobby .pl-modal .research-copy summary {font-size:16px;min-height:48px;padding-block:12px}
+#gui-casual-lobby .pl-modal .research-close {min-height:48px;font-size:17px}
+#gui-casual-lobby .pl-modal .dc-tabs .dc-tab {min-height:48px;font-size:16px}
+#gui-casual-lobby .pl-modal .dc-button {min-height:48px;font-size:16px}
+#gui-casual-lobby .pl-modal .dc-hub h3 {font-size:16px}
+#gui-casual-lobby .pl-modal .dc-progress>span {font-size:13px}
+#gui-casual-lobby .pl-modal .dc-rewards {font-size:14px}
+#gui-casual-lobby .pl-modal .dc-signin-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+#gui-casual-lobby .pl-modal .dc-signin-day.is-final {grid-column:1/-1}
+#gui-casual-lobby .pl-modal .dc-signin-day>strong {font-size:16px}
+#gui-casual-lobby .pl-modal .dc-signin-reward-copy,#gui-casual-lobby .pl-modal .dc-signin-reward-copy>b {font-size:14px}
+#gui-casual-lobby .pl-modal .dc-signin-footer span {font-size:13px;line-height:1.5}
+#gui-casual-lobby .pl-modal .dc-event {grid-template-columns:42px minmax(0,1fr) 64px;gap:10px;padding:12px}
+#gui-casual-lobby .pl-modal .dc-event h3 {font-size:18px}
+#gui-casual-lobby .pl-modal .dc-event p {font-size:15px;line-height:1.5}
+#gui-casual-lobby .pl-modal .dc-event small {font-size:14px}
+#gui-casual-lobby .pl-modal .pt-panel {font-size:16px}
+#gui-casual-lobby .pl-modal .pt-rates {grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 0}
+#gui-casual-lobby .pl-modal .pt-rates span,#gui-casual-lobby .pl-modal .pt-note,#gui-casual-lobby .pl-modal .pt-limit {font-size:14px;white-space:normal;line-height:1.5}
+#gui-casual-lobby .pl-modal .pt-rates b {font-size:20px}
+#gui-casual-lobby .pl-modal .pt-rewards {grid-template-columns:repeat(4,minmax(0,1fr))}
+#gui-casual-lobby .pl-modal .pt-reward>b {font-size:14px}
+#gui-casual-lobby .pl-modal .pt-quick-options>div {font-size:14px}
+#gui-casual-lobby .pl-modal .pt-panel .pt-button {font-size:17px;min-height:48px}
+#gui-casual-lobby .bag-detail-backdrop {padding:6%}
+#gui-casual-lobby .bag-detail .bag-detail-body p {font-size:15px;line-height:1.6}
+#gui-casual-lobby .bag-detail .bag-use-button.wc-button {min-height:48px;font-size:16px}
+#gui-casual-lobby .bag-detail .bag-use-controls summary {min-height:46px;box-sizing:border-box;padding:12px 0;font-size:15px;cursor:pointer}
+#gui-casual-lobby .bag-detail .bag-use-controls details p {font-size:14px}
+#gui-casual-lobby .bag-detail .bag-use-quantity {padding-bottom:12px}
+
+/* Keep short dialogs compact and restore the PSD close art over older paper styles. */
+#gui-casual-lobby .pl-modal[data-modal-kind][data-psd-popup]:is([data-modal-type='gearSources'],[data-modal-type='nativeLab'],[data-modal-type='nativeMaterials'],[data-modal-type='nativeStats'],[data-modal-type='researchSummary']) {--popup-height:auto;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal.lobby-paper-modal[data-psd-popup] .pl-close {background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat!important}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(.clarity-page)>.pl-modal-heading h2 {font-size:clamp(20px,5.6cqw,25px)!important}
+
+#gui-casual-lobby .bag-detail[data-psd-popup][role="dialog"] {--popup-width:88cqw}
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-info h3 {font-size:18px;line-height:1.35}
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-info p {font-size:15px}
+
+/* Character, aircraft and skill details: readable effects and compact disclosure. */
+#gui-casual-lobby .pl-modal-host:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){z-index:70}
+#gui-casual-lobby .pl-modal-backdrop:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){padding:0}
+#gui-casual-lobby .pl-modal[data-modal-kind][data-psd-popup]:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px;flex:none}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail))>.pl-modal-heading h2{font-size:clamp(20px,5.6cqw,25px)!important}
+#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail){font-size:16px;line-height:1.55}
+#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail) :is(p,dt,dd){font-size:16px;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}
+#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail) :is(h3,h4,h5){font-size:18px;line-height:1.4}
+#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview) .wc-button{--wc-button-height:48px;min-height:48px;font-size:17px}
+#gui-casual-lobby .pl-modal .cd-art{height:23cqw;min-height:72px;max-height:110px}
+#gui-casual-lobby .pl-modal .cd-badges{font-size:14px}
+#gui-casual-lobby .pl-modal .cd-hero>p{font-size:14px}
+#gui-casual-lobby .pl-modal .cd-current>p{padding:6px 10px}
+#gui-casual-lobby .pl-modal .cd-costs{font-size:15px;gap:6px}
+#gui-casual-lobby .pl-modal .cd-costs>span{width:100%;justify-content:space-between;box-sizing:border-box;padding:6px 10px}
+#gui-casual-lobby .pl-modal .cd-more>summary{font-size:16px;min-height:48px;padding:12px 6px}
+#gui-casual-lobby .pl-modal .cd-more>div{display:grid;grid-template-columns:1fr;gap:6px}
+#gui-casual-lobby .pl-modal .cd-stages li{display:block;padding:0;color:#425d70}
+#gui-casual-lobby .pl-modal .cd-stage-label{display:flex;align-items:center;gap:6px;list-style:none;min-height:48px;padding:12px 10px;box-sizing:border-box;font-size:16px;cursor:pointer}
+#gui-casual-lobby .pl-modal .cd-stage-label img{vertical-align:middle;margin-right:6px}
+#gui-casual-lobby .pl-modal .cd-stage-label small{display:inline;width:auto;padding-left:10px;font-size:14px}
+#gui-casual-lobby .pl-modal .cd-stage-details>div{padding:0 12px 12px}
+#gui-casual-lobby .pl-modal .cd-stage-details p+p{margin-top:8px}
+#gui-casual-lobby .pl-modal .cd-tier-attributes{display:grid;gap:4px;margin:6px 0}
+#gui-casual-lobby .pl-modal .cd-tier-attributes>div{justify-content:space-between;flex-wrap:nowrap}
+#gui-casual-lobby .pl-modal .fc-skill-levels>section{display:block;padding:0}
+#gui-casual-lobby .pl-modal .fc-skill-levels summary{font-size:16px;font-weight:700;min-height:48px;padding:12px 4px;box-sizing:border-box;cursor:pointer}
+#gui-casual-lobby .pl-modal .fc-skill-levels details>p{padding:0 6px 12px}
+#gui-casual-lobby .pl-modal .fc-detail .cs-source{padding-top:12px;margin-top:14px;border-top:1px solid #7890a477}
+#gui-casual-lobby .pl-modal .fc-detail .cs-source p{font-size:14px;margin:0 0 8px}
+#gui-casual-lobby .pl-modal .fc-detail .cs-source .wc-button{width:100%}
+#gui-casual-lobby .pl-modal .wc-growth-section{margin-top:10px;border:1px solid #8da5b7;background:#d7e3ec;padding:0 10px}
+#gui-casual-lobby .pl-modal .wc-growth-section>summary{font-size:17px;font-weight:700;min-height:48px;padding:12px 0;box-sizing:border-box;cursor:pointer}
+#gui-casual-lobby .pl-modal .wc-skill-detail :is(.wc-skill-note,.wc-skill-timing,.wc-growth-rule>small,.wc-skill-detail-head p){font-size:14px;line-height:1.5}
+#gui-casual-lobby .pl-modal :is(.fc-detail,.fc-skill-preview,.fc-operation-preview) summary:focus-visible,
+#gui-casual-lobby .pl-modal :is(.collection-detail,.wc-skill-detail) summary:focus-visible{outline:2px solid #326b8e;outline-offset:-2px}
+
+#gui-casual-lobby .pl-modal .cd-stage-label::-webkit-details-marker{display:none}
+#gui-casual-lobby .pl-modal .cd-stage-label::before{content:'▸';width:12px;flex:none}
+#gui-casual-lobby .pl-modal .cd-stage-details[open]>.cd-stage-label::before{content:'▾'}
+#gui-casual-lobby .pl-modal .cd-stage-label img{display:inline-block;flex:none;margin:0;width:17px;height:17px}
+#gui-casual-lobby .pl-modal .cd-stage-label b{display:inline}
+
+#gui-casual-lobby .pl-modal .fc-skill-levels>section{background:#d7e3ec;border:1px solid #8da5b7;margin-top:6px;padding:0 10px}
+#gui-casual-lobby .pl-modal .fc-skill-levels>.is-locked{color:#344d61}
+#gui-casual-lobby .pl-modal .fc-detail>h3:has(+p:empty),
+#gui-casual-lobby .pl-modal .fc-detail>p:empty{display:none}

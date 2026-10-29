@@ -1,0 +1,835 @@
+{
+  "airframe-pilot-10": {
+    "id": "airframe-pilot-10",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-10-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      0,
+      38,
+      1008,
+      1458
+    ],
+    "nose": [
+      512,
+      43
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        396,
+        1183
+      ],
+      [
+        629,
+        1183
+      ]
+    ]
+  },
+  "pilot-10-portrait": {
+    "id": "pilot-10-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-10-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-10-avatar": {
+    "id": "pilot-10-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-10-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      310,
+      0,
+      300,
+      300
+    ]
+  },
+  "airframe-pilot-09": {
+    "id": "airframe-pilot-09",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-09-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      0,
+      10,
+      1226,
+      1253
+    ],
+    "nose": [
+      613,
+      14
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        381,
+        985
+      ],
+      [
+        514,
+        1000
+      ],
+      [
+        712,
+        1000
+      ],
+      [
+        844,
+        985
+      ]
+    ]
+  },
+  "pilot-09-portrait": {
+    "id": "pilot-09-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-09-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-09-avatar": {
+    "id": "pilot-09-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-09-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      370,
+      0,
+      300,
+      300
+    ]
+  },
+  "airframe-pilot-08": {
+    "id": "airframe-pilot-08",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-08-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      29,
+      35,
+      975,
+      1335
+    ],
+    "nose": [
+      512,
+      40
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        325,
+        1347
+      ],
+      [
+        512,
+        1355
+      ],
+      [
+        701,
+        1347
+      ]
+    ]
+  },
+  "pilot-08-portrait": {
+    "id": "pilot-08-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-08-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-08-avatar": {
+    "id": "pilot-08-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-08-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      395,
+      0,
+      280,
+      280
+    ]
+  },
+  "airframe-pilot-07": {
+    "id": "airframe-pilot-07",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-07-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      0,
+      0,
+      1214,
+      1295
+    ],
+    "nose": [
+      607,
+      10
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        432,
+        1210
+      ],
+      [
+        782,
+        1210
+      ]
+    ]
+  },
+  "pilot-07-portrait": {
+    "id": "pilot-07-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-07-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-07-avatar": {
+    "id": "pilot-07-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-07-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      355,
+      5,
+      310,
+      310
+    ]
+  },
+  "airframe-pilot-06": {
+    "id": "airframe-pilot-06",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-06-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      21,
+      16,
+      983,
+      1448
+    ],
+    "nose": [
+      512,
+      22
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        512,
+        1380
+      ]
+    ]
+  },
+  "pilot-06-portrait": {
+    "id": "pilot-06-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-06-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-06-avatar": {
+    "id": "pilot-06-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-06-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      370,
+      5,
+      280,
+      280
+    ]
+  },
+  "airframe-pilot-05": {
+    "id": "airframe-pilot-05",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-05-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      37,
+      13,
+      967,
+      1471
+    ],
+    "nose": [
+      512,
+      17
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        430,
+        1450
+      ],
+      [
+        594,
+        1450
+      ]
+    ]
+  },
+  "pilot-05-portrait": {
+    "id": "pilot-05-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-05-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-05-avatar": {
+    "id": "pilot-05-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-05-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      355,
+      15,
+      300,
+      300
+    ]
+  },
+  "airframe-pilot-04": {
+    "id": "airframe-pilot-04",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-04-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      0,
+      28,
+      1205,
+      1234
+    ],
+    "nose": [
+      602.5,
+      30
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        466,
+        1240
+      ],
+      [
+        739,
+        1240
+      ]
+    ]
+  },
+  "pilot-04-portrait": {
+    "id": "pilot-04-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-04-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-04-avatar": {
+    "id": "pilot-04-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-04-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      360,
+      30,
+      290,
+      290
+    ]
+  },
+  "airframe-pilot-03": {
+    "id": "airframe-pilot-03",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-03-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      0,
+      0,
+      1214,
+      1261
+    ],
+    "nose": [
+      607,
+      5
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        468,
+        1120
+      ],
+      [
+        607,
+        1200
+      ],
+      [
+        746,
+        1120
+      ]
+    ]
+  },
+  "pilot-03-portrait": {
+    "id": "pilot-03-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-03-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-03-avatar": {
+    "id": "pilot-03-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-03-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      315,
+      0,
+      300,
+      300
+    ]
+  },
+  "pilot-01-portrait": {
+    "id": "pilot-01-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-01-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-01-avatar": {
+    "id": "pilot-01-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-01-avatar-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ]
+  },
+  "airframe-pilot-01": {
+    "id": "airframe-pilot-01",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-01-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      194,
+      81,
+      868,
+      1087
+    ],
+    "nose": [
+      627,
+      85
+    ],
+    "muzzle": [
+      0,
+      -28
+    ]
+  },
+  "drone-mech": {
+    "id": "drone-mech",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/drone-mech-v01.webp",
+    "size": [
+      32,
+      42
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      189,
+      245,
+      877,
+      704
+    ]
+  },
+  "enemy-scout": {
+    "id": "enemy-scout",
+    "status": "integrated",
+    "url": "./assets/retro/enemies/enemy-scout-v01.webp",
+    "size": [
+      48,
+      56
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      123,
+      20,
+      1010,
+      1183
+    ]
+  },
+  "enemy-turret": {
+    "id": "enemy-turret",
+    "status": "integrated",
+    "url": "./assets/retro/enemies/enemy-turret-v01.webp",
+    "size": [
+      58,
+      68
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      39,
+      104,
+      1177,
+      971
+    ]
+  },
+  "enemy-heavy": {
+    "id": "enemy-heavy",
+    "status": "integrated",
+    "url": "./assets/retro/enemies/enemy-heavy-v01.webp",
+    "size": [
+      88,
+      100
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      6,
+      41,
+      1243,
+      1156
+    ]
+  },
+  "boss-aries-fortress": {
+    "id": "boss-aries-fortress",
+    "status": "integrated",
+    "url": "./assets/retro/bosses/aries-fortress-v01.webp",
+    "size": [
+      224,
+      168
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      25,
+      150,
+      1204,
+      905
+    ]
+  },
+  "tidal-sea-tile": {
+    "id": "tidal-sea-tile",
+    "status": "integrated",
+    "url": "./assets/retro/backgrounds/tidal-sea-tile-v01.webp",
+    "size": [
+      600,
+      600
+    ],
+    "anchor": [
+      0,
+      0
+    ]
+  },
+  "tidal-coast-left": {
+    "id": "tidal-coast-left",
+    "status": "integrated",
+    "url": "./assets/retro/backgrounds/tidal-coast-left-v01.webp",
+    "size": [
+      160,
+      600
+    ],
+    "anchor": [
+      0,
+      0
+    ]
+  },
+  "tidal-island-small": {
+    "id": "tidal-island-small",
+    "status": "integrated",
+    "url": "./assets/retro/backgrounds/tidal-island-small-v01.webp",
+    "size": [
+      96,
+      128
+    ],
+    "anchor": [
+      0,
+      0
+    ]
+  },
+  "tidal-cloud-soft": {
+    "id": "tidal-cloud-soft",
+    "status": "integrated",
+    "url": "./assets/retro/backgrounds/tidal-cloud-soft-v01.webp",
+    "size": [
+      180,
+      120
+    ],
+    "anchor": [
+      0,
+      0
+    ]
+  },
+  "airframe-pilot-02": {
+    "id": "airframe-pilot-02",
+    "status": "integrated",
+    "url": "./assets/retro/airframes/airframe-pilot-02-v01.webp",
+    "size": [
+      76,
+      112
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "frame": [
+      108,
+      90,
+      1038,
+      1090
+    ],
+    "nose": [
+      627,
+      95
+    ],
+    "muzzle": [
+      0,
+      -28
+    ],
+    "nozzles": [
+      [
+        447,
+        904
+      ],
+      [
+        805,
+        904
+      ]
+    ]
+  },
+  "pilot-02-portrait": {
+    "id": "pilot-02-portrait",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-02-portrait-v01.webp",
+    "size": [
+      360,
+      540
+    ],
+    "anchor": [
+      0.5,
+      1
+    ]
+  },
+  "pilot-02-avatar": {
+    "id": "pilot-02-avatar",
+    "status": "integrated",
+    "url": "./assets/retro/pilots/pilot-02-portrait-v01.webp",
+    "size": [
+      76,
+      76
+    ],
+    "frame": [
+      390,
+      10,
+      350,
+      350
+    ],
+    "anchor": [
+      0.5,
+      0.5
+    ]
+  }
+}

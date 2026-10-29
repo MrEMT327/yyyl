@@ -1,0 +1,541 @@
+{
+  "source": "APK 1.1.6: Chapter_MainChapter, ChapterReward_Star, Consts_Const, Buff_buff; research/revive-rating-integration.md",
+  "nativeSha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+  "chapters": {
+    "1": {
+      "manualRevives": 0,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "2": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "3": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "4": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "5": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "6": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "7": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "8": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "9": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "10": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "11": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "12": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "13": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "14": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "15": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "16": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "17": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "18": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "19": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "20": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "21": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "22": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "23": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "24": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "25": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "26": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "27": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "28": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "29": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "30": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "31": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "32": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "33": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "34": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "35": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "36": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "37": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "38": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "39": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "40": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "41": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "42": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "43": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "44": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "45": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "46": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "47": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "48": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "49": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "50": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "51": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "52": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "53": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "54": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "55": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "56": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "57": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "58": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "59": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    },
+    "60": {
+      "manualRevives": 1,
+      "starCondition": [
+        101,
+        102,
+        103
+      ]
+    }
+  },
+  "conditions": [
+    {
+      "id": 101,
+      "condition": 5,
+      "param": 0,
+      "exparam": 0,
+      "langId": "StarCondition_1"
+    },
+    {
+      "id": 102,
+      "condition": 3,
+      "param": 0,
+      "exparam": 0,
+      "langId": "StarCondition_2"
+    },
+    {
+      "id": 103,
+      "condition": 5,
+      "param": 100,
+      "exparam": 0,
+      "langId": "StarCondition_3"
+    }
+  ],
+  "adRevives": 1,
+  "promptSeconds": 5,
+  "recoverFraction": 1,
+  "resumeDelayRaw": 6553,
+  "invincibleBuff": {
+    "ID": 12,
+    "prefabId": 160006,
+    "posType": 0,
+    "buffFlag": 0,
+    "BuffShowGroup": 0,
+    "prefabAliveType": 0,
+    "buffType": 0,
+    "buffClassName": 12,
+    "parameters": "",
+    "clearEvent": 1,
+    "clearParam": 1,
+    "triggerInterval": 0,
+    "clearWeapon": 0,
+    "stackingType": 1,
+    "maxStackCount": 1,
+    "damageType": 0,
+    "triggerType": 2,
+    "triggerCount": 0,
+    "triggerAttributes": [],
+    "triggerAddAttributes": [],
+    "AddAttributes": [],
+    "IconAtlas": 0,
+    "IconName": "",
+    "IconBgStep": 0,
+    "AddSound": 270003,
+    "EndBuffIds": []
+  }
+}

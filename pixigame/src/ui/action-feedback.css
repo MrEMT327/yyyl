@@ -1,0 +1,11 @@
+.action-resource-flight,.action-equip-glow{position:absolute;z-index:100000;pointer-events:none!important}
+/* Former resource-tip lane, now exclusively for actual power changes. */
+#gui-casual-lobby .action-power-notice{position:absolute;z-index:100000;pointer-events:none!important;box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:max-content;min-height:32px;transform:translateX(-50%);padding:0;background:none;border:0;box-shadow:none;color:#fff;font:700 clamp(16px,4.3cqw,21px)/1.3 'Microsoft YaHei',sans-serif;white-space:nowrap;font-variant-numeric:tabular-nums;text-shadow:-1px 0 1px #122433,1px 0 1px #122433,0 -1px 1px #122433,0 1px 1px #122433,0 2px 3px #07121f}
+.action-resource-flight{width:20px;height:20px;filter:drop-shadow(0 0 4px #ffdd7777)}
+.action-resource-flight svg{width:100%;height:100%}
+.action-resource-flight img{width:100%;height:100%;object-fit:contain}
+.reward-reveal-skip{display:block;flex:none;margin:0 0 0 auto;padding:6px 10px;min-height:32px;border:1px solid #567083;background:#10263b;color:#d7e5ef;font:inherit;font-size:12px;cursor:pointer}
+.action-equip-glow{box-sizing:border-box;border:2px solid #8bf4db;border-radius:5px;box-shadow:0 0 12px #78eadb99,inset 0 0 12px #78eadb55}
+.surface-exit-copy,.surface-exit-copy *{pointer-events:none!important}
+.surface-exit-copy{z-index:9999!important}
+.action-equipment-flight{position:absolute;width:64px;height:64px;object-fit:contain;z-index:100001;pointer-events:none!important;filter:drop-shadow(0 0 6px #8bf4db)}

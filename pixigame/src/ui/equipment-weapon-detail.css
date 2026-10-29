@@ -1,0 +1,81 @@
+/* UI_EquipDetail layout coordinates only; all visible surfaces use project PSD assets.
+   CommonTop 373.8; ContentBG 777.39; cost 90; actions 120; bottom padding 85. */
+#gui-casual-lobby .pl-modal-host:has(.weapon-detail-modal) {z-index:100!important}
+#gui-casual-lobby .pl-modal-backdrop.weapon-detail-backdrop {padding:0!important;background:#000a;backdrop-filter:none;align-items:center;justify-content:center}
+#gui-casual-lobby .pl-modal.weapon-detail-modal {
+  --du:calc(92.1cqw / 994.8);position:relative;isolation:isolate;display:block;
+  width:calc(994.8 * var(--du))!important;height:calc(1446.19 * var(--du))!important;
+  min-height:0;max-width:none!important;max-height:92%!important;margin:0;padding:0!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;overflow:visible;
+  color:#3b3936;animation:none;
+}
+#gui-casual-lobby .weapon-detail-modal::before {content:""!important;position:absolute;inset:0;z-index:-2;pointer-events:none;background:none!important;border-image:url('/art/psd-popup-v1/secondary.png') 48 38 38 220 fill / calc(98.05 * var(--du)) calc(77.62 * var(--du)) calc(77.62 * var(--du)) calc(449.4 * var(--du)) stretch!important}
+#gui-casual-lobby .weapon-detail-modal::after {content:none!important}
+#gui-casual-lobby .weapon-detail-modal>.pl-modal-heading {
+  position:absolute;left:calc(306.55 * var(--du));top:calc(59.2 * var(--du));width:calc(414.9 * var(--du));height:calc(60 * var(--du));
+  min-height:0;margin:0;padding:0!important;border:0;background:none;box-shadow:none;z-index:2;display:flex;align-items:center;
+}
+#gui-casual-lobby .weapon-detail-modal>.pl-modal-heading h2 {width:100%;margin:0;color:#203c55;font:400 calc(50 * var(--du))/1.2 PsdPopup,"Microsoft YaHei",sans-serif;text-align:left;letter-spacing:0;text-shadow:0 1px #eef5fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-text-stroke:0}
+#gui-casual-lobby .weapon-detail-modal>.pl-close {
+  position:absolute;top:calc(11.5 * var(--du));right:calc(6.2 * var(--du));z-index:4;
+  width:calc(100 * var(--du));height:calc(100 * var(--du));min-width:44px;min-height:44px;padding:0;
+  border:0;border-radius:0;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat;box-shadow:none;cursor:pointer;
+}
+#gui-casual-lobby .weapon-detail-modal>.pl-close::before,
+#gui-casual-lobby .weapon-detail-modal>.pl-close::after {content:none!important}
+#gui-casual-lobby .weapon-detail-modal>.pl-modal-content {position:absolute;inset:0;margin:0;padding:0;min-height:0;overflow:visible;background:none;box-shadow:none}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail {position:relative;width:100%;height:100%;color:#243e55;font:400 calc(34 * var(--du))/1.45 "PingFang SC","Microsoft YaHei",sans-serif;text-shadow:none}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(p,dl,dd,h3) {margin:0;text-shadow:none}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__scroll,
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__hero,
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__identity {display:contents}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__preview {position:absolute;left:calc(40 * var(--du));top:calc(40.5 * var(--du));width:calc(240 * var(--du));height:calc(240 * var(--du));display:grid;place-items:center;background:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 7px 7px 10px 7px stretch;overflow:hidden}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__preview>.supply-weapon-art {width:100%;height:100%;padding:calc(18 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__level {position:absolute;left:calc(40 * var(--du));top:calc(252.75 * var(--du));width:calc(238.25 * var(--du));min-height:calc(49.29 * var(--du));text-align:center;background:#0003;color:#fff;font-size:calc(30 * var(--du));line-height:1.5}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__status {position:absolute;left:calc(310 * var(--du));top:calc(142 * var(--du));right:calc(75 * var(--du));color:#3d5a72;font-size:calc(29 * var(--du));line-height:1.4}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__stats {position:absolute;left:calc(18.5 * var(--du));top:calc(373.8 * var(--du));width:calc(957.8 * var(--du));height:calc(777.39 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__stats>h3 {position:absolute;left:calc(16 * var(--du));top:calc(129 * var(--du));width:calc(926.5 * var(--du));height:calc(76 * var(--du));display:flex;align-items:center;padding-left:calc(35 * var(--du));color:#25435e;background:#8fa7bf55;border-bottom:1px solid #7c94aa;font:400 calc(42 * var(--du))/1.2 PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__attributes {display:contents}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__attributes>div {position:absolute;left:calc(37 * var(--du));right:calc(37 * var(--du));min-height:calc(68 * var(--du));display:flex;align-items:center;justify-content:space-between;gap:8px;color:#29455f}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__attributes>div:first-child {top:calc(35 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__attributes>div:nth-child(2) {top:calc(230 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__attributes :is(dt,dd) {margin:0;color:#29455f!important;font-size:calc(35 * var(--du));font-weight:500;text-shadow:none}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__attributes dd {display:flex;gap:calc(16 * var(--du));font-variant-numeric:tabular-nums}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__increase {color:#278e36;font-weight:700}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__skill-description {position:absolute;left:calc(37 * var(--du));right:calc(37 * var(--du));top:calc(325 * var(--du));color:#3c566e;font-size:calc(32 * var(--du));line-height:1.5;max-height:calc(170 * var(--du));overflow:auto}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__footer {display:contents}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__costs,
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__limit {position:absolute;top:calc(1151.19 * var(--du));left:calc(40 * var(--du));right:calc(40 * var(--du));height:calc(90 * var(--du));display:flex;align-items:center;justify-content:center;gap:calc(70 * var(--du));color:#29455f}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__cost {display:flex;align-items:center;gap:calc(14 * var(--du));font-size:calc(36 * var(--du));font-variant-numeric:tabular-nums}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__cost>.resource-icon {width:calc(64 * var(--du));height:calc(64 * var(--du));object-fit:contain;filter:none}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__cost.is-short {color:#b53232}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions {position:absolute;top:calc(1271.19 * var(--du));left:calc(24 * var(--du));right:calc(24 * var(--du));height:calc(125 * var(--du));display:flex;align-items:center;justify-content:center;gap:calc(21.65 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-controls {display:contents;color:#29455f}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-controls>h3 {display:none}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slots {position:fixed;display:none}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) {position:static;display:contents}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-controls>.weapon-equip-slots {position:absolute;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));left:calc(55 * var(--du));right:calc(55 * var(--du));top:calc(880 * var(--du));gap:calc(16 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot {min-width:0;min-height:44px;height:calc(150 * var(--du));padding:3px;border:1px solid #748da4;border-radius:2px;background:#c3d2df;color:#29455f;box-shadow:none}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot.is-selected {border-color:#3480a5;background:#d1edf7}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot-heading {justify-content:center;font-size:12px;line-height:1.3}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot-heading>span,
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot-item>span {display:none}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot-item {justify-content:center;margin-top:3px}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot-item>.weapon-equip-empty {display:block;color:#416780;font-size:18px}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-slot-item>.pl-model-thumb {width:28px;height:24px;flex-basis:28px;object-fit:contain;padding:0}
+#gui-casual-lobby .weapon-detail-modal .weapon-equip-hint {position:absolute;left:calc(55 * var(--du));right:calc(55 * var(--du));top:calc(1045 * var(--du));color:#46647e!important;font-size:12px;line-height:1.4}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade,.equipment-weapon-detail__back) {position:relative;isolation:isolate;display:grid;place-items:center;flex:none;width:calc(348 * var(--du));min-width:0;height:calc(125 * var(--du));min-height:44px;margin:0;padding:0 8px;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;clip-path:none!important;color:white!important;font:400 calc(50 * var(--du))/1.15 PsdPopup,"Microsoft YaHei",sans-serif!important;text-shadow:1px 1px 2px #30240c;white-space:normal;opacity:1;filter:none;cursor:pointer}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade,.equipment-weapon-detail__back)::before {content:""!important;position:absolute;inset:0!important;z-index:-1;pointer-events:none;border:0!important;border-radius:0!important;background:none!important;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-control-corner,14px) stretch!important;box-shadow:none!important;transform:none!important}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail .equipment-weapon-detail__upgrade::before {border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / 9px stretch!important}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail .equipment-weapon-detail__upgrade {width:calc(290.83 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail .weapon-equip-remove {width:calc(290.9 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade,.equipment-weapon-detail__back)::after {content:none!important}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade):disabled {color:#e2dacb!important;cursor:default}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade):disabled::before {filter:grayscale(.85) brightness(.8)}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade):active:not(:disabled) {translate:0 1px}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) :is(.weapon-equip-confirm,.equipment-weapon-detail__upgrade) {position:absolute;top:calc(1271.19 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) .weapon-equip-confirm {left:calc(167.16 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) .equipment-weapon-detail__upgrade {right:calc(167.16 * var(--du))}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__back {position:absolute!important;top:calc(1271.19 * var(--du));left:50%;transform:translateX(-50%)}
+#gui-casual-lobby .weapon-detail-modal button:focus-visible {outline:2px solid #1b6594;outline-offset:-3px}
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__star {position:absolute;left:calc(310 * var(--du));top:calc(220 * var(--du));width:calc(280 * var(--du));--wc-button-height:44px;min-height:44px;font-size:clamp(12px,3.4cqw,16px)}

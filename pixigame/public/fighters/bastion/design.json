@@ -1,0 +1,915 @@
+{
+  "schemaVersion": 1,
+  "id": "bastion",
+  "name": "苍垒",
+  "reference": {
+    "sheet": "84a91970-458d-483f-9149-8a863c6a4ffa.png",
+    "row": 5,
+    "column": 5,
+    "reading": "top to bottom, left to right"
+  },
+  "geometryOrigin": "New locally authored geometry; no legacy airframe imported",
+  "palette": {
+    "shell": "#2866b5",
+    "accent": "#c9e1f2",
+    "dark": "#152432",
+    "metal": "#6e859c",
+    "energy": "#6fd5ff",
+    "glass": "#c7ebff",
+    "secondary": "#a4bdff"
+  },
+  "parts": [
+    {
+      "kind": "plate",
+      "name": "stepped-keel",
+      "points": [
+        [
+          0,
+          -5.6
+        ],
+        [
+          1.0,
+          -4.84
+        ],
+        [
+          1.35,
+          -3.22
+        ],
+        [
+          2.15,
+          -2.7
+        ],
+        [
+          2.25,
+          2.44
+        ],
+        [
+          1.62,
+          3.96
+        ],
+        [
+          -1.62,
+          3.96
+        ],
+        [
+          -2.25,
+          2.44
+        ],
+        [
+          -2.15,
+          -2.7
+        ],
+        [
+          -1.35,
+          -3.22
+        ],
+        [
+          -1.0,
+          -4.84
+        ]
+      ],
+      "y": -0.56,
+      "height": 0.83,
+      "material": "dark",
+      "pair": false
+    },
+    {
+      "kind": "plate",
+      "name": "upper-body-deck",
+      "points": [
+        [
+          0,
+          -5.1
+        ],
+        [
+          0.8,
+          -4.47
+        ],
+        [
+          1.04,
+          -2.91
+        ],
+        [
+          1.97,
+          -2.42
+        ],
+        [
+          1.98,
+          2.33
+        ],
+        [
+          1.4,
+          3.63
+        ],
+        [
+          -1.4,
+          3.63
+        ],
+        [
+          -1.98,
+          2.33
+        ],
+        [
+          -1.97,
+          -2.42
+        ],
+        [
+          -1.04,
+          -2.91
+        ],
+        [
+          -0.8,
+          -4.47
+        ]
+      ],
+      "y": 0.24,
+      "height": 0.4,
+      "material": "shell",
+      "pair": false
+    },
+    {
+      "kind": "plate",
+      "name": "stair-wing",
+      "points": [
+        [
+          1.83,
+          -2.75
+        ],
+        [
+          2.91,
+          -2.51
+        ],
+        [
+          3.09,
+          -0.35
+        ],
+        [
+          3.88,
+          -0.15
+        ],
+        [
+          4.04,
+          1.4
+        ],
+        [
+          5.04,
+          1.57
+        ],
+        [
+          7.08,
+          4.85
+        ],
+        [
+          4.77,
+          4.48
+        ],
+        [
+          3.61,
+          3.61
+        ],
+        [
+          1.84,
+          3.0
+        ]
+      ],
+      "y": -0.32,
+      "height": 0.42,
+      "material": "shell",
+      "pair": true
+    },
+    {
+      "kind": "plate",
+      "name": "stair-wing-tip-white",
+      "points": [
+        [
+          4.54,
+          1.95
+        ],
+        [
+          5.03,
+          2.05
+        ],
+        [
+          6.76,
+          4.52
+        ],
+        [
+          5.36,
+          4.31
+        ],
+        [
+          4.76,
+          3.2
+        ]
+      ],
+      "y": 0.18,
+      "height": 0.055,
+      "material": "accent",
+      "pair": true
+    },
+    {
+      "kind": "plate",
+      "name": "tier-shoulder-casing",
+      "points": [
+        [
+          1.45,
+          -3.66
+        ],
+        [
+          2.04,
+          -3.88
+        ],
+        [
+          2.55,
+          -2.82
+        ],
+        [
+          2.6,
+          1.99
+        ],
+        [
+          1.93,
+          2.67
+        ],
+        [
+          1.6,
+          1.89
+        ]
+      ],
+      "y": 0.5,
+      "height": 0.44,
+      "material": "shell",
+      "pair": true
+    },
+    {
+      "kind": "plate",
+      "name": "tier-shoulder-white",
+      "points": [
+        [
+          1.63,
+          -3.34
+        ],
+        [
+          1.95,
+          -3.49
+        ],
+        [
+          2.29,
+          -2.54
+        ],
+        [
+          2.27,
+          0.98
+        ],
+        [
+          1.97,
+          1.43
+        ],
+        [
+          1.68,
+          0.76
+        ]
+      ],
+      "y": 1.03,
+      "height": 0.042,
+      "material": "accent",
+      "pair": true
+    },
+    {
+      "kind": "plate",
+      "name": "side-thruster-armor",
+      "points": [
+        [
+          2.83,
+          -0.29
+        ],
+        [
+          3.52,
+          -0.05
+        ],
+        [
+          3.73,
+          2.9
+        ],
+        [
+          3.11,
+          3.49
+        ],
+        [
+          2.74,
+          2.58
+        ]
+      ],
+      "y": 0.16,
+      "height": 0.34,
+      "material": "dark",
+      "pair": true
+    },
+    {
+      "kind": "plate",
+      "name": "cannon-bulwark",
+      "points": [
+        [
+          0.39,
+          -4.05
+        ],
+        [
+          0.78,
+          -4.73
+        ],
+        [
+          0.98,
+          -3.78
+        ],
+        [
+          0.79,
+          -1.94
+        ],
+        [
+          0.38,
+          -2.11
+        ]
+      ],
+      "y": 0.81,
+      "height": 0.3,
+      "material": "accent",
+      "pair": true
+    },
+    {
+      "kind": "vent",
+      "name": "outer-wing-slats",
+      "position": [
+        3.43,
+        0.66,
+        1.85
+      ],
+      "width": 0.56,
+      "length": 1.0,
+      "count": 5,
+      "pair": true,
+      "angle": 0
+    },
+    {
+      "kind": "vent",
+      "name": "aft-heavy-radiator",
+      "position": [
+        1.08,
+        0.78,
+        2.63
+      ],
+      "width": 0.58,
+      "length": 1.13,
+      "count": 6,
+      "pair": true,
+      "angle": 0
+    },
+    {
+      "kind": "vent",
+      "name": "forward-vent",
+      "position": [
+        0.99,
+        0.88,
+        -2.5
+      ],
+      "width": 0.38,
+      "length": 0.72,
+      "count": 5,
+      "pair": true,
+      "angle": 0
+    },
+    {
+      "kind": "bolts",
+      "name": "fasteners-11",
+      "positions": [
+        [
+          -5.6,
+          0.31,
+          4.13
+        ],
+        [
+          -4.68,
+          0.31,
+          2.56
+        ],
+        [
+          -3.55,
+          0.31,
+          0.24
+        ],
+        [
+          -2.73,
+          0.31,
+          -1.77
+        ],
+        [
+          5.6,
+          0.31,
+          4.13
+        ],
+        [
+          4.68,
+          0.31,
+          2.56
+        ],
+        [
+          3.55,
+          0.31,
+          0.24
+        ],
+        [
+          2.73,
+          0.31,
+          -1.77
+        ]
+      ],
+      "radius": 0.055
+    },
+    {
+      "kind": "plate",
+      "name": "Detail/broad-top-recess",
+      "points": [
+        [
+          0.69,
+          -1.7
+        ],
+        [
+          1.27,
+          -1.66
+        ],
+        [
+          1.24,
+          0.95
+        ],
+        [
+          0.77,
+          1.45
+        ],
+        [
+          0.59,
+          0.79
+        ]
+      ],
+      "y": 0.7,
+      "height": 0.04,
+      "material": "dark",
+      "pair": true,
+      "bevel": 0.018
+    },
+    {
+      "kind": "plate",
+      "name": "Detail/broad-top-panel",
+      "points": [
+        [
+          0.81,
+          -1.43
+        ],
+        [
+          1.11,
+          -1.4
+        ],
+        [
+          1.12,
+          0.66
+        ],
+        [
+          0.78,
+          1.03
+        ]
+      ],
+      "y": 0.77,
+      "height": 0.085,
+      "material": "shell",
+      "pair": true,
+      "bevel": 0.018
+    },
+    {
+      "kind": "vent",
+      "name": "Detail/center-aft-heat-exchanger",
+      "position": [
+        0,
+        0.77,
+        2.28
+      ],
+      "width": 1.02,
+      "length": 0.94,
+      "count": 6,
+      "pair": false
+    },
+    {
+      "kind": "plate",
+      "name": "Detail/aft-reactor-shoulder",
+      "points": [
+        [
+          0.27,
+          1.18
+        ],
+        [
+          0.67,
+          1.34
+        ],
+        [
+          0.54,
+          2.02
+        ],
+        [
+          0.24,
+          1.9
+        ]
+      ],
+      "y": 0.76,
+      "height": 0.3,
+      "material": "metal",
+      "pair": true,
+      "bevel": 0.018
+    },
+    {
+      "kind": "plate",
+      "name": "Detail/tower-cover",
+      "points": [
+        [
+          1.63,
+          -2.34
+        ],
+        [
+          2.2,
+          -2.2
+        ],
+        [
+          2.2,
+          0.69
+        ],
+        [
+          1.75,
+          1.07
+        ]
+      ],
+      "y": 1.16,
+      "height": 0.12,
+      "material": "shell",
+      "pair": true,
+      "bevel": 0.018
+    },
+    {
+      "kind": "vent",
+      "name": "Detail/tower-grille",
+      "position": [
+        1.95,
+        1.355,
+        -0.63
+      ],
+      "width": 0.32,
+      "length": 1.14,
+      "count": 7,
+      "pair": true
+    },
+    {
+      "kind": "box",
+      "name": "Detail/tower-fastener--1.76",
+      "position": [
+        2.26,
+        1.055,
+        -1.76
+      ],
+      "size": [
+        0.105,
+        0.057,
+        0.105
+      ],
+      "material": "metal",
+      "pair": true
+    },
+    {
+      "kind": "box",
+      "name": "Detail/tower-fastener--1.21",
+      "position": [
+        2.26,
+        1.055,
+        -1.21
+      ],
+      "size": [
+        0.105,
+        0.057,
+        0.105
+      ],
+      "material": "metal",
+      "pair": true
+    },
+    {
+      "kind": "box",
+      "name": "Detail/tower-fastener--0.66",
+      "position": [
+        2.26,
+        1.055,
+        -0.66
+      ],
+      "size": [
+        0.105,
+        0.057,
+        0.105
+      ],
+      "material": "metal",
+      "pair": true
+    },
+    {
+      "kind": "box",
+      "name": "Detail/tower-fastener--0.11",
+      "position": [
+        2.26,
+        1.055,
+        -0.11
+      ],
+      "size": [
+        0.105,
+        0.057,
+        0.105
+      ],
+      "material": "metal",
+      "pair": true
+    },
+    {
+      "kind": "box",
+      "name": "Detail/tower-fastener-0.44",
+      "position": [
+        2.26,
+        1.055,
+        0.44
+      ],
+      "size": [
+        0.105,
+        0.057,
+        0.105
+      ],
+      "material": "metal",
+      "pair": true
+    },
+    {
+      "kind": "plate",
+      "name": "Detail/wing-seam",
+      "points": [
+        [
+          4.25,
+          2.22
+        ],
+        [
+          4.94,
+          2.65
+        ],
+        [
+          5.6,
+          3.92
+        ],
+        [
+          5.14,
+          3.58
+        ]
+      ],
+      "y": 0.23,
+      "height": 0.037,
+      "material": "dark",
+      "pair": true,
+      "bevel": 0.018
+    },
+    {
+      "kind": "box",
+      "name": "Detail/spine-contact--4.6",
+      "position": [
+        0,
+        0.728,
+        -4.6
+      ],
+      "size": [
+        0.39,
+        0.04,
+        0.08
+      ],
+      "material": "metal",
+      "pair": false
+    },
+    {
+      "kind": "box",
+      "name": "Detail/spine-contact--4.13",
+      "position": [
+        0,
+        0.728,
+        -4.13
+      ],
+      "size": [
+        0.39,
+        0.04,
+        0.08
+      ],
+      "material": "metal",
+      "pair": false
+    },
+    {
+      "kind": "box",
+      "name": "Detail/spine-contact--3.66",
+      "position": [
+        0,
+        0.728,
+        -3.66
+      ],
+      "size": [
+        0.39,
+        0.04,
+        0.08
+      ],
+      "material": "metal",
+      "pair": false
+    }
+  ],
+  "engines": [
+    {
+      "name": "thruster-0",
+      "anchor": [
+        1.2,
+        -0.12,
+        3.7
+      ],
+      "radius": 0.63,
+      "length": 1.96,
+      "pair": true
+    },
+    {
+      "name": "thruster-1",
+      "anchor": [
+        3.43,
+        -0.2,
+        3.42
+      ],
+      "radius": 0.43,
+      "length": 1.52,
+      "pair": true
+    }
+  ],
+  "weapons": [
+    {
+      "name": "weapon-0",
+      "muzzle": [
+        0.46,
+        1.1,
+        -6.45
+      ],
+      "radius": 0.12,
+      "length": 2.8,
+      "pair": true
+    },
+    {
+      "name": "weapon-1",
+      "muzzle": [
+        1.45,
+        1.14,
+        -5.68
+      ],
+      "radius": 0.14,
+      "length": 2.9,
+      "pair": true
+    },
+    {
+      "name": "weapon-2",
+      "muzzle": [
+        3.09,
+        0.53,
+        -2.71
+      ],
+      "radius": 0.13,
+      "length": 1.82,
+      "pair": true
+    }
+  ],
+  "energyPaths": [
+    {
+      "name": "stepped-emitter",
+      "points": [
+        [
+          2.73,
+          0.24,
+          -2.21
+        ],
+        [
+          2.87,
+          0.24,
+          0.1
+        ],
+        [
+          3.71,
+          0.24,
+          0.35
+        ],
+        [
+          3.87,
+          0.24,
+          1.68
+        ],
+        [
+          4.7,
+          0.24,
+          1.9
+        ],
+        [
+          6.3,
+          0.24,
+          4.21
+        ]
+      ],
+      "width": 0.075,
+      "pair": true,
+      "gain": 0.63
+    },
+    {
+      "name": "armored-rail",
+      "points": [
+        [
+          1.78,
+          1.1,
+          -3.27
+        ],
+        [
+          1.96,
+          1.1,
+          -2.24
+        ],
+        [
+          1.96,
+          1.1,
+          0.67
+        ]
+      ],
+      "width": 0.06,
+      "pair": true,
+      "gain": 0.6
+    }
+  ],
+  "arcPaths": [
+    {
+      "start": [
+        1.91,
+        1.04,
+        0.86
+      ],
+      "end": [
+        3.45,
+        0.63,
+        1.42
+      ],
+      "pair": true
+    }
+  ],
+  "veils": [
+    {
+      "anchor": [
+        3.72,
+        -0.3,
+        3.08
+      ],
+      "length": 2.26,
+      "width": 0.42,
+      "pair": true
+    },
+    {
+      "anchor": [
+        5.36,
+        -0.3,
+        3.54
+      ],
+      "length": 1.95,
+      "width": 0.28,
+      "pair": true
+    }
+  ],
+  "decals": [
+    {
+      "position": [
+        4.48,
+        0.42,
+        3.61
+      ],
+      "size": [
+        1.1,
+        0.25
+      ],
+      "angle": -0.4,
+      "pair": true,
+      "text": "FOXPEN"
+    }
+  ],
+  "camera": {
+    "defaultDirection": [
+      17,
+      24,
+      -23
+    ]
+  },
+  "cockpit": {
+    "center": [
+      0,
+      0.69,
+      -0.4
+    ],
+    "width": 1.49,
+    "length": 2.36,
+    "height": 0.68,
+    "interior": "cockpit",
+    "segments": 12
+  }
+}

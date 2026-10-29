@@ -1,0 +1,87 @@
+/* Original art and supplied nine-slice chrome; section geometry follows 1.1.6. */
+#gui-casual-lobby .shop-native-v2 .store-categories{padding:0 12px}
+#gui-casual-lobby .shop-native-v2 .sn-content{padding:14px 0 24px;display:grid;gap:22px}
+#gui-casual-lobby .shop-native-v2 .sn-section{padding:0 4.6cqw;scroll-margin-top:12px;display:grid;gap:12px;min-width:0}
+#gui-casual-lobby .shop-native-v2 h2{font:400 clamp(17px,4.5cqw,22px)/1.25 PsdPopup,'Microsoft YaHei',sans-serif;text-align:center;color:#e8f4fa;margin:0 0 3px;padding:7px 0;background:linear-gradient(90deg,transparent,#51778e88,transparent);border-bottom:1px solid #698a9c}
+#gui-casual-lobby .sn-button{position:relative;min-height:44px;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 9px;color:#edf7fc;font:400 clamp(12px,3.4cqw,16px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;white-space:normal}
+#gui-casual-lobby .sn-button .shop-icon{width:15px;height:15px}
+#gui-casual-lobby .sn-cost-icon{width:15px;height:19px;object-fit:contain;margin:0}
+#gui-casual-lobby .sn-daily-grid,#gui-casual-lobby .sn-currency-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+#gui-casual-lobby .sn-tile,#gui-casual-lobby .sn-currency{position:relative;isolation:isolate;min-width:0;aspect-ratio:310/451;min-height:169px;display:flex;flex-direction:column;align-items:center;padding:9px 5px 7px;gap:4px;color:#e5f0f7}
+#gui-casual-lobby :is(.sn-tile,.sn-currency,.sn-box)::before{content:'';position:absolute;inset:0;z-index:-1;background:#20394b url('/art/weapon-catalog-psd-v1/triangles-blue.png') right bottom/130px auto no-repeat;border:0;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch;pointer-events:none}
+#gui-casual-lobby :is(.sn-tile,.sn-currency) h3{color:#e4eff6;font-size:clamp(10px,2.8cqw,13px);line-height:1.35;min-height:2.7em;text-align:center;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 1px}
+#gui-casual-lobby .sn-art{display:grid;place-items:center;flex:1;min-height:42px;height:17cqw;width:100%;max-height:80px}
+#gui-casual-lobby .sn-art img{width:100%;height:100%;max-height:80px;max-width:90px;object-fit:contain}
+#gui-casual-lobby :is(.sn-tile,.sn-currency)>strong{font-size:clamp(16px,4.4cqw,22px);font-weight:600;line-height:1.15;color:#fff0bd}
+#gui-casual-lobby :is(.sn-tile,.sn-currency)>small{font-size:10px;line-height:1.2;color:#b3cdda}
+#gui-casual-lobby :is(.sn-tile,.sn-currency)>.sn-button{width:100%;flex:none;font-size:clamp(10px,2.9cqw,14px);padding:5px 4px}
+#gui-casual-lobby .sn-discount{position:absolute;left:3px;top:32px;background:#765226;color:#ffdf88;font-size:10px;padding:1px 4px}
+#gui-casual-lobby .sn-currency{min-height:210px}
+#gui-casual-lobby .sn-stamina-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#gui-casual-lobby .sn-stamina-grid .sn-tile{aspect-ratio:1;min-height:195px}
+#gui-casual-lobby .sn-refresh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 4px 12px;border-bottom:1px solid #577183}
+#gui-casual-lobby .sn-refresh>div{display:flex;flex-direction:column;gap:4px}
+#gui-casual-lobby .sn-refresh strong{font-size:clamp(11px,3cqw,14px);font-weight:600;color:#dfedf4}
+#gui-casual-lobby .sn-refresh small{font-size:11px;color:#afcbd9}
+#gui-casual-lobby .sn-refresh .sn-button{width:29%;min-height:48px}
+#gui-casual-lobby .sn-box{position:relative;isolation:isolate;min-height:202px;height:53.5cqw;max-height:270px;padding:9px 12px;display:grid;grid-template-columns:41% minmax(0,1fr);grid-template-rows:28px minmax(0,1fr) 50px;gap:5px 8px}
+#gui-casual-lobby .sn-box::before{background:#193c50 url('/art/project-supply-v1/supply-bay.png') center/cover no-repeat}
+#gui-casual-lobby .sn-box.is-advanced::before{background-color:#35354f}
+#gui-casual-lobby .sn-box h3{grid-column:1/-1;color:#edf7fc;font:400 clamp(16px,4.4cqw,21px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;align-self:center;padding-right:24px}
+#gui-casual-lobby .sn-info{position:absolute;right:1px;top:0;width:44px;height:44px;background:none;border:0;padding:12px;z-index:1}
+#gui-casual-lobby .sn-info img{height:100%;width:100%;object-fit:contain}
+#gui-casual-lobby .sn-box-art{min-height:0;display:grid;place-items:center}
+#gui-casual-lobby .sn-box-art img{height:100%;width:100%;object-fit:contain}
+#gui-casual-lobby .sn-box-copy{display:flex;flex-direction:column;justify-content:center;gap:6px;min-width:0;color:#e4f3fa}
+#gui-casual-lobby .sn-box-copy p{font-size:clamp(11px,3.1cqw,14px);line-height:1.4;margin:0}
+#gui-casual-lobby .sn-box-copy small{font-size:12px;color:#e6d7a9}
+#gui-casual-lobby .sn-box-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#gui-casual-lobby .sn-box-actions .sn-button{font-size:clamp(11px,3cqw,14px)}
+#gui-casual-lobby .sn-progress{padding:8px 10px;display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:6px 10px;background:#193245;border:1px solid #4c6e82}
+#gui-casual-lobby .sn-progress>span{font-size:12px;color:#e0edf4}
+#gui-casual-lobby .sn-progress>progress{grid-column:1;width:100%;height:9px;accent-color:#80c7d4}
+#gui-casual-lobby .sn-progress>small{font-size:10px;color:#b0cad9;grid-column:1}
+#gui-casual-lobby .sn-progress>.sn-button{grid-column:2;grid-row:1/4;font-size:13px}
+#gui-casual-lobby .sn-notice{margin:8px 20px;color:#f2cc89;font-size:13px}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type^='shop']{--popup-width:90cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:86%}
+#gui-casual-lobby .sn-dialog{padding:6px 8px 12px;font:14px/1.5 'Microsoft YaHei',sans-serif;color:#243f54}
+#gui-casual-lobby .sn-dialog p{font-size:13px;margin:9px 0;line-height:1.5;color:inherit}
+#gui-casual-lobby .sn-dialog h3{font-size:17px;color:#203c50;margin:4px 0 14px}
+#gui-casual-lobby .sn-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+#gui-casual-lobby .sn-dialog .sn-error{padding:6px 8px;color:#8d303c;background:#e0c6c7}
+#gui-casual-lobby .sn-quantity{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0}
+#gui-casual-lobby .sn-quantity .sn-button{width:44px;height:44px;font-size:24px;padding:0}
+#gui-casual-lobby .sn-quantity output{min-width:24px;text-align:center;font-weight:600}
+#gui-casual-lobby .sn-confirm-price{display:flex;align-items:center;gap:6px;justify-content:center;font-size:17px!important}
+#gui-casual-lobby .sn-rate{display:flex;justify-content:space-between;gap:8px;padding:8px;border-bottom:1px solid #809aa9}
+#gui-casual-lobby .sn-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:4px 0 16px}
+#gui-casual-lobby .sn-result{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:6px;border:1px solid #728d9e;background:#ccdfe9;color:#203e52;font:11px/1.3 'Microsoft YaHei',sans-serif;gap:4px}
+#gui-casual-lobby .sn-result img{width:100%;height:66px;object-fit:contain}
+#gui-casual-lobby .sn-result b{font-size:11px;text-align:center}
+#gui-casual-lobby .sn-dialog>.sn-button{width:100%}
+#gui-casual-lobby .sn-currency{min-height:175px}
+#gui-casual-lobby .sn-currency h3{min-height:20px}
+#gui-casual-lobby .sn-button:has(>small){flex-wrap:wrap;gap:0 3px}
+#gui-casual-lobby .sn-button>small{width:100%;font:10px/1.15 'Microsoft YaHei',sans-serif;color:inherit}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='stamina']{--popup-width:88cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:86%}
+#gui-casual-lobby .sn-vitality h3{display:flex;align-items:center;justify-content:center;gap:12px;font-size:23px}
+#gui-casual-lobby .sn-vitality h3 img{width:32px;height:45px;object-fit:contain}
+#gui-casual-lobby .sn-vitality-offer{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #7e9cad}
+#gui-casual-lobby .sn-vitality-offer>div{display:flex;flex-direction:column;gap:5px}
+#gui-casual-lobby .sn-vitality-offer strong{font-size:16px}
+#gui-casual-lobby .sn-vitality-offer small,#gui-casual-lobby .sn-hint{font-size:11px;color:#526d7d}
+/* Native 1080-wide layout: 310×451 tiles, 31/16 gaps, 960×578 boxes,
+   1030×150 section headings. Quantities overlay item art as in UIItem. */
+#gui-casual-lobby .shop-native-v2 .sn-section{padding-inline:4.074074cqw}
+#gui-casual-lobby .shop-native-v2 .sn-section>h2{min-height:13.888889cqw;margin-inline:-1.759259cqw;padding:0;display:flex;align-items:center;justify-content:center}
+#gui-casual-lobby .shop-native-v2 :is(.sn-daily-grid,.sn-currency-grid){gap:1.481481cqw 2.870370cqw}
+#gui-casual-lobby .shop-native-v2 .sn-box{margin-inline:1.481481cqw}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency){min-height:0;padding:7px 5px;gap:4px}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>h3{min-height:2em}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>strong{position:absolute;right:7px;bottom:69px;font-size:clamp(16px,4.4cqw,21px);text-shadow:0 1px 2px #07131f,1px 0 1px #07131f}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>small{position:absolute;left:5px;right:5px;bottom:54px;text-align:center;text-shadow:0 1px #07131f}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>.sn-art{height:auto;min-height:30px;max-height:none;flex:1;padding-bottom:10px}
+#gui-casual-lobby .shop-native-v2 .sn-art img{max-height:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .shop-native-v2 .sn-box{min-height:171px;max-height:none}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>.sn-button{height:44px;min-height:44px}
+#gui-casual-lobby .shop-native-v2 .sn-box-actions>.sn-button{height:100%}

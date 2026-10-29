@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="100" viewBox="0 0 750 100">
+<defs>
+  <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#30383c"/><stop offset=".25" stop-color="#20282c"/><stop offset="1" stop-color="#11191d"/></linearGradient>
+  <linearGradient id="edge"><stop stop-color="#65767d"/><stop offset=".5" stop-color="#9ba9ad"/><stop offset="1" stop-color="#43545d"/></linearGradient>
+  <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M-2 2 2-2M0 8 8 0M6 10 10 6" stroke="#a3b7bf" stroke-opacity=".06" stroke-width="1"/></pattern>
+</defs>
+<path fill="url(#metal)" d="M0 0h750v100H0z"/>
+<path fill="url(#weave)" d="M0 0h750v94H0z"/>
+<path stroke="#a2b2b9" stroke-opacity=".25" d="M0 .5h750"/>
+<path fill="#060d11" d="M0 93h750v7H0z"/>
+<path stroke="url(#edge)" stroke-opacity=".7" d="M0 93.5h750"/>
+<path stroke="#6b868e" stroke-opacity=".28" d="M0 97.5h750"/>
+</svg>

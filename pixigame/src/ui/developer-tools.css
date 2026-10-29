@@ -1,0 +1,19 @@
+#gui-casual-lobby .wc-button.psd-main-developer {
+  --wc-button-height: max(38px, 9cqw);
+  --psd-button-corner: 2.8cqw;
+  position: absolute;
+  right: 1.8%;
+  top: 29%;
+  width: 14%;
+  min-width: 44px;
+  padding: 0;
+  font-size: clamp(12px, 3.4cqw, 17px);
+  pointer-events: auto;
+}
+.pl-developer-panel { display: grid; gap: 12px; }
+.pl-developer-panel p { line-height: 1.6; }
+.pl-developer-balance { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-weight: 800; }
+.pl-developer-reset { display: grid; gap: 10px; padding-top: 14px; border-top: 1px solid var(--ui-muted, #668696); }
+#gui-casual-lobby .pl-developer-panel .wc-button { width: 100%; height: auto; min-height: 44px; padding: 10px; }
+.pl-developer-danger::before { filter: sepia(.6) saturate(2) hue-rotate(315deg); }
+.pl-developer-error { color: #a52f39; }

@@ -1,0 +1,17 @@
+# Fighter packages are verified against SHA-256 hashes at runtime.
+# Preserve their exact repository bytes on Windows even with core.autocrlf=true.
+pixigame/public/fighters/** -text
+
+# Captured runtime sources and data are verified by their exact SHA-256 bytes.
+pixigame/replica-battle/** -text
+pixigame/public/replica-battle/** -text
+# Deterministic generated catalogs use LF.
+pixigame/src/replica/*.json text eol=lf
+pixigame/src/replica/native-runtime-capabilities.js text eol=lf
+# These four artwork fingerprints were captured from CRLF working-tree sources.
+pixigame/src/slot-demo/module-geometry.js text eol=crlf
+pixigame/src/slot-demo/detailed-weapons.js text eol=crlf
+pixigame/src/slot-demo/advanced-weapons.js text eol=crlf
+pixigame/src/slot-demo/catalog.js text eol=crlf
+pixigame/public/replica-battle/data/assets-chapters.json filter=lfs diff=lfs merge=lfs -text
+pixigame/replica-battle/public/data/assets-chapters.json filter=lfs diff=lfs merge=lfs -text

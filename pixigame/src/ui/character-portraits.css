@@ -1,0 +1,39 @@
+.character-portrait{position:relative;isolation:isolate;overflow:hidden;user-select:none}
+.character-portrait>.character-portrait-fallback,.character-portrait>canvas{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;margin:0;object-fit:contain;pointer-events:none}
+.character-portrait>canvas{visibility:hidden}
+.character-portrait.is-ready>canvas{visibility:visible}
+.character-portrait.is-ready>.character-portrait-fallback{visibility:hidden}
+.character-portrait>.character-portrait-scene{position:absolute;inset:0;z-index:0;display:block;width:100%;height:100%;max-width:none;margin:0;object-fit:contain;pointer-events:none}
+.character-portrait>.character-portrait-fallback{z-index:1}
+.character-portrait>canvas{z-index:2}
+.character-portrait[data-action="portraitFeedback"]{pointer-events:auto;cursor:pointer;touch-action:pan-y}
+.character-portrait:focus-visible{outline:2px solid #bffaff;outline-offset:-4px}
+.reference-layout .ref-catalog-pilot .ref-catalog-portrait.character-portrait{position:absolute;inset:8% -12% 9%;width:124%;height:83%;transform:none;filter:none}
+.reference-layout .rc-feature-art.is-pilot>.character-portrait{position:absolute;inset:0;width:100%;height:100%}
+/* Frame the visible subject, rather than its transparent texture canvas.
+   A square reference also keeps static fallbacks and all four renderers aligned. */
+#gui-casual-lobby .fc-pilot-portrait.character-portrait[data-portrait-framed]{
+  --portrait-frame:calc(min(calc(var(--portrait-catalog-height) * 1cqw / var(--portrait-visible-height)),calc(74cqw / var(--portrait-visible-width)),calc((50cqh - 28.6cqw) / var(--portrait-ground-rise))) * var(--portrait-display-scale,1));
+  position:absolute;inset:auto;left:calc(50% - var(--portrait-ground-x) * var(--portrait-frame));top:calc(50% - 22.6cqw - var(--portrait-ground-y) * var(--portrait-frame));
+  width:var(--portrait-frame);height:var(--portrait-frame);aspect-ratio:1;transform:none;filter:none;
+}
+/* 750x1624 main canvas: head at 21%, lowest artwork before 80%. */
+.battle-psd-main .psd-main-portrait.character-portrait[data-portrait-framed]{
+  --portrait-frame:calc(min(calc(127.75cqw / var(--portrait-body-rise)),calc(100cqw / var(--portrait-visible-width))) * var(--portrait-display-scale,1));
+  position:absolute;inset:auto;left:calc(50% - var(--portrait-center-x) * var(--portrait-frame));top:calc(21% - var(--portrait-head-y) * var(--portrait-frame));
+  width:var(--portrait-frame);height:var(--portrait-frame);aspect-ratio:1;transform:none;mask-image:none;pointer-events:auto;
+}
+/* The horizontal card gesture sits below the mail action in the larger seated framing. */
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-01"][data-portrait-framed]{top:calc(23.5% - var(--portrait-head-y) * var(--portrait-frame))}
+/* Home only: give the seated Astra portrait more room below the top actions. */
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-08"][data-portrait-framed]{left:calc(52% - var(--portrait-center-x) * var(--portrait-frame));top:calc(24% - var(--portrait-head-y) * var(--portrait-frame))}
+/* Match the standing pilots' head-to-foot height. The wide train may extend
+   past the viewport sides instead of making the whole character smaller. */
+.battle-psd-main .psd-main-portrait.character-portrait[data-character-portrait="pilot-04"][data-portrait-framed]{--portrait-frame:calc(126cqw / var(--portrait-ground-rise))}
+.battle-psd-main .psd-main-avatar{position:absolute;z-index:3;left:2.8%;top:1.9%;width:9.7%;height:4.5%;overflow:hidden;pointer-events:none;background:#324451}
+.battle-psd-main .psd-main-avatar>img{display:block;width:100%;height:100%;object-fit:cover}
+.psd-main-avatar>img[src*="pilot-06-v09c/portrait.png"],.ref-catalog-card-art>img[src*="pilot-06-v09c/portrait.png"],.pl-commander-avatar[src*="pilot-06-v09c/portrait.png"],.rc-preview-card>img[src*="pilot-06-v09c/portrait.png"]{object-view-box:inset(7% 34% 75% 47%);object-position:center 20%}
+.psd-main-avatar>img[src*="white-gold-luoen-r13/portrait-refined-v1.png"],.ref-catalog-card-art>img[src*="white-gold-luoen-r13/portrait-refined-v1.png"],.pl-commander-avatar[src*="white-gold-luoen-r13/portrait-refined-v1.png"],.rc-preview-card>img[src*="white-gold-luoen-r13/portrait-refined-v1.png"]{object-view-box:inset(5% 38% 74% 42%);object-position:center 20%}
+
+/* Generated icons are already head-only; ignore obsolete full-body crops. */
+#gui-casual-lobby img[src*="/pilot-head-icons-v1/"]{object-view-box:none!important;object-position:center center!important}

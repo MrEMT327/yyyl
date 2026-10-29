@@ -1,0 +1,207 @@
+{
+  "generator": "Blender 5.2.1 LTS",
+  "source": "art/ordnance/ordnance.blend",
+  "forward": "-Y in Blender, +Z in glTF",
+  "assets": [
+    {
+      "id": "twin",
+      "file": "twin.glb",
+      "bytes": 13384,
+      "sha256": "65191f94b897fdf6ab7a9ee14a9d6cb430b296c8f6caa9d8c4171fb42d654c1e",
+      "triangles": 432,
+      "primitives": 4
+    },
+    {
+      "id": "rail",
+      "file": "rail.glb",
+      "bytes": 29756,
+      "sha256": "7abb9dcb3aca5982bbe8e7b289449b96e6dcdeeef457959cad81fa9b1608b4d0",
+      "triangles": 912,
+      "primitives": 4
+    },
+    {
+      "id": "missile",
+      "file": "missile.glb",
+      "bytes": 38540,
+      "sha256": "cd75e2ecb6fad60bfd4146eb6fff4cd41a862df3a3ef34572e6a9f8c1b37e21e",
+      "triangles": 1184,
+      "primitives": 5
+    },
+    {
+      "id": "hostile",
+      "file": "hostile.glb",
+      "bytes": 10444,
+      "sha256": "612982d4d9e898572ce5d8d067e82d9bfe4f436c9032018d59a20482342c9f31",
+      "triangles": 308,
+      "primitives": 3
+    },
+    {
+      "id": "plasma",
+      "file": "plasma.glb",
+      "bytes": 21228,
+      "sha256": "1f337dc643de0d5a29e6cce06b0766a9d3d4a29a329fc97ab1d53a1a6f0ebd90",
+      "triangles": 632,
+      "primitives": 3
+    },
+    {
+      "id": "siege",
+      "file": "siege.glb",
+      "bytes": 16272,
+      "sha256": "e078b5cae72a276c8c9dab5a6c19019229bf8d677f1546d8053910e55661fbcc",
+      "triangles": 584,
+      "primitives": 4
+    },
+    {
+      "id": "blade",
+      "file": "blade.glb",
+      "bytes": 14924,
+      "sha256": "67ca4604cc4b8ec8ff2b0e71b40659a680dd76a1e6d17fd5b8509c8582ea185c",
+      "triangles": 396,
+      "primitives": 3
+    },
+    {
+      "id": "drone",
+      "file": "drone.glb",
+      "bytes": 14916,
+      "sha256": "90651d0d304ab37dd42f9615e13ea675487db47367db34cfadc2c60c34fd56bd",
+      "triangles": 396,
+      "primitives": 3
+    },
+    {
+      "id": "zb_gun",
+      "file": "zb_gun.glb",
+      "bytes": 14100,
+      "sha256": "00fd46443d14fadcb6142b8d6b5beb1ec67f6720f3b28513b9f94a50e8dd5eed",
+      "triangles": 432,
+      "primitives": 3
+    },
+    {
+      "id": "zb_assault_rifle",
+      "file": "zb_assault_rifle.glb",
+      "bytes": 16628,
+      "sha256": "b3020dcce097d9c9bc88f4c55ad386e59d0138fb6f8632641be4a1a7cfdf880f",
+      "triangles": 524,
+      "primitives": 3
+    },
+    {
+      "id": "zb_machine_gun",
+      "file": "zb_machine_gun.glb",
+      "bytes": 22236,
+      "sha256": "3566729bad57c7c4a2ae65a1d00e02c3612a8cbfbc3b75bfb5df5b1dcfb0fab1",
+      "triangles": 644,
+      "primitives": 4
+    },
+    {
+      "id": "zb_sniper",
+      "file": "zb_sniper.glb",
+      "bytes": 23856,
+      "sha256": "89532a2f1356144856ac87ac82c4a24d74b9a5d99da3f44283ac85e6e119d0ed",
+      "triangles": 684,
+      "primitives": 4
+    },
+    {
+      "id": "zb_cannon",
+      "file": "zb_cannon.glb",
+      "bytes": 20036,
+      "sha256": "4c7016c84e7ccce480b4ca3c8b8fe05f8ed5f89a3376d91ea37179a7fb0526b2",
+      "triangles": 620,
+      "primitives": 4
+    },
+    {
+      "id": "zb_shotgun",
+      "file": "zb_shotgun.glb",
+      "bytes": 9600,
+      "sha256": "e4b988e9914e89c73d583ea2e41560c288e781e7383ca74ecfa44ced6f33c663",
+      "triangles": 276,
+      "primitives": 3
+    },
+    {
+      "id": "zb_shotgun_close",
+      "file": "zb_shotgun_close.glb",
+      "bytes": 8864,
+      "sha256": "ffba28b9394bf2b68d4f82ace76f3b2a0903aee0e55632702b7a6755aa7569f7",
+      "triangles": 244,
+      "primitives": 3
+    },
+    {
+      "id": "zb_sidegun",
+      "file": "zb_sidegun.glb",
+      "bytes": 13660,
+      "sha256": "e79bbc54824da9d1cea1832e02034194a4fab85cf7484705366bd3b44a4e4544",
+      "triangles": 364,
+      "primitives": 4
+    },
+    {
+      "id": "zb_grenade_launcher",
+      "file": "zb_grenade_launcher.glb",
+      "bytes": 23948,
+      "sha256": "0c3e241b230716b545a0787e9d80525c72cbe136d4032dbea4be3f634196ccc4",
+      "triangles": 708,
+      "primitives": 4
+    },
+    {
+      "id": "zb_mine_launcher",
+      "file": "zb_mine_launcher.glb",
+      "bytes": 29648,
+      "sha256": "aac0b92b83623f3921efbf94da3dfac63c380ee9a047ab472314a7ab93983bbb",
+      "triangles": 848,
+      "primitives": 3
+    },
+    {
+      "id": "zb_orb_gun",
+      "file": "zb_orb_gun.glb",
+      "bytes": 21152,
+      "sha256": "8b9b8b5f186e140f2acf2c711a2408860e7e8c2905d247bbf09809596ed45298",
+      "triangles": 668,
+      "primitives": 2
+    },
+    {
+      "id": "zb_staurolobber",
+      "file": "zb_staurolobber.glb",
+      "bytes": 22108,
+      "sha256": "6fbbccc2f6cad59da9e07855ffe52b44e76f6c92ad3e9d58148ad04627c28865",
+      "triangles": 648,
+      "primitives": 3
+    },
+    {
+      "id": "zb_flamethrower",
+      "file": "zb_flamethrower.glb",
+      "bytes": 6700,
+      "sha256": "b050442683b905a5e6164f077ebc7927123b9ce75289778be43f10fea80c4f48",
+      "triangles": 184,
+      "primitives": 2
+    },
+    {
+      "id": "zb_harpoon",
+      "file": "zb_harpoon.glb",
+      "bytes": 17084,
+      "sha256": "21d54fd4c4db425b2dc3ebb027c0b0dbb907e2670c4e43522c4d1eb06ffc972a",
+      "triangles": 528,
+      "primitives": 4
+    },
+    {
+      "id": "zb_electric_harpoon",
+      "file": "zb_electric_harpoon.glb",
+      "bytes": 19184,
+      "sha256": "585fbfe3c3deb4076afbeb45a8e3716b0a9818ce446e1cd8b8bdd3deff41cfc6",
+      "triangles": 580,
+      "primitives": 4
+    },
+    {
+      "id": "zb_plasma_whip",
+      "file": "zb_plasma_whip.glb",
+      "bytes": 13012,
+      "sha256": "1546d858eadba35ee6e8b24dd63ff9fe03611221cd2d6961f0460b5dd2980c05",
+      "triangles": 340,
+      "primitives": 3
+    },
+    {
+      "id": "zb_pyrocyst",
+      "file": "zb_pyrocyst.glb",
+      "bytes": 28784,
+      "sha256": "e75456bb61e78b94087f119bf892d543d7810dc1609028d3c82db946b0529112",
+      "triangles": 884,
+      "primitives": 2
+    }
+  ]
+}

@@ -1,0 +1,730 @@
+{
+  "method": "Built-in imagegen, original alpha preserved. Export changes only transparent margins and resolution.",
+  "prompts": [
+    "art/project-ui-icons-v1/prompts.json",
+    "art/project-ui-icons-v1/psd-control-correction.json"
+  ],
+  "preserved": "Bottom navigation stays from the user PSD. Currency and material resources are maintained separately in project-resource-icons-v2; unused navigation and mechanical currency variants are not shipped.",
+  "assets": [
+    {
+      "name": "lock",
+      "file": "lock.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-1aee9fa7-8b5f-46ee-9dce-7a00d6a64205.png",
+      "source": "art/project-ui-icons-v1/source-lock.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 162,
+        "top": 69,
+        "width": 930,
+        "height": 1084
+      },
+      "placement": {
+        "left": 28,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "e8eb98b3a8ae8de074c2b6e9484bcbc5d55ce5f39c8db41e346fee4b3d1c060f",
+      "sha256": "62616dacc9a1fe6fc4091a89aa94d47ca5d308daf89e9372e584d7e932b408e6"
+    },
+    {
+      "name": "star",
+      "file": "star.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-3d6d1f65-051a-4650-96c9-bf5f696036c6.png",
+      "source": "art/project-ui-icons-v1/source-star.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 71,
+        "top": 73,
+        "width": 1112,
+        "height": 1029
+      },
+      "placement": {
+        "left": 12,
+        "top": 20
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "8ce8198ac0536b71c14dd80bd49b98aa3467f2de7eaaa4df26fe9c5b6cd7522f",
+      "sha256": "5ab3296d33e565fef8fe82cd8963c2e88516afa705e79325f261c393cfaa2ef6"
+    },
+    {
+      "name": "check",
+      "file": "check.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-15c76058-da42-4148-a863-f8702602cf3a.png",
+      "source": "art/project-ui-icons-v1/source-check.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 59,
+        "top": 168,
+        "width": 1149,
+        "height": 919
+      },
+      "placement": {
+        "left": 12,
+        "top": 35
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "b9be3d98a9eb3770969ed272edc0e767aa8de06225e5da13ae39a5b0f66a97d8",
+      "sha256": "e9d6ac7c25152a5b8425d488eb55fa221c996bf92bbeb4f3d81fb6fc54824135"
+    },
+    {
+      "name": "info",
+      "file": "info.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-d3c2d232-1d0b-4e18-b1d0-cd714fcebd69.png",
+      "source": "art/project-ui-icons-v1/source-info.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 99,
+        "top": 101,
+        "width": 1055,
+        "height": 1050
+      },
+      "placement": {
+        "left": 12,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "e4fff1a47bd391b426db1b8953573a0e3bc46a2e613b4fdd46b1752ec506e9b9",
+      "sha256": "3c277ed21b39a77b7ad09e8dc5f10b11f8ca69dc0aad1746d6594a80565ea4f2"
+    },
+    {
+      "name": "plus",
+      "file": "plus.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-f8c4ad53-6246-4968-872f-c65f5047f7a7.png",
+      "source": "art/project-ui-icons-v1/source-plus.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 79,
+        "top": 84,
+        "width": 1096,
+        "height": 1086
+      },
+      "placement": {
+        "left": 12,
+        "top": 13
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "3a092de14a2e7d18944a005ffdaa9fb67ba991df83727c9ffe0f05ae3e509f15",
+      "sha256": "baaa5e2e979ce4f63fe1700792ceec2ee6408b1d30fdf7ebd9c7b024f1942ab5"
+    },
+    {
+      "name": "chevron-right",
+      "file": "chevron-right.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-d5966a0b-26b2-4cec-abb2-e56c41ebce83.png",
+      "source": "art/project-ui-icons-v1/source-chevron-right.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 286,
+        "top": 108,
+        "width": 737,
+        "height": 1039
+      },
+      "placement": {
+        "left": 45,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "e2bab7eac743ea7ce1ef16566b40d52ae1a2488d510b416d7271d35e459e3c0f",
+      "sha256": "7a91fc862dcdb0a0facbeea09390d7ef0c7d882aac99a041902cd1f141abca42"
+    },
+    {
+      "name": "upgrade-arrow",
+      "file": "upgrade-arrow.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-c4880408-e83b-4331-87c0-28067c464734.png",
+      "source": "art/project-ui-icons-v1/source-upgrade-arrow.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 56,
+        "top": 148,
+        "width": 1138,
+        "height": 958
+      },
+      "placement": {
+        "left": 12,
+        "top": 30
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "71b792d623baedba24079898289ab6fe7d44064a7397f871e38bf9a829680cf9",
+      "sha256": "aab3dda1b384fc657edb36e8c972844e60bee36ad12cc3f122396008f8c66460"
+    },
+    {
+      "name": "ad-play",
+      "file": "ad-play.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-fddcc76e-99c2-4d00-8ed6-70f054216cd7.png",
+      "source": "art/project-ui-icons-v1/source-ad-play.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 239,
+        "top": 185,
+        "width": 787,
+        "height": 880
+      },
+      "placement": {
+        "left": 24,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "7e553bff63f1da56a75f2b72e65b1c1bfc8c75b1f412a2607a4469fb1d4727b9",
+      "sha256": "d079d03a0b64dff8c0ef17f0ef436607c3715109476038a993725c47574f7052"
+    },
+    {
+      "name": "skill-tab",
+      "file": "skill-tab.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-c4c1bdf9-41a5-4754-8c5e-0b1e310e8f37.png",
+      "source": "art/project-ui-icons-v1/source-skill-tab.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 83,
+        "top": 85,
+        "width": 1085,
+        "height": 1090
+      },
+      "placement": {
+        "left": 12,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "9224c740e3a0fec08f531df5aa1bee1c333df2f821d0132c6bd818f393d68f72",
+      "sha256": "451343ef2d5ed38246aaa570d848e488672288d3b4cc7178e917ae7a5ba3f18d"
+    },
+    {
+      "name": "task-log",
+      "file": "task-log.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-aa694b82-79a6-46d9-b5f1-f8246d8b6b50.png",
+      "source": "art/project-ui-icons-v1/source-task-log.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 121,
+        "top": 55,
+        "width": 1011,
+        "height": 1147
+      },
+      "placement": {
+        "left": 26,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "89cc4322281707cb0f2c83c50afd220682f01cb60e52685708a60bb72be7b549",
+      "sha256": "8eb805d7e7c72a5c097f2c54de88e7993e098ddadb66893c6fd3c4cbb7a50bdd"
+    },
+    {
+      "name": "mail",
+      "file": "mail.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-4855d175-bfe3-48a3-826a-c1ada76f29bc.png",
+      "source": "art/project-ui-icons-v1/source-mail.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 51,
+        "top": 217,
+        "width": 1152,
+        "height": 820
+      },
+      "placement": {
+        "left": 12,
+        "top": 45
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "80638a9282ff60d0887c6ec5712fddf108cf79506e0b4da109c176ef00f12162",
+      "sha256": "0b850b59f0081524c9d9ffbd0fd41a1d01acb90359453f904a056a17f5e9210e"
+    },
+    {
+      "name": "chapter-map",
+      "file": "chapter-map.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-cb29134d-7147-4a61-998b-f0cd7006d37b.png",
+      "source": "art/project-ui-icons-v1/source-chapter-map.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 124,
+        "top": 196,
+        "width": 1009,
+        "height": 865
+      },
+      "placement": {
+        "left": 12,
+        "top": 28
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "f5ef639b6f6c03859147d356ed4f4c599cd0b44f55db6e4a2eceac75fed898ab",
+      "sha256": "bad210a06b464cfcb3f1bbe1a986feadab83343d8695dadb2ca9fdf63224f105"
+    },
+    {
+      "name": "skill-explosive",
+      "file": "skill-explosive.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-fe2818af-9e75-4945-b3f0-8f15db104784.png",
+      "source": "art/project-ui-icons-v1/source-skill-explosive.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 79,
+        "top": 132,
+        "width": 1097,
+        "height": 1006
+      },
+      "placement": {
+        "left": 12,
+        "top": 21
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "ea9f8fb446abab76b7e90881ceb5f26eac71cfd7ac0f91d86733bfa47082990c",
+      "sha256": "75814c5c33b8d80f18ba3cfca0cd3adc63319899494a9a7abb4c1157c8583bfd"
+    },
+    {
+      "name": "skill-freeze",
+      "file": "skill-freeze.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-d9537ab5-7184-4924-86aa-a6e8abd54a50.png",
+      "source": "art/project-ui-icons-v1/source-skill-freeze.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 74,
+        "top": 131,
+        "width": 1113,
+        "height": 992
+      },
+      "placement": {
+        "left": 12,
+        "top": 24
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "0b7015d1e1998934c92e546ec42172ad0506f97533dde464ef996759d1255e65",
+      "sha256": "a4ab2129db654802419ed1b2911055dfff38d905183a1cb2ff9adeaa826d93f8"
+    },
+    {
+      "name": "skill-toxin",
+      "file": "skill-toxin.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-d94884dc-6a0b-499c-bc50-53e91d839d99.png",
+      "source": "art/project-ui-icons-v1/source-skill-toxin.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 143,
+        "top": 41,
+        "width": 1070,
+        "height": 1133
+      },
+      "placement": {
+        "left": 18,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "e4714820205d316ddbe62e08a9f7ee0d5d89198dca35576cb35293f87342af9e",
+      "sha256": "26dd0c1e99be0de604b8c87ca7c1c58b59a54f69bb34a8b7fa527f20f17e3ded"
+    },
+    {
+      "name": "skill-beam",
+      "file": "skill-beam.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-3f289e1c-e009-4ca5-9519-08a125c1f4c7.png",
+      "source": "art/project-ui-icons-v1/source-skill-beam.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 123,
+        "top": 59,
+        "width": 1028,
+        "height": 1025
+      },
+      "placement": {
+        "left": 12,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "e8c675c92002ebd45b2272aab8e25bb9ae8e48f7e6da417834f1c107c11ab535",
+      "sha256": "19711322da6c5389097c2f917f83d612b1189f49be78ca9916c77b2635549b97"
+    },
+    {
+      "name": "skill-shield",
+      "file": "skill-shield.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-6b0e977b-210a-4dd6-aa5a-2efcbf9ba2e2.png",
+      "source": "art/project-ui-icons-v1/source-skill-shield.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 97,
+        "top": 86,
+        "width": 1084,
+        "height": 1085
+      },
+      "placement": {
+        "left": 12,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "0f0aca43a502f72e5e1be0ecde2319e8d76f2ea669203f075b0ffab5231beaed",
+      "sha256": "3b146b64ae16a6c46989c63a9a2873308e2001c3c8a9b181829b67cb801da222"
+    },
+    {
+      "name": "skill-lightning",
+      "file": "skill-lightning.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-3d79cc08-c96d-4d52-9505-910e8445f979.png",
+      "source": "art/project-ui-icons-v1/source-skill-lightning.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 164,
+        "top": 133,
+        "width": 926,
+        "height": 991
+      },
+      "placement": {
+        "left": 19,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "34e5064a1537327691d43de54bd14c617e3bbb6432599f467e9710dd9d81bc60",
+      "sha256": "981091d64ca88ae27444cafeb4000edc0687a37f5938ddd504a9995ed670520c"
+    },
+    {
+      "name": "skill-laser",
+      "file": "skill-laser.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-93583ce8-0a39-409f-8a61-0c3daad07e51.png",
+      "source": "art/project-ui-icons-v1/source-skill-laser.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 83,
+        "top": 103,
+        "width": 1001,
+        "height": 1038
+      },
+      "placement": {
+        "left": 16,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "08035c9e90e3ce1eaf6cf45e0917eefb5230870dfe22942cfdc3ba4bdd7332ae",
+      "sha256": "8bcdec219c5e5113ec3820dbffded7e1c400f1fcd9f50574841426126950ce9c"
+    },
+    {
+      "name": "skill-ballistic",
+      "file": "skill-ballistic.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-a7c10407-c1df-41e5-8342-7414fb2a8de2.png",
+      "source": "art/project-ui-icons-v1/source-skill-ballistic.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 106,
+        "top": 56,
+        "width": 1040,
+        "height": 1129
+      },
+      "placement": {
+        "left": 21,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "6af160fa6bad56bf8fd9eb54d134c868527b94004e940383e5c055f95923336f",
+      "sha256": "fc220872891e8204b262e89c6a1cab8fdb26310f27d1aa9b54383fd0cc7735ef"
+    },
+    {
+      "name": "skill-rail",
+      "file": "skill-rail.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-9b60bd4e-d753-4e58-a2b4-ff9a74f77810.png",
+      "source": "art/project-ui-icons-v1/source-skill-rail.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 43,
+        "top": 124,
+        "width": 1161,
+        "height": 952
+      },
+      "placement": {
+        "left": 12,
+        "top": 33
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "741e4305d31c234e5ba802e9a6e06df9ece6b234678d9951823f1b81162b87b5",
+      "sha256": "afa7d687a8e0c546c646c50b36ba5fe1cfe0962d228499d109f22ea97296e67c"
+    },
+    {
+      "name": "skill-gravity",
+      "file": "skill-gravity.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-939701da-6464-4b5a-a8df-54f4cdeb3423.png",
+      "source": "art/project-ui-icons-v1/source-skill-gravity.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 99,
+        "top": 67,
+        "width": 1053,
+        "height": 1104
+      },
+      "placement": {
+        "left": 17,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "f3d8c02adcb78587af535e95494cc0b222bea8b7b3b7885167ccf1f57927b634",
+      "sha256": "261d6b8e082485c260f6fa5ac7ee948b6397bd7baf085e23b9155e02f932e645"
+    },
+    {
+      "name": "skill-blades",
+      "file": "skill-blades.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-f53ee4cc-b0f3-409d-9ffa-3ea868985de7.png",
+      "source": "art/project-ui-icons-v1/source-skill-blades.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 104,
+        "top": 80,
+        "width": 1048,
+        "height": 1098
+      },
+      "placement": {
+        "left": 17,
+        "top": 12
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "af3b16abeb8805c0b0bc983a82f458bc1921c6668add902e9dbf7a59b601ee97",
+      "sha256": "fb771f37341b00c4690188a9e47f6a441c03398f7dde113258420ee6eb7d1a91"
+    },
+    {
+      "name": "skill-drone",
+      "file": "skill-drone.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-fb5b69bf-b73c-4d13-bdf5-a083d1cab888.png",
+      "source": "art/project-ui-icons-v1/source-skill-drone.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 10,
+        "top": 186,
+        "width": 1234,
+        "height": 882
+      },
+      "placement": {
+        "left": 12,
+        "top": 45
+      },
+      "exportSize": [
+        256,
+        256
+      ],
+      "sourceSha256": "7765a0e2320e1441b66d11b268a53c1c121b9641a2d214b76034b27cf64cc62b",
+      "sha256": "2373ed7a28b85411ec11b643398d897fa40e5c4c30220e613c6204fba6ef35ef"
+    }
+  ]
+}

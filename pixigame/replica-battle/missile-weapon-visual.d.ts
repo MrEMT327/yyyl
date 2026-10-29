@@ -1,0 +1,21 @@
+import type Phaser from 'phaser';
+import type { Effect, Projectile } from './kernel/model';
+import type { OriginalEffectSprite } from './kernel/original-effects';
+import type { nativeWeaponBody } from './weapon-visual-quality.js';
+import type { BodyVisualScene, HitVisualEffect, ImageVisualScene, ScreenPoint, VisualLoaderScene, VisualObjectMap } from './weapon-visual-types';
+
+export const MISSILE_WEAPON_TRIAL_ENABLED: true;
+export const MISSILE_BODY_TEXTURE: 'pathogenic-missile-body-trial';
+export const MISSILE_EXPLOSION_TEXTURE: 'pathogenic-missile-explosion-trial';
+type MissileBody = Pick<Projectile, 'owner' | 'familyId' | 'modelId' | 'beam'>;
+export function isMissileBodyVisual(projectile: MissileBody): boolean;
+export function markMissileExplosionVisual(effect: Pick<Effect, 'modelId'>, projectile: Pick<Projectile, 'owner'> & Partial<Pick<Projectile, 'familyId'>>): void;
+export function missileExplosionFrame(effect: Pick<Effect, 'age' | 'duration'>): number | null;
+export function preloadMissileWeaponVisual(scene: VisualLoaderScene): void;
+export function drawTrialMissileBodyVisual(scene: BodyVisualScene, projectile: Projectile, live: Set<string>): boolean;
+export function drawTrialMissileExplosionVisual(scene: ImageVisualScene, effect: HitVisualEffect, point: ScreenPoint, px: number, objects: VisualObjectMap, live: Set<string>): boolean;
+export const drawMissileBodyVisual: typeof nativeWeaponBody;
+export function drawMissileExplosionVisual(scene: ImageVisualScene, effect: HitVisualEffect, point: ScreenPoint, px: number, objects: VisualObjectMap, live: Set<string>): false;
+export function isBasicMissileBody(projectile: MissileBody & Pick<Projectile, 'visualHidden' | 'scale'>): boolean;
+export function replaceMissileBodySamples(sprites: OriginalEffectSprite[], age: number, enabled: boolean, available: boolean): OriginalEffectSprite[];
+export function syncMissileBodyHue(view: Pick<Phaser.GameObjects.Image, 'postFX' | 'getData' | 'setData'>, texture: string): void;

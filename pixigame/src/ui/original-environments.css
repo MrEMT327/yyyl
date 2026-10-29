@@ -1,0 +1,26 @@
+/* Original carrier environments. PSD frames, subjects and input geometry stay separate. */
+#gui-casual-lobby {
+  --project-hangar-image:url('/art/project-original-environments-v1/launch-hangar-v1.webp');
+  --project-armory-image:url('/art/project-original-environments-v1/armory-bay-v1.webp');
+  --project-ready-room-image:url('/art/project-original-environments-v1/pilot-ready-room-v1.webp');
+  --project-maintenance-image:url('/art/project-original-environments-v1/maintenance-bay-v1.webp');
+  --project-lab-image:url('/art/project-original-environments-v1/research-lab-v1.webp');
+  --project-logistics-image:url('/art/project-original-environments-v1/logistics-bay-v1.webp');
+  --project-patrol-image:url('/art/project-original-environments-v1/patrol-airway-v1.webp');
+  --project-list-background:repeating-linear-gradient(110deg,#7497ad06 0 1px,transparent 1px 12px),linear-gradient(160deg,#1c3041,#101e2c);
+  --project-heading-background:linear-gradient(180deg,#526d80,#2a4356 80%,#1e3344);
+  --project-header-background:#182126 url('/art/project-header-v1/header-metal.png') center/100% 100% no-repeat;
+  --project-lab-background:linear-gradient(#0a1826b8,#0a1826db),var(--project-lab-image) center/cover no-repeat;
+  --project-store-background:linear-gradient(#0a1826c9,#0a1826e3),var(--project-logistics-image) center/cover no-repeat;
+  --project-footer-background:linear-gradient(#294354,#162c3e);
+}
+#gui-casual-lobby :is(.wc-footer,.ws-footer) {background:var(--project-footer-background)}
+#gui-casual-lobby.equipment-reference .pl-header {background:var(--project-header-background)!important}
+#gui-casual-lobby .dc-event {background:linear-gradient(90deg,#112a3ee8,#112a3ea8),var(--event-environment) center/cover no-repeat;border-color:#7f9bae;color:#edf6fb}
+#gui-casual-lobby .dc-event:nth-child(1) {--event-environment:var(--project-ready-room-image)}
+#gui-casual-lobby .dc-event:nth-child(2) {--event-environment:var(--project-lab-image)}
+#gui-casual-lobby .dc-event:nth-child(3) {--event-environment:var(--project-patrol-image)}
+#gui-casual-lobby .dc-event .dc-event-art {background:#c4d8e8dd;border:1px solid #8da9bd}
+#gui-casual-lobby .dc-event-copy h3 {color:#edf6fb}
+#gui-casual-lobby .dc-event-copy :is(p,small) {color:#c7dbe9}
+#gui-casual-lobby .dc-event-copy small.is-ready {color:#a3e4c0}

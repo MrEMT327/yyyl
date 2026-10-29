@@ -1,0 +1,154 @@
+/* Landing-page controls only. Keep authored CTA art, page geometry, card
+   quality frames, navigation and modal/subpage controls owned by their skins. */
+.peripheral-lobby.reference-layout.lobby-theme[data-subpage=""]:is([data-tab="battle"],[data-tab="assembly"],[data-tab="supply"],[data-tab="research"],[data-tab="shop"]) {
+  --lobby-control-surface: #142b3d;
+  --lobby-control-edge: #476277;
+  --lobby-control-disabled: #253848;
+  --lobby-control-disabled-edge: #405768;
+}
+
+/* The blue and yellow source images remain the primary action material.
+   Live button text needs only a one-pixel downward shadow. */
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="assembly"][data-subpage=""] .eq-page :is(.eq-workshop-button,.eq-workshop-button>strong),
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page :is(.rc-draw,.rc-draw>strong,.rc-draw>span,.rc-draw>span>b),
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page :is(.research-awaken,.research-awaken>strong,.research-awaken>span,.research-awaken>small,.research-awaken>span>b,.research-awaken>span>i),
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page :is(.shop-button,.shop-button-label,.shop-button-cost) {
+  text-shadow: 0 1px var(--ui-ink);
+  -webkit-text-stroke: 0;
+}
+
+/* Quiet utility controls share one dark face and one thin edge. Their
+   existing widths, positions and larger hit targets remain page-owned. */
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page :is(.rc-arrow,.rc-history,.rc-feature-name>button),
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-hero-caption,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="assembly"][data-subpage=""] .eq-page .eq-select select {
+  min-height: 44px;
+  border: 1px solid var(--lobby-control-edge);
+  border-radius: 3px;
+  background: var(--lobby-control-surface);
+  box-shadow: none;
+  clip-path: none;
+  color: var(--ui-text);
+  font-weight: 700;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-arrow {
+  min-width: 44px;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-arrow>.rc-icon {
+  filter: brightness(0) invert(1);
+  opacity: .85;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-arrow:disabled {
+  background: var(--lobby-control-disabled);
+  border-color: var(--lobby-control-disabled-edge);
+  filter: none;
+  opacity: 1;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-arrow:disabled>.rc-icon {
+  opacity: .4;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-history>span,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-hero-caption>strong {
+  color: var(--ui-text);
+  font-weight: 700;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+/* Recruitment type is a selection tab. Explicit important overrides are
+   required because .pl-button otherwise applies a full CTA image. */
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-pool-tab {
+  min-height: 44px;
+  border: 0 !important;
+  border-bottom: 2px solid transparent !important;
+  border-radius: 0 !important;
+  background: var(--ui-panel-deep) !important;
+  box-shadow: none !important;
+  color: var(--ui-muted) !important;
+  font-weight: 700 !important;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+  filter: none !important;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-pool-tab.is-active {
+  border-bottom-color: var(--ui-yellow) !important;
+  background: #1b2e3b !important;
+  color: var(--ui-yellow) !important;
+}
+
+/* Retain the authored silhouette and bevel when disabled. Filter only a
+   separate art layer, leaving resource icons and shortage text readable. */
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-button:disabled,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-draw:disabled {
+  --lobby-disabled-button-art: var(--ui-button-blue);
+  position: relative;
+  isolation: isolate;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: var(--ui-muted) !important;
+  filter: none !important;
+  opacity: 1;
+  text-shadow: none;
+  cursor: not-allowed;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken.is-ace:disabled,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-button.is-yellow:disabled,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-draw.is-ten:disabled {
+  --lobby-disabled-button-art: var(--ui-button-yellow);
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled::before,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-button:disabled::before,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-draw:disabled::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--lobby-disabled-button-art) center / 100% 100% no-repeat;
+  filter: saturate(.18) brightness(.55);
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled>:is(strong,span,small),
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled>span>i,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-button:disabled>:is(.shop-button-label,.shop-button-cost),
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-draw:disabled>:is(strong,span) {
+  color: var(--ui-muted);
+  text-shadow: none;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken>small {
+  color: var(--ui-text);
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled>small {
+  color: var(--ui-muted);
+  text-shadow: none;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled>span {
+  background: transparent;
+}
+
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken:disabled>.is-short>b,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"][data-subpage=""] .rc-page .rc-draw:disabled>span>b,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-button:disabled:is([title*="不足"],[data-action="shopWeaponOrder"])>.shop-button-label,
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="shop"][data-subpage=""] .shop-page .shop-button:disabled[data-action="shopWeaponOrder"]>.shop-button-cost {
+  color: var(--ui-warning);
+  text-shadow: none;
+}
+
+/* Battle shortcut and patrol/backpack labels are baked into their source
+   artwork. Only the existing live activity label is safe to adjust here. */

@@ -1,0 +1,367 @@
+{
+  "version": 2,
+  "generator": "built-in image_gen",
+  "sourceSha256": "d083af7063a61df9649d15b08b873678179c719c5a445679d0a5931a62fa6b3d",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "outputSize": [
+    256,
+    256
+  ],
+  "prompt": "Extract the approved simplified equipment board into 25 transparent icons; preserve the five family palettes, silhouettes and five equipment slots. No text, frames, background or new gameplay.",
+  "normalization": "Connected alpha components, two-pixel antialias margin, aspect-preserving fit in a 224-pixel box with 16-pixel transparent padding.",
+  "assets": [
+    {
+      "family": 4200100,
+      "slot": 2,
+      "part": "fire-control",
+      "series": "航卫",
+      "file": "4200100.webp",
+      "sha256": "cb5c430472581742050b28456d00ed50faec36ed6aa1c10fbcc5f030feeadceb",
+      "sourceBounds": {
+        "left": 7,
+        "top": 56,
+        "width": 247,
+        "height": 215
+      }
+    },
+    {
+      "family": 4200200,
+      "slot": 2,
+      "part": "fire-control",
+      "series": "猎隼",
+      "file": "4200200.webp",
+      "sha256": "96acb87fee1b666bdd6ac359a6add6dc160d5c7f1bbb090e69dfd9555ce0550b",
+      "sourceBounds": {
+        "left": 286,
+        "top": 55,
+        "width": 232,
+        "height": 206
+      }
+    },
+    {
+      "family": 4200300,
+      "slot": 2,
+      "part": "fire-control",
+      "series": "雷霆",
+      "file": "4200300.webp",
+      "sha256": "2d9c1f976f35ee079ac265fe68b09c3ab97e4596c6e8da5ad73edde70906d3ce",
+      "sourceBounds": {
+        "left": 531,
+        "top": 61,
+        "width": 233,
+        "height": 209
+      }
+    },
+    {
+      "family": 4200400,
+      "slot": 2,
+      "part": "fire-control",
+      "series": "星盾",
+      "file": "4200400.webp",
+      "sha256": "26326d64f4f45dada87cd6abd16d8db3078468d605f4b8db88c26bf305bb7d12",
+      "sourceBounds": {
+        "left": 779,
+        "top": 57,
+        "width": 224,
+        "height": 220
+      }
+    },
+    {
+      "family": 4210100,
+      "slot": 2,
+      "part": "fire-control",
+      "series": "圣环",
+      "file": "4210100.webp",
+      "sha256": "32fe69f6e0f088af0fac73aa16fc9fd7c5f07026aae6509b7570c82a83c5ec5a",
+      "sourceBounds": {
+        "left": 1029,
+        "top": 55,
+        "width": 215,
+        "height": 227
+      }
+    },
+    {
+      "family": 4100100,
+      "slot": 1,
+      "part": "cockpit",
+      "series": "航卫",
+      "file": "4100100.webp",
+      "sha256": "02f30a9580dd48dac2444988e01e0f93fa3d1e791e878fc0fb814b3b1297b295",
+      "sourceBounds": {
+        "left": 14,
+        "top": 282,
+        "width": 251,
+        "height": 240
+      }
+    },
+    {
+      "family": 4100200,
+      "slot": 1,
+      "part": "cockpit",
+      "series": "猎隼",
+      "file": "4100200.webp",
+      "sha256": "352149d79a6ef32408478410ed74ff62af28d539bdf5249b34a3c9dd34bd11ea",
+      "sourceBounds": {
+        "left": 278,
+        "top": 285,
+        "width": 242,
+        "height": 232
+      }
+    },
+    {
+      "family": 4100300,
+      "slot": 1,
+      "part": "cockpit",
+      "series": "雷霆",
+      "file": "4100300.webp",
+      "sha256": "971cbecdfaa0ff14b7f8ba85c1a6bc7f422f489ce3a2e5c1d9d23c008a95d860",
+      "sourceBounds": {
+        "left": 529,
+        "top": 287,
+        "width": 236,
+        "height": 232
+      }
+    },
+    {
+      "family": 4100400,
+      "slot": 1,
+      "part": "cockpit",
+      "series": "星盾",
+      "file": "4100400.webp",
+      "sha256": "f4fe42cf698f69a52e072915139a8df7ea6ab3160436d190cdee0c2a23a066d2",
+      "sourceBounds": {
+        "left": 762,
+        "top": 282,
+        "width": 241,
+        "height": 243
+      }
+    },
+    {
+      "family": 4110100,
+      "slot": 1,
+      "part": "cockpit",
+      "series": "圣环",
+      "file": "4110100.webp",
+      "sha256": "9bbf101f700788c37fd32b0a171eb1045d673f9e1a335a0d8bf0ef0c47d01a71",
+      "sourceBounds": {
+        "left": 1016,
+        "top": 274,
+        "width": 230,
+        "height": 257
+      }
+    },
+    {
+      "family": 4400100,
+      "slot": 4,
+      "part": "amplifier",
+      "series": "航卫",
+      "file": "4400100.webp",
+      "sha256": "a8000d62c3958dd005a54e2c2375dc8158a252ec3be5f1dd787e46dd6e327ef4",
+      "sourceBounds": {
+        "left": 14,
+        "top": 537,
+        "width": 244,
+        "height": 213
+      }
+    },
+    {
+      "family": 4400200,
+      "slot": 4,
+      "part": "amplifier",
+      "series": "猎隼",
+      "file": "4400200.webp",
+      "sha256": "ad8a0c74c57678b2df3c42c85b4f50fd2d17d27184d405c2c1a7ad636710af55",
+      "sourceBounds": {
+        "left": 274,
+        "top": 530,
+        "width": 230,
+        "height": 219
+      }
+    },
+    {
+      "family": 4400300,
+      "slot": 4,
+      "part": "amplifier",
+      "series": "雷霆",
+      "file": "4400300.webp",
+      "sha256": "2bc8d0cd44a674b0f204bf6a6c5e32064fd301a29ce58f4ec07b8de526414492",
+      "sourceBounds": {
+        "left": 519,
+        "top": 534,
+        "width": 238,
+        "height": 217
+      }
+    },
+    {
+      "family": 4400400,
+      "slot": 4,
+      "part": "amplifier",
+      "series": "星盾",
+      "file": "4400400.webp",
+      "sha256": "116c02b8cb84e9816e45945c4b2324e054b130b771cbb358f85b638268cd20cc",
+      "sourceBounds": {
+        "left": 775,
+        "top": 536,
+        "width": 230,
+        "height": 216
+      }
+    },
+    {
+      "family": 4410100,
+      "slot": 4,
+      "part": "amplifier",
+      "series": "圣环",
+      "file": "4410100.webp",
+      "sha256": "90655aa36b386eae483d085cb3a4637150a22462f7402c2096ac92fc2ac6147f",
+      "sourceBounds": {
+        "left": 1018,
+        "top": 533,
+        "width": 220,
+        "height": 222
+      }
+    },
+    {
+      "family": 4300100,
+      "slot": 3,
+      "part": "fuselage",
+      "series": "航卫",
+      "file": "4300100.webp",
+      "sha256": "11ed7b1fbdf0a88a0c1090f2f640713db1c8a32ae21a2a251019f6af76a045d8",
+      "sourceBounds": {
+        "left": 14,
+        "top": 757,
+        "width": 250,
+        "height": 207
+      }
+    },
+    {
+      "family": 4300200,
+      "slot": 3,
+      "part": "fuselage",
+      "series": "猎隼",
+      "file": "4300200.webp",
+      "sha256": "9ec5e1cb925c0b313c986429d9aef8d29b80a8a7c6f00cffe571347f4677f08c",
+      "sourceBounds": {
+        "left": 270,
+        "top": 758,
+        "width": 247,
+        "height": 212
+      }
+    },
+    {
+      "family": 4300300,
+      "slot": 3,
+      "part": "fuselage",
+      "series": "雷霆",
+      "file": "4300300.webp",
+      "sha256": "c12e9835bf33f8de201e2b8f72f53f22a298eab7e705a55b05fd8937fdf07678",
+      "sourceBounds": {
+        "left": 526,
+        "top": 757,
+        "width": 240,
+        "height": 211
+      }
+    },
+    {
+      "family": 4300400,
+      "slot": 3,
+      "part": "fuselage",
+      "series": "星盾",
+      "file": "4300400.webp",
+      "sha256": "32d4192404b8021135a893a714962dbcb929ee056310c2453990c33064ddd1e6",
+      "sourceBounds": {
+        "left": 765,
+        "top": 753,
+        "width": 242,
+        "height": 215
+      }
+    },
+    {
+      "family": 4310100,
+      "slot": 3,
+      "part": "fuselage",
+      "series": "圣环",
+      "file": "4310100.webp",
+      "sha256": "ef724c012731d29f161f54109e24acfe61c302128c6a805fa407f046aeb7416b",
+      "sourceBounds": {
+        "left": 1011,
+        "top": 753,
+        "width": 234,
+        "height": 219
+      }
+    },
+    {
+      "family": 4500100,
+      "slot": 5,
+      "part": "engine-armor",
+      "series": "航卫",
+      "file": "4500100.webp",
+      "sha256": "247432da982691611b97cebed3fdb37bd1d0de2fcedffd0e7ddb8bd2d6d9604e",
+      "sourceBounds": {
+        "left": 21,
+        "top": 982,
+        "width": 238,
+        "height": 210
+      }
+    },
+    {
+      "family": 4500200,
+      "slot": 5,
+      "part": "engine-armor",
+      "series": "猎隼",
+      "file": "4500200.webp",
+      "sha256": "24c436ef761994aca8eea79eab4463e20b23864f2b10692b92bd82ac92f47045",
+      "sourceBounds": {
+        "left": 270,
+        "top": 982,
+        "width": 244,
+        "height": 217
+      }
+    },
+    {
+      "family": 4500300,
+      "slot": 5,
+      "part": "engine-armor",
+      "series": "雷霆",
+      "file": "4500300.webp",
+      "sha256": "50f80c296161a82064d9a0b06df9dc8fe9f6b4270015df942e8f7fe4cf7f6f19",
+      "sourceBounds": {
+        "left": 526,
+        "top": 984,
+        "width": 234,
+        "height": 216
+      }
+    },
+    {
+      "family": 4500400,
+      "slot": 5,
+      "part": "engine-armor",
+      "series": "星盾",
+      "file": "4500400.webp",
+      "sha256": "bec4675445aa4f2a91f6446effe0944d1cca18a63e4e0b52708cc5fff6093457",
+      "sourceBounds": {
+        "left": 765,
+        "top": 985,
+        "width": 237,
+        "height": 213
+      }
+    },
+    {
+      "family": 4510100,
+      "slot": 5,
+      "part": "engine-armor",
+      "series": "圣环",
+      "file": "4510100.webp",
+      "sha256": "b6b759df85ef1cfb7358f268a780d1daedc246c1ecf95e827b96534b51bb1fcc",
+      "sourceBounds": {
+        "left": 1012,
+        "top": 977,
+        "width": 233,
+        "height": 228
+      }
+    }
+  ]
+}

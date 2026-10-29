@@ -1,0 +1,884 @@
+{
+  "1": {
+    "icon": null
+  },
+  "2": {
+    "icon": null
+  },
+  "3": {
+    "icon": "assets/loadout-ui/Currency_HeroExp.png"
+  },
+  "4": {
+    "icon": null
+  },
+  "5": {
+    "icon": null
+  },
+  "6": {
+    "icon": null
+  },
+  "7": {
+    "icon": null
+  },
+  "8": {
+    "icon": null
+  },
+  "9": {
+    "icon": null
+  },
+  "101": {
+    "icon": null
+  },
+  "102": {
+    "icon": null
+  },
+  "103": {
+    "icon": null
+  },
+  "105": {
+    "icon": null
+  },
+  "106": {
+    "icon": null
+  },
+  "107": {
+    "icon": null
+  },
+  "108": {
+    "icon": null
+  },
+  "109": {
+    "icon": null
+  },
+  "110": {
+    "icon": null
+  },
+  "111": {
+    "icon": null
+  },
+  "112": {
+    "icon": null
+  },
+  "113": {
+    "icon": null
+  },
+  "114": {
+    "icon": null
+  },
+  "115": {
+    "icon": null
+  },
+  "116": {
+    "icon": null
+  },
+  "117": {
+    "icon": null
+  },
+  "118": {
+    "icon": null
+  },
+  "120": {
+    "icon": null
+  },
+  "121": {
+    "icon": null
+  },
+  "123": {
+    "icon": null
+  },
+  "124": {
+    "icon": null
+  },
+  "125": {
+    "icon": null
+  },
+  "126": {
+    "icon": null
+  },
+  "127": {
+    "icon": null
+  },
+  "128": {
+    "icon": null
+  },
+  "129": {
+    "icon": null
+  },
+  "131": {
+    "icon": null
+  },
+  "132": {
+    "icon": null
+  },
+  "133": {
+    "icon": null
+  },
+  "134": {
+    "icon": null
+  },
+  "135": {
+    "icon": null
+  },
+  "136": {
+    "icon": null
+  },
+  "137": {
+    "icon": null
+  },
+  "138": {
+    "icon": null
+  },
+  "139": {
+    "icon": null
+  },
+  "140": {
+    "icon": null
+  },
+  "141": {
+    "icon": null
+  },
+  "142": {
+    "icon": null
+  },
+  "143": {
+    "icon": null
+  },
+  "144": {
+    "icon": null
+  },
+  "145": {
+    "icon": null
+  },
+  "146": {
+    "icon": null
+  },
+  "147": {
+    "icon": null
+  },
+  "148": {
+    "icon": null
+  },
+  "149": {
+    "icon": null
+  },
+  "150": {
+    "icon": null
+  },
+  "151": {
+    "icon": null
+  },
+  "152": {
+    "icon": null
+  },
+  "153": {
+    "icon": null
+  },
+  "154": {
+    "icon": null
+  },
+  "155": {
+    "icon": null
+  },
+  "156": {
+    "icon": null
+  },
+  "157": {
+    "icon": null
+  },
+  "701": {
+    "icon": null
+  },
+  "702": {
+    "icon": null
+  },
+  "703": {
+    "icon": null
+  },
+  "704": {
+    "icon": null
+  },
+  "705": {
+    "icon": null
+  },
+  "706": {
+    "icon": null
+  },
+  "707": {
+    "icon": null
+  },
+  "708": {
+    "icon": null
+  },
+  "709": {
+    "icon": null
+  },
+  "710": {
+    "icon": null
+  },
+  "711": {
+    "icon": null
+  },
+  "712": {
+    "icon": null
+  },
+  "713": {
+    "icon": null
+  },
+  "714": {
+    "icon": null
+  },
+  "715": {
+    "icon": null
+  },
+  "716": {
+    "icon": null
+  },
+  "717": {
+    "icon": null
+  },
+  "718": {
+    "icon": null
+  },
+  "719": {
+    "icon": null
+  },
+  "720": {
+    "icon": null
+  },
+  "721": {
+    "icon": null
+  },
+  "722": {
+    "icon": null
+  },
+  "723": {
+    "icon": null
+  },
+  "724": {
+    "icon": null
+  },
+  "725": {
+    "icon": null
+  },
+  "726": {
+    "icon": null
+  },
+  "727": {
+    "icon": null
+  },
+  "728": {
+    "icon": null
+  },
+  "729": {
+    "icon": null
+  },
+  "730": {
+    "icon": null
+  },
+  "801": {
+    "icon": "assets/loadout/stg_skillLab_icon_08.png"
+  },
+  "802": {
+    "icon": "assets/loadout/stg_skillLab_icon_01.png"
+  },
+  "803": {
+    "icon": "assets/loadout/stg_skillLab_icon_07.png"
+  },
+  "804": {
+    "icon": "assets/loadout/stg_skillLab_icon_03.png"
+  },
+  "805": {
+    "icon": "assets/loadout/stg_skillLab_icon_02.png"
+  },
+  "806": {
+    "icon": "assets/loadout/stg_skillLab_icon_09.png"
+  },
+  "807": {
+    "icon": "assets/loadout/stg_skillLab_icon_04.png"
+  },
+  "808": {
+    "icon": "assets/loadout/stg_skillLab_icon_11.png"
+  },
+  "809": {
+    "icon": "assets/loadout/stg_skillLab_icon_05.png"
+  },
+  "810": {
+    "icon": "assets/loadout/stg_skillLab_icon_06.png"
+  },
+  "811": {
+    "icon": "assets/loadout/stg_skillLab_icon_10.png"
+  },
+  "812": {
+    "icon": null
+  },
+  "813": {
+    "icon": null
+  },
+  "814": {
+    "icon": null
+  },
+  "815": {
+    "icon": null
+  },
+  "816": {
+    "icon": null
+  },
+  "817": {
+    "icon": null
+  },
+  "818": {
+    "icon": null
+  },
+  "901": {
+    "icon": null
+  },
+  "902": {
+    "icon": null
+  },
+  "903": {
+    "icon": null
+  },
+  "904": {
+    "icon": null
+  },
+  "905": {
+    "icon": null
+  },
+  "906": {
+    "icon": null
+  },
+  "907": {
+    "icon": null
+  },
+  "908": {
+    "icon": null
+  },
+  "909": {
+    "icon": null
+  },
+  "910": {
+    "icon": null
+  },
+  "911": {
+    "icon": null
+  },
+  "912": {
+    "icon": null
+  },
+  "913": {
+    "icon": null
+  },
+  "914": {
+    "icon": null
+  },
+  "915": {
+    "icon": null
+  },
+  "916": {
+    "icon": null
+  },
+  "917": {
+    "icon": null
+  },
+  "918": {
+    "icon": null
+  },
+  "919": {
+    "icon": null
+  },
+  "920": {
+    "icon": null
+  },
+  "921": {
+    "icon": null
+  },
+  "922": {
+    "icon": null
+  },
+  "923": {
+    "icon": null
+  },
+  "924": {
+    "icon": null
+  },
+  "925": {
+    "icon": null
+  },
+  "926": {
+    "icon": null
+  },
+  "927": {
+    "icon": null
+  },
+  "928": {
+    "icon": null
+  },
+  "929": {
+    "icon": null
+  },
+  "930": {
+    "icon": null
+  },
+  "931": {
+    "icon": null
+  },
+  "932": {
+    "icon": null
+  },
+  "933": {
+    "icon": null
+  },
+  "934": {
+    "icon": null
+  },
+  "935": {
+    "icon": null
+  },
+  "936": {
+    "icon": null
+  },
+  "937": {
+    "icon": null
+  },
+  "938": {
+    "icon": null
+  },
+  "939": {
+    "icon": null
+  },
+  "940": {
+    "icon": null
+  },
+  "941": {
+    "icon": null
+  },
+  "942": {
+    "icon": null
+  },
+  "943": {
+    "icon": null
+  },
+  "944": {
+    "icon": null
+  },
+  "945": {
+    "icon": null
+  },
+  "946": {
+    "icon": null
+  },
+  "947": {
+    "icon": null
+  },
+  "948": {
+    "icon": null
+  },
+  "949": {
+    "icon": null
+  },
+  "950": {
+    "icon": null
+  },
+  "951": {
+    "icon": null
+  },
+  "952": {
+    "icon": null
+  },
+  "953": {
+    "icon": null
+  },
+  "954": {
+    "icon": null
+  },
+  "955": {
+    "icon": null
+  },
+  "956": {
+    "icon": null
+  },
+  "957": {
+    "icon": null
+  },
+  "958": {
+    "icon": null
+  },
+  "959": {
+    "icon": null
+  },
+  "960": {
+    "icon": null
+  },
+  "961": {
+    "icon": null
+  },
+  "962": {
+    "icon": null
+  },
+  "963": {
+    "icon": null
+  },
+  "964": {
+    "icon": null
+  },
+  "965": {
+    "icon": null
+  },
+  "966": {
+    "icon": null
+  },
+  "967": {
+    "icon": null
+  },
+  "968": {
+    "icon": null
+  },
+  "969": {
+    "icon": null
+  },
+  "970": {
+    "icon": null
+  },
+  "971": {
+    "icon": null
+  },
+  "972": {
+    "icon": null
+  },
+  "973": {
+    "icon": null
+  },
+  "974": {
+    "icon": null
+  },
+  "975": {
+    "icon": null
+  },
+  "976": {
+    "icon": null
+  },
+  "977": {
+    "icon": null
+  },
+  "978": {
+    "icon": null
+  },
+  "979": {
+    "icon": null
+  },
+  "980": {
+    "icon": null
+  },
+  "981": {
+    "icon": null
+  },
+  "982": {
+    "icon": null
+  },
+  "983": {
+    "icon": null
+  },
+  "984": {
+    "icon": null
+  },
+  "985": {
+    "icon": null
+  },
+  "986": {
+    "icon": null
+  },
+  "987": {
+    "icon": null
+  },
+  "988": {
+    "icon": null
+  },
+  "989": {
+    "icon": null
+  },
+  "990": {
+    "icon": null
+  },
+  "991": {
+    "icon": null
+  },
+  "992": {
+    "icon": null
+  },
+  "993": {
+    "icon": null
+  },
+  "994": {
+    "icon": null
+  },
+  "1001": {
+    "icon": null
+  },
+  "1002": {
+    "icon": null
+  },
+  "1003": {
+    "icon": null
+  },
+  "1004": {
+    "icon": null
+  },
+  "1005": {
+    "icon": null
+  },
+  "1006": {
+    "icon": null
+  },
+  "1007": {
+    "icon": null
+  },
+  "1008": {
+    "icon": null
+  },
+  "1009": {
+    "icon": null
+  },
+  "1010": {
+    "icon": null
+  },
+  "1011": {
+    "icon": null
+  },
+  "1012": {
+    "icon": null
+  },
+  "1013": {
+    "icon": null
+  },
+  "1014": {
+    "icon": null
+  },
+  "1015": {
+    "icon": null
+  },
+  "1016": {
+    "icon": null
+  },
+  "1017": {
+    "icon": null
+  },
+  "1018": {
+    "icon": null
+  },
+  "1019": {
+    "icon": null
+  },
+  "1020": {
+    "icon": null
+  },
+  "1021": {
+    "icon": null
+  },
+  "1022": {
+    "icon": null
+  },
+  "1023": {
+    "icon": null
+  },
+  "1024": {
+    "icon": null
+  },
+  "2001": {
+    "icon": null
+  },
+  "2002": {
+    "icon": null
+  },
+  "2003": {
+    "icon": null
+  },
+  "2004": {
+    "icon": null
+  },
+  "2005": {
+    "icon": null
+  },
+  "2006": {
+    "icon": null
+  },
+  "2007": {
+    "icon": null
+  },
+  "2008": {
+    "icon": null
+  },
+  "2009": {
+    "icon": null
+  },
+  "2010": {
+    "icon": null
+  },
+  "2011": {
+    "icon": null
+  },
+  "2012": {
+    "icon": null
+  },
+  "2013": {
+    "icon": null
+  },
+  "2014": {
+    "icon": null
+  },
+  "2015": {
+    "icon": null
+  },
+  "2016": {
+    "icon": null
+  },
+  "2017": {
+    "icon": null
+  },
+  "2018": {
+    "icon": null
+  },
+  "2019": {
+    "icon": null
+  },
+  "3001": {
+    "icon": null
+  },
+  "3002": {
+    "icon": null
+  },
+  "3003": {
+    "icon": null
+  },
+  "3004": {
+    "icon": null
+  },
+  "3005": {
+    "icon": null
+  },
+  "3006": {
+    "icon": null
+  },
+  "3007": {
+    "icon": null
+  },
+  "3008": {
+    "icon": null
+  },
+  "3009": {
+    "icon": null
+  },
+  "3010": {
+    "icon": null
+  },
+  "3011": {
+    "icon": null
+  },
+  "3012": {
+    "icon": null
+  },
+  "3013": {
+    "icon": null
+  },
+  "3014": {
+    "icon": null
+  },
+  "3015": {
+    "icon": null
+  },
+  "3016": {
+    "icon": null
+  },
+  "3017": {
+    "icon": null
+  },
+  "3018": {
+    "icon": null
+  },
+  "3019": {
+    "icon": null
+  },
+  "3020": {
+    "icon": null
+  },
+  "3021": {
+    "icon": null
+  },
+  "3022": {
+    "icon": null
+  },
+  "3023": {
+    "icon": null
+  },
+  "3024": {
+    "icon": null
+  },
+  "3025": {
+    "icon": null
+  },
+  "3026": {
+    "icon": null
+  },
+  "3027": {
+    "icon": null
+  },
+  "3028": {
+    "icon": null
+  },
+  "31001": {
+    "icon": null
+  },
+  "31002": {
+    "icon": null
+  },
+  "31003": {
+    "icon": null
+  },
+  "31005": {
+    "icon": null
+  },
+  "31006": {
+    "icon": null
+  },
+  "31007": {
+    "icon": null
+  },
+  "31008": {
+    "icon": null
+  },
+  "43100": {
+    "icon": null
+  },
+  "43101": {
+    "icon": null
+  },
+  "43200": {
+    "icon": null
+  },
+  "43300": {
+    "icon": null
+  },
+  "43400": {
+    "icon": null
+  },
+  "43500": {
+    "icon": null
+  },
+  "43600": {
+    "icon": null
+  },
+  "43700": {
+    "icon": null
+  },
+  "43800": {
+    "icon": null
+  },
+  "43900": {
+    "icon": null
+  },
+  "44000": {
+    "icon": null
+  },
+  "44100": {
+    "icon": null
+  }
+}

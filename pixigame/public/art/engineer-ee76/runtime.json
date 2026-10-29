@@ -1,0 +1,72 @@
+{
+  "schema": "engineer-ee76-video-v1",
+  "source": {
+    "repository": "Tlwkukuma/live2d-character-assets",
+    "commit": "71f25c29655f2c414e88e5b6353da5d15cb80566",
+    "release": "releases/20261019-engineer-ee76-core",
+    "engine": "Godot 4.6.3 Compatibility",
+    "class": "thigh_knee_root_character_v23.gd",
+    "adaptation": 2,
+    "idleRefinement": {
+      "recipe": "art-source/engineer-ee76/idle-refinement-v1/recipe.json",
+      "sha256": "c4a57e8d27069cadb5ed0306f1706757ec262580981a2aa8019554e54913aef2",
+      "operation": "one-sided horizontal contact field at common display height; native vertical motion and knee anchors fixed; idle only"
+    },
+    "clickRefinement": {
+      "recipe": "art-source/engineer-ee76/style-v1/recipe.json",
+      "sha256": "7e5102beeb632f85e74a1726a90c2b08f81968b0e85129ae704e15f5e5cf259d",
+      "operation": "Reference-inspired registered material with cleaned face, neck and shirt shading; preserve approved idle contact, remove translucent hand swaps, and close inner-thigh and knee contact gaps with at most 3.5 pixels of local support."
+    },
+    "contactRefinement": {
+      "recipe": "art-source/engineer-ee76/inner-contact-v2/recipe.json",
+      "sha256": "95b99ef928fb14b2bf9e7ab56acf514724fec400bb883a9f2a2b57a45cd69e5a",
+      "operation": "Correct the shorts hem ownership and reconstruct a continuous front-thigh contact edge; sample clean same-leg skin instead of detached old hem shadows. Preserve existing garment ownership, animation trajectories and unrelated body layers."
+    },
+    "thighPinholeRepair": {
+      "recipe": "art-source/engineer-ee76/thigh-pinhole-seal-v3/recipe.json",
+      "sha256": "085e487e32c7320ed3e72f803f6f8c67ee020718505f382b2677184ed69c039c",
+      "operation": "Fill isolated transparent pinholes inside the moving screen-right thigh using opaque same-skin neighboring pixels, while preserving the shorts, thigh silhouette, and authored motion."
+    },
+    "outerHemRepair": {
+      "recipe": "art-source/engineer-ee76/outer-hem-v4/recipe.json",
+      "sha256": "bae4a2f714805a256735451104b11829435ce089a470f26c7ad2da5aa6535700",
+      "operation": "Correct the outer shorts hem ownership, support the upper thigh locally through the motion, clean its old reddish hem line, and close isolated enclosed pinholes on the opposite thigh."
+    },
+    "innerHemRefinement": {
+      "recipe": "art-source/engineer-ee76/inner-hem-v5/recipe.json",
+      "sha256": "23acb936161207cae5895ab259fcc14eeaf10aa6cfe3964c0bf05f5a1063d11b",
+      "operation": "Reconstruct the inner shorts opening using the previously generated clean material, eliminate the visible white wedge and old reddish double edge, and soften the moving leg contact shadow for both idle and click."
+    }
+  },
+  "representation": "native rendered colour+alpha video, reconstructed in WebGL; not Cubism MOC",
+  "width": 1200,
+  "height": 1536,
+  "fps": 30,
+  "packedWidth": 2400,
+  "channelLayout": "left RGB / right alpha",
+  "clips": {
+    "idle": {
+      "file": "idle-inner-hem-v5-packed.mp4",
+      "frames": 240,
+      "duration": 8,
+      "loop": true,
+      "end": "loop",
+      "bytes": 3811393,
+      "sha256": "ada64084fcd3c8208a907d8ae22689462c383a5ce728ab8cc9be630cbd242824",
+      "decodedFrames": 240
+    },
+    "touch_core": {
+      "file": "touch_core-inner-hem-v5-packed.mp4",
+      "frames": 186,
+      "duration": 6.2,
+      "loop": false,
+      "end": "hold-last-frame",
+      "bytes": 3842876,
+      "sha256": "0bf1c23c301ec3b2a8f4d89fe39f592e7a86fa09aa63b7be3beb455d3766bef4",
+      "decodedFrames": 186
+    }
+  },
+  "interiorHoleRepair": "blouse-v1",
+  "lobbyMotion": "idle",
+  "entryReturnBridgeIncluded": false
+}

@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "style": "Project PSD blue-gray metal, chamfered utility controls",
+  "source": "Original editable SVG assets authored for equipment controls; not extracted from the reference game",
+  "labels": "Live text; no baked labels",
+  "assets": [
+    {
+      "id": "button-normal",
+      "svg": "button-normal.svg",
+      "png": "button-normal.png",
+      "width": 288,
+      "height": 96,
+      "slice": 24,
+      "sha256": "a5e4aa48f7443a714c8c5d540e11b79a2f26a387615a72bba6d8c03f03e2538f"
+    },
+    {
+      "id": "button-selected",
+      "svg": "button-selected.svg",
+      "png": "button-selected.png",
+      "width": 288,
+      "height": 96,
+      "slice": 24,
+      "sha256": "101d3555e156b16054231ae37567c679058a16058cc0b96bc4dfceb86644b2fe"
+    },
+    {
+      "id": "button-pressed",
+      "svg": "button-pressed.svg",
+      "png": "button-pressed.png",
+      "width": 288,
+      "height": 96,
+      "slice": 24,
+      "sha256": "a1319e8e11fc33d202d0ab1c92ca3cac2e8b30dc4ca7e5b479dac82af62bd70c"
+    },
+    {
+      "id": "button-disabled",
+      "svg": "button-disabled.svg",
+      "png": "button-disabled.png",
+      "width": 288,
+      "height": 96,
+      "slice": 24,
+      "sha256": "3c1816d8752ac7585d790ea4a06df751025069203ad7594f09df00242bea93a1"
+    },
+    {
+      "id": "menu-panel",
+      "svg": "menu-panel.svg",
+      "png": "menu-panel.png",
+      "width": 320,
+      "height": 320,
+      "slice": 24,
+      "sha256": "f9028d6b64d136ccf77d1be81bb6d02fd4b9a3e3c21044c8386333fb295f67e4"
+    },
+    {
+      "id": "option-selected",
+      "svg": "option-selected.svg",
+      "png": "option-selected.png",
+      "width": 288,
+      "height": 88,
+      "slice": 12,
+      "sha256": "dffbc24b572792f2ec03d753cf502cb1070aa48f6caaf834db7804ed64e79bce"
+    },
+    {
+      "id": "chevron-down",
+      "svg": "chevron-down.svg",
+      "png": "chevron-down.png",
+      "width": 24,
+      "height": 24,
+      "slice": null,
+      "sha256": "ca6125ffede5d1c1488256a80f305376c85231f4f4145fbbb219909ab26b687a"
+    },
+    {
+      "id": "check",
+      "svg": "check.svg",
+      "png": "check.png",
+      "width": 24,
+      "height": 24,
+      "slice": null,
+      "sha256": "7e9d0011c6e2a3fff133aa1e14af6a650a56b22b47a747452e62ab1b33c8fd62"
+    }
+  ]
+}

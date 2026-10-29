@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "source": "Original project vector icon matching blue-gray PSD controls",
+  "icon": {
+    "svg": "history.svg",
+    "png": "history.png",
+    "width": 64,
+    "height": 64,
+    "displaySize": 20
+  },
+  "button": {
+    "normal": "../equipment-controls-v1/button-normal.png",
+    "pressed": "../equipment-controls-v1/button-pressed.png",
+    "slice": 24,
+    "borderWidth": 11,
+    "displayWidth": 84,
+    "displayHeight": 44
+  },
+  "labels": "Live text"
+}

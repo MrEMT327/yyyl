@@ -1,0 +1,22 @@
+{
+  "gold": {
+    "file": "gold-spin-v1.png",
+    "frames": 30,
+    "frameSize": [
+      128,
+      128
+    ],
+    "columns": 6,
+    "fps": 22,
+    "source": "https://free-game-assets.itch.io/free-game-coins-sprite",
+    "license": "https://craftpix.net/file-licenses/",
+    "processing": "Shared alpha crop, proportional resize, 4px padding; original frame order preserved."
+  },
+  "medkit": {
+    "file": "medkit-white-green-v1.png",
+    "source": "https://poly.pizza/m/cc9Kueieyl",
+    "author": "Quaternius",
+    "license": "CC0-1.0",
+    "processing": "Transparent render of Health.glb, alpha-trimmed and proportionally resized with 4px padding."
+  }
+}

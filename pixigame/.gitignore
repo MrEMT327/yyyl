@@ -1,0 +1,11 @@
+.tmp-business-ppt/
+
+# Local release packages.
+/release/
+/dist-economy/
+
+# Exclude the WeChat project as requested.
+/wechat/
+
+# Runtime leaderboard written by server/lan-server.js.
+/data/leaderboard.json

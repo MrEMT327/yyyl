@@ -1,0 +1,323 @@
+{
+  "status": "PASS_ALL_15_ORIGINAL_MOTIONS_NORMALIZED_IN_MEMORY",
+  "motion_count": 15,
+  "source_files_modified": false,
+  "curves_and_events_unchanged": true,
+  "reports": [
+    {
+      "source_sha256": "257d4a2ba51769f641931a3f2acbfe6726268185b1b98e06cec5423f64ab3e99",
+      "normalized_sha256": "7056f5f74df4550d64ca4e8eb8c6d541f6ab9d4d18fe19a8cdbba228745bf920",
+      "original_counts": {
+        "CurveCount": 319,
+        "TotalSegmentCount": 2020,
+        "TotalPointCount": 2250
+      },
+      "normalized_counts": {
+        "CurveCount": 319,
+        "TotalSegmentCount": 2019,
+        "TotalPointCount": 2568
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": true,
+      "duration": 7.0,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/complete.motion3.json"
+    },
+    {
+      "source_sha256": "303ce199af3fbe4bf999235b56ac37f33d0136bdf3aeb00da10838a6f94e5538",
+      "normalized_sha256": "09cdd238d96afa226ed1e3b63f860e15c5c77493214adca222d35dc86437fcf3",
+      "original_counts": {
+        "CurveCount": 7,
+        "TotalSegmentCount": 61,
+        "TotalPointCount": 67
+      },
+      "normalized_counts": {
+        "CurveCount": 7,
+        "TotalSegmentCount": 60,
+        "TotalPointCount": 73
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 11.333,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/effect.motion3.json"
+    },
+    {
+      "source_sha256": "6ef86f550d9ce1a2b5ea9f864a23cceb63f590210d5f91ab7a7fcd6e3aadc4c5",
+      "normalized_sha256": "35e6d90686b8bb3fab505a659bcf0d58216057eda67c35306fd7270af9b3050b",
+      "original_counts": {
+        "CurveCount": 314,
+        "TotalSegmentCount": 3025,
+        "TotalPointCount": 3287
+      },
+      "normalized_counts": {
+        "CurveCount": 314,
+        "TotalSegmentCount": 3024,
+        "TotalPointCount": 3600
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 14.8,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/home.motion3.json"
+    },
+    {
+      "source_sha256": "255190b42648116e5f86abc4d0eefc736fc2c26255e48c811f8d142ff7faf240",
+      "normalized_sha256": "738d68bf1ec48f29f0f775447f0aff3c54f3cecb7e9e64cfb8c96c651c9be850",
+      "original_counts": {
+        "CurveCount": 324,
+        "TotalSegmentCount": 2060,
+        "TotalPointCount": 2088
+      },
+      "normalized_counts": {
+        "CurveCount": 324,
+        "TotalSegmentCount": 2059,
+        "TotalPointCount": 2411
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": true,
+      "duration": 8.0,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/idle.motion3.json"
+    },
+    {
+      "source_sha256": "2c7a09fb7d5f4d9ab69a5f4197e11401704b4e3e2e2276e3268c746a75030707",
+      "normalized_sha256": "b42193c1866d86d4d6a5470a19144d0cb8a955094d0af60524f67cf2c482ed16",
+      "original_counts": {
+        "CurveCount": 317,
+        "TotalSegmentCount": 3141,
+        "TotalPointCount": 3385
+      },
+      "normalized_counts": {
+        "CurveCount": 317,
+        "TotalSegmentCount": 3140,
+        "TotalPointCount": 3701
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 14.333,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/login.motion3.json"
+    },
+    {
+      "source_sha256": "25995c25cb4a0e024bb3f60a50ba164941c68515ac4f6fb55715cfcc010bdc3b",
+      "normalized_sha256": "cf2a228f8670d4121a6ced162effc4359d03bb411b5fc55be65aa8e277ee01da",
+      "original_counts": {
+        "CurveCount": 308,
+        "TotalSegmentCount": 1650,
+        "TotalPointCount": 1912
+      },
+      "normalized_counts": {
+        "CurveCount": 308,
+        "TotalSegmentCount": 1649,
+        "TotalPointCount": 2219
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": true,
+      "duration": 6.0,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/mail.motion3.json"
+    },
+    {
+      "source_sha256": "1bbf9d080b1d346b530914ed380b124ab5d8ed2837852bd26ab74541d05a2143",
+      "normalized_sha256": "22dc17d625dfd12cd9d4105645bccfc4ccfb7baf1c74b39ddd51919a399f45a5",
+      "original_counts": {
+        "CurveCount": 314,
+        "TotalSegmentCount": 2581,
+        "TotalPointCount": 2943
+      },
+      "normalized_counts": {
+        "CurveCount": 314,
+        "TotalSegmentCount": 2580,
+        "TotalPointCount": 3256
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 9.0,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/main_1.motion3.json"
+    },
+    {
+      "source_sha256": "cf12429a16d096adde10a4756a1a7e445e90211e649bf20d725a541329824463",
+      "normalized_sha256": "484573b1baa6f9ae738dfae92b9cc5f467e414a5f6e0d984fb364b963b40ffbc",
+      "original_counts": {
+        "CurveCount": 317,
+        "TotalSegmentCount": 3350,
+        "TotalPointCount": 3674
+      },
+      "normalized_counts": {
+        "CurveCount": 317,
+        "TotalSegmentCount": 3349,
+        "TotalPointCount": 3990
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 10.267,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/main_2.motion3.json"
+    },
+    {
+      "source_sha256": "bd6a5a8ff3e10a3400ef2acd893ac55a91a74bfc23894a9088441061cc21e467",
+      "normalized_sha256": "09f5f329c4619b142603c83b062fbbc865c6c4ca681b16f745991c0c8466dc86",
+      "original_counts": {
+        "CurveCount": 316,
+        "TotalSegmentCount": 3144,
+        "TotalPointCount": 3566
+      },
+      "normalized_counts": {
+        "CurveCount": 316,
+        "TotalSegmentCount": 3143,
+        "TotalPointCount": 3881
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 12.5,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/main_3.motion3.json"
+    },
+    {
+      "source_sha256": "b92c67672de6e0b4717c79c8e34dc9ab3e621597afadaebd462256437059d8f9",
+      "normalized_sha256": "865c4e3082e5f4af666e82f93aa9d98c870cc9687d6c8ec68c30607bddaadc4c",
+      "original_counts": {
+        "CurveCount": 316,
+        "TotalSegmentCount": 2447,
+        "TotalPointCount": 2777
+      },
+      "normalized_counts": {
+        "CurveCount": 316,
+        "TotalSegmentCount": 2446,
+        "TotalPointCount": 3092
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": true,
+      "duration": 8.833,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/mission.motion3.json"
+    },
+    {
+      "source_sha256": "f9bc94bc713045620a1f0b4124f0bbaaa43bccc7977205401b7b806f53662b12",
+      "normalized_sha256": "a0d712d119371f9ad5602aaf27b1c454f530791c9ba41c7b109a6ecf488ec9fe",
+      "original_counts": {
+        "CurveCount": 317,
+        "TotalSegmentCount": 2151,
+        "TotalPointCount": 2541
+      },
+      "normalized_counts": {
+        "CurveCount": 317,
+        "TotalSegmentCount": 2150,
+        "TotalPointCount": 2857
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 7.5,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/mission_complete.motion3.json"
+    },
+    {
+      "source_sha256": "d56f8e9f98f303b7f278d7c48842673da6b7b7e434bc69acf10e7b0a25dd1da7",
+      "normalized_sha256": "6c23a812ad1bf64d7e6d9ec306e02317b0685dca37afa37249830acfaf0c7db0",
+      "original_counts": {
+        "CurveCount": 330,
+        "TotalSegmentCount": 3308,
+        "TotalPointCount": 3840
+      },
+      "normalized_counts": {
+        "CurveCount": 330,
+        "TotalSegmentCount": 3307,
+        "TotalPointCount": 4169
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 10.267,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/touch_body.motion3.json"
+    },
+    {
+      "source_sha256": "60e891cce4c377b8a77cd7e3ccf9345fac84bc44292420b9dc32db8e510933c4",
+      "normalized_sha256": "15091066e0324eaedc22d4ee43e2d55e077975f106c0b650555062c15e7e4f41",
+      "original_counts": {
+        "CurveCount": 316,
+        "TotalSegmentCount": 1884,
+        "TotalPointCount": 2164
+      },
+      "normalized_counts": {
+        "CurveCount": 316,
+        "TotalSegmentCount": 1883,
+        "TotalPointCount": 2479
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": true,
+      "duration": 6.167,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/touch_head.motion3.json"
+    },
+    {
+      "source_sha256": "797f0077e3617c1847af6699a7d417449ae1e3efb737acd43a96dfcbd79bcb0f",
+      "normalized_sha256": "ad893ffe0ad9f50534c07ebcc5fd0b6f7c5c36087538c2c708dded4ee68207f3",
+      "original_counts": {
+        "CurveCount": 313,
+        "TotalSegmentCount": 3676,
+        "TotalPointCount": 4242
+      },
+      "normalized_counts": {
+        "CurveCount": 313,
+        "TotalSegmentCount": 3675,
+        "TotalPointCount": 4554
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 13.667,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/touch_special.motion3.json"
+    },
+    {
+      "source_sha256": "8f96728124f787a3cb3532727d6dd08d45141dbe5bec8f21ecdcab691e48628f",
+      "normalized_sha256": "8bf40ca151f38221d048d61807f9b8fc8b8e0299f57c6d9f290ff95d19790587",
+      "original_counts": {
+        "CurveCount": 314,
+        "TotalSegmentCount": 4740,
+        "TotalPointCount": 5102
+      },
+      "normalized_counts": {
+        "CurveCount": 314,
+        "TotalSegmentCount": 4739,
+        "TotalPointCount": 5415
+      },
+      "counts_changed": true,
+      "curves_unchanged": true,
+      "curve_order_changed": false,
+      "duration": 18.667,
+      "fps": 30.0,
+      "loop": true,
+      "path": "bulaimodun_2/motions/wedding.motion3.json"
+    }
+  ]
+}

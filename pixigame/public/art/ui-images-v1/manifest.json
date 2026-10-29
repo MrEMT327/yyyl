@@ -1,0 +1,859 @@
+{
+  "schema": 1,
+  "generator": "tools/optimize-ui-images.py",
+  "entries": {
+    "equipment-comic-v1/hangar.png": {
+      "file": "equipment-comic-v1/hangar.webp",
+      "sourceBytes": 1744295,
+      "bytes": 173164,
+      "sourceSize": [
+        1377,
+        1142
+      ],
+      "size": [
+        1377,
+        1142
+      ],
+      "lossless": false,
+      "sourceSha256": "608e4457ea8a18492aa857e98ff91b35de81858a1808397578efc3d158e5f754",
+      "sha256": "c092995974d10a5efdf40dbf1fd7dbdc3d07eac670d3c8a215d061a63fec82e6"
+    },
+    "pilot-06-v09c/portrait.png": {
+      "file": "pilot-06-v09c/portrait.webp",
+      "sourceBytes": 749122,
+      "bytes": 118078,
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "7d70a6a1be55ee3d6a77dac70bed8e0cf1dc2aef368ff6ded12801035d3c1743",
+      "sha256": "7a9c6d8edcd3f942a9c557fb446d32a6849f217a7c5ca7bb092b4f05ea46ccb9"
+    },
+    "project-draw-stage-v1/receiver.png": {
+      "file": "project-draw-stage-v1/receiver.webp",
+      "sourceBytes": 1071321,
+      "bytes": 100278,
+      "sourceSize": [
+        768,
+        1152
+      ],
+      "size": [
+        768,
+        1152
+      ],
+      "lossless": false,
+      "sourceSha256": "7c9609866eeff063c86ef28e2c8d1cf0bfba802ccfd08eab04fc2ec683fca933",
+      "sha256": "df30c5f94f0b0f3f8331f7f04206f7907014beca662f3a3cf4f637e42f574fc0"
+    },
+    "project-fleet-stage-v2/platform.png": {
+      "file": "project-fleet-stage-v2/platform.webp",
+      "sourceBytes": 690668,
+      "bytes": 72320,
+      "sourceSize": [
+        1024,
+        420
+      ],
+      "size": [
+        1024,
+        420
+      ],
+      "lossless": false,
+      "sourceSha256": "803db3993bd2f58f190a86c5b56510c441878566689f262333f6d63edf307f0e",
+      "sha256": "941b79849e077a77353aa184c5ada24747be43180ad6aedf712331f516b00675"
+    },
+    "project-patrol-v5/airway-soft.png": {
+      "file": "project-patrol-v5/airway-soft.webp",
+      "sourceBytes": 508746,
+      "bytes": 19480,
+      "sourceSize": [
+        1200,
+        411
+      ],
+      "size": [
+        1200,
+        411
+      ],
+      "lossless": false,
+      "sourceSha256": "6b29a81e10ac8c5c466193c6ab559b26c8fa2d74bda2f8560854281538dca3ba",
+      "sha256": "b63efb5ec8a6893d4c072d5d6fec430eac10f204f64ae154becc4d66737de60c"
+    },
+    "project-resource-icons-v2/coins.png": {
+      "file": "project-resource-icons-v2/coins.webp",
+      "sourceBytes": 309849,
+      "bytes": 43490,
+      "sourceSize": [
+        463,
+        512
+      ],
+      "size": [
+        463,
+        512
+      ],
+      "lossless": false,
+      "sourceSha256": "e3b97ef6c7b7fd1c3c39a16f4e984f042d669da3a469bbcee154f209e1a3405b",
+      "sha256": "a9eb9efa2e347c47ef37d9d8011d1465b06a29b347ec22ccfde77b65952a5548"
+    },
+    "project-resource-icons-v2/credits-stack.png": {
+      "file": "project-resource-icons-v2/credits-stack.webp",
+      "sourceBytes": 282673,
+      "bytes": 43674,
+      "sourceSize": [
+        512,
+        410
+      ],
+      "size": [
+        512,
+        410
+      ],
+      "lossless": false,
+      "sourceSha256": "43b51847456256df32c1b63bb5364f300dade73e50e282a45f0ce56cde0f055e",
+      "sha256": "c580f59b5b1298a7e47e520fa2ad44e77204ffd94034c5f7b9b949279e5be17a"
+    },
+    "project-supply-v1/supply-bay.png": {
+      "file": "project-supply-v1/supply-bay.webp",
+      "sourceBytes": 1997365,
+      "bytes": 173766,
+      "sourceSize": [
+        1706,
+        922
+      ],
+      "size": [
+        1536,
+        830
+      ],
+      "lossless": false,
+      "sourceSha256": "f6df61ab5e8f06c01bdf64cc0cceb188eb74b154bdae72ed0fd631c8ab7b2221",
+      "sha256": "8e89edc1fbcf10ec4a4effb94afa42419c22f27b63c2b0192000fe0e0456f87d"
+    },
+    "psd-equipment-v1/pilot-06-crew-portrait.png": {
+      "file": "psd-equipment-v1/pilot-06-crew-portrait.webp",
+      "sourceBytes": 2020541,
+      "bytes": 1057658,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "lossless": true,
+      "sourceSha256": "82e8fe52c3764bac0a8948c2b0accfb3169347b75508435c8006ec96b721d889",
+      "sha256": "2a2421539df871d8e2417f3ea553b5e4f2093f3cb974c55ed91793a33a14b113"
+    },
+    "psd-main-v1/main-background.png": {
+      "file": "psd-main-v1/main-background.webp",
+      "sourceBytes": 1676938,
+      "bytes": 926762,
+      "sourceSize": [
+        750,
+        1624
+      ],
+      "size": [
+        750,
+        1624
+      ],
+      "lossless": true,
+      "sourceSha256": "51bda8d472d22ea35e7cbd4ac1c5e71d83155511dd7184d5ade75ff1dc3d776f",
+      "sha256": "f73dc1cc733cccaada56db1907367f16e8785469cec6bc7c760d89ff90d2e9ea"
+    },
+    "psd-main-v1/main-foreground-current-live-wallet.png": {
+      "file": "psd-main-v1/main-foreground-current-live-wallet.webp",
+      "sourceBytes": 349807,
+      "bytes": 228822,
+      "sourceSize": [
+        750,
+        1624
+      ],
+      "size": [
+        750,
+        1624
+      ],
+      "lossless": true,
+      "sourceSha256": "6bb0095157eb2e6ebb2fcefafc0cdcf95fa725b605df922a13e3716661ebe41f",
+      "sha256": "4ecfc3fcc27bf88f3d6501cb06bdd683b2dde267907c78ab2465f02d23eaabea"
+    },
+    "psd-popup-v1/primary.png": {
+      "file": "psd-popup-v1/primary.webp",
+      "sourceBytes": 161112,
+      "bytes": 126242,
+      "sourceSize": [
+        567,
+        714
+      ],
+      "size": [
+        567,
+        714
+      ],
+      "lossless": true,
+      "sourceSha256": "8d860ccd1e1b67dc9c34ba257a6c08cc68624bf23cec058756a4bbe8a8fa73f5",
+      "sha256": "de4005dd3a3588b9d9e702617e1a503bb63d6435ee88af59774b532cde2a77a3"
+    },
+    "recruit-comic-v1/hangar.png": {
+      "file": "recruit-comic-v1/hangar.webp",
+      "sourceBytes": 1894917,
+      "bytes": 208582,
+      "sourceSize": [
+        1083,
+        1453
+      ],
+      "size": [
+        1083,
+        1453
+      ],
+      "lossless": false,
+      "sourceSha256": "429c9d648aab144364beb921ca8a9bf6ec253357deb9b684d5d860a433485ef2",
+      "sha256": "f86700ecf089655482b29f62b80eeeda8ec198d54067036779bef8cd796a9742"
+    },
+    "research-comic-v1/card-frame.png": {
+      "file": "research-comic-v1/card-frame.webp",
+      "sourceBytes": 920193,
+      "bytes": 23962,
+      "sourceSize": [
+        1136,
+        1385
+      ],
+      "size": [
+        1136,
+        1385
+      ],
+      "lossless": false,
+      "sourceSha256": "3d71b822fe2586078c66664c7a2b33d44148065dc1b3a2f6250f3e680c7d4778",
+      "sha256": "20f00693933ced10b0622293121bc215755d15cad94276d0ba09cb44c3be3a08"
+    },
+    "weapon-drones-v1/drone-parts-v1.png": {
+      "file": "weapon-drones-v1/drone-parts-v1.webp",
+      "sourceBytes": 782879,
+      "bytes": 130122,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "edb1ec40598e169a1bc8158b5b23621f49dd1c78f7097080ad33f989d8ed3475",
+      "sha256": "b2088826d09e02eeeeff936f574f67e51c0c9892cce64f3c315d8f464ef70cbe"
+    },
+    "weapon-drones-v1/mother-parts-v1.png": {
+      "file": "weapon-drones-v1/mother-parts-v1.webp",
+      "sourceBytes": 1251494,
+      "bytes": 189436,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "45cb02314d63a900ac539d6a279efb51b9420fadbcf1bec5b8dc4760a807c081",
+      "sha256": "6888a192a1eb05dbd8c3b42b3f6e762c62be7424dfa960618db5a71ffb504081"
+    },
+    "white-gold-knight-v11/master.png": {
+      "file": "white-gold-knight-v11/master.webp",
+      "sourceBytes": 1588394,
+      "bytes": 314956,
+      "sourceSize": [
+        1118,
+        1407
+      ],
+      "size": [
+        1118,
+        1407
+      ],
+      "lossless": false,
+      "sourceSha256": "bcf32b7193a057b5ab8ce131d0ac3ee84c66c0e6aa0cfb92d5ce64296f456ade",
+      "sha256": "c418813d825a29ba9df9f05f3c9b435c37e10178364ee8b54e98c90cf0238aa3"
+    },
+    "peripheral-v1/foreground-coast.webp": {
+      "file": "peripheral-v1/foreground-coast.webp",
+      "sourceBytes": 947076,
+      "bytes": 196572,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "lossless": false,
+      "sourceSha256": "e3b283333c8e5fc04da3afebe9462c590c43d8fda75399e387d0c7df971d5f7a",
+      "sha256": "1372127ec6aa0097bf8dd269010f4e62819ba616671776c8d096ae936fca1778",
+      "originalPngSha256": "b6714078e1c7ecae30ea88d7130770368b1adb4b0f374c1224e0829fb9b197a5"
+    },
+    "weapon-original/aux_beam.webp": {
+      "file": "weapon-original/aux_beam.webp",
+      "sourceBytes": 764858,
+      "bytes": 31128,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "4303be941a34956ee6b87537947e29570271ddfbe73690920b7e2be2ca2a020c",
+      "sha256": "386b992072783ee020ad70ea8ae881f27c24cacdb45ba023289906650c17009a",
+      "originalPngSha256": "1fe9f48fc24fda3c452742b5b0eebd4cf4940cd19c87ab284396e9edde47883c"
+    },
+    "weapon-original/aux_blades.webp": {
+      "file": "weapon-original/aux_blades.webp",
+      "sourceBytes": 662988,
+      "bytes": 29840,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "54fd004792764c505dc5c11a078abcd27648a207f8c644d586deaf346beb998f",
+      "sha256": "307f38fe18e384b4bdcc82b61ab0f85418080c27449465eed9e644c883d8d2d3",
+      "originalPngSha256": "f69c8c605daeb60f12749432d4e9bd84ad89d951b8522bf7c52301a3b5f60f29"
+    },
+    "weapon-original/aux_cannon.webp": {
+      "file": "weapon-original/aux_cannon.webp",
+      "sourceBytes": 165812,
+      "bytes": 8854,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "e605b26648c2c6eea475380569bfcbf521833a1485cd2c98f68d5b776ccbbf5c",
+      "sha256": "47bada44db7b56c41aaddb311326fcda38b3897f54bd1555b11f257d4ba560ed",
+      "originalPngSha256": "4e0d4360c94c08912dba387962049103069490d6580c32051205699d076f379e"
+    },
+    "weapon-original/aux_drone.webp": {
+      "file": "weapon-original/aux_drone.webp",
+      "sourceBytes": 861188,
+      "bytes": 35534,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "c2f0bae4372932430ea26472b4a76e07235eaaa9324334a5a2ad2b4fda6fee95",
+      "sha256": "ecc5341133f8e3cd242b36ae1a7bbad9bd18c4fa60cb1f8ec7a11ef400225231",
+      "originalPngSha256": "39908fddd31f1fbb7b2db377ca8b6a1fd2e8ffaa3978b983ed404607971d96d8"
+    },
+    "weapon-original/aux_freeze.webp": {
+      "file": "weapon-original/aux_freeze.webp",
+      "sourceBytes": 918192,
+      "bytes": 36350,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "0dbf3a2a02c2137ffaab186b4778c99ae8eee575296db17f8cab7cec95182fb3",
+      "sha256": "6f051a0bb36bc10fcd8002a825c377562f3f7aba0fbd1c042648fd2b4f695a65",
+      "originalPngSha256": "eec6a1a2c38147209c6ac943fb54722f2381754922fcfe71b436b82aca5b3ed7"
+    },
+    "weapon-original/aux_gravity.webp": {
+      "file": "weapon-original/aux_gravity.webp",
+      "sourceBytes": 1238478,
+      "bytes": 42202,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "60f5c668b75b44472f40c69e1d3acf9937ac75a24564557e7fb2e2042a38d589",
+      "sha256": "a7565f11085e8416983db88332797b0387913fceb84d6f94917defffa350fb85",
+      "originalPngSha256": "ca0b2135416c76d1d84f863c05cecdf77edfa81397b7946e62a4f2459542ca86"
+    },
+    "weapon-original/aux_grenade.webp": {
+      "file": "weapon-original/aux_grenade.webp",
+      "sourceBytes": 873280,
+      "bytes": 30220,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "010f35e2c16c5a24323c80626c397b4097a598136caf6ce8c55807e86277e868",
+      "sha256": "96f7c241e1f5473545e6dce85152d923ec4905de3981466cd03a281eb55979fe",
+      "originalPngSha256": "4615014b674de7659b88b3486d9d571803929598458c3a8c96070f1dcb341d7a"
+    },
+    "weapon-original/aux_laser.webp": {
+      "file": "weapon-original/aux_laser.webp",
+      "sourceBytes": 707580,
+      "bytes": 28066,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "871f5aab48a953039626a3d7aa5cf5e7ecb3a42587b8edcc9ab4021095ae8b5a",
+      "sha256": "a0c1e7696fa1d0c7fbe75e168a3df47f3a21ce782acaa1c3d14edc4b42280f65",
+      "originalPngSha256": "a6c58f6d5a527af6db0e944c2b2e2e6e4d8d259e9c46084a82e617566f77f14b"
+    },
+    "weapon-original/aux_lightmine.webp": {
+      "file": "weapon-original/aux_lightmine.webp",
+      "sourceBytes": 732350,
+      "bytes": 32890,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "1a596c473247c37008b117d117257d83bb7fbc071fe4dce1149295507048e1ee",
+      "sha256": "0a6b2f785af2105c7c50663bf0e822a4ac83bce2609e4e2d1f4c4d692bf92471",
+      "originalPngSha256": "7e05169f73daaa52437ca64b4aeb8ce49c7acaf2447f2d8aaaf6b47a3342a138"
+    },
+    "weapon-original/aux_lightning.webp": {
+      "file": "weapon-original/aux_lightning.webp",
+      "sourceBytes": 843286,
+      "bytes": 36458,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "7112f94499d12414e52d8338f41aa3722f9fc612bc6b46f0a36c5e4a4892e5ea",
+      "sha256": "537870531368f4564940a728059500cf7f570e193c6045e624b9b6f0d3fa346f",
+      "originalPngSha256": "991035058d7a185d22a333f08738bc048367048a119340fb7c8a6ef04b954c8b"
+    },
+    "weapon-original/aux_mine.webp": {
+      "file": "weapon-original/aux_mine.webp",
+      "sourceBytes": 1060062,
+      "bytes": 36058,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "7120ce140e5f04e2e7085669e3f780287d0e42bb219fb6e5f5edb22cf2e9ad90",
+      "sha256": "75044acdba1b55a9f109b94b6e70a07ef3fd57ac24f8202b0a8831b107d87877",
+      "originalPngSha256": "6762d1f9227f952847eddd7a028445069b8f84d99e25c6d4158a26bd588f08d5"
+    },
+    "weapon-original/aux_orb.webp": {
+      "file": "weapon-original/aux_orb.webp",
+      "sourceBytes": 891902,
+      "bytes": 39216,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "d6ff35d83e08bc7dc9ed72b0375113d66daed1f645ea9a2cef217a9db0e3ae5d",
+      "sha256": "c15b88d82a17297a1bcfcb8804126b99b6be2f6ef1f8e8ac10766f79d89a351b",
+      "originalPngSha256": "b6b2bf2111447d5c9b88700d48aae6e90af7ecd99f64c03d476f2401c53bdaf8"
+    },
+    "weapon-original/aux_pyro.webp": {
+      "file": "weapon-original/aux_pyro.webp",
+      "sourceBytes": 1077128,
+      "bytes": 42276,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "df1745be13a8b8b7d74daed5c3cc5173c9114c753a084604e7edc50f13b99e9b",
+      "sha256": "d109f7fa5a245fdd9c445c6f13ab89b88c3f3810127d99289179807bb5707e23",
+      "originalPngSha256": "bea807a761d6d35f501bd570403db325282682523d34ae5b43458c7b2f2bdaee"
+    },
+    "weapon-original/aux_rail.webp": {
+      "file": "weapon-original/aux_rail.webp",
+      "sourceBytes": 532514,
+      "bytes": 24428,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "35fb4ce9d73ba400d56d2ccf5d49ef645e5c88912359a566c47cf835fd80c57a",
+      "sha256": "e92ed371ce882cc53d5b7436b02b5cbde5afc815da0444b11235d049bcfed382",
+      "originalPngSha256": "447751023f3059d2f8134a0971c34ff270488242b904b9c45e980a2f089625e3"
+    },
+    "weapon-original/aux_rocket.webp": {
+      "file": "weapon-original/aux_rocket.webp",
+      "sourceBytes": 392302,
+      "bytes": 16620,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "0aa1e63fba80d2383cad388190e17042ea998bb4df0f47285816841a6a164e13",
+      "sha256": "1eae5ea0c3778788713cb0fb35a5e69f3eb22e36b8463f528cb56acb829912da",
+      "originalPngSha256": "12e9142881fa0100a654dc70c4c241f45f9b55ea6d1f955f7b93a095917e3328"
+    },
+    "weapon-original/aux_scatter.webp": {
+      "file": "weapon-original/aux_scatter.webp",
+      "sourceBytes": 928752,
+      "bytes": 30228,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "e5a8c1aa59c2367ea1e75502bed6a80b1243fc01b32e8caa7a6b936209854d17",
+      "sha256": "403a2dde0502b8a66aa07738f2a0d075af834c092fb97beff555ef5593f1bab0",
+      "originalPngSha256": "89564491ab62ff55a003fd364b778cd72e5ef68271da302b330963fb92f125f5"
+    },
+    "weapon-original/aux_shield.webp": {
+      "file": "weapon-original/aux_shield.webp",
+      "sourceBytes": 1071028,
+      "bytes": 43482,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "aa94c0cf3cc245ac2c1015a5028308387e2813d15b33e1323b54e554450f6dbc",
+      "sha256": "70018666957464c605fbe3633276735398fc5c2fe213f08f29ab2fd553309b8a",
+      "originalPngSha256": "d3fb8a563b49d8fa640386ee9e1b89763893a2ca93a896a6ea429660c4979e8c"
+    },
+    "weapon-original/aux_sidegun.webp": {
+      "file": "weapon-original/aux_sidegun.webp",
+      "sourceBytes": 576534,
+      "bytes": 27004,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "8926a02a7d744664ae75efac4a424c11997a8b1dd2bb1e57a7580bee17a37061",
+      "sha256": "d8f137dc2dc91850a376c2a30d90ba228e9831bae2a77b58b8ded45f2ae4dc9f",
+      "originalPngSha256": "228bdd96b51fc5a84fb46d7a82a58b18725b2039cf02a12a408817602ff07ca1"
+    },
+    "weapon-original/aux_tail.webp": {
+      "file": "weapon-original/aux_tail.webp",
+      "sourceBytes": 855424,
+      "bytes": 33704,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "f3d0cb85997ae2d81b22f51a065e5ee296cdb39bd55866e7c0b9755d8261efa2",
+      "sha256": "1eb591643a0abe7575b272a290bdf3bb3dc7b68044a8a7b2f70c6bcdc8bb74fd",
+      "originalPngSha256": "e95f855d3db8a2a9c0a15e298ef549c5d87178a9c330987d43cea5d7ce269152"
+    },
+    "weapon-original/aux_toxin.webp": {
+      "file": "weapon-original/aux_toxin.webp",
+      "sourceBytes": 900474,
+      "bytes": 34696,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        384,
+        384
+      ],
+      "lossless": false,
+      "policy": "icon384-v1",
+      "sourceSha256": "c2c3c2c3575d56fbf595619ce0be64b1ff946ec1c7e550bbbd70d38b8c88cfa1",
+      "sha256": "dc53eb62b2b7cd9afb845f24761adb0c46d4ec94d33ae44a5e6148c42454c7d7",
+      "originalPngSha256": "10aec442671a82c1ae1f361a21b45b6209ab7fd630fd8f9fd2d31ab0989dcd95"
+    },
+    "project-original-environments-v1/armory-bay-v1.webp": {
+      "file": "project-original-environments-v1/armory-bay-v1.webp",
+      "sourceBytes": 1397838,
+      "bytes": 147486,
+      "sourceSize": [
+        1214,
+        1295
+      ],
+      "size": [
+        1214,
+        1295
+      ],
+      "lossless": false,
+      "sourceSha256": "6f7c352395cd527e62234b24401eb52687334c4fb75af717f8259b2b4ff97310",
+      "sha256": "8ff50a3b021bf1e3daff9c35ddcfc40388a092752952adaf20572bf9ca0ccf03",
+      "originalPngSha256": "c5102480af6505cbec31bfb490ada21f7d080fa6d589d436c5aa5cc19beac24f"
+    },
+    "project-original-environments-v1/launch-hangar-v1.webp": {
+      "file": "project-original-environments-v1/launch-hangar-v1.webp",
+      "sourceBytes": 1538934,
+      "bytes": 209610,
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "cdb07ac6c843bf80ea76e30254ae571daa653cdd776f4d07cf365a4f17ffc3d6",
+      "sha256": "eb7baa22c5f698e263dade175e8590800407d5493f84fba950225fee656a5413",
+      "originalPngSha256": "6d6f7ad8958f87af3812675a857df96f598d2c6553f4bb0e57375321dedc8493"
+    },
+    "project-original-environments-v1/logistics-bay-v1.webp": {
+      "file": "project-original-environments-v1/logistics-bay-v1.webp",
+      "sourceBytes": 1464038,
+      "bytes": 203434,
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "63a1d86d4d20591fd131b74ffaba8206a33e7f7fc2d17b88abf5a20d6afd9869",
+      "sha256": "cae247085d58051c980489432bc2d8999b9b7e716939eae4c09c0acb6194e908",
+      "originalPngSha256": "90454a14104d9bfd4a395ecb2fd41b34b79efc8a3043a6d52c09da4eb30b9991"
+    },
+    "project-original-environments-v1/maintenance-bay-v1.webp": {
+      "file": "project-original-environments-v1/maintenance-bay-v1.webp",
+      "sourceBytes": 1514056,
+      "bytes": 218796,
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "9c7bc6ce881617b6498ccd8348f461051fc59b17c39cf08e3b080abf2ddab4df",
+      "sha256": "77a1f8fc8b11e224afb0c5703f37b7e809a0ce60b847756f1fd6690125706222",
+      "originalPngSha256": "31fc848858afc08f691e6f6d82e950a2a7fcee8e8b9e6a59a4054707645f7645"
+    },
+    "project-original-environments-v1/patrol-airway-v1.webp": {
+      "file": "project-original-environments-v1/patrol-airway-v1.webp",
+      "sourceBytes": 1402436,
+      "bytes": 124092,
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "size": [
+        1536,
+        864
+      ],
+      "lossless": false,
+      "sourceSha256": "da921ddd00b1e38d981d25c8c72f53b6d37186193dd03ddbd154b81069e3d0ba",
+      "sha256": "b2acac1c01adb2935621ac9490caa613a41517ff9a883c58209df6b1824a8be0",
+      "originalPngSha256": "5471b58b08d148671a3266d42d0cc95b2db79b8ba98c8fafb0d433e310b5b08b"
+    },
+    "project-original-environments-v1/pilot-ready-room-v1.webp": {
+      "file": "project-original-environments-v1/pilot-ready-room-v1.webp",
+      "sourceBytes": 1418770,
+      "bytes": 142674,
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "size": [
+        1086,
+        1448
+      ],
+      "lossless": false,
+      "sourceSha256": "34e3abb9faaeaf37e05067963a9aff36e187d5a007bf3fd6166f732cf2d690a9",
+      "sha256": "7772cb8211408e72c2098ce390e1d1f29f7d948c803f4f09cc01e8ebb902fd8d",
+      "originalPngSha256": "bee8be4821c16280fabef2d9486b37e8726797a6231906e14d068b6f0976f2b7"
+    },
+    "project-original-environments-v1/research-lab-v1.webp": {
+      "file": "project-original-environments-v1/research-lab-v1.webp",
+      "sourceBytes": 1306702,
+      "bytes": 109156,
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "size": [
+        1086,
+        1448
+      ],
+      "lossless": false,
+      "sourceSha256": "5cf250d934e82b18ccdf9107a256cb9339fef9906c8fd50864dac71550a73730",
+      "sha256": "a188d5e18ee470818483cd96be7ec98ce9842f771bf3fa46ddbf3a3081e4aba8",
+      "originalPngSha256": "85a5a269646fd43a357a20353bbbce4a9578fe1a1b353e2b5a1e94f5db92295f"
+    },
+    "shop-comic-v1/daily-supply.webp": {
+      "file": "shop-comic-v1/daily-supply.webp",
+      "sourceBytes": 1413680,
+      "bytes": 150066,
+      "sourceSize": [
+        2048,
+        768
+      ],
+      "size": [
+        1536,
+        576
+      ],
+      "lossless": false,
+      "sourceSha256": "0e1f6b693bb983fb885452c31c1e34be56fc3eecba6ad5cdba4fb16a3d812e14",
+      "sha256": "1b65090704c4b0f5e0bb2338ea4a4c448dd0670e6a4474dea3b22ef1fb0d7894",
+      "originalPngSha256": "bede93c67ddec8c697074ee2ee7c5aff2c7a6067f9255b47ad6ed272c0d89d61"
+    },
+    "shop-comic-v1/diamond-supply.webp": {
+      "file": "shop-comic-v1/diamond-supply.webp",
+      "sourceBytes": 1704050,
+      "bytes": 282462,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "04c36f9dda36b780d84d7701fe7ca7e1a74d8cd4f7ccdfdbed1814e4928f6141",
+      "sha256": "c9b03538b11e139aa3f0e6b8a7d3954477ba94cd37674134b148bcefeb39576b",
+      "originalPngSha256": "389b3521fb8033ef00557c84d6cfb4491e1f6d3bb0b808081c606c5667bd58b7"
+    },
+    "shop-comic-v1/hero-header-v2.webp": {
+      "file": "shop-comic-v1/hero-header-v2.webp",
+      "sourceBytes": 1999190,
+      "bytes": 336844,
+      "sourceSize": [
+        1701,
+        924
+      ],
+      "size": [
+        1536,
+        834
+      ],
+      "lossless": false,
+      "sourceSha256": "8e61e42f0613512bd7e66043c1c03d27e344c1f6ab7a431ead0787625cf4a28f",
+      "sha256": "9d0ac107fcb7a39110bb0ca5a22a24b3f514a044ad885cd58ee3ae93bf3ac6c9",
+      "originalPngSha256": "7fcb76b3e3db487efec21886570fbbcef0f884c1445ce506c9b24b40d0251100"
+    },
+    "shop-comic-v1/hero-header-v3-clean.webp": {
+      "file": "shop-comic-v1/hero-header-v3-clean.webp",
+      "sourceBytes": 1710298,
+      "bytes": 274328,
+      "sourceSize": [
+        1702,
+        924
+      ],
+      "size": [
+        1536,
+        834
+      ],
+      "lossless": false,
+      "sourceSha256": "96dde8aef47b59f052d32fdc033533dc5165bd5a151f81ba1e955885989e2312",
+      "sha256": "5f0773fa217832f77806b5f6eeaaf24844dc95ca4a64a94c183b30cb12a99331",
+      "originalPngSha256": "1b4a5619a79bd9a0a1244dbd6952edf9b956b65b70797a206c5119fafc89a829"
+    },
+    "shop-comic-v1/weapon-supply.webp": {
+      "file": "shop-comic-v1/weapon-supply.webp",
+      "sourceBytes": 1594226,
+      "bytes": 259942,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "a3c6349fe01462cef29667fc81984b76ddaaf4d281acaeaac9b9d57b4b818cc7",
+      "sha256": "d7db98e3f4e1e8f1b5ee22ecf732b5f8ac9da2c2c440269ddaa55ca77becd471",
+      "originalPngSha256": "14d62b8336b462eb40baef42097d24ab3b0299d9fa4242238f0071545e58d069"
+    }
+  }
+}

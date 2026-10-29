@@ -1,0 +1,824 @@
+{
+  "schema": "purple-doctor-layered-runtime-v1",
+  "character": "purple-doctor",
+  "baseline": "portrait.png",
+  "atlas": "target-atlas-head-v12.png",
+  "bindings": "target-bindings-head-v9.json",
+  "sourceModel": "source/hemin_3.model3.json",
+  "camera": {
+    "width": 1024,
+    "height": 1536,
+    "scaleNdc": [
+      0.15625,
+      0.10416666666666667
+    ],
+    "translateNdc": [
+      -0.0234375,
+      0.21875
+    ]
+  },
+  "layers": [
+    {
+      "name": "hair_back",
+      "index": 0,
+      "image": "layers/hair_back.png",
+      "rect": [
+        531,
+        103,
+        69,
+        177
+      ],
+      "atlas": 0,
+      "tile": [
+        4,
+        4,
+        69,
+        177
+      ],
+      "feature": null,
+      "vertices": 48,
+      "triangles": 66,
+      "driver": 19
+    },
+    {
+      "name": "shoe_front_hidden",
+      "index": 1,
+      "image": "layers/shoe_front_hidden.png",
+      "rect": [
+        600,
+        1392,
+        64,
+        104
+      ],
+      "atlas": 0,
+      "tile": [
+        77,
+        4,
+        64,
+        104
+      ],
+      "feature": null,
+      "vertices": 76,
+      "triangles": 114,
+      "driver": 59
+    },
+    {
+      "name": "leg_back",
+      "index": 2,
+      "image": "layers/leg_back.png",
+      "rect": [
+        504,
+        648,
+        160,
+        768
+      ],
+      "atlas": 0,
+      "tile": [
+        145,
+        4,
+        160,
+        768
+      ],
+      "feature": null,
+      "vertices": 1289,
+      "triangles": 2330,
+      "driver": 37
+    },
+    {
+      "name": "shoe_back",
+      "index": 3,
+      "image": "layers/shoe_back.png",
+      "rect": [
+        528,
+        1336,
+        120,
+        144
+      ],
+      "atlas": 0,
+      "tile": [
+        309,
+        4,
+        120,
+        144
+      ],
+      "feature": null,
+      "vertices": 164,
+      "triangles": 258,
+      "driver": 58
+    },
+    {
+      "name": "leg_front",
+      "index": 4,
+      "image": "layers/leg_front.png",
+      "rect": [
+        600,
+        544,
+        184,
+        888
+      ],
+      "atlas": 0,
+      "tile": [
+        433,
+        4,
+        184,
+        888
+      ],
+      "feature": null,
+      "vertices": 1368,
+      "triangles": 2444,
+      "driver": 36
+    },
+    {
+      "name": "shoe_front",
+      "index": 5,
+      "image": "layers/shoe_front.png",
+      "rect": [
+        584,
+        1304,
+        176,
+        184
+      ],
+      "atlas": 0,
+      "tile": [
+        621,
+        4,
+        176,
+        184
+      ],
+      "feature": null,
+      "vertices": 320,
+      "triangles": 548,
+      "driver": 59
+    },
+    {
+      "name": "holder_upper_arm",
+      "index": 6,
+      "image": "layers/holder_upper_arm.png",
+      "rect": [
+        432,
+        312,
+        72,
+        232
+      ],
+      "atlas": 0,
+      "tile": [
+        801,
+        4,
+        72,
+        232
+      ],
+      "feature": null,
+      "vertices": 222,
+      "triangles": 368,
+      "driver": 119
+    },
+    {
+      "name": "torso",
+      "index": 7,
+      "image": "layers/torso.png",
+      "rect": [
+        402,
+        258,
+        376,
+        448
+      ],
+      "atlas": 0,
+      "tile": [
+        877,
+        4,
+        376,
+        448
+      ],
+      "feature": null,
+      "vertices": 378,
+      "triangles": 642,
+      "driver": 34
+    },
+    {
+      "name": "chest",
+      "index": 8,
+      "image": "layers/chest.png",
+      "rect": [
+        400,
+        316,
+        230,
+        164
+      ],
+      "atlas": 0,
+      "tile": [
+        1257,
+        4,
+        230,
+        164
+      ],
+      "feature": null,
+      "vertices": 128,
+      "triangles": 208,
+      "driver": 51
+    },
+    {
+      "name": "holder_arm",
+      "index": 9,
+      "image": "layers/holder_arm.png",
+      "rect": [
+        352,
+        392,
+        152,
+        152
+      ],
+      "atlas": 0,
+      "tile": [
+        1491,
+        4,
+        152,
+        152
+      ],
+      "feature": null,
+      "vertices": 172,
+      "triangles": 242,
+      "driver": 33
+    },
+    {
+      "name": "clipboard",
+      "index": 10,
+      "image": "layers/clipboard.png",
+      "rect": [
+        400,
+        409,
+        133,
+        96
+      ],
+      "atlas": 0,
+      "tile": [
+        1647,
+        4,
+        133,
+        96
+      ],
+      "feature": null,
+      "vertices": 52,
+      "triangles": 74,
+      "driver": 79
+    },
+    {
+      "name": "holder_wrist",
+      "index": 11,
+      "image": "layers/holder_wrist.png",
+      "rect": [
+        383,
+        461,
+        23,
+        23
+      ],
+      "atlas": 0,
+      "tile": [
+        1784,
+        4,
+        23,
+        23
+      ],
+      "feature": null,
+      "vertices": 9,
+      "triangles": 8,
+      "driver": 33
+    },
+    {
+      "name": "holder_hand",
+      "index": 12,
+      "image": "layers/holder_hand.png",
+      "rect": [
+        352,
+        400,
+        72,
+        88
+      ],
+      "atlas": 0,
+      "tile": [
+        1811,
+        4,
+        72,
+        88
+      ],
+      "feature": null,
+      "vertices": 79,
+      "triangles": 120,
+      "driver": 101
+    },
+    {
+      "name": "pen_elbow",
+      "index": 13,
+      "image": "layers/pen_elbow.png",
+      "rect": [
+        653,
+        395,
+        59,
+        66
+      ],
+      "atlas": 0,
+      "tile": [
+        1887,
+        4,
+        59,
+        66
+      ],
+      "feature": null,
+      "vertices": 25,
+      "triangles": 32,
+      "driver": 31
+    },
+    {
+      "name": "pen_upper_arm",
+      "index": 14,
+      "image": "layers/pen_upper_arm.png",
+      "rect": [
+        608,
+        328,
+        96,
+        144
+      ],
+      "atlas": 0,
+      "tile": [
+        4,
+        896,
+        96,
+        144
+      ],
+      "feature": null,
+      "vertices": 154,
+      "triangles": 246,
+      "driver": 31
+    },
+    {
+      "name": "pen_forearm",
+      "index": 15,
+      "image": "layers/pen_forearm.png",
+      "rect": [
+        656,
+        336,
+        136,
+        120
+      ],
+      "atlas": 0,
+      "tile": [
+        104,
+        896,
+        136,
+        120
+      ],
+      "feature": null,
+      "vertices": 151,
+      "triangles": 238,
+      "driver": 52
+    },
+    {
+      "name": "pen_wrist",
+      "index": 16,
+      "image": "layers/pen_wrist.png",
+      "rect": [
+        762,
+        336,
+        23,
+        23
+      ],
+      "atlas": 0,
+      "tile": [
+        244,
+        896,
+        23,
+        23
+      ],
+      "feature": null,
+      "vertices": 9,
+      "triangles": 8,
+      "driver": 52
+    },
+    {
+      "name": "pen_hand",
+      "index": 17,
+      "image": "layers/pen_hand.png",
+      "rect": [
+        736,
+        240,
+        104,
+        120
+      ],
+      "atlas": 0,
+      "tile": [
+        271,
+        896,
+        104,
+        120
+      ],
+      "feature": null,
+      "vertices": 159,
+      "triangles": 252,
+      "driver": 29
+    },
+    {
+      "name": "pen",
+      "index": 18,
+      "image": "layers/pen.png",
+      "rect": [
+        748,
+        242,
+        89,
+        99
+      ],
+      "atlas": 0,
+      "tile": [
+        379,
+        896,
+        89,
+        99
+      ],
+      "feature": null,
+      "vertices": 25,
+      "triangles": 26,
+      "driver": 27
+    },
+    {
+      "name": "pen_sleeve",
+      "index": 19,
+      "image": "layers/pen_sleeve.png",
+      "rect": [
+        548,
+        262,
+        142,
+        141
+      ],
+      "atlas": 0,
+      "tile": [
+        472,
+        896,
+        142,
+        141
+      ],
+      "feature": null,
+      "vertices": 64,
+      "triangles": 94,
+      "driver": 30
+    },
+    {
+      "name": "neck",
+      "index": 20,
+      "image": "layers/neck.png",
+      "rect": [
+        489,
+        262,
+        62,
+        59
+      ],
+      "atlas": 0,
+      "tile": [
+        618,
+        896,
+        62,
+        59
+      ],
+      "feature": null,
+      "vertices": 22,
+      "triangles": 26,
+      "driver": 35
+    },
+    {
+      "name": "face",
+      "index": 21,
+      "image": "layers/face.png",
+      "rect": [
+        357,
+        82,
+        197,
+        210
+      ],
+      "atlas": 0,
+      "tile": [
+        4,
+        1200,
+        197,
+        210
+      ],
+      "feature": null,
+      "vertices": 1295,
+      "triangles": 1808,
+      "driver": 19
+    },
+    {
+      "name": "eye_screen_left",
+      "index": 22,
+      "image": "layers/eye_screen_left.png",
+      "rect": [
+        407,
+        202,
+        57,
+        47
+      ],
+      "atlas": 0,
+      "tile": [
+        848,
+        896,
+        57,
+        47
+      ],
+      "feature": "eye_screen_left",
+      "vertices": 83,
+      "triangles": 128,
+      "driver": 19
+    },
+    {
+      "name": "eye_screen_right",
+      "index": 23,
+      "image": "layers/eye_screen_right.png",
+      "rect": [
+        462,
+        168,
+        59,
+        49
+      ],
+      "atlas": 0,
+      "tile": [
+        909,
+        896,
+        59,
+        49
+      ],
+      "feature": "eye_screen_right",
+      "vertices": 94,
+      "triangles": 148,
+      "driver": 19
+    },
+    {
+      "name": "mouth_open",
+      "index": 24,
+      "image": "layers/mouth_open.png",
+      "rect": [
+        460,
+        227,
+        43,
+        35
+      ],
+      "atlas": 0,
+      "tile": [
+        972,
+        896,
+        43,
+        35
+      ],
+      "feature": "mouth",
+      "vertices": 55,
+      "triangles": 80,
+      "driver": 19
+    },
+    {
+      "name": "hair_front",
+      "index": 25,
+      "image": "layers/hair_front.png",
+      "rect": [
+        357,
+        82,
+        180,
+        210
+      ],
+      "atlas": 0,
+      "tile": [
+        1019,
+        896,
+        180,
+        210
+      ],
+      "feature": null,
+      "vertices": 197,
+      "triangles": 304,
+      "driver": 19
+    },
+    {
+      "name": "hair_lock_left",
+      "index": 26,
+      "image": "layers/hair_lock_left.png",
+      "rect": [
+        391,
+        221,
+        75,
+        133
+      ],
+      "atlas": 0,
+      "tile": [
+        1203,
+        896,
+        75,
+        133
+      ],
+      "feature": null,
+      "vertices": 38,
+      "triangles": 46,
+      "driver": 290
+    },
+    {
+      "name": "hair_lock_right",
+      "index": 27,
+      "image": "layers/hair_lock_right.png",
+      "rect": [
+        518,
+        193,
+        30,
+        120
+      ],
+      "atlas": 0,
+      "tile": [
+        1282,
+        896,
+        30,
+        120
+      ],
+      "feature": null,
+      "vertices": 22,
+      "triangles": 24,
+      "driver": 269
+    },
+    {
+      "name": "cap",
+      "index": 28,
+      "image": "layers/cap.png",
+      "rect": [
+        345,
+        51,
+        164,
+        103
+      ],
+      "atlas": 0,
+      "tile": [
+        1316,
+        896,
+        164,
+        103
+      ],
+      "feature": null,
+      "vertices": 551,
+      "triangles": 578,
+      "driver": 19
+    }
+  ],
+  "vertices": 7249,
+  "triangles": 11460,
+  "limitations": [
+    "Candidate target layers and runtime mesh transfer, not a new native moc3 or cmo3.",
+    "Finger articulation, hidden thigh roots and large-motion joint seams require iterative visual review."
+  ],
+  "referenceHiddenDrawableIndices": [
+    38,
+    39,
+    60,
+    75,
+    76,
+    77,
+    78,
+    104,
+    105,
+    106,
+    107,
+    117,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    132,
+    133,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219,
+    220,
+    221,
+    222,
+    223,
+    224,
+    225,
+    226,
+    227,
+    228,
+    229,
+    230,
+    231,
+    232,
+    233,
+    234,
+    235,
+    236,
+    237,
+    238,
+    239,
+    240,
+    241,
+    242,
+    243,
+    244,
+    245,
+    246,
+    247,
+    248,
+    249,
+    250,
+    251,
+    252,
+    253,
+    254,
+    255,
+    256,
+    257,
+    258,
+    259,
+    260
+  ],
+  "motionDurations": {
+    "idle": 6,
+    "touch_head": 7
+  },
+  "revision": "motion-flow-v6-neck",
+  "artRevision": "head-cap-lock-v12",
+  "motionOverrides": {
+    "touch_head": "motions/touch_head.motion3.json"
+  },
+  "gameCharacterId": "pilot-09",
+  "gameIntegrated": true
+}

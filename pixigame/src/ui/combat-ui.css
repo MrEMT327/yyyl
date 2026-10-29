@@ -1,0 +1,82 @@
+.combat-detail-dialog {
+  --detail-ink: #06121e;
+  --detail-text: #f8fbff;
+  --detail-muted: #b7cddd;
+  --detail-gold: #ffdc2d;
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
+  padding: 24px;
+  border: 1px solid #547e9e;
+  border-top: 3px solid var(--detail-gold);
+  border-radius: 5px;
+  background: #10263b;
+  color: var(--detail-text);
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  filter: drop-shadow(0 12px 24px #0008);
+  overflow: hidden;
+}
+.combat-detail-dialog[data-upgrade-kind="numeric"] { --detail-gold: #48c7f5; }
+.combat-detail-dialog[open] { display: flex; flex-direction: column; gap: 14px; }
+.combat-detail-dialog::backdrop { background: #06121ecc; }
+.combat-detail-heading { flex: none; }
+.combat-detail-eyebrow { display: inline-block; padding: 4px 15px; background: var(--detail-gold); color: var(--detail-ink); font-size: 13px; font-weight: 900; clip-path: polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%); }
+.combat-detail-dialog h3 { margin: 12px 0 6px; padding: 0; font-size: 22px; line-height: 1.4; overflow-wrap: anywhere; }
+.combat-detail-kind { color: var(--detail-gold); font-size: 14px; font-weight: 800; }
+.combat-detail-body { min-height: 0; overflow: auto; overscroll-behavior: contain; }
+.combat-detail-dialog p { margin: 0; color: var(--detail-muted); white-space: pre-line; font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+.combat-detail-owner { padding-bottom: 12px; }
+.combat-detail-level { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px; border: 1px solid #547e9e; background: #06121e99; font-size: 13px; color: var(--detail-muted); }
+.combat-detail-level strong { font-size: 16px; color: var(--detail-gold); text-align: right; }
+.combat-detail-effects { margin-top: 16px; }
+.combat-detail-effects h4 { margin: 0 0 8px; padding-left: 8px; border-left: 3px solid var(--detail-gold); font-size: 14px; }
+.combat-detail-effects p { color: var(--detail-text); }
+.combat-detail-dialog .combat-detail-note { margin-top: 14px; padding-top: 10px; border-top: 1px solid #547e9e80; font-size: 12px; }
+.combat-detail-dialog button { flex: none; display: block; box-sizing: border-box; width: 100%; min-height: 54px; margin: 0; padding: 12px 18px 16px; border: 0; border-radius: 0; background:transparent;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch; color: var(--detail-text); font: 900 16px/24px "Microsoft YaHei",sans-serif; text-shadow: 0 1px 2px var(--detail-ink); cursor: pointer; }
+.combat-detail-dialog button:focus-visible { outline: 2px solid #ffdc2d; outline-offset: 2px; }
+.combat-detail-dialog button.psd-popup-close {border-image:none}
+.combat-detail-dialog button:active { filter: brightness(1.12); }
+@media (max-width: 360px), (max-height: 600px) {
+  .combat-detail-dialog { padding: 20px; }
+  .combat-detail-dialog[open] { gap: 10px; }
+  .combat-detail-dialog h3 { font-size: 19px; margin-top: 8px; }
+}
+
+/* Combat-only messages share the lobby palette without changing their timing. */
+.game-shell.pixi-combat-active .toast {
+  padding: 8px 14px;
+  border: 1px solid #547e9e;
+  border-left: 3px solid #ffdc2d;
+  border-radius: 3px;
+  background: #0b1c2de8;
+  color: #f8fbff;
+  text-shadow: none;
+  letter-spacing: 0;
+}
+.game-shell.pixi-combat-active .stage-banner {
+  border-color: #547e9e;
+  background: linear-gradient(90deg, transparent, #0b1c2df2 18%, #0b1c2df2 82%, transparent);
+  color: #f8fbff;
+  text-shadow: none;
+}
+.game-shell.pixi-combat-active .stage-banner small { color: #ffdc2d; }
+.game-shell.pixi-combat-active .stage-banner span { color: #b7cddd; }
+@media (prefers-reduced-motion: reduce) {
+  .game-shell.pixi-combat-active .toast,
+  .game-shell.pixi-combat-active .stage-banner { transition: none; }
+}
+
+/* HTML fallback uses the same original assets as the Three combat menus. */
+.game-shell :is(.pause-actions,.revive-actions) button,
+.game-shell .result-card button {
+  min-height:44px;border:0!important;border-radius:0!important;clip-path:none!important;
+  background:none!important;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch;
+  color:#eef8ff!important;box-shadow:none!important;text-shadow:0 1px #102632;
+}
+.game-shell :is(.pause-actions,.revive-actions) button:last-child,
+.game-shell .result-card button {
+  border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / 9px stretch;
+}
+.game-shell :is(.pause-actions,.revive-actions,.result-card) button:active,
+.combat-detail-dialog button:active {filter:brightness(1.15)}
+.game-shell :is(.pause-actions,.revive-actions,.result-card) button:disabled {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch;color:#a9bbc6!important}

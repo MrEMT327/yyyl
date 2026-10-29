@@ -1,0 +1,60 @@
+/* Authored PNG nine-slices and matching SVG glyphs; shared by game and effect sheet. */
+#gui-casual-lobby.equipment-reference .eq-inventory-toolbar.eq-toolbar-authored {
+  position:relative;z-index:20;display:grid;grid-template-columns:1fr 1fr 1.2fr;
+  align-items:center;gap:7px;min-height:58px;padding:6px 9px;
+  border-top:1px solid #7895a7;border-bottom:2px solid #0a1b2b;
+  background:linear-gradient(#263e51,#1d3346);box-shadow:0 3px 8px #06122044;
+}
+#gui-casual-lobby.equipment-reference .eq-choice {position:relative;min-width:0}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button) {
+  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;
+  width:100%;height:44px;min-height:44px;min-width:0;margin:0;padding:0 12px;
+  border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;
+  color:#edf8ff!important;font:600 clamp(12px,3.3cqw,16px)/1.2 "PingFang SC","Microsoft YaHei",sans-serif;
+  letter-spacing:0;text-shadow:0 1px #071725;clip-path:none;transform:none;cursor:pointer;
+}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button)::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;
+  border:0;border-image:url('/art/equipment-controls-v1/button-normal.png') 24 fill / 11px stretch;
+}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button)::after {content:none}
+#gui-casual-lobby.equipment-reference .eq-choice-trigger>span {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#gui-casual-lobby.equipment-reference .eq-choice-chevron {width:16px;height:16px;flex:none;margin-left:5px;transition:rotate .12s}
+#gui-casual-lobby.equipment-reference .eq-choice-trigger[aria-expanded='true']::before {border-image-source:url('/art/equipment-controls-v1/button-selected.png')}
+#gui-casual-lobby.equipment-reference .eq-choice-trigger[aria-expanded='true']>.eq-choice-chevron {rotate:180deg}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):active::before {border-image-source:url('/art/equipment-controls-v1/button-pressed.png')}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):disabled::before {border-image-source:url('/art/equipment-controls-v1/button-disabled.png')}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):disabled {color:#7891a2!important;cursor:default}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored .eq-workshop-button {justify-content:center}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored .eq-workshop-button strong {color:inherit;font:400 clamp(15px,4.1cqw,20px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;-webkit-text-stroke:0;text-shadow:0 1px #071725}
+#gui-casual-lobby.equipment-reference .eq-choice-menu {
+  position:absolute;isolation:isolate;top:calc(100% + 4px);left:0;z-index:30;
+  display:grid;width:max(100%,156px);max-height:264px;padding:7px;overflow:auto;
+  border:0;background:none;box-shadow:0 8px 14px #030d18a8;scrollbar-width:thin;scrollbar-color:#678aa1 transparent;
+}
+#gui-casual-lobby.equipment-reference .eq-choice-menu[hidden] {display:none}
+#gui-casual-lobby.equipment-reference .eq-choice-menu[data-side='above'] {top:auto;bottom:calc(100% + 4px)}
+#gui-casual-lobby.equipment-reference .eq-choice-menu::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-image:url('/art/equipment-controls-v1/menu-panel.png') 24 fill / 12px stretch;
+}
+#gui-casual-lobby.equipment-reference .eq-choice-option {
+  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  min-height:44px;padding:0 12px;border:0;border-radius:0;background:transparent;box-shadow:none;
+  color:#d1e4f1;font:600 13px/1.3 "PingFang SC","Microsoft YaHei",sans-serif;text-shadow:none;white-space:nowrap;cursor:pointer;
+}
+#gui-casual-lobby.equipment-reference .eq-choice-option+[role='option'] {border-top:1px solid #688a9f26}
+#gui-casual-lobby.equipment-reference .eq-choice-option[aria-selected='true'] {color:#f1fdff}
+#gui-casual-lobby.equipment-reference .eq-choice-option[aria-selected='true']::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-image:url('/art/equipment-controls-v1/option-selected.png') 12 fill / 6px stretch;
+}
+#gui-casual-lobby.equipment-reference .eq-choice-option>img {width:17px;height:17px;visibility:hidden}
+#gui-casual-lobby.equipment-reference .eq-choice-option[aria-selected='true']>img {visibility:visible}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored button:focus-visible {outline:2px solid #b1eaf2;outline-offset:-4px}
+@container(max-width:350px) {
+  #gui-casual-lobby.equipment-reference .eq-toolbar-authored {gap:5px;padding-inline:6px}
+  #gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button) {padding-inline:7px}
+  #gui-casual-lobby.equipment-reference .eq-choice-chevron {width:12px;height:12px;margin-left:2px}
+}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby.equipment-reference .eq-choice-chevron{transition:none}}

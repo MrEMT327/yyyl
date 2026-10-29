@@ -1,0 +1,33 @@
+#gui-casual-lobby .pilot-supply-shortcuts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;padding:6px 0}
+#gui-casual-lobby .pilot-supply-shortcuts .wc-button{min-width:0;min-height:36px;padding:5px 4px;font-size:12px;--psd-button-corner:10px}
+#gui-casual-lobby .pilot-supply-panel{display:grid;gap:12px;color:#d9edf6;font-size:13px;line-height:1.6}
+#gui-casual-lobby .pilot-supply-panel section{padding:12px;background:#132b3a;border:1px solid #527084}
+#gui-casual-lobby .dc-hub .pilot-supply-panel h3,
+#gui-casual-lobby .pilot-supply-panel h3{margin:0 0 6px;font-size:16px;color:#f4e2ae}
+#gui-casual-lobby .pilot-supply-panel p{margin:5px 0 10px;color:inherit;text-shadow:none}
+#gui-casual-lobby .pilot-supply-panel .wc-button{min-height:42px;margin:3px 0;padding:8px 12px;--psd-button-corner:12px}
+#gui-casual-lobby .pilot-supply-panel .ps-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#gui-casual-lobby .pilot-supply-panel .ps-resource{display:inline-flex;gap:5px;align-items:center;vertical-align:middle}
+#gui-casual-lobby .pilot-supply-panel .ps-item-art{width:30px;height:30px;object-fit:contain}
+#gui-casual-lobby .pilot-supply-panel .ps-exchange{display:flex;gap:10px;align-items:center;justify-content:space-between;border-top:1px solid #527084;padding:5px 0}
+#gui-casual-lobby .pilot-supply-panel .ps-exchange small{display:block;color:#adbfca;font-size:11px}
+#gui-casual-lobby .pilot-supply-panel button:disabled{opacity:.5}
+
+/* Collection choices reuse the existing PSD button corners and inventory art. */
+#gui-casual-lobby .cs-select-label{display:grid;gap:8px;font-size:14px}
+#gui-casual-lobby .cs-select-label select{width:100%;min-width:0;min-height:44px;padding:6px;font:inherit;background:#e8f1f5;color:#172c39}
+#gui-casual-lobby .cs-preview{display:flex;align-items:center;gap:12px;margin-top:12px}
+#gui-casual-lobby .cs-preview-art{width:72px;height:72px;object-fit:contain;flex:none}
+#gui-casual-lobby .cs-preview>div{min-width:0;overflow-wrap:anywhere}
+#gui-casual-lobby .cs-source{display:grid;gap:6px;margin-top:12px;font-size:13px;line-height:1.6}
+#gui-casual-lobby .cs-source p{margin:0;white-space:normal}
+#gui-casual-lobby .cs-source .wc-button{min-height:42px;width:100%;--psd-button-corner:12px}
+
+/* The weapon detail has a fixed PSD header: use its free right-hand area. */
+#gui-casual-lobby .weapon-detail-modal .cs-source{position:absolute;left:calc(310 * var(--du));right:calc(75 * var(--du));top:calc(200 * var(--du));margin:0;gap:0}
+#gui-casual-lobby .weapon-detail-modal .cs-source p{display:none}
+#gui-casual-lobby .weapon-detail-modal .cs-source .wc-button{margin:0;min-height:44px;padding:6px;font-size:clamp(11px,calc(36 * var(--du)),16px)}
+
+#gui-casual-lobby .pilot-supply-panel {align-content:start}
+#gui-casual-lobby .pl-modal-content>.pilot-supply-panel {color:#233e52}
+#gui-casual-lobby .pl-modal-content>.pilot-supply-panel section {color:#d9edf6}

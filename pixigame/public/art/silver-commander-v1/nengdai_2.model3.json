@@ -1,0 +1,56 @@
+{
+  "Version": 3,
+  "Name": "nengdai_2",
+  "FileReferences": {
+    "Moc": "nengdai_2.moc3",
+    "Textures": [
+      "textures/texture_00.png"
+    ],
+    "DisplayInfo": null,
+    "Physics": "nengdai_2.physics3.json",
+    "Motions": {
+      "idle": [
+        {
+          "File": "motions/idle.motion3.json"
+        }
+      ],
+      "touch_head": [
+        {
+          "File": "motions/touch_head.motion3.json"
+        }
+      ]
+    },
+    "Expressions": []
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "zidongkoukaibi"
+      ]
+    }
+  ],
+  "HitAreas": [
+    {
+      "Id": "TouchBody",
+      "Name": "touch_body"
+    },
+    {
+      "Id": "TouchHead",
+      "Name": "touch_head"
+    },
+    {
+      "Id": "TouchSpecial",
+      "Name": "touch_special"
+    }
+  ]
+}

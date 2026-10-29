@@ -1,0 +1,271 @@
+{
+  "method": "Original generated art and project vector controls; only transparent margins and export dimensions normalized",
+  "assets": [
+    {
+      "name": "experience",
+      "file": "experience.png",
+      "source": "design/icon-supplements-20261027/experience.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-27c45772-1751-43b4-98f5-43cb741c63b8.png",
+      "prompt": "One original mobile sci-fi flight game INVENTORY EXPERIENCE RESOURCE icon. A compact chunky blue-white navy beveled hexagonal training-data medallion, luminous cyan rising double chevrons on face and small integrated clear letters EXP. Polished flat cartoon hard-surface graphic, thick dark navy contour, 2 to 3 flat shading levels, clean big shapes, no tiny mechanical detail. White steel outer rim, teal glass center. Single isolated object fills 80% canvas with transparent margin. Not a weapon, not a coin, not a talent card. No background, no card frame, no watermark. Transparent background. Original design.",
+      "sourceSha256": "0d6332d055b82c170db6fefc2d61bf9a36ee69158b9fab5208187875908670c8",
+      "sha256": "25d0b673183c06acc145569e140d21c1fa3ff183b84ea786ec92dfb2ba39d3d8"
+    },
+    {
+      "name": "basic-ticket",
+      "file": "basic-ticket.png",
+      "source": "design/icon-supplements-20261027/basic-ticket.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-7f8c4f51-25a7-4dce-8992-24444d214dd1.png",
+      "prompt": "One original mobile sci-fi flight game BASIC EQUIPMENT CRATE VOUCHER inventory icon. Single wide horizontal silver-white and blue-grey hard-surface futuristic ticket, chamfered ends and one square notch each short edge. Large simple small white-blue cargo crate emblem at center, navy outline, one cyan stripe. Flat cartoon game icon, bold dark navy contour, 2 to 3 flat shading levels, clear shapes, only minimal sci-fi panel seams, no microdetails. This is a ticket not a box itself. Slight perspective, fills 80% canvas with transparent margins, no letters or text or numbers. Transparent background, no framing card, no watermark. Original design.",
+      "sourceSha256": "e29370db6b0f012cf54cd1fef84c8c71172b2f3d2ab9f21c5152c921644e2e0b",
+      "sha256": "5f47b5307ffbb81366a628fe7b53894092fcac6e84c532bd43cd88ad9ab35327"
+    },
+    {
+      "name": "advanced-ticket",
+      "file": "advanced-ticket.png",
+      "source": "design/icon-supplements-20261027/advanced-ticket.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-65cb0a2d-ea59-4a71-8fa3-2cb57b4f8dda.png",
+      "prompt": "One original mobile sci-fi flight game ADVANCED EQUIPMENT CRATE VOUCHER inventory icon. Single wide horizontal white-gold and dark navy hard-surface futuristic ticket, chamfered ends and one square notch each short edge. Large angular premium cargo crate emblem with cyan center at center, navy outline, two gold stripes and an integrated tiny star. Flat cartoon game icon, bold dark navy contour, 2 to 3 flat shading levels, clear shapes, only minimal sci-fi panel seams, no microdetails. This is a ticket not a box itself. Slight perspective, fills 80% canvas with transparent margins, no letters or text or numbers. Transparent background, no framing card, no watermark. Original design.",
+      "sourceSha256": "10db6202d011947b082dc49af618568b89589127900531fde5278105ad6d7b0d",
+      "sha256": "81a14846349029261e96c66b30d2fa1d351359c90e8bacfc5424a275ccfd0fe2"
+    },
+    {
+      "name": "pilot-box",
+      "file": "pilot-box.png",
+      "source": "design/icon-supplements-20261027/pilot-box.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-7f0501d0-f613-40af-a311-689ae6b3b777.png",
+      "prompt": "pilot recruitment supplies: a navy-white aircrew flight case with a prominent cyan pilot helmet insignia, compact upright proportions",
+      "sourceSha256": "66e7625b16c592e2daf0c4476f036c8f2206a2a08e4808fbe4ab87d71bb47896",
+      "sha256": "7fe461032c025cf6be6ed841a0a5cd9395375e3e6b0169f73daac1c2aaf03bc7"
+    },
+    {
+      "name": "gear-choice-box",
+      "file": "gear-choice-box.png",
+      "source": "design/icon-supplements-20261027/gear-choice-box.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-2fa71f06-d73d-4ad2-9014-9f68d944bd2a.png",
+      "prompt": "epic equipment selector: white-gold reinforced equipment crate, purple illuminated central gear insignia, broad rectangular proportions",
+      "sourceSha256": "b422a31544c3056d0853b409c12b3158e66b8982bbd87a7e057a95b59cc19d4c",
+      "sha256": "c6b46ee1477601bf4289a3e44d306fb91a892df455adad8e61b8c3802acf672d"
+    },
+    {
+      "name": "blueprint-choice-box",
+      "file": "blueprint-choice-box.png",
+      "source": "design/icon-supplements-20261027/blueprint-choice-box.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-dd90c5d8-f28d-424e-9a60-2d34eeff29d2.png",
+      "prompt": "equipment blueprint selector: navy-white technical document case with cyan blueprint grid sheet emblem and gold latch, flatter document-case proportions",
+      "sourceSha256": "66b3cf0df2db95f3236c7c37c880a35bb0e2ab7e118cdbf7416a097b090c21fd",
+      "sha256": "d173dfda7e191fb594d20d5ff2d25871e9d86fd1ecff0816d8f632cc1f5081c3"
+    },
+    {
+      "name": "pilot-box-fragment",
+      "file": "pilot-box-fragment.png",
+      "source": "design/icon-supplements-20261027/pilot-box-fragment.png",
+      "generationFile": "C:\\Users\\lvan\\.codex\\generated_images\\01a16257-ded1-76d2-9743-7e98f52d272d\\exec-c0a54719-13fd-4caa-8522-01d0242fdf45.png",
+      "prompt": "a single collectible fragment of a pilot recruitment case token, one chunky asymmetrical puzzle piece, white-navy border and cyan helmet insignia, unmistakably a fragment NOT a whole crate",
+      "sourceSha256": "07792bad7f2dd0e3dd3ba1b6ba4d9be5f193a6c8845f51caed0232316859c5d0",
+      "sha256": "2a7d8d51fa9067b8021ea750d8339714c01c85d6a0421d7c68f05a81f817d4c5"
+    },
+    {
+      "name": "settings",
+      "file": "settings.png",
+      "source": "settings.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "cfbc40fe723cd16e432c9584e00b32ec980c6af51a1a9f5d8e371800d88ea205"
+    },
+    {
+      "name": "home",
+      "file": "home.png",
+      "source": "home.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "ff2947e3c162d47a7169c44fbf6c04c001cd67da8ceea0f85b4a70ee33aeb0a8"
+    },
+    {
+      "name": "sound",
+      "file": "sound.png",
+      "source": "sound.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "a87bd102ee6a1fc2381a30bb00062bd7177900423d3ad996183b42d3a989745f"
+    },
+    {
+      "name": "muted",
+      "file": "muted.png",
+      "source": "muted.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "7935d2b5b9d48d1ae896c8c27da3d7db943bf1bf0b5d2b7575261362b6a9d792"
+    },
+    {
+      "name": "target",
+      "file": "target.png",
+      "source": "target.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "cc87e9e01d436679057de7021c6817cf4b8052ed8732b79564d820ec7a20476f"
+    },
+    {
+      "name": "boss",
+      "file": "boss.png",
+      "source": "boss.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "0d120e87c47697920ac3c046064c68c0013db9d261979b515b3446acbbcb5498"
+    },
+    {
+      "name": "grade",
+      "file": "grade.png",
+      "source": "grade.svg",
+      "method": "Original vector UI symbol, extending the project navy/cyan control style",
+      "sha256": "36b00d6d40ed3321cd1b9d9b5aa667a52406e1cbe2c918e09f514eb90d17636d"
+    },
+    {
+      "name": "rank-S-yellow",
+      "file": "rank-S-yellow.png",
+      "source": "rank-S-yellow.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "fdee12da785241e79d1d160dd3d2ebcde14e2dca18e0aade690bb4fe7749363a"
+    },
+    {
+      "name": "rank-S-red",
+      "file": "rank-S-red.png",
+      "source": "rank-S-red.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "60ac77a5f9b03adaef0d865e7d173f675183b7a1d94937c2a2db69d44a70c5ed"
+    },
+    {
+      "name": "rank-S-multicolor",
+      "file": "rank-S-multicolor.png",
+      "source": "rank-S-multicolor.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "dd6fb4ddbba2c5c941b5ad95eb2d1f203b449682b7d0ab4a5f780608e14f20bb"
+    },
+    {
+      "name": "rank-S-grey",
+      "file": "rank-S-grey.png",
+      "source": "rank-S-grey.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "718e8bea376c79c8ec2823faeceb0cc6fff9c31c9ad8223ae9ec9fe92796cfd5"
+    },
+    {
+      "name": "rank-S-white",
+      "file": "rank-S-white.png",
+      "source": "rank-S-white.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "b79ca851bae00750924c60ace644e89c093e838c459cd31ca0bb00c3cd57422f"
+    },
+    {
+      "name": "rank-M-yellow",
+      "file": "rank-M-yellow.png",
+      "source": "rank-M-yellow.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "30729bd9f00401aed4632d573d913fdec82ab7b8bd54020d8218fde6385093ea"
+    },
+    {
+      "name": "rank-M-red",
+      "file": "rank-M-red.png",
+      "source": "rank-M-red.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "7d67ed742d4208b358fdfebc825012932915bd0dc8312102ce4551657c1e981c"
+    },
+    {
+      "name": "rank-M-multicolor",
+      "file": "rank-M-multicolor.png",
+      "source": "rank-M-multicolor.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "c2efae9efaf04c6e71b2e8a4e65d907a5d7859197a85dc749fed97443cf3a7fe"
+    },
+    {
+      "name": "rank-M-grey",
+      "file": "rank-M-grey.png",
+      "source": "rank-M-grey.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "1d228ddaedacf104bd96b4b9f1f373e58db59af945c3438baff31d5db35608da"
+    },
+    {
+      "name": "rank-M-white",
+      "file": "rank-M-white.png",
+      "source": "rank-M-white.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "bc342e8827af36bfcf7b9efc505b8f4b7e93e74a6ef0b59da5c286d5772b4b4b"
+    },
+    {
+      "name": "rank-L-yellow",
+      "file": "rank-L-yellow.png",
+      "source": "rank-L-yellow.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "c77a28266adba9f7e77a9e7a864cb322d5063954413af6846bde8dacf4021f2f"
+    },
+    {
+      "name": "rank-L-red",
+      "file": "rank-L-red.png",
+      "source": "rank-L-red.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "737ff7a5c493d1b79d3a0b720cbb2476dc0a55d878cc4d44f4eed764c7d0bbbd"
+    },
+    {
+      "name": "rank-L-multicolor",
+      "file": "rank-L-multicolor.png",
+      "source": "rank-L-multicolor.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "029ae391d84b2d6e27c2d8dd80999f549856502400fd4f4cd0ec029bfe493b0c"
+    },
+    {
+      "name": "rank-L-grey",
+      "file": "rank-L-grey.png",
+      "source": "rank-L-grey.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "779c458590a5be23a02ab8ebf75a9226da5d8332ef72b176e0cdd566824443b2"
+    },
+    {
+      "name": "rank-L-white",
+      "file": "rank-L-white.png",
+      "source": "rank-L-white.svg",
+      "method": "Original vector rank indicator; tier and lit state preserved",
+      "sha256": "c4fb5b8be79ccfe1680ed6cf56b721c5dd4df1e0c0564ecd1eecebb7676cd9fb"
+    },
+    {
+      "name": "exp_0000",
+      "file": "exp_0000.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "79d65ce6056d3f1444b98137f6de880bfe610f517279dace42348b0860d49bc9"
+    },
+    {
+      "name": "exp_0004",
+      "file": "exp_0004.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "c497e377828fe15b96a6c2617a7e2b179d9fab239ea622c7eb6840972dff54f3"
+    },
+    {
+      "name": "exp_0005",
+      "file": "exp_0005.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "c497e377828fe15b96a6c2617a7e2b179d9fab239ea622c7eb6840972dff54f3"
+    },
+    {
+      "name": "exp_0001",
+      "file": "exp_0001.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "c497e377828fe15b96a6c2617a7e2b179d9fab239ea622c7eb6840972dff54f3"
+    },
+    {
+      "name": "exp_0006",
+      "file": "exp_0006.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "0a06e09884cf3aa4db227367f6998a71aff917eb0f600a89851af1ff0416d217"
+    },
+    {
+      "name": "exp_0003",
+      "file": "exp_0003.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "c497e377828fe15b96a6c2617a7e2b179d9fab239ea622c7eb6840972dff54f3"
+    },
+    {
+      "name": "exp_0002",
+      "file": "exp_0002.png",
+      "source": "experience.png",
+      "method": "Same original experience icon exported to the existing animation frame dimensions",
+      "sha256": "0715b7806ef6f591f541b0db44bb1063e357cf1aeb53eebefee32092fea0fd8e"
+    }
+  ]
+}

@@ -1,0 +1,380 @@
+/* Visual authority for lobby components. Page CSS owns layout, art placement,
+   and dimensions; this theme owns materials, type, quality and state styling.
+   Reuse the talent page's authored assets, not separate approximations. */
+.peripheral-lobby.reference-layout.lobby-theme {
+  --ui-ink:#06121e;
+  --ui-panel:#10263b;
+  --ui-panel-deep:#0b1c2d;
+  --ui-edge:#547e9e;
+  --ui-text:#f8fbff;
+  --ui-muted:#b7cddd;
+  --ui-success:#a9e8bc;
+  --ui-warning:#ffb29f;
+  --ui-yellow:#ffdc2d;
+  --ui-blue:#16b5f6;
+  --ui-outline:1px 1px var(--ui-ink),-1px -1px var(--ui-ink),1px -1px var(--ui-ink),-1px 1px var(--ui-ink);
+  --ui-caption-size:clamp(11px,3cqw,12px);
+  --ui-control-size:clamp(13px,3.5cqw,15px);
+  --ui-action-size:clamp(17px,4.5cqw,21px);
+  --ui-label-shadow:0 1px 1px var(--ui-ink);
+  --ui-button-blue:url('/art/ui-original/button-secondary.png');
+  --ui-button-yellow:url('/art/ui-original/button-primary.png');
+  --ui-card:url('/art/research-comic-v1/card-frame.png');
+  --hud-wallet-width:56cqw;
+  --hud-header-inset:2cqw;
+  --hud-wallet-gap:1cqw;
+  --research-ink:var(--ui-ink);--research-panel:var(--ui-panel);--research-yellow:var(--ui-yellow);--research-blue:var(--ui-blue);--research-text:var(--ui-text);--research-outline:var(--ui-outline);
+  --shop-ink:var(--ui-ink);--shop-panel:var(--ui-panel);--shop-line:var(--ui-edge);--shop-yellow:var(--ui-yellow);--shop-text:var(--ui-text);
+  --eq-yellow:var(--ui-yellow);--bc-yellow:var(--ui-yellow);
+  color:var(--ui-text);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+}
+
+/* Bordered controls have one material and state vocabulary. Atlas navigation,
+   transparent model interaction and image-only cards are deliberately excluded. */
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-button,.shop-button,.eq-workshop-button,.rc-draw,.ref-catalog-button,.research-awaken,.ref-combine,.ref-yellow,.ref-small,.ref-back,.lc-tabs :where(button),.lc-claim) {
+  --ui-button-art:var(--ui-button-blue);
+  border:0!important;border-radius:0!important;clip-path:none;
+  background:transparent var(--ui-button-art) center/100% 100% no-repeat!important;
+  box-shadow:none!important;color:var(--ui-text)!important;
+  font-family:inherit;font-weight:900;text-shadow:var(--ui-outline);
+  -webkit-text-stroke:0;transition:filter .12s,transform .12s;
+}
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-primary,.shop-button.is-yellow,.eq-workshop-button,.rc-draw.is-ten,.rc-pool-tab.is-active,.ref-catalog-primary,.ref-combine,.ref-yellow,.research-awaken.is-ace,.ref-workshop-tabs .is-active,.ref-catalog-bottom-tabs .is-active,.pl-slot-picker .is-active,.lc-tabs button[aria-pressed=true],.lc-claim:not(:disabled)) {
+  --ui-button-art:var(--ui-button-yellow);
+  color:var(--ui-text)!important;
+}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-button,.eq-workshop-button,.rc-draw,.ref-catalog-primary,.ref-combine,.research-awaken)>:is(strong,.shop-button-label) {
+  color:var(--ui-text);font-weight:950;text-shadow:var(--ui-outline),0 2px var(--ui-ink);-webkit-text-stroke:0;
+}
+.peripheral-lobby.reference-layout.lobby-theme .eq-workshop-button strong{font-size:clamp(17px,4.4cqw,21px)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-button,.shop-button,.eq-workshop-button,.rc-draw,.ref-catalog-button,.ref-combine,.ref-yellow,.ref-small,.ref-back,.lc-claim):disabled {
+  /* State must win over active/primary variants with more specific selectors. */
+  --ui-button-art:var(--ui-button-blue)!important;filter:saturate(.25) brightness(.75)!important;opacity:1;cursor:not-allowed;
+  color:var(--ui-muted)!important;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-primary.is-current:disabled{filter:saturate(.4) brightness(.85)!important}
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-button,.shop-button,.eq-workshop-button,.rc-draw,.ref-catalog-button,.ref-combine,.research-awaken):active:not(:disabled){transform:translateY(1px);filter:brightness(1.1)}
+.peripheral-lobby.reference-layout.lobby-theme :is(button,select):focus-visible{outline:2px solid #fff2a0;outline-offset:-4px}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-button,.ref-catalog-button,.pl-button) :is(.shop-icon,.pl-icon){filter:brightness(0) invert(1)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-draw>span,.ref-catalog-cost,.workshop-cost){color:var(--ui-text);text-shadow:var(--ui-outline);font-variant-numeric:tabular-nums}
+.peripheral-lobby.reference-layout.lobby-theme .rc-draw:disabled>span>b{color:#ff8f80}
+
+/* One talent frame, six quality treatments. Filter the frame, never the item. */
+.peripheral-lobby.reference-layout.lobby-theme [data-frame-quality="0"]{--ui-quality-filter:saturate(.2) brightness(1.35)}
+.peripheral-lobby.reference-layout.lobby-theme [data-frame-quality="1"]{--ui-quality-filter:hue-rotate(295deg) saturate(1.3) brightness(1.12)}
+.peripheral-lobby.reference-layout.lobby-theme [data-frame-quality="2"]{--ui-quality-filter:saturate(1.65) brightness(1.3)}
+.peripheral-lobby.reference-layout.lobby-theme [data-frame-quality="3"]{--ui-quality-filter:hue-rotate(65deg) saturate(1.7) brightness(1.25)}
+.peripheral-lobby.reference-layout.lobby-theme [data-frame-quality="4"]{--ui-quality-filter:hue-rotate(195deg) saturate(1.7) brightness(1.65)}
+.peripheral-lobby.reference-layout.lobby-theme [data-frame-quality="5"]{--ui-quality-filter:hue-rotate(125deg) saturate(1.5) brightness(1.3)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-card,.ref-catalog-card,.rc-preview-card,.eq-mount,.pl-weapon-detail){isolation:isolate;border:0!important;border-radius:0!important;clip-path:none;background:none;padding:0;box-shadow:none!important;overflow:hidden}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-card,.ref-catalog-card,.rc-preview-card,.eq-mount,.pl-weapon-detail)::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border:0;clip-path:none;background:var(--ui-card) center/100% 100% no-repeat;box-shadow:none;filter:var(--ui-quality-filter)}
+.peripheral-lobby.reference-layout.lobby-theme .eq-mount{filter:none}
+.peripheral-lobby.reference-layout.lobby-theme .eq-mount .eq-mount-inner{inset:7% 8% 8%;border:0;clip-path:none;background:none;box-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .eq-mount-inner>strong{min-height:22%;padding:1px 0;background:#06121e99;font-size:2.7cqw;line-height:1.3;text-shadow:var(--ui-outline)}
+.peripheral-lobby.reference-layout.lobby-theme .eq-mount .eq-mount-art{width:100%;margin-bottom:4%;border:0;clip-path:none;background:none;box-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .eq-mount-inner>b{right:3%;bottom:1%;color:var(--ui-yellow);font-variant-numeric:tabular-nums;text-shadow:var(--ui-outline)}
+.peripheral-lobby.reference-layout.lobby-theme .eq-mount.is-empty .eq-empty-plus{opacity:.65}
+.peripheral-lobby.reference-layout.lobby-theme .pl-weapon-detail>.pl-model-thumb{padding:12px}
+.peripheral-lobby.reference-layout.lobby-theme .pl-weapon-detail>span{right:12px;bottom:10px;color:var(--ui-yellow);font-weight:900;font-variant-numeric:tabular-nums;text-shadow:var(--ui-outline)}
+.peripheral-lobby.reference-layout.lobby-theme .eq-card-inner{inset:7% 8% 8%;border:0;clip-path:none;background:none!important;box-shadow:none!important}
+.peripheral-lobby.reference-layout.lobby-theme .eq-card.is-locked .eq-card-inner{background:none}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-card-name,.eq-card-level,.ref-catalog-card-name,.rc-preview-card>span){color:var(--ui-text);font-weight:800;text-shadow:var(--ui-label-shadow);-webkit-text-stroke:0}
+.peripheral-lobby.reference-layout.lobby-theme .eq-card-level{color:#ffec37}
+/* Small equipment labels need clean glyphs, not a blurred outline. */
+.peripheral-lobby.reference-layout.lobby-theme.equipment-comic :is(.eq-card-name,.eq-card-level,.eq-mount-inner>strong,.eq-catalog-row strong){text-shadow:none;font-weight:700}
+.peripheral-lobby.reference-layout.lobby-theme.equipment-comic .eq-mount-inner>strong{font-size:clamp(11px,3cqw,13px);line-height:14px}
+.peripheral-lobby.reference-layout.lobby-theme.equipment-comic :is(.eq-card-art,.eq-mount-art)>.pl-model-thumb{filter:none}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-card-art{inset:8% 9% 17%}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-aircraft .ref-catalog-card-art{inset:9%}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-pilot .ref-catalog-card>.ref-catalog-stars{bottom:8%;padding-inline:8%}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-card>.rc-portrait{position:absolute;inset:9% 9% 23%;width:82%;height:68%;object-fit:cover}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-card.is-weapon>.pl-model-thumb{position:absolute;inset:9% 9% 23%;width:82%;height:68%;object-fit:contain}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-card>.pl-weapon-icon-cannon{transform:scale(1.3)}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-card>.rc-preview-name{inset:auto 8% 8%;padding:2px 0;background:#04132160}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-card-equipped,.ref-catalog-equipped){color:#ffe775;background:#06121edb;border:1px solid #415e72;border-radius:2px;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .card-selection{inset:0;padding:0;background:none;color:#f1ead8}
+.peripheral-lobby.reference-layout.lobby-theme .card-selection>em{display:none}
+.peripheral-lobby.reference-layout.lobby-theme .card-selection>i:nth-child(1){top:10%;left:10%}
+.peripheral-lobby.reference-layout.lobby-theme .card-selection>i:nth-child(2){top:10%;right:10%}
+.peripheral-lobby.reference-layout.lobby-theme .card-selection>i:nth-child(3){bottom:10%;left:10%}
+.peripheral-lobby.reference-layout.lobby-theme .card-selection>i:nth-child(4){bottom:10%;right:10%}
+
+/* Supporting panels share edge weight and typography without moving content. */
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-inventory-toolbar,.ref-catalog-list-heading,.ref-workshop-tabs,.ref-workshop .ref-divider,.rc-preview-heading,.ref-catalog-bottom,.ref-workshop-footer,.rc-footer){background:var(--ui-panel);border-color:var(--ui-edge);border-radius:3px;box-shadow:inset 0 1px #ffffff12,0 2px var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-inventory,.ref-catalog-scroll,.ref-workshop .ref-warehouse,.shop-content,.rc-preview-strip){background-color:var(--ui-panel-deep)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-modal,.shop-panel,.ref-catalog-rule,.pl-detail-facts,.rc-preview-strip){border:2px solid var(--ui-ink);border-radius:3px;box-shadow:inset 0 0 0 1px var(--ui-edge),0 2px var(--ui-ink);color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal{background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),0 15px 60px #0009}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal-heading{background:var(--ui-panel-deep);border-bottom:2px solid var(--ui-yellow)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-modal-heading h2,.ref-catalog-identity h1,.workshop-scene-title h1,.shop-panel-heading h2,.shop-feature-heading h2,.shop-resources-heading h2,.rc-preview-heading h2,.ref-catalog-list-heading h2){font-weight:900;color:var(--ui-text);text-shadow:var(--ui-outline);letter-spacing:0}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-select select,.rc-preview-heading>button,.rc-history,.shop-hero-caption,.shop-preview,.pl-close,.rc-pool-label>button,.rc-feature-name>button,.rc-arrow,.eq-empty button){border:2px solid var(--ui-ink);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),inset 0 -3px #071624;color:var(--ui-text);font-weight:800;text-shadow:none;clip-path:none}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-title,.research-title){background:#ffda2e;border:2px solid var(--ui-ink);box-shadow:inset 0 0 0 2px #fff192,inset 0 -3px #cba020;color:var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-title-text,.research-title strong){font-size:5.3cqw;font-weight:950;letter-spacing:.15cqw;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-page-title{color:var(--ui-text);text-shadow:var(--ui-outline),0 2px var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-scene-slot{position:relative;isolation:isolate;border:0;border-radius:0;background:none;box-shadow:none;clip-path:none;padding:8% 8% 7%;grid-template-rows:17px minmax(0,1fr) 20px}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-scene-slot::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--ui-card) center/100% 100% no-repeat;filter:var(--ui-quality-filter)}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-scene-slot>small{justify-self:center;padding:0 5px;border:1px solid #48677b;border-radius:2px;background:var(--ui-panel-deep);color:var(--ui-muted);font-size:10px;line-height:15px;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-scene-slot.is-result>small{border-color:#d4ad32;background:#51431c;color:#fff0a8}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-scene-slot>span{font-weight:900;text-shadow:var(--ui-outline);font-variant-numeric:tabular-nums}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-readout{background:#0b1c2de8;border:1px solid var(--ui-edge);border-radius:3px;color:var(--ui-text)}
+
+/* Shared resource markup across all five landing headers. The hit target is
+   taller than the visible bar, so small HUD artwork remains easy to tap. */
+.peripheral-lobby.reference-layout.lobby-theme[data-subpage=""] .pl-header:has(>.lobby-resources){display:grid;box-sizing:border-box;grid-template-columns:minmax(0,1fr) var(--hud-wallet-width);column-gap:2cqw;align-items:start;padding:var(--hud-header-inset) var(--hud-header-inset) 0}
+.peripheral-lobby.reference-layout.lobby-theme[data-subpage=""] .pl-header:has(>.lobby-resources)>:first-child{min-width:0;max-width:100%;margin:0}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resources{box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:var(--hud-wallet-width);min-width:0;justify-self:end;align-self:start;gap:var(--hud-wallet-gap);align-items:start;margin:0;padding:0}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource{display:flex;align-items:flex-start;min-width:0;min-height:44px;height:9cqw;padding:1cqw 0 0;border:0;border-radius:0;background:none;box-shadow:none;touch-action:manipulation}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar{--hud-plus-width:max(14px,4.5cqw);position:relative;box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:0;width:100%;height:clamp(26px,7cqw,34px);padding:0 calc(var(--hud-plus-width) + 1px) 0 3.4cqw;border:2px solid var(--ui-ink);border-radius:2px;background:var(--ui-panel-deep);box-shadow:inset 0 1px var(--ui-edge),inset 0 -2px #030b14,0 1px #7998ad55}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-icon{position:absolute;left:-1cqw;top:50%;transform:translateY(-50%);width:5cqw;height:7cqw;margin:0;pointer-events:none}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>b{display:flex;align-items:baseline;justify-content:center;min-width:0;max-width:100%;white-space:nowrap;color:var(--ui-text);font-size:clamp(11px,3.2cqw,15px);font-weight:900;line-height:1;letter-spacing:-.03cqw;font-variant-numeric:tabular-nums;text-shadow:0 1px var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-amount{min-width:0;overflow:hidden;text-overflow:ellipsis;padding-block:2px}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>b.is-long{font-size:clamp(10px,2.8cqw,13px)}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar small{flex:none;font-size:clamp(8px,2.2cqw,11px);color:var(--ui-muted)}
+/* Draw a bold cross instead of a font glyph: its visible weight is stable on
+   Android and iOS. The entire 44px-high resource button remains clickable. */
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>i{position:absolute;right:0;top:0;bottom:0;display:grid;place-items:center;box-sizing:border-box;width:var(--hud-plus-width);border-left:1px solid var(--ui-ink);background:var(--ui-yellow);box-shadow:inset 0 1px #fff3a0,inset 0 -2px #b88813;color:var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>i::before,
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>i::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:currentColor;border-radius:1px}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>i::before{width:65%;height:2px}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource-bar>i::after{width:2px;height:55%}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-resource:active .lobby-resource-bar{transform:translateY(1px);filter:brightness(1.12)}
+
+/* Secondary surfaces follow the same panel and label grammar, without
+   replacing scene illustrations or overwriting reward quality borders. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal{--lc-gold:var(--ui-yellow);--lc-cyan:var(--ui-blue);--lc-line:var(--ui-edge);border:2px solid var(--ui-ink);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),0 15px 60px #0009}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal::after{display:none}
+.peripheral-lobby.reference-layout.lobby-theme .lc-modal .pl-modal-heading{background:var(--ui-panel-deep);border-bottom:2px solid var(--ui-yellow);box-shadow:inset 0 1px #ffffff12}
+.peripheral-lobby.reference-layout.lobby-theme .lc-modal .pl-modal-heading::before{background:var(--ui-yellow);box-shadow:none;transform:none}
+.peripheral-lobby.reference-layout.lobby-theme .lc-modal .pl-modal-heading h2{letter-spacing:0;text-shadow:var(--ui-outline)}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal-content{background:var(--ui-panel-deep);box-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-close{width:44px;height:44px;min-width:44px;border:2px solid var(--ui-ink);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),inset 0 -3px #071624}
+.peripheral-lobby.reference-layout.lobby-theme :is(.lc-summary,.lc-task,.pl-task,.pl-signin-day,.pl-rule-copy dl){border:1px solid var(--ui-edge);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 1px #ffffff12,0 2px var(--ui-ink);color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.lc-task.is-ready,.pl-signin-day.is-today){border-color:var(--ui-yellow);background:#303522}
+.peripheral-lobby.reference-layout.lobby-theme .lc-task.is-claimed{border-color:#385165;background:var(--ui-panel-deep)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.pl-task-copy p,.pl-task-copy>small,.lc-summary p,.lc-summary small){color:var(--ui-muted)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.lc-emblem,.lc-task-icon,.lc-event-icon,.pl-task-badge){border:1px solid var(--ui-edge);border-radius:3px;background:#1c3b52;box-shadow:inset 0 1px #ffffff12,0 2px var(--ui-ink);transform:none}
+.peripheral-lobby.reference-layout.lobby-theme .pl-reward-item{border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 1px #ffffff12,0 2px var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.lc-chapter,.lc-event,.pl-stage-option){border-radius:3px;border-color:var(--ui-edge);box-shadow:inset 0 1px #ffffff12,0 2px var(--ui-ink)}
+.peripheral-lobby.reference-layout.lobby-theme .pl-stage-option{background:var(--ui-panel);color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.lc-chapter,.pl-stage-option).is-selected{border-color:var(--ui-yellow)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.lc-rewards>span,.lc-chapter-status,.lc-event-cta){border:1px solid var(--ui-edge);border-radius:2px;background:var(--ui-panel-deep);box-shadow:inset 0 1px #ffffff0d}
+.peripheral-lobby.reference-layout.lobby-theme .pl-toast{border:2px solid var(--ui-ink);border-radius:3px;background:#10263bf2;box-shadow:inset 0 0 0 1px var(--ui-edge),0 3px 10px #0006;color:var(--ui-text)}
+
+/* Catalog details and workshop readouts use the same text hierarchy. Keep
+   stage art, image placement, rarity and gameplay values page-owned. */
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-identity h1,.workshop-scene-title h1){padding:4px 9px;border-left:3px solid var(--ui-yellow);border-radius:2px;background:#0b1c2de8;box-shadow:0 2px var(--ui-ink);font-size:clamp(17px,5cqw,23px);line-height:1.3;font-weight:900;letter-spacing:0}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-identity p,.ref-catalog-identity>.ref-catalog-stars){background:#0b1c2dde;color:var(--ui-muted);border-radius:2px;text-shadow:none;font-variant-numeric:tabular-nums}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-skill-intro,.ref-catalog-rule,.catalog-skill-details,.rc-history-list>li){border:2px solid var(--ui-ink);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),0 2px var(--ui-ink);color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-rule>span{border:1px solid var(--ui-edge);border-radius:3px;background:var(--ui-panel-deep);box-shadow:inset 0 1px #ffffff12;opacity:1}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-rule h3,.ref-catalog-skill-intro h2){font-size:14px;font-weight:900;line-height:1.5;color:var(--ui-text);text-shadow:none;gap:6px;flex-wrap:wrap}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-rule p,.ref-catalog-skill-intro p,.ref-catalog-skill-footnote,.catalog-skill-details p){font-size:12px;font-weight:500;line-height:1.65;color:var(--ui-muted);text-shadow:none;overflow-wrap:anywhere}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-rule h3>small{margin-left:0;padding:1px 5px;border:1px solid var(--ui-edge);border-radius:2px;background:var(--ui-panel-deep);color:var(--ui-muted);font-size:10px;font-weight:700;line-height:1.5}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-rule .catalog-next-star{margin-top:8px;padding-top:7px;border-top:1px solid #385165;color:var(--ui-success)}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-facts{flex-wrap:wrap;gap:5px 10px;font-size:11px;color:var(--ui-muted)}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-facts b{color:var(--ui-yellow);font-variant-numeric:tabular-nums}
+.peripheral-lobby.reference-layout.lobby-theme .catalog-skill-details{padding:0 10px;font-size:12px}
+.peripheral-lobby.reference-layout.lobby-theme .catalog-skill-details summary{box-sizing:border-box;width:100%;min-height:44px;padding:12px 0;color:var(--ui-text);font-weight:800;line-height:20px}
+.peripheral-lobby.reference-layout.lobby-theme .catalog-skill-details summary:focus-visible{outline:2px solid #fff2a0;outline-offset:-2px}
+.peripheral-lobby.reference-layout.lobby-theme .catalog-skill-details[open] summary{border-bottom:1px solid #385165;color:var(--ui-yellow)}
+.peripheral-lobby.reference-layout.lobby-theme .catalog-skill-details p{padding:3px 0 8px}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-empty,.ref-empty,.eq-empty,.rc-empty){padding:24px 12px;color:var(--ui-muted);font-size:12px;line-height:1.7;text-align:center;font-weight:500;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme :is(.workshop-cost,.ref-catalog-cost){gap:6px;flex-wrap:wrap;justify-content:center}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-cost{display:inline-flex;align-items:center;justify-content:center;gap:3px;padding:1px 5px;border:1px solid #06121e80;border-radius:2px;background:#06121ec9;color:var(--ui-text);font-size:11px;line-height:15px;white-space:nowrap;font-variant-numeric:tabular-nums;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-cost b{font:inherit;font-weight:800;color:inherit}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-cost[data-cost-state="short"]{color:var(--ui-warning);border-color:#d3867299}
+.peripheral-lobby.reference-layout.lobby-theme .lobby-cost :is(.pl-icon,.resource-icon){width:15px;height:15px;filter:none}
+.peripheral-lobby.reference-layout.lobby-theme .workshop-readout>small{color:var(--ui-warning);font-size:11px;line-height:1.5}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-primary.is-current:disabled{--ui-button-art:var(--ui-button-blue);color:var(--ui-success)!important}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-primary.is-current strong{color:inherit;text-shadow:var(--ui-outline)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-workshop-tabs .pl-button,.ref-catalog-bottom-tabs>.ref-catalog-button):not(.is-active){filter:saturate(.55) brightness(.8)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-workshop-tabs .pl-button,.ref-catalog-bottom-tabs>.ref-catalog-button).is-active{filter:none}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-bottom-tabs>.ref-catalog-button>span{text-shadow:var(--ui-outline)}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-bottom-tabs>.ref-catalog-button.is-active>.pl-icon{filter:brightness(0) invert(1)}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-equipped .pl-icon{stroke:var(--ui-success);filter:none}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-pool-label>button,.rc-feature-name>button,.rc-arrow){min-height:44px;touch-action:manipulation}
+.peripheral-lobby.reference-layout.lobby-theme .rc-arrow:disabled{opacity:.45;cursor:default}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-pool-label>button,.rc-feature-name>button,.rc-arrow):active:not(:disabled){transform:translateY(1px);filter:brightness(1.12)}
+.peripheral-lobby.reference-layout.lobby-theme .rc-reward-grid>button{border:2px solid var(--ui-ink);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),0 2px var(--ui-ink);color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-reward-grid span,.rc-history-list header){color:var(--ui-muted)}
+.peripheral-lobby.reference-layout.lobby-theme .rc-history-list p>b{padding:0 4px;border:1px solid #716132;border-radius:2px;background:#302a1b;color:var(--ui-yellow);font-size:10px}
+
+/* The remaining shop utilities use the same quiet panel and status tokens. */
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-resource-card,.shop-extra,.shop-pool-grid>div){border:2px solid var(--ui-ink);border-radius:3px;background:var(--ui-panel);box-shadow:inset 0 0 0 1px var(--ui-edge),0 2px var(--ui-ink);color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme .shop-extra>summary{min-height:44px;padding:10px 11px;color:var(--ui-text);font-size:12px;line-height:1.5}
+.peripheral-lobby.reference-layout.lobby-theme .shop-extra[open]>summary{color:var(--ui-yellow);border-bottom:1px solid #385165;margin-bottom:7px}
+.peripheral-lobby.reference-layout.lobby-theme .shop-extra>summary:focus-visible{outline:2px solid #fff2a0;outline-offset:-4px}
+.peripheral-lobby.reference-layout.lobby-theme .shop-preview{padding-inline:8px;margin:0;min-width:44px;font-size:11px;touch-action:manipulation}
+.peripheral-lobby.reference-layout.lobby-theme .shop-preview .shop-icon{filter:brightness(0) invert(1)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-preview,.eq-empty button):active:not(:disabled){transform:translateY(1px);filter:brightness(1.12)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-resource-copy>small,.shop-feature-reward>small,.shop-daily-limit,.shop-resources-heading>small){color:var(--ui-muted);font-size:11px;line-height:1.5;text-shadow:none;font-variant-numeric:tabular-nums}
+.peripheral-lobby.reference-layout.lobby-theme .shop-warning{border:1px solid #a97a4c;border-radius:3px;background:#36291f;color:var(--ui-warning);padding:10px;font-size:12px;line-height:1.6}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-confirm,.shop-rules,.shop-pool-copy){color:var(--ui-muted);font-size:12px;line-height:1.7;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-confirm h3,.shop-rules h3,.shop-pool-copy h3){color:var(--ui-text);font-size:14px;line-height:1.5;font-weight:900;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .shop-confirm-cost{padding:6px;border:1px solid var(--ui-edge);border-radius:3px;background:var(--ui-panel-deep);color:var(--ui-muted)}
+.peripheral-lobby.reference-layout.lobby-theme .shop-confirm-cost b{color:var(--ui-yellow);font-variant-numeric:tabular-nums}
+.peripheral-lobby.reference-layout.lobby-theme .eq-stat-row>span{border:1px solid #547e9e99;background:#0b1c2de8;box-shadow:inset 0 1px #ffffff12}
+
+/* Pool selection belongs to the collection toolbar, not on the portrait. */
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px;padding:4px;min-height:52px}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-heading h2{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.peripheral-lobby.reference-layout.lobby-theme .rc-pool-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;min-width:0}
+.peripheral-lobby.reference-layout.lobby-theme .rc-pool-tab{min-width:0;min-height:44px;padding:6px 8px 9px;font-size:var(--ui-control-size);font-weight:800;line-height:1.3;letter-spacing:0;white-space:nowrap;touch-action:manipulation;text-shadow:var(--ui-label-shadow)}
+.peripheral-lobby.reference-layout.lobby-theme .rc-pool-tab:not(.is-active){filter:saturate(.55) brightness(.8)}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-heading>button{min-width:44px;min-height:44px;padding:3px 5px;font-size:11px;line-height:1.2}
+.peripheral-lobby.reference-layout.lobby-theme .rc-pool-note{margin:0;padding:5px 8px;border-inline:1px solid var(--ui-edge);background:var(--ui-panel-deep);color:var(--ui-muted);font-size:11px;font-weight:500;line-height:1.5;text-align:center}
+
+/* Small controls reserve room for the bevel AND the trailing icon. The old
+   44px detail face and 66px selects were smaller than their text plus padding. */
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-feature-name>button,.shop-preview){box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;gap:6px;min-width:68px;min-height:44px;padding:7px 10px 9px;line-height:1.3;white-space:nowrap}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-feature-name>button,.shop-preview)>:is(.rc-icon,.shop-icon){flex:none;width:10px;height:12px}
+.peripheral-lobby.reference-layout.lobby-theme .eq-inventory-toolbar{display:grid;grid-template-columns:82px 82px minmax(0,1fr);gap:6px;padding:3px 8px}
+.peripheral-lobby.reference-layout.lobby-theme .eq-select{box-sizing:border-box;width:100%;min-width:0;height:44px}
+.peripheral-lobby.reference-layout.lobby-theme .eq-select select{box-sizing:border-box;min-width:0;padding:0 26px 0 10px;font-size:12px;line-height:1.3;letter-spacing:0;text-overflow:ellipsis}
+.peripheral-lobby.reference-layout.lobby-theme .eq-select>.eq-icon{right:10px;top:50%;transform:translateY(-50%);width:10px;height:10px}
+.peripheral-lobby.reference-layout.lobby-theme .eq-inventory-toolbar .eq-workshop-button{width:100%;min-width:0;margin:0;padding-inline:8px}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-filter{box-sizing:border-box;gap:6px;min-width:80px;padding:4px 10px;line-height:1.3}
+.peripheral-lobby.reference-layout.lobby-theme .ref-workshop .ref-divider>button{box-sizing:border-box;min-width:80px;padding:3px 12px 5px!important;line-height:1.3;white-space:nowrap}
+.peripheral-lobby.reference-layout.lobby-theme .rc-preview-heading>button{padding:6px 8px 8px;gap:6px;line-height:1.3}
+/* Small labels use a single shadow; reserve the comic outline for large CTAs.
+   Consistent inner space keeps glyphs clear of the authored button bevel. */
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-workshop-tabs .pl-button,.ref-catalog-bottom-tabs>.ref-catalog-button,.ref-workshop .ref-divider>button){font-size:var(--ui-control-size);font-weight:800;text-shadow:var(--ui-label-shadow);-webkit-text-stroke:0}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-bottom-tabs>.ref-catalog-button>span{text-shadow:var(--ui-label-shadow)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.ref-catalog-list-heading h2,.ref-workshop .ref-divider h2,.rc-preview-heading h2){font-size:clamp(15px,4cqw,18px);line-height:1.4;text-shadow:var(--ui-label-shadow)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-draw,.research-awaken,.ref-catalog-primary,.ref-combine)>strong{font-size:var(--ui-action-size);line-height:1.25}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-draw,.research-awaken)>span{font-size:var(--ui-control-size);line-height:1.3;text-shadow:var(--ui-label-shadow)}
+.peripheral-lobby.reference-layout.lobby-theme :is(.shop-button,.rc-draw,.ref-combine,.ref-catalog-primary):disabled>:is(strong,.shop-button-label){color:var(--ui-muted);text-shadow:var(--ui-label-shadow)}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-primary.is-current:disabled>strong{color:var(--ui-success)}
+.peripheral-lobby.reference-layout.lobby-theme .rc-history{box-sizing:border-box;width:auto;min-width:64px;height:48px;padding:5px 8px;gap:3px}
+.peripheral-lobby.reference-layout.lobby-theme .rc-history>span{font-size:11px;font-weight:800;line-height:14px;text-shadow:none;-webkit-text-stroke:0}
+.peripheral-lobby.reference-layout.lobby-theme .rc-history>.rc-icon{width:18px;height:18px}
+.peripheral-lobby.reference-layout.lobby-theme :is(.eq-mount-inner>strong,.eq-category-button,.rc-preview-name){text-shadow:var(--ui-label-shadow);-webkit-text-stroke:0}
+.peripheral-lobby.reference-layout.lobby-theme :is(.rc-feature-name>button,.shop-preview,.eq-select select){font-size:var(--ui-caption-size);font-weight:700;letter-spacing:0}
+@container(max-width:280px){
+  .peripheral-lobby.reference-layout.lobby-theme .eq-inventory-toolbar{grid-template-columns:repeat(2,minmax(82px,1fr))}
+  .peripheral-lobby.reference-layout.lobby-theme .eq-inventory-toolbar .eq-workshop-button{grid-column:1/-1}
+}
+@container(max-width:320px){
+  .peripheral-lobby.reference-layout.lobby-theme .rc-preview-heading>button>span{display:none}
+  .peripheral-lobby.reference-layout.lobby-theme .rc-preview-heading>button .rc-icon{width:18px;height:18px}
+}
+/* Home retains illustrated shortcut icons and its layout. The principal CTA
+   shares the talent gold material; text is live, not baked into the old atlas. */
+@media(prefers-reduced-motion:reduce){.peripheral-lobby.reference-layout.lobby-theme :is(button,.eq-card,.ref-catalog-card){transition:none}}
+
+/* Recruitment: selection controls lead; reference links and container chrome
+   stay quiet. Keep card rarity frames and both purchase buttons unchanged. */
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-heading{border:0;border-radius:0;box-shadow:none;background:var(--ui-panel-deep);padding:4px;gap:6px}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-pool-tabs{gap:0;border-bottom:1px solid #547e9e55}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-pool-tab{background:none;border:0;border-bottom:3px solid transparent;border-radius:0;box-shadow:none;color:var(--ui-muted);filter:none;text-shadow:none;transform:none;padding:6px 4px;font-size:13px}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-pool-tab.is-active{background:#ffdc2d12;border-bottom-color:var(--ui-yellow);color:var(--ui-yellow)}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-heading>button{background:none;border:0;box-shadow:none;color:var(--ui-muted);font-weight:500;font-size:11px;gap:4px;padding:6px 4px;min-height:44px}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-heading>button .rc-icon{width:13px;height:13px;opacity:.8}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-pool-note{border:0;padding:4px 6px 6px;font-size:12px;color:var(--ui-text)}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-pool-note>small{display:block;font-size:11px;color:var(--ui-muted);line-height:1.5;font-weight:400}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-strip{border:0;border-radius:0;box-shadow:none;padding-top:4px;padding-bottom:6px}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-footer{border:0;border-radius:0;box-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-guarantee{font-size:11px;text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card>.rc-preview-name{text-shadow:none;font-weight:600;font-size:10px}
+
+/* Pilot portraits are not equipment: one quiet outline, an unobstructed
+   square headshot, a separate name row, and a small rarity accent. */
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot{
+  --rc-rarity:#a7b9c6;
+  display:flex;flex-direction:column;align-self:stretch;aspect-ratio:auto;
+  border:1px solid #30485c!important;border-radius:4px!important;
+  background:var(--ui-panel-deep);box-shadow:none!important;
+}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot[data-frame-quality="1"]{--rc-rarity:#62bf8c}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot[data-frame-quality="3"]{--rc-rarity:#b48be5}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot[data-frame-quality="4"]{--rc-rarity:#e6be62}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot::before{content:none}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot::after{content:"";display:block;position:static;flex:none;height:2px;width:100%;background:var(--rc-rarity);pointer-events:none}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot>.rc-portrait{position:static;inset:auto;display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;object-position:center top;object-view-box:none;flex:none}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot>.rc-preview-name{position:static;inset:auto;display:flex;align-items:center;justify-content:center;width:100%;height:32px;flex:none;box-sizing:border-box;padding:2px 2px;white-space:normal;word-break:keep-all;overflow-wrap:normal;text-overflow:clip;background:var(--ui-panel-deep);color:var(--ui-text);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;font-size:12px;line-height:14px;font-weight:400;letter-spacing:0;text-shadow:none;-webkit-text-stroke:0}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot>.rc-preview-name>span{font:inherit;color:inherit;text-shadow:none;-webkit-text-stroke:0;max-width:100%}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot.is-selected{border-color:var(--ui-yellow)!important}
+.peripheral-lobby.reference-layout.lobby-theme[data-tab="supply"] .rc-preview-card.is-pilot.is-selected>.rc-preview-name{color:#ffe28a;background:#25303a}
+
+/* Pilot collection only: keep complete rarity frames, but let the faces lead.
+   Names and real growth stars have their own opaque strip below the portrait. */
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-pilot .ref-catalog-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px 8px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-pilot .ref-pilot-card {
+  --pilot-card-panel:#0d2031;
+  --pilot-card-edge:color-mix(in srgb,var(--ref-quality) 88%,#b7cddd);
+  display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+  width:100%;height:100%;min-width:0;aspect-ratio:auto;box-sizing:border-box;
+  padding:4px;border:0!important;border-radius:0!important;
+  background:var(--pilot-card-edge);clip-path:var(--sub-cut);
+  color:var(--ui-text);font-family:inherit;text-shadow:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-catalog-pilot .ref-pilot-card::before {
+  inset:2px;clip-path:var(--sub-cut);border:0;
+  background:var(--pilot-card-panel);filter:none;box-shadow:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .ref-catalog-card-art {
+  position:relative;inset:auto;display:block;flex:none;width:100%;height:auto;
+  aspect-ratio:1;overflow:hidden;background:#14273b;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .ref-catalog-card-art img {
+  display:block;width:100%;height:100%;max-width:none;max-height:none;
+  object-fit:cover;object-position:center top;image-rendering:auto;
+  transform:none;filter:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card.is-locked .ref-catalog-card-art {
+  opacity:1;filter:saturate(.4) brightness(.76);
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-info {
+  display:flex;flex:1;flex-direction:column;justify-content:center;align-items:center;
+  min-width:0;gap:3px;padding:5px 1px 4px;
+  background:var(--pilot-card-panel);border-top:1px solid #ffffff12;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-name {
+  display:flex;align-items:center;justify-content:center;min-width:0;width:100%;
+  min-height:16px;font-size:11px;line-height:16px;font-weight:600;
+  color:var(--ui-text);text-align:center;white-space:normal;overflow-wrap:anywhere;
+  letter-spacing:0;text-shadow:none;-webkit-text-stroke:0;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-info .ref-catalog-stars {
+  position:static;inset:auto;flex:none;height:12px;gap:1px;padding:0;background:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-info .ref-catalog-stars i {
+  width:12px;height:12px;max-width:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-info .ref-catalog-stars .pl-icon {
+  width:100%;height:100%;filter:none;stroke-width:1.6;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-info .is-earned .pl-icon path {
+  fill:#ffdc64;stroke:#ffe9a4;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-info i:not(.is-earned) .pl-icon path {
+  fill:#263c50;stroke:#8095a6;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-status {
+  position:absolute;z-index:4;top:6px;left:6px;max-width:calc(100% - 12px);
+  padding:2px 4px;border:1px solid #578b75;border-radius:2px;
+  background:#102f2bf2;color:#c7f2d7;font-size:10px;line-height:13px;font-weight:600;
+  white-space:nowrap;text-shadow:none;pointer-events:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-status.is-unowned {
+  border-color:#52677c;background:#142535ed;color:#c3d0dc;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card.is-selected .ref-pilot-card-info {
+  background:#213445;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card.is-selected .ref-pilot-card-name {
+  color:#ffe5a0;
+}
+/* Selection is a neutral inset marker, never a second gold rarity frame. */
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .card-selection>i {
+  width:7px;height:7px;filter:none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .card-selection>i:nth-child(1){top:3px;left:3px}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .card-selection>i:nth-child(2){top:3px;right:3px}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .card-selection>i:nth-child(3){bottom:3px;left:3px}
+.peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card .card-selection>i:nth-child(4){bottom:3px;right:3px}
+@container(max-width:340px) {
+  .peripheral-lobby.reference-layout.lobby-theme .ref-catalog-pilot .ref-catalog-grid{gap:8px 6px}
+  .peripheral-lobby.reference-layout.lobby-theme .ref-pilot-card-name{min-height:32px}
+}

@@ -1,0 +1,20 @@
+<!-- Editable sky-blue button; subtle line texture, no embedded bitmap. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="750" height="402" viewBox="0 0 250 134">
+  <defs>
+    <linearGradient id="face" x2="0" y2="1"><stop stop-color="#58ccef"/><stop offset=".5" stop-color="#44b9e9"/><stop offset=".51" stop-color="#37abe5"/><stop offset="1" stop-color="#309fdf"/></linearGradient>
+    <clipPath id="plate"><path d="M16 4H240Q245 4 245 9V103L235 114H10Q5 114 5 109V16Z"/></clipPath>
+    <linearGradient id="fade"><stop stop-color="white" stop-opacity="0"/><stop offset="1" stop-color="white" stop-opacity=".15"/></linearGradient>
+    <mask id="texture"><rect x="143" y="65" width="102" height="49" fill="url(#fade)"/></mask>
+  </defs>
+  <path d="M14 0H244L250 6V116L236 134H5Q0 134 0 127V14Z" fill="#07111a"/>
+  <path d="M5 99H245V112L235 124H11Q5 124 5 118Z" fill="#1c6897"/>
+  <path d="M16 4H240Q245 4 245 9V103L235 114H10Q5 114 5 109V16Z" fill="url(#face)"/>
+  <g clip-path="url(#plate)">
+    <path d="M16 8H91L66 57H5V18Z" fill="#c2f2ff" opacity=".14"/>
+    <path d="M17 6H241" stroke="#b3edff" stroke-width="3" opacity=".7"/>
+    <path d="M8 18L18 8" stroke="#bff2ff" stroke-width="5" opacity=".65"/>
+    <g mask="url(#texture)" stroke="#c8f2ff" stroke-width="2">
+      <path d="M137 116L174 64M151 116L188 64M165 116L202 64M179 116L216 64M193 116L230 64M207 116L244 64M221 116L258 64M235 116L272 64"/>
+    </g>
+  </g>
+</svg>

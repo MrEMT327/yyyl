@@ -1,0 +1,43 @@
+/* Corrections verified against the PSD control/slot audit. */
+#gui-casual-lobby [data-psd-popup='secondary'] {--popup-width:max(280px,64.933333cqw);max-width:92cqw!important}
+#gui-casual-lobby [data-psd-popup='secondary']>.pl-modal-heading h2 {font-size:clamp(16px,4.266667cqw,22px)!important}
+#gui-casual-lobby [data-psd-popup] .lc-mail-empty {background:#d2dfe9;border-color:#839bad}
+#gui-casual-lobby [data-psd-popup] .lc-mail-empty h3 {color:#28475e;text-shadow:none}
+#gui-casual-lobby [data-psd-popup] .lc-summary h3 {color:#23415a;text-shadow:none}
+#gui-casual-lobby [data-psd-popup] .lc-summary-stat {color:#38576a;text-shadow:none}
+/* Fixed geometry in the bag previously extended outside a short game frame. */
+#gui-casual-lobby .pl-modal.bag-modal[data-psd-popup] {--popup-max-height:88%;top:50%}
+#gui-casual-lobby .bag-modal[data-psd-popup]>.bag-content {
+  top:calc(126.11548 * var(--bag-unit));bottom:calc(30 * var(--bag-unit));height:auto!important;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-grid {height:auto;bottom:calc(135 * var(--bag-unit))}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tabs {left:0;right:0;width:auto;top:auto;bottom:0;height:max(44px,calc(125 * var(--bag-unit)))}
+#gui-casual-lobby .bag-detail[data-psd-popup] {max-height:80%!important;overflow:auto!important}
+/* One neutral empty plate; a plus glyph never conveys item rarity. */
+#gui-casual-lobby .fc-skill-slot:has(.psd-empty-mark),
+#gui-casual-lobby .ag-card.is-empty {background:none}
+#gui-casual-lobby .fc-skill-slot:has(.psd-empty-mark)::before,
+#gui-casual-lobby .ag-card.is-empty::before {
+  background:#152a3b88!important;filter:none;
+  border-image:url('/art/psd-equipment-v1/frame-empty.png') 18 fill / 9px stretch!important;
+}
+#gui-casual-lobby .weapon-equip-empty.psd-empty-mark {width:36px;height:36px;background-color:#d6eef8;mask-size:18px auto}
+#gui-casual-lobby .weapon-equip-slot {position:relative;border-radius:0!important;border:0!important;background:none!important;isolation:isolate;color:#edf4f7}
+#gui-casual-lobby .weapon-equip-slot::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch}
+#gui-casual-lobby .weapon-equip-slot.is-selected {outline:2px solid #65c1dc;outline-offset:-3px}
+#gui-casual-lobby .weapon-equip-slot.is-selected::before {filter:brightness(1.3)}
+#gui-casual-lobby .weapon-equip-slot :is(b,.weapon-equip-slot-item>span) {color:#edf4f7}
+#gui-casual-lobby .weapon-equip-slot-heading>span {color:#bceaf7}
+#gui-casual-lobby[data-subpage='workshop'] .ws-page .ws-slot:has(.psd-empty-mark) {clip-path:none;isolation:isolate}
+#gui-casual-lobby[data-subpage='workshop'] .ws-page .ws-slot:has(.psd-empty-mark)::before {background:#152a3baa;border-image:url('/art/psd-equipment-v1/frame-empty.png') 18 fill / 9px stretch}
+/* A selected inventory action occupies its own row, never the following item. */
+#gui-casual-lobby .wc-item-wrap.is-selected {padding-bottom:max(30px,7cqw)}
+#gui-casual-lobby .wc-item-action {top:auto;bottom:0;--wc-button-height:max(30px,7cqw)!important}
+/* Keep source frame corners; rarity changes only the backing artwork. */
+#gui-casual-lobby :is(.wc-item,.eq-card)[data-psd-quality]:is(.is-selected,[aria-pressed='true']) {outline:2px solid #e7faff;outline-offset:-2px}
+#gui-casual-lobby[data-subpage='workshop'] .ws-page .ws-slot[data-psd-quality] {clip-path:none;isolation:isolate}
+#gui-casual-lobby .fm-weapon {background:none;border:0;border-radius:0;border-image:var(--quality-plate,url('/art/psd-equipment-v1/frame-empty.png')) 18 fill / 9px stretch;color:#edf4f7}
+#gui-casual-lobby .fm-weapon :is(strong,small) {color:#d4e5ef}
+#gui-casual-lobby .fm-weapon::after {content:none}
+#gui-casual-lobby .fm-weapon.is-empty>div {opacity:1}
+#gui-casual-lobby .fm-plus.psd-empty-mark {background-color:#d6eef8;opacity:1}

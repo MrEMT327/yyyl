@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "generator": "OpenAI built-in image_gen",
+  "sourceSha256": "a2a328e14b9c8ec6582c88fa03cc9b5a6678cc2af2f445a0ff64e087fd9e1283",
+  "sourceFile": "exec-01b63f6f-de6b-4c65-8540-e2cead9a7f88.png",
+  "prompt": "Original flat sci-fi battle skill icon atlas: 4 columns × 6 rows. Bold navy outlines, large readable color blocks, white/navy machinery, two or three tones, transparent background, no text or card frames. Ordered subjects: twin cannon, acid nozzle, arc antenna, magnetic orb; ice blade, red missile, acid vortex, energy sword; straight blue laser, icy saw, hot orange ray, health; attack, range, cooldown, critical; shield, shrinking aircraft, repair, rage airdrop; missile airdrop, shockwave airdrop, repair airdrop, revive chip. No competitor artwork used as input.",
+  "editPrompt": "Remove the background, retain all 24 icon designs and positions with genuine transparency.",
+  "normalization": "Group disconnected alpha components by atlas cell, crop with 2px margin, preserve alpha, fit within 224px on transparent 256px canvas; lossless WebP.",
+  "scope": "UI icons only; native IDs, selection rules, stats, effects, projectiles and timings unchanged.",
+  "assets": [
+    {
+      "key": "10000101",
+      "file": "10000101.webp",
+      "sha256": "f83b7d268f35383446dbc803f91feba1afa645d0ca34cd8e135675ebb6075bcf",
+      "sourceBounds": {
+        "left": 0,
+        "top": 20,
+        "width": 1241,
+        "height": 1213
+      },
+      "width": 256,
+      "height": 256,
+      "sourceFile": "10000101.png",
+      "sourceSha256": "757c924cb51412400d670fcac7993526f99836aa4f8bdefd4d92fdb9be19ea81",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "revision": "redraw-20261026",
+      "provenance": "research/skill-icon-redraw-20261026/prompts.json"
+    },
+    {
+      "key": "10000201",
+      "file": "10000201.webp",
+      "sha256": "1934fb553244a858cda5b339299ce1f335f63802a6c705b1c0b99f377efa43c9",
+      "sourceBounds": {
+        "left": 268,
+        "top": 66,
+        "width": 245,
+        "height": 163
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "10000301",
+      "file": "10000301.webp",
+      "sha256": "c36850d9c0b86d22997714d0171c5743a17dd7f64cd048bd1659fdaa447b2c93",
+      "sourceBounds": {
+        "left": 0,
+        "top": 31,
+        "width": 1226,
+        "height": 1207
+      },
+      "width": 256,
+      "height": 256,
+      "sourceFile": "10000301.png",
+      "sourceSha256": "ec3f45f8f299a4dc4910656a839aa1419c05e2f81464b572c2dcb3dead077f00",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "revision": "redraw-20261026",
+      "provenance": "research/skill-icon-redraw-20261026/prompts.json"
+    },
+    {
+      "key": "10000401",
+      "file": "10000401.webp",
+      "sha256": "3e47e2ebd17ff002ab8c385dc5dd5c8364480b17c4b46de6c3f649bb5cae725d",
+      "sourceBounds": {
+        "left": 774,
+        "top": 28,
+        "width": 228,
+        "height": 215
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "10000601",
+      "file": "10000601.webp",
+      "sha256": "79dfdcbf1eb05121dad8ce31ab179b157cfa2064c01a127e307d0c0ad9a2afec",
+      "sourceBounds": {
+        "left": 49,
+        "top": 12,
+        "width": 1188,
+        "height": 1232
+      },
+      "width": 256,
+      "height": 256,
+      "sourceFile": "10000601.png",
+      "sourceSha256": "db9f86fdaba5039660554a0e166a704cfb862ab862ffb387a9d7d5c77c0aabb7",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "revision": "redraw-20261026",
+      "provenance": "research/skill-icon-redraw-20261026/prompts.json"
+    },
+    {
+      "key": "10000701",
+      "file": "10000701.webp",
+      "sha256": "c53ed5fb2adb2d9de77dff7cba7aed180b0161d5c51135ac84ce001d8ccaf88a",
+      "sourceBounds": {
+        "left": 260,
+        "top": 257,
+        "width": 240,
+        "height": 217
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "10000901",
+      "file": "10000901.webp",
+      "sha256": "d2e7c6a6673bbd31149a2cc7c86d8e60774a1b9b076e860130a428e6bb56f0a6",
+      "sourceBounds": {
+        "left": 525,
+        "top": 259,
+        "width": 223,
+        "height": 232
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "10001101",
+      "file": "10001101.webp",
+      "sha256": "6c8c163d2c0e035c096de821e3917d92a7193ac652cde8e8a4699700313db744",
+      "sourceBounds": {
+        "left": 772,
+        "top": 258,
+        "width": 234,
+        "height": 233
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "10001501",
+      "file": "10001501.webp",
+      "sha256": "1259dba2f8f5a71f5b25b029ee17b61d8dc9df8681a4a8f9e4f92778ac27ef77",
+      "sourceBounds": {
+        "left": 0,
+        "top": 70,
+        "width": 1168,
+        "height": 1184
+      },
+      "width": 256,
+      "height": 256,
+      "sourceFile": "10001501.png",
+      "sourceSha256": "0ca8e2c62fa9702c096d4f1b7b2904637d5655a6588b777a2b48cacce8926d6f",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "revision": "redraw-20261026",
+      "provenance": "research/skill-icon-redraw-20261026/prompts.json"
+    },
+    {
+      "key": "10001601",
+      "file": "10001601.webp",
+      "sha256": "00811b2c731dc858cc51575caa28e0ba3b0cbf8232c880b5d79250f210bb85e7",
+      "sourceBounds": {
+        "left": 270,
+        "top": 497,
+        "width": 230,
+        "height": 224
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "10001701",
+      "file": "10001701.webp",
+      "sha256": "e6a520a37e70ebf9c0e96dbe9cc9bd02c345c4316fc78a46b1134e8e33c57905",
+      "sourceBounds": {
+        "left": 0,
+        "top": 21,
+        "width": 1253,
+        "height": 1233
+      },
+      "width": 256,
+      "height": 256,
+      "sourceFile": "10001701.png",
+      "sourceSha256": "bfd440a37edbb19e4d1be968407af03bea3925361c2f1ae3e05e91d3874b60f7",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "revision": "redraw-20261026",
+      "provenance": "research/skill-icon-redraw-20261026/prompts.json"
+    },
+    {
+      "key": "11000101",
+      "file": "11000101.webp",
+      "sha256": "7a32ca933bfc2138c69f95bd592532c13a34f8a3fadae0f4d8f726f36ca6114e",
+      "sourceBounds": {
+        "left": 783,
+        "top": 503,
+        "width": 215,
+        "height": 215
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11000201",
+      "file": "11000201.webp",
+      "sha256": "075a9c31ab3eb9f84eef52f8a3c7165dda38a4bb46ebcbae0dfc5c76f976d5d7",
+      "sourceBounds": {
+        "left": 23,
+        "top": 745,
+        "width": 212,
+        "height": 210
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11000301",
+      "file": "11000301.webp",
+      "sha256": "838706cf6d1e39876088fbd6e4561e84cf6f79ecbb9400b4115ac280a419cc9d",
+      "sourceBounds": {
+        "left": 255,
+        "top": 730,
+        "width": 252,
+        "height": 236
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11000601",
+      "file": "11000601.webp",
+      "sha256": "8b9b9e431e5b18e5d874cd89fb8a37aca4eee9d97be150b98bd7b10357fc7cb7",
+      "sourceBounds": {
+        "left": 535,
+        "top": 740,
+        "width": 228,
+        "height": 214
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11000307",
+      "file": "11000307.webp",
+      "sha256": "c612d23794ec6337d476e7b511288c311bd20d99c7d892d67c65652254665a5e",
+      "sourceBounds": {
+        "left": 786,
+        "top": 732,
+        "width": 213,
+        "height": 220
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11000801",
+      "file": "11000801.webp",
+      "sha256": "52b0bfaf36844b6114b6524241b3a76d2085ab9475009c26df5234f99d4c392a",
+      "sourceBounds": {
+        "left": 25,
+        "top": 979,
+        "width": 205,
+        "height": 228
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11001101",
+      "file": "11001101.webp",
+      "sha256": "57c13840c49655e376052288282c1ee840b4f010c55cdc71b8b349daa345c279",
+      "sourceBounds": {
+        "left": 262,
+        "top": 996,
+        "width": 249,
+        "height": 193
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11001401",
+      "file": "11001401.webp",
+      "sha256": "338ad0dc97e22906930b410d09d7e41da9566405899eddae70707649a017f86f",
+      "sourceBounds": {
+        "left": 544,
+        "top": 972,
+        "width": 183,
+        "height": 236
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11001601",
+      "file": "11001601.webp",
+      "sha256": "0e47cd2e1faac57081ceb04fbd2678e387e860a68254607190091be52ccdeef3",
+      "sourceBounds": {
+        "left": 778,
+        "top": 964,
+        "width": 222,
+        "height": 249
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11001701",
+      "file": "11001701.webp",
+      "sha256": "fd3686411b5ca40aa9d7978c77a95e89a59d744da1ea36ded1990c59221efc04",
+      "sourceBounds": {
+        "left": 18,
+        "top": 1218,
+        "width": 222,
+        "height": 269
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11002001",
+      "file": "11002001.webp",
+      "sha256": "0493f5cef91a2d1e07e7741237b9732dcb2695a031ac61a36c9068c8dfcc0e5d",
+      "sourceBounds": {
+        "left": 276,
+        "top": 1219,
+        "width": 219,
+        "height": 268
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11002201",
+      "file": "11002201.webp",
+      "sha256": "46c9c616c4741eac315a1d17c4befb4b1a40078a418bfd532244f13ec6e081cc",
+      "sourceBounds": {
+        "left": 527,
+        "top": 1223,
+        "width": 219,
+        "height": 265
+      },
+      "width": 256,
+      "height": 256
+    },
+    {
+      "key": "11002501",
+      "file": "11002501.webp",
+      "sha256": "e1f0f26b5a7dabf9438d37c4af3f0e22565037c04d0947762107f480b898f6a4",
+      "sourceBounds": {
+        "left": 770,
+        "top": 1243,
+        "width": 234,
+        "height": 240
+      },
+      "width": 256,
+      "height": 256
+    }
+  ],
+  "revisions": [
+    {
+      "id": "redraw-20261026",
+      "generator": "OpenAI built-in image_gen",
+      "keys": [
+        "10000101",
+        "10001501",
+        "10001701",
+        "10000601",
+        "10000301"
+      ],
+      "promptSet": "research/skill-icon-redraw-20261026/prompts.json",
+      "normalization": "Preserve alpha, crop transparent margin, fit within 224px on 256px canvas, lossless WebP.",
+      "scope": "Five selected icons only; other 19 assets, skill IDs, combat stats and behavior unchanged."
+    }
+  ]
+}

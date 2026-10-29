@@ -1,0 +1,53 @@
+/* UIBag prefab, authored in a 1080-wide canvas. Geometry is inventory-independent. */
+#gui-casual-lobby .bag-backdrop{--bag-unit:calc(100cqw / 1080);padding:0!important}
+#gui-casual-lobby .pl-modal.bag-modal[data-psd-popup][data-modal-type='backpack']{
+  --popup-width:calc(994 * var(--bag-unit));--popup-height:calc(1443.230957 * var(--bag-unit));
+  --popup-min-height:0px;--popup-max-height:none;
+  position:absolute!important;left:50%;top:calc(50% - 50.324402 * var(--bag-unit));
+  translate:-50% -50%;margin:0!important;isolation:isolate;
+}
+/* The competitor owns panel geometry; the authored PSD owns its title tab. */
+#gui-casual-lobby .bag-modal[data-psd-popup]>.bag-heading{
+  position:absolute;inset:0 0 auto!important;height:calc(125 * var(--popup-unit));
+  padding:calc(32 * var(--popup-unit)) calc(100 * var(--popup-unit)) calc(18 * var(--popup-unit)) calc(58 * var(--popup-unit))!important;
+  align-items:center;justify-content:flex-start;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup]>.bag-heading h2{text-align:left!important;font-size:calc(40 * var(--popup-unit))!important}
+#gui-casual-lobby .bag-modal[data-psd-popup]>.bag-heading>.bag-close{
+  inset:calc(9.0155 * var(--bag-unit)) calc(12 * var(--bag-unit)) auto auto!important;
+  width:calc(100 * var(--bag-unit))!important;height:calc(100 * var(--bag-unit))!important;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup]>.bag-content{
+  display:block;position:absolute;left:calc(18 * var(--bag-unit));top:calc(126.11548 * var(--bag-unit));
+  width:calc(958 * var(--bag-unit));height:calc(1205 * var(--bag-unit));
+  max-height:none;min-height:0;margin:0!important;padding:0!important;overflow:visible!important;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-grid{
+  position:absolute;left:calc(20 * var(--popup-unit) - 18 * var(--bag-unit));right:calc(28 * var(--popup-unit) - 18 * var(--bag-unit));top:calc(32.01 * var(--bag-unit));
+  width:auto;height:calc(1125.4 * var(--bag-unit));
+  display:grid;grid-template-columns:repeat(5,calc(170 * var(--bag-unit)))!important;
+  grid-auto-rows:calc(170 * var(--bag-unit));gap:calc(20 * var(--bag-unit)) calc(13 * var(--bag-unit))!important;
+  min-height:0;max-height:none;flex:none;padding:calc(6 * var(--bag-unit)) 0 0!important;justify-content:center;
+  align-content:start;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item{
+  display:block;width:calc(170 * var(--bag-unit));height:calc(170 * var(--bag-unit));
+  padding:0;aspect-ratio:1;gap:0;overflow:hidden;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art{width:100%;height:100%;padding:calc(20 * var(--bag-unit));box-sizing:border-box}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>img{padding:0}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-count{right:calc(8 * var(--bag-unit));bottom:calc(6 * var(--bag-unit));font-size:clamp(10px,calc(34 * var(--bag-unit)),15px)}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-name{display:none}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tabs{
+  position:absolute;left:calc(22.8 * var(--bag-unit));top:calc(1180.5 * var(--bag-unit));
+  display:flex;align-items:flex-end;justify-content:flex-end;
+  width:calc(940.4 * var(--bag-unit));height:calc(125 * var(--bag-unit));
+  gap:calc(5.43 * var(--bag-unit));padding:0;margin:0;border:0;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab{
+  flex:0 0 calc(234 * var(--bag-unit));width:calc(234 * var(--bag-unit));height:calc(125 * var(--bag-unit));
+  min-height:44px;font-size:calc(40 * var(--bag-unit));
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-empty{grid-column:1/-1;display:grid;place-items:center;min-height:0;height:calc(1000 * var(--bag-unit));padding:0}
+/* Standard item information width is ~796 source units; no invented Use action for currency/materials. */
+#gui-casual-lobby .bag-detail[data-psd-popup]{--popup-width:calc(796.4 * var(--bag-unit));--popup-height:auto;--popup-min-height:0px}

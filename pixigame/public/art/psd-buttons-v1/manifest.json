@@ -1,0 +1,45 @@
+{
+  "source": "psd/主界面.psd",
+  "sha256": "41f4f4ddd838eb4ec386db81c39a8722a83c15ad3150ff744153e8fffb9b82c7",
+  "group": "组 7",
+  "layers": [
+    "图层 21 拷贝",
+    "图层 20 拷贝",
+    "图层 21",
+    "图层 20"
+  ],
+  "bounds_ltrb": [
+    26,
+    1364,
+    208,
+    1456
+  ],
+  "size": [
+    182,
+    92
+  ],
+  "file": "button-gray.png",
+  "slice_trbl": [
+    32,
+    32,
+    32,
+    32
+  ],
+  "backing": {
+    "color": "#14202a",
+    "mask_layer": "组 7/图层 21",
+    "reason": "Retain the source dark-scene appearance on a pale popup."
+  },
+  "font": "FZY4JW--GB1-0",
+  "excluded": [
+    "巡逻",
+    "沙漏图标",
+    "计时"
+  ],
+  "reviewed_new_psd": {
+    "source": "psd/三选一.psd",
+    "sha256": "424036aafef5324f86ab8812a62a932ada126c3dbf3c458a64fb3c79176f6be4",
+    "button": "组 5/组 4（换一批底框，蓝色）",
+    "usage": "Not used for the default gray style requested in image 2."
+  }
+}

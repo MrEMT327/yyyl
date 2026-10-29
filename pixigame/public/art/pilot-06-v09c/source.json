@@ -1,0 +1,127 @@
+{
+  "repository": "https://github.com/Tlwkukuma/live2d-character-assets",
+  "commit": "27cf5efdd9f41384b276de0e56079e367ff6b5a8",
+  "source_directory": "characters/06-bulaimodun-2/v09c-runtime-candidate/",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4366,
+      "sha256": "b4a302320a69b10df5e2c0444424224d7e05e4d7a6868c94336fbb6f63d8bdbb"
+    },
+    {
+      "path": "SHA256SUMS.txt",
+      "bytes": 2037,
+      "sha256": "61f8fb2250153b2592df4a91142ff99451770462a75022ec287a55b5aa9f3c2b"
+    },
+    {
+      "path": "asset-manifest.json",
+      "bytes": 8318,
+      "sha256": "89f36c4c47d00384ee8902969ee1835428485e58b52670b95ec135eefc79223c"
+    },
+    {
+      "path": "bulaimodun_2/bulaimodun_2.moc3",
+      "bytes": 1350656,
+      "sha256": "7c4d0a1780ed0eed9e79550aaf358ae9385616c15f28308b968392dec8d1d47c"
+    },
+    {
+      "path": "bulaimodun_2/bulaimodun_2.model3.json",
+      "bytes": 2239,
+      "sha256": "e82b4ca9e563ae1f93154721f91d4d9936645d04223231fcad01d0dfd3030be5"
+    },
+    {
+      "path": "bulaimodun_2/bulaimodun_2.physics3.json",
+      "bytes": 55204,
+      "sha256": "8ffe845702f0a88cb325a292bfe9cee5a02c830ba1e10ed1e846a08353c26495"
+    },
+    {
+      "path": "bulaimodun_2/motions/complete.motion3.json",
+      "bytes": 139970,
+      "sha256": "257d4a2ba51769f641931a3f2acbfe6726268185b1b98e06cec5423f64ab3e99"
+    },
+    {
+      "path": "bulaimodun_2/motions/effect.motion3.json",
+      "bytes": 4018,
+      "sha256": "303ce199af3fbe4bf999235b56ac37f33d0136bdf3aeb00da10838a6f94e5538"
+    },
+    {
+      "path": "bulaimodun_2/motions/home.motion3.json",
+      "bytes": 182612,
+      "sha256": "6ef86f550d9ce1a2b5ea9f864a23cceb63f590210d5f91ab7a7fcd6e3aadc4c5"
+    },
+    {
+      "path": "bulaimodun_2/motions/idle.motion3.json",
+      "bytes": 136353,
+      "sha256": "255190b42648116e5f86abc4d0eefc736fc2c26255e48c811f8d142ff7faf240"
+    },
+    {
+      "path": "bulaimodun_2/motions/login.motion3.json",
+      "bytes": 184021,
+      "sha256": "2c7a09fb7d5f4d9ab69a5f4197e11401704b4e3e2e2276e3268c746a75030707"
+    },
+    {
+      "path": "bulaimodun_2/motions/mail.motion3.json",
+      "bytes": 123781,
+      "sha256": "25995c25cb4a0e024bb3f60a50ba164941c68515ac4f6fb55715cfcc010bdc3b"
+    },
+    {
+      "path": "bulaimodun_2/motions/main_1.motion3.json",
+      "bytes": 164918,
+      "sha256": "1bbf9d080b1d346b530914ed380b124ab5d8ed2837852bd26ab74541d05a2143"
+    },
+    {
+      "path": "bulaimodun_2/motions/main_2.motion3.json",
+      "bytes": 196313,
+      "sha256": "cf12429a16d096adde10a4756a1a7e445e90211e649bf20d725a541329824463"
+    },
+    {
+      "path": "bulaimodun_2/motions/main_3.motion3.json",
+      "bytes": 191838,
+      "sha256": "bd6a5a8ff3e10a3400ef2acd893ac55a91a74bfc23894a9088441061cc21e467"
+    },
+    {
+      "path": "bulaimodun_2/motions/mission.motion3.json",
+      "bytes": 160360,
+      "sha256": "b92c67672de6e0b4717c79c8e34dc9ab3e621597afadaebd462256437059d8f9"
+    },
+    {
+      "path": "bulaimodun_2/motions/mission_complete.motion3.json",
+      "bytes": 150028,
+      "sha256": "f9bc94bc713045620a1f0b4124f0bbaaa43bccc7977205401b7b806f53662b12"
+    },
+    {
+      "path": "bulaimodun_2/motions/touch_body.motion3.json",
+      "bytes": 203810,
+      "sha256": "d56f8e9f98f303b7f278d7c48842673da6b7b7e434bc69acf10e7b0a25dd1da7"
+    },
+    {
+      "path": "bulaimodun_2/motions/touch_head.motion3.json",
+      "bytes": 136367,
+      "sha256": "60e891cce4c377b8a77cd7e3ccf9345fac84bc44292420b9dc32db8e510933c4"
+    },
+    {
+      "path": "bulaimodun_2/motions/touch_special.motion3.json",
+      "bytes": 216734,
+      "sha256": "797f0077e3617c1847af6699a7d417449ae1e3efb737acd43a96dfcbd79bcb0f"
+    },
+    {
+      "path": "bulaimodun_2/motions/wedding.motion3.json",
+      "bytes": 254911,
+      "sha256": "8f96728124f787a3cb3532727d6dd08d45141dbe5bec8f21ecdcab691e48628f"
+    },
+    {
+      "path": "bulaimodun_2/textures/texture_00.png",
+      "bytes": 3418754,
+      "sha256": "8bcb027b9ddefeb646a7d00c0ef69c6240eba5703833db7bb23b5f2375165bb4"
+    },
+    {
+      "path": "compatibility/motion-compatibility-report.json",
+      "bytes": 10381,
+      "sha256": "d2ec90aa8336860fc7381b3cb7bdca25e2c3d03254a4545c4bf3c0d0d509d39d"
+    },
+    {
+      "path": "compatibility/motion_compat.py",
+      "bytes": 4615,
+      "sha256": "ef38615272247c6032046ef99d9aca159a2383da1777fec83aca120eb4ffb1f8"
+    }
+  ]
+}

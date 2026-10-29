@@ -1,0 +1,141 @@
+/* Aircraft gear uses the user's sliced card and button PSDs. */
+#gui-casual-lobby .ag-page{height:100%;min-height:0;display:flex;flex-direction:column;color:#e8f3fa;background:var(--project-list-background)}
+#gui-casual-lobby.equipment-reference .ag-hangar.eq-hangar{position:relative;flex:none;height:86cqw;min-height:244px;max-height:55%;overflow:hidden;background-position:center 55%}
+#gui-casual-lobby .ag-hangar .eq-aircraft-stage{inset:9% 16% 24%;pointer-events:none}
+#gui-casual-lobby .ag-card{--ag-card-filter:none;position:relative;isolation:isolate;display:grid;grid-template-rows:16px minmax(0,1fr) 16px;gap:0;aspect-ratio:1;width:100%;min-width:0;padding:6px 5px 8px;border:0;border-radius:0;background:none;color:#ecf6fc;box-shadow:none;text-align:center;cursor:pointer;overflow:visible;line-height:1.15}
+#gui-casual-lobby .ag-card::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/cover no-repeat;border:0;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch;filter:var(--ag-card-filter)}
+#gui-casual-lobby .ag-card[data-quality='0']{--ag-card-filter:saturate(0)}
+#gui-casual-lobby .ag-card[data-quality='1']{--ag-card-filter:hue-rotate(290deg)}
+#gui-casual-lobby .ag-card[data-quality='3']{--ag-card-filter:hue-rotate(65deg)}
+#gui-casual-lobby .ag-card[data-quality='4']{--ag-card-filter:hue-rotate(175deg) saturate(1.7)}
+#gui-casual-lobby .ag-card[data-quality='5']{--ag-card-filter:hue-rotate(140deg) saturate(1.6)}
+#gui-casual-lobby .ag-card>img{display:block;width:100%;height:100%;min-height:0;object-fit:contain;padding:0;filter:none}
+#gui-casual-lobby .ag-card>strong{font-size:clamp(9px,2.35cqw,11px);font-weight:600;white-space:nowrap;color:#edf7fc;align-self:start;text-shadow:0 1px #04131a}
+#gui-casual-lobby .ag-card>b{font-size:clamp(10px,2.8cqw,13px);align-self:center;font-weight:600;color:#edf7fc;white-space:nowrap}
+#gui-casual-lobby .ag-card small{font-size:10px}
+#gui-casual-lobby .ag-card .ag-tag{position:absolute;top:3px;left:3px;background:#1f5758;color:#c9f8e8;font-style:normal;font-size:9px;padding:1px 2px}
+#gui-casual-lobby .ag-card .ag-lock{position:absolute;top:3px;right:4px;background:#172837;color:#dfeaf2;font-style:normal;font-size:9px;padding:1px 2px}
+#gui-casual-lobby .ag-card.is-selected{outline:2px solid #f9de8a;outline-offset:-3px}
+#gui-casual-lobby .ag-selected{position:absolute;right:3px;bottom:3px;color:#ffe598;font-size:20px}
+#gui-casual-lobby .ag-position{position:absolute;width:20.5%;height:24%;}
+#gui-casual-lobby .ag-position .ag-card{height:100%;aspect-ratio:auto}
+#gui-casual-lobby .ag-position-1{right:3%;top:4%}
+#gui-casual-lobby .ag-position-2{left:3%;top:31%}
+#gui-casual-lobby .ag-position-3{right:3%;top:31%}
+#gui-casual-lobby .ag-position-4{left:3%;top:58%}
+#gui-casual-lobby .ag-position-5{right:3%;top:58%}
+#gui-casual-lobby .ag-weapon{position:absolute;left:3%;top:4%;width:39%;height:24%;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:16px minmax(0,1fr);align-items:center;text-align:left}
+#gui-casual-lobby .ag-weapon>strong{grid-column:1/-1;font-size:clamp(11px,3cqw,14px);padding-left:4px}
+#gui-casual-lobby .ag-weapon>span{width:100%;height:100%;min-height:0}
+#gui-casual-lobby .ag-weapon>span{min-width:0;overflow:hidden}
+#gui-casual-lobby .ag-weapon>span>img,#gui-casual-lobby .ag-weapon>span>.wc-art{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+#gui-casual-lobby .ag-weapon>b{font-size:clamp(10px,2.6cqw,12px);white-space:normal;padding:0 4px}
+#gui-casual-lobby .ag-stats{position:absolute;left:26%;right:26%;bottom:23%;display:flex;justify-content:center;gap:5px;padding:0;border:0;background:none;color:#edf5fa;}
+#gui-casual-lobby .ag-stats>span{display:flex;gap:3px;align-items:center;padding:5px 6px;background:#10212fdc;font-size:clamp(11px,3cqw,14px)}
+#gui-casual-lobby .ag-stats .pl-icon{width:15px;height:15px}
+#gui-casual-lobby .ag-catalog{position:absolute;left:28%;right:28%;bottom:3%;display:flex;gap:5px;justify-content:center}
+#gui-casual-lobby .ag-catalog .ag-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-width:0;width:33.333%;height:12cqw;min-height:44px;padding:4px 3px;font-size:clamp(10px,2.65cqw,12px)}
+#gui-casual-lobby .ag-catalog .pl-icon{height:5cqw;width:5cqw;min-height:16px;min-width:16px}
+#gui-casual-lobby .ag-button{position:relative;min-height:44px;padding:8px 12px;color:#eaf5fc;font-family:PsdPopup,'Microsoft YaHei',sans-serif;font-size:16px;line-height:1.2;white-space:normal}
+#gui-casual-lobby .ag-toolbar{flex:none;display:grid;grid-template-columns:1fr 1.12fr .8fr;gap:7px;background:#223b4b;padding:4px 7px;border-top:1px solid #5f7c8c;border-bottom:1px solid #112b3c}
+#gui-casual-lobby .ag-select{position:relative;display:block;min-width:0;min-height:44px;padding:0}
+#gui-casual-lobby .ag-select select{width:100%;height:44px;border:0;padding:4px 20px 4px 10px;appearance:none;background:transparent;color:#edf7fc;font-size:clamp(11px,3cqw,14px);font-weight:600}
+#gui-casual-lobby .ag-select::after{content:'⌄';position:absolute;right:9px;top:12px;color:#b9d3df;pointer-events:none}
+#gui-casual-lobby .ag-select option{color:#edf5fc;background:#203747}
+#gui-casual-lobby .ag-inventory{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:8px 8px 16px;scrollbar-width:thin}
+#gui-casual-lobby .ag-inventory h2{font-size:13px;color:#c5dce8;margin:3px 0 8px;font-weight:600;border-bottom:1px solid #486273;padding-bottom:6px}
+#gui-casual-lobby .ag-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#gui-casual-lobby .ag-materials{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#gui-casual-lobby .ag-grid+h2{margin-top:16px}
+#gui-casual-lobby .ag-material{display:flex;flex-direction:column;align-items:center;padding:4px 1px 5px;min-width:0;border:1px solid #486879;border-radius:0;background:#193142c9;color:#d3e6ef;font-size:clamp(9px,2.2cqw,11px);gap:2px}
+#gui-casual-lobby .ag-material>img{height:9cqw;min-height:30px;width:100%;object-fit:contain;filter:saturate(.45)}
+#gui-casual-lobby .ag-material>b{font-size:12px;font-weight:600}
+#gui-casual-lobby .ag-inventory-actions{display:flex;justify-content:center;padding-top:14px}
+#gui-casual-lobby .ag-empty{text-align:center;font-size:13px;color:#acc8d7;padding:10px}
+#gui-casual-lobby .ag-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#gui-casual-lobby [data-modal-type^='gear']{--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:62cqw}
+#gui-casual-lobby [data-modal-type^='gear']>.pl-modal-content{flex:initial;overflow:auto;}
+#gui-casual-lobby .ag-modal{font:14px/1.5 'Microsoft YaHei',sans-serif;padding:3px 7px 8px;color:#203b51}
+#gui-casual-lobby .ag-modal p{margin:7px 0;color:inherit;font-size:13px;line-height:1.5}
+#gui-casual-lobby .ag-modal h3{margin:12px 0 6px;color:#203b51;font-size:16px}
+#gui-casual-lobby .ag-detail-head{display:grid;grid-template-columns:28% minmax(0,1fr);gap:13px;align-items:center;margin-bottom:12px}
+#gui-casual-lobby .ag-detail-head h3{font-size:18px;margin:4px 0}
+#gui-casual-lobby .ag-detail-head p{margin:2px 0;font-size:14px}
+#gui-casual-lobby .ag-quality{display:inline-block;background:#d6e4ee;border:1px solid #7b93a5;padding:1px 8px;font-size:12px}
+#gui-casual-lobby .ag-attr-table{background:#d9e6ee;border:1px solid #829aad;margin:10px 0}
+#gui-casual-lobby .ag-attr-table>p{margin:0;padding:10px;display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #9eb4c3}
+#gui-casual-lobby .ag-attr-table>p:last-child{border:0}
+#gui-casual-lobby .ag-attr-table em{color:#276750;font-style:normal}
+#gui-casual-lobby .ag-cost{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 5px}
+#gui-casual-lobby .ag-cost>span{padding:8px;background:#d9e6ee;border:1px solid #829aad;font-size:12px}
+#gui-casual-lobby .ag-cost b{float:right}
+#gui-casual-lobby .ag-cost small{display:block;font-size:11px;color:#4a6579;margin-top:4px}
+#gui-casual-lobby .ag-cost .is-short{color:#8e393c}
+#gui-casual-lobby .ag-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#gui-casual-lobby .ag-actions:has([data-action='gearUpgradeAll']){grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+#gui-casual-lobby .ag-actions:has([data-action='gearUpgradeAll']) .ag-button{padding-inline:4px;font-size:clamp(12px,3.5cqw,16px)}
+#gui-casual-lobby .ag-links{display:flex;justify-content:space-around;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid #849aaa}
+#gui-casual-lobby .ag-links .ag-button{flex:1;min-width:0;font-size:14px;padding-inline:6px}
+#gui-casual-lobby .ag-hint{color:#466276;font-size:12px}
+#gui-casual-lobby .ag-error{padding:6px 8px;background:#e0c6c4;color:#862c32!important}
+#gui-casual-lobby .ag-success{color:#25634c!important}
+#gui-casual-lobby .ag-merge-arrow{text-align:center;font-size:18px!important;font-weight:600;margin:15px 0}
+#gui-casual-lobby .ag-merge-count{text-align:right}
+#gui-casual-lobby .ag-breakdown{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #8fa6b7;padding-bottom:6px;font-size:12px!important}
+#gui-casual-lobby .ag-breakdown b{white-space:nowrap}
+#gui-casual-lobby .ag-traits{padding:2px 8px;border-left:3px solid #597f91;background:#c4d8e3}
+#gui-casual-lobby .ag-draw-results{margin-top:10px}
+@media(max-height:650px){#gui-casual-lobby.equipment-reference .ag-hangar.eq-hangar{height:70cqw;min-height:206px;max-height:57%}#gui-casual-lobby .ag-position{height:25%}#gui-casual-lobby .ag-catalog{bottom:1%}}
+/* Labels overlay the sliced frame so the artwork keeps most of the card area. */
+#gui-casual-lobby .ag-card:not(.ag-weapon){display:block;padding:0}
+#gui-casual-lobby .ag-card:not(.ag-weapon)>strong{position:absolute;top:5px;left:4px;right:4px;z-index:1;font-size:clamp(8px,2.25cqw,11px)}
+#gui-casual-lobby .ag-card:not(.ag-weapon)>img{position:absolute;left:6%;top:14%;width:88%;height:72%;object-fit:contain}
+#gui-casual-lobby .ag-card:not(.ag-weapon)>b{position:absolute;left:4px;right:4px;bottom:5px;z-index:1}
+#gui-casual-lobby .ag-card.is-empty .psd-empty-mark{position:absolute;top:45%;left:calc(50% - 9px)}
+#gui-casual-lobby .ag-card .ag-tag{top:16px;left:4px;z-index:2;font-size:8px}
+#gui-casual-lobby .ag-hangar :is(.ag-position,.ag-weapon,.ag-stats,.ag-catalog){z-index:3}
+#gui-casual-lobby .ag-hangar .eq-aircraft-stage{z-index:0}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type^='gear']{--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type^='gear']>.pl-modal-content{flex:1 1 auto;min-height:0}
+#gui-casual-lobby .ag-equipment-detail{--gear-accent:#557080;padding:0 5px 4px}
+#gui-casual-lobby .ag-equipment-detail[data-quality='1']{--gear-accent:#26766b}
+#gui-casual-lobby .ag-equipment-detail[data-quality='2']{--gear-accent:#286c9f}
+#gui-casual-lobby .ag-equipment-detail[data-quality='3']{--gear-accent:#7152a3}
+#gui-casual-lobby .ag-equipment-detail[data-quality='4']{--gear-accent:#926321}
+#gui-casual-lobby .ag-equipment-detail[data-quality='5']{--gear-accent:#a7444b}
+#gui-casual-lobby .ag-equipment-hero{display:grid;grid-template-columns:27% minmax(0,1fr);gap:8px 12px;align-items:center;padding:10px;background:linear-gradient(115deg,color-mix(in srgb,var(--gear-accent) 45%,#c4d7e7),#c4d7e7);border-bottom:3px solid var(--gear-accent)}
+#gui-casual-lobby .ag-equipment-hero .ag-equipment-art{cursor:default;pointer-events:none}
+#gui-casual-lobby .ag-equipment-hero .ag-equipment-art>img{top:9%;height:82%}
+#gui-casual-lobby .ag-equipment-heading{min-width:0}
+#gui-casual-lobby .ag-equipment-heading h3{margin:0 0 6px;font:400 clamp(17px,5cqw,23px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;color:#162e40}
+#gui-casual-lobby .ag-equipment-heading .ag-quality{border-color:var(--gear-accent);color:var(--gear-accent);background:#e0edf1;padding:0 16px;font-weight:700}
+#gui-casual-lobby .ag-equipment-heading p{font-size:12px;margin:6px 0 0}
+#gui-casual-lobby .ag-equipment-hero .ag-equipment-level{grid-column:1/-1;margin:0;font-size:15px;font-weight:700}
+#gui-casual-lobby .ag-equipment-level b{color:var(--gear-accent)}
+#gui-casual-lobby .ag-equipment-stat{display:flex;gap:10px;align-items:center;margin:12px 0;padding:10px 12px;background:#dce8ef;border:1px solid #9aafbf;font-size:clamp(14px,4cqw,18px)}
+#gui-casual-lobby .ag-equipment-stat em{color:#23734a;font-weight:700;font-style:normal}
+#gui-casual-lobby .ag-equipment-skills{background:#d4e0e9;border:1px solid #8da5b7;min-height:49cqw}
+#gui-casual-lobby .ag-equipment-skills h3{margin:0;padding:6px 10px;background:#a8bdce;border-bottom:1px solid #8da5b7;font-size:15px}
+#gui-casual-lobby .ag-equipment-skills ul{list-style:none;padding:3px 0 10px;margin:0}
+#gui-casual-lobby .ag-equipment-skills li{--skill-color:#26766b;display:flex;gap:9px;align-items:flex-start;padding:7px 10px;font-size:clamp(12px,3.55cqw,16px);font-weight:700;line-height:1.4;color:#2a475d;overflow-wrap:anywhere}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='30']{--skill-color:#2872a6}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='40']{--skill-color:#8550af}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='50']{--skill-color:#a66e1c}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='60']{--skill-color:#b74750}
+#gui-casual-lobby .ag-equipment-skills .is-unlocked{color:var(--skill-color);background:#e7eff4a8}
+#gui-casual-lobby .ag-equipment-skills .is-locked{color:#637181}
+#gui-casual-lobby .ag-skill-mark{position:relative;flex:none;box-sizing:border-box;width:13px;height:13px;background:var(--skill-color);border:2px solid #30485c;transform:rotate(45deg);margin:4px 2px 0}
+#gui-casual-lobby .ag-skill-mark.is-lock{transform:none;margin-top:7px;height:11px;border-radius:2px}
+#gui-casual-lobby .ag-skill-mark.is-lock::before{content:'';position:absolute;left:1px;bottom:7px;width:7px;height:7px;box-sizing:border-box;border:2px solid #30485c;border-bottom:0;border-radius:5px 5px 0 0}
+#gui-casual-lobby .ag-equipment-manage{margin-top:8px}
+#gui-casual-lobby .ag-equipment-manage>summary{display:list-item;min-height:44px;box-sizing:border-box;padding:12px 4px;font-size:12px;font-weight:700;cursor:pointer}
+#gui-casual-lobby .ag-management-actions{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px;margin:8px 0}
+#gui-casual-lobby .ag-upgrade-actions{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}
+#gui-casual-lobby .pl-modal .ag-modal .ag-management-actions .ag-button{width:100%;min-width:0;min-height:48px;--wc-button-height:48px;--psd-button-corner:10px;padding:8px 4px;font-size:16px;line-height:1.2;white-space:nowrap}
+#gui-casual-lobby .ag-equipment-manage .ag-cost{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:10px}
+#gui-casual-lobby .ag-equipment-manage .ag-cost b{display:block;float:none;margin-top:4px;font-size:20px;line-height:1.1;white-space:nowrap}
+#gui-casual-lobby .ag-equipment-manage .ag-cost small{overflow-wrap:anywhere}
+#gui-casual-lobby .ag-equipment-detail .ag-modal-footer{border-top:0;padding:8px 0 2px}
+#gui-casual-lobby .ag-equipment-detail .ag-equipment-primary{display:flex;justify-content:center;margin:0}
+#gui-casual-lobby .ag-equipment-primary .ag-button{width:58%;min-height:48px;--psd-button-corner:10px;font-size:20px}
+#gui-casual-lobby .ag-equipment-primary .ag-button::before{border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / var(--psd-button-corner) stretch}

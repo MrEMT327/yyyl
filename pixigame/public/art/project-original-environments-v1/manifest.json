@@ -1,0 +1,105 @@
+{
+  "method": "Built-in imagegen",
+  "intent": "Original background-only environments; own rendered fighter and PSD material references only.",
+  "prompt_file": "pixigame/art/project-original-environments-v1/prompts.json",
+  "references": [
+    {
+      "path": "/Users/liweitang/工作/无主航线/pixigame/public/art/project-fleet-environments-v1/aircraft-hangar-v1.png",
+      "sha256": "afdd9d1e2c281951cd67a0e9b0316456563fa26be40a6fe64deceb53e701f3dc"
+    },
+    {
+      "path": "/Users/liweitang/工作/无主航线/pixigame/art/project-fleet-environments-v1/reference-current-aircraft.png",
+      "sha256": "5f1378de3d66c48acf6291839cc424f92c930c42e2c49c8d05861c420a1bb71d"
+    },
+    {
+      "path": "/Users/liweitang/工作/无主航线/pixigame/public/art/psd-buttons-v1/button-gray.png",
+      "sha256": "1369cbefbb712c426ba47c5eb2a5fd1658e270fb95ee3c103eaa145fad2b05eb"
+    }
+  ],
+  "assets": {
+    "patrol-airway": {
+      "file": "patrol-airway-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-bbfd70b1-8ad2-4779-885f-782b926f1725.png",
+      "size": [
+        1672,
+        941
+      ],
+      "mode": "RGB",
+      "bytes": 1402436,
+      "sha256": "da921ddd00b1e38d981d25c8c72f53b6d37186193dd03ddbd154b81069e3d0ba",
+      "sourcePngSha256": "5471b58b08d148671a3266d42d0cc95b2db79b8ba98c8fafb0d433e310b5b08b"
+    },
+    "armory-bay": {
+      "file": "armory-bay-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-295db12b-aa76-4e0f-9e40-5438192d82f9.png",
+      "size": [
+        1214,
+        1295
+      ],
+      "mode": "RGB",
+      "bytes": 1397838,
+      "sha256": "6f7c352395cd527e62234b24401eb52687334c4fb75af717f8259b2b4ff97310",
+      "sourcePngSha256": "c5102480af6505cbec31bfb490ada21f7d080fa6d589d436c5aa5cc19beac24f"
+    },
+    "pilot-ready-room": {
+      "file": "pilot-ready-room-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-8054d25a-a4a3-4ef9-9049-03c2a3c5b76a.png",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "bytes": 1418770,
+      "sha256": "34e3abb9faaeaf37e05067963a9aff36e187d5a007bf3fd6166f732cf2d690a9",
+      "sourcePngSha256": "bee8be4821c16280fabef2d9486b37e8726797a6231906e14d068b6f0976f2b7"
+    },
+    "maintenance-bay": {
+      "file": "maintenance-bay-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-a741997f-7d32-40a6-b74c-cfac0d70810c.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 1514056,
+      "sha256": "9c7bc6ce881617b6498ccd8348f461051fc59b17c39cf08e3b080abf2ddab4df",
+      "sourcePngSha256": "31fc848858afc08f691e6f6d82e950a2a7fcee8e8b9e6a59a4054707645f7645"
+    },
+    "research-lab": {
+      "file": "research-lab-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-fade8ff9-b77e-4328-a86d-d1321795cd45.png",
+      "size": [
+        1086,
+        1448
+      ],
+      "mode": "RGB",
+      "bytes": 1306702,
+      "sha256": "5cf250d934e82b18ccdf9107a256cb9339fef9906c8fd50864dac71550a73730",
+      "sourcePngSha256": "85a5a269646fd43a357a20353bbbce4a9578fe1a1b353e2b5a1e94f5db92295f"
+    },
+    "logistics-bay": {
+      "file": "logistics-bay-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-9bb3eed0-be30-4221-96eb-54d2ff93b130.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 1464038,
+      "sha256": "63a1d86d4d20591fd131b74ffaba8206a33e7f7fc2d17b88abf5a20d6afd9869",
+      "sourcePngSha256": "90454a14104d9bfd4a395ecb2fd41b34b79efc8a3043a6d52c09da4eb30b9991"
+    },
+    "launch-hangar": {
+      "file": "launch-hangar-v1.webp",
+      "source": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-4998c7ef-44d0-4ec1-a624-44af37869829.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "bytes": 1538934,
+      "sha256": "cdb07ac6c843bf80ea76e30254ae571daa653cdd776f4d07cf365a4f17ffc3d6",
+      "sourcePngSha256": "6d6f7ad8958f87af3812675a857df96f598d2c6553f4bb0e57375321dedc8493"
+    }
+  }
+}

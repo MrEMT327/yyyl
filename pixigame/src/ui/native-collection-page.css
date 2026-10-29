@@ -1,0 +1,16 @@
+/* Reuse cloud PSD frames/buttons; these rules only fit the original data. */
+#gui-casual-lobby .wc-page.nc-page {grid-template-rows:48cqw 10cqw minmax(0,1fr) calc(var(--catalog-bottom) + var(--lobby-safe-bottom,0px))}
+#gui-casual-lobby .nc-page .wc-hero-art {inset:12% 32% 18%}
+#gui-casual-lobby .nc-page .wc-hero-tools {bottom:3%;justify-content:flex-end;padding-right:3cqw}
+#gui-casual-lobby .nc-original-art {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .nc-page .nc-detail,#gui-casual-lobby .nc-stage {padding:3cqw;margin-bottom:3cqw;background:#172d3f}
+#gui-casual-lobby .nc-page h3 {margin:0 0 2cqw;font-size:4cqw}
+#gui-casual-lobby .nc-page p {font-size:3.3cqw;line-height:1.6;overflow-wrap:anywhere}
+#gui-casual-lobby .nc-page .nc-cost {padding:2cqw 0;color:#ffdc7f}
+#gui-casual-lobby .nc-actions {display:flex;gap:2cqw;flex-wrap:wrap}
+#gui-casual-lobby .nc-actions .wc-button {flex:1;min-width:24cqw;--wc-button-height:max(40px,10cqw)}
+#gui-casual-lobby .nc-page button:disabled {cursor:default;opacity:.55}
+#gui-casual-lobby .nc-slots {margin:3cqw 0}
+#gui-casual-lobby .nc-slots>div {display:grid;grid-template-columns:1fr 18cqw 18cqw;align-items:center;gap:2cqw;margin:2cqw 0;font-size:3.3cqw}
+#gui-casual-lobby .nc-slots .wc-button {--wc-button-height:max(36px,9cqw)}
+#gui-casual-lobby .nc-page.nc-appearance {grid-template-rows:12cqw minmax(0,1fr) calc(var(--catalog-bottom) + var(--lobby-safe-bottom,0px))}

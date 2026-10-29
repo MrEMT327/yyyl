@@ -1,0 +1,3906 @@
+{
+  "version": 1,
+  "chapters": {
+    "1": {
+      "events": [
+        {
+          "missionId": 1001059,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1001100,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1001129,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "2": {
+      "events": [
+        {
+          "missionId": 1002053,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1002107,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1002153,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "3": {
+      "events": [
+        {
+          "missionId": 1003039,
+          "wave": 6,
+          "time": 135,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1003095,
+          "wave": 11,
+          "time": 285,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1003128,
+          "wave": 15,
+          "time": 390,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": [
+        {
+          "missionId": 1003044,
+          "wave": 6,
+          "time": 137,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        },
+        {
+          "missionId": 1003101,
+          "wave": 11,
+          "time": 300,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        },
+        {
+          "missionId": 1003102,
+          "wave": 11,
+          "time": 300,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        },
+        {
+          "missionId": 1003103,
+          "wave": 11,
+          "time": 300,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        }
+      ]
+    },
+    "4": {
+      "events": [
+        {
+          "missionId": 1004036,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1004085,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1004110,
+          "wave": 15,
+          "time": 360,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "5": {
+      "events": [
+        {
+          "missionId": 1005023,
+          "wave": 4,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1005044,
+          "wave": 7,
+          "time": 180,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1005064,
+          "wave": 10,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "6": {
+      "events": [
+        {
+          "missionId": 1006069,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1006117,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1006161,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "7": {
+      "events": [
+        {
+          "missionId": 1007058,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1007148,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1007195,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "8": {
+      "events": [
+        {
+          "missionId": 1008048,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1008105,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1008134,
+          "wave": 15,
+          "time": 360,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "9": {
+      "events": [
+        {
+          "missionId": 1009041,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1009110,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1009143,
+          "wave": 15,
+          "time": 360,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "10": {
+      "events": [
+        {
+          "missionId": 1010044,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1010107,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1010133,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "11": {
+      "events": [
+        {
+          "missionId": 1011037,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1011087,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1011114,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "12": {
+      "events": [
+        {
+          "missionId": 1012042,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1012119,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1012148,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "13": {
+      "events": [
+        {
+          "missionId": 1013062,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1013126,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1013161,
+          "wave": 15,
+          "time": 360,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "14": {
+      "events": [
+        {
+          "missionId": 1014041,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1014097,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1014161,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "15": {
+      "events": [
+        {
+          "missionId": 1015026,
+          "wave": 4,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1015048,
+          "wave": 7,
+          "time": 180,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1015067,
+          "wave": 10,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "16": {
+      "events": [
+        {
+          "missionId": 1016093,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1016149,
+          "wave": 11,
+          "time": 225,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1016176,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "17": {
+      "events": [
+        {
+          "missionId": 1017042,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1017094,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1017133,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "18": {
+      "events": [
+        {
+          "missionId": 1018041,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1018114,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1018152,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "19": {
+      "events": [
+        {
+          "missionId": 1019094,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1019164,
+          "wave": 11,
+          "time": 270,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1019238,
+          "wave": 15,
+          "time": 375,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "20": {
+      "events": [
+        {
+          "missionId": 1020070,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1020148,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1020217,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "21": {
+      "events": [
+        {
+          "missionId": 1021046,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1021102,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1021136,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "22": {
+      "events": [
+        {
+          "missionId": 1022028,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1022080,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1022112,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "23": {
+      "events": [
+        {
+          "missionId": 1023051,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1023097,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1023130,
+          "wave": 15,
+          "time": 360,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "24": {
+      "events": [
+        {
+          "missionId": 1024042,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1024094,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1024159,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "25": {
+      "events": [
+        {
+          "missionId": 1025035,
+          "wave": 4,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1025056,
+          "wave": 7,
+          "time": 180,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1025075,
+          "wave": 10,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "26": {
+      "events": [
+        {
+          "missionId": 1026097,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1026154,
+          "wave": 11,
+          "time": 225,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1026181,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "27": {
+      "events": [
+        {
+          "missionId": 1027056,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1027108,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1027157,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "28": {
+      "events": [
+        {
+          "missionId": 1028037,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1028098,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1028151,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "29": {
+      "events": [
+        {
+          "missionId": 1029033,
+          "wave": 6,
+          "time": 90,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1029090,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1029130,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "30": {
+      "events": [
+        {
+          "missionId": 1030045,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1030108,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1030140,
+          "wave": 15,
+          "time": 375,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "31": {
+      "events": [
+        {
+          "missionId": 1031041,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1031116,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1031154,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "32": {
+      "events": [
+        {
+          "missionId": 1032095,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1032165,
+          "wave": 11,
+          "time": 270,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1032239,
+          "wave": 15,
+          "time": 375,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "33": {
+      "events": [
+        {
+          "missionId": 1033046,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1033109,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1033141,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "34": {
+      "events": [
+        {
+          "missionId": 1034042,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1034129,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1034160,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "35": {
+      "events": [
+        {
+          "missionId": 1035027,
+          "wave": 4,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1035088,
+          "wave": 7,
+          "time": 180,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1035105,
+          "wave": 10,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "36": {
+      "events": [
+        {
+          "missionId": 1036037,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1036096,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1036148,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "37": {
+      "events": [
+        {
+          "missionId": 1037033,
+          "wave": 6,
+          "time": 90,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1037090,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1037130,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "38": {
+      "events": [
+        {
+          "missionId": 1038085,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1038141,
+          "wave": 11,
+          "time": 225,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1038168,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "39": {
+      "events": [
+        {
+          "missionId": 1039084,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1039151,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1039228,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "40": {
+      "events": [
+        {
+          "missionId": 1040044,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1040125,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1040184,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "41": {
+      "events": [
+        {
+          "missionId": 1041049,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1041111,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1041151,
+          "wave": 15,
+          "time": 360,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": [
+        {
+          "missionId": 1041117,
+          "wave": 11,
+          "time": 270,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        },
+        {
+          "missionId": 1041118,
+          "wave": 11,
+          "time": 270,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        },
+        {
+          "missionId": 1041119,
+          "wave": 11,
+          "time": 270,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        }
+      ]
+    },
+    "42": {
+      "events": [
+        {
+          "missionId": 1042045,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1042111,
+          "wave": 11,
+          "time": 270,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1042148,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "43": {
+      "events": [
+        {
+          "missionId": 1043038,
+          "wave": 6,
+          "time": 90,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1043110,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1043150,
+          "wave": 15,
+          "time": 390,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": [
+        {
+          "missionId": 1043043,
+          "wave": 6,
+          "time": 92,
+          "rawRandomNpc": 1,
+          "nativeEligible": false,
+          "reason": "RefreshRandomNpc requires value == 9; value 1 returns without creating an NPC"
+        }
+      ]
+    },
+    "44": {
+      "events": [
+        {
+          "missionId": 1044042,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1044098,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1044129,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "45": {
+      "events": [
+        {
+          "missionId": 1045034,
+          "wave": 4,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1045057,
+          "wave": 7,
+          "time": 180,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1045080,
+          "wave": 10,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "46": {
+      "events": [
+        {
+          "missionId": 1046041,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1046109,
+          "wave": 11,
+          "time": 225,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1046136,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "47": {
+      "events": [
+        {
+          "missionId": 1047094,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1047148,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1047197,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "48": {
+      "events": [
+        {
+          "missionId": 1048097,
+          "wave": 6,
+          "time": 90,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1048171,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1048202,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "49": {
+      "events": [
+        {
+          "missionId": 1049056,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1049115,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1049167,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "50": {
+      "events": [
+        {
+          "missionId": 1050042,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1050102,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1050141,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "51": {
+      "events": [
+        {
+          "missionId": 1051097,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1051154,
+          "wave": 11,
+          "time": 225,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1051181,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "52": {
+      "events": [
+        {
+          "missionId": 1052060,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1052111,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1052161,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "53": {
+      "events": [
+        {
+          "missionId": 1053039,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1053101,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1053153,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "54": {
+      "events": [
+        {
+          "missionId": 1054043,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1054096,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1054135,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "55": {
+      "events": [
+        {
+          "missionId": 1055035,
+          "wave": 4,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        },
+        {
+          "missionId": 1055056,
+          "wave": 7,
+          "time": 180,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1055075,
+          "wave": 10,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": [
+            "-1"
+          ]
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "56": {
+      "events": [
+        {
+          "missionId": 1056093,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1056150,
+          "wave": 11,
+          "time": 225,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1056178,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "57": {
+      "events": [
+        {
+          "missionId": 1057033,
+          "wave": 6,
+          "time": 90,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1057090,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1057130,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "58": {
+      "events": [
+        {
+          "missionId": 1058037,
+          "wave": 6,
+          "time": 120,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1058101,
+          "wave": 11,
+          "time": 240,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1058141,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "59": {
+      "events": [
+        {
+          "missionId": 1059033,
+          "wave": 6,
+          "time": 90,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1059103,
+          "wave": 11,
+          "time": 255,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1059135,
+          "wave": 15,
+          "time": 375,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    },
+    "60": {
+      "events": [
+        {
+          "missionId": 1060042,
+          "wave": 6,
+          "time": 105,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        },
+        {
+          "missionId": 1060159,
+          "wave": 15,
+          "time": 345,
+          "entityId": 8,
+          "modelId": 400010,
+          "missionEventId": 8,
+          "enabled": true,
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 2
+          },
+          "moveMode": "fixed",
+          "extraDelaySeconds": 0,
+          "sourceMissionType": 9,
+          "sourceMissionPool": []
+        }
+      ],
+      "randomNpcEvents": []
+    }
+  },
+  "configs": {
+    "8": {
+      "entityId": 8,
+      "modelId": 400010,
+      "entity": {
+        "ID": 8,
+        "Type": 5,
+        "Tag": [],
+        "SecondWeapenType": 0,
+        "BelongSkill": [],
+        "ModelID": 400010,
+        "Shape": [
+          2.5
+        ],
+        "ModelScale": 1,
+        "BuffScale": 0,
+        "mass": 0,
+        "CharacterID": 400009,
+        "HP": 100,
+        "Attack": 0,
+        "MoveSpeed": 3,
+        "AttackDistance": 0,
+        "attributes": [],
+        "WeaponID": [
+          999999
+        ],
+        "MonsterTraitID": [],
+        "MonsterAbility": [],
+        "NoAttackArea": 0,
+        "FireCD": 0,
+        "BulletLifeRange": 0,
+        "attackPossibility": 0.5,
+        "rotateWhenAttack": [
+          1
+        ],
+        "guardDistance": 6,
+        "disengageDistance": 8,
+        "ShowHp": 0,
+        "ShowHpType": 0,
+        "SpecialTrait": [],
+        "AIId": "AIPunchboard",
+        "AIParameters": "{\"PathId\":7,\"DeathOnFinish\":1,\"IsLoop\":0,\"IdleEffectId\":-1,\"PickupCountdownTime\":0.2,\"PickupCountdownBackTime\":10}",
+        "WaveAIId": "AIPunchboard",
+        "WaveAIParameters": "{\"PathId\":7,\"DeathOnFinish\":1,\"IsLoop\":0,\"IdleEffectId\":-1,\"PickupCountdownTime\":0.2,\"PickupCountdownBackTime\":10}",
+        "AIWeight": [],
+        "AICall": 0,
+        "AIRush": 0,
+        "bornType": 0,
+        "bornParameters": "",
+        "BulletMod1": [],
+        "BulletMod2": [],
+        "BulletMod3": [],
+        "WeaponMod1": [],
+        "WeaponMod2": [],
+        "WeaponMod3": [],
+        "leaveType": 0,
+        "WaveleaveType": 0,
+        "leaveParameters": "",
+        "WaveleaveParameters": "",
+        "UrgencyTipParameters": "",
+        "AlertId": 1,
+        "AlertParameters": "",
+        "rotateSpeed": 0,
+        "BodyAttack": 0,
+        "hitRimTime": 0.30000001192092896,
+        "jellyId": 0,
+        "hitPrefabId": 0,
+        "airplanetrail": 0,
+        "AttackSpeed": 0,
+        "HittedInterval": 0,
+        "moveType": 0,
+        "PreloadWeapon": [],
+        "dropID": [],
+        "nameLanguageId": "",
+        "infoLanguageId": "",
+        "hitSoundId": 0,
+        "deadSoundId": 0,
+        "deathClassId": 6,
+        "deathParams": "{\"ExplosionEffectId\":210003}",
+        "LinkEntityId": [],
+        "LinkBulletId": [],
+        "LinkModelId": [],
+        "LinkEffectId": [],
+        "hpDropRate": 0,
+        "hpDropRate2": 0,
+        "hpDropRate3": 0,
+        "expDropRate": 0,
+        "expType": 0,
+        "coin": 0,
+        "exp": 0,
+        "expWeight": 0,
+        "score": 0,
+        "bornEffect": 0,
+        "AvoidRadius": 1,
+        "SelectScale": 2,
+        "Vibrate": 0,
+        "NoAnim": 0,
+        "MonsterDropType": 0
+      },
+      "rawEntity": {
+        "ID": 8,
+        "Type": 5,
+        "Tag": [],
+        "SecondWeapenType": 0,
+        "BelongSkill": [],
+        "ModelID": 400010,
+        "Shape": [
+          163840
+        ],
+        "ModelScale": 65536,
+        "BuffScale": 0,
+        "mass": 0,
+        "CharacterID": 400009,
+        "HP": 6553600,
+        "Attack": 0,
+        "MoveSpeed": 196608,
+        "AttackDistance": 0,
+        "attributes": [],
+        "WeaponID": [
+          999999
+        ],
+        "MonsterTraitID": [],
+        "MonsterAbility": [],
+        "NoAttackArea": 0,
+        "FireCD": 0,
+        "BulletLifeRange": 0,
+        "attackPossibility": 32768,
+        "rotateWhenAttack": [
+          1
+        ],
+        "guardDistance": 393216,
+        "disengageDistance": 524288,
+        "ShowHp": 0,
+        "ShowHpType": 0,
+        "SpecialTrait": [],
+        "AIId": "AIPunchboard",
+        "AIParameters": "{\"PathId\":7,\"DeathOnFinish\":1,\"IsLoop\":0,\"IdleEffectId\":-1,\"PickupCountdownTime\":0.2,\"PickupCountdownBackTime\":10}",
+        "WaveAIId": "AIPunchboard",
+        "WaveAIParameters": "{\"PathId\":7,\"DeathOnFinish\":1,\"IsLoop\":0,\"IdleEffectId\":-1,\"PickupCountdownTime\":0.2,\"PickupCountdownBackTime\":10}",
+        "AIWeight": [],
+        "AICall": 0,
+        "AIRush": 0,
+        "bornType": 0,
+        "bornParameters": "",
+        "BulletMod1": [],
+        "BulletMod2": [],
+        "BulletMod3": [],
+        "WeaponMod1": [],
+        "WeaponMod2": [],
+        "WeaponMod3": [],
+        "leaveType": 0,
+        "WaveleaveType": 0,
+        "leaveParameters": "",
+        "WaveleaveParameters": "",
+        "UrgencyTipParameters": "",
+        "AlertId": 1,
+        "AlertParameters": "",
+        "rotateSpeed": 0,
+        "BodyAttack": 0,
+        "hitRimTime": 0.30000001192092896,
+        "jellyId": 0,
+        "hitPrefabId": 0,
+        "airplanetrail": 0,
+        "AttackSpeed": 0,
+        "HittedInterval": 0,
+        "moveType": 0,
+        "PreloadWeapon": [],
+        "dropID": [],
+        "nameLanguageId": "",
+        "infoLanguageId": "",
+        "hitSoundId": 0,
+        "deadSoundId": 0,
+        "deathClassId": 6,
+        "deathParams": "{\"ExplosionEffectId\":210003}",
+        "LinkEntityId": [],
+        "LinkBulletId": [],
+        "LinkModelId": [],
+        "LinkEffectId": [],
+        "hpDropRate": 0,
+        "hpDropRate2": 0,
+        "hpDropRate3": 0,
+        "expDropRate": 0,
+        "expType": 0,
+        "coin": 0,
+        "exp": 0,
+        "expWeight": 0,
+        "score": 0,
+        "bornEffect": 0,
+        "AvoidRadius": 1,
+        "SelectScale": 2,
+        "Vibrate": 0,
+        "NoAnim": 0,
+        "MonsterDropType": 0
+      },
+      "model": {
+        "ID": 400010,
+        "path": "Assets/_Resources/Prefab/Entity/Battle_Treasure_Chest_1.prefab",
+        "lowPath": "Assets/_Resources/Prefab/Entity/Battle_Treasure_Chest_1.prefab"
+      },
+      "aiParameters": {
+        "PathId": 7,
+        "DeathOnFinish": 1,
+        "IsLoop": 0,
+        "IdleEffectId": -1,
+        "PickupCountdownTime": 0.2,
+        "PickupCountdownBackTime": 10
+      },
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 2
+      },
+      "spawnMode": 2,
+      "spawnModeName": "MissionNpcPos",
+      "moveMode": 2,
+      "moveModeName": "Fixed"
+    }
+  },
+  "constants": {
+    "PunchboardRandomTime": {
+      "value": "0",
+      "type": "int"
+    },
+    "PunchboardMissAddWeight": {
+      "value": "35",
+      "type": "int"
+    },
+    "PunchboardMoveSpeedScale": {
+      "value": "0.8f",
+      "type": "fp"
+    },
+    "PunchboardFiveSkillBlockThreshold": {
+      "value": "4",
+      "type": "int"
+    }
+  },
+  "missionNpcPositionSource": {
+    "resource": "S_1_1",
+    "door": {
+      "type": 4,
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 2
+      },
+      "offset": 630,
+      "rawHex": "00000000000000000000000000000000000002000000000004000000"
+    }
+  },
+  "rules": {
+    "directMissionType": 9,
+    "directEnabled": true,
+    "missionEventId": 8,
+    "entityId": 8,
+    "randomNpcRequiredValue": 9,
+    "randomNpcChanceFormula": "randomInt(0,100) <= missCount * 35",
+    "creationDelaySeconds": 0,
+    "creationDelaySource": "PunchboardRandomTime=0 milliseconds",
+    "spawnMode": "MissionNpcPos",
+    "moveMode": "Fixed",
+    "pickupCountdownTime": 0.2,
+    "pickupCountdownBackTime": 10,
+    "rewardCountWeights": [
+      60,
+      0,
+      30,
+      0,
+      10
+    ],
+    "fiveRewardBlockedAtWeaponCount": 4,
+    "pickupEffect": "enter punchboard skill-reward interaction; do not treat as enemy, kill reward or ordinary experience pickup"
+  },
+  "evidence": [
+    "RefreshMonsters 0x69853c8..0x69853f4 calls CreatePunchboardNpc for mission type9",
+    "RefreshRandomNpc 0x6985a90..0x6985ac0 reads IWaterfallMission slot36 and accepts only9",
+    "CreatePunchboardNpc 0x6985854 -> BaseSurvivalBattleManager.CreatePunchboard 0x6930d6c -> TriggerMissionEvent(8,true,0,delay)",
+    "BattleManager.CreatePunchboardNpc 0x693af58 passes8,8 to BattleWorldContext.CreateNpc",
+    "PunchboardGameplayCustomTable default rule 0x6975b10 spawn2 move2; dictionary only maps worldType7 separately",
+    "MissionData.FixPos 0x6884fa0..0x6884ff0 assigns door type4 to NpcPos",
+    "AIPunchboard.OnBorn 0x68d9480 only schedules path movement when MoveMode==1"
+  ],
+  "unresolved": [
+    "Reward pool advanced quality/replenishment policies and original punchboard UI animation are not fully translated; runtime uses supported owned skills."
+  ]
+}

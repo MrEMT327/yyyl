@@ -1,0 +1,58 @@
+/* Original six-colour plates from 装备.psd. Slice 18px corners at a fixed
+   display scale; the centre fills independently for square and tall cards. */
+#gui-casual-lobby [data-psd-quality] {--quality-plate:url('/art/psd-equipment-v1/frame-gray.png')}
+#gui-casual-lobby [data-psd-quality='1'] {--quality-plate:url('/art/psd-equipment-v1/frame-green.png')}
+#gui-casual-lobby [data-psd-quality='2'] {--quality-plate:url('/art/psd-equipment-v1/frame-blue.png')}
+#gui-casual-lobby [data-psd-quality='3'] {--quality-plate:url('/art/psd-equipment-v1/frame-purple.png')}
+#gui-casual-lobby [data-psd-quality='4'] {--quality-plate:url('/art/psd-equipment-v1/frame-gold.png')}
+#gui-casual-lobby [data-psd-quality='5'] {--quality-plate:url('/art/psd-equipment-v1/frame-red.png')}
+#gui-casual-lobby [data-psd-quality] {--quality-corner:clamp(9px,2.8cqw,13px)}
+#gui-casual-lobby[data-tab='research'] .research-card-shell,
+#gui-casual-lobby .research-result-emblem[data-psd-quality],
+#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__preview[data-psd-quality] {
+  background:none;border:0;clip-path:none;filter:none;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+}
+#gui-casual-lobby[data-tab='research'] .research-card-shell::before {content:none}
+#gui-casual-lobby[data-tab='research'] .research-card-shell.is-concealed {filter:brightness(.65)}
+#gui-casual-lobby .research-result-emblem[data-psd-quality] .research-result-icon {width:78%;height:78%}
+
+#gui-casual-lobby .wc-item[data-psd-quality],
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card[data-psd-quality] {
+  background:none;clip-path:none!important;
+}
+#gui-casual-lobby .wc-item[data-psd-quality]::before,
+#gui-casual-lobby[data-subpage='workshop'] .ws-page .ws-slot[data-psd-quality]::before,
+#gui-casual-lobby:is(.equipment-reference,[data-subpage='workshop']) .eq-card[data-psd-quality]::before,
+#gui-casual-lobby .ag-card[data-psd-quality]::before,
+#gui-casual-lobby.equipment-reference .ag-page .ag-card[data-psd-quality]::before {
+  background:none;border:0;filter:none!important;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+}
+/* Filled plates sit behind the artwork, not over it. */
+#gui-casual-lobby .wc-item[data-psd-quality]::before {z-index:-1}
+#gui-casual-lobby .wc-skill-art[data-psd-quality]::before {
+  background:none;border:0;filter:none!important;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+  z-index:-1;
+}
+#gui-casual-lobby .recruit-reference .rc-preview-card.is-weapon[data-psd-quality] {
+  background:none!important;border:0;border-radius:0;box-shadow:none;clip-path:none;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+}
+#gui-casual-lobby .recruit-reference .recruit-feature-visual[data-psd-quality] {
+  position:relative;isolation:isolate;
+}
+#gui-casual-lobby .recruit-reference .recruit-feature-visual[data-psd-quality]::before {
+  content:'';position:absolute;inset:15% 5%;z-index:-1;pointer-events:none;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+}
+#gui-casual-lobby .recruit-info-dialog .recruit-reward-collection>button[data-psd-quality] {
+  background:none;border:0;border-radius:0;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+}
+#gui-casual-lobby .pl-reward-item[data-psd-quality] {position:relative;isolation:isolate;background:none!important;border:0;border-radius:0}
+#gui-casual-lobby .pl-reward-item[data-psd-quality]::before {
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:none!important;
+  border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch;
+}

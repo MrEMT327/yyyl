@@ -1,0 +1,96 @@
+/* Original 三选一.psd. Fixed 24px source slices preserve metal corners.
+   Only the plate is tinted; portraits and text keep their original colours. */
+.pilot-holo-card{
+ --phc-metal:#65afe0;--phc-metal-light:#c8eaff;--phc-frame-filter:none;
+ --phc-rx:0deg;--phc-ry:0deg;--phc-px:34%;--phc-py:26%;--phc-mx:0px;--phc-my:0px;
+ --phc-bg-x:45%;--phc-bg-y:42%;--phc-frame-corner:18px;
+ position:relative;display:block;width:100%;aspect-ratio:5/9;margin:0;isolation:isolate;
+ color:#f1f6fa;text-align:left;font-family:'Microsoft YaHei',sans-serif;
+ transform:perspective(950px) rotateX(var(--phc-rx)) rotateY(var(--phc-ry));
+ transform-style:preserve-3d;transition:transform .4s ease,filter .25s;
+ touch-action:auto;user-select:none;container-type:inline-size;-webkit-tap-highlight-color:transparent;
+}
+.pilot-holo-card[data-holo-interactive]{cursor:grab;outline:none}
+.pilot-holo-card[data-holo-interactive]:active{cursor:grabbing}
+.pilot-holo-card:focus-visible{outline:2px solid #b7eaff;outline-offset:3px}
+.pilot-holo-card.is-holo-active{transition:transform .09s linear;z-index:3;will-change:transform}
+.phc-face{position:absolute;inset:0;isolation:isolate;background:none;border:0;filter:drop-shadow(0 5px 9px #0007)}
+.phc-face::before,.phc-face::after{content:'';position:absolute;inset:0;pointer-events:none;background:none;filter:var(--phc-frame-filter)}
+.phc-face::before{z-index:0;border-image:var(--phc-frame) 24 fill / var(--phc-frame-corner) stretch}
+.phc-face::after{z-index:1;border-image:var(--phc-frame) 24 / var(--phc-frame-corner) stretch}
+.phc-art{position:absolute;inset:14% -9% 9%;z-index:2;overflow:hidden;pointer-events:none;mask-image:linear-gradient(#000 58%,#000e 70%,transparent 100%)}
+.phc-art>img{position:absolute;top:0;left:-12.5%;display:block!important;width:125%!important;max-width:none!important;height:auto!important;object-fit:contain!important;object-position:var(--phc-art-x) top;transform:translate(var(--phc-mx),var(--phc-my));transition:transform .15s ease-out;filter:drop-shadow(0 3px 5px #0004)}
+.phc-header{position:absolute;z-index:6;left:10%;right:8%;top:4.5%;display:flex;align-items:center;justify-content:space-between;gap:4%;min-height:8%;pointer-events:none}
+.phc-heading-name{min-width:0;max-width:83%;color:#f4f8fb;font-size:clamp(13px,8cqw,30px);font-weight:800;line-height:1.25;white-space:nowrap}
+.phc-rarity{flex:none;color:var(--phc-metal-light);font:italic 700 clamp(17px,8cqw,30px)/1 Georgia,serif;text-shadow:0 1px 3px #000}
+.phc-caption{position:absolute;z-index:6;left:10%;right:9%;bottom:7%;display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-shadow:0 1px 3px #081323;pointer-events:none}
+.phc-role{display:block;width:60%;padding-bottom:5px;border-bottom:1px solid #c4e3f699;color:#c2e4f6;font-size:clamp(10px,4.2cqw,16px);line-height:1.3}
+.phc-title{display:block;color:#f7fbff;font-size:clamp(16px,8.5cqw,32px);font-weight:800;line-height:1.2}
+.phc-name{display:none}
+.phc-metadata{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.phc-status{position:absolute;right:8%;top:15%;z-index:6;background:#0a1828d9;color:#d5e7f6;padding:2px 5px;font-size:clamp(7px,3cqw,12px);line-height:1.4;border:1px solid #9bb7ca66}
+.phc-foil,.phc-glitter,.phc-gloss{position:absolute;inset:60% 5% 3%;z-index:3;pointer-events:none}
+.phc-foil{background:linear-gradient(120deg,transparent 20%,var(--phc-metal-light) 48%,transparent 70%);background-size:260% 180%;background-position:var(--phc-bg-x) var(--phc-bg-y);mix-blend-mode:screen;opacity:calc(var(--phc-foil-idle) * .3);transition:opacity .25s}
+.phc-glitter{background:radial-gradient(circle,#e9f4ff 0 .6px,transparent 1px);background-size:31px 29px;opacity:calc(var(--phc-glitter-opacity) * .3)}
+.phc-gloss{inset:2% 4%;background:linear-gradient(115deg,transparent 5%,#fff2 18%,transparent 30%);opacity:.18}
+.is-holo-active .phc-foil{opacity:calc(var(--phc-foil-active) * .45)}
+.is-holo-active .phc-gloss{opacity:.35}
+.phc-selected .phc-face{filter:drop-shadow(0 0 2px #b0eaff88)}
+.phc-compact{aspect-ratio:5/7;--phc-frame-corner:9px}
+.phc-compact .phc-header{top:5%;left:9%;right:9%;justify-content:flex-start}
+.phc-compact .phc-rarity{font-size:14cqw}
+.phc-compact :is(.phc-heading-name,.phc-role,.phc-title){display:none}
+.phc-compact .phc-art{inset:14% 4% 8%;mask-image:linear-gradient(#000 50%,#000e 65%,transparent 100%)}
+.phc-compact .phc-art>img{width:142%!important;left:-21%}
+.phc-compact .phc-caption{left:7%;right:7%;bottom:8%;align-items:center;gap:0}
+.phc-compact .phc-name{display:block;color:#f4f8ff;font-size:11cqw;font-weight:700;line-height:1.3;white-space:nowrap}
+.phc-compact .phc-status{top:7%;right:8%;font-size:7cqw;max-width:60%;padding:1px 3px}
+/* Shallow bevels register to the existing PSD centre slice. */
+.phc-depth{position:absolute;inset:var(--phc-frame-corner);z-index:1;overflow:hidden;pointer-events:none;mask-image:linear-gradient(transparent 62%,#000 76%,#000)}
+.phc-depth>svg{display:block;width:100%;height:100%;overflow:hidden}
+.phc-facet-fill{fill:var(--phc-metal-light);opacity:.035;animation:phc-facet-reflect 6s ease-in-out var(--shard-delay) infinite paused}
+.phc-facet-recess{fill:none;stroke:#030b19;stroke-width:.7;opacity:.24}
+.phc-facet-bevel{fill:none;stroke:var(--phc-metal-light);stroke-width:.55;opacity:.26}
+.phc-facet-trace{fill:none;stroke:var(--phc-metal-light);stroke-width:.8;stroke-dasharray:9 91;stroke-dashoffset:0;opacity:0;animation:phc-facet-trace 6s ease-in-out var(--shard-delay) infinite paused}
+.phc-lightpass{position:absolute;inset:2% 4%;z-index:3;overflow:hidden;pointer-events:none;clip-path:polygon(5% 0,100% 0,100% 94%,94% 100%,0 100%,0 5%)}
+.phc-lightpass::after{content:'';position:absolute;inset:-30% -90%;background:linear-gradient(112deg,transparent 43%,#bfeaff0a 47%,#ebf8ff38 50%,#bfeaff0a 53%,transparent 57%);transform:translateX(-60%);animation:phc-light-sweep 7.6s ease-in-out -2s infinite paused;opacity:0}
+.phc-caption::before{content:'';position:absolute;inset:-10px -8px -8px;z-index:-1;background:linear-gradient(90deg,#08152485,#08152420,transparent);pointer-events:none}
+.phc-compact .phc-lightpass{opacity:.6}
+.pilot-holo-card.is-holo-active .phc-lightpass::after,.draw-stage .pilot-holo-card .phc-lightpass::after{animation-play-state:running}
+.draw-summary-covered .pilot-holo-card .phc-lightpass::after{animation-play-state:paused!important}
+@keyframes phc-light-sweep{0%,18%{transform:translateX(-60%);opacity:0}25%{opacity:.7}52%{transform:translateX(60%);opacity:.7}60%,100%{transform:translateX(60%);opacity:0}}
+.phc-reveal{animation:phc-reveal .6s ease-out backwards}
+/* Light stays behind the portrait or along the rim; the PSD is still the frame. */
+.pilot-holo-card{--phc-radiance:.42;--phc-edge-strength:.55;--phc-spectrum:var(--phc-metal)}
+.pilot-holo-card[data-holo-rarity='SR']{--phc-radiance:.6;--phc-edge-strength:.7}
+.pilot-holo-card[data-holo-rarity='SSR']{--phc-radiance:.8;--phc-edge-strength:.9}
+.pilot-holo-card[data-holo-rarity='UR']{--phc-radiance:1;--phc-edge-strength:1;--phc-spectrum:#8bcfff}
+.phc-radiance{position:absolute;inset:2% 3%;z-index:1;overflow:hidden;pointer-events:none;opacity:var(--phc-radiance);mask-image:linear-gradient(transparent,#000 17%,#000 86%,transparent)}
+.phc-corona{position:absolute;inset:3% -25% 1%;background:radial-gradient(ellipse at 50% 58%,transparent 22%,color-mix(in srgb,var(--phc-metal) 45%,transparent) 44%,transparent 66%);animation:phc-corona-breathe 4.8s ease-in-out -1.7s infinite alternate paused}
+.phc-orbit{position:absolute;inset:23% -30% -4%;background:repeating-conic-gradient(from 12deg,transparent 0deg 23deg,color-mix(in srgb,var(--phc-metal-light) 42%,transparent) 24deg,transparent 27deg 51deg,var(--phc-spectrum) 52deg,transparent 53deg 72deg);mask-image:radial-gradient(ellipse,transparent 25%,#0009 46%,transparent 68%);animation:phc-orbit-turn 36s linear infinite paused;opacity:.7}
+.phc-sparks{position:absolute;inset:3% 2% 4%;z-index:4;pointer-events:none;overflow:hidden;mask-image:linear-gradient(transparent,#000 10%,#000 86%,transparent)}
+.phc-sparks i{position:absolute;left:var(--spark-x);top:var(--spark-y);width:var(--spark-size);height:var(--spark-size);background:var(--phc-metal-light);border-radius:50%;box-shadow:0 0 5px 1px var(--phc-metal),0 0 13px var(--phc-spectrum);opacity:.6;animation:phc-spark-rise var(--spark-duration) ease-in-out var(--spark-delay) infinite paused}
+.phc-sparks i:nth-child(3n+1){border-radius:0;background:radial-gradient(circle,#fff 0 10%,transparent 58%),linear-gradient(transparent 37%,var(--phc-metal-light) 48% 52%,transparent 63%),linear-gradient(90deg,transparent 37%,var(--phc-metal-light) 48% 52%,transparent 63%);width:calc(var(--spark-size) * 2.5);height:calc(var(--spark-size) * 2.5);box-shadow:none;filter:drop-shadow(0 0 3px var(--phc-metal))}
+.phc-edge-light{position:absolute;inset:1.8% 3%;z-index:4;border:1px solid color-mix(in srgb,var(--phc-metal-light) 65%,transparent);box-shadow:inset 0 0 12px color-mix(in srgb,var(--phc-metal) 35%,transparent),0 0 12px color-mix(in srgb,var(--phc-metal) 45%,transparent);pointer-events:none;opacity:var(--phc-edge-strength);clip-path:polygon(5% 0,100% 0,100% 96%,94% 100%,0 100%,0 4%)}
+.phc-edge-light::after{content:'';position:absolute;inset:-1px;background:linear-gradient(115deg,transparent 22%,var(--phc-metal-light) 40%,#fff 49%,var(--phc-spectrum) 57%,transparent 76%);background-size:300% 300%;padding:2px;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;animation:phc-rim-flow 5s linear -1.5s infinite paused}
+.phc-compact .phc-radiance{opacity:calc(var(--phc-radiance) * .6)}
+.phc-compact .phc-sparks i:nth-child(n+5){display:none}
+.phc-compact .phc-edge-light{opacity:calc(var(--phc-edge-strength) * .7);box-shadow:none}
+.pilot-holo-card[data-holo-rarity='R'] .phc-sparks i:nth-child(n+5),.pilot-holo-card[data-holo-rarity='SR'] .phc-sparks i:nth-child(n+9){display:none}
+.pilot-holo-card[data-holo-rarity='R'] .phc-orbit{display:none}
+:is(.pilot-holo-card.is-holo-active,.draw-stage .pilot-holo-card) :is(.phc-corona,.phc-orbit,.phc-sparks i),:is(.pilot-holo-card.is-holo-active,.draw-stage .pilot-holo-card) .phc-edge-light::after{animation-play-state:running}
+.draw-summary-covered .pilot-holo-card :is(.phc-corona,.phc-orbit,.phc-sparks i),.draw-summary-covered .pilot-holo-card .phc-edge-light::after{animation-play-state:paused!important}
+@keyframes phc-corona-breathe{from{transform:scale(.92);opacity:.6}to{transform:scale(1.08);opacity:1}}
+@keyframes phc-orbit-turn{to{transform:rotate(360deg)}}
+@keyframes phc-spark-rise{0%{transform:translate3d(0,18px,0) scale(.4);opacity:0}30%{opacity:.9}70%{opacity:.6}100%{transform:translate3d(5px,-28px,0) scale(.8);opacity:0}}
+@keyframes phc-rim-flow{from{background-position:100% 100%}to{background-position:0% 0%}}
+@keyframes phc-reveal{from{opacity:0;transform:perspective(950px) rotateY(20deg) translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.pilot-holo-card,.pilot-holo-card *{animation:none!important;transition:none!important}.pilot-holo-card{transform:none!important}.phc-art>img{transform:none!important}.is-holo-active .phc-foil{opacity:calc(var(--phc-foil-idle) * .3)}.is-holo-active .phc-gloss{opacity:.18}}
+@media(prefers-reduced-motion:reduce){.phc-depth{transform:none!important}.phc-lightpass::after{animation:none!important;opacity:0!important}}
+@media(prefers-reduced-motion:reduce){.pilot-holo-card *::before,.pilot-holo-card *::after{animation:none!important;transition:none!important}}
+
+
+:is(.pilot-holo-card.is-holo-active,.draw-stage .pilot-holo-card) :is(.phc-facet-fill,.phc-facet-trace){animation-play-state:running}
+.draw-summary-covered .pilot-holo-card :is(.phc-facet-fill,.phc-facet-trace){animation-play-state:paused!important}
+@keyframes phc-facet-reflect{0%,100%{opacity:.025}45%{opacity:.16}65%{opacity:.06}}
+@keyframes phc-facet-trace{0%{stroke-dashoffset:0;opacity:0}25%{opacity:.75}80%{opacity:.3}100%{stroke-dashoffset:-100;opacity:0}}

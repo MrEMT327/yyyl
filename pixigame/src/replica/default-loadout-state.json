@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "role": { "id": 10100, "level": 1, "star": 0, "starStep": 0, "skinId": 0, "skinStar": 0 },
+  "equipment": [],
+  "skins": [],
+  "guns": [{ "id": 20101, "star": 1, "active": true, "equipped": true }],
+  "pilots": [],
+  "skinSkillSlots": [0, 0, 0],
+  "labs": [],
+  "debugOverride": { "enabled": false, "attack": 100, "hp": 600 }
+}

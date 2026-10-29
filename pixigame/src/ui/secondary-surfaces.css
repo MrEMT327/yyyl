@@ -1,0 +1,202 @@
+/* Shared secondary-screen chrome. Art, rarity frames and domain actions stay
+   page-owned; headings, typography, controls and spacing use one scale. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal {
+  --dialog-gap: 12px;
+  --dialog-body-size: 13px;
+  --dialog-control-height: 48px;
+  border-radius: 3px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-modal-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 62px;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--ui-yellow);
+  background: var(--ui-panel-deep);
+  box-shadow: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-modal-heading::before { content: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-modal-heading h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--ui-edge);
+  background: var(--ui-panel);
+  box-shadow: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-close > .pl-icon { width: 20px; height: 20px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-modal-content {
+  padding: var(--dialog-gap);
+  background: var(--ui-panel-deep);
+  color: var(--ui-text);
+  font-size: var(--dialog-body-size);
+  line-height: 1.65;
+  text-shadow: none;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-rule-copy,.eq-rules,.shop-rules,.shop-pool-copy,.research-copy,.rc-modal-copy,.pl-modal-description,.ref-batch-cost,.ref-batch-list,.pl-card-lore) {
+  font-size: var(--dialog-body-size);
+  line-height: 1.75;
+  color: var(--ui-muted);
+  text-shadow: none;
+  overflow-wrap: anywhere;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-rule-copy,.eq-rules,.shop-rules,.shop-pool-copy,.research-copy,.rc-modal-copy) p {
+  margin: 0 0 12px;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.eq-rules,.shop-rules,.shop-pool-copy,.research-copy) :is(h3,h4) {
+  margin: 18px 0 6px;
+  color: var(--ui-text);
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 800;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.eq-rules,.shop-rules,.shop-pool-copy,.research-copy) > :first-child { margin-top: 0; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.research-muted,.rc-muted,.pl-card-lore>span) {
+  color: var(--ui-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .research-effect {
+  padding: 8px 10px;
+  border-left: 2px solid var(--ui-success);
+  background: var(--ui-panel);
+  color: var(--ui-success);
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-rule-copy,.shop-pool-copy) dl {
+  margin: 12px 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-rule-copy,.shop-pool-copy) dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #385165;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-rule-copy,.shop-pool-copy) dt { color: var(--ui-muted); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-rule-copy,.shop-pool-copy) dd {
+  margin: 0;
+  flex: none;
+  color: var(--ui-yellow);
+  font-variant-numeric: tabular-nums;
+}
+/* Actions do not share the colored skins of selection tabs. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-button,.lc-claim) {
+  min-height: var(--dialog-control-height);
+  padding: 10px 12px;
+  border: 1px solid var(--ui-edge) !important;
+  border-radius: 3px !important;
+  background: var(--ui-panel) !important;
+  box-shadow: 0 2px var(--ui-ink) !important;
+  color: var(--ui-text) !important;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 800;
+  text-shadow: none;
+  clip-path: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-primary,.shop-button.is-yellow,.lc-claim:not(:disabled)) {
+  border-color: #ad7712 !important;
+  background: linear-gradient(180deg,#ffdf43,#ffc329) !important;
+  color: var(--ui-ink) !important;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-button,.lc-claim):disabled {
+  border-color: #385165 !important;
+  background: #203344 !important;
+  color: var(--ui-muted) !important;
+  filter: none !important;
+  opacity: 1;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-wide { margin-top: 12px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-debug-danger {
+  background: #602d38 !important;
+  border-color: #c96c79 !important;
+  color: #fff1f1 !important;
+}
+.peripheral-lobby.reference-layout.lobby-theme .dialog-actions {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1.4fr);
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #385165;
+}
+.peripheral-lobby.reference-layout.lobby-theme .dialog-actions .pl-button { min-width: 0; width: 100%; margin: 0; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-tabs { margin-bottom: 10px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-summary {
+  gap: 10px;
+  padding: 0 0 14px;
+  margin: 0 0 14px;
+  border: 0;
+  border-bottom: 1px solid #385165;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-summary small { display: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-summary h3 { font-size: 16px; line-height: 1.5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-summary p { font-size: 12px; line-height: 1.5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-summary-stat { font-size: 24px; font-style: normal; text-shadow: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task { padding: 12px 10px; gap: 10px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task-title { flex-wrap: wrap; gap: 4px 8px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task-title h3 { font-size: 13px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.lc-refresh,.lc-task-title>span) { font-size: 11px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-claim { flex-basis: 66px; width: 66px; padding-inline: 4px; font-size: 13px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-rewards { gap: 5px 10px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-rewards > span { padding: 0; border: 0; background: none; box-shadow: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-rewards b { color: var(--ui-text); font-size: 12px; }
+/* The two reward previews have the same minimum readable card size. */
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.rc-reward-grid,.shop-pool-grid) {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px;
+  margin: 12px 0;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.rc-reward-grid>button,.shop-pool-grid>div) {
+  min-width: 0;
+  padding: 8px 6px;
+  border: 1px solid var(--ui-edge);
+  border-radius: 3px;
+  background: var(--ui-panel);
+  box-shadow: none;
+}
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.rc-reward-grid b,.shop-pool-grid span) { font-size: 12px; line-height: 1.5; color: var(--ui-text); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .rc-reward-grid span { font-size: 11px; line-height: 1.5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .shop-pool-grid img { height: 64px; width: 100%; object-fit: contain; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .rc-history-list header { flex-wrap: wrap; font-size: 11px; line-height: 1.5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.rc-empty,.lc-mail-empty p) { font-size: 13px; line-height: 1.6; color: var(--ui-muted); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .shop-confirm h3 { font-size: 17px; line-height: 1.5; color: var(--ui-text); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .shop-confirm-cost { border: 0; background: var(--ui-panel); padding: 10px; box-shadow: none; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .research-detail > p { color: var(--ui-muted); font-size: 12px; margin: 8px 0 14px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-signin-intro { padding: 4px 0 14px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-signin-intro h3 { font-size: 16px; line-height: 1.5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-signin-intro p { font-size: 12px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.pl-signin-day>span,.pl-signin-day>b) { font-size: 12px; line-height: 1.5; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .pl-reward-item > b { font-size: 12px; line-height: 1.5; }
+@container (max-width:340px) {
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal { --dialog-gap: 10px; }
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.rc-reward-grid,.shop-pool-grid) { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task { padding: 10px 8px; gap: 8px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .peripheral-lobby.reference-layout.lobby-theme .pl-modal { animation: none; }
+}

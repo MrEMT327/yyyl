@@ -1,0 +1,101 @@
+/* Aircraft / pilot collection polish. All ownership and deployment labels come
+   from the existing snapshot; the selected card remains a separate state. */
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) {
+  --catalog-status-bg:#164f48;
+  --catalog-status-edge:#57b69a;
+  --catalog-status-ink:#c5ffe4;
+  --catalog-heading-height:56px;
+  --subpage-footer-height:64px;
+  grid-template-rows:minmax(230px,50%) var(--catalog-heading-height) minmax(0,1fr) calc(var(--subpage-footer-height) + var(--ref-catalog-bottom-space));
+}
+
+/* A single baseline for titles and tools, including the skill subpage. */
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot)>.ref-catalog-list-heading {
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;
+  gap:10px;min-height:var(--catalog-heading-height);padding:6px 12px;
+  border:0;border-bottom:1px solid var(--ui-edge);border-radius:0;
+  background:var(--ui-panel);background-image:none;box-shadow:none;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot)>.ref-catalog-list-heading>h2 {
+  grid-column:1;grid-row:1;min-width:0;margin:0;text-align:left;
+  color:var(--ui-text);font-size:16px;font-weight:700;line-height:22px;
+  letter-spacing:0;text-shadow:none;
+}
+#gui-casual-lobby .ref-catalog-pilot .ref-catalog-list-heading>.ref-catalog-filter {
+  position:relative;inset:auto;grid-column:2;grid-row:1;
+  min-width:84px;min-height:44px;height:44px;gap:6px;margin:0;
+  padding:2px 12px 6px;line-height:20px;transform:none;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .ref-catalog-scroll {padding:10px 12px}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .ref-catalog-grid {gap:10px 8px}
+
+/* Readable stats retain the artwork and leave the centre free for the model. */
+#gui-casual-lobby .ref-catalog-title-line {display:flex;align-items:center;gap:8px;min-width:0}
+#gui-casual-lobby .ref-catalog-title-line>h1 {min-width:0;flex:0 1 auto}
+#gui-casual-lobby .ref-catalog-aircraft .ref-catalog-identity p {
+  max-width:100%;width:max-content;flex-wrap:wrap;gap:3px 6px;
+  padding:4px 7px;border-radius:4px;font-size:12px;line-height:18px;
+}
+#gui-casual-lobby .ref-catalog-aircraft .ref-catalog-identity p>span {
+  margin-left:0;color:#d2e4f5;font-size:12px;white-space:nowrap;
+}
+#gui-casual-lobby .ref-catalog-aircraft .ref-catalog-identity p b {margin-left:4px;color:#fff}
+#gui-casual-lobby .ref-catalog-hero-state {
+  flex:none;padding:3px 7px;border:1px solid var(--catalog-status-edge);
+  border-radius:5px;background:var(--catalog-status-bg);color:var(--catalog-status-ink);
+  font-size:11px;line-height:16px;font-weight:700;text-shadow:none;white-space:nowrap;
+}
+#gui-casual-lobby .ref-catalog-deployed {
+  box-sizing:border-box;display:flex;align-items:center;justify-content:center;
+  gap:8px;width:196px;max-width:calc(100% - 32px);height:48px;
+  border:1px solid var(--catalog-status-edge);border-radius:9px;
+  background:var(--catalog-status-bg);color:var(--catalog-status-ink);
+  box-shadow:inset 0 1px #b7ffe328,0 3px #07172ab3;
+  font-size:18px;line-height:24px;text-shadow:none;pointer-events:none;
+}
+#gui-casual-lobby .ref-catalog-deployed>.pl-icon {
+  width:22px;height:22px;color:var(--catalog-status-ink);filter:none;
+}
+#gui-casual-lobby .ref-catalog-deployed>.pl-icon path {stroke:currentColor}
+#gui-casual-lobby :is(.ref-catalog-card-state,.ref-pilot-card-status) {
+  position:absolute;left:8px;top:8px;right:auto;bottom:auto;z-index:4;
+  max-width:calc(100% - 16px);padding:2px 5px;
+  border:1px solid var(--catalog-status-edge);border-radius:4px;
+  background:var(--catalog-status-bg);color:var(--catalog-status-ink);
+  font-size:10px;line-height:14px;font-weight:700;text-shadow:none;white-space:nowrap;
+}
+#gui-casual-lobby :is(.ref-catalog-card-state,.ref-pilot-card-status).is-unowned {
+  background:#16253dea;border-color:#6e829d;color:#d7e0ef;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .card-selection {color:#fff2a4}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .card-selection>i {width:14px;height:14px}
+
+/* Back is secondary; selected local tab uses the same gold face as main tabs.
+   No whitening filter on the pack's coloured aircraft / pilot / skill icons. */
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot)>.subpage-bottom {
+  grid-template-columns:76px minmax(0,1fr);gap:10px;
+  padding:6px 12px calc(6px + var(--ref-catalog-bottom-space));border-radius:0;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tabs {gap:6px}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab {
+  --gui-face:var(--gui-button-dark);--gui-button-ink:#fff;--gui-button-shadow:none;
+  padding:0 8px 4px;gap:7px;color:var(--gui-button-ink)!important;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab[aria-pressed="true"] {
+  --gui-face:var(--gui-button-primary);--gui-button-ink:#14243b;
+  color:var(--gui-button-ink)!important;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab::after {content:none}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab>.pl-icon {
+  display:block;width:23px;height:23px;filter:none;opacity:1;transform:none;
+}
+#gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab>span {font-size:14px;line-height:20px;text-shadow:none}
+
+@container(max-width:340px) {
+  #gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot)>.subpage-bottom {grid-template-columns:68px minmax(0,1fr);gap:8px;padding-inline:8px}
+  #gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .ref-catalog-grid {gap:8px 6px}
+  #gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab {padding-inline:5px;gap:4px}
+  #gui-casual-lobby :is(.ref-catalog-aircraft,.ref-catalog-pilot) .subpage-tab>span {font-size:12px}
+  #gui-casual-lobby .ref-catalog-title-line {gap:5px}
+  #gui-casual-lobby .ref-catalog-title-line>h1 {font-size:18px}
+}

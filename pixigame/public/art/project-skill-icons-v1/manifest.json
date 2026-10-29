@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-15",
+  "assets": [
+    {
+      "file": "drone.png",
+      "source": "imagegen built-in",
+      "generation_file": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-8dc34711-04c3-4468-a4ee-d093e69da98c.png",
+      "identity_reference": "../weapon-original/aux_drone.png",
+      "style_reference": "../dkzj-1.1.6-ui/skill-family-08.png",
+      "purpose": "Missing drone skill-family card illustration; keeps the existing three-drone ivory/navy/cyan identity. UI names remain live text.",
+      "size": [
+        1172,
+        1342
+      ],
+      "alpha_range": [
+        0,
+        255
+      ],
+      "sha256": "9a58d7a04a63be8ba2faacb4ac35fd1ead46958543e41c4ed0b86ec19d4ecc96"
+    }
+  ]
+}

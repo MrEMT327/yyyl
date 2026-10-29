@@ -1,0 +1,92 @@
+{
+  "source": "psd/三选一.psd",
+  "sha256": "424036aafef5324f86ab8812a62a932ada126c3dbf3c458a64fb3c79176f6be4",
+  "modified_utc": "2026-10-15T10:24:56.052092+00:00",
+  "canvas": [
+    750,
+    1624
+  ],
+  "assets": {
+    "card-red": {
+      "source_layer": "组 1",
+      "box_xywh": [
+        26,
+        479,
+        224,
+        562
+      ],
+      "file": "card-red.png",
+      "alpha_bbox_ltrb": [
+        0,
+        0,
+        224,
+        562
+      ]
+    },
+    "card-blue": {
+      "source_layer": "组 1",
+      "box_xywh": [
+        264,
+        479,
+        224,
+        562
+      ],
+      "file": "card-blue.png",
+      "alpha_bbox_ltrb": [
+        0,
+        0,
+        224,
+        562
+      ]
+    },
+    "card-prismatic": {
+      "source_layer": "组 1",
+      "box_xywh": [
+        502,
+        475,
+        224,
+        562
+      ],
+      "file": "card-prismatic.png",
+      "alpha_bbox_ltrb": [
+        0,
+        0,
+        224,
+        562
+      ]
+    },
+    "banner": {
+      "source_layer": "图层 20 拷贝",
+      "box_xywh": [
+        -3,
+        253,
+        756,
+        239
+      ],
+      "file": "banner.png",
+      "alpha_bbox_ltrb": [
+        0,
+        0,
+        756,
+        239
+      ]
+    },
+    "reroll": {
+      "source_layer": "组 4",
+      "box_xywh": [
+        262,
+        1205,
+        219,
+        85
+      ],
+      "file": "reroll.png",
+      "alpha_bbox_ltrb": [
+        0,
+        0,
+        219,
+        85
+      ]
+    }
+  },
+  "weapon_icon_crop_metadata": "src/ui/psd-choice-icon-crops.json"
+}

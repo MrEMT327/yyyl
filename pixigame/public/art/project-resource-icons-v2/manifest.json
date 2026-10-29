@@ -1,0 +1,193 @@
+{
+  "method": "Built-in imagegen, generated only from the project PSD style. Original alpha and full resolution source preserved. Runtime export changes only transparent margins and resolution.",
+  "prompts": "art/project-resource-icons-v2/prompts.json",
+  "styleReferences": [
+    "art/psd-main-v1/resources/stamina-icon.png",
+    "art/psd-main-v1/resources/diamonds-icon.png"
+  ],
+  "userInstruction": "HD coins, stamina and diamonds retain their existing identity. Aircraft shards, weapon parts and core share their bold outline and glossy cut-face style. Bottom navigation is unchanged.",
+  "assets": [
+    {
+      "name": "coins",
+      "file": "coins.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-b18d1757-b4e8-46bb-a0c9-af02db656f1f.png",
+      "source": "art/project-resource-icons-v2/source-coins.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 116,
+        "top": 74,
+        "width": 1001,
+        "height": 1116
+      },
+      "exportSize": [
+        463,
+        512
+      ],
+      "sourceSha256": "01faf60915b9e38bc15f8c7e41897b4eca19407515a5ff856d16f8b3c9077117",
+      "sha256": "e3b97ef6c7b7fd1c3c39a16f4e984f042d669da3a469bbcee154f209e1a3405b"
+    },
+    {
+      "name": "stamina",
+      "file": "stamina.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-3c50f458-e152-4fa5-a8ff-543f4e135b49.png",
+      "source": "art/project-resource-icons-v2/source-stamina.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 296,
+        "top": 42,
+        "width": 679,
+        "height": 1177
+      },
+      "exportSize": [
+        309,
+        512
+      ],
+      "sourceSha256": "189e5a0e1f9e8ecb5393a1c0323290a58ff35aa25f5ad539edd263454ef35f27",
+      "sha256": "b12504532c9af9333332dbc69b584ffb289c1b67954cff118b1551854b920cd5"
+    },
+    {
+      "name": "diamonds",
+      "file": "diamonds.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-dc83e9b9-30fb-4390-8397-af8d3ed07207.png",
+      "source": "art/project-resource-icons-v2/source-diamonds.png",
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "alphaRange": [
+        0,
+        254
+      ],
+      "alphaCrop": {
+        "left": 153,
+        "top": 110,
+        "width": 709,
+        "height": 1266
+      },
+      "exportSize": [
+        301,
+        512
+      ],
+      "sourceSha256": "9832535ce660f63d9a65050edd75371286731626d5519998b96df45d783b2797",
+      "sha256": "53d3f750eb271c2b5741ab8506596d3f001afcf00de20f2d11d173bc1562a178"
+    },
+    {
+      "name": "aircraft-shard",
+      "file": "aircraft-shard.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-f3bd4502-ea1b-4d3f-bbea-25d2e78bbea7.png",
+      "source": "art/project-resource-icons-v2/source-aircraft-shard.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 144,
+        "top": 64,
+        "width": 901,
+        "height": 1119
+      },
+      "exportSize": [
+        418,
+        512
+      ],
+      "sourceSha256": "3cd4fad451bb903aff1a4ef33d3b4c2c7ad4cb6ed4ec9b770f9c99c16d9c5083",
+      "sha256": "f0438d20f960dd693bfa3a8ab19bd1315d55f4c7a6df23aa0172f932fc5b5e2b"
+    },
+    {
+      "name": "weapon-parts",
+      "file": "weapon-parts.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-79276227-f480-4850-a97e-480723636ad3.png",
+      "source": "art/project-resource-icons-v2/source-weapon-parts.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 167,
+        "top": 170,
+        "width": 940,
+        "height": 929
+      },
+      "exportSize": [
+        512,
+        506
+      ],
+      "sourceSha256": "20fbcf0f1f5ecb4f1c24f3f52b74c0f7dff9eea9b13eb50c1c14848cc3c02b29",
+      "sha256": "b19875ccc1614d0f26c4b967f4178418cb992b5174f94f7fe180c04a259475f4"
+    },
+    {
+      "name": "technology-core",
+      "file": "technology-core.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-66d6ede7-342c-44c1-88dd-c22f08139c17.png",
+      "source": "art/project-resource-icons-v2/source-technology-core.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 343,
+        "top": 20,
+        "width": 617,
+        "height": 1151
+      },
+      "exportSize": [
+        289,
+        512
+      ],
+      "sourceSha256": "a443f014ca68602a2c674a16d2c74f6b5c0f9d6a76412b3e5d3042182af588da",
+      "sha256": "896912910e41d7567884220158d4532ce99164867076337447d027886cd93cde"
+    },
+    {
+      "name": "credits-stack",
+      "file": "credits-stack.png",
+      "generationFile": "/Users/liweitang/.codex/generated_images/01a13e9b-608b-7362-8b29-1d161e252b96/exec-8b584e94-9f6f-4f44-8010-c4030def0227.png",
+      "source": "art/project-resource-icons-v2/source-credits-stack.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": {
+        "left": 57,
+        "top": 189,
+        "width": 1144,
+        "height": 901
+      },
+      "exportSize": [
+        512,
+        410
+      ],
+      "sourceSha256": "92beec02e6ad632c3c87c7124630586f1f32e8faa5032dd26c03ceb768b94f99",
+      "sha256": "43b51847456256df32c1b63bb5364f300dade73e50e282a45f0ce56cde0f055e"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+/* Original PSD scenery and HUD frame the independent portrait canvas. */
+.peripheral-lobby.reference-layout.battle-psd-main[data-tab="battle"] .pl-shell{
+  position:relative;display:block;container-type:inline-size;width:min(100%,calc(100dvh * .46182266));
+  height:min(100%,calc(100vw * 2.16533334));max-width:none;max-height:100%;
+  aspect-ratio:750/1624;margin-inline:auto;padding:0;overflow:hidden;
+  border:0;border-radius:0;background:#000;isolation:isolate;
+}
+.peripheral-lobby.reference-layout.battle-psd-main[data-tab="battle"] .pl-header{display:none!important}
+.peripheral-lobby.reference-layout.battle-psd-main[data-tab="battle"] .pl-body{
+  position:absolute;inset:0;z-index:10;display:block;min-width:0;min-height:0;max-height:none;
+  overflow:hidden;padding:0;background:#fff;overscroll-behavior:none;
+}
+.battle-psd-main .psd-main-page,.battle-psd-main .psd-main-hotspots{
+  position:absolute;inset:0;width:100%;height:100%;overflow:hidden;
+}
+.battle-psd-main .psd-main-page{container-type:inline-size;background:#fff;isolation:isolate}
+.battle-psd-main .psd-main-composite{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;margin:0;padding:0;object-fit:fill;pointer-events:none;user-select:none}
+.battle-psd-main .psd-main-portrait{position:absolute;left:-12.5%;top:13%;width:125%;aspect-ratio:1118/1407;z-index:1;pointer-events:none;user-select:none}
+.battle-psd-main .psd-main-portrait-fallback,.battle-psd-main .psd-main-portrait>canvas{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:contain}
+.battle-psd-main .psd-main-portrait>canvas{visibility:hidden}
+.battle-psd-main .psd-main-portrait.is-ready>canvas{visibility:visible}
+.battle-psd-main .psd-main-portrait.is-ready>.psd-main-portrait-fallback{visibility:hidden}
+.battle-psd-main .psd-main-foreground{z-index:2}
+/* Remove the baked PSD identity rectangle; its unchanged frame is exported
+   separately with the name/power text layers hidden. Coordinates: 22,27,221,105. */
+.battle-psd-main .psd-main-foreground{clip-path:polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,2.933333% 1.662562%,29.466667% 1.662562%,29.466667% 6.465517%,2.933333% 6.465517%,2.933333% 1.662562%,0 0,8.533333% 82.389163%,22.533333% 82.389163%,22.533333% 83.928571%,8.533333% 83.928571%,8.533333% 82.389163%,0 0,0 21%,16% 21%,16% 28%,0 28%,0 21%,0 0)}
+.battle-psd-main .psd-main-patrol-clock{position:absolute;left:3.466667%;top:82.266010%;width:24.266667%;height:1.724138%;z-index:4;display:grid;place-items:center;pointer-events:none;background:linear-gradient(90deg,transparent,#14232c 18%,#14232c 82%,transparent);color:#fff;font-size:2.3cqw;font-weight:650;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #101923}
+.battle-psd-main .psd-main-profile-frame{position:absolute;left:2.933333%;top:1.662562%;width:26.533333%;height:4.802956%;z-index:3;pointer-events:none}
+.battle-psd-main .psd-main-identity{position:absolute;left:14cqw;top:4.7cqw;width:14.4cqw;z-index:5;pointer-events:none;color:#fff;text-shadow:0 1px 2px #0a1824}
+.battle-psd-main .psd-main-identity>strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:3.05cqw;line-height:1.25;font-weight:700}
+.battle-psd-main .psd-main-identity>span{display:flex;gap:.4cqw;align-items:baseline;max-width:11.5cqw;margin-top:1.6cqw;white-space:nowrap;color:#ffde43}
+.battle-psd-main .psd-main-identity small{font-size:2.1cqw;font-weight:700}
+.battle-psd-main .psd-main-identity b{font-size:2.3cqw;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.battle-psd-main .psd-main-chapter-copy{position:absolute;inset:0;z-index:4;pointer-events:none}
+.battle-psd-main .psd-main-chapter-copy>strong,
+.battle-psd-main .psd-main-chapter-copy>span,
+.battle-psd-main .psd-main-star-total{position:absolute;display:grid;place-items:center;margin:0;padding:0;white-space:nowrap;text-align:center;pointer-events:none}
+.battle-psd-main .psd-main-chapter-copy>strong{left:34.266667cqw;top:19.6cqw;width:31.733333cqw;height:3.866667cqw;color:#fff;font-size:4cqw;font-weight:700;line-height:1;text-shadow:0 1px 2px #102132}
+.battle-psd-main .psd-main-chapter-copy>span{left:40.666667cqw;top:24.8cqw;width:18.666667cqw;height:3.066667cqw;color:#81efff;font-size:3.2cqw;font-weight:650;line-height:1;text-shadow:0 1px 2px #102132}
+.battle-psd-main .psd-main-star-total{left:44.933333cqw;top:33.6cqw;width:14cqw;height:3.066667cqw;color:#fff;font-size:2.85cqw;font-weight:700;line-height:1;text-shadow:0 1px 2px #101923}
+.battle-psd-main .psd-main-hotspots{z-index:30;pointer-events:none}
+.battle-psd-main .psd-main-hotspot{
+  position:absolute;display:block;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:0;
+  color:transparent;background:transparent;box-shadow:none;opacity:0;pointer-events:auto;cursor:pointer;
+}
+.battle-psd-main .psd-main-hotspot>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.battle-psd-main .psd-main-hotspot:focus-visible{opacity:1;outline:2px solid #fff;outline-offset:-3px;border-radius:5px}
+.battle-psd-main .psd-main-hotspot:active{opacity:.08;background:#fff}
+.battle-psd-main .pl-modal-host{z-index:100}
+
+/* No retired hangar skin below the PSD artwork. */
+.battle-psd-main .pl-shell::before,.battle-psd-main::before{content:none!important}

@@ -1,0 +1,10 @@
+{
+  "title": "Shadow Slash",
+  "author": "AutoSprite",
+  "source": "https://www.autosprite.io/free-sprites/shadow-slash",
+  "download": "https://pub-63ab27389d044634a73e89c1a0c6d4a6.r2.dev/free-library/sprites/shadow-slash/loop.png",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://www.autosprite.io/free/license",
+  "originalSha256": "f573e2ec143ee105c17d735dc575225748884b9f0a82b4917e84b30b6923c20e",
+  "presentation": "Original 4x4 atlas unchanged. Frame 5 (zero based) held facing forward; runtime ice palette and luminance alpha mask suppress smoke. Host lifetime, damage and collision unchanged."
+}

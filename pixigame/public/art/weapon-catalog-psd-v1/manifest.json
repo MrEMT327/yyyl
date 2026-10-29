@@ -1,0 +1,239 @@
+{
+  "source": "psd/三选一.psd",
+  "sha256": "424036aafef5324f86ab8812a62a932ada126c3dbf3c458a64fb3c79176f6be4",
+  "group_indices": [
+    11,
+    0
+  ],
+  "group_path": "组 2 拷贝 / 组 1",
+  "source_ltrb": [
+    264,
+    479,
+    488,
+    1041
+  ],
+  "canvas_size": [
+    224,
+    562
+  ],
+  "frame_metal_indices": [
+    2,
+    12
+  ],
+  "frame_rim_index": 10,
+  "plate_indices": [
+    0,
+    1,
+    3,
+    4,
+    7
+  ],
+  "triangles_index": 8,
+  "triangles_source_opacity": 102,
+  "triangles_tight_ltrb": [
+    1,
+    382,
+    223,
+    557
+  ],
+  "excluded_divider_indices": [
+    5,
+    6
+  ],
+  "nine_slice_source_trbl": [
+    24,
+    24,
+    40,
+    24
+  ],
+  "recommended_display_border_trbl_px": [
+    8,
+    8,
+    12,
+    8
+  ],
+  "layers": [
+    {
+      "index": 0,
+      "name": "图层 4",
+      "bbox": [
+        265,
+        480,
+        487,
+        1040
+      ],
+      "opacity": 255,
+      "clipping": false
+    },
+    {
+      "index": 1,
+      "name": "图层 6",
+      "bbox": [
+        240,
+        8,
+        889,
+        696
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 2,
+      "name": "图层 5 拷贝",
+      "bbox": [
+        269,
+        485,
+        482,
+        1030
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 3,
+      "name": "图层 12",
+      "bbox": [
+        272,
+        479,
+        594,
+        1058
+      ],
+      "opacity": 38,
+      "clipping": true
+    },
+    {
+      "index": 4,
+      "name": "图层 14 拷贝 9",
+      "bbox": [
+        433,
+        505,
+        472,
+        1245
+      ],
+      "opacity": 54,
+      "clipping": true
+    },
+    {
+      "index": 5,
+      "name": "图层 13 拷贝",
+      "bbox": [
+        290,
+        541,
+        472,
+        549
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 6,
+      "name": "图层 13 拷贝 2",
+      "bbox": [
+        290,
+        809,
+        472,
+        817
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 7,
+      "name": "图层 7",
+      "bbox": [
+        240,
+        760,
+        844,
+        1241
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 8,
+      "name": "图层 11",
+      "bbox": [
+        223,
+        860,
+        512,
+        1036
+      ],
+      "opacity": 102,
+      "clipping": true
+    },
+    {
+      "index": 9,
+      "name": "图层 10",
+      "bbox": [
+        240,
+        995,
+        562,
+        1103
+      ],
+      "opacity": 148,
+      "clipping": true
+    },
+    {
+      "index": 10,
+      "name": "图层 9",
+      "bbox": [
+        240,
+        996,
+        516,
+        1072
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 11,
+      "name": "图层 14",
+      "bbox": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "opacity": 255,
+      "clipping": true
+    },
+    {
+      "index": 12,
+      "name": "图层 5",
+      "bbox": [
+        264,
+        479,
+        488,
+        1041
+      ],
+      "opacity": 255,
+      "clipping": false
+    }
+  ],
+  "assets": {
+    "frame-blue": {
+      "file": "frame-blue.png",
+      "size": [
+        224,
+        562
+      ],
+      "sha256": "f41c5a999c916fab2bcd8803f5e235557f7c24391dfbb7d36d60860867a047ce"
+    },
+    "plate-blue-clean": {
+      "file": "plate-blue-clean.png",
+      "size": [
+        224,
+        562
+      ],
+      "sha256": "7e67247fa3c8997850426e01b5dda2a72255d66a4794a90594bc521cfe639f25"
+    },
+    "triangles-blue": {
+      "file": "triangles-blue.png",
+      "size": [
+        224,
+        562
+      ],
+      "sha256": "4f25e90300f88d17b53575a536230bee4d4ddb17a2ee7c58dfc5ab91400ad9bf"
+    }
+  }
+}

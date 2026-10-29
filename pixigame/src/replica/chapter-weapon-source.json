@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "source": "APK 1.1.6 SkillLab_Lab.json",
+  "sourceSha256": "b08e98c733178248c3c94b4a686d41827ec14d0cc0554be0616f1ffa4134741a",
+  "nativeRule": "MergeTechnologyAttribute 0x6d1304c bans exact roots absent from known laboratory IDs.",
+  "localPolicy": "Chapter selection permission opens when the native campaign unlocks unlockChapter; server bootstrap timing is not claimed.",
+  "labs": [
+    {
+      "ID": 1,
+      "unlockChapter": 1,
+      "unlockSkill": 10000101
+    },
+    {
+      "ID": 3,
+      "unlockChapter": 1,
+      "unlockSkill": 10001501
+    },
+    {
+      "ID": 4,
+      "unlockChapter": 16,
+      "unlockSkill": 10000201
+    },
+    {
+      "ID": 5,
+      "unlockChapter": 1,
+      "unlockSkill": 10000601
+    },
+    {
+      "ID": 6,
+      "unlockChapter": 8,
+      "unlockSkill": 10000401
+    },
+    {
+      "ID": 7,
+      "unlockChapter": 1,
+      "unlockSkill": 10001701
+    },
+    {
+      "ID": 2,
+      "unlockChapter": 1,
+      "unlockSkill": 10000701
+    },
+    {
+      "ID": 8,
+      "unlockChapter": 1,
+      "unlockSkill": 10001101
+    },
+    {
+      "ID": 9,
+      "unlockChapter": 1,
+      "unlockSkill": 10001601
+    },
+    {
+      "ID": 10,
+      "unlockChapter": 20,
+      "unlockSkill": 10000301
+    },
+    {
+      "ID": 11,
+      "unlockChapter": 25,
+      "unlockSkill": 10000901
+    }
+  ]
+}

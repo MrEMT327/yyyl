@@ -1,0 +1,5 @@
+.sortie-loading{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:#06121e;color:#edf5fb;font-family:"Microsoft YaHei",sans-serif;touch-action:none;overscroll-behavior:contain;padding:24px;box-sizing:border-box}
+.sortie-loading__panel{width:min(100%,440px);text-align:center}
+.sortie-loading__status{margin:0;font-size:clamp(17px,4.5vw,22px);font-weight:600;line-height:1.7;letter-spacing:1px;color:#e4edf4}
+.sortie-loading button{margin:24px 0 0;padding:12px 32px;border:1px solid #ffeea0;background:#ffdc58;color:#132332;font-size:17px;font-weight:bold;cursor:pointer}
+.sortie-loading.is-failed .sortie-loading__status{color:#ffaca9}

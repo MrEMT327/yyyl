@@ -1,0 +1,14 @@
+{
+  "source": "弹壳战机 1.1.6 / GameConfig_Config",
+  "cost": {
+    "key": "ChangeNameCostDiamondCount",
+    "TypeInt": 100
+  },
+  "firstChangeFree": true,
+  "clientEvidence": {
+    "costGetter": "PlayerNameViewModule.get_ChangeNameCost @ 0x7bda64c",
+    "firstChange": "PlayerNameViewModule.InitView @ 0x7bdae20 -> PlayerInfoDataModule.IsFirstChange",
+    "balanceCheck": "PlayerNameViewModule.OnClickCostChangeBtn @ 0x7bdbcb4"
+  },
+  "cooldown": "原服由 IsInChangeNameCd 和服务端数据控制，时长未确认；本地暂不设置冷却。"
+}
