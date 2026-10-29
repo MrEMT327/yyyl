@@ -8,7 +8,7 @@ export const NATIVE_PENDING_ECONOMY_ACTIONS = new Set([
   'researchDraw','researchRefine','researchUpgrade','upgradeAircraft','upgradeWeapon',
   'synthesizeWeapon','synthesizeAll',
 ]);
-export const NATIVE_PENDING_ECONOMY_MESSAGE='该入口的原版规则尚未接通，未扣费或发放奖励；旧记录已保留。';
+export const NATIVE_PENDING_ECONOMY_MESSAGE='功能暂未开放';
 export function nativeEconomyView(value) {
   if(!value.replicaCollection)return value;
   const disable=rows=>(rows||[]).map(row=>({...row,claimable:false,canClaim:false}));

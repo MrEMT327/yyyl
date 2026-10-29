@@ -1,26 +1,13 @@
 import { cloudAssetBase } from './cloud-asset-base.js';
 import { Container, Rectangle, Sprite, Texture } from '../three/display.js';
 import { battleProgress } from './battle-progress.js';
+import { COMBAT_TYPE } from './combat-theme.js';
 
 // PSD coordinates are authoritative. Only the presentation is scaled to the
 // existing 600 × 1300 combat scene; the world and flight input stay untouched.
 const W = 750, H = 1624;
 const assets = new Map();
 const loaded = new Set();
-let fontReady = false, fontStarted = false, fontFamily = 'FZY4JW--GB1-0';
-function loadFont() {
-  if (fontStarted) return;
-  fontStarted = true;
-  const path = `${cloudAssetBase}art/psd-combat-v1/FZY4JW.ttf`;
-  if (globalThis.FontFace && globalThis.document?.fonts) {
-    const face = new FontFace('CombatPsd', `url("${path}")`);
-    face.load().then(font => { document.fonts.add(font); fontFamily='CombatPsd'; fontReady=true; })
-      .catch(error => console.error('Combat PSD font failed to load', error));
-  } else if (globalThis.wx?.loadFont) {
-    const name=globalThis.wx.loadFont(path.replace(/^\//,''));
-    if(name){fontFamily=name;fontReady=true;}
-  }
-}
 const definitions = {
   pause:[4,16,132,132], stats:[460,36,273,111], grade:[133,50,163,63],
   wave:[182,193,387,47], combo:[266,250,218,68],
@@ -59,13 +46,13 @@ function artwork(ctx, name, offsetY = 0, ratio = 1) {
 }
 function text(ctx, value, x, y, size, {align='left', color='#fff', glow='', stroke=0}={}) {
   ctx.save();
-  // The PSD uses 方正粗圆. Use it when installed; the rounded system family
-  // keeps live values legible on hosts without that font. Static labels are PSD pixels.
-  ctx.font = `normal ${size}px "${fontFamily}", "Yuanti SC", "Arial Rounded MT Bold", sans-serif`;
-  ctx.textAlign = align; ctx.textBaseline = 'top'; ctx.fillStyle = color;
+  // Dynamic HUD values share the lobby's upright font family.
+  ctx.font = `700 ${size}px ${COMBAT_TYPE.family}`;
+  ctx.textAlign = align; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = color;
+  const baseline = y + (ctx.measureText(String(value)).actualBoundingBoxAscent ?? size * .8);
   if (glow) {ctx.shadowColor=glow;ctx.shadowBlur=7;}
-  if (stroke) {ctx.lineWidth=stroke;ctx.lineJoin='round';ctx.strokeStyle='#000';ctx.strokeText(value,x,y);}
-  ctx.fillText(value,x,y);ctx.restore();
+  if (stroke) {ctx.lineWidth=stroke;ctx.lineJoin='round';ctx.strokeStyle='#000';ctx.strokeText(value,x,baseline);}
+  ctx.fillText(value,x,baseline);ctx.restore();
 }
 function repaint(layer,key,draw) {
   if (layer.key===key) return;
@@ -73,7 +60,7 @@ function repaint(layer,key,draw) {
   layer.sprite.texture.source.update();
 }
 export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () => 300) {
-  loadAssets(); loadFont();
+  loadAssets();
   const mount = new Container(); mount.label='psd-combat-hud';
   mount.scale.set(600/W,1300/H);root.addChild(mount);
   const top=canvasLayer(mount,0,460), bottom=canvasLayer(mount,1500,124);
@@ -84,7 +71,7 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
   return {update(now) {
     if (now-lastUpdate<80) return;lastUpdate=now;
     const game=bridge.game, boss=bridge.boss, stats=bridge.runStats||{};
-    const ready=`${loaded.size}:${fontReady}`;
+    const ready=loaded.size;
     const seconds=Math.max(0,Math.floor(game.elapsed||0));
     const time=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
     const score=bridge.presentation?.score ?? String(Math.round(game.score||0)).padStart(6,'0');

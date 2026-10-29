@@ -29,7 +29,7 @@ export function backpackUseControls(item,s,state,h) {
     const pilot=s.replicaCollection?.pilots.find(row=>row.id===id);
     content=go('前往激活／升星','pilots',id)+(pilot?.maxed?`<p>驾驶员已满星，每张同名卡可转为 1 个满星重复积分。</p><div class="bag-use-actions">${use('转换 1 张',1,item.count<1)}${all('转换',item.count,'张')}</div>`:'<p>同名卡用于激活或升星；满星后可在此转换积分。</p>');
   }
-  else if(rule?.kind==='exchange')content=`<p>按 1:1 兑换为 ${e(nativeItemPresentation(rule.target).name)}，${[112,113].includes(rule.target)?'兑换后可直接开启对应装备箱':'用于对应的成长系统'}。</p><div class="bag-use-actions">${use('兑换 1 个',1,item.count<1)}${all('兑换',item.count,'个')}</div>`;
+  else if(rule?.kind==='exchange')content=`<p>按 1:1 兑换为 ${e(nativeItemPresentation(rule.target).name)}。</p><div class="bag-use-actions">${use('兑换 1 个',1,item.count<1)}${all('兑换',item.count,'个')}</div>`;
   else if(['pilotCompose','compose'].includes(rule?.kind)) {
     const max=Math.floor(item.count/rule.cost),name=nativeItemPresentation(rule.target).name;
     const full=rule.kind==='compose'&&s.replicaCollection?.pilots.find(row=>row.id===rule.target)?.maxed;

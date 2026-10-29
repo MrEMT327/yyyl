@@ -78,7 +78,7 @@
   background: var(--ui-button-blue) center/100% 100% no-repeat;
   filter: grayscale(1) brightness(.45);
 }
-.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.pl-close,.lc-tabs>.subpage-tab):active { transform: translateY(1px); filter: brightness(1.1); }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal :is(.pl-close,.lc-tabs>.subpage-tab):active { filter: brightness(1.1); }
 
 /* Quiet summary and inset icon frames keep the information denser than the art. */
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal.lc-modal .lc-summary {

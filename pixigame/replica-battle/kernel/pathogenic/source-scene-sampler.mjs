@@ -1,7 +1,8 @@
+import {cloneSourceValue} from './source-value-clone.mjs';
 // Pure source-scene sampling. No old-game renderer, textures, or gameplay state.
 // Godot source references/defaults and limitations are recorded in sampler-notes.md.
 export const IDENTITY = Object.freeze([1, 0, 0, 1, 0, 0]);
-const WHITE = [1, 1, 1, 1], clone = x => structuredClone(x);
+const WHITE = [1, 1, 1, 1], clone = cloneSourceValue;
 const clamp = (x, a=0, b=1) => Math.max(a, Math.min(b, x));
 const lerp = (a,b,t) => a+(b-a)*t;
 const mod = (x,y) => ((x%y)+y)%y;

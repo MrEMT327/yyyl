@@ -48,7 +48,7 @@ import './research-page.css';
 import { shopPage, shopHeader, shopModal, shopSectionId } from './shop-page.js';
 import { hasLobbyGrowthFeedback, showLobbyGrowthFeedback } from './lobby-growth-feedback.js';
 import { createActionFeedback } from './action-feedback.js';
-import { actionRewards } from './reward-feedback-policy.js';
+import { actionRewards, rewardReturnModal } from './reward-feedback-policy.js';
 import { createLobbyStateFeedback } from './lobby-state-feedback.js';
 import { exitModal } from './surface-motion.js';
 import { createUiMotion } from './ui-motion.js';
@@ -249,7 +249,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if (result?.ok === false && !result.message) toast('暂时无法进行此操作');
       const rewards = actionRewards(result,snapshot,result?.ok?read():snapshot);
       if (result?.ok && action==='claimActivity' && modal?.type==='tasks') delete modal.milestoneId;
-      const rewardReturn=modal&&modal.type!=='rewards'?{...modal,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0}:null;
+      const rewardParent=rewardReturnModal(modal);
+      const rewardReturn=rewardParent?{...rewardParent,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0}:null;
       if (rewards.length) modal = { type: 'rewards', title: result.title || (action === 'recruit'||result.recruitPool ? '招募结果' : '获得奖励'), rewards:rewards.map(r=>({...r,isNew:r.isNew ?? ((r.type||r.kind)==='weapon' && !snapshot.weapons.some(w=>w.id===(r.id||r.itemId)&&w.owned))})), recruit: result.recruitPool==='pilot'||action === 'recruit' && (payload.poolId || pool) === 'pilot', recruitPool: result.recruitPool||(action === 'recruit' ? payload.poolId || pool : null), ...(resourceReturn?{returnTo:resourceReturn}:patrolReturn ? {returnTo:patrolReturn,patrol:true} : rewardReturn?{returnTo:rewardReturn}:{}) };
       if (result?.ok && result.researchResult) {
         modal = { type: 'researchResult', result };

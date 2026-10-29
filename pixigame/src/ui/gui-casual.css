@@ -43,8 +43,7 @@
 #gui-casual-lobby .research-awaken:disabled>.is-short>b,
 #gui-casual-lobby .rc-draw:disabled>span>b,
 #gui-casual-lobby .shop-button:disabled:is([title*="不足"],[data-action="shopWeaponOrder"])>:is(.shop-button-label,.shop-button-cost){color:var(--ui-warning)}
-#gui-casual-lobby :is(.pl-button,.shop-button,.rc-draw,.research-awaken):active:not(:disabled){
-  transform:translateY(2px);filter:brightness(1.06)!important;
+#gui-casual-lobby :is(.pl-button,.shop-button,.rc-draw,.research-awaken):active:not(:disabled){filter:brightness(1.06)!important;
 }
 #gui-casual-lobby :is(.rc-pool-tab,.research-summary,.rc-feature-name>button){padding-inline:12px;min-height:44px}
 
@@ -108,7 +107,7 @@
   align-items:center;justify-content:center;gap:1px;min-width:0;min-height:44px;
   height:100%;padding:5px 2px 7px;margin:0;border:0;border-radius:8px;
   background:none!important;clip-path:none;box-shadow:none;overflow:visible;
-  color:white;transform:none;transition:flex-grow .18s ease;
+  color:white;transform:none;transition:none;
 }
 #gui-casual-lobby .lobby-nav-tab::before {
   content:"";display:block;position:absolute;inset:0;width:auto;height:auto;z-index:-1;pointer-events:none;
@@ -128,7 +127,6 @@
 #gui-casual-lobby .lobby-nav-tab.is-active::before{inset:-3px 0 0}
 #gui-casual-lobby .lobby-nav-tab.is-active>.lobby-nav-icon{width:12cqw;height:12cqw;max-width:52px;max-height:52px;margin-top:-12px}
 #gui-casual-lobby .lobby-nav-tab.is-active>span{display:block!important}
-#gui-casual-lobby .lobby-nav-tab:active{transform:translateY(1px)}
 
 /* Common dialogs use the same pack, not a second flat component style. */
 #gui-casual-lobby .pl-modal-host{z-index:20}

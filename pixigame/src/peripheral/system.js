@@ -919,8 +919,8 @@ export function createPeripheralSystem({
         inventory.revision++;
         state.replicaInventory = validateReplicaInventory(inventory);
         state.replicaLoadout = next;
-        if (!persist()) { state.replicaLoadout = previous; state.replicaInventory = previousInventory; return fail('原版出战配置未能保存'); }
-        onChange(); return pass('原版出战配置已保存', { replicaLoadout: copy(next) });
+        if (!persist()) { state.replicaLoadout = previous; state.replicaInventory = previousInventory; return fail('出战配置保存失败'); }
+        onChange(); return pass('出战配置已保存', { replicaLoadout: copy(next) });
       } catch (error) { return fail(error.message); }
     }
     if (patrolAdBusy) return fail('广告正在播放，请稍候');
@@ -1101,7 +1101,7 @@ export function createPeripheralSystem({
     }
     if (type === 'selectStage') {
       const index = Number(payload.index ?? payload.stageIndex ?? payload.id);
-      if (!Number.isInteger(index) || !stages[index] || !replicaStageAccessible(index, state.replicaCampaign.highestUnlocked)) return fail('复刻关卡尚未解锁或尚未接入');
+      if (!Number.isInteger(index) || !stages[index] || !replicaStageAccessible(index, state.replicaCampaign.highestUnlocked)) return fail('关卡未解锁或暂不可用');
       selectStage(index); onChange(); return pass('航线已选择');
     }
     if (type === 'sweep') return fail('扫荡已改为巡逻，请在出击页领取巡逻奖励');
@@ -1185,7 +1185,7 @@ export function createPeripheralSystem({
     if (engine === 'danke-replica-v1') {
       try {
         nativeChapter = replicaChapter(chapterId);
-        if (!nativeChapter || !stages[nativeChapter.stageIndex]) return fail('该关卡尚未接入复刻内核');
+        if (!nativeChapter || !stages[nativeChapter.stageIndex]) return fail('关卡暂不可用');
         if (!trial && !replicaStageAccessible(nativeChapter.stageIndex, state.replicaCampaign.highestUnlocked)) return fail('该关卡尚未解锁');
         nativeConfiguration = validateReplicaConfiguration(requestedConfiguration);
         nativeDefeatCount = trial ? 0 : localFailureCount(state.localFailureProtection,nativeChapter.id);

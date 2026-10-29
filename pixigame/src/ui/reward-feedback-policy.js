@@ -1,5 +1,12 @@
 import { projectItemIcon } from './project-item-icons.js';
 
+// Completed purchase confirmations are spent orders. Return to their resource
+// picker when present, otherwise let the reward close back to the shop.
+export function rewardReturnModal(modal) {
+  if (!modal || modal.type==='rewards') return null;
+  return modal.type==='shopConfirm' ? modal.returnTo || null : modal;
+}
+
 export function walletGains(before = {}, after = {}) {
   return ['coins','diamonds','stamina','weaponParts','aircraftShards','cores'].flatMap(type=>{
     const amount=Number(after[type])-Number(before[type]);

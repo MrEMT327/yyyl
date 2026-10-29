@@ -16,7 +16,7 @@
 .peripheral-lobby.reference-layout.lobby-theme .subpage-tabs>.subpage-tab[aria-pressed="true"]{border-color:#a38c3c!important;background:#213746!important;color:#ffe47d!important;box-shadow:inset 0 1px #ffe47d22!important}
 .peripheral-lobby.reference-layout.lobby-theme .subpage-tabs>.subpage-tab[aria-pressed="true"]::after{content:"";position:absolute;bottom:0;left:18%;right:18%;height:3px;background:var(--ui-yellow);border-radius:2px 2px 0 0}
 .peripheral-lobby.reference-layout.lobby-theme .ref-workshop-tabs.subpage-tabs{padding:4px 10px;background:var(--ui-panel);border-radius:0;border-bottom:1px solid #385165}
-.peripheral-lobby.reference-layout.lobby-theme .subpage-bottom .subpage-back:active,.peripheral-lobby.reference-layout.lobby-theme .subpage-tabs>.subpage-tab:active{transform:translateY(1px);background:#29445b!important}
+.peripheral-lobby.reference-layout.lobby-theme .subpage-bottom .subpage-back:active,.peripheral-lobby.reference-layout.lobby-theme .subpage-tabs>.subpage-tab:active{background:#29445b!important}
 .peripheral-lobby.reference-layout.lobby-theme :is(.subpage-back,.subpage-tab):focus-visible{outline:2px solid #fff2a0;outline-offset:-4px}
 
 /* One cost line, not a row of miniature buttons. Keep per-resource affordability

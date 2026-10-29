@@ -3,7 +3,7 @@
 .entry-screen [hidden]{display:none!important}
 .entry-screen__portrait{position:relative;width:min(100vw,46.26dvh);height:100dvh;container-type:inline-size;overflow:hidden;isolation:isolate}
 .entry-screen__button{box-sizing:border-box;display:block;min-height:48px;padding:12px 22px;border:0;border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / 13px stretch;background:none;color:#fff;font:900 clamp(20px,6cqw,30px)/1.2 "Microsoft YaHei",sans-serif;text-shadow:0 2px 2px #82500a;cursor:pointer;touch-action:manipulation}
-.entry-screen__button:active{filter:brightness(1.16);transform:translateY(1px)}
+.entry-screen__button:active{filter:brightness(1.16)}
 .entry-screen__button:focus-visible{outline:2px solid #e1faff;outline-offset:4px}
 .entry-screen__button:disabled{filter:grayscale(.8);cursor:wait}
 .entry-screen__button--secondary{border-image-source:url('/art/psd-buttons-v1/button-gray.png');border-image-slice:32;border-image-width:15px;font-size:17px;text-shadow:0 1px #172a3c}
@@ -41,3 +41,8 @@
 .sortie-loading.is-failed .sortie-loading__flight{animation-play-state:paused;opacity:.5}
 @keyframes sortie-flight{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @media(prefers-reduced-motion:reduce){.entry-screen *, .entry-screen{animation:none!important;transition:none!important}}
+
+/* Keep an empty track while waiting for the first real loading progress. */
+.sortie-loading__meter{position:relative;overflow:hidden}
+.sortie-loading.is-pending .sortie-loading__meter{box-sizing:border-box;height:7px;border:1px solid #a1c3d27a;background:#05111f}
+.sortie-loading.is-pending .entry-screen__progress{opacity:0}

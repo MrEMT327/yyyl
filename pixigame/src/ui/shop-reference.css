@@ -105,7 +105,7 @@
 #gui-casual-lobby .store-reference .store-action>.shop-icon {width:14px;height:14px}
 #gui-casual-lobby .store-reference .store-action:disabled {opacity:1;filter:none;color:#c0ced9!important;cursor:default}
 #gui-casual-lobby .store-reference .store-action:disabled::before {filter:grayscale(.9) brightness(.65)}
-#gui-casual-lobby .store-reference .store-action:active:not(:disabled) {translate:0 1px;filter:brightness(1.12)}
+#gui-casual-lobby .store-reference .store-action:active:not(:disabled) {filter:brightness(1.12)}
 #gui-casual-lobby .store-reference .store-notice {padding:8px;border:1px solid #ac7d4f;color:#ffdb8e;background:#3c2e22;font-size:12px;line-height:1.4}
 #gui-casual-lobby .store-reference button:focus-visible {outline:2px solid #b4f2ff;outline-offset:-2px}
 @container(max-width:350px) {

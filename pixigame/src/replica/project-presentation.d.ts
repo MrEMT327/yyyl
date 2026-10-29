@@ -4,5 +4,7 @@ export function createProjectPresentation(options: {
   content: GameContent;
   appearance: Record<string, any>;
   onError: (error: Error) => void;
+  onFlightRoll?: () => void;
+  onProgress?: (completed: number, total: number) => void;
   onGraphicsContext?: (canvas: HTMLCanvasElement, context: WebGLRenderingContext | WebGL2RenderingContext) => void;
 }): Promise<BattleAppearance & { dispose(): void }>;

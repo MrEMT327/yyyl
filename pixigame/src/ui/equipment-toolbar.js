@@ -38,7 +38,7 @@ export function bindEquipmentChoices(root) {
     menu.dataset.side=up?'above':'below';menu.style.maxHeight=`${Math.min(264,up?above:below)}px`;
     if(!view.matchMedia('(prefers-reduced-motion: reduce)').matches){
       menu.getAnimations().forEach(a=>a.cancel());
-      const animation=menu.animate([{opacity:0,translate:`0 ${up?5:-5}px`},{opacity:1,translate:'0 0'}],{duration:160,easing:'cubic-bezier(.16,1,.3,1)'});
+      const animation=menu.animate([{opacity:0},{opacity:1}],{duration:160,easing:'cubic-bezier(.16,1,.3,1)'});
       animation.id='ui-dropdown';
     }
   }

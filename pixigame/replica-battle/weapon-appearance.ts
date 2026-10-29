@@ -23,7 +23,14 @@ export interface WeaponAppearance {
 const stages = mapping.stages as Record<string, { familyId: number; star: number; kind: string; childIds: number[] }>;
 const branches = mapping.branches as Record<string, { familyId: number; kind: 'minor' | 'breakthrough' }>;
 
+function isIntroCannonReinforcement(choice: Choice): boolean {
+  return choice.id === 10400101 && choice.group === 10000101 && choice.star === 1
+    && !choice.parentStageId && !choice.advance;
+}
+
 function branchForChoice(familyId: number, choice: Choice): AppliedWeaponSkill | undefined {
+  // The tutorial grants an attribute directly, without learning a weapon parent.
+  if (isIntroCannonReinforcement(choice)) return;
   const branch = branches[String(choice.id)];
   if (!branch || branch.familyId !== familyId || choice.opensBreakthrough) return;
   const parentId = choice.parentStageId || choice.advance || Number(Object.entries(stages).find(([, parent]) => parent.familyId === familyId
@@ -60,7 +67,7 @@ export function previewWeaponAppearance(sim: Simulation, choice: Choice, preview
   if (!family) return;
   // Group 4's cannon reinforcement is an attribute card, not a weapon
   // stage/branch. Show the current cannon without inventing an upgrade stage.
-  if(choice.id===10400101){
+  if(isIntroCannonReinforcement(choice)){
     const owned=readWeaponAppearances(sim).find(row=>row.familyId===family.id);
     if(owned)return Object.freeze({...owned,sourceSkillId:choice.id,preview});
     return;

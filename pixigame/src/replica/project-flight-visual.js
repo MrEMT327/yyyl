@@ -1,12 +1,13 @@
 // Read-only movement snapshots drive model attitude and engine presentation.
 // No input target, entity position, projectile or gameplay parameter is changed.
+import {createFlightRollState,sampleFlightRoll} from './project-flight-roll.js';
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-const idle=()=>({bank:0,pitch:0,thrust:0});
-export function createFlightVisualState(){return {runId:null,clock:null,x:0,z:0,pose:idle()};}
-export function sampleFlightVisual(state,{clock,runId,flight}){
+const idle=()=>({bank:0,pitch:0,thrust:0,roll:0,rollActive:false,rollSerial:0});
+export function createFlightVisualState(){return {runId:null,clock:null,x:0,z:0,roll:createFlightRollState(),pose:idle()};}
+export function sampleFlightVisual(state,{clock,runId,flight,visible=true}){
   if(!flight||![clock,flight.x,flight.z,flight.speed].every(Number.isFinite))return {...state.pose};
-  const reset=()=>{state.runId=runId;state.clock=clock;state.x=flight.x;state.z=flight.z;state.pose=idle();return {...state.pose};};
-  if(state.clock===null||state.runId!==runId||clock<state.clock)return reset();
+  const reset=()=>{state.runId=runId;state.clock=clock;state.x=flight.x;state.z=flight.z;state.roll=createFlightRollState();state.pose=idle();return {...state.pose};};
+  if(!visible||state.clock===null||state.runId!==runId||clock<state.clock)return reset();
   const dt=clock-state.clock;
   if(dt===0)return {...state.pose};
   const dx=flight.x-state.x,dz=flight.z-state.z;
@@ -23,6 +24,7 @@ export function sampleFlightVisual(state,{clock,runId,flight}){
     state.pose[key]+=(target[key]-state.pose[key])*blend;
     if(Math.abs(state.pose[key])<.0001)state.pose[key]=0;
   }
+  Object.assign(state.pose,sampleFlightRoll(state.roll,{dt,vx,vz}));
   return {...state.pose};
 }
 
@@ -38,7 +40,7 @@ export function updateFlightFighter(fighter,clock,pose){
   }
   const quiet=1-clamp(pose.thrust,0,1)*.7;
   fighter.updateAircraft(clock,{bank:pose.bank+Math.sin(clock*1.65)*.018*quiet,
-    pitch:pose.pitch+Math.sin(clock*1.2+.4)*.012*quiet,roll:0});
+    pitch:pose.pitch+Math.sin(clock*1.2+.4)*.012*quiet,roll:pose.roll||0});
   fighter.object3D.rotation.y=Math.sin(clock*1.4)*.018*quiet;
   if(!runtime)return;
   const thrust=clamp(pose.thrust,0,1),saved=[];

@@ -21678,7 +21678,7 @@
     {
       "path": "kernel/content.ts",
       "kind": "gameplay-repair",
-      "reason": "Source-backed maintenance/shockwave airdrop dependencies and narrow card admission; see research/airdrop-integration.md. Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json. Registration only during full-content audit: preserve existing local gold-budget policy and separation of out-of-battle economy attributes; no gameplay edits by this registration. Normalize omitted precompiled trajectory parameters to the same empty object as combat/loadout rows; fixes Thunder UseFirePos null crash in chapters 4, 8, 9 and 10 without changing configured parameters. 2026-10-26: retire user-rejected local zero-gold fallback; restore authored MonsterTotalGold. See research/battle-protection-rewards-20261026.md.",
+      "reason": "Source-backed maintenance/shockwave airdrop dependencies and narrow card admission; see research/airdrop-integration.md. Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json. Registration only during full-content audit: preserve existing local gold-budget policy and separation of out-of-battle economy attributes; no gameplay edits by this registration. Normalize omitted precompiled trajectory parameters to the same empty object as combat/loadout rows; fixes Thunder UseFirePos null crash in chapters 4, 8, 9 and 10 without changing configured parameters. 2026-10-26: retire user-rejected local zero-gold fallback; restore authored MonsterTotalGold. See research/battle-protection-rewards-20261026.md. Report completed chapter-resource loads to the host loading screen; no data, rules or simulation changes (2026-10-29).",
       "originalNormalizedSha256": "0dadbc8731b230da0dd3135c8f200232fe57f89ff8ad99a61321261fed83c304",
       "patches": [
         {
@@ -21712,9 +21712,21 @@
         {
           "before": "    // Reproducible local draw; original global battle RNG state is not present in APK tables.\n    let goldSeed = (wave.id ^ 0x69a8c40) >>> 0;\n    const goldRandom = () => { goldSeed ^= goldSeed << 13; goldSeed ^= goldSeed >>> 17; goldSeed ^= goldSeed << 5; return (goldSeed >>> 0) / 4294967296; };\n    const gold = planWaveGold(wave.goldBudget || localBattleGoldBudget(chapter.chapter.id), waveSpawns.map(spawn => {\n      const raw = chapter.entities[spawn.entityId].raw;\n      return { dropType: raw.MonsterDropType, characterType: raw.Type };\n    }), assets.monsterDrops, wave.stopByEliteOrBossKilled, goldRandom);\n",
           "after": "    // Reproducible local draw; original global battle RNG state is not present in APK tables.\n    let goldSeed = (wave.id ^ 0x69a8c40) >>> 0;\n    const goldRandom = () => { goldSeed ^= goldSeed << 13; goldSeed ^= goldSeed >>> 17; goldSeed ^= goldSeed << 5; return (goldSeed >>> 0) / 4294967296; };\n    const gold = planWaveGold(wave.goldBudget, waveSpawns.map(spawn => {\n      const raw = chapter.entities[spawn.entityId].raw;\n      return { dropType: raw.MonsterDropType, characterType: raw.Type };\n    }), assets.monsterDrops, wave.stopByEliteOrBossKilled, goldRandom);\n"
+        },
+        {
+          "before": "export async function loadContent(): Promise<GameContent> {",
+          "after": "export async function loadContent(onProgress?: (completed: number, total: number) => void): Promise<GameContent> {\n  // Catalog, sixteen chapter tables, two shared packs, and sword effects.\n  let completed = 0;\n  const loaded = <T>(value: T): T => {\n    completed++;\n    try { onProgress?.(completed, 20); } catch { /* Progress cannot interrupt resource loading. */ }\n    return value;\n  };"
+        },
+        {
+          "before": "try { return await response.json(); }",
+          "after": "try { return loaded(await response.json()); }"
+        },
+        {
+          "before": "].map(read).concat(loadLoadoutRuntime(), loadPlayerAppearances()));",
+          "after": "].map(read).concat(loadLoadoutRuntime().then(loaded), loadPlayerAppearances().then(loaded)));"
         }
       ],
-      "sha256": "c87db64306da9b262cd84f5a9098f1f127cb219d22b29b1e3e8c8e247993fa0c"
+      "sha256": "ddb4cf3abade670ffd7db898a3c1f26025133162a96450f55874d660b3312d05"
     },
     {
       "path": "kernel/skill-choice.ts",

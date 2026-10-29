@@ -23,11 +23,17 @@ export function createCharacterPortraits() {
     sync,
     feedback(id) {
       const player=players.get(id), motion=PILOT_PORTRAITS[id]?.feedback;
-      if(!player || !motion || pendingFeedback.has(id) || (player.playing && player.motionName===motion)) return false;
+      if(destroyed || !visible || !hosts.has(id) || !player || !motion || pendingFeedback.has(id) || (player.playing && player.motionName===motion)) return false;
       pendingFeedback.add(id);
       return Promise.resolve(player.playMotion(motion,{returnToIdle:true})).finally(()=>pendingFeedback.delete(id));
     },
-    setVisible(value) { visible=Boolean(value); for(const player of players.values())player.setVisible(visible); },
-    destroy() { destroyed=true;for(const player of players.values())player.destroy();players.clear(); },
+    setVisible(value) {
+      if(destroyed)return;
+      visible=Boolean(value);
+      // Returning from a modal resumes only portraits mounted on this page.
+      // Cached catalog/recruitment players must stay asleep until mounted again.
+      for(const [id,player] of players)player.setVisible(visible && hosts.has(id));
+    },
+    destroy() { destroyed=true;for(const player of players.values())player.destroy();players.clear();hosts.clear();pendingFeedback.clear(); },
   };
 }

@@ -13,6 +13,7 @@ export function createUiMotion(root) {
   const quiet=()=>disposed||media.matches||doc.hidden||root.hidden||!root.isConnected;
   const animate=(node,keys,options={},name='accent')=>{
     if(!node?.isConnected||quiet())return null;
+    node.getAnimations?.().filter(a=>a.id===`ui-${name}`).forEach(a=>a.cancel());
     const a=node.animate(keys,{duration:T.dialog,easing:UI_EASE,...options});a.id=`ui-${name}`;motions.add(a);
     a.finished.then(()=>motions.delete(a),()=>motions.delete(a));return a;
   };
@@ -50,17 +51,18 @@ export function createUiMotion(root) {
   }
   function clear(){epoch++;press?.animation?.cancel();press=null;for(const id of frames)view.cancelAnimationFrame(id);frames.clear();for(const a of motions)a.cancel();motions.clear();for(const n of [...effects])discard(n);}
   const control=e=>e.target.closest?.('button,[role="tab"],[role="menuitemradio"]');
+  const stopControlFeedback=node=>node.getAnimations?.().filter(a=>['ui-press','ui-release','ui-keyboard'].includes(a.id)).forEach(a=>a.cancel());
   function down(e){const node=control(e);if(e.button!==0||!node||node.disabled||quiet()||root.getAttribute('aria-busy')==='true')return;
-    press?.animation?.cancel();press={node,id:e.pointerId,x:e.clientX,y:e.clientY};
-    press.animation=animate(node,[{scale:'1'},{scale:'.965'}],{duration:T.press,fill:'forwards',easing:'ease-out'},'press');
+    press?.animation?.cancel();stopControlFeedback(node);press={node,id:e.pointerId,x:e.clientX,y:e.clientY};
+    press.animation=animate(node,[{filter:'brightness(1)'},{filter:'brightness(.84)'}],{duration:T.press,fill:'forwards',easing:'ease-out'},'press');
   }
   function release(e,cancel=false){if(!press||e.pointerId!==press.id)return;const {node,animation}=press;press=null;animation?.cancel();
-    if(!cancel&&node.isConnected&&!node.disabled)animate(node,[{scale:'.965'},{scale:'1.012',offset:.65},{scale:'1'}],{duration:T.release},'release');
+    if(!cancel&&node.isConnected&&!node.disabled)animate(node,[{filter:'brightness(.84)'},{filter:'brightness(1)'}],{duration:T.release},'release');
   }
   const move=e=>{if(press&&Math.hypot(e.clientX-press.x,e.clientY-press.y)>8)release(e,true);};
   const up=e=>release(e),cancel=e=>release(e,true);
   function clicked(e){const node=control(e);if(!node||node.disabled||quiet())return;
-    if(e.detail===0)animate(node,[{scale:'.97'},{scale:'1'}],{duration:T.release},'keyboard');
+    if(e.detail===0){stopControlFeedback(node);animate(node,[{filter:'brightness(.84)'},{filter:'brightness(1)'}],{duration:T.release},'keyboard');}
     const data={...node.dataset},action=data.action;
     if(!['gearMaterial','pickSlot','catalogSelect','workshopSelect','fleetSkillSlot','recruitPreview','workshopFilterSet'].includes(action))return;
     later(()=>{const target=[...root.querySelectorAll(`[data-action="${action}"]`)].find(n=>['id','slot','kind'].every(k=>!data[k]||n.dataset[k]===data[k]));if(target)flash(target);});
@@ -71,23 +73,20 @@ export function createUiMotion(root) {
   return {
     page(key,body) {
       const menu=body.querySelector('.fc-filter-options');
-      if(menu&&!menuOpen)animate(menu,[{opacity:0,translate:'0 -5px'},{opacity:1,translate:'0 0'}],{duration:160},'dropdown');
+      if(menu&&!menuOpen)animate(menu,[{opacity:0},{opacity:1}],{duration:160},'dropdown');
       menuOpen=Boolean(menu);
       if(route===key)return;const previous=route;route=key;clear();
       if(previous!==null&&!quiet()){
-        const order=['shop','assembly','battle','research','supply'],[oldTab,oldSub]=previous.split(':'),[tab,sub]=key.split(':');
-        const direction=tab!==oldTab?Math.sign(order.indexOf(tab)-order.indexOf(oldTab))||1:oldSub&&!sub?-1:1;
-        for(const a of enterSurface(body,direction)){motions.add(a);a.finished.then(()=>motions.delete(a),()=>motions.delete(a));}
+        for(const a of enterSurface(body)){motions.add(a);a.finished.then(()=>motions.delete(a),()=>motions.delete(a));}
       }
     },
     modal(key) {
       if(key===modalKey)return;modalKey=key;if(!key||quiet())return;
       const host=root.querySelector('.pl-modal-host'),dialog=[...host.querySelectorAll('[role="dialog"]')].at(-1);
       if(!dialog||host.querySelector('.draw-stage'))return;
-      animate(dialog,[{opacity:0,scale:'.955'},{opacity:1,scale:'1.008',offset:.78},{opacity:1,scale:'1'}],{},'dialog');
-      animate(dialog,[{translate:'0 12px'},{translate:'0 0',offset:.78},{translate:'0 0'}],{composite:'add'},'dialog-translate');
-      const children=dialog.querySelectorAll('.pl-modal-heading,.ag-actions,.fc-operation-actions,.equipment-weapon-detail__actions');
-      [...children].slice(0,3).forEach((n,i)=>animate(n,[{opacity:0},{opacity:1}],{duration:180,delay:60+i*35,fill:'backwards'},'dialog-detail'));
+      // All dialogs enter on their final pixel grid. Text, frames and hit areas
+      // share one fade instead of competing scale/translation/detail animations.
+      animate(dialog,[{opacity:0},{opacity:1}],{},'dialog');
     },
     capture() {
       return [...root.querySelectorAll('.ag-card.is-selected[data-action="gearMaterial"],.workshop-cost [data-cost-resource]')].slice(0,4).map(node=>({rect:node.getBoundingClientRect(),src:node.querySelector('img')?.src}));
@@ -98,7 +97,7 @@ export function createUiMotion(root) {
         if(action==='gearSupply'){
           const cards=[...root.querySelectorAll('.sn-results>.sn-result,.ag-draw-results>.ag-card')].slice(0,10);
           cards.forEach((node,i)=>{
-            animate(node,[{opacity:0,scale:'.9',translate:'0 12px'},{opacity:1,scale:'1.025',translate:'0 0',offset:.75},{opacity:1,scale:'1',translate:'0 0'}],{duration:320,delay:i*55,fill:'backwards'},'box-reveal');
+            animate(node,[{opacity:0},{opacity:1}],{duration:320,delay:i*55,fill:'backwards'},'box-reveal');
             const rank=Number(node.dataset.psdQuality??after.equipment?.items.find(x=>x.uid===node.dataset.id)?.qualityRank)||0;
             if(rank>=3)flash(node,{color:QUALITY_LIGHT[rank]||QUALITY_LIGHT[0],delay:160+i*55});
           });return;
@@ -116,7 +115,7 @@ export function createUiMotion(root) {
           transient(n,[{translate:`${m.rect.left+m.rect.width/2-end.left-end.width/2}px ${m.rect.top+m.rect.height/2-end.top-end.height/2}px`,scale:'1',opacity:.9},{translate:'0 0',scale:'.4',opacity:0}],{duration:360,delay:i*40,fill:'backwards'},'material');
         });delay=360;}
         flash(target,{...plan,delay});
-        animate(target,[{scale:'1'},{scale:plan.major?'1.055':'1.025',offset:.4},{scale:'1'}],{duration:360,delay},'success');
+        animate(target,[{filter:'brightness(1)'},{filter:plan.major?'brightness(1.2)':'brightness(1.12)',offset:.4},{filter:'brightness(1)'}],{duration:360,delay},'success');
       });
     },
     clear,

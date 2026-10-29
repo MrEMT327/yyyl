@@ -58,7 +58,7 @@
 .eq-inventory-toolbar h2{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .peripheral-lobby .eq-workshop-button{display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-left:auto;min-width:128px;min-height:44px;padding:0 18px;border:2px solid #17191e;border-radius:6px;background:#ffb832;color:#f1eadc;box-shadow:inset 0 2px 0 #ffd47b,inset 0 -3px 0 #cd861f,0 2px 0 #030a11;font:900 clamp(17px,4.2cqw,21px)/1.2 "Microsoft YaHei","PingFang SC",system-ui,sans-serif;white-space:nowrap;cursor:pointer}
 .peripheral-lobby .eq-workshop-button strong{color:#f1eadc;font:inherit;paint-order:stroke fill;-webkit-text-stroke:3px #242329;text-shadow:0 2px 0 #242329}
-.peripheral-lobby .eq-workshop-button:active{transform:translateY(1px);box-shadow:inset 0 1px 0 #ffd47b,inset 0 -2px 0 #cd861f}
+.peripheral-lobby .eq-workshop-button:active{box-shadow:inset 0 1px 0 #ffd47b,inset 0 -2px 0 #cd861f}
 .eq-workshop-button:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .eq-select{position:relative;display:block;width:17.5%;min-width:66px;height:44px}
 .eq-select select{appearance:none;-webkit-appearance:none;display:block;width:100%;height:100%;padding:0 22px 0 8px;border:1px solid #91afc6;border-radius:3px;background:#0e2033;color:#f5f8fc;font:900 12px/1.2 "Microsoft YaHei","PingFang SC",system-ui,sans-serif;cursor:pointer;box-shadow:inset 0 0 0 2px #061421}
@@ -68,7 +68,7 @@
 .eq-inventory-toolbar,.eq-pick-hint{flex-shrink:0}
 .eq-inventory{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#647f96 #102030;padding:4px 8px 12px;background:#102335}
 .eq-card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px 6px;align-items:start}
-.eq-card{position:relative;min-width:0;aspect-ratio:1.055;padding:3px;border:0;background:#050d15;clip-path:var(--eq-cut);color:#f8fbff;transition:filter .12s,transform .12s;overflow:hidden}
+.eq-card{position:relative;min-width:0;aspect-ratio:1.055;padding:3px;border:0;background:#050d15;clip-path:var(--eq-cut);color:#f8fbff;transition:filter .12s;overflow:hidden}
 .eq-card-inner{position:absolute;inset:3px;display:flex;flex-direction:column;align-items:center;clip-path:var(--eq-cut);border:4px solid var(--eq-quality);background:color-mix(in srgb,var(--eq-quality) 28%,#051827);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--eq-quality) 68%,#07101c),inset 0 0 20px color-mix(in srgb,var(--eq-quality) 20%,transparent);overflow:hidden}
 /* Selected cards keep their quality frame; card-selection supplies the marker. */
 .eq-card.is-locked .eq-card-inner{background:color-mix(in srgb,var(--eq-quality) 15%,#0b1928)}

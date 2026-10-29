@@ -8,11 +8,18 @@ import { installNativeAirdropContent } from './native-airdrop-content';
 
 const parse = (text: unknown) => { if (typeof text !== 'string') return text || {}; try { return JSON.parse(text); } catch { try { return JSON.parse(text.replace(/}}$/, '}')); } catch { return {}; } } };
 
-export async function loadContent(): Promise<GameContent> {
+export async function loadContent(onProgress?: (completed: number, total: number) => void): Promise<GameContent> {
+  // Catalog, sixteen chapter tables, two shared packs, and sword effects.
+  let completed = 0;
+  const loaded = <T>(value: T): T => {
+    completed++;
+    try { onProgress?.(completed, 20); } catch { /* Progress cannot interrupt resource loading. */ }
+    return value;
+  };
   const read = async (name: string) => {
     const response = await fetch(`data/${name}.json`, { cache: 'no-store' });
     if (!response.ok) throw new Error(`关卡资源缺失：${name}`);
-    try { return await response.json(); }
+    try { return loaded(await response.json()); }
     catch { throw new Error(`资源格式错误：${name}.json，请重新生成资源后刷新。`); }
   };
   const catalog = await read('chapters');
@@ -23,7 +30,7 @@ export async function loadContent(): Promise<GameContent> {
     chapterAssets, chapterHealth, chapterBossAnimation, npcChapters, chapterAudio, chapterEffects, mapLayers, enemyLocalAnimation, loadoutRuntime, playerAppearances] = await Promise.all([
     entry.chapterFile, 'assets', 'combat', entry.geometryFile, 'effects-original', 'boss-animation', 'enemy-health-bars', 'beam-effects',
     'assets-chapters', 'enemy-health-bars-chapters', 'boss-animation-chapters', 'npc-chapters', 'audio-chapters', 'effects-original-chapters', 'map-layers', 'enemy-local-animation-chapters',
-  ].map(read).concat(loadLoadoutRuntime(), loadPlayerAppearances()));
+  ].map(read).concat(loadLoadoutRuntime().then(loaded), loadPlayerAppearances().then(loaded)));
   assets.playerAppearances = playerAppearances;
   // Keep previously repaired weapon rows; add the missing original loadout
   // dependency graph before constructing Simulation and its status runtimes.

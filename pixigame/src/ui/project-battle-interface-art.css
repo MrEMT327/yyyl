@@ -1,3 +1,6 @@
+/* Soften the battle scene while keeping the separate HUD at full clarity. */
+#canvas > canvas { filter: saturate(.88); }
+
 #ui .pause-control:not(.pause-resume) {
   border: 12px solid transparent;
   border-image: url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch;

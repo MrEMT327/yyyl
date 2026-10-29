@@ -13,6 +13,12 @@ import nativeBattleRules from './native-battle-rules.json' with { type: 'json' }
 
 const CHANNEL = 'shnh-replica-battle-v1';
 const ENGINE = 'danke-replica-v1';
+const LOADING_PHASES = Object.freeze({
+  data: [.03,.28,'正在读取关卡…'],
+  appearance: [.28,.62,'正在加载飞机与地图…'],
+  interface: [.62,.68,'正在准备战斗界面…'],
+  textures: [.68,.95,'正在加载战斗资源…'],
+});
 
 // Appearance is separate from native progression IDs. Never forward legacy
 // statModifiers, fixed-parts builds, difficulty multipliers or passive formulas.
@@ -120,7 +126,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
   async function start({ trial = false, chapterId = 1 } = {}) {
     if (active) return false;
     const chapter = replicaChapter(chapterId);
-    if (!chapter) { onError('该关卡尚未接入复刻内核'); return false; }
+    if (!chapter) { onError('关卡暂不可用'); return false; }
     const chapterLabel = chapterPresentationForStage(chapter.stageIndex).chapterName;
     const snapshot = peripheral()?.snapshot();
     if (!snapshot) return false;
@@ -155,7 +161,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       catch (error) { onError(error.message); failLoading(); }
     };
     const failLoading = () => {
-      session.loading ||= showSortieLoading({onDismiss:dismissLoading});
+      session.loading ||= showSortieLoading({stageName:chapterLabel,aircraftId:snapshot.aircraftId,indeterminate:true,onDismiss:dismissLoading});
       session.loading.fail();
     };
     const failPreparation = () => {
@@ -219,27 +225,35 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     if (session.focus instanceof HTMLElement) session.focus.blur();
     onEnter(); document.documentElement.classList.add('replica-battle-active');
     document.body.append(host);
-    session.loading=showSortieLoading({onDismiss:dismissLoading});
+    session.loading=showSortieLoading({stageName:chapterLabel,aircraftId:snapshot.aircraftId,indeterminate:true,onDismiss:dismissLoading});
     const started = new Promise(resolve => {
       session.resolve = resolve;
       session.receive = event => {
         if (active !== session || event.origin !== location.origin || event.source !== frame.contentWindow) return;
         const message = event.data;
         if (message?.channel !== CHANNEL || message.session !== id) return;
-        if (session.preparationFailed && ['boot','ready','configured','started','retry','phase','revive-ad'].includes(message.type)) return;
+        if (session.preparationFailed && ['boot','loading-progress','ready','configured','started','retry','phase','revive-ad'].includes(message.type)) return;
         try {
           switch (message.type) {
             case 'boot':
               if (session.run) throw new Error('战斗页面已重新载入，请返回后重新出击');
+              session.loading?.update(.03,'正在读取关卡…');
               send(session, 'initialize', { appearance: appearanceOf(snapshot, chapter) }); break;
+            case 'loading-progress': {
+              if(session.startAcknowledged||session.run||!Object.hasOwn(LOADING_PHASES,message.phase)||!Number.isFinite(message.progress))break;
+              const [from,to,label]=LOADING_PHASES[message.phase];
+              session.loading?.update(from+(to-from)*Math.min(1,Math.max(0,message.progress)),label);
+              break;
+            }
             case 'ready':
               if (session.run) throw new Error('战斗页面已重新载入，请返回后重新出击');
-              session.loading?.stage(2); requestConfiguration(session); break;
+              session.loading?.update(.96,'正在准备战场…'); requestConfiguration(session); break;
             case 'configured': {
               const candidate = session.pendingConfiguration;
               if (!candidate || message.requestId !== candidate.requestId) break;
               if (message.configurationKey !== candidate.key) throw new Error('大厅与战斗配置版本不一致，请刷新页面后重新出击');
               session.pendingConfiguration = null;
+              session.loading?.update(.98,'正在准备出击…');
               if (!launch(session, { ...candidate, entry: message.entry })) { close(session); resolve(false); }
               break;
             }
@@ -248,6 +262,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
               if (message.configurationKey !== replicaConfigurationKey(session.run.snapshot.replicaConfiguration))
                 throw new Error('战斗启动配置不一致，请刷新页面后重新出击');
               clearTimeout(session.timer); session.timer = null; session.startAcknowledged = true;
+              session.loading?.update(1,'准备完成');
               session.loading?.close({restoreFocus:false}); session.loading=null;
               onState('playing'); resolve(true); break;
             case 'onboarding': {

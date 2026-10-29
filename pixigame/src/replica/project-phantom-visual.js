@@ -1,13 +1,13 @@
 /** Visual-only echoes of the actual aircraft. All ages use simulation seconds,
- * so pause freezes them and a native phantom exit clears them immediately. */
+ * so pause freezes them and ending the active effect clears them immediately. */
 export function createPhantomTrailState() {
   return { runId: undefined, lastClock: -Infinity, history: [] };
 }
-export function samplePhantomTrail(state, { clock, runId, phantomActive, pose }) {
+export function samplePhantomTrail(state, { clock, runId, phantomActive, rollActive = false, pose }) {
   if (state.runId !== runId || clock < state.lastClock) state.history.length = 0;
   state.runId = runId;
   state.lastClock = clock;
-  if (!phantomActive || !pose?.visible) {
+  if ((!phantomActive && !rollActive) || !pose?.visible) {
     state.history.length = 0;
     return [];
   }
@@ -24,8 +24,8 @@ export function samplePhantomTrail(state, { clock, runId, phantomActive, pose })
     // Keep the copies within the hull's neighborhood even after a teleport.
     const ratio = distance ? Math.min(1, Math.max(8, width * .24) / distance) : 1;
     const side = index ? 1 : -1;
-    const offset = Math.min(14, Math.max(6, width * .10)) * side;
+    const offset = phantomActive ? Math.min(14, Math.max(6, width * .10)) * side : 0;
     return { x: pose.x + dx * ratio + offset, y: pose.y + dy * ratio + 2 + index * 2,
-      width, height, tint: index ? 0xd6f5ff : 0x71d9ff, alpha: index ? .26 : .40 };
+      width, height, tint: index ? 0xd6f5ff : 0x71d9ff, alpha: phantomActive ? (index ? .26 : .40) : (distance > .5 ? (index ? .13 : .24) : 0) };
   });
 }

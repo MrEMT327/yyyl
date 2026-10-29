@@ -17,7 +17,7 @@ export function showSortieLoading(options={}) {
     <div class="sortie-loading__flight"><img alt="" /></div>
     <div class="sortie-loading__state">
       <p class="sortie-loading__status" role="status" aria-live="polite">正在准备出击…</p>
-      <progress class="entry-screen__progress" value="0" aria-label="关卡准备进度"></progress>
+      <div class="sortie-loading__meter"><progress class="entry-screen__progress" value="0" aria-label="关卡准备进度"></progress></div>
       <div class="sortie-loading__actions" hidden>
         <button type="button" class="entry-screen__button entry-screen__button--secondary" data-loading-action="back">返回</button>
         <button type="button" class="entry-screen__button" data-loading-action="retry">重试</button>
@@ -31,7 +31,8 @@ export function showSortieLoading(options={}) {
   flight.src=`${import.meta.env?.BASE_URL||'/'}art/aircraft-ui-v1/${aircraft}-preview.webp`;
   flight.onerror=()=>{flight.onerror=null;flight.src=`${import.meta.env?.BASE_URL||'/'}art/aircraft-ui-v1/pilot-01-preview.webp`;};
   const status = overlay.querySelector('.sortie-loading__status');
-  const progress=overlay.querySelector('progress');progress.max=resourceCount+2;
+  const progress=overlay.querySelector('progress');progress.max=resourceCount+2;progress.value=0;
+  if(options.indeterminate){progress.removeAttribute('value');overlay.classList.add('is-pending');}
   const actions=overlay.querySelector('.sortie-loading__actions');
   const back=overlay.querySelector('[data-loading-action="back"]'),retry=overlay.querySelector('[data-loading-action="retry"]');
   let closed=false,closing,failed=false;
@@ -76,6 +77,14 @@ export function showSortieLoading(options={}) {
   };
   back.onclick=async()=>{await close();options.onDismiss?.();};
   return {
+    update(value,message) {
+      if(closed||failed||!Number.isFinite(value))return;
+      const next=Math.min(1,Math.max(0,value))*progress.max;
+      if(next<progress.value)return;
+      overlay.classList.remove('is-pending');
+      progress.value=next;progress.setAttribute('value',String(next));
+      if(message)status.textContent=message;
+    },
     resource() {if(!closed&&!failed)progress.value=Math.min(resourceCount,progress.value+1);},
     stage(index) {
       if(closed||failed)return;
@@ -85,6 +94,7 @@ export function showSortieLoading(options={}) {
     fail({onRetry}={}) {
       if(closed)return;
       failed=true;
+      overlay.classList.remove('is-pending');
       overlay.classList.add('is-failed');
       status.textContent='准备失败，请重试';
       actions.hidden=false;retry.hidden=!onRetry;

@@ -25,11 +25,6 @@ export function createLobbyOnboarding({root,context,mark}) {
       return null;
     }
     if(c.subpage)return null;
-    if(g===6){
-      if(c.tab!=='research')return [tab('research'),'进入科技研究'];
-      if(c.researchSection!=='talent')return [select('researchSection','[data-section="talent"]'),'进入天赋'];
-      return [select('researchDraw','[data-pool="ace"]'),'进行一次王牌觉醒'];
-    }
     if(g===8){
       if(c.tab!=='shop')return [tab('shop'),'进入商城，获取装备'];
       if(c.shopSection!=='boxes')return [select('shopSection','[data-section="boxes"]'),'查看装备宝箱'];
@@ -80,7 +75,6 @@ export function createLobbyOnboarding({root,context,mark}) {
       if(!s||!c.visible||c.busy||document.hidden||root.hidden){hide();return;}
       if(active&&guideFinished(s,active.group)&&active.group!==14&&!(active.group===8&&c.modal?.type==='shopBoxResult'))active=null;
       if(active&&(active.group===9||active.group===14)&&!s.equipment?.items?.some(i=>i.uid===active.uid&&(active.group===9?!i.equipped:i.equipped&&i.canUpgrade)))active=null;
-      if(active?.group===6&&!s.research?.canAce)active=null;
       if(!active&&!c.modal&&!c.subpage)active=nextLobbyGuide(s,[...dismissed]);
       if(active){
         const dest=destination(c);
@@ -95,7 +89,7 @@ export function createLobbyOnboarding({root,context,mark}) {
       const chapter=(c.chapterIndex??s.selectedStageIndex??0)+1;
       if(weakChapter!==chapter){weakChapter=chapter;idle=0;}idle+=Math.max(0,dt);
       if(!c.modal&&!c.subpage&&c.tab==='battle'&&chapter<=3&&!reachedGuideProgress(s.replicaCampaign,4)
-        &&(chapter===1&&!guideFinished(s,1)||idle>=60)&&!s.rewardPending&&!s.rewardBusy&&!s.research?.canAce){
+        &&(chapter===1&&!guideFinished(s,1)||idle>=60)&&!s.rewardPending&&!s.rewardBusy){
         show(select('start'),'点击出战',false);return;
       }
       hide();

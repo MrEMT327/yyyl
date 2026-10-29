@@ -35,18 +35,18 @@ export function createRewardReveal(root,sound = () => {}) {
       const rank = rankOf(node), rare = rank >= 3;
       const color = rank >= 4 ? '#ffdb74' : '#c3a1ff';
       animate(node, rare ? [
-        { opacity:.15, transform:'translateY(8px) scale(.94)', boxShadow:`inset 0 0 0 1px ${color}00` },
-        { opacity:.55, transform:'translateY(2px) scale(.98)', boxShadow:`inset 0 0 24px ${color}55`, offset:.38 },
-        { opacity:1, transform:'translateY(0) scale(1.025)', boxShadow:`inset 0 0 0 2px ${color}`, offset:.65 },
-        { opacity:1, transform:'translateY(0) scale(1)', boxShadow:`inset 0 0 0 0 ${color}00` },
+        { opacity:.15, boxShadow:`inset 0 0 0 1px ${color}00` },
+        { opacity:.55, boxShadow:`inset 0 0 24px ${color}55`, offset:.38 },
+        { opacity:1, boxShadow:`inset 0 0 0 2px ${color}`, offset:.65 },
+        { opacity:1, boxShadow:`inset 0 0 0 0 ${color}00` },
       ] : [
-        { opacity:.2, transform:'translateY(5px) scale(.98)' },
-        { opacity:1, transform:'translateY(0) scale(1)' },
+        { opacity:.2 },
+        { opacity:1 },
       ], { duration:rare ? 650 : 230, delay:Math.min(i, 9)*45, fill:'backwards', easing:'ease-out' });
     });
     host.querySelectorAll('.research-effect').forEach((node, i) => animate(node, [
-      { opacity:.4, transform:'translateX(-5px)' },
-      { opacity:1, transform:'translateX(0)' },
+      { opacity:.4 },
+      { opacity:1 },
     ], { duration:240, delay:250+i*45, fill:'backwards' }));
     if (!motions.length) return;
     const skip = document.createElement('button');

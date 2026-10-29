@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { RESOURCE_ICONS, resourceIconType } from './resource-icons.js';
+import { COMBAT_TYPE } from './combat-theme.js';
 
 const resourceTextures=new Map();
 function sharedResourceTexture(type){
@@ -93,17 +94,20 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
   function text(value, x, y, { size = 20, color = '#edf6fb', weight = 500, align = 'left', maxWidth = 560, tracking = 0 } = {}) {
     const canvas = documentRef?.createElement('canvas') || globalThis.wx?.createCanvas?.();
     const ctx = canvas.getContext('2d');
-    const font = `${weight} ${size}px "Bahnschrift", "DIN Alternate", "Microsoft YaHei", sans-serif`;
+    const font = `${weight} ${size}px ${COMBAT_TYPE.family}`;
     ctx.font = font;
-    const naturalWidth = ctx.measureText(String(value)).width + Math.max(0, String(value).length - 1) * tracking;
+    const metrics = ctx.measureText(String(value));
+    const naturalWidth = metrics.width + Math.max(0, String(value).length - 1) * tracking;
     const width = Math.ceil(Math.min(maxWidth, naturalWidth) + 4), height = Math.ceil(size * 1.65);
     const resolution = textResolution;
     canvas.width = width * resolution; canvas.height = height * resolution;
-    ctx.scale(resolution, resolution); ctx.font = font; ctx.fillStyle = color; ctx.textBaseline = 'middle';
+    ctx.scale(resolution, resolution); ctx.font = font; ctx.fillStyle = color; ctx.textBaseline = 'alphabetic';
+    // Center the visible glyphs, including CJK, rather than the font's em box.
+    const baseline = (height + (metrics.actualBoundingBoxAscent ?? size * .8) - (metrics.actualBoundingBoxDescent ?? size * .2)) / 2;
     if (tracking && naturalWidth <= maxWidth) {
       let cursor = 2;
-      for (const char of String(value)) { ctx.fillText(char, cursor, height / 2); cursor += ctx.measureText(char).width + tracking; }
-    } else ctx.fillText(String(value), 2, height / 2, maxWidth);
+      for (const char of String(value)) { ctx.fillText(char, cursor, baseline); cursor += ctx.measureText(char).width + tracking; }
+    } else ctx.fillText(String(value), 2, baseline, maxWidth);
     const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
     texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; textures.add(texture);
     const mesh=quad(x - (align === 'center' ? width / 2 : align === 'right' ? width : 0), y - height / 2, width, height, '#ffffff', 1, texture);

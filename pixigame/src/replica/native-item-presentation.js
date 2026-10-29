@@ -40,14 +40,14 @@ export function nativeItemPresentation(id) {
   const description=replacement?`可在背包按1:1兑换为${nativeItemDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
     :part?`用于强化${part.name}，与金币一同消耗。`
     :researchBlueprint?'用于对应科研升级，与金币一同消耗。可通过巡逻、快速巡逻、章节奖励与每日商店获得。'
-    :id===112?'开启高级装备箱时消耗；这是开箱券。'
-    :id===113?'开启普通装备箱时消耗；这是开箱券。'
-    :id===903?'在每日成长补给领取；开启时自选一种配置内的装备图纸。'
+    :id===112?'开启高级装备箱时消耗。'
+    :id===113?'开启普通装备箱时消耗。'
+    :id===903?'在每日成长补给领取；开启时自选一种装备图纸。'
     :id===934?'通关第8章并完成每周5天满活跃，可在每周成长补给领取；开启时自选一件史诗装备。'
     :fragment?`${fragment.cost}个碎片合成对应驾驶员同名卡；每日和每周成长补给可定向选择已拥有、未满星驾驶员的碎片。`
     :id===925?'在背包中开启，获得驾驶员或同名卡。'
     :id===926?'50 个碎片合成 1 个角色箱。'
-    :unit?catalog.guns.some(row=>row.id===id)?'高级装备箱随机获得；首次解锁武器，重复获得用于升星。':catalog.pilots.some(row=>row.id===id)?'用于对应驾驶员激活或升星；满星后库存同名卡可在背包转换积分。':'用于对应收藏的激活或升星；同名卡数量与材料库存一致。':undefined;
+    :unit?catalog.guns.some(row=>row.id===id)?'高级装备箱随机获得；首次解锁武器，重复获得用于升星。':catalog.pilots.some(row=>row.id===id)?'用于对应驾驶员激活或升星；满星后库存同名卡可在背包转换积分。':'用于对应收藏的激活或升星。':undefined;
   return {name,image:nativeItemArt(id),pilotFragment:Boolean(fragment),qualityRank:unit?collectionQualityRank(unit.quality):gear?.qualityRank??(items.has(id)?collectionQualityRank(items.get(id).quality):undefined),qualityName:gear?.qualityName,description};
 }
 

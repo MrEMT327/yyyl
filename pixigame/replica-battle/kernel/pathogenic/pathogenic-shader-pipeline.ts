@@ -292,6 +292,11 @@ void main() {
 /** Matrices are mandatory to avoid accidentally using viewport pixels as source
  * local/world coordinates. Texture defaults are not silently invented. */
 export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeline {
+  // WebGL copies matrix values synchronously. Phaser passes force=true for
+  // matrix uniforms, so reusing these upload buffers cannot suppress updates.
+  private readonly screenMatrix=new Float32Array(9);
+  private readonly localMatrix=new Float32Array(9);
+  private readonly modelMatrix=new Float32Array(16);
   constructor(game: Phaser.Game, readonly program: CompiledCanvasShader) {
     super({ game, vertShader: program.vertex, fragShader: program.fragment });
   }
@@ -307,7 +312,7 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
       fail('Compatibility zero-light specialization requires an explicit zero point/directional light assertion on every draw');
     if (!Number.isFinite(data.time) || data.textureSize.some(n => !(n > 0))) fail('invalid time/texture size');
     if (data.screenToLocal.length !== 9 || data.localToScreen.length !== 9 || data.modelMatrix.length !== 16) fail('invalid source transform');
-    if ([...data.color, ...data.screenToLocal, ...data.localToScreen, ...data.modelMatrix].some(v => !Number.isFinite(v))) fail('non-finite source transform/color');
+    if (!data.color.every(Number.isFinite)||!data.screenToLocal.every(Number.isFinite)||!data.localToScreen.every(Number.isFinite)||!data.modelMatrix.every(Number.isFinite)) fail('non-finite source transform/color');
     this.flush();
     this.set1f('uPgTime', data.time);
     this.set4f('uPgColor', ...data.color);
@@ -315,9 +320,10 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
     this.set4f('uPgCanvasModulate', ...(data.canvasModulate || [1, 1, 1, 1]) as [number, number, number, number]);
     this.set4f('uPgUvRect', ...(data.uvRect || [0, 0, 1, 1]) as [number, number, number, number]);
     this.set2f('uPgTexturePixelSize', 1 / data.textureSize[0], 1 / data.textureSize[1]);
-    this.setMatrix3fv('uPgScreenToLocal', false, new Float32Array(data.screenToLocal));
-    this.setMatrix3fv('uPgLocalToScreen', false, new Float32Array(data.localToScreen));
-    this.setMatrix4fv('MODEL_MATRIX', false, new Float32Array(data.modelMatrix));
+    this.screenMatrix.set(data.screenToLocal);this.localMatrix.set(data.localToScreen);this.modelMatrix.set(data.modelMatrix);
+    this.setMatrix3fv('uPgScreenToLocal', false, this.screenMatrix);
+    this.setMatrix3fv('uPgLocalToScreen', false, this.localMatrix);
+    this.setMatrix4fv('MODEL_MATRIX', false, this.modelMatrix);
     this.set1f('pgPremult_TEXTURE', data.mainPremultiplied === false ? 0 : 1);
     this.set1f('uPgMainRepeat',data.mainRepeat?1:0);
     let unit = 1;
@@ -353,16 +359,18 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
 /** Godot outputs straight RGB. Use these dedicated blend factors rather than
  * Phaser's premultiplied NORMAL/ADD modes. Matches transparent Godot GLES3 RT. */
 export interface RegisteredPathogenicShader {key: string; blendMode: number; program: CompiledCanvasShader}
-const registeredShaders = new WeakMap<Phaser.Game,Map<string,RegisteredPathogenicShader>>();
+const registeredShaders = new WeakMap<Phaser.Game,{sources:Map<string,Map<string,RegisteredPathogenicShader>>;count:number}>();
 const registeredBlendModes = new WeakMap<Phaser.Game,Map<CompiledCanvasShader['blend'],number>>();
 export function registerPathogenicShader(game: Phaser.Game, source: CanvasShaderSource, options: CanvasShaderCompileOptions = {}): RegisteredPathogenicShader {
   const renderer = game.renderer;
   if (!(renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer))
     throw new PathogenicShaderCoverageError(source.path, 'WebGL renderer required');
-  let cache=registeredShaders.get(game);if(!cache){cache=new Map();registeredShaders.set(game,cache);}
+  let cache=registeredShaders.get(game);if(!cache){cache={sources:new Map(),count:0};registeredShaders.set(game,cache);}
   // Include actual code even when callers reuse stale/absent sha256 fields.
-  const identity=JSON.stringify([source.path,source.sha256??'',source.code,options.compatibilityZeroLights===true]);
-  const cached=cache.get(identity);if(cached)return cached;
+  // Key the full code as a string instead of serializing it again for every
+  // mesh. Keep code identity even if a caller reuses a stale sha256.
+  const identity=JSON.stringify([source.path,source.sha256??'',options.compatibilityZeroLights===true]);
+  const versions=cache.sources.get(identity),cached=versions?.get(source.code);if(cached)return cached;
   const program = compilePathogenicCanvasShader(source,options);
   const gl = renderer.gl;
   const factors: Record<CompiledCanvasShader['blend'], number[]> = {
@@ -372,7 +380,7 @@ export function registerPathogenicShader(game: Phaser.Game, source: CanvasShader
     mul: [gl.DST_COLOR, gl.ZERO, gl.DST_ALPHA, gl.ZERO],
     premul_alpha: [gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA],
   };
-  const key = `Pathogenic:${source.sha256 || source.path}:${options.compatibilityZeroLights?'compatibility-zero-lights':'unlit'}:${cache.size}`;
+  const key = `Pathogenic:${source.sha256 || source.path}:${options.compatibilityZeroLights?'compatibility-zero-lights':'unlit'}:${cache.count}`;
   if (!renderer.pipelines.has(key)) {
     try{renderer.pipelines.add(key,new PathogenicShaderPipeline(game,program));}
     catch(error){renderer.pipelines.remove(key);throw new PathogenicShaderCoverageError(source.path,`GPU pipeline registration failed: ${String(error)}`);}
@@ -380,7 +388,8 @@ export function registerPathogenicShader(game: Phaser.Game, source: CanvasShader
   let blends=registeredBlendModes.get(game);if(!blends){blends=new Map();registeredBlendModes.set(game,blends);}
   let blendMode=blends.get(program.blend);
   if(blendMode===undefined){blendMode=renderer.addBlendMode(factors[program.blend], program.blend === 'sub' ? gl.FUNC_REVERSE_SUBTRACT : gl.FUNC_ADD);blends.set(program.blend,blendMode);}
-  const registered={key,blendMode,program};cache.set(identity,registered);return registered;
+  const registered={key,blendMode,program},entries=versions??new Map<string,RegisteredPathogenicShader>();
+  entries.set(source.code,registered);cache.sources.set(identity,entries);cache.count++;return registered;
 }
 
 /** Exact unsigned integer hash from particle_blood_stream.gdshader. */

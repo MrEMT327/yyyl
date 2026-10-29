@@ -9,7 +9,7 @@
 .lc-panel button{font:inherit;cursor:pointer;touch-action:manipulation}
 .lc-panel button:disabled{cursor:default}
 .lc-panel button:focus-visible{outline:2px solid #fff2aa;outline-offset:-4px}
-.lc-panel button:active:not(:disabled){filter:brightness(1.13);transform:translateY(1px)}
+.lc-panel button:active:not(:disabled){filter:brightness(1.13)}
 .lc-summary{display:flex;gap:12px;align-items:center;padding:15px 12px;margin-bottom:16px;border:1px solid #598eaa;background:radial-gradient(ellipse at 0 0,#377da777,transparent 70%),linear-gradient(120deg,#183f5a,#10283b);box-shadow:inset 0 1px #a1d6ea33,0 3px #041320;border-radius:8px 2px;position:relative;overflow:hidden}
 .lc-summary>div:nth-child(2){flex:1;min-width:0}.lc-summary small{color:#80b8d5;font-size:10px;letter-spacing:2px}.lc-summary h3{font-size:17px;margin:3px 0 5px;color:#fff;font-weight:900}.lc-summary p{font-size:11px;margin:0;color:#bdd2df}
 .lc-emblem{width:46px;height:50px;display:grid;place-items:center;flex:none;background:linear-gradient(145deg,#3e7290,#152e43);border:2px solid #70abc5;border-radius:8px 2px;box-shadow:inset 0 0 0 3px #112839,0 3px #030f1a;transform:rotate(-4deg)}

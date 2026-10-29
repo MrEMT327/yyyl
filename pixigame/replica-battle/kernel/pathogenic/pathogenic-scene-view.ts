@@ -1,3 +1,4 @@
+import {updateSourceMeshGeometry} from './source-mesh-update.mjs';
 import Phaser from 'phaser';
 import {trimEmitterHistory,VisualMeshPool} from '../combat-readability.mjs';
 import {PathogenicHdrComposite} from './pathogenic-hdr-composite';
@@ -40,7 +41,7 @@ export class PathogenicSceneView {
   setCameraOffset(x:number,y:number){this.cameraOffset=[x,y];}
   beginFrame(time:number){
     if(!this.materials){this.display=new PathogenicHdrComposite(this.scene);this.snapshot=new PathogenicScreenSnapshot(this.scene);this.capture=this.snapshot.createCaptureObject(29);this.materials=new PathogenicMaterials(this.scene,this.graph,this.snapshot);}
-    if(time<this.clock)this.reset();this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();this.diagnostics=[];
+    if(time<this.clock)this.reset();this.snapshot!.beginFrame();this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();this.diagnostics=[];
   }
   draw(id:string,path:string,ctx:Any={}){
     const result:any=sampleScene(this.graph,path,ctx);
@@ -115,18 +116,7 @@ export class PathogenicSceneView {
     if(!view){view=this.meshPool.acquire(()=>{const mesh=new SourceMesh(this.scene,0,0,textureKey);mesh.hideCCW=false;mesh.ignoreDirtyCache=true;this.scene.add.existing(mesh);return mesh;});this.views.set(key,view!);}
     view!.setVisible(true).setTexture(textureKey).setPosition(0,0).setDepth((presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001).setBlendMode(pipeline.blendMode);
     view.setOrtho(view.width,view.height);
-    const points=geometry.vertices,indices=geometry.indices;
-    // Source color stays in float uniforms; line vertex variation uses the
-    // existing mesh color attributes and is recorded as a precision boundary.
-    const gain=line?Math.max(1,...points.flatMap((v:Any)=>v.color.slice(0,3))):1;
-    const colors=points.map((v:Any)=>line?((Math.round(Math.max(0,Math.min(1,v.color[0]/gain))*255)<<16)|(Math.round(Math.max(0,Math.min(1,v.color[1]/gain))*255)<<8)|Math.round(Math.max(0,Math.min(1,v.color[2]/gain))*255)):0xffffff);
-    const uvs=points.flatMap((v:Any)=>line?v.uv:[v.uv[0]/source.width,v.uv[1]/source.height]);
-    // Phaser Mesh's y coordinate points up before its orthographic projection.
-    const positions=points.flatMap((v:Any)=>[v.position[0],-v.position[1]]);
-    if(view.vertices.length!==indices.length){view.clear();view.addVertices(positions,uvs,indices,false,undefined,colors);}
-    for(let i=0;i<indices.length;i++){
-      const j=indices[i],v=view.vertices[i];v.x=positions[j*2];v.y=positions[j*2+1];v.setUVs(uvs[j*2],uvs[j*2+1]);v.color=colors[j];v.alpha=line?points[j].color[3]:1;
-    }
+    const gain=updateSourceMeshGeometry(view,geometry,source,line);
     const crop=line?[0,0,source.width,source.height]:(item.texture?.crop??[0,0,source.width,source.height]);
     const opacity=presentation.presentationOpacity??1;
     view.setData('pathogenicShader',{time,projectilePalette,color:line?[gain,gain,gain,opacity]:[...item.color.slice(0,3),item.color[3]*opacity],
@@ -141,6 +131,6 @@ export class PathogenicSceneView {
     for(const [id,player]of this.players)if(!this.livePlayers.has(id)){player.reset();this.players.delete(id);}
     for(const key of this.histories.keys())if(!this.liveHistories.has(key))this.histories.delete(key);
   }
-  reset(){for(const v of this.views.values())v.destroy();this.views.clear();this.meshPool.clear();for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();}
+  reset(){this.snapshot?.beginFrame();for(const v of this.views.values())v.destroy();this.views.clear();this.meshPool.clear();for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();}
   destroy(){this.display?.destroy();this.reset();this.capture?.destroy();this.capture=undefined;this.snapshot?.destroy();}
 }

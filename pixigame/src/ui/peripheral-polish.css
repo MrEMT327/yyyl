@@ -1,5 +1,5 @@
 /* Illustrated emblems and collectible-card presentation, shared across pages. */
-.pl-tab>.pl-nav-emblem{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 3px 3px #050e20aa);transition:transform .2s,filter .2s}
+.pl-tab>.pl-nav-emblem{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 3px 3px #050e20aa);transition:filter .2s}
 .pl-tab-home>.pl-nav-emblem{width:52px;height:52px;margin-top:-7px}
 .pl-tab.is-active>.pl-nav-emblem{transform:translateY(-3px) scale(1.08);filter:drop-shadow(0 0 10px #91d9ff66)}
 .pl-nav{background:linear-gradient(#314c66,#172b43);border-top-color:#829db477}
@@ -63,7 +63,7 @@
 .pl-modal:has(.pl-card-results),.pl-modal:has(.pl-pilot-card-detail){background:radial-gradient(ellipse at 50% 35%,#313953,#13243b 80%);border:1px solid #ac9d7977;box-shadow:0 15px 90px #020816,inset 0 0 0 4px #dbc79808}
 .pl-modal:has(.pl-card-results) .pl-modal-heading,.pl-modal:has(.pl-pilot-card-detail) .pl-modal-heading{background:linear-gradient(100deg,#29344e,#1d2b44);border-bottom:1px solid #c4ac7033}
 .pl-modal:has(.pl-card-results) .pl-modal-heading h2,.pl-modal:has(.pl-pilot-card-detail) .pl-modal-heading h2{font-size:17px;color:#e9dbb7}
-@keyframes pl-card-arrive{from{opacity:0;transform:translateY(20px) scale(.94);filter:brightness(1.7)}to{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}}
+@keyframes pl-card-arrive{from{opacity:0;filter:brightness(1.7)}to{opacity:1;filter:brightness(1)}}
 @media(max-height:740px){.pl-tab>.pl-nav-emblem{width:37px;height:37px}.pl-tab-home>.pl-nav-emblem{width:45px;height:45px}.pl-pilot-banner{height:354px}.pl-featured-card{width:170px;top:95px}.pl-banner-copy{padding-top:14px}.pl-banner-copy h2{font-size:21px}.pl-weapon-picture{height:66px}}
 @media(max-width:370px){.pl-pilot-collection{gap:11px 7px}.pl-banner-copy h2{font-size:21px}.pl-pity-strip{font-size:9px}.pl-slot>.pl-weapon-emblem{height:41px}}
 @media(prefers-reduced-motion:reduce){.pl-card-result{animation:none}.pl-tab>.pl-nav-emblem{transition:none}}

@@ -72,7 +72,6 @@
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade,.equipment-weapon-detail__back)::after {content:none!important}
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade):disabled {color:#e2dacb!important;cursor:default}
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade):disabled::before {filter:grayscale(.85) brightness(.8)}
-#gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail :is(.weapon-equip-confirm,.weapon-equip-remove,.equipment-weapon-detail__upgrade):active:not(:disabled) {translate:0 1px}
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) :is(.weapon-equip-confirm,.equipment-weapon-detail__upgrade) {position:absolute;top:calc(1271.19 * var(--du))}
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) .weapon-equip-confirm {left:calc(167.16 * var(--du))}
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__actions:has(.weapon-equip-slots) .equipment-weapon-detail__upgrade {right:calc(167.16 * var(--du))}

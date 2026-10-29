@@ -32,7 +32,7 @@ export function battleOnboarding(s,chapterId,trial=false){
 export function nextLobbyGuide(s, dismissed=[]) {
   if(!s.onboarding||s.rewardBusy||s.rewardPending)return null;
   const pending=id=>!guideFinished(s,id)&&!dismissed.includes(id);
-  if(pending(6)&&s.research?.canAce)return {group:6};
+  // Talent draws are optional. Keep legacy group 6 saves, but never auto-start it.
   const gearOpen=reachedGuideProgress(s.replicaCampaign,2);
   const items=s.equipment?.items||[];
   const wearable=items.find(i=>!i.equipped&&!s.equipment?.slots?.[i.type])||items.find(i=>!i.equipped);

@@ -9,9 +9,8 @@ export function preloadSupplyChestArt(scene: Phaser.Scene) {
 }
 
 export function createSupplyChestVisual(scene: Phaser.Scene): Phaser.GameObjects.Container {
-  const shadow = scene.add.graphics().fillStyle(0x071317, .28).fillEllipse(0, 23, 56, 14);
   const image = scene.add.image(0, -4, TEXTURE).setDisplaySize(SIZE, SIZE);
-  return scene.add.container(0, 0, [shadow, image]).setData('supplyChestBody', image);
+  return scene.add.container(0, 0, [image]).setData('supplyChestBody', image);
 }
 
 /** The native NPC still owns contact, rewards and removal timing. */

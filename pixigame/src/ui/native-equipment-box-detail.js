@@ -14,7 +14,7 @@ export function nativeEquipmentBoxDetail(snapshot,h) {
       <p class="su-subtitle">${box.quotes.map(q=>`${q.count===1?'单次':'十次'} ${price(q)}`).join(' · ')}</p>${!box.canDraw?`<p>${e(box.unavailableReason)}</p>`:''}
       <details class="su-details su-box-probabilities"><summary>概率与规则</summary>
         <div class="su-rate-groups">${box.rates.map(group=>`<details><summary><span>${e(group.name)}</span><b>${group.weight/1000}%</b></summary>${group.items.map(item=>`<p class="su-item-rate">${h.img(nativeItemArt(item.id),'','su-item-art')}<span>${e(item.name)} ×${item.count}</span><b>${item.weight/1000}%</b></p>`).join('')}</details>`).join('')}</div>
-        <h4>开启规则</h4>${equipmentBoxRules(box,h)}<p>免费优先；十连箱券不足时，整单使用钻石。</p>${box.id===3?'<p>随机武器概率10%，命中后11种基础武器等概率；首次获得即解锁，重复获得用于升星。</p><p>驾驶员首次获得即解锁，重复转同名卡，满星后转积分。</p>':''}
+        <h4>开启规则</h4>${equipmentBoxRules(box,h)}<p>免费优先；十连箱券不足时，整单使用钻石。</p>${box.id===3?'<p>驾驶员首次获得即解锁，重复转同名卡，满星后转积分。</p>':''}
         ${box.id===4?`<p>累计 ${n(snapshot.equipment.draws)} 次 · 高级券可领 ${n(snapshot.equipment.basicRewardAvailable)} 次</p>`:''}
       </details>
     </section>`;

@@ -59,13 +59,14 @@ export class PathogenicScreenSnapshot {
   private target!:Phaser.Renderer.WebGL.RenderTarget|ReturnType<typeof makeFloatTarget>;
   private halfFloat=false;
   private capturedFrame=-1;
+  private requested=false;
   private format=0;
   private destroyed=false;
   readonly renderer:Phaser.Renderer.WebGL.WebGLRenderer;
   constructor(readonly scene:Phaser.Scene,readonly premultiplied=true){
     const renderer=scene.game.renderer;
     if(!(renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer))throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','WebGL required');
-    this.renderer=renderer;this.allocate(renderer.width,renderer.height,renderer.gl.getContextAttributes()?.alpha===false?renderer.gl.RGB:renderer.gl.RGBA);
+    this.renderer=renderer;
   }
   private allocate(width:number,height:number,format:number,halfFloat=false){
     const r=this.renderer,gl=r.gl,fb=gl.getParameter(gl.FRAMEBUFFER_BINDING),wrapper=r.currentFramebuffer;
@@ -87,6 +88,10 @@ export class PathogenicScreenSnapshot {
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,unpackPma);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,unpackFlip);
     }
   }
+  /** Keep demand until the next update, including paused render-only frames.
+   * A new prepared frame declares its screen-reading meshes before depth 29. */
+  beginFrame():void {this.requested=false;}
+  requestCapture():void {this.requested=true;}
   capture(frame=this.scene.game.loop.frame):void {
     if(this.destroyed)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','snapshot destroyed');
     const r=this.renderer,gl=r.gl;
@@ -94,13 +99,13 @@ export class PathogenicScreenSnapshot {
     r.flush();
     const entryError=gl.getError();if(gl.isContextLost())return;if(entryError)throw new Error('Snapshot before allocate '+entryError);
     const current=r.currentFramebuffer;
-    if(current===this.target.framebuffer||gl.getParameter(gl.FRAMEBUFFER_BINDING)===this.target.framebuffer.webGLFramebuffer)
+    if(this.target&&(current===this.target.framebuffer||gl.getParameter(gl.FRAMEBUFFER_BINDING)===this.target.framebuffer.webGLFramebuffer))
       throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','feedback: snapshot target is the active write framebuffer');
     const width=current?.renderTexture?.width??gl.drawingBufferWidth,height=current?.renderTexture?.height??gl.drawingBufferHeight;
     const format=current?.renderTexture?.format??(gl.getContextAttributes()?.alpha===false?gl.RGB:gl.RGBA);
     if(format!==gl.RGB&&format!==gl.RGBA)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','snapshot source requires supported RGB/RGBA8 framebuffer');
     const halfFloat=!!(current?.renderTexture as any)?.pathogenicHalfFloat;
-    if(this.target.width!==width||this.target.height!==height||this.format!==format||this.halfFloat!==halfFloat)this.allocate(width,height,format,halfFloat);
+    if(!this.target||this.target.width!==width||this.target.height!==height||this.format!==format||this.halfFloat!==halfFloat)this.allocate(width,height,format,halfFloat);
     const active=gl.getParameter(gl.ACTIVE_TEXTURE);gl.activeTexture(gl.TEXTURE0);
     const oldTexture=gl.getParameter(gl.TEXTURE_BINDING_2D);
     const priorError=gl.getError();if(gl.isContextLost())return;if(priorError)throw new Error('Snapshot before copy '+priorError+' half='+halfFloat);
@@ -113,7 +118,7 @@ export class PathogenicScreenSnapshot {
   }
   binding():ShaderTextureBinding {
     const owner=this;
-    return {get texture(){return owner.target.texture;},premultiplied:this.premultiplied,validate(){
+    return {get texture(){if(!owner.target)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','background capture must run before binding');return owner.target.texture;},premultiplied:this.premultiplied,validate(){
       if(owner.renderer.gl.isContextLost())return;
       if(owner.destroyed||owner.capturedFrame!==owner.scene.game.loop.frame)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','background capture must run before this effect in the current render frame');
       const r=owner.renderer;if(r.currentFramebuffer===owner.target.framebuffer||r.gl.getParameter(r.gl.FRAMEBUFFER_BINDING)===owner.target.framebuffer.webGLFramebuffer)
@@ -124,10 +129,10 @@ export class PathogenicScreenSnapshot {
    * One capture is shared by following effects, matching Godot backbuffer use. */
   createCaptureObject(depth:number):Phaser.GameObjects.Extern {
     const snapshot=this;
-    class Capture extends Phaser.GameObjects.Extern {render(){snapshot.capture();}}
+    class Capture extends Phaser.GameObjects.Extern {render(){if(snapshot.requested)snapshot.capture();}}
     const object=new Capture(this.scene);object.setDepth(depth);this.scene.add.existing(object);return object;
   }
-  destroy(){if(!this.destroyed){this.target.destroy();this.destroyed=true;}}
+  destroy(){if(!this.destroyed){this.target?.destroy();this.destroyed=true;}}
 }
 
 /** Resolve original material overrides and bind actual texture dependencies. */
@@ -148,7 +153,7 @@ export class PathogenicMaterials {
     return {channels,diffuse:this.installTexture(ref),normal:channels.normal?this.installTexture(channels.normal):null,specular:channels.specular?this.installTexture(channels.specular):null};
   }
   resolve(materialRef:any,overrides:Any={},options:{compatibilityZeroLights?:boolean}={compatibilityZeroLights:true}){
-    const material=getResource(this.graph,materialRef),p={...(material?.properties??{})};
+    const material=getResource(this.graph,materialRef),p=material?.properties??{};
     let source={path:'pathogenic-source-canvas',code:'shader_type canvas_item; void fragment() {}'};
     if(material?.type==='ShaderMaterial'){
       const path=p.shader?.$external,shader=this.graph.shaders[path];
@@ -173,7 +178,7 @@ export class PathogenicMaterials {
       if(/hint_screen_texture/.test(uniform.hints)){
         if(!this.screen)throw new PathogenicShaderCoverageError(source.path,'hint_screen_texture needs an independent background snapshot');
         if(/mipmap|repeat_enable/.test(uniform.hints))throw new PathogenicShaderCoverageError(source.path,'screen mipmap/repeat needs an explicit matching snapshot sampler');
-        textures[uniform.name]=this.screen.binding();dependencies.push({uniform:uniform.name,type:'screen-snapshot',hints:uniform.hints});continue;
+        this.screen.requestCapture();textures[uniform.name]=this.screen.binding();dependencies.push({uniform:uniform.name,type:'screen-snapshot',hints:uniform.hints});continue;
       }
       if(/filter_nearest|mipmap|repeat_enable/.test(uniform.hints))throw new PathogenicShaderCoverageError(source.path,`custom sampler state requires isolated texture view: ${uniform.name}`);
       if(!value)throw new PathogenicShaderCoverageError(source.path,`sampler ${uniform.name} has no texture dependency`);

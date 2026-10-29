@@ -24,7 +24,7 @@ export function backpackItems(snapshot) {
     const rows=snapshot.nativeAcquisition.materials.map(row=>({
       id:'native:'+row.id,nativeId:row.id,name:nativeItemPresentation(row.id).name||row.name,count:row.count,
       category:[1,2].includes(row.id)?'resources':'materials',image:nativeItemArt(row.id),pilotFragment:nativeItemPresentation(row.id).pilotFragment,
-      description:nativeItemPresentation(row.id).description||(row.id===1?'用于装备强化和收藏养成。':row.id===2?'用于商城兑换和补给。':'道具数量与材料库存一致。'),
+      description:nativeItemPresentation(row.id).description||(row.id===1?'用于装备强化和收藏养成。':row.id===2?'用于商城兑换和补给。':''),
     }));
     if(wallet.stamina>0)rows.push({id:'stamina',name:'体力',count:wallet.stamina,category:'resources',image:nativeItemArt(4),description:'用于出击关卡，随时间恢复。'});
     return rows;

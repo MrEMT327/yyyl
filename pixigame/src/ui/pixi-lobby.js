@@ -123,7 +123,7 @@ const TAB_DEFINITIONS = [
 ];
 
 const MENU_STATES = new Set(['menu', 'gameover', 'victory', 'defeat']);
-const FONT_FAMILY = '"PingFang SC", "Microsoft YaHei", sans-serif';
+const FONT_FAMILY = COMBAT_TYPE.family;
 const TEXT_RESOLUTION = 2;
 const UI_FONT_SCALE = 1.08;
 const preparedPilotTextures = new WeakSet();

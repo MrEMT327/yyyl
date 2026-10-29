@@ -20,9 +20,9 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   const panel=new Container();panel.label='combat-pause';root.addChild(panel);
   panel.pauseSnapshot=model;
   const label=(value,x,y,size=24,color='#f2f7ff',align='left')=>surface(panel,s=>s.text(value,x,y,{size,color,align,weight:800}));
-  const control=(id,x,y,w,h,title,action,primary=false)=>{
+  const control=(id,x,y,w,h,title,action,primary=false,art=primary?'primary':'secondary')=>{
     const node=button({x,y,width:w,height:h,text:title,fontSize:29,variant:primary?'primary':'secondary',
-      art:primary?'primary':'secondary',onPress:action});
+      art,onPress:action});
     // Preserve the reference's small utility artwork while keeping mobile hit areas usable.
     if(!id.startsWith('weapons-')&&!id.startsWith('upgrades-')) {
       const hitWidth=Math.max(112,w),hitHeight=Math.max(112,h);
@@ -90,7 +90,7 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
     const key=kind==='weapons'?'pauseWeaponPage':'pauseUpgradePage';
     const page=Math.min(count-1,Math.max(0,game[key]||0));
     surface(panel,s=>{
-      paintCombatArt(s,'card',32,y,536,222).material.color.set('#344957');
+      paintCombatArt(s,'card',32,y,536,222).material.color.set('#a8bac7');
       // Colored section ribbons are labels; the housing and slots retain PSD corners.
       s.polygon([[48,y],[563,y],[568,y+5],[568,y+54],[32,y+54],[32,y+16]],tint);
       s.text(title,320,y+29,{size:29,color:'#183041',align:'center',weight:900});
@@ -98,17 +98,19 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
     });
     for(let i=0;i<5;i++) {
       const item=items[page*5+i],x=46+i*103,sy=y+72;
-      const node=item?control(kind+'-'+item.id,x,sy,96,126,'',()=>{
+      const node=item?control(kind+'-'+item.id,x,sy,96,120,'',()=>{
         game.pauseDetail={...item};navigate('detail');
-      }):new Container();
-      if(!item){node.position.set(x,sy);panel.addChild(node);}
+      },false,'pauseSlot'):new Container();
+      if(!item){node.label='pause-'+kind+'-empty-'+i;node.position.set(x,sy);panel.addChild(node);}
       surface(node,s=>{
-        paintCombatArt(s,'slot',0,0,96,96);
-        if(!item)return;
+        // The interactive card already owns its frame. Empty cards use the
+        // same PSD and dimensions with reduced opacity, without another button.
+        if(!item){paintCombatArt(s,'pauseSlot',0,0,96,120).material.opacity=.45;return;}
         if(kind==='weapons'||(item.icon&&art?.get(item.itemId))) {
-          weaponImage(s,art?.get(item.itemId),item.itemId,{x:5,y:12,width:86,height:74});
+          weaponImage(s,art?.get(item.itemId),item.itemId,{x:8,y:10,width:80,height:76});
         }else drawUiSymbol(s,item.symbol,23,21,50,tint);
-        s.text('Lv.'+item.level,48,115,{size:18,color:'#e4f2fa',align:'center',weight:800});
+        s.polygon([[9,91],[87,91],[87,106],[80,113],[9,113]],'#102737',.9);
+        s.text('Lv.'+item.level,48,102,{size:20,color:'#edf6fc',align:'center',weight:800,maxWidth:80});
         if(item.innate)s.text('主',8,20,{size:16,color:'#ffe6a0',weight:800});
       });
     }
@@ -123,8 +125,8 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   const utility=(id,x,y,symbol,caption,action,tint='#d0f2ff')=>{
     const node=control(id,x,y,86,86,'',action);
     surface(node,s=>{
-      drawUiSymbol(s,symbol,22,10,43,tint);
-      s.text(caption,43,73,{size:18,color:'#e8f4fb',align:'center',weight:800});
+      drawUiSymbol(s,symbol,24,8,38,tint);
+      s.text(caption,43,64,{size:18,color:'#e8f4fb',align:'center',weight:800});
     });
   };
   utility('stats',32,1000,'stats','统计',()=>navigate('stats'));

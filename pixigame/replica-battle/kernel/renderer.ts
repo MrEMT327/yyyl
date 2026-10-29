@@ -79,6 +79,7 @@ export class BattleView extends Phaser.Scene {
   private nativeTerrain: { row: NativeMapSpriteRenderer; layer: NativeMapLayer; geometry: { vertices: { x: number; z: number; u: number; v: number }[]; indices: number[] } }[] = [];
   private mapSubtractBlend = Phaser.BlendModes.NORMAL;
   private bars!: Phaser.GameObjects.Graphics;
+  private playerDamage!: Phaser.GameObjects.Graphics;
   private beams!: Phaser.GameObjects.Graphics;
   private debug!: Phaser.GameObjects.Graphics;
   private debugOn = false;
@@ -87,6 +88,7 @@ export class BattleView extends Phaser.Scene {
   private px: number;
   private playerSpine?: SpinePlayer;
   private playerAppearanceKey = '';
+  coastBackgroundTime = 0;
   onFrame?: (delta: number) => void;
   constructor(private content: GameContent, private sim: Simulation, private ready: () => void, private appearance?: BattleAppearance) {
     super('battle'); this.px = WIDTH / content.world.width;
@@ -189,6 +191,7 @@ export class BattleView extends Phaser.Scene {
     if (!this.appearance?.replaceTerrain) this.createTerrain();
     this.beams = this.add.graphics().setDepth(30);
     this.bars = this.add.graphics().setDepth(50);
+    this.playerDamage = this.add.graphics().setDepth(COMBAT_LAYERS.enemyShot + 1);
     this.debug = this.add.graphics().setDepth(90);
     const playerModel = this.content.assets.prefabs[this.prefabByModel.get(this.content.chapter.entities[this.content.chapter.player.entityId].modelId)!];
     const appearance = selectPlayerAppearance(this.content);
@@ -450,7 +453,7 @@ export class BattleView extends Phaser.Scene {
       const pos = this.screen(entry.x, z); entry.image.setPosition(pos.x, pos.y);
       entry.image.setVisible(pos.y > -entry.image.displayHeight && pos.y < HEIGHT + entry.image.displayHeight);
     }
-    this.bars.clear(); this.beams.clear(); this.debug.clear();
+    this.bars.clear(); this.beams.clear(); this.debug.clear(); this.playerDamage.clear();
     const pp = this.screen(s.player.x, s.player.z);
     const appearance = selectPlayerAppearance(this.content);
     if (appearance.key !== this.playerAppearanceKey && appearance.layers.length) {
@@ -467,12 +470,14 @@ export class BattleView extends Phaser.Scene {
       let player = this.objects.get(playerKey) as Phaser.GameObjects.Container | undefined;
       if (!player) { player = this.model(playerEntity.modelId); player.setDepth(COMBAT_LAYERS.player); this.objects.set(playerKey, player); }
       player.setPosition(pp.x, pp.y).setScale(playerEntity.modelScale * s.playerScale).setVisible(s.player.hp > 0).setAlpha(alpha);
-      this.tint(player, s.player.hitFlash > 0);
+      this.tint(player, s.phase === 'playing' && s.player.hitFlash > .14);
     }
-    this.appearance?.update?.({ time: s.time, clock: s.clock, camera: this.cameraPosition, phantomActive, runId: s.runId,
+    this.appearance?.update?.({ time: s.time, coastBackgroundTime: this.coastBackgroundTime, clock: s.clock, camera: this.cameraPosition, phantomActive, runId: s.runId,
+      playerHitFlash: s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > .14,
       flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed, active: s.phase === 'playing' && s.player.hp > 0 },
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
-    if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, 0x3ee4a1);
+    if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, s.player.hitFlash > .14 ? 0xff7777 : 0x3ee4a1);
+    if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(s.player.hitFlash);
     const enemyIds = new Set<number>();
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
     const gunboatShots = scatterGunboatShots(s.enemies, s.projectiles, s.clock);
@@ -709,6 +714,17 @@ export class BattleView extends Phaser.Scene {
       if (!m || !sprite) continue;
       const a = m[0], b = -m[8], c = -m[1], d = m[9], sx = Math.hypot(a, b), sy = sx ? (a * d - b * c) / sx : 0;
       child.setPosition(m[3] * this.px, -m[11] * this.px).setScale(this.px / sprite.ppu * sx, this.px / sprite.ppu * sy).setRotation(Math.atan2(b, a)).setAlpha(m[12]);
+    }
+  }
+  private drawPlayerDamage(remaining: number) {
+    // Narrow, translucent edge cues do not cover the aircraft or projectiles.
+    const strength = Math.min(1, Math.max(0, remaining / .3));
+    const g = this.playerDamage;
+    for (let i = 0; i < 3; i++) {
+      const inset = i * 5;
+      g.fillStyle(0xff3434, (.13 - i * .035) * strength);
+      g.fillRect(inset, 0, 5, HEIGHT).fillRect(WIDTH - inset - 5, 0, 5, HEIGHT);
+      g.fillRect(0, inset, WIDTH, 5).fillRect(0, HEIGHT - inset - 5, WIDTH, 5);
     }
   }
   private healthBar(x: number, y: number, width: number, ratio: number, color: number) {

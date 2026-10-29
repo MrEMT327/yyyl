@@ -179,6 +179,14 @@ export function layerLateralOffset(layer, lateral = 0) {
   return input * 80 * distance / (100 + distance) * layer.moveScale;
 }
 
+// The island belongs to the map: aircraft movement alone cannot move it.
+// The artwork has limited side overscan, so only camera movement shifts it,
+// with a bounded offset to keep the edge of the strip off screen.
+export function coastIslandLateralOffset(cameraX, unitsPerWorld) {
+  if (![cameraX, unitsPerWorld].every(Number.isFinite)) return 0;
+  return Math.max(-9, Math.min(9, -cameraX * unitsPerWorld));
+}
+
 /** Bounded UV travel for a mirrored two-tile cycle, shared by runtime and QA. */
 export function layerScrollOffset(layer, elapsed, imageAspect = 1.5) {
   const tileLength = layer.width * imageAspect;

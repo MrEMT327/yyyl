@@ -3948,9 +3948,11 @@ export class Simulation {
       this.dispatchPlayerEvent(type, data);
     }
     if (contact) p.invincible = this.content.chapter.entities[this.content.chapter.player.entityId].stats.hitInterval || 1;
-    p.hitFlash = 0.3;
-    this.effect('text', p.x, p.z + 1, 0.8, 1, `−${Math.round(damage)}`);
-    this.sounds.push(330001);
+    if (p.hp < oldHp) {
+      p.hitFlash = 0.3;
+      this.effect('text', p.x, p.z + 1, 0.8, 1, `−${Math.round(oldHp - p.hp)}`);
+      this.sounds.push(330001);
+    }
   }
   private movePickups(dt: number) {
     const p = this.player;

@@ -22,6 +22,7 @@ import { Controls } from './kernel/input';
 import { Interface } from './kernel/ui';
 import { mountCloudCombat } from './cloud-combat.js';
 import { nativeLogicRate, nativeLogicDelta } from './kernel/native-time';
+import { smoothCoastTime } from '../src/replica/coast-background-time.mjs';
 import { loadLoadoutCatalog, loadStudyLoadoutState, createDefaultStudyLoadoutState, applyStudyLoadout } from './kernel/loadout-state';
 import { createAppearance } from './appearance';
 import { prepareReplicaLoadout } from './prepare-loadout';
@@ -37,6 +38,9 @@ const CHANNEL = 'shnh-replica-battle-v1';
 const session = new URLSearchParams(location.search).get('session');
 const requestedChapter = replicaChapter(Number(new URLSearchParams(location.search).get('chapter')));
 const send = (type: string, payload: Record<string, unknown> = {}) => parent.postMessage({ channel: CHANNEL, session, type, ...payload }, location.origin);
+const reportLoading = (phase: string, progress: number) => {
+  if (!lifetime.disposed) send('loading-progress', {phase,progress});
+};
 const stage = document.getElementById('stage')!;
 let startRun: ((runId: string, configurationKey: string, onboarding?: {movement?:boolean;firstChoice?:boolean}, defeatCount?:number) => void) | undefined;
 let configureRun: ((requestId: number, configuration: unknown, configurationKey: unknown) => void) | undefined;
@@ -66,7 +70,8 @@ function localAssetUrls(node: unknown): void {
 
 async function initialize(appearance: any) {
   memoryCheckpoint('battle-load-start');
-  const [content, catalog] = await Promise.all([loadContent(), loadLoadoutCatalog(), document.fonts.load('16px DankeUI')]);
+  reportLoading('data',0);
+  const [content, catalog] = await Promise.all([loadContent((completed,total)=>reportLoading('data',completed/total)), loadLoadoutCatalog(), document.fonts.load('16px DankeUI')]);
   if (lifetime.disposed) return;
   if (!requestedChapter || Number(content.chapter.chapter.id) !== requestedChapter.id) throw new Error('关卡与出击请求不一致');
   // This host uses project map artwork. Adapt only the display name so the
@@ -81,6 +86,7 @@ async function initialize(appearance: any) {
   installEnemyFireEffects(content);
   localAssetUrls(content);
   memoryCheckpoint('battle-data-ready');
+  reportLoading('data',1);
   // Default state only prepares the renderer. A validated native configuration
   // must replace it before the first tick of every actual sortie.
   let prepared: ReturnType<typeof prepareReplicaLoadout> | undefined;
@@ -98,16 +104,18 @@ async function initialize(appearance: any) {
   let reviveRequestSerial = 0, pendingReviveRequest = 0;
   applyStudyLoadout(content, sim, catalog, entryLoadout);
   const music = pathogenicBattleMusic(content.chapter.chapter.id, content.assets.audio, content.chapter.musicKey, content.assets.soundKeys?.[100006]);
-  const audio = new GameAudio({ ...content.assets.audio, ...pathogenicAudioManifest, ...music });
+  const audio = new GameAudio({ ...content.assets.audio, ...pathogenicAudioManifest, ...music, 'project:flight-roll': { url: new URL('../assets/audio/sfx/dodge.wav', import.meta.url).href } });
   lifetime.add(() => disposeNativeAudio(audio));
   let controls: Controls, ui: Interface, accumulated = 0, lastPhase = '';
   let activity: ReturnType<typeof createBattleActivity> | undefined;
   const graphics = createBattleGraphics({signal:lifetime.signal,onChange:()=>{activity?.enforce();ui?.update();}});
   lifetime.add(() => graphics.destroy());
-  const skin = await createAppearance(content, appearance, fail, graphics.watch);
+  reportLoading('appearance',0);
+  const skin = await createAppearance(content, appearance, fail, graphics.watch, (completed,total)=>reportLoading('appearance',completed/total), ()=>audio.effect('project:flight-roll',.22,.5));
   lifetime.add(() => skin.dispose());
   if (!lifetime.disposed) memoryCheckpoint('battle-skin-ready');
   if (lifetime.disposed) return;
+  reportLoading('appearance',1);
   const syncWeaponSkins = () => skin.setWeapons?.(readWeaponAppearances(sim));
   syncWeaponSkins();
   const weaponIcon = (familyId: number, _star: number, choice?: Choice, preview = false) => {
@@ -152,12 +160,14 @@ async function initialize(appearance: any) {
       }
       ui.update(); reportPhase();
     };
+    reportLoading('interface',0);
     const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,onGraphicsContext:graphics.watch});
     applySettlement=receipt=>cloud.setSettlement(receipt);
     lifetime.add(() => {applySettlement=undefined;receiveReviveAd=undefined;cloud.destroy();});
     if (!lifetime.disposed) memoryCheckpoint('battle-ui-ready');
     if (lifetime.disposed) return;
   }
+  reportLoading('interface',1);
   const developerSkills = mountDeveloperSkills(stage, sim, audio, ui);
   lifetime.add(() => developerSkills.destroy());
   const configureDeveloperSkills = () => { sim.developerSkillCatalog = developerSkillsEnabled() ? buildDeveloperSkillCatalog(content, catalog) : []; };
@@ -237,8 +247,10 @@ async function initialize(appearance: any) {
   // native Q16 delta 0x888, then sound/music delivery and original UI.
   const logicStep = 1 / nativeLogicRate;
   const nativeDelta = nativeLogicDelta;
+  let backgroundRunId = sim.runId;
   scene.onFrame = delta => {
     if (lifetime.disposed) return;
+    if (backgroundRunId !== sim.runId) { backgroundRunId = sim.runId; scene.coastBackgroundTime = 0; }
     if (!activity!.enforce()) { accumulated = 0; return; }
     delta = activity!.frameDelta(delta);
     if(sim.tutorialChoiceCompleted){pendingGuides.add(4);sim.tutorialChoiceCompleted=false;guideRetryAt=0;}
@@ -261,6 +273,8 @@ async function initialize(appearance: any) {
       } else sim.step(nativeDelta, { x: movement.x, z: -movement.y, dirX: movement.dirX, dirZ: movement.dirZ, rawX: movement.rawX });
       accumulated -= logicStep;
     }
+    if (sim.phase === 'playing' && !waitingForMovement)
+      scene.coastBackgroundTime = smoothCoastTime(sim.time, accumulated, logicStep, nativeDelta, scene.coastBackgroundTime);
     ui.update();
     for (const id of sim.sounds) {
       const cue = combatCues[id];
@@ -279,6 +293,13 @@ async function initialize(appearance: any) {
     syncWeaponSkins(); ui.update(); studyLoadout?.update(); reportPhase();
   };
   stage.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { passive: true, signal:lifetime.signal });
+  // Attach before Phaser starts preload; its loader reports completed assets.
+  const preload=scene.preload.bind(scene);
+  scene.preload=()=>{
+    reportLoading('textures',0);
+    scene.load.on('progress',(value:number)=>reportLoading('textures',value));
+    preload();
+  };
   const game = makeGame(scene);
   lifetime.add(() => { scene.onFrame = undefined; disposeNativeGame(game); });
 }

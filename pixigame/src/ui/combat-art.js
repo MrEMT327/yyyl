@@ -10,9 +10,10 @@ export const COMBAT_ART_PATHS = Object.freeze({
   disabled: 'psd-buttons-v1/button-gray.png',
   card: 'weapon-catalog-psd-v1/plate-blue-clean.png',
   slot: 'psd-equipment-v1/frame-empty.png',
+  pauseSlot: 'psd-equipment-v1/frame-gray.png',
 });
 const textures = new Map();
-const frames={primary:[198,67,18],secondary:[182,92,32],card:[224,562,24],slot:[128,128,18]};
+const frames={primary:[198,67,18],secondary:[182,92,32],card:[224,562,24],slot:[128,128,18],pauseSlot:[128,128,18]};
 function texture(kind) {
   if (!COMBAT_ART_PATHS[kind]) throw new Error(`Unknown combat art: ${kind}`);
   if (!textures.has(kind)) {
@@ -30,7 +31,7 @@ export function setCombatArt(mesh,kind) {
   mesh.geometry.dispose();
   mesh.geometry=nineSliceGeometry(state.width,state.height,sw,sh,slice,state.corner);
   mesh.material.map=texture(state.base);
-  mesh.material.color.setHex(kind==='disabled'?0x87939e:kind==='pressed'?0xc4e5f0:0xffffff);
+  mesh.material.color.setHex(kind==='disabled'?0x87939e:kind==='pressed'?0xc4e5f0:state.base==='pauseSlot'?0x758e9f:0xffffff);
   mesh.material.needsUpdate=true;
 }
 export function paintCombatArt(surface,kind,x,y,width,height) {

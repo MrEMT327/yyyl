@@ -111,9 +111,6 @@
   outline: 2px solid var(--ui-text);
   outline-offset: 2px;
 }
-.peripheral-lobby.reference-layout.lobby-theme .weapon-equip-controls button:active {
-  transform: translateY(1px);
-}
 @media (max-height: 700px) {
   .peripheral-lobby.reference-layout.lobby-theme .weapon-detail-modal .pl-weapon-detail {
     width: 96px;

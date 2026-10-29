@@ -71,7 +71,6 @@ export function createActionFeedback(root) {
       Object.assign(glow.style,{left:`${r.left - bounds.left}px`,top:`${r.top - bounds.top}px`,width:`${r.width}px`,height:`${r.height}px`});
       add(glow,1050);
       glow.animate([{opacity:0},{opacity:1,offset:.2},{opacity:0}],{duration:600,delay:flight?330:0,fill:'both'});
-      if (!reduced()) target.animate([{transform:'scale(.97)'},{transform:'scale(1.035)',offset:.45},{transform:'scale(1)'}],{duration:300,delay:flight?330:0});
     },
     failure() {
       if(!sourceBounds||root.hidden||!root.isConnected)return;

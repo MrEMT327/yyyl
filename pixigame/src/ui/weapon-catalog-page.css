@@ -90,7 +90,6 @@
 #gui-casual-lobby .wc-mode>span {font:400 clamp(9px,2.7cqw,13px)/1.1 PsdPopup,"Microsoft YaHei",sans-serif}
 #gui-casual-lobby .wc-button.is-active::before {filter:brightness(1.3)}
 #gui-casual-lobby .wc-page button:focus-visible {outline:2px solid #fff4a2;outline-offset:-2px}
-#gui-casual-lobby .wc-page button:active {transform:translateY(1px)}
 #gui-casual-lobby .wc-skill {display:flex;flex-direction:column;gap:0;align-items:stretch;min-width:0;margin:0;padding:0;border:0;background:none;color:#fff;cursor:pointer}
 #gui-casual-lobby .wc-skill-art {position:relative;isolation:isolate;display:grid;place-items:center;aspect-ratio:242/287;overflow:hidden}
 #gui-casual-lobby .wc-skill-illustration {position:absolute;inset:9% 10% 17%;display:grid;place-items:center}

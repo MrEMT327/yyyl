@@ -91,6 +91,6 @@ export function revealResearchCard(card,{instant=false,rank=0,origin=null}={}) {
     {opacity:1,transform:'none'},
   ],{duration:settle});
   const details=card.querySelectorAll('.research-result-name,.research-result-level,.research-result-stat,.research-result-core');
-  details.forEach((node,index)=>animate(node,[{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:280,delay:Math.min(index,6)*70+170}));
+  details.forEach((node,index)=>animate(node,[{opacity:0},{opacity:1}],{duration:280,delay:Math.min(index,6)*70+170}));
   return motions;
 }

@@ -61,13 +61,12 @@ export function createAirdropModuleVisual(scene: Phaser.Scene, pickup: Pickup): 
   const profile = moduleProfile(pickup);
   if (!profile) return undefined;
   const color = MODULE_PROFILES[profile].color;
-  const shadow = scene.add.graphics().fillStyle(0x07131f, .22).fillEllipse(0, 22, 37, 9);
   const shell = scene.add.image(0, 0, TEXTURE).setDisplaySize(60, 60);
   const light = scene.add.graphics().fillStyle(color, 1).fillRoundedRect(-13, -15, 26, 26, 4);
   const symbol = scene.add.graphics().setPosition(0, -2);
   drawSymbol(symbol, profile, color);
   const body = scene.add.container(0, 0, [shell, light, symbol]);
-  return scene.add.container(0, 0, [shadow, body]).setData('airdropModule', { body, light, shadow, profile });
+  return scene.add.container(0, 0, [body]).setData('airdropModule', { body, light, profile });
 }
 
 export function airdropModulePose(pickup: Pick<Pickup, 'age' | 'delay' | 'state' | 'stateTime'>) {
@@ -75,8 +74,7 @@ export function airdropModulePose(pickup: Pick<Pickup, 'age' | 'delay' | 'state'
   const absorbing = pickup.state === 'absorb';
   const progress = absorbing ? Math.min(1, Math.max(0, pickup.stateTime) / .18) : 0;
   return { y: absorbing ? -2 : -2 + Math.sin(time * 2.4) * 1.4,
-    scale: 1 - progress * .3, glow: absorbing ? .3 : .08 + (1 + Math.sin(time * 2.4)) * .035,
-    shadow: absorbing ? 1 - progress : 1 };
+    scale: 1 - progress * .3, glow: absorbing ? .3 : .08 + (1 + Math.sin(time * 2.4)) * .035 };
 }
 
 export function updateAirdropModuleVisual(view: Phaser.GameObjects.Container, pickup: Pickup): boolean {
@@ -85,6 +83,5 @@ export function updateAirdropModuleVisual(view: Phaser.GameObjects.Container, pi
   const pose = airdropModulePose(pickup);
   visual.body.setPosition(0, pose.y).setScale(pose.scale);
   visual.light.setAlpha(pose.glow);
-  visual.shadow.setAlpha(pose.shadow);
   return true;
 }

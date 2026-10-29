@@ -84,7 +84,7 @@
 @keyframes phc-orbit-turn{to{transform:rotate(360deg)}}
 @keyframes phc-spark-rise{0%{transform:translate3d(0,18px,0) scale(.4);opacity:0}30%{opacity:.9}70%{opacity:.6}100%{transform:translate3d(5px,-28px,0) scale(.8);opacity:0}}
 @keyframes phc-rim-flow{from{background-position:100% 100%}to{background-position:0% 0%}}
-@keyframes phc-reveal{from{opacity:0;transform:perspective(950px) rotateY(20deg) translateY(10px)}to{opacity:1;transform:none}}
+@keyframes phc-reveal{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){.pilot-holo-card,.pilot-holo-card *{animation:none!important;transition:none!important}.pilot-holo-card{transform:none!important}.phc-art>img{transform:none!important}.is-holo-active .phc-foil{opacity:calc(var(--phc-foil-idle) * .3)}.is-holo-active .phc-gloss{opacity:.18}}
 @media(prefers-reduced-motion:reduce){.phc-depth{transform:none!important}.phc-lightpass::after{animation:none!important;opacity:0!important}}
 @media(prefers-reduced-motion:reduce){.pilot-holo-card *::before,.pilot-holo-card *::after{animation:none!important;transition:none!important}}
