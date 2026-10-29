@@ -1,55 +1,54 @@
-/* Existing hangar, character players and nine-slice PSD controls. */
+/* Git v0.1.43 layout: top actions, large live portrait and a single roster strip. */
 #gui-casual-lobby .recruit-reference {
  --recruit-ink:#10283b;--recruit-paper:#f3f1ec;--recruit-navy:#102535;
  --recruit-serif:'Noto Serif SC','Source Han Serif SC',SimSun,serif;
 }
-#gui-casual-lobby[data-tab='supply'] .recruit-reference.rc-page {position:relative;display:grid;grid-template-rows:minmax(0,1fr) auto;width:100%;height:100%;min-height:0;padding:0;overflow:hidden;background:var(--recruit-navy);color:#eef3f6;font-family:'Microsoft YaHei',sans-serif}
+#gui-casual-lobby[data-tab='supply'] .recruit-reference.rc-page {position:relative;display:grid;grid-template-rows:auto minmax(0,1fr) auto;width:100%;height:100%;min-height:0;padding:0;overflow:hidden;background:var(--recruit-navy);color:#eef3f6;font-family:'Microsoft YaHei',sans-serif}
 #gui-casual-lobby .recruit-reference :is(h1,h2,p) {margin:0;letter-spacing:0;-webkit-text-stroke:0;text-shadow:none}
-#gui-casual-lobby .recruit-reference .recruit-collection-actions {display:grid;align-content:center;gap:6px;min-width:0}
-#gui-casual-lobby .recruit-reference .recruit-toolbar {display:grid;gap:6px;min-height:0;padding:0;border:0;background:none}
-#gui-casual-lobby .recruit-reference :is(.recruit-history,.recruit-rules) {display:flex;align-items:center;justify-content:center;gap:3px;flex:none;width:54px;min-height:32px;height:32px;padding:4px;font-size:12px;--psd-button-corner:9px}
+#gui-casual-lobby .recruit-reference .recruit-pool-heading {flex:1;min-width:0;color:var(--recruit-ink);font:700 clamp(18px,5cqw,24px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .recruit-reference .recruit-toolbar {display:flex;align-items:center;gap:6px;min-height:48px;padding:4px 3cqw;border:0;border-bottom:1px solid #bbc5c9;background:var(--recruit-paper)}
+#gui-casual-lobby .recruit-reference :is(.recruit-history,.recruit-rules) {display:flex;align-items:center;justify-content:center;gap:3px;flex:none;width:54px;min-height:36px;height:36px;padding:4px;font-size:12px;--psd-button-corner:9px}
 #gui-casual-lobby .recruit-reference .recruit-history-icon {width:13px;height:13px;object-fit:contain}
 #gui-casual-lobby .recruit-reference .recruit-history.psd-button {padding:4px;white-space:nowrap}
-#gui-casual-lobby .recruit-reference .recruit-browse {display:grid;grid-template-rows:minmax(150px,1fr) auto auto;min-width:0;min-height:0;padding:0;overflow:visible;gap:0}
+#gui-casual-lobby .recruit-reference .recruit-browse {display:grid;grid-template-rows:minmax(160px,1fr) auto;min-width:0;min-height:0;padding:0;overflow:visible;gap:0}
 #gui-casual-lobby .recruit-reference .recruit-showcase {position:relative;isolation:isolate;display:block;min-width:0;min-height:0;padding:0;overflow:hidden;border:0;border-radius:0;background:#e8edf0 url('/art/recruit-dossier-v1/ivory-hangar.webp') center/cover;box-shadow:none}
 #gui-casual-lobby .recruit-reference .recruit-showcase::before {content:'';position:absolute;inset:0;background:linear-gradient(90deg,#f5f4f1bb,transparent 65%);pointer-events:none;z-index:1}
 #gui-casual-lobby .recruit-reference .recruit-showcase::after {content:none}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual {position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;container-type:size}
 #gui-casual-lobby .recruit-reference .recruit-hero-portrait {position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:contain;object-position:center top;filter:drop-shadow(-3px 3px 4px #23364820)}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-portrait-framed] {
- --recruit-focus-x:.5;--recruit-crop-scale:1.5;--recruit-headroom:5cqh;
+ --recruit-focus-x:.5;--recruit-crop-scale:1.95;--recruit-headroom:7cqh;
  --recruit-portrait-frame:calc(100cqh * var(--recruit-crop-scale) / var(--portrait-body-rise));
- inset:auto;left:calc(64% - var(--recruit-focus-x) * var(--recruit-portrait-frame));top:calc(var(--recruit-headroom) - var(--portrait-head-y) * var(--recruit-portrait-frame));width:var(--recruit-portrait-frame);height:var(--recruit-portrait-frame);transform:none;
+ inset:auto;left:calc(68% - var(--recruit-focus-x) * var(--recruit-portrait-frame));top:calc(var(--recruit-headroom) - var(--portrait-head-y) * var(--recruit-portrait-frame));width:var(--recruit-portrait-frame);height:var(--recruit-portrait-frame);transform:none;
 }
 /* Frame the person independently of wide skirts, chairs and motorcycles. */
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-04'] {--recruit-focus-x:.53}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-05'] {--recruit-focus-x:.54}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-07'] {--recruit-focus-x:.60}
-#gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-08'] {--recruit-focus-x:.43;--recruit-crop-scale:1.3;--recruit-headroom:12cqh}
+#gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-08'] {--recruit-focus-x:.43;--recruit-crop-scale:1.65;--recruit-headroom:12cqh}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-10'] {--recruit-focus-x:.61}
-#gui-casual-lobby .recruit-reference .recruit-feature-copy {position:absolute;top:14px;left:4cqw;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:5px;width:52%;padding:0;background:none;border:0;color:var(--recruit-ink);pointer-events:none}
+#gui-casual-lobby .recruit-reference .recruit-feature-copy {position:absolute;top:17%;left:4cqw;z-index:4;display:flex;flex-direction:column;align-items:flex-start;gap:5px;width:43%;padding:0;background:none;border:0;color:var(--recruit-ink);pointer-events:none}
 #gui-casual-lobby .recruit-reference .recruit-grade {padding:1px 7px;border-left:3px solid var(--recruit-grade);color:var(--recruit-ink);font:bold 13px/1.2 Georgia,serif;background:#f3f1ece6}
 #gui-casual-lobby .recruit-reference .recruit-feature-copy h2 {max-width:100%;padding:1px 3px;background:#f3f1ecdd;font:700 clamp(18px,5.6cqw,25px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;color:var(--recruit-ink);white-space:normal;overflow-wrap:anywhere}
 #gui-casual-lobby .recruit-reference .recruit-feature-title {padding:1px 3px;background:#f3f1ecdd;font:600 clamp(11px,3cqw,14px)/1.3 'Microsoft YaHei',sans-serif;color:#385165}
-#gui-casual-lobby .recruit-reference .recruit-feature-skill {display:grid;grid-template-columns:minmax(0,1fr) 64px;align-items:center;gap:10px;width:100%;margin:0;padding:8px 4cqw;border:0;border-top:1px solid #8396a5;background:var(--recruit-paper);color:var(--recruit-ink)}
-#gui-casual-lobby .recruit-reference .recruit-skill-copy {min-width:0}
+#gui-casual-lobby .recruit-reference .recruit-feature-skill {display:block;width:100%;margin:4px 0 0;padding:6px 0 0;border:0;border-top:1px solid #8396a566;background:none;color:var(--recruit-ink)}
+#gui-casual-lobby .recruit-reference .recruit-skill-copy {min-width:0;padding:3px;background:#f3f1ecdd}
 #gui-casual-lobby .recruit-reference .recruit-skill-copy>strong {font:700 clamp(12px,3.4cqw,15px)/1.3 'Microsoft YaHei',sans-serif;color:var(--recruit-ink)}
 #gui-casual-lobby .recruit-reference .recruit-skill-copy>p {margin-top:3px;font-size:clamp(10px,2.8cqw,12px);line-height:1.4;color:#385165;white-space:pre-line;overflow-wrap:anywhere}
-#gui-casual-lobby .recruit-reference .recruit-detail {display:flex;align-items:center;justify-content:center;gap:5px;width:64px;min-height:36px;margin:0;padding:4px;font-size:12px;--wc-button-height:36px;--psd-button-corner:9px}
+#gui-casual-lobby .recruit-reference .recruit-detail {display:flex;align-items:center;justify-content:center;gap:5px;width:105px;max-width:100%;min-height:36px;margin:6px 0 0;padding:4px;font-size:12px;pointer-events:auto;--wc-button-height:36px;--psd-button-corner:9px}
 #gui-casual-lobby .recruit-reference .recruit-detail>.rc-icon {width:8px;height:12px}
-#gui-casual-lobby .recruit-reference .recruit-cycle {position:absolute;inset:46% 3cqw auto;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:5;pointer-events:none}
+#gui-casual-lobby .recruit-reference .recruit-cycle {position:absolute;inset:auto 3cqw 7%;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:5;pointer-events:none}
 #gui-casual-lobby .recruit-reference .rc-arrow {pointer-events:auto;position:relative;display:grid;place-items:center;width:30px;min-height:40px;height:40px;padding:7px;--psd-button-corner:9px}
 #gui-casual-lobby .recruit-reference .rc-arrow>:is(img,svg) {width:11px;height:18px;object-fit:contain}
 #gui-casual-lobby .recruit-reference .rc-arrow.is-prev>:is(img,svg) {transform:rotate(180deg)}
-#gui-casual-lobby .recruit-reference .recruit-collection {position:relative;display:grid;grid-template-columns:minmax(0,1fr) 54px;align-items:center;gap:8px;min-width:0;margin:0;padding:9px 3cqw;background:var(--recruit-navy)}
-#gui-casual-lobby .recruit-reference .recruit-collection-strip {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;min-width:0;overflow:visible;scroll-snap-type:none;touch-action:auto;padding:0;border:0;background:none}
-#gui-casual-lobby .recruit-reference .rc-preview-card {position:relative;display:block;min-width:0;height:clamp(44px,16cqw,70px);aspect-ratio:auto;padding:0!important;border:0!important;border-radius:0;background:none!important;box-shadow:none!important;cursor:pointer}
+#gui-casual-lobby .recruit-reference .recruit-collection {position:relative;display:flex;align-items:flex-end;gap:8px;min-width:0;margin:0;padding:5px 3cqw 6px;background:var(--recruit-navy)}
+#gui-casual-lobby .recruit-reference .recruit-collection-strip {display:flex;flex:1;gap:8px;min-width:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:#6e9cb1 transparent;overscroll-behavior-x:contain;scroll-snap-type:x proximity;touch-action:pan-x;padding:3px;border:0;background:none}
+#gui-casual-lobby .recruit-reference .rc-preview-card {position:relative;display:block;flex:0 0 calc((100% - 16px)/3);min-width:0;height:auto;aspect-ratio:1;padding:0!important;border:0!important;border-radius:0;background:none!important;box-shadow:none!important;scroll-snap-align:start;cursor:pointer}
 #gui-casual-lobby .recruit-reference .rc-preview-card::before {content:none!important}
-#gui-casual-lobby .recruit-reference .rc-preview-card>.pilot-holo-card {width:100%;height:100%;aspect-ratio:auto;margin:0;--phc-frame-corner:8px}
-#gui-casual-lobby .recruit-reference .rc-preview-card :is(.phc-stars,.phc-title,.phc-grade-marks,.phc-orbit,.phc-rays) {display:none}
+#gui-casual-lobby .recruit-reference .rc-preview-card>.pilot-holo-card {width:100%;height:auto;aspect-ratio:1;margin:0;--phc-frame-corner:10px}
+#gui-casual-lobby .recruit-reference .rc-preview-card :is(.phc-stars,.phc-title,.phc-grade-marks,.phc-orbit,.phc-rays,.phc-caption,.phc-heading-name) {display:none}
 #gui-casual-lobby .recruit-reference .rc-preview-card.is-selected {outline:1px solid #dbf5ff;outline-offset:2px}
-#gui-casual-lobby .recruit-reference .recruit-selected-mark {position:absolute;top:2px;right:2px;z-index:10;background:#def6ff;color:#133449;font:bold 10px sans-serif;padding:1px 3px}
-#gui-casual-lobby .recruit-reference .recruit-roster-link {display:flex;align-items:center;justify-content:center;min-height:32px;height:32px;width:54px;margin:0;padding:0;border:0;background:none;color:#e3edf2;font:700 11px/1.5 'Microsoft YaHei',sans-serif;white-space:nowrap;cursor:pointer;--psd-button-corner:9px}
+#gui-casual-lobby .recruit-reference .recruit-roster-link {display:flex;align-items:center;justify-content:center;flex:none;min-height:44px;width:66px;margin:0 0 5px;padding:0;border:0;border-bottom:1px solid #829bab;background:none;color:#e3edf2;font:700 12px/1.5 'Microsoft YaHei',sans-serif;white-space:nowrap;cursor:pointer}
 #gui-casual-lobby .recruit-reference .recruit-footer {display:block;padding:0 3cqw 10px;border:0;background:var(--recruit-navy)}
 #gui-casual-lobby .recruit-reference .recruit-pity {display:block;margin:0;padding:5px 0 7px;text-align:center;font:400 clamp(10px,2.8cqw,12px)/1.3 'Microsoft YaHei',sans-serif;color:#cbd5df}
 #gui-casual-lobby .recruit-reference .recruit-pity :is(b,strong) {color:#f3d18c;font-weight:700;margin:0 2px}
@@ -63,23 +62,27 @@
 #gui-casual-lobby .recruit-reference .recruit-draw>strong {color:#f3f6f8;font:700 clamp(16px,4.6cqw,22px)/1.15 PsdPopup,'Microsoft YaHei',sans-serif;white-space:nowrap}
 #gui-casual-lobby .recruit-reference .recruit-draw>span {display:flex;align-items:center;gap:4px;color:#f3f6f8;font:700 clamp(14px,3.8cqw,18px)/1.15 'Microsoft YaHei',sans-serif}
 #gui-casual-lobby .recruit-reference .recruit-cost-icon {width:15px;height:17px;object-fit:contain}
-#gui-casual-lobby .recruit-reference .recruit-shortage {position:static;padding:0;background:none;color:#ffcfaa;font-size:10px;line-height:1.1}
 #gui-casual-lobby .recruit-reference .recruit-draw:disabled {cursor:default}
 #gui-casual-lobby .recruit-reference .recruit-draw:disabled::before {filter:grayscale(.9) brightness(.6)}
 #gui-casual-lobby .recruit-reference .recruit-warning {padding-top:5px;color:#f4d698;font-size:11px}
 #gui-casual-lobby .recruit-reference button:focus-visible {outline:2px solid #65adce;outline-offset:2px}
 @container(max-width:300px) {
  #gui-casual-lobby .recruit-reference :is(.recruit-history,.recruit-rules) {width:42px;font-size:11px;min-height:28px;height:28px}
- #gui-casual-lobby .recruit-reference :is(.recruit-collection-actions,.recruit-toolbar) {gap:4px}
- #gui-casual-lobby .recruit-reference .recruit-feature-copy {top:9px;width:55%;gap:3px}
- #gui-casual-lobby .recruit-reference .recruit-feature-copy h2 {font-size:17px}
+ #gui-casual-lobby .recruit-reference .recruit-toolbar {min-height:42px;gap:4px}
+ #gui-casual-lobby .recruit-reference .recruit-feature-copy {top:6%;width:48%;gap:2px}
+ #gui-casual-lobby .recruit-reference .recruit-feature-copy h2 {font-size:16px}
  #gui-casual-lobby .recruit-reference .recruit-grade {font-size:11px}
  #gui-casual-lobby .recruit-reference .recruit-feature-title {font-size:10px}
- #gui-casual-lobby .recruit-reference .recruit-feature-skill {grid-template-columns:minmax(0,1fr) 48px;padding:5px 3cqw;gap:6px}
- #gui-casual-lobby .recruit-reference .recruit-detail {width:48px;min-height:32px;--wc-button-height:32px;font-size:11px}
- #gui-casual-lobby .recruit-reference .recruit-collection {grid-template-columns:minmax(0,1fr) 42px;gap:6px;padding-block:6px}
- #gui-casual-lobby .recruit-reference .recruit-collection-strip {gap:4px}
- #gui-casual-lobby .recruit-reference .recruit-roster-link {width:42px;min-height:28px;height:28px;font-size:10px}
+ #gui-casual-lobby .recruit-reference .recruit-feature-skill {margin-top:3px;padding:4px 0 0}
+ #gui-casual-lobby .recruit-reference .recruit-skill-copy {padding:2px}
+ #gui-casual-lobby .recruit-reference .recruit-skill-copy>strong {font-size:11px;line-height:1.2}
+ #gui-casual-lobby .recruit-reference .recruit-skill-copy>p {font-size:10px;line-height:1.3}
+ #gui-casual-lobby .recruit-reference .recruit-detail {width:90px;min-height:32px;--wc-button-height:32px;font-size:11px}
+ #gui-casual-lobby .recruit-reference .recruit-collection {gap:6px;padding-block:5px}
+ #gui-casual-lobby .recruit-reference .recruit-collection-strip {gap:6px}
+ #gui-casual-lobby .recruit-reference .rc-preview-card {flex-basis:calc((100% - 12px)/3)}
+ #gui-casual-lobby .recruit-reference .recruit-cycle {inset:auto 3cqw 3px auto;width:66px}
+ #gui-casual-lobby .recruit-reference .recruit-roster-link {width:48px;min-height:36px;font-size:10px}
  #gui-casual-lobby .recruit-reference .recruit-footer {padding-bottom:6px}
  #gui-casual-lobby .recruit-reference .recruit-draw {height:54px;min-height:54px;gap:2px}
  #gui-casual-lobby .recruit-reference .recruit-draw>strong {font-size:15px}
@@ -88,8 +91,8 @@
 /* Small recruitment cards use the existing close-up portraits and crisp text. */
 #gui-casual-lobby .recruit-reference .rc-preview-card>.pilot-holo-card {transform:none;transform-style:flat}
 #gui-casual-lobby .recruit-reference .rc-preview-card .phc-face {filter:none}
-#gui-casual-lobby .recruit-reference .rc-preview-card .phc-art {inset:12% 6% 15%;mask-image:linear-gradient(#000 72%,transparent 100%)}
-#gui-casual-lobby .recruit-reference .rc-preview-card .phc-art>img {inset:0;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center top;transform:none;filter:none}
+#gui-casual-lobby .recruit-reference .rc-preview-card .phc-art {inset:6%;mask-image:none}
+#gui-casual-lobby .recruit-reference .rc-preview-card .phc-art>img {inset:0;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center center;transform:none;filter:none}
 #gui-casual-lobby .recruit-reference .rc-preview-card .phc-caption {left:5%;right:5%;bottom:7%;min-height:18%;justify-content:center;text-align:center}
 #gui-casual-lobby .recruit-reference .rc-preview-card .phc-caption::before {inset:-2px 0;background:#071827db}
 #gui-casual-lobby .recruit-reference .rc-preview-card .phc-name {font:700 clamp(11px,12.5cqw,13px)/1.1 'Microsoft YaHei',sans-serif;white-space:normal;overflow-wrap:anywhere;text-shadow:0 1px 1px #07131f}
@@ -97,4 +100,7 @@
 
 #gui-casual-lobby .recruit-reference .rc-preview-card [data-pilot-id='pilot-04'] .phc-art>img {object-view-box:inset(7% 14% 24% 9%)}
 
-#gui-casual-lobby .recruit-reference .recruit-selected-mark {top:2px;right:2px;bottom:auto}
+
+#gui-casual-lobby .recruit-reference .recruit-collection-strip {width:100%;cursor:grab;user-select:none}
+#gui-casual-lobby .recruit-reference .rc-preview-card {flex-basis:calc((100% - 24px)/3.5)}
+#gui-casual-lobby .recruit-reference .recruit-collection-strip.is-dragging {cursor:grabbing;scroll-snap-type:none}

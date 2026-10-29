@@ -1,4 +1,3 @@
-import {isLegendaryIceShard,legendaryIceShardMeshes,withLegendaryIceShardResources} from './ice-shard-presentation.mjs';
 import type {Effect,Projectile} from '../model';
 import {COMBAT_LAYERS,HitSparkAdmission} from '../combat-readability.mjs';
 import {ProjectileMotionAccents,withProjectileMotionResources} from './projectile-motion-accents.mjs';
@@ -42,7 +41,7 @@ export class PathogenicBattleEffects {
   readonly swordTrails:SwordEnergyTrails;
   readonly iaido:IaidoVfx;
   readonly audit={draws:0,legacyDraws:0,scenes:new Set<string>(),issues:[] as any[],events:[] as any[]};
-  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withLegendaryIceShardResources(withProjectileMotionResources(withScorchPresentationResources(graph)));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
+  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withProjectileMotionResources(withScorchPresentationResources(graph));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
   preload(urlFor:(p:string,t:Row)=>string){this.source.preload(urlFor);}
@@ -151,20 +150,12 @@ export class PathogenicBattleEffects {
   }
   projectile(b:Projectile&Row,screen:(x:number,z:number)=>ScreenPoint,element=0){
     if(b.dead||b.visualHidden)return;
-    if(isLegendaryIceShard(b)){
-      const meshes=legendaryIceShardMeshes(b,screen);
-      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:ice-shard`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add('host:legendary-ice-shard');}
-      return;
-    }
     if(this.iaido.projectile(b,screen))return;
     if(b.owner==='enemy')this.motionAccents.projectile(b,screen,element);
     if(isConstructWeapon(b)||isCorrectedEnemyProjectile(b)){
       const category=isConstructWeapon(b)?'construct':'enemy-projectile';
       const meshes=isConstructWeapon(b)?constructWeaponScreenMeshes(b,screen):correctedEnemyProjectileMeshes(b,screen);
-      // The brick already has a red, shaded body; the shared full-red tint
-      // clips its bevel highlights and erases the recessed-face contrast.
-      const palette=category==='enemy-projectile'&&b.modelId!==1100014?projectilePalette(b,element):undefined;
-      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,palette,{presentationDepth:category==='enemy-projectile'?COMBAT_LAYERS.enemyShot:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
+      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,category==='enemy-projectile'?projectilePalette(b,element):undefined,{presentationDepth:category==='enemy-projectile'?COMBAT_LAYERS.enemyShot:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
       return;
     }
     if(isAreaWeaponPresentation(b)||isAircraftPulse(b)||isDimensionSword(b)){

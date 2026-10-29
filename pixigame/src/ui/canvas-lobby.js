@@ -121,8 +121,15 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
     p.image('art/psd-main-v1/main-background.png', 0, 0, W, H, 'cover');
     const pilot = portraitPresentation(s.pilots.find(item => item.id === s.pilotId) || {});
     p.image(pilot.image, 86, 234, 598, 1122, 'cover');
-    // The baked mail icon has no mailbox service; omit its region as well as its hit target.
-    for(const box of [{x:0,y:0,width:W,height:H*.21},{x:W*.16,y:H*.21,width:W*.84,height:H*.07},{x:0,y:H*.28,width:W,height:H*.72}])
+    // Omit the baked mail and activity icons while keeping the scenery beneath them.
+    for(const box of [
+      {x:0,y:0,width:W,height:H*.21},
+      {x:W*.16,y:H*.21,width:W*.84,height:347-H*.21},
+      {x:W*.16,y:347,width:635-W*.16,height:102},
+      {x:736,y:347,width:W-736,height:102},
+      {x:W*.16,y:449,width:W*.84,height:H*.28-449},
+      {x:0,y:H*.28,width:W,height:H*.72},
+    ])
       p.clipped(box,()=>p.image('art/psd-main-v1/main-foreground-current-live-wallet.png',0,0,W,H,'cover'));
     header(s);
     const stage = s.stages[s.selectedStageIndex] || s.stages[0];
@@ -133,7 +140,7 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
       ['chapter-next',585,159,36,55,()=>act('selectStage',{index:Math.min(s.stages.length-1,s.selectedStageIndex+1)})],
       ['chapters',175,138,405,80,()=>open('chapters')], ['tasks',6,232,101,102,()=>open('tasks')],
       ['map',635,239,101,102,()=>open('chapters')],
-      ['activities',635,347,101,102,()=>open('activities')], ['stars',240,239,289,45,()=>open('stars')],
+      ['stars',240,239,289,45,()=>open('stars')],
       ['pilot',597,1187,145,147,()=>visit('pilot')], ['patrol',26,1345,182,111,()=>open('patrol')],
       ['backpack',545,1364,182,92,()=>open('backpack')], ['start',224,1341,301,117,()=>act('start')],
     ];
@@ -148,7 +155,6 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
       if(item) card(item,x,y,140,152,`art/project-flight-gear-v1/${item.art}.webp`,()=>open('gear',{id:item.uid}),'Lv.'+item.level);
       else {p.nine('art/psd-equipment-v1/frame-empty.png',x,y,140,152,24,.7);p.image(EMPTY_SLOT_ART,x+52,y+50,36,36);p.hit('slot:'+type,x,y,140,152,()=>open('gearList',{part:type}));}
     });
-    button('inspect','旋转查看',270,875,210,()=>inspect(s.aircraftId));
     [['aircraft','战机'],['pilot','驾驶员'],['weapon','武器'],['workshop','改装间']].forEach(([id,label],i)=>button('catalog:'+id,label,22+i*181,980,164,()=>visit(id)));
     p.text('机体部件',28,1120,29); list(s.equipment.items,(item,i,x,y,w)=>card(item,x,y,w,190,`art/project-flight-gear-v1/${item.art}.webp`,()=>open('gear',{id:item.uid})),4,200,1160,1455);
   }

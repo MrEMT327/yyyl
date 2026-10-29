@@ -25,7 +25,7 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
       art:primary?'primary':'secondary',onPress:action});
     // Preserve the reference's small utility artwork while keeping mobile hit areas usable.
     if(!id.startsWith('weapons-')&&!id.startsWith('upgrades-')) {
-      const hitWidth=Math.max(112,w),hitHeight=Math.max(112,h);
+      const hitWidth=Math.max(96,w),hitHeight=Math.max(96,h);
       node.hitArea=new Rectangle((w-hitWidth)/2,(h-hitHeight)/2,hitWidth,hitHeight);
     }
     node.label='pause-'+id;panel.addChild(node);return node;
@@ -84,52 +84,42 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
     control('back',170,839,260,80,'返回',()=>navigate('pause'));
     return;
   }
-  label('暂停',300,155,42,'#fff','center');
-  function section(kind,title,items,y,tint) {
+  // Restore the centered PSD pause composition from v0.1.43, retaining
+  // the current run inventory, paging and secondary actions.
+  const top=345;
+  surface(panel,s=>paintPsdPopup(s,'primary',42,top,516,610));
+  label('暂停',86,top+62,34,'#f5faff');
+  function section(kind,title,items,y) {
     const count=Math.max(1,Math.ceil(items.length/5));
     const key=kind==='weapons'?'pauseWeaponPage':'pauseUpgradePage';
     const page=Math.min(count-1,Math.max(0,game[key]||0));
-    surface(panel,s=>{
-      paintCombatArt(s,'card',32,y,536,222).material.color.set('#344957');
-      // Colored section ribbons are labels; the housing and slots retain PSD corners.
-      s.polygon([[48,y],[563,y],[568,y+5],[568,y+54],[32,y+54],[32,y+16]],tint);
-      s.text(title,320,y+29,{size:29,color:'#183041',align:'center',weight:900});
-      drawUiSymbol(s,kind==='weapons'?'cadence':'up',242,y+14,27,'#294457');
-    });
-    for(let i=0;i<5;i++) {
-      const item=items[page*5+i],x=46+i*103,sy=y+72;
-      const node=item?control(kind+'-'+item.id,x,sy,96,126,'',()=>{
+    label(title,84,y,25,'#203c55');
+    if(count>1){
+      control(kind+'-prev',370,y-25,44,38,'‹',()=>{game[key]=(page+count-1)%count;refresh();});
+      label((page+1)+'/'+count,449,y,20,'#304b65','center');
+      control(kind+'-next',480,y-25,44,38,'›',()=>{game[key]=(page+1)%count;refresh();});
+    }
+    const shown=items.slice(page*5,page*5+5);
+    if(!shown.length){label(kind==='weapons'?'暂无武器':'暂无强化',300,y+68,23,'#526c80','center');return;}
+    shown.forEach((item,i)=>{
+      const node=control(kind+'-'+item.id,84+i*88,y+20,78,108,'',()=>{
         game.pauseDetail={...item};navigate('detail');
-      }):new Container();
-      if(!item){node.position.set(x,sy);panel.addChild(node);}
-      surface(node,s=>{
-        paintCombatArt(s,'slot',0,0,96,96);
-        if(!item)return;
-        if(kind==='weapons'||(item.icon&&art?.get(item.itemId))) {
-          weaponImage(s,art?.get(item.itemId),item.itemId,{x:5,y:12,width:86,height:74});
-        }else drawUiSymbol(s,item.symbol,23,21,50,tint);
-        s.text('Lv.'+item.level,48,115,{size:18,color:'#e4f2fa',align:'center',weight:800});
-        if(item.innate)s.text('主',8,20,{size:16,color:'#ffe6a0',weight:800});
       });
-    }
-    if(count>1) {
-      control(kind+'-prev',354,y+228,82,65,'‹',()=>{game[key]=(page+count-1)%count;refresh();});
-      control(kind+'-next',486,y+228,82,65,'›',()=>{game[key]=(page+1)%count;refresh();});
-      label((page+1)+'/'+count,461,y+267,21,'#c7dde8','center');
-    }
-  }
-  section('weapons','武器',model.weapons,280,'#ffe291');
-  section('upgrades','强化',model.upgrades,610,'#7ed8ec');
-  const utility=(id,x,y,symbol,caption,action,tint='#d0f2ff')=>{
-    const node=control(id,x,y,86,86,'',action);
-    surface(node,s=>{
-      drawUiSymbol(s,symbol,22,10,43,tint);
-      s.text(caption,43,73,{size:18,color:'#e8f4fb',align:'center',weight:800});
+      surface(node,s=>{
+        paintCombatArt(s,'slot',0,0,78,78);
+        if(kind==='weapons'||(item.icon&&art?.get(item.itemId))) {
+          weaponImage(s,art?.get(item.itemId),item.itemId,{x:4,y:7,width:70,height:66});
+        }else drawUiSymbol(s,item.symbol,19,16,40,'#7ed8ec');
+        s.text('Lv.'+item.level,39,95,{size:18,color:'#e4f2fa',align:'center',weight:800});
+        if(item.innate)s.text('主',7,17,{size:14,color:'#ffe6a0',weight:800});
+      });
     });
-  };
-  utility('stats',32,1000,'stats','统计',()=>navigate('stats'));
-  if(typeof bridge.getCombatAudioSettings==='function'&&typeof bridge.setCombatAudioSetting==='function')
-    utility('settings',32,1120,'settings','设置',()=>navigate('settings'));
-  control('resume',170,1110,260,100,'继续',()=>bridge.resumeGame(),true);
-  utility('home',482,1120,'home','退出',()=>bridge.showExitConfirm(),'#ffc5cc');
+  }
+  section('weapons','武器',model.weapons,top+119);
+  section('upgrades','强化',model.upgrades,top+275);
+  const hasSettings=typeof bridge.getCombatAudioSettings==='function'&&typeof bridge.setCombatAudioSetting==='function';
+  control('stats',84,top+427,hasSettings?210:432,56,'伤害统计',()=>navigate('stats'));
+  if(hasSettings)control('settings',306,top+427,210,56,'设置',()=>navigate('settings'));
+  control('home',84,top+503,142,76,'退出本局',()=>bridge.showExitConfirm());
+  control('resume',242,top+503,274,76,'继续战斗',()=>bridge.resumeGame(),true);
 }

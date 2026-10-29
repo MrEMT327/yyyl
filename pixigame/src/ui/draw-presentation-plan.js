@@ -19,9 +19,9 @@ export function drawPresentationPlan(receipt, snapshot) {
     const pilot=snapshot.pilots?.find(p=>p.id===(reward.pilotId||reward.id));
     // A converted weapon reward's current inventory rank is not its draw rank.
     const rank=pilot?({R:1,SR:2,SSR:3,UR:4}[pilot.rarity]||1):({white:0,green:1,blue:2,purple:3,gold:4}[reward.drawQuality]??Number(reward.qualityRank??reward.rank??0));
-    return {index,rank,isNew:Boolean(reward.isNew)};
+    return {index,rank,isNew:Boolean(reward.isNew),converted:Boolean(reward.convertedFragment)};
   });
-  return {kind:'recruit',title:'补给接收',entries,featured:entries.length===1?[0]:entries.filter(e=>e.isNew||e.rank>=3).map(e=>e.index)};
+  return {kind:'recruit',title:'招募',entries,featured:entries.length===1?[0]:entries.filter(e=>e.isNew||e.rank>=3).map(e=>e.index)};
 }
 
 export function advanceDrawPresentation(flow, action, plan) {

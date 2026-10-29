@@ -1,4 +1,3 @@
-import {nativeWeaponGroupId,nativeWeaponGroupRows} from './native-weapon-groups.js';
 import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import { nativeCollectionArt, nativeSkillArt } from './native-collection-art.js';
 import { NATIVE_PILOT_SKINS } from './native-pilot-roster.js';
@@ -32,10 +31,8 @@ export function cloudNativeCatalog(ctx){
     for(const node of t.content.querySelectorAll('[data-action="catalogMode"],[data-action="catalogBack"],[data-action="aircraftInfo"],[data-action="pilotInfo"]')){node.dataset.action='nativeAppearance';node.dataset.mode='progression';}
     return t.innerHTML;
   }
-  const allRows=collection[group],rows=kind==='weapon'?nativeWeaponGroupRows(allRows):allRows;
-  const byId=new Map(rows.map(row=>[String(row.id),row]));
-  const requested=allRows.find(row=>String(row.id)===String(ctx.selectedId));
-  const selected=(kind==='weapon'&&requested?rows.find(row=>nativeWeaponGroupId(row)===nativeWeaponGroupId(requested)):byId.get(String(ctx.selectedId)))||rows.find(row=>row.equipped)||rows[0];
+  const rows=collection[group],byId=new Map(rows.map(row=>[String(row.id),row]));
+  const selected=byId.get(String(ctx.selectedId))||rows.find(row=>row.equipped)||rows[0];
   if(!selected)return '';
   const e=h.escape;
   const items=rows.map(row=>({...row,id:String(row.id),stars:row.star,qualityRank:collectionQualityRank(row.quality),
@@ -86,7 +83,7 @@ export function cloudNativeCatalog(ctx){
   for(const node of t.content.querySelectorAll('[data-action]')){
     const action=node.dataset.action,row=byId.get(node.dataset.id)||selected;
     if(['fleetUnlock','fleetStar'].includes(action)){
-      nativeDetailAction(node,group,row,s,row.owned?'star':'unlock',true);const shortage=!row.maxed&&row.costs.some(cost=>Number(cost.available)<Number(cost.count));if(shortage)node.dataset.shortage='true';node.innerHTML=`<strong>${row.maxed?'已满星':shortage?(row.owned?'查看升星':'查看激活'):row.owned?'升星':'激活'}</strong><small>${row.costs.map(cost=>`${e(cost.name)} ${cost.available}/${cost.count}`).join('、')}</small>`;
+      nativeDetailAction(node,group,row,s,row.owned?'star':'unlock',true);const shortage=!row.maxed&&row.costs.some(cost=>Number(cost.available)<Number(cost.count));if(shortage)node.dataset.shortage='true';node.innerHTML=`<strong>${row.maxed?'已满星':row.owned?'升星':'激活'}</strong><small>${row.costs.map(cost=>`${e(cost.name)} ${cost.available}/${cost.count}`).join('、')}</small>`;
     }else if(['selectAircraft','selectPilot','catalogEquipWeapon'].includes(action))operation(node,row,'select');
     else if(action==='fleetSkillPreview'){
       node.dataset.action='nativeSkillPreview';node.dataset.kind=group;node.dataset.id=String(row.id);
@@ -136,8 +133,7 @@ function collectionDetailArtwork(row,h){
 export function cloudNativeWeaponPreview(id,mode,s,h){
   const row=s.replicaCollection.guns.find(row=>row.id===Number(id)),e=h.escape;
   if(!row)return {title:'武器',content:'<p>记录不存在</p>'};
-  const base=s.replicaCollection.guns.find(item=>item.id===nativeWeaponGroupId(row))||row;
-  const family=base.stage.skills.map(skill=>weaponPreview.families[skill.id]).find(Boolean);
+  const family=row.stage.skills.map(skill=>weaponPreview.families[skill.id]).find(Boolean);
   if(mode==='base'){
     const description=family?.description||row.stage.skills[0]?.description||row.description;
     return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${collectionDetailArtwork(row,h)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};
@@ -168,9 +164,10 @@ function nativeAttributeRows(stage,s,h) {
 export function cloudNativeCollectionDetail(group,id,s,h){
   const row=s.replicaCollection[group]?.find(row=>row.id===Number(id)),e=h.escape;
   if(!row)return {title:'详情',content:'<p>记录不存在</p>'};
-  if(['guns','pilots'].includes(group))return collectionDetail(group,row,s,h);
+  if(group==='guns')return collectionDetail(group,row,s,h);
+  const retained=group==='pilots'?template(collectionDetail(group,row,s,h).content):null;
   const item=collectionView(row,h),kind=group==='skins'?'aircraft':'pilot';
-  const supply=group==='skins'?`<div class="cs-source"><p>每周满活跃5天：自选飞机卡。</p><button type="button" class="wc-button" data-action="collectionSupplyOpen" data-kind="${group}" data-id="${row.id}">获取同名卡</button></div>`:'';
+  const supply=['guns','skins'].includes(group)?`<div class="cs-source"><p>${group==='guns'?'每日满活跃：自选机炮卡':'每周满活跃5天：自选飞机卡'}。</p><button type="button" class="wc-button" data-action="collectionSupplyOpen" data-kind="${group}" data-id="${row.id}">获取同名卡</button></div>`:'';
   const helpers={...h,thumbnail:()=>h.img(nativeCollectionArt(row,'default'),row.name,'pl-model-thumb')};
   const t=template(kind==='aircraft'
     ?fleetAircraftDetail({aircraft:item,snapshot:s,helpers})
@@ -182,19 +179,52 @@ export function cloudNativeCollectionDetail(group,id,s,h){
     t.content.querySelector('.fc-detail>h3+p').textContent=item.description;
     t.content.querySelector('.fc-detail-cost')?.remove();
   }else{
-    t.content.querySelector('.fc-detail>p').textContent=`${row.star} / 5 星`;
+    t.content.querySelector('.fc-detail>p').textContent=retained?.content.querySelector('.cd-stars')?.getAttribute('aria-label')||`${row.star} / 5 星`;
     const rule=t.content.querySelector('.fc-skill-rule');
     if(rule){
-      rule.querySelector('.fc-skill-rule-art').innerHTML=h.img(nativeSkillArt(row.stage.skills[0]),'','fc-skill-icon');
-      rule.querySelector('h3').textContent=item.skillName;
-      rule.querySelector('p').textContent=item.description;
+      const art=nativeSkillArt(row.stage.skills[0]);
+      rule.querySelector('.fc-skill-rule-art').innerHTML=art?h.img(art,'','fc-skill-icon'):projectIcon('skill-tab','fc-skill-icon');
+      rule.querySelector('h3').textContent=item.skillName||(row.owned?'当前技能':'技能预览');
+      rule.querySelector('p').textContent=item.description||'当前星级无技能';
     }
   }
   const action=t.content.querySelector('.fc-detail-button');
   const shortage=!row.maxed&&row.costs.some(cost=>Number(cost.available)<Number(cost.count));
-  action.textContent=row.maxed?'已满星':shortage?(row.owned?'查看升星':'查看激活'):row.owned?'升星':'激活';
-  if(shortage)action.dataset.shortage='true';
+  action.textContent=row.maxed?'已满星':row.owned?'升星':'激活';
+  if(shortage&&!retained)action.dataset.shortage='true';
   nativeDetailAction(action,group,row,s,row.owned?'star':'unlock',true);
+  if(retained){
+    // Keep the historical detail template intact, then retain the newer data and actions below it.
+    const detail=t.content.querySelector('.fc-detail'),source=retained.content;
+    detail.dataset.historicalPilot='true';
+    const state=document.createElement('p');
+    state.textContent=[...source.querySelectorAll('.cd-badges span')].map(node=>node.textContent).filter(Boolean).join(' · ');
+    const previewState=source.querySelector('.cd-hero>p')?.textContent;
+    if(previewState&&!row.owned)state.textContent+=` · ${previewState.replace(/^未激活\s*·\s*/, '')}`;
+    if(state.textContent)detail.append(state);
+    const attributes=source.querySelector('.cd-attributes');
+    if(attributes){
+      const heading=document.createElement('h3');heading.textContent=attributes.querySelector('h3').textContent;detail.append(heading);
+      const stats=document.createElement('div');stats.className='fc-detail-stats';
+      for(const entry of attributes.querySelectorAll('dl>div')){
+        const line=document.createElement('div'),label=document.createElement('span'),value=document.createElement('b');
+        label.textContent=entry.querySelector('dt').textContent;value.textContent=entry.querySelector('dd').textContent;
+        line.append(label,value);stats.append(line);
+      }
+      detail.append(stats);
+    }
+    const costs=source.querySelector('.cd-costs');
+    if(costs)for(const entry of costs.children){
+      const line=document.createElement('div'),label=document.createElement('span'),value=document.createElement('b');
+      line.className='fc-card-cost';line.setAttribute('aria-label',costs.getAttribute('aria-label'));
+      label.textContent=entry.querySelector('span').textContent;value.textContent=entry.querySelector('b').textContent;
+      if(entry.classList.contains('is-short'))value.classList.add('is-short');
+      line.append(label,value);detail.append(line);
+    }
+    for(const node of [source.querySelector('.cd-preview-link button'),source.querySelector('.cd-actions [data-operation="select"]')]){
+      if(node){node.classList.add('fc-detail-button');detail.append(node);}
+    }
+  }
   if(supply)t.content.querySelector('.fc-detail').insertAdjacentHTML('beforeend',supply);
   return {title:row.name,content:t.innerHTML};
 }
@@ -220,7 +250,7 @@ export function cloudNativeCollectionOperation(modal,s,h){
   if(cost)cost.outerHTML=row.costs.map(value=>`<div class="fc-card-cost"><span>${e(value.name)}</span><b class="${value.available<value.count?'is-short':''}">${value.available} / ${value.count}</b></div>`).join('');
   const actions=t.content.querySelector('.fc-operation-actions');
   if(!result){
-    actions.innerHTML=h.button('nativeOperation',row.maxed?'已满星':row.canPurchase?(row.owned?'升星':'激活'):'材料不足','wc-button fc-detail-button','',!row.canPurchase);
+    actions.innerHTML=h.button('nativeOperation',row.maxed?'已满星':row.owned?'升星':'激活','wc-button fc-detail-button','',!row.canPurchase);
     nativeDetailAction(actions.querySelector('button'),group,row,s,modal.operation);
   }
   return {...panel,content:t.innerHTML};
@@ -229,7 +259,7 @@ export function cloudNativeCollectionOperation(modal,s,h){
 
 export function cloudNativeRecruitSnapshot(s){
   if(!s.nativeAcquisition)return s;
-  // The mixed supply and pilot boxes have separate rewards and guarantees.
+  // Direct recruitment and retained legacy boxes have independent histories and guarantees.
   return {...s,pools:{pilot:s.pilotSupply?.pool||{unavailable:true}},recruitHistory:s.pilotSupply?.history||[],
     pilots:s.replicaCollection.pilots.filter(row=>!s.pilotSupply||s.pilotSupply.candidates.some(p=>p.id===row.id)).map(row=>{
       const skin=s.pilots.find(p=>p.id===NATIVE_PILOT_SKINS[row.id]);

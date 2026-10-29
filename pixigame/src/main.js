@@ -8298,9 +8298,11 @@ async function startGame(options = {}) {
   if(game.sortieLoading || (!['menu','gameover','victory','fixed_result'].includes(game.state) && !options.trial))return false;
   game.sortieLoading = true;
   game.keys.clear();resetRelativeDrag();
+  const loadingAircraftId=peripheralSystem?.getAircraftId()||getActivePilot().id;
   const loading = showSortieLoading({
     stageName:CAMPAIGN[BOSS_TEST_MODE ? BOSS_TEST_STAGE_INDEX : selectedStageIndex]?.name,
-    aircraftId:peripheralSystem?.getAircraftId()||getActivePilot().id,
+    aircraftId:loadingAircraftId,
+    aircraftName:AIRCRAFTS.find(aircraft=>aircraft.id===loadingAircraftId)?.aircraft,
     resourceCount:thunderRuntimeGlobals.canvas?4:5,
   });
   let started = false;
@@ -8322,6 +8324,7 @@ async function startGame(options = {}) {
     window.clearTimeout(resourceTimeout);
     loading.stage(0,'作战资源已就绪');
     await nextLoadingFrame();
+    await loading.readyForLaunch();
     started = initializeGame(options);
     if(!started){await loading.close();return false;}
     releaseUnusedEnemyLibrary(chapterEnemyProfile(game.stageIndex).id);

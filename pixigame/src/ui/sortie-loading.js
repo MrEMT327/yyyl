@@ -1,4 +1,5 @@
 import './entry-screens.css';
+import { createSortieHangar } from './sortie-hangar.js';
 
 export const nextLoadingFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -13,23 +14,31 @@ export function showSortieLoading(options={}) {
   overlay.setAttribute('aria-label', '出击准备');
   overlay.tabIndex = -1;
   overlay.innerHTML = `<section class="entry-screen__portrait sortie-loading__panel">
-    <header class="sortie-loading__heading"><small>即将抵达</small><h2></h2></header>
-    <div class="sortie-loading__flight"><img alt="" /></div>
-    <div class="sortie-loading__state">
-      <p class="sortie-loading__status" role="status" aria-live="polite">正在准备出击…</p>
+    <div class="sortie-loading__shaft" aria-hidden="true"><div class="sortie-loading__shaft-strip"><img class="sortie-loading__backdrop" alt="" /><img class="sortie-loading__backdrop" alt="" /></div></div>
+    <div class="sortie-loading__shade" aria-hidden="true"></div>
+    <header class="sortie-loading__heading"><h2></h2></header>
+    <div class="sortie-hangar" aria-hidden="true">
+      <img class="sortie-hangar__elevator" src="${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/lift-front.png" alt="" />
+      <div class="sortie-hangar__model"><img class="sortie-hangar__fallback" alt="" /></div>
+    </div>
+    <div class="sortie-loading__state" hidden>
+      <p class="sortie-loading__status" role="status" aria-live="polite"></p>
       <progress class="entry-screen__progress" value="0" aria-label="关卡准备进度"></progress>
       <div class="sortie-loading__actions" hidden>
         <button type="button" class="entry-screen__button entry-screen__button--secondary" data-loading-action="back">返回</button>
         <button type="button" class="entry-screen__button" data-loading-action="retry">重试</button>
       </div>
     </div>
-    <p class="sortie-loading__tip">按住屏幕滑动移动，战机会自动开火</p>
   </section>`;
   overlay.querySelector('h2').textContent=options.stageName||'作战区域';
   const aircraft=/^pilot-\d{2}$/.test(options.aircraftId)?options.aircraftId:'pilot-01';
-  const flight=overlay.querySelector('.sortie-loading__flight img');
+  for(const backdrop of overlay.querySelectorAll('.sortie-loading__backdrop')){
+    backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/shaft-section.png`;
+    backdrop.onerror=()=>{backdrop.onerror=null;backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/psd-main-v1/main-background.png`;};
+  }
+  const flight=overlay.querySelector('.sortie-hangar__fallback');
   flight.src=`${import.meta.env?.BASE_URL||'/'}art/aircraft-ui-v1/${aircraft}-preview.webp`;
-  flight.onerror=()=>{flight.onerror=null;flight.src=`${import.meta.env?.BASE_URL||'/'}art/aircraft-ui-v1/pilot-01-preview.webp`;};
+  flight.onerror=()=>{flight.onerror=null;flight.hidden=true;};
   const status = overlay.querySelector('.sortie-loading__status');
   const progress=overlay.querySelector('progress');progress.max=resourceCount+2;
   const actions=overlay.querySelector('.sortie-loading__actions');
@@ -51,11 +60,17 @@ export function showSortieLoading(options={}) {
   };
   window.addEventListener('keydown', block, true);
   window.addEventListener('keyup', block, true);
+  document.documentElement.classList.add('sortie-loading-active');
   document.body.append(overlay);
+  const presentation=createSortieHangar(overlay.querySelector('.sortie-hangar__model'),aircraft);
+  const heading=overlay.querySelector('.sortie-loading__heading');
+  const titleTimer=window.setTimeout(()=>heading.classList.add('is-muted'),1600);
   overlay.focus({preventScroll:true});
   const close = ({restoreFocus=true}={}) => {
     if(closing)return closing;
     closed=true;
+    window.clearTimeout(titleTimer);
+    presentation.freeze();
     closing=(async()=>{
       overlay.classList.add('is-leaving');
       if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -69,13 +84,16 @@ export function showSortieLoading(options={}) {
         });
       }
       window.removeEventListener('keydown',block,true);window.removeEventListener('keyup',block,true);
+      presentation.dispose();
       overlay.remove();
+      if(!document.querySelector('.sortie-loading'))document.documentElement.classList.remove('sortie-loading-active');
       if(restoreFocus&&previousFocus?.isConnected)previousFocus.focus({preventScroll:true});
     })();
     return closing;
   };
   back.onclick=async()=>{await close();options.onDismiss?.();};
   return {
+    readyForLaunch(){return presentation.ready;},
     resource() {if(!closed&&!failed)progress.value=Math.min(resourceCount,progress.value+1);},
     stage(index) {
       if(closed||failed)return;
@@ -85,8 +103,11 @@ export function showSortieLoading(options={}) {
     fail({onRetry}={}) {
       if(closed)return;
       failed=true;
+      window.clearTimeout(titleTimer);heading.classList.remove('is-muted');
+      presentation.freeze();
       overlay.classList.add('is-failed');
-      status.textContent='准备失败，请重试';
+      overlay.querySelector('.sortie-loading__state').hidden=false;progress.hidden=true;
+      status.textContent='准备失败';
       actions.hidden=false;retry.hidden=!onRetry;
       if(!onRetry)status.textContent='准备未完成，请返回';
       retry.onclick=async()=>{retry.disabled=true;back.disabled=true;await close();onRetry?.();};

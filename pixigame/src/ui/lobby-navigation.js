@@ -1,4 +1,4 @@
-const tabs = [['shop','商城'],['assembly','装备'],['battle','战役'],['research','天赋'],['supply','补给']];
+const tabs = [['shop','商城'],['assembly','装备'],['battle','战役'],['research','天赋'],['supply','招募']];
 const navAsset = id => `${import.meta.env?.BASE_URL ?? '/'}art/psd-main-v1/navigation/${id}.png`;
 
 export function lobbyNavigation(activeTab = 'battle') {

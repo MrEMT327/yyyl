@@ -45,6 +45,9 @@ export function createDrawPresentation(root, sound = () => {}) {
     const button=(text,action,cls='')=>{const b=document.createElement('button');b.type='button';b.className=`draw-control ${cls}`;b.dataset.drawAction=action;b.textContent=text;return b;};
     function summarize() {
       state.overlay?.remove();state.overlay=null;backdrop.inert=false;backdrop.classList.remove('draw-summary-covered');
+      // Results already watched in the spotlight finish on their item face;
+      // the rest perform their conversion once when the summary becomes visible.
+      nodes.forEach(node=>{if(node.dataset.conversionSeen==='true')node.classList.add('is-conversion-complete');});
       if(plan.kind==='research'){
         const confirm=dialog.querySelector('.research-close')||dialog.querySelector('[data-action="close"]');
         clear();confirm?.click();return;
@@ -89,7 +92,7 @@ export function createDrawPresentation(root, sound = () => {}) {
           });
         }else{
         const gate=createDrawGate(document);overlay.prepend(gate);
-        const label=document.createElement('p');label.textContent=plan.kind==='research'?'科技同步':'正在接收补给';label.className='draw-opening-label';body.append(label);
+        const label=document.createElement('p');label.textContent='正在招募';label.className='draw-opening-label';body.append(label);
         footer.append(button('揭晓','next','draw-primary'));
         if(!reduced)prepareDrawGate(document).then(loaded=>{
           if(active!==state || state.overlay!==overlay || flow.phase!=='opening')return;
@@ -103,6 +106,8 @@ export function createDrawPresentation(root, sound = () => {}) {
         const entry=plan.entries[index];overlay.dataset.rank=String(entry.rank);
         if(plan.entries.length>1){const count=document.createElement('span');count.className='draw-stage-count';count.textContent=flow.review?`${flow.cursor+1} / ${plan.entries.length}`:`${index+1} / ${plan.entries.length}`;head.insertBefore(count,head.lastChild);}
         const card=nodes[index]?.cloneNode(true);if(card){
+          if(entry.converted&&!flow.review)nodes[index].dataset.conversionSeen='true';
+          if(entry.converted)card.classList.remove('is-conversion-complete');
           card.querySelectorAll('.draw-card-review,.research-close').forEach(n=>n.remove());
           card.removeAttribute('id');card.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
           card.classList.add('draw-spotlight');card.style.animation='none';

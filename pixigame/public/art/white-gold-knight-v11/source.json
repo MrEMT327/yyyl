@@ -1,0 +1,509 @@
+{
+  "repository": "https://github.com/Tlwkukuma/live2d-character-assets",
+  "commit": "912966d06832613215ff9486f6becb7e4185b10b",
+  "source_directory": "characters/white-gold-knight/v11-fixed-panel",
+  "canvas": [
+    1118,
+    1407
+  ],
+  "fps": 30,
+  "frames": 180,
+  "duration_seconds": 6,
+  "files": [
+    {
+      "path": "PIXI-LICENSE.txt",
+      "bytes": 1092,
+      "sha256": "5ce7447bc57f7349ffc48338782fbcabe613696e00712b20d66bc58e780f9473"
+    },
+    {
+      "path": "SOURCE-PROVENANCE.md",
+      "bytes": 3645,
+      "sha256": "0658440eaff432a1f8b3af705d42b333aa8ce4416bc6357dbf705fa158cc8745"
+    },
+    {
+      "path": "master.png",
+      "bytes": 1588394,
+      "sha256": "bcf32b7193a057b5ab8ce131d0ac3ee84c66c0e6aa0cfb92d5ce64296f456ade"
+    },
+    {
+      "path": "pixi-8.19.0.min.js",
+      "bytes": 797792,
+      "sha256": "83b2d7edf27bb77460f5f5f5e25cd73c91b77a53f44c80ac63096d6c0b5cfda7"
+    },
+    {
+      "path": "runtime/frames.bin.gz",
+      "bytes": 21941654,
+      "sha256": "a68d05ba8daee981c64a9a766d8ef1a1752801aee3ec474119ac5565d08860d7"
+    },
+    {
+      "path": "runtime/manifest.json",
+      "bytes": 1533972,
+      "sha256": "f6caf154a6dee5c3c596e0fdebf049f3222a37f64563784203a4651efaa3ff14"
+    },
+    {
+      "path": "runtime/textures/000.png",
+      "bytes": 161452,
+      "sha256": "cf9782c8bdde285bd899f2238118b082845ef5fc91d491771c43d01a68ba3b85"
+    },
+    {
+      "path": "runtime/textures/001.png",
+      "bytes": 74322,
+      "sha256": "7e5769531c9d63a11588fcd2f52e7beb26cc8dbaf331c786e287681f252bbbbb"
+    },
+    {
+      "path": "runtime/textures/002.png",
+      "bytes": 12414,
+      "sha256": "b001147ec5c28671622dcc349b9d64df3cbe5dcf5175ccd8ee5568e6f073a69d"
+    },
+    {
+      "path": "runtime/textures/003.png",
+      "bytes": 16010,
+      "sha256": "5c5d18f5ddf78551d89d6ffb5ae7a925b11c2fd986a94288bc0a78b63659d749"
+    },
+    {
+      "path": "runtime/textures/004.png",
+      "bytes": 9584,
+      "sha256": "42627f325d0ebc9e4b247130cd891ff0bd3496558cd5bbbb3fae4ebc093f246e"
+    },
+    {
+      "path": "runtime/textures/005.png",
+      "bytes": 1413,
+      "sha256": "08d71cd6e78fb03d6dec092112a1e22aaff3273a308be3ace4cf45218e0e288f"
+    },
+    {
+      "path": "runtime/textures/006.png",
+      "bytes": 2008,
+      "sha256": "796b75b8a78080d2dedeac268768e0cdfd80470edad264050e6f6f236733781c"
+    },
+    {
+      "path": "runtime/textures/007.png",
+      "bytes": 1880,
+      "sha256": "d92b68b6813b3a98a7ee8e8bdf2dcf4c98615a2d81c440045a9ef54b9e149845"
+    },
+    {
+      "path": "runtime/textures/008.png",
+      "bytes": 4959,
+      "sha256": "c14735fccdb858b745777d6e69420d0d485839f88bdbbef2441d49ff6f042b34"
+    },
+    {
+      "path": "runtime/textures/009.png",
+      "bytes": 67624,
+      "sha256": "10f9d7a2d24bfa5864922b37db4b2ccc6a214b31876b5bbf550c8bb1198e1c5b"
+    },
+    {
+      "path": "runtime/textures/010.png",
+      "bytes": 4511,
+      "sha256": "135aa401b2e8a6ee34ffc77601884c0dcd349c5ee73bc7f4ad55a3b0783f66c9"
+    },
+    {
+      "path": "runtime/textures/011.png",
+      "bytes": 149307,
+      "sha256": "474f686a3c0f2b62bca6c99af0dba4c7a826418bc642ce6410872e0b836b5979"
+    },
+    {
+      "path": "runtime/textures/013.png",
+      "bytes": 7008,
+      "sha256": "f41e7a4cb8a21fd8dcb81c2c34e6eb06311a4ecd798d06b92b493b113f374c85"
+    },
+    {
+      "path": "runtime/textures/014.png",
+      "bytes": 3257,
+      "sha256": "dded5548059d4c72ff0301b2785076c449d8c64f9eb04f569ccf508ae61b3a7a"
+    },
+    {
+      "path": "runtime/textures/015.png",
+      "bytes": 744,
+      "sha256": "92540bfc998d6c95289bdada9b0b1813fbefb6549c65efffa30797d6f7f1f91b"
+    },
+    {
+      "path": "runtime/textures/016.png",
+      "bytes": 2190,
+      "sha256": "629791bd942096a3478f4a3c9fbda805fe59160f7a44306ad8194adb619b6070"
+    },
+    {
+      "path": "runtime/textures/021.png",
+      "bytes": 4261,
+      "sha256": "9fd1ba3911e2f4d61f2b7fa1ad7b9883bd21c9c1a57a5a9ece22959744a2430d"
+    },
+    {
+      "path": "runtime/textures/023.png",
+      "bytes": 22092,
+      "sha256": "b600dd2ab1bebc77f113613f12f380aee9dacf487622b6a296ce41b8a21d76c8"
+    },
+    {
+      "path": "runtime/textures/024.png",
+      "bytes": 33859,
+      "sha256": "da3b23088439d50220d0122a20f5f3d033adce731ea92a656e06c9f1446521e7"
+    },
+    {
+      "path": "runtime/textures/027.png",
+      "bytes": 29628,
+      "sha256": "2cea403d6e80011d45050f5dbcf47d4bc0b9ed5601b82c3eaebdafce07ae9c4f"
+    },
+    {
+      "path": "runtime/textures/029.png",
+      "bytes": 8464,
+      "sha256": "ceaa0cba39227357119b99c45e92586950d3625710eba21234573bdf9f264897"
+    },
+    {
+      "path": "runtime/textures/030.png",
+      "bytes": 32969,
+      "sha256": "feefafac2851fd253663e56e881ee5ac80217121a58e7598fab35c5d41ca9d52"
+    },
+    {
+      "path": "runtime/textures/031.png",
+      "bytes": 5114,
+      "sha256": "286adb1baf78482811347e52c401c399019d2c76feff2f04f1d8dbea3672e271"
+    },
+    {
+      "path": "runtime/textures/032.png",
+      "bytes": 6380,
+      "sha256": "f21871771da702d55517944fe1ee00955f36e019a857c6e89a57959ffdd3e6e0"
+    },
+    {
+      "path": "runtime/textures/034.png",
+      "bytes": 18944,
+      "sha256": "9239aaaeacd02971c7c05a1794ef0beb0401cac8cfed1a14c3afd50d47982083"
+    },
+    {
+      "path": "runtime/textures/035.png",
+      "bytes": 4832,
+      "sha256": "6c466a359a85267b890e7af0f16d7680389d2e374f226504f13dbc756fa0a763"
+    },
+    {
+      "path": "runtime/textures/036.png",
+      "bytes": 106582,
+      "sha256": "1f6f6c7894279c48c647f5941494373ec09cf14026ac69f2cf64488e326bd7fc"
+    },
+    {
+      "path": "runtime/textures/037.png",
+      "bytes": 142197,
+      "sha256": "101021cfe51eb4e00440c98462092c638dec0a200b8a15781e8eb5578f257262"
+    },
+    {
+      "path": "runtime/textures/042.png",
+      "bytes": 37230,
+      "sha256": "446c94aff4bd9a8dfd94ccbd0765b93e4244e17784f363633a63667499d14cbf"
+    },
+    {
+      "path": "runtime/textures/043.png",
+      "bytes": 46333,
+      "sha256": "9d59826daf961958ef987661ba531c8c4e29d80e1c6ed02bdb90adb3487febbf"
+    },
+    {
+      "path": "runtime/textures/044.png",
+      "bytes": 72140,
+      "sha256": "aace19843a3f4530291a367daa06e1a1c186099ca832e2428f07f35a79ccb246"
+    },
+    {
+      "path": "runtime/textures/045.png",
+      "bytes": 20706,
+      "sha256": "02fe5fb68d7562c639580dc2a0058c023dc0465bb3ca6540aefb303a74e0955d"
+    },
+    {
+      "path": "runtime/textures/046.png",
+      "bytes": 6322,
+      "sha256": "04ff0756ff0b2f251d77f268babc8db5c6e4e483d613afa716ca4c8a6ef19477"
+    },
+    {
+      "path": "runtime/textures/047.png",
+      "bytes": 8047,
+      "sha256": "0169f2103d697bbc54cb87c1485aefe028c90492cdb64e26b43e2dbb1bc273e1"
+    },
+    {
+      "path": "runtime/textures/048.png",
+      "bytes": 7584,
+      "sha256": "b1b4d857a901552125b499ae570c0c95b4854b6d3a196745990e0fe4fd9c3f9c"
+    },
+    {
+      "path": "runtime/textures/049.png",
+      "bytes": 40503,
+      "sha256": "f47ea680fc43181320fd249dd072a8dcf0613008f64d947b8349bdadec7927e5"
+    },
+    {
+      "path": "runtime/textures/050.png",
+      "bytes": 35579,
+      "sha256": "7f21a65de730224566e580289a35b6567160173fb8c2e383619c6120f3f6d5fa"
+    },
+    {
+      "path": "runtime/textures/051.png",
+      "bytes": 51784,
+      "sha256": "fdcbb4dc7bce3ab90f7f74e386014cfb4cde7ce3772abf820664fcca0097557a"
+    },
+    {
+      "path": "runtime/textures/052.png",
+      "bytes": 26009,
+      "sha256": "06c2e3c270b2de238c654ee5c6d3d9fdb275cf2b0db4054570735b2388d82f87"
+    },
+    {
+      "path": "runtime/textures/053.png",
+      "bytes": 26637,
+      "sha256": "4d2b6fe126e8adbcca23469fc37ef04ce74f9be1cb7e09a589846cfb4894c8c2"
+    },
+    {
+      "path": "runtime/textures/054.png",
+      "bytes": 25673,
+      "sha256": "6eefe4995ee584a1e6be39dc73a76041d05f44cc65f5bb22fdb7080c7b324129"
+    },
+    {
+      "path": "runtime/textures/055.png",
+      "bytes": 5381,
+      "sha256": "fc1940f12d5b818f171f876b1a8b023b03884865abda56c03cd47b13c602be02"
+    },
+    {
+      "path": "runtime/textures/056.png",
+      "bytes": 9951,
+      "sha256": "b0d2713ddc2463e66a159258f03eb3822857c92f9f1459a7758346b9e71f45e1"
+    },
+    {
+      "path": "runtime/textures/057.png",
+      "bytes": 80940,
+      "sha256": "425196c3ce2cc94b2366baea57984876664925521440e05987e017a9675b333a"
+    },
+    {
+      "path": "runtime/textures/058.png",
+      "bytes": 32443,
+      "sha256": "62bfa64e1c20f278991cda8bcc6c2aaa50fe56a58020a91ad8f00ef8ea267867"
+    },
+    {
+      "path": "runtime/textures/059.png",
+      "bytes": 29150,
+      "sha256": "f286d24f88a217fe0b6eb35f5464ff47ae3fc71bfb9c2421e8e566368e0800da"
+    },
+    {
+      "path": "runtime/textures/060.png",
+      "bytes": 18057,
+      "sha256": "62a0253eafe62a528086156da9ec6cf585778d5275cc10d53bc45b411743fee4"
+    },
+    {
+      "path": "runtime/textures/061.png",
+      "bytes": 42619,
+      "sha256": "941a5052b7460fbf1d99c0fe9680c8435ca13b1358dd81136c45b1eb75ba857f"
+    },
+    {
+      "path": "runtime/textures/062.png",
+      "bytes": 40050,
+      "sha256": "8be7a3d2d9ef6593246d9251341c619e1f93fd6c2bc58244df927aca13e3e67b"
+    },
+    {
+      "path": "runtime/textures/063.png",
+      "bytes": 8780,
+      "sha256": "d6f9830bddfdbc5c8a910f6146dc22b14b22a31f07f4437068addb1f22343b24"
+    },
+    {
+      "path": "runtime/textures/064.png",
+      "bytes": 23731,
+      "sha256": "f5b451aff3cc0885026bf9aad6a0da703ec343e5c3107651f63968cdfc026432"
+    },
+    {
+      "path": "runtime/textures/066.png",
+      "bytes": 10116,
+      "sha256": "d4eb0034a1462cc51d72a0c2dbc44e913ef25a3ffdb78027c364227e4100e474"
+    },
+    {
+      "path": "runtime/textures/067.png",
+      "bytes": 60702,
+      "sha256": "30a6188dc6e9d4cc9d36c912a1edba5113859f9272f84e94e693dc725eeaa5a7"
+    },
+    {
+      "path": "runtime/textures/068.png",
+      "bytes": 725,
+      "sha256": "5fa5cdc02c96c184c96a7d533100dad5e86e6b0d2fe75b22cecbff40a8a6165c"
+    },
+    {
+      "path": "runtime/textures/069.png",
+      "bytes": 112,
+      "sha256": "fdb439097b672b054cb85fd535964d93c545a9878cb85b54d3992d4a18f5bfe3"
+    },
+    {
+      "path": "runtime/textures/070.png",
+      "bytes": 1099,
+      "sha256": "a12ed07f20586c925da88b8a2a66b9853733bdb503a76929de8e35cef34e2962"
+    },
+    {
+      "path": "runtime/textures/071.png",
+      "bytes": 543,
+      "sha256": "36137e6c588a6c1f6b759e2a4692f64c68600004e95a6e7d2b80da08d8ba77f9"
+    },
+    {
+      "path": "runtime/textures/072.png",
+      "bytes": 683,
+      "sha256": "50dae4aad854daeecd100c3d3d046b5847782b9421cbcf2daec58c2b790d1691"
+    },
+    {
+      "path": "runtime/textures/073.png",
+      "bytes": 752,
+      "sha256": "f6b31ae3aecea344f4dc064902ad2989641d166dbf4a22e63b9b6cd6ed3a4f99"
+    },
+    {
+      "path": "runtime/textures/074.png",
+      "bytes": 613,
+      "sha256": "6dd20a072cf96a667d16fd22bc61e83b206f3ba1ff09da17e819acbe4cc17ed6"
+    },
+    {
+      "path": "runtime/textures/075.png",
+      "bytes": 123,
+      "sha256": "b3003f1309e400a4b601dd2d5e32c6a8c45bfa7fe3d30f3516964739b6d89cb5"
+    },
+    {
+      "path": "runtime/textures/076.png",
+      "bytes": 756,
+      "sha256": "80a162b1a3bf3b9667ece5878834e29ff6189fc3d525b13bf58a21013fea3db9"
+    },
+    {
+      "path": "runtime/textures/077.png",
+      "bytes": 104,
+      "sha256": "fe4509ea905ad16dfb069b5db96193472129013884f15121cca60fda50d4ae50"
+    },
+    {
+      "path": "runtime/textures/078.png",
+      "bytes": 1114,
+      "sha256": "517b46e9001942668648819a7cc0bf20150e28c00838129291988a6209044d4e"
+    },
+    {
+      "path": "runtime/textures/079.png",
+      "bytes": 260,
+      "sha256": "fde7139c6afe81ab727b9ba9fdbdbeb00f39dda1d04084f962435a972ca1f690"
+    },
+    {
+      "path": "runtime/textures/080.png",
+      "bytes": 1126,
+      "sha256": "2622f4e47bb0ff50fd3bc50d4ed0431d4ef6ef07daffe362ac58e0f63a2b8299"
+    },
+    {
+      "path": "runtime/textures/081.png",
+      "bytes": 462,
+      "sha256": "c07fbfeea9d036f19007ed39926adebb3d6bb45bab46ae07df2f5ab7a304a099"
+    },
+    {
+      "path": "runtime/textures/082.png",
+      "bytes": 670,
+      "sha256": "a6e63473b51f279dd6404638ad2935d19e9e01f21f0bc7cc6bbec712034e3b22"
+    },
+    {
+      "path": "runtime/textures/083.png",
+      "bytes": 119,
+      "sha256": "49746f4c4d3b24e01fdd8442ef921e9974008c2f8c3d618bd15fdb951c62200c"
+    },
+    {
+      "path": "runtime/textures/084.png",
+      "bytes": 169,
+      "sha256": "49970fdac23af672b8795becd51897fdc2254ac3cde354257dfc8d517521641e"
+    },
+    {
+      "path": "runtime/textures/085.png",
+      "bytes": 222,
+      "sha256": "6e643c7edc98c3270a413de2e9d089dc0bd23b08bb020d72848620afcad09175"
+    },
+    {
+      "path": "runtime/textures/091.png",
+      "bytes": 11265,
+      "sha256": "9fea028230518594e222f6a899abbb831c9626e5f93eb97dba1bd1205a759216"
+    },
+    {
+      "path": "runtime/textures/092.png",
+      "bytes": 8160,
+      "sha256": "5dca7fcb0322d11ecf7a26d6e7eb8fe50d09761bc98abcf6fa654af5192ce241"
+    },
+    {
+      "path": "runtime/textures/093.png",
+      "bytes": 2046,
+      "sha256": "4c528031f2c14ff653a10228d4f449867c9f513cab183e7e88f66f306dc991de"
+    },
+    {
+      "path": "runtime/textures/094.png",
+      "bytes": 804,
+      "sha256": "be62554abc0cfb96f04704ee6b43ab454895cab6c70c2af5cc4f3fc828274208"
+    },
+    {
+      "path": "runtime/textures/095.png",
+      "bytes": 1117,
+      "sha256": "80b10a53fbf5d069060810653440f118427981398fa860391cb073cb18f32d57"
+    },
+    {
+      "path": "runtime/textures/096.png",
+      "bytes": 455,
+      "sha256": "c5fc010edabfec90dc99b050c47dbada7402bf2c1800eb4236c5cd91f955dd98"
+    },
+    {
+      "path": "runtime/textures/097.png",
+      "bytes": 418,
+      "sha256": "fa800cf9bf576faf9094869191e3a2a86d4a31a0bb5377b635808c8db982ce0a"
+    },
+    {
+      "path": "runtime/textures/101.png",
+      "bytes": 534,
+      "sha256": "f1eca6a7ea1e38b95c61e47fe0092156211262cf090800bc5018122b76d0e2da"
+    },
+    {
+      "path": "runtime/textures/102.png",
+      "bytes": 476,
+      "sha256": "67b41ca748cd9dbe9ac60417d36255c07a1f6ee8c5877f984a9d7b8867386d89"
+    },
+    {
+      "path": "runtime/textures/103.png",
+      "bytes": 53408,
+      "sha256": "306e49c203a0d302ef94bb229d0031ff47903230615178f06f27c0b923f37f7d"
+    },
+    {
+      "path": "runtime/textures/104.png",
+      "bytes": 56784,
+      "sha256": "ab63034d341c400d92c79dc888ac16b16ece1801b2f8fcdfc2c672d9dfc3ddd6"
+    },
+    {
+      "path": "runtime/textures/105.png",
+      "bytes": 22247,
+      "sha256": "3751cb77e98e962089218fcfb95209fa8d552ffa80fb93205a28718418c9501f"
+    },
+    {
+      "path": "runtime/textures/106.png",
+      "bytes": 2599,
+      "sha256": "053d5602caeb64d28a74cfdccc7f8c0a4e463eeecbe1cf62c2b9b1ccb454ba97"
+    },
+    {
+      "path": "runtime/textures/107.png",
+      "bytes": 2436,
+      "sha256": "05ad3d4829f2ddb36d5bd9a81416b9f3dabf5d6afb7897c7a81631edb9a9df44"
+    },
+    {
+      "path": "runtime/textures/108.png",
+      "bytes": 1882,
+      "sha256": "9e292e142dc3d6b8db9017dc4730a3944f4967380e86af1bb324f1c1fa5b5219"
+    },
+    {
+      "path": "runtime/textures/109.png",
+      "bytes": 1386,
+      "sha256": "dfd7150a0f5b0f179daf38effcab486efa3e0151f9a7032b7f6b3a2c9ffa49e8"
+    },
+    {
+      "path": "runtime/textures/110.png",
+      "bytes": 1363,
+      "sha256": "1e21ae5651d4ee27c0dd324736a8aa61c6a2ae312fdd04fc63e24d81bf0c94d2"
+    },
+    {
+      "path": "runtime/textures/113.png",
+      "bytes": 133734,
+      "sha256": "dffc4d39497e74ca499647c03dac6c1e58c019ef781a9aead7b082852a8a515b"
+    },
+    {
+      "path": "runtime/textures/114.png",
+      "bytes": 200425,
+      "sha256": "8635750f704f90b19fe6079ff15a02bfa0801d1bb2c06e503bee007b113f25af"
+    },
+    {
+      "path": "runtime/textures/115.png",
+      "bytes": 9447,
+      "sha256": "3bcb5d4eda15cc6317436501e6cb22c83720fcc4eaba9b50e8898d1015de87be"
+    },
+    {
+      "path": "runtime/textures/116.png",
+      "bytes": 52910,
+      "sha256": "46c84c7087513332348818f6d8192b8aa283b360d1a9763cfba21b4dba66dccb"
+    },
+    {
+      "path": "runtime/textures/117.png",
+      "bytes": 537646,
+      "sha256": "96450364f6b5efdb640fc5080137c9c7e605656828591b04db95e950189e5eea"
+    }
+  ]
+}

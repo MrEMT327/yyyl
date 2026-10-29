@@ -1,3 +1,5 @@
+import { availabilityMessage, isResourceShortage } from './resource-availability.js';
+import './resource-availability.css';
 import { STAMINA_RECOVERY_DESCRIPTION } from '../peripheral/config.js';
 import { nativeEquipmentBoxPrices } from '../replica/native-box-prices.js';
 import { equipmentBoxRules } from './equipment-box-rules.js';
@@ -29,16 +31,39 @@ export function shopNavigation() { return lobbyNavigation('shop'); }
 const shopButton=(action,label,data='',disabled=false)=>`<button type="button" class="wc-button sn-button" data-action="${action}" ${data} ${disabled?'disabled':''}>${label}</button>`;
 const shopArt=type=>type.startsWith('researchBlueprint')?`<img src="${nativeItemArt(Number(type.slice(17)))}" alt="" draggable="false">`:type==='basicKeys'||type==='advancedKeys'?`<img src="${nativeItemArt(type==='basicKeys'?113:112)}" alt="" draggable="false">`:type.startsWith('blueprint')?`<img src="${nativeItemArt(GEAR_PARTS[Number(type.slice(9))-1].blueprintId)}" alt="" draggable="false">`:type==='randomBlueprints'?projectIcon('chest-closed','sn-item-art'):type==='coins'?projectIcon('credits-stack','sn-item-art'):resourceArt(type);
 const shopName=type=>type.startsWith('researchBlueprint')?nativeItemPresentation(Number(type.slice(17))).name:type==='randomBlueprints'?'随机强化图纸':type==='basicKeys'?nativeItemDisplayName(113):type==='advancedKeys'?nativeItemDisplayName(112):type.startsWith('blueprint')?`${GEAR_PARTS[Number(type.slice(9))-1].name}图纸`:resourceNames[type]||type;
+export function shopPurchaseMax(offer,wallet={}){
+  const limit=Math.max(0,Math.floor(Number(offer?.maxQuantity)||0)),price=Number(offer?.cost?.amount)||0;
+  if(!price||wallet.unlimited)return limit;
+  return Math.min(limit,Math.floor(Math.max(0,Number(wallet[offer.cost.type])||0)/price));
+}
+export function shopOfferQuote(offer){
+  if(!offer)return null;
+  return JSON.stringify([offer.id,offer.nativeId,offer.cost?.type,offer.cost?.amount,Object.entries(offer.reward||{}).sort(([a],[b])=>a.localeCompare(b))]);
+}
+export function reconcileShopReview(review,snapshot){
+  if(review?.type!=='shopConfirm'||!snapshot?.shop)return {review,invalidated:false};
+  const offer=snapshot.shop.items.find(item=>item.id===review.id),quantity=review.quantity||1;
+  if(!offer)return {review:null,invalidated:true};
+  let next=review;
+  if(review.token!==snapshot.shop.token){
+    if(!offer.available||review.quoteKey!==shopOfferQuote(offer)||quantity>shopPurchaseMax(offer,snapshot.wallet))return {review:null,invalidated:true};
+    next={...review,token:snapshot.shop.token};
+  }
+  const max=Math.max(1,shopPurchaseMax(offer,snapshot.wallet));
+  if(quantity>max)next={...next,quantity:max};
+  return {review:next,invalidated:false};
+}
 export function shopSectionId(id='boxes'){return({supply:'daily',resources:'coins',exchange:'coins',daily:'daily',boxes:'boxes',coins:'coins',stamina:'stamina'})[id]||'boxes';}
 export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
  const {escape:e,number:n}=h;selectedSection=shopSectionId(selectedSection);const shop=s.shop,items=shop?.items||[],gear=s.equipment,blocked=s.rewardPending||s.rewardBusy;
  const action=(o,extra='')=>{
-   const reason=s.rewardPending?'奖励待保存':s.rewardBusy?'奖励处理中':!o.available?o.reason:'';
-   const label=o.cost.amount?`<span class="sn-price">${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(o.cost.amount)}</span></span>${reason?`<small>${e(reason)}</small>`:''}`:reason?e(reason):o.cost.type==='ad'?`${glyph('play')}广告领取`:'免费领取';
-   return shopButton('shopOffer',label,`data-id="${e(o.id)}" aria-label="${e(o.name)}，${o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取'}${o.reason?'，'+e(o.reason):''}" ${extra}`,blocked||!o.available);
+   const reason=s.rewardPending?'奖励待保存':s.rewardBusy?'奖励处理中':!o.available?availabilityMessage(o.reason):'';
+   const soldOut=!o.unlimited&&o.remaining===0||o.reason==='今日已领取';
+   const label=soldOut&&!blocked?'已售罄':o.cost.amount?`<span class="sn-price ${isResourceShortage(o.reason)?'is-short':''}">${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(o.cost.amount)}</span></span>${reason?`<small>${e(reason)}</small>`:''}`:reason?e(reason):o.cost.type==='ad'?`${glyph('play')}广告领取`:'免费领取';
+   return shopButton('shopOffer',label,`data-id="${e(o.id)}" ${!blocked&&isResourceShortage(o.reason)?`data-resource-short="${e(resourceNames[o.cost.type]||'资源')}"`:''} aria-label="${e(o.name)}，${o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取'}${o.reason?'，'+e(availabilityMessage(o.reason)):''}" ${extra}`,blocked||!o.available);
  };
- const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(o.name)}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}<small>${o.remaining?'限购 '+o.remaining+' 次':'已售罄'}</small>${action(o)}</article>`;};
- const currency=(id,label)=>{const o=items.find(x=>x.id===id);if(!o)return'';const free=id==='exchange-coins'?items.find(x=>x.id==='coin-free'):null,ad=id==='exchange-coins'?items.find(x=>x.id==='coin-ad'):null,primary=free?.available?free:ad?.available?ad:o;return `<article class="sn-currency" data-offer="${e(id)}"><div class="sn-art">${shopArt('coins')}</div><div class="sn-currency-copy"><h3>${e(label)}</h3><strong>×${n(o.reward.coins)}</strong><small>剩余 ${n(primary.remaining)}/${primary.limit}</small></div>${action(primary)}</article>`;};
+ const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(o.name)}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}${action(o)}</article>`;};
+ const currency=(id,label)=>{const o=items.find(x=>x.id===id);if(!o)return'';const free=id==='exchange-coins'?items.find(x=>x.id==='coin-free'):null,primary=free||o;return `<article class="sn-currency" data-offer="${e(id)}"><div class="sn-art">${shopArt('coins')}</div><div class="sn-currency-copy"><h3>${e(label)}</h3><strong>×${n(o.reward.coins)}</strong></div>${action(primary)}</article>`;};
  const progress=gear?.basicRewardAvailable?20:(gear?.draws||0)%20;
  const box=pool=>{
   const advanced=pool==='advanced',prices=nativeEquipmentBoxPrices(pool),price=prices.single,keys=gear?.keys?.[pool]||0;
@@ -47,7 +72,7 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
   const quote=count=>quotes?.find(row=>row.count===count);
   const amount=count=>quote(count)?.amount??(keys>=count?count:count===10?prices.ten:price);
   const payment=count=>quote(count)?.payment||(keys>=count?'key':'diamond');
-  const cost=count=>payment(count)==='free'?'<span>免费开启</span>':`<span>${payment(count)==='key'?h.img(nativeItemArt(prices.keyId),'','sn-cost-icon'):resourceIcon('diamonds','sn-cost-icon')} ${amount(count)==null?'—':n(amount(count))}</span>`;
+  const cost=count=>payment(count)==='free'?'<span>免费开启</span>':`<span class="${payment(count)==='diamond'&&!s.wallet.unlimited&&s.wallet.diamonds<amount(count)||payment(count)==='key'&&keys<amount(count)?'is-short':''}">${payment(count)==='key'?h.img(nativeItemArt(prices.keyId),'','sn-cost-icon'):resourceIcon('diamonds','sn-cost-icon')} ${amount(count)==null?'—':n(amount(count))}</span>`;
   return `<article class="sn-box ${advanced?'is-advanced':''}" data-box="${pool}">
    <h3>${advanced?'高级装备箱':'普通装备箱'}</h3>
    <button type="button" class="sn-info" data-action="shopBoxRates" data-pool="${pool}" aria-label="${advanced?'高级':'基础'}装备宝箱概率">${projectIcon('info')}</button>
@@ -69,7 +94,7 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
   <div class="shop-scroll store-scroll"><div class="sn-content">
    ${s.rewardPending?'<p class="sn-notice">奖励待保存</p>'+shopButton('recoverDailyRewards','重试保存','',s.rewardBusy):s.rewardBusy?'<p class="sn-notice">奖励正在处理</p>':''}
    ${shop?.clockBlocked?'<p class="sn-notice">设备日期异常</p>':''}
-   <section data-shop-section="${current}" class="sn-section">${sections[current]()}</section>
+   ${Object.entries(sections).map(([id,render])=>`<section data-shop-section="${id}" class="sn-section">${render()}</section>`).join('')}
   </div></div>
  </section>`;
 }
@@ -78,12 +103,12 @@ export function shopModal(modal,s,h) {
   // Old receipts keep their original IDs and amounts; refresh only visible names.
   if(modal.type==='shopBoxResult')modal={...modal,
     pilots:modal.pilots?.map(p=>({...p,name:nativeCollectionDisplayName(p.id)||p.name})),
-    weapons:(modal.receipt?.weaponRewards||modal.weapons)?.map(w=>({...w,name:nativeCollectionDisplayName(w.id)||w.name}))};
+    weapons:modal.weapons?.map(w=>({...w,name:nativeCollectionDisplayName(w.id)||w.name}))};
   const {escape:e,number:n,button}=h,blocked=s.rewardPending||s.rewardBusy;
   const orderStale=modal.token!==undefined&&modal.token!==s.shop.token;
   if(modal.type==='shopStamina'){
     const offers=s.shop.items.filter(o=>o.section==='stamina');
-    return {title:'体力补给',content:`<div class="sn-dialog sn-vitality"><h3>${resourceArt('stamina')}${n(s.wallet.stamina)} / ${n(s.wallet.maxStamina??s.wallet.staminaMax)}</h3><p>${e(STAMINA_RECOVERY_DESCRIPTION)}</p>${offers.map(o=>`<div class="sn-vitality-offer"><div><strong>体力 ×${o.reward.stamina}</strong><small>${o.unlimited?'不限次数':`剩余 ${o.remaining}/${o.limit}`}</small></div>${shopButton('shopOffer',o.cost.type==='ad'?`${glyph('play')}广告领取`:`${resourceIcon('diamonds','sn-cost-icon')}${o.cost.amount}`,`data-id="${e(o.id)}"`,blocked||!o.available)}</div>${!o.available?`<p class="sn-hint">${e(o.reason)}</p>`:''}`).join('')}</div>`};
+    return {title:'体力补给',content:`<div class="sn-dialog sn-vitality"><h3>${resourceArt('stamina')}${n(s.wallet.stamina)} / ${n(s.wallet.maxStamina??s.wallet.staminaMax)}</h3><p>${e(STAMINA_RECOVERY_DESCRIPTION)}</p>${offers.map(o=>`<div class="sn-vitality-offer"><div><strong>体力 ×${o.reward.stamina}</strong><small>${o.unlimited?'不限次数':`剩余 ${o.remaining}/${o.limit}`}</small></div>${shopButton('shopOffer',o.cost.type==='ad'?`${glyph('play')}广告领取`:`${resourceIcon('diamonds','sn-cost-icon')}${o.cost.amount}`,`data-id="${e(o.id)}"`,blocked||!o.available)}</div>${!o.available?`<p class="sn-hint">${e(availabilityMessage(o.reason))}</p>`:''}`).join('')}</div>`};
   }
   if(modal.type==='shopRefreshConfirm'){
     const refresh=s.shop.refresh,adMode=refresh.freeRemaining===0;
@@ -106,7 +131,7 @@ export function shopModal(modal,s,h) {
   }
   if(modal.type==='shopBoxResult'){
     const equipmentResult=shopBoxEquipmentCards(modal,s,h);
-    return{title:modal.history?'上次开箱结果':'获得奖励',content:`<div class="sn-dialog"><div class="sn-result-grid">${equipmentResult.cards}${(modal.pilots||[]).map(p=>{const art=nativePilotAppearance(p.id);return `<div class="sn-result">${art?`<img src="${e(art.avatar)}" alt="${e(art.name)}">`:''}<b>${e(p.name)}</b><small>${p.creditsAdded?`已满星 · 兑换积分 +${p.creditsAdded}`:p.isNew?'驾驶员已解锁':`同名升星材料 ×${p.amount}`}</small></div>`;}).join('')}${(modal.weapons||[]).map(w=>`<div class="sn-result"><img src="${e(nativeItemArt(w.id))}" alt=""><b>${e(w.name)}</b><small>${w.isNew?'武器已解锁':`同名武器 ×${w.copiesAdded??w.amount}`}</small></div>`).join('')}</div>${equipmentResult.note}${shopButton('close','确定')}</div>`};
+    return{title:modal.history?'上次开箱结果':'获得奖励',content:`<div class="sn-dialog"><div class="sn-result-grid">${equipmentResult.cards}${(modal.pilots||[]).map(p=>{const art=nativePilotAppearance(p.id);return `<div class="sn-result">${art?`<img src="${e(art.avatar)}" alt="${e(art.name)}">`:''}<b>${e(p.name)}</b><small>${p.creditsAdded?`已满星 · 兑换积分 +${p.creditsAdded}`:p.isNew?'驾驶员已解锁':`同名升星材料 ×${p.amount}`}</small></div>`;}).join('')}${(modal.weapons||[]).map(w=>`<div class="sn-result">${h.thumbnail(w.id)}<b>${e(w.name)}</b><small>${w.isNew?'已解锁':`本武器碎片 ×${w.fragmentsAdded}`}</small></div>`).join('')}</div>${equipmentResult.note}${shopButton('close','确定')}</div>`};
   }
   if (modal.type==='shopWeaponPreview') {
     const pool=supplyPool(s,'weapon'), tiers={white:'普通',green:'优秀',blue:'精良',purple:'史诗',gold:'传说'};
@@ -119,12 +144,21 @@ export function shopModal(modal,s,h) {
   }
   if (modal.type==='shopWeaponConfirm') {
     const cost=supplyPool(s,'weapon').singleCost??20, affordable=s.wallet.diamonds>=cost;
-    return {title:'确认武器补给',content:`<div class="shop-confirm shop-paper-confirm"><div class="shop-confirm-head"><span class="shop-confirm-item-art">${projectIcon('chest-closed')}</span><div><h3>通用武器 <b>×1</b></h3><p>随机获得 1 件武器</p><small>重复转为通用强化零件</small></div></div><div class="shop-confirm-price"><p class="shop-confirm-cost"><span>消耗</span><strong>${glyph('gem')}<b>${n(cost)}</b><span>钻石</span></strong></p><p class="shop-confirm-balance">当前拥有 <b>${n(s.wallet.diamonds)}</b> 钻石</p></div><div class="dialog-actions" role="group" aria-label="兑换操作">${button('close','暂不兑换','shop-cancel')}${button('shopWeaponBuy',affordable?'确认兑换':'钻石不足','shop-button is-yellow','',!affordable)}</div></div>`};
+    return {title:'确认武器补给',content:`<div class="shop-confirm shop-paper-confirm"><div class="shop-confirm-head"><span class="shop-confirm-item-art">${projectIcon('chest-closed')}</span><div><h3>通用武器 <b>×1</b></h3><p>随机获得 1 件武器</p><small>重复转为通用强化零件</small></div></div><div class="shop-confirm-price"><p class="shop-confirm-cost"><span>消耗</span><strong>${glyph('gem')}<b>${n(cost)}</b><span>钻石</span></strong></p><p class="shop-confirm-balance">当前拥有 <b>${n(s.wallet.diamonds)}</b> 钻石</p></div><div class="dialog-actions" role="group" aria-label="兑换操作">${button('close','暂不兑换','shop-cancel')}${button('shopWeaponBuy','确认兑换','shop-button is-yellow','',!affordable)}</div></div>`};
   }
   const o=s.shop.items.find(o=>o.id===modal.id);
   if (!o) return {title:'商品已更新',content:'请关闭后重新选择。'};
-  const quantity=Math.max(1,Math.min(o.maxQuantity,modal.quantity||1)),rewardType=Object.keys(o.reward)[0],balance=s.wallet[o.cost.type];
-  return {title:'确认兑换',content:`<div class="sn-dialog"><div class="shop-confirm-head"><span class="shop-confirm-item-art">${shopArt(rewardType)}</span><div><h3>${e(o.name)}</h3><p>×${n(o.reward[rewardType]*quantity)}</p><small>${o.unlimited?'不限次数':`剩余 ${o.remaining}/${o.limit}`}</small></div></div>${o.maxQuantity>1?`<div class="sn-quantity" aria-label="购买数量">${shopButton('shopQuantity','−','data-step="-1" aria-label="减少数量"',quantity<=1)}<output>${quantity}</output>${shopButton('shopQuantity','＋','data-step="1" aria-label="增加数量"',quantity>=o.maxQuantity)}</div>`:''}<p class="sn-confirm-price">消耗 ${resourceIcon(o.cost.type,'sn-cost-icon')}${n(o.cost.amount*quantity)}</p><p>拥有 ${n(balance)} ${e(resourceNames[o.cost.type]||'')}</p>${modal.error||orderStale?`<p class="sn-error">${e(orderStale?'商品状态已更新，请返回重新确认。':modal.error)}</p>`:''}<div class="sn-dialog-actions">${shopButton('close','取消')}${shopButton('shopConfirm',o.available?'确认兑换':e(o.reason),`data-id="${e(o.id)}"`,blocked||orderStale||!o.available||!s.wallet.unlimited&&balance<o.cost.amount*quantity)}</div></div>`};
+  const max=shopPurchaseMax(o,s.wallet),quantity=Math.max(1,Math.min(Math.max(1,max),modal.quantity||1));
+  const rewardType=Object.keys(o.reward)[0],price=o.cost.amount*quantity,currency=resourceNames[o.cost.type]||'';
+  const disabled=blocked||orderStale||!o.available||quantity>max;
+  return {title:'确认兑换',content:`<div class="sn-dialog sn-exchange-dialog">
+    <div class="sn-exchange-product">
+      <span class="sn-exchange-item">${shopArt(rewardType)}</span>
+      <div class="sn-exchange-copy"><h3>${e(o.name)}</h3><p>×${n(o.reward[rewardType]*quantity)}</p></div>
+      ${o.maxQuantity>1?`<div class="sn-quantity" aria-label="购买数量">${shopButton('shopQuantity','−','data-step="-1" aria-label="减少数量"',quantity<=1)}<output aria-label="购买数量">${quantity}</output>${shopButton('shopQuantity','＋','data-step="1" aria-label="增加数量"',quantity>=max)}${shopButton('shopQuantity','MAX','data-step="max" aria-label="最大数量"',quantity>=max)}</div>`:''}
+    </div>
+    <div class="sn-dialog-actions sn-exchange-actions">${shopButton('shopConfirm',`${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(price)}</span>`,`data-id="${e(o.id)}" aria-label="确认兑换，消耗${n(price)}${e(currency)}"`,disabled)}</div>
+  </div>`};
 }
 
 export function tasksModal(s,h,period='daily') {

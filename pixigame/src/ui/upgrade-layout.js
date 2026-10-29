@@ -78,10 +78,10 @@ export function renderUpgradeLayout({ surface, bridge, art, fighter, state, acti
         { size: 24, color: card.affordable ? '#4e5e69' : '#a9614e', weight: 800, maxWidth: 181 });
     }
     plate(409, y + 126, 147, 57, card.affordable ? '#a9793c' : '#7d939f', undefined, 8);
-    action(`upgrade-${card.id}`, card.maxed ? '已满级' : card.affordable ? `升级${card.title}` : `${card.title}金币不足`, 409, y + 120, 147, 60,
+    action(`upgrade-${card.id}`, card.maxed ? '已满级' : `升级${card.title}`, 409, y + 120, 147, 60,
       () => actions.upgrade(card.id), { disabled: !card.affordable, fill: card.affordable ? '#ffe4a6' : '#c6d2d8',
         bottomColor: card.affordable ? '#edb760' : '#a3b5c0', radius: 8, opacity: 1 });
-    text(card.maxed ? '已满级' : card.affordable ? '升级' : '金币不足', 482, y + 150,
+    text(card.maxed ? '已满级' : '升级', 482, y + 150,
       { size: card.affordable ? 28 : 20, color: card.affordable ? '#654423' : '#667d8c', weight: 900, align: 'center' });
   });
   renderMobileHeader(ui, bridge, art, actions);

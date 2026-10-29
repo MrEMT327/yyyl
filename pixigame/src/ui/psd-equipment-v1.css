@@ -168,7 +168,6 @@
   font-size: clamp(10px,2.8cqw,14px);
 }
 #gui-casual-lobby.equipment-reference .ag-catalog .ag-button>span {white-space:nowrap;line-height:1.2}
-#gui-casual-lobby.equipment-reference .ag-catalog .ag-preview-toggle {white-space:nowrap;font-size:clamp(10px,2.8cqw,14px)}
 #gui-casual-lobby.equipment-reference .ag-catalog .pl-icon {
   width: 5cqw;
   height: 5cqw;

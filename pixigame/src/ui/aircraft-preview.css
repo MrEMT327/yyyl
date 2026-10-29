@@ -1,5 +1,1 @@
-.ui-aircraft-preview{position:relative;width:100%;height:100%;isolation:isolate}.ui-aircraft-still,.ui-aircraft-live{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none}.ui-aircraft-live{pointer-events:auto}.ui-aircraft-preview.is-preview-ready>.ui-aircraft-still{visibility:hidden}
-#gui-casual-lobby .ui-aircraft-preview>.ui-aircraft-3d.wc-button{position:absolute!important;inset:auto 5% 5% auto!important;z-index:5;display:flex!important;align-items:center;justify-content:center;width:84px!important;height:32px!important;min-height:32px!important;min-width:0!important;margin:0!important;transform:none!important;font-size:12px;--psd-button-corner:10px;--wc-button-height:32px;padding:3px 8px;pointer-events:auto}
-#gui-casual-lobby .ui-aircraft-live>.pl-model-canvas{display:block;width:100%;height:100%;object-fit:contain}
-#gui-casual-lobby .ui-aircraft-live[aria-busy='true']>.pl-model-canvas{visibility:hidden}
-#gui-casual-lobby.equipment-reference .ag-hangar .ui-aircraft-preview>.ui-aircraft-3d.wc-button {display:none!important}
+.ui-aircraft-preview{position:relative;width:100%;height:100%;isolation:isolate}.ui-aircraft-still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none}

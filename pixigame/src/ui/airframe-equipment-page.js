@@ -1,6 +1,5 @@
 import {emptySlotMark} from './psd-empty-slot.js';
 import {weaponIconUrl} from './weapon-icon-source.js';
-import {nativeCollectionArt} from '../replica/native-collection-art.js';
 import {supplyWeaponArt} from './supply-visuals.js';
 import {GEAR_QUALITY_NAMES,gearName} from '../peripheral/equipment-system.js';
 import {gearDetailSkills,gearDetailIncrease} from './gear-detail-model.js';
@@ -26,7 +25,7 @@ export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',fil
   const innate=s.weapons.find(w=>w.id===innateId);
   const nativeGun=s.replicaCollection?.guns.find(row=>row.equipped);
   const weaponButton=s.replicaCollection
-    ? `<button type="button" class="ag-weapon ag-card ${nativeGun?'is-filled':'is-empty'}" data-action="equipmentWeapons" aria-label="主武器，${e(nativeGun?.name||'选择武器')}"><strong>主武器</strong><span>${nativeGun?(`<img src="${e(nativeCollectionArt(nativeGun))}" alt="">`):emptySlotMark()}</span><b>${nativeGun?`${nativeGun.star} 星`:''}</b></button>`
+    ? `<button type="button" class="ag-weapon ag-card ${nativeGun?'is-filled':'is-empty'}" data-action="equipmentWeapons" aria-label="主武器，${e(nativeGun?.name||'选择武器')}"><strong>主武器</strong><span>${nativeGun?(nativeGun.appearance?supplyWeaponArt({id:nativeGun.appearance},h.thumbnail):`<img src="${e(base+'replica-battle/'+nativeGun.icon.replace(/^\//,''))}" alt="">`):emptySlotMark()}</span><b>${nativeGun?`${nativeGun.star} 星`:''}</b></button>`
     : null;
   const list=gear.items.filter(item=>filter==='all'||String(item.type)===filter).sort((x,y)=>(sort==='level'?y.level-x.level:sort==='part'?x.type-y.type:y.quality-x.quality)||Number(y.equipped)-Number(x.equipped)||x.type-y.type||x.uid.localeCompare(y.uid));
   const slot=type=>{
@@ -78,7 +77,7 @@ export function gearModal(modal,{snapshot:s,helpers:h}){
     const increase=gearDetailIncrease(item),data=`data-id="${e(item.uid)}"`;
     const skills=gearDetailSkills(item),occupied=!!gear.slots[item.type];
     return {title:'装备详情',content:`<div class="ag-modal ag-equipment-detail" data-quality="${item.qualityRank}">
-      <div class="ag-equipment-hero"><div class="ag-equipment-art ag-card" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}"><img src="${gearArt(item.art)}" alt="${e(item.name)}"></div><div class="ag-equipment-heading"><h3>${e(item.name)}</h3><span class="ag-quality">${e(item.qualityName)}</span><p>${e(item.part)}${item.equipped?' · 已装配':''}${item.locked?' · 已锁定':''}</p></div><p class="ag-equipment-level">强化等级 <b>${item.level}</b> <small>（当前品质可强化至${item.maxLevel}级）</small></p></div>
+      <div class="ag-equipment-hero"><div class="ag-equipment-art ag-card" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}"><img src="${gearArt(item.art)}" alt="${e(item.name)}"></div><div class="ag-equipment-heading"><h3>${e(item.name)}</h3><span class="ag-quality">${e(item.qualityName)}</span><p>${e(item.part)}${item.equipped?' · 已装配':''}${item.locked?' · 已锁定':''}</p></div><p class="ag-equipment-level">强化等级 <b>Lv.${item.level} / ${item.maxLevel}</b></p></div>
       <div class="ag-equipment-stat"><strong>${e(item.attributeName)} +${n(item.attribute)}</strong>${increase!=null?`<em aria-label="下一级增加${n(increase)}">(+${n(increase)})</em>`:''}</div>
       <section class="ag-equipment-skills" aria-label="装备技能"><h3>装备技能</h3><ul>${skills.map(feature=>`<li data-quality="${feature.quality}" class="${feature.unlocked?'is-unlocked':'is-locked'}"><span class="ag-skill-mark ${feature.unlocked?'':'is-lock'}" aria-hidden="true"></span><span><span class="ag-sr">${e(feature.qualityName)}${feature.unlocked?'已解锁':'解锁'}：</span>${e(feature.text)}</span></li>`).join('')}</ul></section>
       <details class="ag-equipment-manage" ${modal.result||modal.error?'open':''}><summary>${item.equipped?'强化与管理':'装备管理'}</summary>${item.level>=item.maxLevel?`<p class="ag-hint">当前部位 Lv.${item.level}，本品质可强化至 Lv.${item.maxLevel}，暂不能继续强化。</p>`:''}<p class="ag-hint">更换同部位装备，强化等级保留。</p>${item.equipped?costRow(item,gear,s,h):''}${item.equipped?`<div class="ag-management-actions ag-upgrade-actions" role="group" aria-label="强化装备">${btn('gearUpgrade','强化',data,!item.canUpgrade)}${btn('gearUpgradeAll','一键强化',data,!item.canUpgrade)}</div>`:''}<div class="ag-management-actions" role="group" aria-label="管理装备">${btn('gearMerge','合成',data,!item.merge.required)}${item.canDowngrade?btn('gearDowngradePreview','降阶',data):''}${item.equipped?btn('gearUnequip','卸下',data):''}${btn('gearLock',item.locked?'解锁':'锁定',data)}</div></details>

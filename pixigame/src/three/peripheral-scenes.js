@@ -96,7 +96,7 @@ const chapterStyles = [
   { id:'lunar-crater-field', native:[null,null,null,null,null], authoredMotion:true, names:['月海地表','浅坑遗迹','陨坑边壁','月尘','稀薄尘雾'],effect:1,effectOpacity:.025,cloudTint:0xb2adc5 },
   { id:'lunar-research-camp', native:[null,null,null,null,null], authoredMotion:true, names:['月壤地表','实验站连桥','研究营地','月尘','稀薄尘雾'],effect:1,effectOpacity:.025,cloudTint:0xa8b8cc },
 ];
-// All 60 campaign chapters use balanced art; named original scenes remain available.
+// Balanced art is selected only by chapters 1–20. Later map reuse keeps its original art.
 export const FIRST_STAGE_SCENE = Object.freeze({
   ...PERIPHERAL_SCENES[0], id: 'coast-balanced',
   artUrl: `${base}art/project-coast-balanced-v1/middle-coast.png`,
@@ -137,14 +137,6 @@ const BALANCED_CHAPTER_THEMES = Object.freeze([
   'storm-front', 'iron-dock', 'red-nest', 'volcano',
   'space', 'emerald-rainforest', 'red-nest', 'coast', 'volcano',
   'sewer', 'space', 'neon-city', 'storm-front', 'space',
-  'sky-core', 'orbital-wreckage', 'lunar-outpost', 'ring-spaceport', 'obsidian-wastes',
-  'terraced-highlands', 'space', 'ring-spaceport', 'sky-core', 'obsidian-wastes',
-  'orbital-wreckage', 'lunar-outpost', 'ring-spaceport', 'obsidian-wastes', 'terraced-highlands',
-  'neon-city', 'ring-spaceport', 'sky-core', 'obsidian-wastes', 'orbital-wreckage',
-  'terraced-highlands', 'lunar-ring-station', 'lunar-crater-field', 'lunar-research-camp', 'lunar-ring-station',
-  'lunar-crater-field', 'lunar-research-camp', 'lunar-ring-station', 'lunar-crater-field', 'lunar-research-camp',
-  'terraced-highlands', 'lunar-ring-station', 'lunar-crater-field', 'lunar-research-camp', 'lunar-ring-station',
-  'lunar-crater-field', 'lunar-research-camp', 'lunar-ring-station', 'lunar-crater-field', 'lunar-research-camp',
 ]);
 const balancedByTheme = Object.freeze(Object.fromEntries([...new Set(BALANCED_CHAPTER_THEMES)].map(theme => [
   theme, theme === 'coast' ? FIRST_STAGE_SCENE : Object.freeze({
@@ -206,7 +198,7 @@ export function peripheralSceneForStage(stage = 0) {
   const index = Number.isFinite(Number(stage)) ? Math.max(0, Math.floor(Number(stage))) : 0;
   if (index < BALANCED_CHAPTER_SCENES.length) return BALANCED_CHAPTER_SCENES[index];
   const representative = chapterMapRepresentativeStage(index);
-  // Preserve the original scene fallback for indices outside the campaign.
+  // Later s_map0025_2 reuse (chapter 36) keeps the original city/bridge set.
   if (representative === 17) return PERIPHERAL_SCENES.find(scene => scene.id === 'neon-city');
   // Six new source map groups in chapters 21..26. Later occurrences resolve
   // through chapterMapRepresentativeStage, so 27/28/29/30 reuse 5/24/21/25.

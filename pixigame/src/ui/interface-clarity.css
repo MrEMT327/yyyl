@@ -71,14 +71,14 @@
 #gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-info p {font-size:15px}
 
 /* Character, aircraft and skill details: readable effects and compact disclosure. */
-#gui-casual-lobby .pl-modal-host:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){z-index:70}
-#gui-casual-lobby .pl-modal-backdrop:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){padding:0}
-#gui-casual-lobby .pl-modal[data-modal-kind][data-psd-popup]:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px;flex:none}
-#gui-casual-lobby .pl-modal[data-psd-popup]:has(:is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail))>.pl-modal-heading h2{font-size:clamp(20px,5.6cqw,25px)!important}
-#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail){font-size:16px;line-height:1.55}
-#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail) :is(p,dt,dd){font-size:16px;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}
-#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview,.wc-skill-detail) :is(h3,h4,h5){font-size:18px;line-height:1.4}
-#gui-casual-lobby .pl-modal :is(.collection-detail,.fc-detail,.fc-skill-preview,.fc-operation-preview) .wc-button{--wc-button-height:48px;min-height:48px;font-size:17px}
+#gui-casual-lobby .pl-modal-host:has(:is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){z-index:70}
+#gui-casual-lobby .pl-modal-backdrop:has(:is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){padding:0}
+#gui-casual-lobby .pl-modal[data-modal-kind][data-psd-popup]:has(:is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail)){--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px;flex:none}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(:is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail))>.pl-modal-heading h2{font-size:clamp(20px,5.6cqw,25px)!important}
+#gui-casual-lobby .pl-modal :is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail){font-size:16px;line-height:1.55}
+#gui-casual-lobby .pl-modal :is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail) :is(p,dt,dd){font-size:16px;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}
+#gui-casual-lobby .pl-modal :is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview,.wc-skill-detail) :is(h3,h4,h5){font-size:18px;line-height:1.4}
+#gui-casual-lobby .pl-modal :is(.collection-detail,:where(.fc-detail:not([data-historical-pilot])),.fc-skill-preview,.fc-operation-preview) .wc-button{--wc-button-height:48px;min-height:48px;font-size:17px}
 #gui-casual-lobby .pl-modal .cd-art{height:23cqw;min-height:72px;max-height:110px}
 #gui-casual-lobby .pl-modal .cd-badges{font-size:14px}
 #gui-casual-lobby .pl-modal .cd-hero>p{font-size:14px}

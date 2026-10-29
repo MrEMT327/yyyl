@@ -56,12 +56,10 @@ export function backpackItemSources(item,s,rule,h,go) {
     const period=id===903?'daily':'week',view=p?.growth?.[period];
     if(view){lines.push(view.requirement+'；每期1箱，自选1项。');link(view.name,period==='daily'?'growthDaily':'growthWeek');}
   }else{
-    const weapon=s.replicaCollection?.guns.find(row=>row.id===id);
-    if(weapon){lines.push('高级装备箱：随机获得武器；首次解锁，重复获得用于升星。');link('前往高级装备箱','shop');}
-    const kind=p?.collection?.skins?.candidates.some(row=>row.id===id)?'skins':null;
+    const kind=['guns','skins'].find(kind=>p?.collection?.[kind]?.candidates.some(row=>row.id===id));
     if(kind){
       lines.push('自选补给：'+p.collection[kind].requirement+'；每次自选1张，用于激活／升星。余量见补给页。');
-      link('每周飞机补给','supplyTasks');
+      link(kind==='guns'?'每日机炮补给':'每周飞机补给','supplyTasks');
     }
   }
   if(!lines.length)return '';

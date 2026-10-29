@@ -13,5 +13,7 @@ pixigame/src/slot-demo/module-geometry.js text eol=crlf
 pixigame/src/slot-demo/detailed-weapons.js text eol=crlf
 pixigame/src/slot-demo/advanced-weapons.js text eol=crlf
 pixigame/src/slot-demo/catalog.js text eol=crlf
+
+# Large chapter data is already stored in GitHub LFS.
 pixigame/public/replica-battle/data/assets-chapters.json filter=lfs diff=lfs merge=lfs -text
 pixigame/replica-battle/public/data/assets-chapters.json filter=lfs diff=lfs merge=lfs -text

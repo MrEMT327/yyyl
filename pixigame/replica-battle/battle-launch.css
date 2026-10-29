@@ -1,0 +1,5 @@
+/* The entry flight is visible in the real battlefield, before any interactive
+   HUD, opening choices or movement guide can take input. */
+#stage[data-launch] #ui,
+#stage[data-launch] .cloud-combat-canvas,
+#stage[data-launch] .battle-movement-guide { visibility:hidden!important;pointer-events:none!important; }

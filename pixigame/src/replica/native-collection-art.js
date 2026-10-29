@@ -2,7 +2,6 @@ import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import { nativePilotAppearance } from './native-pilot-presentation.js';
 import { aircraftUiImage } from '../aircraft-ui-images.js';
 import { weaponIconUrl } from '../ui/weapon-icon-source.js';
-import { weaponThemeArt } from '../ui/weapon-theme-art.js';
 import { researchBlueprintArtForLab } from './research-blueprint-art.js';
 import { projectCollectionIcon } from './project-collection-icons.js';
 
@@ -12,7 +11,7 @@ export function nativeCollectionArt(row, view='thumbnail') {
   if(plane)return absolute(aircraftUiImage(plane,view));
   const pilot=nativePilotAppearance(row.id);
   if(pilot)return view==='thumbnail'?pilot.avatar:pilot.image;
-  return weaponThemeArt(row.id)||(row.appearance&&weaponIconUrl(row.appearance))||projectCollectionIcon(row.icon);
+  return (row.appearance&&weaponIconUrl(row.appearance))||projectCollectionIcon(row.icon);
 }
 export const nativeSkillArt = skill => projectCollectionIcon(skill?.icon);
 // Laboratory details share the canonical research sheet with material inventory.

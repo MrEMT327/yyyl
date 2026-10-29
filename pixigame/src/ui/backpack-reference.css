@@ -51,3 +51,14 @@
 #gui-casual-lobby .bag-modal[data-psd-popup] .bag-empty{grid-column:1/-1;display:grid;place-items:center;min-height:0;height:calc(1000 * var(--bag-unit));padding:0}
 /* Standard item information width is ~796 source units; no invented Use action for currency/materials. */
 #gui-casual-lobby .bag-detail[data-psd-popup]{--popup-width:calc(796.4 * var(--bag-unit));--popup-height:auto;--popup-min-height:0px}
+
+/* Blueprint artwork includes its own transparent margin. Size the visible
+   sheet to roughly 80% of the PSD slot without changing the item asset. */
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art:has(>img[src*="/project-research-blueprints-v1/"]),
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon:has(>img[src*="/project-research-blueprints-v1/"]) {padding:0}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>img[src*="/project-research-blueprints-v1/"],
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon>img[src*="/project-research-blueprints-v1/"] {padding:0;transform:scale(1.1)}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art:has(>img[src*="/project-flight-blueprints-v1/"]),
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon:has(>img[src*="/project-flight-blueprints-v1/"]) {padding:5%}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>img[src*="/project-flight-blueprints-v1/"],
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon>img[src*="/project-flight-blueprints-v1/"] {padding:0}

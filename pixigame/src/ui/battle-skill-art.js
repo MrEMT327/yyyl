@@ -1,5 +1,4 @@
 import { cloudAssetBase } from './cloud-asset-base.js';
-import { weaponFamilyThemeArt } from './weapon-theme-art.js';
 
 export const BATTLE_SKILL_ART_KEYS = Object.freeze([
   '10000101', '10000201', '10000301', '10000401',
@@ -10,7 +9,7 @@ export const BATTLE_SKILL_ART_KEYS = Object.freeze([
   '11001701', '11002001', '11002201', '11002501',
 ]);
 
-const icons = new Map(BATTLE_SKILL_ART_KEYS.map(key => [key, weaponFamilyThemeArt(key) || `${cloudAssetBase}art/project-battle-skills-v1/${key}.webp`]));
+const icons = new Map(BATTLE_SKILL_ART_KEYS.map(key => [key, `${cloudAssetBase}art/project-battle-skills-v1/${key}.webp`]));
 
 export function battleSkillIconUrl(key) {
   return icons.get(String(key)) || null;

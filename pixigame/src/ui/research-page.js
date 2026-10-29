@@ -26,7 +26,7 @@ export function researchPage({snapshot:s,helpers:h}) {
   const normalName=r.allFinished?'全部满级':r.coresSufficient?'星核已充足':r.refineReady?'领取星核':r.refining?'推进研制':'常规觉醒';
   const normalBlocked=r.allFinished||r.coresSufficient;
   const normalShort=!normalBlocked&&!r.refineReady&&s.wallet.coins<r.normalCost;
-  const normalHint=normalShort?'金币不足':'';
+  const normalHint='';
   const normalPrice=normalBlocked?'—':r.refineReady?`${core}<b>+1</b>`:`${coin}<b>${amount(s.wallet.coins,n)}</b><i>/${amount(r.normalCost,n)}</i>`;
   const aceShort=!r.aceFinished&&r.cores<1;
   const progress=r.native?r.progressText:r.allFinished||r.aceFinished?'':r.coresSufficient?'星核充足，可进行王牌觉醒':r.refining?`研制 ${r.refineProgress}/${r.refineSteps}`:`再觉醒 ${r.untilCore} 次，获得`;
@@ -36,7 +36,7 @@ export function researchPage({snapshot:s,helpers:h}) {
     <div class="research-scroll" tabindex="0" aria-label="天赋卡片列表，可滚动浏览"><div class="research-grid">${cards}</div></div>
     <footer class="research-footer">${progress?`<p class="research-core-progress">${progress}${r.coresSufficient?'':`${core}<span>×${r.native?r.cores:1}</span>`}</p>`:''}<div class="research-actions">
       <button type="button" class="wc-button research-awaken is-normal" data-action="researchDraw" data-pool="normal" data-revision="${r.revision}" ${r.canNormal?'':'disabled'} aria-label="${e(normalName)}${normalHint?`，${normalHint}`:''}，现有${s.wallet.coins}金币，消耗${normalBlocked||r.refineReady?0:r.normalCost}金币"><strong>${normalName}</strong><span${normalShort?' class="is-short"':''}>${normalPrice}</span></button>
-      <button type="button" class="wc-button research-awaken is-ace" data-action="researchDraw" data-pool="ace" data-revision="${r.revision}" ${r.canAce?'':'disabled'} aria-label="${r.aceFinished?'王牌已满级':'王牌觉醒，消耗1枚星核'}${aceShort?'，星核不足':''}"><strong>${r.aceFinished?'王牌已满级':'王牌觉醒'}</strong><span${aceShort?' class="is-short"':''}>${r.aceFinished?'—':`${core}<b>${n(r.cores)}</b><i>/1</i>`}</span></button>
+      <button type="button" class="wc-button research-awaken is-ace" data-action="researchDraw" data-pool="ace" data-revision="${r.revision}" ${r.canAce?'':'disabled'} aria-label="${r.aceFinished?'王牌已满级':'王牌觉醒，消耗1枚星核'}"><strong>${r.aceFinished?'王牌已满级':'王牌觉醒'}</strong><span${aceShort?' class="is-short"':''}>${r.aceFinished?'—':`${core}<b>${n(r.cores)}</b><i>/1</i>`}</span></button>
     </div>${s.storageWarning?`<p class="research-warning">${e(s.storageWarning)}</p>`:''}</footer></section>`;
 }
 

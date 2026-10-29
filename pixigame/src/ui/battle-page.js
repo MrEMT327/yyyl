@@ -58,7 +58,6 @@ export function battlePage(ctx,requestedChapter) {
     hotspot('chapter-next','下一章','chapterNext',[585,159,36,39]),
     hotspot('tasks','查看航线任务','tasks',[6,232,101,102]),
     hotspot('chapters','打开章节地图','chapters',[635,239,101,102]),
-    hotspot('activities','查看活动','activities',[635,347,101,102]),
     hotspot('star-rewards',s.nativeAcquisition?'查看章节奖励':'查看星级奖励','chapterChest',[240,239,289,45]),
     hotspot('switch-pilot','切换驾驶员','catalog',[597,1187,145,147],'data-kind="pilot"'),
     hotspot('patrol','航线巡逻','patrol',[26,1345,182,111]),

@@ -1,7 +1,6 @@
 import equipment from '../peripheral/equipment-reference-data.json' with {type:'json'};
 import { nativeGearPresentation } from './native-item-names.js';
 import { isRosterPilot } from './native-pilot-roster.js';
-import catalog from './native-economy-catalog.json' with {type:'json'};
 import { ITEM_USE_BATCH_LIMIT } from './item-use-batches.js';
 
 const records=new Map(equipment.equip.map(row=>[row.ID,{
@@ -19,7 +18,7 @@ export function equipmentBoxReceiptItems(receipt) {
   for(const outcome of receipt.outcomes){
     if(!Number.isSafeInteger(outcome?.id)||!Number.isSafeInteger(outcome.amount)||outcome.amount<1||outcome.amount>10000)return missing();
     const row=records.get(outcome.id);
-    if(!row){if(!isRosterPilot(outcome.id)&&!catalog.guns.some(row=>row.id===outcome.id))detailsMissing=true;continue;}
+    if(!row){if(!isRosterPilot(outcome.id))detailsMissing=true;continue;}
     if(items.length+outcome.amount>10000)return missing();
     for(let i=0;i<outcome.amount;i++){
       const recorded=uids[index++],valid=typeof recorded==='string'&&/^gear-[1-9]\d*$/.test(recorded)&&!seen.has(recorded);

@@ -7,6 +7,8 @@ import { flightRewardView } from './flight-rewards.js';
 import { localGrowthAllowances } from './local-growth-policy.js';
 
 const rules={
+  guns:{period:'daily',name:'机炮',requirement:'领取每日100活跃奖励后可领，每天一次',
+    fallback:[[1,3000],[105,5],[106,5],[107,5],[108,5],[109,5]]},
   skins:{period:'week',name:'飞机',requirement:'本周累计5天领取每日满活跃奖励后开放本周自选名额',
     fallback:[[112,1],[105,10],[106,10],[107,10],[108,10],[109,10]]},
 };
@@ -25,10 +27,10 @@ export function collectionSupplySnapshot(progression,inventory,ledger,campaign={
         owned:Boolean(owned),star:owned?.star||0,maxed,copies,needed,
         selectable:UNLOCK_ALL_CONTENT||!maxed&&copies<needed,stocked:!maxed&&copies>=needed};
     });
-    const record=ledger[rule.period],limit=UNLOCK_ALL_CONTENT?5:localGrowthAllowances(campaign).weeklyPlanes;
+    const record=ledger[rule.period],limit=kind==='skins'?(UNLOCK_ALL_CONTENT?5:localGrowthAllowances(campaign).weeklyPlanes):1;
     const claimedCount=record.collectionCount??(record.collectionChoice===null?0:1),claimed=claimedCount>=limit;
-    const reached=UNLOCK_ALL_CONTENT||ledger.week.activeDays.length>=5;
-    const allowanceNote='每周自选1张飞机卡，通关10/20/30/60章后增至2/3/4/5张。';
+    const reached=UNLOCK_ALL_CONTENT||(kind==='guns'?ledger.daily.activityClaimed:ledger.week.activeDays.length>=5);
+    const allowanceNote=kind==='skins'?'每周自选1张飞机卡，通关10/20/30/60章后增至2/3/4/5张。':'每天自选1张机炮卡。';
     return [kind,{kind,name:rule.name,requirement:rule.requirement,candidates,claimed,reached,limit,claimedCount,remaining:Math.max(0,limit-claimedCount),allowanceNote,
       canClaim:!claimed&&reached,complete:!candidates.some(row=>row.selectable),
       claimedId:record.collectionChoice,fallback:rule.fallback.map(([id,count])=>flightRewardView({kind:'item',id,count}))}];
@@ -38,7 +40,7 @@ export function collectionSupplySnapshot(progression,inventory,ledger,campaign={
 /** Called inside the existing pilot-supply atomic profile/inventory transaction. */
 export function claimCollectionSupply(progression,inventory,ledger,operation,campaign={}) {
   const rule=rules[operation.kind];
-  if(!rule)throw Error('该自选补给已停用');
+  if(!rule)throw Error('请选择机炮或飞机补给');
   const view=collectionSupplySnapshot(progression,inventory,ledger,campaign)[operation.kind];
   if(view.claimed)throw Error('本期自选补给已领取');
   if(!view.reached)throw Error(view.requirement);

@@ -1,11 +1,8 @@
-import { BUILD_IDENTITY } from '../build-info.js';
-
 export function createStartupScreen(documentRef=document) {
   const root=documentRef.getElementById('bootLoading');
   if(!root)return {stage(){},ready:async()=>{},fail(){}};
   const status=root.querySelector('#bootMessage'),progress=root.querySelector('progress');
   const start=root.querySelector('#bootStart'),retry=root.querySelector('#bootRetry');
-  root.querySelector('.startup__version').textContent='v'+BUILD_IDENTITY.version;
   const block=event=>{
     event.stopImmediatePropagation();
     if(event.key==='Enter'){event.preventDefault();(retry.hidden?start:retry).click();}
@@ -22,7 +19,6 @@ export function createStartupScreen(documentRef=document) {
     ready(onEnter,{automatic=false}={}) {
       progress.value=3;status.textContent='准备就绪';start.hidden=false;start.disabled=false;
       if(automatic){cleanup();return Promise.resolve();}
-      start.focus({preventScroll:true});
       return new Promise(resolve=>{
         start.onclick=()=>{
           if(start.disabled)return;start.disabled=true;onEnter?.();cleanup();resolve();
@@ -35,7 +31,7 @@ export function createStartupScreen(documentRef=document) {
       window.addEventListener('keydown',block,true);window.addEventListener('keyup',block,true);
       root.style.zIndex='2147483647';
       root.classList.add('is-failed');status.textContent=message;
-      start.hidden=true;retry.hidden=false;retry.onclick=()=>location.reload();retry.focus({preventScroll:true});
+      start.hidden=true;retry.hidden=false;retry.onclick=()=>location.reload();
     },
   };
 }

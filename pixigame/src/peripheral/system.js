@@ -673,10 +673,10 @@ export function createPeripheralSystem({
     state.replicaLoadout=plan.progression;state.replicaInventory=plan.inventory;state.pilotSupply=plan.ledger;
     if(!persist()){
       [state.replicaLoadout,state.replicaInventory,state.pilotSupply]=before;
-      return fail('补给未能保存，请重试；本次未扣费');
+      return fail(plan.isRecruitDraw?'招募未能保存，请重试；本次未扣费':'补给未能保存，请重试；本次未扣费');
     }
     nativeDetails=null;onChange();
-    return pass(plan.taskActivityOnly?'活跃 +20':'补给已存入库存',{title:plan.title,rewards:plan.rewards,...(plan.recruitPool?{recruitPool:plan.recruitPool}:{})});
+    return pass(plan.taskActivityOnly?'活跃 +20':plan.isRecruitDraw?'':'补给已存入库存',{title:plan.title,rewards:plan.rewards,...(plan.recruitPool?{recruitPool:plan.recruitPool}:{})});
   }
   async function pilotSupplyAd(revision) {
     if(pendingFlightAd){
@@ -991,7 +991,7 @@ export function createPeripheralSystem({
       if(!persist()){state=before;return fail('装备操作未能保存，材料未扣除');}
       onChange();
       nativeDetails=null;
-      return pass(plan.message,{gearResult:{operation,pool:plan.pool,uid:payload.uid||id,fromLevel:plan.fromLevel,toLevel:plan.toLevel,fromQuality:plan.fromQuality,toQuality:plan.toQuality,steps:plan.steps,drawn:plan.drawn||[],pilotRewards:plan.pilotRewards||[],weaponRewards:plan.weaponRewards||[],keyReward:plan.keyReward,receipt:plan.receipt?copy(plan.receipt):null}});
+      return pass(plan.message,{gearResult:{operation,pool:plan.pool,uid:payload.uid||id,fromLevel:plan.fromLevel,toLevel:plan.toLevel,fromQuality:plan.fromQuality,toQuality:plan.toQuality,steps:plan.steps,drawn:plan.drawn||[],pilotRewards:plan.pilotRewards||[],weaponRewards:[],keyReward:plan.keyReward,receipt:plan.receipt?copy(plan.receipt):null}});
     }
     if(['fleetActivate','fleetStarUp','fleetSkillEquip','fleetSkillRemove'].includes(type)) {
       if(activeSortie)return fail('请先完成当前出击');
