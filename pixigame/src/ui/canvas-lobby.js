@@ -122,9 +122,11 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
     p.image('art/psd-main-v1/main-background.png', 0, 0, W, H, 'cover');
     const pilot = portraitPresentation(s.pilots.find(item => item.id === s.pilotId) || {});
     p.image(pilot.image, 86, 234, 598, 1122, 'cover');
-    // Omit the baked mail and activity icons while keeping the scenery beneath them.
+    // Omit the baked mail, chapter and activity icons while keeping the scenery beneath them.
     for(const box of [
-      {x:0,y:0,width:W,height:H*.21},
+      {x:0,y:0,width:W,height:239},
+      {x:0,y:239,width:635,height:H*.21-239},
+      {x:736,y:239,width:W-736,height:H*.21-239},
       {x:W*.16,y:H*.21,width:W*.84,height:347-H*.21},
       {x:W*.16,y:347,width:635-W*.16,height:102},
       {x:736,y:347,width:W-736,height:102},
@@ -140,7 +142,6 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
       ['chapter-prev',136,159,36,55,()=>act('selectStage',{index:Math.max(0,s.selectedStageIndex-1)})],
       ['chapter-next',585,159,36,55,()=>act('selectStage',{index:Math.min(s.stages.length-1,s.selectedStageIndex+1)})],
       ['chapters',175,138,405,80,()=>open('chapters')], ['tasks',6,232,101,102,()=>open('tasks')],
-      ['map',635,239,101,102,()=>open('chapters')],
       ['stars',240,239,289,45,()=>open('stars')],
       ['pilot',597,1187,145,147,()=>visit('pilot')], ['patrol',26,1345,182,111,()=>open('patrol')],
       ['backpack',545,1364,182,92,()=>open('backpack')], ['start',224,1341,301,117,()=>act('start')],

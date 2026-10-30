@@ -32,7 +32,7 @@ export function nativeEquipmentBoxPreview(items,gear,time=Date.now()) {
         const entries=group.items.map(item=>({...item,weight:rule.items.find(r=>r[0]===item.id)?.[2]||0}));
         return {...group,...(group.id===311?{name:'随机武器'}:{}),items:entries.map(item=>item.id===902?{...item,name:'随机武器（11种等概率）'}:item),weight:entries.reduce((n,r)=>n+r.weight,0)};
       });
-      rates.push({id:'pilots',name:'驾驶员（自定义奖池）',weight:3000,denominator:100000,
+      rates.push({id:'pilots',name:'驾驶员',weight:3000,denominator:100000,
         items:rule.items.filter(([id])=>id>=40000&&id<50000).map(([id,count,weight])=>({id,count,weight,name:nativeCollectionDisplayName(id)||text.itemNames[id]||`驾驶员 ${id}`}))});
     }
     const quotes=[1,10].map(count=>{

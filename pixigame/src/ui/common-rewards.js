@@ -1,7 +1,7 @@
 import './common-rewards.css';
 
 export function isCommonReward(modal) {
-  return modal?.type==='rewards' && !modal.patrol && !modal.recruit && !['pilot','weapon'].includes(modal.recruitPool);
+  return modal?.type==='shopBoxResult' || (modal?.type==='rewards' && !modal.patrol && !modal.recruit && !['pilot','weapon'].includes(modal.recruitPool));
 }
 
 // The domain has already granted the receipt. Dismissal never awards it again.

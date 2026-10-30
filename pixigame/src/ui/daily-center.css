@@ -134,6 +134,7 @@
 #gui-casual-lobby .dc-event-copy p {margin:0;font-size:clamp(10px,2.8cqw,14px);color:#3d5b72;line-height:1.4}
 #gui-casual-lobby .dc-event-copy small {font-size:clamp(10px,2.9cqw,14px);color:#526b7f}
 #gui-casual-lobby .dc-event-copy small.is-ready {color:#25634a;font-weight:700}
+#gui-casual-lobby .dc-event.is-chapter-locked :is(.dc-event-art,.dc-button) {filter:grayscale(1);opacity:.5}
 #gui-casual-lobby .eq-page button.eq-stat-row {width:auto;min-height:30px;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;pointer-events:auto;color:inherit;cursor:pointer}
 #gui-casual-lobby .dc-hub button:focus-visible,#gui-casual-lobby .fm-summary button:focus-visible,#gui-casual-lobby button.eq-stat-row:focus-visible {outline:2px solid #fcf0a0;outline-offset:-1px}
 /* Native active-box states: ready claims on tap; claimed boxes have no action. */

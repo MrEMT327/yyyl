@@ -14,9 +14,9 @@ const glyph=(name,cls='')=>resourceIcon(name,`rc-icon ${cls}`)||projectIcon(name
 const collected=(item,isPilot)=>isPilot?(item?.activated??Boolean(item?.owned&&!item?.temporaryUnlocked)):item?.owned;
 const recruitPreviewPortrait=item=>{const portrait=portraitPresentation(item);return {...portrait,image:portrait.avatar||portrait.image};};
 const collectionStatus=(item,isPilot)=>collected(item,isPilot)?'已拥有':isPilot&&item?.copies?'待激活':isPilot&&item?.temporaryUnlocked?'试玩':'未拥有';
+const isLegacyBoxReward=item=>[925,926].includes(Number(item?.nativeItemId??item?.id))||/角色箱/.test(item?.name||'');
 export function recruitItems(s){return s.pilots||[];}
-// The resource supply can showcase every pilot; the role-box preview must use
-// its actual eight-person candidate list, which excludes the two base pilots.
+// Show the actual recruitment candidates, excluding the two base pilots.
 export function recruitBoxItems(s){
   if(!s.pilotSupply)return recruitItems(s);
   const ids=new Set(s.pilotSupply.candidates.map(row=>row.skinId));
@@ -28,12 +28,12 @@ export function recruitNavigation(){return lobbyNavigation('supply');}
 export function recruitPage({snapshot:s,helpers:h,selected}){
  const {escape:e,number:n}=h,info=supplyPool(s,'pilot'),items=recruitItems(s),featured=recruitFeatured(s,'pilot',selected);
  const quality=pilotCardQuality(featured?.rarity);
- // Show the next high-rarity guarantee; all three rules remain in probabilities.
+ // Show the next applicable guarantee.
  const pity=(info.pityDetails||[]).filter(item=>['pilot','ssr','ur'].includes(item.id)&&Number(item.triggerAt)>0)
   .map(item=>({...item,remaining:Math.max(1,item.triggerAt-Math.max(0,Number(info.pity?.[item.id])||0))}))
   .sort((a,b)=>a.remaining-b.remaining||(a.id==='ur'?-1:1))[0];
  const label=pity?.id==='pilot'?'驾驶员':pity?.id==='ur'?'UR驾驶员':'SSR及以上驾驶员';
- const pityHtml=info.mixed?`<p class="recruit-pity">${info.rookieAvailable?'首次十连 · 至少获得 1 个角色箱':'50 碎片合成角色箱 · 开箱另计未拥有保底'}${info.development?' · 开发免费':''}</p>`:pity?`<p class="recruit-pity" data-pity="${pity.id}" aria-label="${label}，${pity.remaining}抽内必得" aria-live="polite">再招募<strong>${pity.remaining}</strong>次必得<b>${label}</b></p>`:'';
+ const pityHtml=pity?`<p class="recruit-pity" data-pity="${pity.id}" aria-label="${label}，${pity.remaining}抽内必得" aria-live="polite">再招募<strong>${pity.remaining}</strong>次必得<b>${label}</b></p>`:'';
  const single=info.singleCost??info.cost;
  const draw=count=>{
   const cost=count===10?info.tenCost:single;
@@ -55,23 +55,27 @@ export function recruitModal(type,s,h,view){
   const pool='pilot';
   const {escape:e,number:n}=h,info=supplyPool(s,pool);
   const itemStatus=item=>collectionStatus(item,true),boxItems=recruitBoxItems(s);
-  const close='<button type="button" class="recruit-modal-back" data-action="close">返回招募</button>';
   if(type==='recruitHistory'){
-    const entries=s.pilotSupply?.history||s.recruitHistory||[],boxes=s.pilotSupply?.boxHistory||[];
-    const list=(rows,isBox)=>rows.length?`<ol class="recruit-history-entries">${rows.slice().reverse().map(entry=>`<li><header><time>${e(new Date(entry.at).toLocaleString('zh-CN',{hour12:false}))}</time><b>${entry.count} 次${isBox?'开箱':` · ${n(entry.cost)} 钻石`}</b></header>${entry.results.map(r=>`<p><span>${e(nativeRewardPresentation(r).name||r.name)} ${r.isNew?'· 首次获得':r.creditsAdded?'· 积分 +1':r.copiesAdded?'· 同名卡 ×1':`×${r.amount}`}</span></p>`).join('')}</li>`).join('')}</ol>`:'<p class="recruit-modal-empty">暂无记录</p>';
-    return {title:'驾驶员招募记录',content:`<div class="recruit-modal-surface"><div class="recruit-history-summary"><span>累计招募 <b>${n(info.totalPulls||0)}</b> 次</span><small>各保留最近 50 批</small></div><h3>招募</h3>${list(entries,false)}<h3>角色箱开启</h3>${list(boxes,true)}${close}</div>`};
+    const entries=(info.direct?(s.pilotSupply?.directHistory||[]):(s.recruitHistory||[]).filter(entry=>!entry.pool||entry.pool==='pilot'))
+      .filter(entry=>!(entry.results||[]).some(isLegacyBoxReward));
+    const list=entries.length?`<ol class="recruit-history-entries">${entries.slice().reverse().map(entry=>`<li>${entry.results.map(result=>{
+      const reward=result.convertedFragment||result;
+      return `<p><span>${e(nativeRewardPresentation(reward).name||reward.name)} ×${n(reward.amount??1)}</span></p>`;
+    }).join('')}</li>`).join('')}</ol>`:'<p class="recruit-modal-empty">暂无记录</p>';
+    const total=info.direct?info.directTotalPulls??0:info.totalPulls??0;
+    return {title:'招募记录',content:`<div class="recruit-modal-surface"><div class="recruit-history-summary"><span>累计招募 <b>${n(total)}</b> 次</span></div>${list}</div>`};
   }
   if(view==='roster')return {title:'角色一览',content:`<div class="recruit-probability-content"><section class="recruit-reward-section"><header><h3>可获得驾驶员 · ${boxItems.length}位</h3><small>通过招募获得</small></header><div class="recruit-reward-collection">${boxItems.map(item=>`<button type="button" data-action="recruitRewardDetail" data-kind="${pool}" data-id="${e(item.id)}" aria-label="查看${e(item.name)}详情">${pilotHoloCard(portraitPresentation(item),{compact:true,loading:'lazy'})}<span class="recruit-owned-state">${itemStatus(item)}</span></button>`).join('')}</div></section></div>`};
   if(info.direct){
     const resources=info.resources||[];
-    return {title:'招募奖励',content:`<div class="recruit-reward-summary" data-recruit-mode="direct"><h3>驾驶员</h3><div class="recruit-preview-grid">${boxItems.map(item=>`<div class="recruit-preview-item" aria-label="${e(item.name)}，${e(item.rarity)}">${h.img(recruitPreviewPortrait(item).image,'','recruit-preview-icon')}<span>${e(item.name)}</span><strong>${e(item.rarity)}</strong></div>`).join('')}</div><h3>资源</h3><div class="recruit-preview-grid">${resources.map(item=>`<div class="recruit-preview-item" aria-label="${e(item.name)} ×${n(item.amount)}">${h.img(item.image,'','recruit-preview-icon')}<span>${e(item.name)}</span><strong>×${n(item.amount)}</strong></div>`).join('')}</div><div class="recruit-preview-rules"><p>基础概率：驾驶员 ${Math.round(info.probabilities.pilot*100)}% · 金币 ${Math.round(info.probabilities.coins*100)}% · 普通箱券 ${Math.round(info.probabilities.basicKey*100)}%</p><p>图纸 ${Math.round(info.probabilities.blueprint*100)}% · 高级箱券 ${Math.round(info.probabilities.advancedKey*100)}%</p><p>获得驾驶员时：${Object.entries(info.rarityProbabilities).map(([rank,rate])=>`${rank} ${Math.round(rate*100)}%`).join(' · ')}</p><p>${e(info.guaranteeText)}</p></div><button type="button" class="wc-button recruit-preview-back" data-action="close">返回招募</button></div>`};
+    return {title:'招募奖励',content:`<div class="recruit-reward-summary" data-recruit-mode="direct"><h3>驾驶员</h3><div class="recruit-preview-grid">${boxItems.map(item=>`<div class="recruit-preview-item" aria-label="${e(item.name)}，${e(item.rarity)}">${h.img(recruitPreviewPortrait(item).image,'','recruit-preview-icon')}<span>${e(item.name)}</span><strong>${e(item.rarity)}</strong></div>`).join('')}</div><h3>资源</h3><div class="recruit-preview-grid">${resources.map(item=>`<div class="recruit-preview-item" aria-label="${e(item.name)} ×${n(item.amount)}">${h.img(item.image,'','recruit-preview-icon')}<span>${e(item.name)}</span><strong>×${n(item.amount)}</strong></div>`).join('')}</div></div>`};
   }
-  const rates=Object.entries(info.probabilities||{}).filter(([,value])=>Number.isFinite(Number(value)));
-  const shortNames={1:'金币',112:'高级箱券',113:'普通箱券',925:'角色箱',926:'角色箱碎片',blueprint:'随机图纸'};
+  const rates=Object.entries(info.probabilities||{}).filter(([key,value])=>!['925','926'].includes(key)&&!/角色箱/.test(info.probabilityLabels?.[key]||'')&&Number.isFinite(Number(value)));
+  const shortNames={1:'金币',112:'高级箱券',113:'普通箱券',blueprint:'随机图纸'};
   const rewardItems=rates.map(([key])=>{
     const label=info.probabilityLabels?.[key]||key,match=/^(.*?)\s*×\s*(\d+)$/.exec(label);
     const name=shortNames[key]||match?.[1]||label,count=match?.[2],art=key==='blueprint'?projectIconUrl('task-log'):nativeRewardPresentation({id:Number(key)}).image;
     return `<div class="recruit-preview-item" aria-label="${e(label)}">${art?h.img(art,'','recruit-preview-icon'):''}<span>${e(name)}</span>${count?`<strong>×${n(Number(count))}</strong>`:''}</div>`;
   }).join('');
-  return {title:'奖励预览',content:`<div class="recruit-reward-summary" data-recruit-pool="${pool}"><div class="recruit-preview-grid" aria-label="招募奖励">${rewardItems}</div><div class="recruit-preview-rules">${info.mixed?`${info.rookieAvailable?'<p>首次十连必得角色箱 ×1</p>':''}<p>${n(s.pilotSupply?.box.required??50)}碎片 → 角色箱 ×1</p>`:info.guaranteeText?`<p>${e(info.guaranteeText)}</p>`:''}</div><button type="button" class="wc-button recruit-preview-back" data-action="close">返回招募</button></div>`};
+  return {title:'奖励预览',content:`<div class="recruit-reward-summary" data-recruit-pool="${pool}"><div class="recruit-preview-grid" aria-label="招募奖励">${rewardItems}</div></div>`};
 }

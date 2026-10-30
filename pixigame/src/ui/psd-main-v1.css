@@ -21,15 +21,23 @@
 .battle-psd-main .psd-main-portrait.is-ready>canvas{visibility:visible}
 .battle-psd-main .psd-main-portrait.is-ready>.psd-main-portrait-fallback{visibility:hidden}
 .battle-psd-main .psd-main-foreground{z-index:2}
-/* Remove baked identity, patrol clock, mail and activity artwork. The live
+/* Remove baked identity, patrol clock, mail, chapter and activity artwork. The live
    identity frame is drawn separately; the scenery remains visible underneath. */
 .battle-psd-main .psd-main-foreground{clip-path:polygon(evenodd,
   0 0,100% 0,100% 100%,0 100%,0 0,
   2.933333% 1.662562%,29.466667% 1.662562%,29.466667% 6.465517%,2.933333% 6.465517%,2.933333% 1.662562%,0 0,
-  8.533333% 82.389163%,22.533333% 82.389163%,22.533333% 83.928571%,8.533333% 83.928571%,8.533333% 82.389163%,0 0,
+  var(--clock-clip-left,8.533333%) 82.389163%,var(--clock-clip-right,22.533333%) 82.389163%,var(--clock-clip-right,22.533333%) 83.928571%,var(--clock-clip-left,8.533333%) 83.928571%,var(--clock-clip-left,8.533333%) 82.389163%,0 0,
   0 21%,16% 21%,16% 28%,0 28%,0 21%,0 0,
+  84.666667% 14.716749%,98.133333% 14.716749%,98.133333% 20.997537%,84.666667% 20.997537%,84.666667% 14.716749%,0 0,
   84.666667% 21.366995%,98.133333% 21.366995%,98.133333% 27.647783%,84.666667% 27.647783%,84.666667% 21.366995%,0 0)}
 .battle-psd-main .psd-main-patrol-clock{position:absolute;left:3.466667%;top:82.266010%;width:24.266667%;height:1.724138%;z-index:4;display:grid;place-items:center;pointer-events:none;background:linear-gradient(90deg,transparent,#14232c 18%,#14232c 82%,transparent);color:#fff;font-size:2.3cqw;font-weight:650;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #101923}
+.battle-psd-main .psd-main-patrol-clock[data-patrol-status='locked']{display:none}
+.battle-psd-main .psd-main-page:has(.psd-hit-patrol[data-chapter-locked]) .psd-main-foreground{--clock-clip-left:3.466667%;--clock-clip-right:27.333333%}
+/* Restore the surrounding PSD dimming where the baked clock is clipped out. */
+.battle-psd-main .psd-main-page:has(.psd-hit-patrol[data-chapter-locked])::after{
+  content:"";position:absolute;z-index:2;left:3.466667%;top:82.389163%;width:23.866666%;height:1.539408%;
+  background:linear-gradient(90deg,rgba(0,0,0,.067),transparent),linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.651));pointer-events:none;
+}
 .battle-psd-main .psd-main-profile-frame{position:absolute;left:2.933333%;top:1.662562%;width:26.533333%;height:4.802956%;z-index:3;pointer-events:none}
 .battle-psd-main .psd-main-identity{position:absolute;left:14cqw;top:4.7cqw;width:14.4cqw;z-index:5;pointer-events:none;color:#fff;text-shadow:0 1px 2px #0a1824}
 .battle-psd-main .psd-main-identity>strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:3.05cqw;line-height:1.25;font-weight:700}
@@ -51,6 +59,12 @@
 .battle-psd-main .psd-main-hotspot>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .battle-psd-main .psd-main-hotspot:focus-visible{opacity:1;outline:2px solid #fff;outline-offset:-3px;border-radius:5px}
 .battle-psd-main .psd-main-hotspot:active{opacity:.08;background:#fff}
+.battle-psd-main .psd-hit-patrol[data-chapter-locked]{opacity:1}
+.battle-psd-main .psd-hit-patrol[data-chapter-locked]::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  -webkit-backdrop-filter:grayscale(1) brightness(.65);backdrop-filter:grayscale(1) brightness(.65);
+  clip-path:polygon(8.2% 17%,95.6% 17%,95.6% 74%,86.8% 89.2%,.5% 89.2%,.5% 32.4%);
+}
 .battle-psd-main .pl-modal-host{z-index:100}
 
 /* No retired hangar skin below the PSD artwork. */

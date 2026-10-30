@@ -1,9 +1,9 @@
-import { legacyWeaponThemeArt } from './weapon-theme-art.js';
 import { equippedSlots } from './equipment-labels.js';
 import { projectIcon } from './project-ui-art.js';
 import { weaponCatalogSkills } from './weapon-catalog-skills.js';
 import { weaponSkillArtwork } from './weapon-skill-art.js';
 import iconCrops from './psd-choice-icon-crops.json' with { type: 'json' };
+import { weaponThemeArt, legacyWeaponThemeArt } from './weapon-theme-art.js';
 import './weapon-catalog-page.css';
 
 const QUALITIES = ['普通', '优秀', '稀有', '史诗', '传说', '神话'];
@@ -11,8 +11,10 @@ const rankOf = item => Math.max(0, Math.min(5, Math.floor(Number(item.qualityRan
 const sprite = projectIcon;
 const stars = rank => `<span class="wc-stars" aria-hidden="true">${Array.from({length:5},(_,index)=>sprite('star',index < rank ? '' : 'is-icon-muted')).join('')}</span>`;
 function artwork(weapon, helpers, extra = '') {
-  const key = weapon.appearance || weapon.id;
-  const crop = legacyWeaponThemeArt(key) ? null : iconCrops[key]?.crop;
+  // The theme images are already complete, transparent icons. The legacy
+  // crop coordinates only apply to the older weapon-original artwork.
+  const themed = weaponThemeArt(weapon.id) || legacyWeaponThemeArt(weapon.id);
+  const crop = themed ? null : iconCrops[weapon.appearance || weapon.id]?.crop;
   const style = crop ? ` style="--crop-left:${-crop[0]/crop[2]*100}%;--crop-top:${-crop[1]/crop[3]*100}%;--crop-width:${100/crop[2]}%;--crop-height:${100/crop[3]}%;--crop-aspect:${crop[2]/crop[3]}"` : '';
   return `<span class="wc-art ${extra}"${style}><span>${helpers.thumbnail(weapon.id)}</span></span>`;
 }
