@@ -63,6 +63,7 @@ function grant(inventory,progression,reward) {
   else {
     const row=catalog[reward.kind].find(r=>r.id===reward.id);
     if(!row||row.closed)throw new Error('奖励配置不可用');
+    const hadActivePlane=reward.kind==='skins'&&progression.skins.some(row=>row.active);
     const old=progression[reward.kind].find(r=>r.id===reward.id);
     if(reward.kind==='pilots'){
       const grant=grantPilotCards(inventory,progression,reward.id,reward.count,{activate:true});
@@ -77,7 +78,7 @@ function grant(inventory,progression,reward) {
       else progression[reward.kind].push({id:reward.id,star:row.defaultStar,active:true,equipped:false});
       view.isNew=true;
       if(reward.kind==='skins') {
-        if(!progression.role.skinId){progression.role.skinId=reward.id;progression.role.skinStar=row.defaultStar;}
+        if(!hadActivePlane&&!progression.role.skinId){progression.role.skinId=reward.id;progression.role.skinStar=row.defaultStar;}
         const slot=progression.skinSkillSlots.indexOf(0);
         if(slot>=0&&row.stages.find(s=>s.star===row.defaultStar)?.skills.length&&!progression.skinSkillSlots.includes(reward.id))
           progression.skinSkillSlots[slot]=reward.id;

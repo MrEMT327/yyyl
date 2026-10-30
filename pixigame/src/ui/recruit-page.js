@@ -33,13 +33,13 @@ export function recruitPage({snapshot:s,helpers:h,selected}){
   .map(item=>({...item,remaining:Math.max(1,item.triggerAt-Math.max(0,Number(info.pity?.[item.id])||0))}))
   .sort((a,b)=>a.remaining-b.remaining||(a.id==='ur'?-1:1))[0];
  const label=pity?.id==='pilot'?'驾驶员':pity?.id==='ur'?'UR驾驶员':'SSR及以上驾驶员';
- const pityHtml=info.mixed?`<p class="recruit-pity">${info.rookieAvailable?'首次十连 · 至少获得 1 个角色箱':'50 碎片合成角色箱 · 开箱另计未拥有保底'}${info.development?' · 开发免费':''}</p>`:pity?`<p class="recruit-pity" data-pity="${pity.id}" aria-label="${label}，${pity.remaining}抽内必得" aria-live="polite">再招募<strong>${pity.remaining}</strong>次必得<b>${label}</b></p>`:'';
+ const pityHtml=pity?`<p class="recruit-pity" data-pity="${pity.id}" aria-label="${label}，${pity.remaining}抽内必得" aria-live="polite">再招募<strong>${pity.remaining}</strong>次必得<b>${label}</b></p>`:'';
  const single=info.singleCost??info.cost;
  const draw=count=>{
   const cost=count===10?info.tenCost:single;
   if(info.unavailable||cost==null)return '';
   const reason=s.rewardPending?'奖励待保存':s.rewardBusy?'奖励处理中':info.unavailable||cost==null?'暂未开放':'';
-  return `<button type="button" class="rc-draw recruit-draw ${count===10?'is-ten':'is-single'}" data-action="recruit" data-count="${count}" ${reason||s.wallet.diamonds<cost?'disabled':''} aria-label="${count===10?'十次':'单次'}招募，消耗${cost??0}钻石${reason?'，'+e(reason):''}"><strong>${count===10?info.rookieAvailable?'新手十连':'十次招募':'单次招募'}</strong><span class="${s.wallet.diamonds<cost?'is-short':''}">${resourceIcon('diamonds','recruit-cost-icon')}<b>×${cost==null?'—':n(cost)}</b></span></button>`;
+  return `<button type="button" class="rc-draw recruit-draw ${count===10?'is-ten':'is-single'}" data-action="recruit" data-count="${count}" ${reason||s.wallet.diamonds<cost?'disabled':''} aria-label="${count===10?'十次':'单次'}招募，消耗${cost??0}钻石${reason?'，'+e(reason):''}"><strong>${count===10?'十次招募':'单次招募'}</strong><span class="${s.wallet.diamonds<cost?'is-short':''}">${resourceIcon('diamonds','recruit-cost-icon')}<b>×${cost==null?'—':n(cost)}</b></span></button>`;
  };
  const presentation=featured?portraitPresentation(featured):null,portrait=presentation?.image?.replace(/^\.\/assets\//,`${base}assets/`);
  const livePortrait=featured?characterPortrait(featured,'recruit-hero-portrait'):'';
@@ -73,5 +73,5 @@ export function recruitModal(type,s,h,view){
     const name=shortNames[key]||match?.[1]||label,count=match?.[2],art=key==='blueprint'?projectIconUrl('task-log'):nativeRewardPresentation({id:Number(key)}).image;
     return `<div class="recruit-preview-item" aria-label="${e(label)}">${art?h.img(art,'','recruit-preview-icon'):''}<span>${e(name)}</span>${count?`<strong>×${n(Number(count))}</strong>`:''}</div>`;
   }).join('');
-  return {title:'奖励预览',content:`<div class="recruit-reward-summary" data-recruit-pool="${pool}"><div class="recruit-preview-grid" aria-label="招募奖励">${rewardItems}</div><div class="recruit-preview-rules">${info.mixed?`${info.rookieAvailable?'<p>首次十连必得角色箱 ×1</p>':''}<p>${n(s.pilotSupply?.box.required??50)}碎片 → 角色箱 ×1</p>`:info.guaranteeText?`<p>${e(info.guaranteeText)}</p>`:''}</div><button type="button" class="wc-button recruit-preview-back" data-action="close">返回招募</button></div>`};
+  return {title:'奖励预览',content:`<div class="recruit-reward-summary" data-recruit-pool="${pool}"><div class="recruit-preview-grid" aria-label="招募奖励">${rewardItems}</div><div class="recruit-preview-rules">${info.guaranteeText?`<p>${e(info.guaranteeText)}</p>`:''}</div><button type="button" class="wc-button recruit-preview-back" data-action="close">返回招募</button></div>`};
 }

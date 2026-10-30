@@ -1,3 +1,4 @@
+import {createBattleUiFrame} from './battle-ui-frame.js';
 import { bindCloudPointerInput } from './cloud-pointer-input.js';
 import { Container, WebGLRenderer } from '../src/three/display.js';
 import { createPixiCombatUi } from '../src/ui/pixi-lobby.js';
@@ -125,9 +126,10 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const resize=()=>{const width=Math.min(stage.clientWidth,stage.clientHeight*600/1300);canvas.style.width=`${width}px`;canvas.style.height=`${width*1300/600}px`;};
   const observer=new ResizeObserver(resize);observer.observe(stage);resize();
   const input=bindCloudPointerInput({surface:stage,canvas,handlePointer:cloud.handlePointer});
-  const update=()=>{if(disposed)return;sync();cloud.update();renderer.render({container:scene});};
+  const frame=createBattleUiFrame(()=>{sync();cloud.update();renderer.render({container:scene});});
+  const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
-  const destroy=()=>{if(disposed)return;disposed=true;stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
+  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
   window.addEventListener('pagehide',destroy,{once:true});update();
-  return {update,destroy,setSettlement(receipt){settlement=receipt;update();}};
+  return {update,destroy,frame:frame.run,setSettlement(receipt){settlement=receipt;update();}};
 }

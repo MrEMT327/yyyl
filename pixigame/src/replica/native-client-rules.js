@@ -1,4 +1,5 @@
 import { equipmentBoxRules } from './native-equipment-boxes.js';
+import { RANDOM_AIRCRAFT } from './native-aircraft-grants.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import source from './native-acquisition-catalog.json' with {type:'json'};
 import text from './native-acquisition-labels.json' with {type:'json'};
@@ -32,8 +33,8 @@ export function nativeEquipmentBoxPreview(items,gear,time=Date.now()) {
         const entries=group.items.map(item=>({...item,weight:rule.items.find(r=>r[0]===item.id)?.[2]||0}));
         return {...group,...(group.id===311?{name:'随机武器'}:{}),items:entries.map(item=>item.id===902?{...item,name:'随机武器（11种等概率）'}:item),weight:entries.reduce((n,r)=>n+r.weight,0)};
       });
-      rates.push({id:'pilots',name:'驾驶员（自定义奖池）',weight:3000,denominator:100000,
-        items:rule.items.filter(([id])=>id>=40000&&id<50000).map(([id,count,weight])=>({id,count,weight,name:nativeCollectionDisplayName(id)||text.itemNames[id]||`驾驶员 ${id}`}))});
+      const aircraft=RANDOM_AIRCRAFT.map(row=>{const [,count,weight]=rule.items.find(item=>item[0]===row.id);return {id:row.id,name:row.name,count,weight};});
+      rates.push({id:'aircraft',name:'随机飞机',items:aircraft,weight:aircraft.reduce((sum,row)=>sum+row.weight,0),denominator:100000});
     }
     const quotes=[1,10].map(count=>{
       const diamondCost=count===10?row.Ten:single;

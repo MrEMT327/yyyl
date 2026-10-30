@@ -102,7 +102,7 @@ import { NativeBlackHolePullRuntime, NativeBlackHoleBoundaryRuntime, NativeBlack
 
 type AlarmQueueAim = { target: Point; mount: Point; initialAngle: number; lockedDelta?: number };
 type FixedWeaponFirePlan = Omit<NativeDeathFirePlan, 'allowDeadOwner'> & { allowDeadOwner: boolean; externalShapeScale?: number; fireEffectScale?: number };
-type NativeFireGroup = { started: boolean; attributes: Record<string, number> };
+type NativeFireGroup = { started: boolean; attributes: Record<string, number>; equipmentBurstVisual?: boolean };
 type Shot = { silentAudio?: boolean; cooldownResetAttack?: number; fireGroup?: NativeFireGroup; at: number; owner: 'player' | 'enemy'; origin: Point; anchor?: Point; localAnchor?: boolean; ownerUid: number; weaponId: number; angle: number; attack: number; bulletId?: number; bonus?: number; familyId?: number; aimTarget?: Point; realTimeAim?: boolean; aimOffset?: number; radial?: Point; mirror?: number; flags?: number; fireEvent?: boolean; weaponOverride?: RecordData; targetUid?: number; extraTraits?: number; nativeShapeType?: number; nativeDeflectionDegrees?: number; firePositionAngle?: number; alarmAim?: AlarmQueueAim; postAimAngle?: number; fixedFire?: boolean; allowDeadOwner?: boolean };
 type DamageArea = Point & { radius: number; damage: number; element: number; hurtType: number; traits: number; familyId: number; expiresAt: number; hitInterval: number; nextHit: Map<number, number>; critChance: number; critMultiplier: number };
 type EnemyBehavior = {
@@ -227,6 +227,16 @@ export class Simulation {
     return [...this.playerStatuses.visuals().map(item => ({ ...item, x: this.player.x, z: this.player.z })),
       ...this.weaponStatuses.visuals().map(item => ({ ...item, x: this.player.x, z: this.player.z })),
       ...this.statuses.visuals().flatMap(item => { const target = this.enemies.find(e => e.uid === item.targetUid && !e.dead); return target ? [{ ...item, x: target.x, z: target.z }] : []; })];
+  }
+  /** Read-only presentation query; it cannot consume counters, buffs or RNG. */
+  equipmentProjectileAccent(b: Projectile): string | undefined {
+    if(b.owner!=='player'||b.age>.32||b.beam||b.held)return;
+    const skills=this.content.combat.studyLoadout?.battleSkillIds||[];
+    const attrs=this.bulletAttributes.get(b)||{};
+    if((skills.includes(221121)||skills.includes(221122))&&(attrs['CommonDamageAdd%']||0)>=1.25)return 'charged';
+    const base=this.bulletBase.get(b)?.attributes||{};
+    if(!((b.flags||0)&128)&&((b.traits||0)&1)&&(base['BulletTraitAreaScale%']||0)>0)return 'area';
+    if(skills.includes(220121)&&b.equipmentBurstVisual)return 'burst';
   }
   secondary = new Map<number, WeaponState>();
   globalCrit = 0;
@@ -2817,7 +2827,10 @@ export class Simulation {
     const charge = w.mods.find((m: RecordData) => m.type === 'WeaponChargeMod')?.parameters;
     const continued = w.mods.find((m: RecordData) => m.type === 'WeaponContinueMod')?.parameters;
     const firstQueued = this.shots.length;
-    const fireGroup: NativeFireGroup = { started: false, attributes: {} };
+    const baseMulti = this.content.chapter.weapons[weaponId]?.mods.find((m:RecordData)=>m.type==='WeaponMultiMod')?.parameters;
+    const fireGroup: NativeFireGroup = { started: false, attributes: {}, equipmentBurstVisual: owner==='player'
+      &&(this.content.combat.studyLoadout?.battleSkillIds||[]).includes(220121)
+      &&Number(multi.FireCount||0)>Number(baseMulti?.FireCount||0) };
     const state = owner === 'player' ? this.playerWeaponState(familyId) : undefined;
     // Weapon.GetModInfo seeds fireCount=1; Multi adds its configured extra shots.
     const count = Math.max(1, Number(salvo.Count || 1) + (state?.salvo || 0));
@@ -3080,6 +3093,7 @@ export class Simulation {
       trajectory: w.trajectory, trajectoryParameters: w.trajectoryParameters,
       damageDisabled: Boolean(w.trajectoryParameters?.DisableHurtTarget), repeatHits: true, targetUid: shot.targetUid,
     };
+    if(shot.fireGroup?.equipmentBurstVisual)projectile.equipmentBurstVisual=true;
     this.loadoutBulletMotion.set(projectile, { distance: 0, x: projectile.x, z: projectile.z, angle: projectile.angle, deviation: 0 });
     const colliderMod = w.mods.find((mod: RecordData) => mod.type === 'ScaleOnlyColliderMod')?.parameters;
     if (colliderMod) {

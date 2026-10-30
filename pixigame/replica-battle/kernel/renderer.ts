@@ -474,7 +474,9 @@ export class BattleView extends Phaser.Scene {
     }
     this.appearance?.update?.({ time: s.time, coastBackgroundTime: this.coastBackgroundTime, clock: s.clock, camera: this.cameraPosition, phantomActive, runId: s.runId,
       playerHitFlash: s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > .14,
-      flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed, active: s.phase === 'playing' && s.player.hp > 0 },
+      renderDelta: s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .05) : 0,
+      flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed,
+        radius: playerEntity.stats.shape[0] * s.playerScale, active: s.phase === 'playing' && s.player.hp > 0 },
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
     if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, s.player.hitFlash > .14 ? 0xff7777 : 0x3ee4a1);
     if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(s.player.hitFlash);
@@ -607,6 +609,7 @@ export class BattleView extends Phaser.Scene {
       const visualBullet=sourceBullet.owner==='player'&&!sourceBullet.familyId?{...sourceBullet,familyId:this.content.chapter.player.weaponEntityId}:sourceBullet;
       // The basic and wing shots use the short flat body. Piercing has its
       // own longer sprite, while the heavy branch retains its round body.
+      this.pathogenic.equipmentAccent(visualBullet,s.equipmentProjectileAccent(bullet),(x,z)=>this.screen(x,z));
       const cannonModel=visualBullet.modelId===1000050?1000050
         :visualBullet.familyId===200151&&visualBullet.modelId===1000049?1000049
         :((visualBullet.familyId===200151&&visualBullet.modelId===1000000)

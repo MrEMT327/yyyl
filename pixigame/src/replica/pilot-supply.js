@@ -3,7 +3,6 @@ import { AIRCRAFTS } from '../pilots.js';
 import { normalizeGrowthSupplyClaims, growthSupplySnapshot, claimGrowthSupply } from './growth-supply.js';
 import { ITEM_USE_BATCH_LIMIT, isItemUseBatchCount } from './item-use-batches.js';
 import { grantPilotCards, pilotAtMaxStar, pilotCreditReward, PILOT_CREDIT_COST } from './pilot-copy-grants.js';
-import { collectionSupplySnapshot, claimCollectionSupply } from './collection-supply.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import catalog from './native-economy-catalog.json' with {type:'json'};
 import { NATIVE_PILOT_SKINS, isRosterPilot } from './native-pilot-roster.js';
@@ -15,14 +14,6 @@ import { nativeItemArt } from './native-item-presentation.js';
 import { nativeItemDisplayName } from './native-item-names.js';
 import { pilotFragmentForPilot } from './native-pilot-fragments.js';
 
-export const PILOT_SUPPLY_POOL = Object.freeze([
-  {id:926,amount:3,weight:70,name:'角色箱碎片'},
-  {id:925,amount:1,weight:2,name:'角色箱'},
-  {id:113,amount:1,weight:10,name:'普通装备箱券'},
-  {id:112,amount:1,weight:3,name:'高级装备箱券'},
-  {id:1,amount:1000,weight:10,name:'金币'},
-  {id:'blueprint',amount:10,weight:5,name:'装备图纸（随机一种）'},
-]);
 const exchangeRoster=catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id));
 const roster=exchangeRoster.filter(row=>![40100,40101].includes(row.id));
 const recruitRarity=row=>AIRCRAFTS.find(p=>p.id===NATIVE_PILOT_SKINS[row.id])?.rarity;
@@ -36,6 +27,9 @@ export const DIRECT_RECRUIT_RESOURCES=Object.freeze([
   Object.freeze({id:'blueprint',amount:10,weight:15,name:'随机装备图纸'}),
   Object.freeze({id:112,amount:1,weight:5,name:'高级箱券'}),
 ]);
+const RECRUIT_COST=100;
+const RECRUIT_PITY=Object.freeze({pilot:10,ssr:30,ur:70});
+const RESOURCE_KEYS={1:'coins',113:'basicKey',blueprint:'blueprint',112:'advancedKey'};
 const blueprints=[105,106,107,108,109];
 const DAILY_ACTIVITY_FRAGMENTS=5, AD_FRAGMENTS=5, WEEKLY_FRAGMENTS=25;
 const INTRO_BATTLE_REWARDS=[{id:1,amount:300},{id:106,amount:5}];
@@ -73,6 +67,7 @@ function history(raw,box=false) {
 }
 function ledger(raw,time) {
   const today=flightDay(time),week=weekStart(today);
+  // Historical receipt fields remain readable; they never select the current recruitment policy.
   const l=structuredClone(raw??{version:1,total:0,newbieTenClaimed:false,history:[],boxOpened:0,boxMisses:0,
     boxHistory:[],cardCredits:0,daily:{day:today,battles:0,claimed:[],activityClaimed:false,ads:0},
     week:{start:week,activeDays:[],claimed:false}});
@@ -80,7 +75,7 @@ function ledger(raw,time) {
   // Older direct-only records guarantee a character on every draw, so their
   // character miss count is exactly zero; retain existing high-rarity pity.
   l.directRecruit.pilot??=0;
-  if(![l.directRecruit.pilot,l.directRecruit.ssr,l.directRecruit.ur,l.directRecruit.total].every(safe)||l.directRecruit.pilot>=10||l.directRecruit.ssr>=30||l.directRecruit.ur>=70)throw Error('招募保底记录无效');
+  if(![l.directRecruit.pilot,l.directRecruit.ssr,l.directRecruit.ur,l.directRecruit.total].every(safe)||Object.entries(RECRUIT_PITY).some(([key,limit])=>l.directRecruit[key]>=limit))throw Error('招募保底记录无效');
   // Preserve points already earned under the previous three-task schedule.
   if(l.daily&&l.daily.taskVersion===undefined){
     const claimed=Array.isArray(l.daily.claimed)?l.daily.claimed:[];
@@ -171,21 +166,22 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
   const missing=roster.filter(row=>!progression.pilots.some(p=>p.id===row.id&&p.active));
   const weekly=weeklyTaskView(l,taskCounters.weekly);
   return {revision:inventory.revision,history:l.history,boxHistory:l.boxHistory,development:UNLOCK_ALL_CONTENT,
-    collection:collectionSupplySnapshot(progression,inventory,l,campaign),
+    collection:{},
     growth:growthSupplySnapshot(progression,inventory,l,campaign),
     pool:{id:'pilot',mixed:false,direct:true,originLabel:'驾驶员招募',development:UNLOCK_ALL_CONTENT,
-      singleCost:UNLOCK_ALL_CONTENT?0:100,tenCost:UNLOCK_ALL_CONTENT?0:1000,totalPulls:l.total,
-      probabilities:{pilot:.2,coins:.4,basicKey:.2,blueprint:.15,advancedKey:.05},
+      singleCost:UNLOCK_ALL_CONTENT?0:RECRUIT_COST,tenCost:UNLOCK_ALL_CONTENT?0:RECRUIT_COST*10,totalPulls:l.total,
+      probabilities:{pilot:DIRECT_RECRUIT_PILOT_WEIGHT/100,...Object.fromEntries(DIRECT_RECRUIT_RESOURCES.map(row=>[RESOURCE_KEYS[row.id],row.weight/100]))},
       probabilityLabels:{pilot:'驾驶员',coins:'金币 ×1000',basicKey:'普通箱券 ×1',blueprint:'随机装备图纸 ×10',advancedKey:'高级箱券 ×1'},
       rarityProbabilities:DIRECT_RECRUIT_RATES,
       resources:DIRECT_RECRUIT_RESOURCES.map(r=>({...r,image:nativeItemArt(r.id==='blueprint'?105:r.id)})),
       pity:{pilot:l.directRecruit.pilot,ssr:l.directRecruit.ssr,ur:l.directRecruit.ur},
-      pityDetails:[{id:'pilot',triggerAt:10},{id:'ssr',triggerAt:30},{id:'ur',triggerAt:70}],
-      guaranteeText:'10抽内必得驾驶员 · 30抽内SSR及以上 · 70抽内UR',
+      pityDetails:Object.entries(RECRUIT_PITY).map(([id,triggerAt])=>({id,triggerAt})),
+      guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员 · ${RECRUIT_PITY.ssr}抽内SSR及以上 · ${RECRUIT_PITY.ur}抽内UR`,
       duplicateText:'重复驾驶员转为对应碎片 ×50。',
-      rules:['单次100钻石，十次1000钻石。','基础概率：驾驶员20%、金币40%、普通箱券20%、随机装备图纸15%、高级箱券5%。',
-        '驾驶员稀有度条件概率：R／SR／SSR／UR为74%／20%／5%／1%。',
-        '10抽内必得驾驶员；30抽内必得SSR或UR，70抽内必得UR。单抽与十连共享保底；UR同时重置三项计数。',
+      rules:[`单次${RECRUIT_COST}钻石，十次${RECRUIT_COST*10}钻石。`,
+        `基础概率：驾驶员${DIRECT_RECRUIT_PILOT_WEIGHT}%、${DIRECT_RECRUIT_RESOURCES.map(row=>row.name+row.weight+'%').join('、')}。`,
+        `驾驶员稀有度条件概率：${Object.keys(DIRECT_RECRUIT_RATES).join('／')}为${Object.values(DIRECT_RECRUIT_RATES).map(rate=>rate*100+'%').join('／')}。`,
+        `${RECRUIT_PITY.pilot}抽内必得驾驶员；${RECRUIT_PITY.ssr}抽内必得SSR或UR，${RECRUIT_PITY.ur}抽内必得UR。单抽与十连共享保底；UR同时重置三项计数。`,
         '首次获得激活驾驶员；重复驾驶员转为对应碎片，可在背包合成同名卡。']},
     candidates:roster.map(row=>({id:row.id,skinId:NATIVE_PILOT_SKINS[row.id],name:pilotName(row),
       owned:progression.pilots.some(p=>p.id===row.id&&p.active),
@@ -217,15 +213,18 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
   let title='获得奖励',cost=0,taskActivityOnly=false;
   if(operation.action==='draw') {
     const count=operation.count;if(![1,10].includes(count))throw Error('请选择单次或十次招募');
-    cost=UNLOCK_ALL_CONTENT?0:count*100;debit(2,cost);
+    cost=UNLOCK_ALL_CONTENT?0:count*RECRUIT_COST;debit(2,cost);
     for(let i=0;i<count;i++){
       const pity=l.directRecruit;
-      const forced=pity.pilot>=9||pity.ssr>=29||pity.ur>=69;
+      const forced=Object.entries(RECRUIT_PITY).some(([key,limit])=>pity[key]>=limit-1);
       const bucket=forced?0:randomTicket(100);
       if(bucket<DIRECT_RECRUIT_PILOT_WEIGHT){
         const roll=randomTicket(10000)/10000;
-        const rarity=pity.ur>=69?'UR':pity.ssr>=29?(roll<5/6?'SSR':'UR'):
-          roll<.74?'R':roll<.94?'SR':roll<.99?'SSR':'UR';
+        const rates=DIRECT_RECRUIT_RATES;
+        let remaining=Math.round(roll*10000);
+        const rarity=pity.ur>=RECRUIT_PITY.ur-1?'UR':pity.ssr>=RECRUIT_PITY.ssr-1
+          ?(roll<rates.SSR/(rates.SSR+rates.UR)?'SSR':'UR')
+          :Object.entries(rates).find(([,rate])=>(remaining-=Math.round(rate*10000))<0)?.[0]||'UR';
         const candidates=roster.filter(row=>recruitRarity(row)===rarity);
         const unfinished=candidates.filter(row=>!pilotAtMaxStar(progression,row.id));
         const pool=unfinished.length?unfinished:candidates;
@@ -288,8 +287,7 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
     const result=claimGrowthSupply(progression,inventory,l,campaign,operation);
     rewards.push(...result.rewards);title=result.title;
   }else if(operation.action==='collection') {
-    const result=claimCollectionSupply(progression,inventory,l,operation,campaign);
-    rewards.push(...result.rewards);title=result.title;
+    throw Error('机炮／飞机自选补给已停用');
   }else if(operation.action==='task') {
     const task=tasks.find(t=>t.id===operation.id);
     if(!task||l.daily.claimed.includes(task.id)||!UNLOCK_ALL_CONTENT&&taskCount(task,l,taskCounters.daily)<task.target)throw Error('任务未完成或已领取');

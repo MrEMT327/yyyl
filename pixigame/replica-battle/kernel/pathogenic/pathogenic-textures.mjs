@@ -47,7 +47,14 @@ export function installGradientTexture(scene,graph,descriptor) {
   // Phaser's wrapper owns context restoration/deletion. Replace its upload step,
   // so restoration re-uploads the same source Float32 data rather than RGBA8.
   wrapper._processTexture=function(){
-    const gl=this.gl,previous=gl.getParameter(gl.TEXTURE_BINDING_2D);
+    const gl=this.gl;
+    if(gl.isContextLost())return;
+    // WebGL1 extension enablement is reset with the context. Phaser recreates
+    // wrapped textures before its final renderer extension setup, so reacquire
+    // the exact float capabilities here before uploading the original HDR data.
+    if(!isWebGL2&&!gl.getExtension('OES_texture_float'))throw Error('Float textures unavailable: cannot preserve source HDR gradients');
+    if(!gl.getExtension('OES_texture_float_linear'))throw Error('Float texture linear filtering unavailable');
+    const previous=gl.getParameter(gl.TEXTURE_BINDING_2D);
     gl.bindTexture(gl.TEXTURE_2D,this.webGLTexture);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);

@@ -1,14 +1,21 @@
 import {transformPoint} from './source-scene-sampler.mjs';
 import {sampleCurve,sampleGradient} from './pathogenic-particles.mjs';
-export function inverseMatrix(m){const d=m[0]*m[3]-m[1]*m[2];if(!Number.isFinite(d)||Math.abs(d)<1e-12)throw Error('Singular source transform');return [m[3]/d,-m[1]/d,-m[2]/d,m[0]/d,(m[2]*m[5]-m[3]*m[4])/d,(m[1]*m[4]-m[0]*m[5])/d];}
-export const matrix3=m=>[m[0],m[1],0,m[2],m[3],0,m[4],m[5],1];
-export const matrix4=m=>[m[0],m[1],0,0,m[2],m[3],0,0,0,0,1,0,m[4],m[5],0,1];
-export function spriteGeometry(sprite){
-  const [x,y,w,h]=sprite.localRect;
-  const points=[[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
-  const [u,v,uw,vh]=sprite.texture.crop??[0,0,sprite.texture.width,sprite.texture.height];
-  const us=sprite.flipX?[u+uw,u]:[u,u+uw],vs=sprite.flipY?[v+vh,v]:[v,v+vh];
-  return {vertices:points.map((p,i)=>({position:transformPoint(sprite.matrix,p),uv:[us[i===1||i===2?1:0],vs[i>=2?1:0]],color:sprite.color})),indices:[0,1,2,0,2,3]};
+export function inverseMatrix(m,out=new Array(6)){
+ const [a,b,c,d,x,y]=m,det=a*d-b*c;if(!Number.isFinite(det)||Math.abs(det)<1e-12)throw Error('Singular source transform');
+ out[0]=d/det;out[1]=-b/det;out[2]=-c/det;out[3]=a/det;out[4]=(c*y-d*x)/det;out[5]=(b*x-a*y)/det;return out;
+}
+export function matrix3(m,out=new Array(9)){const [a,b,c,d,x,y]=m;out[0]=a;out[1]=b;out[2]=0;out[3]=c;out[4]=d;out[5]=0;out[6]=x;out[7]=y;out[8]=1;return out;}
+export function matrix4(m,out=new Array(16)){const [a,b,c,d,x,y]=m;out[0]=a;out[1]=b;out[2]=0;out[3]=0;out[4]=c;out[5]=d;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=1;out[11]=0;out[12]=x;out[13]=y;out[14]=0;out[15]=1;return out;}
+export function spriteGeometry(sprite,out){
+ const [x,y,w,h]=sprite.localRect,m=sprite.matrix,t=sprite.texture,crop=t.crop;
+ const u=crop?crop[0]:0,v=crop?crop[1]:0,uw=crop?crop[2]:t.width,vh=crop?crop[3]:t.height;
+ out??={vertices:Array.from({length:4},()=>({position:[0,0],uv:[0,0],color:null})),indices:[0,1,2,0,2,3]};
+ for(let i=0;i<4;i++){
+  const right=i===1||i===2,bottom=i>=2,px=right?x+w:x,py=bottom?y+h:y,vertex=out.vertices[i];
+  vertex.position[0]=m[0]*px+m[2]*py+m[4];vertex.position[1]=m[1]*px+m[3]*py+m[5];
+  vertex.uv[0]=(sprite.flipX?!right:right)?u+uw:u;vertex.uv[1]=(sprite.flipY?!bottom:bottom)?v+vh:v;vertex.color=sprite.color;
+ }
+ return out;
 }
 
 /*

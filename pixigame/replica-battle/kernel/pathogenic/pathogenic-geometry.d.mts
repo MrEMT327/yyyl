@@ -1,5 +1,5 @@
-export function inverseMatrix(m: any): number[];
-export function spriteGeometry(sprite: any): {
+export function inverseMatrix(m: any, out?:number[]): number[];
+export function spriteGeometry(sprite: any, out?:any): {
     vertices: {
         position: any[];
         uv: any[];
@@ -18,5 +18,5 @@ export function lineGeometry(graph: any, line: any): {
     indices: any[];
     unsupported: any[];
 };
-export function matrix3(m: any): any[];
-export function matrix4(m: any): any[];
+export function matrix3(m: any, out?:any[]): any[];
+export function matrix4(m: any, out?:any[]): any[];

@@ -1,3 +1,4 @@
+import {createBattlePerformanceReporter} from '../src/replica/battle-performance.js';
 import {createBattleLaunch} from './battle-launch.js';
 import './battle-launch.css';
 import { developerSkillsEnabled } from '../src/developer-battle-settings.js';
@@ -38,6 +39,8 @@ const lifetime = createBattleLifetime();
 const researchMode = new URLSearchParams(location.search).get('study') === '1';
 const CHANNEL = 'shnh-replica-battle-v1';
 const session = new URLSearchParams(location.search).get('session');
+const battlePerformance=createBattlePerformanceReporter({session});
+lifetime.add(()=>battlePerformance.destroy());
 const requestedChapter = replicaChapter(Number(new URLSearchParams(location.search).get('chapter')));
 const send = (type: string, payload: Record<string, unknown> = {}) => parent.postMessage({ channel: CHANNEL, session, type, ...payload }, location.origin);
 const reportLoading = (phase: string, progress: number) => {
@@ -111,10 +114,12 @@ async function initialize(appearance: any) {
   lifetime.add(() => disposeNativeAudio(audio));
   let controls: Controls, ui: Interface, accumulated = 0, lastPhase = '';
   let activity: ReturnType<typeof createBattleActivity> | undefined;
+  let cloudFrame=(callback:()=>void)=>callback();
   const graphics = createBattleGraphics({signal:lifetime.signal,onChange:()=>{activity?.enforce();ui?.update();}});
   lifetime.add(() => graphics.destroy());
+  const watchGraphics=(canvas:HTMLCanvasElement,context:WebGLRenderingContext|WebGL2RenderingContext)=>{graphics.watch(canvas,context);battlePerformance.watch(canvas,context);};
   reportLoading('appearance',0);
-  const skin = await createAppearance(content, appearance, fail, graphics.watch, (completed,total)=>reportLoading('appearance',completed/total), ()=>audio.effect('project:flight-roll',.22,.5));
+  const skin = await createAppearance(content, appearance, fail, watchGraphics, (completed,total)=>reportLoading('appearance',completed/total), ()=>audio.effect('project:flight-roll',.22,.5));
   lifetime.add(() => skin.dispose());
   const launch=createBattleLaunch({
     stage,player:()=>sim.player,bounds:()=>sim.cameraWorldBounds,
@@ -137,7 +142,7 @@ async function initialize(appearance: any) {
   };
   const scene = new BattleView(projectExperienceContent(content), sim, () => {
     installSafeTouchCancel(scene.game.input);
-    graphics.watch(scene.game.canvas, (scene.game.renderer as import('phaser').Renderer.WebGL.WebGLRenderer).gl);
+    watchGraphics(scene.game.canvas, (scene.game.renderer as import('phaser').Renderer.WebGL.WebGLRenderer).gl);
     memoryCheckpoint('battle-textures-ready');
     ui.update(); studyLoadout?.update(); send(researchMode ? 'research-ready' : 'ready');
   }, skin);
@@ -173,7 +178,8 @@ async function initialize(appearance: any) {
       ui.update(); reportPhase();
     };
     reportLoading('interface',0);
-    const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,onGraphicsContext:graphics.watch});
+    const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,onGraphicsContext:watchGraphics});
+    cloudFrame=cloud.frame;
     applySettlement=receipt=>cloud.setSettlement(receipt);
     lifetime.add(() => {applySettlement=undefined;receiveReviveAd=undefined;cloud.destroy();});
     if (!lifetime.disposed) memoryCheckpoint('battle-ui-ready');
@@ -261,7 +267,7 @@ async function initialize(appearance: any) {
   const logicStep = 1 / nativeLogicRate;
   const nativeDelta = nativeLogicDelta;
   let backgroundRunId = sim.runId;
-  scene.onFrame = delta => {
+  scene.onFrame = delta => cloudFrame(() => {
     if (lifetime.disposed) return;
     if (backgroundRunId !== sim.runId) { backgroundRunId = sim.runId; scene.coastBackgroundTime = 0; }
     if (!activity!.enforce()) { accumulated = 0; return; }
@@ -308,7 +314,7 @@ async function initialize(appearance: any) {
     audio.syncContinuous(activeCombatSounds(sim.projectiles, sim.phase === 'playing' && sim.player.hp > 0, sim.enemies));
     audio.syncCharges(sim.activeEnemyCharges());
     syncWeaponSkins(); ui.update(); studyLoadout?.update(); reportPhase();
-  };
+  });
   stage.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { passive: true, signal:lifetime.signal });
   // Attach before Phaser starts preload; its loader reports completed assets.
   const preload=scene.preload.bind(scene);
@@ -318,6 +324,7 @@ async function initialize(appearance: any) {
     preload();
   };
   const game = makeGame(scene);
+  battlePerformance.attach(game);
   lifetime.add(() => { scene.onFrame = undefined; disposeNativeGame(game); });
 }
 

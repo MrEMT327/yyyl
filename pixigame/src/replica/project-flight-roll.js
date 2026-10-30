@@ -1,14 +1,18 @@
 // Presentation-only barrel roll. Movement and elapsed time come from immutable
 // simulation snapshots; this module cannot move the player or grant a dodge.
-export const FLIGHT_ROLL_SECONDS=.72;
-const TRAVEL=.10,COOLDOWN=.6,QUEUE_SECONDS=1.55;
+export const FLIGHT_ROLL_SECONDS=.56;
+const TRAVEL=.10,COOLDOWN=.4,QUEUE_SECONDS=.55;
 export function createFlightRollState(){
-  return {elapsed:null,direction:0,cooldown:0,gesture:0,travel:0,latched:0,pending:0,pendingTime:0,serial:0};
+  return {elapsed:null,rate:1,direction:0,cooldown:0,gesture:0,travel:0,latched:0,pending:0,pendingTime:0,serial:0};
 }
 export function sampleFlightRoll(state,{dt,vx,vz}){
   state.cooldown=Math.max(0,state.cooldown-dt);
   if(state.elapsed!==null){
-    state.elapsed+=dt;
+    // A committed opposite gesture accelerates the unfinished revolution.
+    // The hull stays continuous; the next bank no longer waits a full roll.
+    const opposite=Math.sign(vx)===-state.direction&&Math.abs(vx)>=.55&&Math.abs(vx)>=Math.abs(vz)*1.15;
+    if(opposite)state.rate=Math.min(3,Math.max(state.rate,(FLIGHT_ROLL_SECONDS-state.elapsed)/.16));
+    state.elapsed+=dt*state.rate;
     if(state.elapsed>=FLIGHT_ROLL_SECONDS-1e-9)state.elapsed=null;
   }
   state.pendingTime=Math.max(0,state.pendingTime-dt);
@@ -30,8 +34,8 @@ export function sampleFlightRoll(state,{dt,vx,vz}){
         state.pending=direction;state.pendingTime=QUEUE_SECONDS;
       }
     }
-    if(state.pending===direction&&state.elapsed===null&&state.cooldown===0){
-      state.direction=direction;state.elapsed=0;state.cooldown=COOLDOWN;
+    if(state.pending===direction&&state.elapsed===null&&(state.cooldown===0||direction!==state.direction)){
+      state.direction=direction;state.elapsed=0;state.rate=1;state.cooldown=COOLDOWN;
       state.pending=0;state.serial++;
     }
   }

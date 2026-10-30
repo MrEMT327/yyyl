@@ -1,3 +1,4 @@
+import {ParticleFrameCache} from './particle-frame-cache.mjs';
 /*
  * Source: Godot 4.7 ParticleProcessMaterial / renderer_rd particles.glsl.
  * Copyright (c) 2014-present Godot Engine contributors.
@@ -99,10 +100,16 @@ function noiseDirection(p,pos,time){
  const [[x0,x1],[y0,y1],[z0,z1]]=pairs;
  return scale(norm([(y1[2]-y0[2])-(z1[1]-z0[1]),(z1[0]-z0[0])-(x1[2]-x0[2]),(x1[1]-x0[1])-(y1[0]-y0[0])]),mix(.9,1,strength-9));
 }
-function rotateHue(c,a){const co=Math.cos(a),si=Math.sin(a),base=[[.299,.299,.299],[.587,.587,.588],[.114,.114,.114]],cos=[[.701,-.299,-.300],[-.587,.413,-.588],[-.114,-.114,.886]],sin=[[.168,-.328,1.250],[.330,.035,-1.050],[-.497,.292,-.203]];
- // Matrices above are represented as rows after transposing GLSL constructors.
- base[1][2]=.587;
- return [0,1,2].map(i=>dot(base[i].map((v,j)=>v+co*cos[i][j]+si*sin[i][j]),c.slice(0,3))).concat(c[3]);
+function rotateHue(c,a){
+ const co=Math.cos(a),si=Math.sin(a),r=c[0],g=c[1],b=c[2];
+ // Keep the original coefficient values and exact scalar operation order.
+ // The initial zero matches dot()'s reduction, including signed zero.
+ return [
+  ((0+(.299+co*.701+si*.168)*r)+(.299+co*(-.299)+si*(-.328))*g)+(.299+co*(-.300)+si*1.250)*b,
+  ((0+(.587+co*(-.587)+si*.330)*r)+(.587+co*.413+si*.035)*g)+(.587+co*(-.588)+si*(-1.050))*b,
+  ((0+(.114+co*(-.114)+si*(-.497))*r)+(.114+co*(-.114)+si*.292)*g)+(.114+co*.886+si*(-.203))*b,
+  c[3],
+ ];
 }
 function range(p,k,r,def=0){const a=p[k+'_min']??def,b=p[k+'_max']??def;return mix(a,b,r());}
 function initial(g,p,number,seed){
@@ -172,7 +179,13 @@ export function sampleParticles(g,node,age,seed=1,options={}){
  if(!Number.isFinite(age)||age<start||clock<0||!(lifetime>0)||!(speed>0)||!(amount>0)||(!enabled&&!Number.isFinite(options.stopAge)))return {instances,trails,unsupported};
  const local=np.local_coords??false,fps=np.fixed_fps??30,dt=fps>0?1/fps:(options.timeStep??1/60);
  const cache=options.cache,cacheSignature=cache?JSON.stringify([lifetime,amount,dt,local,speed,start,pre,seed]):null;
- if(cache&&(cache.signature!==cacheSignature||cache.material!==p)){cache.clear();cache.signature=cacheSignature;cache.material=p;}
+ if(cache&&(cache.signature!==cacheSignature||cache.material!==p)){
+  // Lifecycle overrides are owned copies. Equal process parameters must not
+  // replay every living particle from birth merely because identity changed.
+  const materialSignature=JSON.stringify(p);
+  if(cache.signature!==cacheSignature||cache.materialSignature!==materialSignature)cache.clear();
+  cache.signature=cacheSignature;cache.material=p;cache.materialSignature=materialSignature;
+ }
  const liveCacheKeys=new Set();
  const cycleFirst=np.one_shot?0:Math.max(0,Math.floor((clock-lifetime-(np.trail_lifetime??.3))/lifetime));
  const cycleLast=np.one_shot?0:Math.floor(clock/lifetime);
@@ -209,7 +222,7 @@ export function sampleParticles(g,node,age,seed=1,options={}){
    if(p.turbulence_enabled){const noise=norm(noiseDirection(p,pos,now)),infl=clamp(dy.turbulence*scalar(g,p,'turbulence_influence_over_life',life));vel=vecmix(vel,scale(noise,Math.hypot(...vel)*(1+(1-infl)*.2)),infl);controlled=vecmix(controlled,scale(noise,Math.hypot(...controlled)*(1+(1-infl)*.2)),infl);}
    finalVelocity=add(controlled,vel);finalVelocity[2]=0;pos=add(pos,scale(finalVelocity,delta));history.push(frame(t,finalVelocity));
    const retain=np.trail_enabled?Math.ceil((np.trail_lifetime??.3)/dt)+2:1;if(history.length>retain)history.splice(0,history.length-retain);
-   if(cached&&Math.abs(t-step*dt)<1e-10){cached.pos=[...pos];cached.vel=[...vel];cached.finalVelocity=[...finalVelocity];cached.fullSteps=step;cached.randomSeed=state.random.state;cached.history=[...history];}
+   if(cached&&t===step*dt){cached.pos=[...pos];cached.vel=[...vel];cached.finalVelocity=[...finalVelocity];cached.fullSteps=step;cached.randomSeed=state.random.state;cached.history=[...history];}
   }
   const id=`${node.path??'particles'}:${number}`,common={id,texture:np.texture,material:np.material,space:local?'local':'world',number,birthTime:start+(born-pre)/speed};
   if(particleAge<duration)instances.push({...common,...history.at(-1)});
@@ -220,14 +233,22 @@ export function sampleParticles(g,node,age,seed=1,options={}){
 }
 /** One player belongs to one effect instance; reset on new run/owner reuse. */
 export class ParticlePlayer {
- constructor(){this.nodes=new Map();this.age=-Infinity;this.seed=undefined;}
- reset(){this.nodes.clear();this.age=-Infinity;this.seed=undefined;}
+ constructor(){this.nodes=new Map();this.age=-Infinity;this.seed=undefined;this.readonlyFrames=new ParticleFrameCache();}
+ reset(){this.readonlyFrames.clear();this.nodes.clear();this.age=-Infinity;this.seed=undefined;}
  sample(graph,node,age,seed=1,options={}){
   if(age<this.age-1e-9||this.seed!==undefined&&seed!==this.seed)this.reset();
   this.age=age;this.seed=seed;
   const key=options.key??`${node.nodePath??node.path??'.'}:${node.properties?.process_material?.$ref??''}`;
+  this.readonlyFrames.delete(key);
   let cache=this.nodes.get(key);if(!cache){cache=new Map();this.nodes.set(key,cache);}
   return sampleParticles(graph,node,age,seed,{...options,cache});
+ }
+ // Returned arrays are read-only. The renderer supplies a revision for every
+ // emitter-history mutation; live shader/camera projection still runs each frame.
+ sampleReadOnly(graph,node,age,seed=1,options={}){
+  if(age<this.age-1e-9||this.seed!==undefined&&seed!==this.seed)this.reset();
+  const key=options.key??`${node.nodePath??node.path??'.'}:${node.properties?.process_material?.$ref??''}`;
+  return this.readonlyFrames.sample(key,graph,node,age,seed,options,()=>this.sample(graph,node,age,seed,options));
  }
 }
 export { gradientSample as sampleGradient, curveSample as sampleCurve };

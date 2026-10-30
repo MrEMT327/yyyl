@@ -20,3 +20,6 @@ export function sampleScene(graph: any, scenePath: any, ctx?: {}): {
     finished: boolean;
 };
 export const IDENTITY: readonly number[];
+
+/** Internal read-only render sample; unanimated defaults can share source arrays. */
+export const sampleSceneForRender: typeof sampleScene;

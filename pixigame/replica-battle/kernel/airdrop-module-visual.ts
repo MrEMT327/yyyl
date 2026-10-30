@@ -9,6 +9,7 @@ export const MODULE_PROFILES = {
   shield: { color: 0x649fff, label: '护盾强化' },
   overdrive: { color: 0xdd8dff, label: '综合强化' },
   generic: { color: 0x8ce2c7, label: '强化模块' },
+  missile: { color: 0xff8d42, label: '导弹支援' },
 } as const;
 type Profile = keyof typeof MODULE_PROFILES;
 export const MODULE_ITEM_PROFILES: Readonly<Record<number, Profile>> = {
@@ -21,6 +22,7 @@ export const MODULE_ITEM_PROFILES: Readonly<Record<number, Profile>> = {
 };
 
 export function moduleProfile(pickup: Pick<Pickup, 'kind' | 'itemId'>): Profile | undefined {
+  if(pickup.kind === 'trigger' && pickup.itemId === 159)return 'missile';
   return pickup.kind === 'buff' ? MODULE_ITEM_PROFILES[pickup.itemId] ?? 'generic' : undefined;
 }
 
@@ -36,6 +38,11 @@ function drawSymbol(graphics: Phaser.GameObjects.Graphics, profile: Profile, col
       graphics.fillTriangle(horizontal - 1.5, -4, horizontal + 1.5, -4, horizontal, -7);
     }
     graphics.lineBetween(-7, 9, 0, 6).lineBetween(0, 6, 7, 9);
+  } else if (profile === 'missile') {
+    for(const x of [-7,0,7]){
+      graphics.fillRect(x-1.7,-3,3.4,9).fillTriangle(x-2,-3,x+2,-3,x,-7);
+      graphics.lineBetween(x-2,8,x,10).lineBetween(x,10,x+2,8);
+    }
   } else if (profile === 'attack') {
     graphics.strokeCircle(0, 0, 6).fillCircle(0, 0, 1.7);
     for (const direction of [-1, 1]) {
@@ -62,11 +69,22 @@ export function createAirdropModuleVisual(scene: Phaser.Scene, pickup: Pickup): 
   if (!profile) return undefined;
   const color = MODULE_PROFILES[profile].color;
   const shell = scene.add.image(0, 0, TEXTURE).setDisplaySize(60, 60);
-  const light = scene.add.graphics().fillStyle(color, 1).fillRoundedRect(-13, -15, 26, 26, 4);
+  const frame=scene.add.graphics();
+  frame.fillStyle(0x0a1a26,.95).fillRoundedRect(-17,-19,34,36,5);
+  frame.lineStyle(1.25,0x6f8798,.9).strokeRoundedRect(-17,-19,34,36,5);
+  frame.lineStyle(1,color,.9).lineBetween(-12,-20,12,-20).lineBetween(-12,18,12,18);
+  for(const side of [-1,1]){
+    frame.fillStyle(0x899fad,1).fillRoundedRect(side*22-2,-10,4,20,1);
+    frame.fillStyle(0xdce9ed,1).fillRect(side*22-1,-9,2,5);
+    for(const y of [-11,-5,1])frame.fillStyle(color,.65).fillRect(side*14-1,y,2,3);
+  }
+  const light = scene.add.graphics().fillStyle(color, 1).fillRoundedRect(-12, -14, 24, 27, 4);
   const symbol = scene.add.graphics().setPosition(0, -2);
   drawSymbol(symbol, profile, color);
-  const body = scene.add.container(0, 0, [shell, light, symbol]);
-  return scene.add.container(0, 0, [body]).setData('airdropModule', { body, light, profile });
+  const body = scene.add.container(0, 0, [shell, frame, light, symbol]);
+  const shadow=scene.add.graphics().fillStyle(0x03121c,.3).fillEllipse(0,23,32,8);
+  const beacon=scene.add.graphics().lineStyle(1,color,.35).strokeEllipse(0,22,39,12);
+  return scene.add.container(0, 0, [shadow, beacon, body]).setData('airdropModule', { body, light, beacon, profile });
 }
 
 export function airdropModulePose(pickup: Pick<Pickup, 'age' | 'delay' | 'state' | 'stateTime'>) {
@@ -83,5 +101,6 @@ export function updateAirdropModuleVisual(view: Phaser.GameObjects.Container, pi
   const pose = airdropModulePose(pickup);
   visual.body.setPosition(0, pose.y).setScale(pose.scale);
   visual.light.setAlpha(pose.glow);
+  visual.beacon.setAlpha(.35+pose.glow).setScale(.93+pose.glow*.3);
   return true;
 }

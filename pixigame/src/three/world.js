@@ -95,7 +95,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
   const group = new T.Group();
   group.name = 'peripheral-chapter-world';
   scene.add(group);
-  let disposed = false, elapsed = 0, lateral = 0, lastTime = null;
+  let disposed = false, elapsed = 0, lateral = 0, lastTime = null, lastMotionRevision;
   let current = peripheralSceneForStage(initialStage);
   const textures = new Map();
   const status = new Map();
@@ -235,11 +235,11 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     if (disposed) return;
     const nextTime = Number.isFinite(time) ? Math.max(0, time) : 0;
     const nextScene = peripheralSceneForStage(stage);
-    if (nextTime === lastTime && nextScene.id === current.id) return;
-    // Pausing freezes all three layers, including input-driven parallax. On a
-    // new chapter or a new run, apply its initial lateral position immediately.
-    if (nextTime !== lastTime || nextScene.id !== current.id) lateral = Number.isFinite(options.lateral) ? Math.max(-1, Math.min(1, options.lateral)) : 0;
-    elapsed = nextTime; lastTime = nextTime; current = nextScene;
+    if (nextTime === lastTime && nextScene.id === current.id && options.motionRevision === lastMotionRevision) return;
+    // Camera interpolation can advance between equal simulation-time samples.
+    // Refresh the layers then as well, rather than showing a stale position.
+    lateral = Number.isFinite(options.lateral) ? Math.max(-1, Math.min(1, options.lateral)) : 0;
+    elapsed = nextTime; lastTime = nextTime; lastMotionRevision = options.motionRevision; current = nextScene;
     requestScene(current);
     syncLayers();
   }

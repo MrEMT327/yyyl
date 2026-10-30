@@ -1,9 +1,11 @@
+import {compactPilotAvatar} from '../pilot-avatar-icons.js';
 import {emptySlotMark} from './psd-empty-slot.js';
 import {weaponIconUrl} from './weapon-icon-source.js';
 import {supplyWeaponArt} from './supply-visuals.js';
+import {nativeCollectionArt} from '../replica/native-collection-art.js';
 import {GEAR_QUALITY_NAMES,gearName} from '../peripheral/equipment-system.js';
 import {gearDetailSkills,gearDetailIncrease} from './gear-detail-model.js';
-import {equipmentBlueprintArtPath,equipmentArtPath} from '../replica/equipment-art.js';
+import {equipmentArtPath} from '../replica/equipment-art.js';
 import './airframe-equipment-page.css';
 const base=import.meta.env?.BASE_URL??'/';
 // Configuration changes invalidate native combat details until recalculation finishes.
@@ -19,13 +21,13 @@ const card=gearCard;
 export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',filter='all'}={}){
   const {escape:e,number:n}=h,gear=s.equipment,a=s.aircraft.find(item=>item.id===s.aircraftId)||s.aircraft[0];
   const pilot=s.pilots?.find(item=>item.id===s.pilotId)||s.pilots?.[0];
-  const pilotAvatar=pilot?.avatar||pilot?.image;
+  const pilotAvatar=compactPilotAvatar(pilot?.avatar||pilot?.image);
   const mainSlot=s.loadout?.W1;
   const innateId=(typeof mainSlot==='object'?mainSlot?.itemId||mainSlot?.id:mainSlot)||s.innateWeapon||a?.weaponId;
   const innate=s.weapons.find(w=>w.id===innateId);
   const nativeGun=s.replicaCollection?.guns.find(row=>row.equipped);
   const weaponButton=s.replicaCollection
-    ? `<button type="button" class="ag-weapon ag-card ${nativeGun?'is-filled':'is-empty'}" data-action="equipmentWeapons" aria-label="主武器，${e(nativeGun?.name||'选择武器')}"><strong>主武器</strong><span>${nativeGun?(nativeGun.appearance?supplyWeaponArt({id:nativeGun.appearance},h.thumbnail):`<img src="${e(base+'replica-battle/'+nativeGun.icon.replace(/^\//,''))}" alt="">`):emptySlotMark()}</span><b>${nativeGun?`${nativeGun.star} 星`:''}</b></button>`
+    ? `<button type="button" class="ag-weapon ag-card ${nativeGun?'is-filled':'is-empty'}" data-action="equipmentWeapons" aria-label="主武器，${e(nativeGun?.name||'选择武器')}"><strong>主武器</strong><span>${nativeGun?`<img src="${e(nativeCollectionArt(nativeGun))}" alt="${e(nativeGun.name)}" draggable="false">`:emptySlotMark()}</span><b>${nativeGun?`${nativeGun.star} 星`:''}</b></button>`
     : null;
   const list=gear.items.filter(item=>filter==='all'||String(item.type)===filter).sort((x,y)=>(sort==='level'?y.level-x.level:sort==='part'?x.type-y.type:y.quality-x.quality)||Number(y.equipped)-Number(x.equipped)||x.type-y.type||x.uid.localeCompare(y.uid));
   const slot=type=>{
@@ -33,13 +35,13 @@ export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',fil
     return `<div class="ag-position ag-position-${type}">${item?card(item,h,{mount:true}):`<button type="button" class="ag-card ag-mount is-empty" data-action="gearChoosePart" data-part="${type}" aria-label="${e(part.name)}，空槽"><strong>${e(part.name)}</strong>${emptySlotMark()}<b>未装配</b></button>`}</div>`;
   };
   return `<section class="ag-page eq-page" aria-label="驾驶员装备"><div class="ag-hangar eq-hangar">
-    <div class="ag-pilot-card" data-pilot-id="${e(pilot?.id||'')}"><button type="button" class="ag-pilot-select" data-action="catalog" data-kind="pilot" aria-label="查看驾驶员：${e(pilot?.name||'未选择驾驶员')}"><span class="ag-pilot-avatar">${h.img(pilotAvatar,'','ag-pilot-avatar-art')}</span><span class="ag-pilot-info"><small>驾驶员</small><strong>${e(pilot?.name||'未选择驾驶员')}</strong></span></button><button type="button" class="ag-pilot-stats" data-action="gearAttributes" aria-label="查看战斗属性，攻击${combatStat(s.combatStats?.attack,n)}，耐久${combatStat(s.combatStats?.maxHp,n)}"><span><small>攻击</small><b>${combatStat(s.combatStats?.attack,n)}</b></span><span><small>耐久</small><b>${combatStat(s.combatStats?.maxHp,n)}</b></span></button></div>
+    <div class="ag-pilot-card" data-pilot-id="${e(pilot?.id||'')}"><button type="button" class="ag-pilot-select" data-action="catalog" data-kind="pilot" aria-label="查看驾驶员：${e(pilot?.name||'未选择驾驶员')}"><span class="ag-pilot-avatar">${h.img(pilotAvatar.src,'','ag-pilot-avatar-art',pilotAvatar.srcset?`srcset="${e(pilotAvatar.srcset)}" sizes="min(165px, 22vw, 10.17dvh)" width="320" height="320"`:'')}</span><span class="ag-pilot-info"><small>驾驶员</small><strong>${e(pilot?.name||'未选择驾驶员')}</strong></span></button><button type="button" class="ag-pilot-stats" data-action="gearAttributes" aria-label="查看战斗属性，攻击${combatStat(s.combatStats?.attack,n)}，耐久${combatStat(s.combatStats?.maxHp,n)}"><span><small>攻击</small><b>${combatStat(s.combatStats?.attack,n)}</b></span><span><small>耐久</small><b>${combatStat(s.combatStats?.maxHp,n)}</b></span></button></div>
     <div class="eq-aircraft-stage pl-live-model" aria-label="${e(a?.name||'当前战机')}">${h.preview?.(a?.id,{name:a?.name,view:'equipment'})||h.thumbnail(a?.id,'eq-aircraft-fallback')}</div>
     ${weaponButton ?? `<button type="button" class="ag-weapon ag-card ${innate?'is-filled':'is-empty'}" ${innate?`data-psd-quality="${innate.qualityRank||0}" data-action="weapon" data-id="${e(innate.id)}"`:'data-action="equipmentWeapons"'} aria-label="主武器，${e(innate?.name||'选择武器')}${innate?'，本机专武':''}"><strong>主武器</strong><span>${innate?supplyWeaponArt(innate,h.thumbnail):emptySlotMark()}</span>${innate?`<b>Lv.${n(innate.level||1)}</b>`:''}</button>`}
     ${[1,2,3,4,5].map(slot).join('')}
     <div class="ag-catalog" role="group" aria-label="装备功能">${btn('equipmentWeapons',`${h.icon('weapon')}<span>武器</span>`)}${btn('catalog',`${h.icon('plane')}<span>战机</span>`,'data-kind="aircraft"')}${btn('catalog',`${h.icon('pilot')}<span>驾驶员</span>`,'data-kind="pilot"')}</div>
   </div><div class="ag-toolbar"><label class="ag-select"><span class="ag-sr">装备排序</span><select data-gear-select="sort" aria-label="装备排序">${[['quality','按品质排序'],['part','按部位排序'],['level','按等级排序']].map(([id,name])=>`<option value="${id}" ${id===sort?'selected':''}>${name}</option>`).join('')}</select></label>${filter==='all'?'<strong class="ag-toolbar-title">装备</strong>':btn('gearClearFilter','全部装备')}${btn('openWorkshop','改装间')}</div>
-    <div class="ag-inventory eq-inventory"><h2 class="ag-sr">驾驶员装备</h2><div class="ag-grid">${list.map(item=>card(item,h)).join('')}</div>${!list.length?'<p class="ag-empty">暂无该部位装备</p>':''}<div class="ag-inventory-extra"><h2>强化图纸</h2><div class="ag-materials">${gear.blueprints.map(part=>`<button type="button" class="ag-material" data-action="gearSources" data-part="${part.type}" aria-label="${e(part.name)}图纸，拥有${n(part.count)}"><img src="${base}${equipmentBlueprintArtPath(part.id)}" alt=""><span>${e(part.name)}图纸</span><b>×${n(part.count)}</b></button>`).join('')}</div>${Object.values(gear.fodder).some(n=>n>0)?`<h2>合成材料</h2><div class="ag-materials">${Object.entries(gear.fodder).filter(([,count])=>count>0).map(([key,count])=>{const [type,q]=key.split(':').map(Number),part=gear.blueprints.find(p=>p.type===type);return `<button type="button" class="ag-material" data-action="gearMaterialInfo" data-part="${type}" data-quality="${q}"><img src="${gearArt(part.id)}" alt=""><span>${e(part.name)}</span><span>${e(GEAR_QUALITY_NAMES[q])}材料</span><b>×${n(count)}</b></button>`;}).join('')}</div>`:''}<div class="ag-inventory-actions">${btn('gearSources','获取装备与图纸')}</div></div></div></section>`;
+    <div class="ag-inventory eq-inventory"><h2 class="ag-sr">驾驶员装备</h2><div class="ag-grid">${list.map(item=>card(item,h)).join('')}</div>${!list.length?'<p class="ag-empty">暂无该部位装备</p>':''}${Object.values(gear.fodder).some(n=>n>0)?`<div class="ag-inventory-extra"><h2>合成材料</h2><div class="ag-materials">${Object.entries(gear.fodder).filter(([,count])=>count>0).map(([key,count])=>{const [type,q]=key.split(':').map(Number),part=gear.blueprints.find(p=>p.type===type);return `<button type="button" class="ag-material" data-action="gearMaterialInfo" data-part="${type}" data-quality="${q}"><img src="${gearArt(part.id)}" alt=""><span>${e(part.name)}</span><span>${e(GEAR_QUALITY_NAMES[q])}材料</span><b>×${n(count)}</b></button>`;}).join('')}</div></div>`:''}</div></section>`;
 }
 function attributesTable(item,h,next=false){return `<div class="ag-attr-table"><p><span>${h.escape(item.attributeName)}</span><b>${h.number(item.attribute)}${next&&item.nextAttribute!=null?` → <em>${h.number(item.nextAttribute)}</em>`:''}</b></p><p><span>可强化至</span><b>${item.maxLevel}</b></p></div>`;}
 function costRow(item,gear,s,h){

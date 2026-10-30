@@ -18,5 +18,5 @@ export function shopBoxEquipmentCards(modal,s,h) {
     return `<${tag} class="sn-result" data-psd-quality="${Math.max(0,Math.min(5,Math.floor(item.quality/10)-1))}" ${action}>
       <img src="${e(image)}" alt=""><b>${e(item.name)}</b>${status?`<small>${e(status)}</small>`:''}</${tag}>`;
   }).join('');
-  return {cards,note:view?.detailsMissing?'<p class="sn-hint">部分奖励记录缺失</p>':''};
+  return {cards};
 }

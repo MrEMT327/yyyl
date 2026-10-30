@@ -22,6 +22,8 @@ export function sampleParticles(g: any, node: any, age: any, seed?: number, opti
 export const PARTICLE_FIDELITY_LIMITS: readonly string[];
 /** One player belongs to one effect instance; reset on new run/owner reuse. */
 export class ParticlePlayer {
+    /** Read-only render snapshots; emitter history must carry a revision. */
+    sampleReadOnly(graph:any,node:any,age:any,seed?:number,options?:{}):ReturnType<ParticlePlayer["sample"]>;
     nodes: Map<any, any>;
     age: number;
     seed: number;

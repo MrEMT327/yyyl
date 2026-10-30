@@ -1,3 +1,4 @@
+import { compactPilotAvatar } from '../pilot-avatar-icons.js';
 import { characterPortrait } from './character-portraits.js';
 import { projectIcon, projectIconUrl } from './project-ui-art.js';
 import { lobbyCost } from './lobby-cost.js';
@@ -12,7 +13,11 @@ const rank=item=>Math.min(5,Math.max(0,Math.floor(Number(item?.stars)||0)));
 const attrs=(item,kind,e)=>`data-id="${e(item.id)}" data-kind="${kind}"`;
 const button=(action,label,extra='',cls='',disabled=false)=>`<button type="button" class="wc-button ${cls}" data-action="${action}" ${extra}${disabled?' disabled':''}>${label}</button>`;
 const stars=(item,cls='')=>`<span class="wc-stars fc-stars ${cls}" aria-label="${rank(item)}星">${Array.from({length:5},(_,i)=>projectIcon('star',i<rank(item)?'':'is-icon-muted')).join('')}</span>`;
-const portrait=(item,kind,h,cls='')=>kind==='pilot'?h.img(item.avatar||item.image,item.name,cls):h.thumbnail(item.id,cls);
+const portrait=(item,kind,h,cls='')=>{
+  if(kind!=='pilot')return h.thumbnail(item.id,cls);
+  const image=compactPilotAvatar(item.avatar||item.image);
+  return h.img(image.src,item.name,cls,image.srcset?`srcset="${h.escape(image.srcset)}" sizes="min(165px, 22vw, 10.17dvh)" width="320" height="320"`:'');
+};
 const costs=(item,s,h)=>item.cost?lobbyCost(h,{label:'金币',icon:'coin',amount:item.cost.coins||0,available:s.wallet?.coins})+lobbyCost(h,{label:'飞机碎片',icon:'shard',amount:item.cost.aircraftShards||0,available:s.wallet?.aircraftShards}):'';
 const copies=item=>Math.max(0,Number(item.copies)||0);
 const persistent=item=>item.owned&&!item.temporaryUnlocked;
@@ -50,7 +55,7 @@ export function fleetCatalogPage({kind='aircraft',snapshot:s={},selectedId,skill
     :kind==='pilot'?`<aside class="fc-worn-skills"><span>当前<br>装备技能</span>${bank.slots.map((id,index)=>slot(id,index,true)).join('')}</aside>`:'';
   const filters=s.catalogPresentation?.filters||FLEET_FILTERS;
   const activeFilter=filters.some(option=>option.id===filter)?filter:'all';
-  const filtered=items.filter(item=>activeFilter==='owned'?item.owned:activeFilter==='locked'?!item.owned:activeFilter==='all'||(s.catalogPresentation?.skillFor(item)||fleetSkillDefinition(kind,item))?.category===activeFilter);
+  const filtered=items.filter(item=>activeFilter==='owned'?(item.activated??item.owned):activeFilter==='locked'?!(item.activated??item.owned):activeFilter==='all'||(s.catalogPresentation?.skillFor(item)||fleetSkillDefinition(kind,item))?.category===activeFilter);
   const cards=filtered.map(item=>{
     const chosen=item.id===selected.id,using=item.id===activeId,def=s.catalogPresentation?.skillFor(item)||fleetSkillDefinition(kind,item);
     const label=`${titleOf(item,kind)}，${rank(item)}星${item.temporaryUnlocked?'，试玩':item.owned?'':'，未激活'}${using?item.temporaryUnlocked?'中':'，使用中':''}`;

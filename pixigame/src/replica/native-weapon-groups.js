@@ -14,5 +14,7 @@ export function nativeWeaponGroupRows(rows) {
     groups.get(key).push(row);
   }
   return [...groups.values()].map(items => items.find(row => row.equipped)
+    || items.find(row => row.owned && row.id === nativeWeaponGroupId(row))
+    || items.find(row => row.owned)
     || items.find(row => row.id === nativeWeaponGroupId(row)) || items[0]);
 }

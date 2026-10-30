@@ -21,9 +21,9 @@ export interface BattleAppearance {
   preload(scene: Phaser.Scene): void;
   create(scene: Phaser.Scene): void;
   update?(frame: {
-    time: number; coastBackgroundTime?: number; clock: number; camera: Readonly<Point>;
+    time: number; coastBackgroundTime?: number; clock: number; renderDelta?: number; camera: Readonly<Point>;
     phantomActive?: boolean; playerHitFlash?: boolean; runId?: number;
-    flight?: Readonly<{ x: number; z: number; speed: number; active: boolean }>;
+    flight?: Readonly<{ x: number; z: number; speed: number; radius?: number; active: boolean }>;
     mapCameraOffset(layer: NativeMapLayer): Point;
   }): void;
 }

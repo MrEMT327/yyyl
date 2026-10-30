@@ -4,7 +4,7 @@ import {resource,godotEase,transformPoint,IDENTITY} from './source-scene-sampler
 const clamp=x=>Math.max(0,Math.min(1,x));
 const mix=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
-const basename=p=>p.split('/').at(-1).replace(/\.tscn$/,'');
+const basename=p=>{const start=p.lastIndexOf('/')+1;return p.slice(start,p.endsWith('.tscn')?-5:undefined);};
 const SOURCE_ROOT='res://scn/player/projectiles/';
 export const LIFECYCLE_SOURCES=Object.freeze({
   laser:'scn/player/projectiles/laser_beam.gd',

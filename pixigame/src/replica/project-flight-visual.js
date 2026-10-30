@@ -3,23 +3,31 @@
 import {createFlightRollState,sampleFlightRoll} from './project-flight-roll.js';
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 const idle=()=>({bank:0,pitch:0,thrust:0,roll:0,rollActive:false,rollSerial:0});
-export function createFlightVisualState(){return {runId:null,clock:null,x:0,z:0,roll:createFlightRollState(),pose:idle()};}
-export function sampleFlightVisual(state,{clock,runId,flight,visible=true}){
+export function createFlightVisualState(){return {runId:null,clock:null,visualClock:0,motion:{vx:0,vz:0},x:0,z:0,roll:createFlightRollState(),pose:idle()};}
+export function sampleFlightVisual(state,{clock,runId,flight,visible=true,renderDelta}){
   if(!flight||![clock,flight.x,flight.z,flight.speed].every(Number.isFinite))return {...state.pose};
-  const reset=()=>{state.runId=runId;state.clock=clock;state.x=flight.x;state.z=flight.z;state.roll=createFlightRollState();state.pose=idle();return {...state.pose};};
+  const reset=()=>{state.runId=runId;state.clock=clock;state.visualClock=clock;state.motion={vx:0,vz:0};state.x=flight.x;state.z=flight.z;state.roll=createFlightRollState();state.pose=idle();return {...state.pose};};
   if(!visible||state.clock===null||state.runId!==runId||clock<state.clock)return reset();
-  const dt=clock-state.clock;
-  if(dt===0)return {...state.pose};
-  const dx=flight.x-state.x,dz=flight.z-state.z;
-  state.clock=clock;state.x=flight.x;state.z=flight.z;
-  // Rebase after a long suspension or teleport, without a false thrust burst.
-  if(dt>.25||Math.hypot(dx,dz)>Math.max(.5,flight.speed*dt*2))return reset();
-  if(!flight.active)return {...state.pose};
-  const speed=Math.max(.001,flight.speed),vx=dx/dt/speed,vz=dz/dt/speed;
+  const snapshotDelta=clock-state.clock;
+  if(snapshotDelta>0){
+    const dx=flight.x-state.x,dz=flight.z-state.z;
+    // Rebase after a long suspension or teleport, without a false thrust burst.
+    if(snapshotDelta>.25||Math.hypot(dx,dz)>Math.max(.5,flight.speed*snapshotDelta*2))return reset();
+    state.clock=clock;state.x=flight.x;state.z=flight.z;
+    const speed=Math.max(.001,flight.speed);
+    state.motion={vx:dx/snapshotDelta/speed,vz:dz/snapshotDelta/speed};
+  }
+  // Native snapshots still determine motion. Only attitude/engine animation
+  // advances between ticks; pause, restart and teleport keep their reset rules.
+  const dt=Number.isFinite(renderDelta)?clamp(renderDelta,0,.05):snapshotDelta;
+  if(!flight.active||dt<=0)return {...state.pose};
+  state.visualClock+=dt;
+  const {vx,vz}=state.motion;
   const moving=Math.hypot(vx,vz)>.015;
   const target={bank:clamp(-vx,-1,1)*.22,pitch:clamp(-vz,-1,1)*.045,
     thrust:moving?clamp(Math.hypot(vx,vz)*.65+Math.max(0,vz)*.35,0,1):0};
-  const blend=1-Math.exp(-(moving?18:24)*dt);
+  const reversing=state.pose.bank*target.bank<0;
+  const blend=1-Math.exp(-(reversing?48:moving?28:40)*dt);
   for(const key of ['bank','pitch','thrust']){
     state.pose[key]+=(target[key]-state.pose[key])*blend;
     if(Math.abs(state.pose[key])<.0001)state.pose[key]=0;

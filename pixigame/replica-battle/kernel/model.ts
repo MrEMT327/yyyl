@@ -17,6 +17,8 @@ export interface Enemy extends Point {
   urgencyWarning?: { startedAt: number; duration: number; posType: number };
 }
 export interface Projectile extends Point {
+  /** View-only flag captured once for the complete equipment-boosted salvo. */
+  equipmentBurstVisual?: boolean;
   originalThroughCount?: number;
   suppressFirstTargetEvent?: boolean;
   uid: number; owner: 'player' | 'enemy'; weaponId: number; bulletId: number; modelId: number;

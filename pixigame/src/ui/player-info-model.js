@@ -2,6 +2,7 @@ import {GEAR_PARTS} from '../peripheral/equipment-system.js';
 import { NATIVE_AIRCRAFT_SKINS } from '../replica/native-aircraft-skins.js';
 import { NATIVE_PILOT_SKINS } from '../replica/native-pilot-roster.js';
 import {DEFAULT_PLAYER_NAME} from '../player-identity.js';
+import {nativeCollectionIdentity} from '../replica/native-collection-access.js';
 const itemId=value=>typeof value==='object'?value?.itemId||value?.id:value;
 
 // Only equipped slots and completed campaign results are profile evidence.
@@ -41,12 +42,17 @@ export function playerInfoModel(snapshot={},callsign='') {
       passive:{name:list.map(skill=>skill.name).join('、'),description:list.map(skill=>skill.description).join('；')}};
   };
   const gun=row=>({...row,id:row.appearance||String(row.id),nativeRow:row,stars:row.star});
+  const identity=nativeCollectionIdentity(collection,{aircraftId:snapshot.baseAircraftId||snapshot.aircraftId,pilotId:snapshot.basePilotId||snapshot.pilotId});
+  const baseAircraft=snapshot.aircraft?.find(item=>item.id===identity.baseAircraftId);
+  const basePilot=snapshot.pilots?.find(item=>item.id===identity.basePilotId);
   const currentSkin=collection.skins.find(row=>row.id===collection.skinId&&row.owned);
   const currentPilot=collection.pilots.find(row=>row.equipped);
   const currentGun=collection.guns.find(row=>row.equipped);
   return {...model,native:true,
-    aircraft:currentSkin?skin(currentSkin):{...aircraft,name:'基础战机',aircraftName:'基础战机',stars:0,level:undefined},
-    pilot:currentPilot?pilotRow(currentPilot):null,
+    aircraft:currentSkin?skin(currentSkin):{...baseAircraft,name:baseAircraft?.aircraftName||baseAircraft?.name||'基础战机',
+      aircraftName:baseAircraft?.aircraftName||baseAircraft?.name||'基础战机',stars:0,level:undefined,owned:false,available:true},
+    pilot:currentPilot?pilotRow(currentPilot):basePilot?{...basePilot,stars:0,owned:false,available:true,temporaryUnlocked:false,
+      skillName:'',passiveDescription:'',description:'默认驾驶员，养成需单独激活。',passive:{name:'',description:''}}:null,
     main:currentGun?gun(currentGun):null,
     // Cloud slots remain visible; native secondary weapons are chosen in battle.
     weapons:['W3','W4','W5','W6'].map(slot=>({slot,item:null})),

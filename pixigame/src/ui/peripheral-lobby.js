@@ -36,7 +36,6 @@ import { growthSupplyDialog } from './growth-supply-panel.js';
 import { chapterRewardsDialog } from './chapter-rewards-panel.js';
 import { nativeStarRewardsDialog } from './native-star-rewards-panel.js';
 import { pilotSupplyPanel } from './pilot-supply-panel.js';
-import { collectionSupplyDialog } from './collection-supply-panel.js';
 import { isRecruitResult, recruitResultsDialog, recruitRewardsDialog, pilotRecruitResults } from './recruit-results.js';
 import './peripheral-unified.css';
 import { slotLabel, equippedSlots } from './equipment-labels.js';
@@ -404,6 +403,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     modal=parent;renderModal();if(scroll!=null){const content=modalHost.querySelector('.pl-modal-content');if(content)content.scrollTop=scroll;}restoreFocus(modalHost,opener);return true;
   }
   function renderModal() {
+    if(modal?.type==='collectionSupplyChoice')modal=null;
     if(modal&&isResourceShortage(modal.error))modal={...modal,error:''};
     if(modal?.type==='shopConfirm'){
       const result=reconcileShopReview(modal,snapshot);
@@ -413,7 +413,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     // Keep the last portrait image behind a modal without rendering both UI layers.
     portraitPlayer.setVisible(visible&&!modal);
     const modalKey = modal ? `${modal.type}:${modal.id || ''}:${modal.view || ''}` : '';
-    const stableType = modal && (isRecruitResult(modal) || modal.type==='recruitRewards' || COMMAND_PANELS.has(modal.type) || ['chapterRewards','chapterCoreRewards','nativeStarRewards','nativeMaterials','nativeStats','nativeEquipmentBoxes','pilotSupplyTasks','pilotSupplyBoxes','nativeRecruitInfo','playerInfo','formation','chapterChest','patrol','quickPatrol','nativeLab','nativeCollectionDetail','nativeSkillPreview','nativeWeaponPreview','collectionSupplyChoice','growthSupplyChoice','weapon','weaponSkill','weaponSkillGroup','aircraftInfo','pilotInfo','fleetSkill','fleetOperation','workshopBatch','workshopFilter'].includes(modal.type) || modal.type.startsWith('research') || modal.type.startsWith('gear'));
+    const stableType = modal && (isRecruitResult(modal) || modal.type==='recruitRewards' || COMMAND_PANELS.has(modal.type) || ['chapterRewards','chapterCoreRewards','nativeStarRewards','nativeMaterials','nativeStats','nativeEquipmentBoxes','pilotSupplyTasks','pilotSupplyBoxes','nativeRecruitInfo','playerInfo','formation','chapterChest','patrol','quickPatrol','nativeLab','nativeCollectionDetail','nativeSkillPreview','nativeWeaponPreview','growthSupplyChoice','weapon','weaponSkill','weaponSkillGroup','aircraftInfo','pilotInfo','fleetSkill','fleetOperation','workshopBatch','workshopFilter'].includes(modal.type) || modal.type.startsWith('research') || modal.type.startsWith('gear'));
     if (!stableType || renderedModalKey !== modalKey) stateFeedback.clearResult();
     const focused = captureFocus(modalHost);
     const modalScrollSelector = modal?.type==='weapon' ? '.equipment-weapon-detail__scroll' : ['nativeCollectionDetail','nativeSkillPreview'].includes(modal?.type) ? '.cd-scroll,.pl-modal-content:not(:has(.cd-scroll))' : modal?.type?.startsWith('gear') ? '.ag-modal-scroll,.pl-modal-content:not(:has(.ag-modal-scroll))' : '.pl-modal-content';
@@ -510,8 +510,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       ({title,content}=chapterRewardsDialog(snapshot,modal.chapter));
     } else if (modal.type==='growthSupplyChoice') {
       ({title,content}=growthSupplyDialog(snapshot,modal,referenceContext().helpers));
-    } else if (modal.type==='collectionSupplyChoice') {
-      ({title,content}=collectionSupplyDialog(snapshot,modal,referenceContext().helpers));
     } else if (['nativeRecruitInfo','pilotSupplyBoxes','pilotSupplyTasks'].includes(modal.type)) {
       ({title,content}=pilotSupplyPanel(modal.type==='pilotSupplyTasks'?'tasks':'boxes',snapshot,referenceContext().helpers,{period:modal.period}));
     } else if (modal.type === 'nativeStats') {
@@ -565,7 +563,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(snapshot.rewardPending||snapshot.rewardBusy) {
       const template=document.createElement('template');template.innerHTML=content;
       const actions=new Set(['claimSignIn','claimTask','claimActivity','claimAchievement','claimStarReward',
-        'flightReward','pilotSupply','collectionSupplyOpen','collectionSupplyClaim','growthSupplyOpen','growthSupplyClaim','nativeChapterReward','nativeChapterCoreReward','nativeComposePilotBox','shopOffer','shopConfirm','shopBoxOpen','shopRefreshPreview','shopRefreshConfirm','shopRefreshAdConfirm',
+        'flightReward','pilotSupply','growthSupplyOpen','growthSupplyClaim','nativeChapterReward','nativeChapterCoreReward','nativeComposePilotBox','shopOffer','shopConfirm','shopBoxOpen','shopRefreshPreview','shopRefreshConfirm','shopRefreshAdConfirm',
         'shopClaimBoxReward','claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample']);
       for(const node of template.content.querySelectorAll('[data-action]'))if(actions.has(node.dataset.action)) {
         node.disabled=true;node.title=snapshot.rewardPending?'已有奖励待保存，请先重试保存':'奖励正在处理，请稍候';
@@ -861,10 +859,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modalHost.querySelector('[data-growth-choice]')?.focus({preventScroll:true});return;
     }
 
-    if(modal?.type==='collectionSupplyChoice'&&event.target.matches('[data-collection-choice]')&&!busy){
-      modal.choiceId=Number(event.target.value);renderModal();
-      modalHost.querySelector('[data-collection-choice]')?.focus({preventScroll:true});return;
-    }
     if(modal?.type==='backpack'&&event.target.matches('[data-bag-choice]')&&!busy){
       modal.bagChoice=Number(event.target.value);return;
     }
@@ -907,21 +901,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(action==='growthSupplyClaim'){
       if(modal?.type!=='growthSupplyChoice')return;
       await act('pilotSupply',{action:'growth',period:modal.period,id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
-    }
-    if(action==='collectionSupplyOpen'){
-      const kind=target.dataset.kind,view=snapshot.pilotSupply?.collection?.[kind];
-      if(!view)return;
-      const choice=view.claimed?view.candidates.find(row=>row.id===view.claimedId):view.candidates.find(row=>row.id===Number(id)&&row.selectable)||view.candidates.find(row=>row.selectable);
-      modal={type:'collectionSupplyChoice',kind,choiceId:choice?.id,opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};
-      renderModal();return;
-    }
-    if(action==='collectionSupplyClaim'){
-      if(modal?.type!=='collectionSupplyChoice')return;
-      await act('pilotSupply',{action:'collection',kind:modal.kind,id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
-    }
-    if(action==='collectionSupplyDetail'){
-      if(!['guns','skins'].includes(target.dataset.kind))return;
-      modal={type:'nativeCollectionDetail',kind:target.dataset.kind,id:Number(id),returnTo:{...modal}};renderModal();return;
     }
     if(action==='bagOpen'){
       const item=backpackItems(snapshot).find(row=>row.nativeId===Number(id));if(!item)return;
@@ -1085,7 +1064,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         const result=await act('backpackUse',{id:item.nativeId,count,targetId,...(target.dataset.useOperation?{action:target.dataset.useOperation}:{}),
           expectedRevision:Number(target.dataset.revision),expectedGearRevision:Number(target.dataset.gearRevision)});
         if(result?.ok&&rule?.kind==='equipmentKey') {
-          modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(row=>row.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:[],returnTo:origin};renderModal();
+          modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(row=>row.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards||[],aircraft:result.gearResult.aircraftRewards||[],returnTo:origin};renderModal();
         }
         return;
       }
@@ -1247,7 +1226,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (action === 'shopRecruit') {pool='pilot';switchTab('supply');return;}
     if(action==='nativeEquipmentBoxLast'){
       const receipt=snapshot.equipmentBoxReceipt;
-      if(receipt){modal={type:'shopBoxResult',history:true,receipt,drawn:receipt.uids,pilots:receipt.pilotRewards||[],weapons:[],...(modal?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();}
+      if(receipt){modal={type:'shopBoxResult',history:true,receipt,drawn:receipt.uids,pilots:receipt.pilotRewards||[],weapons:receipt.weaponRewards||[],aircraft:receipt.aircraftRewards||[],...(modal?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();}
       return;
     }
     if(action==='shopBoxConfirm'||action==='shopBoxRates'){
@@ -1255,7 +1234,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if(action==='shopBoxOpen'){
       const review=modal,result=await act('gearSupply',{pool:review.pool,count:review.count,expectedRevision:review.revision,expectedInventoryRevision:review.inventoryRevision});
-      modal=result?.ok?{type:'shopBoxResult',drawn:result.gearResult.drawn.map(i=>i.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards}:{...review,error:result?.message};renderModal();return;
+      modal=result?.ok?{type:'shopBoxResult',drawn:result.gearResult.drawn.map(i=>i.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards,aircraft:result.gearResult.aircraftRewards}:{...review,error:result?.message};renderModal();return;
     }
     if(action==='shopClaimBoxReward'){await act('gearClaimBasicReward',{expectedRevision:snapshot.equipment.revision,expectedInventoryRevision:snapshot.nativeAcquisition.revision});return;}
     if(action==='shopRefreshPreview'){

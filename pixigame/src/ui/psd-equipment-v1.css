@@ -115,8 +115,8 @@
 #gui-casual-lobby.equipment-reference .ag-pilot-select .ag-pilot-info { flex:1;align-self:flex-start;padding-top:0;padding-bottom:0;gap:1px; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats { position:absolute;left:24.4cqw;right:2cqw;bottom:1.4cqw;min-width:0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:1cqw;padding:2px 0 0;border:0;border-top:1px solid #81d8fc55;border-radius:0;background:none;box-shadow:none;color:#fff; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats>span { display:flex;flex-direction:column;align-items:flex-start;gap:0;min-width:0;white-space:nowrap; }
-#gui-casual-lobby.equipment-reference .ag-pilot-stats small { font-size:max(10px,2.2cqw);line-height:1.1;color:#b6d7ee; }
-#gui-casual-lobby.equipment-reference .ag-pilot-stats b { font-size:max(11px,2.6cqw);line-height:1.1;font-variant-numeric:tabular-nums; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats small { font-size:max(11px,2.2cqw);line-height:1.1;color:#d0e5f4; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats b { font-size:max(12px,2.6cqw);line-height:1.1;font-variant-numeric:tabular-nums; }
 #gui-casual-lobby.equipment-reference .ag-pilot-card:hover { background-color: #214661; }
 #gui-casual-lobby.equipment-reference .ag-pilot-avatar {
   position: relative;
@@ -133,8 +133,8 @@
   object-fit: cover;
   object-position: center 20%;
 }
-#gui-casual-lobby.equipment-reference .ag-pilot-card[data-pilot-id='pilot-06'] .ag-pilot-avatar-art { object-view-box: inset(3% 3% 55% 12%); object-position: center top; }
-#gui-casual-lobby.equipment-reference .ag-pilot-card[data-pilot-id='pilot-10'] .ag-pilot-avatar-art { object-view-box: inset(0% 26% 63% 27%); }
+#gui-casual-lobby.equipment-reference .ag-pilot-card[data-pilot-id='pilot-06'] .ag-pilot-avatar-art:not([src*='/pilot-head-icons-v1/']) { object-view-box: inset(3% 3% 55% 12%); object-position: center top; }
+#gui-casual-lobby.equipment-reference .ag-pilot-card[data-pilot-id='pilot-10'] .ag-pilot-avatar-art:not([src*='/pilot-head-icons-v1/']) { object-view-box: inset(0% 26% 63% 27%); }
 #gui-casual-lobby.equipment-reference .ag-pilot-info { min-width: 0; display: grid; gap: 1.4cqw; }
 #gui-casual-lobby.equipment-reference .ag-pilot-info small { color: #b6d7ee; font-size: max(11px,2.8cqw); line-height: 1.1; }
 #gui-casual-lobby.equipment-reference .ag-pilot-info strong { min-width:0;font-size:max(13px,3.2cqw);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
@@ -153,7 +153,7 @@
   border: 0;
 }
 #gui-casual-lobby.equipment-reference .ag-catalog .ag-button {
-  --wc-button-height: 12cqw;
+  --wc-button-height: max(48px,12cqw);
   --psd-button-corner: 2.8cqw;
   display: flex;
   flex-direction: column;
@@ -165,12 +165,14 @@
   min-height: var(--wc-button-height);
   min-width: 0;
   padding: .5cqw;
-  font-size: clamp(10px,2.8cqw,14px);
+  font: 600 clamp(12px,3.15cqw,16px)/1.1 'Microsoft YaHei','PingFang SC',sans-serif;
+  text-shadow: none;
 }
-#gui-casual-lobby.equipment-reference .ag-catalog .ag-button>span {white-space:nowrap;line-height:1.2}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button>span {white-space:nowrap;line-height:1.1}
 #gui-casual-lobby.equipment-reference .ag-catalog .pl-icon {
-  width: 5cqw;
-  height: 5cqw;
+  width: clamp(22px,6cqw,34px);
+  height: clamp(22px,6cqw,34px);
+  flex: none;
   min-height: 0;
 }
 #gui-casual-lobby.equipment-reference .ag-stats {
@@ -243,16 +245,25 @@
   bottom: 5%;
   font-size: max(11px,2.5cqw);
   line-height: 1;
-  text-shadow: 0 1px 0 #102538;
+  font-family: 'Microsoft YaHei','PingFang SC',sans-serif;
+  font-weight: 600;
+  text-shadow: 0 1px 1px #102538;
 }
 #gui-casual-lobby.equipment-reference .ag-page .ag-card small { font-size: inherit; }
+#gui-casual-lobby.equipment-reference .ag-page .ag-card :is(.ag-tag,.ag-ready,.ag-lock) {
+  font: 600 clamp(10px,2.4cqw,13px)/1.1 'Microsoft YaHei','PingFang SC',sans-serif;
+  padding: 1px 1px;
+  text-shadow: none;
+}
 #gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-tag {
   display: block;
   top: 5%;
   left: 5%;
-  font-size: max(9px,2.1cqw);
+  font-size: clamp(10px,2.4cqw,13px);
   line-height: 1.1;
-  padding: .4cqw .6cqw;
+  padding: 1px 1px;
+  color: #effff9;
+  background: #164649;
 }
 #gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-lock { right: 8%; top: 8%; }
 #gui-casual-lobby.equipment-reference .ag-page .ag-card.is-selected { outline: 2px solid #fff4a9; outline-offset: -2px; }

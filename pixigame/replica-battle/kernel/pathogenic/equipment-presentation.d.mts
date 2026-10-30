@@ -1,0 +1,10 @@
+type Row=Record<string,any>;
+type Screen=(x:number,z:number)=>{x:number;y:number};
+export function withEquipmentResources(graph:Row):Row;
+export function equipmentProjectileKind(b:Row):string|undefined;
+export function equipmentStatusKind(b:Row):string|undefined;
+export function equipmentEffectKind(b:Row):string|undefined;
+export function equipmentProjectileMeshes(b:Row,screen:Screen):any[];
+export function equipmentStatusMeshes(b:Row,screen:Screen):any[];
+export function equipmentEffectMeshes(b:Row,screen:Screen):any[];
+export function equipmentAccentMeshes(b:Row,style:string|undefined,screen:Screen):any[];

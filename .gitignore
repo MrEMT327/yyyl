@@ -75,6 +75,7 @@ test-results/
 /pixigame/tools/*
 !/pixigame/tools/gm.html
 !/pixigame/tools/check-original-ui-art.mjs
+!/pixigame/tools/check-player-state.mjs
 !/pixigame/tools/audit-replica-snapshot.mjs
 !/pixigame/tools/generate-native-economy.mjs
 !/pixigame/tools/generate-native-weapon-preview.mjs

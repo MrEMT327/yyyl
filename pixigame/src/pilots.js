@@ -1,6 +1,6 @@
 import { isGameSessionCurrent } from './platform/game-session-runtime.js';
 import { pilotAvatarIcon } from './pilot-avatar-icons.js';
-import { DEFAULT_PREVIEW_PILOT_ID, TEMPORARY_PILOT_IDS } from './pilot-preview-access.js';
+import { pilotPreviewAccess } from './pilot-preview-access.js';
 
 const PILOT_STORAGE_KEY = 'thunder-ssr-pilots-v1';
 const RESONANCE_STATE_VERSION = 2;
@@ -441,10 +441,8 @@ function loadPilotState() {
 }
 
 let pilotState = loadPilotState();
-const requestedPreviewPilot = globalThis.location?.search
-  ? new URLSearchParams(globalThis.location.search).get('preview-pilot') : null;
-let sessionPilotId = TEMPORARY_PILOT_IDS.includes(requestedPreviewPilot)
-  ? requestedPreviewPilot : DEFAULT_PREVIEW_PILOT_ID;
+const previewAccess = pilotPreviewAccess();
+let sessionPilotId = previewAccess.selected;
 
 function savePilotState() {
   if (!isGameSessionCurrent()) return false;
@@ -474,7 +472,7 @@ export function getPilotState() {
     ...pilotState,
     selected: sessionPilotId || pilotState.selected,
     persistentSelected: pilotState.selected,
-    temporaryUnlocked: [...TEMPORARY_PILOT_IDS],
+    temporaryUnlocked: previewAccess.unlocked.filter(id => !pilotState.owned.includes(id)),
     owned: [...pilotState.owned],
     resonance: { ...pilotState.resonance },
   };
@@ -489,10 +487,10 @@ export function isPilotOwned(id) {
 }
 
 export function selectPilot(id) {
-  if (!AIRCRAFT_MAP.has(id) || (!isPilotOwned(id) && !TEMPORARY_PILOT_IDS.includes(id))) return false;
+  if (!AIRCRAFT_MAP.has(id) || (!isPilotOwned(id) && !previewAccess.unlocked.includes(id))) return false;
   sessionPilotId = id;
   // Preview selection leaves the user's saved character and ownership intact.
-  if (TEMPORARY_PILOT_IDS.includes(id)) return true;
+  if (!isPilotOwned(id) && previewAccess.unlocked.includes(id)) return true;
   pilotState.selected = id;
   savePilotState();
   return true;

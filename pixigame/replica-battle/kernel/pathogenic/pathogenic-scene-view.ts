@@ -1,19 +1,21 @@
+import {createSourceMeshShaderData,updateSourceMeshShaderData} from './source-mesh-shader-data.mjs';
 import {updateSourceMeshGeometry} from './source-mesh-update.mjs';
 import Phaser from 'phaser';
 import {trimEmitterHistory,VisualMeshPool} from '../combat-readability.mjs';
 import {PathogenicHdrComposite} from './pathogenic-hdr-composite';
-import {sampleScene,resolveTexture,resource,multiplyMatrix} from './source-scene-sampler.mjs';
+import {sampleSceneForRender,resolveTexture,resource,multiplyMatrix} from './source-scene-sampler.mjs';
 import {ParticlePlayer} from './pathogenic-particles.mjs';
-import {spriteGeometry,lineGeometry,inverseMatrix,matrix3,matrix4} from './pathogenic-geometry.mjs';
+import {spriteGeometry,lineGeometry} from './pathogenic-geometry.mjs';
 import {installGradientTexture} from './pathogenic-textures.mjs';
 import {particleTrailGeometry} from './pathogenic-particle-trails.mjs';
 import {registerPathogenicShader} from './pathogenic-shader-pipeline';
 import {PathogenicMaterials,PathogenicScreenSnapshot} from './pathogenic-materials';
 
 type Any = Record<string,any>;
+type SharedMaterial={resolved?:ReturnType<PathogenicMaterials["resolve"]>};
 const PLAIN={path:'pathogenic-source-canvas',code:'shader_type canvas_item; render_mode unshaded; void fragment() {}'};
 const MULTIPLY=[1,0,0,1,0,0];
-class SourceMesh extends Phaser.GameObjects.Mesh { refresh(){this.preUpdate(0,0);} }
+class SourceMesh extends Phaser.GameObjects.Mesh { shaderData?:Any;spriteShape?:Any;refresh(){this.preUpdate(0,0);} }
 export class SourceCoverageError extends Error {
   constructor(readonly details:any[]){super('Pathogenic source features require implementation: '+JSON.stringify(details));}
 }
@@ -22,7 +24,7 @@ export class PathogenicSceneView {
   private views=new Map<string,SourceMesh>();
   readonly meshPool=new VisualMeshPool<SourceMesh>();
   private players=new Map<string,ParticlePlayer>();
-  private histories=new Map<string,any[]>();
+  private histories=new Map<string,{samples:any[];revision:number}>();
   private live=new Set<string>();
   private livePlayers=new Set<string>();
   private liveHistories=new Set<string>();
@@ -44,10 +46,10 @@ export class PathogenicSceneView {
     if(time<this.clock)this.reset();this.snapshot!.beginFrame();this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();this.diagnostics=[];
   }
   draw(id:string,path:string,ctx:Any={}){
-    const result:any=sampleScene(this.graph,path,ctx);
+    const result:any=sampleSceneForRender(this.graph,path,ctx);
     const unsupported=result.unsupported.filter((x:Any)=>x.code!=='procedural-sprite-texture');
     if(unsupported.length)throw new SourceCoverageError(unsupported.map((x:Any)=>({...x,scene:path})));
-    for(const sprite of result.sprites)this.mesh(`${id}:${sprite.nodePath}`,sprite,spriteGeometry(sprite),this.clock,false,ctx.projectilePalette,ctx);
+    for(const sprite of result.sprites)this.mesh(`${id}:${sprite.nodePath}`,sprite,spriteGeometry(sprite,this.views.get(`${id}:${sprite.nodePath}`)?.spriteShape),this.clock,false,ctx.projectilePalette,ctx);
     for(const line of result.lines){
       const geometry=lineGeometry(this.graph,line);
       if(geometry.unsupported?.length)throw new SourceCoverageError(geometry.unsupported.map((code:string)=>({code,scene:path,node:line.nodePath})));
@@ -60,11 +62,11 @@ export class PathogenicSceneView {
       // scrolling must move existing particles, never become emitter motion.
       const [cameraX,cameraY]=this.cameraOffset;
       const worldNode={...node,matrix:[...node.matrix]};worldNode.matrix[4]-=cameraX;worldNode.matrix[5]-=cameraY;
-      const key=`${id}:${node.nodePath}`,history=this.histories.get(key)??[];
-      if(!history.length||history.at(-1).age!==ctx.time)history.push({age:ctx.time,matrix:worldNode.matrix});
-      trimEmitterHistory(history,ctx.time,node.properties);
-      this.histories.set(key,history);this.liveHistories.add(key);
-      const particles=player!.sample(this.graph,worldNode,ctx.time,ctx.seed??1,{history,
+      const key=`${id}:${node.nodePath}`,stored=this.histories.get(key)??{samples:[],revision:0},history=stored.samples;
+      if(!history.length||history.at(-1).age!==ctx.time){history.push({age:ctx.time,matrix:worldNode.matrix});stored.revision++;}
+      const historyLength=history.length;trimEmitterHistory(history,ctx.time,node.properties);if(history.length!==historyLength)stored.revision++;
+      this.histories.set(key,stored);this.liveHistories.add(key);
+      const particles=player!.sampleReadOnly(this.graph,worldNode,ctx.time,ctx.seed??1,{history,historyRevision:stored.revision,
         stopAge:ctx.stopAge,emitting:ctx.emit??node.properties.emitting});
       const ribbons=particleTrailGeometry(this.graph,worldNode,particles.trails,worldNode.matrix,{strict:true});
       if(ribbons.unsupported.length)throw new SourceCoverageError(ribbons.unsupported);
@@ -75,12 +77,16 @@ export class PathogenicSceneView {
       }
       const baseTexture=resolveTexture(this.graph,node.properties.texture);
       if(!baseTexture)throw new SourceCoverageError([{code:'particle-texture',scene:path,node:node.nodePath}]);
+      // A node's particles share read-only material parameters for this draw.
+      // Resolve lazily after visibility/geometry guards, and keep per-particle
+      // texture frames, transforms, color and every GPU upload independent.
+      const sharedMaterial:SharedMaterial|undefined=particles.instances.length>1?{}:undefined;
+      const material=resource(this.graph,node.material);
       for(const p of ribbons.enabled?[]:particles.instances){
         const c=Math.cos(p.rotation),s=Math.sin(p.rotation);
         const local=[c*p.scale[0],s*p.scale[0],-s*p.scale[1],c*p.scale[1],...p.position];
         const matrix=p.space==='world'?local:multiplyMatrix(node.matrix,local);
         if(p.space==='world'){matrix[4]+=cameraX;matrix[5]+=cameraY;}
-        const material=resource(this.graph,node.material);
         let texture=baseTexture;
         if(material?.type==='CanvasItemMaterial'&&material.properties.particles_animation){
           const m=material.properties,h=m.particles_anim_h_frames??1,v=m.particles_anim_v_frames??1;
@@ -90,7 +96,7 @@ export class PathogenicSceneView {
         }
         const sprite={...node,texture,matrix,localRect:[-texture.width/2,-texture.height/2,texture.width,texture.height],
           color:p.color.map((v:number,i:number)=>v*node.color[i]),z:node.z};
-        this.mesh(`${key}:particle:${p.id}`,sprite,spriteGeometry(sprite),this.clock,false,ctx.projectilePalette,ctx);
+        this.mesh(`${key}:particle:${p.id}`,sprite,spriteGeometry(sprite,this.views.get(`${key}:particle:${p.id}`)?.spriteShape),this.clock,false,ctx.projectilePalette,ctx,sharedMaterial);
       }
     }
     return result;
@@ -105,24 +111,22 @@ export class PathogenicSceneView {
     if(!this.scene.textures.exists(descriptor.key))throw new SourceCoverageError([{code:'missing-loaded-texture',key:descriptor.key}]);
     return descriptor.key;
   }
-  private mesh(key:string,item:Any,geometry:Any,time:number,line=false,projectilePalette?:number[],presentation:Any={}){
+  private mesh(key:string,item:Any,geometry:Any,time:number,line=false,projectilePalette?:number[],presentation:Any={},sharedMaterial?:SharedMaterial){
     if(!geometry.indices.length)return;
     const m=item.matrix??MULTIPLY;
     if(Math.abs(m[0]*m[3]-m[1]*m[2])<1e-12)return;
     const installed=this.materials!.installTexture(item.texture),textureKey=installed.key,texture=this.scene.textures.get(textureKey),source=texture.source[0];
-    const resolved=this.materials!.resolve(item.material,item.materialUniformOverrides??{}, {compatibilityZeroLights:true});
+    const resolved=sharedMaterial?.resolved??this.materials!.resolve(item.material,item.materialUniformOverrides??{}, {compatibilityZeroLights:true});
+    if(sharedMaterial)sharedMaterial.resolved=resolved;
     const pipeline=resolved.registration;
     let view=this.views.get(key);
     if(!view){view=this.meshPool.acquire(()=>{const mesh=new SourceMesh(this.scene,0,0,textureKey);mesh.hideCCW=false;mesh.ignoreDirtyCache=true;this.scene.add.existing(mesh);return mesh;});this.views.set(key,view!);}
-    view!.setVisible(true).setTexture(textureKey).setPosition(0,0).setDepth((presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001).setBlendMode(pipeline.blendMode);
+    view.setVisible(true).setTexture(textureKey).setPosition(0,0).setDepth((presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001).setBlendMode(pipeline.blendMode);
     view.setOrtho(view.width,view.height);
-    const gain=updateSourceMeshGeometry(view,geometry,source,line);
-    const crop=line?[0,0,source.width,source.height]:(item.texture?.crop??[0,0,source.width,source.height]);
-    const opacity=presentation.presentationOpacity??1;
-    view.setData('pathogenicShader',{time,projectilePalette,color:line?[gain,gain,gain,opacity]:[...item.color.slice(0,3),item.color[3]*opacity],
-      screenToLocal:matrix3(inverseMatrix(item.matrix??MULTIPLY)),localToScreen:matrix3(item.matrix??MULTIPLY),modelMatrix:matrix4(item.matrix??MULTIPLY),
-      textureSize:[source.width,source.height],uvRect:[crop[0]/source.width,crop[1]/source.height,crop[2]/source.width,crop[3]/source.height],
-      mainPremultiplied:installed.binding.premultiplied,mainRepeat:item.textureRepeat===2,uniforms:resolved.uniforms,textures:resolved.textures,lighting:'unlit',compatibility:{renderer:'compatibility',lightCount:0,directionalLightCount:0}});
+    const gain=updateSourceMeshGeometry(view,geometry,source,line);if(!line)view.spriteShape=geometry;
+    const data=view.shaderData??=createSourceMeshShaderData();
+    updateSourceMeshShaderData(data,item,source,time,line,gain,presentation.presentationOpacity??1,projectilePalette,installed,resolved);
+    view.setData('pathogenicShader',data);
     view.setPipeline(pipeline.key);
     view.refresh();this.live.add(key);
   }

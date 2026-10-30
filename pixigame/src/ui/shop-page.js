@@ -13,6 +13,8 @@ import { projectIcon } from './project-ui-art.js';
 import './shop-popup-polish.css';
 import './shop-reference.css';
 import { supplyWeaponArt } from './supply-visuals.js';
+import { weaponThemeArt } from './weapon-theme-art.js';
+import { equipmentBoxReceiptItems } from '../replica/native-equipment-box-receipt.js';
 import { supplyPool } from './supply-pools.js';
 import {GEAR_PARTS} from '../peripheral/equipment-system.js';
 import './shop-native-v2.css';
@@ -77,7 +79,7 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
    <h3>${advanced?'高级装备箱':'普通装备箱'}</h3>
    <button type="button" class="sn-info" data-action="shopBoxRates" data-pool="${pool}" aria-label="${advanced?'高级':'基础'}装备宝箱概率">${projectIcon('info')}</button>
    <div class="sn-box-art">${projectIcon('chest-closed')}</div>
-   <div class="sn-box-copy"><div class="sn-quality-range" aria-label="${advanced?'优秀、精良、史诗装备':'普通、优秀装备'}">${ranks.map(rank=>`<i data-psd-quality="${rank}" aria-hidden="true"></i>`).join('')}</div>${advanced&&!gear?.native?'<p>含 S 级装备</p>':''}${keys?`<small>补给券 ×${n(keys)}</small>`:''}</div>
+   <div class="sn-box-copy"><div class="sn-quality-range" aria-label="${advanced?'优秀、精良、史诗装备':'普通、优秀装备'}">${ranks.map(rank=>`<i data-psd-quality="${rank}" aria-hidden="true"></i>`).join('')}</div>${advanced?'<small>含随机武器、飞机</small>':''}${advanced&&!gear?.native?'<p>含 S 级装备</p>':''}${keys?`<small>补给券 ×${n(keys)}</small>`:''}</div>
    ${advanced?'':`<button type="button" class="sn-progress" data-action="shopClaimBoxReward" ${gear?.basicRewardAvailable&&!s.rewardPending&&!s.rewardBusy?'':'disabled'} aria-label="${gear?.basicRewardAvailable?'领取高级装备箱券':'开启20次可领高级装备箱券'}" title="每开启20次，领取高级装备箱券 ×1"><span data-psd-quality="3">${h.img(nativeItemArt(112),'','sn-item-art')}</span><b>${s.rewardPending?'待保存':s.rewardBusy?'处理中':gear?.basicRewardAvailable?'领取':`${progress}/20`}</b></button>`}
    <div class="sn-box-actions">${shopButton('shopBoxConfirm',`<span>开启1次</span>${cost(1)}`,`data-pool="${pool}" data-count="1" aria-label="开启1次，${quote(1)?.payment==='free'?'免费':`消耗${payment(1)==='key'?'补给券':'钻石'}${amount(1)??'待同步'}`}"`,blocked||(quote(1)?!quote(1).canDraw:keys<1&&!s.wallet.unlimited&&s.wallet.diamonds<price))}${shopButton('shopBoxConfirm',`<span>开启10次</span>${cost(10)}`,`data-pool="${pool}" data-count="10" aria-label="开启10次，消耗${payment(10)==='key'?'补给券':'钻石'}${amount(10)??'待同步'}"`,blocked||(quote(10)?!quote(10).canDraw:keys<10&&!s.wallet.unlimited&&s.wallet.diamonds<prices.ten))}</div>
   </article>`;
@@ -101,9 +103,13 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
 
 export function shopModal(modal,s,h) {
   // Old receipts keep their original IDs and amounts; refresh only visible names.
-  if(modal.type==='shopBoxResult')modal={...modal,
-    pilots:modal.pilots?.map(p=>({...p,name:nativeCollectionDisplayName(p.id)||p.name})),
-    weapons:modal.weapons?.map(w=>({...w,name:nativeCollectionDisplayName(w.id)||w.name}))};
+  if(modal.type==='shopBoxResult'){
+    const recorded=modal.receipt?equipmentBoxReceiptItems(modal.receipt):null;
+    modal={...modal,
+      pilots:(modal.receipt?.pilotRewards??modal.pilots)?.map(p=>({...p,name:nativeCollectionDisplayName(p.id)||p.name})),
+      weapons:(recorded?recorded.weapons:modal.weapons)?.map(w=>({...w,name:nativeCollectionDisplayName(w.id)||w.name})),
+      aircraft:(recorded?recorded.aircraft:modal.aircraft)?.map(a=>({...a,name:nativeCollectionDisplayName(a.id)||a.name}))};
+  }
   const {escape:e,number:n,button}=h,blocked=s.rewardPending||s.rewardBusy;
   const orderStale=modal.token!==undefined&&modal.token!==s.shop.token;
   if(modal.type==='shopStamina'){
@@ -131,7 +137,7 @@ export function shopModal(modal,s,h) {
   }
   if(modal.type==='shopBoxResult'){
     const equipmentResult=shopBoxEquipmentCards(modal,s,h);
-    return{title:modal.history?'上次开箱结果':'获得奖励',content:`<div class="sn-dialog"><div class="sn-result-grid">${equipmentResult.cards}${(modal.pilots||[]).map(p=>{const art=nativePilotAppearance(p.id);return `<div class="sn-result">${art?`<img src="${e(art.avatar)}" alt="${e(art.name)}">`:''}<b>${e(p.name)}</b><small>${p.creditsAdded?`已满星 · 兑换积分 +${p.creditsAdded}`:p.isNew?'驾驶员已解锁':`同名升星材料 ×${p.amount}`}</small></div>`;}).join('')}${(modal.weapons||[]).map(w=>`<div class="sn-result">${h.thumbnail(w.id)}<b>${e(w.name)}</b><small>${w.isNew?'已解锁':`本武器碎片 ×${w.fragmentsAdded}`}</small></div>`).join('')}</div>${equipmentResult.note}${shopButton('close','确定')}</div>`};
+    return{title:modal.history?'上次开箱结果':'获得奖励',content:`<div class="sn-dialog"><div class="sn-result-grid">${equipmentResult.cards}${(modal.pilots||[]).map(p=>{const art=nativePilotAppearance(p.id);return `<div class="sn-result">${art?`<img src="${e(art.avatar)}" alt="${e(art.name)}">`:''}<b>${e(p.name)}</b><small>${p.creditsAdded?`已满星 · 兑换积分 +${p.creditsAdded}`:p.isNew?'驾驶员已解锁':`同名升星材料 ×${p.amount}`}</small></div>`;}).join('')}${(modal.weapons||[]).map(w=>`<div class="sn-result"><img src="${e(weaponThemeArt(w.id))}" alt="${e(w.name)}"><b>${e(w.name)}</b><small>${w.isNew?'武器已解锁':w.isNew===false?`同名武器 ×${w.copiesAdded??w.amount}`:`武器 ×${w.amount}`}</small></div>`).join('')}${(modal.aircraft||[]).map(a=>`<div class="sn-result"><img class="sn-aircraft-art" src="${e(nativeItemArt(a.id))}" alt="${e(a.name)}"><b>${e(a.name)}</b><small>${a.isNew?'飞机已解锁':a.isNew===false?`同名飞机卡 ×${a.copiesAdded??a.amount}`:`飞机 ×${a.amount}`}</small></div>`).join('')}</div>${shopButton('close','确定')}</div>`};
   }
   if (modal.type==='shopWeaponPreview') {
     const pool=supplyPool(s,'weapon'), tiers={white:'普通',green:'优秀',blue:'精良',purple:'史诗',gold:'传说'};

@@ -91,7 +91,7 @@ export function resolveTexture(graph,ref,seen=new Set()) {
   return null;
 }
 function propertySet(node,property,value) {
-  if(!property.includes(':')){node.properties[property]=clone(value);return;}
+  if(!property.includes(':')){node.properties[property]=value;return;}
   const [head,...rest]=property.split(':');let v=node.properties[head];
   const component={x:0,y:1,z:2,w:3,r:0,g:1,b:2,a:3};
   if(Array.isArray(v)&&rest.length===1&&rest[0] in component){v=[...v];v[component[rest[0]]]=value;node.properties[head]=v;return;}
@@ -117,10 +117,16 @@ function frameAt(animation,elapsed,startFrame=0,startProgress=0,customSpeed=1) {
 const COMMON=new Set(['position','scale','rotation','skew','transform','modulate','self_modulate','visible','z_index','z_as_relative','show_behind_parent','top_level','material','use_parent_material','texture_filter','texture_repeat','light_mask','visibility_layer','unique_name_in_owner','script','physics_interpolation_mode','process_mode','editor_description']);
 const SPRITE=new Set(['texture','offset','centered','flip_h','flip_v','hframes','vframes','frame','frame_coords','region_enabled','region_rect','region_filter_clip_enabled','sprite_frames','animation','autoplay','frame_progress','speed_scale']);
 const LINE=new Set(['points','width','width_curve','default_color','gradient','texture','texture_mode','joint_mode','begin_cap_mode','end_cap_mode','round_precision','sharp_limit','antialiased','closed']);
-export function sampleScene(graph,scenePath,ctx={}) {
+// Public samples own all values. The internal renderer only reads unmodified
+// defaults, so its shallow property shell avoids cloning static arrays and
+// references for every particle/shot. Animated and overridden values are still
+// copied; render samples must not be mutated or retained by external callers.
+export function sampleScene(graph,scenePath,ctx={}) {return sample(graph,scenePath,ctx,false);}
+export function sampleSceneForRender(graph,scenePath,ctx={}) {return sample(graph,scenePath,ctx,true);}
+function sample(graph,scenePath,ctx,renderOnly) {
   const scene=graph.scenes[scenePath];if(!scene)throw Error('Unknown source scene '+scenePath);
   const time=ctx.time??0;if(!Number.isFinite(time))throw Error('Non-finite source time');
-  const nodes=new Map(scene.nodes.map(n=>[n.path,{...n,properties:clone(n.properties)}]));
+  const nodes=new Map(scene.nodes.map(n=>[n.path,{...n,properties:renderOnly?{...n.properties}:clone(n.properties)}]));
   const out={sprites:[],lines:[],particles:[],methods:[],unsupported:[],nodes:[],finished:false};
   const warn=(code,nodePath,detail)=>out.unsupported.push({code,nodePath,detail});
   const plays=new Map(),freed=new Set(),methodEvents=[];
@@ -134,10 +140,11 @@ export function sampleScene(graph,scenePath,ctx={}) {
     if(!anim){warn('missing-animation',node.path,selected);continue;}
     const a=anim.properties,length=a.length??1,loop=a.loop_mode??0,localTime=(ctx.animationTimes?.[node.path]??time)*(p.speed_scale??1);
     const current=animationTime(localTime,length,loop);
-    const autoCaptureDuration=Math.max(0,...trackIds(a).map(i=>a[`tracks/${i}/keys`]?.update===2?a[`tracks/${i}/keys`].times[0]||0:0));
+    const tracks=trackIds(a);
+    const autoCaptureDuration=Math.max(0,...tracks.map(i=>a[`tracks/${i}/keys`]?.update===2?a[`tracks/${i}/keys`].times[0]||0:0));
     const configuredCapture=ctx.captureDuration??p.playback_auto_capture_duration??-1;
     const captureDuration=configuredCapture<0?autoCaptureDuration:configuredCapture;
-    for(const id of trackIds(a)){
+    for(const id of tracks){
       const pre=`tracks/${id}/`;if(a[pre+'enabled']===false)continue;
       const type=a[pre+'type'],keys=a[pre+'keys'];
       const target=trackTarget(nodes,root,a[pre+'path']);

@@ -1,3 +1,4 @@
+import {guardWorldTextureUpload} from './project-world-texture-recovery.js';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createFighterView } from '../three/aircraft/fighter-view.js';
@@ -9,6 +10,7 @@ import { nativeMapScrollZ } from '../../replica-battle/kernel/native-map-layers'
 import { WEAPON_SKINS, validateWeaponSkins, createWeaponForm, weaponSkinLoadout, createWeaponIcons } from './weapon-skins.js';
 import { createPhantomTrailState, samplePhantomTrail } from './project-phantom-visual.js';
 import { createFlightVisualState, sampleFlightVisual, updateFlightFighter } from './project-flight-visual.js';
+import {createFlightPositionState,sampleFlightPosition} from './project-flight-position.js';
 import { createCombatAircraftRenderer } from './project-aircraft-render.js';
 import {sampleCombatEngineWake,drawCombatEngineWake} from './combat-engine-wake.js';
 import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails} from './project-wingtip-trails.js';
@@ -32,8 +34,15 @@ export async function createProjectPresentation({ content, appearance, onError, 
   const surface = renderer.domElement;
   let disposed = false, fighter, scene, playerImage, playerTexture, worldTexture, pose, wingtipGraphics;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };
+  let lastAircraftVisualClock = -1;
+  const flightPosition = createFlightPositionState();
   let lastAircraftClock = -1, lastWorldKey = '', lastRollSerial = 0;
   let launchPresentation=null,launchDirty=false;
+  let worldDirect=false, worldContextReady=true, worldSurfaceReady=false, releaseWorldUpload;
+  const worldLost=()=>{worldContextReady=false;worldSurfaceReady=false;};
+  const worldRestored=()=>{const oldLighting=lighting;lighting=makeLighting();aircraftScene.environment=lighting.texture;oldLighting.dispose();worldContextReady=true;worldSurfaceReady=false;lastWorldKey='';};
+  surface.addEventListener('webglcontextlost',worldLost);
+  surface.addEventListener('webglcontextrestored',worldRestored);
   const flightVisual = createFlightVisualState();
   const phantomTrail = createPhantomTrailState(), phantomImages = [];
   function updatePhantom(flightPose) {
@@ -109,22 +118,24 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const tileHeight = definition.width * aspect / unitsPerWorld;
       const scroll = (-nativeMapScrollZ(original, elapsed) * (definition.scrollScale ?? 1) / tileHeight + offset.z / tileHeight) % 2;
       // Keep both banks inside the 760-wide strip's 14-unit overscan margin.
-      // The island belongs to the map and stays still when only the aircraft moves.
+      // The fixed coast camera needs the original layer compensation in screen space.
       const anchored = definition.role === 'background' || definition.role === 'midground';
       // Native layer 2 has a positive world-space moveScale. With our fixed
       // coast camera, reverse it so foreground banks oppose aircraft motion.
       const directionalLayer = definition.role === 'foreground' || definition.role === 'cloud';
       const direction = coastCamera && directionalLayer ? -Math.sign(original.moveScale || 1) : 1;
       const coastIsland = selectedScene.id === 'coast-balanced' && definition.role === 'midground';
-      const lateralOffset = coastIsland ? coastIslandLateralOffset(frame.camera.x, unitsPerWorld)
+      const lateralOffset = coastIsland ? coastIslandLateralOffset(frame.camera.x, offset.x, unitsPerWorld)
         : anchored ? 0 : definition.presentationMotion && directionalLayer
         ? -frame.camera.x * unitsPerWorld * (definition.role === 'cloud' ? .45 : .3)
         : offset.x * unitsPerWorld * direction;
       return { scroll: (scroll + 2) % 2, lateralOffset: coastCamera ? Math.max(-12, Math.min(12, lateralOffset)) : lateralOffset };
     },
   }) : { dispose() {}, update() {} };
-  const studio = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer);
-  const lighting = pmrem.fromScene(studio, .04); studio.dispose(); pmrem.dispose();
+  // This environment is a generated GPU render target, not a decoded image.
+  // Rebuild it after context restoration with the same studio and PMREM settings.
+  const makeLighting=()=>{const studio=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);try{return pmrem.fromScene(studio,.04);}finally{studio.dispose();pmrem.dispose();}};
+  let lighting=makeLighting();
   aircraftScene.environment = lighting.texture; aircraftScene.environmentIntensity = .85;
   aircraftScene.add(new THREE.HemisphereLight('#e7f0f6', '#677786', 1.6));
   for (const [color, intensity, position] of [
@@ -141,8 +152,24 @@ export async function createProjectPresentation({ content, appearance, onError, 
   const worldContext = worldCanvas.getContext('2d');
   if (!worldContext) throw new Error('无法创建分层场景显示纹理');
 
+  // Seed the canvas before Phaser uploads its first player texture. A cold
+  // aircraft must not defer shader compilation and its first draw to launch.
+  function renderAircraftTexture(visualClock, visualPose, displaySize = 0) {
+    updateFlightFighter(fighter, visualClock, visualPose);
+    renderer.setScissorTest(true); renderer.setScissor(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+    renderer.setViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+    renderer.setClearColor(0x000000, 0); renderer.clear(); aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
+    playerContext.clearRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+    if (displaySize > 0) drawCombatEngineWake(playerContext,sampleCombatEngineWake(fighter,aircraftCamera,{clock:visualClock,displaySize,textureSize:TEXTURE_SIZE,thrust:visualPose.thrust}));
+    playerContext.drawImage(surface, 0, HEIGHT - TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+    playerTexture?.refresh();
+  }
+
   function dispose() {
     if (disposed) return; disposed = true;
+    surface.removeEventListener('webglcontextlost',worldLost);
+    surface.removeEventListener('webglcontextrestored',worldRestored);
+    releaseWorldUpload?.();
     window.removeEventListener('pagehide', dispose);
     window.removeEventListener('shnh-dispose-replica-battle', dispose);
     for (const image of phantomImages) image.destroy(); phantomImages.length = 0; phantomTrail.history.length = 0;
@@ -197,6 +224,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
     aircraftCamera.position.set(sphere.center.x, bounds.max.y + span, sphere.center.z);
     aircraftCamera.lookAt(sphere.center); aircraftCamera.updateProjectionMatrix();
     icons = createWeaponIcons(renderer, aircraftScene, content);
+    renderAircraftTexture(0, { bank: 0, pitch: 0, roll: 0, thrust: 0 });
   } catch (error) { dispose(); throw error; }
 
   return {
@@ -230,7 +258,11 @@ export async function createProjectPresentation({ content, appearance, onError, 
       scene = phaser;
       playerTexture = scene.textures.addCanvas('project-aircraft-3d', playerCanvas);
       if (replaceTerrain) {
-        worldTexture = scene.textures.addCanvas('project-world-3d', worldCanvas);
+        // A native WebGL texture can upload the completed opaque Three surface
+        // directly. The Canvas renderer keeps its original compositing path.
+        worldDirect=Boolean(scene.game.renderer.gl);
+        worldTexture=worldDirect?scene.textures.addImage('project-world-3d',surface):scene.textures.addCanvas('project-world-3d',worldCanvas);
+        if(worldDirect)releaseWorldUpload=guardWorldTextureUpload(worldTexture.source[0].glTexture,()=>worldContextReady&&worldSurfaceReady&&!renderer.getContext().isContextLost(),worldCanvas);
         scene.add.image(0, 0, 'project-world-3d').setOrigin(0, 0).setDepth(-1000);
       }
       wingtipGraphics = scene.add.graphics().setDepth(24.6).setName('project-aircraft-wingtip-trails');
@@ -243,12 +275,26 @@ export async function createProjectPresentation({ content, appearance, onError, 
     },
     update(next) {
       if (disposed) return; frame = next;
+      if(!worldContextReady||renderer.getContext().isContextLost())return;
       // Tint the rendered aircraft silhouette, not its transparent texture bounds.
       if (playerImage) {
         if (frame.playerHitFlash) playerImage.setTintFill(0xffffff);
         else playerImage.clearTint();
       }
       const flightPose=sampleFlightVisual(flightVisual, {...frame,visible:pose?.visible??false});
+      const position=sampleFlightPosition(flightPosition,{...frame,visible:pose?.visible??false,launchActive:launchPresentation!==null});
+      if(pose&&frame.flight&&position){
+        // Bound the visual offset to a quarter of the actual collision radius.
+        // No prediction, extra movement, altered muzzle or changed hit shape.
+        pose={...pose,x:pose.x+(position.x-frame.flight.x)*WIDTH/content.world.width,
+          y:pose.y-(position.z-frame.flight.z)*WIDTH/content.world.width};
+        playerImage?.setPosition(pose.x,pose.y);
+      }
+      const visualClock=flightVisual.visualClock+(launchPresentation?.time||0);
+      // Refresh the 3D texture at up to 60 Hz; screen position still updates
+      // every frame. Paused frames reuse the exact last aircraft texture.
+      const aircraftInterval=launchPresentation||flightPose.rollActive||Math.abs(flightPose.bank)>.002||flightPose.thrust>.02?1/60:1/30;
+      const aircraftDue=visualClock<lastAircraftVisualClock||visualClock-lastAircraftVisualClock>=aircraftInterval-1e-6||weaponsDirty||launchDirty;
       if (flightPose.rollSerial !== lastRollSerial) {
         lastRollSerial = flightPose.rollSerial;
         if (flightPose.rollActive) onFlightRoll?.();
@@ -256,32 +302,25 @@ export async function createProjectPresentation({ content, appearance, onError, 
       updatePhantom(flightPose);
       const backgroundTime = selectedScene.id === 'coast-balanced' ? (frame.coastBackgroundTime ?? frame.time) : frame.time;
       const worldKey = `${backgroundTime}/${frame.camera.x}/${frame.camera.z}`;
-      if (lastWorldKey === worldKey && lastAircraftClock === frame.clock && !weaponsDirty && !launchDirty) {
+      if (lastWorldKey === worldKey && !aircraftDue) {
         updateWingtipTrails(flightPose); return;
       }
       const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
       camera.position.copy(cameraHome).add(new THREE.Vector3(shiftX, 0, shiftZ));
       camera.lookAt(targetHome.x + shiftX, 0, targetHome.z + shiftZ);
-      environment.update(backgroundTime, stageIndex);
+      environment.update(backgroundTime, stageIndex, { motionRevision: frame.camera.x });
       // Render the native 3D model into a texture used at Phaser's original
       // player depth. Enemy bullets and pickups retain their original sorting.
       // The world is drawn last into this same Three surface, before paint.
-      if (pose && (lastAircraftClock !== frame.clock || lastAircraftClock < 0 || weaponsDirty || launchDirty)) {
+      if (pose && aircraftDue) {
         if (frame.clock < lastAircraftClock) {
           fighter._disposeVisuals(); fighter.setPilot(appearance.aircraft.id);
           applyWeaponSkins();
           Object.assign(fighter.runtime.config, { firing: false, cruise: false, trails: 0, particles: 0 });
         }
-        const visualClock=frame.clock+(launchPresentation?.time||0);
         const visualPose=launchPresentation?{...flightPose,bank:0,pitch:-.045*launchPresentation.thrust,thrust:launchPresentation.thrust}:flightPose;
-        updateFlightFighter(fighter, visualClock, visualPose);
-        renderer.setScissorTest(true); renderer.setScissor(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-        renderer.setViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-        renderer.setClearColor(0x000000, 0); renderer.clear(); aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
-        playerContext.clearRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-        drawCombatEngineWake(playerContext,sampleCombatEngineWake(fighter,aircraftCamera,{clock:visualClock,displaySize:Math.max(pose.width,pose.height),textureSize:TEXTURE_SIZE,thrust:visualPose.thrust}));
-        playerContext.drawImage(surface, 0, HEIGHT - TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-        playerTexture.refresh(); lastAircraftClock = frame.clock; weaponsDirty = false;launchDirty=false;
+        renderAircraftTexture(visualClock, visualPose, Math.max(pose.width, pose.height));
+        lastAircraftClock = frame.clock; lastAircraftVisualClock = visualClock; weaponsDirty = false;launchDirty=false;
       }
       updateWingtipTrails(flightPose);
       if (!replaceTerrain) { lastWorldKey = worldKey; return; }
@@ -289,8 +328,10 @@ export async function createProjectPresentation({ content, appearance, onError, 
       renderer.setClearColor(selectedScene.ground, 1); renderer.clear(); renderer.render(worldScene, coastCamera || camera);
       // The complete frame is a Phaser background texture, so original ADD /
       // SUBTRACT FX blend against the actual scene instead of a separate DOM canvas.
-      worldContext.clearRect(0, 0, WIDTH, HEIGHT); worldContext.drawImage(surface, 0, 0);
-      worldTexture.refresh(); lastWorldKey = worldKey;
+      worldSurfaceReady=true;
+      if(worldDirect)worldTexture.source[0].update();
+      else{worldContext.clearRect(0,0,WIDTH,HEIGHT);worldContext.drawImage(surface,0,0);worldTexture.refresh();}
+      lastWorldKey = worldKey;
     },
   };
 }

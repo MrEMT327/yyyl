@@ -179,12 +179,12 @@ export function layerLateralOffset(layer, lateral = 0) {
   return input * 80 * distance / (100 + distance) * layer.moveScale;
 }
 
-// The island belongs to the map: aircraft movement alone cannot move it.
-// The artwork has limited side overscan, so only camera movement shifts it,
-// with a bounded offset to keep the edge of the strip off screen.
-export function coastIslandLateralOffset(cameraX, unitsPerWorld) {
-  if (![cameraX, unitsPerWorld].every(Number.isFinite)) return 0;
-  return Math.max(-9, Math.min(9, -cameraX * unitsPerWorld));
+// The coast uses a fixed presentation camera. Convert the native map layer's
+// camera compensation to its equivalent screen-space offset: a normal moving
+// camera would subtract cameraX after applying the native layer displacement.
+export function coastIslandLateralOffset(cameraX, nativeLayerOffsetX, unitsPerWorld) {
+  if (![cameraX, nativeLayerOffsetX, unitsPerWorld].every(Number.isFinite)) return 0;
+  return (nativeLayerOffsetX - cameraX) * unitsPerWorld;
 }
 
 /** Bounded UV travel for a mirrored two-tile cycle, shared by runtime and QA. */

@@ -1,5 +1,7 @@
 // Explain only current, connected sources. This view never grants rewards or
 // treats dormant original item tables as live drop channels.
+import { RANDOM_AIRCRAFT } from '../replica/native-aircraft-grants.js';
+
 export function backpackItemSources(item,s,rule,h,go) {
   const id=item.nativeId,e=h.escape,n=h.number,links=[],lines=[];
   const link=(label,kind)=>links.push(go(label,kind));
@@ -49,18 +51,16 @@ export function backpackItemSources(item,s,rule,h,go) {
     link('角色箱与积分','supplyBoxes');
   }else if(rule?.kind==='pilotCard'){
     const inRoleBox=p?.candidates.some(row=>row.id===id);
-    lines.push(inRoleBox?'角色箱／高级箱可出；重复得卡，满星转积分。':'高级箱可出；角色箱不含此驾驶员。');
+    lines.push(inRoleBox?'驾驶员招募／角色箱可出。':'新手奖励、签到或积分兑换；角色箱不含此驾驶员。');
+    if(inRoleBox)link('驾驶员招募','supply');
     lines.push('3积分：指定解锁或兑换未满星同名卡。');
     link('角色箱与积分','supplyBoxes');
+  }else if(RANDOM_AIRCRAFT.some(row=>row.id===id)){
+    lines.push('高级装备箱：随机获得飞机，重复获得同名卡用于升星。');
+    link('高级装备箱','shop');
   }else if(rule?.kind==='choice'){
     const period=id===903?'daily':'week',view=p?.growth?.[period];
     if(view){lines.push(view.requirement+'；每期1箱，自选1项。');link(view.name,period==='daily'?'growthDaily':'growthWeek');}
-  }else{
-    const kind=['guns','skins'].find(kind=>p?.collection?.[kind]?.candidates.some(row=>row.id===id));
-    if(kind){
-      lines.push('自选补给：'+p.collection[kind].requirement+'；每次自选1张，用于激活／升星。余量见补给页。');
-      link(kind==='guns'?'每日机炮补给':'每周飞机补给','supplyTasks');
-    }
   }
   if(!lines.length)return '';
   return `<details class="bag-item-sources"><summary>获取途径</summary>${lines.map(line=>`<p>${e(line)}</p>`).join('')}${links.length?`<div class="bag-use-actions">${links.join('')}</div>`:''}</details>`;

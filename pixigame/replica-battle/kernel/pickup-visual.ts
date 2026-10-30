@@ -17,7 +17,10 @@ export function preloadPickupArt(scene: Phaser.Scene) {
 export function createPickupVisual(scene: Phaser.Scene, pickup: Pickup): Phaser.GameObjects.Container | undefined {
   const module = createAirdropModuleVisual(scene, pickup);
   if (module) return module;
-  if (pickup.kind !== 'gold' && pickup.kind !== 'heart') return undefined;
+  // Stg_Prop_Life is a trigger pickup (including healing items 154/155),
+  // so it must share the medkit art instead of falling back to the old prefab.
+  const healing = pickup.kind === 'heart' || (pickup.kind === 'trigger' && pickup.modelId === 1300008);
+  if (pickup.kind !== 'gold' && !healing) return undefined;
   const coin = pickup.kind === 'gold';
   // Logical 540px battle width: roughly 30px coin / 40px medkit visible artwork.
   const image = scene.add.image(0, 0, coin ? COIN : MEDKIT, coin ? 0 : undefined);

@@ -1,4 +1,3 @@
-import { collectionSupplyEntry } from './collection-supply-panel.js';
 import { growthSupplyEntry } from './growth-supply-panel.js';
 import { nativeItemArt, nativeItemPresentation } from '../replica/native-item-presentation.js';
 import './pilot-supply.css';
@@ -58,6 +57,6 @@ export function pilotSupplyTaskCenter(period,s,h) {
   const f=s.flightRewards;
   const dailyAd=!weekly&&f?.ad?`<section class="su-card dc-extra-task"><header class="su-card-heading"><h3>每日特惠</h3><span>每日1次</span></header><div class="su-rewards">${f.ad.rewards.map(r=>reward(r.id,r.count??r.amount,r.name)).join('')}</div><button type="button" class="wc-button" data-action="${f.adPending?'recoverDailyRewards':'flightReward'}" data-operation="ad" data-revision="${f.revision}" ${f.adBusy||!f.adPending&&(blocked||!f.ad.canClaim||!f.adAvailable)?'disabled':''}>${f.adPending?'重试保存':f.adBusy?'广告播放中':!f.ad.canClaim?'已领取':!f.adAvailable?'广告暂不可用':'看广告领取'}</button></section>`:'';
   const ad=!weekly?`<section class="su-card dc-extra-task"><header class="su-card-heading"><h3>广告补给</h3><span>${n(p.ad.count)} / ${n(p.ad.limit)}次</span></header><div class="su-card-bottom">${reward(926,p.ad.fragments,'角色箱碎片')}${button(p.adPending?'重试保存':p.adBusy?'广告播放中':!p.ad.canClaim?'已领完':!p.adAvailable?'广告暂不可用':'看广告领取','ad',p,'',p.adBusy||!p.adPending&&(!p.ad.canClaim||!p.adAvailable))}</div>${p.development?button('开发领取','devAd',p,'',!p.ad.canClaim||p.adBusy||p.adPending):''}</section>`:'';
-  const extras=`<div class="pilot-supply-panel supply-ui dc-supply-extras">${collectionSupplyEntry(weekly?'skins':'guns',s,h,{compact:true})}${growthSupplyEntry(weekly?'week':'daily',s,h,{compact:true})}${dailyAd}${ad}</div>`;
+  const extras=`<div class="pilot-supply-panel supply-ui dc-supply-extras">${growthSupplyEntry(weekly?'week':'daily',s,h,{compact:true})}${dailyAd}${ad}</div>`;
   return `${header}<p class="dc-reset">${weekly?'每周一':'每日'} 00:00 刷新</p><div class="dc-scroll dc-restored-scroll" data-daily-scroll="${period}">${tasks}${extras}</div>`;
 }

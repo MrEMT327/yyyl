@@ -8,7 +8,7 @@ import { projectCollectionIcon } from './project-collection-icons.js';
 
 const absolute = url => url ? new URL(url, document.baseURI).href : null;
 export function nativeCollectionArt(row, view='thumbnail') {
-  const plane=NATIVE_AIRCRAFT_SKINS[row.id];
+  const plane=row.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[row.id];
   if(plane)return absolute(aircraftUiImage(plane,view));
   const pilot=nativePilotAppearance(row.id);
   if(pilot)return view==='thumbnail'?pilot.avatar:pilot.image;

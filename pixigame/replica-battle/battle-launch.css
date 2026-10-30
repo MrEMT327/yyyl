@@ -3,3 +3,6 @@
 #stage[data-launch] #ui,
 #stage[data-launch] .cloud-combat-canvas,
 #stage[data-launch] .battle-movement-guide { visibility:hidden!important;pointer-events:none!important; }
+
+/* The opening-choice backdrop belongs to its dialog, after entry completes. */
+#stage[data-launch]::after { display:none!important; }

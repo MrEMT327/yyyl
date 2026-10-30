@@ -81,6 +81,7 @@
 #gui-casual-lobby .sn-result{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:6px;border:1px solid #728d9e;background:#ccdfe9;color:#203e52;font:11px/1.3 'Microsoft YaHei',sans-serif;gap:4px}
 #gui-casual-lobby .sn-result img{width:100%;height:66px;object-fit:contain}
 #gui-casual-lobby .sn-result b{font-size:11px;text-align:center}
+#gui-casual-lobby .sn-result img.sn-aircraft-art{object-fit:cover;object-position:center}
 #gui-casual-lobby .sn-dialog>.sn-button{width:100%}
 #gui-casual-lobby .sn-currency{min-height:175px}
 #gui-casual-lobby .sn-currency h3{min-height:20px}
