@@ -117,15 +117,15 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const offset = frame.mapCameraOffset(original);
       const tileHeight = definition.width * aspect / unitsPerWorld;
       const scroll = (-nativeMapScrollZ(original, elapsed) * (definition.scrollScale ?? 1) / tileHeight + offset.z / tileHeight) % 2;
-      // Keep both banks inside the 760-wide strip's 14-unit overscan margin.
-      // The fixed coast camera needs the original layer compensation in screen space.
+      // Keep terrain inside the strip's overscan margin. Connected bridges,
+      // islands and banks use one source group and the same fixed-camera offset.
       const anchored = definition.role === 'background' || definition.role === 'midground';
       // Native layer 2 has a positive world-space moveScale. With our fixed
       // coast camera, reverse it so foreground banks oppose aircraft motion.
       const directionalLayer = definition.role === 'foreground' || definition.role === 'cloud';
       const direction = coastCamera && directionalLayer ? -Math.sign(original.moveScale || 1) : 1;
-      const coastIsland = selectedScene.id === 'coast-balanced' && definition.role === 'midground';
-      const lateralOffset = coastIsland ? coastIslandLateralOffset(frame.camera.x, offset.x, unitsPerWorld)
+      const rigidTerrain = definition.motionGroup === 'terrain';
+      const lateralOffset = rigidTerrain ? coastIslandLateralOffset(frame.camera.x, offset.x, unitsPerWorld)
         : anchored ? 0 : definition.presentationMotion && directionalLayer
         ? -frame.camera.x * unitsPerWorld * (definition.role === 'cloud' ? .45 : .3)
         : offset.x * unitsPerWorld * direction;

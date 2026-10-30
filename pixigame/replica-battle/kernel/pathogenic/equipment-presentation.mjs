@@ -67,37 +67,56 @@ function sparks(p,rx,rz,age,seed,color,count=9){
     p.line([x*(1-tail),y*(1-tail)],[x,y],.025,rgb(color,(1-clamp(age))* .7));
   }
 }
-function shield(p,b,holy,alpha){
+function starShield(p,b,alpha){
+  const rx=Math.max(.3,b.radiusX),rz=Math.max(.35,b.radiusZ);
+  const pulse=.92+.08*Math.sin(b.age*4.5);
+  const shape=[[-.64,.66],[.64,.66],[.86,.24],[.5,-.48],[0,-1.03],[-.5,-.48],[-.86,.24]];
+  const points=shape.map(([x,z])=>[x*rx,z*rz]);
+  const cyan=[.12,.82,1],ice=[.79,.9,.96];
+  // A translucent energy face and two pale shoulder plates retain a clear
+  // silhouette at battle size without the old triple frame or stacked arrows.
+  p.radial(rx*1.06,rz*1.24,BLUE,.085*alpha*pulse);
+  p.polygon(points,rgb([.035,.17,.25],.46*alpha));
+  p.polygon([points[0],points[1],[rx*.38,rz*.06],[-rx*.38,rz*.06]],rgb([.27,.62,.76],.3*alpha));
+  p.polygon([points[2],points[3],points[4],[0,-rz*.12],[rx*.26,rz*.06]],rgb([.025,.09,.17],.28*alpha));
+  p.polygon([points[6],points[5],points[4],[0,-rz*.12],[-rx*.26,rz*.06]],rgb([.12,.38,.5],.22*alpha));
+  p.path(points,.095,rgb(cyan,.11*alpha*pulse),true);
+  p.path(points,.038,rgb(cyan,.88*alpha),true);
+  p.path([points[2],points[3],points[4],points[5],points[6]],.018,rgb(WHITE,.6*alpha));
+  for(const side of [-1,1]){
+    const panel=[[.52,.65],[.65,.68],[.87,.24],[.74,.17]].map(([x,z])=>[side*x*rx,z*rz]);
+    p.polygon(panel,rgb(ice,.96*alpha));
+    p.polygon([panel[1],panel[2],panel[3]],rgb([.34,.52,.65],.86*alpha));
+    p.line([side*rx*.6,rz*.66],[side*rx*.82,rz*.25],.025,rgb(WHITE,.9*alpha));
+    p.line([side*rx*.49,-rz*.57],[side*rx*.34,-rz*1.12],.04,rgb(cyan,.16*alpha*pulse));
+  }
+  p.line([-rx*.38,rz*.65],[rx*.38,rz*.65],.05,rgb(ice,.96*alpha),'solid');
+  p.radial(rx*.22,rz*.42,cyan,.19*alpha*pulse,0,-rz*.13);
+  p.gem(0,-rz*.13,Math.min(rx*.09,rz*.21),rgb(WHITE,.84*alpha));
+}
+function holyShield(p,b,alpha){
   const rx=Math.max(.3,b.radiusX),rz=Math.max(.35,b.radiusZ),age=b.age;
-  const shape=holy?[[-.58,.82],[0,1.12],[.58,.82],[.61,-.08],[0,-1.05],[-.61,-.08]]
-    :[[-.8,.47],[0,.86],[.8,.47],[.8,-.36],[0,-.88],[-.8,-.36]];
+  const shape=[[-.58,.82],[0,1.12],[.58,.82],[.61,-.08],[0,-1.05],[-.61,-.08]];
   const points=shape.map(([x,y])=>[x*rx,y*rz]);
-  const color=holy?GOLD:BLUE;
+  const color=GOLD;
   p.radial(rx*1.22,rz*1.5,color,.18*alpha);
-  p.polygon(points,rgb(holy?[.13,.11,.065]:[.055,.15,.22],.94*alpha));
-  p.polygon([points[0],points[1],points[2],[0,rz*.18]],rgb(holy?[.47,.37,.15]:[.16,.36,.47],.75*alpha));
-  p.polygon([points[2],points[3],points[4],[0,rz*.18]],rgb(holy?[.24,.17,.065]:[.06,.19,.29],.88*alpha));
+  p.polygon(points,rgb([.13,.11,.065],.94*alpha));
+  p.polygon([points[0],points[1],points[2],[0,rz*.18]],rgb([.47,.37,.15],.75*alpha));
+  p.polygon([points[2],points[3],points[4],[0,rz*.18]],rgb([.24,.17,.065],.88*alpha));
   p.polygon(points.map(([x,y])=>[x*.76,y*.76]),rgb(color,.16*alpha));
   p.path(points,.075,rgb(color,.27*alpha),true);
   p.path(points,.035,rgb(WHITE,.94*alpha),true);
   p.path(points.map(([x,y])=>[x*.84,y*.84]),.045,rgb(color,.8*alpha),true);
-  if(holy){
-    for(const side of [-1,1])for(let i=0;i<3;i++){
-      const wing=[[side*rx*.56,rz*(.55-i*.29)],[side*rx*(1.08-i*.1),rz*(.85-i*.32)],
-        [side*rx*(.88-i*.07),rz*(.1-i*.3)],[side*rx*.56,rz*(-.18-i*.21)]];
-      p.polygon(wing,rgb([.48,.25,.045],.94*alpha));
-      p.polygon([wing[0],wing[1],[wing[2][0],(wing[2][1]+wing[1][1])*.5]],rgb([.94,.77,.36],.86*alpha));
-      p.path(wing,.04,rgb(GOLD,.85*alpha),true);
-    }
-    p.line([0,-rz*.49],[0,rz*.52],.055,rgb(WHITE,.9*alpha));
-    p.line([-rx*.28,rz*.16],[rx*.28,rz*.16],.04,rgb(GOLD,alpha));
-    p.radial(.33,.33,GOLD,.48*alpha,0,rz*.16);p.gem(0,rz*.16,.16,rgb([1,.94,.66],alpha));
-  }else{
-    // Three forward chevrons and six lattice cells read as a compact interceptor.
-    for(let i=0;i<3;i++)p.path([[-rx*.35,rz*(i*.22-.36)],[0,rz*(i*.22-.1)],[rx*.35,rz*(i*.22-.36)]],.035,rgb(WHITE,.72*alpha));
-    for(const side of [-1,1])p.line([side*rx*.53,-rz*.19],[side*rx*.53,rz*.34],.025,rgb(BLUE,.5*alpha));
-    p.radial(rx*.7,rz*.72,BLUE,.2*alpha);p.gem(0,rz*.14,.09,rgb(WHITE,alpha));
+  for(const side of [-1,1])for(let i=0;i<3;i++){
+    const wing=[[side*rx*.56,rz*(.55-i*.29)],[side*rx*(1.08-i*.1),rz*(.85-i*.32)],
+      [side*rx*(.88-i*.07),rz*(.1-i*.3)],[side*rx*.56,rz*(-.18-i*.21)]];
+    p.polygon(wing,rgb([.48,.25,.045],.94*alpha));
+    p.polygon([wing[0],wing[1],[wing[2][0],(wing[2][1]+wing[1][1])*.5]],rgb([.94,.77,.36],.86*alpha));
+    p.path(wing,.04,rgb(GOLD,.85*alpha),true);
   }
+  p.line([0,-rz*.49],[0,rz*.52],.055,rgb(WHITE,.9*alpha));
+  p.line([-rx*.28,rz*.16],[rx*.28,rz*.16],.04,rgb(GOLD,alpha));
+  p.radial(.33,.33,GOLD,.48*alpha,0,rz*.16);p.gem(0,rz*.16,.16,rgb([1,.94,.66],alpha));
   const sweep=(age*1.7%1)*1.3-.65;
   p.line([-rx*.46,rz*sweep],[rx*.46,rz*sweep],.022,rgb(WHITE,.32*alpha));
   for(const side of [-1,1])p.line([side*rx*.55,-rz*.5],[side*rx*.36,-rz*(1.05+.08*Math.sin(age*24))],.05,rgb(color,.23*alpha));
@@ -157,7 +176,7 @@ export function equipmentProjectileMeshes(b,screen){
   const kind=equipmentProjectileKind(b);if(!kind||!valid(b)||b.radiusX<=0||b.radiusZ<=0)return[];
   const p=brush(coordinates(b,screen,kind.includes('shield')||kind.startsWith('missile')));
   const alpha=clamp(b.age/.055+.12)*clamp((b.lifetime-b.age)/.2);
-  if(kind.includes('shield'))shield(p,b,kind==='holy-shield',alpha);
+  if(kind.includes('shield'))(kind==='holy-shield'?holyShield:starShield)(p,b,alpha);
   else if(kind.startsWith('strike')||kind.startsWith('charge'))lightning(p,b,kind.endsWith('gold'),kind.startsWith('charge'));
   else if(kind.startsWith('missile'))missile(p,b,kind==='missile-super');
   else explosion(p,b,kind.endsWith('wave'),kind==='holy-wave');

@@ -25792,11 +25792,11 @@
     },
     {
       "path": "kernel/pathogenic/source-scene-sampler.mjs",
-      "sha256": "8cfabc546dff4b9e9ef3a64dbf08812cd06ea69515f706617fa240382c72cb23",
+      "sha256": "ccf8967e4d9c0feb65de551c3da10ca190c7174df7328c330c981e16eb5a3c38",
       "kind": "presentation",
-      "previousSha256": null,
+      "previousSha256": "0e30f9dcf96f6c316d202fc47cea775e6be775e4b4b0a0cb4dd5aead62d9acd4",
       "patches": [],
-      "reason": "User-requested Pathogenic complete combat VFX scene runtime; see research/pathogenic-vfx-migration.md."
+      "reason": "User-requested Pathogenic complete combat VFX scene runtime; see research/pathogenic-vfx-migration.md. Performance-only reuse of immutable animation timelines, sprite frame durations and graph-scoped texture descriptors for internal read-only sampling. Public sampling stays owned and observes mutable inputs. Verified against 2380 scene/time/transform cases and paired WebGL rendering; see research/performance-source-sampler-20261030.json."
     },
     {
       "path": "kernel/pathogenic/source-scene-sampler.d.mts",

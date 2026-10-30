@@ -53,12 +53,13 @@ export const PERIPHERAL_LAYERS = Object.freeze([
   Object.freeze({ id: 'near', name: '近景云雾', source: 'foreground', depth: -30, speed: 40, width: 760, length: 6000, moveScale: -.5, sourceWidth: 1, opacity: .20, opening: [.24, .37] }),
 ]);
 
-// Chapter 1 owns five independent strips. Native indices refer to s_map0017_2,
-// not drawing order: the cloud strip (5) is the fastest, water (1) the slowest.
+// Five visual roles for our artwork, not a claim about native sprite roles.
+// The coast's terrain group travels at 4 native units/s; the visual half-scale
+// retains the previously approved 2-unit/s shoreline travel.
 export const COAST_LAYERS = Object.freeze([
   { id: 'coast-water', role: 'background', name: '后景·海水', source: 'depth', kind: 0, nativeLayer: 1, depth: -1000, speed: 7, opacity: 1 },
-  { id: 'coast-islands', role: 'midground', name: '中景·岛礁', source: 'islands', kind: 2, nativeLayer: 3, depth: -100, speed: 17, opacity: .92, fullAlpha: true },
-  { id: 'coast-walls', role: 'foreground', name: '前景·崖壁', source: 'ground', kind: 1, nativeLayer: 2, depth: -60, speed: 20, opacity: 1, opening: [.20, .32] },
+  { id: 'coast-islands', role: 'midground', name: '中景·岛礁', source: 'islands', kind: 2, nativeLayer: 0, motionGroup: 'terrain', scrollScale: .5, depth: -100, speed: 20, opacity: 1, fullAlpha: true },
+  { id: 'coast-walls', role: 'foreground', name: '前景·崖壁', source: 'ground', kind: 1, nativeLayer: 0, motionGroup: 'terrain', scrollScale: .5, depth: -60, speed: 20, opacity: 1, opening: [.20, .32] },
   { id: 'coast-effects', role: 'effects', name: '效果·水纹', source: 'effects', kind: 3, nativeLayer: 0, depth: -30, speed: 40, opacity: .035 },
   { id: 'coast-cloud', role: 'cloud', name: '柔边薄雾', source: 'cloud', kind: 2, nativeLayer: 5, depth: -10, speed: 120, opacity: .50, fullAlpha: true },
 ].map(layer => Object.freeze({ width: 760, length: 6000, sourceWidth: 1, moveScale: 0, opening: [0, .01], ...layer, sceneId: 'coast' })));
@@ -96,6 +97,14 @@ const chapterStyles = [
   { id:'lunar-crater-field', native:[null,null,null,null,null], authoredMotion:true, names:['月海地表','浅坑遗迹','陨坑边壁','月尘','稀薄尘雾'],effect:1,effectOpacity:.025,cloudTint:0xb2adc5 },
   { id:'lunar-research-camp', native:[null,null,null,null,null], authoredMotion:true, names:['月壤地表','实验站连桥','研究营地','月尘','稀薄尘雾'],effect:1,effectOpacity:.025,cloudTint:0xa8b8cc },
 ];
+// These owned scenes contain detached asteroids/aircraft rather than bridges
+// attached to the banks. Keep their independent depth motion.
+const DETACHED_SCENES = new Set(['space', 'storm-front', 'orbital-wreckage']);
+// Only these themes have a verified source cloud group in the captured maps.
+// Other fog uses the existing authored cloud motion; it is local presentation,
+// never a fabricated native cloud layer or a change to simulation data.
+const SOURCE_CLOUD_SCENES = new Set(['ruins', 'volcano', 'space']);
+
 // All 60 campaign chapters use balanced art; named original scenes remain available.
 export const FIRST_STAGE_SCENE = Object.freeze({
   ...PERIPHERAL_SCENES[0], id: 'coast-balanced',
@@ -116,22 +125,38 @@ const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
   ...chapterStyles.map(style => [style.id, Object.freeze({
     layers: Object.freeze(COAST_LAYERS.map((layer, index) => Object.freeze({
       ...layer, id: `${style.id}-${layer.role}`, sceneId: style.id,
-      name: style.names[index], nativeLayer: style.native[index],
+      name: style.names[index], nativeLayer: style.native[index], motionGroup: undefined,
+      // Explicit per-theme scaling avoids inheriting the coast calibration.
+      scrollScale: expandedDepth[style.id] ? [.65, 1, 1.15, 1.3, 1.6][index] : 1,
+      ...(layer.role === 'midground' ? { opacity: .92 } : {}),
       ...(style.authoredMotion ? {authoredMotion:true} : {}),
       effectStyle: layer.role === 'effects' ? style.effect : 0,
       opacity: layer.role === 'effects' ? style.effectOpacity : layer.opacity,
       tint: layer.role === 'cloud' ? style.cloudTint : 0xffffff,
       // These new foreground PNGs have authored alpha, unlike old opaque banks.
       ...(expandedDepth[style.id] && layer.role === 'foreground' ? { kind: 2, fullAlpha: true } : {}),
-      ...(expandedDepth[style.id] ? {
-        presentationMotion: true,
-        scrollScale: [.65, 1, 1.15, 1.3, 1.6][index],
+      ...(expandedDepth[style.id] ? { presentationMotion: true } : {}),
+      ...(!DETACHED_SCENES.has(style.id) && ['midground', 'foreground'].includes(layer.role) ? {
+        motionGroup: 'terrain', opacity: 1, speed: 20,
+        // Native volcano layer 1 is land; layer 2 is cloud. Frozen layer 0
+        // contains terrain; layer 1 contains lights. Else retain the banks'
+        // verified geometry group and its previously configured travel rate.
+        nativeLayer: style.id === 'volcano' ? 1 : style.id === 'frozen-rift' ? 0 : style.native[2],
+        scrollScale: style.id === 'volcano' ? 8 : expandedDepth[style.id] ? 1.15 : 1,
+      } : {}),
+      ...(layer.role === 'cloud' && !SOURCE_CLOUD_SCENES.has(style.id) ? {
+        authoredMotion: true, nativeLayer: null, scrollScale: 1,
+      } : {}),
+      // The owned storm border is cloud, not a rigid canyon wall.
+      ...(style.id === 'storm-front' && layer.role === 'foreground' ? {
+        authoredMotion: true, nativeLayer: null, scrollScale: 1,
       } : {}),
     }))),
     urls: Object.freeze({ islands: `${base}art/peripheral-v1/${style.id === 'red-nest' ? 'verdant-valley-mid-v2' : `${style.id}-${expandedDepth[style.id] ? 'mid-v1' : style.id === 'space' ? 'midground-v1' : 'crossings-v2'}`}.png`, cloud: COAST_EXTRA_URLS.cloud }),
   })]),
 ]));
-// Reused themes share approved artwork; all native motion stays with its chapter.
+// Reused themes share approved artwork and role bindings; native-backed
+// terrain clocks still come from each chapter, authored atmosphere stays local.
 const BALANCED_CHAPTER_THEMES = Object.freeze([
   'coast', 'ruins', 'volcano', 'sewer', 'space', 'frozen-rift',
   'storm-front', 'iron-dock', 'red-nest', 'volcano',
@@ -179,9 +204,8 @@ export function layerLateralOffset(layer, lateral = 0) {
   return input * 80 * distance / (100 + distance) * layer.moveScale;
 }
 
-// The coast uses a fixed presentation camera. Convert the native map layer's
-// camera compensation to its equivalent screen-space offset: a normal moving
-// camera would subtract cameraX after applying the native layer displacement.
+// Fixed orthographic presentation: rigid terrain shares this screen-space
+// compensation. A moving camera subtracts cameraX after native displacement.
 export function coastIslandLateralOffset(cameraX, nativeLayerOffsetX, unitsPerWorld) {
   if (![cameraX, nativeLayerOffsetX, unitsPerWorld].every(Number.isFinite)) return 0;
   return (nativeLayerOffsetX - cameraX) * unitsPerWorld;
@@ -193,10 +217,10 @@ export function layerScrollOffset(layer, elapsed, imageAspect = 1.5) {
   return ((Math.max(0, Number(elapsed) || 0) * layer.speed / tileLength) % 2 + 2) % 2;
 }
 
-/** Owned fallback ONLY for explicitly authored scenes with unavailable native
- * art metadata. Never supplies synthetic source layers to the simulation. */
+/** Owned motion for artwork without a matching native role: atmosphere,
+ * storm borders or missing prefabs. Never supplies source layers to simulation. */
 export function authoredLayerMotion(layer, elapsed, aspect, cameraX, unitsPerWorld) {
-  const directional = layer.role === 'foreground' || layer.role === 'cloud';
+  const directional = layer.motionGroup === 'terrain' || layer.role === 'foreground' || layer.role === 'cloud';
   return {
     scroll:layerScrollOffset(layer,elapsed,aspect),
     lateralOffset:directional ? Math.max(-12,Math.min(12,-cameraX*unitsPerWorld*(layer.role==='cloud'?.45:.3))) : 0,

@@ -22,7 +22,10 @@ export function createLobbyOnboarding({root,context,mark}) {
     if(g===8&&m?.type==='shopBoxResult')return ['.common-reward-dismiss','收下装备，继续提升战力'];
     if(m){
       if(g===8&&m.type==='shopBoxConfirm'&&m.pool===active.pool&&m.count===1)return [select('shopBoxOpen'),'确认本次单抽'];
-      if((g===9||g===14)&&m.type==='gearDetail'&&m.id===active.uid)return [item(g===9?'gearEquip':'gearUpgrade',active.uid),g===9?'装配这件装备':'强化已装配的装备'];
+      if((g===9||g===14)&&m.type==='gearDetail'&&m.id===active.uid){
+        if(g===14&&m.detailOrigin!=='slot')return [select('close'),'返回装备槽升级'];
+        return [item(g===9?'gearEquip':'gearUpgrade',active.uid),g===9?'装配这件装备':'升级已装配的装备'];
+      }
       return null;
     }
     if(c.subpage)return null;
@@ -33,7 +36,7 @@ export function createLobbyOnboarding({root,context,mark}) {
     }
     if(c.tab!=='assembly')return [tab('assembly'),g===9?'进入装备页，装配新装备':'进入装备页，强化装备'];
     if(c.gearFilter!=='all')return [select('gearClearFilter'),'查看全部装备'];
-    return [item('gearDetail',active.uid),g===9?'查看这件装备':'查看可强化的装备'];
+    return [item('gearDetail',active.uid)+(g===14?'[data-gear-origin="slot"]':''),g===9?'查看这件装备':'点击已装配的装备'];
   }
   function usable(node){return node&&!node.disabled&&!node.closest('[hidden],[aria-hidden="true"]')&&node.getClientRects().length>0;}
   function show(selector,label,strong){

@@ -1029,7 +1029,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       const open=(type,extra={})=>{
         modal={type,id:itemId,revision:snapshot.equipment.revision,...(current?.type?.startsWith('gear')||current?.type==='shopBoxResult'?{returnTo:{...current,childOpener:captureFocus(modalHost,target)}}:{}),...extra};renderModal();
       };
-      if(action==='gearDetail'){open('gearDetail');return;}
+      if(action==='gearDetail'){open('gearDetail',{detailOrigin:target.dataset.gearOrigin==='slot'?'slot':'warehouse'});return;}
       if(action==='gearReplace'){if(item){gearFilter=String(item.type);pendingEquipmentScroll=0;switchTab('assembly');}return;}
       if(action==='gearMaterialInfo'){open('gearMaterialInfo',{id:undefined,part:Number(target.dataset.part),quality:Number(target.dataset.quality)});return;}
       if(action==='gearAttributes'||action==='gearSources'||action==='gearMergeList'){open(action,{id:undefined});return;}
@@ -1062,7 +1062,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(operation==='gearBatch'&&subpage==='workshop'&&workshopKind==='gear'){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);modal=null;render(true);return;}
       if(operation==='gearSupply')modal={...current,type:'gearSources',drawn:result.gearResult.drawn.map(item=>item.uid),revision:snapshot.equipment.revision};
       else if(operation==='gearBatch')modal={type:'gearMergeList',steps:result.gearResult.steps.length,revision:snapshot.equipment.revision};
-      else modal={type:'gearDetail',id:itemId,revision:snapshot.equipment.revision,result:result.message,
+      else modal={type:'gearDetail',id:itemId,detailOrigin:current?.detailOrigin||'warehouse',revision:snapshot.equipment.revision,result:result.message,
         ...(current?.type==='gearDetail'&&current.returnTo?{returnTo:current.returnTo}:current?.returnTo?.type==='gearMergeList'?{returnTo:current.returnTo}:{})};
       renderModal();return;
     }

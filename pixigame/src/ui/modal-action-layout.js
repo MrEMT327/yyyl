@@ -4,7 +4,7 @@ export function dockGearActions(host) {
   const panel=host.querySelector('[data-modal-type^="gear"] .ag-modal');
   if(!panel||panel.querySelector('.ag-modal-footer'))return;
   const children=[...panel.children];
-  let first=children.findIndex(n=>n.matches('.ag-actions,.ag-inventory-actions'));
+  let first=children.findIndex(n=>n.matches('.ag-actions,.ag-inventory-actions,.ag-equipment-footer'));
   if(first<0)first=children.findLastIndex(n=>n.matches('button.wc-button'));
   if(first<0)return;
   if(children[first-1]?.matches('.ag-merge-count'))first--;

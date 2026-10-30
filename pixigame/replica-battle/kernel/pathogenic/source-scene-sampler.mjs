@@ -46,14 +46,14 @@ export function animationTime(time,length=1,loop=0) {
   if(loop===2){const t=mod(time,length*2);return t>length?length*2-t:t;}
   return clamp(time,0,length);
 }
-export function sampleTrack(keys,time,{length=1,loop=0,loopWrap=true,interpolation=1,captureValue,captureDuration}={}) {
-  let times=keys.times,values=keys.values,transitions=keys.transitions||times.map(()=>1);
+export function sampleTrack(keys,time,{length=1,loop=0,loopWrap=true,interpolation=1,captureValue,captureDuration}={},prepared) {
+  let times=keys.times,values=keys.values,transitions=prepared?.transitions??keys.transitions??times.map(()=>1);
   if(!times?.length)return undefined;
   const duration=captureDuration??times[0];
   const captured=keys.update===2&&duration>0&&time<duration;
   if(captured&&captureValue===undefined)throw Error('UPDATE_CAPTURE requires captureProperties');
   const finish=value=>captured?interpolate(captureValue,value,clamp(time/duration)):clone(value);
-  const n=times.filter(t=>t<=length+1e-7).length;if(!n)return undefined;
+  const n=prepared?.count??times.filter(t=>t<=length+1e-7).length;if(!n)return undefined;
   time=animationTime(time,length,loop);
   if(n===1)return finish(values[0]);
   let index=-1;for(let i=0;i<n&&times[i]<=time+1e-9;i++)index=i;
@@ -90,6 +90,16 @@ export function resolveTexture(graph,ref,seen=new Set()) {
   }
   return null;
 }
+// Rendering only reads descriptors. Keep source graph ownership explicit;
+// public resolveTexture/sampleScene still return their regular fresh values.
+const renderTextures=new WeakMap();
+function renderTexture(graph,ref){
+  const key=ref?.$external?'external:'+ref.$external:ref?.$ref?'resource:'+ref.$ref:null;
+  if(!key)return resolveTexture(graph,ref);
+  let cache=renderTextures.get(graph);if(!cache){cache=new Map();renderTextures.set(graph,cache);}
+  if(cache.has(key))return cache.get(key);
+  const result=resolveTexture(graph,ref);cache.set(key,result);return result;
+}
 function propertySet(node,property,value) {
   if(!property.includes(':')){node.properties[property]=value;return;}
   const [head,...rest]=property.split(':');let v=node.properties[head];
@@ -106,9 +116,24 @@ function trackTarget(nodes,root,path) {
   return {node:nodes.get(p),path:p,property:properties.join(':')};
 }
 function trackIds(properties) {return [...new Set(Object.keys(properties).map(k=>/^tracks\/(\d+)\/type$/.exec(k)?.[1]).filter(x=>x!==undefined))].map(Number).sort((a,b)=>a-b);}
-function frameAt(animation,elapsed,startFrame=0,startProgress=0,customSpeed=1) {
+// Only the internal read-only renderer uses these plans. Public samplers still
+// observe mutable source inputs on every call and return independently owned values.
+const renderAnimations=new WeakMap(),renderSpriteFrames=new WeakMap();
+function renderAnimationPlan(properties){
+  let plan=renderAnimations.get(properties);if(plan)return plan;
+  const tracks=trackIds(properties),length=properties.length??1,timings=new Map();
+  for(const id of tracks){const keys=properties[`tracks/${id}/keys`];if(keys?.times)timings.set(keys,{
+    transitions:keys.transitions??keys.times.map(()=>1),count:keys.times.filter(t=>t<=length+1e-7).length});}
+  const captureDuration=Math.max(0,...tracks.map(i=>properties[`tracks/${i}/keys`]?.update===2?properties[`tracks/${i}/keys`].times[0]||0:0));
+  plan={tracks,timings,captureDuration};renderAnimations.set(properties,plan);return plan;
+}
+function renderFrameTiming(animation){
+  let timing=renderSpriteFrames.get(animation);if(!timing){const durations=(animation.frames||[]).map(f=>f.duration??1);
+    timing={durations,total:durations.reduce((a,b)=>a+b,0)};renderSpriteFrames.set(animation,timing);}return timing;
+}
+function frameAt(animation,elapsed,startFrame=0,startProgress=0,customSpeed=1,timing) {
   const frames=animation.frames||[];if(!frames.length)return 0;
-  const durations=frames.map(f=>f.duration??1),total=durations.reduce((a,b)=>a+b,0);
+  const durations=timing?.durations??frames.map(f=>f.duration??1),total=timing?.total??durations.reduce((a,b)=>a+b,0);
   let t=durations.slice(0,startFrame).reduce((a,b)=>a+b,0)+startProgress*durations[startFrame]+elapsed*(animation.speed??5)*customSpeed;
   t=animation.loop?mod(t,total):clamp(t,0,total);
   for(let i=0;i<frames.length;i++){if(t<durations[i]||i===frames.length-1)return i;t-=durations[i];}
@@ -121,6 +146,7 @@ const LINE=new Set(['points','width','width_curve','default_color','gradient','t
 // defaults, so its shallow property shell avoids cloning static arrays and
 // references for every particle/shot. Animated and overridden values are still
 // copied; render samples must not be mutated or retained by external callers.
+// Render plans/descriptors require source graphs and resources to stay immutable.
 export function sampleScene(graph,scenePath,ctx={}) {return sample(graph,scenePath,ctx,false);}
 export function sampleSceneForRender(graph,scenePath,ctx={}) {return sample(graph,scenePath,ctx,true);}
 function sample(graph,scenePath,ctx,renderOnly) {
@@ -140,8 +166,8 @@ function sample(graph,scenePath,ctx,renderOnly) {
     if(!anim){warn('missing-animation',node.path,selected);continue;}
     const a=anim.properties,length=a.length??1,loop=a.loop_mode??0,localTime=(ctx.animationTimes?.[node.path]??time)*(p.speed_scale??1);
     const current=animationTime(localTime,length,loop);
-    const tracks=trackIds(a);
-    const autoCaptureDuration=Math.max(0,...tracks.map(i=>a[`tracks/${i}/keys`]?.update===2?a[`tracks/${i}/keys`].times[0]||0:0));
+    const plan=renderOnly?renderAnimationPlan(a):undefined,tracks=plan?.tracks??trackIds(a);
+    const autoCaptureDuration=plan?.captureDuration??Math.max(0,...tracks.map(i=>a[`tracks/${i}/keys`]?.update===2?a[`tracks/${i}/keys`].times[0]||0:0));
     const configuredCapture=ctx.captureDuration??p.playback_auto_capture_duration??-1;
     const captureDuration=configuredCapture<0?autoCaptureDuration:configuredCapture;
     for(const id of tracks){
@@ -153,7 +179,7 @@ function sample(graph,scenePath,ctx,renderOnly) {
         try{
           const capture=ctx.captureProperties?.[target.path]?.[target.property];
           if(keys.update===2&&(p.playback_auto_capture_transition_type??0)!==0)throw Error('Nonlinear auto capture transition not implemented');
-          const value=sampleTrack(keys,localTime,{length,loop,loopWrap:a[pre+'loop_wrap']??true,interpolation:a[pre+'interp']??1,captureValue:capture,captureDuration});
+          const value=sampleTrack(keys,localTime,{length,loop,loopWrap:a[pre+'loop_wrap']??true,interpolation:a[pre+'interp']??1,captureValue:capture,captureDuration},plan?.timings.get(keys));
           if(value!==undefined)propertySet(target.node,target.property,value);
         }catch(e){warn('animation-value',target.path,e.message);}
       }else if(type==='method'){
@@ -215,7 +241,7 @@ function sample(graph,scenePath,ctx,renderOnly) {
         const a=points[0],b=points[1],dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy);
         if(l)points=[a,[a[0]+dx/l*ctx.beamLength,a[1]+dy/l*ctx.beamLength]];
       }
-      const texture=resolveTexture(graph,p.texture);if(p.texture&&!texture)warn('missing-texture',node.path,p.texture);
+      const texture=renderOnly?renderTexture(graph,p.texture):resolveTexture(graph,p.texture);if(p.texture&&!texture)warn('missing-texture',node.path,p.texture);
       out.lines.push({...base,points:points.map(p=>transformPoint(e.matrix,p)),localPoints:points,width:p.width??10,canvasColor:base.color,color:p.gradient?base.color:colorMultiply(base.color,p.default_color||WHITE),texture,gradient:p.gradient||null,widthCurve:p.width_curve||null,jointMode:p.joint_mode??0,beginCapMode:p.begin_cap_mode??0,endCapMode:p.end_cap_mode??0,textureMode:p.texture_mode??0,roundPrecision:p.round_precision??8,sharpLimit:p.sharp_limit??2,antialiased:p.antialiased??false,closed:p.closed??false});continue;
     }
     if(node.type==='Sprite2D'||node.type==='AnimatedSprite2D'){
@@ -227,7 +253,7 @@ function sample(graph,scenePath,ctx,renderOnly) {
         if(!animation){warn('missing-sprite-animation',node.path,name);continue;}
         if(play){
           if(play.fromEnd){warn('reverse-sprite-playback',node.path,name);continue;}
-          frame=frameAt(animation,play.age,p.frame??0,p.frame_progress??0,(p.speed_scale??1)*play.speed);
+          frame=frameAt(animation,play.age,p.frame??0,p.frame_progress??0,(p.speed_scale??1)*play.speed,renderOnly?renderFrameTiming(animation):undefined);
         }
         // AnimatedSprite2D::set_frame_and_progress clamps an assigned frame to
         // the last valid frame. The source flail tracks intentionally key 6 in
@@ -235,7 +261,7 @@ function sample(graph,scenePath,ctx,renderOnly) {
         frame=clamp(Math.trunc(frame),0,Math.max(0,(animation.frames?.length??0)-1));
         tex=animation.frames?.[frame]?.texture;
       }
-      let texture=resolveTexture(graph,tex);if(!texture){warn('missing-texture',node.path,tex);continue;}
+      let texture=renderOnly?renderTexture(graph,tex):resolveTexture(graph,tex);if(!texture){warn('missing-texture',node.path,tex);continue;}
       if(!texture.crop){warn('procedural-sprite-texture',node.path,texture.resource);}
       let width=texture.width,height=texture.height;
       if(node.type==='Sprite2D'){

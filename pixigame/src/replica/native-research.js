@@ -20,6 +20,7 @@ const featureLines=row=>{
 };
 const lines=row=>(row?.Attribute||[]).map(value=>{
  const [key,amount]=value.split('='),percent=key.trim().endsWith('%');
+ if(key.trim()==='RefreshCount')return `每局增加 ${amount} 次技能刷新机会`;
  return `${economy.attributeNames[key.trim()]||key.trim()} +${amount}${percent?'%':''}`;
 }).concat(featureLines(row));
 function quote(state,pool){
@@ -91,6 +92,7 @@ export function planNativeResearch(rawProgression,rawInventory,operation,rng=Mat
      message:`${q.card.name} · Lv.${q.previous+1}`,
      nativeChanges:(q.target.Attribute||[]).map(value=>{
        const [key,amount]=value.split('='),old=(stage(q.card.ID,q.previous)?.Attribute||[]).find(line=>line.split('=')[0]===key)?.split('=')[1]||'0';
+       if(key.trim()==='RefreshCount')return {label:'每局技能刷新机会',before:`${old} 次`,after:`${amount} 次`};
        const unit=key.trim().endsWith('%')?'%':'';
        return {label:economy.attributeNames[key.trim()]||key.trim(),before:`+${old}${unit}`,after:`+${amount}${unit}`};
      }).concat(featureLines(q.target).map(after=>({label:'技能效果',before:featureLines(stage(q.card.ID,q.previous)).join('；')||'未觉醒',after})))}};

@@ -3,9 +3,10 @@ import {emptySlotMark} from './psd-empty-slot.js';
 import {weaponIconUrl} from './weapon-icon-source.js';
 import {supplyWeaponArt} from './supply-visuals.js';
 import {nativeCollectionArt} from '../replica/native-collection-art.js';
-import {GEAR_QUALITY_NAMES,gearName} from '../peripheral/equipment-system.js';
+import {GEAR_PARTS,GEAR_QUALITY_NAMES,gearName} from '../peripheral/equipment-system.js';
 import {gearDetailSkills,gearDetailIncrease} from './gear-detail-model.js';
 import {equipmentArtPath} from '../replica/equipment-art.js';
+import {nativeItemArt} from '../replica/native-item-presentation.js';
 import './airframe-equipment-page.css';
 const base=import.meta.env?.BASE_URL??'/';
 // Configuration changes invalidate native combat details until recalculation finishes.
@@ -15,7 +16,7 @@ const btn=(action,label,data='',disabled=false)=>`<button type="button" class="w
 export const gearCard=(item,h,{action='gearDetail',selected=false,mount=false,disabled=false}={})=>{
   const e=h.escape;
   const mergeReady=!mount&&action==='gearDetail'&&!item.locked&&item.merge?.available;
-  return `<button type="button" class="ag-card ${mount?'ag-mount':''} ${selected?'is-selected':''}" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}" data-action="${action}" data-id="${e(item.uid)}" ${disabled?'disabled':''} ${action==='gearMaterial'?`aria-pressed="${selected}"`:''} aria-label="${e(item.name)}，${e(item.qualityName)}，等级${item.level}${item.equipped?'，已装配':''}${item.locked?'，已锁定':''}${mergeReady?'，可合成':''}"><strong>${e(mount?item.part:item.name)}</strong><img src="${gearArt(item.art)}" alt="" draggable="false"><b>Lv.${item.level}</b>${item.quality%10?`<small class="ag-tier" aria-label="品质加${item.quality%10}">+${item.quality%10}</small>`:''}${item.equipped&&!mount?'<i class="ag-tag">已装</i>':''}${item.locked?'<i class="ag-lock" aria-label="已锁定">锁</i>':mergeReady?'<i class="ag-ready">可合</i>':''}${selected?'<span class="ag-selected">✓</span>':''}</button>`;
+  return `<button type="button" class="ag-card ${mount?'ag-mount':''} ${selected?'is-selected':''}" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}" data-action="${action}" data-id="${e(item.uid)}" ${action==='gearDetail'?`data-gear-origin="${mount?'slot':'warehouse'}"`: ''} ${disabled?'disabled':''} ${action==='gearMaterial'?`aria-pressed="${selected}"`:''} aria-label="${e(item.name)}，${e(item.qualityName)}，等级${item.level}${item.equipped?'，已装配':''}${item.locked?'，已锁定':''}${mergeReady?'，可合成':''}"><strong>${e(mount?item.part:item.name)}</strong><img src="${gearArt(item.art)}" alt="" draggable="false"><b>Lv.${item.level}</b>${item.quality%10?`<small class="ag-tier" aria-label="品质加${item.quality%10}">+${item.quality%10}</small>`:''}${item.equipped&&!mount?'<i class="ag-tag">已装</i>':''}${item.locked?'<i class="ag-lock" aria-label="已锁定">锁</i>':mergeReady?'<i class="ag-ready">可合</i>':''}${selected?'<span class="ag-selected">✓</span>':''}</button>`;
 };
 const card=gearCard;
 export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',filter='all'}={}){
@@ -45,10 +46,11 @@ export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',fil
 }
 function attributesTable(item,h,next=false){return `<div class="ag-attr-table"><p><span>${h.escape(item.attributeName)}</span><b>${h.number(item.attribute)}${next&&item.nextAttribute!=null?` → <em>${h.number(item.nextAttribute)}</em>`:''}</b></p><p><span>可强化至</span><b>${item.maxLevel}</b></p></div>`;}
 function costRow(item,gear,s,h){
-  if(!item.cost)return '<p class="ag-hint">已达当前品质强化上限</p>';
-  const have=gear.blueprints.find(part=>part.type===item.type)?.count||0;
-  s={...s,wallet:gear.wallet||s.wallet};
-  return `<div class="ag-cost"><span class="${!s.wallet.unlimited&&s.wallet.coins<item.cost.coins?'is-short':''}">金币 <b>${h.number(item.cost.coins)}</b><small>拥有 ${s.wallet.unlimited?'不限量':h.number(s.wallet.coins)}</small></span><span class="${have<item.cost.blueprints?'is-short':''}">强化图纸 <b>${h.number(item.cost.blueprints)}</b><small>拥有 ${h.number(have)}</small></span></div>`;
+  if(!item.cost)return '';
+  const part=gear.blueprints.find(part=>part.type===item.type),have=part?.count||0;
+  const blueprint=GEAR_PARTS.find(part=>part.type===item.type)?.blueprintId;
+  const wallet=gear.wallet||s.wallet,coins=wallet.unlimited?'∞':h.number(wallet.coins);
+  return `<div class="ag-slot-cost" role="group" aria-label="升级消耗"><span class="${have<item.cost.blueprints?'is-short':''}" aria-label="强化图纸 ${have}/${item.cost.blueprints}"><img src="${nativeItemArt(blueprint)}" alt="强化图纸"><b>${h.number(have)}</b><span>/${h.number(item.cost.blueprints)}</span></span><span class="${!wallet.unlimited&&wallet.coins<item.cost.coins?'is-short':''}" aria-label="金币 ${coins}/${item.cost.coins}"><img src="${nativeItemArt(1)}" alt="金币"><b>${coins}</b><span>/${h.number(item.cost.coins)}</span></span></div>`;
 }
 export function gearModal(modal,{snapshot:s,helpers:h}){
   const gear=s.equipment,{escape:e,number:n}=h,item=gear?.items.find(item=>item.uid===modal.id),error=modal.error?`<p class="ag-error" role="alert">${e(modal.error)}</p>`:'';
@@ -77,13 +79,14 @@ export function gearModal(modal,{snapshot:s,helpers:h}){
   const summary=`<div class="ag-detail-head">${card(item,h)}<div><h3>${e(item.name)}</h3><p>部位强化 Lv.${item.level}</p><p>当前品质可强化至 Lv.${item.maxLevel}</p><p>${item.equipped?'已装配':'未装配'}${item.locked?' · 已锁定':''}</p></div></div>`;
   if(modal.type==='gearDetail'){
     const increase=gearDetailIncrease(item),data=`data-id="${e(item.uid)}"`;
-    const skills=gearDetailSkills(item),occupied=!!gear.slots[item.type];
-    return {title:'装备详情',content:`<div class="ag-modal ag-equipment-detail" data-quality="${item.qualityRank}">
-      <div class="ag-equipment-hero"><div class="ag-equipment-art ag-card" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}"><img src="${gearArt(item.art)}" alt="${e(item.name)}"></div><div class="ag-equipment-heading"><h3>${e(item.name)}</h3><span class="ag-quality">${e(item.qualityName)}</span><p>${e(item.part)}${item.equipped?' · 已装配':''}${item.locked?' · 已锁定':''}</p></div><p class="ag-equipment-level">强化等级 <b>Lv.${item.level} / ${item.maxLevel}</b></p></div>
+    const skills=gearDetailSkills(item);
+    const slotDetail=modal.detailOrigin==='slot'&&item.equipped;
+    return {title:'装备详情',content:`<div class="ag-modal ag-equipment-detail" data-quality="${item.qualityRank}" data-detail-origin="${slotDetail?'slot':'warehouse'}">
+      <div class="ag-equipment-hero"><div class="ag-equipment-art ag-card" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}"><img src="${gearArt(item.art)}" alt="${e(item.name)}"></div><div class="ag-equipment-heading"><h3>${e(item.name)}</h3><span class="ag-quality">${e(item.qualityName)}</span><p>${e(item.part)}${item.equipped?' · 已装配':''}${item.locked?' · 已锁定':''}</p>${slotDetail&&item.canDowngrade?btn('gearDowngradePreview','降阶',data):''}</div><p class="ag-equipment-level">强化等级 <b>Lv.${item.level} / ${item.maxLevel}</b></p></div>
       <div class="ag-equipment-stat"><strong>${e(item.attributeName)} +${n(item.attribute)}</strong>${increase!=null?`<em aria-label="下一级增加${n(increase)}">(+${n(increase)})</em>`:''}</div>
       <section class="ag-equipment-skills" aria-label="装备技能"><h3>装备技能</h3><ul>${skills.map(feature=>`<li data-quality="${feature.quality}" class="${feature.unlocked?'is-unlocked':'is-locked'}"><span class="ag-skill-mark ${feature.unlocked?'':'is-lock'}" aria-hidden="true"></span><span><span class="ag-sr">${e(feature.qualityName)}${feature.unlocked?'已解锁':'解锁'}：</span>${e(feature.text)}</span></li>`).join('')}</ul></section>
-      <details class="ag-equipment-manage" ${modal.result||modal.error?'open':''}><summary>${item.equipped?'强化与管理':'装备管理'}</summary>${item.level>=item.maxLevel?`<p class="ag-hint">当前部位 Lv.${item.level}，本品质可强化至 Lv.${item.maxLevel}，暂不能继续强化。</p>`:''}<p class="ag-hint">更换同部位装备，强化等级保留。</p>${item.equipped?costRow(item,gear,s,h):''}${item.equipped?`<div class="ag-management-actions ag-upgrade-actions" role="group" aria-label="强化装备">${btn('gearUpgrade','强化',data,!item.canUpgrade)}${btn('gearUpgradeAll','一键强化',data,!item.canUpgrade)}</div>`:''}<div class="ag-management-actions" role="group" aria-label="管理装备">${btn('gearMerge','合成',data,!item.merge.required)}${item.canDowngrade?btn('gearDowngradePreview','降阶',data):''}${item.equipped?btn('gearUnequip','卸下',data):''}${btn('gearLock',item.locked?'解锁':'锁定',data)}</div></details>
-      ${error}${modal.result?`<p class="ag-success" role="status">${e(modal.result)}</p>`:''}<div class="ag-actions ag-equipment-primary">${btn(item.equipped?'gearReplace':'gearEquip',item.equipped||occupied?'替换':'装配',data)}</div>
+      ${error}${modal.result?`<p class="ag-success" role="status">${e(modal.result)}</p>`:''}
+      <footer class="ag-equipment-footer">${slotDetail?`${costRow(item,gear,s,h)}<div class="ag-actions ag-slot-actions" role="group" aria-label="已装配装备操作">${btn('gearUnequip','卸下',data)}${btn('gearUpgrade','升级',data,!item.canUpgrade)}${btn('gearUpgradeAll','一键升级',data,!item.canUpgrade)}</div>`:`<div class="ag-actions ag-equipment-primary">${btn(item.equipped?'gearReplace':'gearEquip','替换',data)}</div>`}</footer>
     </div>`};
   }
   if(modal.type==='gearDowngrade'){
