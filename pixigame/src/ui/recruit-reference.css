@@ -1,13 +1,12 @@
 @import './recruit-dossier.css';
 /* Content within the existing PSD modal shell. */
 #gui-casual-lobby .recruit-modal-surface {color:#1d3852;font-size:13px;line-height:1.65}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='recruitHistory'] {--popup-height:auto;--popup-min-height:0px;--popup-max-height:88%}
 #gui-casual-lobby .recruit-modal-surface :is(h3,p) {margin:0;color:inherit;text-shadow:none}
 #gui-casual-lobby .recruit-modal-surface h3 {margin:8px 0;font-size:15px;line-height:1.4;font-weight:800}
 #gui-casual-lobby .recruit-modal-surface .recruit-history-summary {display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:4px 0 12px;border-bottom:1px solid #6f8aa4}
-#gui-casual-lobby .recruit-modal-surface .recruit-history-summary small {color:#46617a;font-size:10px}
 #gui-casual-lobby .recruit-modal-surface .recruit-history-entries {list-style:none;display:grid;gap:10px;margin:12px 0;padding:0}
 #gui-casual-lobby .recruit-modal-surface .recruit-history-entries>li {padding:9px;border:1px solid #7c96ad;background:#d6e2ec88}
-#gui-casual-lobby .recruit-modal-surface .recruit-history-entries header {display:flex;flex-wrap:wrap;justify-content:space-between;gap:3px 6px;margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid #7c96ad;color:#3f5c75;font-size:10px}
 #gui-casual-lobby .recruit-modal-surface .recruit-history-entries p {display:flex;justify-content:space-between;gap:8px;margin:3px 0;font-size:12px}
 #gui-casual-lobby .recruit-modal-surface .recruit-history-entries p>b {color:#216a48;font-size:10px;white-space:nowrap}
 #gui-casual-lobby .recruit-modal-surface .recruit-modal-empty {padding:35px 5px;text-align:center;color:#46617a}
@@ -25,8 +24,6 @@
 #gui-casual-lobby .recruit-modal-surface .recruit-rule-details {margin-top:16px;border-top:1px solid #7c96ad;padding-top:6px}
 #gui-casual-lobby .recruit-modal-surface .recruit-rule-details summary {min-height:40px;padding:8px 0;color:#183b59;font-weight:800;cursor:pointer}
 #gui-casual-lobby .recruit-modal-surface .recruit-rule-details p {margin:7px 0;font-size:12px;line-height:1.8;color:#3b566d}
-#gui-casual-lobby .recruit-modal-surface .recruit-modal-back {position:relative;isolation:isolate;width:100%;min-height:46px;margin-top:15px;padding:8px 12px;border:0;background:none;color:white;font:400 16px/1.2 PsdPopup,"Microsoft YaHei",sans-serif;text-shadow:0 1px #061526}
-#gui-casual-lobby .recruit-modal-surface .recruit-modal-back::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 15px stretch}
 #gui-casual-lobby[data-tab='supply'][data-subpage=''] .pl-shell {
   --lobby-nav-gap:0px;
   --lobby-nav-height:calc(var(--lobby-frame-width) * .201333333333 + var(--lobby-safe-bottom,0px));

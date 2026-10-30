@@ -12,14 +12,15 @@
       #bootLoading { position:fixed;inset:0;background:#06151c;color:#e2f6ff; }
     </style>
     <link rel="stylesheet" href="/src/ui/entry-screens.css" />
-    <link rel="preload" as="image" href="/art/entry-screens-v2/startup-clean-v3.png" />
+    <link rel="preload" as="image" href="/art/entry-screens-v3/startup.png" />
     <script src="/cpsdk.js"></script>
     <script src="https://h.api.4399.com/h5mini-2.0/h5api-interface.php"></script>
   </head>
   <body>
     <div id="bootLoading" class="entry-screen startup" role="dialog" aria-modal="true" aria-label="彼方之遥启动">
       <section class="entry-screen__portrait">
-        <img class="startup__art" src="/art/entry-screens-v2/startup-clean-v3.png" alt="" fetchpriority="high" />
+        <img class="startup__art" src="/art/entry-screens-v3/startup.png" alt="" fetchpriority="high" />
+        <div class="startup__controls-backdrop" aria-hidden="true"></div>
         <h1 class="startup__title">彼方之遥 · 战区出击</h1>
         <div class="startup__footer">
           <div class="startup__load">

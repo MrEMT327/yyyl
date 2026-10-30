@@ -16,7 +16,7 @@ export function pilotSupplyTaskCenter(period,s,h) {
   const blocked=Boolean(s.rewardPending||s.rewardBusy);
   const label=weekly?'每周活跃':'每日活跃';
   const status=s.rewardPending?'待恢复':s.rewardBusy?'处理中':activity.claimed?'已领取':activity.canClaim?'可领取':'未达成';
-  const rewardLabel=`角色箱碎片 ×${n(activity.fragments)}`;
+  const rewardLabel=(activity.rewards||[]).map(r=>`${r.name} ×${n(r.amount)}`).join('、');
   const steps=[20,40,60,80,100];
   const reward=(id,count,name='')=>`<span class="dc-supply-reward" aria-label="${e(name||nativeItemPresentation(id).name)} ×${n(count)}">${h.img(nativeItemArt(id),'','dc-native-reward-icon')}<b>×${n(count)}</b>${name?`<small>${e(name)}</small>`:''}</span>`;
   const taskReward=(id,count,name='',first=false)=>{
@@ -29,6 +29,7 @@ export function pilotSupplyTaskCenter(period,s,h) {
   const header=`<section class="dc-activity dc-supply-activity" aria-label="${label}奖励">
     <div class="dc-activity-meter"><span class="dc-activity-value"><img src="${taskArt('activity-medal')}" alt="" draggable="false"><b>${n(value)}</b></span><progress value="${value}" max="${max}" aria-label="${label} ${n(value)} / ${max}"></progress></div>
     <div class="dc-supply-milestones">${milestones}</div>
+    <div class="dc-supply-activity-rewards" aria-label="活跃奖励">${(activity.rewards||[]).map(r=>reward(r.id,r.amount)).join('')}</div>
   </section>`;
   const tasks=weekly?`<div class="dc-task-list dc-supply-task-list">${(p.week.tasks||[]).map(t=>{
     const progress=Math.max(0,Math.min(t.target,Number(t.progress)||0)),complete=progress>=t.target;
@@ -43,7 +44,7 @@ export function pilotSupplyTaskCenter(period,s,h) {
     const starterArt=starter?.avatar||starter?.image;
     const starterReward=t.starterName?`<span class="dc-supply-reward is-first" title="首次解锁 ${e(t.starterName)}" aria-label="首次解锁 ${e(t.starterName)}">${starterArt?h.img(starterArt,'','dc-native-reward-icon'):`<span class="dc-supply-pilot-name">${e(t.starterName)}</span>`}<b>×1</b></span>`:'';
     const firstRewards=starterReward+(t.introRewards||[]).map(r=>taskReward(r.id,r.amount,r.name,true)).join('');
-    const taskRewards=(t.fragments?taskReward(926,t.fragments):'')+(firstRewards?`<span class="dc-first-rewards">${firstRewards}</span>`:'');
+    const taskRewards=(t.rewards||[]).map(r=>taskReward(r.id,r.amount,r.name)).join('')+(firstRewards?`<span class="dc-first-rewards">${firstRewards}</span>`:'');
     const destination=t.destination||({battle1:'battle',battle3:'battle',sortie:'battle',victory:'battle',upgrade:'equipment',recruit:'supply'})[t.id];
     const taskAction=!t.claimed&&!t.canClaim&&destination
       ? `<button type="button" class="wc-button dc-button" data-action="dailyGo" data-destination="${e(destination)}" ${blocked?'disabled':''}>前往</button>`
@@ -56,7 +57,7 @@ export function pilotSupplyTaskCenter(period,s,h) {
   }).join('')}</div>`;
   const f=s.flightRewards;
   const dailyAd=!weekly&&f?.ad?`<section class="su-card dc-extra-task"><header class="su-card-heading"><h3>每日特惠</h3><span>每日1次</span></header><div class="su-rewards">${f.ad.rewards.map(r=>reward(r.id,r.count??r.amount,r.name)).join('')}</div><button type="button" class="wc-button" data-action="${f.adPending?'recoverDailyRewards':'flightReward'}" data-operation="ad" data-revision="${f.revision}" ${f.adBusy||!f.adPending&&(blocked||!f.ad.canClaim||!f.adAvailable)?'disabled':''}>${f.adPending?'重试保存':f.adBusy?'广告播放中':!f.ad.canClaim?'已领取':!f.adAvailable?'广告暂不可用':'看广告领取'}</button></section>`:'';
-  const ad=!weekly?`<section class="su-card dc-extra-task"><header class="su-card-heading"><h3>广告补给</h3><span>${n(p.ad.count)} / ${n(p.ad.limit)}次</span></header><div class="su-card-bottom">${reward(926,p.ad.fragments,'角色箱碎片')}${button(p.adPending?'重试保存':p.adBusy?'广告播放中':!p.ad.canClaim?'已领完':!p.adAvailable?'广告暂不可用':'看广告领取','ad',p,'',p.adBusy||!p.adPending&&(!p.ad.canClaim||!p.adAvailable))}</div>${p.development?button('开发领取','devAd',p,'',!p.ad.canClaim||p.adBusy||p.adPending):''}</section>`:'';
+  const ad=!weekly?`<section class="su-card dc-extra-task"><header class="su-card-heading"><h3>广告补给</h3><span>${n(p.ad.count)} / ${n(p.ad.limit)}次</span></header><div class="su-card-bottom">${(p.ad.rewards||[]).map(r=>reward(r.id,r.amount,r.name)).join('')}${button(p.adPending?'重试保存':p.adBusy?'广告播放中':!p.ad.canClaim?'已领完':!p.adAvailable?'广告暂不可用':'看广告领取','ad',p,'',p.adBusy||!p.adPending&&(!p.ad.canClaim||!p.adAvailable))}</div>${p.development?button('开发领取','devAd',p,'',!p.ad.canClaim||p.adBusy||p.adPending):''}</section>`:'';
   const extras=`<div class="pilot-supply-panel supply-ui dc-supply-extras">${growthSupplyEntry(weekly?'week':'daily',s,h,{compact:true})}${dailyAd}${ad}</div>`;
   return `${header}<p class="dc-reset">${weekly?'每周一':'每日'} 00:00 刷新</p><div class="dc-scroll dc-restored-scroll" data-daily-scroll="${period}">${tasks}${extras}</div>`;
 }

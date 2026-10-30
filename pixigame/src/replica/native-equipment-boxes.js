@@ -55,6 +55,7 @@ export function planEquipmentBox(gear,rawInventory,operation,rawProgression) {
   const time=operation.time??Date.now(),economy=localBoxState(gear.localBoxState,time),boxState=economy.boxes[id];
   if(time<economy.lastSeen)return {ok:false,message:'设备时间回退，请恢复时间后开箱'};
   const freePayment=!keyOnly&&count===1&&time>=boxState.nextFreeAt;
+  if(operation.freeOnly===true&&!freePayment)return {ok:false,message:'免费次数已更新，请重新选择'};
   const keyPayment=(inventory.items[box.Key_ID]||0)>=count;
   if(keyOnly&&(!keyPayment||operation.keyOnly!==box.Key_ID))return {ok:false,message:'箱券不足，本次未消耗钻石'};
   const debit={id:freePayment?box.Key_ID:keyPayment?box.Key_ID:2,amount:freePayment?0:keyPayment?count:count===10?box.Ten:box.Single[0],free:freePayment};

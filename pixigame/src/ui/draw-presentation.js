@@ -1,11 +1,11 @@
 import {createDrawGate,prepareDrawGate,DRAW_GATE_DURATION_MS} from './draw-gate.js';
-import {drawPresentationPlan,advanceDrawPresentation} from './draw-presentation-plan.js';
+import {drawPresentationPlan,initialDrawPresentation,advanceDrawPresentation} from './draw-presentation-plan.js';
 import {trapModalTab} from './peripheral-focus.js';
 import {createResearchCharge,startResearchCharge,prepareResearchDraw,researchDrawTiming,revealResearchCard} from './research-draw.js';
 import './draw-presentation.css';
 
 export function createDrawPresentation(root, sound = () => {}) {
-  const states=new WeakMap(),sounded=new WeakMap();
+  const states=new WeakMap(),sounded=new WeakMap(),convertedSeen=new WeakMap();
   let active=null;
   const document=root.ownerDocument,view=document.defaultView;
   function clear() {
@@ -34,7 +34,7 @@ export function createDrawPresentation(root, sound = () => {}) {
     if(!nodes.length||nodes.some(n=>!n))return true;
     const media=view.matchMedia('(prefers-reduced-motion: reduce)');
     const reduced=media.matches;
-    let flow=states.get(receipt)||{phase:reduced?(plan.kind==='research'?'spotlight':'summary'):'opening',cursor:0,review:false,instant:reduced};
+    let flow=states.get(receipt)||initialDrawPresentation(plan,reduced);
     const state=active={receipt,host,dialog,backdrop,nodes,overlay:null,timer:null,click:null,key:null,motions:[],media,preference:null,preventDismissUntil:0};
     const remember=()=>states.set(receipt,flow);
     const cue=(step,key)=>{
@@ -45,14 +45,19 @@ export function createDrawPresentation(root, sound = () => {}) {
     const button=(text,action,cls='')=>{const b=document.createElement('button');b.type='button';b.className=`draw-control ${cls}`;b.dataset.drawAction=action;b.textContent=text;return b;};
     function summarize() {
       state.overlay?.remove();state.overlay=null;backdrop.inert=false;backdrop.classList.remove('draw-summary-covered');
-      // Results already watched in the spotlight finish on their item face;
-      // the rest perform their conversion once when the summary becomes visible.
-      nodes.forEach(node=>{if(node.dataset.conversionSeen==='true')node.classList.add('is-conversion-complete');});
+      // A refresh of the same receipt must not replay already seen conversions.
+      const seen=convertedSeen.get(receipt)||new Set();
+      nodes.forEach((node,index)=>{
+        if(!node.classList.contains('rr-conversion'))return;
+        if(seen.has(index))node.classList.add('is-conversion-complete');
+        else seen.add(index);
+      });
+      convertedSeen.set(receipt,seen);
       if(plan.kind==='research'){
         const confirm=dialog.querySelector('.research-close')||dialog.querySelector('[data-action="close"]');
         clear();confirm?.click();return;
       }
-      if(plan.kind==='recruit'&&!dialog.querySelector('.draw-review-all')) {
+      if(plan.kind==='recruit'&&!dialog.classList.contains('is-pilot-grid')&&!dialog.querySelector('.draw-review-all')) {
         const review=button('逐张回看','review','draw-review-all');
         dialog.querySelector('.pl-modal-heading')?.insertBefore(review,dialog.querySelector('.pl-close'));
         nodes.forEach((node,index)=>{const b=button('查看','card','draw-card-review');b.dataset.drawIndex=String(index);b.setAttribute('aria-label',`查看第${index+1}项结果`);node.append(b);});
@@ -106,7 +111,9 @@ export function createDrawPresentation(root, sound = () => {}) {
         const entry=plan.entries[index];overlay.dataset.rank=String(entry.rank);
         if(plan.entries.length>1){const count=document.createElement('span');count.className='draw-stage-count';count.textContent=flow.review?`${flow.cursor+1} / ${plan.entries.length}`:`${index+1} / ${plan.entries.length}`;head.insertBefore(count,head.lastChild);}
         const card=nodes[index]?.cloneNode(true);if(card){
-          if(entry.converted&&!flow.review)nodes[index].dataset.conversionSeen='true';
+          if(entry.converted&&!flow.review){
+            const seen=convertedSeen.get(receipt)||new Set();seen.add(index);convertedSeen.set(receipt,seen);
+          }
           if(entry.converted)card.classList.remove('is-conversion-complete');
           card.querySelectorAll('.draw-card-review,.research-close').forEach(n=>n.remove());
           card.removeAttribute('id');card.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));

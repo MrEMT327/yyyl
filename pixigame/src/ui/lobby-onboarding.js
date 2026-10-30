@@ -19,7 +19,7 @@ export function createLobbyOnboarding({root,context,mark}) {
   const item=(action,uid)=>select(action,`[data-id="${CSS.escape(String(uid))}"]`);
   function destination(c){
     const g=active.group,m=c.modal;
-    if(g===8&&m?.type==='shopBoxResult')return ['.sn-dialog '+select('close'),'收下装备，继续提升战力'];
+    if(g===8&&m?.type==='shopBoxResult')return ['.common-reward-dismiss','收下装备，继续提升战力'];
     if(m){
       if(g===8&&m.type==='shopBoxConfirm'&&m.pool===active.pool&&m.count===1)return [select('shopBoxOpen'),'确认本次单抽'];
       if((g===9||g===14)&&m.type==='gearDetail'&&m.id===active.uid)return [item(g===9?'gearEquip':'gearUpgrade',active.uid),g===9?'装配这件装备':'强化已装配的装备'];

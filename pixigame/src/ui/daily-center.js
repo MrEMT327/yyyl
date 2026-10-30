@@ -116,9 +116,9 @@ export function dailyActivities(snapshot,h) {
   const entries=[
     {action:'signin',name:'七日签到',art:icon('calendar'),detail:`已签到 ${n(signin.claimedCount||0)} / 7 天`,status:signin.completed?'已领完':signin.canClaim?'今日可领':'今日已领',ready:signin.canClaim},
     {action:'tasks',name:'任务中心',art:sprite('daily-activity'),detail:taskDetail,status:taskReady?`${n(taskReady)} 项奖励可领`:'查看任务',ready:taskReady>0},
-    {action:'patrol',name:'巡逻',art:icon('plane'),detail:patrol.native?(patrol.unlocked?'查看巡逻收益与奖励预览':patrol.lockReason):patrol.unlocked?`已累计 ${n(Math.floor(stored/60))} 小时 ${n(stored%60)} 分钟`:'通关第1章开启',status:patrol.native&&!patrol.sampleBased?'查看':patrolReady?'奖励可领':patrol.unlocked?'巡逻中':'未解锁',ready:patrolReady,disabled:!patrol.canPreview&&!patrol.unlocked},
+    {action:'patrol',name:'巡逻',art:icon('plane'),detail:patrol.unlocked?(patrol.native?'查看巡逻收益与奖励预览':`已累计 ${n(Math.floor(stored/60))} 小时 ${n(stored%60)} 分钟`):'',status:!patrol.unlocked?'':patrol.native&&!patrol.sampleBased?'查看':patrolReady?'奖励可领':'巡逻中',ready:patrolReady,chapterLocked:patrol.unlocked===false},
   ];
-  return {title:'活动',content:`<section class="dc-activities"><p class="dc-scroll-hint">向下滑动查看更多</p>${entries.map(entry=>`<article class="dc-event"><div class="dc-event-art">${entry.art}</div><div class="dc-event-copy"><h3>${entry.name}</h3><p>${entry.detail}</p><small${entry.ready&&!snapshot.rewardPending&&!snapshot.rewardBusy?' class="is-ready"':''}>${snapshot.rewardPending?'奖励待保存':snapshot.rewardBusy?'奖励处理中':entry.status}</small></div>${button(entry.action,'前往','',entry.disabled)}</article>`).join('')}</section>`};
+  return {title:'活动',content:`<section class="dc-activities"><p class="dc-scroll-hint">向下滑动查看更多</p>${entries.map(entry=>`<article class="dc-event${entry.chapterLocked?' is-chapter-locked':''}"><div class="dc-event-art">${entry.art}</div><div class="dc-event-copy"><h3>${entry.name}</h3>${entry.detail?`<p>${entry.detail}</p>`:''}${entry.status?`<small${entry.ready&&!snapshot.rewardPending&&!snapshot.rewardBusy?' class="is-ready"':''}>${snapshot.rewardPending?'奖励待保存':snapshot.rewardBusy?'奖励处理中':entry.status}</small>`:''}</div>${button(entry.action,'前往',entry.chapterLocked?'aria-disabled="true"':'',false)}</article>`).join('')}</section>`};
 }
 
 export function formationPanel(snapshot,h) {

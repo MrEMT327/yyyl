@@ -17,6 +17,7 @@
 #gui-casual-lobby .dc-supply-step.is-reached img {opacity:.48}
 #gui-casual-lobby .dc-supply-chest {width:100%;min-height:40px;grid-template-rows:10cqw auto}
 #gui-casual-lobby .dc-supply-chest img {width:10.5cqw;height:10cqw}
+#gui-casual-lobby .dc-supply-activity-rewards {display:flex;justify-content:center;align-items:center;gap:2cqw;padding-top:.5cqw}
 #gui-casual-lobby .dc-restored-scroll {display:flex;flex-direction:column;gap:1.2cqw}
 #gui-casual-lobby .dc-supply-task-list {flex:none}
 #gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-task-list {padding-bottom:7cqw}

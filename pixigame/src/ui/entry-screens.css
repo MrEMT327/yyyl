@@ -113,27 +113,29 @@
 /* Selected illustrated startup: pixels supply all decorative artwork.
    The only live overlays are status, PSD progress slices and PSD buttons. */
 .startup .entry-screen__portrait {
-  width: min(100vw, 46.26dvh);
-  height: min(100dvh, 216.18vw);
+  width: min(100vw, 48.12dvh);
+  height: min(100dvh, 207.82vw);
 }
 .startup__art { position:absolute;inset:0;width:100%;height:100%;object-fit:contain; }
+.startup__controls-backdrop {
+  position:absolute;left:0;right:0;top:79%;height:17%;pointer-events:none;
+  background:linear-gradient(180deg,#80bffd 0%,#6db7fd 36%,#68b3fd 69%,#9accfd 100%);
+  -webkit-mask-image:linear-gradient(to bottom,transparent,black 8%,black 85%,transparent);
+  mask-image:linear-gradient(to bottom,transparent,black 8%,black 85%,transparent);
+}
 .startup__title { position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap; }
-.startup__footer { position:absolute;left:15%;right:15%;bottom:max(8%,env(safe-area-inset-bottom));text-align:center; }
+.startup__footer { position:absolute;left:15.7%;right:15.7%;top:81.4%;bottom:6.8%;text-align:center; }
 .startup__load { padding:0;background:none;box-shadow:none; }
-.startup__status { margin:0 0 8px;min-height:1.4em;color:#fff;font:500 clamp(12px,4cqw,20px)/1.4 "Songti SC","STSong","SimSun",serif;text-shadow:0 1px 4px #143c73,0 1px 1px #143c73; }
-.startup .entry-screen__progress { height:clamp(8px,2.6cqw,12px);background:none;border:0;border-image:url('/art/psd-combat-v1/progress-track.png') 5 8 fill / 3px 5px stretch; }
+.startup__status { margin:0;min-height:1.4em;color:#fff;font:600 clamp(12px,3.5cqw,30px)/1.3 "Songti SC","STSong","SimSun",serif;text-shadow:0 1px 3px #4b8cc7; }
+.startup .entry-screen__progress { position:absolute;top:25%;height:clamp(8px,2.6cqw,12px);background:none;border:0;border-image:url('/art/psd-combat-v1/progress-track.png') 5 8 fill / 3px 5px stretch; }
 .startup .entry-screen__progress::-webkit-progress-bar { background:none;border-image:url('/art/psd-combat-v1/progress-track.png') 5 8 fill / 3px 5px stretch; }
 .startup .entry-screen__progress::-webkit-progress-value { background:none;box-shadow:none;border-image:url('/art/psd-combat-v1/progress-fill.png') 5 8 fill / 3px 5px stretch; }
 .startup .entry-screen__progress::-moz-progress-bar { background:none;border-image:url('/art/psd-combat-v1/progress-fill.png') 5 8 fill / 3px 5px stretch; }
-.startup__actions { margin-top:clamp(22px,5.5cqw,30px);min-height:44px; }
-.startup__actions .entry-screen__button { width:72%;height:clamp(44px,12.8cqw,64px);min-height:44px;margin:0 auto;padding:7px 12px;font:700 clamp(17px,6cqw,30px)/1.2 "Songti SC","STSong","SimSun",serif;letter-spacing:.08em; }
+.startup__actions { position:absolute;left:0;right:0;top:52%;height:45%; }
+.startup__actions .entry-screen__button { width:69%;height:100%;min-height:0;margin:0 auto;padding:2px 8px;font:700 clamp(16px,5.9cqw,30px)/1.2 "Songti SC","STSong","SimSun",serif;letter-spacing:.08em; }
 .startup.is-failed .startup__status { color:#fff; }
 @media (orientation:landscape) and (max-height:500px) {
-  .startup .entry-screen__portrait { width:min(100vw,850px);height:100dvh; }
-  .startup__art { width:50%;object-position:center; }
-  .startup__footer { left:54%;right:6%;bottom:25%; }
-  .startup__status { font-size:16px; }
-  .startup__actions .entry-screen__button { width:85%;font-size:22px; }
+  .startup__actions .entry-screen__button { min-height:0; }
 }
 
 /* A following camera stays inside the elevator shaft throughout preparation. */

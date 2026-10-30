@@ -683,7 +683,7 @@ export function createPeripheralSystem({
       return fail(plan.isRecruitDraw?'招募未能保存，请重试；本次未扣费':'补给未能保存，请重试；本次未扣费');
     }
     onChange();
-    return pass(plan.taskActivityOnly?'活跃 +20':plan.isRecruitDraw?'':'补给已存入库存',{title:plan.title,rewards:plan.rewards,...(plan.recruitPool?{recruitPool:plan.recruitPool}:{})});
+    return pass(plan.taskActivityOnly?(plan.taskActivityPoints?`活跃 +${plan.taskActivityPoints}`:'活跃已满'):plan.isRecruitDraw?'':'补给已存入库存',{title:plan.title,rewards:plan.rewards,...(plan.recruitPool?{recruitPool:plan.recruitPool}:{}),...(plan.isRecruitDraw?{directRecruit:true}:{})});
   }
   async function pilotSupplyAd(revision) {
     if(pendingFlightAd){

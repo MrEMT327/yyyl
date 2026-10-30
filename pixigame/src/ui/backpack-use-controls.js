@@ -3,6 +3,7 @@ import { ITEM_USE_BATCH_LIMIT, isItemUseBatchCount } from '../replica/item-use-b
 import { backpackUseRule } from '../replica/native-backpack-use.js';
 import { nativeItemPresentation } from '../replica/native-item-presentation.js';
 import { GEAR_PARTS } from '../peripheral/equipment-system.js';
+import { MAXED_PILOT_FRAGMENT_DIAMONDS } from '../replica/pilot-supply-reward-policy.js';
 
 export function backpackUseControls(item,s,state,h) {
   const e=h.escape,id=item.nativeId,rule=backpackUseRule(id),blocked=s.rewardPending||s.rewardBusy;
@@ -35,7 +36,7 @@ export function backpackUseControls(item,s,state,h) {
     const full=rule.kind==='compose'&&s.replicaCollection?.pilots.find(row=>row.id===rule.target)?.maxed;
     content=`<p>每 ${rule.cost} 个碎片合成 ${e(name)} ×1${rule.kind==='compose'?full?' 对应同名卡；该驾驶员已满星，合成后转为 1 个满星重复积分':' 同名卡；合成后用于激活或升星':'；合成后再开启'}。</p><div class="bag-use-actions">${use('合成 1 个',1,max<1)}${all('合成',max,'个')}</div>`;
     const remainder=item.count%rule.cost;
-    if(full&&remainder>0)content+=`<p>满星后剩余 ${remainder} 个专属碎片可按 1:1 换为角色箱碎片。整组 ${rule.cost} 个仍可合成为积分。</p><div class="bag-use-actions">${button('兑换余量',`aria-label="兑换余量 ${remainder} 个，获得角色箱碎片 ${remainder} 个" data-action="bagUse" data-use-operation="exchangePilotRemainder" data-id="${id}" data-count="${remainder}" data-revision="${s.nativeAcquisition.revision}" data-gear-revision="${s.equipment.revision}"`,blocked)}</div>`;
+    if(full&&remainder>0)content+=`<p>剩余 ${remainder} 碎片可兑换钻石 ×${h.number(remainder*MAXED_PILOT_FRAGMENT_DIAMONDS)}。</p><div class="bag-use-actions">${button('兑换余量',`aria-label="兑换余量 ${remainder} 个，获得钻石 ${h.number(remainder*MAXED_PILOT_FRAGMENT_DIAMONDS)} 个" data-action="bagUse" data-use-operation="exchangePilotRemainder" data-id="${id}" data-count="${remainder}" data-revision="${s.nativeAcquisition.revision}" data-gear-revision="${s.equipment.revision}"`,blocked)}</div>`;
   } else if(rule?.kind==='equipmentKey')content=`<p>每张券开启对应装备箱 1 次，只消耗箱券。券不足时不会改用钻石。</p>${batch('使用','张')}`;
   else if(rule?.kind==='choice') {
     const selected=rule.choices.some(row=>row.id===state.bagChoice)?state.bagChoice:rule.choices[0].id;

@@ -8,6 +8,7 @@ import equipment from '../peripheral/equipment-reference-data.json' with {type:'
 import { validateReplicaInventory } from './native-economy.js';
 import { isRosterPilot } from './native-pilot-roster.js';
 import { flightRewardView } from './flight-rewards.js';
+import { MAXED_PILOT_FRAGMENT_DIAMONDS } from './pilot-supply-reward-policy.js';
 
 const items=new Map(source.items.map(row=>[row.id,row]));
 const gearRows=new Map(equipment.equip.map(row=>[row.ID,row]));
@@ -34,19 +35,20 @@ export function planBackpackUse(rawInventory,rawGear,operation,rawProgression) {
   const inventory=validateReplicaInventory(rawInventory),rule=backpackUseRule(operation.id);
   if(operation.expectedRevision!==inventory.revision)throw Error('道具数量已变化，请重新确认');
   if(!rule||!['compose','choice','exchange'].includes(rule.kind))throw Error('该道具不能在这里直接使用');
-  // Local surplus policy: only the <50 remainder of a max-star pilot may
-  // become role-box fragments 1:1. Full groups retain their credit conversion.
+  // Only a max-star pilot's remainder may be exchanged; full groups still
+  // compose into credits. Existing role-box inventory is never changed here.
   if(operation.action==='exchangePilotRemainder') {
     if(rule.kind!=='compose'||!pilotAtMaxStar(validateReplicaProgression(rawProgression),rule.target))
       throw Error('仅满星驾驶员的专属碎片余量可兑换');
     const remainder=(inventory.items[operation.id]||0)%rule.cost;
     if(!remainder||operation.count!==remainder)throw Error('碎片余量已变化，请重新确认');
-    const balance=(inventory.items[926]||0)+remainder;
-    if(!Number.isSafeInteger(balance))throw Error('角色箱碎片数量超限，未兑换');
-    inventory.items[operation.id]-=remainder;inventory.items[926]=balance;inventory.revision++;
+    const amount=remainder*MAXED_PILOT_FRAGMENT_DIAMONDS;
+    const balance=(inventory.items[2]||0)+amount;
+    if(!Number.isSafeInteger(balance))throw Error('钻石数量超限，未兑换');
+    inventory.items[operation.id]-=remainder;inventory.items[2]=balance;inventory.revision++;
     return {inventory:validateReplicaInventory(inventory),pilotCreditDelta:0,
-      rewards:[flightRewardView({kind:'item',id:926,count:remainder})],
-      message:`已将 ${remainder} 个满星专属碎片余量兑换为等量角色箱碎片`};
+      rewards:[flightRewardView({kind:'item',id:2,count:amount})],
+      message:`兑换成功，获得钻石 ×${amount}`};
   }
   if(operation.action!==undefined)throw Error('未知的道具使用操作');
   const count=operation.count;

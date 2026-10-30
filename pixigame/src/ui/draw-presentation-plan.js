@@ -21,7 +21,14 @@ export function drawPresentationPlan(receipt, snapshot) {
     const rank=pilot?({R:1,SR:2,SSR:3,UR:4}[pilot.rarity]||1):({white:0,green:1,blue:2,purple:3,gold:4}[reward.drawQuality]??Number(reward.qualityRank??reward.rank??0));
     return {index,rank,isNew:Boolean(reward.isNew),converted:Boolean(reward.convertedFragment)};
   });
-  return {kind:'recruit',title:'招募',entries,featured:entries.length===1?[0]:entries.filter(e=>e.isNew||e.rank>=3).map(e=>e.index)};
+  // Direct pilot recruitment presents the complete receipt without a gate.
+  // Weapon recruitment and legacy boxes retain their individual sequences.
+  const pilot=receipt.recruitGrid===true;
+  return {kind:'recruit',title:'招募',grid:pilot,entries,featured:pilot?[]:entries.length===1?[0]:entries.filter(e=>e.isNew||e.rank>=3).map(e=>e.index)};
+}
+
+export function initialDrawPresentation(plan,reduced=false) {
+  return {phase:plan.grid?'summary':reduced?(plan.kind==='research'?'spotlight':'summary'):'opening',cursor:0,review:false,instant:reduced};
 }
 
 export function advanceDrawPresentation(flow, action, plan) {

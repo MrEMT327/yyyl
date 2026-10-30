@@ -1,15 +1,17 @@
 /* Keep the shared PSD buttons, frame slices and four-column mobile viewport. */
-#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs {display:grid;grid-template-columns:minmax(0,1fr) 25cqw;gap:1.5cqw;padding:0 2cqw}
-#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {position:static;width:100%;--wc-button-height:max(44px,9cqw);font-size:clamp(10px,2.7cqw,14px)}
-#gui-casual-lobby .research-tabs {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1cqw;min-width:0}
+#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs {display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(64px,22cqw);align-items:center;gap:1.5cqw;padding:0 2cqw}
+#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {right:auto;left:auto;top:auto;align-self:center;width:100%;--wc-button-height:max(36px,8cqw);height:var(--wc-button-height);min-height:36px;padding:2px 4px;font-size:clamp(10px,2.7cqw,14px)}
+#gui-casual-lobby .research-tabs {display:contents}
 #gui-casual-lobby .research-tabs .research-tab {--wc-button-height:max(44px,9cqw);width:100%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(14px,4cqw,21px);color:var(--paper-ink)}
+#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs .research-summary::before {content:none!important}
 #gui-casual-lobby .research-tab.is-active::before {filter:brightness(1.35)}
 #gui-casual-lobby .research-tab:not(.is-active) {opacity:.72}
-#gui-casual-lobby .research-tab small {font-size:clamp(8px,2cqw,10px);line-height:1.15}
+#gui-casual-lobby .research-tab.is-chapter-locked {filter:grayscale(1);opacity:.45}
 #gui-casual-lobby .research-tab:focus-visible {outline:2px solid #b9f4ff;outline-offset:-3px}
 #gui-casual-lobby[data-tab='research'] .native-lab-card {aspect-ratio:216/296}
 #gui-casual-lobby .native-lab-face {position:absolute;inset:2% 2% 14%;width:96%;height:84%;object-fit:contain;pointer-events:none}
 #gui-casual-lobby .native-lab-card.is-locked .native-lab-face {filter:brightness(.5) saturate(.65)}
+#gui-casual-lobby .native-lab-card.is-chapter-locked .native-lab-face {filter:grayscale(1) brightness(.5)}
 #gui-casual-lobby .native-lab-progress {position:absolute;left:25%;right:6%;bottom:6%;height:14%;overflow:hidden;background:#424747;border:1px solid #17222b;border-radius:3px;color:#fff;text-shadow:0 1px 2px #000}
 #gui-casual-lobby .native-lab-progress i {position:absolute;inset:0 auto 0 0;background:#7bba37}
 #gui-casual-lobby .native-lab-progress b {position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(9px,2.6cqw,14px)/1 sans-serif;font-variant-numeric:tabular-nums}

@@ -57,10 +57,9 @@ export function battlePage(ctx,requestedChapter) {
     hotspot('chapter-title','选择章节','chapters',[172,143,413,70]),
     hotspot('chapter-next','下一章','chapterNext',[585,159,36,39]),
     hotspot('tasks','查看航线任务','tasks',[6,232,101,102]),
-    hotspot('chapters','打开章节地图','chapters',[635,239,101,102]),
     hotspot('star-rewards',s.nativeAcquisition?'查看章节奖励':'查看星级奖励','chapterChest',[240,239,289,45]),
     hotspot('switch-pilot','切换驾驶员','catalog',[597,1187,145,147],'data-kind="pilot"'),
-    hotspot('patrol','航线巡逻','patrol',[26,1345,182,111]),
+    hotspot('patrol','航线巡逻','patrol',[26,1345,182,111],s.patrol?.unlocked===false?'aria-disabled="true" data-chapter-locked="true"':''),
     hotspot('backpack','打开背包','backpack',[545,1364,182,92]),
     hotspot('start',stage?.unlocked === false ? '当前章节未解锁' : '开始战役，消耗体力×5','start',[224,1341,301,117],`data-stage-index="${chapter}"`),
   ].join('');
@@ -84,7 +83,7 @@ export function battleSupplementalModal(type, snapshot, requestedChapter) {
   const route = snapshot.stages.slice(chapter, chapter + 1);
   const stars = route.reduce((sum,item) => sum + (item.stars || 0), 0);
   if(type==='chapterChest'&&snapshot.nativeAcquisition) {
-    return chapterRewardsDialog(snapshot,route[0]?.replicaChapterId);
+    return chapterRewardsDialog(snapshot,route[0]?.replicaChapterId,{currentOnly:true});
   }
   if (type === 'chapterChest') {
     const rewardMode = 'easy';
