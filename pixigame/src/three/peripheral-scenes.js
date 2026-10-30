@@ -113,6 +113,9 @@ export const FIRST_STAGE_SCENE = Object.freeze({
 });
 const FIRST_STAGE_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.freeze({
   ...layer, id: `coast-balanced-${layer.role}`, sceneId: FIRST_STAGE_SCENE.id,
+  // A four-strip composition keeps island layouts stable through UV wrap.
+  ...(layer.motionGroup==='terrain'?{cycleTiles:4}:{}),
+  ...(layer.role==='midground'?{layout:'coast-islands'}:{}),
   // Authored transparent shoreline uses the existing RGBA shader path.
   ...(layer.role === 'foreground' ? { kind: 2, fullAlpha: true } : {}),
 })));
@@ -211,10 +214,11 @@ export function coastIslandLateralOffset(cameraX, nativeLayerOffsetX, unitsPerWo
   return (nativeLayerOffsetX - cameraX) * unitsPerWorld;
 }
 
-/** Bounded UV travel for a mirrored two-tile cycle, shared by runtime and QA. */
+/** Bounded UV travel for the authored tile cycle, shared by runtime and QA. */
 export function layerScrollOffset(layer, elapsed, imageAspect = 1.5) {
   const tileLength = layer.width * imageAspect;
-  return ((Math.max(0, Number(elapsed) || 0) * layer.speed / tileLength) % 2 + 2) % 2;
+  const period=layer.cycleTiles??2;
+  return ((Math.max(0, Number(elapsed) || 0) * layer.speed / tileLength) % period + period) % period;
 }
 
 /** Owned motion for artwork without a matching native role: atmosphere,

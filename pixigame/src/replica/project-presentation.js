@@ -116,7 +116,8 @@ export async function createProjectPresentation({ content, appearance, onError, 
       if (!original) throw new Error(`当前关卡缺少背景层：${definition.id}`);
       const offset = frame.mapCameraOffset(original);
       const tileHeight = definition.width * aspect / unitsPerWorld;
-      const scroll = (-nativeMapScrollZ(original, elapsed) * (definition.scrollScale ?? 1) / tileHeight + offset.z / tileHeight) % 2;
+      const period=definition.cycleTiles??2;
+      const scroll = (-nativeMapScrollZ(original, elapsed) * (definition.scrollScale ?? 1) / tileHeight + offset.z / tileHeight) % period;
       // Keep terrain inside the strip's overscan margin. Connected bridges,
       // islands and banks use one source group and the same fixed-camera offset.
       const anchored = definition.role === 'background' || definition.role === 'midground';
@@ -129,7 +130,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
         : anchored ? 0 : definition.presentationMotion && directionalLayer
         ? -frame.camera.x * unitsPerWorld * (definition.role === 'cloud' ? .45 : .3)
         : offset.x * unitsPerWorld * direction;
-      return { scroll: (scroll + 2) % 2, lateralOffset: coastCamera ? Math.max(-12, Math.min(12, lateralOffset)) : lateralOffset };
+      return { scroll: (scroll + period) % period, lateralOffset: coastCamera ? Math.max(-12, Math.min(12, lateralOffset)) : lateralOffset };
     },
   }) : { dispose() {}, update() {} };
   // This environment is a generated GPU render target, not a decoded image.

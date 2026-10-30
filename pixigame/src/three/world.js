@@ -1,5 +1,6 @@
 import * as T from 'three';
-import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, FIVE_LAYER_DEFINITIONS, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
+import {mapLayerGrade,COAST_ISLAND_LAYOUT} from './map-scene-polish.js';
+import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
 
 const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
 // The middle plane has a real transparent opening. Through it the distant
@@ -8,10 +9,27 @@ const fragmentShader = `
 varying vec2 terrainUv;
 uniform sampler2D artwork;uniform float hasArt;uniform float repeatY;uniform float scroll;
 uniform float sourceWidth;uniform vec2 opening;uniform float opacity;uniform float completeScene;
+uniform vec4 visualGrade;
+#if ISLAND_LAYOUT == 1
+uniform vec4 islandLayout[12];
+#endif
 uniform vec3 base;uniform vec3 edge;uniform vec3 accent;uniform vec3 mist;uniform vec3 chapterTint;uniform vec3 layerTint;
 // Overlap only the narrow ends of directional strips. Both samples keep their
 // authored orientation, while premultiplied interpolation preserves cutout edges.
 vec4 sampleArtwork(vec2 uv){
+  #if ISLAND_LAYOUT == 1
+    // Reuse the three complete island cutouts in a fixed four-strip island.
+    // Empty cells and varied spacing/scales are world-anchored, never rerolled
+    // by camera movement. Painted terrain is never flipped or stretched.
+    float cell=floor(uv.y*3.);
+    int index=int(mod(mod(cell,12.)+12.,12.));
+    vec4 island=islandLayout[index];
+    if(island.y<.01)return vec4(0.);
+    vec2 local=vec2((uv.x-island.z)/island.y+island.w,(fract(uv.y*3.)-.5)/island.y+.5);
+    if(local.x<0.||local.x>1.||local.y<0.||local.y>1.)return vec4(0.);
+    vec2 sampleUv=vec2(local.x,(island.x+local.y)/3.);
+    return textureGrad(artwork,sampleUv,dFdx(uv)/island.y,dFdy(uv)/island.y);
+  #endif
   #if DIRECTIONAL_SEAM == 1
     const float overlap=.045;
     vec2 gradientX=dFdx(uv)*vec2(1.,1.-overlap);
@@ -42,6 +60,13 @@ void main(){
   if(hasArt>.5)picture=sampleArtwork(uv);
   picture.rgb*=chapterTint*layerTint;
   float border=abs(terrainUv.x-.5);
+  // Grade only the scenery; aircraft, pickups and projectiles are composited
+  // later. Keep near-bank pixels crisp while distant landmarks sit back.
+  float quietCenter=1.-smoothstep(.16,.43,border);
+  float luminance=dot(picture.rgb,vec3(.2126,.7152,.0722));
+  picture.rgb=mix(vec3(luminance),picture.rgb,visualGrade.y)*visualGrade.x;
+  picture.rgb=mix(picture.rgb,base,visualGrade.z);
+  picture.rgb*=1.-visualGrade.w*quietCenter;
   float edgeMask=mix(smoothstep(opening.x,opening.y,border),1.,completeScene);
   #if LAYER_KIND == 0
     if(hasArt<.5){float ripple=sin(uv.y*48.+sin(uv.x*26.)*.7)*.5+.5;picture.rgb=mix(base,accent,ripple*.045);}
@@ -117,25 +142,39 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     };
     uploadJob = idle ? view.requestIdleCallback(upload) : view.setTimeout(upload, 80);
   }
-  const layers = [...PERIPHERAL_LAYERS, ...FIVE_LAYER_DEFINITIONS].map((definition, index) => {
-    const kind = definition.kind ?? index;
-    const material = new T.ShaderMaterial({
-      defines: { DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0 }, vertexShader, fragmentShader,
-      uniforms: {
-        artwork: { value: null }, hasArt: { value: 0 }, repeatY: { value: definition.length / (definition.width * 1.5) }, scroll: { value: 0 },
-        sourceWidth: { value: definition.sourceWidth }, opening: { value: new T.Vector2(...(definition.opening || [0, 1])) }, opacity: { value: definition.opacity }, completeScene: { value: 0 },
-        base: { value: new T.Color() }, edge: { value: new T.Color() }, accent: { value: new T.Color() }, mist: { value: new T.Color() }, layerTint: { value: new T.Color(definition.tint ?? 0xffffff) },
-      },
-      transparent: kind > 0, depthWrite: kind === 0, toneMapped: false,
+  let layers = [], layerSceneId;
+  function releaseLayers() {
+    for (const {mesh,material} of layers) {
+      mesh.removeFromParent(); mesh.geometry.dispose(); material.dispose();
+    }
+    layers=[];
+  }
+  function selectLayers() {
+    if (layerSceneId===current.id) return;
+    releaseLayers(); layerSceneId=current.id;
+    const definitions=FIVE_LAYER_SCENES[current.id]?.layers || PERIPHERAL_LAYERS;
+    layers=definitions.map((definition,index)=>{
+      const kind = definition.kind ?? index;
+      const material = new T.ShaderMaterial({
+        defines: { DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0 }, vertexShader, fragmentShader,
+        uniforms: {
+          visualGrade: {value:new T.Vector4(1,1,0,0)},
+          ...(definition.layout==='coast-islands'?{islandLayout:{value:COAST_ISLAND_LAYOUT.map(row=>new T.Vector4(...row))}}:{}),
+          artwork: { value: null }, hasArt: { value: 0 }, repeatY: { value: definition.length / (definition.width * 1.5) }, scroll: { value: 0 },
+          sourceWidth: { value: definition.sourceWidth }, opening: { value: new T.Vector2(...(definition.opening || [0, 1])) }, opacity: { value: definition.opacity }, completeScene: { value: 0 },
+          base: { value: new T.Color() }, edge: { value: new T.Color() }, accent: { value: new T.Color() }, mist: { value: new T.Color() }, layerTint: { value: new T.Color(definition.tint ?? 0xffffff) },
+        },
+        transparent: kind > 0, depthWrite: kind === 0, toneMapped: false,
+      });
+      const mesh = new T.Mesh(new T.PlaneGeometry(definition.width, definition.length).rotateX(-Math.PI / 2), material);
+      mesh.name = `chapter-${definition.id}-layer`;
+      mesh.position.set(300, definition.depth, 650);
+      mesh.renderOrder = -1000 + index * 10;
+      mesh.userData.layer = definition.id;
+      group.add(mesh);
+      return { definition, mesh, material };
     });
-    const mesh = new T.Mesh(new T.PlaneGeometry(definition.width, definition.length).rotateX(-Math.PI / 2), material);
-    mesh.name = `chapter-${definition.id}-layer`;
-    mesh.position.set(300, definition.depth, 650);
-    mesh.renderOrder = -1000 + index * 10;
-    mesh.userData.layer = definition.id;
-    group.add(mesh);
-    return { definition, mesh, material };
-  });
+  }
   const shadow = new T.Mesh(
     new T.PlaneGeometry(1100, 6000).rotateX(-Math.PI / 2),
     new T.ShadowMaterial({ color: 0x14283b, opacity: .035, depthWrite: false }),
@@ -150,6 +189,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
   group.add(shadow);
 
   function syncLayers() {
+    selectLayers();
     for (const { definition, mesh, material } of layers) {
       mesh.visible = FIVE_LAYER_SCENES[current.id] ? definition.sceneId === current.id : !definition.sceneId && (!current.singleLayer || definition.id === 'middle');
       if (!mesh.visible) continue;
@@ -158,10 +198,12 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       const aspect = texture ? texture.image.height / texture.image.width : 1.5;
       const u = material.uniforms;
       if (mesh.userData.scene !== current || u.artwork.value !== (texture || null)) {
+        const grade=mapLayerGrade(current.id,definition.role);
+        u.visualGrade.value.fromArray(grade.color);
         u.completeScene.value = current.singleLayer || definition.fullAlpha ? 1 : 0;
         u.chapterTint ??= {value:new T.Color(0xffffff)};
         u.chapterTint.value.set(current.tint||0xffffff).lerp(white,current.tint ? .55 : 0);
-        u.opacity.value = definition.source === 'foreground' ? (current.foregroundOpacity ?? definition.opacity) : definition.opacity;
+        u.opacity.value = (definition.source === 'foreground' ? (current.foregroundOpacity ?? definition.opacity) : definition.opacity)*grade.opacity;
         u.artwork.value = texture || null; u.hasArt.value = texture ? 1 : 0;
         u.repeatY.value = definition.length / (definition.width * aspect);
         for (const color of ['base', 'edge', 'accent', 'mist']) u[color].value.set(current[color === 'base' ? 'ground' : color]);
@@ -174,6 +216,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
         x: mesh.position.x, source: key, status: texture ? 'ready' : status.get(key), opening: definition.opening || null });
     }
     Object.assign(group.userData.terrain ||= {}, {
+      allocatedLayers:layers.length,
       layers: layers.filter(layer => layer.mesh.visible).map(layer => layer.mesh.userData.terrain),
       id: current.id, name: current.name, status: status.get(`${current.textureId || current.id}/ground`), artUrl: current.artUrl,
       depthUrl: current.depthUrl, foregroundUrl: current.foregroundUrl, elapsed, lateral });
@@ -259,7 +302,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       }
       uploads.length = 0;
       group.removeFromParent();
-      for (const layer of layers) { layer.mesh.geometry.dispose(); layer.material.dispose(); }
+      releaseLayers();
       shadow.geometry.dispose(); shadow.material.dispose();
       textures.forEach(texture => texture.dispose()); textures.clear();
       sceneCache.clear(); status.clear();
