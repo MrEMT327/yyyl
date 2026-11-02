@@ -5,9 +5,13 @@ import { developerSkillsEnabled, setDeveloperSkillsEnabled } from '../developer-
 import { researchArt } from './research-art.js';
 import {createLobbyOnboarding} from './lobby-onboarding.js';
 import { nativeRewardPresentation } from '../replica/native-item-presentation.js';
+import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
+import {rewardItemSlot} from './reward-item-slot.js';
 import { developerToolsDialog } from './developer-tools-panel.js';
 import './developer-tools.css';
 import {commonRewardsDialog,isCommonReward} from './common-rewards.js';
+import {isRewardReceiptModal,modalIdentity,mountRewardLayers,labelRewardLayer,captureModalScroll,restoreModalScroll} from './reward-modal-stack.js';
+import './reward-modal-stack.css';
 import {shopBoxRewards} from './shop-box-result-cards.js';
 import {playerName} from '../player-identity.js';
 import { emptySlotMark } from './psd-empty-slot.js';
@@ -159,7 +163,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   const root = document.createElement('section'); root.className = 'peripheral-lobby psd-nav-global'; root.id = 'gui-casual-lobby'; root.setAttribute('aria-label', '少女航线指挥部');
   root.innerHTML = '<div class="pl-shell"><header class="pl-header"></header><div class="pl-resource-host"></div><main class="pl-body"></main><nav class="pl-nav lobby-nav" aria-label="主导航"></nav><div class="pl-modal-host"></div><div class="pl-toast" role="status" aria-live="polite"></div></div>';
   parent.append(root);
-  const header = root.querySelector('.pl-header'), resourceHost = root.querySelector('.pl-resource-host'), body = root.querySelector('.pl-body'), nav = root.querySelector('.pl-nav'), modalHost = root.querySelector('.pl-modal-host');
+  const header = root.querySelector('.pl-header'), resourceHost = root.querySelector('.pl-resource-host'), body = root.querySelector('.pl-body'), nav = root.querySelector('.pl-nav'), modalRoot = root.querySelector('.pl-modal-host');
+  let modalHost=modalRoot,rewardLayer=null;
   const uiMotion = createUiMotion(root);
   let tab = TABS.some(t => t.id === bridge.activeLobbyTab) ? bridge.activeLobbyTab : 'battle';
   let snapshot, signature = '', visible = true, destroyed = false, busy = false, elapsed = 0, toastTimer, debugClearTimer = 0, modal = null;
@@ -176,6 +181,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   let pendingModalBackgroundRefresh = false;
   const polishedTab = () => ['shop','assembly','battle','research','supply'].includes(tab);
   let nativeAppearanceOnly = false;
+  let weaponSkillSlot=0;
   let subpage = '', catalogSkillTab = false, catalogFilter = 'all', equipmentSortDescending = true, workshopId = null, workshopFilter = 'all', workshopMode = 'level';
   const catalogScrollPositions = new Map();
   const fleetUi={aircraft:{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false},pilot:{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false}};
@@ -242,16 +248,19 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       const handler = bridge.peripheralAction || system?.action;
       const result = handler ? await handler.call(system || bridge, action, payload) : { ok: false, message: '当前功能尚未开放' };
       if(result?.ok&&result.recruitToken)await handler.call(system||bridge,'fleetRecruitSeen',{token:result.recruitToken});
-      if (result?.message && !(result.ok && growthBefore)) toast(action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message);
+      if (result?.message && !(result.ok && growthBefore)) toast(action==='replicaCollection'&&['skins','pilots'].includes(payload.kind)&&['unlock','star'].includes(payload.action)&&isResourceShortage(result.message)?'道具不足':action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message);
       if (result?.ok === false && !result.message) toast('暂时无法进行此操作');
       const rewards = actionRewards(result,snapshot,result?.ok?read():snapshot);
       if (result?.ok && action==='claimActivity' && modal?.type==='tasks') delete modal.milestoneId;
       const completedShopOrder=result?.ok&&action==='shopBuy'&&modal?.type==='shopConfirm';
-      const rewardReturn=modal&&modal.type!=='rewards'&&!completedShopOrder?{...modal,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0}:null;
+      const rewardParent=rewardReturnModal(modal);
+      const rewardReturn=rewardParent?{...rewardParent,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0}:null;
+      const rewardOrigin=resourceReturn||patrolReturn||rewardReturn;
+      if(rewards.length&&rewardOrigin)rewardOrigin.rewardReturnScrollState=captureModalScroll(modalHost);
       if (rewards.length) modal = { type: 'rewards', title: result.title || (action === 'recruit'||result.recruitPool ? '招募结果' : '获得奖励'), rewards:rewards.map(r=>({...r,isNew:r.isNew ?? ((r.type||r.kind)==='weapon' && !snapshot.weapons.some(w=>w.id===(r.id||r.itemId)&&w.owned))})), recruit: result.recruitPool==='pilot'||action === 'recruit' && (payload.poolId || pool) === 'pilot', recruitPool: result.recruitPool||(action === 'recruit' ? payload.poolId || pool : null), recruitGrid:result.directRecruit===true||action==='recruit'&&(payload.poolId||pool)==='pilot', ...(resourceReturn?{returnTo:resourceReturn}:patrolReturn ? {returnTo:patrolReturn,patrol:true} : rewardReturn?{returnTo:rewardReturn}:{}) };
       else if(completedShopOrder)modal=resourceReturn||null;
       if (result?.ok && result.researchResult) {
-        modal = { type: 'researchResult', result };
+        modal = { type: 'researchResult', result,...(rewardReturn?{returnTo:rewardReturn}:{}) };
         pendingResearchFocus = result.cardId || null;
       }
       if(result?.ok&&snapshot.replicaCollection&&['replicaCollection','selectReplicaLoadout','gearEquip','gearUnequip','gearUpgrade','gearUpgradeAll','gearDowngrade','gearMerge','gearBatch'].includes(action)) {
@@ -283,11 +292,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
   }
   async function openShopBox(review, freeOnly = false) {
+    const source=modal?.type==='shopBoxConfirm'?modal.returnTo||null:modal;
+    const returnTo=source?{...source,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0,rewardReturnScrollState:captureModalScroll(modalHost)}:null;
     const result=await act('gearSupply',{pool:review.pool,count:review.count,expectedRevision:review.revision,
       expectedInventoryRevision:review.inventoryRevision,...(freeOnly?{freeOnly:true}:{})});
     if(!result)return;
     if(result.ok)modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(i=>i.uid),receipt:result.gearResult.receipt,
-      pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards,aircraft:result.gearResult.aircraftRewards};
+      pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards,aircraft:result.gearResult.aircraftRewards,...(returnTo?{returnTo}:{})};
     else if(!freeOnly)modal={...review,error:result.message};
     else return;
     renderModal();
@@ -339,23 +350,25 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     return `<section class="pl-upgrade-page">${heading('BASIC ENHANCEMENT', '基础强化', `<span class="pl-count">战力 ${number(snapshot.power)}</span>`)}<div class="pl-segmented">${button('growthKind', `${icon('plane')} 飞机强化`, growthKind === 'aircraft' ? 'is-active' : '', 'data-kind="aircraft"')}${button('growthKind', `${icon('weapon')} 武器强化`, growthKind === 'weapon' ? 'is-active' : '', 'data-kind="weapon"')}</div><div class="pl-upgrade-hero" style="background-image:url('${asset('hangar')}')"><div class="pl-upgrade-rays"></div>${growthKind === 'aircraft' ? `<div class="pl-live-model" data-model-aircraft="${escape(a?.id)}"></div>` : `<div class="pl-growth-weapon">${thumbnail(w?.id) || icon('weapon')}</div>`}<div class="pl-upgrade-hero-name"><h2>${escape(growthKind === 'aircraft' ? a?.aircraftName || a?.aircraft || a?.name : w?.name || '选择武器')}</h2><span>Lv.${item?.level || 1}</span><i>→</i><strong>Lv.${Math.max(item?.level || 1, Math.min(item?.maxLevel || 999, (item?.level || 1) + 1))}</strong></div></div><div class="pl-growth-stats pl-panel">${growthKind === 'aircraft' ? `<div><span>基础攻击</span><b>${number(item?.attack ?? item?.stats?.attack)}</b><i>→</i><strong>${number(growth.nextAttack ?? item?.nextAttack)}</strong></div><div><span>基础耐久</span><b>${number(item?.hp ?? item?.stats?.hp)}</b><i>→</i><strong>${number(growth.nextHp ?? item?.nextHp)}</strong></div>` : `<div><span>基础伤害</span><b>${number(item?.damage ?? item?.stats?.damage)}</b><i>→</i><strong>${number(growth.nextDamage ?? item?.nextDamage)}</strong></div><p>${escape(item?.description || item?.role || '')}</p>`}</div><div class="pl-materials"><span>${icon('shard')} 飞机碎片 <b>${number(snapshot.wallet.aircraftShards)}</b></span><span>${icon('parts')} 武器零件 <b>${number(snapshot.wallet.weaponParts)}</b></span></div>${button('upgrade', `<strong>${item?.level >= item?.maxLevel ? (growthKind === 'weapon' && item?.qualityRank < 5 ? '请先提升品级' : '已达满级') : growth.breakthrough ? '阶段突破' : '基础强化'}</strong><span class="pl-button-cost">${costHtml(cost)}</span>`, 'pl-primary pl-wide pl-upgrade-button', `data-kind="${growthKind}" data-id="${escape(item?.id)}"`, !item?.owned || item?.level >= item?.maxLevel)}<div class="pl-section-label"><h2>${growthKind === 'aircraft' ? '出战战机' : '选择强化武器'}</h2><span>成长 ${growthKind === 'aircraft' ? '耐久 · 攻击' : '基础伤害'}</span></div>${growthKind === 'aircraft' ? `<div class="pl-growth-identity">${icon('plane')}<span>${escape(a?.aircraftName || a?.aircraft || a?.name)}</span>${button('tab', '前往机库', 'pl-secondary', 'data-tab="assembly"')}</div>` : `<div class="pl-weapon-grid">${snapshot.weapons.filter(w => w.owned).map(x => weaponCard(x, x.id === w?.id, 'growthWeapon')).join('')}</div>`}</section>`;
   }
   function pilotRewardsHtml(rewards) {
-    return pilotRecruitResults(rewards,snapshot.pilots,{number,renderReward:rewardItemHtml,grid:modal?.recruitGrid===true});
+    const view=cloudNativeRecruitSnapshot(snapshot);
+    return pilotRecruitResults(rewards,view.pilots,{number,renderReward:rewardItemHtml,grid:modal?.recruitGrid===true});
   }
   function rewardItemHtml(r,projectAssets=false) {
     const id = r.id || r.itemId, type = r.type || r.kind;
     const known = snapshot.weapons.find(w => w.id === id) || snapshot.aircraft.find(a => a.id === id);
     const native = nativeRewardPresentation(r);
-    const rank = Math.max(0, Math.min(5, Number(r.qualityRank ?? native.qualityRank ?? known?.qualityRank ?? 0)));
+    const quality=rewardDisplayQuality(r,native,known),rank=quality.qualityRank;
     const ownResource=projectAssets?({coins:'psd-main-v1/resources/coins-icon',diamonds:'psd-main-v1/resources/diamonds-icon',stamina:'psd-main-v1/resources/stamina-icon',aircraftShards:'project-inventory-icons-v1/aircraft-shard',weaponParts:'project-inventory-icons-v1/weapon-parts',cores:'project-inventory-icons-v1/technology-core'})[type]:null;
     const resourceName = ({ coins:'金币', diamonds:'钻石', aircraftShards:'通用飞机碎片', weaponParts:'武器零件', cores:'科技星核', stamina:'体力' })[type];
     const gearImage=type==='pilotCredits'?icon('medal'):native.image?img(native.image,'','pl-icon ag-reward-art'):type==='nativeItem'&&r.image?img(r.image,'','pl-icon ag-reward-art'):['gear','gearBlueprint','gearKey'].includes(type)&&r.image?img(`${import.meta.env.BASE_URL}${r.image}`,'','pl-icon ag-reward-art'):'';
-    if (projectAssets) {
+    {
       const artwork = gearImage || (ownResource ? img(`${import.meta.env.BASE_URL}art/${ownResource}.png`,'','pl-icon') : '') || thumbnail(id) || icon(({ aircraft:'plane', weapon:'weapon' })[type] || 'crate');
-      const name=resourceName || native.name || r.name || known?.aircraftName || known?.name || '补给';
-      const tag=r.gearUid?'button':'div',action=r.gearUid?`type="button" data-action="gearDetail" data-id="${escape(r.gearUid)}" aria-label="${escape(name)}${r.qualityName?'，'+escape(r.qualityName):''}，查看当前装备"`:'';
-      return `<${tag} class="pl-reward-item" data-reward-resource="${escape(type)}" data-reward-rank="${rank}" ${action}><div class="common-reward-item-frame" data-psd-quality="${rank}">${artwork}<span class="common-reward-quantity">×${number(r.amount ?? r.count ?? 1)}</span></div><b>${escape(name)}</b>${r.receiptStatus?`<small>${escape(r.receiptStatus)}</small>`:''}</${tag}>`;
+      const name=native.name || resourceName || r.name || known?.aircraftName || known?.name || '补给';
+      const interactive=projectAssets&&r.gearUid;
+      const tag=interactive?'button':'div',action=interactive?`type="button" data-action="gearDetail" data-id="${escape(r.gearUid)}" aria-label="${escape(name)}，${escape(quality.qualityName)}，查看当前装备"`:'';
+      const slot=rewardItemSlot({name,amount:r.amount??r.count??1,artwork,...quality,itemId:rewardNativeItemId(r)??id},{escape});
+      return `<${tag} class="pl-reward-item" data-reward-resource="${escape(type)}" data-reward-rank="${rank}" ${action}>${slot}<b>${escape(name)}</b>${r.receiptStatus?`<small>${escape(r.receiptStatus)}</small>`:''}</${tag}>`;
     }
-    return `<div class="pl-reward-item" data-reward-resource="${escape(type)}" data-reward-rank="${rank}" ${['weapon','gear'].includes(type)?`data-psd-quality="${rank}"`:''} style="--quality:${QUALITIES[rank]}">${gearImage || (ownResource?img(`${import.meta.env.BASE_URL}art/${ownResource}.png`,'','pl-icon'):'') || thumbnail(id) || icon(({ coins:'coin', diamonds:'diamond', aircraftShards:'shard', weaponParts:'parts', cores:'core', stamina:'energy', aircraft:'plane', weapon:'weapon' })[type] || 'crate')}<b>${escape(resourceName || native.name || r.name || known?.aircraftName || known?.name || '补给')}</b><span>×${number(r.amount ?? r.count ?? 1)}</span></div>`;
   }
   function rewardsHtml(rewards,projectAssets=false) {
     return `<div class="pl-rewards-grid">${rewards.map(r=>rewardItemHtml(r,projectAssets)).join('')}</div>`;
@@ -413,11 +426,31 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   }
   function returnToParentModal() {
     if(!modal?.returnTo)return false;
-    const parent=modal.returnTo,opener=parent.childOpener,scroll=parent.rewardReturnScroll;delete parent.childOpener;delete parent.rewardReturnScroll;
+    const parent=modal.returnTo,opener=parent.childOpener,scroll=parent.rewardReturnScroll,positions=parent.rewardReturnScrollState;delete parent.childOpener;delete parent.rewardReturnScroll;delete parent.rewardReturnScrollState;
     if(['gearDetail','gearSources','gearMergeList'].includes(parent.type))parent.revision=snapshot.equipment.revision;
-    modal=parent;renderModal();if(scroll!=null){const content=modalHost.querySelector('.pl-modal-content');if(content)content.scrollTop=scroll;}restoreFocus(modalHost,opener);return true;
+    modal=parent;renderModal();if(scroll!=null){const content=modalHost.querySelector('.pl-modal-content');if(content)content.scrollTop=scroll;}
+    restoreModalScroll(modalHost,positions);
+    if(!restoreFocus(modalHost,opener))(modalHost.querySelector('.dc-tab[aria-pressed="true"]')||modalHost.querySelector('.pl-close,.bag-close'))?.focus({preventScroll:true});return true;
   }
   function renderModal() {
+    if(rewardLayer&&!isRewardReceiptModal(modal)){
+      stateFeedback.clearResult();
+      const previous=rewardLayer;rewardLayer=null;previous.layers.restore();modalHost=modalRoot;
+      renderedModalKey=previous.key;renderedModalContent=previous.content;
+    }
+    if(isRewardReceiptModal(modal)&&!rewardLayer){
+      const receipt=modal,parent=receipt.returnTo;
+      // Refresh the source in place after its transaction, before making it
+      // inert. It remains visible throughout the reward presentation.
+      if(parent){modal=parent;renderModal();restoreModalScroll(modalHost,parent.rewardReturnScrollState);modal=receipt;}
+      else {
+        stateFeedback.clearResult();
+        if(!modalOpener)modalOpener=receipt.opener||captureFocus(root);
+        modalRoot.replaceChildren();renderedModalKey='';renderedModalContent='';
+      }
+      rewardLayer={key:renderedModalKey,content:renderedModalContent,layers:mountRewardLayers(modalRoot)};
+      modalHost=rewardLayer.layers.overlay;renderedModalKey='';renderedModalContent='';
+    }
     if(modal?.type==='collectionSupplyChoice')modal=null;
     if(modal&&isResourceShortage(modal.error))modal={...modal,error:''};
     if(modal?.type==='shopConfirm'){
@@ -427,7 +460,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     // Keep the last portrait image behind a modal without rendering both UI layers.
     portraitPlayer.setVisible(visible&&!modal);
-    const modalKey = modal ? `${modal.type}:${modal.id || ''}:${modal.view || ''}` : '';
+    const modalKey = modalIdentity(modal);
     const stableType = modal && (isRecruitResult(modal) || modal.type==='recruitRewards' || COMMAND_PANELS.has(modal.type) || ['chapterRewards','chapterCoreRewards','nativeStarRewards','nativeMaterials','nativeStats','nativeEquipmentBoxes','pilotSupplyTasks','pilotSupplyBoxes','nativeRecruitInfo','playerInfo','formation','chapterChest','patrol','quickPatrol','nativeLab','nativeCollectionDetail','nativeSkillPreview','nativeWeaponPreview','growthSupplyChoice','weapon','weaponSkill','weaponSkillGroup','aircraftInfo','pilotInfo','fleetSkill','fleetOperation','workshopBatch','workshopFilter'].includes(modal.type) || modal.type.startsWith('research') || modal.type.startsWith('gear'));
     if (!stableType || renderedModalKey !== modalKey) stateFeedback.clearResult();
     const focused = captureFocus(modalHost);
@@ -453,7 +486,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       return;
     }
     root.querySelectorAll('.surface-exit-copy').forEach(node => node.remove());
-    if (polishedTab() && !renderedModalKey) modalOpener = modal.opener || captureFocus(root);
+    if (polishedTab() && !renderedModalKey && !rewardLayer) modalOpener = modal.opener || captureFocus(root);
     if (modal.type === 'backpack') {
       // Preserve the grid and its focus while a live wallet snapshot updates.
       if (modal.bagItem && !backpackItems(snapshot).some(item => item.id === modal.bagItem)) modal.bagItem = null;
@@ -639,6 +672,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modalHost.innerHTML = `<div class="pl-modal-backdrop ${paper ? 'lobby-paper-backdrop' : ''}" data-action="dismiss"><section class="pl-modal ${paper ? 'lobby-paper-modal' : ''} ${COMMAND_PANELS.has(modal.type) ? 'lc-modal' : ''} ${modal.type === 'weapon' ? 'weapon-detail-modal' : (modal.type === 'weaponSkill' || modal.type === 'weaponSkillGroup' || modal.type === 'nativeWeaponPreview') ? 'weapon-skill-modal' : ''}" data-psd-popup="${popupLevel(modal.type==='nativeCollectionDetail'?(modal.kind==='skins'?'aircraftInfo':'pilotInfo'):modal.type==='nativeWeaponPreview'?'weaponSkillGroup':modal.type)}" data-modal-type="${escape(modal.type)}" data-modal-kind="${escape(modal.type)}" role="dialog" aria-modal="true" aria-labelledby="lobby-modal-title" tabindex="-1"><div class="pl-modal-heading"><h2 id="lobby-modal-title">${escape(title)}</h2><button type="button" class="pl-close" data-action="close" aria-label="关闭">${icon('close')}</button></div><div class="pl-modal-content">${content}</div></section></div>`;
     }
     dockGearActions(modalHost);
+    if(rewardLayer)labelRewardLayer(modalHost);
     const patrolAircraftHost = modalHost.querySelector('[data-model-view="patrol"]');
     if (patrolAircraftHost) { models.attach(patrolAircraftHost); models.showAircraft(patrolAircraftHost.dataset.modelAircraft, snapshot); }
     renderedModalContent = content;
@@ -672,6 +706,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (destroyed) return; const next = read(), nextSignature = patrolRenderSignature(next);
     refreshPatrolClocks(root,next);
     if (!force && nextSignature === signature) { snapshot=next;return; }
+    if(isRewardReceiptModal(modal)&&rewardLayer){
+      pendingModalBackgroundRefresh=true;signature=nextSignature;snapshot=next;
+      renderModal();return;
+    }
     // Model-thumbnail readiness can force refreshes without changing rewards.
     // Keep the dialog and its blurred background mounted until it closes.
     if ((modal?.type==='playerInfo'&&renderedModalKey==='playerInfo:') || ['chapterChest','backpack','patrol','quickPatrol'].includes(modal?.type)) {
@@ -712,7 +750,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     const ctx = referenceContext();
     setUiMarkup(resourceHost,subpage ? lobbyResources(ctx, tab === 'assembly' ? 'equipmentShop' : tab === 'research' ? 'researchShop' : 'shopSection') : '');
     const bodyChanged=setUiMarkup(body, ['weapon','aircraft','pilot'].includes(subpage)
-      ? referenceCatalogPage({ ...ctx, appearanceOnly:nativeAppearanceOnly, kind:subpage, selectedId:subpage==='weapon'?selectedWeapon:subpage==='aircraft'?browseAircraft:browsePilot, skillTab:catalogSkillTab, filter:catalogFilter, ...(fleetUi[subpage]||{}) })
+      ? referenceCatalogPage({ ...ctx, appearanceOnly:nativeAppearanceOnly, kind:subpage, selectedId:subpage==='weapon'?selectedWeapon:subpage==='aircraft'?browseAircraft:browsePilot, skillTab:catalogSkillTab, selectedSkillSlot:subpage==='weapon'?weaponSkillSlot:undefined, filter:catalogFilter, ...(fleetUi[subpage]||{}) })
       : subpage === 'workshop' ? referenceWorkshopPage(ctx)
       : tab === 'battle' ? battlePage(ctx,battleChapter)
       : tab === 'assembly' ? equipmentPage(ctx, {filter:equipmentFilter,sort:equipmentSort,selectedWeapon,selectedSlot,pickingSlot:equipmentPickingSlot,gearSort,gearFilter})
@@ -769,16 +807,9 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   }
   function scrollShopSection(value) {
     shopSection = shopSectionId(value);
-    let scroller = body.querySelector('.shop-scroll');
-    const target = shopSection === 'stamina' ? 'coins' : shopSection;
-    let section = scroller?.querySelector(`[data-shop-section="${target}"]`);
-    if (!section && tab === 'shop') {
-      // Only the active section is mounted; switch pages before scrolling.
-      render(true);
-      scroller = body.querySelector('.shop-scroll');
-      section = scroller?.querySelector(`[data-shop-section="${target}"]`);
-    }
-    if (section) scroller.scrollTop = 0;
+    const scroller = body.querySelector('.shop-scroll');
+    const section = scroller?.querySelector(`[data-shop-section="${shopSection === 'stamina' ? 'coins' : shopSection}"]`);
+    if (section) scroller.scrollTop = section.offsetTop;
   }
   function switchTab(value, requestedShopSection) {
     const previousTab = tab, previousSubpage = subpage;
@@ -945,6 +976,17 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
     if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='nativeWeaponSkillSlot'){
+      const slot=Number(target.dataset.slot);
+      if(subpage==='weapon'&&catalogSkillTab&&[0,1].includes(slot)){weaponSkillSlot=slot;render(true);}
+      return;
+    }
+    if(action==='nativeWeaponSkillEquip'){
+      const slot=Number(target.dataset.slot);
+      if(subpage!=='weapon'||!catalogSkillTab||![0,1].includes(slot))return;
+      if(Number(id)&&!snapshot.replicaCollection?.guns.find(row=>row.id===Number(id))?.owned){toast('技能未激活');return;}
+      await act('replicaCollection',{kind:'guns',action:'slot',id:Number(id),slot,expectedRevision:Number(target.dataset.revision)});return;
+    }
     if(action==='nativeSlotPick'){const state=fleetUi[subpage];if(state){state.selectedSkillSlot=Number(target.dataset.slot);catalogSkillTab=true;render(true);}return;}
     if(action==='nativeEquipmentBoxes'){modal={type:'nativeEquipmentBoxes',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
     if(action==='nativeMaterials'){modal={type:'backpack',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
@@ -1221,13 +1263,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(modal?.type==='tasks' && DAILY_TABS.some(t=>t.id===target.dataset.period) && modal.period!==target.dataset.period) {
         modal.period=target.dataset.period;delete modal.milestoneId;renderModal();stateFeedback.taskPage();
         modalHost.querySelector(`.dc-tab[data-period="${modal.period}"]`)?.focus({preventScroll:true});
-      }
-      return;
-    }
-    if (action === 'achievementCategory') {
-      if(modal?.type==='tasks' && snapshot.achievements?.categories.some(c=>c.id===target.dataset.category)) {
-        modal.achievementCategory=target.dataset.category;renderModal();stateFeedback.taskPage();
-        modalHost.querySelector(`.dc-categories [data-category="${modal.achievementCategory}"]`)?.focus({preventScroll:true});
       }
       return;
     }

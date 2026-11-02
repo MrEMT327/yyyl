@@ -7,7 +7,7 @@ import catalog from './native-economy-catalog.json' with {type:'json'};
 import acquisition from './native-acquisition-catalog.json' with {type:'json'};
 import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { nativeCollectionArt } from './native-collection-art.js';
-import { collectionQualityRank } from './native-quality.js';
+import { nativeItemDisplayQuality, rewardNativeItemId } from './item-display-quality.js';
 import { nativeGearPresentation, nativeItemDisplayName } from './native-item-names.js';
 import { equipmentBlueprintArtPath, equipmentArtPath, equipmentArtFamily } from './equipment-art.js';
 import { researchBlueprintArt } from './research-blueprint-art.js';
@@ -15,6 +15,13 @@ const base=import.meta.env?.BASE_URL||'/';
 const units=new Map([...catalog.guns,...catalog.skins,...catalog.pilots].map(row=>[row.id,row]));
 const items=new Map(acquisition.items.map(row=>[row.id,row]));
 export function nativeItemArt(id) {
+  const signin=({111:'quantum-key',3132505:'epic-glove-chip'})[id];
+  if(signin)return `${base}art/project-signin-icons-v1/${signin}.png`;
+  if(Number(id)===110)return projectItemIcon(113);
+  if(Number(id)===129)return RESOURCE_ICONS.weaponParts.url;
+  if(Number(id)===151)return `${base}art/project-ui-icons-v1/skill-drone.png`;
+  if(Number(id)===153)return `${base}art/weapon-drones-v1/drone-parts-v1.png`;
+  if([10010007,10010008].includes(Number(id)))return projectItemIcon(903);
   const money=({1:'coins',2:'diamonds',4:'stamina',135:'cores'})[id];
   if(money)return RESOURCE_ICONS[money].url;
   const supply=projectItemIcon(id);
@@ -36,8 +43,9 @@ export function nativeItemPresentation(id) {
   const fragment=nativePilotFragment(id);
   const name=nativeItemDisplayName(id)||nativePilotFragmentName(id)||nativeCollectionDisplayName(id)||unit?.name||catalog.itemNames[id]||items.get(id)?.note;
   const researchBlueprint=id>=801&&id<=811;
+  const displayQuality=nativeItemDisplayQuality(id);
   const replacement=MATERIAL_REPLACEMENTS[id];
-  const description=replacement?`可在背包按1:1兑换为${nativeItemDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
+  const description=id===3132505?'原包签到奖励，按原物品保存；芯片装备系统暂未接入。':replacement?`可在背包按1:1兑换为${nativeItemDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
     :part?`用于强化${part.name}，与金币一同消耗。`
     :researchBlueprint?'用于对应科研升级，与金币一同消耗。可通过巡逻、快速巡逻、章节奖励与每日商店获得。'
     :id===112?'开启高级装备箱时消耗。'
@@ -48,7 +56,7 @@ export function nativeItemPresentation(id) {
     :id===925?'在背包中开启，获得驾驶员或同名卡。'
     :id===926?'50 个碎片合成 1 个角色箱。'
     :unit?catalog.guns.some(row=>row.id===id)?'高级装备箱随机获得；首次解锁武器，重复获得用于升星。':catalog.pilots.some(row=>row.id===id)?'用于对应驾驶员激活或升星；满星后库存同名卡可在背包转换积分。':catalog.skins.some(row=>row.id===id&&!row.closed)?'高级装备箱随机获得；首次解锁飞机，重复获得同名卡用于升星。':'用于对应收藏的激活或升星。':undefined;
-  return {name,image:nativeItemArt(id),pilotFragment:Boolean(fragment),qualityRank:unit?collectionQualityRank(unit.quality):gear?.qualityRank??(items.has(id)?collectionQualityRank(items.get(id).quality):undefined),qualityName:gear?.qualityName,description};
+  return {nativeItemId:id,name,image:nativeItemArt(id),pilotFragment:Boolean(fragment),qualityRank:displayQuality?.qualityRank,qualityName:gear?.qualityName||displayQuality?.qualityName,qualityKnown:Boolean(displayQuality),description};
 }
 
 // Resolve persisted receipts by canonical ID, without changing their quantities.
@@ -61,8 +69,8 @@ export function nativeRewardPresentation(reward) {
     const gear=family==null?null:nativeGearPresentation(family+10);
     if(gear)return {name:gear.name,image:base+equipmentArtPath(family)};
   }
-  const id=reward.nativeItemId??(type==='gearKey'?(reward.pool==='basic'?113:reward.pool==='advanced'?112:null)
-    :type==='gearBlueprint'?GEAR_PARTS.find(part=>part.type===Number(reward.gearType))?.blueprintId
-    :!type||['nativeItem','native-item','item','aircraft','pilot','weapon','guns','skins','pilots'].includes(type)?reward.id??reward.itemId:null);
-  return /^\d+$/.test(String(id))?nativeItemPresentation(id):{};
+  const id=rewardNativeItemId(reward);
+  if(id)return nativeItemPresentation(id);
+  const resource=RESOURCE_ICONS[type];
+  return resource?{name:({weaponParts:'武器零件',aircraftShards:'通用飞机碎片'})[type],image:resource.url}:{};
 }

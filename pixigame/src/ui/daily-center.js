@@ -2,9 +2,16 @@ import { playerInfoModel } from './player-info-model.js';
 import { nativeCollectionArt } from '../replica/native-collection-art.js';
 import { catalogWeaponArtwork } from './weapon-catalog-page.js';
 import { emptySlotMark } from './psd-empty-slot.js';
+import { equipmentBlueprintArtPath } from '../replica/equipment-art.js';
+import { researchBlueprintArt } from '../replica/research-blueprint-art.js';
 import './daily-center.css';
 import { pilotSupplyTaskCenter } from './task-center-supply.js';
 import './task-center-restore.css';
+import './daily-signin.css';
+import {taskStatusMark,TASK_CLAIMED_IMAGE} from './task-center-icons.js';
+import './task-center-layout.css';
+import {rewardItemSlot} from './reward-item-slot.js';
+import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
 
 export const DAILY_TABS=Object.freeze([
   {id:'signin',label:'签到'}, {id:'daily',label:'每日'},
@@ -26,8 +33,8 @@ function readyCount(s,period) {
   if(!supply)return (s.tasks||[]).filter(t=>t.type===period&&t.claimable).length
     +(s.activity?.[period]?.items||[]).filter(t=>t.claimable).length;
   const rewards=period==='weekly'
-    ?[supply.week,supply.collection?.skins,supply.growth?.week]
-    :[supply.activity,supply.collection?.guns,supply.growth?.daily];
+    ?(supply.week.milestones||[supply.week])
+    :(supply.activity.milestones||[supply.activity]);
   return rewards.filter(row=>row?.canClaim).length
     +(period==='weekly'?0:supply.tasks.filter(task=>task.canClaim).length);
 }
@@ -58,6 +65,8 @@ function taskRows(snapshot,period,h) {
   </article>`).join('')}</div>`;
 }
 function prizeArt(day,snapshot,h) {
+  if(day.id===10010007)return h.img(base+equipmentBlueprintArtPath('fire-control'),day.name,'dc-signin-art');
+  if(day.id===10010008)return h.img(researchBlueprintArt(801),day.name,'dc-signin-art');
   if(day.image)return h.img(day.image,day.name||'','dc-signin-art');
   if(day.nativeRow)return h.img(nativeCollectionArt(day.nativeRow,day.type==='aircraft'?'preview':'thumbnail'),day.name||'','dc-signin-art');
   const id=day.itemId?.split(':')[1];
@@ -72,36 +81,38 @@ function prizeArt(day,snapshot,h) {
   return h.icon(icons[day.type]||'gift');
 }
 function signInContent(snapshot,h) {
-  const {escape:e,number:n,icon}=h,signin=snapshot.signIn||{},days=signin.days||[];
-  const rollback=signin.lastClaimDay>signin.today;
-  const label=snapshot.rewardPending?'待恢复':signin.starterPending?'补领新手飞机':signin.completed?'已领完':rollback?'日期异常':signin.canClaim?'领取':'今日已领';
+  const {escape:e,number:n}=h,signin=snapshot.signIn||{},days=signin.days||[];
+  const busy=Boolean(snapshot.rewardBusy),pending=Boolean(snapshot.rewardPending);
+  const claimedMark=`<img class="dc-signin-claimed-mark" src="${base}art/project-signin-icons-v2/claimed.png" alt="" aria-hidden="true" draggable="false">`;
+  const rewardHtml=(item,claimed=false)=>`<span class="dc-signin-reward"${item.id?` data-reward-id="${e(item.id)}"`:''}>${rewardItemSlot({name:item.name||names[item.type]||item.title||'奖励',amount:item.count??item.amount??1,artwork:prizeArt(item,snapshot,h),...rewardDisplayQuality(item),itemId:rewardNativeItemId(item),overlay:claimed?claimedMark:''},h)}</span>`;
   return `<div class="dc-scroll dc-signin" data-daily-scroll="signin">
-    <p class="dc-signin-count">已签到 <b>${n(signin.claimedCount||0)} / 7</b> 天</p>
     <div class="dc-signin-grid">${days.map(day=>{
-      const today=day.active&&signin.canClaim&&!snapshot.rewardPending&&!snapshot.rewardBusy;
-      const aircraft=day.type==='aircraft'?snapshot.aircraft?.find(a=>a.id===day.itemId?.split(':')[1]):null;
-      const title=snapshot.flightRewards?day.title:aircraft?`${aircraft.aircraftName}${day.isCard?'卡':''}`:(day.type==='coins'?`金币 ×${n(day.amount)}`:day.title);
+      const today=day.active&&signin.canClaim&&!pending;
       const items=Array.isArray(day.rewards)&&day.rewards.length?day.rewards:[day];
-      const status=day.claimed?'已领取':today?'今日可领':'待签到';
-      return `<button type="button" class="dc-signin-day${day.day===7?' is-final':''}${day.claimed?' is-claimed':''}${today?' is-today':''}" data-action="claimSignIn" ${!today?'disabled':''} aria-label="第${day.day}天，${e(title)}，${day.claimed?'已领取':today?'今日可领取':'未领取'}"><strong>第 ${day.day} 天</strong><span class="dc-signin-rewards${items.length===1?' is-single':''}">${items.map(item=>`<span class="dc-signin-reward"${item.id?` data-reward-id="${e(item.id)}"`:''}><span class="dc-prize-art${['weapon','aircraft'].includes(item.type)?' is-equipment':''}">${prizeArt(item,snapshot,h)}</span><span class="dc-signin-reward-copy"><span>${e(item.name||names[item.type]||item.title||'奖励')}</span><b>×${n(item.count??item.amount??1)}</b></span></span>`).join('')}</span><span class="dc-signin-status${day.claimed?' dc-signin-stamp':''}">${day.claimed?icon('check'):''}${status}</span></button>`;
+      const pilot=items.find(row=>row.type==='pilot');
+      const title=day.title||items.map(item=>item.title||item.name).join('、');
+      const content=pilot?`<span class="dc-signin-pilot-hero" data-pilot-id="${e(pilot.id)}"><span class="dc-signin-pilot-copy"><b>${e(pilot.name)}</b><span class="dc-signin-pilot-items">${items.map(item=>rewardHtml(item,day.claimed)).join('')}</span></span><span class="dc-signin-pilot-portrait"><span class="dc-signin-pilot-crop">${h.img(nativeCollectionArt(pilot.nativeRow,'preview'),pilot.name,'dc-signin-pilot-art')}</span></span></span>`:`<span class="dc-signin-rewards${items.length===1?' is-single':''}" style="--signin-reward-count:${items.length}">${items.map(item=>rewardHtml(item,day.claimed)).join('')}</span>`;
+      return `<button type="button" class="dc-signin-day${day.day===7?' is-final':''}${pilot?' has-pilot':''}${day.claimed?' is-claimed':''}${today?' is-today':''}" data-action="claimSignIn" ${!today||busy?'disabled':''} aria-label="第${day.calendarDay||day.day}天，${e(title)}，${day.claimed?'已领取':today?(busy?'领取中':'今日可领取'):'未领取'}"><strong>第 ${day.calendarDay||day.day} 天</strong>${content}${today&&busy?'<span class="dc-signin-busy" role="status" aria-label="领取中"></span>':''}</button>`;
     }).join('')}</div>
-  </div><footer class="dc-signin-footer"><div>${snapshot.flightRewards?`<span>断签不重置</span>`:`<span>每日另含</span>${rewards(signin.supplements,h)}`}</div>${button('claimSignIn',label,'',!signin.canClaim||snapshot.rewardPending)}</footer>`;
+  </div>`;
 }
-function achievementContent(snapshot,modal,h) {
-  const {escape:e,number:n,icon}=h,achievement=snapshot.achievements||{categories:[],items:[]};
-  const category=achievement.categories.some(c=>c.id===modal.achievementCategory)?modal.achievementCategory:'combat';
-  const items=achievement.items.filter(t=>t.category===category);
-  return `<div class="dc-categories" role="group" aria-label="成就分类">${achievement.categories.map(c=>button('achievementCategory',c.name,`data-category="${e(c.id)}" aria-pressed="${c.id===category}"`,false,c.id===category?'is-selected':'')).join('')}</div>
-    <p class="dc-reset">已领取 ${n(items.filter(t=>t.claimed).length)} / ${n(items.length)}</p>
-    <div class="dc-scroll dc-achievements" data-daily-scroll="achievements:${category}">${items.map(item=>`<article class="dc-achievement${item.claimed?' is-claimed':item.claimable?' is-ready':''}" data-achievement-id="${e(item.id)}" tabindex="-1"><div class="dc-achievement-heading"><h3>${e(item.name)}</h3>${rewards(item.rewardItems||item.reward,h)}</div><div class="dc-progress"><progress max="${item.target}" value="${item.progress}" aria-label="${e(item.name)}进度"></progress><span>${n(item.progress)} / ${n(item.target)}</span></div><div class="dc-achievement-action">${item.pending?'<span class="dc-claimed">待恢复</span>':item.claimed?`<span class="dc-claimed">${icon('check')}已领取</span>`:button(item.progress>=item.target?'claimAchievement':'dailyGo',item.progress>=item.target?(snapshot.rewardPending?'待恢复':item.claimable?'领取':'暂未开放'):'前往',`data-destination="${e(item.destination)}" data-id="${e(item.id)}"`,snapshot.rewardPending||item.progress>=item.target&&!item.claimable,item.claimable?'is-ready':'')}</div></article>`).join('')}</div>`;
+function achievementContent(snapshot,h) {
+  const {escape:e,number:n}=h,items=snapshot.achievements?.items||[];
+  return `<div class="dc-scroll dc-achievements" data-daily-scroll="achievements">${items.map(item=>{
+      const reached=item.progress>=item.target,action=reached?'claimAchievement':'dailyGo';
+      const label=item.pending||snapshot.rewardPending?'待恢复':reached?(item.claimable?'领取':'未达成'):'前往';
+      const rewardRows=Array.isArray(item.rewardItems)?item.rewardItems:Object.entries(item.reward||{}).filter(([,value])=>value>0).map(([type,count])=>({type,count,name:names[type]||type}));
+      const rewardSlots=rewardRows.map(row=>rewardItemSlot({name:row.name,amount:row.count??row.amount,artwork:row.image?h.img(row.image,row.name,'dc-native-reward-icon'):h.icon(icons[row.type]||'gift'),...rewardDisplayQuality(row),itemId:rewardNativeItemId(row)},h)).join('');
+      return `<article class="dc-achievement${item.claimed?' is-claimed':item.claimable?' is-ready':''}" data-achievement-id="${e(item.id)}" tabindex="-1"><h3>${e(item.name)}</h3><div class="dc-progress"><progress max="${item.target}" value="${Math.min(item.progress,item.target)}" aria-label="${e(item.name)}进度"></progress><span>${n(item.progress)} / ${n(item.target)}</span></div><div class="dc-achievement-rewards">${rewardSlots}</div><div class="dc-achievement-action">${item.claimed?taskStatusMark():button(action,label,`aria-label="${label}，${e(item.name)}" title="${label}" data-destination="${e(item.destination)}" data-id="${e(item.id)}"`,Boolean(item.pending||snapshot.rewardPending||snapshot.rewardBusy||reached&&!item.claimable))}</div></article>`;
+    }).join('')}</div>`;
 }
 
 export function dailyCenter(snapshot,modal,h) {
   const period=DAILY_TABS.some(t=>t.id===modal.period)?modal.period:'daily';
   const page={...modal,period};
-  return {title:'任务',content:`<section class="dc-hub" data-daily-page="${period}"><nav class="dc-tabs" aria-label="任务分类">${DAILY_TABS.map(t=>`<button type="button" class="wc-button dc-tab" data-action="taskPeriod" data-period="${t.id}" aria-pressed="${period===t.id}">${t.label}${hasReady(snapshot,t.id)?'<i aria-label="有奖励可领取"></i>':''}</button>`).join('')}</nav>
+  return {title:'任务',content:`<section class="dc-hub${snapshot.signIn?.referenceLayout?' dc-project-task':''}" data-daily-page="${period}"><nav class="dc-tabs" aria-label="任务分类">${DAILY_TABS.map(t=>`<button type="button" class="wc-button dc-tab" data-action="taskPeriod" data-period="${t.id}" aria-pressed="${period===t.id}">${t.label}${hasReady(snapshot,t.id)?'<i aria-label="有奖励可领取"></i>':''}</button>`).join('')}</nav>
     ${snapshot.rewardPending?`<div class="dc-pending" role="status"><span>领取记录待恢复</span>${button('recoverDailyRewards','重试')}</div>`:''}
-    ${snapshot.pilotSupply&&['daily','weekly'].includes(period)?pilotSupplyTaskCenter(period,snapshot,h):period==='signin'?signInContent(snapshot,h):period==='achievements'?achievementContent(snapshot,page,h):`${activityHeader(snapshot,page,h)}<p class="dc-reset">${period==='weekly'?'每周一':'每日'} 00:00 刷新</p>${taskRows(snapshot,period,h)}`}
+    ${snapshot.pilotSupply&&['daily','weekly'].includes(period)?pilotSupplyTaskCenter(period,snapshot,h):period==='signin'?signInContent(snapshot,h):period==='achievements'?achievementContent(snapshot,h):`${activityHeader(snapshot,page,h)}<p class="dc-reset">${period==='weekly'?'每周一':'每日'} 00:00 刷新</p>${taskRows(snapshot,period,h)}`}
   </section>`};
 }
 
@@ -114,7 +125,7 @@ export function dailyActivities(snapshot,h) {
   const stored=Math.max(0,patrol.storedMinutes||0);
   const patrolReady=patrol.unlocked && !patrol.clockRollback && !patrol.nativeSettlementPending && Object.values(patrol.rewards||{}).some(v=>v>0);
   const entries=[
-    {action:'signin',name:'七日签到',art:icon('calendar'),detail:`已签到 ${n(signin.claimedCount||0)} / 7 天`,status:signin.completed?'已领完':signin.canClaim?'今日可领':'今日已领',ready:signin.canClaim},
+    {action:'signin',name:'签到',art:icon('calendar'),detail:`已签到 ${n(signin.claimedCount||0)}${signin.referenceLayout?'':' / 7'} 天`,status:signin.completed?'已领完':signin.canClaim?'今日可领':'今日已领',ready:signin.canClaim},
     {action:'tasks',name:'任务中心',art:sprite('daily-activity'),detail:taskDetail,status:taskReady?`${n(taskReady)} 项奖励可领`:'查看任务',ready:taskReady>0},
     {action:'patrol',name:'巡逻',art:icon('plane'),detail:patrol.unlocked?(patrol.native?'查看巡逻收益与奖励预览':`已累计 ${n(Math.floor(stored/60))} 小时 ${n(stored%60)} 分钟`):'',status:!patrol.unlocked?'':patrol.native&&!patrol.sampleBased?'查看':patrolReady?'奖励可领':'巡逻中',ready:patrolReady,chapterLocked:patrol.unlocked===false},
   ];

@@ -22,6 +22,7 @@
  inset:auto;left:calc(68% - var(--recruit-focus-x) * var(--recruit-portrait-frame));top:calc(var(--recruit-headroom) - var(--portrait-head-y) * var(--recruit-portrait-frame));width:var(--recruit-portrait-frame);height:var(--recruit-portrait-frame);transform:none;
 }
 /* Frame the person independently of wide skirts, chairs and motorcycles. */
+#gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-01'] {--recruit-focus-x:.70}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-04'] {--recruit-focus-x:.53}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-05'] {--recruit-focus-x:.54}
 #gui-casual-lobby .recruit-reference .recruit-feature-visual>.character-portrait[data-character-portrait='pilot-07'] {--recruit-focus-x:.60}
@@ -49,9 +50,7 @@
 #gui-casual-lobby .recruit-reference .rc-preview-card :is(.phc-stars,.phc-title,.phc-grade-marks,.phc-orbit,.phc-rays,.phc-caption,.phc-heading-name) {display:none}
 #gui-casual-lobby .recruit-reference .rc-preview-card.is-selected {outline:1px solid #dbf5ff;outline-offset:2px}
 #gui-casual-lobby .recruit-reference .recruit-roster-link {display:flex;align-items:center;justify-content:center;flex:none;min-height:44px;width:66px;margin:0 0 5px;padding:0;border:0;border-bottom:1px solid #829bab;background:none;color:#e3edf2;font:700 12px/1.5 'Microsoft YaHei',sans-serif;white-space:nowrap;cursor:pointer}
-#gui-casual-lobby .recruit-reference .recruit-footer {display:block;padding:0 3cqw 10px;border:0;background:var(--recruit-navy)}
-#gui-casual-lobby .recruit-reference .recruit-pity {display:block;margin:0;padding:5px 0 7px;text-align:center;font:400 clamp(10px,2.8cqw,12px)/1.3 'Microsoft YaHei',sans-serif;color:#cbd5df}
-#gui-casual-lobby .recruit-reference .recruit-pity :is(b,strong) {color:#f3d18c;font-weight:700;margin:0 2px}
+#gui-casual-lobby .recruit-reference .recruit-footer {display:block;padding:5px 3cqw 10px;border:0;background:var(--recruit-navy)}
 #gui-casual-lobby .recruit-reference .rc-actions {display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #gui-casual-lobby .recruit-reference .recruit-draw {position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:100%;height:clamp(58px,15cqw,70px);min-height:58px;margin:0;padding:5px 4px;border:0!important;border-radius:0!important;clip-path:none!important;background:none!important;box-shadow:none!important;overflow:visible;cursor:pointer}
 #gui-casual-lobby .recruit-reference .recruit-draw::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:none!important;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch!important}

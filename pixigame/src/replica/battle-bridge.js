@@ -273,7 +273,13 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
               if (message.configurationKey !== candidate.key) throw new Error('大厅与战斗配置版本不一致，请刷新页面后重新出击');
               session.pendingConfiguration = null;
               session.loading?.update(.98,'正在准备出击…');
-              if (!launch(session, { ...candidate, entry: message.entry })) { close(session); resolve(false); }
+              const entry=message.entry;
+              void Promise.resolve(session.loading?.readyForLaunch()).then(()=>{
+                if(active!==session||session.preparationFailed||candidate.requestId!==session.configurationSerial)return;
+                try {
+                  if(!launch(session,{...candidate,entry})){close(session);resolve(false);}
+                } catch(error) { onError(error.message);failPreparation(); }
+              });
               break;
             }
             case 'started':

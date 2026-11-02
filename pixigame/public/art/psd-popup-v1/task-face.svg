@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="567" height="714" viewBox="0 0 567 714">
+  <defs>
+    <linearGradient id="face" x1="0" y1="0" x2="567" y2="714" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#90a8bf"/>
+      <stop offset=".48" stop-color="#9fb5c9"/>
+      <stop offset="1" stop-color="#8ca5be"/>
+    </linearGradient>
+  </defs>
+  <!-- Interior of the original 567x714 primary PSD popup, inset from its
+       chrome. Keep 110/44/55/255 nine-slices identical to primary.png. -->
+  <path d="M49.5 15.5H221.5L244.5 40.5H539.5V659.5L514.5 684.5H20.5V44.5Z" fill="url(#face)"/>
+</svg>

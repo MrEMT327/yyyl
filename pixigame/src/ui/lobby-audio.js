@@ -20,7 +20,7 @@ export function hasLobbyFeedback(action,payload={}) {
 const selection=s=>({pilot:s.pilotId,aircraft:s.aircraftId,loadout:s.loadout,gear:s.equipment?.slots,
   guns:s.replicaLoadout?.guns?.filter(r=>r.equipped).map(r=>r.id),
   pilots:s.replicaLoadout?.pilots?.filter(r=>r.equipped).map(r=>r.id),skin:s.replicaLoadout?.role?.skinId,
-  slots:s.replicaLoadout?.skinSkillSlots,pilotSlots:s.fleet?.pilot?.slots,aircraftSlots:s.fleet?.aircraft?.slots});
+  weaponSlots:s.replicaLoadout?.weaponSkillSlots,slots:s.replicaLoadout?.skinSkillSlots,pilotSlots:s.replicaLoadout?.pilotSkillSlots||s.fleet?.pilot?.slots,aircraftSlots:s.fleet?.aircraft?.slots});
 export function lobbyResultCue(action,payload,result,before,after) {
   // Only explicit rejection of an implemented gesture; cancellations and background recovery stay quiet.
   if(result?.ok===false && hasLobbyFeedback(action,payload) && action!=='recoverDailyRewards'

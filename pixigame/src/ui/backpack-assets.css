@@ -9,29 +9,6 @@
   width:100%;height:auto;padding:7px;border:0;border-radius:0;
   background:none;box-shadow:none;
 }
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon) {--bag-quality-filter:grayscale(1)}
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon)[data-psd-quality='1'] {--bag-quality-filter:hue-rotate(280deg) saturate(1.2)}
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon)[data-psd-quality='2'] {--bag-quality-filter:none}
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon)[data-psd-quality='3'] {--bag-quality-filter:hue-rotate(75deg) saturate(1.3)}
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon)[data-psd-quality='4'] {--bag-quality-filter:hue-rotate(200deg) saturate(1.4)}
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon)[data-psd-quality='5'] {--bag-quality-filter:hue-rotate(145deg) saturate(1.4)}
-#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art::before,
-#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon::before {
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;
-  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 10px 6px stretch;
-  filter:var(--bag-quality-filter);
-}
-#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>img,
-#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon>img {position:relative;z-index:1;width:100%;height:100%;padding:4px;object-fit:contain;filter:none;min-height:0}
-#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art>.supply-weapon-art {width:100%;height:100%}
-#gui-casual-lobby :is(.bag-item-art,.bag-detail-icon)>:is(.bag-owned-art,.supply-weapon-art) {position:relative;z-index:1}
-#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-count {
-  right:6px;bottom:5px;z-index:2;max-width:calc(100% - 12px);padding:1px 3px;
-  background:#102538e8;border-radius:2px;color:#f4f9ff;
-  font:700 clamp(11px,3.1cqw,14px)/1.2 "PingFang SC","Microsoft YaHei",sans-serif;
-  -webkit-text-stroke:0;text-shadow:none;white-space:nowrap;
-}
 #gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-name {
   display:block;min-width:0;max-height:30px;overflow:hidden;color:#203c55;
   font:600 12px/15px "PingFang SC","Microsoft YaHei",sans-serif;text-shadow:none;text-align:center;

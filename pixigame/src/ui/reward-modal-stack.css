@@ -1,0 +1,5 @@
+#gui-casual-lobby .reward-modal-underlay,
+#gui-casual-lobby .reward-modal-overlay {position:absolute;inset:0;min-width:0;min-height:0}
+#gui-casual-lobby .reward-modal-underlay {z-index:0;pointer-events:none}
+#gui-casual-lobby .reward-modal-overlay {z-index:1;pointer-events:none}
+#gui-casual-lobby .reward-modal-overlay>.common-reward-backdrop {background:rgb(3 12 22 / .5)!important;backdrop-filter:none!important}

@@ -6,7 +6,8 @@ import { resolveAircraftSlots } from '../slot-demo/aircraft-slots.js';
 import { itemAtSlot } from '../slot-demo/catalog.js';
 import { createModuleGeometry } from '../slot-demo/module-geometry.js';
 import { acquireFixedPartThumbnails } from './fixed-part-thumbnails.js';
-import { createBlueprintSurface } from '../three/aircraft/blueprint-surface.js';
+import { createAircraftStyle, AIRCRAFT_FINISH_CONFIG } from '../three/aircraft/aircraft-style.js';
+import { createAircraftLighting, renderWithAircraftStyle } from '../three/aircraft/aircraft-lighting.js';
 
 function disposeTree(group) {
   group.traverse(node => { node.geometry?.dispose(); node.material?.dispose(); });
@@ -17,18 +18,15 @@ function disposeTree(group) {
 // renderer. All geometry here is native Three; nothing creates a second canvas.
 export function createAssemblyScene({ renderer, pilotId }) {
   const scene = new T.Scene(), mount = new T.Group();
-  scene.environment = renderer.scene.environment; scene.environmentIntensity = .9;
-  scene.add(mount, new T.HemisphereLight('#e9f4ff', '#677786', 1.8));
-  const key = new T.DirectionalLight('#fff4e5', 3); key.position.set(-8, 16, -10); scene.add(key);
-  const rim = new T.DirectionalLight('#b5d8e8', 2.6); rim.position.set(10, 4, 8); scene.add(rim);
-  const fill = new T.DirectionalLight('#b5c9dd', 1.1); fill.position.set(4, -5, 10); scene.add(fill);
+  scene.environment = renderer.scene.environment;
+  scene.add(mount); createAircraftLighting(scene);
   const camera = new T.PerspectiveCamera(36, 600 / 425, .1, 150);
   const target = new T.WebGLRenderTarget(900, 638, { depthBuffer: true, samples: 2 });
   const cameraTarget = new T.Vector3(0, .2, -.65), orbit = new T.Spherical(32, .28, 0);
   const modules = new T.Group(), wiring = new T.Group(), pads = new T.Group(); scene.add(modules, wiring, pads);
   const mounted = new Map(), padMeshes = new Map();
   const thumbnailCache = acquireFixedPartThumbnails(renderer), thumbnails = new Map(thumbnailCache.textures);
-  let runtime, equipment, blueprint, currentPilot, slots = [], current = {}, selected = 'W3';
+  let runtime, equipment, hullStyle, moduleStyle, currentPilot, slots = [], current = {}, selected = 'W3';
   let visible = false, comparing = false, showSockets = true, elapsed = 0, dirty = true, lastFrame = -1, renderedFrames = 0;
 
   function cameraUpdate() {
@@ -43,6 +41,7 @@ export function createAssemblyScene({ renderer, pilotId }) {
     dirty = true;
   }
   function apply(placements) {
+    moduleStyle?.dispose(); moduleStyle=null;
     current = placements;
     for (const slot of slots) {
       const item = itemAtSlot(current, slot.id), previous = mounted.get(slot.id);
@@ -66,24 +65,25 @@ export function createAssemblyScene({ renderer, pilotId }) {
           new T.MeshStandardMaterial({ color: connected ? item.color : '#516774', emissive: connected ? item.color : '#142330', emissiveIntensity: connected ? .45 : 0, metalness: .65, roughness: .4 })));
       }
     }
+    moduleStyle=createAircraftStyle(modules);moduleStyle.setEnabled(true);
     focus(selected);
   }
   function setPilot(id, placements = current) {
     if (id === currentPilot) { apply(placements); return; }
-    blueprint?.dispose(); equipment?.dispose(); runtime?.dispose(); mount.clear(); currentPilot = id; elapsed = 0;
+    hullStyle?.dispose(); moduleStyle?.dispose();moduleStyle=null; equipment?.dispose(); runtime?.dispose(); mount.clear(); currentPilot = id; elapsed = 0;
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
     equipment = createKestrelEquipment(asset);
     const span = Math.max(asset.view.bounds.max[0] - asset.view.bounds.min[0], asset.view.bounds.max[2] - asset.view.bounds.min[2]);
     mount.scale.setScalar(15.75509262084961 / span);
     runtime = new ConfigFighter({ scene: mount, asset, config: { ...entry.defaults, cruise: false, firing: false,
-      altitude: 0, scale: 1, lightIntensity: 0, bodyFx: .1, surfaceGlow: .25, coreGlow: .3, weaponGlow: .16, trails: 0, particles: 0 }, globals: { glow: 1, particleCount: 0 } });
+      altitude: 0, scale: 1, lightIntensity: 0, ...AIRCRAFT_FINISH_CONFIG, trails: 0, particles: 0 }, globals: { glow: 1, particleCount: 0 } });
     runtime.flight = null; runtime.deck.visible = false; runtime.quality = 'low';
     runtime.poseAtTime = (_time, position, quaternion) => { position.set(0, 0, 0); quaternion.identity(); };
     runtime.veilKinematics = { pose: runtime.poseAtTime, socketAt: (_time, socket, out) => out.copy(socket), socketVelocity: (_time, _socket, out) => out.set(0, 0, 0) };
     for (const light of runtime.lights) light.object.removeFromParent();
     runtime.spawn(new T.Vector3()); runtime.sample(0); equipment?.update(0, runtime);
     slots = resolveAircraftSlots({ object3D: mount, runtime, fighterId: entry.slug }).filter(s=>s.kind==='weapon');
-    blueprint = createBlueprintSurface(asset);
+    hullStyle=createAircraftStyle(mount);hullStyle.setEnabled(true);
     new T.Box3().setFromObject(asset.solid).getCenter(cameraTarget);
     cameraUpdate();
     disposeTree(pads); padMeshes.clear();
@@ -102,7 +102,7 @@ export function createAssemblyScene({ renderer, pilotId }) {
     three.getClearColor(color); three.getViewport(viewport); three.getScissor(scissor);
     try {
       three.setScissorTest(false); three.setClearColor(0, 0);
-      three.setRenderTarget(target); three.clear(); runtime.prepareRender(camera); three.render(scene, camera);
+      three.setRenderTarget(target); three.clear(); runtime.prepareRender(camera); renderWithAircraftStyle(three,()=>three.render(scene, camera));
       dirty = false; lastFrame = Math.floor(elapsed * 30); renderedFrames++;
     } finally {
       three.setRenderTarget(oldTarget); three.setViewport(viewport); three.setScissor(scissor); three.setScissorTest(scissorTest); three.setClearColor(color, alpha);
@@ -128,8 +128,8 @@ export function createAssemblyScene({ renderer, pilotId }) {
     setVisible(value) { if (value && !visible) dirty = true; visible = value; },
     update(dt) { if (visible) { elapsed += Math.max(0, Math.min(.05, dt)); runtime.sample(elapsed); equipment?.update(elapsed, runtime); } },
     destroy() {
-      renderer.screenPasses.delete(render); mounted.forEach(kit => kit.userData.dispose()); disposeTree(wiring); disposeTree(pads);
-      blueprint?.dispose(); equipment?.dispose(); runtime.dispose(); target.dispose(); thumbnailCache.release(); scene.clear();
+      renderer.screenPasses.delete(render);moduleStyle?.dispose();moduleStyle=null; mounted.forEach(kit => kit.userData.dispose()); disposeTree(wiring); disposeTree(pads);
+      hullStyle?.dispose(); equipment?.dispose(); runtime.dispose(); target.dispose(); thumbnailCache.release(); scene.clear();
     },
   };
 }

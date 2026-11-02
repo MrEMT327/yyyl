@@ -1,15 +1,18 @@
-import {nativeWeaponGroupId,nativeWeaponGroupRows} from './native-weapon-groups.js';
+import {nativeWeaponGroupId} from './native-weapon-groups.js';
 import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import {nativeCollectionAccess,nativeCollectionRows} from './native-collection-access.js';
 import { nativeCollectionArt, nativeSkillArt } from './native-collection-art.js';
 import { nativeWeaponSkillArt } from './native-weapon-skill-art.js';
+import { nativeItemArt } from './native-item-presentation.js';
 import { NATIVE_PILOT_SKINS } from './native-pilot-roster.js';
+import { nativePilotDisplayQuality } from './native-pilot-quality.js';
 import { nativePilotAppearance } from './native-pilot-presentation.js';
 import { characterPortrait } from '../ui/character-portraits.js';
 import { supplyWeaponArt } from '../ui/supply-visuals.js';
 import { collectionDetail } from '../ui/collection-detail.js';
 import { fleetCatalogPage, fleetSkillPreview, fleetAircraftDetail, fleetPilotDetail, fleetOperationModal } from '../ui/fleet-catalog-page.js';
 import { weaponCatalogPage, catalogWeaponArtwork } from '../ui/weapon-catalog-page.js';
+import { nativeWeaponSkillPage } from '../ui/native-weapon-skill-page.js';
 import { recruitPage } from '../ui/recruit-page.js';
 import weaponPreview from './native-weapon-preview-index.json' with {type:'json'};
 import { projectIcon } from '../ui/project-ui-art.js';
@@ -32,32 +35,36 @@ const template=html=>{const t=document.createElement('template');t.innerHTML=htm
 export function cloudNativeCatalog(ctx){
   const {kind,snapshot:s,helpers:h}=ctx,group=groupFor[kind],collection=s.replicaCollection;
   if(!collection||!group)return '';
+  if(kind==='weapon'&&ctx.skillTab)return nativeWeaponSkillPage(ctx);
   if(ctx.appearanceOnly&&kind!=='weapon'){
     const t=template(fleetCatalogPage({...ctx,skillTab:false}));
     for(const node of t.content.querySelectorAll('.fc-header-stats,.fc-unlock-skill,.fc-worn-skills,[data-action="fleetStar"],[data-action="fleetUnlock"]'))node.remove();
     for(const node of t.content.querySelectorAll('[data-action="catalogMode"],[data-action="catalogBack"],[data-action="aircraftInfo"],[data-action="pilotInfo"]')){node.dataset.action='nativeAppearance';node.dataset.mode='progression';}
     return t.innerHTML;
   }
-  const allRows=nativeCollectionRows(group,s),rows=kind==='weapon'?nativeWeaponGroupRows(allRows):allRows;
+  const rows=nativeCollectionRows(group,s);
   const byId=new Map(rows.map(row=>[String(row.id),row]));
-  const requested=allRows.find(row=>String(row.id)===String(ctx.selectedId));
-  const selected=(kind==='weapon'&&requested?rows.find(row=>nativeWeaponGroupId(row)===nativeWeaponGroupId(requested)):byId.get(String(ctx.selectedId)))||rows.find(row=>nativeCollectionAccess(group,s,row).using)||rows[0];
+  const selected=byId.get(String(ctx.selectedId))||rows.find(row=>nativeCollectionAccess(group,s,row).using)||rows[0];
   if(!selected)return '';
   const e=h.escape;
   const items=rows.map(row=>({...row,id:String(row.id),owned:nativeCollectionAccess(group,s,row).available,activated:row.owned,stars:row.star,qualityRank:collectionQualityRank(row.quality),
-    avatar:icon(row),image:nativeCollectionArt(row,'default'),rarity:'R',copies:0,attack:undefined,hp:undefined,temporaryUnlocked:false}));
-  const slots=kind==='aircraft'?collection.slots.map(id=>id?String(id):null):[String(rows.find(row=>row.equipped)?.id||'')].filter(Boolean);
+    avatar:icon(row),image:nativeCollectionArt(row,'default'),rarity:kind==='pilot'?nativePilotDisplayQuality({nativeId:row.id}).rarity:'R',copies:0,attack:undefined,hp:undefined,temporaryUnlocked:false}));
+  const slots=(kind==='aircraft'?collection.slots:collection.pilotSlots||[0,0,0]).map(id=>id?String(id):null);
+  const pilotSkills=kind==='pilot'&&ctx.skillTab;
+  const selectedSkillSlot=pilotSkills
+    ?Number.isInteger(ctx.selectedSkillSlot)&&ctx.selectedSkillSlot>=0&&ctx.selectedSkillSlot<slots.length?ctx.selectedSkillSlot:Math.max(0,slots.indexOf(null))
+    :ctx.selectedSkillSlot;
   const nativeSkill=row=>({id:String(row.id),name:row.stage.skills.map(skill=>plain(skill.name)).join('、')||row.name,
     description:row.stage.skills.map(skill=>plain(skill.description)).join('\n'),
     owned:row.owned&&row.stage.skills.length>0,slot:slots.indexOf(String(row.id)),
     image:nativeSkillArt(row.stage.skills[0]),icon:'skill-tab',category:'all'});
-  const bank={skills:rows.map(nativeSkill),slots};
+  const bank={skills:rows.filter(row=>row.stage.skills.length>0).map(nativeSkill),slots};
   const view={...s,pilots:kind==='pilot'?items:s.pilots,aircraft:kind==='aircraft'?items:s.aircraft,weapons:kind==='weapon'?items:s.weapons,
     aircraftId:kind==='aircraft'?String(rows.find(row=>nativeCollectionAccess(group,s,row).using)?.id??collection.skinId):s.aircraftId,pilotId:kind==='pilot'?String(rows.find(row=>nativeCollectionAccess(group,s,row).using)?.id||''):s.pilotId,
     loadout:kind==='weapon'?{W1:String(rows.find(row=>row.equipped)?.id||'')}:s.loadout,
     fleet:{revision:collection.revision,[kind]:bank},catalogPresentation:{skillFor:item=>nativeSkill(byId.get(item.id)),native:true,...(kind==='pilot'?{filters:nativePilotFilters}:{})}};
   const helpers={...h,weaponSkillArtwork:item=>weaponSkillArtwork(byId.get(String(item.id)),e),pilotPortrait:(item,cls)=>{const skin=nativePilotAppearance(item.id);return skin?characterPortrait({...skin,name:item.name},cls):'';},thumbnail:(id,cls='')=>{const row=byId.get(String(id));return row?`<img class="pl-model-thumb ${e(cls)}" src="${e(icon(row))}" alt="${e(row.name)}">`:h.thumbnail(id,cls);},preview:(id,options)=>{const plane=byId.get(String(id))?.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[id];return plane?h.preview?.(plane,options):null;}};
-  const t=template(kind==='weapon'?weaponCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}):fleetCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}));
+  const t=template(kind==='weapon'?weaponCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}):fleetCatalogPage({...ctx,selectedSkillSlot,snapshot:view,selectedId:String(selected.id),helpers}));
   for(const node of t.content.querySelectorAll('.wc-item[data-id]')){
     const row=byId.get(node.dataset.id);if(!row)continue;
     node.dataset.psdQuality=String(collectionQualityRank(row.quality));
@@ -81,6 +88,7 @@ export function cloudNativeCatalog(ctx){
   t.content.querySelector('.fc-header-stats')?.remove();
   if(!selected.stage.skills.length)t.content.querySelector('.fc-unlock-skill')?.remove();
   const empty=t.content.querySelector('.fc-skill-list .fc-empty');
+  if(empty&&kind==='pilot')empty.textContent='暂无技能';
   if(empty&&kind==='aircraft')empty.textContent=rows.some(row=>row.owned)
     ?'暂无可携带技能，可在战机详情查看。'
     :'激活战机后可携带技能。';
@@ -88,18 +96,24 @@ export function cloudNativeCatalog(ctx){
     const access=op==='select'?nativeCollectionAccess(group,s,row):null;
     node.dataset.action='nativeOperation';node.dataset.operation=op;node.dataset.kind=group;
     node.dataset.id=String(access?access.selectionId:row.id);node.dataset.revision=String(collection.revision);
-    node.disabled=access?!access.available||access.using:op==='slot'?group!=='skins'||!row.owned||!row.stage.skills.length:!row.canPurchase;
+    node.disabled=access?!access.available||access.using:op==='slot'?!['skins','pilots'].includes(group)||!row.owned||!row.stage.skills.length:!row.canPurchase;
     if(access)node.textContent=access.using?'使用中':'使用';
   };
-  if(nativeCollectionAccess(group,s,selected).basicOnly){
-    const hint=t.content.querySelector('.fc-unlock-skill>span:last-child');
-    if(hint)hint.textContent='激活后获得';
+  if(['aircraft','pilot'].includes(kind)){
+    const label=t.content.querySelector('.fc-unlock-skill>span:last-child');
+    if(label)label.textContent=plain(selected.stage.skills[0]?.name)||'技能';
   }
   for(const node of t.content.querySelectorAll('[data-action]')){
     const action=node.dataset.action,row=byId.get(node.dataset.id)||selected;
     if(row.baseOnly&&['fleetUnlock','fleetStar'].includes(action)){node.remove();continue;}
     if(['fleetUnlock','fleetStar'].includes(action)){
-      nativeDetailAction(node,group,row,s,row.owned?'star':'unlock',true);const shortage=!row.maxed&&row.costs.some(cost=>Number(cost.available)<Number(cost.count));if(shortage)node.dataset.shortage='true';node.innerHTML=`<strong>${row.maxed?'已满星':row.owned?'升星':'激活'}</strong><small>${row.costs.map(cost=>`${e(cost.name)} ${cost.available}/${cost.count}`).join('、')}</small>`;
+      nativeDetailAction(node,group,row,s,row.owned?'star':'unlock');
+      const shortage=!row.maxed&&row.costs.some(cost=>Number(cost.available)<Number(cost.count));if(shortage)node.dataset.shortage='true';
+      const costs=row.costs.map(cost=>{
+        const art=nativeItemArt(cost.id);
+        return `<span class="fc-operation-cost" aria-label="${e(cost.name)} ${cost.available}/${cost.count}">${art?`<span class="fc-operation-cost-art${NATIVE_AIRCRAFT_SKINS[cost.id]?' is-aircraft':''}"><img src="${e(art)}" alt="" draggable="false"></span>`:e(cost.name)}<b class="${cost.available<cost.count?'is-short':''}">${cost.available}/${cost.count}</b></span>`;
+      }).join('');
+      node.innerHTML=`<strong>${row.maxed?'已满星':row.owned?'升星':'激活'}</strong><small>${costs}</small>`;
     }else if(['selectAircraft','selectPilot','catalogEquipWeapon'].includes(action))operation(node,row,'select');
     else if(action==='fleetSkillPreview'){
       node.dataset.action='nativeSkillPreview';node.dataset.kind=group;node.dataset.id=String(row.id);
@@ -110,14 +124,14 @@ export function cloudNativeCatalog(ctx){
     }else if(['weapon','weaponInfo','aircraftInfo','pilotInfo','catalogAcquire'].includes(action)){
       node.dataset.action='nativeCollectionDetail';node.dataset.kind=group;node.dataset.id=String(row.id);
     }else if(action==='fleetSkillSlot'){
-      node.dataset.action=group==='skins'?'nativeSlotPick':'nativeCollectionDetail';node.dataset.kind=group;if(group==='pilots')node.dataset.id=String(selected.id);
+      node.dataset.action='nativeSlotPick';node.dataset.kind=group;
     }else if(['fleetSkillEquip','fleetSkillRemove'].includes(action)){
       operation(node,row,'slot');
       // Removal targets the skill's existing slot, not the newly selected slot.
-      const slot=action==='fleetSkillRemove'?Number(node.dataset.slot):ctx.selectedSkillSlot;
+      const slot=action==='fleetSkillRemove'?Number(node.dataset.slot):selectedSkillSlot;
       node.dataset.slot=String(slot);
-      const validSlot=Number.isInteger(slot)&&slot>=0&&slot<collection.slots.length;
-      if(action==='fleetSkillRemove'){node.dataset.id='0';node.disabled=!validSlot||collection.slots[slot]!==row.id;}
+      const validSlot=Number.isInteger(slot)&&slot>=0&&slot<slots.length;
+      if(action==='fleetSkillRemove'){node.dataset.id='0';node.disabled=!validSlot||slots[slot]!==String(row.id);}
       else node.disabled=node.disabled||!validSlot;
     }
   }
@@ -126,7 +140,7 @@ export function cloudNativeCatalog(ctx){
 
 export function cloudNativeSkillPreview(group,id,s,h){
   const row=s.replicaCollection[group]?.find(row=>row.id===Number(id));
-  if(row&&['guns','pilots'].includes(group))return collectionDetail(group,row,s,h,{preview:true});
+  if(row&&group==='guns')return collectionDetail(group,row,s,h,{preview:true});
   if(!row?.stage.skills.length)return {title:'技能',content:'<p>当前星级没有可携带技能。</p>'};
   return fleetSkillPreview({kind:group==='skins'?'aircraft':'pilot',
     item:{id:String(row.id),stars:row.star,owned:row.owned},helpers:h,
@@ -168,11 +182,12 @@ function collectionView(row,h) {
     description:row.stage.skills.map(skill=>plain(skill.description)).join('\n')};
 }
 function nativeDetailAction(node,group,row,s,operation,preview=false) {
-  node.dataset.action=preview?'nativeCollectionOperation':'nativeOperation';
+  const directGrowth=['skins','pilots'].includes(group)&&['unlock','star'].includes(operation);
+  node.dataset.action=preview&&!directGrowth?'nativeCollectionOperation':'nativeOperation';
   Object.assign(node.dataset,{kind:group,id:String(row.id),revision:String(s.replicaCollection.revision),operation});
   const access=operation==='select'?nativeCollectionAccess(group,s,row):null;
   if(access)node.dataset.id=String(access.selectionId);
-  node.disabled=preview?row.maxed:access?!access.available||access.using:!row.canPurchase;
+  node.disabled=directGrowth?Boolean(row.maxed||s.rewardPending||s.rewardBusy):preview?row.maxed:access?!access.available||access.using:!row.canPurchase;
   if(access)node.textContent=access.using?'使用中':'使用';
 }
 function nativeAttributeRows(stage,s,h) {
@@ -288,12 +303,16 @@ export function cloudNativeCollectionOperation(modal,s,h){
 export function cloudNativeRecruitSnapshot(s){
   if(!s.nativeAcquisition)return s;
   // Direct recruitment and retained legacy boxes have independent histories and guarantees.
+  const candidates=new Set((s.pilotSupply?.candidates||[]).map(row=>row.id));
   return {...s,pools:{pilot:s.pilotSupply?.pool||{unavailable:true}},recruitHistory:s.pilotSupply?.history||[],
-    pilots:s.replicaCollection.pilots.filter(row=>!s.pilotSupply||s.pilotSupply.candidates.some(p=>p.id===row.id)).map(row=>{
+    pilots:s.replicaCollection.pilots.filter(row=>NATIVE_PILOT_SKINS[row.id]).map(row=>{
       const skin=s.pilots.find(p=>p.id===NATIVE_PILOT_SKINS[row.id]);
       const name=row.stage.skills.map(skill=>plain(skill.name)).join('、');
       const description=row.stage.skills.map(skill=>plain(skill.description)).join('\n');
-      return {...skin,nativeId:row.id,owned:row.owned,activated:row.owned,temporaryUnlocked:false,
+      const access=nativeCollectionAccess('pilots',s,row),quality=nativePilotDisplayQuality({nativeId:row.id});
+      const starterAvailable=row.id===40100&&access.isBase;
+      return {...skin,...quality,nativeId:row.id,recruitable:!s.pilotSupply||candidates.has(row.id),
+        owned:row.owned||starterAvailable,activated:row.owned||starterAvailable,temporaryUnlocked:false,
         stars:row.star,copies:0,skillName:name,description,passive:{name,description}};
     })};
 }

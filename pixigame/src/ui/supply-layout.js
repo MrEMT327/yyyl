@@ -92,16 +92,18 @@ export function renderSupplyLayout({ surface, bridge, art, state, actions }) {
     text('图鉴  ›', 511, 866, { size: 16, color: MUTED, align: 'center' });
   }
 
-  plate(24, 912, 552, 106, '#eef1eb', '#c1d0da', 9);
-  text('保底进度', 41, 935, { size: 20, color: INK, weight: 800 });
-  const rules = [...pool.pityRules].sort((a, b) => a.triggerAt - b.triggerAt), cellWidth = 518 / rules.length;
-  rules.forEach((rule, i) => {
-    const x = 41 + i * cellWidth, count = counters.pity[rule.counter], label = aircraft ? rule.id.toUpperCase() : rule.id === 'gold' ? '金色' : '紫色';
-    text(`${label}${rule.id === 'ur' || rule.id === 'gold' ? '' : '+'}`, x, 968, { size: 16, color: '#516b7d', weight: 700 });
-    text(`${count} / ${rule.triggerAt}`, x + cellWidth - 15, 991, { size: 17, color: '#856943', weight: 800, align: 'right' });
-    plate(x, 984, cellWidth - 93, 6, '#9eafba', undefined, 3);
-    if (count) plate(x, 984, Math.max(3, (cellWidth - 93) * Math.min(1, count / rule.triggerAt)), 6, '#b18b4e', undefined, 3);
-  });
+  if (!aircraft) {
+    plate(24, 912, 552, 106, '#eef1eb', '#c1d0da', 9);
+    text('保底进度', 41, 935, { size: 20, color: INK, weight: 800 });
+    const rules = [...pool.pityRules].sort((a, b) => a.triggerAt - b.triggerAt), cellWidth = 518 / rules.length;
+    rules.forEach((rule, i) => {
+      const x = 41 + i * cellWidth, count = counters.pity[rule.counter], label = rule.id === 'gold' ? '金色' : '紫色';
+      text(`${label}${rule.id === 'gold' ? '' : '+'}`, x, 968, { size: 16, color: '#516b7d', weight: 700 });
+      text(`${count} / ${rule.triggerAt}`, x + cellWidth - 15, 991, { size: 17, color: '#856943', weight: 800, align: 'right' });
+      plate(x, 984, cellWidth - 93, 6, '#9eafba', undefined, 3);
+      if (count) plate(x, 984, Math.max(3, (cellWidth - 93) * Math.min(1, count / rule.triggerAt)), 6, '#b18b4e', undefined, 3);
+    });
+  }
   [['single', 1, 20], ['ten', 10, 180]].forEach(([id, count, cost], i) => {
     const x = 24 + i * 282, disabled = bridge.profileState.diamonds < cost;
     button(ui, `draw-${id}`, '', x, 1040, 270, 100, () => actions.draw(id), { gold: i === 1, disabled });

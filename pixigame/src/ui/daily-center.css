@@ -1,12 +1,13 @@
 /* UI_Task hierarchy with the current PSD shell, buttons and equipment plates. */
-#gui-casual-lobby [data-modal-type='tasks'] {
-  --popup-width:92cqw;--popup-height:min(154cqw,90%);--popup-max-height:90%;
-}
 #gui-casual-lobby [data-modal-type='tasks']>.pl-modal-content {overflow:hidden!important;display:flex;flex-direction:column}
 #gui-casual-lobby .dc-hub {display:flex;flex-direction:column;min-height:0;height:100%;gap:2cqw;color:var(--paper-ink);font-family:'Microsoft YaHei','PingFang SC',sans-serif}
 #gui-casual-lobby .dc-hub :is(h3,p) {margin:0;text-shadow:none;-webkit-text-stroke:0;letter-spacing:0}
 #gui-casual-lobby .dc-tabs {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1cqw;flex:none;padding-top:1cqw}
-#gui-casual-lobby .dc-tabs .dc-tab {position:relative;width:100%;--wc-button-height:max(42px,11cqw);font-size:clamp(14px,4cqw,20px);padding:0;min-width:0}
+#gui-casual-lobby .pl-modal .dc-hub>.dc-tabs .dc-tab {
+  --wc-button-height:max(36px,9cqw);position:relative;box-sizing:border-box;width:100%;min-width:0;
+  height:var(--wc-button-height);min-height:var(--wc-button-height);max-height:var(--wc-button-height);
+  font-size:clamp(13px,3.7cqw,15px);padding:0;
+}
 #gui-casual-lobby .dc-tab[aria-pressed='true'] {filter:brightness(1.35);color:#bceeff}
 #gui-casual-lobby .dc-tab>i,#gui-casual-lobby .dc-chest>i {position:absolute;top:7%;right:8%;width:8px;height:8px;border:1px solid #641f27;border-radius:50%;background:#ee5767}
 #gui-casual-lobby .dc-scroll {flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#536e87 transparent;padding:0 .6cqw 1cqw}
@@ -52,44 +53,12 @@
 #gui-casual-lobby .dc-task .dc-claimed {flex-direction:column;gap:1px}
 #gui-casual-lobby .dc-task.is-claimed {background:#b9cbd6;box-shadow:none}
 #gui-casual-lobby .dc-task.is-claimed .dc-task-badge {opacity:.6}
-#gui-casual-lobby .dc-categories {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2cqw;flex:none}
-#gui-casual-lobby .dc-categories .is-selected {color:#bceeff;filter:brightness(1.25)}
 #gui-casual-lobby .dc-achievements {display:flex;flex-direction:column;gap:2cqw}
 #gui-casual-lobby .dc-achievement {flex:none;padding:3cqw;background:#d7e3ed;border:1px solid #829caf}
 #gui-casual-lobby .dc-achievement-heading {display:flex;justify-content:space-between;gap:2cqw;align-items:center;margin-bottom:2cqw}
 #gui-casual-lobby .dc-achievement-action {display:flex;justify-content:flex-end;margin-top:2cqw}
 #gui-casual-lobby .dc-achievement-action .dc-button {min-width:19cqw}
 #gui-casual-lobby .dc-achievement.is-claimed {background:#b9cbd6}
-#gui-casual-lobby .dc-signin-count {text-align:center;color:#304b62;font-size:clamp(12px,3.4cqw,17px);padding-bottom:2cqw}
-#gui-casual-lobby .dc-signin-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2cqw}
-#gui-casual-lobby .dc-signin-day {position:relative;display:flex;flex-direction:column;align-items:stretch;gap:1.5cqw;min-width:0;min-height:31cqw;border:1px solid #6c889f;border-radius:0;padding:2cqw 1.2cqw;background:#d1dfeb;color:#243e54;opacity:1;font-family:'Microsoft YaHei',sans-serif}
-#gui-casual-lobby .dc-signin-day>strong {width:100%;text-align:center;font-size:clamp(11px,3.3cqw,16px);font-weight:700}
-#gui-casual-lobby .dc-signin-day.is-today {border:2px solid #297c9e;background:#e0f0fa;cursor:pointer}
-#gui-casual-lobby .dc-signin-rewards {display:grid;align-content:center;gap:1.5cqw;min-width:0;width:100%;flex:1}
-#gui-casual-lobby .dc-signin-reward {display:grid;grid-template-columns:8cqw minmax(0,1fr);align-items:center;gap:1cqw;min-width:0;text-align:left}
-#gui-casual-lobby .dc-signin-reward-copy {display:flex;flex-direction:column;gap:.5cqw;min-width:0;font-size:clamp(10px,2.8cqw,14px);line-height:1.3;white-space:normal;overflow-wrap:anywhere}
-#gui-casual-lobby .dc-signin-reward-copy>b {font:700 clamp(10px,2.8cqw,14px)/1.25 'Microsoft YaHei',sans-serif}
-#gui-casual-lobby .dc-prize-art {position:relative;display:grid;place-items:center;min-width:0;width:8cqw;height:8cqw}
-#gui-casual-lobby .dc-prize-art>:is(img,svg,.pl-icon,.pl-model-thumb) {position:static!important;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;margin:0!important;transform:none!important}
-#gui-casual-lobby .dc-prize-art.is-equipment {background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;padding:1.2cqw}
-#gui-casual-lobby .dc-prize-art.is-equipment::after {content:'';position:absolute;inset:0;pointer-events:none;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 5px 5px 8px 5px stretch}
-#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward {grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
-#gui-casual-lobby .dc-signin-rewards.is-single .dc-prize-art {width:14cqw;height:14cqw}
-#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward-copy {align-items:center}
-#gui-casual-lobby .dc-signin-day.is-claimed {background:#afc3d2}
-#gui-casual-lobby .dc-signin-day.is-claimed .dc-prize-art {opacity:.7}
-#gui-casual-lobby .dc-signin-status {display:flex;align-items:center;justify-content:center;gap:.5cqw;min-height:4.5cqw;flex:none;color:#4d687e;font-size:clamp(10px,2.8cqw,14px);line-height:1.3}
-#gui-casual-lobby .dc-signin-day.is-today .dc-signin-status {color:#286282;font-weight:700}
-#gui-casual-lobby .dc-signin-stamp {color:#286849;font-weight:700}
-#gui-casual-lobby .dc-signin-stamp>.pl-icon {width:4cqw!important;height:4cqw!important;min-width:14px;min-height:14px;flex:none;color:inherit;filter:none}
-#gui-casual-lobby .dc-signin-day.is-final {grid-column:1/-1;min-height:32cqw;padding:2cqw 3cqw;background:#bcd3e5}
-#gui-casual-lobby .dc-signin-day.is-final .dc-signin-rewards {grid-template-columns:repeat(3,minmax(0,1fr));align-items:center;gap:2cqw}
-#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward {grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;align-self:start}
-#gui-casual-lobby .dc-signin-day.is-final .dc-prize-art {width:14cqw;height:14cqw}
-#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward-copy {align-items:center}
-#gui-casual-lobby .dc-signin-footer {flex:none;display:grid;grid-template-columns:1fr 25cqw;gap:2cqw;align-items:center;padding-top:2cqw;border-top:1px solid #7c96ab}
-#gui-casual-lobby .dc-signin-footer>div {display:grid;gap:1cqw;font-size:clamp(10px,2.8cqw,14px);color:#425c72}
-#gui-casual-lobby .dc-signin-footer .dc-button {white-space:normal;line-height:1.2}
 #gui-casual-lobby .dc-pending {display:flex;align-items:center;justify-content:space-between;flex:none;font-size:12px;color:#7c4729}
 #gui-casual-lobby [data-modal-type='formation'] {--popup-width:92cqw;--popup-height:auto;--popup-max-height:90%}
 #gui-casual-lobby .pl-modal-host:has(.pl-modal[data-modal-type='formation']) {z-index:70!important}
@@ -146,23 +115,3 @@
 #gui-casual-lobby .dc-achievement-heading .dc-rewards {flex-wrap:wrap;justify-content:flex-end;max-width:55%}
 #gui-casual-lobby .dc-native-reward-icon {width:18px;height:18px;object-fit:contain;vertical-align:middle}
 #gui-casual-lobby .dc-achievement-action .dc-button.is-ready:not(:disabled) {color:#fff;filter:brightness(1.15)}
-
-/* Reward cards share one icon size and readable rows on phone screens. */
-#gui-casual-lobby .dc-signin-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:2.4cqw}
-#gui-casual-lobby .dc-signin-day {padding:2.5cqw;gap:2cqw;min-height:31cqw;filter:none}
-#gui-casual-lobby .dc-signin-day>strong {text-align:left;padding-bottom:1.5cqw;border-bottom:1px solid #90a9bd;font-size:clamp(13px,3.5cqw,17px)}
-#gui-casual-lobby .dc-signin-reward,#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward {grid-template-columns:10cqw minmax(0,1fr);gap:2cqw;justify-items:stretch;text-align:left}
-#gui-casual-lobby .dc-signin-rewards {gap:2.5cqw}
-#gui-casual-lobby .dc-prize-art,#gui-casual-lobby .dc-signin-rewards.is-single .dc-prize-art {width:10cqw;height:10cqw}
-#gui-casual-lobby .dc-prize-art.is-equipment {background:none;padding:0}
-#gui-casual-lobby .dc-prize-art.is-equipment::after {content:none}
-#gui-casual-lobby .dc-signin-reward-copy,#gui-casual-lobby .dc-signin-rewards.is-single .dc-signin-reward-copy {align-items:flex-start;font-size:clamp(11px,3.1cqw,15px);line-height:1.45;overflow-wrap:break-word}
-#gui-casual-lobby .dc-signin-reward-copy>b {font-size:clamp(12px,3.3cqw,16px);color:#173b53}
-#gui-casual-lobby .dc-signin-status {justify-content:flex-start;padding-top:1cqw;font-size:clamp(11px,3cqw,15px)}
-#gui-casual-lobby .dc-signin-day.is-final {min-height:31cqw;padding:2.5cqw}
-#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward {grid-template-columns:1fr;justify-items:center;text-align:center}
-#gui-casual-lobby .dc-signin-day.is-final .dc-prize-art {width:12cqw;height:12cqw}
-#gui-casual-lobby .dc-signin-day.is-final .dc-signin-reward-copy {align-items:center}
-
-#gui-casual-lobby .dc-prize-art.is-equipment {overflow:hidden}
-#gui-casual-lobby .dc-prize-art.is-equipment>.dc-signin-art {transform:scale(1.65)!important}

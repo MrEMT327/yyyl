@@ -5,20 +5,7 @@ import { makeBindings } from './v34/aircraft/Expressions.js';
 import { fighterForPilot, instantiateFighterPackage } from './fighter-packages.js';
 import { createKestrelEquipment } from './kestrel-equipment.js';
 import { createFixedPartMounts } from '../../fixed-parts/mounts.js';
-
-// V34's presentation defaults, independent of pilot statistics and weapons.
-const VISUAL_OVERRIDES = {
-  kestrel: {surfaceGlow:1.38,coreGlow:1.20,bodyFx:1.34,trailLength:1.08,weaponGlow:1.14},
-  verdant: {surfaceGlow:1.14,coreGlow:1.38,bodyFx:1.22,trailLength:1.00,weaponGlow:1.10},
-  crimson: {surfaceGlow:1.10,coreGlow:1.20,bodyFx:1.42,trailLength:1.08,weaponGlow:1.30},
-  azure: {surfaceGlow:1.28,coreGlow:1.14,bodyFx:1.26,trailLength:1.14,weaponGlow:1.10},
-  prism: {surfaceGlow:1.42,coreGlow:1.28,bodyFx:1.30,trailLength:1.16,weaponGlow:1.24},
-  scarlet: {surfaceGlow:1.28,coreGlow:1.22,bodyFx:1.36,trailLength:1.14,weaponGlow:1.26},
-  verdure: {surfaceGlow:1.26,coreGlow:1.44,bodyFx:1.28,trailLength:1.08,weaponGlow:1.18},
-  bastion: {surfaceGlow:1.14,coreGlow:1.34,bodyFx:1.40,trailLength:1.12,weaponGlow:1.20},
-  wraith: {surfaceGlow:1.30,coreGlow:1.14,bodyFx:1.22,trailLength:1.10,weaponGlow:1.04},
-  auric: {surfaceGlow:1.24,coreGlow:1.50,bodyFx:1.32,trailLength:1.08,weaponGlow:1.20},
-};
+import { createAircraftStyle, AIRCRAFT_FINISH_CONFIG } from './aircraft-style.js';
 
 function supportClipping(material) {
   if (!material.isShaderMaterial || material.userData.fighterClipping) return;
@@ -43,9 +30,10 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
   let runtime, equipment, appearance, time = 0, animationTime = 0, shielded = false, shieldStrength = 1, boost = false;
   let shieldNodes = [], shieldMaterials = [], shieldBindings = [];
   const visualMaterials = new Set();
-  let cachedFixedParts = null, fixedPartsKey = '';
+  let hullStyle, partsStyle, cachedFixedParts = null, fixedPartsKey = '';
+  const style = root => { const next = createAircraftStyle(root, { outlineScale: size }); next.setEnabled(true); return next; };
   const disposeFixedParts = () => {
-    cachedFixedParts?.dispose();
+    partsStyle?.dispose(); partsStyle = null; cachedFixedParts?.dispose();
     cachedFixedParts = null; fixedPartsKey = ''; view.fixedParts = null;
   };
 
@@ -65,14 +53,14 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
         if (!nativeSpace) material.transparent = true;
         material.userData.preserveShaderOpacity = true;
         supportClipping(material);
-        if (material.isShaderMaterial || material.blending === THREE.AdditiveBlending) object.userData.bloom = true;
+        if (!object.userData.aircraftInkOverlay && (material.isShaderMaterial || material.blending === THREE.AdditiveBlending)) object.userData.bloom = true;
       }
     });
   };
 
   view.setEquipment = next => {
     appearance = next;
-    if (equipment?.setAppearance(next)) prepareMaterials();
+    if (equipment?.setAppearance(next)) { hullStyle?.dispose(); hullStyle = style(runtime.group); prepareMaterials(); }
     equipment?.update(animationTime, runtime);
   };
 
@@ -91,6 +79,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
       disposeFixedParts();
       cachedFixedParts = createFixedPartMounts({ view, mount, attitude, runtime, loadout, geometryFactory: presentation.geometryFactory });
       fixedPartsKey = key;
+      partsStyle = style(cachedFixedParts.root);
     }
     view.fixedParts = cachedFixedParts;
     cachedFixedParts.root.visible = true;
@@ -100,7 +89,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
   view.setPilot = id => {
     if (runtime && view.pilotId === id) return;
     disposeFixedParts();
-    equipment?.dispose(); runtime?.dispose(); attitude.clear(); visualMaterials.clear(); animationTime = 0;
+    hullStyle?.dispose(); hullStyle = null; equipment?.dispose(); runtime?.dispose(); attitude.clear(); visualMaterials.clear(); animationTime = 0;
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
     equipment = createKestrelEquipment(asset);
     view.equipment = equipment;
@@ -108,7 +97,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     view.label = `${entry.slug}-three-model`;
     const span = Math.max(asset.view.bounds.max[0]-asset.view.bounds.min[0], asset.view.bounds.max[2]-asset.view.bounds.min[2]);
     attitude.scale.setScalar(15.75509262084961 / span);
-    const config = {...entry.defaults, ...VISUAL_OVERRIDES[entry.slug], cruise:false, firing:false, altitude:0, scale:1, lightIntensity:0};
+    const config = {...entry.defaults, ...AIRCRAFT_FINISH_CONFIG, cruise:false, firing:false, altitude:0, scale:1, lightIntensity:0};
     runtime = new ConfigFighter({ scene:attitude, asset, config, globals:{glow:1,particleCount:1} });
     // Find the package's explicit protection shell, not hull accents that also
     // react to shield state. Keep immutable scales and re-evaluate its bindings
@@ -147,6 +136,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     runtime.spawn(new THREE.Vector3());
     view.runtime = runtime;
     if (appearance) equipment?.setAppearance(appearance);
+    hullStyle = style(runtime.group);
     prepareMaterials();
     view.updateAircraft(time);
   };
@@ -187,7 +177,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     for (const material of shieldMaterials) if (material.uniforms?.uGain) material.uniforms.uGain.value *= shieldStrength;
     for (const { object, scale } of shieldNodes) object.scale.copy(scale).multiplyScalar(.94 + .06 * shieldStrength);
   };
-  view._disposeVisuals = () => {disposeFixedParts();equipment?.dispose();runtime?.dispose();equipment=null;runtime=null;view.runtime=null;shieldNodes=[];shieldMaterials=[];shieldBindings=[];};
+  view._disposeVisuals = () => {disposeFixedParts();hullStyle?.dispose();hullStyle=null;equipment?.dispose();runtime?.dispose();equipment=null;runtime=null;view.runtime=null;shieldNodes=[];shieldMaterials=[];shieldBindings=[];};
   view.setPilot(pilotId);
   return view;
 }

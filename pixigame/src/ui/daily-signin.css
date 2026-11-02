@@ -1,0 +1,76 @@
+/* The project's blue-gray PSD language; the competitor only informs grouping
+   and bottom tabs. Fixed-length nine-slices keep all corners intact. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin {padding:1.2cqw .6cqw 1cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.6cqw 1.3cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day {
+  --signin-face:#c5d7e5;--signin-heading:transparent;--signin-corner:2px;--signin-frame:url('/art/psd-equipment-v1/frame-blue.png');
+  position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:stretch;
+  min-width:0;min-height:30.5cqw;padding:0 1.2cqw 1.7cqw;gap:1.2cqw;
+  border:0;border-radius:0;background:var(--signin-face);color:#203e55;opacity:1;filter:none;
+  clip-path:polygon(var(--signin-corner) 0,100% 0,100% calc(100% - var(--signin-corner)),calc(100% - var(--signin-corner)) 100%,0 100%,0 var(--signin-corner));
+  font-family:'Microsoft YaHei','PingFang SC',sans-serif;text-align:center;line-height:1.2;
+}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:var(--signin-frame) 18 / var(--signin-corner) stretch;opacity:.3}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day>strong {
+  display:flex;align-items:center;justify-content:center;gap:2cqw;flex:none;
+  min-height:6.4cqw;margin:0 -.2cqw;padding:.6cqw 0;border:0;
+  background:none;color:#42617a;font-size:clamp(11px,3.1cqw,16px);font-weight:700;line-height:1.2;
+}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-today {--signin-face:#d8ebf5;--signin-heading:transparent;cursor:pointer}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-today::before {filter:brightness(1.1);opacity:.9}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day:disabled {cursor:default}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards {display:grid;align-content:center;gap:1cqw;flex:1;min-width:0;width:100%}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-reward {display:grid;grid-template-columns:7cqw minmax(0,1fr);align-items:center;gap:.8cqw;min-width:0;text-align:left}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards.is-single .dc-signin-reward {grid-template-columns:1fr;justify-items:center;gap:.7cqw;text-align:center}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed {--signin-face:#bbcedc;--signin-heading:#b2c4d2}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .dc-signin-rewards {opacity:.6}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final {grid-column:1/-1;min-height:32cqw;padding-inline:1.5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-signin-rewards {grid-template-columns:repeat(var(--signin-reward-count,3),minmax(0,1fr));gap:1cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-signin-reward {grid-template-columns:1fr;justify-items:center;text-align:center}
+/* The driver is the seventh-day headline; resources are secondary. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot {min-height:47cqw;padding:0 1.5cqw 1.2cqw;background:linear-gradient(110deg,#c7dbe8 0%,#bdd3e3 58%,#a8c0d5 100%)}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-hero {position:relative;display:block;flex:1;min-height:38cqw;min-width:0;text-align:left}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-copy {position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:1cqw;width:56%;padding:5cqw 0 0 2cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-copy>small {font-size:clamp(10px,2.6cqw,13px);color:#466d87}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-copy>b {font-size:clamp(14px,4.5cqw,23px);line-height:1.2;color:#173e5b;white-space:nowrap}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-portrait {position:absolute;right:-1cqw;top:-5cqw;bottom:0;width:44cqw;overflow:visible;pointer-events:none}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-art {position:absolute!important;left:50%;top:0;transform:translateX(-50%)!important;display:block;width:230%!important;height:auto!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center top!important}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot.is-claimed .dc-signin-pilot-hero {opacity:.7}
+#gui-casual-lobby .pl-modal .dc-project-task>.dc-tabs {order:20;margin-top:auto;padding-top:1.5cqw}
+@container(max-width:360px) {
+  #gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-copy {gap:.6cqw;padding-top:3cqw}
+}
+
+
+/* Collected rewards use a generated pictorial stamp over the artwork. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .dc-signin-rewards,
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot.is-claimed .dc-signin-pilot-hero {opacity:1}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .dc-signin-pilot-art {opacity:.45;filter:saturate(.45)}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-busy {position:absolute;left:50%;top:52%;width:5cqw;height:5cqw;margin:-2.5cqw;border:2px solid #7199b2;border-top-color:#eef8ff;border-radius:50%;animation:dc-signin-spin .7s linear infinite;pointer-events:none}
+@keyframes dc-signin-spin {to {transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce) {#gui-casual-lobby .pl-modal .dc-hub .dc-signin-busy {animation:none}}
+
+/* Quiet panel face, keeping the PSD outer frame and title geometry. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day {min-height:28cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final {min-height:32cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot {min-height:47cqw}
+
+/* A restrained PSD edge replaces the heavy cyan card frames. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot>strong {justify-content:flex-start;padding-left:2cqw;position:relative;z-index:3}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-crop {
+  position:absolute;inset:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%),linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%),linear-gradient(to right,transparent 0%,#000 12%,#000 88%,transparent 100%);
+  mask-composite:intersect;
+}
+
+/* Item frames are identical to the receipt/inventory component. Day cards
+   only group them; their backgrounds do not represent item quality. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-reward {display:block;min-width:0}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards.is-single {justify-items:center}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards.is-single .dc-signin-reward {width:17cqw;max-width:100%}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-signin-reward {width:100%}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-items {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1cqw;width:100%;margin-top:2cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .reward-item-art {opacity:.45;filter:saturate(.45)}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .reward-item-slot::before {opacity:.75}

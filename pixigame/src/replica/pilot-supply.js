@@ -17,8 +17,20 @@ import { PILOT_TASK_POINTS, PILOT_TASK_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PI
 
 const exchangeRoster=catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id));
 const roster=exchangeRoster.filter(row=>![40100,40101].includes(row.id));
-const recruitRarity=row=>AIRCRAFTS.find(p=>p.id===NATIVE_PILOT_SKINS[row.id])?.rarity;
-export const DIRECT_RECRUIT_RATES=Object.freeze({R:.74,SR:.20,SSR:.05,UR:.01});
+const recruitPilot=row=>AIRCRAFTS.find(p=>p.id===NATIVE_PILOT_SKINS[row.id]);
+// Preserve the historical per-character weights and saved protection counters;
+// these groups are not character quality and are never shown as rarity labels.
+const LEGACY_GROUP_RATES=Object.freeze({R:.74,SR:.20,SSR:.05,UR:.01});
+const recruitGroup=row=>recruitPilot(row)?.legacyRecruitGroup;
+function displayRarityRates() {
+  const rates={R:0,SR:0,SSR:0};
+  for(const [group,weight] of Object.entries(LEGACY_GROUP_RATES)) {
+    const members=roster.filter(row=>recruitGroup(row)===group);
+    for(const row of members){const rarity=recruitPilot(row)?.rarity;if(Object.hasOwn(rates,rarity))rates[rarity]+=weight/members.length;}
+  }
+  return Object.freeze(Object.fromEntries(Object.entries(rates).map(([key,value])=>[key,Number(value.toFixed(10))])));
+}
+export const DIRECT_RECRUIT_RATES=displayRarityRates();
 // The historical direct-character chance and ten-draw guarantee, combined
 // with existing project resources. Weights add up to 100 per unforced draw.
 export const DIRECT_RECRUIT_PILOT_WEIGHT=20;
@@ -32,6 +44,10 @@ const RECRUIT_COST=100;
 const RECRUIT_PITY=Object.freeze({pilot:10,ssr:30,ur:70});
 const RESOURCE_KEYS={1:'coins',113:'basicKey',blueprint:'blueprint',112:'advancedKey'};
 const blueprints=[105,106,107,108,109];
+const activitySteps=[20,40,60,80,100];
+// Intermediate prizes use resources already available in this project; retain the existing final prize.
+const milestoneRewards={daily:{20:[{id:1,amount:1000}],40:[{id:105,amount:5}],60:[{id:113,amount:1}],80:[{id:106,amount:5}],100:PILOT_DAILY_ACTIVITY_REWARDS},
+  weekly:{20:[{id:1,amount:1000}],40:[{id:105,amount:5}],60:[{id:113,amount:1}],80:[{id:106,amount:10}],100:PILOT_WEEKLY_ACTIVITY_REWARDS}};
 const INTRO_BATTLE_REWARDS=[{id:1,amount:300},{id:106,amount:5}];
 // Retain task IDs so existing claims cannot be paid again after the change.
 const tasks=[{id:'login',name:'每日报到',target:1,counter:'login',starter:40100},
@@ -84,6 +100,11 @@ function ledger(raw,time) {
   }
   if(l.daily){l.daily.victories??=0;l.daily.upgrades??=0;l.daily.recruits??=0;}
   if(l.week){l.week.battles??=0;l.week.victories??=0;l.week.upgrades??=0;}
+  for(const [record,legacy] of [[l.daily,l.daily?.activityClaimed],[l.week,l.week?.claimed]]) {
+    if(!record)continue;
+    record.activityClaims??=legacy?[...activitySteps]:[];
+    if(!Array.isArray(record.activityClaims)||new Set(record.activityClaims).size!==record.activityClaims.length||record.activityClaims.some(step=>!activitySteps.includes(step))||Boolean(legacy)!==record.activityClaims.includes(100))throw Error('活跃奖励领取记录无效');
+  }
   // New one-time resource reward; existing daily claims and all granted pilots survive.
   l.introBattleRewardClaimed ??= false;
   if(typeof l.introBattleRewardClaimed!=='boolean')throw Error('新手出击奖励记录无效');
@@ -107,8 +128,8 @@ function ledger(raw,time) {
   }
   l.history=history(l.history);l.boxHistory=history(l.boxHistory,true);
   if(today<l.daily.day||week<l.week.start)throw Error('日期异常，请恢复设备日期');
-  if(today>l.daily.day)l.daily={day:today,battles:0,victories:0,upgrades:0,recruits:0,taskVersion:2,activityOffset:0,claimed:[],activityClaimed:false,ads:0,collectionChoice:null};
-  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,battles:0,victories:0,upgrades:0,collectionChoice:null};
+  if(today>l.daily.day)l.daily={day:today,battles:0,victories:0,upgrades:0,recruits:0,taskVersion:2,activityOffset:0,claimed:[],activityClaimed:false,activityClaims:[],ads:0,collectionChoice:null};
+  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,activityClaims:[],battles:0,victories:0,upgrades:0,collectionChoice:null};
   normalizeGrowthSupplyClaims(l);
   return l;
 }
@@ -161,6 +182,10 @@ function itemReward(id,amount) {
   return {id,nativeItemId:id,type:id===1?'coins':'nativeItem',amount,
     name:nativeItemDisplayName(id)||names[id]||catalog.itemNames[id]||'装备图纸',image:nativeItemArt(id)};
 }
+function milestoneViews(period,record,value) {
+  return activitySteps.map(step=>({step,rewards:milestoneRewards[period][step].map(r=>itemReward(r.id,r.amount)),
+    claimed:record.activityClaims.includes(step),canClaim:!record.activityClaims.includes(step)&&(period==='weekly'&&UNLOCK_ALL_CONTENT||value>=step)}));
+}
 // Direct draws were appended after the legacy box pool and have their own
 // draw counter. Keep the full saved ledger; expose only complete direct batches.
 function directRecruitHistory(l) {
@@ -187,13 +212,13 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
       rarityProbabilities:DIRECT_RECRUIT_RATES,
       resources:DIRECT_RECRUIT_RESOURCES.map(r=>({...r,image:nativeItemArt(r.id==='blueprint'?105:r.id)})),
       pity:{pilot:l.directRecruit.pilot,ssr:l.directRecruit.ssr,ur:l.directRecruit.ur},
-      pityDetails:Object.entries(RECRUIT_PITY).map(([id,triggerAt])=>({id,triggerAt})),
-      guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员 · ${RECRUIT_PITY.ssr}抽内SSR及以上 · ${RECRUIT_PITY.ur}抽内UR`,
+      pityDetails:[{id:'pilot',triggerAt:RECRUIT_PITY.pilot}],
+      guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员`,
       duplicateText:'重复驾驶员转为对应碎片 ×50。',
       rules:[`单次${RECRUIT_COST}钻石，十次${RECRUIT_COST*10}钻石。`,
         `基础概率：驾驶员${DIRECT_RECRUIT_PILOT_WEIGHT}%、${DIRECT_RECRUIT_RESOURCES.map(row=>row.name+row.weight+'%').join('、')}。`,
         `驾驶员稀有度条件概率：${Object.keys(DIRECT_RECRUIT_RATES).join('／')}为${Object.values(DIRECT_RECRUIT_RATES).map(rate=>rate*100+'%').join('／')}。`,
-        `${RECRUIT_PITY.pilot}抽内必得驾驶员；${RECRUIT_PITY.ssr}抽内必得SSR或UR，${RECRUIT_PITY.ur}抽内必得UR。单抽与十连共享保底；UR同时重置三项计数。`,
+        `${RECRUIT_PITY.pilot}抽内必得驾驶员。单抽与十连共享保底。`,
         '首次获得激活驾驶员；重复驾驶员转为对应碎片，可在背包合成同名卡。']},
     candidates:roster.map(row=>({id:row.id,skinId:NATIVE_PILOT_SKINS[row.id],name:pilotName(row),
       owned:progression.pilots.some(p=>p.id===row.id&&p.active),
@@ -205,9 +230,9 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
       missing:missing.length,remaining:missing.length?(l.boxOpened<2?1:5-l.boxMisses):null,credits:l.cardCredits},
     tasks:tasks.map(t=>{const progress=Math.min(t.target,taskCount(t,l,taskCounters.daily));return {...t,rewards:t.rewards.map(r=>itemReward(r.id,r.amount)),introRewards:t.id==='battle1'&&!l.introBattleRewardClaimed?INTRO_BATTLE_REWARDS.map(r=>itemReward(r.id,r.amount)):[],starterName:t.starter&&!progression.pilots.some(p=>p.id===t.starter&&p.active)?nativePilotDisplayName(t.starter):null,progress,claimed:l.daily.claimed.includes(t.id),
       canClaim:!l.daily.claimed.includes(t.id)&&(UNLOCK_ALL_CONTENT||progress>=t.target)};}),
-    activity:{rewards:PILOT_DAILY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),points:points(l),claimed:l.daily.activityClaimed,canClaim:!l.daily.activityClaimed&&points(l)>=100},
+    activity:{rewards:PILOT_DAILY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),points:points(l),claimed:l.daily.activityClaimed,canClaim:!l.daily.activityClaimed&&points(l)>=100,milestones:milestoneViews('daily',l.daily,points(l))},
     ad:{count:l.daily.ads,limit:2,canClaim:l.daily.ads<2,rewards:PILOT_AD_REWARDS.map(r=>itemReward(r.id,r.amount))},
-    week:{rewards:PILOT_WEEKLY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),days:l.week.activeDays.length,points:weekly.points,tasks:weekly.rows,claimed:l.week.claimed,canClaim:!l.week.claimed&&(UNLOCK_ALL_CONTENT||weekly.points>=100)}};
+    week:{rewards:PILOT_WEEKLY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),days:l.week.activeDays.length,points:weekly.points,tasks:weekly.rows,claimed:l.week.claimed,canClaim:!l.week.claimed&&(UNLOCK_ALL_CONTENT||weekly.points>=100),milestones:milestoneViews('weekly',l.week,weekly.points)}};
 }
 export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,time,{adCompleted=false,campaign={},taskCounters={},randomTicket=ticket}={}) {
   const inventory=validateReplicaInventory(rawInventory),progression=validateReplicaProgression(rawProgression),l=ledger(rawRecord,time);
@@ -232,16 +257,17 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
       const bucket=forced?0:randomTicket(100);
       if(bucket<DIRECT_RECRUIT_PILOT_WEIGHT){
         const roll=randomTicket(10000)/10000;
-        const rates=DIRECT_RECRUIT_RATES;
+        const rates=LEGACY_GROUP_RATES;
         let remaining=Math.round(roll*10000);
-        const rarity=pity.ur>=RECRUIT_PITY.ur-1?'UR':pity.ssr>=RECRUIT_PITY.ssr-1
+        const group=pity.ur>=RECRUIT_PITY.ur-1?'UR':pity.ssr>=RECRUIT_PITY.ssr-1
           ?(roll<rates.SSR/(rates.SSR+rates.UR)?'SSR':'UR')
           :Object.entries(rates).find(([,rate])=>(remaining-=Math.round(rate*10000))<0)?.[0]||'UR';
-        const candidates=roster.filter(row=>recruitRarity(row)===rarity);
+        const candidates=roster.filter(row=>recruitGroup(row)===group);
         const unfinished=candidates.filter(row=>!pilotAtMaxStar(progression,row.id));
         const pool=unfinished.length?unfinished:candidates;
         const row=pool[randomTicket(pool.length)];
         if(!row)throw Error('招募奖池配置无效');
+        const rarity=recruitPilot(row)?.rarity||'未标注';
         const owned=progression.pilots.find(p=>p.id===row.id&&p.active);
         if(!owned){
           const grant=grantPilotCards(inventory,progression,row.id,1,{activate:true});
@@ -262,8 +288,8 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
             isNew:false,stars:owned.star,nativeRecruit:true,convertedFragment});
         }
         pity.pilot=0;
-        pity.ssr=['SSR','UR'].includes(rarity)?0:pity.ssr+1;
-        pity.ur=rarity==='UR'?0:pity.ur+1;
+        pity.ssr=['SSR','UR'].includes(group)?0:pity.ssr+1;
+        pity.ur=group==='UR'?0:pity.ur+1;
       }else{
         let cursor=bucket-DIRECT_RECRUIT_PILOT_WEIGHT;
         const resource=DIRECT_RECRUIT_RESOURCES.find(r=>(cursor-=r.weight)<0);
@@ -317,12 +343,15 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
     }
     taskActivityOnly=rewards.length===0;
   }else if(operation.action==='activity') {
-    if(l.daily.activityClaimed||points(l)<100)throw Error('请先领取每日任务，达到 100 活跃');
-    l.daily.activityClaimed=true;PILOT_DAILY_ACTIVITY_REWARDS.forEach(r=>add(r.id,r.amount));
-    if(!l.week.activeDays.includes(l.daily.day))l.week.activeDays.push(l.daily.day);
+    const step=operation.id==null||Number.isNaN(operation.id)?100:operation.id;
+    if(!activitySteps.includes(step)||l.daily.activityClaims.includes(step)||points(l)<step)throw Error(`请先领取每日任务，达到 ${step} 活跃，且奖励未领取`);
+    l.daily.activityClaims.push(step);milestoneRewards.daily[step].forEach(r=>add(r.id,r.amount));
+    if(step===100){l.daily.activityClaimed=true;if(!l.week.activeDays.includes(l.daily.day))l.week.activeDays.push(l.daily.day);}
   }else if(operation.action==='weekly') {
-    if(l.week.claimed||!UNLOCK_ALL_CONTENT&&weeklyTaskView(l,taskCounters.weekly).points<100)throw Error('每周活跃未达 100，或奖励已领取');
-    l.week.claimed=true;PILOT_WEEKLY_ACTIVITY_REWARDS.forEach(r=>add(r.id,r.amount));
+    const step=operation.id==null||Number.isNaN(operation.id)?100:operation.id;
+    if(!activitySteps.includes(step)||l.week.activityClaims.includes(step)||!UNLOCK_ALL_CONTENT&&weeklyTaskView(l,taskCounters.weekly).points<step)throw Error(`每周活跃未达 ${step}，或奖励已领取`);
+    l.week.activityClaims.push(step);milestoneRewards.weekly[step].forEach(r=>add(r.id,r.amount));
+    if(step===100)l.week.claimed=true;
   }else if(operation.action==='ad'||operation.action==='devAd') {
     if(l.daily.ads>=2||!(operation.action==='devAd'?UNLOCK_ALL_CONTENT:adCompleted))throw Error('广告未完整完成或今日次数已用完');
     l.daily.ads++;PILOT_AD_REWARDS.forEach(r=>add(r.id,r.amount));

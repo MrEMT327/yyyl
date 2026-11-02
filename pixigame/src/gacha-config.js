@@ -2,10 +2,10 @@ import { AIRCRAFTS } from './pilots.js';
 import { COMMON_WEAPONS } from './fixed-parts/common-weapons.js';
 
 export const GACHA_QUALITIES = Object.freeze({
-  R: { id: 'R', name: 'R', color: '#d9e4e6' },
-  SR: { id: 'SR', name: 'SR', color: '#62cf83' },
-  SSR: { id: 'SSR', name: 'SSR', color: '#758cff' },
-  UR: { id: 'UR', name: 'UR', color: '#ff78dc' },
+  R: { id: 'R', name: 'R', color: '#65afe0' },
+  SR: { id: 'SR', name: 'SR', color: '#b38aef' },
+  SSR: { id: 'SSR', name: 'SSR', color: '#efbd55' },
+  UR: { id: 'UR', name: 'SSR', color: '#efbd55' }, // Legacy draw group only.
   white: { id: 'white', name: '白色', color: '#edf5f5' },
   green: { id: 'green', name: '绿色', color: '#62cf83' },
   blue: { id: 'blue', name: '蓝色', color: '#5d9dff' },
@@ -39,6 +39,7 @@ function aircraftItem(pilot) {
     type: 'aircraft',
     slot: null,
     quality: pilot.rarity,
+    drawGroup: pilot.legacyRecruitGroup,
     effects: Object.freeze([
       effect('pilotAbility', pilot.ability, `${pilot.skillName}：${pilot.description}`),
     ]),
@@ -415,7 +416,7 @@ export const GACHA_ITEMS = Object.freeze([
 export const GACHA_ITEM_MAP = new Map(GACHA_ITEMS.map((item) => [item.id, item]));
 
 function itemIds(items, quality) {
-  return Object.freeze(items.filter((item) => item.quality === quality).map((item) => item.id));
+  return Object.freeze(items.filter((item) => (item.drawGroup || item.quality) === quality).map((item) => item.id));
 }
 
 export const GACHA_POOLS = Object.freeze({

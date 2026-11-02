@@ -5,6 +5,7 @@ import { isRosterPilot } from './native-pilot-roster.js';
 import { grantPilotCards } from './pilot-copy-grants.js';
 import { nativeCollectionDisplayName } from './native-collection-names.js';
 import catalog from './native-economy-catalog.json' with { type: 'json' };
+import {nativeItemDisplayQuality} from './item-display-quality.js';
 import { nativeSkillText } from './native-skill-text.js';
 import { validateReplicaProgression, selectReplicaProgression } from './native-progression.js';
 
@@ -31,8 +32,8 @@ function costRows(cost, inventory) {
 export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
   const progression = validateReplicaProgression(value), inventory = validateReplicaInventory(rawInventory);
   synchronizeNativeLabs(progression,nativeLabProgressGate(campaign));
-  const result = { revision: inventory.revision, gold: inventory.items[1] || 0, slots: progression.skinSkillSlots.slice(),
-    attributeNames: catalog.attributeNames, skinId: progression.role.skinId };
+  const result = { revision: inventory.revision, gold: inventory.items[1] || 0, slots: progression.skinSkillSlots.slice(), pilotSlots:progression.pilotSkillSlots.slice(),
+    weaponSlots:progression.weaponSkillSlots.slice(), attributeNames: catalog.attributeNames, skinId: progression.role.skinId };
   for (const kind of ['guns','skins','pilots']) result[kind] = catalog[kind].flatMap(row => {
     if (kind === 'pilots' && !isRosterPilot(row.id)) return [];
     const entry = progression[kind].find(entry => entry.id === row.id), owned = Boolean(entry?.active);
@@ -40,7 +41,8 @@ export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
     const stages = row.stages.map(stage => ({...stage, skills:stage.skills.map(nativeSkillText)}));
     const stage = stages.find(stage => stage.star === (owned ? entry.star : row.defaultStar));
     const cost = costsFor(row, entry), costs = costRows(cost, inventory);
-    return [{ ...row, name:nativeCollectionDisplayName(row.id)||row.name, owned, star: owned ? entry.star : 0, stages, stage,
+    const displayQuality=nativeItemDisplayQuality(row.id);
+    return [{ ...row, name:nativeCollectionDisplayName(row.id)||row.name,qualityRank:displayQuality?.qualityRank,qualityName:displayQuality?.qualityName||row.qualityName, owned, star: owned ? entry.star : 0, stages, stage,
       equipped: kind === 'skins' ? row.id === progression.role.skinId : Boolean(entry?.equipped),
       maxed: owned && cost === null, costs,
       canPurchase: (!row.closed || UNLOCK_ALL_CONTENT) && Boolean(cost?.length) && costs.every(row=>row.available>=row.count) }];
@@ -73,16 +75,26 @@ export function planReplicaCollection(value, rawInventory, operation, campaign={
     progression=validateReplicaProgression(progression);
   } else if (action === 'select') {
     progression = selectReplicaProgression(progression, {kind,id});
+  } else if (action === 'slot' && kind==='guns') {
+    const slot=operation.slot,ids=progression.weaponSkillSlots.slice();
+    if(!Number.isInteger(slot)||slot<0||slot>1)throw Error('技能槽无效');
+    if(id===0&&slot===0)throw Error('主技能不能卸下');
+    const groupOf=id=>{const row=catalog.guns.find(row=>row.id===id);return row?row.baseGunId||row.id:0;};
+    const other=id===0?-1:ids.findIndex(value=>value&&groupOf(value)===groupOf(id));
+    if(other>=0&&other!==slot)ids[other]=ids[slot];
+    ids[slot]=id;progression=selectReplicaProgression(progression,{kind:'weaponSkillSlots',ids});
   } else if (action === 'slot') {
+    if (!['skins','pilots'].includes(kind)) throw new Error('技能类型无效');
+    const key=kind==='pilots'?'pilotSkillSlots':'skinSkillSlots';
     const slot = operation.slot;
-    if (!Number.isInteger(slot) || slot < 0 || slot >= progression.skinSkillSlots.length) throw new Error('技能槽无效');
+    if (!Number.isInteger(slot) || slot < 0 || slot >= progression[key].length) throw new Error('技能槽无效');
     if (id !== 0) {
-      const owned = progression.skins.find(row=>row.id===id && row.active);
-      const row = catalog.skins.find(row=>row.id===id)?.stages.find(row=>row.star===owned?.star);
-      if (!row?.skills.length) throw new Error('尚未拥有该飞机技能');
+      const owned = progression[kind].find(row=>row.id===id && row.active);
+      const row = catalog[kind].find(row=>row.id===id)?.stages.find(row=>row.star===owned?.star);
+      if (!row?.skills.length) throw new Error(kind==='pilots'?'尚未拥有该驾驶员技能':'尚未拥有该飞机技能');
     }
-    const ids = progression.skinSkillSlots.map(old=>old===id?0:old); ids[slot] = id;
-    progression = selectReplicaProgression(progression,{kind:'skinSkillSlots',ids});
+    const ids = progression[key].map(old=>old===id?0:old); ids[slot] = id;
+    progression = selectReplicaProgression(progression,{kind:key,ids});
   } else if (action === 'unlock' || action === 'star') {
     const row = catalog[kind]?.find(row=>row.id===id);
     if (!['guns','skins','pilots'].includes(kind) || !row || (row.closed && !UNLOCK_ALL_CONTENT)) throw new Error('该养成项目不可用');

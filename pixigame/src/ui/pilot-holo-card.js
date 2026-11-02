@@ -1,6 +1,6 @@
 // Shared pilot card uses the in-battle 三选一.psd skin. Portraits stay unfiltered.
 import {pilotCardQuality} from './pilot-card-quality.js';
-const RARITIES = new Set(['R', 'SR', 'SSR', 'UR']);
+const RARITIES = new Set(['R', 'SR', 'SSR']);
 const BASE_URL = import.meta.env?.BASE_URL || '/';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
@@ -35,15 +35,18 @@ export function pilotHoloCard(pilot, {
   loading = 'eager',
 } = {}) {
   if (!pilot) return '';
-  const rank = RARITIES.has(rarity) ? rarity : 'R';
-  const quality=pilotCardQuality(rank);
+  const grade={2:'R',3:'SR',4:'SSR'}[pilot.qualityRank];
+  const rank = pilot.qualityKnown===false || (Number.isInteger(pilot.qualityRank) && !grade)
+    ? '未标注' : grade || (rarity==='UR'?'SSR':RARITIES.has(rarity)?rarity:'未标注');
+  const quality=pilotCardQuality(rank,pilot.qualityRank,pilot.qualityKnown);
   const framePath=`${BASE_URL}art/psd-choice-v1/${quality.choiceFrame}`;
   const frame=globalThis.document?.baseURI?new URL(framePath,globalThis.document.baseURI).href:framePath;
 
   const classes = ['pilot-holo-card', compact && 'phc-compact', selected && 'phc-selected', reveal && 'phc-reveal'].filter(Boolean).join(' ');
   const focusX = clamp(Number(pilot.portraitFocus?.x) || 50, 25, 75);
   const portrait = String(pilot.image || '').replace(/^\.\/assets\//, `${BASE_URL}assets/`);
-  return `<article class="${classes}" data-holo-card data-holo-rarity="${rank}" data-pilot-id="${escape(pilot.id)}"${interactive ? ' data-holo-interactive tabindex="0"' : ''} aria-label="${escape(`${rank} ${pilot.name} · ${pilot.title || '驾驶员'}${status ? ` · ${status}` : ''}`)}" style="--phc-art-x:${focusX}%;--phc-frame:url('${escape(frame)}');--phc-frame-filter:${quality.frameFilter};--phc-metal:${quality.color};--phc-metal-light:${quality.light};--phc-ink:${quality.ink};--phc-foil-idle:${quality.foil};--phc-foil-active:${quality.foilActive};--phc-glitter-opacity:${quality.glitter};">
+  const nativeQuality=pilot.qualityKnown!==false&&Number.isInteger(pilot.qualityRank)&&pilot.qualityRank>=0&&pilot.qualityRank<=5?` data-pilot-quality="${pilot.qualityRank}"`:'';
+  return `<article class="${classes}" data-holo-card data-holo-rarity="${rank}"${nativeQuality} data-pilot-id="${escape(pilot.id)}"${interactive ? ' data-holo-interactive tabindex="0"' : ''} aria-label="${escape(`${rank} ${pilot.name} · ${pilot.title || '驾驶员'}${status ? ` · ${status}` : ''}`)}" style="--phc-art-x:${focusX}%;--phc-frame:url('${escape(frame)}');--phc-frame-filter:${quality.frameFilter};--phc-metal:${quality.color};--phc-metal-light:${quality.light};--phc-ink:${quality.ink};--phc-foil-idle:${quality.foil};--phc-foil-active:${quality.foilActive};--phc-glitter-opacity:${quality.glitter};">
     <div class="phc-face">
       ${radianceLayer()}
       ${prismLayer()}
@@ -67,10 +70,13 @@ export function bindPilotHoloCards(root) {
   const motion = view.matchMedia?.('(prefers-reduced-motion: reduce)');
   const requestFrame = view.requestAnimationFrame?.bind(view) || (callback => view.setTimeout(callback, 16));
   const cancelFrame = view.cancelAnimationFrame?.bind(view) || view.clearTimeout.bind(view);
+  const setTimer = view.setTimeout?.bind(view) || setTimeout;
+  const clearTimer = view.clearTimeout?.bind(view) || clearTimeout;
   let active = null;
   let pointerId = null;
   let pending = null;
   let frame = null;
+  let idleTimer = null;
   let captured = null;
   let disposed = false;
   const cardFor = target => {
@@ -78,6 +84,8 @@ export function bindPilotHoloCards(root) {
     return card && root.contains(card) ? card : null;
   };
   function reset() {
+    if (idleTimer !== null) clearTimer(idleTimer);
+    idleTimer = null;
     if (frame !== null) cancelFrame(frame);
     frame = null;
     pending = null;
@@ -120,16 +128,29 @@ export function bindPilotHoloCards(root) {
     if (!rect.width || !rect.height) return;
     update(card, (event.clientX - rect.left) / rect.width, (event.clientY - rect.top) / rect.height);
   }
+  function resumeIdleAfterInteraction(card) {
+    if (motion?.matches || disposed || !card?.closest?.('.recruit-result-dialog.is-pilot-grid')) return;
+    if (idleTimer !== null) clearTimer(idleTimer);
+    idleTimer = setTimer(() => {
+      idleTimer = null;
+      if (active === card && pointerId === null) reset();
+    }, 1400);
+  }
   const move = event => {
     if (active?.closest?.('.drag-scroll-active') || event.target?.closest?.('.drag-scroll-active')) { reset(); return; }
     if (event.pointerType === 'touch' && event.pointerId !== pointerId) return;
     const card = pointerId === event.pointerId && active ? active : cardFor(event.target);
-    if (card) point(card, event);
+    if (card) {
+      point(card, event);
+      if (pointerId === null && event.pointerType !== 'touch') resumeIdleAfterInteraction(card);
+    }
   };
   const down = event => {
     if (event.isPrimary === false || (event.button !== undefined && event.button !== 0) || motion?.matches) return;
     const card = cardFor(event.target);
     if (!card) return;
+    if (idleTimer !== null) clearTimer(idleTimer);
+    idleTimer = null;
     point(card, event);
     pointerId = event.pointerId;
     // Capture only the standalone hero. Collection buttons keep native click
@@ -140,7 +161,7 @@ export function bindPilotHoloCards(root) {
   };
   const up = event => { if (pointerId === event.pointerId) reset(); };
   const out = event => { if (pointerId === null && active && !active.contains(event.relatedTarget)) reset(); };
-  const focus = event => { const card = cardFor(event.target); if (card) update(card, .67, .32); };
+  const focus = event => { const card = cardFor(event.target); if (card) { update(card, .67, .32); resumeIdleAfterInteraction(card); } };
   const blur = event => { if (active && !active.contains(event.relatedTarget)) reset(); };
   const key = event => {
     const card = cardFor(event.target);
@@ -150,6 +171,7 @@ export function bindPilotHoloCards(root) {
     if (!directions[event.key]) return;
     event.preventDefault();
     update(card, ...directions[event.key]);
+    resumeIdleAfterInteraction(card);
   };
   const listeners = { pointermove: move, pointerdown: down, pointerup: up, pointercancel: up, pointerout: out, focusin: focus, focusout: blur, keydown: key };
   for (const [name, listener] of Object.entries(listeners)) root.addEventListener(name, listener);

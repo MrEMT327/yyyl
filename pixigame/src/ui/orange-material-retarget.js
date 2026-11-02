@@ -23,7 +23,15 @@ export function createOrangeMaterialRetarget(manifest){
   if(manifest.materialUpperBody){
    const a=transform(groups.body.matrix,manifest.joints.hip.targetRest),b=transform(groups.body.matrix,manifest.joints.neck.targetRest),p=map('body',jointPositions.hip),q=map('body',jointPositions.neck),dx=b[0]-a[0],dy=b[1]-a[1],u=q[0]-p[0],v=q[1]-p[1],angle=Math.atan2(v*dx-u*dy,u*dx+v*dy),scale=Math.max(.98,Math.min(1.02,Math.hypot(u,v)/Math.hypot(dx,dy))),c=Math.cos(angle)*scale,s=Math.sin(angle)*scale;
    torsoPoint=r=>[p[0]+(r[0]-a[0])*c-(r[1]-a[1])*s,p[1]+(r[0]-a[0])*s+(r[1]-a[1])*c];
-   for(let j=0;j<layers.length;j++){const l=layers[j],o=offsets[j],rest=restManifest.layers[j].vertices;if(l.id==='body'){const spec=manifest.materialUpperBody,neck=map('head',sampleSurface(spec.neckBinding)),own=torsoPoint(spec.neck);for(let v=0;v<rest.length;v+=2){const p=torsoPoint([rest[v],rest[v+1]]),w=Math.max(0,Math.min(1,(390-rest[v+1])/80))*Math.max(0,Math.min(1,(rest[v]-680)/25))*Math.max(0,Math.min(1,(835-rest[v])/20));positions[o+v]=p[0]+(neck[0]-own[0])*w;positions[o+v+1]=p[1]+(neck[1]-own[1])*w;}}
+   for(let j=0;j<layers.length;j++){const l=layers[j],o=offsets[j],rest=restManifest.layers[j].vertices;if(l.id==='body'){const spec=manifest.materialUpperBody,neck=map('head',sampleSurface(spec.neckBinding)),own=torsoPoint(spec.neck);for(let v=0;v<rest.length;v+=2){const rx=rest[v],ry=rest[v+1];
+    // Soften the exposed right waist tip only on the current jetboard artwork.
+    // The smooth falloff leaves the upper torso and opposite side untouched.
+    const u=Math.max(0,Math.min(1,(rx-790)/35)),t=Math.max(0,Math.min(1,(ry-606)/35)),inset=manifest.materialRevision==='jetboard-v5-clean-r5'?16*u*u*(3-2*u)*t*t*(3-2*t):0;
+    const p=torsoPoint([rx-inset,ry]),w=Math.max(0,Math.min(1,(390-ry)/80))*Math.max(0,Math.min(1,(rx-680)/25))*Math.max(0,Math.min(1,(835-rx)/20));positions[o+v]=p[0]+(neck[0]-own[0])*w;positions[o+v+1]=p[1]+(neck[1]-own[1])*w;}}
+    // The shorts' upper edge overlaps the rigid torso by only 26 painted
+    // pixels. Follow the same torso motion across that overlap, then blend
+    // back to the original hip surface before reaching the leg openings.
+    if(l.id==='shorts-underlap'){for(let v=0;v<rest.length;v+=2){const t=Math.max(0,Math.min(1,(rest[v+1]-650)/80)),w=1-t*t*(3-2*t),p=torsoPoint([rest[v],rest[v+1]]);positions[o+v]+=(p[0]-positions[o+v])*w;positions[o+v+1]+=(p[1]-positions[o+v+1])*w;}}
     if(l.sleeveElbow){const a=[625,345],b=[423,293],p=torsoPoint(a),q=map('frontArm',sampleSurface(l.sleeveElbow)),dx=b[0]-a[0],dy=b[1]-a[1],u=q[0]-p[0],v=q[1]-p[1],den=dx*dx+dy*dy,c=(u*dx+v*dy)/den,s=(v*dx-u*dy)/den;for(let k=0;k<rest.length;k+=2){const x=rest[k]-a[0],y=rest[k+1]-a[1];const arm=[p[0]+x*c-y*s,p[1]+x*s+y*c],root=torsoPoint([rest[k],rest[k+1]]),distance=(65*(rest[k]-650)+51*(rest[k+1]-334))/Math.hypot(65,51),t=Math.max(0,Math.min(1,(distance+85)/85)),w=t*t*(3-2*t);positions[o+k]=arm[0]+(root[0]-arm[0])*w;positions[o+k+1]=arm[1]+(root[1]-arm[1])*w;}}
    }
   }

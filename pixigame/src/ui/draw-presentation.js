@@ -1,4 +1,5 @@
 import {createDrawGate,prepareDrawGate,DRAW_GATE_DURATION_MS} from './draw-gate.js';
+import {activeModalHost} from './reward-modal-stack.js';
 import {drawPresentationPlan,initialDrawPresentation,advanceDrawPresentation} from './draw-presentation-plan.js';
 import {trapModalTab} from './peripheral-focus.js';
 import {createResearchCharge,startResearchCharge,prepareResearchDraw,researchDrawTiming,revealResearchCard} from './research-draw.js';
@@ -26,7 +27,7 @@ export function createDrawPresentation(root, sound = () => {}) {
     if(!plan)return false;
     if(active?.receipt===receipt && active.backdrop.isConnected)return true;
     clear();
-    const host=root.querySelector('.pl-modal-host'),dialog=host?.querySelector('.pl-modal');
+    const host=activeModalHost(root),dialog=host?.querySelector('.pl-modal');
     if(!dialog)return true;
     const backdrop=dialog.closest('.pl-modal-backdrop');
     const nodes=plan.kind==='research'?[dialog.querySelector('.research-awakening-result')]:[...dialog.querySelectorAll('.rr-result-slot')];

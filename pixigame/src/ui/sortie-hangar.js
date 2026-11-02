@@ -3,11 +3,13 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadFighterPackages, instantiateFighterPackage } from '../three/aircraft/fighter-packages.js';
 import { hangarPose, HANGAR_VISUAL_TIMEOUT_MS } from './sortie-hangar-motion.js';
 import { hangarPivot } from './sortie-hangar-pivot.js';
+import { createAircraftStyle } from '../three/aircraft/aircraft-style.js';
+import { AIRCRAFT_RENDER_STYLE, createAircraftLighting } from '../three/aircraft/aircraft-lighting.js';
 
 // Follow the existing aircraft on its elevator inside the illustrated shaft.
 // No procedural hangar geometry or graphic radar is used here.
 export function createSortieHangar(host, aircraftId, {onPhase=()=>{}}={}) {
-  let renderer, asset, environment, observer, scene, camera, mount, normalized;
+  let renderer, asset, environment, observer, scene, camera, mount, normalized, aircraftStyle;
   let undersideOffset=0;
   const elevator=host.parentElement.querySelector('.sortie-hangar__elevator');
   host.dataset.aircraftId=aircraftId;
@@ -46,6 +48,7 @@ export function createSortieHangar(host, aircraftId, {onPhase=()=>{}}={}) {
   reduced.addEventListener('change',reduceChanged);
   const releaseGpu=()=>{
     cancelAnimationFrame(frame);frame=0;observer?.disconnect();
+    aircraftStyle?.dispose();aircraftStyle=null;
     asset?.dispose();asset=null;environment?.dispose();environment=null;
     if(renderer){renderer.domElement.remove();renderer.dispose();renderer.forceContextLoss();renderer=null;}
     scene?.clear();
@@ -80,18 +83,15 @@ export function createSortieHangar(host, aircraftId, {onPhase=()=>{}}={}) {
       renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
       renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
       renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
-      renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+      renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=AIRCRAFT_RENDER_STYLE.exposure;
       scene=new THREE.Scene();mount=new THREE.Group();scene.add(mount);
       camera=new THREE.OrthographicCamera(-8,8,8,-8,.1,100);
       // Straight-on orthographic section: no lateral bearing or camera pitch.
       camera.position.set(0,4.7,-24);camera.up.set(0,1,0);camera.lookAt(0,4.7,0);
-      scene.add(new THREE.HemisphereLight('#edf7ff','#42526b',1.6));
-      for(const [color,intensity,position] of [['#ffffff',3,[-7,14,-12]],['#9bdfff',2,[9,5,8]]]){
-        const light=new THREE.DirectionalLight(color,intensity);light.position.set(...position);scene.add(light);
-      }
+      createAircraftLighting(scene);
       const room=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);
       try{environment=pmrem.fromScene(room,.04);}finally{room.dispose();pmrem.dispose();}
-      scene.environment=environment.texture;scene.environmentIntensity=.7;
+      scene.environment=environment.texture;
       asset=instantiateFighterPackage(aircraftId);
       const bounds=new THREE.Box3().setFromObject(asset.solid,true),size=bounds.getSize(new THREE.Vector3()),center=hangarPivot(asset.solid,bounds);
       normalized=new THREE.Group();normalized.scale.setScalar(10/Math.max(size.x,size.z,1));
@@ -104,6 +104,10 @@ export function createSortieHangar(host, aircraftId, {onPhase=()=>{}}={}) {
           material.needsUpdate=true;
         }
       });
+      // This elevator owns a separate renderer and raw package instance. Apply
+      // the same finish as the equipment page after computing its deck pivot.
+      aircraftStyle=createAircraftStyle(normalized,{outlineScale:10/15.75509262084961});
+      aircraftStyle.setEnabled(true);host.dataset.aircraftStyle='equipment';
       const canvas=renderer.domElement;canvas.className='sortie-hangar__canvas';canvas.setAttribute('aria-hidden','true');
       canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(!disposed)fallback();},{once:true});
       host.append(canvas);host.classList.add('has-model');

@@ -15,3 +15,9 @@
 .bc-star-reward.is-claimed {opacity:.65}.bc-star-note {margin:0;color:#9cb4c5;font-size:11px;line-height:1.6}
 #gui-casual-lobby .bc-current-chapter .bc-chapter-actions{display:flex;gap:8px}
 #gui-casual-lobby .bc-current-chapter .bc-chapter-actions .wc-button{flex:1;min-width:0;min-height:44px;--wc-button-height:44px;font-size:14px}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='chapterChest']:has(.bc-current-chapter) {--popup-width:90cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:88%}
+#gui-casual-lobby .bc-current-chapter .bc-star-reward {padding:12px 10px;gap:7px 10px}
+#gui-casual-lobby .bc-current-chapter .bc-reward-items {display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+#gui-casual-lobby .bc-current-chapter .bc-reward-item {display:inline-flex;align-items:center;gap:4px;color:#203b56;white-space:nowrap}
+#gui-casual-lobby .bc-current-chapter .bc-reward-item>img {display:block;width:28px;height:28px;object-fit:contain}
+#gui-casual-lobby .bc-current-chapter .bc-reward-item>strong {font-size:13px;line-height:1.2;font-variant-numeric:tabular-nums}

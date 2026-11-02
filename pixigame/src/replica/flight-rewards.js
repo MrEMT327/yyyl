@@ -1,13 +1,15 @@
-// Girl Flight acquisition policy, NOT a reconstruction of the native economy.
-// Native IDs, star costs and combat skills remain unchanged.
+// Project sign-in rewards with the existing local transactional grant.
+// The UTC+8 daily clock and random-group sampler are offline compatibility.
+// Collection IDs, star costs and combat skills remain unchanged.
 import { nativeItemDisplayName } from './native-item-names.js';
 import { grantPilotCards, pilotCreditReward } from './pilot-copy-grants.js';
 import catalog from './native-economy-catalog.json' with { type: 'json' };
 import acquisition from './native-acquisition-catalog.json' with { type: 'json' };
 import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { nativeItemArt } from './native-item-presentation.js';
+import { localRandomMaterials } from './local-economy-policy.js';
 
-import {STARTER_PLANE,STARTER_PILOT,FLIGHT_SIGNIN,LOCAL_SIGNIN_POLICY_ID} from './local-signin-policy.js';
+import {STARTER_PLANE,LOCAL_SIGNIN_POLICY_ID,APK_SIGNIN_POLICY_ID,SIGNIN_PILOT,signinRewards,capturedSigninRewards,SIGNIN_LAST_DAY,SIGNIN_SOURCE,LEGACY_FLIGHT_SIGNIN} from './local-signin-policy.js';
 export {STARTER_PLANE,STARTER_PILOT,FLIGHT_SIGNIN} from './local-signin-policy.js';
 const item = (id,count) => ({kind:'item',id,count});
 const unit = (kind,id) => ({kind,id,count:1});
@@ -24,16 +26,33 @@ export function flightLedger(value,legacy={}) {
     adDay:'',misses:0,total:0,history:[]});
   if(result.version!==1||!Array.isArray(result.chapters)||new Set(result.chapters).size!==result.chapters.length||
     result.chapters.some(x=>!Number.isInteger(x)||x<1||x>50)||
-    !Number.isInteger(result.signCount)||result.signCount<0||result.signCount>7||
+    !Number.isInteger(result.signCount)||result.signCount<0||result.signCount>SIGNIN_LAST_DAY||
     !Number.isInteger(result.misses)||result.misses<0||result.misses>=10||
     !Number.isSafeInteger(result.total)||result.total<0||
     ![result.signDay,result.adDay].every(x=>x===''||/^\d{4}-\d{2}-\d{2}$/.test(x)))
     throw new Error('奖励领取记录无效，未覆盖旧记录');
+  if(!result.signinPolicy&&!result.legacySignIn&&result.signCount>0)
+    result.legacySignIn={policy:'girl-flight-signin-v1',count:Math.min(7,result.signCount)};
+  if(result.legacySignIn&&(!Number.isInteger(result.legacySignIn.count)||result.legacySignIn.count<1||result.legacySignIn.count>7))
+    throw Error('旧签到记录无效，未覆盖旧记录');
+  if(!Object.hasOwn(result,'signinHistory')){
+    result.signinHistory=Array.from({length:result.signCount},(_,i)=>{
+      const oldLocal=i<(result.legacySignIn?.count||0);
+      const rewards=oldLocal?LEGACY_FLIGHT_SIGNIN[i]:result.signinPolicy===APK_SIGNIN_POLICY_ID?capturedSigninRewards(i+1):signinRewards(i+1);
+      return {day:i+1,policy:oldLocal?'girl-flight-signin-v1':result.signinPolicy||LOCAL_SIGNIN_POLICY_ID,rewards:structuredClone(rewards)};
+    });
+  }
+  if(!Array.isArray(result.signinHistory)||result.signinHistory.length!==result.signCount||result.signinHistory.some((row,i)=>row?.day!==i+1||!Array.isArray(row.rewards)||!row.rewards.length||row.rewards.some(r=>!['item','skins','pilots','guns'].includes(r?.kind)||!Number.isSafeInteger(r.id)||r.id<1||!Number.isSafeInteger(r.count)||r.count<1)))
+    throw Error('签到奖励历史无效，未覆盖旧记录');
+  // Repair the rejected APK policy's seventh-day chip reward once. Preserve
+  // earned stock and the cursor; only the missing pilot can be recovered.
+  if(result.signinPolicy===APK_SIGNIN_POLICY_ID&&result.signCount>=7&&!result.driverRecoveryDone&&!result.signinHistory[6].rewards.some(r=>r.kind==='pilots'&&r.id===SIGNIN_PILOT))
+    result.driverPending=true;
   return result;
 }
 export function flightRewardView(reward) {
   const row=reward.kind==='item'?null:catalog[reward.kind].find(r=>r.id===reward.id);
-  const name=nativeItemDisplayName(reward.id)||({925:'角色箱',926:'角色箱碎片',113:'普通装备箱券'})[reward.id]||nativeCollectionDisplayName(reward.id)||row?.name||catalog.itemNames[reward.id]||acquisition.items.find(r=>r.id===reward.id)?.note||`物品 ${reward.id}`;
+  const name=nativeItemDisplayName(reward.id)||({925:'角色箱',926:'角色箱碎片',113:'普通装备箱券',3132505:'手套·史诗芯片',10010007:'随机装备图纸',10010008:'随机科研图纸'})[reward.id]||nativeCollectionDisplayName(reward.id)||row?.name||catalog.itemNames[reward.id]||acquisition.items.find(r=>r.id===reward.id)?.note||`物品 ${reward.id}`;
   return {...reward,name,
     nativeRow:row,type:reward.kind==='skins'?'aircraft':reward.kind==='pilots'?'pilot':reward.kind==='guns'?'weapon':reward.id===2?'diamonds':reward.id===1?'coins':'nativeItem',
     ...(reward.kind==='item'?{nativeItemId:reward.id,image:nativeItemArt(reward.id)}:{}),
@@ -41,19 +60,29 @@ export function flightRewardView(reward) {
 }
 export function flightRewardsSnapshot(ledger,inventory,campaign,time) {
   const claims=flightLedger(ledger),today=flightDay(time);
-  const canSign=claims.starterPending || claims.signCount<7&&today>claims.signDay;
+  const canSign=claims.starterPending || claims.driverPending || claims.signCount<SIGNIN_LAST_DAY&&today>claims.signDay;
+  // Keep the just-completed week visible for the rest of its claim day.
+  const displayIndex=claims.starterPending||claims.driverPending?0:today>claims.signDay?claims.signCount:Math.max(0,claims.signCount-1);
+  const weekStart=Math.floor(displayIndex/7)*7;
   return {
     revision:inventory.revision,diamonds:inventory.items[2]||0,
     misses:claims.misses,total:claims.total,history:(claims.history||[]).map(row=>({...row,rewards:row.rewards.map(r=>({...r,name:nativeCollectionDisplayName(r.id)||r.name}))})),
     chapters:[], // Compatibility only; use nativeAcquisition.rewards.
     ad:{canClaim:today>claims.adDay,rewards:FLIGHT_AD_REWARDS.map(flightRewardView)},
-    signIn:{ruleSource:LOCAL_SIGNIN_POLICY_ID,nativeRewardScheduleKnown:false,today,lastClaimDay:claims.signDay,claimedCount:claims.signCount,
-      completed:claims.signCount===7&&!claims.starterPending,canClaim:canSign,starterPending:claims.starterPending,
-      supplements:{},days:FLIGHT_SIGNIN.map((rewards,i)=>({day:i+1,...flightRewardView(rewards[0]),
+    signIn:{ruleSource:LOCAL_SIGNIN_POLICY_ID,nativeRewardScheduleKnown:false,projectAdapted:true,referenceLayout:true,source:SIGNIN_SOURCE,serverRulesKnown:false,today,lastClaimDay:claims.signDay,claimedCount:claims.signCount,weekStart,
+      completed:claims.signCount===SIGNIN_LAST_DAY&&!claims.starterPending&&!claims.driverPending,canClaim:canSign,starterPending:claims.starterPending,driverPending:Boolean(claims.driverPending),
+      supplements:{},days:Array.from({length:7},(_,i)=>{
+        const calendarDay=weekStart+i+1;
+        const entry=claims.signinHistory[calendarDay-1];
+        const legacyReward=Boolean(entry&&entry.policy!==LOCAL_SIGNIN_POLICY_ID);
+        const recovery=claims.driverPending&&i===6;
+        const recovered=calendarDay===7&&claims.driverRecoveryDone;
+        const rewards=recovery||recovered?[unit('pilots',SIGNIN_PILOT)]:claims.starterPending&&i===1?[unit('skins',STARTER_PLANE)]:entry?entry.rewards:signinRewards(Math.min(calendarDay,SIGNIN_LAST_DAY));
+        return {day:i+1,calendarDay,legacyReward,recovery,recovered,...flightRewardView(rewards[0]),
         rewards:rewards.map(flightRewardView),
         title:rewards.map(r=>flightRewardView(r).title).join('、'),
-        claimed:i<claims.signCount&&!(claims.starterPending&&i===1),
-        active:claims.starterPending?i===1:i===claims.signCount})),
+        claimed:weekStart+i<claims.signCount&&!(claims.starterPending&&i===1)&&!recovery,
+        active:claims.driverPending?i===6:claims.starterPending?i===1:weekStart+i===claims.signCount};}),
     },
   };
 }
@@ -95,10 +124,16 @@ export function planFlightReward({ledger,inventory,progression,campaign,time},op
   let pilotCreditDelta=0;
   const give=r=>{const view=grant(next.inventory,next.progression,r);pilotCreditDelta+=view.creditsAdded||0;rewards.push(view);};
   if(operation.action==='signin') {
-    if(l.starterPending){give(unit('skins',STARTER_PLANE));l.starterPending=false;}
+    if(l.driverPending){give(unit('pilots',SIGNIN_PILOT));l.driverPending=false;l.driverRecoveryDone=true;l.signinPolicy=LOCAL_SIGNIN_POLICY_ID;}
+    else if(l.starterPending){give(unit('skins',STARTER_PLANE));l.starterPending=false;}
     else {
-      if(l.signCount>=7||today<=l.signDay)throw new Error('今日已签到、七日已完成或日期异常');
-      FLIGHT_SIGNIN[l.signCount].forEach(give);l.signCount++;l.signDay=today;
+      if(l.signCount>=SIGNIN_LAST_DAY||today<=l.signDay)throw new Error('今日已签到、签到已完成或日期异常');
+      const entitlement=signinRewards(l.signCount+1);
+      entitlement.forEach(reward=>{
+        if([10010007,10010008].includes(reward.id))localRandomMaterials(reward.id,reward.count,rng).forEach(([id,count])=>give(item(id,count)));
+        else give(reward);
+      });l.signCount++;l.signDay=today;l.signinPolicy=LOCAL_SIGNIN_POLICY_ID;
+      l.signinHistory.push({day:l.signCount,policy:LOCAL_SIGNIN_POLICY_ID,rewards:entitlement});
     }
   } else if(operation.action==='chapter') {
     throw new Error('旧章节礼包已停用，请前往章节奖励领取');

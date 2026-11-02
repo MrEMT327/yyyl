@@ -45,9 +45,6 @@
 #gui-casual-lobby .pl-modal .dc-signin-scroll-hint {display:block;margin-top:2px;color:#3f6077;font-size:12px;line-height:1.25}
 #gui-casual-lobby .dc-prize-art.is-equipment>.dc-signin-art {transform:scale(1.9)!important}
 #gui-casual-lobby .cd-actions .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch}
-#gui-casual-lobby.psd-nav-global .lobby-nav-tab>span {display:block!important;top:14.2cqw!important;font-size:clamp(10px,3cqw,13px)!important;font-weight:700!important;color:#d9edf5!important}
-#gui-casual-lobby.psd-nav-global .lobby-nav-tab.is-active>span {color:#fff!important;font-weight:900!important}
-#gui-casual-lobby.psd-nav-global .lobby-nav-tab:not(.is-active) .psd-nav-icon {top:1.5cqw!important;height:11.4cqw!important}
 #gui-casual-lobby.psd-nav-global .lobby-resource-bar>b {left:7cqw!important;top:1.2cqw!important;width:10.8cqw!important;height:3.8cqw!important;font-size:clamp(10px,3.2cqw,14px)!important}
 #gui-casual-lobby.psd-nav-global .lobby-resource-bar>b.is-long {font-size:clamp(9px,2.75cqw,12px)!important}
 #gui-casual-lobby .shop-native-v2 .sn-box-copy :is(p,small) {font-size:clamp(10px,2.8cqw,13px)}

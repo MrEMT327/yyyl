@@ -2,6 +2,7 @@ import {guardWorldTextureUpload} from './project-world-texture-recovery.js';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createFighterView } from '../three/aircraft/fighter-view.js';
+import { createAircraftLighting, renderWithAircraftStyle } from '../three/aircraft/aircraft-lighting.js';
 import { loadFighterPackages } from '../three/aircraft/fighter-packages.js';
 import { createWorldEnvironment } from '../three/world.js';
 import { BATTLE_VIEW, createBattleCamera } from '../three/battle-camera.js';
@@ -137,13 +138,8 @@ export async function createProjectPresentation({ content, appearance, onError, 
   // Rebuild it after context restoration with the same studio and PMREM settings.
   const makeLighting=()=>{const studio=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);try{return pmrem.fromScene(studio,.04);}finally{studio.dispose();pmrem.dispose();}};
   let lighting=makeLighting();
-  aircraftScene.environment = lighting.texture; aircraftScene.environmentIntensity = .85;
-  aircraftScene.add(new THREE.HemisphereLight('#e7f0f6', '#677786', 1.6));
-  for (const [color, intensity, position] of [
-    ['#f3f9ff', 3, [-7, 12, -12]], ['#a8d4e9', 2.6, [9, 3, 8]], ['#b5c9dd', 1.1, [4, -5, 10]],
-  ]) {
-    const light = new THREE.DirectionalLight(color, intensity); light.position.set(...position); aircraftScene.add(light);
-  }
+  aircraftScene.environment = lighting.texture;
+  createAircraftLighting(aircraftScene);
   const aircraftCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, .01, 10000);
   aircraftCamera.up.set(0, 0, -1);
   const playerCanvas = document.createElement('canvas'); playerCanvas.width = playerCanvas.height = TEXTURE_SIZE;
@@ -159,7 +155,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
     updateFlightFighter(fighter, visualClock, visualPose);
     renderer.setScissorTest(true); renderer.setScissor(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
     renderer.setViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-    renderer.setClearColor(0x000000, 0); renderer.clear(); aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
+    renderer.setClearColor(0x000000, 0); renderer.clear(); renderWithAircraftStyle(renderer, () => aircraftRenderer.render(aircraftScene, aircraftCamera, fighter));
     playerContext.clearRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
     if (displaySize > 0) drawCombatEngineWake(playerContext,sampleCombatEngineWake(fighter,aircraftCamera,{clock:visualClock,displaySize,textureSize:TEXTURE_SIZE,thrust:visualPose.thrust}));
     playerContext.drawImage(surface, 0, HEIGHT - TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE);

@@ -44,7 +44,7 @@ import { sanitizeRecruitHistory, appendRecruitHistory } from './recruit-history.
 import { fleetSkillSnapshot, mergePilotSkillModifiers, fleetCriticalModifiers } from './fleet-skills.js';
 import { sanitizeFleetProgress, collectFleetRecruit, planFleetAction } from './fleet-progression.js';
 import { pilotPassive, sanitizePilotStars, sanitizePilotRecruit, planPilotRecruit, PILOT_PITY, PILOT_DRAW_CHANCE, PILOT_SHARDS } from './pilot-growth.js';
-import { RECRUIT_SINGLE_COST, RECRUIT_TEN_COST, PILOT_SSR_PITY, PILOT_UR_PITY, WEAPON_NEW_PITY, trailingRecruitMisses } from './recruit-tuning.js';
+import { RECRUIT_SINGLE_COST, RECRUIT_TEN_COST, WEAPON_NEW_PITY, trailingRecruitMisses } from './recruit-tuning.js';
 import { FIRST_CLEAR_WEAPON_PRIORITY, sortieMaterialReward } from './balance-tuning.js';
 import { rateLoadoutPower } from './power-rating.js';
 import { sanitizeGearState, gearTotals, grantGearSortie } from './equipment-system.js';
@@ -1522,17 +1522,15 @@ export function createPeripheralSystem({
         probabilities: pool.id === 'pilot' ? { pilot: PILOT_DRAW_CHANCE, shards: 1 - PILOT_DRAW_CHANCE } : Object.fromEntries(Object.entries(GACHA_POOLS[pool.key].qualityProbabilities).map(([key, value]) => [key, value / 100])),
         pity: pool.id === 'pilot' ? { pilot: state.pilotRecruit.pity, ssr: state.pilotRecruit.ssrPity, ur: state.pilotRecruit.urPity }
           : { ...copy(collection.pools[pool.key]?.pity || {}), newWeapon: collection.pools[pool.key]?.newWeaponMisses || 0 },
-        pityDetails: pool.id === 'pilot' ? [{ id: 'pilot', triggerAt: PILOT_PITY }, { id: 'ssr', triggerAt: PILOT_SSR_PITY }, { id: 'ur', triggerAt: PILOT_UR_PITY }]
+        pityDetails: pool.id === 'pilot' ? [{ id: 'pilot', triggerAt: PILOT_PITY }]
           : [...GACHA_POOLS[pool.key].pityRules.map(r => ({ id: r.id, triggerAt: r.triggerAt })), { id: 'newWeapon', triggerAt: WEAPON_NEW_PITY }],
         guaranteeText: pool.id === 'pilot'
-          ? `人物 ≤${PILOT_PITY - state.pilotRecruit.pity} 抽 · SSR及以上 ≤${PILOT_SSR_PITY - state.pilotRecruit.ssrPity} 抽 · UR ≤${PILOT_UR_PITY - state.pilotRecruit.urPity} 抽`
+          ? `人物 ≤${PILOT_PITY - state.pilotRecruit.pity} 抽`
           : weapons.some(w => !w.owned) ? `新武器 ≤${WEAPON_NEW_PITY - (collection.pools[pool.key]?.newWeaponMisses || 0)} 抽 · 首次解锁，重复转零件` : '武器已集齐 · 重复获得转通用强化零件',
         duplicateText: pool.id === 'pilot' ? (state.fleet.mode==='manual'?'同名驾驶员卡用于手动激活、升星，最高5星；抽中驾驶员时同时获得对应机体卡。已收集足够升满星的同稀有度成员会让位给其他成员，整档完成后转为30枚飞机碎片。':'首次解锁为0星；重复同名人物自动升1星，最高5星。整档满星后转为30枚飞机碎片。') : '重复武器按补给档位转化为 10 / 15 / 20 / 30 / 50 个通用强化零件；不会提升武器品质。',
         rules: pool.id === 'pilot' ? [
-          `当前剩余上限：人物 ${PILOT_PITY - state.pilotRecruit.pity} 抽；SSR或UR ${PILOT_SSR_PITY - state.pilotRecruit.ssrPity} 抽；UR ${PILOT_UR_PITY - state.pilotRecruit.urPity} 抽。`,
+          `当前剩余上限：人物 ${PILOT_PITY - state.pilotRecruit.pity} 抽。`,
           `非保底抽取：人物基础概率 ${PILOT_DRAW_CHANCE * 100}%，否则获得通用飞机碎片 ×${PILOT_SHARDS}。最多 ${PILOT_PITY} 抽必出人物；人物结果重置该计数。`,
-          `最多 ${PILOT_SSR_PITY} 抽必出SSR或UR，最多 ${PILOT_UR_PITY} 抽必出UR。所有抽取（包括碎片）均累计，单抽十连共享，切池或重启不清零。SSR重置SSR计数，UR同时重置SSR与UR计数；高阶保底也会重置人物计数。`,
-          '非高阶保底的人物稀有度：R / SR / SSR / UR = 74% / 20% / 5% / 1%。选定稀有度后，在尚未获得或尚未满星的人物中等概率抽取；该档全部满星才转为飞机碎片。SSR保底按SSR:UR = 5:1选取；UR保底优先。同一抽只发一份结果，不叠发。表中为基础概率，不含保底。',
           state.fleet.mode==='manual'?'高阶保底不保证新人物。获得同名驾驶员卡及对应机体卡后，分别在驾驶员、战机页手动激活或升星，每次消耗1张，最高5星。已收集足够升满星的成员会让位给同稀有度其他成员；整档完成后转为30枚飞机碎片。通关、签到赠送不清空招募保底。':'高阶保底不保证新人物，但该稀有度仍有未满星人物时不会抽中满星者。首次招募人物同时解锁专属战机；重复人物升1星，最多5星。通关赠送、签到等不清空招募保底。',
           `单次 ${RECRUIT_SINGLE_COST} 钻石，十次 ${RECRUIT_TEN_COST} 钻石。已有角色、星级、累计抽数及人物保底保留；新增高阶计数从最近记录恢复可确认的连续未出次数，缺失历史不猜测、不追溯补奖。`]
           : ['首次获得解锁普通（0 星）武器；下列档位仅决定重复获得的零件数量，不代表武器品质。',

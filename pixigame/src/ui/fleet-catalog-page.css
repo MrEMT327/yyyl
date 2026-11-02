@@ -165,3 +165,40 @@
 #gui-casual-lobby .fc-aircraft .fc-item.is-locked .fc-card-art {filter:grayscale(.7) brightness(.286)}
 #gui-casual-lobby .fc-aircraft .fc-item.is-locked[aria-pressed='true'] .fc-card-art {filter:grayscale(.7) brightness(.52)}
 #gui-casual-lobby .fc-aircraft .fc-item.is-locked:not([aria-pressed='true']) :is(.fc-card-type,.fc-stars,.wc-lock,.fc-worn-check) {filter:brightness(.55)}
+
+#gui-casual-lobby .fc-operation .fc-operation-cost {display:inline-flex;align-items:center;gap:.7cqw;white-space:nowrap}
+#gui-casual-lobby .fc-operation .fc-operation-cost b {font:600 clamp(11px,3.3cqw,16px)/1 Arial,sans-serif}
+#gui-casual-lobby .fc-operation .fc-operation-cost .is-short {color:#ffb2a8}
+
+#gui-casual-lobby .fc-operation-cost-art {display:block;flex:none;width:7cqw;height:5.2cqw;overflow:hidden}
+#gui-casual-lobby .fc-operation small .fc-operation-cost-art img {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-operation-cost-art.is-aircraft img {transform:scale(1.8)}
+
+#gui-casual-lobby .fc-title {display:block;min-height:32px;color:#fff;text-shadow:0 1px 2px #07121e}
+#gui-casual-lobby .fc-page .fc-unlock-skill {left:3%;width:21%;gap:1cqw;height:auto;min-height:0;font:600 clamp(10px,2.9cqw,14px)/1.3 "Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-unlock-skill-art {position:relative;isolation:isolate;display:grid;place-items:center;width:12cqw;height:12cqw;padding:1cqw;box-sizing:border-box;background:#18354ddd}
+#gui-casual-lobby .fc-unlock-skill-art::before {content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 5px stretch;pointer-events:none}
+#gui-casual-lobby .fc-unlock-skill-art>.fc-skill-icon {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-page .fc-unlock-skill>span:last-child {white-space:normal;text-align:center;text-shadow:0 1px 3px #000,0 0 4px #000}
+
+/* UI_PlaneSkinSkillPreview: centered skill identity and compact star-effect rows. */
+#gui-casual-lobby .pl-modal .fc-star-skill-preview>header {display:flex;flex-direction:column;align-items:center;gap:1.5cqw;margin:0 0 3cqw}
+#gui-casual-lobby .fc-skill-emblem {position:relative;display:grid;place-items:center;width:18cqw;height:18cqw;max-width:76px;max-height:76px;padding:2cqw;background:#c2d5e3;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 5px stretch}
+#gui-casual-lobby .fc-skill-emblem .fc-skill-icon {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pl-modal .fc-star-skill-preview>header h3 {margin:0;display:flex;align-items:center;justify-content:center;gap:2cqw;width:100%;font-size:clamp(14px,4cqw,18px);line-height:1.3}
+#gui-casual-lobby .fc-star-skill-preview>header h3::before,#gui-casual-lobby .fc-star-skill-preview>header h3::after {content:'';width:17cqw;height:1px;background:#839eaf}
+#gui-casual-lobby .fc-star-skill-list {display:grid;gap:1.5cqw}
+#gui-casual-lobby .fc-star-skill-list>section {display:grid;grid-template-columns:22% minmax(0,1fr);align-items:center;gap:2cqw;min-height:13cqw;padding:2cqw;background:#cfdeea;border-image:url('/art/psd-equipment-v1/frame-gray.png') 18 / 4px stretch}
+#gui-casual-lobby .fc-star-skill-list>.is-unlocked {background:#d5eadf}
+#gui-casual-lobby .fc-skill-star-line {display:flex;align-items:center;justify-content:flex-start;gap:0}
+#gui-casual-lobby .fc-skill-star-line>img {display:block;width:3.2cqw;height:3.2cqw;object-fit:contain}
+#gui-casual-lobby .pl-modal .fc-star-skill-list p {margin:0;color:#203b50;font:400 clamp(12px,3.5cqw,15px)/1.5 'Microsoft YaHei',sans-serif;white-space:pre-line;overflow-wrap:anywhere}
+
+/* Pilot skill choices use real saved slots and grow with their descriptions. */
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-skill-row {display:grid;grid-template-columns:12cqw minmax(0,1fr) 19cqw;align-items:center;gap:2cqw;width:auto;height:auto;min-height:22cqw;margin:2cqw 3cqw;padding:2cqw;background:#203b4e;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 5px stretch}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-skill-row::before {content:none}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-preview {position:relative;inset:auto;width:12cqw;height:12cqw;min-height:40px;padding:1cqw}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-copy {min-width:0}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-copy h3 {margin:0 0 1cqw;font:600 clamp(12px,3.4cqw,16px)/1.3 'Microsoft YaHei',sans-serif;color:#f1f8fc}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-copy p {position:static;display:block;width:auto;height:auto;padding:0!important;font-size:clamp(11px,3cqw,14px);line-height:1.45;overflow-wrap:anywhere;color:#c5dbe8}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-action {position:relative;inset:auto;width:100%;height:auto;min-height:36px;--wc-button-height:max(36px,10cqw);font-size:clamp(12px,3.4cqw,16px)}

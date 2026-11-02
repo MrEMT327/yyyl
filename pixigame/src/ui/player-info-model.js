@@ -58,7 +58,7 @@ export function playerInfoModel(snapshot={},callsign='') {
     weapons:['W3','W4','W5','W6'].map(slot=>({slot,item:null})),
     aircraftOwned:collection.skins.filter(row=>row.owned).map(skin),
     pilotsOwned:collection.pilots.filter(row=>row.owned).map(pilotRow),
-    skills:kind=>kind==='pilot'?skills(currentPilot):collection.slots.flatMap(id=>skills(collection.skins.find(row=>row.id===id&&row.owned))),
+    skills:kind=>kind==='pilot'?(collection.pilotSlots||[]).flatMap(id=>skills(collection.pilots.find(row=>row.id===id&&row.owned))):collection.slots.flatMap(id=>skills(collection.skins.find(row=>row.id===id&&row.owned))),
   };
 }
 

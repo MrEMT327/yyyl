@@ -7,6 +7,8 @@ import { inspectLoadoutSkillSupport } from './special-skill-runtime';
 import { buildLoadoutRuntimeAttributes } from './loadout-attributes';
 import { splitNativeEconomyAttributes } from '../../src/replica/native-economy-attributes.js';
 import { normalizeEquipmentPartLevel } from '../../src/replica/native-equipment-level.js';
+import { validatePilotSkillSlots } from '../../src/replica/native-pilot-skill-slots.js';
+import { validateWeaponSkillSlots } from '../../src/replica/native-weapon-skill-slots.js';
 
 export type LoadoutCatalog = RecordData & {
   equipment: RecordData[]; planes: RecordData[]; guns: RecordData[];
@@ -19,6 +21,9 @@ export interface StudyLoadoutState {
   equipment: { slot: number; id: number; level: number }[];
   skins: Collection[]; guns: Collection[]; pilots: Collection[];
   skinSkillSlots: number[];
+  /** Omitted only by legacy saves, which inherit their equipped pilot skill. */
+  pilotSkillSlots?: number[];
+  weaponSkillSlots?: number[];
   nativeResearch?: { version: 1; levels: Record<string, number> };
   /** Transient formal-sortie permission; independent of lab attributes and milestones. */
   weaponSelectionBanSkillIds?: number[];
@@ -77,8 +82,14 @@ export function loadStudyLoadoutState(catalog: LoadoutCatalog): StudyLoadoutStat
   }
   let equipped = false;
   state.guns.forEach(row => { if (row.equipped) { row.equipped = !equipped; equipped = true; } });
+  try {state.weaponSkillSlots=validateWeaponSkillSlots(saved.weaponSkillSlots,state.guns,id=>{const row=catalog.guns.find(row=>Number(row.id)===id);return row?Number(row.baseGunId||row.id):0;});}
+  catch {state.weaponSkillSlots=[state.guns.find(row=>row.equipped)!.id,0];}
   state.pilots = collect('pilots', catalog.pilots); equipped = false;
   state.pilots.forEach(row => { if (row.equipped) { row.equipped = !equipped; equipped = true; } });
+  try {
+    state.pilotSkillSlots=validatePilotSkillSlots(saved.pilotSkillSlots,state.pilots,(id,star)=>
+      Boolean(catalog.pilots.find(row=>Number(row.id)===id)?.stars?.find((row: RecordData)=>Number(row.Star??row.star)===star)?.SkillId));
+  } catch { state.pilotSkillSlots=[0,0,0]; }
   state.skins = collect('skins', catalog.planes);
   const skinId = Number(saved.role?.skinId || 0);
   const skin = state.skins.find(r => r.id === skinId && r.active);
@@ -165,21 +176,26 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
     feature(`${row.name} · 收藏`, star?.FeatureOnStarUp, state.skinSkillSlots.includes(entry.id));
   }
   const selectedGun = state.guns.find(r => r.equipped) || { id: 20101, star: 1, active: true };
+  const weaponSkillSlots=validateWeaponSkillSlots(state.weaponSkillSlots,state.guns,id=>{const row=catalog.guns.find(row=>Number(row.id)===id);return row?Number(row.baseGunId||row.id):0;});
   let primarySkillId = 10000101;
   for (const entry of state.guns.filter(r => r.active)) {
     const row = catalog.guns.find(r => Number(r.id) === entry.id); if (!row) continue;
     const star = currentStar(row, entry.star), name = `${row.name} · ${entry.star} 星`;
     add(`${name}收藏`, star?.AttrOnStarUp);
-    if (entry.id === selectedGun.id) {
-      for (const f of parseStudyFeatures(star?.FeatureInitSkill)) if (f.Type === 'Skill') for (const id of String(f.Args).match(/\d+/g) || []) { initial.add(Number(id)); roots.add(Number(id)); primarySkillId = Number(id); }
+    if (weaponSkillSlots.includes(entry.id)) {
+      const base=catalog.guns.find(r=>Number(r.id)===Number(row.baseGunId||row.id));
+      const initialFeatures=star?.FeatureInitSkill?.length?star.FeatureInitSkill:currentStar(base||{},entry.star)?.FeatureInitSkill;
+      for (const f of parseStudyFeatures(initialFeatures)) if (f.Type === 'Skill') for (const id of String(f.Args).match(/\d+/g) || []) { initial.add(Number(id)); roots.add(Number(id)); if(entry.id===weaponSkillSlots[0])primarySkillId = Number(id); }
       feature(name, star?.FeatureOnStarUp, true);
     }
   }
   const selectedPilot = state.pilots.find(r => r.equipped);
+  const pilotSkillSlots=validatePilotSkillSlots(state.pilotSkillSlots,state.pilots,(id,star)=>
+    Boolean(currentStar(catalog.pilots.find(row=>Number(row.id)===id)||{},star)?.SkillId));
   for (const entry of state.pilots.filter(r => r.active)) {
     const row = catalog.pilots.find(r => Number(r.id) === entry.id); if (!row) continue;
     const star = currentStar(row, entry.star); add(`${row.name} · ${entry.star} 星收藏`, star?.AttrOnStarUp);
-    if (entry.id === selectedPilot?.id && star?.SkillId) initial.add(Number(star.SkillId));
+    if (pilotSkillSlots.includes(entry.id) && star?.SkillId) initial.add(Number(star.SkillId));
   }
   // Native CardLevel rows contain totals at the selected level, not per-level
   // growth. Feed them through the same source attribute/skill calculator.

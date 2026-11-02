@@ -6,6 +6,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { createFighterView } from '../three/aircraft/fighter-view.js';
+import { AIRCRAFT_RENDER_STYLE, createAircraftLighting } from '../three/aircraft/aircraft-lighting.js';
 import { fixedPartProfile } from '../three/aircraft/fixed-part-profiles.js';
 import { WING_DESIGNS } from '../three/aircraft/wing-designs.js';
 import { setShowroomCameraPreset } from './showroom-camera.js';
@@ -99,25 +100,21 @@ export function createAssemblyShowroom({ bridge, host }) {
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = .82;
+  renderer.toneMappingExposure = AIRCRAFT_RENDER_STYLE.exposure;
   const scene = new T.Scene(); scene.background = new T.Color('#0a1525');
   const studio = new RoomEnvironment();
   const pmrem = new T.PMREMGenerator(renderer);
   const environment = pmrem.fromScene(studio, .04);
   scene.environment = environment.texture;
-  scene.environmentIntensity = .65;
   studio.dispose(); pmrem.dispose();
-  scene.add(new T.HemisphereLight('#dceaff', '#172536', .8));
-  const keyLight = new T.DirectionalLight('#e7f4ff', 1.2); keyLight.position.set(-8, 16, -12); scene.add(keyLight);
-  const rim = new T.DirectionalLight('#70bbff', .9); rim.position.set(12, 7, 8); scene.add(rim);
+  createAircraftLighting(scene);
   const grid = new T.GridHelper(32, 32, '#27465f', '#152a40'); grid.position.y = -2.15;
   grid.material.transparent = true; grid.material.opacity = .4; scene.add(grid);
   const ring = new T.Mesh(new T.TorusGeometry(10.5, .015, 4, 96), new T.MeshBasicMaterial({ color: '#2e5c76', transparent: true, opacity: .5 }));
   ring.rotation.x = Math.PI / 2; ring.position.y = -2.12; scene.add(ring);
   const fighter = createFighterView({ pilotId: 'pilot-01', size: 1, nativeSpace: true });
-  // Inspection lighting: preserve illuminated seams and exhaust, while lowering
-  // the combat skin's energy overlays so panel edges and cockpit remain legible.
-  Object.assign(fighter.runtime.config, { bodyFx: .16, surfaceGlow: .35, coreGlow: .45, weaponGlow: .35, trails: .2, particles: .15 });
+  // Inspection uses the shared equipment finish; parked views suppress flight FX.
+  Object.assign(fighter.runtime.config, { trails: 0, particles: 0 });
   scene.add(fighter.object3D);
   const camera = new T.PerspectiveCamera(43, 1, .1, 160);
   const controls = new OrbitControls(camera, canvas);

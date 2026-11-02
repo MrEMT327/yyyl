@@ -64,7 +64,7 @@
 .pilot-holo-card{--phc-radiance:.42;--phc-edge-strength:.55;--phc-spectrum:var(--phc-metal)}
 .pilot-holo-card[data-holo-rarity='SR']{--phc-radiance:.6;--phc-edge-strength:.7}
 .pilot-holo-card[data-holo-rarity='SSR']{--phc-radiance:.8;--phc-edge-strength:.9}
-.pilot-holo-card[data-holo-rarity='UR']{--phc-radiance:1;--phc-edge-strength:1;--phc-spectrum:#8bcfff}
+.pilot-holo-card[data-pilot-quality]{--phc-spectrum:var(--phc-metal)}
 .phc-radiance{position:absolute;inset:2% 3%;z-index:1;overflow:hidden;pointer-events:none;opacity:var(--phc-radiance);mask-image:linear-gradient(transparent,#000 17%,#000 86%,transparent)}
 .phc-corona{position:absolute;inset:3% -25% 1%;background:radial-gradient(ellipse at 50% 58%,transparent 22%,color-mix(in srgb,var(--phc-metal) 45%,transparent) 44%,transparent 66%);animation:phc-corona-breathe 4.8s ease-in-out -1.7s infinite alternate paused}
 .phc-orbit{position:absolute;inset:23% -30% -4%;background:repeating-conic-gradient(from 12deg,transparent 0deg 23deg,color-mix(in srgb,var(--phc-metal-light) 42%,transparent) 24deg,transparent 27deg 51deg,var(--phc-spectrum) 52deg,transparent 53deg 72deg);mask-image:radial-gradient(ellipse,transparent 25%,#0009 46%,transparent 68%);animation:phc-orbit-turn 36s linear infinite paused;opacity:.7}

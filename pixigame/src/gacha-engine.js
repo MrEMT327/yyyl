@@ -167,7 +167,7 @@ export function drawFromPool(stateValue, poolId, count = 1, rng = Math.random) {
     results.push({
       index,
       poolId,
-      quality,
+      quality: poolId === 'aircraft_permanent' && item ? item.quality : quality,
       item,
       itemId: item?.id || null,
       pityTriggered: Boolean(pityRule) || newWeaponDue,

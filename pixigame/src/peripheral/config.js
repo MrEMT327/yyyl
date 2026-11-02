@@ -20,7 +20,7 @@ const innateIds = ['aux_cannon', 'aux_drone', 'aux_scatter', 'aux_sidegun', 'aux
   'aux_rail', 'aux_lightning', 'aux_laser', 'aux_grenade', 'aux_orb'];
 const hulls = [100, 115, 105, 95, 100, 90, 110, 95, 130, 105];
 export const PERIPHERAL_AIRCRAFT = Object.freeze(AIRCRAFTS.map((pilot, index) => Object.freeze({
-  id: pilot.id, name: pilot.aircraft, rarity: pilot.rarity, color: pilot.color,
+  id: pilot.id, name: pilot.aircraft, rarity: pilot.legacyRecruitGroup, color: pilot.color,
   image: `${import.meta.env?.BASE_URL??'/'}art/aircraft-ui-v1/${pilot.id}.webp`, callsign: pilot.callsign, baseHp: hulls[index], baseAttack: 100,
   weaponId: innateIds[index], weaponName: COMMON_WEAPONS[innateIds[index]].name,
 })));

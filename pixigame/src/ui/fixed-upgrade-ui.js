@@ -25,9 +25,9 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
   const text = (parent, value, x, y, size, fill, extra = {}) =>
     place(parent, makeText(value, { size, fill, ...extra }), x, y);
   const banner = createThreeSurface();
-  paintPsdChoiceArt(banner, 'banner', px(-3), py(253), px(756), py(239));
+  paintPsdChoiceArt(banner, 'banner', px(-3), py(229), px(756), py(239));
   attachSurface(panel, banner);
-  text(panel, '强化升级', px(375), py(348), 38, COMBAT_UI.text, {anchorX:.5,weight:'900'});
+  text(panel, '选择强化', px(375), py(324), 38, COMBAT_UI.text, {anchorX:.5,weight:'900'});
 
   const offers = bridge.presentation?.choices || bridge.currentUpgradeChoices.slice(0, 3).map(skill => {
     const weapon = bridge.game.fixedLoadout.weapons.find(w => w.id === skill.ownerId);
@@ -42,6 +42,8 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
 
   const width = px(224), height = py(562);
   offers.forEach(({skill,model,summary,recipientMarker}, index) => {
+    // The name already identifies the skill; keep only what the choice does.
+    const effect = String(summary || '').replace(`获得${model.name}，`, '').replace(/^可以/, '').trim();
     const frame = upgradeChoiceSlot(index,offers.length);
     const card = makeButton({x:px(frame.x),y:py(frame.y),width,height,
       fill:0x0d1521,fillAlpha:0,strokeAlpha:0,pressedFill:0x20384a,
@@ -49,32 +51,35 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     card.__fixedCardId = skill.id; card.__fixedOwnerId = skill.ownerId;
     card.__upgradeConfirmRect = {x:3,y:3,width:width-6,height:height-6};
     card.__fixedUpgradeView = bridge.presentation ? model : fixedUpgradeView(skill,state);
-    card.cardSnapshot = () => ({...model,summary,recipientMarker,presentation:'psd-three-choice'});
+    card.cardSnapshot = () => ({...model,summary:effect,recipientMarker,presentation:'psd-three-choice'});
     const surface = createThreeSurface({textResolution:3});
     paintPsdChoiceArt(surface,frame.art,0,0,width,height);
     const texture = art?.get(model.itemId);
     if (texture) {
       const source=choiceIconCrops[model.itemId];
       const crop=source&&{x:source.crop[0],y:source.crop[1],width:source.crop[2],height:source.crop[3]};
-      const icon=crop?{...fitUpgradeIcon(...source.size,crop,{x:15,y:92,width:148,height:134}),crop}
-        :upgradeIconLayout(texture,{x:15,y:92,width:148,height:134});
+      const icon=crop?{...fitUpgradeIcon(...source.size,crop,{x:15,y:80,width:148,height:158}),crop}
+        :upgradeIconLayout(texture,{x:15,y:80,width:148,height:158});
       surface.image(texture,icon.x,icon.y,icon.width,icon.height,icon.crop)
         .material.toneMapped = !texture.userData.inventoryIcon;
-    } else drawUpgradeWeaponIcon(surface,model.itemId,31,104,118);
-    for(let i=0;i<(model.qualityKnown===false?0:Math.min(6,model.qualityRank+1));i++)
-      drawUiSymbol(surface,'star',14+i*16,height-27,14,'#e9f5ff');
+    } else drawUpgradeWeaponIcon(surface,model.itemId,29,96,122);
+    const stars = model.qualityKnown===false ? 0 : Math.min(6,model.qualityRank+1);
+    for(let i=0;i<stars;i++)
+      drawUiSymbol(surface,'star',(width-stars*18+4)/2+i*18,height-30,14,'#e9f5ff');
     attachSurface(card,surface);
-    const name = text(card,model.name,width/2,19,23,COMBAT_UI.text,{anchorX:.5,weight:'900'});
+    const name = text(card,model.name,width/2,26,23,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(name.width>width-20)name.scale.set((width-20)/name.width);
-    const badge = model.evolving ? '进化' : model.terminal ? '觉醒' : '强化';
-    text(card,badge,width/2,44,14,0xc7e0f1,{anchorX:.5,weight:'800'});
+
     const label = text(card,bridge.presentation?'':model.change?.label || model.stat.label,width/2,268,19,COMBAT_UI.text,{anchorX:.5,weight:'800'});
     if(label.width>width-18)label.scale.set((width-18)/label.width);
     const value = bridge.presentation ? '' : model.evolving ? model.stat.after : model.change?.value || '效果增强';
     const valueNode = text(card,value,width/2,296,29,[0xff727b,0x6ac9fa,0xd09afa][index],{anchorX:.5,weight:'900'});
     if(valueNode.width>width-16)valueNode.scale.set((width-16)/valueNode.width);
-    if(bridge.presentation && summary) {
-      addEffectText(card,[{text:summary,strong:true}],13,276,width-26,13,COMBAT_UI.text,makeText,place);
+    if(bridge.presentation && effect) {
+      const runs = [{text:effect,strong:true}];
+      let size = 16;
+      while(size>12 && addEffectText(null,runs,0,0,width-28,size,COMBAT_UI.text,makeText,place)>height-276-86)size--;
+      addEffectText(card,runs,14,276,width-28,size,COMBAT_UI.text,makeText,place);
     } else if(model.evolving && summary) {
       const shortEffect=summary.length>19?`${summary.slice(0,18)}…`:summary;
       addEffectText(card,[{text:shortEffect,strong:true}],13,334,width-26,13,COMBAT_UI.text,makeText,place);
@@ -83,18 +88,18 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
       const marker = text(card,recipientMarker,width/2,65,13,0xc5d5e5,{anchorX:.5});
       if(marker.width>width-16)marker.scale.set((width-16)/marker.width);
     }
-    const footer = text(card,model.label || '技能强化',width-10,height-61,18,COMBAT_UI.text,{anchorX:1,weight:'900'});
+    const prefix = model.evolving ? (bridge.presentation ? '突破 · ' : '进化 · ') : model.terminal ? '觉醒 · ' : '';
+    const footer = text(card,`${prefix}Lv.${model.level} → ${model.nextLevel}`,width/2,height-65,20,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(footer.width>width-24)footer.scale.set((width-24)/footer.width);
-    text(card,`Lv.${model.level} → ${model.nextLevel}`,width-10,height-27,12,0xd3e7f6,{anchorX:1,weight:'800'});
     panel.addChild(card);
   });
-  text(panel,state.pendingLevels>1?`从上方选择一个技能学习 · 待选 ${state.pendingLevels} 次`:'从上方选择一个技能学习',
-    px(375),py(1115),22,COMBAT_UI.text,{anchorX:.5,weight:'900'});
+  if(state.pendingLevels>1)text(panel,`还可选 ${state.pendingLevels} 次`,
+    px(375),py(1115),18,0xc7e0f1,{anchorX:.5,weight:'800'});
   if(bridge.presentation?.reroll === false)return;
   const totalRerolls = state.totalRerolls ?? 2;
   const reroll = makeButton({x:px(262),y:py(1205),width:px(219),height:py(85),radius:0,
     fill:0x17274d,fillAlpha:0,strokeAlpha:0,
-    text:`换一批 ${Math.max(0,totalRerolls-state.rerolls)}/${totalRerolls}`,
+    text:`换一批 ${Math.max(0,state.rerolls)}/${totalRerolls}`,
     textColor:COMBAT_UI.text,fontSize:24,disabled:!state.rerolls,
     onPress:()=>bridge.rerollFixedUpgrade()});
   const rerollSurface=createThreeSurface();
@@ -123,6 +128,7 @@ function addEffectText(parent, runs, x, y, width, size, ink, makeText, place) {
     if (fill!==activeColor || weight!==activeWeight) {flush();activeColor=fill;activeWeight=weight;}
     context.font = `${weight} ${style.fontSize}px ${style.fontFamily}`;
     for (const char of run.text) {
+      if(char==='\n'){flush();row++;cursor=0;start=0;continue;}
       const advance=context.measureText(char).width;
       if(cursor+advance>width) {flush();row++;cursor=0;start=0;}
       buffer+=char;cursor+=advance;

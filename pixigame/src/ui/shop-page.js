@@ -9,8 +9,6 @@ import { projectIcon } from './project-ui-art.js';
 import './shop-popup-polish.css';
 import './shop-reference.css';
 import { supplyWeaponArt } from './supply-visuals.js';
-import { weaponThemeArt } from './weapon-theme-art.js';
-import { equipmentBoxReceiptItems } from '../replica/native-equipment-box-receipt.js';
 import { supplyPool } from './supply-pools.js';
 import {GEAR_PARTS} from '../peripheral/equipment-system.js';
 import './shop-native-v2.css';
@@ -60,8 +58,8 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
    const label=soldOut&&!blocked?'已售罄':o.cost.amount?`<span class="sn-price ${isResourceShortage(o.reason)?'is-short':''}">${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(o.cost.amount)}</span></span>${reason?`<small>${e(reason)}</small>`:''}`:reason?e(reason):o.cost.type==='ad'?`${glyph('play')}广告领取`:'免费领取';
    return shopButton('shopOffer',label,`data-id="${e(o.id)}" ${!blocked&&isResourceShortage(o.reason)?`data-resource-short="${e(resourceNames[o.cost.type]||'资源')}"`:''} aria-label="${e(o.name)}，${o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取'}${o.reason?'，'+e(availabilityMessage(o.reason)):''}" ${extra}`,blocked||!o.available);
  };
- const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(o.name)}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}<small>${o.remaining?'限购 '+o.remaining+' 次':'已售罄'}</small>${action(o)}</article>`;};
- const currency=(id,label)=>{const o=items.find(x=>x.id===id);if(!o)return'';const free=id==='exchange-coins'?items.find(x=>x.id==='coin-free'):null,ad=id==='exchange-coins'?items.find(x=>x.id==='coin-ad'):null,primary=free?.available?free:ad?.available?ad:o;return `<article class="sn-currency" data-offer="${e(id)}"><div class="sn-art">${shopArt('coins')}</div><div class="sn-currency-copy"><h3>${e(label)}</h3><strong>×${n(o.reward.coins)}</strong><small>今日剩余 ${n(primary.remaining)} 次</small></div>${action(primary)}</article>`;};
+ const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(o.name)}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}${action(o)}</article>`;};
+ const currency=(id,label)=>{const o=items.find(x=>x.id===id);if(!o)return'';const free=id==='exchange-coins'?items.find(x=>x.id==='coin-free'):null,primary=free||o;return `<article class="sn-currency" data-offer="${e(id)}"><div class="sn-art">${shopArt('coins')}</div><div class="sn-currency-copy"><h3>${e(label)}</h3><strong>×${n(o.reward.coins)}</strong></div>${action(primary)}</article>`;};
  const progress=gear?.basicRewardAvailable?20:(gear?.draws||0)%20;
  const box=pool=>{
   const advanced=pool==='advanced',prices=nativeEquipmentBoxPrices(pool),price=prices.single,keys=gear?.keys?.[pool]||0;
@@ -75,7 +73,7 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
    <h3>${advanced?'高级装备箱':'普通装备箱'}</h3>
    <button type="button" class="sn-info" data-action="shopBoxRates" data-pool="${pool}" aria-label="${advanced?'高级':'基础'}装备宝箱概率">${projectIcon('info')}</button>
    <div class="sn-box-art">${projectIcon('chest-closed')}</div>
-   <div class="sn-box-copy"><div class="sn-quality-range" aria-label="${advanced?'优秀、精良、史诗装备':'普通、优秀装备'}">${ranks.map(rank=>`<i data-psd-quality="${rank}" aria-hidden="true"></i>`).join('')}</div>${advanced?'<small>含随机武器、飞机</small>':''}${advanced&&!gear?.native?'<p>含 S 级装备</p>':''}${keys?`<small>补给券 ×${n(keys)}</small>`:''}</div>
+   <div class="sn-box-copy"><div class="sn-quality-range" aria-label="${advanced?'优秀、精良、史诗装备':'普通、优秀装备'}">${ranks.map(rank=>`<i data-psd-quality="${rank}" aria-hidden="true"></i>`).join('')}</div>${advanced&&!gear?.native?'<p>含 S 级装备</p>':''}${keys?`<small>补给券 ×${n(keys)}</small>`:''}</div>
    ${advanced?'':`<button type="button" class="sn-progress" data-action="shopClaimBoxReward" ${gear?.basicRewardAvailable&&!s.rewardPending&&!s.rewardBusy?'':'disabled'} aria-label="${gear?.basicRewardAvailable?'领取高级装备箱券':'开启20次可领高级装备箱券'}" title="每开启20次，领取高级装备箱券 ×1"><span data-psd-quality="3">${h.img(nativeItemArt(112),'','sn-item-art')}</span><b>${s.rewardPending?'待保存':s.rewardBusy?'处理中':gear?.basicRewardAvailable?'领取':`${progress}/20`}</b></button>`}
    <div class="sn-box-actions">${shopButton('shopBoxConfirm',`<span>开启1次</span>${cost(1)}`,`data-pool="${pool}" data-count="1" data-payment="${payment(1)}" aria-label="开启1次，${quote(1)?.payment==='free'?'免费':`消耗${payment(1)==='key'?'补给券':'钻石'}${amount(1)??'待同步'}`}"`,blocked||(quote(1)?!quote(1).canDraw:keys<1&&!s.wallet.unlimited&&s.wallet.diamonds<price))}${shopButton('shopBoxConfirm',`<span>开启10次</span>${cost(10)}`,`data-pool="${pool}" data-count="10" aria-label="开启10次，消耗${payment(10)==='key'?'补给券':'钻石'}${amount(10)??'待同步'}"`,blocked||(quote(10)?!quote(10).canDraw:keys<10&&!s.wallet.unlimited&&s.wallet.diamonds<prices.ten))}</div>
   </article>`;
@@ -92,7 +90,7 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
   <div class="shop-scroll store-scroll"><div class="sn-content">
    ${s.rewardPending?'<p class="sn-notice">奖励待保存</p>'+shopButton('recoverDailyRewards','重试保存','',s.rewardBusy):s.rewardBusy?'<p class="sn-notice">奖励正在处理</p>':''}
    ${shop?.clockBlocked?'<p class="sn-notice">设备日期异常</p>':''}
-   <section data-shop-section="${current}" class="sn-section">${sections[current]()}</section>
+   ${Object.entries(sections).map(([id,render])=>`<section data-shop-section="${id}" class="sn-section">${render()}</section>`).join('')}
   </div></div>
  </section>`;
 }
@@ -102,11 +100,11 @@ export function shopModal(modal,s,h) {
   const orderStale=modal.token!==undefined&&modal.token!==s.shop.token;
   if(modal.type==='shopStamina'){
     const offers=s.shop.items.filter(o=>o.section==='stamina');
-    return {title:'体力补给',content:`<div class="sn-dialog sn-vitality"><h3>${resourceArt('stamina')}${n(s.wallet.stamina)} / ${n(s.wallet.maxStamina??s.wallet.staminaMax)}</h3><p>${e(STAMINA_RECOVERY_DESCRIPTION)}</p>${offers.map(o=>`<div class="sn-vitality-offer"><div><strong>体力 ×${o.reward.stamina}</strong><small>${o.unlimited?'不限次数':`今日剩余 ${n(o.remaining)} 次`}</small></div>${shopButton('shopOffer',o.cost.type==='ad'?`${glyph('play')}广告领取`:`${resourceIcon('diamonds','sn-cost-icon')}${o.cost.amount}`,`data-id="${e(o.id)}"`,blocked||!o.available)}</div>${!o.available?`<p class="sn-hint">${e(availabilityMessage(o.reason))}</p>`:''}`).join('')}</div>`};
+    return {title:'体力补给',content:`<div class="sn-dialog sn-vitality"><h3>${resourceArt('stamina')}${n(s.wallet.stamina)} / ${n(s.wallet.maxStamina??s.wallet.staminaMax)}</h3><p>${e(STAMINA_RECOVERY_DESCRIPTION)}</p>${offers.map(o=>`<div class="sn-vitality-offer"><div><strong>体力 ×${o.reward.stamina}</strong><small>${o.unlimited?'不限次数':`剩余 ${o.remaining}/${o.limit}`}</small></div>${shopButton('shopOffer',o.cost.type==='ad'?`${glyph('play')}广告领取`:`${resourceIcon('diamonds','sn-cost-icon')}${o.cost.amount}`,`data-id="${e(o.id)}"`,blocked||!o.available)}</div>${!o.available?`<p class="sn-hint">${e(availabilityMessage(o.reason))}</p>`:''}`).join('')}</div>`};
   }
   if(modal.type==='shopRefreshConfirm'){
     const refresh=s.shop.refresh,adMode=refresh.freeRemaining===0;
-    return {title:'刷新每日商店',content:`<div class="sn-dialog"><p>${adMode?'免费次数已用完，看广告可刷新一次。':`今日免费刷新：${n(refresh.freeRemaining)} / ${n(refresh.freeLimit)}`}</p><p>同一商品当日限购不重置。</p>${orderStale?'<p class="sn-error">商品已更新，请重新选择。</p>':''}${adMode&&!refresh.adAvailable&&refresh.adReason?`<p class="sn-hint">${e(refresh.adReason)}</p>`:''}<div class="sn-dialog-actions">${adMode?shopButton('shopRefreshConfirm',`金币 ×${n(refresh.cost)}<br>刷新`,'',blocked||orderStale||!refresh.available):shopButton('close','取消')}${shopButton(adMode?'shopRefreshAdConfirm':'shopRefreshConfirm',adMode?`${glyph('play')}看广告刷新`:'免费刷新','',blocked||orderStale||!(adMode?refresh.adAvailable:refresh.available))}</div></div>`};
+    return {title:'刷新每日商店',content:`<div class="sn-dialog"><p>${adMode?'免费次数已用完，看广告可刷新一次。':`今日免费刷新：${n(refresh.freeRemaining)} / ${n(refresh.freeLimit)}`}</p><p>同一商品当日限购不重置。</p>${orderStale?'<p class="sn-error">商品状态已更新，请返回重新确认。</p>':''}${adMode&&!refresh.adAvailable&&refresh.adReason?`<p class="sn-hint">${e(refresh.adReason)}</p>`:''}<div class="sn-dialog-actions">${adMode?shopButton('shopRefreshConfirm',`金币 ×${n(refresh.cost)}<br>刷新`,'',blocked||orderStale||!refresh.available):shopButton('close','取消')}${shopButton(adMode?'shopRefreshAdConfirm':'shopRefreshConfirm',adMode?`${glyph('play')}看广告刷新`:'免费刷新','',blocked||orderStale||!(adMode?refresh.adAvailable:refresh.available))}</div></div>`};
   }
   if(s.equipment?.native && ['shopBoxRates','shopBoxConfirm'].includes(modal.type)){
     const box=s.nativeAcquisition.equipmentBoxes.find(box=>box.id===(modal.pool==='advanced'?3:4));
@@ -138,8 +136,17 @@ export function shopModal(modal,s,h) {
   }
   const o=s.shop.items.find(o=>o.id===modal.id);
   if (!o) return {title:'商品已更新',content:'请关闭后重新选择。'};
-  const max=shopPurchaseMax(o,s.wallet),quantity=Math.max(1,Math.min(Math.max(1,max),modal.quantity||1)),rewardType=Object.keys(o.reward)[0],balance=s.wallet[o.cost.type];
-  return {title:'确认兑换',content:`<div class="sn-dialog"><div class="shop-confirm-head"><span class="shop-confirm-item-art">${shopArt(rewardType)}</span><div><h3>${e(o.name)}</h3><p>×${n(o.reward[rewardType]*quantity)}</p><small>${o.unlimited?'不限次数':`今日剩余 ${n(o.remaining)} 次`}</small></div></div>${o.maxQuantity>1?`<div class="sn-quantity" aria-label="购买数量">${shopButton('shopQuantity','−','data-step="-1" aria-label="减少数量"',quantity<=1)}<output>${quantity}</output>${shopButton('shopQuantity','＋','data-step="1" aria-label="增加数量"',quantity>=max)}</div>`:''}<p class="sn-confirm-price">消耗 ${resourceIcon(o.cost.type,'sn-cost-icon')}${n(o.cost.amount*quantity)}</p><p>${e(resourceNames[o.cost.type]||'')}余额 ${n(balance)}</p>${modal.error||orderStale?`<p class="sn-error">${e(orderStale?'商品已更新，请重新选择。':modal.error)}</p>`:''}<div class="sn-dialog-actions">${shopButton('close','取消')}${shopButton('shopConfirm',o.available?'确认兑换':e(o.reason),`data-id="${e(o.id)}"`,blocked||orderStale||!o.available||quantity>max||!s.wallet.unlimited&&balance<o.cost.amount*quantity)}</div></div>`};
+  const max=shopPurchaseMax(o,s.wallet),quantity=Math.max(1,Math.min(Math.max(1,max),modal.quantity||1));
+  const rewardType=Object.keys(o.reward)[0],price=o.cost.amount*quantity,currency=resourceNames[o.cost.type]||'';
+  const disabled=blocked||orderStale||!o.available||quantity>max;
+  return {title:'确认兑换',content:`<div class="sn-dialog sn-exchange-dialog">
+    <div class="sn-exchange-product">
+      <span class="sn-exchange-item">${shopArt(rewardType)}</span>
+      <div class="sn-exchange-copy"><h3>${e(o.name)}</h3><p>×${n(o.reward[rewardType]*quantity)}</p></div>
+      ${o.maxQuantity>1?`<div class="sn-quantity" aria-label="购买数量">${shopButton('shopQuantity','−','data-step="-1" aria-label="减少数量"',quantity<=1)}<output aria-label="购买数量">${quantity}</output>${shopButton('shopQuantity','＋','data-step="1" aria-label="增加数量"',quantity>=max)}${shopButton('shopQuantity','MAX','data-step="max" aria-label="最大数量"',quantity>=max)}</div>`:''}
+    </div>
+    <div class="sn-dialog-actions sn-exchange-actions">${shopButton('shopConfirm',`${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(price)}</span>`,`data-id="${e(o.id)}" aria-label="确认兑换，消耗${n(price)}${e(currency)}"`,disabled)}</div>
+  </div>`};
 }
 
 export function tasksModal(s,h,period='daily') {

@@ -6,7 +6,8 @@ import { createKestrelEquipment } from '../three/aircraft/kestrel-equipment.js';
 import { createModelOrbitInteraction } from './model-orbit-interaction.js';
 import { createFixedPartMounts } from '../fixed-parts/mounts.js';
 import { peripheralModelLoadout, peripheralModelLoadoutKey } from './peripheral-model-loadout.js';
-import { createEquipmentAircraftStyle } from './equipment-aircraft-style.js';
+import { createAircraftStyle, AIRCRAFT_FINISH_CONFIG } from '../three/aircraft/aircraft-style.js';
+import { AIRCRAFT_RENDER_STYLE, createAircraftLighting } from '../three/aircraft/aircraft-lighting.js';
 import { performanceMonitor } from '../performance-monitor.js';
 import {createPreviewBatcher} from './preview-batcher.js';
 
@@ -57,15 +58,10 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
   // Without one, reflective surfaces become flat dark blocks and glass loses depth.
   const studio = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer);
   const environment = pmrem.fromScene(studio, .04); studio.dispose(); pmrem.dispose();
-  const hemisphere = new THREE.HemisphereLight('#e7f6ff', '#566a88', 2);
-  scene.add(hemisphere); const studioLights = [];
-  for (const [color, intensity, position] of [['#ffffff', 3.6, [-7, 12, -12]], ['#96d8ff', 3, [9, 5, 8]], ['#b5c9dd', 1.5, [4, -5, 10]]]) {
-    const light = new THREE.DirectionalLight(color, intensity); light.position.set(...position); scene.add(light); studioLights.push(light);
-  }
-  const perspectiveCamera = new THREE.PerspectiveCamera(32, 600 / 390, .1, 160);
+  const { lights: studioLights } = createAircraftLighting(scene);
   // A's hull occupies about half the screen width; leave gutters at the PSD slots.
   const equipmentCamera = new THREE.OrthographicCamera(-13, 13, 8.45, -8.45, .1, 160);
-  let camera = perspectiveCamera;
+  const camera = equipmentCamera;
   camera.position.set(7, 20, -25); camera.lookAt(0, 0, -.5);
   // A transparent receiver grounds the actual hull and equipped parts in the PSD hangar.
   const shadowImage=document.createElement('canvas');shadowImage.width=shadowImage.height=64;
@@ -103,34 +99,25 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
     const size=renderer.getSize(new THREE.Vector2());
     if(size.x===width&&size.y===height)return;
     renderer.setSize(width,height,false);
-    if(camera.isPerspectiveCamera){camera.aspect=width/height;camera.updateProjectionMatrix();}
+    camera.top=13*height/width;camera.bottom=-camera.top;camera.updateProjectionMatrix();
     lastFrame=-1;
   }
   const viewportObserver=new ResizeObserver(()=>{if(!disposed&&visible&&canvas.isConnected)fitViewport();});
-  const patrolFog = new THREE.Fog('#cadce9', 18, 95);
   function applyViewLighting() {
-    const patrol = viewProfile === 'patrol', illustrated = viewProfile === 'equipment';
-    scene.environmentIntensity = illustrated ? .6 : patrol ? 1 : .85;
-    scene.fog = patrol ? patrolFog : null;
-    renderer.toneMappingExposure = illustrated ? 1.08 : patrol ? 1.02 : .92;
-    hemisphere.intensity = illustrated ? 1.05 : patrol ? 1.45 : .95;
-    studioLights.forEach((light, i) => {
-      light.intensity = (illustrated ? [2.7, 1.15, 1.9] : patrol ? [2, 1.4, .45] : [2.6, 2.8, .65])[i];
-      light.position.set(...(illustrated ? [[-10, 22, -12], [14, 7, -3], [3, 12, 16]] : [[-7, 12, -12], [9, 5, 8], [4, -5, 10]])[i]);
-    });
-    studioLights[0].color.set(patrol ? '#fff3e3' : '#ffffff');
-    keyLight.castShadow = false; shadowFloor.visible = illustrated;
+    scene.environmentIntensity = AIRCRAFT_RENDER_STYLE.environmentIntensity;
+    scene.fog = null;
+    renderer.toneMappingExposure = AIRCRAFT_RENDER_STYLE.exposure;
+    keyLight.castShadow = false; shadowFloor.visible = viewProfile === 'equipment';
     renderer.shadowMap.enabled = false;
-    if (illustrated && runtime && !equipmentStyle) equipmentStyle = createEquipmentAircraftStyle(mount);
-    equipmentStyle?.setEnabled(illustrated);
+    if (runtime && !equipmentStyle) equipmentStyle = createAircraftStyle(mount);
+    equipmentStyle?.setEnabled(true);
   }
   function setCameraView(profile,thumbnail=false) {
     viewProfile = profile;
     applyViewLighting();
-    camera = profile === 'equipment' ? equipmentCamera : perspectiveCamera;
     fitViewport(thumbnail);
     canvas.dataset.viewProfile = profile;
-    // Equipment uses a compressed illustration-like view; other pages keep their optics.
+    // All previews keep the approved parallel projection; only viewing direction varies.
     camera.position.set(...(profile === 'equipment' ? [19, 29, -28] : profile === 'patrol' ? [21, 8, -3] : profile === 'battle' ? [27, 13, -26] : [7, 20, -25]));
     // Patrol exposes the aircraft's authored engine jets on the effects layer.
     camera.layers.set(0); if (profile === 'patrol') camera.layers.enable(1);
@@ -188,7 +175,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
     equipment = createKestrelEquipment(asset);
     const span = Math.max(asset.view.bounds.max[0] - asset.view.bounds.min[0], asset.view.bounds.max[2] - asset.view.bounds.min[2]);
     attitude.scale.setScalar(15.75509262084961 / span);
-    runtime = new ConfigFighter({ scene: attitude, asset, config: { ...entry.defaults, cruise: false, firing: false, altitude: 0, scale: 1, lightIntensity: 0, bodyFx: .18, coreGlow: .6, surfaceGlow: .35, weaponGlow: .25, trails: 0, particles: 0 }, globals: { glow: 1, particleCount: 0 } });
+    runtime = new ConfigFighter({ scene: attitude, asset, config: { ...entry.defaults, cruise: false, firing: false, altitude: 0, scale: 1, lightIntensity: 0, ...AIRCRAFT_FINISH_CONFIG, trails: 0, particles: 0 }, globals: { glow: 1, particleCount: 0 } });
     runtime.flight = null; runtime.deck.visible = false; runtime.quality = 'low';
     runtime.poseAtTime = (_time, position, quaternion) => { position.set(0, 0, 0); quaternion.identity(); };
     runtime.veilKinematics = { pose: runtime.poseAtTime, socketAt: (_time, socket, out) => out.copy(socket), socketVelocity: (_time, _socket, out) => out.set(0, 0, 0) };

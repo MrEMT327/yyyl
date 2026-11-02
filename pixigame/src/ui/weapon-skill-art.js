@@ -16,6 +16,11 @@ export const WEAPON_SKILL_ICONS = Object.freeze({
 });
 const source = `${import.meta.env?.BASE_URL??'/'}art/skill-icons-anime-v1/approved-sheet.png`;
 
+const nativeFamilies=Object.freeze({10000101:'aux_cannon',10000701:'aux_rocket',10001501:'aux_laser',
+  10000201:'aux_toxin',10000601:'aux_freeze',10000401:'aux_lightning',10001701:'aux_beam',
+  10001101:'aux_blades',10001601:'aux_shield',10000301:'aux_orb',10000901:'aux_gravity'});
+export const nativeWeaponSkillArtwork=skillId=>weaponSkillArtwork({id:nativeFamilies[Number(skillId)]});
+
 export function weaponSkillArtwork(weapon) {
   const id=WEAPON_SKILL_ICONS[weapon?.id],rect=atlas.rects[id];
   if(!id)return '';

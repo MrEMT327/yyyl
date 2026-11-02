@@ -1,6 +1,7 @@
 import { isGameSessionCurrent } from './platform/game-session-runtime.js';
 import { pilotAvatarIcon } from './pilot-avatar-icons.js';
 import { pilotPreviewAccess } from './pilot-preview-access.js';
+import { nativePilotDisplayQuality } from './replica/native-pilot-quality.js';
 
 const PILOT_STORAGE_KEY = 'thunder-ssr-pilots-v1';
 const RESONANCE_STATE_VERSION = 2;
@@ -8,13 +9,12 @@ const RESONANCE_DAMAGE_CAP = 0.18;
 const RESONANCE_DAMAGE_CURVE = 24;
 
 export const AIRCRAFT_RARITY_PRESENTATION = Object.freeze({
-  R: Object.freeze({ label: 'R', color: '#d9e4e6' }),
-  SR: Object.freeze({ label: 'SR', color: '#62cf83' }),
-  SSR: Object.freeze({ label: 'SSR', color: '#758cff' }),
-  UR: Object.freeze({ label: 'UR', color: '#ff78dc' }),
+  R: Object.freeze({ label: 'R', color: '#65afe0' }),
+  SR: Object.freeze({ label: 'SR', color: '#b38aef' }),
+  SSR: Object.freeze({ label: 'SSR', color: '#efbd55' }),
 });
 
-export const AIRCRAFTS = [
+const PILOT_DEFINITIONS = [
   {
     id: 'pilot-01',
     lobbyPortrait: 'orange-jetboard-v5',
@@ -373,9 +373,14 @@ export const AIRCRAFTS = [
   },
 ];
 
+// Keep historical draw groups separate from the character's displayed quality.
+export const AIRCRAFTS = PILOT_DEFINITIONS.map(pilot => ({
+  ...pilot, legacyRecruitGroup: pilot.rarity, ...nativePilotDisplayQuality(pilot),
+}));
+
 export const AIRCRAFT_MAP = new Map(AIRCRAFTS.map((pilot) => [pilot.id, pilot]));
 export const AIRCRAFT_CALLSIGN_MAP = new Map(AIRCRAFTS.map((pilot) => [pilot.callsign, pilot]));
-export const PILOT_RARITY_ORDER = Object.freeze(['R', 'SR', 'SSR', 'UR']);
+export const PILOT_RARITY_ORDER = Object.freeze(['R', 'SR', 'SSR']);
 export const PILOTS_BY_RARITY = Object.freeze([...AIRCRAFTS].sort(
   (left, right) => PILOT_RARITY_ORDER.indexOf(left.rarity)
     - PILOT_RARITY_ORDER.indexOf(right.rarity),
@@ -547,10 +552,11 @@ export function pilotCardMarkup(pilot, {
   rarity = null,
   rarityColor = null,
 } = {}) {
-  const displayRarity = rarity || pilot.rarity || 'R';
+  const requestedRarity = rarity || pilot.rarity || '未标注';
+  const displayRarity = requestedRarity === 'UR' ? 'SSR' : Object.hasOwn(AIRCRAFT_RARITY_PRESENTATION, requestedRarity) ? requestedRarity : '未标注';
   const displayRarityColor = rarityColor
     || AIRCRAFT_RARITY_PRESENTATION[displayRarity]?.color
-    || AIRCRAFT_RARITY_PRESENTATION.R.color;
+    || '#8899a2';
   const owned = isPilotOwned(pilot.id);
   const selected = pilotState.selected === pilot.id;
   const resonance = pilotState.resonance[pilot.id] || 0;

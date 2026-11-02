@@ -6600,7 +6600,7 @@ function showGachaResults(receipts) {
           <small>${typeLabel}</small>
           <strong>${item?.name || '金色角色专有武器（待配置）'}</strong>
           <span>${obtainLabel}</span>
-          <em>${receipt.pityTriggered ? `保底触发 · ${receipt.pityTier.toUpperCase()}` : '基础概率结果'}</em>
+          <em>${receipt.pityTriggered ? `保底触发 · ${receipt.poolId === 'aircraft_permanent' ? receipt.quality : receipt.pityTier.toUpperCase()}` : '基础概率结果'}</em>
         </div>
         <span class="gacha-new-badge">${receipt.isFirst ? '新' : receipt.pendingContent ? '待配置' : `×${receipt.ownedCount}`}</span>
       </article>
@@ -7161,7 +7161,7 @@ function renderGrowthPanel(tabId) {
           <div class="pilot-recruit-stats">
             <b>累计 ${getGachaState().pools[selectedGachaPoolId].totalPulls} 抽</b>
             ${selectedGachaPoolId === 'aircraft_permanent'
-    ? `<b>SR ${getGachaState().pools.aircraft_permanent.pity.sr}/10</b><b>SSR ${getGachaState().pools.aircraft_permanent.pity.ssr}/30 · UR ${getGachaState().pools.aircraft_permanent.pity.ur}/70</b>`
+    ? ''
     : `<b>紫色 ${getGachaState().pools.weapon_permanent.pity.purple}/10</b><b>金色 ${getGachaState().pools.weapon_permanent.pity.gold}/60</b>`}
           </div>
         </section>

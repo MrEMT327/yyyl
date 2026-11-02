@@ -16,7 +16,7 @@ export function sanitizePilotRecruit(value = {}, history = [], fallbackTotal = 0
   const counter = (key, limit, rarities) => value[key] != null && Number.isFinite(Number(value[key]))
     ? recruitMisses(value[key], limit)
     : trailingRecruitMisses(history, 'pilot', reward => {
-      const rarity = AIRCRAFTS.find(p => p.id === reward.id)?.rarity || reward.rarity;
+      const rarity = AIRCRAFTS.find(p => p.id === reward.id)?.legacyRecruitGroup || reward.rarity;
       return rarities.includes(rarity);
     }, limit);
   return { version: 2, pity: recruitMisses(value.pity, PILOT_PITY),
@@ -66,11 +66,11 @@ export function planPilotRecruit({ stars, owned, ownedAircraft, pity = 0, ssrPit
       continue;
     }
     misses = 0;
-    const roll = rng(), rarity = guarantee === 'ur' ? 'UR' : guarantee === 'ssr' ? (roll < 5 / 6 ? 'SSR' : 'UR')
+    const roll = rng(), group = guarantee === 'ur' ? 'UR' : guarantee === 'ssr' ? (roll < 5 / 6 ? 'SSR' : 'UR')
       : roll < .74 ? 'R' : roll < .94 ? 'SR' : roll < .99 ? 'SSR' : 'UR';
-    ssrMisses = ['SSR', 'UR'].includes(rarity) ? 0 : ssrMisses + 1;
-    urMisses = rarity === 'UR' ? 0 : urMisses + 1;
-    const rarityCandidates = AIRCRAFTS.filter(p => p.rarity === rarity);
+    ssrMisses = ['SSR', 'UR'].includes(group) ? 0 : ssrMisses + 1;
+    urMisses = group === 'UR' ? 0 : urMisses + 1;
+    const rarityCandidates = AIRCRAFTS.filter(p => p.legacyRecruitGroup === group);
     // Keep the rarity roll and pity intact while completed pilots make room for
     // unfinished peers. Ownership wins over a malformed stored star count.
     const unfinished = rarityCandidates.filter(p => !roster.has(p.id) || nextStars[p.id] < PILOT_MAX_STARS);

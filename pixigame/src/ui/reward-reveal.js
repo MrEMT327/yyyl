@@ -1,4 +1,5 @@
 import { createDrawPresentation } from './draw-presentation.js';
+import {activeModalHost} from './reward-modal-stack.js';
 // Receipts are already committed. This controller owns presentation only.
 export function createRewardReveal(root,sound = () => {}) {
   const shown = new WeakSet();
@@ -8,7 +9,7 @@ export function createRewardReveal(root,sound = () => {}) {
     if (draw.show(receipt, snapshot)) return;
     draw.clear();
     cleanup();
-    const host = root.querySelector('.pl-modal-host');
+    const host = activeModalHost(root);
     if (!host || !receipt) return;
     const cards = [...host.querySelectorAll('.pl-reward-item,.pl-card-result,.research-detail-card,.research-core-reward')];
     // One animation owner; a thumbnail refresh must not replay CSS reveals.
@@ -24,7 +25,7 @@ export function createRewardReveal(root,sound = () => {}) {
     };
     const rankOf = node => {
       const rarity = node.querySelector('[data-holo-rarity]')?.dataset.holoRarity;
-      if (rarity) return { R:1, SR:2, SSR:3, UR:4 }[rarity] || 0;
+      if (rarity) return { R:1, SR:2, SSR:3, UR:3 }[rarity] || 0;
       if (node.classList.contains('research-detail-card')) {
         const card = snapshot?.research?.cards.find(c => c.id === receipt.result?.cardId);
         return { 5:3, 6:4 }[card?.quality] ?? (card?.pool === 'ace' ? 3 : 1);

@@ -9,6 +9,7 @@ const names=Object.freeze({
   ...Object.fromEntries(GEAR_PARTS.map(part=>[part.blueprintId,`${part.name}图纸`])),
   903:'装备图纸自选箱',934:'史诗装备自选箱',
   112:'高级装备箱券',113:'普通装备箱券',925:'角色箱',926:'角色箱碎片',
+  3132505:'手套·史诗芯片',10010007:'随机装备图纸',10010008:'随机科研图纸',
 });
 const gear=new Map(equipment.equip.map(row=>[row.ID,{
   name:gearName({family:row.ID-row.quality,quality:row.quality}),

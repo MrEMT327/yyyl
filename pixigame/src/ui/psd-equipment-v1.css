@@ -109,12 +109,12 @@
 }
 /* Small labels must stay readable after fitting the PSD into a phone viewport.
    Stack each stat so five-digit values fit without shrinking their glyphs. */
-#gui-casual-lobby.equipment-reference .ag-pilot-select:focus-visible,
+#gui-casual-lobby.equipment-reference .ag-pilot-card:focus-visible,
 #gui-casual-lobby.equipment-reference .ag-pilot-stats:focus-visible { outline: 2px solid white; outline-offset: -3px; }
 #gui-casual-lobby.equipment-reference .ag-pilot-select { display:flex;align-items:center;gap:1.4cqw;width:100%;height:100%;padding:0;border:0;border-radius:0;box-shadow:none;background:none;color:inherit;text-align:left;min-width:0; }
 #gui-casual-lobby.equipment-reference .ag-pilot-select .ag-pilot-info { flex:1;align-self:flex-start;padding-top:0;padding-bottom:0;gap:1px; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats { position:absolute;left:24.4cqw;right:2cqw;bottom:1.4cqw;min-width:0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:1cqw;padding:2px 0 0;border:0;border-top:1px solid #81d8fc55;border-radius:0;background:none;box-shadow:none;color:#fff; }
-#gui-casual-lobby.equipment-reference .ag-pilot-stats>span { display:flex;flex-direction:column;align-items:flex-start;gap:0;min-width:0;white-space:nowrap; }
+#gui-casual-lobby.equipment-reference .ag-pilot-stats>span { display:flex;flex-direction:row;align-items:center;gap:1cqw;min-width:0;white-space:nowrap; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats small { font-size:max(11px,2.2cqw);line-height:1.1;color:#d0e5f4; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats b { font-size:max(12px,2.6cqw);line-height:1.1;font-variant-numeric:tabular-nums; }
 #gui-casual-lobby.equipment-reference .ag-pilot-card:hover { background-color: #214661; }
@@ -365,3 +365,12 @@
 }
 #gui-casual-lobby.equipment-reference .ag-inventory-extra { padding: 8px 0 20px; }
 #gui-casual-lobby.equipment-reference .ag-inventory-extra h2 { margin-top: 10px; }
+
+#gui-casual-lobby.equipment-reference .ag-pilot-stats .ag-stat-icon {display:block;flex:none;width:5.4cqw;height:5.4cqw;min-width:18px;min-height:18px;object-fit:contain}
+
+/* Approved equipment-entry pictograms; keep the original PSD nine-slice buttons. */
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button {--wc-button-height:max(52px,14cqw)}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-entry-icon {display:block;flex:none;width:8cqw;height:8cqw;min-width:28px;min-height:28px;background-image:url('/art/equipment-entry-icons-v1/atlas.png');background-size:300% 100%;background-repeat:no-repeat}
+#gui-casual-lobby .ag-entry-weapon {background-position:0% 50%}
+#gui-casual-lobby .ag-entry-aircraft {background-position:50% 50%}
+#gui-casual-lobby .ag-entry-pilot {background-position:100% 50%}

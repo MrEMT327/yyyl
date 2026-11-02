@@ -1,6 +1,9 @@
 import { nativeLabActivation } from './native-laboratory.js';
 import { nativeResearchState } from './native-research-state.js';
 import { isRosterPilot } from './native-pilot-roster.js';
+import { validatePilotSkillSlots } from './native-pilot-skill-slots.js';
+import { validateWeaponSkillSlots } from './native-weapon-skill-slots.js';
+import economyCatalog from './native-economy-catalog.json' with { type: 'json' };
 import catalog from './loadout-progression-index.json' with { type: 'json' };
 import defaultLoadoutState from './default-loadout-state.json' with { type: 'json' };
 
@@ -60,8 +63,11 @@ export function validateReplicaProgression(value) {
     if (!skins.some(row => row.id === id && row.active) || used.has(id)) throw new Error('飞机技能未拥有或重复装配');
     used.add(id);
   }
+  const pilotSkillSlots=validatePilotSkillSlots(value.pilotSkillSlots,pilots,(id,star)=>
+    Boolean(economyCatalog.pilots.find(row=>row.id===id)?.stages.find(row=>row.star===star)?.skills.length));
+  const weaponSkillSlots=validateWeaponSkillSlots(value.weaponSkillSlots,guns,id=>{const row=economyCatalog.guns.find(row=>row.id===id);return row?row.baseGunId||row.id:0;});
   return { ...defaults, role: { ...defaults.role, skinId, skinStar: skin?.star || 0 },
-    guns, pilots, skins, labs, nativeResearch: nativeResearchState(value.nativeResearch), skinSkillSlots: slots };
+    guns, pilots, skins, labs, nativeResearch: nativeResearchState(value.nativeResearch), skinSkillSlots: slots, pilotSkillSlots, weaponSkillSlots };
 }
 
 /** Selection only. Unlocks/star levels cannot be granted by a skin change. */
@@ -70,6 +76,10 @@ export function selectReplicaProgression(value, selection) {
   const { kind, id } = selection || {};
   if (kind === 'skinSkillSlots') {
     next.skinSkillSlots = selection.ids;
+  } else if (kind === 'pilotSkillSlots') {
+    next.pilotSkillSlots = selection.ids;
+  } else if (kind === 'weaponSkillSlots') {
+    next.weaponSkillSlots = selection.ids;
   } else if (kind === 'skins') {
     const skin = next.skins.find(row => row.id === id && row.active);
     if (id !== 0 && !skin) throw new Error('原版飞机尚未拥有');

@@ -136,7 +136,7 @@
 /* Pilot results use the existing project cards in the approved 5 × 2 layout. */
 #gui-casual-lobby .pl-modal.recruit-result-dialog.is-pilot-grid {
   grid-template-rows:minmax(0,1fr) auto;
-  background:#07131e url('/art/project-draw-stage-v1/receiver.png') center/cover no-repeat!important;
+  background:linear-gradient(180deg,#0b1c2c33,#0b1c2c66),url('/art/project-recruit-result-v1/hangar.webp') center/cover no-repeat #102232!important;
 }
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid>.recruit-result-scroll {
   display:flex;align-items:center;justify-content:center;overflow:auto;
@@ -157,15 +157,36 @@
   animation:recruit-card-arrive .42s ease-out var(--reveal-delay,0ms) both;
 }
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-result-slot>.pilot-holo-card,
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-idle-sway>.pilot-holo-card,
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion-source>.pilot-holo-card {
   width:100%;height:100%;max-width:none;aspect-ratio:auto;--phc-frame-corner:9px;
 }
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-art>img {
-  top:0;left:0;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 16%;
-  transform:scale(1.8);transform-origin:center top;
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-idle-sway {
+  position:absolute;inset:0;transform-style:preserve-3d;
+  animation:recruit-holo-sway 5.8s ease-in-out calc(var(--reveal-delay,0ms) + 400ms) infinite both;
 }
-/* Luna's existing portrait is right-weighted; keep her face inside the card. */
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-07'] .phc-art>img {object-position:88% 16%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-idle-sway:has(.is-holo-active) {animation-play-state:paused}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact {
+  --rr-portrait-width:300%;--rr-portrait-left:-100%;--rr-portrait-top:0%;
+}
+/* Frame each existing portrait around its face and upper body. The source
+   illustrations have different dimensions and subjects are not centred. */
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-03'] {--rr-portrait-width:620%;--rr-portrait-left:-248%;--rr-portrait-top:0%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-04'] {--rr-portrait-width:620%;--rr-portrait-left:-266%;--rr-portrait-top:0%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-05'] {--rr-portrait-width:370%;--rr-portrait-left:-139%;--rr-portrait-top:-7%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-06'] {--rr-portrait-width:310%;--rr-portrait-left:-93%;--rr-portrait-top:0%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-07'] {--rr-portrait-width:420%;--rr-portrait-left:-210%;--rr-portrait-top:-2%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-08'] {--rr-portrait-width:480%;--rr-portrait-left:-163%;--rr-portrait-top:-17%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-09'] {--rr-portrait-width:420%;--rr-portrait-left:-142%;--rr-portrait-top:-3%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact[data-pilot-id='pilot-10'] {--rr-portrait-width:360%;--rr-portrait-left:-130%;--rr-portrait-top:0%}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-art {
+  inset:12% 5% 5%;mask-image:linear-gradient(#000 82%,transparent 100%);
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-art>img {
+  top:var(--rr-portrait-top);left:var(--rr-portrait-left);width:var(--rr-portrait-width)!important;
+  height:auto!important;max-width:none!important;object-fit:contain!important;object-position:center top;
+  transform:translate(var(--phc-mx,0px),var(--phc-my,0px))!important;
+}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-caption {display:none}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-rarity {font-size:clamp(9px,16cqw,14px)}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-status {
@@ -174,16 +195,32 @@
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid.is-single .phc-status {top:12%}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid.is-multiple[data-draw-count='10'] .phc-status {display:block}
 
+/* Keep the existing foil sweep and rarity lights active in the result grid. */
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .pilot-holo-card .phc-lightpass::after,
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .phc-lightpass::after {
+  animation-play-state:running;animation-duration:4.8s;
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .pilot-holo-card .phc-edge-light::after,
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .pilot-holo-card :is(.phc-corona,.phc-sparks i) {
+  animation-play-state:running;
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-lightpass {opacity:1}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .pilot-holo-card .phc-foil {
+  opacity:calc(.05 + var(--phc-foil-active) * .75);animation:phc-rim-flow 6.5s linear infinite;
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .pilot-holo-card.is-holo-active .phc-foil {
+  animation:none;background-position:var(--phc-bg-x) var(--phc-bg-y);
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-edge-light {
+  opacity:var(--phc-edge-strength);
+  box-shadow:inset 0 0 6px color-mix(in srgb,var(--phc-metal) 35%,transparent),0 0 6px color-mix(in srgb,var(--phc-metal) 45%,transparent);
+}
+
 /* Resource items use the same nine-sliced 三选一.psd face as pilot cards. */
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face {
-  --rr-item-filter:grayscale(1);
+  --rr-item-filter:none;
   position:relative;isolation:isolate;container-type:inline-size;width:100%;height:100%;
 }
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face[data-item-quality='1'] {--rr-item-filter:hue-rotate(280deg) saturate(1.2)}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face[data-item-quality='2'] {--rr-item-filter:none}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face[data-item-quality='3'] {--rr-item-filter:hue-rotate(76deg)}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face[data-item-quality='4'] {--rr-item-filter:hue-rotate(208deg) saturate(.8)}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face[data-item-quality='5'] {--rr-item-filter:none}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face::before {
   content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
   border-image:var(--rr-item-face) 24 fill / 9px stretch;filter:var(--rr-item-filter);
@@ -192,18 +229,12 @@
   position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;
   margin:0;padding:0;border:0!important;border-radius:0;background:none!important;box-shadow:none;
 }
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face .common-reward-item-frame {
-  position:static;width:100%;height:100%;max-width:none;aspect-ratio:auto;
-}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face .common-reward-item-frame::before {content:none}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face .common-reward-item-frame>.pl-icon {
-  position:absolute;inset:17% 10% 29%;width:80%;height:54%;max-height:none;object-fit:contain;
-}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face .common-reward-quantity {
-  left:4%;right:4%;bottom:7%;font-size:clamp(10px,15cqw,22px);line-height:1.1;text-align:center;
+/* Reveal cards contain the same square as every other reward surface. */
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face .reward-item-slot {
+  position:absolute;top:17%;left:9%;width:82%;height:auto;max-width:none;aspect-ratio:1;
 }
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face .pl-reward-item>b {
-  position:absolute;left:6%;right:6%;bottom:21%;width:auto;height:auto;margin:0;padding:0;overflow:hidden;
+  position:absolute;left:6%;right:6%;bottom:14%;width:auto;height:auto;margin:0;padding:0;overflow:hidden;
   color:#d6eafa;font:600 clamp(8px,13cqw,14px)/1.2 'PingFang SC',sans-serif;text-align:center;
   text-overflow:ellipsis;white-space:nowrap;clip-path:none;text-shadow:0 1px 2px #07121c;
 }
@@ -213,6 +244,13 @@
 
 /* A duplicate turns as one card; its reverse is the actual fragment reward. */
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion {perspective:900px}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-holo-target {
+  --phc-rx:0deg;--phc-ry:0deg;position:absolute;inset:0;transform-style:preserve-3d;
+  transform:perspective(950px) rotateX(var(--phc-rx)) rotateY(var(--phc-ry));
+  transition:transform .4s ease;touch-action:pan-y;outline:none;
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-holo-target.is-holo-active {transition:transform .09s linear;z-index:3;will-change:transform}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-holo-target:focus-visible {outline:2px solid #b7eaff;outline-offset:3px}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion-turn {
   transform-style:preserve-3d;animation:recruit-card-flip .9s cubic-bezier(.55,0,.25,1) calc(700ms + var(--reveal-delay,0ms)) both;
 }
@@ -224,16 +262,6 @@
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion-target {transform:rotateY(180deg)}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion.is-conversion-complete .rr-conversion-turn {animation:none;transform:rotateY(180deg)}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion.is-conversion-complete :is(.rr-conversion-source,.rr-conversion-target) {animation:none;opacity:1}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .common-reward-item-frame {
-  position:absolute;top:20%;left:9%;width:82%;height:auto;aspect-ratio:1;
-}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .common-reward-item-frame::before {content:''}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .common-reward-item-frame>.pl-icon {
-  inset:8% 12% 23%;width:76%;height:69%;
-}
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .common-reward-quantity {
-  left:-10%;right:-10%;bottom:-95%;font-size:clamp(10px,15cqw,22px);
-}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .pl-reward-item>b {display:none}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid.is-single .rr-material-face.is-fragment .pl-reward-item>b {
   display:block;bottom:22%;font-size:clamp(13px,7cqw,19px);line-height:1.2;
@@ -247,11 +275,18 @@
   left:5%;right:5%;bottom:23%;color:#d6eafa;font:600 clamp(8px,13cqw,14px)/1.2 'PingFang SC',sans-serif;text-align:center;text-shadow:0 1px 2px #07121c;
 }
 @keyframes recruit-card-arrive {from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes recruit-holo-sway {
+  0%,100%{transform:perspective(900px) rotateX(-1.5deg) rotateY(-4deg)}
+  50%{transform:perspective(900px) rotateX(1.5deg) rotateY(4deg)}
+}
 @keyframes recruit-card-flip {from{transform:rotateY(0deg)}to{transform:rotateY(180deg)}}
 @media(prefers-reduced-motion:reduce){
   #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-result-slot {animation:none}
+  #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-idle-sway {animation:none;transform:none}
   #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-conversion-turn {animation:none;transform:rotateY(180deg)}
-  #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-art>img{transform:scale(1.8)!important}
+  #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-holo-target {transform:none;transition:none}
+  #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-compact .phc-art>img {transform:none!important}
+  #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .rr-material-face.is-fragment .phc-lightpass::after {animation:none;opacity:0}
 }
 
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid>.recruit-result-actions {

@@ -18,7 +18,7 @@ export function drawPresentationPlan(receipt, snapshot) {
   const entries=(receipt.rewards||[]).map((reward,index)=>{
     const pilot=snapshot.pilots?.find(p=>p.id===(reward.pilotId||reward.id));
     // A converted weapon reward's current inventory rank is not its draw rank.
-    const rank=pilot?({R:1,SR:2,SSR:3,UR:4}[pilot.rarity]||1):({white:0,green:1,blue:2,purple:3,gold:4}[reward.drawQuality]??Number(reward.qualityRank??reward.rank??0));
+    const rank=pilot?({R:1,SR:2,SSR:3,UR:3}[pilot.rarity]||1):({white:0,green:1,blue:2,purple:3,gold:4}[reward.drawQuality]??Number(reward.qualityRank??reward.rank??0));
     return {index,rank,isNew:Boolean(reward.isNew),converted:Boolean(reward.convertedFragment)};
   });
   // Direct pilot recruitment presents the complete receipt without a gate.

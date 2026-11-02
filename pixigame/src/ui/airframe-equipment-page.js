@@ -11,7 +11,9 @@ import './airframe-equipment-page.css';
 const base=import.meta.env?.BASE_URL??'/';
 // Configuration changes invalidate native combat details until recalculation finishes.
 const combatStat=(value,format)=>Number.isFinite(value)?format(value):'—';
+const combatStatIcon=(kind,label)=>`<img class="ag-stat-icon" src="${base}art/combat-stat-icons-v2/${kind}.png" alt="${label}" title="${label}" draggable="false">`;
 export const gearArt=id=>base+equipmentArtPath(id);
+const entryIcon=kind=>`<span class="ag-entry-icon ag-entry-${kind}" aria-hidden="true"></span>`;
 const btn=(action,label,data='',disabled=false)=>`<button type="button" class="wc-button ag-button" data-action="${action}" ${data} ${disabled?'disabled':''}>${label}</button>`;
 export const gearCard=(item,h,{action='gearDetail',selected=false,mount=false,disabled=false}={})=>{
   const e=h.escape;
@@ -36,11 +38,11 @@ export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',fil
     return `<div class="ag-position ag-position-${type}">${item?card(item,h,{mount:true}):`<button type="button" class="ag-card ag-mount is-empty" data-action="gearChoosePart" data-part="${type}" aria-label="${e(part.name)}，空槽"><strong>${e(part.name)}</strong>${emptySlotMark()}<b>未装配</b></button>`}</div>`;
   };
   return `<section class="ag-page eq-page" aria-label="驾驶员装备"><div class="ag-hangar eq-hangar">
-    <div class="ag-pilot-card" data-pilot-id="${e(pilot?.id||'')}"><button type="button" class="ag-pilot-select" data-action="catalog" data-kind="pilot" aria-label="查看驾驶员：${e(pilot?.name||'未选择驾驶员')}"><span class="ag-pilot-avatar">${h.img(pilotAvatar.src,'','ag-pilot-avatar-art',pilotAvatar.srcset?`srcset="${e(pilotAvatar.srcset)}" sizes="min(165px, 22vw, 10.17dvh)" width="320" height="320"`:'')}</span><span class="ag-pilot-info"><small>驾驶员</small><strong>${e(pilot?.name||'未选择驾驶员')}</strong></span></button><button type="button" class="ag-pilot-stats" data-action="gearAttributes" aria-label="查看战斗属性，攻击${combatStat(s.combatStats?.attack,n)}，耐久${combatStat(s.combatStats?.maxHp,n)}"><span><small>攻击</small><b>${combatStat(s.combatStats?.attack,n)}</b></span><span><small>耐久</small><b>${combatStat(s.combatStats?.maxHp,n)}</b></span></button></div>
+    <button type="button" class="ag-pilot-card" data-action="gearAttributes" aria-label="查看战斗属性" data-pilot-id="${e(pilot?.id||'')}"><span class="ag-pilot-select"><span class="ag-pilot-avatar">${h.img(pilotAvatar.src,'','ag-pilot-avatar-art',pilotAvatar.srcset?`srcset="${e(pilotAvatar.srcset)}" sizes="min(165px, 22vw, 10.17dvh)" width="320" height="320"`:'')}</span><span class="ag-pilot-info"><small>驾驶员</small><strong>${e(pilot?.name||'未选择驾驶员')}</strong></span></span><span class="ag-pilot-stats"><span>${combatStatIcon('attack','攻击')}<b>${combatStat(s.combatStats?.attack,n)}</b></span><span>${combatStatIcon('durability','耐久')}<b>${combatStat(s.combatStats?.maxHp,n)}</b></span></span></button>
     <div class="eq-aircraft-stage pl-live-model" aria-label="${e(a?.name||'当前战机')}">${h.preview?.(a?.id,{name:a?.name,view:'equipment'})||h.thumbnail(a?.id,'eq-aircraft-fallback')}</div>
     ${weaponButton ?? `<button type="button" class="ag-weapon ag-card ${innate?'is-filled':'is-empty'}" ${innate?`data-psd-quality="${innate.qualityRank||0}" data-action="weapon" data-id="${e(innate.id)}"`:'data-action="equipmentWeapons"'} aria-label="主武器，${e(innate?.name||'选择武器')}${innate?'，本机专武':''}"><strong>主武器</strong><span>${innate?supplyWeaponArt(innate,h.thumbnail):emptySlotMark()}</span>${innate?`<b>Lv.${n(innate.level||1)}</b>`:''}</button>`}
     ${[1,2,3,4,5].map(slot).join('')}
-    <div class="ag-catalog" role="group" aria-label="装备功能">${btn('equipmentWeapons',`${h.icon('weapon')}<span>武器</span>`)}${btn('catalog',`${h.icon('plane')}<span>战机</span>`,'data-kind="aircraft"')}${btn('catalog',`${h.icon('pilot')}<span>驾驶员</span>`,'data-kind="pilot"')}</div>
+    <div class="ag-catalog" role="group" aria-label="装备功能">${btn('equipmentWeapons',`${entryIcon('weapon')}<span>武器</span>`)}${btn('catalog',`${entryIcon('aircraft')}<span>战机</span>`,'data-kind="aircraft"')}${btn('catalog',`${entryIcon('pilot')}<span>驾驶员</span>`,'data-kind="pilot"')}</div>
   </div><div class="ag-toolbar"><label class="ag-select"><span class="ag-sr">装备排序</span><select data-gear-select="sort" aria-label="装备排序">${[['quality','按品质排序'],['part','按部位排序'],['level','按等级排序']].map(([id,name])=>`<option value="${id}" ${id===sort?'selected':''}>${name}</option>`).join('')}</select></label>${filter==='all'?'<strong class="ag-toolbar-title">装备</strong>':btn('gearClearFilter','全部装备')}${btn('openWorkshop','改装间')}</div>
     <div class="ag-inventory eq-inventory"><h2 class="ag-sr">驾驶员装备</h2><div class="ag-grid">${list.map(item=>card(item,h)).join('')}</div>${!list.length?'<p class="ag-empty">暂无该部位装备</p>':''}${Object.values(gear.fodder).some(n=>n>0)?`<div class="ag-inventory-extra"><h2>合成材料</h2><div class="ag-materials">${Object.entries(gear.fodder).filter(([,count])=>count>0).map(([key,count])=>{const [type,q]=key.split(':').map(Number),part=gear.blueprints.find(p=>p.type===type);return `<button type="button" class="ag-material" data-action="gearMaterialInfo" data-part="${type}" data-quality="${q}"><img src="${gearArt(part.id)}" alt=""><span>${e(part.name)}</span><span>${e(GEAR_QUALITY_NAMES[q])}材料</span><b>×${n(count)}</b></button>`;}).join('')}</div></div>`:''}</div></section>`;
 }
@@ -56,7 +58,13 @@ export function gearModal(modal,{snapshot:s,helpers:h}){
   const gear=s.equipment,{escape:e,number:n}=h,item=gear?.items.find(item=>item.uid===modal.id),error=modal.error?`<p class="ag-error" role="alert">${e(modal.error)}</p>`:'';
   if(modal.type==='gearAttributes'){
     const total=gear.totals;
-    return {title:'战斗属性',content:`<div class="ag-modal"><div class="ag-attr-table"><p><span>总攻击</span><b>${Number.isFinite(s.combatStats?.attack)?combatStat(s.combatStats?.attack,n):'—'}</b></p><p><span>总耐久</span><b>${Number.isFinite(s.combatStats?.maxHp)?combatStat(s.combatStats?.maxHp,n):'—'}</b></p><p><span>装备攻击</span><b>+${n(total.attack)}</b></p><p><span>装备耐久</span><b>+${n(total.hp)}</b></p></div><h3>当前装备</h3>${gear.items.filter(item=>item.equipped).map(item=>`<p class="ag-breakdown"><span>${e(item.name)} · Lv.${item.level}</span><b>${e(item.attributeName)} +${n(item.attribute)}</b></p>`).join('')}<p class="ag-hint">${s.replicaCollection?'总属性按当前出战配置计算。':'总属性包含机体成长、装备、已携带技能和科技加成。'}</p></div>`};
+    const rows=[
+      {label:'总攻击',icon:'attack',value:combatStat(s.combatStats?.attack,n),primary:true},
+      {label:'总耐久',icon:'durability',value:combatStat(s.combatStats?.maxHp,n),primary:true},
+      {label:'装备攻击',icon:'attack',value:`+${n(total.attack)}`},
+      {label:'装备耐久',icon:'durability',value:`+${n(total.hp)}`},
+    ];
+    return {title:'战斗属性',content:`<dl class="ag-combat-attributes">${rows.map(row=>`<div class="ag-combat-attribute${row.primary?' is-total':''}"><dt>${combatStatIcon(row.icon,'')}<span>${row.label}</span></dt><dd>${e(row.value)}</dd></div>`).join('')}</dl>`};
   }
   if(modal.type==='gearMaterialInfo'){
     const part=gear.blueprints.find(p=>p.type===modal.part),q=modal.quality;

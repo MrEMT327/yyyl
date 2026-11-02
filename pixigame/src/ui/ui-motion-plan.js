@@ -10,7 +10,8 @@ export function uiActionPlan(action,result,before,after,payload={}) {
   const gear=action.startsWith('gear');
   const items=gear?after?.equipment?.items:action.startsWith('fleet')?payload.kind==='aircraft'?after?.aircraft:after?.pilots:action==='upgradeAircraft'?after?.aircraft:after?.weapons;
   const item=items?.find(i=>(i.uid||i.id)===payload.id);
-  const rank=Math.max(0,Math.min(5,Number(item?.qualityRank??({R:0,SR:2,SSR:3,UR:4}[item?.rarity]))||0));
+  const rarityRanks=payload.kind==='pilot'?{R:2,SR:3,SSR:4,UR:4}:{R:0,SR:2,SSR:3,UR:4};
+  const rank=Math.max(0,Math.min(5,Number(item?.qualityRank??rarityRanks[item?.rarity])||0));
   return {action,gear,id:payload.id,kind:payload.kind,slot:payload.slot,major:major.has(action),rank,
     color:major.has(action)?QUALITY_LIGHT[rank]:'#9ceaff',
     powerGain:Math.max(0,Number(after?.power)-Number(before?.power)||0)};

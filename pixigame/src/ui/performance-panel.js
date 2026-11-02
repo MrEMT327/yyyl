@@ -109,6 +109,8 @@ export function mountPerformancePanel({bridge,documentRef=document}={}) {
   });
   const keydown=event=>{if(event.key==='F8'&&!event.repeat){event.preventDefault();setOpen(!open);}};view.addEventListener('keydown',keydown);
   const visibility=()=>monitor.resetClocks();doc.addEventListener('visibilitychange',visibility);
-  if(new URLSearchParams(view.location.search).get('perf')!=='0')setOpen(true);
+  const initialMode=new URLSearchParams(view.location.search).get('perf');
+  const narrow=view.matchMedia?.('(max-width:760px)').matches??false;
+  if(initialMode==='1'||(initialMode!=='0'&&!narrow))setOpen(true);
   return {setOpen,get state(){return {open,compact,sampling:monitor.enabled,loopStarted:loop.started,observers:observers.length};},destroy(){setOpen(false);loop.destroy();battleSource.destroy();releaseRenderer();doc.removeEventListener('visibilitychange',visibility);view.removeEventListener('keydown',keydown);host.remove();if(stage){stage.before(shell);stage.remove();arcade.classList.remove('has-performance-tools');}}};
 }

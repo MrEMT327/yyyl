@@ -1,12 +1,13 @@
 /* The original compact task-center layout, populated by the current ledger. */
 #gui-casual-lobby .pl-modal .dc-hub {gap:1.3cqw}
-#gui-casual-lobby .pl-modal .dc-tabs .dc-tab {
-  min-height:36px;--wc-button-height:max(36px,9cqw);font-size:clamp(13px,3.7cqw,15px);
-}
-#gui-casual-lobby .dc-supply-activity {padding:1cqw 2cqw 1.5cqw}
+#gui-casual-lobby .dc-supply-activity {padding:1.5cqw 2cqw 2cqw;background:#d4e1eb80;border-color:#a1b6c8}
+#gui-casual-lobby .dc-supply-activity .dc-activity-meter {padding:0 0 .3cqw}
 #gui-casual-lobby .dc-supply-milestones {
-  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1cqw;align-items:end;
+  position:relative;height:17cqw;margin:0 1cqw;
 }
+#gui-casual-lobby .dc-supply-milestones progress {position:absolute;top:10cqw;left:0;width:calc(100% - 5cqw);appearance:none;height:1.6cqw;min-height:5px;border:0;border-radius:99px;overflow:hidden;background:#819aab}
+#gui-casual-lobby .dc-supply-milestones progress::-webkit-progress-bar {background:#819aab;border-radius:99px}
+#gui-casual-lobby .dc-supply-milestones progress::-webkit-progress-value {background:#56c6ec;border-radius:99px}
 #gui-casual-lobby .dc-supply-step {
   display:grid;grid-template-rows:10cqw auto;place-items:center;min-width:0;
   color:#49657a;font:600 clamp(10px,2.8cqw,14px)/1.2 'Microsoft YaHei',sans-serif;
@@ -15,9 +16,9 @@
   display:block;width:10.5cqw;height:10cqw;object-fit:contain;filter:grayscale(1);opacity:.32;
 }
 #gui-casual-lobby .dc-supply-step.is-reached img {opacity:.48}
-#gui-casual-lobby .dc-supply-chest {width:100%;min-height:40px;grid-template-rows:10cqw auto}
-#gui-casual-lobby .dc-supply-chest img {width:10.5cqw;height:10cqw}
-#gui-casual-lobby .dc-supply-activity-rewards {display:flex;justify-content:center;align-items:center;gap:2cqw;padding-top:.5cqw}
+#gui-casual-lobby .dc-supply-chest {position:absolute;top:0;z-index:1;transform:translateX(-50%);width:10cqw;min-height:0;padding:0;grid-template-rows:9.5cqw 4cqw;row-gap:2cqw}
+#gui-casual-lobby .dc-supply-chest img {width:10cqw;height:9.5cqw;object-fit:contain}
+#gui-casual-lobby .dc-supply-chest.is-claimed img {opacity:.7}
 #gui-casual-lobby .dc-restored-scroll {display:flex;flex-direction:column;gap:1.2cqw}
 #gui-casual-lobby .dc-supply-task-list {flex:none}
 #gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-task-list {padding-bottom:7cqw}
@@ -32,7 +33,7 @@
 #gui-casual-lobby .dc-task-extra summary {min-height:30px;display:flex;align-items:center;cursor:pointer;text-decoration:underline}
 #gui-casual-lobby .dc-task-extra .dc-rewards {padding:0 0 1cqw}
 
-/* Daily tasks use the original compact rows; one-time rewards stay visible as icons. */
+/* Daily tasks use compact rows. */
 #gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-step img {filter:none;opacity:1}
 #gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-chest:disabled {filter:none;opacity:1}
 #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-supply-task {
@@ -58,12 +59,9 @@
 #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-weekly-task .dc-button {
   --wc-button-height:max(36px,9cqw);min-height:36px;font-size:clamp(11px,3cqw,14px);
 }
-#gui-casual-lobby .pl-modal .dc-hub:is([data-daily-page='daily'],[data-daily-page='weekly']) .dc-progress>span {font-size:clamp(9px,2.4cqw,11px)}
-#gui-casual-lobby .pl-modal .dc-hub:is([data-daily-page='daily'],[data-daily-page='weekly']) .dc-task-badge img {width:7cqw;height:7cqw}
-#gui-casual-lobby .pl-modal .dc-hub:is([data-daily-page='daily'],[data-daily-page='weekly']) .dc-task-badge b {font-size:clamp(9px,2.5cqw,12px)}
-@media(max-height:700px){
-  #gui-casual-lobby .pl-modal[data-modal-type='tasks']{--popup-height:min(180cqw,92%);--popup-max-height:92%}
-}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-progress>span {font-size:clamp(9px,2.4cqw,11px)}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task-badge img {width:7cqw;height:7cqw}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task-badge b {font-size:clamp(9px,2.5cqw,12px)}
 
 /* Additional supply entries remain available below the original task rows. */
 #gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui {gap:1.2cqw;padding:0;color:#203b51;font-size:clamp(11px,3cqw,15px)}
@@ -84,37 +82,11 @@
   grid-column:2;grid-row:1 / span 3;width:100%;margin:0;padding:1px;font-size:clamp(9px,2.7cqw,13px);white-space:nowrap;
 }
 
-/* Keep all current rewards while restoring the six compact days and wide
-   seventh-day card from the original layout. */
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-count {padding-bottom:1cqw;line-height:1.2}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:1.5cqw}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day {padding:1.2cqw .8cqw;gap:.6cqw;min-height:29cqw;line-height:1.1}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day>strong {padding:0;border:0;text-align:center;font-size:clamp(10px,3cqw,14px);line-height:1.15}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day:is(.is-today,.is-claimed)>strong {padding-left:.6cqw;text-align:left}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards {gap:.5cqw;align-content:center}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-reward {grid-template-columns:5cqw minmax(0,1fr);gap:.5cqw;text-align:left}
-#gui-casual-lobby .pl-modal .dc-hub .dc-prize-art {width:5cqw;height:5cqw}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-reward-copy {display:block;min-width:0;font-size:clamp(10px,2.6cqw,12px);line-height:1.1;overflow-wrap:anywhere}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-reward-copy>b {display:inline;margin-left:.2em;font-size:inherit;line-height:inherit;white-space:nowrap}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards.is-single .dc-signin-reward {grid-template-columns:1fr;justify-items:center;text-align:center}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-rewards.is-single .dc-prize-art {width:10cqw;height:10cqw}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-status {display:none}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day:is(.is-today,.is-claimed) .dc-signin-status {position:absolute;top:0;right:0;display:flex;min-height:0;padding:.3cqw .6cqw;background:#286282e6;color:#eaf9ff;font-size:clamp(9px,2.3cqw,11px);line-height:1.2}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final {display:grid;grid-column:1/-1;grid-template-columns:20cqw minmax(0,1fr);align-items:center;min-height:29cqw;padding:1.5cqw 2cqw}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final>strong {grid-column:1;grid-row:1}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-signin-rewards {grid-column:2;grid-row:1;grid-template-columns:repeat(3,minmax(0,1fr));gap:1cqw}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-signin-reward {grid-template-columns:1fr;justify-items:center;text-align:center}
-#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-prize-art {width:9cqw;height:9cqw}
-@media (max-width:360px), (max-height:650px) {
-  #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day:is(.is-today,.is-claimed)>strong {padding-left:0;text-align:center}
-  #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day:is(.is-today,.is-claimed) .dc-signin-status {position:static;align-self:center}
-  #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final .dc-signin-status {grid-column:1;grid-row:2;justify-self:center}
-}
-
 /* Weekly milestones keep their real day values and only the final claim
    action; the current supply entries use compact, old-style task rows. */
 #gui-casual-lobby .dc-hub[data-daily-page='weekly'] .dc-supply-step img {filter:none;opacity:1}
 #gui-casual-lobby .dc-hub[data-daily-page='weekly'] .dc-supply-chest:disabled {filter:none;opacity:1}
+#gui-casual-lobby .dc-hub[data-daily-page='weekly'] .dc-weekly-chest:disabled {filter:none;opacity:1}
 #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry {
   grid-template-columns:9cqw minmax(0,1fr) 19cqw;gap:.4cqw 1cqw;padding:1.2cqw;
 }
@@ -137,17 +109,8 @@
   #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry>.wc-button {grid-column:2}
 }
 
-/* Three achievement cards fit in the reference viewport without changing
-   progress, rewards, actions, or scroll behavior. */
-#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-achievement {padding:2cqw}
-#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-achievement-heading {margin-bottom:1cqw}
-#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-achievement-action {margin-top:1cqw}
-#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-achievement h3 {font-size:clamp(11px,3cqw,14px);line-height:1.1}
-#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-achievement-action .dc-button {
-  min-height:36px;--wc-button-height:max(36px,9cqw);font-size:clamp(11px,3cqw,14px);
-}
-#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='achievements'] .dc-progress>span {font-size:clamp(9px,2.4cqw,11px)}
-
+/* Content spacing does not change the shared popup or tab geometry. */
+#gui-casual-lobby .pl-modal .dc-hub:is([data-daily-page='weekly'],[data-daily-page='achievements']) {gap:2cqw}
 /* v0.1.43 task-row composition; present-day bonus entries share its density. */
 #gui-casual-lobby .pl-modal .dc-hub .dc-supply-task-list {padding-bottom:0}
 #gui-casual-lobby .pl-modal .dc-hub .dc-task .dc-first-rewards {display:contents}

@@ -6,6 +6,10 @@ const reward=(item,processed=false,historicalClaim=false,showIcon=true)=>{
     `${icon}${escape(item.name)} ×${item.count}`):
     `${icon}${escape(item.name||'星核')} ×${item.count}${processed?' · 已领取':''}`;
 };
+const compactReward=item=>{
+  const image=nativeItemArt(item.id),name=escape(item.name||'星核');
+  return `<span class="bc-reward-item" title="${name}" aria-label="${name} ×${item.count}">${image?`<img src="${escape(image)}" alt="" draggable="false">`:`<span>${name}</span>`}<strong>×${item.count}</strong></span>`;
+};
 /** Keep the current chapter view compact while retaining the complete ledger. */
 export function chapterRewardsDialog(snapshot,preferredChapter,{currentOnly=false}={}) {
   const a=snapshot.nativeAcquisition;
@@ -22,13 +26,13 @@ export function chapterRewardsDialog(snapshot,preferredChapter,{currentOnly=fals
     const style=currentOnly?`pl-button ${row.canClaim?'pl-primary':'pl-secondary'}`:'wc-button';
     return `<button type="button" class="${style}" data-action="${core?'nativeChapterCoreReward':'nativeChapterReward'}" data-id="${row.id}" data-revision="${a.revision}" ${blocked||!row.canClaim?'disabled':''}>${label}</button>`;
   };
-  const waveRow=row=>`<section class="bc-star-reward ${row.claimed?'is-claimed':''}"><b>${row.wave?`第 ${row.wave} 波`:row.room?`${row.room} 个房间`:`${row.time} 秒`}${row.unresolved?'<small> · 待补图纸</small>':''}</b><span>${row.rewards.map(item=>reward(item,row.processed&&!item.unverified,row.claimed,!currentOnly)).join('<br>')}${!currentOnly?row.rewards.filter(r=>r.preview?.length).map(r=>`<details><summary>奖励预览</summary>${r.preview.map(item=>reward(item)).join('<br>')}</details>`).join(''):''}</span>${button(row)}</section>`;
-  const coreRow=core=>`<section class="bc-star-reward ${core.claimed?'is-claimed':''}"><b>通关奖励</b><span>${core.rewards.map(item=>reward(item,false,false,!currentOnly)).join('<br>')}</span>${button(core,true)}</section>`;
+  const waveRow=row=>`<section class="bc-star-reward ${row.claimed?'is-claimed':''}"><b>${row.wave?`第 ${row.wave} 波`:row.room?`${row.room} 个房间`:`${row.time} 秒`}${row.unresolved?'<small> · 待补图纸</small>':''}</b><span class="${currentOnly?'bc-reward-items':''}">${row.rewards.map(item=>currentOnly&&!item.unverified?compactReward(item):reward(item,row.processed&&!item.unverified,row.claimed)).join(currentOnly?'':'<br>')}${!currentOnly?row.rewards.filter(r=>r.preview?.length).map(r=>`<details><summary>奖励预览</summary>${r.preview.map(item=>reward(item)).join('<br>')}</details>`).join(''):''}</span>${button(row)}</section>`;
+  const coreRow=core=>`<section class="bc-star-reward ${core.claimed?'is-claimed':''}"><b>通关奖励</b><span class="${currentOnly?'bc-reward-items':''}">${core.rewards.map(item=>currentOnly?compactReward(item):reward(item)).join(currentOnly?'':'<br>')}</span>${button(core,true)}</section>`;
   const notice=blocked?`<p role="status">${snapshot.rewardPending?'奖励待保存':'奖励处理中'}</p>`:'';
   if(currentOnly){
     const id=preferredChapter??snapshot.stages?.[snapshot.selectedStageIndex||0]?.replicaChapterId??chapters[0];
     const rows=waves.filter(row=>row.missionId===id),core=cores.find(row=>row.id===id);
-    return {title:'章节奖励',content:`<section class="bc-star-rewards bc-current-chapter" aria-label="章节奖励"><div class="bc-star-total"><strong>累计 ${rows.filter(row=>row.claimed).length}<small> / ${rows.length}</small></strong><span>每档仅领一次</span></div>${notice}<div class="bc-star-reward-list">${rows.map(waveRow).join('')}${core?coreRow(core):''}</div><div class="bc-chapter-actions"><button type="button" class="wc-button" data-action="chapterRewards">全部章节</button>${originalStars}</div></section>`};
+    return {title:'章节奖励',content:`<section class="bc-star-rewards bc-current-chapter" aria-label="章节奖励">${notice}<div class="bc-star-reward-list">${rows.map(waveRow).join('')}${core?coreRow(core):''}</div><div class="bc-chapter-actions"><button type="button" class="wc-button" data-action="chapterRewards">全部章节</button>${originalStars}</div></section>`};
   }
   const pending=ledger?.deferred||[];
   const deferred=pending.length?`<p>待补图纸 ${pending.length} 档</p>`:'';

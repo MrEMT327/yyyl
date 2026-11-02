@@ -66,7 +66,7 @@ export function battlePage(ctx,requestedChapter) {
   return `<section class="bc-page psd-main-page" aria-label="主界面">
     <img class="psd-main-composite" src="${art}psd-main-v1/main-background.png" alt="" aria-hidden="true" draggable="false">
     ${portrait}
-    <img class="psd-main-composite psd-main-foreground" src="${art}psd-main-v1/main-foreground-current-live-wallet.png" alt="" aria-hidden="true" draggable="false">
+    <img class="psd-main-composite psd-main-foreground" src="${art}psd-main-v1/main-foreground-live-patrol.png" alt="" aria-hidden="true" draggable="false">
     <img class="psd-main-profile-frame" src="${art}psd-main-v1/profile-live-frame.png" alt="" aria-hidden="true" draggable="false">
     <div class="psd-main-avatar" aria-hidden="true"><img src="${pilot.avatar || pilot.image || ''}" alt="" draggable="false"></div>
     <div class="psd-main-identity"><strong>${ctx.helpers.escape(s.playerName)}</strong><span><small>战力</small><b>${Number.isFinite(s.power)?ctx.helpers.number(s.power):'—'}</b></span></div>
