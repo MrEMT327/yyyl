@@ -2,6 +2,7 @@ import {nativeWeaponGroupId,nativeWeaponGroupRows} from './native-weapon-groups.
 import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import {nativeCollectionAccess,nativeCollectionRows} from './native-collection-access.js';
 import { nativeCollectionArt, nativeSkillArt } from './native-collection-art.js';
+import { nativeWeaponSkillArt } from './native-weapon-skill-art.js';
 import { NATIVE_PILOT_SKINS } from './native-pilot-roster.js';
 import { nativePilotAppearance } from './native-pilot-presentation.js';
 import { characterPortrait } from '../ui/character-portraits.js';
@@ -19,6 +20,10 @@ const groupFor={weapon:'guns',aircraft:'skins',pilot:'pilots'};
 const nativePilotFilters=Object.freeze([{id:'all',label:'全部'},{id:'owned',label:'已激活'},{id:'locked',label:'未激活'}]);
 const plain=value=>String(value||'').replace(/<[^>]*>/g,'');
 const icon=nativeCollectionArt;
+const weaponSkillArtwork=(row,e)=>{
+  const url=nativeWeaponSkillArt(row);
+  return url?`<img class="weapon-skill-icon native-weapon-skill-icon" data-weapon-skill-family="${nativeWeaponGroupId(row)}" src="${e(url)}" alt="${e(row.name)}技能" draggable="false">`:'';
+};
 const button=(action,label,attrs='',disabled=false)=>`<button type="button" class="wc-button" data-action="${action}" ${attrs}${disabled?' disabled':''}>${label}</button>`;
 const template=html=>{const t=document.createElement('template');t.innerHTML=html;return t;};
 
@@ -51,12 +56,7 @@ export function cloudNativeCatalog(ctx){
     aircraftId:kind==='aircraft'?String(rows.find(row=>nativeCollectionAccess(group,s,row).using)?.id??collection.skinId):s.aircraftId,pilotId:kind==='pilot'?String(rows.find(row=>nativeCollectionAccess(group,s,row).using)?.id||''):s.pilotId,
     loadout:kind==='weapon'?{W1:String(rows.find(row=>row.equipped)?.id||'')}:s.loadout,
     fleet:{revision:collection.revision,[kind]:bank},catalogPresentation:{skillFor:item=>nativeSkill(byId.get(item.id)),native:true,...(kind==='pilot'?{filters:nativePilotFilters}:{})}};
-  const helpers={...h,weaponSkillArtwork:item=>{
-    const row=byId.get(String(item.id));
-    const skill=row?.stage.skills.find(skill=>weaponPreview.families[skill.id])||row?.stage.skills[0];
-    const url=nativeSkillArt(skill)||nativeSkillArt(row);
-    return url?`<img class="weapon-skill-icon native-weapon-skill-icon" src="${e(url)}" alt="${e(row.name)}" draggable="false">`:'';
-  },pilotPortrait:(item,cls)=>{const skin=nativePilotAppearance(item.id);return skin?characterPortrait({...skin,name:item.name},cls):'';},thumbnail:(id,cls='')=>{const row=byId.get(String(id));return row?`<img class="pl-model-thumb ${e(cls)}" src="${e(icon(row))}" alt="${e(row.name)}">`:h.thumbnail(id,cls);},preview:(id,options)=>{const plane=byId.get(String(id))?.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[id];return plane?h.preview?.(plane,options):null;}};
+  const helpers={...h,weaponSkillArtwork:item=>weaponSkillArtwork(byId.get(String(item.id)),e),pilotPortrait:(item,cls)=>{const skin=nativePilotAppearance(item.id);return skin?characterPortrait({...skin,name:item.name},cls):'';},thumbnail:(id,cls='')=>{const row=byId.get(String(id));return row?`<img class="pl-model-thumb ${e(cls)}" src="${e(icon(row))}" alt="${e(row.name)}">`:h.thumbnail(id,cls);},preview:(id,options)=>{const plane=byId.get(String(id))?.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[id];return plane?h.preview?.(plane,options):null;}};
   const t=template(kind==='weapon'?weaponCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}):fleetCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}));
   for(const node of t.content.querySelectorAll('.wc-item[data-id]')){
     const row=byId.get(node.dataset.id);if(!row)continue;
@@ -153,7 +153,7 @@ export function cloudNativeWeaponPreview(id,mode,s,h){
   const family=base.stage.skills.map(skill=>weaponPreview.families[skill.id]).find(Boolean);
   if(mode==='base'){
     const description=family?.description||row.stage.skills[0]?.description||row.description;
-    return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${collectionDetailArtwork(row,h)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};
+    return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${weaponSkillArtwork(row,e)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};
   }
   const stages=family?.stages.filter(stage=>stage.star>1)||[];
   const rows=stages.map(stage=>`<details class="wc-growth-section"><summary>${stage.star} 星 · ${stage.kind==='breakthrough'?'突破':stage.kind==='minor'?'强化':'升级'}</summary>${stage.options.length?stage.options.map(skill=>`<div class="wc-growth-rule"><h5>${e(skill.name)}</h5><p>${e(skill.description)}</p></div>`).join(''):`<div class="wc-growth-rule"><p>${e(stage.description)}</p></div>`}</details>`).join('');

@@ -1,0 +1,142 @@
+{
+  "version": 2,
+  "generator": "OpenAI built-in image_gen",
+  "mode": "built-in edit",
+  "styleReference": "Existing original project v1 artwork, redesigned to retain the cartoon medium while replacing the hex badges, dot patterns, compositions and effect silhouettes with aviation radar motifs. No third-party art used as edit input.",
+  "normalization": "Generated single-icon square PNGs resized to 320px WebP, quality 90. Art redesigned by image_gen; postprocessing only resizes and compresses. No competitor pixels or weapon inventory renders.",
+  "scope": "Weapon catalog skill tiles, skill hero and base attack preview only. Original PSD card frame and weapon inventory art retained.",
+  "assets": [
+    {
+      "baseGunId": 20101,
+      "name": "速射机炮",
+      "file": "rapid-autocannon.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21748,
+      "sha256": "3e484654212abce469c88ca003e81a87240ea2a914e932d5015c576a03f25d3c",
+      "sourceFile": "exec-02c4cf72-c9aa-4aa6-9d8f-98003b06cfd1.png",
+      "sourceSha256": "b989114269f958a2718c4ec50dc81c79e9309c98622b72a1da973a107e57af08",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: five short golden tracer streaks in a fan-shaped volley opening upward from one small orange muzzle-flash spark near the lower center. Tracers are chunky glowing dashes with blunt rounded tips, not three realistic cartridge bullets. Mostly upward motion, no single diagonal row. Amber, ivory and navy."
+    },
+    {
+      "baseGunId": 20201,
+      "name": "爆燃导弹",
+      "file": "he-missile.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 20260,
+      "sha256": "af3a384babbea122666e0606daed964683b3f27262851ed6d727f57c75c3cb94",
+      "sourceFile": "exec-55b0f25f-010a-435e-a90e-4ea68464d9ab.png",
+      "sourceSha256": "0e80695c1da55e8de686cc3cb67dcb55440a4592fbaa441171c7a3a2e98c0d73",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: THREE small stylized white-and-coral micro rockets seen from above in a triangular formation, one leading vertically upward and two flanking lower, with short coral-and-yellow exhaust tails. Simple fins and wedge noses, not one big rocket flying diagonally. Coral, ivory and warm yellow."
+    },
+    {
+      "baseGunId": 20301,
+      "name": "高能激光",
+      "file": "high-energy-laser.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 17308,
+      "sha256": "99f0222bc18573989371418f02a4293aeee3d63360eb07081e069b630b6fbc0b",
+      "sourceFile": "exec-7be43402-ab92-4aac-8035-ca50ccdfb639.png",
+      "sourceSha256": "19616f373b0e6bf9f01d1b829c2b134b53719d24d9056123e68adaeacfd5d9e3",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: one strong VERTICAL white-turquoise laser column passing through two separated crescent focusing rings at center, with a square bright core and two short parallel light rails. The beam is a clean narrow geometric cut, no diagonal starburst. Teal, cyan, ivory and navy."
+    },
+    {
+      "baseGunId": 20401,
+      "name": "酸液枪",
+      "file": "acid-projectile.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 25088,
+      "sha256": "536b58779bf7a1c18e5eed9bbdf7d700fe3cc3c6bc8f55bbd3643820dbe64756",
+      "sourceFile": "exec-1d4e8754-fa95-4e22-b6f1-41b372c85bfd.png",
+      "sourceSha256": "3acf4d4034e9096510fbea3dc7e3194075b6b66ea0fabc05ac33c72c6330f357",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: three chunky emerald acid droplets descending into a shallow splash pool, with one stylized crown-shaped splash and a pale lime highlight. A compact falling volley and splash silhouette, not a single large comet projectile or flame. Emerald, mint and pale yellow-green."
+    },
+    {
+      "baseGunId": 20501,
+      "name": "冰刃弹",
+      "file": "frost-blades.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23610,
+      "sha256": "2235aacdec7fef6a4f0acf93409b8ea7c03da05e1238f1a603b412ec0e8794f7",
+      "sourceFile": "exec-492b3d35-6071-47aa-b97d-a8cafd1c093b.png",
+      "sourceSha256": "5fdb47dec87ebcc906682ebeada9d4afa40ba32393cedf3ad758af0dd2faf750",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: THREE short straight crystalline ice blades fanning outward like an opening feather fan, with chunky chisel tips, blue-white facets and one small shattered ice spark. They are individual angular ice projectiles, not a crescent moon, curved circular blade or saw disc. Powder cyan, periwinkle and ivory."
+    },
+    {
+      "baseGunId": 20601,
+      "name": "磁暴枪",
+      "file": "magstorm.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 27422,
+      "sha256": "82f8306127c4ac7226f7ca9e494d05597f59f3a7184e4ea8c62245496162b8f0",
+      "sourceFile": "exec-7d07ad38-1989-407f-a89e-708b1b2328e0.png",
+      "sourceSha256": "89f2639947481103e93bf13bdaeed861ebb394f08d3e9ec7d9f9607ff0a24f12",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: one compact six-point ELECTRIC SPARK with a white core, surrounded by two violet magnetic field ribbons and four short jagged cyan discharges. Symmetrical charged energy-field silhouette, not three long diagonal lightning bolts. Violet, electric cyan and ivory."
+    },
+    {
+      "baseGunId": 20701,
+      "name": "灼热射线",
+      "file": "scorch-ray.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21800,
+      "sha256": "a29e20ba28dc507c9b51522f1b4e28d66024ab0e41df4e1d8ac55c409de1c0bd",
+      "sourceFile": "exec-a7b3765f-7f97-450a-895b-e5b14c9fc1af.png",
+      "sourceSha256": "c55381645c2600df091a3aa19a9095b9627bd59b3a2e5bbb63cb0e3610c68796",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: two parallel HORIZONTAL amber-white scorching rays going from a compact red hot core at the left toward the right, with three blunt rising heat tongues and one small round heat ripple. Clean short bar-like silhouette, not a diagonal flame comet or sun-shaped explosion. Vermilion, warm gold and ivory."
+    },
+    {
+      "baseGunId": 20801,
+      "name": "能量光剑",
+      "file": "energy-blade.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 22444,
+      "sha256": "9a86f9aa59519fcedac740b6518a078e29c5e6cead75ee27a3878dcb53f83048",
+      "sourceFile": "exec-b783fc8c-713b-4b83-8a92-2c06fce834ad.png",
+      "sourceSha256": "4c3d795d5361a2d571f5d4ed1c3d85b6883a94740f6de6e444836e6dbfb074cb",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: two angular CYAN LIGHT SLASHES crossing in a compact off-center X, with tapered kite-shaped blade edges, a bright ivory intersection and two small wing-shaped energy fragments. Show the cutting energy, with no physical sword hilt, handle or weapon model. Icy teal, turquoise and ivory."
+    },
+    {
+      "baseGunId": 20901,
+      "name": "冰冻锯盘",
+      "file": "frost-sawblade.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23884,
+      "sha256": "de6038a7994f97356a0ad6314b13f39b27f782ef3f2accb706d5f0febc0dd5da",
+      "sourceFile": "exec-52ec8a8c-fc69-4e9e-8d76-610790b57899.png",
+      "sourceSha256": "038e826664b1eee6bd5fc8e9aaa172cf9bfc4616792ca35f2e55950f2b67b0ee",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: ONE rotating face-on icy saw disc with six broad angular wing-like cutting teeth and a small DIAMOND-shaped dark hub, with one short white-blue motion swoop and two ice shards. An original stylized frost rotor silhouette, not two overlapping many-toothed circular saws. Glacier blue, ivory and navy."
+    },
+    {
+      "baseGunId": 21001,
+      "name": "电弧枪",
+      "file": "arc-blast.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 27596,
+      "sha256": "396795fa49092a3a750098a62c52bcd64250d46108ef54393d55027ddfcab986",
+      "sourceFile": "exec-e27672f2-57b1-42bc-a60c-31d0c743ab7f.png",
+      "sourceSha256": "3394d6ba34d5543704c22810c09feeafa2fdf9503c295c516c72a4084d85dd4d",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: a branching chain of electric arcs linking THREE small luminous energy nodes in a triangular zigzag, with a sharp white connection and chunky blue-cyan sparks. Open branching lightning circuit silhouette, not an S-shaped boomerang or a single curved white ribbon. Cyan, cobalt and ivory."
+    },
+    {
+      "baseGunId": 21101,
+      "name": "酸性黑洞",
+      "file": "corrosive-black-hole.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 26056,
+      "sha256": "04c00106f37ac0b7509a24335be716b7264382364372d8253a26777f6cd81a18",
+      "sourceFile": "exec-7ebd7e86-4066-4a64-99af-9988fc2ec4f0.png",
+      "sourceSha256": "7db53fc2364701192dda9150137ab7da86b9d797ef6be84cd717145fc8471ec6",
+      "prompt": "Use case: style-transfer. Edit target: the attached first-version Girl Flight skill tile. Redesign it into an ORIGINAL second-version game icon while preserving the bright hand-drawn 2D cartoon readability, thick navy contour lines and clean 2-3 tone cel shading. REPLACE the entire composition, silhouette and background, not just the color. New art direction: an aviation tactical display with a large expressive skill glyph floating over two thin broken circular radar arcs and a few sparse calibration ticks. Use a cool desaturated blue/slate square background, a soft lighter central field, and a narrow vertical color accent near one side; the glyph itself has vivid family colors and ivory highlights. Open composition, no enclosing badge. The circular radar arcs are faint open lines behind the glyph, never a thick closed medallion. Glyph fills roughly 70% of the tile with an 8% safe margin. Readable at 64px. Keep it playful, illustrated and clean, with no realistic 3D machinery. Strictly remove ALL hexagons, polygon shields, halftone dots, broad diagonal background stripes and original skill silhouette. No text, numbers, logos, outer border or UI controls. Keep square canvas, opaque full-bleed background. New glyph: a FRONT-FACING circular dark void with four broad turquoise acid spiral vanes curling inward, two short hanging acid drips, and two tiny angular debris shards being pulled in. Keep the central negative space obvious. No tilted elliptical orbit ring or large orbiting gel bubbles. Petroleum teal, acid mint and ivory."
+    }
+  ]
+}
