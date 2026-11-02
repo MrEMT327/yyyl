@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "generator": "OpenAI built-in image_gen",
+  "mode": "built-in",
+  "styleReference": "User-supplied Eggshell Fighter screenshot; art direction only, no competitor pixels copied.",
+  "normalization": "Generated single-icon square PNGs resized to 320px WebP, quality 90. No design edits, extracted competitor pixels or weapon inventory renders.",
+  "scope": "Weapon catalog skill tiles, skill hero and base attack preview only. Original PSD card frame and weapon inventory art retained.",
+  "assets": [
+    {
+      "baseGunId": 20101,
+      "name": "速射机炮",
+      "file": "rapid-autocannon.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 29370,
+      "sha256": "a307991a0ea6f14955522d77837fca671b251ccd25d3ac5f7a2df7911576f3fb",
+      "sourceFile": "exec-d8da0b19-459e-4bfa-9d65-575737714c1a.png",
+      "sourceSha256": "b14c93f025aab91abc74f84ea5971c382d0c2169d8e22d80fd41f736e422709e",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Warm gold/orange badge on golden yellow background. Exactly three compact golden bullets with bright ivory tips racing diagonally toward upper right, short white speed lines. Strong navy outline. No gun, barrel, magazine or mechanical housing."
+    },
+    {
+      "baseGunId": 20201,
+      "name": "爆燃导弹",
+      "file": "he-missile.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 27516,
+      "sha256": "aededa8b36b9643d4b0b36f9a6bd0d7f75fa1908b3b8c367e23df8efacd0c10d",
+      "sourceFile": "exec-bf292b7c-e9f6-4662-bf1f-fc99163b4617.png",
+      "sourceSha256": "e9f85cc4e2c1c0fdbd3d6f69ac6873f0b2ae4b968cdb9f2b43e574eb2a4bbe28",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Red-orange badge on warm coral background. One bold cartoon explosive rocket projectile with pale yellow nose, red fins and a yellow-orange flame trail moving toward upper right; one simple burst behind the trail. No rocket launcher, tubes or gun."
+    },
+    {
+      "baseGunId": 20301,
+      "name": "高能激光",
+      "file": "high-energy-laser.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 25636,
+      "sha256": "77d8d933d7222c645e9c49e13271a1154a58658f701abe67d1164036abf3b1fb",
+      "sourceFile": "exec-f5059347-b168-4f19-8e5f-69302eba0365.png",
+      "sourceSha256": "44144b547c9773ebf04a0eb80c66711e790f21f16022fca552eb60a57d1e27ae",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Turquoise badge on bright cyan background. One thick brilliant white-cyan laser beam shooting diagonally lower-left to upper-right, layered teal edges and a pointed burst at its tip. No laser gun or mechanical object."
+    },
+    {
+      "baseGunId": 20401,
+      "name": "酸液枪",
+      "file": "acid-projectile.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 24370,
+      "sha256": "d38be71b013d2ec66cd164db3a0b058f4cef44a0c84219bb0e2c5d090a44a827",
+      "sourceFile": "exec-9c8992c6-117d-47d7-a634-7290cffe7398.png",
+      "sourceSha256": "bcf682ab0775823d5402d99bfcdcf7efb811516c60fa90a21925e1b184b49e19",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Emerald badge on lime-green background. One large bright lime acid droplet/comet with dark green edge, a white highlight, two small trailing drops and a curved splash tail, flying toward upper right. No acid gun or mechanical parts."
+    },
+    {
+      "baseGunId": 20501,
+      "name": "冰刃弹",
+      "file": "frost-blades.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 25644,
+      "sha256": "2f0ae93ad4fffdec08713ae481b45e0d0a5501464b521b852aa0ee2f20e9605c",
+      "sourceFile": "exec-900966c8-b05d-4f28-a0e5-ce97546c6f78.png",
+      "sourceSha256": "e56ffcf76fd1af66c0a636cdc5868ebca5934d6e3fc63c95ca4c76417ec4f3af",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Ice blue badge on pale cyan background. One broad stylized crescent ice blade sweeping upward, with a white interior, cyan edge and two small diamond-shaped ice shards. Bold simple curved silhouette, no handgrip, handle or gun."
+    },
+    {
+      "baseGunId": 20601,
+      "name": "磁暴枪",
+      "file": "magstorm.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 33944,
+      "sha256": "f725808a107812bdaf52039f773f38be83395a96636458b7a94b0aea9b924540",
+      "sourceFile": "exec-4262d80d-ea13-411d-bd4d-97d8a369b60f.png",
+      "sourceSha256": "f3c9d2cf3884d7d178f68fc92d213fb22c868a38f9ef3287b8f701f58f741425",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Cobalt blue badge on vivid blue background. A compact violent cluster of three jagged electric-blue lightning bolts with white cores, spreading diagonally toward upper right, with two angular sparks. It must read as a magnetic lightning storm rather than a lightning gun. No gun or mechanical parts."
+    },
+    {
+      "baseGunId": 20701,
+      "name": "灼热射线",
+      "file": "scorch-ray.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 30184,
+      "sha256": "976ba0d0d3cf1d3c0633fbfddcd9a997ca0b009dd38cba48b3d02267762cf08f",
+      "sourceFile": "exec-d0312f48-2a55-44df-8421-37cc6049d7f9.png",
+      "sourceSha256": "8fc2eeb9dfa20afa6f9d92b289a32fe471cbcbd108fcf19a7d805e94b4057f2a",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Orange-red badge on warm tangerine background. A broad incandescent yellow-white heat ray sweeping diagonally lower-left to upper-right, flame-shaped red-orange tips and one forked hot trail. Clearly a burning ray effect. No gun, rocket or mechanical housing."
+    },
+    {
+      "baseGunId": 20801,
+      "name": "能量光剑",
+      "file": "energy-blade.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 26644,
+      "sha256": "2c3aba096ea3edafc46445340f4fb6d6dfbdd0d0bd71ad4bc2e81d0f4964f2c5",
+      "sourceFile": "exec-9a90c906-365a-4f96-bba9-ef4f6d386354.png",
+      "sourceSha256": "1c45f24c57ab8f562c909916afa9375f9567a10f9326b23f6bb551016b847ae0",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Turquoise badge on aqua-teal background. A single simplified glowing cyan energy sword slash, long pointed white-cyan blade with a tiny dark teal guard and a curved light trail. Bold diagonal upward silhouette; emphasize the luminous energy blade, not a realistic inventory render."
+    },
+    {
+      "baseGunId": 20901,
+      "name": "冰冻锯盘",
+      "file": "frost-sawblade.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 32396,
+      "sha256": "9eeece2adc3ab5e299be132b8b9f8b361fe1eb04c7feadb4489c3ace535f8bbc",
+      "sourceFile": "exec-497b83b5-8a1e-4349-b0d9-a3fb991a60b1.png",
+      "sourceSha256": "3af95dd1fd6c5b007e3669dde242e36d8d4784bfd71baa0bf790f8ee21c2d570",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Ice blue badge on pale sky blue background. Two rotating stylized circular icy saw discs, one larger in lower-right and a smaller one upper-left. Clearly toothed circular edges with white-cyan ice blades, pale center circles and simple navy motion arcs. Bold simple silhouettes, no mechanical gun housing."
+    },
+    {
+      "baseGunId": 21001,
+      "name": "电弧枪",
+      "file": "arc-blast.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 27574,
+      "sha256": "430076916383a41c9da0dee4403b579463112e4cc3db12e95284ef6020ed6f8a",
+      "sourceFile": "exec-9356e350-571d-4bb9-bea4-0010935f5d97.png",
+      "sourceSha256": "5d8eb14538484afba17b5de554b0d2d4bd4b2dfb6fc4e89d644988559285817b",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Royal blue badge on electric blue background. One thick S-shaped curved white-cyan electric arc with three strong pointed branches, suggesting a curling arc blast or boomerang of electricity. Simple flowing silhouette visually distinct from a cluster of straight jagged lightning bolts. No gun, mechanical parts or metal object."
+    },
+    {
+      "baseGunId": 21101,
+      "name": "酸性黑洞",
+      "file": "corrosive-black-hole.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 33492,
+      "sha256": "40409f8b1b522b8cd2acdbf31e552b69be948210acd69565a8be3858ddf6c3b3",
+      "sourceFile": "exec-5c17452c-d122-43ed-84ed-c9913b20a408.png",
+      "sourceSha256": "c888d4c52709aa4453d5713371a70027e80648929d757769a5d9749ec0163ae7",
+      "prompt": "Use case: stylized-concept. Asset type: one finished square mobile shooter SKILL EFFECT icon. Create original artwork for Girl Flight. Art direction: playful clean 2D comic game icon, thick consistent dark navy outlines, sharply readable simple silhouette, cel shading in 2-3 tones, a large flat beveled hexagonal emblem centered on a colored square background with subtle halftone dots in the upper-left and a broad diagonal light band. Badge occupies 80% of the square. Skill effect fills most of the badge, with generous safe margins. Bright saturated palette, strong pale highlights, legible at 64px. This belongs to an internally consistent 11-icon set. No text, numbers, lettering, labels, logos, watermark, UI controls, outer card frame, scenery, realistic rendering or 3D gun body. Show an abstract attack EFFECT rather than a weapon inventory render. Square canvas, full bleed colored background. Emerald green badge on vivid acid green background. A tilted elliptical dark green black hole with a near-black center, two thick bright lime green orbital rings and three tiny orbiting acid drops, a swirling vortex of acid energy. Clearly an elliptical vortex, not a grenade or physical mine. Bold simple clean silhouette, no gun or mechanical object."
+    }
+  ]
+}

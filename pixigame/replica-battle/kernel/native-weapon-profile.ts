@@ -2,6 +2,16 @@ import type { RecordData, WeaponState } from './model';
 import { nativeModRecords, nativeModParameters } from './native-projectile-mods';
 
 type NativeScaleAttributes = Readonly<Record<string, number>>;
+
+/** FollowMod.OnModBuildComplete@6d33320..6d333cc merges its contribution
+ * into BulletData.Attribute[RotateSpeed]; MoveStraight@6d83d2c reads that
+ * final attribute. The table's RotateSpeed is the base, not visual spin.
+ * Owner BulletFollowRotateSpeed% scales the mod contribution only. */
+export function nativeFollowRotateSpeed(baseRotateSpeed: number, follow: RecordData | undefined,
+  ownerAttributes: NativeScaleAttributes = {}, extraRotateSpeed = 0): number {
+  return follow ? baseRotateSpeed + Number(follow.RotateSpeed || 0)
+    * (1 + (ownerAttributes['BulletFollowRotateSpeed%'] || 0)) + extraRotateSpeed : extraRotateSpeed;
+}
 const scaleFpMultiply = (a: number, b: number): number => Math.floor(a * b * 65536) / 65536;
 
 /** Weapon.CalculateBulletScale@6e475b4. attrs are the owner's resolved

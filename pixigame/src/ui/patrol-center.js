@@ -21,7 +21,7 @@ function rewards(values, {icon, number:n}) {
   return `<div class="pt-rewards">${resources.filter(r => values?.[r.key] > 0).map(r => `<div class="${rewardClass(n(values[r.key]))}" aria-label="${r.name} ${n(values[r.key])}">${icon(r.icon)}<b>×${n(values[r.key])}</b></div>`).join('')}</div>`;
 }
 function nativeArt(item, h) {
-  const url = nativeItemArt(item.id);
+  const url = nativeItemArt(item.artId||item.id);
   return url ? `<img class="pl-icon" src="${h.escape(url)}" alt="" draggable="false">` : '';
 }
 function nativeRewards(items, h) {

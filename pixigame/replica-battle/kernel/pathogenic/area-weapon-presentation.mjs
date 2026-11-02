@@ -112,7 +112,7 @@ export function areaWeaponScreenMeshes(b,screen) {
   // Ground quads match the live collision radii. Upright columns are atmosphere
   // above that footprint, never a new collision shape. Native radii include scale.
   const alpha=type==='cyclone'?clamp(.1+age/.16)*clamp((b.lifetime-b.age)/.4):clamp((b.lifetime-b.age)/.22);
-  const color=type==='lightning'&&b.modelId===1000065?[1.25,.77,.16,alpha]:[.32,.72,1.2,alpha];
+  const color=type==='lightning'?(b.modelId===1000065?[1.25,.77,.16,alpha]:[.56,.38,1.15,alpha]):[.32,.72,1.2,alpha];
   const width=radiusX*(type==='cyclone'?1:0.72),height=Math.max(radiusX,radiusZ)*(type==='cyclone'?2.3:4.0);
   const top=center.y-height,bottom=center.y+radiusZ*.16;
   const upright=[{x:center.x-width,y:top},{x:center.x+width,y:top},{x:center.x+width,y:bottom},{x:center.x-width,y:bottom}];

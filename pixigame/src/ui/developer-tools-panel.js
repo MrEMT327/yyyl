@@ -1,10 +1,12 @@
 import { developerSkillsEnabled } from '../developer-battle-settings.js';
 import { DEVELOPER_CURRENCY_GRANTS } from '../developer-tools.js';
+import { nativeLabProgressGate } from '../replica/native-client-rules.js';
 
 export function developerToolsDialog(snapshot, modal, { escape, number }) {
   const revision = snapshot.nativeAcquisition.revision;
   const busy = snapshot.rewardBusy;
   const pending = snapshot.rewardPending;
+  const researchUnlocked = nativeLabProgressGate(snapshot.replicaCampaign).reached;
   const currencyButtons = Object.entries(DEVELOPER_CURRENCY_GRANTS).map(([currency, grant]) =>
     `<button type="button" class="wc-button" data-action="developerCurrency" data-currency="${currency}" data-revision="${revision}" ${busy || pending ? 'disabled' : ''}>${grant.name} +${number(grant.amount)}</button>`).join('');
   return {
@@ -13,6 +15,8 @@ export function developerToolsDialog(snapshot, modal, { escape, number }) {
       <p>开发资源按需领取，局内技能可单独开启。下方领取的资源会写入当前存档，正常消费。</p>
       <div class="pl-developer-balance"><span>金币 ${number(snapshot.wallet.coins)}</span><span>钻石 ${number(snapshot.wallet.diamonds)}</span></div>
       ${currencyButtons}
+      <button type="button" class="wc-button" data-action="developerResearchUnlock" data-revision="${revision}" ${busy || pending || researchUnlocked ? 'disabled' : ''}>${researchUnlocked ? '科研界面已解锁' : '解锁科研界面'}</button>
+      <p>提前开放科研入口，解锁状态随存档保存。科研项目仍按章节条件开放，升级照常消耗金币和图纸。</p>
       <button type="button" class="wc-button" data-action="developerSkills" aria-pressed="${developerSkillsEnabled()}">局内全部技能：${developerSkillsEnabled() ? '已开启' : '未开启'}</button>
       <p>开启后，下次出击可直接选择全部武器、升级、驾驶员和飞机技能；仅影响局内体验。</p>
       ${busy || pending ? '<p role="status">请先完成当前操作或保存奖励，再领取开发资源。</p>' : ''}

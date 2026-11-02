@@ -1,3 +1,4 @@
+import { nativeWeaponDisplayText } from './native-weapon-display.js';
 import { advanceNativeLab, synchronizeNativeLabs } from './native-laboratory.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import { nativeLabProgressGate } from './native-client-rules.js';
@@ -33,7 +34,7 @@ export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
   const progression = validateReplicaProgression(value), inventory = validateReplicaInventory(rawInventory);
   synchronizeNativeLabs(progression,nativeLabProgressGate(campaign));
   const result = { revision: inventory.revision, gold: inventory.items[1] || 0, slots: progression.skinSkillSlots.slice(), pilotSlots:progression.pilotSkillSlots.slice(),
-    weaponSlots:progression.weaponSkillSlots.slice(), attributeNames: catalog.attributeNames, skinId: progression.role.skinId };
+    weaponSlots:progression.weaponSkillSlots.slice(), attributeNames: Object.fromEntries(Object.entries(catalog.attributeNames).map(([key,name])=>[key,nativeWeaponDisplayText(name)])), skinId: progression.role.skinId };
   for (const kind of ['guns','skins','pilots']) result[kind] = catalog[kind].flatMap(row => {
     if (kind === 'pilots' && !isRosterPilot(row.id)) return [];
     const entry = progression[kind].find(entry => entry.id === row.id), owned = Boolean(entry?.active);
@@ -49,7 +50,7 @@ export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
   });
   result.labs = catalog.labs.map(row=>{
     const entry=progression.labs.find(entry=>entry.id===row.id);
-    return {...row,active:Boolean(entry?.active),level:entry?.level||0,activationKnown:Boolean(entry?.activationKnown),needActive:entry?.needActive,confirmedSkillLevel:entry?.confirmedSkillLevel||0,
+    return {...row,name:nativeWeaponDisplayText(row.name),active:Boolean(entry?.active),level:entry?.level||0,activationKnown:Boolean(entry?.activationKnown),needActive:entry?.needActive,confirmedSkillLevel:entry?.confirmedSkillLevel||0,
       levels:row.levels.map(level=>({...level,skills:level.skills.map(nativeSkillText),costs:costRows(level.cost,inventory)}))};
   });
   return result;

@@ -68,7 +68,7 @@ export function recruitModal(type,s,h,view){
   const shortNames={1:'金币',112:'高级箱券',113:'普通箱券',blueprint:'随机图纸'};
   const rewardItems=rates.map(([key])=>{
     const label=info.probabilityLabels?.[key]||key,match=/^(.*?)\s*×\s*(\d+)$/.exec(label);
-    const name=shortNames[key]||match?.[1]||label,count=match?.[2],art=key==='blueprint'?projectIconUrl('task-log'):nativeRewardPresentation({id:Number(key)}).image;
+    const name=shortNames[key]||match?.[1]||label,count=match?.[2],art=nativeRewardPresentation({id:key==='blueprint'?10010007:Number(key)}).image;
     return `<div class="recruit-preview-item" aria-label="${e(label)}">${art?h.img(art,'','recruit-preview-icon'):''}<span>${e(name)}</span>${count?`<strong>×${n(Number(count))}</strong>`:''}</div>`;
   }).join('');
   return {title:'奖励预览',content:`<div class="recruit-reward-summary" data-recruit-pool="${pool}"><div class="recruit-preview-grid" aria-label="招募奖励">${rewardItems}</div></div>`};

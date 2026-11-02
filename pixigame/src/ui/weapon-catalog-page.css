@@ -23,6 +23,13 @@
   color:#fff;font:400 clamp(16px,5cqw,24px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;
   background:var(--project-heading-background);text-shadow:0 1px 2px #07131f!important;
 }
+#gui-casual-lobby .wc-hero-identity {position:absolute;top:17%;left:4%;right:4%;z-index:2;display:flex;align-items:center;justify-content:center;gap:2cqw;pointer-events:none}
+#gui-casual-lobby .wc-hero-identity h2 {font-size:clamp(14px,4.5cqw,21px);line-height:1.3;color:#fff;text-shadow:0 1px 2px #07131f}
+#gui-casual-lobby .wc-hero-state {padding:.5cqw 1.5cqw;font-size:clamp(10px,3cqw,14px);line-height:1.2;border:1px solid currentColor;background:#0b1b29cc}
+#gui-casual-lobby :is(.wc-hero-state,.wc-state-badge).is-using {color:#b7f5d2;background:#153e38ee}
+#gui-casual-lobby :is(.wc-hero-state,.wc-state-badge).is-preview {color:#ffe0a3;background:#44351dee}
+#gui-casual-lobby .wc-state-badge {position:absolute;top:5%;left:5%;z-index:3;display:flex;align-items:center;justify-content:center;gap:.6cqw;max-width:90%;padding:.6cqw 1cqw;font-size:clamp(9px,2.7cqw,12px);font-weight:700;line-height:1.25;white-space:nowrap;border:1px solid currentColor;pointer-events:none}
+#gui-casual-lobby .wc-state-badge>img {display:block;width:2.8cqw;height:2.5cqw;object-fit:contain}
 #gui-casual-lobby .wc-hero-art {position:absolute;inset:25% 34.5% 33% 29.5%;display:grid;place-items:center;margin:0;padding:0;border:0;background:none;cursor:pointer}
 #gui-casual-lobby .wc-art {display:grid;place-items:center;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;container-type:size}
 #gui-casual-lobby .wc-art>span {position:relative;display:block;width:min(100cqw,calc(100cqh * var(--crop-aspect,1)));height:min(100cqh,calc(100cqw / var(--crop-aspect,1)));overflow:hidden}

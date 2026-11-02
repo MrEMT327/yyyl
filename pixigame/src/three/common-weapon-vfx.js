@@ -6,6 +6,7 @@ import {grenadeHop,toxinShapeSeed} from './common-weapon-motion.js';
 import {commonCannonShape} from '../fixed-parts/common-cannon-shape.js';
 import {DroneSpriteModels} from './drone-sprite-models.js';
 import {hitFeedbackProfile,hitFeedbackPriority} from './enemy-hit-feedback.js';
+import {electricArcSeed} from '../fixed-parts/common-electric.js';
 
 // One GPU surface per effect. Common weapons never use Canvas, line paths,
 // polygon silhouettes, or CPU-tessellated circles.
@@ -39,7 +40,7 @@ class EnergySurfaces{
    a.placement.setXYZW(i,v.x,v.y,angle,6);a.dimensions.setXY(i,Math.max(.01,width),Math.max(.01,height));
    this.color.set(v.color);this.hot.set(v.highlight??v.color);a.tint.setXYZW(i,this.color.r,this.color.g,this.color.b,v.alpha??1);a.highlight.setXYZ(i,this.hot.r,this.hot.g,this.hot.b);
    a.meta.setXYZW(i,EFFECTS[type],v.rank||0,v.progress||0,extra);
-   a.flags.setXYZW(i,flag,type==='toxin'||type==='poison-collapse'?toxinShapeSeed(v):0,0,0);
+   a.flags.setXYZW(i,flag,type==='toxin'||type==='poison-collapse'?toxinShapeSeed(v):type==='lightning'?electricArcSeed(v):0,0,0);
  }
  attenuateOverlap(){
    // Coarse world-space coverage, not all-pairs comparison. Reuse fixed arrays;
@@ -103,7 +104,7 @@ export class CommonWeaponRenderer{
    const dx=end.x-start.x,dy=end.y-start.y,p=commonWeaponPresentation(v);
    // Sustained beams retain a solid colored core but no additive white-out.
    const sustained=['beam','cut-ray','frost-ray'].includes(type),batch=sustained?this.soft:this.light;
-   batch.add(type,{...v,x:(start.x+end.x)/2,y:(start.y+end.y)/2,alpha:(v.alpha??1)*alpha*(sustained?.85:1)},width*p.beam*(1+(v.rank||0)*.04),Math.hypot(dx,dy),Math.atan2(-dx,dy),v.stacks||0);
+   batch.add(type,{...v,x:(start.x+end.x)/2,y:(start.y+end.y)/2,alpha:(v.alpha??1)*alpha*(sustained?.85:1)},width*p.beam*(1+(v.rank||0)*.04),Math.hypot(dx,dy),Math.atan2(-dx,dy),v.stacks||0,v.continuous?1:0);
  }
  add(v){
    let k=v.shape;const r=v.radius||8,u=v.unit||1,rank=v.rank||0,presentation=commonWeaponPresentation(v),grade=1+rank*.035;

@@ -1,3 +1,4 @@
+import {VfxMeshBuffer,quadVisible} from './vfx-buffers.mjs';
 import {ENEMY_SPRITE_CORES} from './enemy-sprite-footprint.mjs';
 import {projectilePalette} from './projectile-palette.mjs';
 
@@ -14,10 +15,12 @@ export function withProjectileMotionResources(graph){
 const fresh=owner=>({key:owner,z:4,material:{$ref:MATERIAL},vertices:[],indices:[],count:0});
 const fract=n=>n-Math.floor(n);
 export class ProjectileMotionAccents{
-  constructor(){this.reset();}
-  reset(){this.batches={player:fresh('player'),enemy:fresh('enemy')};}
-  beginFrame(){this.reset();}
+  constructor(){this.buffers={player:new VfxMeshBuffer('player',MATERIAL,4),enemy:new VfxMeshBuffer('enemy',MATERIAL,4)};this.batches={player:this.buffers.player.mesh,enemy:this.buffers.enemy.mesh};this.beginFrame();}
+  reset(){this.beginFrame(this.viewport);}
+  beginFrame(viewport){this.viewport=viewport;this.buffers.player.reset();this.buffers.enemy.reset();}
   projectile(b,screen,element=0,sprite){
+    // Keep compact kinetic bodies short and clean in dense barrages.
+    if(b.owner==='player'&&[1000000,1000063,1000049,1000050].includes(b.modelId))return;
     const batch=this.batches[b.owner],allowed=b.owner==='enemy'?ENEMY:PLAYER;
     if(!batch||!allowed.has(b.modelId)||batch.count>=PROJECTILE_MOTION_LIMIT||b.dead||b.visualHidden||b.beam||b.held
       ||![b.uid,b.x,b.z,b.age,b.lifetime,b.scale,b.radiusX,b.radiusZ,b.angle??0,b.offsetX??0,b.offsetZ??0].every(Number.isFinite)
@@ -42,6 +45,7 @@ export class ProjectileMotionAccents{
       // curved flight and visualAngle. Collision radii never position this wake.
       point=(a,l)=>({x:ox+m[0]/sx*a-m[2]/sy*l,y:oy+m[1]/sx*a-m[3]/sy*l});
     }
+    if(this.viewport){const a=point(-rx*1.2,-rz-24/px),c=point(rx*1.2,-rz-24/px),d=point(rx*1.2,rz*1.2),e=point(-rx*1.2,rz*1.2);if(!quadVisible([a,c,d,e],this.viewport))return;}
     const palette=projectilePalette(b,element),rgb=palette[3]>0?palette.slice(0,3):element===3?[.22,1,.3]:[.12,.68,1];
     const light=rgb.map(v=>v*.5+.5),phase=b.age*7+b.uid*2.399963;
     const fade=Math.min(1,b.age/.08,(b.lifetime-b.age)/.08),pulse=(.78+.22*Math.sin(phase))*fade;
@@ -49,7 +53,7 @@ export class ProjectileMotionAccents{
       const start=batch.vertices.length;
       for(let i=0;i<points.length;i++){
         const p=point(...points[i]);
-        batch.vertices.push({position:[p.x,p.y],uv:[.5,.5],color:[...color,Array.isArray(alpha)?alpha[i]:alpha]});
+        this.buffers[b.owner].vertex(p.x,p.y,.5,.5,color[0],color[1],color[2],Array.isArray(alpha)?alpha[i]:alpha);
       }
       for(let i=1;i<points.length-1;i++)batch.indices.push(start,start+i,start+i+1);
     };

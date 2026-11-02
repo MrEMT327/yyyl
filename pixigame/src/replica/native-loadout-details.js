@@ -2,6 +2,7 @@ import { calculateStudyLoadout } from '../../replica-battle/kernel/loadout-state
 import { validateReplicaConfiguration, replicaConfigurationKey } from './loadout-contract.js';
 import { initializeReplicaLoadoutCapabilities } from './native-runtime-capabilities.js';
 import { withNativeResearchRuntime } from './native-research-runtime.js';
+import { nativeWeaponDisplayText } from './native-weapon-display.js';
 import { nativeSkillText } from './native-skill-text.js';
 let request;
 let cachedKey, cachedResult, pendingKey, pendingResult;
@@ -18,7 +19,7 @@ async function calculateDetails(value) {
   const state=configuration.progression;state.equipment=configuration.equipment.map(row=>({...row}));
   initializeReplicaLoadoutCapabilities();
   const result=calculateStudyLoadout(data,state);
-  const names=Object.fromEntries(Object.entries(data.attributeNames).map(([key,row])=>[key,row.name||key]));
+  const names=Object.fromEntries(Object.entries(data.attributeNames).map(([key,row])=>[key,nativeWeaponDisplayText(row.name||key)]));
   const skills=result.initialSkillIds.map(id=>{
     const row=data.allSkills.find(row=>row.id===id);
     return nativeSkillText({id,name:row?.name,description:row?.description,supported:result.battleSkillIds.includes(id)});

@@ -794,6 +794,21 @@ export function createPeripheralSystem({
       if(!persist()){state.onboarding=previous;return fail('引导进度未能保存');}
       onChange();return pass('');
     }
+    if (type === 'developerResearchUnlock') {
+      const access = developerToolsAccess();
+      if (!access.ok) return access;
+      if (payload.expectedRevision !== state.replicaInventory.revision) return fail('资源已变化，请重新点击');
+      if (state.replicaCampaign.developmentResearchUnlocked === true) return pass('科研界面已解锁');
+      try {
+        const replicaCampaign = { ...state.replicaCampaign, developmentResearchUnlocked: true };
+        const sync = planNativeLabSynchronization(state.replicaLoadout, state.replicaInventory, replicaCampaign);
+        const next = { ...state, replicaCampaign,
+          ...(sync ? { replicaLoadout: sync.progression, replicaInventory: sync.inventory } : {}) };
+        if (!saveDailyState(next)) return fail('解锁未保存，请重试');
+        onChange();
+        return pass('科研界面已解锁');
+      } catch (error) { return fail(error.message); }
+    }
     if (type === 'developerCurrency') {
       const access = developerToolsAccess();
       if (!access.ok) return access;

@@ -1173,6 +1173,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         catch (error) { modal.error = error.message || '开发设置保存失败'; }
         renderModal(); return;
       }
+      if (action === 'developerResearchUnlock') {
+        await act('developerResearchUnlock', { expectedRevision: Number(target.dataset.revision) });
+        return;
+      }
       if (action === 'developerCurrency') {
         await act('developerCurrency', { currency: target.dataset.currency, expectedRevision: Number(target.dataset.revision) });
         return;

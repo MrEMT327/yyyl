@@ -1,7 +1,9 @@
 import {COMBAT_LAYERS,damageTextPose,playerVisibility} from './combat-readability.mjs';
-import {isOrdinaryDeathVisual} from '../small-death-visual.js';
+import {CombatRenderSamples,CombatStatusIndex} from '../../src/replica/combat-render-samples.mjs';
+import {captureEnemyDeathBody,enemyDeathVisualScale} from '../small-death-visual.js';
 import {sampleNativeUrgencyWarning} from './enemy-warning';
 import {applySourceStatusTint} from './pathogenic/source-status-tint';
+import {setupFirstChapterBloom,registerFirstChapterSpriteBloom} from './pathogenic/chapter1-bloom';
 import {PathogenicBattleEffects} from './pathogenic/pathogenic-battle-effects';
 import pathogenicGraph from './pathogenic/scene-graph.json';
 import {restoredSequenceOwnsSprite} from '../weapon-visual-quality.js';
@@ -68,6 +70,10 @@ type Display = Phaser.GameObjects.Container | Phaser.GameObjects.Image | Phaser.
 
 export class BattleView extends Phaser.Scene {
   private objects = new Map<string, Display>();
+  private readonly renderSamples = new CombatRenderSamples();
+  private readonly statusIndex = new CombatStatusIndex();
+  private readonly liveViews = new Set<string>();
+  private readonly liveEnemyIds = new Set<number>();
   private enemyViewPositions = new Map<number, { view: NativeViewPosition; target: Point; revision: number }>();
   private readonly cameraView = new NativeViewPosition({ x: 0, z: 0 }, true);
   private cameraRunId = -1;
@@ -75,6 +81,7 @@ export class BattleView extends Phaser.Scene {
   private readonly mapCameraOffsets = new NativeMapCameraOffsets();
   private vfxRunId = -1;
   private pathogenic!: PathogenicBattleEffects;
+  private chapterBloomPipeline?:string;
   private terrain: { image: Phaser.GameObjects.Image; z: number; x: number }[] = [];
   private nativeTerrain: { row: NativeMapSpriteRenderer; layer: NativeMapLayer; geometry: { vertices: { x: number; z: number; u: number; v: number }[]; indices: number[] } }[] = [];
   private mapSubtractBlend = Phaser.BlendModes.NORMAL;
@@ -99,7 +106,7 @@ export class BattleView extends Phaser.Scene {
     preloadPickupArt(this);
     preloadSupplyChestArt(this);
     this.pathogenic=new PathogenicBattleEffects(this,pathogenicGraph);
-    this.pathogenic.configureHost({playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});
+    this.pathogenic.configureHost({weaponSkinId:()=>Number(this.content.combat.studyLoadout?.selectedGunId||0),playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});
     this.pathogenic.preload((_p,t)=>t.url);
         preloadChapterOrbitArt(this, this.prefabByModel.keys());
     preloadScatterGunboat(this, this.prefabByModel.keys());
@@ -187,6 +194,7 @@ export class BattleView extends Phaser.Scene {
       this.mapSubtractBlend = this.renderer.addBlendMode([gl.ONE, gl.ONE, gl.ZERO, gl.ONE], gl.FUNC_REVERSE_SUBTRACT);
     }
     this.cameras.main.setBackgroundColor('#315257');
+    this.chapterBloomPipeline=setupFirstChapterBloom(this,this.pathogenic.source,Number(this.content.chapter.chapter.id))??registerFirstChapterSpriteBloom(this);
     this.appearance?.create(this);
     if (!this.appearance?.replaceTerrain) this.createTerrain();
     this.beams = this.add.graphics().setDepth(30);
@@ -440,9 +448,12 @@ export class BattleView extends Phaser.Scene {
     // CameraView.Root is the original camera root: its ordinary EntityView
     // interpolation IS the display movement. No second follow/Lerp is applied.
     this.advanceCameraView(delta);
-    const s = this.sim, live = new Set<string>();
+    const s = this.sim, live = this.liveViews; live.clear();
+    const visualClock = this.renderSamples.beginFrame(s.clock,s.runId,s.phase,delta/1000);
+    const statusIndex = this.statusIndex.update(s);
     const sourceCamera=this.screen(0,0);this.pathogenic.setCameraOffset(sourceCamera.x,sourceCamera.y);
-    this.pathogenic.beginFrame(s.clock,s.runId,{playerBulletCount:s.projectiles.filter(b=>b.owner==='player'&&!b.dead).length});
+    let playerBulletCount=0;for(const bullet of s.projectiles)if(bullet.owner==='player'&&!bullet.dead)playerBulletCount++;
+    this.pathogenic.beginFrame(s.clock,s.runId,{playerBulletCount,visualClock});
     if(this.vfxRunId!==s.runId||s.phase==='ready'){this.enemyViewPositions.clear();this.vfxRunId=s.runId;}
     this.drawNativeTerrain(live);
     const mapLength = this.content.assets.map.loopLength || 192;
@@ -480,7 +491,7 @@ export class BattleView extends Phaser.Scene {
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
     if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, s.player.hitFlash > .14 ? 0xff7777 : 0x3ee4a1);
     if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(s.player.hitFlash);
-    const enemyIds = new Set<number>();
+    const enemyIds = this.liveEnemyIds; enemyIds.clear();
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
     const gunboatShots = scatterGunboatShots(s.enemies, s.projectiles, s.clock);
     const patrolShots = patrolDroneShots(s.enemies, s.projectiles, s.clock);
@@ -490,7 +501,9 @@ export class BattleView extends Phaser.Scene {
       enemyIds.add(enemy.uid);
       const key = `enemy:${enemy.uid}`; live.add(key);
       let view = this.objects.get(key) as Phaser.GameObjects.Container | undefined;
-      if (!view) { view = this.model(enemy.modelId, enemy.radiusX * 2); view.setDepth(20); this.objects.set(key, view); }
+      if (!view) { view = this.model(enemy.modelId, enemy.radiusX * 2); view.setDepth(20); this.objects.set(key, view);
+        const bounds=view.getBounds();captureEnemyDeathBody(enemy,bounds.width,bounds.height,this.px);
+      }
       let motion = this.enemyViewPositions.get(enemy.uid);
       const revision = enemy.viewPositionRevision ?? 0;
       if (!motion) {
@@ -579,7 +592,7 @@ export class BattleView extends Phaser.Scene {
           child.setTexture(frame).setOrigin(sprite.pivot.x, 1 - sprite.pivot.y);
         }
       }
-      applySourceStatusTint(view,enemy.hitFlash>0,s.activeBuffVisuals.some(buff=>buff.targetUid===enemy.uid&&(buff.modelId===170001||buff.modelId===170012)),s.clock,{boss:enemy.boss});
+      applySourceStatusTint(view,enemy.hitFlash>0,statusIndex.frozen.has(enemy.uid),visualClock,{boss:enemy.boss});
       const health = this.content.assets.enemyHealthBars;
       const healthConfig = health.entities[enemy.entityId];
       if (!enemy.boss && healthConfig?.showHp && healthConfig.showHpType !== 0) {
@@ -589,7 +602,7 @@ export class BattleView extends Phaser.Scene {
         const anchor = health.models[enemy.modelId], center = anchor.center;
         const co = Math.cos(enemy.angle), si = Math.sin(enemy.angle);
         const point = this.screen(visual.x + (center[0] * co + center[2] * si) * enemy.scale, visual.z + (-center[0] * si + center[2] * co + anchor.healthDistance) * enemy.scale);
-        bar.setPosition(point.x, point.y); bar.updateHealth(enemy, s.clock);
+        bar.setPosition(point.x, point.y); bar.updateHealth(enemy, visualClock);
       }
       if (this.debugOn) this.outline(enemy, 0x77eeff);
     }
@@ -606,38 +619,16 @@ export class BattleView extends Phaser.Scene {
     for(const bullet of s.projectiles){
       // Native primary-gun shots use familyId 0. Resolve only their view identity.
       const sourceBullet=thunderBeam(bullet)??bullet;
-      const visualBullet=sourceBullet.owner==='player'&&!sourceBullet.familyId?{...sourceBullet,familyId:this.content.chapter.player.weaponEntityId}:sourceBullet;
-      // The basic and wing shots use the short flat body. Piercing has its
-      // own longer sprite, while the heavy branch retains its round body.
+      const visualBullet=this.renderSamples.projectile(sourceBullet,this.content.chapter.player.weaponEntityId);
+      // All kinetic shots share the authored presentation route.
       this.pathogenic.equipmentAccent(visualBullet,s.equipmentProjectileAccent(bullet),(x,z)=>this.screen(x,z));
-      const cannonModel=visualBullet.modelId===1000050?1000050
-        :visualBullet.familyId===200151&&visualBullet.modelId===1000049?1000049
-        :((visualBullet.familyId===200151&&visualBullet.modelId===1000000)
-          ||(visualBullet.weaponId===400002&&visualBullet.modelId===1000063))?1000000:undefined;
-      const cannonSprite=cannonModel===1000050?'arrow_Monster_rotundity_1_0000'
-        :cannonModel===1000049?'arrow_Monster_slender_1_0000'
-        :cannonModel===1000000?'arrow_Monster_green_1_0000':undefined;
-      if(visualBullet.owner==='player'&&!visualBullet.beam&&cannonModel!==undefined&&cannonSprite&&this.textures.exists(cannonSprite)) {
-        if(!visualBullet.dead&&!visualBullet.visualHidden&&visualBullet.age >= (visualBullet.warmup ?? 0)) {
-          const key=`native-heavy-shot:${visualBullet.uid}`;live.add(key);
-          let view=this.objects.get(key) as Phaser.GameObjects.Container | undefined;
-          if(!view){view=this.model(cannonModel);view.setDepth(COMBAT_LAYERS.playerShot);this.objects.set(key,view);}
-          if(visualBullet.modelId===1000050){
-            const frame=`arrow_Monster_rotundity_1_000${Math.floor(visualBullet.age*16)%4}`;
-            if(this.textures.exists(frame))for(const child of view.list)
-              if(child instanceof Phaser.GameObjects.Image&&child.getData('sourceSprite')==='arrow_Monster_rotundity_1_0000')child.setTexture(frame);
-          }
-          const point=this.screen(visualBullet.x,visualBullet.z);
-          const yaw=visualBullet.visualAngle??(Math.hypot(visualBullet.vx,visualBullet.vz)>.001
-            ?Math.atan2(visualBullet.vx,visualBullet.vz):visualBullet.angle);
-          view.setPosition(point.x,point.y).setScale(visualBullet.scale).setRotation(yaw).setVisible(true);
-        }
-        continue;
-      }
+      if(this.pathogenic.weaponSkinProjectile(visualBullet,(x,z)=>this.screen(x,z)))continue;
       this.pathogenic.projectile(visualBullet,(x,z)=>this.screen(x,z),Number(this.content.chapter.bullets[bullet.bulletId]?.parameters.Element??0));
       if(this.debugOn)this.outline(bullet,bullet.owner==='player'?0xffdd77:0xff5252);
     }
-    for (const pickup of s.pickups) {
+    for (const sourcePickup of s.pickups) {
+      const pickup=this.renderSamples.pickup(sourcePickup);
+      this.pathogenic.pickup(pickup,(x,z)=>this.screen(x,z));
       const key = `pickup:${pickup.uid}`; live.add(key);
       let view = this.objects.get(key) as Phaser.GameObjects.Container | undefined;
       if (!view) { view = createPickupVisual(this, pickup) ?? this.model(pickup.modelId); view.setDepth(19); this.objects.set(key, view); }
@@ -650,7 +641,20 @@ export class BattleView extends Phaser.Scene {
         for (const child of view.list) if (child instanceof Phaser.GameObjects.Image && child.getData('sourceSprite') === sequence.rendererSprite) child.setTexture(frame).setOrigin(sprite.pivot.x, 1 - sprite.pivot.y);
       }
     }
-    for(const buff of s.activeBuffVisuals)this.pathogenic.status(buff,(x,z)=>this.screen(x,z));
+    const buffVisuals=statusIndex.visuals,visualTargets=statusIndex.targets;
+    for(const sourceBuff of buffVisuals){
+      const position=this.enemyViewPositions.get(sourceBuff.targetUid)?.view.position;
+      const buff: RecordData={...sourceBuff,x:position?.x??sourceBuff.x,z:position?.z??sourceBuff.z,
+        age:Number.isFinite(sourceBuff.age)?this.renderSamples.age(sourceBuff.age):sourceBuff.age,
+        ...(Number.isFinite(sourceBuff.remaining)?{remaining:sourceBuff.remaining+Math.max(0,s.clock-visualClock)}:{})};
+      if([170002,170001,170004,170012,220022,170000].includes(buff.modelId)){
+        // Read target extents only to attach the corrosion art to its silhouette.
+        const target=buff.targetUid===0?undefined:visualTargets.get(buff.targetUid);
+        const shape=playerEntity.stats.shape;
+        this.pathogenic.status({...buff,visualRadiusX:target?.radiusX??shape[0]*s.playerScale,
+          visualRadiusZ:target?.radiusZ??(shape[1]??shape[0])*s.playerScale},(x,z)=>this.screen(x,z));
+      }else this.pathogenic.status(buff,(x,z)=>this.screen(x,z));
+    }
     for(const fx of s.effects)this.drawEffect(fx,live);
     this.pathogenic.endFrame();
     if (this.debugOn) {
@@ -658,7 +662,7 @@ export class BattleView extends Phaser.Scene {
       this.outline({ ...s.player, radiusX: radius, radiusZ: radius, box: false, angle: 0 }, 0x44ff88);
     }
     for (const [key, view] of this.objects) if (!live.has(key)) {
-      if (s.phase !== 'ready' && view instanceof EnemyHealthBar && view.finishAfterDeath(s.clock)) continue;
+      if (s.phase !== 'ready' && view instanceof EnemyHealthBar && view.finishAfterDeath(visualClock)) continue;
       view.destroy(); this.objects.delete(key);
     }
   }
@@ -738,9 +742,9 @@ export class BattleView extends Phaser.Scene {
     if(fx.age<0)return;
     if(fx.followPlayer){fx.x=this.sim.player.x+(fx.followOffset?.x||0);fx.z=this.sim.player.z+(fx.followOffset?.z||0);}
     if(fx.ownerUid){const owner=this.sim.enemies.find(e=>e.uid===fx.ownerUid&&!e.dead);if(!owner)return;const pos=this.enemyViewPositions.get(owner.uid)?.view.position??owner;fx.x=pos.x;fx.z=pos.z;}
-    if(fx.kind!=='text'){this.pathogenic.effect(fx,(x,z)=>this.screen(x,z),isOrdinaryDeathVisual(fx)?.5:1);return;}
+    if(fx.kind!=='text'){this.pathogenic.effect(fx,(x,z)=>this.screen(x,z),enemyDeathVisualScale(fx));return;}
     const key=`fx:${fx.uid}`;live.add(key);let view=this.objects.get(key) as Phaser.GameObjects.Text|undefined;
-    const layout=damageTextPose(fx);
+    const layout=damageTextPose({...fx,age:this.renderSamples.age(fx.age)});
     if(!view){view=this.add.text(0,0,fx.value||'',{fontFamily:'DankeUI, Microsoft YaHei',fontSize:layout.fontSize+'px',color:layout.color,stroke:'#18272e',strokeThickness:2}).setOrigin(.5).setDepth(layout.depth);this.objects.set(key,view);}
     const pos=this.screen(fx.x,fx.z),margin=view.width/2+4;
     view.setPosition(Math.max(margin,Math.min(WIDTH-margin,pos.x+layout.x)),Math.max(30,Math.min(HEIGHT-12,pos.y+layout.y))).setAlpha(layout.alpha);

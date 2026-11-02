@@ -119,7 +119,7 @@ export class SwordEnergyTrails {
       const ty = Math.sin(particle.angle) * particle.length * shrink / 2;
       const nx = -Math.sin(particle.angle) * particle.width * shrink / 2;
       const ny = Math.cos(particle.angle) * particle.width * shrink / 2;
-      const base = vertices.length, color = [.65, .94, 1, particle.alpha * (1 - fraction) ** 1.4];
+      const base = vertices.length, color = [.48, .70, 1, particle.alpha * (1 - fraction) ** 1.4];
       for (const [along, across, u, v] of [[-1,-1,0,0],[-1,1,0,1],[1,1,1,1],[1,-1,1,0]]) {
         vertices.push({ position: [x + tx * along + nx * across, y + ty * along + ny * across], uv: [u, v], color });
       }

@@ -19,12 +19,17 @@ export function sampleFlightPosition(state,{clock,runId,flight,visible=true,rend
   const snapshotDelta=clock-state.clock;
   if(snapshotDelta>0){
     const dx=target.x-state.target.x,dz=target.z-state.target.z,distance=Math.hypot(dx,dz);
-    const reversed=state.direction&&dx*state.direction.x+dz*state.direction.z<0;
-    if(snapshotDelta>.25||distance>Math.max(.5,(flight.speed||0)*snapshotDelta*2)||distance<1e-7||reversed)return reset();
+    const dot=state.direction?dx*state.direction.x+dz*state.direction.z:0;
+    const turning=state.direction&&dot<=Math.hypot(state.direction.x,state.direction.z)*distance*.25;
+    if(snapshotDelta>.25||distance>Math.max(.5,(flight.speed||0)*snapshotDelta*2)||distance<1e-7||turning)return reset();
+    const starting=!state.direction;
     state.direction={x:dx,z:dz};state.target=target;state.clock=clock;
+    // First movement follows the accepted logic position immediately. Subsequent
+    // steady travel can still be subdivided between snapshots without prediction.
+    if(starting){state.current={...target};return {...state.current};}
   }
   const dt=Number.isFinite(renderDelta)?Math.min(.05,Math.max(0,renderDelta)):0;
-  const blend=1-Math.exp(-90*dt);
+  const blend=1-Math.exp(-120*dt);
   state.current.x+=(state.target.x-state.current.x)*blend;
   state.current.z+=(state.target.z-state.current.z)*blend;
   const dx=state.current.x-target.x,dz=state.current.z-target.z,distance=Math.hypot(dx,dz);

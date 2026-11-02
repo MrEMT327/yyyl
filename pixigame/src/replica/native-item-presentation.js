@@ -15,6 +15,8 @@ const base=import.meta.env?.BASE_URL||'/';
 const units=new Map([...catalog.guns,...catalog.skins,...catalog.pilots].map(row=>[row.id,row]));
 const items=new Map(acquisition.items.map(row=>[row.id,row]));
 export function nativeItemArt(id) {
+  const group=({10010007:'equipment-blueprints',10010008:'research-blueprints'})[id];
+  if(group)return base+'art/project-material-groups-v1/'+group+'.svg';
   const signin=({111:'quantum-key',3132505:'epic-glove-chip'})[id];
   if(signin)return `${base}art/project-signin-icons-v1/${signin}.png`;
   if(Number(id)===110)return projectItemIcon(113);
@@ -45,8 +47,10 @@ export function nativeItemPresentation(id) {
   const researchBlueprint=id>=801&&id<=811;
   const displayQuality=nativeItemDisplayQuality(id);
   const replacement=MATERIAL_REPLACEMENTS[id];
-  const description=id===3132505?'原包签到奖励，按原物品保存；芯片装备系统暂未接入。':replacement?`可在背包按1:1兑换为${nativeItemDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
+  const description=id===3132505?'原包签到奖励，按原物品保存；芯片装备系统暂未接入。':replacement?`可在背包按1:1兑换为${nativeCollectionDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
     :part?`用于强化${part.name}，与金币一同消耗。`
+    :id===10010007?'随机获得五种装备部位图纸中的一种。'
+    :id===10010008?'随机获得十一种科研图纸中的一种。'
     :researchBlueprint?'用于对应科研升级，与金币一同消耗。可通过巡逻、快速巡逻、章节奖励与每日商店获得。'
     :id===112?'开启高级装备箱时消耗。'
     :id===113?'开启普通装备箱时消耗。'

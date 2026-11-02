@@ -1,3 +1,4 @@
+import { nativeResearchBlueprintName } from './native-weapon-display.js';
 import { cloudAssetBase } from '../ui/cloud-asset-base.js';
 
 // Item IDs and laboratory IDs are distinct from the battle skill family IDs.
@@ -15,7 +16,7 @@ export const RESEARCH_BLUEPRINT_ART = Object.freeze([
   [810, 10, '10000301', '电弧枪图纸'],
   [811, 11, '10000901', '酸性黑洞图纸'],
 ].map(([nativeItemId, labId, skillKey, name]) => Object.freeze({
-  nativeItemId, labId, skillKey, name,
+  nativeItemId, labId, skillKey, name:nativeResearchBlueprintName(nativeItemId)||name,
   url: `${cloudAssetBase}art/project-research-blueprints-v1/${nativeItemId}.png`,
 })));
 

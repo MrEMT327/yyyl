@@ -1,3 +1,4 @@
+import { nativeWeaponDisplayText } from '../../src/replica/native-weapon-display.js';
 import { isRosterPilot } from '../../src/replica/native-pilot-roster.js';
 import { nativePilotDisplayName } from '../../src/replica/native-pilot-names.js';
 import { nativeSkillDescription } from '../../src/replica/native-skill-description.js';
@@ -11,7 +12,7 @@ export type DeveloperSkill = {
   name: string; description: string; label: string; familyId?: number;
   variants?: number[]; parentStageIds?: number[]; unavailable?: string[]; choice: Choice;
 };
-const plain = (value: unknown) => String(value || '').replace(/<[^>]*>/g, '').replace(/\\n/g, '\n');
+const plain = (value: unknown) => nativeWeaponDisplayText(String(value || '').replace(/<[^>]*>/g, '').replace(/\\n/g, '\n'));
 
 /** The allowlist contains player skills with implemented runtime dependencies.
  * Enemy/system rows are deliberately not exposed by the development picker. */
@@ -40,7 +41,7 @@ export function buildDeveloperSkillCatalog(content: GameContent, catalog: Loadou
       star: star || stage?.star || parents[0]?.star || raw.SkillStar || 1, icon: family?.icon || raw.IconName || '',
       effects: card?.effects || stage?.effects || [], raw,
       advance: stage ? id : undefined, parentStageId: parentStageIds[0], opensBreakthrough: false };
-    result.set(id, { id, category, label, name, description, familyId, variants, parentStageIds, unavailable: support && !support.supported ? support.reasons : undefined, choice });
+    result.set(id, { id, category, label: nativeWeaponDisplayText(label), name, description, familyId, variants, parentStageIds, unavailable: support && !support.supported ? support.reasons : undefined, choice });
   };
   for (const family of Object.values(combat.families) as RecordData[]) {
     if (!runtimeWeaponFamilyEnabled(family.id)) continue;

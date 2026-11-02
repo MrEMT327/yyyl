@@ -1,20 +1,22 @@
 const PREFIX='host://missile-v2/';
 const ROCKET='res://scn/player/projectiles/rocket.tscn';
-const BODY_HEIGHT=70;
+const BODY_HEIGHT=90;
 const BODY_REGION=[295,56,361,1485];
 const FLAME_REGION=[114,68,497,2037];
 
 export function missilePresentation(projectile){
   const bodyScale=BODY_HEIGHT/BODY_REGION[3];
   const age=Number.isFinite(projectile.age)?projectile.age:0,phase=age*24+(projectile.uid??0)*2.4;
-  const flutter=.94+.06*Math.sin(phase),flameLength=(projectile.held?24:40)*flutter;
-  return{scale:1,retireImmediately:false,pose:{overrides:{
-    'Visual/Circle':{position:[0,0],offset:[0,0],scale:[bodyScale,bodyScale],
+  const flutter=.94+.06*Math.sin(phase),flameLength=(projectile.held?28:46)*flutter;
+  // The host impact owns removal. Do not leave the solid body/exhaust frozen
+  // during the source rocket's separate 0.2s exit animation.
+  return{scale:1,retireImmediately:true,pose:{overrides:{
+    'Visual/Circle':{position:[0,0],offset:[0,0],scale:[bodyScale*1.08,bodyScale],
       self_modulate:[1,1,1,1],modulate:[1,1,1,1],
       texture:{$ref:PREFIX+'body-frame'},material:{$ref:PREFIX+'body-material'}},
     'Visual/EngineFlame':{visible:!projectile.held||projectile.targetUid>0,
       position:[0,BODY_HEIGHT/2-2],offset:[0,FLAME_REGION[3]/2],
-      scale:[(9.6+.4*Math.cos(phase*1.3))/FLAME_REGION[2],flameLength/FLAME_REGION[3]]},
+      scale:[(12.2+.5*Math.cos(phase*1.3))/FLAME_REGION[2],flameLength/FLAME_REGION[3]]},
   }}};
 }
 

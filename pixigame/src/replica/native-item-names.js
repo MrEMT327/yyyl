@@ -1,3 +1,4 @@
+import { nativeResearchBlueprintName } from './native-weapon-display.js';
 import { nativePilotFragmentName } from './native-pilot-fragments.js';
 import { GEAR_PARTS, GEAR_QUALITY_NAMES, gearName } from '../peripheral/equipment-system.js';
 import equipment from '../peripheral/equipment-reference-data.json' with {type:'json'};
@@ -7,6 +8,8 @@ import { equipmentArtKey } from './equipment-art.js';
 // Keep captured item tables and all balances/costs untouched.
 const names=Object.freeze({
   ...Object.fromEntries(GEAR_PARTS.map(part=>[part.blueprintId,`${part.name}图纸`])),
+  ...Object.fromEntries(Array.from({length:11},(_,index)=>[801+index,nativeResearchBlueprintName(801+index)])),
+  10010007:'随机装备图纸',10010008:'随机科研图纸',
   903:'装备图纸自选箱',934:'史诗装备自选箱',
   112:'高级装备箱券',113:'普通装备箱券',925:'角色箱',926:'角色箱碎片',
   3132505:'手套·史诗芯片',10010007:'随机装备图纸',10010008:'随机科研图纸',

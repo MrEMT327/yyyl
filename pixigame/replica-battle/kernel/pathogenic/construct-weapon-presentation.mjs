@@ -31,7 +31,7 @@ void fragment(){
   float spokes=pow(wave,35.0)*smoothstep(0.43,0.59,r)*(1.0-smoothstep(0.78,0.9,r));
   float core=exp(-r*r*15.0)*(0.25+0.06*sin(construct_age*4.0));
   float bound=1.0-smoothstep(0.9,1.0,r);
-  vec3 color=mix(vec3(0.06,0.35,0.9),vec3(0.6,1.12,1.4),clamp(rim+spokes,0.0,1.0));
+  vec3 color=mix(vec3(0.28,0.12,0.86),vec3(0.78,0.68,1.25),clamp(rim+spokes,0.0,1.0));
   COLOR=vec4(color,COLOR.a*bound*clamp(rim+gap+spokes*0.7+core,0.0,0.95));
 }`);
   add('halo',`shader_type canvas_item;
@@ -86,14 +86,14 @@ export function constructWeaponScreenMeshes(b,screen){
   }
   const radius=Number.isFinite(b.radiusX)&&b.radiusX>0?b.radiusX:.8*b.scale;
   const ratio=radius/.8;
-  const meshes=[quad('prism-glow',point,1.2*ratio,2*ratio,'halo',alpha,age,seed,[.14,.45,1.1])];
+  const meshes=[quad('prism-glow',point,1.2*ratio,2*ratio,'halo',alpha,age,seed,[.08,.24,1.05])];
   // The source sprite is a three-faced triangular prism, not a round pellet.
   const top=[0,.65*ratio],left=[-.8*ratio,-.65*ratio],right=[.8*ratio,-.65*ratio],middle=[0,-.1*ratio];
   const positions=[top,left,middle,top,middle,right,left,right,middle];
   // Rotate only the visible facets and edges; the construct and ray origins stay fixed.
   const spin=age*1.5,c=Math.cos(spin),s=Math.sin(spin);
   const prismPoint=(across,forward)=>point(across*c-forward*s,across*s+forward*c);
-  const colors=[[.35,.89,1.05],[.065,.28,.8],[.09,.63,.8]];
+  const colors=[[.38,.65,1.08],[.055,.15,.68],[.10,.38,.85]];
   meshes.push({key:'prism-body',z:3,material:{$ref:PREFIX+'facet'},materialUniformOverrides:{construct_age:age},
     vertices:positions.map((p,i)=>vertex(prismPoint(...p),[(p[0]/radius+1)/2,(p[1]/(.65*ratio)+1)/2],[...colors[Math.floor(i/3)],alpha*.96])),indices:[0,1,2,3,4,5,6,7,8]});
   const vertices=[],indices=[];
@@ -101,7 +101,7 @@ export function constructWeaponScreenMeshes(b,screen){
     const vx=bp[0]-a[0],vz=bp[1]-a[1],length=Math.hypot(vx,vz),nx=-vz/length*.018*ratio,nz=vx/length*.018*ratio;
     const start=vertices.length;
     for(const[p,u,v]of [[[a[0]-nx,a[1]-nz],0,0],[[bp[0]-nx,bp[1]-nz],1,0],[[bp[0]+nx,bp[1]+nz],1,1],[[a[0]+nx,a[1]+nz],0,1]]){
-      vertices.push(vertex(prismPoint(...p),[u,v],[.68,1.15,1.35,alpha*.8]));
+      vertices.push(vertex(prismPoint(...p),[u,v],[.60,.85,1.30,alpha*.8]));
     }
     indices.push(start,start+1,start+2,start,start+2,start+3);
   }

@@ -1,3 +1,4 @@
+import { nativeWeaponDisplayText } from './native-weapon-display.js';
 import {nativeWeaponGroupId} from './native-weapon-groups.js';
 import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import {nativeCollectionAccess,nativeCollectionRows} from './native-collection-access.js';
@@ -21,7 +22,7 @@ const groupFor={weapon:'guns',aircraft:'skins',pilot:'pilots'};
 // Native pilot IDs do not belong to the retired cloud combat categories.
 // Filter the actual collection state without assigning invented skill types.
 const nativePilotFilters=Object.freeze([{id:'all',label:'全部'},{id:'owned',label:'已激活'},{id:'locked',label:'未激活'}]);
-const plain=value=>String(value||'').replace(/<[^>]*>/g,'');
+const plain=value=>nativeWeaponDisplayText(String(value||'').replace(/<[^>]*>/g,''));
 const icon=nativeCollectionArt;
 const weaponSkillArtwork=(row,e)=>{
   const url=nativeWeaponSkillArt(row);
@@ -70,7 +71,7 @@ export function cloudNativeCatalog(ctx){
     node.dataset.psdQuality=String(collectionQualityRank(row.quality));
     node.removeAttribute('data-rarity');
     const access=nativeCollectionAccess(group,s,row);
-    node.setAttribute('aria-label',`${row.name}，${row.qualityName}，${row.star}星${row.baseOnly||access.basicOnly?'，可用':row.owned?'':'，未激活'}${access.using?'，使用中':''}`);
+    node.setAttribute('aria-label',`${row.name}，${row.qualityName}，${row.star}星${row.baseOnly||access.basicOnly?'，可用':row.owned?'':'，未激活'}${access.using?'，使用中':''}${node.getAttribute('aria-pressed')==='true'&&!access.using?'，预览中':''}`);
     const stars=node.querySelector('.wc-stars');
     if(stars){
       stars.setAttribute('aria-label',`${row.star}星`);
@@ -97,7 +98,7 @@ export function cloudNativeCatalog(ctx){
     node.dataset.action='nativeOperation';node.dataset.operation=op;node.dataset.kind=group;
     node.dataset.id=String(access?access.selectionId:row.id);node.dataset.revision=String(collection.revision);
     node.disabled=access?!access.available||access.using:op==='slot'?!['skins','pilots'].includes(group)||!row.owned||!row.stage.skills.length:!row.canPurchase;
-    if(access)node.textContent=access.using?'使用中':'使用';
+    if(access)node.textContent=access.using?'使用中':group==='guns'?'装备出战':'使用';
   };
   if(['aircraft','pilot'].includes(kind)){
     const label=t.content.querySelector('.fc-unlock-skill>span:last-child');
@@ -141,16 +142,26 @@ export function cloudNativeCatalog(ctx){
 export function cloudNativeSkillPreview(group,id,s,h){
   const row=s.replicaCollection[group]?.find(row=>row.id===Number(id));
   if(row&&group==='guns')return collectionDetail(group,row,s,h,{preview:true});
-  if(!row?.stage.skills.length)return {title:'技能',content:'<p>当前星级没有可携带技能。</p>'};
-  return fleetSkillPreview({kind:group==='skins'?'aircraft':'pilot',
+  if(!row)return {title:'技能',content:'<p>记录不存在</p>'};
+  if(!row.stages.some(stage=>stage.skills.length||stage.attributes.length))
+    return {title:row.name,content:'<p>暂无星级效果。</p>'};
+  const panel=fleetSkillPreview({kind:group==='skins'?'aircraft':'pilot',
     item:{id:String(row.id),stars:row.star,owned:row.owned},helpers:h,
     levels:row.stages.map(stage=>stage.star),
     skillFor:(_kind,item)=>{
       const stage=row.stages.find(stage=>stage.star===(item.stars||row.defaultStar));
-      return {name:stage.skills.map(skill=>plain(skill.name)).join('、'),ownerName:row.name,
-        description:stage.skills.map(skill=>plain(skill.description)).join('\n'),
+      return {name:stage.skills.map(skill=>plain(skill.name)).join('、')||'星级效果',ownerName:row.name,
+        description:stage.skills.map(skill=>plain(skill.description)).join('\n')||'该星级无技能效果。',
         image:nativeSkillArt(stage.skills[0]),icon:'skill-tab'};
     }});
+  const t=template(panel.content);
+  for(const [index,node] of [...t.content.querySelectorAll('.fc-star-skill-list>section')].entries()){
+    const stage=row.stages[index];
+    if(!stage.skills.length&&stage.attributes.length)node.querySelector('p')?.remove();
+    if(stage.attributes.length)node.insertAdjacentHTML('beforeend',
+      `<div class="fc-detail-stats" aria-label="${stage.star}星收藏属性">${nativeAttributeRows(stage,s,h)}</div>`);
+  }
+  return {...panel,content:t.innerHTML};
 }
 
 function collectionDetailArtwork(row,h){
@@ -170,7 +181,7 @@ export function cloudNativeWeaponPreview(id,mode,s,h){
     return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${weaponSkillArtwork(row,e)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};
   }
   const stages=family?.stages.filter(stage=>stage.star>1)||[];
-  const rows=stages.map(stage=>`<details class="wc-growth-section"><summary>${stage.star} 星 · ${stage.kind==='breakthrough'?'突破':stage.kind==='minor'?'强化':'升级'}</summary>${stage.options.length?stage.options.map(skill=>`<div class="wc-growth-rule"><h5>${e(skill.name)}</h5><p>${e(skill.description)}</p></div>`).join(''):`<div class="wc-growth-rule"><p>${e(stage.description)}</p></div>`}</details>`).join('');
+  const rows=stages.map(stage=>`<details class="wc-growth-section"><summary>${stage.star} 星 · ${stage.kind==='breakthrough'?'突破':stage.kind==='minor'?'强化':'升级'}</summary>${stage.options.length?stage.options.map(skill=>`<div class="wc-growth-rule"><h5>${e(plain(skill.name))}</h5><p>${e(plain(skill.description))}</p></div>`).join(''):`<div class="wc-growth-rule"><p>${e(plain(stage.description))}</p></div>`}</details>`).join('');
   return {title:'局内成长',content:`<article class="wc-skill-detail wc-growth-detail"><h3>${e(row.name)}</h3>${rows||'<p>当前模式没有该武器的局内成长配置。</p>'}<p class="wc-skill-timing">候选效果受本局技能与抽取规则限制，选取后仅本局生效。</p></article>`};
 }
 
@@ -188,12 +199,13 @@ function nativeDetailAction(node,group,row,s,operation,preview=false) {
   const access=operation==='select'?nativeCollectionAccess(group,s,row):null;
   if(access)node.dataset.id=String(access.selectionId);
   node.disabled=directGrowth?Boolean(row.maxed||s.rewardPending||s.rewardBusy):preview?row.maxed:access?!access.available||access.using:!row.canPurchase;
-  if(access)node.textContent=access.using?'使用中':'使用';
+  if(access)node.textContent=access.using?'使用中':group==='guns'?'装备出战':'使用';
 }
 function nativeAttributeRows(stage,s,h) {
   return (stage?.attributes||[]).map(value=>{
     const [key,amount]=value.split('=');
-    return `<div><span>${h.escape(s.replicaCollection.attributeNames[key]||key)}</span><b>${h.escape(amount)}</b></div>`;
+    const display=`${Number(amount)>=0?'+':''}${amount}${key.endsWith('%')?'%':''}`;
+    return `<div><span>${h.escape(s.replicaCollection.attributeNames[key]||key)}</span><b>${h.escape(display)}</b></div>`;
   }).join('');
 }
 export function cloudNativeCollectionDetail(group,id,s,h){

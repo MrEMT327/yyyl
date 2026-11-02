@@ -60,7 +60,7 @@ export function nativeLabProgressGate(campaign={}) {
     ||Object.entries(campaign.passedWaves||{}).some(([id,passed])=>passed>0&&(Number(id)>chapter||(Number(id)===chapter&&passed>=wave)));
   const reachedChapter=Math.max(1,...(campaign.clearedChapterIds||[]).map(id=>id+1),
     ...Object.entries(campaign.passedWaves||{}).filter(([,passed])=>passed>0).map(([id])=>Number(id)));
-  return {chapter,wave,reachedChapter,reached:UNLOCK_ALL_CONTENT || reached,developmentUnlocked:UNLOCK_ALL_CONTENT,serverStateKnown:false};
+  return {chapter,wave,reachedChapter,reached:UNLOCK_ALL_CONTENT || campaign.developmentResearchUnlocked === true || reached,developmentUnlocked:UNLOCK_ALL_CONTENT,serverStateKnown:false};
 }
 
 export function nativeLabView(row,campaign) {

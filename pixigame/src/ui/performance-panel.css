@@ -1,13 +1,16 @@
-/* Diagnostics own a layout cell outside the game, including the reopen button. */
-.arcade.has-performance-tools{grid-template-columns:minmax(0,min(750px,46.182dvh)) auto;grid-template-rows:minmax(0,1fr);gap:12px;padding:8px;align-items:start}
-.performance-game-stage{grid-column:1;grid-row:1;width:100%;height:100%;min-width:0;min-height:0;display:grid;place-items:center;container-type:size}
-.performance-game-stage>#gameShell{width:min(100cqw,46.182cqh)!important;height:auto!important;aspect-ratio:750/1624!important;max-height:100%!important}
-.performance-tools{grid-column:2;grid-row:1;align-self:start;width:236px;max-width:100%;max-height:100%;min-height:0;overflow:auto;font:12px/1.4 system-ui;color:#deebef}
-.performance-tools:has(.perf-panel:not(.is-compact):not([hidden])){width:330px}
+/* Diagnostics share a top toolbar; the game keeps the full row below it. */
+.arcade.has-performance-tools{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:4px;padding:max(4px,env(safe-area-inset-top)) max(4px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left));align-items:stretch}
+.performance-game-stage{grid-column:1;grid-row:2;width:100%;height:100%;min-width:0;min-height:0;display:grid;place-items:start center;container-type:size}
+.performance-game-stage>#gameShell{width:min(750px,100cqw,46.182cqh)!important;height:auto!important;aspect-ratio:750/1624!important;max-height:100%!important}
+.performance-tools{grid-column:1;grid-row:1;justify-self:end;align-self:start;position:relative;z-index:100;display:flex;align-items:center;gap:6px;width:max-content;max-width:100%;min-height:32px;overflow:visible;font:12px/1.4 system-ui;color:#deebef}
+.performance-tools :is(#replicaResearchToggle,.perf-toggle){width:auto;min-height:32px;margin:0;padding:5px 10px;white-space:nowrap}
 .performance-tools button{font:inherit;color:inherit;background:#1c3542;border:1px solid #7196a5;border-radius:5px;padding:4px 8px;cursor:pointer;min-height:28px}
+body:has(.has-performance-tools) #buildIdentity,
+body:has(#gui-casual-lobby:not([hidden])):has(.has-performance-tools) #buildIdentity{left:max(4px,env(safe-area-inset-left));right:auto;top:max(4px,env(safe-area-inset-top))!important;bottom:auto!important;max-width:calc(100vw - 190px);overflow:hidden;text-overflow:ellipsis;line-height:32px}
 .performance-tools button:focus-visible{outline:2px solid #d4f6ff;outline-offset:2px}
 .performance-tools [hidden]{display:none!important}
-.perf-panel{width:100%;box-sizing:border-box;border:1px solid #526d7c;border-radius:7px;background:#0e1c27;padding:10px;contain:layout style}
+.perf-panel{position:absolute;right:0;top:calc(100% + 4px);width:236px;max-width:calc(100vw - 12px);max-height:calc(100dvh - 52px);overflow:auto;box-sizing:border-box;border:1px solid #526d7c;border-radius:7px;background:#0e1c27;padding:10px;contain:layout style}
+.perf-panel:not(.is-compact){width:330px}
 .perf-panel header,.perf-panel footer{display:flex;align-items:center;gap:6px}
 .perf-panel header>strong{flex:1;font-size:12px;color:#a7c3cf}
 .perf-panel header button{font-size:11px;line-height:1;min-height:24px}
@@ -21,11 +24,6 @@
 .perf-values{margin:8px 0;font-variant-numeric:tabular-nums}.perf-values>div{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid #38556366;padding:3px 0}
 .perf-values dt{color:#b1c8d2}.perf-values dd{margin:0;color:#edf8fb}.perf-note{font-size:10px}.perf-panel footer button{flex:1}
 @media(max-width:760px){
-  .arcade.has-performance-tools{grid-template-columns:minmax(0,1fr) 58px;grid-template-rows:minmax(0,1fr);gap:6px;padding:max(6px,env(safe-area-inset-top)) 6px 6px}
-  .arcade.has-performance-tools:has(.perf-panel:not([hidden])){grid-template-columns:minmax(0,1fr) min(236px,50vw)}
-  .has-performance-tools>.performance-tools,
-  .has-performance-tools>.performance-tools:has(.perf-panel:not(.is-compact):not([hidden])){width:100%;max-height:100%}
-  .performance-tools :is(#replicaResearchToggle,.perf-toggle){width:100%;min-height:44px;padding:4px;font-size:11px;white-space:normal}
   .perf-panel{padding:6px 8px}.perf-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:5px}
   .perf-summary dd{font-size:16px}.perf-summary [data-value='frame-ms']{font-size:13px}
   .perf-values dt{min-width:0;overflow-wrap:anywhere}

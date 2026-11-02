@@ -1,4 +1,5 @@
 import { nativeSkillDescription } from './native-skill-description.js';
+import { nativeWeaponDisplayText, nativeWeaponSkillDisplayOverride } from './native-weapon-display.js';
 
 const researchNames = Object.freeze({
   10201503: '暴击过载',
@@ -26,7 +27,7 @@ export function nativeDisplayText(value, fallback = '') {
 export function nativeSkillText(skill) {
   return {
     ...skill,
-    name: nativeDisplayText(skill.name, researchNames[skill.id] || '技能效果'),
-    description: nativeDisplayText(nativeSkillDescription(skill), '暂无技能说明'),
+    name: nativeWeaponDisplayText(nativeDisplayText(nativeWeaponSkillDisplayOverride(skill.id)?.name || skill.name, researchNames[skill.id] || '技能效果')),
+    description: nativeWeaponDisplayText(nativeDisplayText(nativeSkillDescription(skill), '暂无技能说明')),
   };
 }

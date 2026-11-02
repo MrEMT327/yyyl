@@ -1,3 +1,4 @@
+import { nativeWeaponDisplayText } from '../../src/replica/native-weapon-display.js';
 import type { GameAudio } from './audio';
 import type { RecordData, Choice } from './model';
 import type { Simulation } from './simulation';
@@ -109,7 +110,7 @@ export class Interface {
   }
   private skinReward(card: Choice): Choice {
     return this.sim.content.combat.families[card.group]
-      ? { ...card, icon: this.weaponIconKey(card.group, card.star, card) } : card;
+      ? { ...card, name: nativeWeaponDisplayText(card.name), description: nativeWeaponDisplayText(card.description || originalSkillDescription(card as unknown as RecordData) || effectDescription(card.effects)), icon: this.weaponIconKey(card.group, card.star, card) } : card;
   }
   private image(key: string, className = '') { const sprite = this.sprites[key]; return sprite ? `<img class="${className}" src="${escape(sprite.url)}" alt="" draggable="false">` : ''; }
   update() {
@@ -204,7 +205,7 @@ export class Interface {
     ].map(({ entityId, state }) => {
       const family = families.find(f => f.entityId === entityId);
       const stage = family?.stages.find((row: RecordData) => row.skillId === state.stageId);
-      return { entityId, icon: family ? this.weaponIconKey(family.id, stage?.star || 1) : '10000101', name: family?.name || '速射机炮', star: stage?.star || 1 };
+      return { entityId, icon: family ? this.weaponIconKey(family.id, stage?.star || 1) : '10000101', name: nativeWeaponDisplayText(family?.name || '速射机炮'), star: stage?.star || 1 };
     });
   }
   private inventoryStars(star: number, weapon = true, maxStar = 2) {
@@ -245,9 +246,9 @@ export class Interface {
   }
   private card(c: Choice) {
     const family = this.sim.content.combat.families?.[c.group] || Object.values(this.sim.content.combat.families || {}).find((f: any) => f.id === c.group) as RecordData | undefined;
-    const name = c.name || family?.name || '武器强化';
+    const name = nativeWeaponDisplayText(c.name || family?.name || '武器强化');
     const stageEffects = family?.stages.find((stage: RecordData) => stage.skillId === c.advance)?.effects || [];
-    const description = c.description || originalSkillDescription(c as unknown as RecordData) || effectDescription([...c.effects, ...stageEffects]);
+    const description = nativeWeaponDisplayText(c.description || originalSkillDescription(c as unknown as RecordData) || effectDescription([...c.effects, ...stageEffects]));
     const breakthrough = Boolean(family) && c.star > 0 && c.star % 3 === 0;
     const element: Record<number, [string, string]> = {
       10000101: ['physics', '物理'], 10000601: ['ice', '冰冻'],
