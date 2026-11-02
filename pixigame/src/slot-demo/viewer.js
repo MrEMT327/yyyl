@@ -7,6 +7,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { loadFighterPackages, fighterForPilot } from '../three/aircraft/fighter-packages.js';
 import { createFighterView } from '../three/aircraft/fighter-view.js';
+import { AIRCRAFT_RENDER_STYLE, createAircraftLighting } from '../three/aircraft/aircraft-lighting.js';
 import { setShowroomCameraPreset } from '../ui/showroom-camera.js';
 import { DEMO_ITEMS, itemAtSlot } from './catalog.js';
 import { createModuleGeometry } from './module-geometry.js';
@@ -25,20 +26,18 @@ export async function createSlotDemoViewer({ viewport, onProject, pilotId = 'pil
   viewport.prepend(canvas);
   const renderer = new T.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75));
-  renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
+  renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = AIRCRAFT_RENDER_STYLE.exposure;
   const scene = new T.Scene(); scene.background = new T.Color('#0b1726');
   const room = new RoomEnvironment(), pmrem = new T.PMREMGenerator(renderer), environment = pmrem.fromScene(room, .04);
-  room.dispose(); pmrem.dispose(); scene.environment = environment.texture; scene.environmentIntensity = .75;
-  scene.add(new T.HemisphereLight('#e8f3ff', '#1b2835', 1));
-  const key = new T.DirectionalLight('#e3f3ff', 2.1); key.position.set(-10, 18, -8); scene.add(key);
-  const rim = new T.DirectionalLight('#74bece', 1.7); rim.position.set(8, 5, 7); scene.add(rim);
+  room.dispose(); pmrem.dispose(); scene.environment = environment.texture;
+  createAircraftLighting(scene);
   const grid = new T.GridHelper(42, 42, '#2a4252', '#172d3f'); grid.position.y = -2;
   grid.material.transparent = true; grid.material.opacity = .42; scene.add(grid);
   const runway = new T.Mesh(new T.RingGeometry(10.8, 10.83, 100), new T.MeshBasicMaterial({ color: '#3c6879', side: T.DoubleSide, transparent: true, opacity: .5 }));
   runway.rotation.x = -Math.PI / 2; runway.position.y = -1.98; scene.add(runway);
 
   const fighter = createFighterView({ pilotId: fittingPilotId(pilotId), size: 1, nativeSpace: true });
-  Object.assign(fighter.runtime.config, { bodyFx: .1, surfaceGlow: .25, coreGlow: .3, weaponGlow: .16, trails: 0, particles: 0 });
+  Object.assign(fighter.runtime.config, { trails: 0, particles: 0 });
   scene.add(fighter.object3D);
   let slots = resolveAircraftSlots(fighter);
   const modules = new T.Group(), wiring = new T.Group(), pads = new T.Group(); scene.add(modules, wiring, pads);
@@ -150,7 +149,7 @@ export async function createSlotDemoViewer({ viewport, onProject, pilotId = 'pil
   function setPilot(nextId, placements = current) {
     const id = fittingPilotId(nextId), entry = fighterForPilot(id);
     fighter.setPilot(id);
-    Object.assign(fighter.runtime.config, { bodyFx: .1, surfaceGlow: .25, coreGlow: .3, weaponGlow: .16, trails: 0, particles: 0 });
+    Object.assign(fighter.runtime.config, { trails: 0, particles: 0 });
     fighter.updateAircraft(elapsed);
     slots = resolveAircraftSlots(fighter);
     for (const slot of slots) {
