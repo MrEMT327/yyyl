@@ -2,6 +2,7 @@ import { cloudAssetBase } from './cloud-asset-base.js';
 import { projectIconUrl } from './project-ui-art.js';
 import { createSkillIconSprites } from './battle-skill-art.js';
 import { projectItemIcon } from './project-item-icons.js';
+import { pauseCategoryIconUrl } from './pause-category-art.js';
 
 const own = name => `${cloudAssetBase}art/project-supplement-icons-v1/${name}.png`;
 const psd = name => `${cloudAssetBase}art/psd-combat-v1/${name}.png`;
@@ -23,8 +24,8 @@ export function projectBattleInterfaceIcon(key) {
     Pause:psd('pause'), Pause_1:psd('pause'),
     ui_coin:projectIconUrl('credits-token'), ui_kill:own('target'),
     Currency_HeroExp:projectItemIcon(3),
-    stg_pause_activeSkillIcon:projectIconUrl('skill-tab'),
-    stg_pause_passiveSkillIcon:projectIconUrl('upgrade-arrow'),
+    stg_pause_activeSkillIcon:pauseCategoryIconUrl('weapons'),
+    stg_pause_passiveSkillIcon:pauseCategoryIconUrl('upgrades'),
     stg_pause_hurt:psd('stats'), stg_pause_hurt_down:psd('stats'),
     stg_pause_setting:own('settings'), stg_pause_main:own('home'), stg_pause_main_down:own('home'),
     stg_pause_soundOpen:own('sound'), stg_pause_soundClose:own('muted'),

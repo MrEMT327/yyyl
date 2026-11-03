@@ -63,7 +63,7 @@ function eligible(row,campaign) {
   if(row.wave)return (campaign.passedWaves?.[row.missionId]||0)>=row.wave;
   return false;
 }
-export function nativeAcquisitionSnapshot(rawInventory,campaign={},rawClaims={},gear,time=Date.now()) {
+export function nativeAcquisitionSnapshot(rawInventory,campaign={},rawClaims={},gear,time=Date.now(),progression) {
   const inventory=validateReplicaInventory(rawInventory),claims=milestoneState(rawClaims);
   const rewards=source.missionRewards.filter(row=>replicaChapter(row.missionId)).map(row=>{
     const reward=rewardPairs(row);
@@ -85,7 +85,7 @@ export function nativeAcquisitionSnapshot(rawInventory,campaign={},rawClaims={},
     chapterRewardLedger:{completeClaimedThrough:claims.lastClaimedId,fixedProcessedThrough:claims.fixedRewardCursor,
       deferred:claims.deferredRandomRewards.map(entry=>{const row=missions.get(entry.rewardId);return {...entry,missionId:row.missionId,wave:row.wave,rewards:entry.rewards.map(rewardView)};}),
       compatibilityNote:'离线兼容v1：随机组按原候选逐张均匀分配；旧待发记录只补图纸，不重复发固定奖励。'},
-    equipmentBoxes:nativeEquipmentBoxPreview(inventory.items,gear,time),materials:Object.entries(inventory.items).filter(([,count])=>count>0).map(([id,count])=>({id:Number(id),count,name:itemName(Number(id))})),rewards,
+    equipmentBoxes:nativeEquipmentBoxPreview(inventory.items,gear,time,progression),materials:Object.entries(inventory.items).filter(([,count])=>count>0).map(([id,count])=>({id:Number(id),count,name:itemName(Number(id))})),rewards,
     recruit:{fragmentId:compose.id,fragmentCount:inventory.items[compose.id]||0,required:composeCost,boxId:composeTarget,boxCount:inventory.items[composeTarget]||0,
       canCompose:(inventory.items[compose.id]||0)>=composeCost,maxComposeCount:Math.floor((inventory.items[compose.id]||0)/composeCost),canOpen:(inventory.items[composeTarget]||0)>0,
       candidates:items.get(composeTarget).itemPreview.filter(([id])=>isRosterPilot(id)).map(([id,count])=>({id,count,name:nativeCollectionDisplayName(id)||growth.pilots.find(row=>row.id===id)?.name||itemName(id)}))},

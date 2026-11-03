@@ -1477,7 +1477,7 @@ export function createPeripheralSystem({
       replicaCollection: nativeCollection,
       pilotSupply: {...pilotSupplySnapshot(state.pilotSupply,state.replicaInventory,state.replicaLoadout,currentTime(),state.replicaCampaign,taskCounters()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.pilotSupply),adAvailable:typeof playShopAd==='function'},
       replicaCampaign: copy(state.replicaCampaign), onboarding: normalizeOnboarding(state.onboarding),
-      nativeAcquisition: nativeAcquisitionSnapshot(state.replicaInventory,state.replicaCampaign,state.replicaClaims,state.equipment,currentTime()),
+      nativeAcquisition: nativeAcquisitionSnapshot(state.replicaInventory,state.replicaCampaign,state.replicaClaims,state.equipment,currentTime(),state.replicaLoadout),
       flightRewards: {...flightRewardsSnapshot(flightRewards,state.replicaInventory,state.replicaCampaign,currentTime()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd&&!pendingFlightAd.pilotSupply&&!pendingFlightAd.samplePatrol),adAvailable:typeof playShopAd==='function'},
       research: nativeResearchSnapshot(state.replicaLoadout, state.replicaInventory),
       starRewards: state.replicaLoadout?{...nativeStarRewardSnapshot(state.starRewards,state.replicaCampaign,stages.length*3),revision:state.replicaInventory.revision}:starRewards.snapshot(),

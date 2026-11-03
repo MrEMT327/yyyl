@@ -2,7 +2,7 @@ import { nativeResearchBlueprintName } from './native-weapon-display.js';
 import { cloudAssetBase } from '../ui/cloud-asset-base.js';
 
 // Item IDs and laboratory IDs are distinct from the battle skill family IDs.
-// These sheets are presentation only: inventory, costs and quality stay native.
+// Sheets embed the current equipment weapon artwork; IDs, costs and quality stay native.
 export const RESEARCH_BLUEPRINT_ART = Object.freeze([
   [801, 1, '10000101', '速射机炮图纸'],
   [802, 2, '10000701', '爆燃导弹图纸'],
@@ -17,7 +17,7 @@ export const RESEARCH_BLUEPRINT_ART = Object.freeze([
   [811, 11, '10000901', '酸性黑洞图纸'],
 ].map(([nativeItemId, labId, skillKey, name]) => Object.freeze({
   nativeItemId, labId, skillKey, name:nativeResearchBlueprintName(nativeItemId)||name,
-  url: `${cloudAssetBase}art/project-research-blueprints-v1/${nativeItemId}.png`,
+  url: `${cloudAssetBase}art/project-research-blueprints-v2/${nativeItemId}.svg`,
 })));
 
 const byItem = new Map(RESEARCH_BLUEPRINT_ART.map(row => [row.nativeItemId, row]));

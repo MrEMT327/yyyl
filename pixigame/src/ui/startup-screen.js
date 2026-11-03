@@ -17,7 +17,7 @@ export function createStartupScreen(documentRef=document) {
   return {
     stage(value,message){progress.value=Math.max(progress.value,Math.min(3,value));status.textContent=message;},
     ready(onEnter,{automatic=false}={}) {
-      progress.value=3;status.textContent='准备就绪';start.hidden=false;start.disabled=false;
+      progress.value=3;root.classList.add('is-ready');status.textContent='准备就绪';start.hidden=false;start.disabled=false;
       if(automatic){cleanup();return Promise.resolve();}
       return new Promise(resolve=>{
         start.onclick=()=>{

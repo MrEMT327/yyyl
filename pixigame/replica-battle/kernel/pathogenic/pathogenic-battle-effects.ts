@@ -33,7 +33,7 @@ type Row=Record<string,any>;
 export type ScreenPoint={x:number;y:number};
 export type BeamQuery={origin:ScreenPoint;direction:ScreenPoint;maxDistance:number;sourceId:string;scenePath:string;seed:number;birthTime:number};
 export type BeamResult={endpoint:ScreenPoint;hit?:boolean;normal?:ScreenPoint};
-export type BattleEffectsHost={weaponSkinId?:()=>number;playerBulletCount?:()=>number;raycastBeam?:(query:BeamQuery)=>BeamResult;screenPointVisible?:(point:ScreenPoint)=>boolean;physicsFps?:number;view?:any;nativeSwordEffects?:Row};
+export type BattleEffectsHost={weaponSkinId?:()=>number|number[];playerBulletCount?:()=>number;raycastBeam?:(query:BeamQuery)=>BeamResult;screenPointVisible?:(point:ScreenPoint)=>boolean;physicsFps?:number;view?:any;nativeSwordEffects?:Row};
 type Entry={path:string;age:number;bornAt:number;lastSeen:number;seenRevision:number;lastDraw:number;exitAt?:number;pose:Row;poseCamera:[number,number];randomValues:number[];seed:number;duration?:number;retention:number;independent?:boolean;retireImmediately?:boolean;capture?:Row;children:Set<string>;lightningPoints?:number[][];scheduled?:Row;hitEvents:Row[];stopAge?:number;seenHits?:Map<number,number>;sparkCooldown?:number;sparkTime?:number;sparkCount?:number;visualComplete?:boolean};
 const PREFIRE='res://scn/player/projectiles/staurolaser_beam.tscn';
 const finite=(x:any)=>typeof x==='number'&&Number.isFinite(x);
@@ -296,9 +296,8 @@ export class PathogenicBattleEffects {
       return;
     }
     if(fx.age<0||fx.kind==='text')return;const path=effectScene(fx);if(!path)return;
-    if(nativeContact&&(this.feedback.count>=120||this.feedback.contactCount>=96))return;
     if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
-    if(nativeContact){this.feedback.count++;this.feedback.contactCount++;}
+    if(nativeContact&&!this.feedback.admitNativeContact())return;
     const explosion=rootProps(this.graph,path).script?.$external?.endsWith('/explosion.gd');
     const presentation=effectPresentation(fx),root=graphRoot(this.graph,path),overrides:Row={...(root.type==='GPUParticles2D'&&root.properties.one_shot?{'.':{emitting:true}}:{}),...presentation.overrides};
     if(nativeContact){

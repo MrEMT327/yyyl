@@ -12,22 +12,30 @@ export function damageTextPose(fx){
     alpha:(strong?1:.78)*Math.pow(1-t,.8),fontSize:hurt?21:fx.critical?21:15,
     color:hurt?'#ff7277':fx.critical?'#ffed91':'#d9e4e8',depth:COMBAT_LAYERS.text};
 }
-// Decide once per event, so throttled sparks cannot appear late on another frame.
-// Explosions, warning cues, status effects and damage numbers are never throttled.
-const CONTACT_MODELS=new Set([0,110001,110008,210001,210012,210013,210014,210047,210050,210062,110030,110039,120006,210048,220029,210049,210065,210051,210035]);
+// Decide once at birth. Rejected contacts never appear later in their life.
+// Two different contact families may share a small area; later decorative
+// contacts wait for a new real hit. Explosions and essential cues are untouched.
+const CONTACT_MODELS=new Set([0,110001,110008,110011,120001,210001,210012,210013,210014,210047,210050,210059,210060,210062,110030,110039,120006,210048,220029,210049,210065,210051,210035,220022]);
+const COLD_CONTACTS=new Set([210035,210051,220022]),ACID_CONTACTS=new Set([210049,210065]),ELECTRIC_CONTACTS=new Set([110030,110039,120006,210047,210048,210062,220029]);
+const contactFamily=id=>COLD_CONTACTS.has(id)?'cold':ACID_CONTACTS.has(id)?'acid':ELECTRIC_CONTACTS.has(id)?'electric':'metal';
+const SPARK_RADIUS=32,SPARK_INTERVAL=.065;
 export class HitSparkAdmission {
   constructor(){this.events=new Map();this.cells=new Map();this.clock=-Infinity;}
   beginFrame(clock){
     if(clock<this.clock)this.reset();this.clock=clock;
     for(const [id,e]of this.events)if(clock>e.until)this.events.delete(id);
-    for(const [key,at]of this.cells)if(clock-at>.2)this.cells.delete(key);
+    for(const [key,rows]of this.cells){const live=rows.filter(r=>clock-r.at<=SPARK_INTERVAL);if(live.length)this.cells.set(key,live);else this.cells.delete(key);}
   }
   accepts(fx,point){
     if(fx.kind!=='hit'||!CONTACT_MODELS.has(fx.modelId??0))return true;
     const known=this.events.get(fx.uid);if(known)return known.allowed;
-    const key=`${fx.modelId??0}:${Math.floor(point.x/36)}:${Math.floor(point.y/36)}`;
-    const allowed=this.clock-(this.cells.get(key)??-Infinity)>=.065;
-    if(allowed)this.cells.set(key,this.clock);
+    const valid=Number.isFinite(point.x)&&Number.isFinite(point.y),family=contactFamily(fx.modelId??0);
+    const cx=Math.floor(point.x/SPARK_RADIUS),cy=Math.floor(point.y/SPARK_RADIUS);let nearby=0,same=false;
+    if(valid)for(let x=cx-1;x<=cx+1;x++)for(let y=cy-1;y<=cy+1;y++)for(const row of this.cells.get(x+':'+y)||[]){
+      if(this.clock-row.at<SPARK_INTERVAL&&(row.x-point.x)**2+(row.y-point.y)**2<=SPARK_RADIUS**2){nearby++;if(row.family===family)same=true;}
+    }
+    const allowed=valid&&!same&&nearby<2;
+    if(allowed){const key=cx+':'+cy,rows=this.cells.get(key)||[];rows.push({at:this.clock,x:point.x,y:point.y,family});this.cells.set(key,rows);}
     this.events.set(fx.uid,{allowed,until:this.clock+Math.max(0,(fx.duration??0)-(fx.age??0))+.2});
     return allowed;
   }

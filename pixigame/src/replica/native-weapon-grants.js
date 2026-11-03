@@ -12,9 +12,24 @@ export const RANDOM_WEAPONS=Object.freeze(ids.map(id=>{
   return Object.freeze({id,name:nativeCollectionDisplayName(id)||row.name,defaultStar:row.defaultStar});
 }));
 
+// Authored variants are a LOCAL advanced-box pool, separate from native group 10010023.
+export const RANDOM_VARIANT_WEAPONS=Object.freeze(catalog.guns.filter(row=>!row.closed&&row.skinNumber>0).map(row=>{
+  if(!RANDOM_WEAPONS.some(base=>base.id===row.baseGunId)||row.unlockCost.length!==1||row.unlockCost[0][0]!==row.id||row.unlockCost[0][1]!==1)
+    throw Error('武器变体激活配置无效');
+  return Object.freeze({id:row.id,name:nativeCollectionDisplayName(row.id)||row.name,defaultStar:row.defaultStar,baseGunId:row.baseGunId,isVariant:true});
+}));
+export const BOX_WEAPONS=Object.freeze([
+  ...RANDOM_WEAPONS.map(row=>Object.freeze({...row,baseGunId:row.id,isVariant:false})),...RANDOM_VARIANT_WEAPONS,
+]);
+export function availableWeaponVariants(progression){
+  const active=new Set((progression?.guns||[]).filter(row=>row.active).map(row=>row.id));
+  return RANDOM_VARIANT_WEAPONS.filter(row=>active.has(row.baseGunId));
+}
+
 export function grantWeaponCopies(inventory,progression,id,amount) {
-  const row=RANDOM_WEAPONS.find(row=>row.id===id);
+  const row=BOX_WEAPONS.find(row=>row.id===id);
   if(!row||!Number.isSafeInteger(amount)||amount<1)throw Error('随机武器奖励无效');
+  if(row.isVariant&&!progression.guns.some(base=>base.id===row.baseGunId&&base.active))throw Error('请先激活对应基础武器');
   const owned=progression.guns.find(row=>row.id===id),isNew=!owned?.active;
   const copiesAdded=amount-(isNew?1:0),balance=(inventory.items[id]||0)+copiesAdded;
   if(!Number.isSafeInteger(balance))throw Error('同名武器数量超限');
@@ -23,5 +38,5 @@ export function grantWeaponCopies(inventory,progression,id,amount) {
     else progression.guns.push({id,star:row.defaultStar,active:true,equipped:false});
   }
   if(copiesAdded)inventory.items[id]=balance;
-  return {id,name:row.name,amount,isNew,copiesAdded,star:isNew?row.defaultStar:owned.star};
+  return {id,name:row.name,amount,isNew,copiesAdded,star:isNew?row.defaultStar:owned.star,isVariant:row.isVariant,baseGunId:row.baseGunId};
 }

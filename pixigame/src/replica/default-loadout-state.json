@@ -1,13 +1,49 @@
 {
   "version": 1,
-  "role": { "id": 10100, "level": 1, "star": 0, "starStep": 0, "skinId": 0, "skinStar": 0 },
+  "role": {
+    "id": 10100,
+    "level": 1,
+    "star": 0,
+    "starStep": 0,
+    "skinId": 0,
+    "skinStar": 0
+  },
   "equipment": [],
   "skins": [],
-  "guns": [{ "id": 20101, "star": 1, "active": true, "equipped": true }],
+  "guns": [
+    {
+      "id": 20101,
+      "star": 1,
+      "active": true,
+      "equipped": true
+    }
+  ],
   "pilots": [],
-  "skinSkillSlots": [0, 0, 0],
-  "pilotSkillSlots": [0, 0, 0],
-  "weaponSkillSlots": [20101, 0],
+  "skinSkillSlots": [
+    0,
+    0,
+    0
+  ],
+  "pilotSkillSlots": [
+    0,
+    0,
+    0
+  ],
   "labs": [],
-  "debugOverride": { "enabled": false, "attack": 100, "hp": 600 }
+  "debugOverride": {
+    "enabled": false,
+    "attack": 100,
+    "hp": 600
+  },
+  "playerLevel": 1,
+  "useWeaponMap": {
+    "0": 20101,
+    "1": 0
+  },
+  "weaponSkillMap": {
+    "13": [
+      20101,
+      0
+    ]
+  }
 }

@@ -74,8 +74,10 @@ export class WeaponSkinVfx{
   constructor(){this.brush=new Brush();this.trails=new Map();this.lastTime=-Infinity;this.reset();}
   reset(){this.trails.clear();this.lastTime=-Infinity;this.beginFrame(0,0);}
   beginFrame(skinId,time,viewport){
-    if(skinId!==this.skinId||time<this.lastTime-1e-6||time-this.lastTime>.6)this.trails.clear();
-    this.skinId=Number(skinId)||0;this.lastTime=time;this.time=time;this.viewport=viewport;this.projectiles=0;this.effects=0;this.brush.reset();
+    const skinIds=[...new Set((Array.isArray(skinId)?skinId:[skinId]).map(Number))],key=skinIds.join(',');
+    if(key!==this.skinKey||time<this.lastTime-1e-6||time-this.lastTime>.6)this.trails.clear();
+    this.skinIds=skinIds;this.skinKey=key;
+    this.skinId=skinIds[0]||0;this.lastTime=time;this.time=time;this.viewport=viewport;this.projectiles=0;this.effects=0;this.brush.reset();
     for(const [id,trail]of this.trails)if(time-trail.lastSeen>trail.life)this.trails.delete(id);
   }
   rememberTrail(b,x,z,width,color,life=.22,length=40){
@@ -107,11 +109,11 @@ export class WeaponSkinVfx{
       }
     }
   }
-  get active(){return Boolean(WEAPON_SKIN_FAMILIES[this.skinId]);}
-  valid(b){return weaponSkinMatches(this.skinId,b)&&b.modelId>0&&!b.dead&&!b.visualHidden&&b.scale>0
+  get active(){return this.skinIds.some(id=>Boolean(WEAPON_SKIN_FAMILIES[id]));}
+  valid(b){this.skinId=this.skinIds.find(id=>weaponSkinMatches(id,b))||0;return weaponSkinMatches(this.skinId,b)&&b.modelId>0&&!b.dead&&!b.visualHidden&&b.scale>0
     &&[b.x,b.z,b.age,b.scale,b.radiusX,b.radiusZ,b.angle??0,b.offsetX??0,b.offsetZ??0,b.visualAngle??0,b.warmup??0].every(Number.isFinite)
     &&b.age>=Math.max(0,b.warmup??0)&&b.age<b.lifetime;}
-  effectMatches(f){return this.active&&f.weaponSkinFamily===WEAPON_SKIN_FAMILIES[this.skinId]
+  effectMatches(f){this.skinId=this.skinIds.find(id=>WEAPON_SKIN_FAMILIES[id]&&f.weaponSkinFamily===WEAPON_SKIN_FAMILIES[id])||0;return Boolean(this.skinId)&&f.weaponSkinFamily===WEAPON_SKIN_FAMILIES[this.skinId]
     &&(f.kind==='hit'||f.kind==='explosion'||[210016,220005,220017].includes(f.modelId))
     &&[f.x,f.z,f.age,f.duration,f.size,f.originalScale??1,f.angle??0,f.originalSpeed??1].every(Number.isFinite)
     &&f.age>=0&&f.age<f.duration;}

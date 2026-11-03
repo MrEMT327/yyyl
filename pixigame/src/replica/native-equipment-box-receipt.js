@@ -2,10 +2,10 @@ import equipment from '../peripheral/equipment-reference-data.json' with {type:'
 import { nativeGearPresentation } from './native-item-names.js';
 import { isRosterPilot } from './native-pilot-roster.js';
 import { ITEM_USE_BATCH_LIMIT } from './item-use-batches.js';
-import { RANDOM_WEAPONS } from './native-weapon-grants.js';
+import { BOX_WEAPONS } from './native-weapon-grants.js';
 import { RANDOM_AIRCRAFT } from './native-aircraft-grants.js';
 
-const weaponRows=new Map(RANDOM_WEAPONS.map(row=>[row.id,row]));
+const weaponRows=new Map(BOX_WEAPONS.map(row=>[row.id,row]));
 const aircraftRows=new Map(RANDOM_AIRCRAFT.map(row=>[row.id,row]));
 
 const records=new Map(equipment.equip.map(row=>[row.ID,{

@@ -6,6 +6,16 @@ export function nativeWeaponVariants(rows, row) {
   return rows.filter(item => nativeWeaponGroupId(item) === id)
     .sort((a,b) => (a.skinNumber || 0) - (b.skinNumber || 0) || a.id-b.id);
 }
+// Catalog cards retain the base weapon's identity. The selection target is
+// an actual owned/equipped row; this display projection never grants a base.
+export function nativeWeaponCatalogRows(rows) {
+  return nativeWeaponGroupRows(rows).map(current => {
+    const base=rows.find(row=>row.id===nativeWeaponGroupId(current))||current;
+    return {...base,owned:current.owned,equipped:current.equipped,star:current.star,
+      catalogSelectionId:current.id};
+  });
+}
+
 export function nativeWeaponGroupRows(rows) {
   const groups = new Map();
   for (const row of rows) {

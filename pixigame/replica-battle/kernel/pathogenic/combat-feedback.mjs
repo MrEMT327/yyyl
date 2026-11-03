@@ -1,3 +1,4 @@
+import {impactDirectionYaw} from '../impact-direction.mjs';
 import {BeamFootprints} from './beam-footprint.mjs';
 import {VfxMeshBuffer,quadVisible,packedScalar} from './vfx-buffers.mjs';
 // Transient feedback reads snapshots only. Eight bounded batches replace many
@@ -9,8 +10,8 @@ const COLLECT=new Set([140003,140014,140024,140025,140026,140027,140028,140029,1
 const COLD=new Set([210035,210051,220022]),ACID=new Set([210043,210049,210065,210039]),ELECTRIC=new Set([110030,110039,120006,210047,210048,210062,220029]);
 export function feedbackKind(f){
  if(f.kind==='text')return null;
- if(COLLECT.has(f.modelId))return'collect';
  if(f.kind==='heal'||f.kind==='level')return'restore';
+ if(COLLECT.has(f.modelId))return'collect';
  if(f.kind==='explosion')return'blast';
  if(f.kind==='hit'&&(!f.modelId||CONTACT.has(f.modelId)))return'contact';
  if(f.kind==='muzzle'&&f.modelId===100001&&Number.isFinite(f.duration))return'muzzle';
@@ -34,16 +35,21 @@ const shaders={
  'beam-footprint':'shader_type canvas_item;render_mode unshaded,blend_mix;void fragment(){}',
  'beam-flow':`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){
- float x=UV.x*2.0-1.0;
- // Distance UVs are advanced by host age, never by wall-clock shader TIME.
- float travel=UV.y,packet=exp(-pow((fract(travel)-.48)/.105,2.0));
- float weave=.24*sin(travel*11.3)+.04*sin(travel*27.0);
- float thread=exp(-pow((x-weave)*18.0,2.0));
- float core=exp(-x*x*150.0),halo=exp(-x*x*22.0);
- float edge=exp(-pow((x+.35+sin(travel*16.0)*.035)*30.0,2.0));
- float a=core*.015+packet*(thread*.68+halo*.11)+edge*packet*.18;
- COLOR=vec4(mix(COLOR.rgb*1.45,vec3(1.85),packet*.24),min(a*COLOR.a,.72));
-}`,
+ float x=UV.x*2.0-1.0,travel=UV.y;
+ // Host-age UVs keep reflected segments continuous and freeze with combat.
+ float packet=exp(-pow((fract(travel)-.52)/.14,2.0));
+ float core=exp(-x*x*180.0),halo=exp(-x*x*24.0);
+ float weave=.22*sin(travel*11.3)+.045*sin(travel*27.0);
+ float thread=exp(-pow((x-weave)*23.0,2.0));
+ float left=exp(-pow((x+.39+sin(travel*9.0)*.035)*37.0,2.0));
+ float right=exp(-pow((x-.39+sin(travel*7.0+2.4)*.03)*37.0,2.0));
+ float sideGate=pow(.5+.5*sin(travel*13.0),4.0);
+ float tip=exp(-pow((fract(travel)-.61)/.037,2.0));
+ float a=core*(.075+packet*.08)+packet*(thread*.52+halo*.07)
+  +left*sideGate*.14+right*(1.0-sideGate)*.09+tip*core*.30;
+ COLOR=vec4(mix(COLOR.rgb*1.55,vec3(2.05),tip*.28),min(a*COLOR.a,.76));
+}
+`,
  'blast-body':`shader_type canvas_item;render_mode unshaded,blend_mix;
 ${cloud}
 void fragment(){${phase}
@@ -72,62 +78,81 @@ void fragment(){${phase}
  contact:`shader_type canvas_item;render_mode unshaded,blend_add;
 uniform float feedback_family=0.0;
 void fragment(){
- float t=clamp((COLOR.a-.1)/.8,0.0,1.0);
- float contact_seed=floor(UV.x+.00001);
- vec2 p=vec2(UV.x-contact_seed,UV.y)*2.0-1.0;float r=length(p);
- float a=atan(p.y,p.x),core=exp(-r*r*65.0)*exp(-t*10.0);
+ float t=clamp((COLOR.a-.1)/.8,0.0,1.0),seed=floor(UV.x+.00001);
+ float directed=step(1.5,UV.y);
+ vec2 p=vec2(UV.x-seed,UV.y-directed*2.0)*2.0-1.0;float r=length(p),a=atan(p.y,p.x),highlight=0.0,emission=0.0;
+ float core=exp(-r*r*65.0)*exp(-t*10.0);
  float inner=.06+t*.62,outer=inner+.20;
  float rays=pow(max(0.0,cos(a*7.0+t)),20.0);
  float detail=rays*smoothstep(inner,inner+.04,r)*(1.0-smoothstep(outer,outer+.10,r))*pow(1.0-t,1.6);
- if(feedback_family>.5)core=exp(-r*r*125.0)*exp(-t*17.0);
+ if(feedback_family>.5)core=exp(-r*r*140.0)*exp(-t*16.0);
  if(feedback_family>2.5){
   detail=0.0;
   for(int i=0;i<3;i++){
-   float k=float(i),turn=contact_seed*.61+k*2.0944+.24*sin(contact_seed+k*3.1);
-   vec2 axis=vec2(cos(turn),sin(turn));
-   float along=dot(p,axis),side=dot(p,vec2(-axis.y,axis.x));
-   float epoch=floor(t*5.0+k*.37);
-   float kink=(abs(fract(along*(5.5+k*.7)+contact_seed*.11+epoch*.19)-.5)*4.0-1.0)*(.035+k*.009);
-   float line=1.0-smoothstep(.008,.027,abs(side-kink));
-   float gap=smoothstep(.04,.13,fract(along*8.0+contact_seed*.13+epoch*.23));
-   float reach=.27+.42*(1.0-exp(-t*4.0));
-   float spark=.55+.45*pow(.5+.5*sin(t*21.0+k*2.3+contact_seed),2.0);
-   detail+=line*gap*smoothstep(.025,.07,along)*(1.0-smoothstep(reach-.08,reach+.04,along))*spark*pow(max(0.0,1.0-t*(1.05+k*.09)),1.6);
+   float k=float(i),turn=mix(seed*.61+k*2.0944+.31*sin(seed+k*3.1),-1.5707963+(k-1.0)*.91+.14*sin(seed+k),directed);
+   vec2 axis=vec2(cos(turn),sin(turn)),crossAxis=vec2(-axis.y,axis.x);
+   float along=dot(p,axis),side=dot(p,crossAxis);
+   float reach=.22+.47*(1.0-exp(-t*6.0));
+   float kink=(abs(fract(along*(5.5+k*.7)+seed*.11)-.5)*4.0-1.0)*(.034+k*.009);
+   kink+=sin(along*28.0+seed+t*8.0)*.009;
+   float line=exp(-pow((side-kink)*65.0,2.0));
+   float fineCore=exp(-pow((side-kink)*126.0,2.0)),sheath=exp(-pow((side-kink)*29.0,2.0));
+   float envelope=smoothstep(.018,.065,along)*(1.0-smoothstep(reach-.075,reach+.015,along));
+   float branchSide=kink+(along-reach*.48)*(.43+.12*k);
+   float branch=exp(-pow((side-branchSide)*85.0,2.0))*smoothstep(reach*.4,reach*.55,along)*(1.0-smoothstep(reach*.80,reach*.94,along));
+   float terminal=exp(-pow((along-reach)*42.0,2.0)-pow((side-kink)*48.0,2.0));
+   float pulse=.72+.28*sin(t*18.0+seed+k*2.3);
+   float fade=pow(max(0.0,1.0-t*(1.12+k*.08)),1.7);
+   detail+=((line*.94+sheath*.085)*envelope+branch*.40+terminal*.52)*pulse*fade;highlight+=terminal*fade;
+   emission+=(fineCore*envelope*.72+terminal*.85)*pulse*fade;
   }
  }else if(feedback_family>1.5){
   detail=0.0;
   for(int i=0;i<4;i++){
-   float k=float(i),turn=contact_seed*.73+k*1.5708+.29*sin(contact_seed+k*2.7);
+   float k=float(i),turn=mix(seed*.73+k*2.39996+.32*sin(seed+k*2.7),-1.5707963+(k-1.5)*.58+.16*sin(seed+k*2.7),directed);
    vec2 axis=vec2(cos(turn),sin(turn)),crossAxis=vec2(-axis.y,axis.x);
-   float travel=.07+t*(.46+k*.055)*(1.0-.32*t);
-   vec2 q=p-axis*travel-crossAxis*(.13*t*t*sin(contact_seed+k));
-   float along=dot(q,axis),side=dot(q,crossAxis),ellipse=length(vec2(along*8.0,side*13.0));
-   float body=1.0-smoothstep(.58,.94,ellipse),wet=exp(-abs(ellipse-.68)*15.0);
-   float shine=exp(-pow((along-.028)*28.0,2.0)-pow((side+.018)*48.0,2.0));
-   float tail=exp(-side*side*1200.0)*smoothstep(-.24,-.13,along)*(1.0-smoothstep(-.07,0.0,along));
-   detail+=(body*.28+wet*.40+shine*.42+tail*.10)*pow(max(0.0,1.0-t*(1.0+k*.07)),1.7);
+   float travel=.045+(1.0-exp(-t*(3.4+k*.3)))*(.52+k*.045);
+   vec2 q=p-axis*travel-crossAxis*(.11*t*t*sin(seed+k));
+   float along=dot(q,axis),side=dot(q,crossAxis);
+   float ellipse=length(vec2(along*(8.0+t*4.0),side*(13.0-t*2.0)));
+   float body=1.0-smoothstep(.58,.94,ellipse),wet=exp(-abs(ellipse-.71)*24.0);
+   float shine=exp(-pow((along-.018)*43.0,2.0)-pow((side+.022)*60.0,2.0));
+   float tail=exp(-side*side*2100.0)*smoothstep(-.25,-.15,along)*(1.0-smoothstep(-.055,0.0,along));
+   float pin=exp(-pow((along+.19)*54.0,2.0)-pow((side-.035*sin(k+seed))*70.0,2.0));
+   float fade=pow(max(0.0,1.0-t*(1.03+k*.07)),1.65);
+   detail+=(body*.30+wet*.40+shine*.85+tail*.16+pin*.24)*fade;highlight+=shine*fade;
+   emission+=shine*fade*.25;
   }
  }else if(feedback_family>.5){
   detail=0.0;
   for(int i=0;i<4;i++){
-   float k=float(i),turn=contact_seed*.57+k*2.39996+.19*sin(contact_seed+k);
+   float k=float(i),turn=mix(seed*.57+k*2.39996+.26*sin(seed+k),-1.5707963+(k-1.5)*.49+.14*sin(seed+k),directed);
    vec2 axis=vec2(cos(turn),sin(turn));
-   vec2 q=p-axis*(.06+t*(.42+k*.055)*(1.0-.18*t));
-   float spin=contact_seed*.39+k*.8+t*(2.4-k*1.35),c=cos(spin),s=sin(spin);
+   float travel=.045+(1.0-exp(-t*3.8))*(.47+k*.055);
+   vec2 q=p-axis*travel;
+   float spin=seed*.39+k*.8+t*(2.7-k*1.48),c=cos(spin),s=sin(spin);
    vec2 local=vec2(c*q.x+s*q.y,-s*q.x+c*q.y);
-   float diamond=abs(local.x)*1.25+abs(local.y)*2.25,size=.075+.013*k;
-   float body=1.0-smoothstep(size*.65,size,diamond),edge=exp(-abs(diamond-size*.78)*100.0);
-   float glint=pow(max(0.0,cos(spin*3.0+k)),8.0);
+   float diamond=abs(local.x)*1.25+abs(local.y)*2.25,size=.094+.016*k;
+   float body=1.0-smoothstep(size*.65,size,diamond),edge=exp(-abs(diamond-size*.79)*120.0);
+   float facet=smoothstep(-.02,.025,local.x-local.y*.4),glint=pow(max(0.0,cos(spin*3.0+k)),12.0);
    float along=dot(q,axis),side=dot(q,vec2(-axis.y,axis.x));
-   float trail=exp(-side*side*1600.0)*smoothstep(-.23,-.12,along)*(1.0-smoothstep(-.045,0.0,along));
-   detail+=(body*(.27+.62*glint)+edge*.22+trail*.08)*pow(max(0.0,1.0-t*(1.0+k*.055)),1.4);
+   float trail=exp(-side*side*2200.0)*smoothstep(-.23,-.13,along)*(1.0-smoothstep(-.045,0.0,along));
+   float fade=pow(max(0.0,1.0-t*(1.03+k*.055)),1.35);
+   detail+=(body*(.45+facet*.30+glint*.60)+edge*.42+trail*.23)*fade;highlight+=body*glint*fade;
+   emission+=(body*glint*.70+edge*.42)*fade;
   }
  }
  float rim=exp(-abs(r-(.08+t*.52))*65.0)*exp(-t*10.0);
- float halo=feedback_family>.5?exp(-r*r*26.0)*exp(-t*15.0)*.035:0.0;
+ float halo=feedback_family>.5?exp(-r*r*32.0)*exp(-t*17.0)*.025:0.0;
  vec3 hot=mix(COLOR.rgb,vec3(1.0),.26)*3.4;
- COLOR=vec4(mix(COLOR.rgb*2.6,hot,core),clamp(core*.90+detail*.85+rim*.16+halo,0.0,1.0));
-}`,
+ float ringGain=feedback_family>.5?.035:.16;
+ float gain=feedback_family>.5?3.05:2.6;
+ // Only the narrow cores/specular facets exceed the existing HDR threshold.
+ vec3 color=mix(COLOR.rgb*gain,hot,clamp(core+highlight*.48,0.0,1.0));
+ color+=mix(COLOR.rgb,vec3(1.0),.55)*min(emission,1.15)*8.0;
+ COLOR=vec4(color,clamp(core*.90+detail*(feedback_family>.5?.92:.85)+rim*ringGain+halo,0.0,1.0));
+}
+`,
  muzzle:`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){${phase}
  float hot=exp(-(p.x*p.x*35.0+p.y*p.y*9.0));
@@ -138,13 +163,24 @@ void fragment(){${phase}
 }`,
  restore:`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){${phase}
- float ring=exp(-abs(r-(0.35+t*0.52))*55.0)*pow(1.0-t,1.6);
- vec2 q=vec2(p.x*5.0,p.y*3.0+t*2.0);vec2 cell=floor(q),local=fract(q)-0.5;
- float crystal=1.0-smoothstep(0.05,0.13,abs(local.x)+abs(local.y)*.65);
- float gate=step(0.68,fract(sin(dot(cell,vec2(12.9,78.2)))*43758.5));
- float particles=crystal*gate*(1.0-smoothstep(.15,.95,r))*sin(t*3.14159265);
- COLOR=vec4(COLOR.rgb*2.8+vec3(.2),ring*.26+particles*.65);
-}`,
+ float healing=step(COLOR.b,COLOR.g);
+ float ringRadius=.19+.65*(1.0-pow(1.0-t,2.2));
+ float ring=exp(-abs(r-ringRadius)*72.0)*pow(1.0-t,2.2);
+ float sheen=exp(-r*r*17.0)*exp(-t*14.0);
+ float particles=0.0;
+ for(int i=0;i<6;i++){
+  float k=float(i),life=clamp((t-k*.047)/.72,0.0,1.0);
+  float x=sin(k*2.4)*(.24+.042*k),y=.40-life*.92+k*.035;
+  vec2 q=p-vec2(x,y);
+  float cross=max(exp(-q.x*q.x*6200.0-q.y*q.y*740.0),exp(-q.y*q.y*6200.0-q.x*q.x*740.0));
+  float crystal=1.0-smoothstep(.018,.036,abs(q.x)+abs(q.y)*.62);
+  float fade=smoothstep(0.0,.12,life)*(1.0-smoothstep(.45,1.0,life));
+  particles+=mix(crystal,cross,healing)*fade;
+ }
+ vec3 color=COLOR.rgb*(2.5+ring*6.8)+vec3(.15)+mix(COLOR.rgb,vec3(1.0),.35)*particles*1.1;
+ COLOR=vec4(color,ring*.22+sheen*.16+particles*.62);
+}
+`,
  collect:`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){${phase}
  float a=atan(p.y,p.x),rays=pow(max(0.0,cos(a*4.0+t*1.8)),20.0);
@@ -165,26 +201,46 @@ const statusShaders={
  frost:`${cloud}
  vec2 p=UV*2.0-1.0;float r=length(p),a=atan(p.y,p.x);
  float n=fbNoise(p*5.0+vec2(status_seed));
- float fragments=pow(max(0.0,cos(a*7.0+r*5.0)),6.0)*smoothstep(.38,.62,r)*(1.0-smoothstep(.77,.96,r));
- float edges=exp(-abs(r-(.72+.04*sin(a*8.0)))*50.0)*(0.25+0.75*n);
- float frost=(1.0-smoothstep(.45,.9,r))*n*.07;
- COLOR=vec4(mix(vec3(.20,.49,.68),vec3(1.2,1.75,2.0),fragments),COLOR.a*(fragments*.35+edges*.30+frost));`,
+ float facets=pow(max(0.0,cos(a*7.0+status_seed*.37+r*4.0)),9.0)*smoothstep(.42,.64,r)*(1.0-smoothstep(.80,.97,r));
+ float edgeRadius=.75+.026*sin(a*8.0+status_seed);
+ float edge=exp(-abs(r-edgeRadius)*68.0)*(.28+.55*n);
+ float glass=(1.0-smoothstep(.40,.85,r))*n*.035;
+ float shine=pow(max(0.0,cos(a*5.0+status_seed*1.9)),28.0)*edge;
+ vec3 color=mix(vec3(.19,.45,.62),vec3(1.15,1.68,1.85),clamp(facets*.8+shine,0.0,1.0));
+ COLOR=vec4(color,COLOR.a*(facets*.39+edge*.30+shine*.30+glass));`,
  burn:`${cloud}
  vec2 p=UV*2.0-1.0;float y=p.y,t=status_age;
- float fire=0.0;
- for(int i=0;i<4;i++){float seed=float(i);float center=-.63+seed*.42+.065*sin(y*7.0-t*5.0+seed);
- float width=.08+.05*(.5+.5*sin(t*4.0+seed*2.0));float x=(p.x-center)/width;
- float height=.10+.20*sin(t*3.7+seed*2.3);
- fire+=exp(-x*x)*smoothstep(-.85,-.48,y)*(1.0-smoothstep(-.15,height,y));}
- float n=fbNoise(p*4.0+vec2(t*.1,-t*1.1));
- float smoke=(1.0-smoothstep(.25,.9,length(p+vec2(0.0,.15))))*n*.06;
- float core=clamp(fire*(.6+.4*n),0.0,1.0);
- COLOR=vec4(mix(vec3(.42,.07,.02),vec3(2.5,1.2,.18),core),COLOR.a*(core*.58+smoke));`,
+ float fire=0.0,filaments=0.0,embers=0.0;
+ for(int i=0;i<4;i++){
+  float k=float(i),drift=sin(y*6.0-t*3.8+k*1.7+status_seed);
+  float center=-.60+k*.40+.065*drift;
+  float width=.060+.028*(.5+.5*sin(t*4.0+k*2.0+status_seed));
+  float x=(p.x-center)/width;
+  float height=.02+.22*sin(t*3.2+k*2.3+status_seed);
+  float flame=exp(-x*x)*smoothstep(-.84,-.52,y)*(1.0-smoothstep(-.20,height,y));
+  fire+=flame;
+  filaments+=exp(-pow((p.x-center+.025)*65.0,2.0))*flame;
+  float travel=fract(t*(.47+k*.041)+k*.237+status_seed*.13);
+  vec2 q=p-vec2(center+.045*sin(travel*8.0+k),-.47+travel*1.02);
+  embers+=exp(-q.x*q.x*6000.0-q.y*q.y*1900.0)*sin(travel*3.14159265);
+ }
+ float n=fbNoise(p*4.0+vec2(status_seed+t*.08,-t*.85));
+ float smoke=(1.0-smoothstep(.25,.9,length(p+vec2(0.0,.15))))*n*.045;
+ float core=clamp(fire*(.66+.34*n),0.0,1.0);
+ vec3 color=mix(vec3(.35,.065,.025),vec3(1.85,.69,.095),core);
+ color+=vec3(.74,.41,.12)*clamp(filaments+embers,0.0,1.0);
+ COLOR=vec4(color,COLOR.a*clamp(core*.48+smoke+embers*.46,0.0,.76));`,
  disrupt:`
- vec2 p=UV*2.0-1.0;float r=length(p),a=atan(p.y,p.x);
- float orbit=pow(max(0.0,cos(a*4.0-status_age*2.6)),20.0)*exp(-abs(r-.73)*40.0);
- float mote=exp(-dot(p,p)*4.0)*.025;
- COLOR=vec4(vec3(.85,.42,1.3),COLOR.a*(orbit*.65+mote));`,
+ vec2 p=UV*2.0-1.0;float r=length(p),a=atan(p.y,p.x),t=status_age;
+ float orbit=pow(max(0.0,cos(a*4.0-t*2.1+status_seed)),24.0)*exp(-abs(r-.75)*59.0);
+ float gate=smoothstep(.16,.34,fract(a*1.90986+t*.12+status_seed));
+ float circuit=exp(-abs(r-.67)*92.0)*gate*.19;
+ vec2 q=p*7.0,cell=floor(q);float jitter=sin(cell.y*2.3+t*3.0+status_seed);
+ float scan=exp(-pow((fract(q.x)-.5)*23.0,2.0))*exp(-pow((fract(q.y)-.5)*9.0,2.0));
+ scan*=smoothstep(.55,.87,jitter)*(1.0-smoothstep(.56,.88,r))*.20;
+ float mote=exp(-dot(p,p)*5.0)*.012;
+ COLOR=vec4(mix(vec3(.48,.23,.79),vec3(1.0,.66,1.46),orbit),COLOR.a*(orbit*.57+circuit+scan+mote));`,
+
 };
 export function withCombatFeedbackResources(graph){
  const resources={...graph.resources},programs={...graph.shaders};
@@ -207,7 +263,7 @@ function batch(name){return{key:name,z:name.endsWith('body')?0:2,material:{$ref:
 function append(mesh,points,color,t){const start=mesh.vertices.length;points.forEach((p,i)=>mesh.vertices.push({position:[p.x,p.y],uv:[[0,0],[1,0],[1,1],[0,1]][i],color:[...color,.1+.8*clamp(t)]}));mesh.indices.push(start,start+1,start+2,start,start+2,start+3);}
 export class CombatFeedback{
  constructor(){this.beams=new BeamFootprints(ROOT+'beam-footprint',ROOT+'beam-flow');this.batches=new Map();this.pool=new Map();this.points=Array.from({length:4},()=>({x:0,y:0}));this.packed=[0,0,0];this.frame=0;this.statusGroups=[];this.statusLatest=new Map();this.beginFrame();}
- beginFrame(viewport){for(const name of this.batches.keys())this.pool.get(name).reset();this.batches.clear();this.beams.beginFrame(viewport);this.contactCount=0;this.count=0;this.pickups=0;this.statuses=0;this.culled=0;this.statusGroups.length=0;this.statusLatest.clear();this.submittedStatuses=0;this.viewport=viewport;this.frame++;
+ beginFrame(viewport){for(const name of this.batches.keys())this.pool.get(name).reset();this.batches.clear();this.beams.beginFrame(viewport);this.contactCount=0;this.count=0;this.normalCount=0;this.restoreCounts={heal:0,level:0};this.pickups=0;this.statuses=0;this.culled=0;this.statusGroups.length=0;this.statusLatest.clear();this.submittedStatuses=0;this.viewport=viewport;this.frame++;
   // Old age buckets must not accumulate through long or repeated battles.
   for(const [key,buffer]of this.pool)if(this.frame-buffer.lastUsed>120)this.pool.delete(key);
  }
@@ -216,22 +272,27 @@ export class CombatFeedback{
  }
  corners(x,z,rx,rz,yaw,screen){const c=Math.cos(yaw),s=Math.sin(yaw);for(let i=0;i<4;i++){const a=i===1||i===2?rx:-rx,f=i<2?rz:-rz,p=screen(x+c*a+s*f,z-s*a+c*f);this.points[i].x=p.x;this.points[i].y=p.y;}return this.points;}
  visible(){if(quadVisible(this.points,this.viewport))return true;this.culled++;return false;}
- queue(name,points,color,t,family=0,seed=0){
+ queue(name,points,color,t,family=0,seed=0,directed=false){
   const contact=name==='contact',buffer=this.buffer(contact&&family?name+'-'+family:name,contact?'contact':name);
   if(contact){buffer.mesh.materialUniformOverrides??={feedback_family:0};buffer.mesh.materialUniformOverrides.feedback_family=family;}
   const first=buffer.mesh.vertices.length;buffer.quad(points,color[0],color[1],color[2],.1+.8*clamp(t));
   // Integer UV offset carries a deterministic per-hit variant without material
   // instances or extra draw calls. Fractional UVs remain local to this quad.
-  if(contact&&family)for(let i=first;i<first+4;i++)buffer.mesh.vertices[i].uv[0]+=seed;
+  if(contact&&family)for(let i=first;i<first+4;i++){buffer.mesh.vertices[i].uv[0]+=seed;if(directed)buffer.mesh.vertices[i].uv[1]+=2;}
  }
+ // Keep eight shared-budget slots for essential receipts, four of each kind.
+ admitNativeContact(){if(this.normalCount>=112||this.contactCount>=96)return false;this.count++;this.normalCount++;this.contactCount++;return true;}
  beam(projectile,screen){this.beams.projectile(projectile,screen);}
  effect(f,screen,visualScale=1){
   const kind=feedbackKind(f);if(!kind)return false;
   if(!Number.isFinite(f.x)||!Number.isFinite(f.z)||!Number.isFinite(f.age)||!Number.isFinite(f.size)||!Number.isFinite(visualScale)||!(f.duration>0)||f.age<0||f.age>=f.duration)return true;
-  const lifetime=Math.min(f.duration,kind==='muzzle'?.12:kind==='contact'?.26:kind==='blast'?1.05:.7);if(f.age>=lifetime||this.count>=120||(kind==='contact'&&this.contactCount>=96))return true;
+  const lifetime=Math.min(f.duration,kind==='muzzle'?.12:kind==='contact'?.26:kind==='blast'?1.05:.7);if(f.age>=lifetime||(kind==='restore'?this.restoreCounts[f.kind]>=4:this.normalCount>=112)||(kind==='contact'&&this.contactCount>=96))return true;
   const radius=clamp(f.size*(kind==='muzzle'?.65:.5)*visualScale,.12,6),extent=kind==='blast'?1.55:kind==='contact'?1.55:1;
-  this.corners(f.x,f.z,radius*(kind==='muzzle'?.7:1)*extent,radius*(kind==='muzzle'?1.4:1)*extent,f.angle??0,screen);if(!this.visible())return true;this.count++;if(kind==='contact')this.contactCount++;
-  const color=palette(f),t=f.age/lifetime;if(kind==='blast'){this.queue('blast-body',this.points,color,t);this.queue('blast-light',this.points,color,t);}else this.queue(kind,this.points,color,t,COLD.has(f.modelId)?1:ACID.has(f.modelId)?2:ELECTRIC.has(f.modelId)?3:0,(Math.imul((f.uid??0)|0,1664525)>>>0)%32);return true;
+  const family=COLD.has(f.modelId)?1:ACID.has(f.modelId)?2:ELECTRIC.has(f.modelId)?3:0;
+  const yaw=kind==='contact'&&family?impactDirectionYaw(f):undefined;
+  this.corners(f.x,f.z,radius*(kind==='muzzle'?.7:1)*extent,radius*(kind==='muzzle'?1.4:1)*extent,yaw??f.angle??0,screen);if(!this.visible())return true;this.count++;if(kind==='contact')this.contactCount++;
+  if(kind==='restore')this.restoreCounts[f.kind]++;else this.normalCount++;
+  const color=palette(f),t=f.age/lifetime;if(kind==='blast'){this.queue('blast-body',this.points,color,t);this.queue('blast-light',this.points,color,t);}else this.queue(kind,this.points,color,t,family,(Math.imul((f.uid??0)|0,1664525)>>>0)%32,yaw!==undefined);return true;
  }
  pickup(p,screen){
   if(this.pickups>=64||p.age<p.delay||!Number.isFinite(p.x)||!Number.isFinite(p.z)||!Number.isFinite(p.age))return;
@@ -258,7 +319,7 @@ export class CombatFeedback{
   packedScalar(value,range,this.packed);buffer.quad(this.points,this.packed[0],this.packed[1],this.packed[2],alpha);this.statuses++;return true;
  }
  flushStatuses(view){while(this.submittedStatuses<this.statusGroups.length){const buffer=this.statusGroups[this.submittedStatuses++];view.drawMeshes('combat-feedback:'+buffer.mesh.key,[buffer.mesh],undefined,{presentationDepth:38});}this.statusLatest.clear();}
- draw(view){this.beams.draw(view);for(const [name,mesh]of this.batches)if(mesh.indices.length&&(!name.startsWith('status:')||this.pool.get(name).statusOrder>=this.submittedStatuses))view.drawMeshes('combat-feedback:'+name,[mesh],undefined,{presentationDepth:name==='pickup'?18.8:name.startsWith('status:')?38:34});}
+ draw(view){this.beams.draw(view);for(const [name,mesh]of this.batches)if(mesh.indices.length&&(!name.startsWith('status:')||this.pool.get(name).statusOrder>=this.submittedStatuses))view.drawMeshes('combat-feedback:'+name,[mesh],undefined,{presentationDepth:name==='pickup'?18.8:name==='restore'?39:name.startsWith('status:')?38:34});}
  reset(){this.beginFrame(this.viewport);this.beams.reset();this.pool.clear();}
 }
 export const isRefinedBasicStatus=b=>[170001,170004,170012,220022,170000].includes(b.modelId);

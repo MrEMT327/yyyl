@@ -21,6 +21,8 @@ void fragment(){
  float center=(1.0-smoothstep(0.45,0.78,r))*0.012;
  float amount=rim*0.35+halo+electric*0.75+inner+sparks*0.38+center;
  vec3 color=mix(vec3(0.16,0.42,0.46),vec3(0.60,0.94,0.96),clamp(rim*0.4+electric+sparks,0.0,1.0));
+ float rimEmission=clamp(rim*.65+electric*.45+sparks*.60,0.0,1.0);
+ color+=vec3(.45,1.80,2.10)*rimEmission;
  COLOR=vec4(color*COLOR.rgb,COLOR.a*clamp(amount*0.84,0.0,0.78));
 }`,
  plasma:`shader_type canvas_item;

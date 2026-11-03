@@ -28,7 +28,7 @@ export function prepareReplicaLoadout(catalog: LoadoutCatalog, value: unknown) {
   return { state, configuration, key: replicaConfigurationKey(configuration), entry: {
     attack: result.attack, hp: result.hp,
     initialSkillIds: result.initialSkillIds, battleSkillIds: result.battleSkillIds,
-    selectedGunId: result.selectedGunId, selectedSkinId: result.selectedSkinId,
+    selectedGunIds: result.selectedGunIds, selectedGunId: result.selectedGunId, selectedSkinId: result.selectedSkinId,
     selectedPilotId: result.selectedPilotId,
   } };
 }

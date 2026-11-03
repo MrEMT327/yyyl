@@ -9,6 +9,7 @@ import { effectDescription } from './kernel/ui';
 import './cloud-combat.css';
 import { assessReplicaBattle } from '../src/replica/native-battle-rating.js';
 import { battleSkillPresentation } from '../src/replica/native-quality.js';
+import { battleChoiceElement } from '../src/replica/battle-weapon-element.js';
 import { nativeResultRows, nativeResultRecommendations } from './result-presentation.js';
 
 // The cloud UI is a read-only view of the original simulation. The hidden
@@ -99,6 +100,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     game.fixedGrowth.state.totalRerolls=sim.rerollsTotal;
     presentation.choices=sim.choices.map(card=>({skill:card,summary:description(card),slots:[],model:{
       itemId:keyFor(card),ownerId:String(card.group),name:nativeWeaponDisplayText(card.name),...battleSkillPresentation(card),
+      element:battleChoiceElement(card,sim.content.combat),
       terminal:false,stat:{label:'强化效果',after:''},change:{label:'强化效果',value:''},
     }}));
     game.fixedGrowth.state.offer={runId:sim.runId,offerId:`${sim.choices.map(c=>c.id).join(',')}:reroll:${sim.rerollsRemaining}`,buildVersion:sim.learned.length};

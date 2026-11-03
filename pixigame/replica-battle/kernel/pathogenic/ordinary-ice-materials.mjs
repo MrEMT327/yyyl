@@ -26,6 +26,9 @@ void fragment(){
  color=mix(color,vec3(0.96,1.58,1.90),edge*0.90);
  color=mix(color,vec3(0.04,0.22,0.50),smoothstep(0.78,0.98,depth)*0.62);
  color+=vec3(0.06,0.12,0.15)*flow*bevel;
+ // Keep the approved body/alpha intact; a narrow cutting edge feeds HDR bloom.
+ float edgeEmission=pow(edge,2.0)*(0.48+0.52*smoothstep(0.48,0.87,abs(x)));
+ color+=vec3(0.22,0.68,1.02)*edgeEmission;
  float alpha=mask*(0.93+bevel*0.05+edge*0.02)*(1.0-depth*0.08);
  COLOR=vec4(color,blade_alpha*alpha);
 }`,
@@ -42,6 +45,7 @@ void fragment(){
  float flow=pow(0.5+0.5*cos(atan(q.y,q.x)*7.0+r*15.0-TIME*2.8),10.0);
  vec3 color=mix(vec3(0.06,0.26,0.43),vec3(0.36,0.78,0.96),face);
  color+=vec3(0.30,0.42,0.45)*glint*rim;
+ color+=vec3(0.22,0.88,1.32)*pow(glint,2.0)*rim;
  color+=vec3(0.08,0.13,0.15)*flow*rim;
  float alpha=0.30+rim*0.29+glint*0.16+hub*0.14;
  COLOR=vec4(color,COLOR.a*alpha);

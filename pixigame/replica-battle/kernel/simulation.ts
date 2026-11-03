@@ -1,3 +1,5 @@
+import {recordHealingReceipt} from './healing-receipt.mjs';
+import {markImpactDirection} from './impact-direction.mjs';
 import { projectileSound } from './combat-audio';
 import {nativeProtectHpRateRaw} from '../../src/replica/native-failure-protection.js';
 import {firstGuideChoices} from '../battle-onboarding';
@@ -32,7 +34,8 @@ import { createAttackLoop, advanceAttackLoop, canEnemySendBullet, createTwoPoint
 import { createNativeEnemyPath, sampleNativeEnemyPath, nativePathMovementAngle, nativePathDistanceDelta, type NativeEnemyPath } from './enemy-path';
 import { chapterPathSelfRotationEnabled, chapterPathRotationRadians } from '../chapter-path-self-rotation';
 import { drawNativeOrdinaryChoices, drawNativeBreakthroughChoices, nativeInitialSkillGroupCount, type NativeSkillCandidate } from './skill-choice';
-import { nativeSkillEligible } from './skill-eligibility';
+import { nativeSkillEligible, nativeSkillPoolEligible } from './skill-eligibility';
+import { NativeSkillFallbackPool, nativeFallbackReward } from './skill-choice-fallback';
 import { createNativeEnemyRebound, checkNativeEnemyRebound, advanceNativeEnemyRebound, nativeEnemyReboundScrollXOffset, nativeReboundRay, nativeReboundRayOffset, type NativeEnemyReboundState } from './native-enemy-rebound';
 import { NativeMapOutWalls, nativeChapter9WallQuerySupported, nativeOrdinaryWallQueryMask } from './native-map-out-walls';
 import { nativeWallLinecast } from './native-wall-query';
@@ -331,8 +334,13 @@ export class Simulation {
   private seed = 0x1badf00d;
   private pendingLevels = 0;
   private playerBulletHurtCount = 0;
-  rerollsRemaining = 0;
-  rerollsTotal = 0;
+  private rerollsUsed = 0;
+  private readonly skillChoiceCategory = { index: 0 };
+  get rerollsRemaining() { return Math.max(0, Math.trunc(this.playerCombatAttributes().RefreshCount || 0)); }
+  // Presentation only; eligibility always reads the live character attribute.
+  get rerollsTotal() { return this.rerollsRemaining + this.rerollsUsed; }
+  private readonly fallbackPool = new NativeSkillFallbackPool();
+  private readonly fallbackLearned = new Set<number>();
   private breakthroughChoice = false;
   private ordinarySelections = 0;
   private resultDelay = 0;
@@ -386,7 +394,8 @@ export class Simulation {
     this.phase = 'ready'; this.time = this.clock = this.exp = this.kills = this.gold = this.damageDealt = 0;
     this.wave = this.level = 1; this.serial = 1; this.shots = []; this.pendingLevels = 0; this.seed = 0x1badf00d;
     this.playerBulletHurtCount = 0;
-    this.rerollsRemaining = this.rerollsTotal = 0; this.breakthroughChoice = false;
+    this.rerollsUsed = 0; this.skillChoiceCategory.index = 0; this.breakthroughChoice = false;
+    this.fallbackPool.reset(); this.fallbackLearned.clear();
     this.currentMissionId = 0; this.runId++; this.waveUIRequest = undefined; this.completedWaveUI = undefined;
     this.nativeEnemyCount = this.nativeKillCount = 0; this.queuedNpc = []; this.musicRequests = [];
     this.waveFlow = new NativeWaveFlow(this.content.chapter.waves, { chestType: Number(this.content.chapter.chapter.parameters.ChestType) });
@@ -504,7 +513,6 @@ export class Simulation {
     // BaseInitState.ShowSkillSelect: consumes opening choices before play,
     // without awarding experience or increasing the hero level.
     const researchAttrs = this.playerCombatAttributes();
-    this.rerollsRemaining = this.rerollsTotal = Math.max(0, Math.trunc(researchAttrs.RefreshCount || 0));
     this.pendingLevels = Math.max(0, Math.trunc(researchAttrs.ChooseSkillOnFirst || 0));
     if (this.pendingLevels) this.openUpgrade();
   }
@@ -1672,6 +1680,7 @@ export class Simulation {
   private healPlayer(amount: number, sourceKind = 0) {
     const oldHp = this.player.hp;
     this.player.hp = Math.min(this.player.maxHp, this.player.hp + nativeLoadoutHealAmount(amount, this.playerCombatAttributes(), sourceKind));
+    recordHealingReceipt(this,this.player.hp-oldHp);
     if (this.player.hp !== oldHp) this.dispatchPlayerEvent(6);
   }
   private getLoadoutSpecials() {
@@ -3674,7 +3683,7 @@ export class Simulation {
           const bulletConfig = this.content.chapter.bullets[b.bulletId]?.parameters;
           const segmentIndex = Math.min(segments.length - 1, Math.floor(hit.at));
           const segment = segments[segmentIndex], contactTime = hit.at - segmentIndex;
-          if (bulletConfig?.hitCharacterPrefabId && segment) markWeaponSkinEffect(markSwordHitVisual(markIceSawHitVisual(markBlackHoleHitVisual(markScorchHitVisual(markLaserHitVisual(markMagneticHitVisual(markIceHitVisual(markAcidHitVisual(this.effect('hit', lerp(segment.from.x, segment.to.x, contactTime), lerp(segment.from.z, segment.to.z, contactTime), .16, .8, undefined, bulletConfig.hitCharacterPrefabId), b), b), b), b), b), b), b), b),b,this.content.chapter.player.weaponEntityId);
+          if (bulletConfig?.hitCharacterPrefabId && segment) markImpactDirection(markWeaponSkinEffect(markSwordHitVisual(markIceSawHitVisual(markBlackHoleHitVisual(markScorchHitVisual(markLaserHitVisual(markMagneticHitVisual(markIceHitVisual(markAcidHitVisual(this.effect('hit', lerp(segment.from.x, segment.to.x, contactTime), lerp(segment.from.z, segment.to.z, contactTime), .16, .8, undefined, bulletConfig.hitCharacterPrefabId), b), b), b), b), b), b), b), b),b,this.content.chapter.player.weaponEntityId),b,segment);
           const hurtType = nativeHurtTypeFromExpressions(bulletConfig?.hurtAttributes);
           if (damageAccepted && !b.damageDisabled && hurtType !== undefined)
             this.damageEnemy(hit.enemy, damage, critical, b.familyId, Number(bulletConfig?.Element || 0), Number(b.traits ?? bulletConfig?.BulletTrait ?? 0), b, hurtType, hitAttributes);
@@ -4070,11 +4079,21 @@ export class Simulation {
   get canRerollUpgrade() { return this.phase === 'upgrade' && !this.breakthroughChoice && !this.tutorialFirstChoiceActive && this.rerollsRemaining > 0; }
   rerollUpgrade() {
     if (!this.canRerollUpgrade) return false;
+    // RandomSkill@6c9d7f8..994 reads RefreshCount and SetAttributeValue(count-1)
+    // BEFORE drawing. Keep this as a runtime attribute mutation so later skill
+    // recomputation cannot restore spent uses, and live bonuses/expiry still apply.
+    const current = this.playerCombatAttributes().RefreshCount || 0;
+    const key = 'native:skill-refresh';
+    const previous = this.specialAttributeSources.get(key)?.attributes.RefreshCount || 0;
+    this.specialAttributeSources.set(key, { familyId: 0, attributes: {
+      RefreshCount: previous + Math.trunc(current) - 1 - current,
+    } });
+    this.rerollsUsed++;
+    this.refreshBuffAttributes();
     // openUpgrade already removed the visible choice from pendingLevels.
     // Refresh keeps that choice's level, rather than borrowing the next one's slots.
-    const choices = this.makeChoices(false, this.level - Math.max(0, this.pendingLevels));
-    if (!choices.length) return false;
-    this.choices = choices; this.rerollsRemaining--; this.ordinarySelections++;
+    this.choices = this.makeChoices(false, this.level - Math.max(0, this.pendingLevels), true);
+    this.ordinarySelections++;
     return true;
   }
   private openUpgrade() {
@@ -4084,7 +4103,7 @@ export class Simulation {
     this.ordinarySelections++;
     this.pendingLevels--; this.phase = 'upgrade'; this.sounds.push(410001);
   }
-  makeChoices(treasure = false, heroLevel = this.level - Math.max(0, this.pendingLevels - 1)): Choice[] {
+  makeChoices(treasure = false, heroLevel = this.level - Math.max(0, this.pendingLevels - 1), isRefresh = false): Choice[] {
     const combat = this.content.combat;
     if(!treasure&&this.tutorialFirstChoicePending){
       const choices=firstGuideChoices(combat);
@@ -4117,8 +4136,8 @@ export class Simulation {
     // Each parent weapon occupies one weighted slot. IsUpgrade=2 resolves its
     // basic branch before display; IsUpgrade=1 opens a separate two-card choice.
     const occupiedPassives = new Set(this.learned.filter(c => c.id >= 11000000).map(c => c.group)).size;
-    return drawNativeOrdinaryChoices(candidates, id => this.canStudySkill(id), () => this.random(), {
-      mode: combat.mode,
+    const choices = drawNativeOrdinaryChoices(candidates, id => this.canStudySkill(id), () => this.random(), {
+      mode: combat.mode, categoryState: treasure ? undefined : this.skillChoiceCategory, isRefresh,
       weightGroup: this.content.chapter.chapter.parameters[combat.mode === 'B' ? 'SkillGroupWeight_B' : 'SkillGroupWeight'],
       initialPool: !treasure && this.ordinarySelections < nativeInitialSkillGroupCount, count: treasure ? 1 : 3,
       // This runtime loads Chapter_MainChapter; world type 1 is distinct from chapterType 8.
@@ -4139,6 +4158,10 @@ export class Simulation {
         advance: isNew ? undefined : stage.skillId, opensBreakthrough: offer.kind === 'breakthrough',
         effects: isNew ? [{ type: 'addSecondary', entityId: family.entityId, skillId: family.id }, ...(stage.effects || [])] : [] } as Choice;
     });
+    if (treasure) return choices;
+    const known = new Set([...this.skillHistory(), ...this.fallbackLearned]);
+    return this.fallbackPool.supplement(choices, id => nativeSkillPoolEligible(id, known),
+      () => this.random(), this.content.chapter.chapter.parameters);
   }
   private canStudySkill(id: number) {
     const card = this.content.combat.cards[id];
@@ -4164,6 +4187,19 @@ export class Simulation {
     if (this.phase !== 'upgrade') return;
     const card = this.choices.find(c => c.id === id);
     if (!card) return;
+    const reward = nativeFallbackReward(card.id, this.content.chapter.chapter.parameters);
+    if (reward) {
+      // These non-battle cards are immediate rewards, never permanent passive
+      // attributes. The isolated history informs pool bans without adding a
+      // persistent RecoverHP% modifier or consuming a weapon/passive slot.
+      if (reward.kind === 'heal') this.healPlayer(this.player.maxHp * reward.percent / 100);
+      else this.gold += reward.amount;
+      this.fallbackLearned.add(card.id);
+      this.choices = []; this.phase = 'playing'; this.breakthroughChoice = false;
+      this.effect('level', this.player.x, this.player.z, 0.6, 3);
+      if (this.pendingLevels && !treasure) this.openUpgrade();
+      return;
+    }
     const family = this.content.combat.families[card.group];
     if (family && !this.secondWeaponOrder.includes(Number(family.entityId))) this.secondWeaponOrder.push(Number(family.entityId));
     if (family?.entityId === this.content.chapter.player.weaponEntityId) this.cannonOwned = true;

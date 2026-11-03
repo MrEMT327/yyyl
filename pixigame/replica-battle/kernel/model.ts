@@ -47,6 +47,7 @@ export interface Pickup extends Point { uid: number; itemId: number; modelId: nu
 export interface Effect extends Point {
   /** Emitting weapon identity used only by the cosmetic skin renderer. */
   weaponSkinFamily?: number; weaponSkinWeapon?: number;
+  impactDirection?: Point;
   uid: number; kind: 'hit' | 'explosion' | 'muzzle' | 'text' | 'level' | 'heal'; age: number; duration: number; size: number; value?: string; modelId?: number; critical?: boolean; originalScale?: number; originalSpeed?: number; originalMirrorX?: boolean; angle?: number; ownerUid?: number; followPlayer?: boolean; followOffset?: Point }
 export interface Choice { id: number; name: string; description: string; icon: string; star: number; group: number; advance?: number; parentStageId?: number; opensBreakthrough?: boolean; effects: RecordData[]; raw?: RecordData }
 export interface CannonState { stageId: number; damageBonus: number; cooldownReduction: number; critBonus: number; parallel: number; parallelPercent: number; sidePercent: number; pierce: number; bulletId: number; fireCount: number; fireHoldBonus: number; fireInterval?: number; waitingForBeams?: boolean; hitBuffs?: HitBuffMod[]; throughDamage?: number }

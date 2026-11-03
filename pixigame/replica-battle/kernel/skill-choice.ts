@@ -15,8 +15,11 @@ export type NativeSkillOffer = {
   id: number; parentStageId: number; rootId: number;
   kind: 'direct' | 'minor' | 'breakthrough';
 };
+/** DankeSkillCreator.RandomIndex (this+0x60), shared across ordinary offers. */
+export type NativeSkillCategoryState = { index: number };
 export type NativeSelectionOptions = {
   mode?: 'A' | 'B'; weightGroup?: number; initialPool?: boolean; count?: number;
+  categoryState?: NativeSkillCategoryState; isRefresh?: boolean;
   /** Original HeroComponentExp.GetLevel (starts at 1); native slot checks add 1. */
   heroLevel?: number;
   /** Include fully upgraded families that have no remaining candidate. */
@@ -115,6 +118,7 @@ export function drawNativeOrdinaryChoices(
   random: () => number, options: NativeSelectionOptions = {},
 ): NativeSkillOffer[] {
   const mode = options.mode ?? 'A';
+  const categoryState = options.categoryState ?? { index: 0 };
   const weightGroup = options.weightGroup ?? source.chapter.SkillGroupWeight;
   const eligible = candidates.filter(candidate => {
     const upgrade = nativeSkillUpgradeType(candidate.stageId, mode);
@@ -166,7 +170,10 @@ export function drawNativeOrdinaryChoices(
       if (index === 2) enabled &&= weaponRemaining > 0 || members.some(already);
       return { index, weight: enabled ? baseWeight : 0 };
     });
-    const start = forcedCategory ?? drawWeighted(categories, item => item.weight, 1, random)[0]?.index ?? 0;
+    // isRefresh bypasses the category lottery, retaining the one shared index.
+    // It does not retain a category per old card, nor ban previous offers.
+    const start = forcedCategory ?? (options.isRefresh ? categoryState.index
+      : drawWeighted(categories, item => item.weight, 1, random)[0]?.index ?? 0);
     // Original cycles through the other categories if the selected pool is empty.
     for (let step = 0; step < categories.length; step++) {
       const index = (start + step) % categories.length;
@@ -186,6 +193,9 @@ export function drawNativeOrdinaryChoices(
         }
       }
       const selected = drawWeighted(members, weight, 1, random)[0];
+      // GetRandomSkills@6c90290..2a4 writes the attempted category even if
+      // GetCount was zero, before cycling to the next category.
+      categoryState.index = index;
       if (selected) return selected;
     }
     return undefined;
@@ -202,6 +212,8 @@ export function drawNativeOrdinaryChoices(
   // offers were drawn and a weapon remains eligible. This is not a fixed 2+1 quota.
   if (chosen.length > 1 && !chosen.some(c => category(c) >= 2)) {
     const replaceIndex = Math.floor(Math.min(1 - Number.EPSILON, Math.max(0, random())) * chosen.length);
+    // GetNormalSkill@6c8e1f8 sets 2 BEFORE this refresh-style extra draw.
+    categoryState.index = 2;
     const weapon = drawOne(2);
     if (weapon) {
       const offer = toOffer(weapon);

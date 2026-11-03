@@ -1,5 +1,5 @@
 import { nativeWeaponDisplayText } from './native-weapon-display.js';
-import {nativeWeaponGroupId} from './native-weapon-groups.js';
+import {nativeWeaponGroupId,nativeWeaponCatalogRows} from './native-weapon-groups.js';
 import { NATIVE_AIRCRAFT_SKINS } from './native-aircraft-skins.js';
 import {nativeCollectionAccess,nativeCollectionRows} from './native-collection-access.js';
 import { nativeCollectionArt, nativeSkillArt } from './native-collection-art.js';
@@ -43,9 +43,12 @@ export function cloudNativeCatalog(ctx){
     for(const node of t.content.querySelectorAll('[data-action="catalogMode"],[data-action="catalogBack"],[data-action="aircraftInfo"],[data-action="pilotInfo"]')){node.dataset.action='nativeAppearance';node.dataset.mode='progression';}
     return t.innerHTML;
   }
-  const rows=nativeCollectionRows(group,s);
+  const collectionRows=nativeCollectionRows(group,s);
+  const rows=kind==='weapon'?nativeWeaponCatalogRows(collectionRows):collectionRows;
   const byId=new Map(rows.map(row=>[String(row.id),row]));
-  const selected=byId.get(String(ctx.selectedId))||rows.find(row=>nativeCollectionAccess(group,s,row).using)||rows[0];
+  const requested=collectionRows.find(row=>String(row.id)===String(ctx.selectedId));
+  const selectedId=kind==='weapon'&&requested?nativeWeaponGroupId(requested):ctx.selectedId;
+  const selected=byId.get(String(selectedId))||rows.find(row=>nativeCollectionAccess(group,s,row).using)||rows[0];
   if(!selected)return '';
   const e=h.escape;
   const items=rows.map(row=>({...row,id:String(row.id),owned:nativeCollectionAccess(group,s,row).available,activated:row.owned,stars:row.star,qualityRank:collectionQualityRank(row.quality),
@@ -62,7 +65,7 @@ export function cloudNativeCatalog(ctx){
   const bank={skills:rows.filter(row=>row.stage.skills.length>0).map(nativeSkill),slots};
   const view={...s,pilots:kind==='pilot'?items:s.pilots,aircraft:kind==='aircraft'?items:s.aircraft,weapons:kind==='weapon'?items:s.weapons,
     aircraftId:kind==='aircraft'?String(rows.find(row=>nativeCollectionAccess(group,s,row).using)?.id??collection.skinId):s.aircraftId,pilotId:kind==='pilot'?String(rows.find(row=>nativeCollectionAccess(group,s,row).using)?.id||''):s.pilotId,
-    loadout:kind==='weapon'?{W1:String(rows.find(row=>row.equipped)?.id||'')}:s.loadout,
+    loadout:kind==='weapon'?Object.fromEntries([0,1].map(slot=>{const row=collectionRows.find(row=>row.id===collection.useWeaponMap[slot]);return ['W'+(slot+1),row?String(nativeWeaponGroupId(row)):''];})):s.loadout,
     fleet:{revision:collection.revision,[kind]:bank},catalogPresentation:{skillFor:item=>nativeSkill(byId.get(item.id)),native:true,...(kind==='pilot'?{filters:nativePilotFilters}:{})}};
   const helpers={...h,weaponSkillArtwork:item=>weaponSkillArtwork(byId.get(String(item.id)),e),pilotPortrait:(item,cls)=>{const skin=nativePilotAppearance(item.id);return skin?characterPortrait({...skin,name:item.name},cls):'';},thumbnail:(id,cls='')=>{const row=byId.get(String(id));return row?`<img class="pl-model-thumb ${e(cls)}" src="${e(icon(row))}" alt="${e(row.name)}">`:h.thumbnail(id,cls);},preview:(id,options)=>{const plane=byId.get(String(id))?.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[id];return plane?h.preview?.(plane,options):null;}};
   const t=template(kind==='weapon'?weaponCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}):fleetCatalogPage({...ctx,selectedSkillSlot,snapshot:view,selectedId:String(selected.id),helpers}));
@@ -96,7 +99,7 @@ export function cloudNativeCatalog(ctx){
   const operation=(node,row,op)=>{
     const access=op==='select'?nativeCollectionAccess(group,s,row):null;
     node.dataset.action='nativeOperation';node.dataset.operation=op;node.dataset.kind=group;
-    node.dataset.id=String(access?access.selectionId:row.id);node.dataset.revision=String(collection.revision);
+    node.dataset.id=String(access?(row.catalogSelectionId??access.selectionId):row.id);node.dataset.revision=String(collection.revision);
     node.disabled=access?!access.available||access.using:op==='slot'?!['skins','pilots'].includes(group)||!row.owned||!row.stage.skills.length:!row.canPurchase;
     if(access)node.textContent=access.using?'使用中':group==='guns'?'装备出战':'使用';
   };
@@ -123,7 +126,7 @@ export function cloudNativeCatalog(ctx){
       node.dataset.action='nativeWeaponPreview';node.dataset.id=String(row.id);
       node.dataset.mode=action==='catalogGrowth'?'growth':'base';
     }else if(['weapon','weaponInfo','aircraftInfo','pilotInfo','catalogAcquire'].includes(action)){
-      node.dataset.action='nativeCollectionDetail';node.dataset.kind=group;node.dataset.id=String(row.id);
+      node.dataset.action='nativeCollectionDetail';node.dataset.kind=group;node.dataset.id=String(row.catalogSelectionId??row.id);
     }else if(action==='fleetSkillSlot'){
       node.dataset.action='nativeSlotPick';node.dataset.kind=group;
     }else if(['fleetSkillEquip','fleetSkillRemove'].includes(action)){
@@ -136,6 +139,8 @@ export function cloudNativeCatalog(ctx){
       else node.disabled=node.disabled||!validSlot;
     }
   }
+  if(kind==='weapon')t.content.querySelector('.wc-hero-tools')?.insertAdjacentHTML('beforeend',
+    button('nativeCollectionDetail','外观',`data-kind="guns" data-id="${selected.catalogSelectionId??selected.id}" aria-label="选择${e(selected.name)}外观"`));
   return t.innerHTML;
 }
 

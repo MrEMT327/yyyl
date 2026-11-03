@@ -1,3 +1,4 @@
+import {sampleHealingReceipt} from './healing-receipt.mjs';
 import {COMBAT_LAYERS,damageTextPose,playerVisibility} from './combat-readability.mjs';
 import {CombatRenderSamples,CombatStatusIndex} from '../../src/replica/combat-render-samples.mjs';
 import {captureEnemyDeathBody,enemyDeathVisualScale} from '../small-death-visual.js';
@@ -106,7 +107,7 @@ export class BattleView extends Phaser.Scene {
     preloadPickupArt(this);
     preloadSupplyChestArt(this);
     this.pathogenic=new PathogenicBattleEffects(this,pathogenicGraph);
-    this.pathogenic.configureHost({weaponSkinId:()=>Number(this.content.combat.studyLoadout?.selectedGunId||0),playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});
+    this.pathogenic.configureHost({weaponSkinId:()=>this.content.combat.studyLoadout?.selectedGunIds??Number(this.content.combat.studyLoadout?.selectedGunId||0),playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});
     this.pathogenic.preload((_p,t)=>t.url);
         preloadChapterOrbitArt(this, this.prefabByModel.keys());
     preloadScatterGunboat(this, this.prefabByModel.keys());
@@ -656,6 +657,7 @@ export class BattleView extends Phaser.Scene {
       }else this.pathogenic.status(buff,(x,z)=>this.screen(x,z));
     }
     for(const fx of s.effects)this.drawEffect(fx,live);
+    const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
     this.pathogenic.endFrame();
     if (this.debugOn) {
       const radius = this.content.chapter.entities[this.content.chapter.player.entityId].stats.shape[0];

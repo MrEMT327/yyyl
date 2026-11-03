@@ -1,4 +1,6 @@
 import { nativeWeaponDisplayText } from '../../src/replica/native-weapon-display.js';
+import { battleChoiceElement } from '../../src/replica/battle-weapon-element.js';
+import { battleElementBadgeMarkup } from '../../src/ui/battle-element-badge.js';
 import type { GameAudio } from './audio';
 import type { RecordData, Choice } from './model';
 import type { Simulation } from './simulation';
@@ -250,18 +252,14 @@ export class Interface {
     const stageEffects = family?.stages.find((stage: RecordData) => stage.skillId === c.advance)?.effects || [];
     const description = nativeWeaponDisplayText(c.description || originalSkillDescription(c as unknown as RecordData) || effectDescription([...c.effects, ...stageEffects]));
     const breakthrough = Boolean(family) && c.star > 0 && c.star % 3 === 0;
-    const element: Record<number, [string, string]> = {
-      10000101: ['physics', '物理'], 10000601: ['ice', '冰冻'],
-      10001501: ['energy', '能量'], 10001701: ['fire', '火焰'],
-    };
-    const badge = element[c.group];
+    const badge = battleChoiceElement(c, this.sim.content.combat);
     // UICommonTools.SetSkillImageByDeepType: weapon stars 1..9 map to
     // 02,02,03,04,04,05,06,06,07. Each completed tier has its own panel.
     const panelIndex = family ? Math.min(7, 2 + 2 * Math.floor((Math.max(1, c.star) - 1) / 3) + (breakthrough ? 1 : 0)) : 1;
     const panel = `Choose_skills_panel_${String(panelIndex).padStart(2, '0')}`;
     const tier = Math.min(2, Math.floor((Math.max(1, c.star) - 1) / 3));
     const lit = family ? (Math.max(1, c.star) - 1) % 3 + 1 : c.star;
-    const pipCount = family ? 3 : Math.max(c.star, c.raw?.MaxStar || 2);
+    const pipCount = c.raw?.SkillType === 99 ? 0 : family ? 3 : Math.max(c.star, c.raw?.MaxStar || 2);
     const pips = Array.from({ length: pipCount }, (_, i) => {
       const shape = family ? `${['S', 'M', 'L'][tier]}${i === 2 ? 2 : 1}` : 'S1';
       const color = i < lit ? family ? ['yellow', 'red', 'multicolor'][tier] : 'yellow' : 'grey';
@@ -270,7 +268,7 @@ export class Interface {
     }).join('');
     const aura = breakthrough ? `<span class="card-aura" aria-hidden="true">${[1, 2, 3, 4].map(i => this.image(`Choose_skills_${['y', 'r', 'm'][tier]}${i}`, `aura-${i}`)).join('')}</span>` : '';
     const cubeTier = ['y', 'r', 'c'][tier];
-    return `<button class="upgrade-card ${breakthrough ? 'breakthrough' : ''}" data-action="choose" data-id="${c.id}" data-tier="${cubeTier}" aria-label="${escape(name)}：${escape(description)}"><span class="card-face">${aura}${this.image(panel, 'card-panel')}<span class="card-title">${escape(name)}</span><div class="card-art">${this.image(family ? this.weaponIconKey(family.id, c.star, c, true) : c.icon || '10000101')}</div><span class="stars" aria-label="${c.star} 星">${pips}</span><p>${escape(description)}</p>${breakthrough ? `<canvas class="original-cube" data-tier="${cubeTier}" width="328" height="804" aria-hidden="true"></canvas>` : ''}${badge ? `<span class="card-tag">${this.image('ui_stg_ability_' + badge[0])}${badge[1]}</span>` : ''}</span></button>`;
+    return `<button class="upgrade-card ${breakthrough ? 'breakthrough' : ''}" data-action="choose" data-id="${c.id}" data-tier="${cubeTier}" aria-label="${escape(name)}：${escape(description)}"><span class="card-face">${aura}${this.image(panel, 'card-panel')}<span class="card-title">${escape(name)}</span><div class="card-art">${this.image(family ? this.weaponIconKey(family.id, c.star, c, true) : c.icon || '10000101')}</div><span class="stars" aria-label="${c.star} 星">${pips}</span><p>${escape(description)}</p>${breakthrough ? `<canvas class="original-cube" data-tier="${cubeTier}" width="328" height="804" aria-hidden="true"></canvas>` : ''}${battleElementBadgeMarkup(badge)}</span></button>`;
   }
 }
 function originalSkillDescription(card: RecordData): string {

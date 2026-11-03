@@ -92,7 +92,7 @@ function starShield(p,b,alpha){
     p.polygon([a,c,d,e],[rgb(ice,alpha*.96),rgb(ice,alpha*.96),rgb([.16*shade,.40*shade,.52*shade],alpha*.96),rgb([.25*shade,.52*shade,.64*shade],alpha*.96)]);
   }
   p.path(front,.10,rgb(cyan,.14*alpha*pulse));
-  p.path(front,.038,rgb([.72,1.18,1.20],.76*alpha)); // HDR rim feeds the existing thresholded bloom.
+  p.path(front,.038,rgb([.96,1.82,2.12],.76*alpha)); // HDR rim feeds the existing thresholded bloom.
   p.path(rear,.027,rgb(cyan,.78*alpha));
   for(const side of [-1,1]){
     const panel=[[.94,.10],[.82,.43],[.69,.31],[.78,-.03]].map(([x,z])=>[side*x*rx,z*rz]);
@@ -118,7 +118,7 @@ function holyShield(p,b,alpha){
   p.polygon([points[2],points[3],points[4],[0,rz*.18]],rgb([.24,.17,.065],.88*alpha));
   p.polygon(points.map(([x,y])=>[x*.76,y*.76]),rgb(color,.16*alpha));
   p.path(points,.075,rgb(color,.27*alpha),true);
-  p.path(points,.035,rgb(WHITE,.94*alpha),true);
+  p.path(points,.035,rgb([2.10,1.75,.90],.94*alpha),true);
   p.path(points.map(([x,y])=>[x*.84,y*.84]),.045,rgb(color,.8*alpha),true);
   for(const side of [-1,1])for(let i=0;i<3;i++){
     const wing=[[side*rx*.56,rz*(.55-i*.29)],[side*rx*(1.08-i*.1),rz*(.85-i*.32)],
@@ -127,7 +127,7 @@ function holyShield(p,b,alpha){
     p.polygon([wing[0],wing[1],[wing[2][0],(wing[2][1]+wing[1][1])*.5]],rgb([.94,.77,.36],.86*alpha));
     p.path(wing,.04,rgb(GOLD,.85*alpha),true);
   }
-  p.line([0,-rz*.49],[0,rz*.52],.055,rgb(WHITE,.9*alpha));
+  p.line([0,-rz*.49],[0,rz*.52],.055,rgb([2.05,1.74,.96],.9*alpha));
   p.line([-rx*.28,rz*.16],[rx*.28,rz*.16],.04,rgb(GOLD,alpha));
   p.radial(.33,.33,GOLD,.48*alpha,0,rz*.16);p.gem(0,rz*.16,.16,rgb([1,.94,.66],alpha));
   const sweep=(age*1.7%1)*1.3-.65;
