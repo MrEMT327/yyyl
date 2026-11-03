@@ -1,5 +1,8 @@
 import * as T from 'three';
 import {mapLayerGrade,mapAtmosphereShape,COAST_ISLAND_LAYOUT,COAST_ISLAND_Y_OFFSETS} from './map-scene-polish.js';
+import {createCloudModuleLayer,syncCloudModuleLayer} from './cloud-module-layer.js';
+import {coastalWaterShader} from './coastal-water-shader.js';
+import {createFloatingPropLayer,syncFloatingPropLayer} from './floating-prop-layer.js';
 import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
 
 const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
@@ -10,8 +13,12 @@ varying vec2 terrainUv;
 uniform sampler2D artwork;uniform float hasArt;uniform float repeatY;uniform float scroll;
 uniform float sourceWidth;uniform vec2 opening;uniform float opacity;uniform float completeScene;
 uniform vec4 visualGrade;uniform vec2 cloudForm;uniform vec4 bridgePattern;
+uniform float sceneTime;
 #if SHORE_VARIANTS == 1
 uniform sampler2D alternateArt;
+#if COAST_SEQUENCE == 1
+uniform sampler2D thirdArt;
+#endif
 #endif
 #if ISLAND_LAYOUT == 1
 uniform vec4 islandLayout[12];uniform float islandOffsets[12];
@@ -21,8 +28,15 @@ uniform vec3 base;uniform vec3 edge;uniform vec3 accent;uniform vec3 mist;unifor
 // authored orientation, while premultiplied interpolation preserves cutout edges.
 #if SHORE_VARIANTS == 1
 vec4 sampleShore(float stripIndex,vec2 uv,vec2 gx,vec2 gy){
+  #if COAST_SEQUENCE == 1
+  float section=mod(mod(stripIndex,6.)+6.,6.);
+  if(section<.5||(section>2.5&&section<3.5))return textureGrad(artwork,uv,gx,gy);
+  if(section<1.5||section>4.5)return textureGrad(alternateArt,uv,gx,gy);
+  return textureGrad(thirdArt,uv,gx,gy);
+  #else
   if(mod(mod(stripIndex,2.)+2.,2.)<.5)return textureGrad(artwork,uv,gx,gy);
   return textureGrad(alternateArt,uv,gx,gy);
+  #endif
 }
 #endif
 vec4 sampleArtwork(vec2 uv){
@@ -64,6 +78,7 @@ vec4 sampleArtwork(vec2 uv){
     return texture2D(artwork,uv);
   #endif
 }
+${coastalWaterShader}
 void main(){
   vec2 uv=vec2(.5+(terrainUv.x-.5)*sourceWidth,terrainUv.y*repeatY+scroll);
   float cloudDensity=1.;
@@ -76,6 +91,7 @@ void main(){
   #endif
   vec4 picture=vec4(base,1.);
   if(hasArt>.5)picture=sampleArtwork(uv);
+  vec3 originalColor=picture.rgb;
   picture.rgb*=chapterTint*layerTint;
   float border=abs(terrainUv.x-.5);
   #if BRIDGE_CADENCE == 1
@@ -95,9 +111,18 @@ void main(){
   float edgeMask=mix(smoothstep(opening.x,opening.y,border),1.,completeScene);
   #if LAYER_KIND == 0
     if(hasArt<.5){float ripple=sin(uv.y*48.+sin(uv.x*26.)*.7)*.5+.5;picture.rgb=mix(base,accent,ripple*.045);}
+    #if FULL_SCENE_BASE == 1
+    // This opaque scene already contains painted shore, shallows and seabed.
+    // Keep their authored value relationship instead of grading it as far fog.
+    #if COASTAL_WATER == 1
+    picture.rgb=animateCoastalWater(picture.rgb,originalColor,uv,sceneTime);
+    #endif
+    gl_FragColor=vec4(picture.rgb,1.);
+    #else
     // Haze lowers distant contrast without turning the floor into an empty slab.
     vec3 distant=mix(picture.rgb*.72,base,.16);
     gl_FragColor=vec4(mix(distant,mist,.035),1.);
+    #endif
   #elif LAYER_KIND == 1
     if(hasArt<.5){float islands=smoothstep(.15,.8,sin(uv.y*18.)*.5+.5);picture.rgb=mix(base,edge,islands);}
     // Preserve the painted vertical faces. Only the quiet inner bottom opens
@@ -172,8 +197,10 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
   }
   let layers = [], layerSceneId;
   function releaseLayers() {
-    for (const {mesh,material} of layers) {
-      mesh.removeFromParent(); mesh.geometry.dispose(); material.dispose();
+    for (const {mesh,material,geometry,materials} of layers) {
+      mesh.removeFromParent();
+      if(materials){geometry.dispose();materials.forEach(value=>value.dispose());}
+      else {mesh.geometry.dispose();material.dispose();}
     }
     layers=[];
   }
@@ -182,13 +209,20 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     releaseLayers(); layerSceneId=current.id;
     const definitions=FIVE_LAYER_SCENES[current.id]?.layers || PERIPHERAL_LAYERS;
     layers=definitions.map((definition,index)=>{
+      if(definition.modules){
+        const record=(definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer)(definition,-1000+index*10);
+        group.add(record.mesh);
+        return record;
+      }
       const kind = definition.kind ?? index;
       const material = new T.ShaderMaterial({
-        defines: { DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
+        defines: { COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
         uniforms: {
+          sceneTime: {value:0},
           visualGrade: {value:new T.Vector4(1,1,0,0)},
           cloudForm:{value:new T.Vector2(1,1)},bridgePattern:{value:new T.Vector4(...(definition.bridgeCadence||[1,1,1,1]))},
           ...(definition.shoreVariants?{alternateArt:{value:null}}:{}),
+          ...(definition.coastSequence?{thirdArt:{value:null}}:{}),
           ...(definition.layout==='coast-islands'?{islandLayout:{value:COAST_ISLAND_LAYOUT.map(row=>new T.Vector4(...row))},islandOffsets:{value:[...COAST_ISLAND_Y_OFFSETS]}}:{}),
           artwork: { value: null }, hasArt: { value: 0 }, repeatY: { value: definition.length / (definition.width * 1.5) }, scroll: { value: 0 },
           sourceWidth: { value: definition.sourceWidth }, opening: { value: new T.Vector2(...(definition.opening || [0, 1])) }, opacity: { value: definition.opacity }, completeScene: { value: 0 },
@@ -220,14 +254,21 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
 
   function syncLayers() {
     selectLayers();
-    for (const { definition, mesh, material } of layers) {
+    for (const record of layers) {
+      const {definition,mesh,material}=record;
       mesh.visible = FIVE_LAYER_SCENES[current.id] ? definition.sceneId === current.id : !definition.sceneId && (!current.singleLayer || definition.id === 'middle');
       if (!mesh.visible) continue;
+      if(definition.modules){
+        (definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer)(record,textures,current.textureId||current.id,elapsed,layerMotion?.(definition,elapsed,1));
+        continue;
+      }
       const key = `${current.textureId||current.id}/${definition.source}`;
       const texture = textures.get(key);
       const aspect = texture ? texture.image.height / texture.image.width : 1.5;
       const u = material.uniforms;
+      u.sceneTime.value=elapsed;
       if(u.alternateArt)u.alternateArt.value=textures.get(`${current.textureId||current.id}/groundAlt`)||texture||null;
+      if(u.thirdArt)u.thirdArt.value=textures.get(`${current.textureId||current.id}/groundThird`)||texture||null;
       if (mesh.userData.scene !== current || u.artwork.value !== (texture || null)) {
         const grade=mapLayerGrade(current.id,definition.role);
         u.visualGrade.value.fromArray(grade.color);
@@ -266,14 +307,17 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     while (sceneCache.size > 3) {
       const oldest = [...sceneCache.keys()].find(key => key !== id && key !== (current.textureId || current.id));
       sceneCache.delete(oldest);
-      for (const type of ['depth', 'ground', 'groundAlt', 'foreground', 'islands', 'effects', 'cloud']) {
-        const key = `${oldest}/${type}`, texture = textures.get(key);
+      for (const key of [...status.keys()].filter(key=>key.startsWith(`${oldest}/`))) {
+        const texture = textures.get(key);
         if (texture) { const at = uploads.indexOf(texture); if (at >= 0) uploads.splice(at, 1); texture.dispose(); textures.delete(key); }
         status.delete(key);
       }
     }
-    const types = FIVE_LAYER_SCENES[definition.id] ? ['depth', 'ground', 'islands', 'effects', 'cloud'] : ['depth', 'ground', 'foreground'];
-    if(FIVE_LAYER_SCENES[definition.id]?.urls.groundAlt)types.splice(2,0,'groundAlt');
+    const types = FIVE_LAYER_SCENES[definition.id]
+      ? [...new Set(FIVE_LAYER_SCENES[definition.id].layers.flatMap(layer => layer.modules ? layer.modules.map(module=>module[0]) : [layer.source]))]
+      : ['depth', 'ground', 'foreground'];
+    if(FIVE_LAYER_SCENES[definition.id]?.urls.groundAlt)types.push('groundAlt');
+    if(FIVE_LAYER_SCENES[definition.id]?.urls.groundThird)types.push('groundThird');
     record.promise = Promise.all(types.map(type => new Promise(resolve => {
     const key = `${id}/${type}`;
     status.set(key, 'loading');
@@ -290,7 +334,8 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       // A mirrored next tile reverses roofs, walls and support faces. Only the
       // directionless atmosphere layers may alternate vertically.
       const atmosphere = type === 'cloud' || type === 'foreground';
-      texture.wrapT = atmosphere ? T.MirroredRepeatWrapping : T.RepeatWrapping;
+      const moduleTexture=FIVE_LAYER_SCENES[definition.id]?.layers.some(layer=>layer.modules?.some(module=>module[0]===type));
+      texture.wrapT = moduleTexture ? T.ClampToEdgeWrapping : atmosphere ? T.MirroredRepeatWrapping : T.RepeatWrapping;
       texture.anisotropy = 2;
       texture.needsUpdate = true;
       textures.set(key, texture); status.set(key, 'ready'); syncLayers(); resolve();

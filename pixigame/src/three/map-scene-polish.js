@@ -21,7 +21,7 @@ const distant={
   'terraced-highlands':[.87,.82,.03,.055],'lunar-ring-station':[.87,.82,.03,.055],
   'lunar-crater-field':[.84,.62,.04,.05],'lunar-research-camp':[.89,.80,.04,.045],
 };
-const fog={coast:.62,ruins:.58,volcano:.48,sewer:.44,space:.22,
+const fog={coast:.62,'coast-defense':.68,ruins:.58,volcano:.48,sewer:.44,space:.22,
   'frozen-rift':.42,'storm-front':.80,'iron-dock':.48,'red-nest':.44,
   'emerald-rainforest':.48,'neon-city':.36,'sky-core':.30,
   'orbital-wreckage':.26,'ring-spaceport':.28,'obsidian-wastes':.40,

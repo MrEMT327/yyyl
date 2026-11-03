@@ -1,6 +1,8 @@
 import {ADVANCED_CHAPTERS} from '../advanced-chapters.js';
 import {mapSceneLayout} from './map-scene-polish.js';
 import {chapterMapRepresentativeStage} from '../replica/chapter-map-reuse.js';
+import {STAGE1_COAST_CLOUDS} from './stage1-cloud-modules.js';
+import {STAGE1_FLOATING_PROPS} from './stage1-floating-props.js';
 // Original generated terrain. APK artwork remains design evidence under doc.
 const base = import.meta.env?.BASE_URL || '/';
 // New chapters reuse quiet original depth textures, not flattened chapter art.
@@ -107,13 +109,13 @@ const DETACHED_SCENES = new Set(['space', 'storm-front', 'orbital-wreckage']);
 const SOURCE_CLOUD_SCENES = new Set(['ruins', 'volcano', 'space']);
 
 // All 60 campaign chapters use balanced art; named original scenes remain available.
-export const FIRST_STAGE_SCENE = Object.freeze({
+const SHARED_COAST_SCENE = Object.freeze({
   ...PERIPHERAL_SCENES[0], id: 'coast-balanced',
   artUrl: `${base}art/project-coast-polished-v2/shore-a.png`,
   depthUrl: `${base}art/project-coast-balanced-v1/far-water-soft.png`,
 });
-const FIRST_STAGE_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.freeze({
-  ...layer, id: `coast-balanced-${layer.role}`, sceneId: FIRST_STAGE_SCENE.id,
+const BALANCED_COAST_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.freeze({
+  ...layer, id: `coast-balanced-${layer.role}`, sceneId: SHARED_COAST_SCENE.id,
   // A four-strip composition keeps island layouts stable through UV wrap.
   ...(layer.motionGroup==='terrain'?{cycleTiles:layer.role==='foreground'?2:4}:{}),
   ...(layer.role==='midground'?{layout:'coast-islands'}:{}),
@@ -121,11 +123,41 @@ const FIRST_STAGE_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.freeze
   // Authored transparent shoreline uses the existing RGBA shader path.
   ...(layer.role === 'foreground' ? { kind: 2, fullAlpha: true, shoreVariants:true } : {}),
 })));
+// Chapter 1 owns this trial artwork. Later coast chapters keep the shared set.
+export const FIRST_STAGE_SCENE = Object.freeze({
+  ...SHARED_COAST_SCENE, id: 'coast-defense-balanced', smoothBackground: true,
+  artUrl: `${base}art/stage1-coastal-defense-v1/coastal-ground.png`,
+  ground: 0x12364b, edge: 0x708596, accent: 0x65afbf,
+});
+// Ocean, reefs, their submerged footings and the coast form one rigid ground
+// image. Water motion follows its pixels; sparse clouds only establish altitude.
+const FIRST_STAGE_LAYERS = Object.freeze([
+  { ...COAST_LAYERS[0], source:'ground', fullSceneBase:true, coastalWater:true,
+    shoreVariants:true,coastSequence:true,cycleTiles:6,
+    nativeLayer:0, motionGroup:'terrain', scrollScale:.5, speed:20 },
+  { ...COAST_LAYERS[4],id:'floating-props',role:'props',name:'水面·浮标与漂流物',nativeLayer:0,
+    modules:STAGE1_FLOATING_PROPS,nativeSpeed:2,scrollScale:.5,moduleLoopLength:340,depth:-800,opacity:1 },
+  { ...COAST_LAYERS[4], id:'large-clouds',name:'边缘·稀疏云',nativeLayer:2,
+    modules:STAGE1_COAST_CLOUDS[2],nativeSpeed:2,depth:-300,tint:0xffffff,whiteness:.25,opacity:1 },
+  { ...COAST_LAYERS[4], id:'near-clouds',name:'近层·掠过云',nativeLayer:5,
+    modules:STAGE1_COAST_CLOUDS[5],nativeSpeed:12,depth:-10,tint:0xffffff,whiteness:.42,opacity:.62 },
+].map(layer => Object.freeze({
+  ...layer, id:`coast-defense-${layer.modules?layer.id:layer.role}`, sceneId:FIRST_STAGE_SCENE.id,
+})));
 const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
-  [FIRST_STAGE_SCENE.id, Object.freeze({ layers: FIRST_STAGE_LAYERS, urls: Object.freeze({
+  [SHARED_COAST_SCENE.id, Object.freeze({ layers: BALANCED_COAST_LAYERS, urls: Object.freeze({
     ...COAST_EXTRA_URLS, islands: `${base}art/project-coast-polished-v2/island-landmarks.png`,
     groundAlt: `${base}art/project-coast-polished-v2/shore-b.png`,
     cloud: `${base}art/project-coast-balanced-v1/near-clouds.png`,
+  }) })],
+  [FIRST_STAGE_SCENE.id, Object.freeze({ layers: FIRST_STAGE_LAYERS, urls: Object.freeze({
+    groundAlt: `${base}art/stage1-maritime-v1/harbor.png`,
+    groundThird: `${base}art/stage1-maritime-v1/reef.png`,
+    buoy: `${base}art/stage1-maritime-v1/buoy.png`,
+    cargo: `${base}art/stage1-maritime-v1/cargo.png`,
+    skiff: `${base}art/stage1-maritime-v1/skiff.png`,
+    cloudLargeA: `${base}art/stage1-coastal-defense-v1/cloud-modules-v1/large-a.png`,
+    cloudLargeB: `${base}art/stage1-coastal-defense-v1/cloud-modules-v1/large-b.png`,
   }) })],
   ['coast', Object.freeze({ layers: COAST_LAYERS, urls: COAST_EXTRA_URLS })],
   ...chapterStyles.map(style => [style.id, Object.freeze({
@@ -178,13 +210,13 @@ const BALANCED_CHAPTER_THEMES = Object.freeze([
   'lunar-crater-field', 'lunar-research-camp', 'lunar-ring-station', 'lunar-crater-field', 'lunar-research-camp',
 ]);
 const balancedByTheme = Object.freeze(Object.fromEntries([...new Set(BALANCED_CHAPTER_THEMES)].map(theme => [
-  theme, theme === 'coast' ? FIRST_STAGE_SCENE : Object.freeze({
+  theme, theme === 'coast' ? SHARED_COAST_SCENE : Object.freeze({
     ...PERIPHERAL_SCENES.find(scene => scene.id === theme), id: `${theme}-balanced`,
     artUrl: `${base}art/project-chapters-balanced-v1/${theme}/foreground.png`,
     depthUrl: `${base}art/project-chapters-balanced-v1/${theme}/depth.png`,
   }),
 ])));
-export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map(theme => balancedByTheme[theme]));
+export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map((theme, index) => index === 0 ? FIRST_STAGE_SCENE : balancedByTheme[theme]));
 export const FIVE_LAYER_SCENES = Object.freeze({
   ...ORIGINAL_FIVE_LAYER_SCENES,
   ...Object.fromEntries(Object.entries(balancedByTheme).filter(([theme]) => theme !== 'coast').map(([theme, scene]) => [

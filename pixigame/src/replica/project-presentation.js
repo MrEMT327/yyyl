@@ -121,6 +121,20 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const original = definition.nativeLayer !== undefined ? sourceMap.layers.find(layer => layer.layer === definition.nativeLayer) : sourceLayers[definition.id];
       if (!original) throw new Error(`当前关卡缺少背景层：${definition.id}`);
       const offset = frame.mapCameraOffset(original);
+      if(definition.role==='props')return {
+        moduleTravel:(-nativeMapScrollZ(original,elapsed)*(definition.scrollScale??1)+offset.z)*unitsPerWorld,
+        moduleUnitsPerWorld:unitsPerWorld,
+        lateralOffset:coastIslandLateralOffset(frame.camera.x,offset.x,unitsPerWorld),
+      };
+      if(definition.modules){
+        // Module clouds retain the native collider cycle and camera parallax;
+        // their world scale must not fall back to the old full-width fog strip.
+        return {
+          moduleTravel:(-nativeMapScrollZ(original,elapsed)-offset.z+frame.camera.z)*unitsPerWorld,
+          moduleLoopLength:original.loopLength,moduleUnitsPerWorld:unitsPerWorld,
+          lateralOffset:coastIslandLateralOffset(frame.camera.x,offset.x,unitsPerWorld),
+        };
+      }
       const tileHeight = definition.width * aspect / unitsPerWorld;
       const period=definition.cycleTiles??2;
       const scroll = (-nativeMapScrollZ(original, elapsed) * (definition.scrollScale ?? 1) / tileHeight + offset.z / tileHeight) % period;
