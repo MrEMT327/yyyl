@@ -8,7 +8,7 @@ import { buildLoadoutRuntimeAttributes } from './loadout-attributes';
 import { splitNativeEconomyAttributes } from '../../src/replica/native-economy-attributes.js';
 import { normalizeEquipmentPartLevel } from '../../src/replica/native-equipment-level.js';
 import { validatePilotSkillSlots } from '../../src/replica/native-pilot-skill-slots.js';
-import { validateWeaponSkillSlots } from '../../src/replica/native-weapon-skill-slots.js';
+import { normalizeNativeWeaponLoadout, battleWeaponSkillSources } from '../../src/replica/native-weapon-loadout.js';
 
 export type LoadoutCatalog = RecordData & {
   equipment: RecordData[]; planes: RecordData[]; guns: RecordData[];
@@ -23,7 +23,12 @@ export interface StudyLoadoutState {
   skinSkillSlots: number[];
   /** Omitted only by legacy saves, which inherit their equipped pilot skill. */
   pilotSkillSlots?: number[];
+  /** Legacy import only; never determines battle attacks. */
   weaponSkillSlots?: number[];
+  playerLevel?: number;
+  useWeaponMap?: Record<string, number>;
+  weaponSkillMap?: Record<string, number[]>;
+  weaponSkillMigration?: {version: 1; legacySlots: number[]};
   nativeResearch?: { version: 1; levels: Record<string, number> };
   /** Transient formal-sortie permission; independent of lab attributes and milestones. */
   weaponSelectionBanSkillIds?: number[];
@@ -37,7 +42,7 @@ export interface CalculatedLoadout {
   attributes: Record<string, number>; weaponAttributes: Record<string, Record<string, number>>;
   runtimeAttributes: Record<string, number>; runtimeWeaponAttributes: Record<string, Record<string, number>>;
   initialSkillIds: number[]; battleSkillIds: number[]; banSkillIds: number[];
-  selectedGunId: number; primarySkillId: number; selectedSkinId: number; selectedPilotId: number;
+  selectedGunIds: number[]; selectedGunId: number; primarySkillId: number; selectedSkinId: number; selectedPilotId: number;
   unsupportedEffects: { source: string; description: string; skillId?: number }[];
   skillSupport: Record<number, { supported: boolean; reasons: string[] }>;
   contributions: { name: string; attributes: Record<string, number> }[];
@@ -80,10 +85,11 @@ export function loadStudyLoadoutState(catalog: LoadoutCatalog): StudyLoadoutStat
     if (!starter) { starter = { id: 20101, star: 1, active: true }; state.guns.push(starter); }
     starter.active = starter.equipped = true;
   }
+  // Invalid native maps fail visibly; never replace them with a new gun/save.
+  const weaponLoadout=normalizeNativeWeaponLoadout(saved,state.guns);
+  Object.assign(state,weaponLoadout);
+  state.guns.forEach(row=>{row.equipped=Object.values(weaponLoadout.useWeaponMap).includes(row.id);});
   let equipped = false;
-  state.guns.forEach(row => { if (row.equipped) { row.equipped = !equipped; equipped = true; } });
-  try {state.weaponSkillSlots=validateWeaponSkillSlots(saved.weaponSkillSlots,state.guns,id=>{const row=catalog.guns.find(row=>Number(row.id)===id);return row?Number(row.baseGunId||row.id):0;});}
-  catch {state.weaponSkillSlots=[state.guns.find(row=>row.equipped)!.id,0];}
   state.pilots = collect('pilots', catalog.pilots); equipped = false;
   state.pilots.forEach(row => { if (row.equipped) { row.equipped = !equipped; equipped = true; } });
   try {
@@ -175,17 +181,21 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
     add(`${row.name} · ${entry.star} 星收藏`, star?.AttrOnStarUp);
     feature(`${row.name} · 收藏`, star?.FeatureOnStarUp, state.skinSkillSlots.includes(entry.id));
   }
-  const selectedGun = state.guns.find(r => r.equipped) || { id: 20101, star: 1, active: true };
-  const weaponSkillSlots=validateWeaponSkillSlots(state.weaponSkillSlots,state.guns,id=>{const row=catalog.guns.find(row=>Number(row.id)===id);return row?Number(row.baseGunId||row.id):0;});
-  let primarySkillId = 10000101;
+  const weaponLoadout=normalizeNativeWeaponLoadout(state,state.guns);
+  const selectedGun = state.guns.find(r=>r.id===weaponLoadout.useWeaponMap[0])!;
+  const weaponSkillSources=new Set(battleWeaponSkillSources(weaponLoadout,state.guns));
+  let primarySkillId = 0;
   for (const entry of state.guns.filter(r => r.active)) {
     const row = catalog.guns.find(r => Number(r.id) === entry.id); if (!row) continue;
     const star = currentStar(row, entry.star), name = `${row.name} · ${entry.star} 星`;
     add(`${name}收藏`, star?.AttrOnStarUp);
-    if (weaponSkillSlots.includes(entry.id)) {
-      const base=catalog.guns.find(r=>Number(r.id)===Number(row.baseGunId||row.id));
-      const initialFeatures=star?.FeatureInitSkill?.length?star.FeatureInitSkill:currentStar(base||{},entry.star)?.FeatureInitSkill;
-      for (const f of parseStudyFeatures(initialFeatures)) if (f.Type === 'Skill') for (const id of String(f.Args).match(/\d+/g) || []) { initial.add(Number(id)); roots.add(Number(id)); if(entry.id===weaponSkillSlots[0])primarySkillId = Number(id); }
+    if (weaponSkillSources.has(entry.id)) {
+      // Native uses this source's exact star row. A variant with an empty
+      // FeatureInitSkill does NOT borrow a base weapon the player never slotted.
+      for (const f of parseStudyFeatures(star?.FeatureInitSkill)) if (f.Type === 'Skill') for (const id of String(f.Args).match(/\d+/g) || []) {
+        initial.add(Number(id)); roots.add(Number(id));
+        if(!primarySkillId)primarySkillId=Number(id);
+      }
       feature(name, star?.FeatureOnStarUp, true);
     }
   }
@@ -218,13 +228,6 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
     const skillLevel = entry.confirmedSkillLevel ?? (entry.activationKnown === false ? 0
       : entry.needActive === true ? entry.level - 1 : entry.level);
     for (const level of (row.levels || []).filter((r: RecordData) => Number(r.Level) <= skillLevel)) feature(`${row.name}实验室 Lv.${level.Level}`, level.FeatureJson, true);
-  }
-  if (!roots.size) {
-    const selected = catalog.guns.find(r => Number(r.id) === selectedGun.id);
-    const base = catalog.guns.find(r => Number(r.id) === Number(selected?.baseGunId));
-    const star = base && currentStar(base, selectedGun.star);
-    for (const f of parseStudyFeatures(star?.FeatureInitSkill)) if (f.Type === 'Skill') for (const id of String(f.Args).match(/\d+/g) || []) { roots.add(Number(id)); initial.add(Number(id)); primarySkillId = Number(id); }
-    if (!roots.size) { roots.add(10000101); initial.add(10000101); }
   }
   // CalAttributeData 0x6d112c4..0x6d11500: collect all initial BanSkillS
   // first, then remove those IDs. This is not the random-pool RejectSkills
@@ -266,7 +269,7 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
   if (state.debugOverride.enabled) { attack = state.debugOverride.attack; hp = state.debugOverride.hp; }
   contributions.unshift({ name: '基础战机', attributes: { Attack: 100, HPMax: 600 } });
   return { attack, hp, attributes, economyAttributes, runtimeAttributes, weaponAttributes: {}, runtimeWeaponAttributes: {}, initialSkillIds: [...initial], battleSkillIds, banSkillIds: [...(state.weaponSelectionBanSkillIds || [])], skillSupport,
-    selectedGunId: selectedGun.id, primarySkillId, selectedSkinId, selectedPilotId: selectedPilot?.id || 0, unsupportedEffects, contributions };
+    selectedGunIds: Object.values(weaponLoadout.useWeaponMap).filter(Boolean), selectedGunId: selectedGun.id, primarySkillId, selectedSkinId, selectedPilotId: selectedPilot?.id || 0, unsupportedEffects, contributions };
 }
 export function applyStudyLoadout(content: GameContent, _sim: Simulation, catalog: LoadoutCatalog, state: StudyLoadoutState): CalculatedLoadout {
   const result = calculateStudyLoadout(catalog, state), player = content.chapter.player;

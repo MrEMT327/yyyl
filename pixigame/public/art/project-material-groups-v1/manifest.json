@@ -1,0 +1,39 @@
+{
+  "method": "SVG card layout reusing existing project-authored artwork; source rasters unchanged",
+  "assets": [
+    {
+      "file": "equipment-blueprints.svg",
+      "sources": [
+        {
+          "path": "project-flight-blueprints-v1/cockpit.webp",
+          "sha256": "d68761aee2c6b425fc14293e0b593832591ec4fc4ffe90cff43cac8e9b842b79"
+        },
+        {
+          "path": "project-flight-blueprints-v1/fuselage.webp",
+          "sha256": "2f452849453eded59c5f6c30be719bfe1dd22a1a139763f810beda6c6ca155ea"
+        },
+        {
+          "path": "project-flight-blueprints-v1/engine-armor.webp",
+          "sha256": "09c1268681b26f8114dffa60c97deef5da8fcd6453351c5b0c2db59571de2b97"
+        }
+      ]
+    },
+    {
+      "file": "research-blueprints.svg",
+      "sources": [
+        {
+          "path": "project-weapon-themes-v1/20101.webp",
+          "sha256": "54604cba891f217a24124add309081a6fb944ccd31ae92c78de341876801f434"
+        },
+        {
+          "path": "project-weapon-themes-v1/20501.webp",
+          "sha256": "240f7cfff2dcd734c2704251332ab0ade3f091bb3b29afeb6f1ea17f9aafa26b"
+        },
+        {
+          "path": "project-weapon-themes-v1/20601.webp",
+          "sha256": "3537219ed764ad05af6715ba694535043a2307fdbfd703621774e3de861bf24f"
+        }
+      ]
+    }
+  ]
+}

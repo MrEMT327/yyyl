@@ -14,7 +14,14 @@ import {enemyProjectileMaterialPose,withEnemyProjectileMaterialResources} from '
 import {isAcidVortex,acidVortexPresentation,withAcidVortexResources} from './acid-vortex-presentation.mjs';
 import {isAcidDroplet,isAcidGammaRay,acidDropletPresentation,withAcidDropletResources} from './acid-droplet-presentation.mjs';
 import {playerShotMaterialPose,withPlayerShotMaterials} from './player-shot-material.mjs';
+import {withOrdinaryIceMaterials} from './ordinary-ice-materials.mjs';
 export function projectilePresentation(b){
+  // Native magnetic fans keep the harpoon model ID but draw a beam scene.
+  // Select their electric material before the ordinary circle-body adapter.
+  if(b.owner==='player'&&b.weaponId!==360017&&[200001,200011].includes(b.familyId)
+    &&([200037,200139,419004].includes(b.modelId)||b.familyId===200011&&b.trajectory==='SectorSpreadMod'))return{scale:1,retireImmediately:false,pose:{electricArc:true,overrides:{
+      'Visual/Line2D':{material:{$ref:'host://cool-electric-v1/arc'}},
+    }}};
   const flightPose=playerShotMaterialPose(b);
   if(flightPose)return{scale:1,retireImmediately:false,pose:flightPose};
   // Route by the actual rocket model: families can change for upgrades and pilot skills.
@@ -51,7 +58,9 @@ export function projectilePresentation(b){
     pose:{animationNames:{AnimationPlayer:'attack1'},animationTimes:{AnimationPlayer:Math.min(.1,b.age)},overrides:{
       Visual:{modulate:[1,1,1,1]},'Visual/AnimatedSprite2D':{
         position:[0,0],offset:[0,0],rotation:0,scale:[.16,.16],frame:0,speed_scale:0,
-        sprite_frames:{$ref:ICE+'blade-frames'},material:{$ref:ICE+'material'},
+        // 200038 is the host's spawned split blade; the upgraded main model is 1000006.
+        self_modulate:[1,1,1,b.weaponId===200038?.95:1],
+        sprite_frames:{$ref:ICE+'blade-frames'},material:{$ref:ICE+'blade-flight'},
       },
     }},
   };
@@ -120,14 +129,14 @@ export function withScorchPresentationResources(graph){
   });
   const laserAdd=(name,type,properties)=>{const id=LASER+name;resources[id]={id,type,properties};return {$ref:id};};
   const laserGradient=laserAdd('gradient','Gradient',{offsets:[0,.2,.42,.5,.58,.8,1],colors:[
-    [.025,.3,1,0],[.04,.45,1,.4],[.2,.7,1,.9],[.7,.94,1,1],
-    [.2,.7,1,.9],[.04,.45,1,.4],[.025,.3,1,0],
+    [.025,.08,.55,0],[.04,.20,1,.4],[.16,.42,1,.9],[.60,.78,1,1],
+    [.16,.42,1,.9],[.04,.20,1,.4],[.025,.08,.55,0],
   ]});
   laserAdd('texture','GradientTexture2D',{gradient:laserGradient,use_hdr:true,width:32,height:128,fill_from:[0,1],fill_to:[0,0]});
   laserAdd('material','CanvasItemMaterial',{blend_mode:0,light_mode:1});
   const textures={...graph.textures};
   const iceAdd=(name,type,properties)=>{const id=ICE+name;resources[id]={id,type,properties};return {$ref:id};};
-  for(const [name,file] of [['blade','ice-crescent-v2.png'],['saw','ice-saw-v2.png']]){
+  for(const [name,file] of [['blade','ice-crescent-v2.png'],['saw','ice-saw-clean-v3.png']]){
     textures[ICE+name]={width:1254,height:1254,file,url:'assets/ice-weapons-v2/'+file};
     const frame=iceAdd(name+'-frame','AtlasTexture',{atlas:{$external:ICE+name},region:[0,0,1254,1254]});
     iceAdd(name+'-frames','SpriteFrames',{animations:[{name:'default',speed:1,loop:true,frames:[{texture:frame,duration:1}]}]});
@@ -147,7 +156,7 @@ void fragment(){
   stepUV=TEXTURE_PIXEL_SIZE*9.0;
   float softInner=min(min(texture(TEXTURE,UV+vec2(stepUV.x,0.0)).a,texture(TEXTURE,UV-vec2(stepUV.x,0.0)).a),min(texture(TEXTURE,UV+vec2(0.0,stepUV.y)).a,texture(TEXTURE,UV-vec2(0.0,stepUV.y)).a));
   float glow=clamp((mask-softInner)*2.0,0.0,1.0);
-  COLOR=vec4(mix(vec3(0.03,0.38,1.0),vec3(0.65,0.9,1.0),edge),COLOR.a*(0.075+0.75*edge+0.22*glow));
+  COLOR=vec4(mix(vec3(0.025,0.14,1.0),vec3(0.48,0.70,1.15),edge),COLOR.a*(0.075+0.75*edge+0.22*glow));
 }`}};
   const continuousSword='host://continuous-blue-sword-v1/';
   resources[continuousSword+'material']={id:continuousSword+'material',type:'ShaderMaterial',properties:{shader:{$external:continuousSword+'shader'}}};
@@ -167,8 +176,8 @@ void fragment(){
   float vein=(1.0-smoothstep(0.002,0.014,abs(d-veinAt)))*(0.12+0.25*flow);
   float secondAt=0.21+0.019*sin(UV.x*31.0-swing_age*13.0);
   float thread=(1.0-smoothstep(0.002,0.009,abs(d-secondAt)))*flow*0.1;
-  vec3 energy=mix(vec3(0.025,0.38,1.0),vec3(0.22,0.78,1.2),rim);
-  energy=mix(energy,vec3(1.05,1.3,1.4),core);
+  vec3 energy=mix(vec3(0.025,0.14,1.0),vec3(0.14,0.48,1.2),rim);
+  energy=mix(energy,vec3(0.90,1.08,1.4),core);
   float alpha=clamp(core*0.9+rim*0.38+wake+vein+thread,0.0,1.0);
   COLOR=vec4(energy,COLOR.a*sweep*alpha*layer_strength);
 }`};
@@ -181,7 +190,16 @@ void fragment(){
   float tip=1.0-smoothstep(0.55,1.0,abs(q.x));
   float halo=exp(-q.y*q.y*5.0)*tip;
   float core=exp(-q.y*q.y*40.0)*tip;
-  COLOR=vec4(mix(COLOR.rgb,vec3(1.1,1.3,1.4),core),COLOR.a*(core*0.8+halo*0.2));
+  COLOR=vec4(mix(COLOR.rgb,vec3(0.85,1.03,1.35),core),COLOR.a*(core*0.8+halo*0.2));
 }`};
-  return [withPlayerShotMaterials,withMissilePresentationResources,withIaidoResources,withAcidCloudResources,withAcidVortexResources,withAcidDropletResources,withAreaWeaponResources,withAircraftPulseResources,withConstructWeaponResources,withCorrectedStatusResources,withCorrectedEnemyResources,withEnemyProjectileMaterialResources].reduce((g,adapt)=>adapt(g),{...graph,resources,textures,shaders});
+  resources['host://cool-electric-v1/arc']={type:'ShaderMaterial',properties:{shader:{$external:'host://cool-electric-v1/shader'}}};
+  shaders['host://cool-electric-v1/shader']={code:`shader_type canvas_item;
+render_mode unshaded, blend_add;
+void fragment(){
+  vec3 source=texture(TEXTURE,UV).rgb;
+  float light=max(source.r,max(source.g,source.b));
+  vec3 electric=mix(vec3(0.30,0.18,1.05),vec3(0.84,0.80,1.22),smoothstep(0.35,0.95,light));
+  COLOR=vec4(electric*(0.85+0.85*light),COLOR.a);
+}`};
+  return [withOrdinaryIceMaterials,withPlayerShotMaterials,withMissilePresentationResources,withIaidoResources,withAcidCloudResources,withAcidVortexResources,withAcidDropletResources,withAreaWeaponResources,withAircraftPulseResources,withConstructWeaponResources,withCorrectedStatusResources,withCorrectedEnemyResources,withEnemyProjectileMaterialResources].reduce((g,adapt)=>adapt(g),{...graph,resources,textures,shaders});
 }

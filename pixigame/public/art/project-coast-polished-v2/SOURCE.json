@@ -1,0 +1,39 @@
+{
+  "created": "2026-10-30",
+  "generator": "Built-in image_gen tool; no external API or CLI",
+  "use": "Original replacement scenery for the first coastal map",
+  "references": [
+    "art/project-coast-balanced-v1/middle-coast.png",
+    "art/project-chapters-balanced-v1/coast/midground.png"
+  ],
+  "commonShorePrompt": "Use case: style-transfer. Asset type: production RGBA scrolling shoreline strip for a vertical airplane shooter. The attached local image is a STYLE AND CAMERA reference, not a template to repeat. Create a NEW original tall shoreline variation matching its clean painted low-poly game art, stone facets, small palms, warm pale sand, restrained cyan surf, slate military coastal structures and soft daylight. Actual transparent background, wide central channel completely transparent, no painted sea/sky. Exactly two continuous banks along the left/right outer 12–20% of the width; keep the central 60–65% empty alpha. No central islands, no characters, no aircraft, no bullets, no text/UI. Perspective and light direction must match the reference all the way down: top-down elevated oblique game view, never mirror roofs or flip vertical faces. Tall 1024x3072 composition, a long continuous stretch rather than repeated copies. Small architectural props at the SAME apparent scale as reference, with many quiet stretches and irregular bays. At top and bottom 6% use only narrow rock/sand shoreline of the same widths on both edges, no towers/piers or isolated objects crossing the horizontal ends, so these two endpoint regions can connect cleanly to another strip. All remaining empty pixels must have genuine alpha transparency, not black or a checkerboard. No baked broad gray/white fog, no large shadows in the channel. ",
+  "assets": [
+    {
+      "file": "shore-a.png",
+      "actualSize": [
+        724,
+        2172
+      ],
+      "promptSuffix": "Variant A: mostly natural sandy coves with a few scattered gray boulder clusters and small palms. Only ONE compact low coastal bunker with a small blue beacon near the upper left quarter and ONE short modest wooden dock near the lower right third. Asymmetric shoreline contours and long open intervals. Preserve style, perspective, resolution quality and transparent center.",
+      "sha256": "1b06b8bb3a9324b0fd8a5e3942204768b4d72db0128d702bb45013b3641b4f0d"
+    },
+    {
+      "file": "shore-b.png",
+      "actualSize": [
+        724,
+        2172
+      ],
+      "promptSuffix": "Variant B: a distinct longer rocky headland with two irregular inlets and sparse beach. Only ONE small ruined slate observation wall near the upper right third and ONE tiny harbor beacon on the left lower quarter; no repeated domes or repeated docks. A few palms and broken stone near the edge. Asymmetric and visually different from a fortress-filled shoreline. Preserve style, perspective, resolution quality and transparent center.",
+      "sha256": "5e92124092b516abb239051d01a7b4e2abe905d86a563f3e6ad70870c380d2ba"
+    },
+    {
+      "file": "island-landmarks.png",
+      "actualSize": [
+        1024,
+        1536
+      ],
+      "prompt": "Use case: style-transfer. Production transparent game sprite atlas. Reference image is for camera, palette and painted low-poly style only. Create ONE 1024x1536 RGBA atlas with exactly THREE small distinct complete island cutouts arranged vertically, one centered inside each equal 1024x512 horizontal band, with generous truly transparent margins on every band boundary. No contact between cutouts; no cast shadows or broad colored fog. Top band: a narrow crescent-shaped pale sandbar, a few tiny gray stones and one small palm; middle band: an irregular scattered gray rocky reef with almost no greenery and tiny thin cyan foam at the waterline; bottom band: an elongated low tropical islet, sparse shrubs and a few palms rather than a round bush mound. All three clearly different silhouettes and only about 35–45% of total image width each. Keep every sprite vertically within the central 50–60% of its own 512px band. Top-down elevated oblique shooter background camera matching reference, same soft daytime light direction, crisp facets and modest saturation, matching the provided original shoreline style. Absolute transparent alpha between sprites; no black backdrop, checkerboard, text, characters, buildings or UI. Do not add large white glow.",
+      "sha256": "b74daee1bc900d4e869f8d54e5fa5a92e0880a8fbef80e86e76bae7b4fc48db0"
+    }
+  ]
+}

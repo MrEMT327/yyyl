@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "origin": "Original code-native SVG artwork, based on user-approved light-v2 direction on 2026-11-02.",
+  "palette": [
+    "#f4c15c",
+    "#ffdb8b",
+    "#ffe9ac",
+    "#f7c968",
+    "#fff6d5",
+    "#fff1c7",
+    "#ffe9ad"
+  ],
+  "shapes": [
+    {
+      "name": "regular",
+      "width": 64,
+      "height": 136,
+      "source": "regular.svg",
+      "runtime": "regular.png"
+    },
+    {
+      "name": "piercing",
+      "width": 64,
+      "height": 224,
+      "source": "piercing.svg",
+      "runtime": "piercing.png"
+    },
+    {
+      "name": "heavy",
+      "width": 112,
+      "height": 160,
+      "source": "heavy.svg",
+      "runtime": "heavy.png"
+    }
+  ]
+}

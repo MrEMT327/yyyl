@@ -2,6 +2,7 @@ import { COMMON_WEAPONS, commonWeaponStats } from './common-weapons.js';
 import { createAirframeGrowth } from './airframe-growth.js';
 import { movingCircleHitTime, movingCapsuleHitTime } from '../combat-collision.js';
 import { commonCannonShape } from './common-cannon-shape.js';
+import { ELECTRIC_TUNING, scatterTargets } from './common-electric.js';
 
 const TAU=Math.PI*2, clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const DRONE_LIMIT=12, DRONE_OVERFLOW_MAX=10, DRONE_OVERFLOW_DAMAGE=.05;
@@ -82,11 +83,11 @@ export function createCommonCombat(loadout,{random=Math.random}={}){
     return trace([{...p}],q.color,1,life,{...glyph(p,r,q.color,shape),...style(q),...extra});
   }
   function corner(q,b){effect(q,b.p,'corner',15*s(),.2,{angle:b.angle,from:b.prev});}
-  function arc(q,a,b,color,width=3,life=.2){
+  function arc(q,a,b,color,width=3,life=.2,secondary=color===q.shadow){
     // Preserve the established simulation random stream; GPU noise animates
     // the arc and no longer generates a CPU polyline from these samples.
     for(let i=0;i<7;i++)random();
-    effect(q,a,'lightning',width*8,life,{end:{...b},color,secondary:color===q.shadow});
+    effect(q,a,'lightning',width*8,life,{end:{...b},color,secondary});
   }
   function source(q,key=uid()){return {runId,groupId:q.groupId,weaponId:q.weaponId,projectileId:key,kind:'root',depth:0};}
   function hit(q,t,damage=q.damage,meta={}){
@@ -175,13 +176,13 @@ export function createCommonCombat(loadout,{random=Math.random}={}){
     if(q.rank>=5&&!secondary)schedule(.25,()=>gravity(q,{...world.origin},true));
   }
   function lightning(q,p){
-    const seen=new Set(),range=180*s()*(q.rank>=2?1.25:1)*q.chainMultiplier,max=5;
+    const seen=new Set(),range=ELECTRIC_TUNING.lightning.chainRange*s()*(q.rank>=2?1.25:1)*q.chainMultiplier,max=5;
     let from=p;
     for(let i=0;i<max;i++){
-      const t=nearest(from,{exclude:seen,range:i?range:800*s()});if(!t)break;
-      seen.add(t.id);arc(q,from,t,q.color,3*s(),.11);const node={...t};if(q.rank>=2)schedule(i*.015,()=>effect(q,node,'node',6*s(),.1));hit(q,t,q.damage,{lightning:true});
-      if(q.rank>=3||random()<(q.rank>=2?.23:.13)){
-        const branch=nearest(t,{exclude:seen,range});if(branch){seen.add(branch.id);arc(q,t,branch,q.shadow,1.8*s(),.13);hit(q,branch,q.damage,{lightning:true});}
+      const t=nearest(from,{exclude:seen,range:i?range:ELECTRIC_TUNING.lightning.initialRange*s()});if(!t)break;
+      seen.add(t.id);arc(q,from,t,q.color,3.8*s(),.18);const node={...t};schedule(i*.012,()=>effect(q,node,'node',7*s(),.14));hit(q,t,q.damage,{lightning:true});
+      if(q.rank>=3||random()<(q.rank>=2?ELECTRIC_TUNING.lightning.upgradedBranchChance:ELECTRIC_TUNING.lightning.branchChance)){
+        const branch=nearest(t,{exclude:seen,range});if(branch){seen.add(branch.id);arc(q,t,branch,q.color,2.6*s(),.18,true);hit(q,branch,q.damage,{lightning:true});}
       }from=t;
     }
     if(q.rank>=5&&q.round%5===0){
@@ -221,10 +222,7 @@ export function createCommonCombat(loadout,{random=Math.random}={}){
           if(q.rank>=5)for(const side of [-1,1])beam(q,{x:a.x+side*24*s(),y:a.y},{x:b.x+side*24*s(),y:b.y},width,q.damage*.3,{side:true,secondary:true});
         });}break;
       }
-      case 'scatter': {
-        const groupHits=new Set();for(let i=0;i<q.count;i++)addProjectile(q,p,(i/(q.count-1)-.5)*Math.PI/3,{outer:i===0||i===q.count-1,groupHits});
-        if(q.rank>=5&&q.round%3===0)schedule(.25,()=>{const origin={...p},groupHits=new Set();for(let i=0;i<q.count;i++){const x=(i/(q.count-1)-.5)*160*s();const start={x:origin.x+x,y:origin.y};addProjectile({...q,damage:q.damage*.6},start,aim(start,{x:origin.x,y:origin.y-330*s()}),{outer:false,groupHits,secondary:true});}});break;
-      }
+      case 'scatter':break; // Target-gated sustained discharge is stepped below.
       case 'sidegun':for(const side of [-1,1]){const angle=side*(q.round%3===0?.1:1.05);muzzle(q,{x:p.x+side*28*s(),y:p.y},{angle});addProjectile(q,p,angle,{speed:q.speed*s()*(q.rank>=2?1.2:1),life:q.life*(q.rank>=2?1.25/1.2:1),side});}
         if(q.rank>=5)schedule(.08,()=>{for(const side of [-1,1])addProjectile({...q,damage:q.damage*.6},p,side*Math.PI*.72,{side,extra:true});});break;
       case 'grenade': {const heavy=q.rank>=5&&q.round%3===0;addProjectile({...q,damage:q.damage*(heavy?1.5:1)},p,0,{heavy,maxBounces:2+(q.rank>=2?1:0),nextBounce:.45,radius:q.radius*s()*(heavy?1.5:1),landing:point(p,0,q.speed*s()*q.life)});break;}
@@ -401,6 +399,46 @@ export function createCommonCombat(loadout,{random=Math.random}={}){
       }
     }drones=drones.filter(d=>d.age<d.life&&d.hp>0);
   }
+  function scatter(c,q,dt,active){
+    const prefix=c.weapon.id+'/electric/';
+    const targets=active?scatterTargets(world.origin,living(),{range:ELECTRIC_TUNING.scatter.range*s()*q.width,limit:q.count}):[];
+    if(!targets.length){
+      fx=fx.filter(v=>!String(v.id).startsWith(prefix));
+      c.next=now();c.scatterPulseAt=0;c.scatterRounds=0;return;
+    }
+    const p=point(world.origin,0,24*s()),visual={...q,weaponId:c.weapon.id,itemId:c.weapon.itemId};
+    const activeIds=new Set(targets.map(t=>prefix+t.id));
+    fx=fx.filter(v=>!String(v.id).startsWith(prefix)||activeIds.has(v.id)||v.id===prefix+'coil');
+    effect(visual,p,'node',10*s(),.08,{id:prefix+'coil',alpha:.72});
+    for(const t of targets)effect(visual,p,'lightning',24*s(),.08,{id:prefix+t.id,end:{x:t.x,y:t.y},continuous:true});
+    if(!c.scatterPulseAt){c.scatterPulseAt=now()+1;c.next=now();}
+    let ticks=0;
+    while(now()+1e-9>=c.next&&ticks++<8){
+      c.next+=q.interval;c.round++;c.scatterRounds=(c.scatterRounds||0)+1;
+      const shot=makeShot(c),seen=new Set(targets.map(t=>t.id));state.shots++;
+      for(const t of targets){
+        const close=q.rank>=3&&dist(world.origin,t)<=220*s();
+        hit(shot,t,shot.damage*(close?1.3:1),{scatter:true});
+        if(close&&c.scatterRounds%3===1)effect(visual,t,'discharge',16*s(),.16,{alpha:.5});
+      }
+      if(q.rank>=4){
+        const edges=[...targets].sort((a,b)=>a.x-b.x),anchors=edges.length>1?[edges[0],edges.at(-1)]:edges;
+        for(const anchor of anchors){
+          const other=nearest(anchor,{exclude:seen,range:180*s()*q.width,front:true});
+          if(!other)continue;seen.add(other.id);
+          hit(shot,other,shot.damage*.5,{scatter:true});
+          effect(visual,anchor,'lightning',17*s(),.14,{end:{x:other.x,y:other.y},secondary:true});
+        }
+      }
+      if(q.rank>=5&&now()+1e-9>=c.scatterPulseAt){
+        c.scatterPulseAt=now()+1;
+        const pulse={...shot,groupId:shot.groupId+'/convergence'};
+        for(const t of targets){hit(pulse,t,shot.damage*.6,{scatter:true});effect(visual,p,'lightning',28*s(),.16,{end:{x:t.x,y:t.y},color:q.highlight});}
+        effect(visual,p,'compression',36*s(),.16,{alpha:.55});
+      }
+    }
+  }
+
   function persistent(c,q,dt,active){
     if(!active){c.lock=null;c.stacks=0;c.lockTime=0;c.next=now();return;}
     const old=c.lock,t=living().find(t=>t.id===old&&t.y<=world.origin.y)||nearest(world.origin,{front:true,range:900*s()});
@@ -481,6 +519,7 @@ export function createCommonCombat(loadout,{random=Math.random}={}){
       // Empty waves are not a trigger release: forward fire and overload continue.
       // Target-locked rays still require an enemy; pause freezes the entire simulation.
       for(const c of clocks){const a=stats(c);c.held=firing?c.held+dt:0;
+        if(a.mechanic==='scatter'){scatter(c,a,dt,firing&&hasTargets);continue;}
         if(['beam','freeze'].includes(a.mechanic)){persistent(c,makeShot(c),dt,firing&&hasTargets);continue;}
         if(!firing){c.next=now();continue;}
         const movement=Math.hypot(velocity.x,velocity.y),angle=Math.atan2(velocity.y,velocity.x),turn=c.lastAngle===null?0:Math.abs(Math.atan2(Math.sin(angle-c.lastAngle),Math.cos(angle-c.lastAngle)));

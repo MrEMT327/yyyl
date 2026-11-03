@@ -4,6 +4,7 @@ import { combatWeaponDetail, combatDetailLines } from './combat-weapon-detail-mo
 import { paintCombatArt } from './combat-art.js';
 import { paintPsdPopup } from './psd-popup-art.js';
 import { drawUiSymbol } from './ui-symbols.js';
+import { paintPauseCategoryIcon } from './pause-category-art.js';
 import { upgradeIconLayout, fitUpgradeIcon } from './upgrade-icon-layout.js';
 import iconCrops from './psd-choice-icon-crops.json' with {type:'json'};
 
@@ -122,7 +123,7 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
       // Colored section ribbons are labels; the housing and slots retain PSD corners.
       s.polygon([[48,y],[563,y],[568,y+5],[568,y+54],[32,y+54],[32,y+16]],tint);
       s.text(title,320,y+29,{size:29,color:'#183041',align:'center',weight:900});
-      drawUiSymbol(s,kind==='weapons'?'cadence':'up',242,y+14,27,'#294457');
+      paintPauseCategoryIcon(s,kind,238,y+10,34);
     });
     for(let i=0;i<5;i++) {
       const item=items[page*5+i],x=46+i*103,sy=y+72;

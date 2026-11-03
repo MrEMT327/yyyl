@@ -25,8 +25,9 @@ export function shopNavigation() { return lobbyNavigation('shop'); }
 
 // Older resource-header links used the recruitment section for diamonds.
 const shopButton=(action,label,data='',disabled=false)=>`<button type="button" class="wc-button sn-button" data-action="${action}" ${data} ${disabled?'disabled':''}>${label}</button>`;
-const shopArt=type=>type.startsWith('researchBlueprint')?`<img src="${nativeItemArt(Number(type.slice(17)))}" alt="" draggable="false">`:type==='basicKeys'||type==='advancedKeys'?`<img src="${nativeItemArt(type==='basicKeys'?113:112)}" alt="" draggable="false">`:type.startsWith('blueprint')?`<img src="${nativeItemArt(GEAR_PARTS[Number(type.slice(9))-1].blueprintId)}" alt="" draggable="false">`:type==='randomBlueprints'?projectIcon('chest-closed','sn-item-art'):type==='coins'?projectIcon('credits-stack','sn-item-art'):resourceArt(type);
-const shopName=type=>type.startsWith('researchBlueprint')?nativeItemPresentation(Number(type.slice(17))).name:type==='randomBlueprints'?'随机强化图纸':type==='basicKeys'?nativeItemDisplayName(113):type==='advancedKeys'?nativeItemDisplayName(112):type.startsWith('blueprint')?`${GEAR_PARTS[Number(type.slice(9))-1].name}图纸`:resourceNames[type]||type;
+const shopArt=type=>type.startsWith('researchBlueprint')?`<img src="${nativeItemArt(Number(type.slice(17)))}" alt="" draggable="false">`:type==='basicKeys'||type==='advancedKeys'?`<img src="${nativeItemArt(type==='basicKeys'?113:112)}" alt="" draggable="false">`:type.startsWith('blueprint')?`<img src="${nativeItemArt(GEAR_PARTS[Number(type.slice(9))-1].blueprintId)}" alt="" draggable="false">`:type==='randomBlueprints'?`<img src="${nativeItemArt(10010007)}" alt="" draggable="false">`:type==='coins'?projectIcon('credits-stack','sn-item-art'):resourceArt(type);
+const shopName=type=>type.startsWith('researchBlueprint')?nativeItemPresentation(Number(type.slice(17))).name:type==='randomBlueprints'?nativeItemPresentation(10010007).name:type==='basicKeys'?nativeItemDisplayName(113):type==='advancedKeys'?nativeItemDisplayName(112):type.startsWith('blueprint')?`${GEAR_PARTS[Number(type.slice(9))-1].name}图纸`:resourceNames[type]||type;
+const shopOfferName=offer=>{const type=Object.keys(offer.reward||{})[0]||'';return /^(?:researchBlueprint\d+|blueprint\d+|basicKeys|advancedKeys|randomBlueprints)$/.test(type)?shopName(type):offer.name||shopName(type);};
 export function shopPurchaseMax(offer,wallet={}){
   const limit=Math.max(0,Math.floor(Number(offer?.maxQuantity)||0)),price=Number(offer?.cost?.amount)||0;
   if(!price||wallet.unlimited)return limit;
@@ -56,9 +57,9 @@ export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
    const reason=s.rewardPending?'奖励待保存':s.rewardBusy?'奖励处理中':!o.available?availabilityMessage(o.reason):'';
    const soldOut=!o.unlimited&&o.remaining===0||o.reason==='今日已领取';
    const label=soldOut&&!blocked?'已售罄':o.cost.amount?`<span class="sn-price ${isResourceShortage(o.reason)?'is-short':''}">${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(o.cost.amount)}</span></span>${reason?`<small>${e(reason)}</small>`:''}`:reason?e(reason):o.cost.type==='ad'?`${glyph('play')}广告领取`:'免费领取';
-   return shopButton('shopOffer',label,`data-id="${e(o.id)}" ${!blocked&&isResourceShortage(o.reason)?`data-resource-short="${e(resourceNames[o.cost.type]||'资源')}"`:''} aria-label="${e(o.name)}，${o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取'}${o.reason?'，'+e(availabilityMessage(o.reason)):''}" ${extra}`,blocked||!o.available);
+   return shopButton('shopOffer',label,`data-id="${e(o.id)}" ${!blocked&&isResourceShortage(o.reason)?`data-resource-short="${e(resourceNames[o.cost.type]||'资源')}"`:''} aria-label="${e(shopOfferName(o))}，${o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取'}${o.reason?'，'+e(availabilityMessage(o.reason)):''}" ${extra}`,blocked||!o.available);
  };
- const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(o.name)}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}${action(o)}</article>`;};
+ const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(shopOfferName(o))}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}${action(o)}</article>`;};
  const currency=(id,label)=>{const o=items.find(x=>x.id===id);if(!o)return'';const free=id==='exchange-coins'?items.find(x=>x.id==='coin-free'):null,primary=free||o;return `<article class="sn-currency" data-offer="${e(id)}"><div class="sn-art">${shopArt('coins')}</div><div class="sn-currency-copy"><h3>${e(label)}</h3><strong>×${n(o.reward.coins)}</strong></div>${action(primary)}</article>`;};
  const progress=gear?.basicRewardAvailable?20:(gear?.draws||0)%20;
  const box=pool=>{
@@ -142,7 +143,7 @@ export function shopModal(modal,s,h) {
   return {title:'确认兑换',content:`<div class="sn-dialog sn-exchange-dialog">
     <div class="sn-exchange-product">
       <span class="sn-exchange-item">${shopArt(rewardType)}</span>
-      <div class="sn-exchange-copy"><h3>${e(o.name)}</h3><p>×${n(o.reward[rewardType]*quantity)}</p></div>
+      <div class="sn-exchange-copy"><h3>${e(shopOfferName(o))}</h3><p>×${n(o.reward[rewardType]*quantity)}</p></div>
       ${o.maxQuantity>1?`<div class="sn-quantity" aria-label="购买数量">${shopButton('shopQuantity','−','data-step="-1" aria-label="减少数量"',quantity<=1)}<output aria-label="购买数量">${quantity}</output>${shopButton('shopQuantity','＋','data-step="1" aria-label="增加数量"',quantity>=max)}${shopButton('shopQuantity','MAX','data-step="max" aria-label="最大数量"',quantity>=max)}</div>`:''}
     </div>
     <div class="sn-dialog-actions sn-exchange-actions">${shopButton('shopConfirm',`${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(price)}</span>`,`data-id="${e(o.id)}" aria-label="确认兑换，消耗${n(price)}${e(currency)}"`,disabled)}</div>

@@ -2,7 +2,7 @@ import { nativeLabActivation } from './native-laboratory.js';
 import { nativeResearchState } from './native-research-state.js';
 import { isRosterPilot } from './native-pilot-roster.js';
 import { validatePilotSkillSlots } from './native-pilot-skill-slots.js';
-import { validateWeaponSkillSlots } from './native-weapon-skill-slots.js';
+import { normalizeNativeWeaponLoadout, selectNativeWeapon } from './native-weapon-loadout.js';
 import economyCatalog from './native-economy-catalog.json' with { type: 'json' };
 import catalog from './loadout-progression-index.json' with { type: 'json' };
 import defaultLoadoutState from './default-loadout-state.json' with { type: 'json' };
@@ -42,7 +42,7 @@ export function validateReplicaProgression(value) {
   const pilots = collect('pilots', catalog.pilots, 'stars').filter(row => isRosterPilot(row.id));
   const skins = collect('skins', catalog.skins, 'stars');
   const labs = collect('labs', catalog.labs, 'levels');
-  if (guns.filter(row => row.equipped).length !== 1 || pilots.filter(row => row.equipped).length > 1) {
+  if (pilots.filter(row => row.equipped).length > 1) {
     throw new Error('原版出战配置必须有一把主武器，至多一名驾驶员');
   }
   // The captured replica calculates current-star collections. Its legacy role
@@ -65,9 +65,10 @@ export function validateReplicaProgression(value) {
   }
   const pilotSkillSlots=validatePilotSkillSlots(value.pilotSkillSlots,pilots,(id,star)=>
     Boolean(economyCatalog.pilots.find(row=>row.id===id)?.stages.find(row=>row.star===star)?.skills.length));
-  const weaponSkillSlots=validateWeaponSkillSlots(value.weaponSkillSlots,guns,id=>{const row=economyCatalog.guns.find(row=>row.id===id);return row?row.baseGunId||row.id:0;});
+  const weaponLoadout=normalizeNativeWeaponLoadout(value,guns);
+  guns.forEach(row=>{row.equipped=Object.values(weaponLoadout.useWeaponMap).includes(row.id);});
   return { ...defaults, role: { ...defaults.role, skinId, skinStar: skin?.star || 0 },
-    guns, pilots, skins, labs, nativeResearch: nativeResearchState(value.nativeResearch), skinSkillSlots: slots, pilotSkillSlots, weaponSkillSlots };
+    guns, pilots, skins, labs, nativeResearch: nativeResearchState(value.nativeResearch), skinSkillSlots: slots, pilotSkillSlots, ...weaponLoadout };
 }
 
 /** Selection only. Unlocks/star levels cannot be granted by a skin change. */
@@ -78,13 +79,15 @@ export function selectReplicaProgression(value, selection) {
     next.skinSkillSlots = selection.ids;
   } else if (kind === 'pilotSkillSlots') {
     next.pilotSkillSlots = selection.ids;
-  } else if (kind === 'weaponSkillSlots') {
-    next.weaponSkillSlots = selection.ids;
+  } else if (kind === 'weaponSkillMap') {
+    next.weaponSkillMap = {...next.weaponSkillMap,[selection.weaponType]:selection.ids};
   } else if (kind === 'skins') {
     const skin = next.skins.find(row => row.id === id && row.active);
     if (id !== 0 && !skin) throw new Error('原版飞机尚未拥有');
     next.role.skinId = id; next.role.skinStar = skin?.star || 0;
-  } else if (kind === 'guns' || kind === 'pilots') {
+  } else if (kind === 'guns') {
+    next.useWeaponMap=selectNativeWeapon(next,id,selection.slot);
+  } else if (kind === 'pilots') {
     if (!(kind === 'pilots' && id === 0) && !next[kind].some(row => row.id === id && row.active)) {
       throw new Error('原版武器或驾驶员尚未拥有');
     }

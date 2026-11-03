@@ -24,7 +24,7 @@ function brush(point){
   const api={
     polygon(points,color,layer='solid'){
       const m=layers[layer],base=m.vertices.length;
-      for(const p of points){const q=point(p[0],p[1]);m.vertices.push({position:[q.x,q.y],uv:[.5,.5],color:[...color]});}
+      for(const [i,p] of points.entries()){const q=point(p[0],p[1]),tint=Array.isArray(color[0])?color[i]:color;m.vertices.push({position:[q.x,q.y],uv:[.5,.5],color:[...tint]});}
       for(let i=1;i<points.length-1;i++)m.indices.push(base,base+i,base+i+1);
     },
     radial(rx,ry,color,alpha,cx=0,cy=0){
@@ -54,8 +54,9 @@ function brush(point){
 const valid=b=>!b.dead&&!b.visualHidden&&b.scale>0&&b.lifetime>0
   &&[b.x,b.z,b.age,b.scale,b.radiusX,b.radiusZ,b.angle??0,b.visualAngle??0,b.offsetX??0,b.offsetZ??0].every(Number.isFinite)
   &&b.age>=Math.max(0,b.warmup??0)&&b.age<b.lifetime;
-function coordinates(b,screen,rotate=false){
-  const yaw=rotate?(b.visualAngle??b.angle??0):0,c=Math.cos(yaw),s=Math.sin(yaw);
+function coordinates(b,screen,rotate=false,followTravel=false){
+  const moving=Number.isFinite(b.vx)&&Number.isFinite(b.vz)&&Math.hypot(b.vx,b.vz)>.001;
+  const yaw=followTravel?(moving?Math.atan2(b.vx,b.vz):(b.angle??0)):rotate?(b.visualAngle??b.angle??0):0,c=Math.cos(yaw),s=Math.sin(yaw);
   const baseYaw=b.angle??0,ox=b.offsetX??0,oz=b.offsetZ??0;
   const x=b.x+Math.cos(baseYaw)*ox+Math.sin(baseYaw)*oz,z=b.z-Math.sin(baseYaw)*ox+Math.cos(baseYaw)*oz;
   return(a,f)=>screen(x+c*a+s*f,z-s*a+c*f);
@@ -68,31 +69,43 @@ function sparks(p,rx,rz,age,seed,color,count=9){
   }
 }
 function starShield(p,b,alpha){
-  const rx=Math.max(.3,b.radiusX),rz=Math.max(.35,b.radiusZ);
-  const pulse=.92+.08*Math.sin(b.age*4.5);
-  const shape=[[-.64,.66],[.64,.66],[.86,.24],[.5,-.48],[0,-1.03],[-.5,-.48],[-.86,.24]];
-  const points=shape.map(([x,z])=>[x*rx,z*rz]);
-  const cyan=[.12,.82,1],ice=[.79,.9,.96];
-  // A translucent energy face and two pale shoulder plates retain a clear
-  // silhouette at battle size without the old triple frame or stacked arrows.
-  p.radial(rx*1.06,rz*1.24,BLUE,.085*alpha*pulse);
-  p.polygon(points,rgb([.035,.17,.25],.46*alpha));
-  p.polygon([points[0],points[1],[rx*.38,rz*.06],[-rx*.38,rz*.06]],rgb([.27,.62,.76],.3*alpha));
-  p.polygon([points[2],points[3],points[4],[0,-rz*.12],[rx*.26,rz*.06]],rgb([.025,.09,.17],.28*alpha));
-  p.polygon([points[6],points[5],points[4],[0,-rz*.12],[-rx*.26,rz*.06]],rgb([.12,.38,.5],.22*alpha));
-  p.path(points,.095,rgb(cyan,.11*alpha*pulse),true);
-  p.path(points,.038,rgb(cyan,.88*alpha),true);
-  p.path([points[2],points[3],points[4],points[5],points[6]],.018,rgb(WHITE,.6*alpha));
-  for(const side of [-1,1]){
-    const panel=[[.52,.65],[.65,.68],[.87,.24],[.74,.17]].map(([x,z])=>[side*x*rx,z*rz]);
-    p.polygon(panel,rgb(ice,.96*alpha));
-    p.polygon([panel[1],panel[2],panel[3]],rgb([.34,.52,.65],.86*alpha));
-    p.line([side*rx*.6,rz*.66],[side*rx*.82,rz*.25],.025,rgb(WHITE,.9*alpha));
-    p.line([side*rx*.49,-rz*.57],[side*rx*.34,-rz*1.12],.04,rgb(cyan,.16*alpha*pulse));
+  const rx=Math.max(.3,b.radiusX),rz=Math.max(.35,b.radiusZ),time=b.age;
+  const pulse=.94+.06*Math.sin(time*4.5),cyan=[.28,.65,.67],ice=[.79,.89,.88];
+  // +forward faces incoming fire. The open rear and fading wake stay behind it.
+  p.radial(rx*1.0,rz*.95,[.22,.55,.57],.055*alpha*pulse,0,-rz*.26);
+  for(const side of [-1,0,1]){
+    const x=side*rx*.48,w=rx*(side===0?.10:.07),tail=rz*(1.22+.1*Math.sin(time*7+side));
+    p.polygon([[x-w,-rz*.22],[x+w,-rz*.22],[x+w*.4,-tail],[x-w*.4,-tail]],
+      [rgb(cyan,.19*alpha),rgb(cyan,.19*alpha),rgb(cyan,0),rgb(cyan,0)],'light');
   }
-  p.line([-rx*.38,rz*.65],[rx*.38,rz*.65],.05,rgb(ice,.96*alpha),'solid');
-  p.radial(rx*.22,rz*.42,cyan,.19*alpha*pulse,0,-rz*.13);
-  p.gem(0,-rz*.13,Math.min(rx*.09,rz*.21),rgb(WHITE,.84*alpha));
+  const film=[[-.77,.08],[-.50,.40],[0,.52],[.50,.40],[.77,.08],[.57,-.30],[0,-.43],[-.57,-.30]].map(([x,z])=>[x*rx,z*rz]);
+  p.polygon(film,film.map((_,i)=>rgb(i<5?[.12,.40,.53]:[.035,.14,.21],alpha*(i<5?.25:.15))));
+  p.polygon([[-rx*.44,rz*.25],[0,rz*.43],[rx*.44,rz*.25],[0,-rz*.30]],
+    [rgb([.28,.60,.69],alpha*.17),rgb([.42,.72,.79],alpha*.23),rgb([.12,.38,.49],alpha*.13),rgb([.025,.12,.18],alpha*.08)]);
+  const front=[[-.94,.10],[-.82,.43],[-.50,.76],[0,.90],[.50,.76],[.82,.43],[.94,.10]].map(([x,z])=>[x*rx,z*rz]);
+  const rear=front.map(([x,z])=>[x*.94,z-rz*.28]);
+  // Separate dark thickness and lit upper panels make a convex leading face.
+  for(let i=1;i<front.length;i++){
+    const a=front[i-1],c=front[i],d=rear[i],e=rear[i-1],shade=.60+.30*(1-Math.abs(i-3.5)/3.5);
+    p.polygon([e,d,[d[0],d[1]-rz*.12],[e[0],e[1]-rz*.12]],
+      [rgb([.10,.25,.34],alpha*.96),rgb([.09,.22,.31],alpha*.96),rgb([.025,.075,.12],alpha*.94),rgb([.035,.10,.16],alpha*.94)]);
+    p.polygon([a,c,d,e],[rgb(ice,alpha*.96),rgb(ice,alpha*.96),rgb([.16*shade,.40*shade,.52*shade],alpha*.96),rgb([.25*shade,.52*shade,.64*shade],alpha*.96)]);
+  }
+  p.path(front,.10,rgb(cyan,.14*alpha*pulse));
+  p.path(front,.038,rgb([.96,1.82,2.12],.76*alpha)); // HDR rim feeds the existing thresholded bloom.
+  p.path(rear,.027,rgb(cyan,.78*alpha));
+  for(const side of [-1,1]){
+    const panel=[[.94,.10],[.82,.43],[.69,.31],[.78,-.03]].map(([x,z])=>[side*x*rx,z*rz]);
+    p.polygon(panel,[rgb(ice,alpha),rgb([.92,.97,1],alpha),rgb([.43,.63,.73],alpha),rgb([.18,.35,.46],alpha)]);
+    p.line([side*rx*.76,-rz*.01],[side*rx*.55,-rz*.38],.022,rgb(cyan,.35*alpha));
+  }
+  p.radial(rx*.30,rz*.30,cyan,.15*alpha*pulse,0,-rz*.09);
+  p.polygon([[-rx*.13,0],[rx*.13,0],[rx*.10,-rz*.12],[-rx*.10,-rz*.12]],rgb([.10,.24,.31],.85*alpha));
+  p.line([-rx*.09,-rz*.035],[rx*.09,-rz*.035],.026,rgb([.70,1.10,1.12],.66*alpha));
+  // A small travelling highlight stays on the rim; the shield body never spins away.
+  const scan=(time*.42%1)*(front.length-1),segment=Math.min(front.length-2,Math.floor(scan)),u=scan-segment;
+  const a=front[segment],c=front[segment+1],x=a[0]+(c[0]-a[0])*u,z=a[1]+(c[1]-a[1])*u;
+  p.radial(rx*.075,rz*.13,WHITE,.24*alpha,x,z);
 }
 function holyShield(p,b,alpha){
   const rx=Math.max(.3,b.radiusX),rz=Math.max(.35,b.radiusZ),age=b.age;
@@ -105,7 +118,7 @@ function holyShield(p,b,alpha){
   p.polygon([points[2],points[3],points[4],[0,rz*.18]],rgb([.24,.17,.065],.88*alpha));
   p.polygon(points.map(([x,y])=>[x*.76,y*.76]),rgb(color,.16*alpha));
   p.path(points,.075,rgb(color,.27*alpha),true);
-  p.path(points,.035,rgb(WHITE,.94*alpha),true);
+  p.path(points,.035,rgb([2.10,1.75,.90],.94*alpha),true);
   p.path(points.map(([x,y])=>[x*.84,y*.84]),.045,rgb(color,.8*alpha),true);
   for(const side of [-1,1])for(let i=0;i<3;i++){
     const wing=[[side*rx*.56,rz*(.55-i*.29)],[side*rx*(1.08-i*.1),rz*(.85-i*.32)],
@@ -114,7 +127,7 @@ function holyShield(p,b,alpha){
     p.polygon([wing[0],wing[1],[wing[2][0],(wing[2][1]+wing[1][1])*.5]],rgb([.94,.77,.36],.86*alpha));
     p.path(wing,.04,rgb(GOLD,.85*alpha),true);
   }
-  p.line([0,-rz*.49],[0,rz*.52],.055,rgb(WHITE,.9*alpha));
+  p.line([0,-rz*.49],[0,rz*.52],.055,rgb([2.05,1.74,.96],.9*alpha));
   p.line([-rx*.28,rz*.16],[rx*.28,rz*.16],.04,rgb(GOLD,alpha));
   p.radial(.33,.33,GOLD,.48*alpha,0,rz*.16);p.gem(0,rz*.16,.16,rgb([1,.94,.66],alpha));
   const sweep=(age*1.7%1)*1.3-.65;
@@ -122,7 +135,7 @@ function holyShield(p,b,alpha){
   for(const side of [-1,1])p.line([side*rx*.55,-rz*.5],[side*rx*.36,-rz*(1.05+.08*Math.sin(age*24))],.05,rgb(color,.23*alpha));
 }
 function lightning(p,b,gold,charge){
-  const r=Math.max(.3,b.radiusX),age=b.age-(b.warmup??0),color=gold?GOLD:BLUE;
+  const r=Math.max(.3,b.radiusX),age=b.age-(b.warmup??0),color=gold?GOLD:[.56,.38,1.15];
   const alpha=charge?.34:clamp(1-age/b.lifetime)*(.65+.35*Math.exp(-age*14));
   p.radial(r*1.2,r*.65,color,alpha*(charge?.04:.18));
   p.arc(r,r*.48,0,Math.PI*2,.035,rgb(color,alpha*.54));
@@ -134,7 +147,7 @@ function lightning(p,b,gold,charge){
       points.push([spread*(1-t)+shift,height*(1-t)]);}
     p.path(points,gold?.3:.23,rgb(color,alpha*.1));
     p.path(points,gold?.095:.075,rgb(color,alpha*.9));
-    p.path(points,.028,rgb(WHITE,alpha));
+    p.path(points,.028,rgb(gold?[5.80,3.80,1.20]:[1.20,1.10,2.35],alpha*.82));
     for(const i of [3,5]){const q=points[i],side=(i+branch)%2?1:-1;
       p.path([q,[q[0]+side*r*.45,q[1]+r*.22],[q[0]+side*r*.72,q[1]+r*.12]],.022,rgb(color,alpha*.7));}
   }
@@ -174,7 +187,7 @@ function missile(p,b,supercharged){
 }
 export function equipmentProjectileMeshes(b,screen){
   const kind=equipmentProjectileKind(b);if(!kind||!valid(b)||b.radiusX<=0||b.radiusZ<=0)return[];
-  const p=brush(coordinates(b,screen,kind.includes('shield')||kind.startsWith('missile')));
+  const p=brush(coordinates(b,screen,kind.includes('shield')||kind.startsWith('missile'),kind==='star-shield'));
   const alpha=clamp(b.age/.055+.12)*clamp((b.lifetime-b.age)/.2);
   if(kind.includes('shield'))(kind==='holy-shield'?holyShield:starShield)(p,b,alpha);
   else if(kind.startsWith('strike')||kind.startsWith('charge'))lightning(p,b,kind.endsWith('gold'),kind.startsWith('charge'));
@@ -188,9 +201,9 @@ export function equipmentStatusMeshes(b,screen){
   const p=brush((x,z)=>screen(b.x+x,b.z+z)),a=clamp(b.age/.12+.1)*clamp(remaining/.18),time=b.age;
   if(kind==='barrier'){
     const r=2.05,points=Array.from({length:6},(_,i)=>{const t=i*Math.PI/3+Math.PI/6;return[Math.cos(t)*r,Math.sin(t)*r];});
-    p.radial(2.25,2.25,BLUE,a*.09);
-    p.path(points,.14,rgb(BLUE,a*.13),true);p.path(points,.06,rgb(BLUE,a*.8),true);p.path(points.map(([x,z])=>[x*.88,z*.88]),.035,rgb(WHITE,a*.4),true);
-    for(let i=0;i<6;i++){const v=points[i],next=points[(i+1)%6];p.line([v[0]*.7,v[1]*.7],[next[0]*.7,next[1]*.7],.025,rgb(BLUE,a*(.14+.18*(.5+.5*Math.sin(time*3+i)))));}
+    p.radial(2.25,2.25,[.23,.58,.60],a*.055);
+    p.path(points,.14,rgb([.28,.65,.67],a*.13),true);p.path(points,.06,rgb([.28,.65,.67],a*.8),true);p.path(points.map(([x,z])=>[x*.88,z*.88]),.035,rgb([.72,.94,.94],a*.32),true);
+    for(let i=0;i<6;i++){const v=points[i],next=points[(i+1)%6];p.line([v[0]*.7,v[1]*.7],[next[0]*.7,next[1]*.7],.025,rgb([.28,.65,.67],a*(.14+.18*(.5+.5*Math.sin(time*3+i)))));}
     for(const side of [-1,1])p.gem(side*1.78,0,.11,rgb(WHITE,a*.7));
   }else if(kind==='holy'){
     p.radial(2.55,2.55,GOLD,a*.1);

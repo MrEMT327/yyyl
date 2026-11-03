@@ -7,5 +7,5 @@ export function dimensionSwordScreenMeshes(b,screen) {
   // Reuse only projected ribbon geometry. The temporary descriptor selects the
   // line shape; every physical value remains the original pilot projectile's.
   return iaidoScreenMeshes({...b,weaponId:400007},screen).map(mesh=>({...mesh,
-    vertices:mesh.vertices.map(v=>({...v,color:[.28,.82,1,v.color[3]]}))}));
+    vertices:mesh.vertices.map(v=>({...v,color:[.30,.48,1,v.color[3]]}))}));
 }

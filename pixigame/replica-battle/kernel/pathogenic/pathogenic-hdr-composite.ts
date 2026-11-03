@@ -4,6 +4,7 @@ import {PATHOGENIC_DISPLAY_PROFILE,type PathogenicDisplayProfile} from './pathog
 import {GLES_GLOW_GLSL} from './pathogenic-color-math.mjs';
 
 type Target=ReturnType<typeof makeFloatTarget>;
+export type PathogenicBloomOptions=Partial<Pick<PathogenicDisplayProfile,'glowEnabled'|'intensity'|'threshold'|'scale'|'bloom'|'cap'>>&{bloomLevels?:number;prefilterBrightPixels?:boolean};
 /** Actual floating scene composition, followed by the source GLES glow pipeline.
  * All world objects are inside this layer; HUD/text are rendered after resolve.
  * RGBA16F stores the pre-threshold energy. No blur of an already clipped SDR frame.
@@ -12,6 +13,7 @@ export class PathogenicHdrComposite {
   enabled=true;
   readonly diagnostics={format:'RGBA16F',workingSpace:'source-compatibility-srgb',frames:0,passes:0,width:0,height:0};
   private world?:Target;private down:Target[]=[];private up:Target[]=[];
+  private bloomLevels=4;private prefilterBrightPixels=false;
   private base?:Phaser.Textures.TextureSource['glTexture'];private baseFormat=0;
   private destination:Phaser.Renderer.WebGL.Wrappers.WebGLFramebufferWrapper|null=null;
   private started=false;private destroyed=false;
@@ -32,7 +34,15 @@ export class PathogenicHdrComposite {
     this.r.on('losewebgl',this.onContextLost,this);
     this.r.on('restorewebgl',this.onContextRestored,this);
   }
-  configure(values:Partial<Pick<PathogenicDisplayProfile,'glowEnabled'|'intensity'|'threshold'|'scale'|'bloom'|'cap'>>){this.profile={...this.profile,...values};}
+  configure(values:PathogenicBloomOptions){
+    const {bloomLevels,prefilterBrightPixels,...profile}=values;
+    if(bloomLevels!==undefined){if(!Number.isInteger(bloomLevels)||bloomLevels<2||bloomLevels>4)throw Error('Bloom levels must be 2, 3 or 4');this.bloomLevels=bloomLevels;}
+    if(prefilterBrightPixels!==undefined&&prefilterBrightPixels!==this.prefilterBrightPixels){
+      this.prefilterBrightPixels=prefilterBrightPixels;
+      if(this.program||this.buffer){const gl=this.r.gl;if(!gl.isContextLost()){if(this.program)gl.deleteProgram(this.program);if(this.buffer)gl.deleteBuffer(this.buffer);}this.program=undefined;this.buffer=undefined;this.uniforms.clear();}
+    }
+    this.profile={...this.profile,...profile};
+  }
   private onContextLost(){
     if(this.started)(this.r as any).blendModes[Phaser.BlendModes.ADD]=this.savedAddBlend;
     this.started=false;this.destination=null;
@@ -46,9 +56,21 @@ export class PathogenicHdrComposite {
 varying vec2 vUv;uniform sampler2D uInput;uniform sampler2D uScene;
 uniform vec2 uPixel;uniform float uMode;uniform vec4 uFilter;uniform float uIntensity;uniform float uExposure;
 ${GLES_GLOW_GLSL}
+${this.prefilterBrightPixels?`// Project first-chapter bloom: select hot source pixels before spatial mixing.
+vec3 projectBloomTap(vec2 uv){
+  vec3 c=texture2D(uInput,uv).rgb;float peak=max(c.r,max(c.g,c.b));
+  if(peak<=uFilter.x&&uFilter.z<=0.0)return vec3(0.0);
+  return godotGlowFilter(c,uFilter.x,uFilter.y,uFilter.z,uFilter.w);
+}
+vec4 projectBloomDownsample(){
+  vec2 h=uPixel*0.5;vec3 c=projectBloomTap(vUv)*4.0;
+  c+=projectBloomTap(vUv-h);c+=projectBloomTap(vUv+h);
+  c+=projectBloomTap(vUv-vec2(h.x,-h.y));c+=projectBloomTap(vUv+vec2(h.x,-h.y));
+  return vec4(c/8.0,1.0);
+}`:''}
 void main(){
  if(uMode<.5){vec4 c=texture2D(uInput,vUv);if(uExposure!=1.0)c.rgb=godotCanvasExposure(c.rgb,uExposure);gl_FragColor=c;}
- else if(uMode<1.5){vec4 c=godotGlowDownsample(uInput,vUv,uPixel);c.rgb=godotGlowFilter(c.rgb,uFilter.x,uFilter.y,uFilter.z,uFilter.w);gl_FragColor=c;}
+ else if(uMode<1.5){${this.prefilterBrightPixels?'gl_FragColor=projectBloomDownsample();':'vec4 c=godotGlowDownsample(uInput,vUv,uPixel);c.rgb=godotGlowFilter(c.rgb,uFilter.x,uFilter.y,uFilter.z,uFilter.w);gl_FragColor=c;'}}
  else if(uMode<2.5)gl_FragColor=godotGlowDownsample(uInput,vUv,uPixel);
  else if(uMode<3.5)gl_FragColor=godotGlowUpsample(uInput,vUv,uPixel);
  else {vec4 c=texture2D(uScene,vUv);vec3 glow=godotGlowUpsample(uInput,vUv,uPixel).rgb;gl_FragColor=vec4(godotGlowResolve(c.rgb,glow,uIntensity),c.a);}
@@ -59,9 +81,9 @@ void main(){
   }
   private uniform(name:string){if(!this.uniforms.has(name))this.uniforms.set(name,this.r.gl.getUniformLocation(this.program!,name));return this.uniforms.get(name)!;}
   private allocate(width:number,height:number,baseFormat:number){
-    if(this.world?.width===width&&this.world.height===height&&this.baseFormat===baseFormat)return;
+    if(this.world?.width===width&&this.world.height===height&&this.baseFormat===baseFormat&&this.down.length===this.bloomLevels)return;
     this.freeTargets();this.world=makeFloatTarget(this.r,width,height);
-    let w=width,h=height;for(let i=0;i<4;i++){w=Math.max(4,Math.floor(w/2));h=Math.max(4,Math.floor(h/2));this.down.push(makeFloatTarget(this.r,w,h));if(i<3)this.up.push(makeFloatTarget(this.r,w,h));}
+    let w=width,h=height;for(let i=0;i<this.bloomLevels;i++){w=Math.max(4,Math.floor(w/2));h=Math.max(4,Math.floor(h/2));this.down.push(makeFloatTarget(this.r,w,h));if(i<this.bloomLevels-1)this.up.push(makeFloatTarget(this.r,w,h));}
     const gl=this.r.gl;this.base=this.r.createTexture2D(0,gl.LINEAR,gl.LINEAR,gl.CLAMP_TO_EDGE,gl.CLAMP_TO_EDGE,baseFormat,undefined,width,height,false,true,false);this.baseFormat=baseFormat;
     this.diagnostics.width=width;this.diagnostics.height=height;
   }
@@ -110,8 +132,8 @@ void main(){
     this.r.flush();const gl=this.r.gl;
     this.raw(()=>{
       if(this.profile.glowEnabled){
-        for(let i=0;i<4;i++)this.pass(this.down[i],i===0?this.world!.texture:this.down[i-1].texture,i===0?1:2,this.down[i].width,this.down[i].height);
-        for(let i=2;i>=0;i--)this.pass(this.up[i],i===2?this.down[3].texture:this.up[i+1].texture,3,this.up[i].width,this.up[i].height);
+        for(let i=0;i<this.down.length;i++)this.pass(this.down[i],i===0?this.world!.texture:this.down[i-1].texture,i===0?1:2,this.down[i].width,this.down[i].height);
+        for(let i=this.up.length-1;i>=0;i--)this.pass(this.up[i],i===this.up.length-1?this.down[this.down.length-1].texture:this.up[i+1].texture,3,this.up[i].width,this.up[i].height);
       }
       this.pass(null,this.profile.glowEnabled?this.up[0].texture:this.world!.texture,4,this.world!.width,this.world!.height);
       gl.bindFramebuffer(gl.FRAMEBUFFER,this.destination?.webGLFramebuffer??null);(this.r as any).currentFramebuffer=this.destination;

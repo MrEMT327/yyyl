@@ -1,16 +1,16 @@
+import { nativeWeaponDisplayText } from '../replica/native-weapon-display.js';
 import { researchTabs, researchUnlockMessage } from './research-tabs.js';
 import labPresentation from '../replica/native-lab-presentation.json' with {type:'json'};
 import './native-lab-page.css';
 import { nativeLabArt } from '../replica/native-collection-art.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import { nativeLabView } from '../replica/native-client-rules.js';
-const plain=value=>String(value||'').replace(/<[^>]*>/g,'');
+const plain=value=>nativeWeaponDisplayText(String(value||'').replace(/<[^>]*>/g,''));
 const button=(action,label,attrs='',cls='')=>`<button type="button" class="wc-button ${cls}" data-action="${action}" ${attrs}>${label}</button>`;
 const attr=(value,names,e)=>{
   const at=value.indexOf('='),key=value.slice(0,at).trim(),amount=value.slice(at+1).trim();
-  return e(`${names[key]||key} ${Number(amount)>=0?'+':''}${amount}${key.endsWith('%')?'%':''}`);
+  return e(`${nativeWeaponDisplayText(names[key]||key)} ${Number(amount)>=0?'+':''}${amount}${key.endsWith('%')?'%':''}`);
 };
-const artBase=`${import.meta.env?.BASE_URL??'/'}replica-battle`;
 const compact=(value,h)=>value>=1e8?`${Number((value/1e8).toFixed(1))}亿`:value>=1e4?`${Number((value/1e4).toFixed(1))}万`:h.number(value);
 export function nativeLabPage({snapshot:s,helpers:h}) {
   const e=h.escape;
@@ -23,7 +23,7 @@ export function nativeLabPage({snapshot:s,helpers:h}) {
     const label=chapterLocked?'未开启':row.active?`等级${row.level}，${maxed?'已满级':`图纸${material?.available||0}/${material?.count||0}`}`:'尚未解锁';
     const count=row.needActive?'待激活':maxed?'MAX':`${compact(material?.available||0,h)}/${h.number(material?.count||0)}`;
     const progress=material?Math.min(100,(material.available/material.count)*100):maxed?100:0;
-    return `<button type="button" class="research-card native-lab-card ${row.active&&!chapterLocked?'':'is-locked'}${chapterLocked?' is-chapter-locked':''}" data-action="nativeLab" data-id="${row.id}" title="${e(row.name)}" aria-label="${e(row.name)}科研，${e(label)}"${chapterLocked?' aria-disabled="true"':''}><span class="research-card-shell" data-psd-quality="0"><img class="native-lab-face" src="${e(artBase+labPresentation[row.id].card)}" alt="${e(row.name)}" draggable="false">${view.canActivate||view.canUpgrade?`<span class="native-lab-notice">${view.canActivate?'激活':'升级'}</span>`:''}${row.active&&!chapterLocked?`<span class="native-lab-progress" aria-label="${e(label)}"><i style="width:${progress}%"></i><b>${count}</b></span><span class="native-lab-level" aria-label="等级${row.level}">${row.level}</span>`:`<span class="native-lab-lock">${h.icon('lock')}</span>${chapterLocked?'':`<span class="native-lab-locked-text">${e(label)}</span>`}`}</span></button>`;
+    return `<button type="button" class="research-card native-lab-card ${row.active&&!chapterLocked?'':'is-locked'}${chapterLocked?' is-chapter-locked':''}" data-action="nativeLab" data-id="${row.id}" title="${e(row.name)}" aria-label="${e(row.name)}科研，${e(label)}"${chapterLocked?' aria-disabled="true"':''}><span class="research-card-shell" data-psd-quality="0"><img class="native-lab-face" src="${e(nativeLabArt(row))}" alt="${e(row.name)}" draggable="false"><strong class="native-lab-name">${e(row.name)}</strong>${view.canActivate||view.canUpgrade?`<span class="native-lab-notice">${view.canActivate?'激活':'升级'}</span>`:''}${row.active&&!chapterLocked?`<span class="native-lab-progress" aria-label="${e(label)}"><i style="width:${progress}%"></i><b>${count}</b></span><span class="native-lab-level" aria-label="等级${row.level}">${row.level}</span>`:`<span class="native-lab-lock">${h.icon('lock')}</span>${chapterLocked?'':`<span class="native-lab-locked-text">${e(label)}</span>`}`}</span></button>`;
   }).join('');
   return `<section class="research-page rg-page native-lab-page" aria-label="科研实验室"><header class="research-banner has-research-tabs">${researchTabs(s,'lab')}${button('nativeStats','出击属性','','research-summary')}</header><div class="research-scroll" tabindex="0" aria-label="科研项目列表"><div class="research-grid">${cards}</div></div></section>`;
 }
@@ -50,5 +50,5 @@ export function nativeStatsDetail(result,h) {
   if(!result)return {title:'出击属性',content:'<p role="status">正在读取当前配置…</p>'};
   if(result.error)return {title:'出击属性',content:`<p>${e(result.error)}</p>${button('nativeStats','重新读取')}`};
   const entries=values=>Object.entries(values).map(([key,value])=>`<p>${attr(`${key}=${value}`,result.names,e)}</p>`).join('');
-  return {title:'出击属性',content:`<article class="wc-skill-detail clarity-page"><h3>战力 ${e(result.power)}</h3><p>攻击 ${e(result.attack)} · 生命 ${e(result.hp)}</p>${result.unsupported.length?`<p>当前配置包含未接通效果，暂不能正式出击：</p>${result.unsupported.map(row=>`<p>${e(plain(row.description))}</p>`).join('')}`:''}<h4>合并属性</h4>${entries(result.attributes)}<details class="clarity-rules"><summary>属性来源</summary>${result.contributions.map(row=>`<details><summary>${e(row.name)}</summary>${entries(row.attributes)}</details>`).join('')}</details><details class="clarity-rules"><summary>初始技能</summary>${result.skills.map(skill=>`<p><b>${e(plain(skill.name))}</b>：${e(plain(skill.description))}${skill.supported?'':'（尚未接通）'}</p>`).join('')}</details></article>`};
+  return {title:'出击属性',content:`<article class="wc-skill-detail clarity-page"><h3>战力 ${e(result.power)}</h3><p>攻击 ${e(result.attack)} · 生命 ${e(result.hp)}</p>${result.unsupported.length?`<p>当前配置包含未接通效果，暂不能正式出击：</p>${result.unsupported.map(row=>`<p>${e(plain(row.description))}</p>`).join('')}`:''}<h4>合并属性</h4>${entries(result.attributes)}<details class="clarity-rules"><summary>属性来源</summary>${result.contributions.map(row=>`<details><summary>${e(plain(row.name))}</summary>${entries(row.attributes)}</details>`).join('')}</details><details class="clarity-rules"><summary>初始技能</summary>${result.skills.map(skill=>`<p><b>${e(plain(skill.name))}</b>：${e(plain(skill.description))}${skill.supported?'':'（尚未接通）'}</p>`).join('')}</details></article>`};
 }

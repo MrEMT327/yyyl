@@ -1,3 +1,5 @@
+import {recordHealingReceipt} from './healing-receipt.mjs';
+import {markImpactDirection} from './impact-direction.mjs';
 import { projectileSound } from './combat-audio';
 import {nativeProtectHpRateRaw} from '../../src/replica/native-failure-protection.js';
 import {firstGuideChoices} from '../battle-onboarding';
@@ -5,6 +7,7 @@ import { clamp, lerp, sweep, newWeapon, type WeaponState, type Choice, type Effe
 import { advancePickup, createPickup } from './drop-motion';
 import { markOrdinaryDeathVisual } from '../small-death-visual.js';
 import { markAcidHitVisual } from '../acid-weapon-visual.js';
+import { markWeaponSkinEffect } from './weapon-skin-identity.mjs';
 import { markBlackHoleHitVisual } from '../black-hole-hit-visual.js';
 import { markIceSawHitVisual } from '../ice-saw-hit-visual.js';
 import { markSwordHitVisual } from '../sword-hit-visual.js';
@@ -31,7 +34,8 @@ import { createAttackLoop, advanceAttackLoop, canEnemySendBullet, createTwoPoint
 import { createNativeEnemyPath, sampleNativeEnemyPath, nativePathMovementAngle, nativePathDistanceDelta, type NativeEnemyPath } from './enemy-path';
 import { chapterPathSelfRotationEnabled, chapterPathRotationRadians } from '../chapter-path-self-rotation';
 import { drawNativeOrdinaryChoices, drawNativeBreakthroughChoices, nativeInitialSkillGroupCount, type NativeSkillCandidate } from './skill-choice';
-import { nativeSkillEligible } from './skill-eligibility';
+import { nativeSkillEligible, nativeSkillPoolEligible } from './skill-eligibility';
+import { NativeSkillFallbackPool, nativeFallbackReward } from './skill-choice-fallback';
 import { createNativeEnemyRebound, checkNativeEnemyRebound, advanceNativeEnemyRebound, nativeEnemyReboundScrollXOffset, nativeReboundRay, nativeReboundRayOffset, type NativeEnemyReboundState } from './native-enemy-rebound';
 import { NativeMapOutWalls, nativeChapter9WallQuerySupported, nativeOrdinaryWallQueryMask } from './native-map-out-walls';
 import { nativeWallLinecast } from './native-wall-query';
@@ -75,7 +79,7 @@ import { MissionCreators } from './mission-creators';
 import type { WaveUIRequest } from './wave-ui';
 import { NativeWaveExperience } from './wave-experience';
 import { compileNativeSkillTrigger, compileNativeWeaponSkills, compileNativePassiveAttributes, compileNativePlayerSkills, nativeAttributeValue, mergeNativeAttribute, nativeInstalledAttributeContributions, NativeWeaponSkillRuntime, type NativeWeaponSkillSnapshot, type NativeWeaponActionCommand, type NativeWeaponEvent } from './weapon-skill-runtime';
-import { nativeRuntimeWeapon, nativeContinueFirePlan, applyNativeWeaponAttributes, nativeBulletScale, nativeScaleAnimDefaults, nativeScaleAnimationScale } from './native-weapon-profile';
+import { nativeRuntimeWeapon, nativeContinueFirePlan, applyNativeWeaponAttributes, nativeBulletScale, nativeScaleAnimDefaults, nativeScaleAnimationScale, nativeFollowRotateSpeed } from './native-weapon-profile';
 import { NativeSectorSpreadRuntime, nativeSectorRadius, nativeWeaponChargeHold, nativeExplosionRadius } from './weapon-runtime-extensions';
 import { nativeCameraWallHit, nativeNearDamageBonus } from './native-projectile-mods';
 import { NativeArcChain } from './native-arc-chain';
@@ -224,9 +228,12 @@ export class Simulation {
     return Math.max(0, (this.content.chapter.entities[this.content.chapter.player.entityId].stats.speed + (attrs.MoveSpeed || 0)) * (1 + (attrs['MoveSpeed%'] || 0)));
   }
   get activeBuffVisuals() {
-    return [...this.playerStatuses.visuals().map(item => ({ ...item, x: this.player.x, z: this.player.z })),
-      ...this.weaponStatuses.visuals().map(item => ({ ...item, x: this.player.x, z: this.player.z })),
-      ...this.statuses.visuals().flatMap(item => { const target = this.enemies.find(e => e.uid === item.targetUid && !e.dead); return target ? [{ ...item, x: target.x, z: target.z }] : []; })];
+    const playerVisuals=this.playerStatuses.visuals(),weaponVisuals=this.weaponStatuses.visuals(),enemyVisuals=this.statuses.visuals();
+    const targets=new Map<number,(typeof this.enemies)[number]>();
+    if(enemyVisuals.length)for(const enemy of this.enemies)if(!enemy.dead&&!Number.isNaN(enemy.uid)&&!targets.has(enemy.uid))targets.set(enemy.uid,enemy);
+    return [...playerVisuals.map(item => ({ ...item, x: this.player.x, z: this.player.z })),
+      ...weaponVisuals.map(item => ({ ...item, x: this.player.x, z: this.player.z })),
+      ...enemyVisuals.flatMap(item => { const target = targets.get(item.targetUid); return target ? [{ ...item, x: target.x, z: target.z }] : []; })];
   }
   /** Read-only presentation query; it cannot consume counters, buffs or RNG. */
   equipmentProjectileAccent(b: Projectile): string | undefined {
@@ -301,7 +308,7 @@ export class Simulation {
   private bulletAttributes = new WeakMap<Projectile, Record<string, number>>();
   private bulletSpeedFactors = new WeakMap<Projectile, number>();
   private incrementalBulletScales = new WeakMap<Projectile, { attribute: number; factor: number }>();
-  private bulletBase = new WeakMap<Projectile, { damage: number; scale: number; radiusX: number; radiusZ: number; radiusOverride?: number; speed: number; attributes: Record<string, number> }>();
+  private bulletBase = new WeakMap<Projectile, { damage: number; scale: number; radiusX: number; radiusZ: number; radiusOverride?: number; speed: number; attributes: Record<string, number>; follow?: { baseRotateSpeed: number; parameters: RecordData; extraRotateSpeed: number } }>();
   private blackHolePulls = new Map<number, { source: Projectile; runtime: NativeBlackHolePullRuntime }>();
   private blackHoleContacts = new Map<number, Set<number>>();
   private blackHoleBulletAttrs = new NativeBlackHoleOverlapAttributes();
@@ -327,8 +334,13 @@ export class Simulation {
   private seed = 0x1badf00d;
   private pendingLevels = 0;
   private playerBulletHurtCount = 0;
-  rerollsRemaining = 0;
-  rerollsTotal = 0;
+  private rerollsUsed = 0;
+  private readonly skillChoiceCategory = { index: 0 };
+  get rerollsRemaining() { return Math.max(0, Math.trunc(this.playerCombatAttributes().RefreshCount || 0)); }
+  // Presentation only; eligibility always reads the live character attribute.
+  get rerollsTotal() { return this.rerollsRemaining + this.rerollsUsed; }
+  private readonly fallbackPool = new NativeSkillFallbackPool();
+  private readonly fallbackLearned = new Set<number>();
   private breakthroughChoice = false;
   private ordinarySelections = 0;
   private resultDelay = 0;
@@ -382,7 +394,8 @@ export class Simulation {
     this.phase = 'ready'; this.time = this.clock = this.exp = this.kills = this.gold = this.damageDealt = 0;
     this.wave = this.level = 1; this.serial = 1; this.shots = []; this.pendingLevels = 0; this.seed = 0x1badf00d;
     this.playerBulletHurtCount = 0;
-    this.rerollsRemaining = this.rerollsTotal = 0; this.breakthroughChoice = false;
+    this.rerollsUsed = 0; this.skillChoiceCategory.index = 0; this.breakthroughChoice = false;
+    this.fallbackPool.reset(); this.fallbackLearned.clear();
     this.currentMissionId = 0; this.runId++; this.waveUIRequest = undefined; this.completedWaveUI = undefined;
     this.nativeEnemyCount = this.nativeKillCount = 0; this.queuedNpc = []; this.musicRequests = [];
     this.waveFlow = new NativeWaveFlow(this.content.chapter.waves, { chestType: Number(this.content.chapter.chapter.parameters.ChestType) });
@@ -500,7 +513,6 @@ export class Simulation {
     // BaseInitState.ShowSkillSelect: consumes opening choices before play,
     // without awarding experience or increasing the hero level.
     const researchAttrs = this.playerCombatAttributes();
-    this.rerollsRemaining = this.rerollsTotal = Math.max(0, Math.trunc(researchAttrs.RefreshCount || 0));
     this.pendingLevels = Math.max(0, Math.trunc(researchAttrs.ChooseSkillOnFirst || 0));
     if (this.pendingLevels) this.openUpgrade();
   }
@@ -1668,6 +1680,7 @@ export class Simulation {
   private healPlayer(amount: number, sourceKind = 0) {
     const oldHp = this.player.hp;
     this.player.hp = Math.min(this.player.maxHp, this.player.hp + nativeLoadoutHealAmount(amount, this.playerCombatAttributes(), sourceKind));
+    recordHealingReceipt(this,this.player.hp-oldHp);
     if (this.player.hp !== oldHp) this.dispatchPlayerEvent(6);
   }
   private getLoadoutSpecials() {
@@ -1974,6 +1987,8 @@ export class Simulation {
     const attrs = this.bulletAttributes.get(bullet) || {}, current = bullet.owner === 'player' ? this.weaponAttributes(bullet.familyId) : base.attributes;
     const merged = (name: string) => (current[name] || 0) + (attrs[name] || 0);
     const fraction = (name: string) => (1 + merged(name)) / (1 + (base.attributes[name] || 0));
+    if (base.follow) bullet.follow = nativeFollowRotateSpeed(base.follow.baseRotateSpeed + (attrs.RotateSpeed || 0),
+      base.follow.parameters, current, base.follow.extraRotateSpeed);
     bullet.damage = base.damage * (1 + (attrs['Attack%'] || 0) / (1 + (base.attributes['Attack%'] || 0))) * fraction('BulletAttack%') * fraction('SkillUpgradeAttack%') * fraction('WeaponDamageAdd%')
       * (bullet.owner === 'player' && bullet.attackSnapshot ? this.player.attack / bullet.attackSnapshot : 1);
     const incrementalScale = this.incrementalBulletScales.get(bullet);
@@ -2634,6 +2649,7 @@ export class Simulation {
         if (bullet) bullet.visualHidden = true; // Native DispatchScaleEvent(0,true), collision remains unchanged.
         const duration = swing.circular ? 1 : .5;
         const fx = this.effect('muzzle', swing.position.x, swing.position.z, duration, 1, undefined, swing.circular ? 220017 : 220005);
+        if(bullet)markWeaponSkinEffect(fx,bullet,this.content.chapter.player.weaponEntityId);
         fx.duration = duration;
         fx.originalScale = swing.radius * (0xb5c2 / 65536);
         fx.originalSpeed = swing.simulationSpeed;
@@ -3072,7 +3088,7 @@ export class Simulation {
       scale, damage: shot.attack * ownerAttackRatio * multiplier * (1 + (shot.cooldownResetAttack || 0)) * (shot.owner === 'player' ? 1 + (this.specialWeaponDamage.get(shot.weaponId) || 0) : 1) * (1 + (state?.damageBonus ?? shot.bonus ?? 0)) * (1 + (state?.skillDamage || 0)) * (1 + (state?.nativeAttributes?.['WeaponDamageAdd%'] || 0)) * (shot.owner === 'player' ? 1 + nativeElementAndTraitDamageBonus(name => entryWeaponAttribute(this.content.combat, name) + (state?.nativeAttributes?.[name] || 0) * 100, b.Element, b.BulletTrait) : 1), radiusX: (b.Shape[0] ?? 0.25) * (1 + (state?.beamWidth || 0)) * scale,
       radiusZ: (beam ? b.Shape[0] || 0.25 : b.Shape[1] ?? b.Shape[0] ?? 0.25) * scale, offsetZ: (b.ShapeOffset?.[1] || 0) * scale,
       angle: shot.angle, pierce: Math.max(0, Number(through?.ThroughCount || 0) + (state?.pierce || 0) + (through ? modification?.DeltaThroughCount || 0 : 0)),
-      bounce: Number(rebound?.ReBoundCount || 0), follow: Number(follow?.RotateSpeed || 0) + (state?.homing || 0), hit: new Set(), beam, beamLength: beam ? Number(b.Shape[1] || 50) * (1 + (state?.beamLength || 0)) : 0,
+      bounce: Number(rebound?.ReBoundCount || 0), follow: nativeFollowRotateSpeed(Number(b.RotateSpeed || 0), follow, state?.nativeAttributes, state?.homing || 0), hit: new Set(), beam, beamLength: beam ? Number(b.Shape[1] || 50) * (1 + (state?.beamLength || 0)) : 0,
       dead: false, hitInterval: (b.MinBulletHurtTime ?? 0.1) * (state?.hitIntervalFactor ?? 1), hitTimes: new Map(), box: b.Shape.length > 1,
       critChance: this.content.chapter.player.critRate + this.globalCrit + (state?.critBonus || 0), critMultiplier: Math.max(1, 1.5 + entryWeaponAttribute(this.content.combat, 'CritValue%') / 100 + this.globalCritDamage + (state?.critDamage || 0)),
       warmup: 0, familyId: shot.familyId || 0, reflections: state?.reflections || 0,
@@ -3101,7 +3117,8 @@ export class Simulation {
       projectile.radiusX = Number(b.Shape[0]) * controller.scale; projectile.radiusZ = Number(b.Shape[1] ?? b.Shape[0]) * controller.scale;
     }
     this.bulletBase.set(projectile, { damage: projectile.damage, scale: projectile.scale, radiusX: projectile.radiusX, radiusZ: projectile.radiusZ, speed,
-      attributes: { ...(state?.nativeAttributes || {}) } });
+      attributes: { ...(state?.nativeAttributes || {}) },
+      follow: follow ? { baseRotateSpeed: Number(b.RotateSpeed || 0), parameters: follow, extraRotateSpeed: state?.homing || 0 } : undefined });
     // FollowModProcessor.OnModBuildComplete adds the source default trait128,
     // separately from its RotateSpeed/DeviationAngle attributes.
     if (w.mods.some((mod: RecordData) => mod.type === 'PersistentMod')) projectile.flags = nativeInstallPersistentMod(projectile.flags);
@@ -3239,7 +3256,7 @@ export class Simulation {
     // start scale forever (acid explosion 200068 grows from 0 to 3 in .2s).
     const birthEffectScale = scaleAnimation ? nativeBulletScale(Number(b.Scale ?? 1), finalFlags, Number(b.BulletTrait || 0), state?.nativeAttributes,
       { nextFireModifiers: fireBoost, modificationDelta: modification?.DeltaScalePercent, allowModificationWhenIgnored: modification?.AllowScaleWhenIgnored }) : scale;
-    if (birthEffect) { const fx = this.effect('muzzle', origin.x, origin.z, .1, .45, undefined, birthEffect); fx.angle = shot.angle; fx.originalScale = birthEffectScale * ((shot as Shot & { fireEffectScale?: number }).fireEffectScale ?? 1); markMissileExplosionVisual(fx, shot); markFrostBurstVisual(fx, shot); }
+    if (birthEffect) { const fx = this.effect('muzzle', origin.x, origin.z, .1, .45, undefined, birthEffect); fx.angle = shot.angle; fx.originalScale = birthEffectScale * ((shot as Shot & { fireEffectScale?: number }).fireEffectScale ?? 1); markMissileExplosionVisual(fx, shot); markFrostBurstVisual(fx, shot); markWeaponSkinEffect(fx,shot,this.content.chapter.player.weaponEntityId); }
     if (shot.owner === 'player') {
       const pending = this.pendingBulletAttributes.consume(shot.familyId || this.content.chapter.player.weaponEntityId, shot.weaponId);
       if (Object.keys(pending).length) this.applyBulletAttributes(projectile, pending);
@@ -3416,7 +3433,12 @@ export class Simulation {
     // MoveStraightProcessor 0x6d84034..0x6d841c8: DeviationAngle is the
     // cumulative turning limit; it is not a targeting cone or a per-frame angle.
     if (b.follow && (!b.followLimit || (b.followTurned || 0) <= b.followLimit)) {
-      const target = b.owner === 'player' ? this.enemies.find(enemy => enemy.uid === b.targetUid && !enemy.dead) || this.closestEnemy(b) : this.player;
+      let target = b.owner === 'player' ? this.enemies.find(enemy => enemy.uid === b.targetUid && !enemy.dead) : this.player;
+      if (!target && b.owner === 'player') {
+        // FollowMod.FindNearestTarget@6d323a8/6d324ac stores the replacement.
+        // Keep a living lock; only reacquisition is restricted to the camera.
+        target = this.closestEnemy(b); b.targetUid = target?.uid;
+      }
       if (target) {
         const angle = Math.atan2(target.x - b.x, target.z - b.z);
         const change = Math.atan2(Math.sin(angle - b.angle), Math.cos(angle - b.angle));
@@ -3504,6 +3526,7 @@ export class Simulation {
       if (plan.effectId) {
         const effect = this.effect('explosion', bullet.x, bullet.z, plan.effectLifetime, plan.radius * 2, undefined, plan.effectId);
         effect.originalScale = plan.radius;
+        markWeaponSkinEffect(effect,bullet,this.content.chapter.player.weaponEntityId);
       }
       this.collisions(bullet, false, { radius: plan.radius, multiplier: plan.damageMultiplier });
     }
@@ -3660,7 +3683,7 @@ export class Simulation {
           const bulletConfig = this.content.chapter.bullets[b.bulletId]?.parameters;
           const segmentIndex = Math.min(segments.length - 1, Math.floor(hit.at));
           const segment = segments[segmentIndex], contactTime = hit.at - segmentIndex;
-          if (bulletConfig?.hitCharacterPrefabId && segment) markSwordHitVisual(markIceSawHitVisual(markBlackHoleHitVisual(markScorchHitVisual(markLaserHitVisual(markMagneticHitVisual(markIceHitVisual(markAcidHitVisual(this.effect('hit', lerp(segment.from.x, segment.to.x, contactTime), lerp(segment.from.z, segment.to.z, contactTime), .16, .8, undefined, bulletConfig.hitCharacterPrefabId), b), b), b), b), b), b), b), b);
+          if (bulletConfig?.hitCharacterPrefabId && segment) markImpactDirection(markWeaponSkinEffect(markSwordHitVisual(markIceSawHitVisual(markBlackHoleHitVisual(markScorchHitVisual(markLaserHitVisual(markMagneticHitVisual(markIceHitVisual(markAcidHitVisual(this.effect('hit', lerp(segment.from.x, segment.to.x, contactTime), lerp(segment.from.z, segment.to.z, contactTime), .16, .8, undefined, bulletConfig.hitCharacterPrefabId), b), b), b), b), b), b), b), b),b,this.content.chapter.player.weaponEntityId),b,segment);
           const hurtType = nativeHurtTypeFromExpressions(bulletConfig?.hurtAttributes);
           if (damageAccepted && !b.damageDisabled && hurtType !== undefined)
             this.damageEnemy(hit.enemy, damage, critical, b.familyId, Number(bulletConfig?.Element || 0), Number(b.traits ?? bulletConfig?.BulletTrait ?? 0), b, hurtType, hitAttributes);
@@ -4056,11 +4079,21 @@ export class Simulation {
   get canRerollUpgrade() { return this.phase === 'upgrade' && !this.breakthroughChoice && !this.tutorialFirstChoiceActive && this.rerollsRemaining > 0; }
   rerollUpgrade() {
     if (!this.canRerollUpgrade) return false;
+    // RandomSkill@6c9d7f8..994 reads RefreshCount and SetAttributeValue(count-1)
+    // BEFORE drawing. Keep this as a runtime attribute mutation so later skill
+    // recomputation cannot restore spent uses, and live bonuses/expiry still apply.
+    const current = this.playerCombatAttributes().RefreshCount || 0;
+    const key = 'native:skill-refresh';
+    const previous = this.specialAttributeSources.get(key)?.attributes.RefreshCount || 0;
+    this.specialAttributeSources.set(key, { familyId: 0, attributes: {
+      RefreshCount: previous + Math.trunc(current) - 1 - current,
+    } });
+    this.rerollsUsed++;
+    this.refreshBuffAttributes();
     // openUpgrade already removed the visible choice from pendingLevels.
     // Refresh keeps that choice's level, rather than borrowing the next one's slots.
-    const choices = this.makeChoices(false, this.level - Math.max(0, this.pendingLevels));
-    if (!choices.length) return false;
-    this.choices = choices; this.rerollsRemaining--; this.ordinarySelections++;
+    this.choices = this.makeChoices(false, this.level - Math.max(0, this.pendingLevels), true);
+    this.ordinarySelections++;
     return true;
   }
   private openUpgrade() {
@@ -4070,7 +4103,7 @@ export class Simulation {
     this.ordinarySelections++;
     this.pendingLevels--; this.phase = 'upgrade'; this.sounds.push(410001);
   }
-  makeChoices(treasure = false, heroLevel = this.level - Math.max(0, this.pendingLevels - 1)): Choice[] {
+  makeChoices(treasure = false, heroLevel = this.level - Math.max(0, this.pendingLevels - 1), isRefresh = false): Choice[] {
     const combat = this.content.combat;
     if(!treasure&&this.tutorialFirstChoicePending){
       const choices=firstGuideChoices(combat);
@@ -4103,8 +4136,8 @@ export class Simulation {
     // Each parent weapon occupies one weighted slot. IsUpgrade=2 resolves its
     // basic branch before display; IsUpgrade=1 opens a separate two-card choice.
     const occupiedPassives = new Set(this.learned.filter(c => c.id >= 11000000).map(c => c.group)).size;
-    return drawNativeOrdinaryChoices(candidates, id => this.canStudySkill(id), () => this.random(), {
-      mode: combat.mode,
+    const choices = drawNativeOrdinaryChoices(candidates, id => this.canStudySkill(id), () => this.random(), {
+      mode: combat.mode, categoryState: treasure ? undefined : this.skillChoiceCategory, isRefresh,
       weightGroup: this.content.chapter.chapter.parameters[combat.mode === 'B' ? 'SkillGroupWeight_B' : 'SkillGroupWeight'],
       initialPool: !treasure && this.ordinarySelections < nativeInitialSkillGroupCount, count: treasure ? 1 : 3,
       // This runtime loads Chapter_MainChapter; world type 1 is distinct from chapterType 8.
@@ -4125,6 +4158,10 @@ export class Simulation {
         advance: isNew ? undefined : stage.skillId, opensBreakthrough: offer.kind === 'breakthrough',
         effects: isNew ? [{ type: 'addSecondary', entityId: family.entityId, skillId: family.id }, ...(stage.effects || [])] : [] } as Choice;
     });
+    if (treasure) return choices;
+    const known = new Set([...this.skillHistory(), ...this.fallbackLearned]);
+    return this.fallbackPool.supplement(choices, id => nativeSkillPoolEligible(id, known),
+      () => this.random(), this.content.chapter.chapter.parameters);
   }
   private canStudySkill(id: number) {
     const card = this.content.combat.cards[id];
@@ -4150,6 +4187,19 @@ export class Simulation {
     if (this.phase !== 'upgrade') return;
     const card = this.choices.find(c => c.id === id);
     if (!card) return;
+    const reward = nativeFallbackReward(card.id, this.content.chapter.chapter.parameters);
+    if (reward) {
+      // These non-battle cards are immediate rewards, never permanent passive
+      // attributes. The isolated history informs pool bans without adding a
+      // persistent RecoverHP% modifier or consuming a weapon/passive slot.
+      if (reward.kind === 'heal') this.healPlayer(this.player.maxHp * reward.percent / 100);
+      else this.gold += reward.amount;
+      this.fallbackLearned.add(card.id);
+      this.choices = []; this.phase = 'playing'; this.breakthroughChoice = false;
+      this.effect('level', this.player.x, this.player.z, 0.6, 3);
+      if (this.pendingLevels && !treasure) this.openUpgrade();
+      return;
+    }
     const family = this.content.combat.families[card.group];
     if (family && !this.secondWeaponOrder.includes(Number(family.entityId))) this.secondWeaponOrder.push(Number(family.entityId));
     if (family?.entityId === this.content.chapter.player.weaponEntityId) this.cannonOwned = true;
@@ -4180,6 +4230,6 @@ export class Simulation {
     this.effect('level', this.player.x, this.player.z, 0.6, 3);
     if (this.pendingLevels && !treasure) this.openUpgrade();
   }
-  private closestEnemy(point: Point) { let best: Enemy | undefined, distance = Infinity; for (const enemy of this.enemies) { if (enemy.dead) continue; const d = Math.hypot(enemy.x - point.x, enemy.z - point.z); if (d < distance) { distance = d; best = enemy; } } return best; }
+  private closestEnemy(point: Point) { let best: Enemy | undefined, distance = Infinity; for (const enemy of this.enemies) { if (enemy.dead || !this.inCamera(enemy)) continue; const d = Math.hypot(enemy.x - point.x, enemy.z - point.z); if (d < distance) { distance = d; best = enemy; } } return best; }
   effect(kind: Effect['kind'], x: number, z: number, duration: number, size: number, value?: string, modelId?: number) { const originalDuration = modelId ? originalEffectDuration(this.content.assets.originalEffects, modelId) : 0; if (Number.isFinite(originalDuration) && originalDuration > 0) duration = originalDuration; const fx: Effect = { uid: this.serial++, kind, x, z, age: 0, duration, size, value, modelId }; this.effects.push(fx); return fx; }
 }

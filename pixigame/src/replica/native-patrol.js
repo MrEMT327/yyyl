@@ -1,3 +1,4 @@
+import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { nativeResearchContributions } from './native-research-state.js';
 import source from './native-patrol-source.json' with {type:'json'};
 import channels from './native-resource-channels-source.json' with {type:'json'};
@@ -49,7 +50,7 @@ export function nativePatrolSnapshot(campaign = {}, materials = [], progression)
   // privileges. Only the owned research contribution is locally established.
   const knownMultiplier=1+researchBonus/100;
   const previewItems = row ? (previews.get(row.Id) || []).map(id => ({
-    id, name: source.previewNames[id], owned: owned.get(id) || 0,
+    id, name: nativeCollectionDisplayName(id)||source.previewNames[id], owned: owned.get(id) || 0,
     random: source.randomPreviewIds.includes(id),
     // Native Refresh creates PropData(id, 0): no award quantity is supplied.
     count: null,

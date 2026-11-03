@@ -181,7 +181,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   let pendingModalBackgroundRefresh = false;
   const polishedTab = () => ['shop','assembly','battle','research','supply'].includes(tab);
   let nativeAppearanceOnly = false;
-  let weaponSkillSlot=0;
+  let weaponSkillSlot=-1;
   let subpage = '', catalogSkillTab = false, catalogFilter = 'all', equipmentSortDescending = true, workshopId = null, workshopFilter = 'all', workshopMode = 'level';
   const catalogScrollPositions = new Map();
   const fleetUi={aircraft:{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false},pilot:{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false}};
@@ -976,16 +976,20 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
     if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='nativeWeaponSkillBrowse'){
+      selectedWeapon=id;weaponSkillSlot=-1;
+      render(true);return;
+    }
     if(action==='nativeWeaponSkillSlot'){
       const slot=Number(target.dataset.slot);
-      if(subpage==='weapon'&&catalogSkillTab&&[0,1].includes(slot)){weaponSkillSlot=slot;render(true);}
+      if(subpage==='weapon'&&catalogSkillTab&&[0,1].includes(slot)){weaponSkillSlot=slot;selectedWeapon=id;render(true);}
       return;
     }
     if(action==='nativeWeaponSkillEquip'){
       const slot=Number(target.dataset.slot);
       if(subpage!=='weapon'||!catalogSkillTab||![0,1].includes(slot))return;
       if(Number(id)&&!snapshot.replicaCollection?.guns.find(row=>row.id===Number(id))?.owned){toast('技能未激活');return;}
-      await act('replicaCollection',{kind:'guns',action:'slot',id:Number(id),slot,expectedRevision:Number(target.dataset.revision)});return;
+      await act('replicaCollection',{kind:'guns',action:'slot',id:Number(id),slot,weaponType:Number(target.dataset.weaponType),expectedRevision:Number(target.dataset.revision)});return;
     }
     if(action==='nativeSlotPick'){const state=fleetUi[subpage];if(state){state.selectedSkillSlot=Number(target.dataset.slot);catalogSkillTab=true;render(true);}return;}
     if(action==='nativeEquipmentBoxes'){modal={type:'nativeEquipmentBoxes',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
@@ -1029,7 +1033,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if (action === 'nativeAppearance') { modal=null; nativeAppearanceOnly = target.dataset.mode === 'appearance'; render(true); return; }
     if (action === 'nativeOperation') {
-      const operation=target.dataset.operation,slot=Number(target.dataset.slot);
+      const operation=target.dataset.operation,slot=target.dataset.slot===undefined?undefined:Number(target.dataset.slot);
       const preview=modal?.type==='nativeCollectionOperation'?{...modal}:null;
       const previousStars=snapshot.replicaCollection[target.dataset.kind]?.find(row=>row.id===Number(id))?.star;
       const result=await act('replicaCollection', { action: operation, kind: target.dataset.kind,
@@ -1172,6 +1176,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         try { setDeveloperSkillsEnabled(!developerSkillsEnabled()); modal.error = ''; }
         catch (error) { modal.error = error.message || '开发设置保存失败'; }
         renderModal(); return;
+      }
+      if (action === 'developerResearchUnlock') {
+        await act('developerResearchUnlock', { expectedRevision: Number(target.dataset.revision) });
+        return;
       }
       if (action === 'developerCurrency') {
         await act('developerCurrency', { currency: target.dataset.currency, expectedRevision: Number(target.dataset.revision) });
@@ -1371,7 +1379,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modal={type:'weaponSkill',id,skillKey:target.dataset.skill,opener:captureFocus(root,target)}; renderModal(); return;
     }
     if (action === 'catalogSelect') { if (subpage === 'weapon') selectedWeapon = id; else if (subpage === 'aircraft') browseAircraft = id; else browsePilot = id; render(true); return; }
-    if (action === 'catalogMode') { catalogSkillTab = target.dataset.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false});render(true); return; }
+    if (action === 'catalogMode') { weaponSkillSlot=-1;catalogSkillTab = target.dataset.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false});render(true); return; }
     if(action==='catalogFilter'&&fleetUi[subpage]){fleetUi[subpage].filterOpen=!fleetUi[subpage].filterOpen;render(true);if(fleetUi[subpage].filterOpen)body.querySelector('.fc-filter-options [aria-checked="true"]')?.focus({preventScroll:true});return;}
     if(action==='fleetFilterClose'){if(fleetUi[subpage])fleetUi[subpage].filterOpen=false;render(true);body.querySelector('.fc-filter')?.focus({preventScroll:true});return;}
     if(action==='fleetFilterSet') {catalogFilter=target.dataset.filter;fleetUi[subpage].filterOpen=false;const scroll=body.querySelector('[data-catalog-scroll]');if(scroll)scroll.scrollTop=0;catalogScrollPositions.set(`${subpage}:list`,0);render(true);body.querySelector('.fc-filter')?.focus({preventScroll:true});return;}

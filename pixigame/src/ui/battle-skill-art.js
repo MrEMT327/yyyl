@@ -1,4 +1,5 @@
 import { cloudAssetBase } from './cloud-asset-base.js';
+import { RESOURCE_ICONS } from './resource-icons.js';
 import { weaponFamilyThemeArt } from './weapon-theme-art.js';
 
 export const BATTLE_SKILL_ART_KEYS = Object.freeze([
@@ -10,7 +11,12 @@ export const BATTLE_SKILL_ART_KEYS = Object.freeze([
   '11001701', '11002001', '11002201', '11002501',
 ]);
 
-const icons = new Map(BATTLE_SKILL_ART_KEYS.map(key => [key, weaponFamilyThemeArt(key) || `${cloudAssetBase}art/project-battle-skills-v1/${key}.webp`]));
+export const PASSIVE_SKILL_ART_KEYS = Object.freeze(BATTLE_SKILL_ART_KEYS.filter(key => key.startsWith('110')));
+
+const icons = new Map(BATTLE_SKILL_ART_KEYS.map(key => [key, weaponFamilyThemeArt(key) || `${cloudAssetBase}art/project-battle-passives-v2/${key}.webp`]));
+// Instant fallback cards reuse the project's healing and currency artwork.
+icons.set('10000001', `${cloudAssetBase}replica-battle/assets/licensed-pickups/medkit-white-green-v1.png`);
+icons.set('10000002', RESOURCE_ICONS.coins.url);
 
 export function battleSkillIconUrl(key) {
   return icons.get(String(key)) || null;

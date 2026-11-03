@@ -14,7 +14,7 @@ import { createFlightVisualState, sampleFlightVisual, updateFlightFighter } from
 import {createFlightPositionState,sampleFlightPosition} from './project-flight-position.js';
 import { createCombatAircraftRenderer } from './project-aircraft-render.js';
 import {sampleCombatEngineWake,drawCombatEngineWake} from './combat-engine-wake.js';
-import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails} from './project-wingtip-trails.js';
+import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails,drawWingtipHighlights} from './project-wingtip-trails.js';
 
 const WIDTH = 540, HEIGHT = 960;
 const TEXTURE_SIZE = 256;
@@ -33,7 +33,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   const aircraftRenderer = createCombatAircraftRenderer(renderer, TEXTURE_SIZE);
   const surface = renderer.domElement;
-  let disposed = false, fighter, scene, playerImage, playerTexture, worldTexture, pose, wingtipGraphics;
+  let disposed = false, fighter, scene, playerImage, playerTexture, worldTexture, pose, wingtipGraphics, wingtipHighlightGraphics;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };
   let lastAircraftVisualClock = -1;
   const flightPosition = createFlightPositionState();
@@ -63,6 +63,9 @@ export async function createProjectPresentation({ content, appearance, onError, 
       ...frame, pose, tips, pilotId: fighter.pilotId, pixelsPerUnit: WIDTH / content.world.width,
       rollActive: flightPose.rollActive, thrust: flightPose.thrust,
     }));
+    drawWingtipHighlights(wingtipHighlightGraphics,tips,{visible:pose?.visible??false,clock:frame.clock,
+      width:pose?Math.max(pose.width,pose.height)*Math.abs(pose.scaleX):80,
+      thrust:flightPose.thrust,rollActive:flightPose.rollActive});
   }
   let weapons = [], weaponRevision = '', weaponsDirty = true, icons;
   const geometryFactory = (_catalogItem, item) => createWeaponForm(item.skin);
@@ -170,7 +173,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
     window.removeEventListener('pagehide', dispose);
     window.removeEventListener('shnh-dispose-replica-battle', dispose);
     for (const image of phantomImages) image.destroy(); phantomImages.length = 0; phantomTrail.history.length = 0;
-    wingtipGraphics?.destroy(); wingtipTrail.tracks.forEach(track => { track.length = 0; });
+    wingtipGraphics?.destroy(); wingtipHighlightGraphics?.destroy(); wingtipTrail.tracks.forEach(track => { track.length = 0; });
     icons?.dispose(); environment.dispose(); fighter?._disposeVisuals(); fighter?.object3D.removeFromParent();
     lighting.dispose(); aircraftRenderer.dispose(); renderer.dispose(); renderer.forceContextLoss(); surface.remove();
     playerCanvas.width = playerCanvas.height = worldCanvas.width = worldCanvas.height = 0;
@@ -262,8 +265,9 @@ export async function createProjectPresentation({ content, appearance, onError, 
         if(worldDirect)releaseWorldUpload=guardWorldTextureUpload(worldTexture.source[0].glTexture,()=>worldContextReady&&worldSurfaceReady&&!renderer.getContext().isContextLost(),worldCanvas);
         scene.add.image(0, 0, 'project-world-3d').setOrigin(0, 0).setDepth(-1000);
       }
-      wingtipGraphics = scene.add.graphics().setDepth(24.6).setName('project-aircraft-wingtip-trails');
+      wingtipGraphics = scene.add.graphics().setDepth(24.6).setName('project-aircraft-wingtip-trails').setBlendMode('ADD');
       playerImage = scene.add.image(0, 0, 'project-aircraft-3d').setDepth(25).setVisible(false);
+      wingtipHighlightGraphics = scene.add.graphics().setDepth(25.05).setName('project-aircraft-wingtip-lights').setBlendMode('ADD');
       // Two compact copies share the current aircraft texture; no extra render target.
       for (let index = 0; index < 2; index++) phantomImages.push(scene.add.image(0, 0, 'project-aircraft-3d')
         .setDepth(24.8 + index * .05).setVisible(false).setName('project-aircraft-phantom-' + index));
@@ -297,7 +301,8 @@ export async function createProjectPresentation({ content, appearance, onError, 
         if (flightPose.rollActive) onFlightRoll?.();
       }
       updatePhantom(flightPose);
-      const backgroundTime = selectedScene.id === 'coast-balanced' ? (frame.coastBackgroundTime ?? frame.time) : frame.time;
+      // The interpolated visual clock is available for every chapter.
+      const backgroundTime = frame.coastBackgroundTime ?? frame.time;
       const worldKey = `${backgroundTime}/${frame.camera.x}/${frame.camera.z}`;
       if (lastWorldKey === worldKey && !aircraftDue) {
         updateWingtipTrails(flightPose); return;
@@ -305,7 +310,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
       camera.position.copy(cameraHome).add(new THREE.Vector3(shiftX, 0, shiftZ));
       camera.lookAt(targetHome.x + shiftX, 0, targetHome.z + shiftZ);
-      environment.update(backgroundTime, stageIndex, { motionRevision: frame.camera.x });
+      environment.update(backgroundTime, stageIndex, { motionRevision: worldKey });
       // Render the native 3D model into a texture used at Phaser's original
       // player depth. Enemy bullets and pickups retain their original sorting.
       // The world is drawn last into this same Three surface, before paint.

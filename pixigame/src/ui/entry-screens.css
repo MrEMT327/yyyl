@@ -131,6 +131,15 @@
 .startup .entry-screen__progress::-webkit-progress-bar { background:none;border-image:url('/art/psd-combat-v1/progress-track.png') 5 8 fill / 3px 5px stretch; }
 .startup .entry-screen__progress::-webkit-progress-value { background:none;box-shadow:none;border-image:url('/art/psd-combat-v1/progress-fill.png') 5 8 fill / 3px 5px stretch; }
 .startup .entry-screen__progress::-moz-progress-bar { background:none;border-image:url('/art/psd-combat-v1/progress-fill.png') 5 8 fill / 3px 5px stretch; }
+/* The track and fill PSDs have different right caps. At completion use the
+   fill cap on both layers so the dark track cannot show through at 100%. */
+.startup.is-ready .entry-screen__progress,
+.startup.is-ready .entry-screen__progress::-webkit-progress-bar { border-image-source:url('/art/psd-combat-v1/progress-fill.png'); }
+.startup.is-ready .entry-screen__progress,
+.startup.is-ready .entry-screen__progress::-webkit-progress-bar,
+.startup.is-ready .entry-screen__progress::-webkit-progress-value,
+.startup.is-ready .entry-screen__progress::-moz-progress-bar { border-image-width:3px 0 3px 5px; }
+.startup.is-ready .entry-screen__progress { clip-path:polygon(0 0,100% 0,calc(100% - 5px) 100%,5px 100%); }
 .startup__actions { position:absolute;left:0;right:0;top:52%;height:45%; }
 .startup__actions .entry-screen__button { width:69%;height:100%;min-height:0;margin:0 auto;padding:2px 8px;font:700 clamp(16px,5.9cqw,30px)/1.2 "Songti SC","STSong","SimSun",serif;letter-spacing:.08em; }
 .startup.is-failed .startup__status { color:#fff; }

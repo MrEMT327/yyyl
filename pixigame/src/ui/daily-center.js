@@ -22,10 +22,12 @@ const taskArt=name=>`${base}art/project-task-icons-v1/${({'chest-idle':'chest-cl
 const sprite=(name,cls='')=>`<img class="${cls}" src="${taskArt(name)}" alt="" aria-hidden="true" draggable="false">`;
 const names={coins:'金币',diamonds:'钻石',weaponParts:'强化零件',aircraftShards:'飞机碎片',stamina:'体力'};
 const icons={coins:'coin',diamonds:'diamond',weaponParts:'parts',aircraftShards:'shard',stamina:'energy'};
+// Saved reward rows may contain an older image; blueprint identity owns its art.
+const rewardArt=row=>researchBlueprintArt(rewardNativeItemId(row))||row.image;
 const button=(action,label,attrs='',disabled=false,cls='')=>`<button type="button" class="wc-button dc-button ${cls}" data-action="${action}" ${attrs}${disabled?' disabled':''}>${label}</button>`;
 function rewards(reward,h,cls='') {
   const {icon,number:n,escape:e,img}=h;
-  if(Array.isArray(reward))return `<span class="dc-rewards ${cls}">${reward.map(row=>`<span aria-label="${e(row.name)} ${n(row.count)}">${img(row.image,row.name,'dc-native-reward-icon')}<b>×${n(row.count)}</b></span>`).join('')}</span>`;
+  if(Array.isArray(reward))return `<span class="dc-rewards ${cls}">${reward.map(row=>`<span aria-label="${e(row.name)} ${n(row.count)}">${img(rewardArt(row),row.name,'dc-native-reward-icon')}<b>×${n(row.count)}</b></span>`).join('')}</span>`;
   return `<span class="dc-rewards ${cls}">${Object.entries(reward||{}).filter(([,v])=>v>0).map(([key,value])=>`<span aria-label="${names[key]||key} ${n(value)}">${icon(icons[key]||'gift')}<b>×${n(value)}</b></span>`).join('')}</span>`;
 }
 function readyCount(s,period) {
@@ -67,6 +69,8 @@ function taskRows(snapshot,period,h) {
 function prizeArt(day,snapshot,h) {
   if(day.id===10010007)return h.img(base+equipmentBlueprintArtPath('fire-control'),day.name,'dc-signin-art');
   if(day.id===10010008)return h.img(researchBlueprintArt(801),day.name,'dc-signin-art');
+  const blueprint=researchBlueprintArt(rewardNativeItemId(day));
+  if(blueprint)return h.img(blueprint,day.name,'dc-signin-art');
   if(day.image)return h.img(day.image,day.name||'','dc-signin-art');
   if(day.nativeRow)return h.img(nativeCollectionArt(day.nativeRow,day.type==='aircraft'?'preview':'thumbnail'),day.name||'','dc-signin-art');
   const id=day.itemId?.split(':')[1];
@@ -102,7 +106,7 @@ function achievementContent(snapshot,h) {
       const reached=item.progress>=item.target,action=reached?'claimAchievement':'dailyGo';
       const label=item.pending||snapshot.rewardPending?'待恢复':reached?(item.claimable?'领取':'未达成'):'前往';
       const rewardRows=Array.isArray(item.rewardItems)?item.rewardItems:Object.entries(item.reward||{}).filter(([,value])=>value>0).map(([type,count])=>({type,count,name:names[type]||type}));
-      const rewardSlots=rewardRows.map(row=>rewardItemSlot({name:row.name,amount:row.count??row.amount,artwork:row.image?h.img(row.image,row.name,'dc-native-reward-icon'):h.icon(icons[row.type]||'gift'),...rewardDisplayQuality(row),itemId:rewardNativeItemId(row)},h)).join('');
+      const rewardSlots=rewardRows.map(row=>rewardItemSlot({name:row.name,amount:row.count??row.amount,artwork:rewardArt(row)?h.img(rewardArt(row),row.name,'dc-native-reward-icon'):h.icon(icons[row.type]||'gift'),...rewardDisplayQuality(row),itemId:rewardNativeItemId(row)},h)).join('');
       return `<article class="dc-achievement${item.claimed?' is-claimed':item.claimable?' is-ready':''}" data-achievement-id="${e(item.id)}" tabindex="-1"><h3>${e(item.name)}</h3><div class="dc-progress"><progress max="${item.target}" value="${Math.min(item.progress,item.target)}" aria-label="${e(item.name)}进度"></progress><span>${n(item.progress)} / ${n(item.target)}</span></div><div class="dc-achievement-rewards">${rewardSlots}</div><div class="dc-achievement-action">${item.claimed?taskStatusMark():button(action,label,`aria-label="${label}，${e(item.name)}" title="${label}" data-destination="${e(item.destination)}" data-id="${e(item.id)}"`,Boolean(item.pending||snapshot.rewardPending||snapshot.rewardBusy||reached&&!item.claimable))}</div></article>`;
     }).join('')}</div>`;
 }

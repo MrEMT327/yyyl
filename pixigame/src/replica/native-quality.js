@@ -7,7 +7,9 @@ export function battleSkillPresentation(card) {
   const quality=Number(card.raw?.Quality ?? card.quality ?? 0);
   const qualityKnown=Number.isInteger(quality)&&quality>=1&&quality<=6;
   const level=Number.isSafeInteger(card.star)&&card.star>0?card.star:1;
+  const instant=Number(card.raw?.SkillType)===99;
   return {qualityRank:qualityKnown?quality-1:0,qualityKnown,
-    level:level-1,nextLevel:level,label:card.opensBreakthrough?'突破':`Lv.${level} · 技能强化`,
+    level:instant?0:level-1,nextLevel:instant?0:level,label:instant?'立即生效':card.opensBreakthrough?'突破':`Lv.${level} · 技能强化`,
+    ...(instant?{instant:true}:{}),
     evolving:Boolean(card.opensBreakthrough)};
 }

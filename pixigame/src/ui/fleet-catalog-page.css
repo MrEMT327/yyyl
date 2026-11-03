@@ -190,6 +190,8 @@
 #gui-casual-lobby .fc-star-skill-list {display:grid;gap:1.5cqw}
 #gui-casual-lobby .fc-star-skill-list>section {display:grid;grid-template-columns:22% minmax(0,1fr);align-items:center;gap:2cqw;min-height:13cqw;padding:2cqw;background:#cfdeea;border-image:url('/art/psd-equipment-v1/frame-gray.png') 18 / 4px stretch}
 #gui-casual-lobby .fc-star-skill-list>.is-unlocked {background:#d5eadf}
+#gui-casual-lobby .fc-star-skill-list .fc-detail-stats {grid-column:2;min-width:0;margin:0;border:0;color:#203b50;font-size:clamp(12px,3.5cqw,15px)}
+#gui-casual-lobby .fc-star-skill-list .fc-detail-stats>div {gap:1cqw;padding:.5cqw 0}
 #gui-casual-lobby .fc-skill-star-line {display:flex;align-items:center;justify-content:flex-start;gap:0}
 #gui-casual-lobby .fc-skill-star-line>img {display:block;width:3.2cqw;height:3.2cqw;object-fit:contain}
 #gui-casual-lobby .pl-modal .fc-star-skill-list p {margin:0;color:#203b50;font:400 clamp(12px,3.5cqw,15px)/1.5 'Microsoft YaHei',sans-serif;white-space:pre-line;overflow-wrap:anywhere}

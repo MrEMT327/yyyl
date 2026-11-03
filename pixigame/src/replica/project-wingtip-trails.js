@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-const sockets=new WeakMap(),LIFETIME=.30,MAX_POINTS=20;
+const sockets=new WeakMap(),LIFETIME=.36,MAX_POINTS=20;
 
 // Use the package's outermost authored trail sockets. Their identity stays in
 // aircraft space, so the two sides never swap histories during a barrel roll.
@@ -47,16 +47,16 @@ export function sampleWingtipTrails(state,{clock,runId,pilotId,pose,tips,camera,
   if(state.runId!==runId||state.pilotId!==pilotId||dt<0||dt>.25||teleported)clear();
   const advancing=state.clock===null||dt!==0;
   state.runId=runId;state.pilotId=pilotId;state.clock=clock;state.center=center;
-  const strength=rollActive?.9:clamp(thrust,0,1)*.55;
+  const strength=rollActive?.9:clamp(.24+clamp(thrust,0,1)*.72,0,.8);
   for(const [side,history]of state.tracks.entries()){
-    if(advancing&&flight?.active&&(rollActive||thrust>.3)){
+    if(advancing&&flight?.active&&(rollActive||thrust>.06)){
       const previous=history.at(-1);
       if(!previous||clock-previous.clock>=1/60-1e-9)
         history.push({clock,x:tips[side].x+offset.x,y:tips[side].y+offset.y,strength});
     }
     while(history.length>MAX_POINTS||history.length&&clock-history[0].clock>LIFETIME)history.shift();
   }
-  const segments=[],maxLength=clamp(width*.55,22,42),scale=clamp(width/80,.7,1.4);
+  const segments=[],maxLength=clamp(width*.7,26,54),scale=clamp(width/80,.7,1.4);
   for(const [side,history]of state.tracks.entries()){
     let length=0;
     for(let i=history.length-1;i>0&&length<maxLength;i--){
@@ -65,10 +65,15 @@ export function sampleWingtipTrails(state,{clock,runId,pilotId,pose,tips,camera,
       const ratio=Math.min(1,(maxLength-length)/distance);
       const freshness=clamp(1-(clock-(a.clock+b.clock)/2)/LIFETIME,0,1);
       const taper=clamp(1-length/maxLength,0,1);
-      const alpha=freshness*freshness*Math.min(a.strength,b.strength)*taper;
-      if(alpha>.002)segments.push({side,x1:a.x-offset.x,y1:a.y-offset.y,
+      // Concentrate the extra light in the first few pixels, not the whole wake.
+      const alpha=Math.min(.9,freshness*freshness*Math.min(a.strength,b.strength)*taper*(1+.3*taper**4));
+      // A narrow highlight runs from the wing towards the end of the trail.
+      // Shared simulation time keeps pause/reprojection deterministic.
+      const phase=((clock*2.4+side*.12)%1+1)%1;
+      const glint=Math.max(0,1-Math.abs(length/maxLength-phase)/.22);
+      if(alpha>.0005)segments.push({side,x1:a.x-offset.x,y1:a.y-offset.y,
         x2:a.x+(b.x-a.x)*ratio-offset.x,y2:a.y+(b.y-a.y)*ratio-offset.y,
-        width:scale*(.45+.55*taper),alpha});
+        width:scale*(.45+.55*taper),alpha,glint:glint*glint});
       length+=distance*ratio;
     }
   }
@@ -77,12 +82,33 @@ export function sampleWingtipTrails(state,{clock,runId,pilotId,pose,tips,camera,
 
 export function drawWingtipTrails(graphics,segments){
   graphics.clear();
-  // Two thin blue-white strokes per segment, behind the real aircraft sprite.
+  // Local additive glow: soft halo, cyan body and a thin moving white core.
+  // Keep the existing short history and length cap; no extra render target.
   for(const segment of segments)for(const [width,color,alpha]of [
-    [segment.width*2.4,0x58bdff,segment.alpha*.22],
-    [segment.width*.8,0xe3f8ff,segment.alpha*.65],
+    [segment.width*4.5,0x47baff,segment.alpha*.12],
+    [segment.width*2.1,0x64ddff,segment.alpha*.4],
+    [segment.width*.85,0xd4f0fb,segment.alpha*(.7+(segment.glint||0)*.1)],
   ]){
     graphics.lineStyle(width,color,alpha).beginPath();
     graphics.moveTo(segment.x1,segment.y1).lineTo(segment.x2,segment.y2).strokePath();
+  }
+}
+
+// Separate foreground caps keep the emission points readable on bright hulls.
+// History stays behind the fighter; these two tiny lights never move it.
+export function drawWingtipHighlights(graphics,tips,{visible=true,clock=0,width=80,thrust=0,rollActive=false}={}){
+  if(!graphics)return;graphics.clear();
+  if(!visible||tips?.length!==2||![clock,width,...tips.flatMap(p=>[p.x,p.y])].every(Number.isFinite))return;
+  const scale=clamp(Math.abs(width)/80,.65,3.5),power=rollActive?.95:clamp(.65+clamp(thrust,0,1)*.4,.65,.9);
+  for(const [side,tip]of tips.entries()){
+    const intensity=power*(.92+.08*Math.sin(clock*5+side*1.7));
+    // Low-opacity concentric falloff avoids the old three hard disc edges.
+    // Only two tiny tips use this gradient; no blur pass or extra texture.
+    for(let ring=8;ring>=1;ring--){
+      const t=ring/8,alpha=.12*Math.exp(-3*t*t)*intensity;
+      graphics.fillStyle(0x5bc3ec,alpha).fillCircle(tip.x,tip.y,4.6*t*scale);
+    }
+    graphics.fillStyle(0xbcebf5,.18*intensity).fillCircle(tip.x,tip.y,.55*scale);
+    graphics.fillStyle(0xe2f8ff,.14*intensity).fillCircle(tip.x,tip.y,.25*scale);
   }
 }

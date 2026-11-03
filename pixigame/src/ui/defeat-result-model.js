@@ -2,7 +2,7 @@ import { nativeItemArt } from '../replica/native-item-presentation.js';
 import { resultRewardStatus } from './result-reward-status.js';
 import { projectIconUrl } from './project-ui-art.js';
 import { RESOURCE_ICONS } from './resource-icons.js';
-import { weaponIconUrl } from './weapon-icon-source.js';
+import { weaponFamilyThemeArt } from './weapon-theme-art.js';
 import correspondence from '../../replica-battle/weapon-skin-correspondence.json' with {type:'json'};
 
 export function defeatRewardArt(row) {
@@ -15,11 +15,8 @@ export function defeatRewardArt(row) {
 
 export function defeatRecommendationArt(row) {
   if (row.functionId) return projectIconUrl(row.functionId === 2 ? 'nav-equipment' : 'nav-research');
-  const itemId = correspondence.families[row.familyId]?.itemId;
-  if (itemId) return weaponIconUrl(itemId);
-  const symbol = ({10000201:'skill-toxin',10000601:'skill-blades',10000901:'skill-gravity',
-    10001101:'skill-blades',10001601:'skill-freeze',10001701:'skill-beam'})[row.familyId];
-  return projectIconUrl(symbol || 'skill-tab');
+  const familyId = row.familyId || correspondence.stages[row.skillId]?.familyId || correspondence.branches[row.skillId]?.familyId;
+  return weaponFamilyThemeArt(familyId) || projectIconUrl('skill-tab');
 }
 
 export function defeatResultModel(bridge, page = 0) {

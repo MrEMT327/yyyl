@@ -1,3 +1,5 @@
+import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js';
+
 export function nativeResultRows(settlement) {
   return (settlement?.rewards || []).map(row => ({
     ...row,
@@ -11,7 +13,7 @@ export function nativeResultRecommendations(chapter, combat) {
   const ids = (combat.mode === 'B' ? parameters.SuggestedSkills_B : parameters.SuggestedSkills) || [];
   const skills = ids.map(skillId => {
     const family = Object.values(combat.families).find(row => row.id === skillId || row.stages.some(stage => stage.skillId === skillId));
-    return {skillId, familyId: family?.id, name: family?.name || `技能 ${skillId}`};
+    return {skillId, familyId: family?.id, name: nativeWeaponDisplayText(family?.name || `技能 ${skillId}`)};
   });
   const availableFunctions = {2:'装备',4:'科研'};
   return skills.concat((parameters.SuggestedFunction || []).filter(id => availableFunctions[id])

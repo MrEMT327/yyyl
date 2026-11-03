@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "source": "User-directed local pool change, 2026-11-02; not original APK probabilities",
+  "denominator": 100000,
+  "basic": {
+    "baseWeaponWeight": 10000,
+    "variantWeight": 0,
+    "aircraftWeight": 5000,
+    "aircraftIds": [
+      10101,
+      10109
+    ],
+    "equipmentWeights": {
+      "10": 55000,
+      "20": 30000
+    }
+  },
+  "advanced": {
+    "baseWeaponWeight": 10000,
+    "variantWeight": 5000,
+    "aircraftWeight": 5000,
+    "equipmentWeights": {
+      "20": 36000
+    }
+  },
+  "variantEligibility": "corresponding-base-weapon-active",
+  "emptyVariantPool": "transfer-variant-weight-to-base-weapons",
+  "batchEligibility": "recompute-after-each-draw"
+}

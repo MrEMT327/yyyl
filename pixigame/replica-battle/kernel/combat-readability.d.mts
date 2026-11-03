@@ -21,7 +21,7 @@ export interface HitSparkInput {
 }
 export class HitSparkAdmission {
   events: Map<number, { allowed: boolean; until: number }>;
-  cells: Map<string, number>;
+  cells: Map<string, Array<{at:number;x:number;y:number;family:string}>>;
   clock: number;
   beginFrame(clock: number): void;
   accepts(fx: HitSparkInput, point: ScreenPoint): boolean;

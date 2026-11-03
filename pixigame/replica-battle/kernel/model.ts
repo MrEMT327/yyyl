@@ -44,7 +44,11 @@ export interface Projectile extends Point {
   trajectoryParameters?: RecordData;
 }
 export interface Pickup extends Point { uid: number; itemId: number; modelId: number; kind: 'exp' | 'gold' | 'heart' | 'buff' | 'trigger'; value: number; age: number; delay: number; attracted: boolean; state: 'scatter' | 'stay' | 'retreat' | 'absorb'; stateTime: number; speed: number; origin: Point; destination: Point; retreatDistance: number; retreatDuration: number }
-export interface Effect extends Point { uid: number; kind: 'hit' | 'explosion' | 'muzzle' | 'text' | 'level' | 'heal'; age: number; duration: number; size: number; value?: string; modelId?: number; critical?: boolean; originalScale?: number; originalSpeed?: number; originalMirrorX?: boolean; angle?: number; ownerUid?: number; followPlayer?: boolean; followOffset?: Point }
+export interface Effect extends Point {
+  /** Emitting weapon identity used only by the cosmetic skin renderer. */
+  weaponSkinFamily?: number; weaponSkinWeapon?: number;
+  impactDirection?: Point;
+  uid: number; kind: 'hit' | 'explosion' | 'muzzle' | 'text' | 'level' | 'heal'; age: number; duration: number; size: number; value?: string; modelId?: number; critical?: boolean; originalScale?: number; originalSpeed?: number; originalMirrorX?: boolean; angle?: number; ownerUid?: number; followPlayer?: boolean; followOffset?: Point }
 export interface Choice { id: number; name: string; description: string; icon: string; star: number; group: number; advance?: number; parentStageId?: number; opensBreakthrough?: boolean; effects: RecordData[]; raw?: RecordData }
 export interface CannonState { stageId: number; damageBonus: number; cooldownReduction: number; critBonus: number; parallel: number; parallelPercent: number; sidePercent: number; pierce: number; bulletId: number; fireCount: number; fireHoldBonus: number; fireInterval?: number; waitingForBeams?: boolean; hitBuffs?: HitBuffMod[]; throughDamage?: number }
 export interface WeaponState extends CannonState { at: number; salvo: number; salvoAngle: number; homing: number; beamWidth: number; lifetime: number; lifetimePercent: number; range: number; reflections: number; skillDamage: number; critDamage: number; side: number; sideAngle: number; speedBonus: number; scaleBonus: number; ricochet: number; ricochetRange: number; ricochetDamage: number; ricochetSpeed: number; explosion?: RecordData; explosionScale: number; beamLength: number; hitIntervalFactor: number; disableThroughReduction: boolean;

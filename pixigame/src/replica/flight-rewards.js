@@ -77,7 +77,8 @@ export function flightRewardsSnapshot(ledger,inventory,campaign,time) {
         const legacyReward=Boolean(entry&&entry.policy!==LOCAL_SIGNIN_POLICY_ID);
         const recovery=claims.driverPending&&i===6;
         const recovered=calendarDay===7&&claims.driverRecoveryDone;
-        const rewards=recovery||recovered?[unit('pilots',SIGNIN_PILOT)]:claims.starterPending&&i===1?[unit('skins',STARTER_PLANE)]:entry?entry.rewards:signinRewards(Math.min(calendarDay,SIGNIN_LAST_DAY));
+        const earned=entry?entry.rewards:signinRewards(Math.min(calendarDay,SIGNIN_LAST_DAY));
+        const rewards=recovery?[unit('pilots',SIGNIN_PILOT)]:recovered?[...earned.filter(r=>r.kind!=='pilots'||r.id!==SIGNIN_PILOT),unit('pilots',SIGNIN_PILOT)]:claims.starterPending&&i===1?[unit('skins',STARTER_PLANE)]:earned;
         return {day:i+1,calendarDay,legacyReward,recovery,recovered,...flightRewardView(rewards[0]),
         rewards:rewards.map(flightRewardView),
         title:rewards.map(r=>flightRewardView(r).title).join('、'),

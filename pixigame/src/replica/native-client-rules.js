@@ -1,5 +1,6 @@
 import { equipmentBoxRules } from './native-equipment-boxes.js';
-import { RANDOM_AIRCRAFT } from './native-aircraft-grants.js';
+import {equipmentBoxCollectionRates,LOCAL_BOX_POOL_POLICY} from './local-equipment-box-pools.js';
+import {createReplicaProgression} from './native-progression.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import source from './native-acquisition-catalog.json' with {type:'json'};
 import text from './native-acquisition-labels.json' with {type:'json'};
@@ -15,27 +16,21 @@ function equipmentRateName(group) {
   const labels=[...new Set(entries.map(row=>`${row.rank?'圣环系列 · ':''}${row.qualityName}`))];
   return labels.length===1?labels[0]:null;
 }
-export function nativeEquipmentBoxPreview(items,gear,time=Date.now()) {
+export function nativeEquipmentBoxPreview(items,gear,time=Date.now(),progression=createReplicaProgression()) {
   const economy=localBoxSnapshot(gear,time);
   return [4,3].map(id=>{
     const row=source.boxes.find(row=>row.ID===id),keys=items[row.Key_ID]||0;
-    let rates=row.DrawBoxRateInfo.map(id=>source.boxRates.find(row=>row.ID===id)).map(group=>({
-      id:group.ID,name:equipmentRateName(group)||text.strings[group.TitleNameID]||group.TitleNameID,
-      weight:group.ItemsProbability.reduce((sum,item)=>sum+item[2],0),denominator:100000,
-      items:group.ItemsProbability.map(([id,count,weight])=>({id,count,weight,name:nativeCollectionDisplayName(id)||text.itemNames[id]||`物品 ${id}`})),
-    }));
-    // All captured equipment Single arrays have one value. Do not assume
-    // singleNum=0 for a future multi-price config with no authoritative DTO.
+    const rule=equipmentBoxRules(id,progression);
+    const rates=row.DrawBoxRateInfo.map(id=>source.boxRates.find(row=>row.ID===id)).map(group=>{
+      const entries=group.ItemsProbability.filter(([item])=>nativeGearPresentation(item)).map(([item,count])=>({
+        id:item,count,weight:rule.items.find(row=>row[0]===item)?.[2]||0,
+        name:nativeCollectionDisplayName(item)||text.itemNames[item]||`物品 ${item}`,
+      }));
+      return {id:group.ID,name:equipmentRateName({...group,ItemsProbability:entries.map(row=>[row.id,row.count,row.weight])})||text.strings[group.TitleNameID]||group.TitleNameID,
+        items:entries,weight:entries.reduce((n,row)=>n+row.weight,0),denominator:100000};
+    }).filter(group=>group.items.length);
+    rates.push(...equipmentBoxCollectionRates(rule.pools));
     const single=row.Single.length===1?row.Single[0]:null;
-    const rule=equipmentBoxRules(id);
-    if(id===3){
-      rates=rates.map(group=>{
-        const entries=group.items.map(item=>({...item,weight:rule.items.find(r=>r[0]===item.id)?.[2]||0}));
-        return {...group,...(group.id===311?{name:'随机武器'}:{}),items:entries.map(item=>item.id===902?{...item,name:'随机武器（11种等概率）'}:item),weight:entries.reduce((n,r)=>n+r.weight,0)};
-      });
-      const aircraft=RANDOM_AIRCRAFT.map(row=>{const [,count,weight]=rule.items.find(item=>item[0]===row.id);return {id:row.id,name:row.name,count,weight};});
-      rates.push({id:'aircraft',name:'随机飞机',items:aircraft,weight:aircraft.reduce((sum,row)=>sum+row.weight,0),denominator:100000});
-    }
     const quotes=[1,10].map(count=>{
       const diamondCost=count===10?row.Ten:single;
       const free=count===1&&economy[id].freeAvailable;
@@ -44,6 +39,7 @@ export function nativeEquipmentBoxPreview(items,gear,time=Date.now()) {
         canDraw:!economy[id].clockBlocked&&rule.supported&&(free||keys>=count || diamondCost!=null&&(items[2]||0)>=diamondCost),freeStateKnown:true,freeStateSource:economy[id].ruleSource,nativeFreeStateKnown:false};
     });
     return {id,name:id===4?'普通装备箱':'高级装备箱',keyId:row.Key_ID,keys,rates,quotes,
+      poolPolicyVersion:LOCAL_BOX_POOL_POLICY.version,variantCount:rule.pools.variants.length,baseWeaponCount:rule.pools.base.length,aircraftCount:rule.pools.aircraft.length,
       weightTotal:rates.reduce((sum,row)=>sum+row.weight,0),denominator:100000,
       cumulativeStateKnown:id===4,compatibility:economy[id],canDraw:rule.supported,unavailableReason:rule.reason};
   });
@@ -60,7 +56,7 @@ export function nativeLabProgressGate(campaign={}) {
     ||Object.entries(campaign.passedWaves||{}).some(([id,passed])=>passed>0&&(Number(id)>chapter||(Number(id)===chapter&&passed>=wave)));
   const reachedChapter=Math.max(1,...(campaign.clearedChapterIds||[]).map(id=>id+1),
     ...Object.entries(campaign.passedWaves||{}).filter(([,passed])=>passed>0).map(([id])=>Number(id)));
-  return {chapter,wave,reachedChapter,reached:UNLOCK_ALL_CONTENT || reached,developmentUnlocked:UNLOCK_ALL_CONTENT,serverStateKnown:false};
+  return {chapter,wave,reachedChapter,reached:UNLOCK_ALL_CONTENT || campaign.developmentResearchUnlocked === true || reached,developmentUnlocked:UNLOCK_ALL_CONTENT,serverStateKnown:false};
 }
 
 export function nativeLabView(row,campaign) {

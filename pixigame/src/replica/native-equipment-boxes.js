@@ -1,39 +1,41 @@
 import { ITEM_USE_BATCH_LIMIT, isItemUseBatchCount } from './item-use-batches.js';
 import { RANDOM_WEAPONS, grantWeaponCopies } from './native-weapon-grants.js';
+import {equipmentBoxCollectionPools,LOCAL_BOX_POOL_POLICY,VARIANT_WEAPON_POOL} from './local-equipment-box-pools.js';
 import { RANDOM_AIRCRAFT, grantAircraftCopies } from './native-aircraft-grants.js';
 import source from './native-acquisition-catalog.json' with {type:'json'};
 import equipment from '../peripheral/equipment-reference-data.json' with {type:'json'};
 import { validateReplicaInventory } from './native-economy.js';
 import { nativeBoxProgress, basicBoxReward } from './native-box-progress.js';
 
-import { validateReplicaProgression } from './native-progression.js';
+import { validateReplicaProgression,createReplicaProgression } from './native-progression.js';
 import { localBoxState } from './local-box-state.js';
 import { LOCAL_ECONOMY_POLICY } from './local-economy-policy.js';
 const DENOMINATOR=100000;
 const rows=new Map(equipment.equip.map(row=>[row.ID,row]));
-export function equipmentBoxRules(id) {
+export function equipmentBoxRules(id,progression=createReplicaProgression()) {
   const box=source.boxes.find(row=>row.ID===id);
-  if(!box)return {supported:false,reason:'未知装备宝箱'};
+  if(!box||![3,4].includes(id))return {supported:false,reason:'未知装备宝箱'};
   const groups=box.DrawBoxRateInfo.map(id=>source.boxRates.find(row=>row.ID===id));
   if(groups.some(row=>!row))return {supported:false,reason:'宝箱概率表缺失'};
-  let items=groups.flatMap(row=>row.ItemsProbability);
-  // Local pool: weapons 10%, aircraft 5%, green equipment 41%. Pilots stay in recruitment.
-  // Blue, purple and S equipment retain their existing weights.
-  if(id===3){
-    const green=items.filter(([item])=>rows.get(item)?.quality===20);
-    if(green.length!==20)throw Error('高级箱自定义奖池配置变化');
-    items=items.filter(([item])=>rows.has(item)||item===902).map(([item,count,weight])=>
-      [item,count,item===902?10000:rows.get(item)?.quality===20?2050:weight]);
-    if(RANDOM_AIRCRAFT.length!==8)throw Error('高级箱飞机奖池配置变化');
-    items.splice(1,0,...RANDOM_AIRCRAFT.map(row=>[row.id,1,625]));
+  const pools=equipmentBoxCollectionPools(id,progression);
+  let equipmentItems=groups.flatMap(row=>row.ItemsProbability).filter(([item])=>rows.has(item));
+  // Only the lowest equipment tier funds the newly requested collections.
+  // Preserve native source tables; this policy is explicitly project-authored.
+  for(const [quality,total] of Object.entries(pools.equipmentWeights)){
+    const count=equipmentItems.filter(([item])=>rows.get(item).quality===Number(quality)).length;
+    if(!count||!Number.isSafeInteger(total/count))throw Error('宝箱装备概率分配无效');
+    equipmentItems=equipmentItems.map(([item,amount,weight])=>[item,amount,rows.get(item).quality===Number(quality)?total/count:weight]);
   }
-  const valid=items.every(([id,count,weight])=>(rows.has(id)||id===902&&RANDOM_WEAPONS.length===11||RANDOM_AIRCRAFT.some(row=>row.id===id))&&Number.isSafeInteger(count)&&count>0
-    &&Number.isSafeInteger(weight)&&weight>=0);
+  const items=[[902,1,pools.baseWeight],...(pools.variantWeight?[[VARIANT_WEAPON_POOL,1,pools.variantWeight]]:[]),
+    ...pools.aircraft.map(row=>[row.id,1,pools.aircraftWeight/pools.aircraft.length]),...equipmentItems];
+  const valid=items.every(([item,count,weight])=>(rows.has(item)||item===902&&RANDOM_WEAPONS.length===11
+    ||item===VARIANT_WEAPON_POOL&&id===3&&pools.variants.length>0||pools.aircraft.some(row=>row.id===item))
+    &&Number.isSafeInteger(count)&&count>0&&Number.isSafeInteger(weight)&&weight>0);
   const weight=items.reduce((sum,row)=>sum+row[2],0);
-  const supported=[3,4].includes(id) && valid && weight===DENOMINATOR
-    &&box.Single.length===1&&Number.isSafeInteger(box.Single[0])&&box.Single[0]>0
+  const supported=valid&&weight===DENOMINATOR&&box.Single.length===1&&Number.isSafeInteger(box.Single[0])&&box.Single[0]>0
     &&Number.isSafeInteger(box.Ten)&&box.Ten>0;
-  return {box,items,supported,weight,reason:supported?'':'该箱子的完整抽取规则尚未核实，暂不开放'};
+  return {box,items,pools,supported,weight,policyVersion:LOCAL_BOX_POOL_POLICY.version,
+    reason:supported?'':'宝箱奖池配置无效，暂不开放'};
 }
 function ticket(denominator=DENOMINATOR) {
   // Uniform integer ticket without modulo bias, including the nested weapon draw.
@@ -49,9 +51,11 @@ export function planEquipmentBox(gear,rawInventory,operation,rawProgression) {
   if(keyOnly?!isItemUseBatchCount(count):![1,10].includes(count))
     return {ok:false,message:keyOnly?`每批可使用 1～${ITEM_USE_BATCH_LIMIT} 张箱券`:'请选择单抽或十连'};
   const id=operation.boxId ?? ({basic:4,advanced:3})[operation.pool];
-  const rule=equipmentBoxRules(id);
+  const progression=validateReplicaProgression(rawProgression);
+  const rule=equipmentBoxRules(id,progression);
   if(!rule.supported)return {ok:false,message:rule.reason};
-  const {box,items}=rule;
+  const {box}=rule;
+  const items=rule.items;
   const time=operation.time??Date.now(),economy=localBoxState(gear.localBoxState,time),boxState=economy.boxes[id];
   if(time<economy.lastSeen)return {ok:false,message:'设备时间回退，请恢复时间后开箱'};
   const freePayment=!keyOnly&&count===1&&time>=boxState.nextFreeAt;
@@ -65,8 +69,9 @@ export function planEquipmentBox(gear,rawInventory,operation,rawProgression) {
     ||!Number.isSafeInteger(gear.serial)||gear.serial<0||!Number.isSafeInteger(gear.revision)||gear.revision<0)
     return {ok:false,message:'装备仓库无法接收本次奖励'};
   const next=structuredClone(gear),drawn=[],outcomes=[],weaponRewards=[],aircraftRewards=[];
-  const progression=id===3?validateReplicaProgression(rawProgression):null;
   for(let draw=0;draw<count;draw++){
+    // Earlier rewards in this batch can activate a base weapon for later draws.
+    const drawRule=equipmentBoxRules(id,progression),items=drawRule.items;
     let cursor=ticket();
     let chosen=items.find(row=>(cursor-=row[2])<0);
     if(!chosen)throw new Error('原版概率表未覆盖抽取结果');
@@ -85,8 +90,9 @@ export function planEquipmentBox(gear,rawInventory,operation,rawProgression) {
       boxState.qualityMisses=awarded.quality>=minimum?0:boxState.qualityMisses+1;
       if(id===3)boxState.sMisses=awarded.rank===1?0:boxState.sMisses+1;
     }
-    if(chosen[0]===902){
-      const weapon=RANDOM_WEAPONS[ticket(RANDOM_WEAPONS.length)];
+    if(chosen[0]===902||chosen[0]===VARIANT_WEAPON_POOL){
+      const pool=chosen[0]===902?drawRule.pools.base:drawRule.pools.variants;
+      const weapon=pool[ticket(pool.length)];
       const reward=grantWeaponCopies(inventory,progression,weapon.id,chosen[1]);
       outcomes.push({id:weapon.id,amount:chosen[1]});
       weaponRewards.push(reward);
@@ -119,7 +125,7 @@ export function planEquipmentBox(gear,rawInventory,operation,rawProgression) {
   }
   inventory.revision++;next.revision++;
   if(!Number.isSafeInteger(next.revision))throw new Error('装备版本超限');
-  const receipt={version:1,boxId:id,count,debit,outcomes,uids:drawn.map(row=>row.uid),
+  const receipt={version:1,poolPolicyVersion:LOCAL_BOX_POOL_POLICY.version,boxId:id,count,debit,outcomes,uids:drawn.map(row=>row.uid),
     pilotRewards:[],weaponRewards,aircraftRewards,inventoryRevision:inventory.revision,gearRevision:next.revision};
   return {ok:true,message:'开箱奖励已保存',state:next,inventory:validateReplicaInventory(inventory),
     drawn,pilotRewards:[],weaponRewards,aircraftRewards,pilotCreditDelta:0,...(progression?{progression:validateReplicaProgression(progression)}:{}),pool:id===4?'basic':'advanced',receipt};

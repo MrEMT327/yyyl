@@ -1,3 +1,5 @@
+import {nativeWeaponType,weaponDeploymentGate} from './native-weapon-loadout.js';
+import { nativeWeaponDisplayText } from './native-weapon-display.js';
 import { advanceNativeLab, synchronizeNativeLabs } from './native-laboratory.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import { nativeLabProgressGate } from './native-client-rules.js';
@@ -33,7 +35,8 @@ export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
   const progression = validateReplicaProgression(value), inventory = validateReplicaInventory(rawInventory);
   synchronizeNativeLabs(progression,nativeLabProgressGate(campaign));
   const result = { revision: inventory.revision, gold: inventory.items[1] || 0, slots: progression.skinSkillSlots.slice(), pilotSlots:progression.pilotSkillSlots.slice(),
-    weaponSlots:progression.weaponSkillSlots.slice(), attributeNames: catalog.attributeNames, skinId: progression.role.skinId };
+    useWeaponMap:{...progression.useWeaponMap},weaponSkillMap:structuredClone(progression.weaponSkillMap),
+    playerLevel:progression.playerLevel,weaponDeploymentGate:weaponDeploymentGate(progression.playerLevel), attributeNames: Object.fromEntries(Object.entries(catalog.attributeNames).map(([key,name])=>[key,nativeWeaponDisplayText(name)])), skinId: progression.role.skinId };
   for (const kind of ['guns','skins','pilots']) result[kind] = catalog[kind].flatMap(row => {
     if (kind === 'pilots' && !isRosterPilot(row.id)) return [];
     const entry = progression[kind].find(entry => entry.id === row.id), owned = Boolean(entry?.active);
@@ -49,7 +52,7 @@ export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
   });
   result.labs = catalog.labs.map(row=>{
     const entry=progression.labs.find(entry=>entry.id===row.id);
-    return {...row,active:Boolean(entry?.active),level:entry?.level||0,activationKnown:Boolean(entry?.activationKnown),needActive:entry?.needActive,confirmedSkillLevel:entry?.confirmedSkillLevel||0,
+    return {...row,name:nativeWeaponDisplayText(row.name),active:Boolean(entry?.active),level:entry?.level||0,activationKnown:Boolean(entry?.activationKnown),needActive:entry?.needActive,confirmedSkillLevel:entry?.confirmedSkillLevel||0,
       levels:row.levels.map(level=>({...level,skills:level.skills.map(nativeSkillText),costs:costRows(level.cost,inventory)}))};
   });
   return result;
@@ -74,15 +77,14 @@ export function planReplicaCollection(value, rawInventory, operation, campaign={
     advanceNativeLab(progression,inventory,operation,nativeLabProgressGate(campaign));
     progression=validateReplicaProgression(progression);
   } else if (action === 'select') {
-    progression = selectReplicaProgression(progression, {kind,id});
+    progression = selectReplicaProgression(progression, {kind,id,slot:operation.slot});
   } else if (action === 'slot' && kind==='guns') {
-    const slot=operation.slot,ids=progression.weaponSkillSlots.slice();
-    if(!Number.isInteger(slot)||slot<0||slot>1)throw Error('技能槽无效');
-    if(id===0&&slot===0)throw Error('主技能不能卸下');
-    const groupOf=id=>{const row=catalog.guns.find(row=>row.id===id);return row?row.baseGunId||row.id:0;};
-    const other=id===0?-1:ids.findIndex(value=>value&&groupOf(value)===groupOf(id));
-    if(other>=0&&other!==slot)ids[other]=ids[slot];
-    ids[slot]=id;progression=selectReplicaProgression(progression,{kind:'weaponSkillSlots',ids});
+    const slot=operation.slot,type=operation.weaponType;
+    if(!Number.isInteger(slot)||slot<0||slot>1||!Number.isSafeInteger(type)||!progression.weaponSkillMap[type])throw Error('技能槽或武器类型无效');
+    if(id!==0&&nativeWeaponType(id)!==type)throw Error('只能装配当前武器类型的技能');
+    const ids=progression.weaponSkillMap[type].map(old=>id!==0&&old===id?0:old);
+    ids[slot]=id;
+    progression=selectReplicaProgression(progression,{kind:'weaponSkillMap',weaponType:type,ids});
   } else if (action === 'slot') {
     if (!['skins','pilots'].includes(kind)) throw new Error('技能类型无效');
     const key=kind==='pilots'?'pilotSkillSlots':'skinSkillSlots';
@@ -100,7 +102,7 @@ export function planReplicaCollection(value, rawInventory, operation, campaign={
     if (!['guns','skins','pilots'].includes(kind) || !row || (row.closed && !UNLOCK_ALL_CONTENT)) throw new Error('该养成项目不可用');
     const owned = progression[kind].find(row=>row.id===id);
     if (action === 'unlock' ? Boolean(owned?.active) : !owned?.active) throw new Error('拥有状态已变化');
-    // Girl Flight makes native weapon variants obtainable from its diamond box.
+    // Local advanced boxes grant eligible variants; a stored own-ID card can also activate them.
     const cost = costsFor(row, owned);
     if (!cost?.length) throw new Error('已满星或没有可用的原版消耗配置');
     const costs = costRows(cost, inventory);

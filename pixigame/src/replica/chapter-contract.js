@@ -47,5 +47,6 @@ export function replicaCampaignProgress(results, previous = {}) {
   const clearedChapterIds = [...cleared].sort((a, b) => a - b);
   const highestCleared = Math.max(-1, ...clearedChapterIds.map(id => replicaChapter(id).stageIndex));
   const finalStage = Math.max(...catalog.chapters.map(row => row.stageIndex));
-  return { version: 2, passedWaves, starMasks, clearedChapterIds, highestCleared, highestUnlocked: Math.min(finalStage, highestCleared + 1) };
+  return { version: 2, passedWaves, starMasks, clearedChapterIds, highestCleared, highestUnlocked: Math.min(finalStage, highestCleared + 1),
+    ...(previous.developmentResearchUnlocked === true ? { developmentResearchUnlocked: true } : {}) };
 }

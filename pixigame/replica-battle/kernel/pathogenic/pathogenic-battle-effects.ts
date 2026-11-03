@@ -1,3 +1,9 @@
+import {WeaponSkinVfx,withWeaponSkinResources} from './weapon-skin-vfx.mjs';
+import {VfxMeshCache} from './vfx-buffers.mjs';
+import {withBattleVfxFinish} from './battle-vfx-finish.mjs';
+import {CombatFeedback,feedbackKind,isOrdinaryContact,withCombatFeedbackResources,isRefinedBasicStatus,refinedBasicStatusMeshes} from './combat-feedback.mjs';
+import {isLayeredCorrosion,isLayeredIceCyclone,corrosionStatusMeshes,iceCycloneMeshes,withElementalVolumeResources} from './elemental-volume-presentation.mjs';
+import {isEnergyFieldProjectile,energyFieldProjectileMeshes,withEnergyFieldResources} from './energy-field-presentation.mjs';
 import {withEquipmentResources,equipmentProjectileKind,equipmentProjectileMeshes,equipmentStatusKind,equipmentStatusMeshes,equipmentEffectKind,equipmentEffectMeshes,equipmentAccentMeshes} from './equipment-presentation.mjs';
 import {isLegendaryIceShard,legendaryIceShardMeshes,withLegendaryIceShardResources} from './ice-shard-presentation.mjs';
 import type {Effect,Projectile} from '../model';
@@ -27,7 +33,7 @@ type Row=Record<string,any>;
 export type ScreenPoint={x:number;y:number};
 export type BeamQuery={origin:ScreenPoint;direction:ScreenPoint;maxDistance:number;sourceId:string;scenePath:string;seed:number;birthTime:number};
 export type BeamResult={endpoint:ScreenPoint;hit?:boolean;normal?:ScreenPoint};
-export type BattleEffectsHost={playerBulletCount?:()=>number;raycastBeam?:(query:BeamQuery)=>BeamResult;screenPointVisible?:(point:ScreenPoint)=>boolean;physicsFps?:number;view?:any;nativeSwordEffects?:Row};
+export type BattleEffectsHost={weaponSkinId?:()=>number|number[];playerBulletCount?:()=>number;raycastBeam?:(query:BeamQuery)=>BeamResult;screenPointVisible?:(point:ScreenPoint)=>boolean;physicsFps?:number;view?:any;nativeSwordEffects?:Row};
 type Entry={path:string;age:number;bornAt:number;lastSeen:number;seenRevision:number;lastDraw:number;exitAt?:number;pose:Row;poseCamera:[number,number];randomValues:number[];seed:number;duration?:number;retention:number;independent?:boolean;retireImmediately?:boolean;capture?:Row;children:Set<string>;lightningPoints?:number[][];scheduled?:Row;hitEvents:Row[];stopAge?:number;seenHits?:Map<number,number>;sparkCooldown?:number;sparkTime?:number;sparkCount?:number;visualComplete?:boolean};
 const PREFIRE='res://scn/player/projectiles/staurolaser_beam.tscn';
 const finite=(x:any)=>typeof x==='number'&&Number.isFinite(x);
@@ -35,20 +41,25 @@ const graphRoot=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>
 const rootProps=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>n.path==='.').properties;
 /** Combat/raycast stay in the host; sourcePixelScale converts source pixels to screen pixels. */
 export class PathogenicBattleEffects {
+  private feedback=new CombatFeedback();
+  private skinVfx=new WeaponSkinVfx();
+  private volumeMeshes=new VfxMeshCache();
+  private readonly viewport={width:NaN,height:NaN,padding:128};
   private hitAdmission=new HitSparkAdmission();
   private motionAccents=new ProjectileMotionAccents();
   private equipmentAccentCount=0;
+  private visualLag=0;
   private entries=new Map<string,Entry>();private run=-1;private clock=0;private revision=0;private frameCount?:number;private host:BattleEffectsHost;private camera:[number,number]=[0,0];
   readonly source:PathogenicSceneView;
   readonly iceTrails:IceWeaponTrails;
   readonly swordTrails:SwordEnergyTrails;
   readonly iaido:IaidoVfx;
   readonly audit={draws:0,legacyDraws:0,scenes:new Set<string>(),issues:[] as any[],events:[] as any[],eventsDropped:0};
-  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withScorchPresentationResources(graph))));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
+  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
   preload(urlFor:(p:string,t:Row)=>string){this.source.preload(urlFor);}
-  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.motionAccents.beginFrame();this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.source.beginFrame(clock);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);}
+  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=this.scene.scale?.width??NaN;this.viewport.height=this.scene.scale?.height??NaN;this.feedback.beginFrame(this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);}
   private recordAuditEvent(event:Row){
     const events=this.audit.events;
     if(events.length>=1024){const removed=events.length-512;events.splice(0,removed);this.audit.eventsDropped+=removed;}
@@ -110,7 +121,7 @@ export class PathogenicBattleEffects {
           pose.projectilePalette=impact.palette;
         }
         const born=entry.bornAt+child.at;copy=this.make(child.scenePath,Math.max(0,this.clock-born),entry.seed+i+1,pose);copy.bornAt=born;
-      }else{copy=this.make(child.scenePath,0,(entry.seed*1664525+i+1013904223)>>>0,{projectilePalette:entry.pose.projectilePalette});copy.bornAt=entry.bornAt+child.delay;copy.scheduled=structuredClone(child);}
+      }else{copy=this.make(child.scenePath,0,(entry.seed*1664525+i+1013904223)>>>0,{projectilePalette:entry.pose.projectilePalette,...(entry.pose.electricArc?{electricArc:true,overrides:entry.pose.overrides}:{})});copy.bornAt=entry.bornAt+child.delay;copy.scheduled=structuredClone(child);}
       copy.independent=true;this.entries.set(key,copy);
     }
   }
@@ -121,7 +132,7 @@ export class PathogenicBattleEffects {
     if(!ray?.endpoint||![ray.endpoint.x,ray.endpoint.y].every(finite))this.fail('invalid-host-branch-raycast',ray);
     const dx=ray.endpoint.x-origin.x,dy=ray.endpoint.y-origin.y,distance=Math.hypot(dx,dy);if(distance>query.maxDistance+1e-4)this.fail('branch-raycast-out-of-range',{query,ray});
     const angle=child.globalRotation,c=Math.cos(angle),s=Math.sin(angle);
-    entry.pose={projectilePalette:entry.pose.projectilePalette,rootTransform:[c*scale,s*scale,-s*scale,c*scale,origin.x,origin.y],localEndpoint:[(dx*c+dy*s)/scale,(-dx*s+dy*c)/scale],maxDistance:child.maxDistance,splitOffChance:child.splitOffChance,globalRotation:angle,impactProbe:query};
+    entry.pose={...(entry.pose.electricArc?{electricArc:true,overrides:entry.pose.overrides}:{}),projectilePalette:entry.pose.projectilePalette,rootTransform:[c*scale,s*scale,-s*scale,c*scale,origin.x,origin.y],localEndpoint:[(dx*c+dy*s)/scale,(-dx*s+dy*c)/scale],maxDistance:child.maxDistance,splitOffChance:child.splitOffChance,globalRotation:angle,impactProbe:query};
     entry.poseCamera=[...this.camera];entry.scheduled=undefined;this.recordAuditEvent({type:'source-lightning-branch',id,at:entry.bornAt,query,hit:ray.hit??false});
   }
   private impactSparks(id:string,entry:Entry,life:Row,sample:Row){
@@ -162,8 +173,21 @@ export class PathogenicBattleEffects {
     entry.visualComplete=life.completed===true;
     entry.lastDraw=this.revision;this.audit.draws++;this.audit.scenes.add(entry.path);return result;
   }
+  weaponSkinProjectile(b:Projectile&Row,screen:(x:number,z:number)=>ScreenPoint){
+    const drawn=this.skinVfx.projectile(b,screen);if(drawn){this.audit.draws++;this.audit.scenes.add('project:weapon-skin-'+this.skinVfx.skinId);}return drawn;
+  }
   projectile(b:Projectile&Row,screen:(x:number,z:number)=>ScreenPoint,element=0){
-    if(b.dead||b.visualHidden)return;
+    if(b.dead||b.visualHidden)return;if(this.weaponSkinProjectile(b,screen))return;this.feedback.beam(b,screen);
+    if(isLayeredIceCyclone(b)){
+      const meshes=iceCycloneMeshes(b,screen,this.viewport,this.volumeMeshes.get('cyclone:'+b.uid));
+      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:layered-cyclone`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.area,presentationOpacity:.9});this.audit.draws++;this.audit.scenes.add('host:layered-ice-cyclone');}
+      return;
+    }
+    if(isEnergyFieldProjectile(b)){
+      const meshes=energyFieldProjectileMeshes(b,screen);
+      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:energy-field`,meshes,undefined,{presentationDepth:b.modelId===1000054?COMBAT_LAYERS.enemyShot:b.modelId===200249?COMBAT_LAYERS.status:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add('host:energy-field');}
+      return;
+    }
     if(equipmentProjectileKind(b)){
       const meshes=equipmentProjectileMeshes(b,screen);
       if(meshes.length){this.source.drawMeshes(`equipment:${b.uid}`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add('project:equipment-projectile');}
@@ -207,7 +231,7 @@ export class PathogenicBattleEffects {
       if(sector&&i%3!==0&&i!==segments.length-1)continue;
       const a=screen(segment.from.x,segment.from.z),end=screen(segment.to.x,segment.to.z),dx=end.x-a.x,dy=end.y-a.y,length=Math.hypot(dx,dy)/(this.sourcePixelScale*scale);
       const pose:Row={rootTransform:this.pose(a,Math.atan2(dy,dx)-Math.PI/2,scale),beamLength:length,localEndpoint:[0,length],skipPrefire:true,held:true,awaitHostExit:true,...presentation.pose,presentationDepth,projectilePalette:palette,impactProbe:i===segments.length-1?{origin:a,direction:{x:dx/Math.max(.0001,Math.hypot(dx,dy)),y:dy/Math.max(.0001,Math.hypot(dx,dy))},maxDistance:Math.hypot(dx,dy)}:undefined};
-      if(sector){pose.splitOffChance=0;pose.refreshLightningPath=true;pose.impactProbe=undefined;pose.overrides={Visual:{position:[0,0]},'Visual/Line2D':{width:36,modulate:[1.15,2.2,3,1]}};}
+      if(sector){pose.splitOffChance=0;pose.refreshLightningPath=true;pose.impactProbe=undefined;pose.overrides={...presentation.pose.overrides,Visual:{position:[0,0]},'Visual/Line2D':{...presentation.pose.overrides?.['Visual/Line2D'],width:36,modulate:[1,1,1,1]}};}
       if(warming){this.prefire(`projectile:${b.uid}:${i}:warmup`,b.uid,b.age,warmup,pose);continue;}
       this.emit(`projectile:${b.uid}:${i}`,path,b.age-warmup,b.uid+i,pose,Math.max(0,b.lifetime-warmup),sector);
     }}else{
@@ -233,12 +257,32 @@ export class PathogenicBattleEffects {
       if(b.owner==='player'){const sprite=drawn?.sprites?.find((s:Row)=>s.nodePath==='Visual/Circle');if(sprite)this.motionAccents.projectile(b,screen,element,sprite);}
     }
   }
+  nativeProjectile(b:Projectile,screen:(x:number,z:number)=>ScreenPoint,sprite:Row){
+    this.motionAccents.projectile(b,screen,0,sprite);
+  }
   equipmentAccent(b:Projectile,style:string|undefined,screen:(x:number,z:number)=>ScreenPoint){
     if(this.equipmentAccentCount>=24)return;
     const meshes=equipmentAccentMeshes(b,style,screen);
     if(meshes.length){this.equipmentAccentCount++;this.source.drawMeshes(`equipment-accent:${b.uid}`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot+.01});}
   }
   effect(fx:Effect&Row,screen:(x:number,z:number)=>ScreenPoint,visualScale=1){
+    if(this.skinVfx.effectMatches(fx)){
+      if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
+      if(isNativeSwordSwing(fx))this.skinVfx.sword(fx,nativeSwordScreenMeshes(this.host.nativeSwordEffects!,fx,screen,visualScale));
+      else this.skinVfx.effect(fx,screen,visualScale);
+      this.audit.draws++;this.audit.scenes.add('project:weapon-skin-impact-'+this.skinVfx.skinId);return;
+    }
+    const feedbackType=feedbackKind(fx);
+    // Restore the authored flying particles for ordinary metal impacts. The
+    // procedural contact star remains available for the distinct elements.
+    const nativeContact=isOrdinaryContact(fx)&&effectScene(fx)==='res://scn/particles/hit_particle.tscn';
+    if(nativeContact&&(!Number.isFinite(fx.x)||!Number.isFinite(fx.z)||!Number.isFinite(fx.age)||!Number.isFinite(fx.size)||!Number.isFinite(visualScale)||!(fx.duration>0)||fx.age<0||fx.age>=fx.duration))return;
+    if(feedbackType&&!isNativeSwordSwing(fx)&&!nativeContact){
+      if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
+      const before=this.feedback.count;this.feedback.effect(this.visualLag>0&&fx.age>=0?{...fx,age:Math.max(0,fx.age-this.visualLag)}:fx,screen,visualScale);
+      if(this.feedback.count>before){this.audit.draws++;this.audit.scenes.add('host:feedback-'+feedbackType);}
+      return;
+    }
     if(equipmentEffectKind(fx)){
       if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
       const meshes=equipmentEffectMeshes(fx,screen);
@@ -252,8 +296,16 @@ export class PathogenicBattleEffects {
       return;
     }
     if(fx.age<0||fx.kind==='text')return;const path=effectScene(fx);if(!path)return;
-    if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;const explosion=rootProps(this.graph,path).script?.$external?.endsWith('/explosion.gd');
+    if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
+    if(nativeContact&&!this.feedback.admitNativeContact())return;
+    const explosion=rootProps(this.graph,path).script?.$external?.endsWith('/explosion.gd');
     const presentation=effectPresentation(fx),root=graphRoot(this.graph,path),overrides:Row={...(root.type==='GPUParticles2D'&&root.properties.one_shot?{'.':{emitting:true}}:{}),...presentation.overrides};
+    if(nativeContact){
+      // Keep source birth positions, random directions, damping, scale curves
+      // and lifetime. Lift only the existing warm color by twenty percent.
+      const c=root.properties.modulate??[1,1,1,1];
+      overrides['.']={...overrides['.'],modulate:[c[0]*1.2,c[1]*1.2,c[2]*1.2,c[3]]};
+    }
     const displayScale=(fx.originalScale??1)*visualScale*presentation.scale;
     // World-space Godot particles inherit emission positions/velocity, but
     // their sprite scale is independent of the emitter transform. Apply the
@@ -262,9 +314,24 @@ export class PathogenicBattleEffects {
       const material=resource(this.graph,node.properties.process_material);if(!material)continue;
       overrides[node.path]={...overrides[node.path],process_material:{...material,properties:{...material.properties,scale_min:(material.properties.scale_min??1)*displayScale,scale_max:(material.properties.scale_max??1)*displayScale}}};
     }
-    this.emit(`effect:${fx.uid}`,path,fx.age,fx.uid,{rootTransform:this.pose(screen(fx.x,fx.z),fx.angle??0,displayScale),event:explosion?'explode':undefined,overrides,projectilePalette:presentation.palette,presentationDepth:fx.modelId===220014?COMBAT_LAYERS.warning:COMBAT_LAYERS.impact,presentationOpacity:fx.kind==='hit'?.85:1},fx.duration);
+    // The source explosion starts at zero visual scale. Sample its first
+    // visible animation frame immediately when the host reports an impact.
+    const displayAge=fx.modelId===210016?Math.max(1/60,fx.age):fx.age;
+    this.emit(`effect:${fx.uid}`,path,displayAge,fx.uid,{rootTransform:this.pose(screen(fx.x,fx.z),fx.angle??0,displayScale),event:explosion?'explode':undefined,...(fx.modelId===210016?{explosionPhysicsFrames:2}:{}),overrides,projectilePalette:presentation.palette,presentationDepth:fx.modelId===220014?COMBAT_LAYERS.warning:COMBAT_LAYERS.impact,presentationOpacity:fx.kind==='hit'?.85:1},fx.duration);
   }
+  pickup(item:Row,screen:(x:number,z:number)=>ScreenPoint){this.feedback.pickup(item,screen);}
   status(buff:Row,screen:(x:number,z:number)=>ScreenPoint){
+    if(isRefinedBasicStatus(buff)){
+      const before=this.feedback.statuses;this.feedback.status(buff,screen);
+      if(this.feedback.statuses>before){this.audit.draws++;this.audit.scenes.add('host:refined-basic-status');}
+      return;
+    }
+    this.feedback.flushStatuses(this.source);
+    if(isLayeredCorrosion(buff)){
+      const meshes=corrosionStatusMeshes(buff,screen,this.viewport,this.volumeMeshes.get('corrosion:'+buff.targetUid+':'+buff.buffId));
+      if(meshes.length){this.source.drawMeshes(`status:${buff.targetUid}:${buff.buffId}:corrosion`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.status});this.audit.draws++;this.audit.scenes.add('host:layered-corrosion');}
+      return;
+    }
     if(equipmentStatusKind(buff)){
       const meshes=equipmentStatusMeshes(buff,screen);
       if(meshes.length){this.source.drawMeshes(`equipment-status:${buff.targetUid}:${buff.buffId}`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.status});this.audit.draws++;this.audit.scenes.add('project:equipment-status');}
@@ -311,9 +378,9 @@ export class PathogenicBattleEffects {
       // lifecycle for the remaining eight-second safety retention window.
       if(entry.visualComplete&&(entry.independent||entry.exitAt!==undefined))this.entries.delete(id);
     }
-    this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();
+    this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();this.volumeMeshes.endFrame();
   }
-  reset(){this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
+  reset(){this.skinVfx.reset();this.volumeMeshes.reset();this.feedback.reset();this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
   destroy(){this.reset();this.source.destroy();}
 }
 

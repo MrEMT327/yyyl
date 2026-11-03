@@ -4,7 +4,9 @@
 // amounts below are project tuning, not claims about the live competitor.
 const items=rows=>Object.freeze(rows.map(([id,amount])=>Object.freeze({id,amount})));
 
-export const PILOT_TASK_POINTS=Object.freeze({login:25,battle1:25,battle3:25,upgrade:25,recruit:20});
+// Repeatable, free play must reach full activity after permanent upgrades cap.
+export const PILOT_TASK_POINTS=Object.freeze({login:25,battle1:50,battle3:25,upgrade:25,recruit:20});
+export const PILOT_WEEKLY_TASK_POINTS=Object.freeze({sorties:60,victories:40,upgrades:30});
 export const PILOT_TASK_REWARDS=Object.freeze({
   login:items([[1,1000]]),
   battle1:items([[1,1000]]),

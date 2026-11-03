@@ -32,15 +32,20 @@ void main(){
    }
    a*=smoothstep(0.,.015,vUv.y)*smoothstep(0.,.015,1.-vUv.y);
  }else if(id==1.){
-   float zig=(noise(vec2(floor(vUv.y*28.),floor(clock*24.)))-.5)*.8*sin(vUv.y*3.14159);
-   float d=p.x-zig,flicker=.84+.16*sin(clock*73.+p.y*17.);
-   a=(band(d,.06)*1.1+band(d,.19)*.48+band(d,.43)*.12)*flicker;hot=band(d,.027)*.9;
-   if(rank>=3.){
-     float branch=band(p.x-zig-sin(vUv.y*17.+extra)*.34,.027)*step(.2,vUv.y)*step(vUv.y,.85);
-     a+=branch*.8+band(p.x-zig+sin(vUv.y*21.-clock*9.)*.3,.045)*.26;
-     hot+=branch*.4;
-   }
-   a*=smoothstep(0.,.02,vUv.y)*smoothstep(0.,.02,1.-vUv.y);
+   float seed=vFlags.y*91.7,frame=floor(clock*28.);
+   float envelope=sin(vUv.y*3.14159);
+   float zig=(noise(vec2(vUv.y*18.+seed,frame))-.5)*.66*envelope;
+   zig+=(noise(vec2(vUv.y*53.+seed,frame+17.))-.5)*.15*envelope;
+   float d=p.x-zig,flicker=.92+.08*sin(clock*73.+seed+p.y*17.);
+   float coreWidth=flag>.5?.048:.036;
+   a=(band(d,coreWidth)*1.25+band(d,.15)*.62+band(d,.34)*.17)*flicker;
+   hot=band(d,coreWidth*.66)*1.15;
+   // Restrained parallel filaments, with independent paths for each real arc.
+   float filament=band(p.x-zig-sin(vUv.y*21.+seed-clock*3.)*.23,.021)
+     *smoothstep(.15,.28,vUv.y)*(1.-smoothstep(.65,.88,vUv.y));
+   a+=filament*(rank>=3.?.65:.22);hot+=filament*.18;
+   if(rank>=3.)a+=band(p.x-zig+sin(vUv.y*17.-seed)*.29,.028)*.22*envelope;
+   a*=smoothstep(0.,.012,vUv.y)*smoothstep(0.,.012,1.-vUv.y);
  }else if(id==2.){
    float flow=fbm(vec2(p.x*7.,p.y*10.+clock*8.)),plume=band(p.x,.5+flow*.21);
    float ice=pow(noise(vec2(p.x*19.,p.y*65.+clock*21.)),14.);

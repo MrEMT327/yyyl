@@ -13,7 +13,7 @@ import { flightDay } from './flight-rewards.js';
 import { nativeItemArt } from './native-item-presentation.js';
 import { nativeItemDisplayName } from './native-item-names.js';
 import { pilotFragmentForPilot } from './native-pilot-fragments.js';
-import { PILOT_TASK_POINTS, PILOT_TASK_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PILOT_WEEKLY_ACTIVITY_REWARDS, PILOT_AD_REWARDS } from './pilot-supply-reward-policy.js';
+import { PILOT_TASK_POINTS, PILOT_WEEKLY_TASK_POINTS, PILOT_TASK_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PILOT_WEEKLY_ACTIVITY_REWARDS, PILOT_AD_REWARDS } from './pilot-supply-reward-policy.js';
 
 const exchangeRoster=catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id));
 const roster=exchangeRoster.filter(row=>![40100,40101].includes(row.id));
@@ -57,9 +57,9 @@ const tasks=[{id:'login',name:'每日报到',target:1,counter:'login',starter:40
   {id:'recruit',name:'完成 1 次招募',target:1,counter:'recruits',destination:'supply'}]
   .map(task=>({...task,points:PILOT_TASK_POINTS[task.id],rewards:PILOT_TASK_REWARDS[task.id]}));
 const weekTasks=[
-  {id:'weekly-sorties',name:'每周完成 5 次出击',target:5,counter:'battles',points:30,destination:'battle'},
-  {id:'weekly-victories',name:'每周取得 3 次胜利',target:3,counter:'victories',points:40,destination:'battle'},
-  {id:'weekly-upgrades',name:'每周完成 5 次强化',target:5,counter:'upgrades',points:30,destination:'equipment'},
+  {id:'weekly-sorties',name:'每周完成 5 次出击',target:5,counter:'battles',points:PILOT_WEEKLY_TASK_POINTS.sorties,destination:'battle'},
+  {id:'weekly-victories',name:'每周取得 3 次胜利',target:3,counter:'victories',points:PILOT_WEEKLY_TASK_POINTS.victories,destination:'battle'},
+  {id:'weekly-upgrades',name:'每周完成 5 次强化',target:5,counter:'upgrades',points:PILOT_WEEKLY_TASK_POINTS.upgrades,destination:'equipment'},
 ];
 const names={925:'角色箱',926:'角色箱碎片',113:'普通装备箱券',112:'高级装备箱券',1:'金币',2:'钻石'};
 const safe=n=>Number.isSafeInteger(n)&&n>=0;
@@ -210,7 +210,7 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
       probabilities:{pilot:DIRECT_RECRUIT_PILOT_WEIGHT/100,...Object.fromEntries(DIRECT_RECRUIT_RESOURCES.map(row=>[RESOURCE_KEYS[row.id],row.weight/100]))},
       probabilityLabels:{pilot:'驾驶员',coins:'金币 ×1000',basicKey:'普通箱券 ×1',blueprint:'随机装备图纸 ×10',advancedKey:'高级箱券 ×1'},
       rarityProbabilities:DIRECT_RECRUIT_RATES,
-      resources:DIRECT_RECRUIT_RESOURCES.map(r=>({...r,image:nativeItemArt(r.id==='blueprint'?105:r.id)})),
+      resources:DIRECT_RECRUIT_RESOURCES.map(r=>({...r,image:nativeItemArt(r.id==='blueprint'?10010007:r.id)})),
       pity:{pilot:l.directRecruit.pilot,ssr:l.directRecruit.ssr,ur:l.directRecruit.ur},
       pityDetails:[{id:'pilot',triggerAt:RECRUIT_PITY.pilot}],
       guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员`,

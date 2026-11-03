@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-02",
+  "mode": "built-in image_gen edit",
+  "prompt": "Use case: precise-object-edit. Edit target: the attached transparent ice saw weapon sprite, for a top-down mobile shooter. Change ONLY the surface finish: REMOVE ALL thin white cracks, fracture lines, cloudy frost veins, scratched grain and mottled microtexture from every blade face, the circular plate and the central gem. Replace those fine details with clean smooth cyan/blue ice surfaces and a few broad calm highlight planes. Preserve the exact overall saw design and proportions: same circular outline, same curved serrated blade teeth, same tooth count and direction, same three large dark-blue sweeping spiral grooves, same concentric hub and central faceted hexagonal ice gem, same front-facing orthographic orientation. Keep the existing stylized icy blue colors and crisp bright bevels, but keep the interior lower-contrast and simple so it stays readable when rotating rapidly at 70–100 pixels wide. No new glow, no motion blur, no noise, no particles, no text, no background, no extra objects. Preserve a genuinely transparent alpha background, centered square composition, fit the entire saw with its tips uncut and approximately the same padding as the reference. This is a clean surface variant of the same sprite, not a redesign.",
+  "reference": "ice-saw-v2.png",
+  "generatedSource": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-1ded2fb8-d86e-4eca-a65a-87cdd93e2a32.png",
+  "asset": "ice-saw-clean-v3.png",
+  "width": 1254,
+  "height": 1254,
+  "transparent": true,
+  "sha256": "437124fea1963b4dfadcea83fb6b357f2076810b97309ce32e6acea2bc0e67d0",
+  "scope": "Surface texture only; existing sprite scale, rotation, particles, hit effects and game mechanics retained."
+}

@@ -12,3 +12,6 @@
 #gui-casual-lobby .wg-skill-page .wg-equipped {left:1cqw;top:1cqw;width:5cqw;height:5cqw;min-width:16px;min-height:16px}
 #gui-casual-lobby .wg-skill-page .wc-skill.is-locked .weapon-skill-icon {filter:brightness(.55) saturate(.5)}
 #gui-casual-lobby .wg-skill-page .wc-skill-name {font-size:clamp(10px,3cqw,14px);line-height:1.3;min-height:2.6em;white-space:normal}
+
+#gui-casual-lobby .wg-skill-page .wc-heading {position:relative}
+#gui-casual-lobby .wg-browse-back {position:absolute;right:2cqw;top:1cqw;--wc-button-height:max(28px,8cqw);width:24cqw;font-size:clamp(10px,3cqw,14px)}

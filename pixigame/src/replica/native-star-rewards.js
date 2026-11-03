@@ -1,6 +1,7 @@
 import source from './native-resource-channels-source.json' with {type:'json'};
 import { countStars } from './native-battle-rating.js';
 import { replicaChapter } from './chapter-contract.js';
+import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { validateReplicaInventory } from './native-economy.js';
 import { flightRewardView } from './flight-rewards.js';
 import acquisition from './native-acquisition-catalog.json' with {type:'json'};
@@ -17,7 +18,7 @@ function claimedIds(state) {
   return ids;
 }
 const rewardView=([id,count])=>direct(id)?{...flightRewardView({kind:'item',id:localRewardPairs([[id,count]])[0][0],count}),originalId:id}:{
-  id,count,name:'随机装备图纸（离线逐张均匀分配）',preview:nativeRandomGroupPreview(id),
+  id,count,name:nativeCollectionDisplayName(id)||'随机图纸',preview:nativeRandomGroupPreview(id),
 };
 // Original normal-mode claim state is a set of IDs, not a sequential cursor.
 // Legacy custom rewards paid different items: archive those records as-is and

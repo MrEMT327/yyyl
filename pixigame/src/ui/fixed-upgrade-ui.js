@@ -11,6 +11,7 @@ import choiceIconCrops from './psd-choice-icon-crops.json' with { type: 'json' }
 import { paintPsdChoiceArt } from './psd-choice-art.js';
 import { drawUiSymbol } from './ui-symbols.js';
 import { upgradeChoiceSlot } from './upgrade-choice-slots.js';
+import { drawBattleElementBadge, BATTLE_ELEMENT_BADGE_SIZE } from './battle-element-badge.js';
 
 function attachSurface(parent,surface){const node=new Container();node.object3D.add(surface.group);node._disposeVisuals=()=>surface.destroy();parent.addChild(node);return node;}
 
@@ -40,7 +41,8 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     other.model.itemId === offer.model.itemId && other.model.ownerId !== offer.model.ownerId)
     ? offer.slots.join('/') || offer.model.owner : '';
 
-  const width = px(224), height = py(562);
+  // Keep the attribute on the final row, below quality and run level.
+  const width = px(224), height = py(bridge.presentation ? 606 : 562);
   offers.forEach(({skill,model,summary,recipientMarker}, index) => {
     // The name already identifies the skill; keep only what the choice does.
     const effect = String(summary || '').replace(`获得${model.name}，`, '').replace(/^可以/, '').trim();
@@ -65,7 +67,9 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     } else drawUpgradeWeaponIcon(surface,model.itemId,29,96,122);
     const stars = model.qualityKnown===false ? 0 : Math.min(6,model.qualityRank+1);
     for(let i=0;i<stars;i++)
-      drawUiSymbol(surface,'star',(width-stars*18+4)/2+i*18,height-30,14,'#e9f5ff');
+      drawUiSymbol(surface,'star',(width-stars*18+4)/2+i*18,height-(bridge.presentation?104:30),14,'#e9f5ff');
+    if(model.element)drawBattleElementBadge(surface,model.element,
+      (width-BATTLE_ELEMENT_BADGE_SIZE.width)/2,height-42);
     attachSurface(card,surface);
     const name = text(card,model.name,width/2,26,23,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(name.width>width-20)name.scale.set((width-20)/name.width);
@@ -78,7 +82,7 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     if(bridge.presentation && effect) {
       const runs = [{text:effect,strong:true}];
       let size = 16;
-      while(size>12 && addEffectText(null,runs,0,0,width-28,size,COMBAT_UI.text,makeText,place)>height-276-86)size--;
+      while(size>12 && addEffectText(null,runs,0,0,width-28,size,COMBAT_UI.text,makeText,place)>height-276-122)size--;
       addEffectText(card,runs,14,276,width-28,size,COMBAT_UI.text,makeText,place);
     } else if(model.evolving && summary) {
       const shortEffect=summary.length>19?`${summary.slice(0,18)}…`:summary;
@@ -89,7 +93,7 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
       if(marker.width>width-16)marker.scale.set((width-16)/marker.width);
     }
     const prefix = model.evolving ? (bridge.presentation ? '突破 · ' : '进化 · ') : model.terminal ? '觉醒 · ' : '';
-    const footer = text(card,`${prefix}Lv.${model.level} → ${model.nextLevel}`,width/2,height-65,20,COMBAT_UI.text,{anchorX:.5,weight:'900'});
+    const footer = text(card,model.instant?'立即生效':`${prefix}Lv.${model.level} → ${model.nextLevel}`,width/2,height-(bridge.presentation?82:65),20,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(footer.width>width-24)footer.scale.set((width-24)/footer.width);
     panel.addChild(card);
   });

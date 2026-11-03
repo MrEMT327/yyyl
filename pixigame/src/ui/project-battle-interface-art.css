@@ -22,6 +22,9 @@
 #ui .pause-resume > span { position: relative; }
 
 
+#ui .battle-element-badge {background:#10202cee;border:1px solid var(--element-color);border-radius:3px;color:#eff7fc;font-weight:800;gap:6%;height:7%;padding:1px 4px}
+#ui .battle-element-badge svg {width:24%;height:100%;color:var(--element-color);flex:none}
+
 /* Short labels identify pause actions without adding persistent HUD chrome. */
 #ui .pause-control:not(.pause-resume)>img {inset:8% 19% auto;width:62%;height:58%}
 #ui .pause-control:not(.pause-resume)::after {position:absolute;bottom:-14px;left:-12px;right:-12px;z-index:3;text-align:center;color:#fff;font:700 clamp(10px,3cqw,12px)/1.1 "Microsoft YaHei",sans-serif;text-shadow:0 1px 2px #061526;pointer-events:none}

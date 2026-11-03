@@ -1,9 +1,10 @@
 import { chapterRewardsDialog } from './chapter-rewards-panel.js';
+import { nativeRewardPresentation } from '../replica/native-item-presentation.js';
 import { nativeCollectionArt } from '../replica/native-collection-art.js';
 import { resourceIcon } from './resource-icons.js';
 import './flight-rewards-page.css';
 const btn=(label,action,revision,extra='',disabled=false)=>`<button type="button" class="wc-button" data-action="flightReward" data-operation="${action}" data-revision="${revision}" ${extra} ${disabled?'disabled':''}>${label}</button>`;
-const reward=(r,h)=>`<span class="fr-reward">${r.nativeRow?h.img(nativeCollectionArt(r.nativeRow),r.name,'fr-art'):r.image?h.img(r.image,r.name,'fr-art'):resourceIcon(r.id===2?'diamonds':'coins','fr-art')}<span>${h.escape(r.name)} ×${r.count}</span></span>`;
+const reward=(r,h)=>{const view=nativeRewardPresentation(r),name=view.name||r.name,image=view.image||(r.nativeRow?nativeCollectionArt(r.nativeRow):r.image);return `<span class="fr-reward">${image?h.img(image,name,'fr-art'):[1,2].includes(r.id)?resourceIcon(r.id===2?'diamonds':'coins','fr-art'):''}<span>${h.escape(name)} ×${r.count}</span></span>`;};
 export function flightChapters(s){return chapterRewardsDialog(s).content;}
 export function flightRewardsPage({snapshot:s,helpers:h}){
   const f=s.flightRewards;

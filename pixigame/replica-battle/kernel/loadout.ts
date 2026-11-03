@@ -1,4 +1,6 @@
 import './loadout.css';
+import type {WeaponCollection} from '../../src/replica/native-weapon-loadout.js';
+import {normalizeNativeWeaponLoadout,selectNativeWeapon} from '../../src/replica/native-weapon-loadout.js';
 import type { GameContent, RecordData } from './model';
 import type { Simulation } from './simulation';
 import { NATIVE_EQUIPMENT_LEVEL_MAX } from '../../src/replica/native-equipment-level.js';
@@ -6,7 +8,7 @@ import { inspectLoadoutSkillSupport } from './special-skill-runtime';
 import { nativeSkillDescription } from '../../src/replica/native-skill-description.js';
 import {
   loadLoadoutCatalog, loadStudyLoadoutState, saveStudyLoadoutState,
-  calculateStudyLoadout, applyStudyLoadout, studyEquipmentQualityChain,
+  calculateStudyLoadout, applyStudyLoadout, studyEquipmentQualityChain, createDefaultStudyLoadoutState,
 } from './loadout-state';
 
 type Tab = 'equipment' | 'planes' | 'guns' | 'pilots' | 'skills' | 'labs';
@@ -282,7 +284,13 @@ export function mountStudyLoadout({ content, sim, onStart }: { content: GameCont
       if (!entry) { entry = { id, star: draft.star, level: draft.level, active: false, equipped: false }; members(kind).push(entry); }
       if (equip) members(kind).forEach(e => { e.equipped = false; });
       Object.assign(entry, kind === 'labs' ? { level: draft.level, active: draft.active } : { star: draft.star, active: equip || draft.active || kind === 'guns' && !!entry.equipped, equipped: equip || (!!entry.equipped && (draft.active || kind === 'guns')) });
-      if (kind === 'guns' && !entry.active) local().weaponSkillSlots=(local().weaponSkillSlots||[20101,0]).map((value:number,index:number)=>value===id?(index===0?members('guns').find(e=>e.equipped)?.id||20101:0):value);
+      if(kind==='guns'){
+        if(!entry.active)for(const [type,slots] of Object.entries(local().weaponSkillMap||{}))local().weaponSkillMap![type]=(slots as number[]).map((value:number)=>value===id?0:value);
+        const loadout=normalizeNativeWeaponLoadout(local(),members('guns') as WeaponCollection[]);
+        if(equip)loadout.useWeaponMap=selectNativeWeapon({...loadout,guns:members('guns') as WeaponCollection[]},id,0);
+        Object.assign(local(),loadout);
+        members('guns').forEach(row=>{row.equipped=Object.values(loadout.useWeaponMap).includes(row.id);});
+      }
       if (kind === 'pilots' && !entry.active) local().pilotSkillSlots=(local().pilotSkillSlots||[0,0,0]).map((value:number)=>value===id?0:value);
     }
     save(); closeModal(); render(true); toast(equip ? '已设为出战，配置已保存' : '配置已保存');
@@ -321,12 +329,12 @@ export function mountStudyLoadout({ content, sim, onStart }: { content: GameCont
     } else if (action === 'save-item' || action === 'equip') commitItem(action === 'equip');
     else if (action === 'unequip' && detail) {
       if (detail.tab === 'equipment') local().equipment = equipment().filter(e => e.id !== detail!.id);
-      else if (detail.tab === 'guns' || detail.tab === 'pilots') { const e = member(detail.tab, detail.id); if (e) e.equipped = false; }
+      else if (detail.tab === 'pilots') { const e = member(detail.tab, detail.id); if (e) e.equipped = false; }
       save(); closeModal(); render(true); toast('已卸下；收藏状态保留');
     } else if (action === 'confirm-reset') {
       // Only reset this screen's state, never unrelated browser saves.
-      const base = rows('planes').find(r => r.id === 10100) || rows('planes')[0];
-      Object.assign(local(), { role: { id: base?.id || 10100, level: 1, star: 0, starStep: 0, skinId: 0, skinStar: 0 }, equipment: [], skins: [], skinSkillSlots: [0, 0, 0], pilotSkillSlots: [0, 0, 0], weaponSkillSlots: [20101, 0], pilots: [], labs: [], guns: [{ id: 20101, star: 1, active: true, equipped: true }], debugOverride: { enabled: false, attack: 100, hp: 600 } });
+      for(const key of Object.keys(local()))delete (local() as unknown as RecordData)[key];
+      Object.assign(local(),createDefaultStudyLoadoutState());
       save(); closeModal(); render(); toast('已恢复初始研究配置');
     } else if (action === 'start') {
       save(); applyStudyLoadout(content, sim, catalog, state); root.hidden = true; onStart(); lastPhase = sim.phase;

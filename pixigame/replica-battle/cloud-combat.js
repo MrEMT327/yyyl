@@ -1,3 +1,4 @@
+import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js';
 import {createBattleUiFrame} from './battle-ui-frame.js';
 import { bindCloudPointerInput } from './cloud-pointer-input.js';
 import { Container, WebGLRenderer } from '../src/three/display.js';
@@ -8,6 +9,7 @@ import { effectDescription } from './kernel/ui';
 import './cloud-combat.css';
 import { assessReplicaBattle } from '../src/replica/native-battle-rating.js';
 import { battleSkillPresentation } from '../src/replica/native-quality.js';
+import { battleChoiceElement } from '../src/replica/battle-weapon-element.js';
 import { nativeResultRows, nativeResultRecommendations } from './result-presentation.js';
 
 // The cloud UI is a read-only view of the original simulation. The hidden
@@ -28,13 +30,13 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     if(url&&!textures.has(key)){const texture=loader.load(url);texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;textures.set(key,texture);}
     return key;
   };
-  const description=card=>card.description||String(card.descriptionSource||'').replace(/\{(\d+)\}/g,(match,index)=>card.descriptionArgsSource?.[Number(index)]??match)||effectDescription(card.effects||[]);
+  const description=card=>nativeWeaponDisplayText(card.description||String(card.descriptionSource||'').replace(/\{(\d+)\}/g,(match,index)=>card.descriptionArgsSource?.[Number(index)]??match)||effectDescription(card.effects||[]));
   const currentWeapons=()=>ui.equippedWeapons().map(weapon=>{
     const family=Object.values(sim.content.combat.families).find(f=>f.entityId===weapon.entityId);
     const state=weapon.entityId===sim.content.chapter.player.weaponEntityId?sim.cannon:sim.secondary.get(weapon.entityId);
     const card={id:state?.stageId,star:weapon.star,group:family?.id,icon:weapon.icon};
     const stage=family?.stages.find(row=>row.skillId===state?.stageId);
-    return {id:String(weapon.entityId),itemId:keyFor(card),name:weapon.name,level:weapon.star,
+    return {id:String(weapon.entityId),itemId:keyFor(card),name:nativeWeaponDisplayText(weapon.name),level:weapon.star,
       quality:stage?.raw?.Quality??stage?.quality,
       description:description(stage||{})||family?.description||'',slots:[]};
   });
@@ -43,7 +45,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     const latest=new Map();
     for(const card of sim.learned)if(card.id>=11000000)latest.set(card.group,card);
     return [...latest.values()].map(card=>({id:String(card.group),itemId:keyFor(card),
-      name:card.name,icon:card.icon,level:card.star,owner:'被动强化',description:description(card)}));
+      name:nativeWeaponDisplayText(card.name),icon:card.icon,level:card.star,owner:'被动强化',description:description(card)}));
   };
   const presentation={art:textures,fullStageResultBackdrop:true,fullStagePauseBackdrop:true,fullStageUpgradeBackdrop:true,exitCopy:'结束战斗，返回航母',grade:'—',score:'—',reroll:false,choices:[],weapons:[],upgrades:[]};
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,skills:{},activeWeapons:[],fixedPartsMode:true,
@@ -100,7 +102,8 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     game.fixedGrowth.state.rerolls=sim.canRerollUpgrade?sim.rerollsRemaining:0;
     game.fixedGrowth.state.totalRerolls=sim.rerollsTotal;
     presentation.choices=sim.choices.map(card=>({skill:card,summary:description(card),slots:[],model:{
-      itemId:keyFor(card),ownerId:String(card.group),name:card.name,...battleSkillPresentation(card),
+      itemId:keyFor(card),ownerId:String(card.group),name:nativeWeaponDisplayText(card.name),...battleSkillPresentation(card),
+      element:battleChoiceElement(card,sim.content.combat),
       terminal:false,stat:{label:'强化效果',after:''},change:{label:'强化效果',value:''},
     }}));
     game.fixedGrowth.state.offer={runId:sim.runId,offerId:`${sim.choices.map(c=>c.id).join(',')}:reroll:${sim.rerollsRemaining}`,buildVersion:sim.learned.length};
@@ -114,10 +117,10 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     if(sim.phase==='treasure'){
       const board=ui.punchboard,key=`${sim.runId}:${board.started}:${board.stage}`;
       const rewards=sim.treasureRewards,slots=board.slots||[],reward=rewards[0]||{icon:'',name:'当前武器已无可用强化'};
-      const wrap=(card,index)=>({...card,id:`supply:${index}`,ownerId:`supply:${index}`,itemId:keyFor(card),ownerName:rewards.map(c=>c.name).join('、'),key:''});
+      const wrap=(card,index)=>({...card,name:nativeWeaponDisplayText(card.name),description:description(card),id:`supply:${index}`,ownerId:`supply:${index}`,itemId:keyFor(card),ownerName:rewards.map(c=>nativeWeaponDisplayText(c.name)).join('、'),key:''});
       if(key!==lastSupply){lastSupply=key;supply={chestId:key,phase:board.stage==='result'?'ready':board.stage==='rolling'?'rolling':'idle',
         slots:slots.map(wrap),reward:wrap(reward,16),pickupAt:board.started,revealedAt:board.phaseStarted,
-        subtitle:'本局武装强化',rewardNames:rewards.map(c=>c.name).join('、')};}
+        subtitle:'本局武装强化',rewardNames:rewards.map(c=>nativeWeaponDisplayText(c.name)).join('、')};}
       const elapsed=(performance.now()-board.phaseStarted)/1000,steps=board.steps||[],index=steps.findLastIndex(s=>s.at<=elapsed);
       supply.presentationMotion={index:board.stage==='result'?(board.stops?.[0]??-1):steps[index]?.slot??-1,step:index};
       supply.disabled=Boolean(board.button?.disabled||board.button?.hidden);

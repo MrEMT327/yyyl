@@ -1,5 +1,5 @@
 import * as T from 'three';
-import {mapLayerGrade,COAST_ISLAND_LAYOUT} from './map-scene-polish.js';
+import {mapLayerGrade,mapAtmosphereShape,COAST_ISLAND_LAYOUT,COAST_ISLAND_Y_OFFSETS} from './map-scene-polish.js';
 import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
 
 const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
@@ -9,37 +9,54 @@ const fragmentShader = `
 varying vec2 terrainUv;
 uniform sampler2D artwork;uniform float hasArt;uniform float repeatY;uniform float scroll;
 uniform float sourceWidth;uniform vec2 opening;uniform float opacity;uniform float completeScene;
-uniform vec4 visualGrade;
+uniform vec4 visualGrade;uniform vec2 cloudForm;uniform vec4 bridgePattern;
+#if SHORE_VARIANTS == 1
+uniform sampler2D alternateArt;
+#endif
 #if ISLAND_LAYOUT == 1
-uniform vec4 islandLayout[12];
+uniform vec4 islandLayout[12];uniform float islandOffsets[12];
 #endif
 uniform vec3 base;uniform vec3 edge;uniform vec3 accent;uniform vec3 mist;uniform vec3 chapterTint;uniform vec3 layerTint;
 // Overlap only the narrow ends of directional strips. Both samples keep their
 // authored orientation, while premultiplied interpolation preserves cutout edges.
+#if SHORE_VARIANTS == 1
+vec4 sampleShore(float stripIndex,vec2 uv,vec2 gx,vec2 gy){
+  if(mod(mod(stripIndex,2.)+2.,2.)<.5)return textureGrad(artwork,uv,gx,gy);
+  return textureGrad(alternateArt,uv,gx,gy);
+}
+#endif
 vec4 sampleArtwork(vec2 uv){
   #if ISLAND_LAYOUT == 1
-    // Reuse the three complete island cutouts in a fixed four-strip island.
-    // Empty cells and varied spacing/scales are world-anchored, never rerolled
-    // by camera movement. Painted terrain is never flipped or stretched.
     float cell=floor(uv.y*3.);
     int index=int(mod(mod(cell,12.)+12.,12.));
     vec4 island=islandLayout[index];
     if(island.y<.01)return vec4(0.);
-    vec2 local=vec2((uv.x-island.z)/island.y+island.w,(fract(uv.y*3.)-.5)/island.y+.5);
+    vec2 local=vec2((uv.x-island.z)/island.y+island.w,(fract(uv.y*3.)-.5-islandOffsets[index])/island.y+.5);
     if(local.x<0.||local.x>1.||local.y<0.||local.y>1.)return vec4(0.);
-    vec2 sampleUv=vec2(local.x,(island.x+local.y)/3.);
-    return textureGrad(artwork,sampleUv,dFdx(uv)/island.y,dFdy(uv)/island.y);
-  #endif
-  #if DIRECTIONAL_SEAM == 1
-    const float overlap=.045;
-    vec2 gradientX=dFdx(uv)*vec2(1.,1.-overlap);
-    vec2 gradientY=dFdy(uv)*vec2(1.,1.-overlap);
-    float y=fract(uv.y)*(1.-overlap);
-    vec4 current=textureGrad(artwork,vec2(uv.x,y),gradientX,gradientY);
+    vec4 cutout=textureGrad(artwork,vec2(local.x,(island.x+local.y)/3.),dFdx(uv)/island.y,dFdy(uv)/island.y);
+    cutout.a=smoothstep(.012,.18,cutout.a);
+    return cutout;
+  #elif SHORE_VARIANTS == 1
+    // Two complete tall coast sections. Architecture stays upright and only
+    // plain rock/sand endpoint regions participate in the narrow transition.
+    const float overlap=.025;
+    vec2 gx=dFdx(uv)*vec2(1.,1.-overlap),gy=dFdy(uv)*vec2(1.,1.-overlap);
+    float stripIndex=floor(uv.y),y=fract(uv.y)*(1.-overlap);
+    vec4 current=sampleShore(stripIndex,vec2(uv.x,y),gx,gy);
     if(y<overlap){
-      vec4 previous=textureGrad(artwork,vec2(uv.x,y+1.-overlap),gradientX,gradientY);
-      float blend=smoothstep(0.,overlap,y);
-      vec4 color=mix(vec4(previous.rgb*previous.a,previous.a),vec4(current.rgb*current.a,current.a),blend);
+      vec4 previous=sampleShore(stripIndex-1.,vec2(uv.x,y+1.-overlap),gx,gy);
+      vec4 color=mix(vec4(previous.rgb*previous.a,previous.a),vec4(current.rgb*current.a,current.a),smoothstep(0.,overlap,y));
+      current=vec4(color.rgb/max(color.a,.00001),color.a);
+    }
+    return current;
+  #elif DIRECTIONAL_SEAM == 1
+    const float overlap=.045;
+    vec2 gx=dFdx(uv)*vec2(1.,1.-overlap),gy=dFdy(uv)*vec2(1.,1.-overlap);
+    float y=fract(uv.y)*(1.-overlap);
+    vec4 current=textureGrad(artwork,vec2(uv.x,y),gx,gy);
+    if(y<overlap){
+      vec4 previous=textureGrad(artwork,vec2(uv.x,y+1.-overlap),gx,gy);
+      vec4 color=mix(vec4(previous.rgb*previous.a,previous.a),vec4(current.rgb*current.a,current.a),smoothstep(0.,overlap,y));
       current=vec4(color.rgb/max(color.a,.00001),color.a);
     }
     return current;
@@ -53,6 +70,7 @@ void main(){
   #if CLOUD_LAYER == 1
     // Empty tile ends allow per-strip variation without a visible seam.
     float cloudSeed=fract(sin(mod(floor(uv.y),2.)*127.1+31.7)*43758.5453);
+    uv=vec2(.5+(uv.x-.5)*cloudForm.x,uv.y*cloudForm.y);
     if(cloudSeed>.5)uv.x=1.-uv.x;
     cloudDensity=mix(.45,1.,cloudSeed);
   #endif
@@ -60,6 +78,13 @@ void main(){
   if(hasArt>.5)picture=sampleArtwork(uv);
   picture.rgb*=chapterTint*layerTint;
   float border=abs(terrainUv.x-.5);
+  #if BRIDGE_CADENCE == 1
+    // Bridge endpoints and bank-side railings stay in place. The central span
+    // has authored quiet sections in a deterministic four-strip composition.
+    float section=mod(floor(uv.y),4.);
+    float keep=section<.5?bridgePattern.x:section<1.5?bridgePattern.y:section<2.5?bridgePattern.z:bridgePattern.w;
+    picture.a*=mix(keep,1.,smoothstep(.29,.37,border));
+  #endif
   // Grade only the scenery; aircraft, pickups and projectiles are composited
   // later. Keep near-bank pixels crisp while distant landmarks sit back.
   float quietCenter=1.-smoothstep(.16,.43,border);
@@ -111,6 +136,9 @@ void main(){
     // Protect the central 60% even while native lateral parallax is active.
     gl_FragColor.a*=cloudDensity*smoothstep(.30,.43,border);
   #endif
+  #if DETACHED_DETAIL == 1
+    gl_FragColor.a*=smoothstep(0.,.035,terrainUv.x)*smoothstep(0.,.035,1.-terrainUv.x);
+  #endif
   if(gl_FragColor.a<.002)discard;
   #include <tonemapping_fragment>
   #include <colorspace_fragment>
@@ -156,10 +184,12 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     layers=definitions.map((definition,index)=>{
       const kind = definition.kind ?? index;
       const material = new T.ShaderMaterial({
-        defines: { DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0 }, vertexShader, fragmentShader,
+        defines: { DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
         uniforms: {
           visualGrade: {value:new T.Vector4(1,1,0,0)},
-          ...(definition.layout==='coast-islands'?{islandLayout:{value:COAST_ISLAND_LAYOUT.map(row=>new T.Vector4(...row))}}:{}),
+          cloudForm:{value:new T.Vector2(1,1)},bridgePattern:{value:new T.Vector4(...(definition.bridgeCadence||[1,1,1,1]))},
+          ...(definition.shoreVariants?{alternateArt:{value:null}}:{}),
+          ...(definition.layout==='coast-islands'?{islandLayout:{value:COAST_ISLAND_LAYOUT.map(row=>new T.Vector4(...row))},islandOffsets:{value:[...COAST_ISLAND_Y_OFFSETS]}}:{}),
           artwork: { value: null }, hasArt: { value: 0 }, repeatY: { value: definition.length / (definition.width * 1.5) }, scroll: { value: 0 },
           sourceWidth: { value: definition.sourceWidth }, opening: { value: new T.Vector2(...(definition.opening || [0, 1])) }, opacity: { value: definition.opacity }, completeScene: { value: 0 },
           base: { value: new T.Color() }, edge: { value: new T.Color() }, accent: { value: new T.Color() }, mist: { value: new T.Color() }, layerTint: { value: new T.Color(definition.tint ?? 0xffffff) },
@@ -197,9 +227,11 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       const texture = textures.get(key);
       const aspect = texture ? texture.image.height / texture.image.width : 1.5;
       const u = material.uniforms;
+      if(u.alternateArt)u.alternateArt.value=textures.get(`${current.textureId||current.id}/groundAlt`)||texture||null;
       if (mesh.userData.scene !== current || u.artwork.value !== (texture || null)) {
         const grade=mapLayerGrade(current.id,definition.role);
         u.visualGrade.value.fromArray(grade.color);
+        u.cloudForm.value.fromArray(mapAtmosphereShape(current.id));
         u.completeScene.value = current.singleLayer || definition.fullAlpha ? 1 : 0;
         u.chapterTint ??= {value:new T.Color(0xffffff)};
         u.chapterTint.value.set(current.tint||0xffffff).lerp(white,current.tint ? .55 : 0);
@@ -234,13 +266,14 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     while (sceneCache.size > 3) {
       const oldest = [...sceneCache.keys()].find(key => key !== id && key !== (current.textureId || current.id));
       sceneCache.delete(oldest);
-      for (const type of ['depth', 'ground', 'foreground', 'islands', 'effects', 'cloud']) {
+      for (const type of ['depth', 'ground', 'groundAlt', 'foreground', 'islands', 'effects', 'cloud']) {
         const key = `${oldest}/${type}`, texture = textures.get(key);
         if (texture) { const at = uploads.indexOf(texture); if (at >= 0) uploads.splice(at, 1); texture.dispose(); textures.delete(key); }
         status.delete(key);
       }
     }
     const types = FIVE_LAYER_SCENES[definition.id] ? ['depth', 'ground', 'islands', 'effects', 'cloud'] : ['depth', 'ground', 'foreground'];
+    if(FIVE_LAYER_SCENES[definition.id]?.urls.groundAlt)types.splice(2,0,'groundAlt');
     record.promise = Promise.all(types.map(type => new Promise(resolve => {
     const key = `${id}/${type}`;
     status.set(key, 'loading');

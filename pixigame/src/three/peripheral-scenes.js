@@ -1,4 +1,5 @@
 import {ADVANCED_CHAPTERS} from '../advanced-chapters.js';
+import {mapSceneLayout} from './map-scene-polish.js';
 import {chapterMapRepresentativeStage} from '../replica/chapter-map-reuse.js';
 // Original generated terrain. APK artwork remains design evidence under doc.
 const base = import.meta.env?.BASE_URL || '/';
@@ -108,20 +109,22 @@ const SOURCE_CLOUD_SCENES = new Set(['ruins', 'volcano', 'space']);
 // All 60 campaign chapters use balanced art; named original scenes remain available.
 export const FIRST_STAGE_SCENE = Object.freeze({
   ...PERIPHERAL_SCENES[0], id: 'coast-balanced',
-  artUrl: `${base}art/project-coast-balanced-v1/middle-coast.png`,
+  artUrl: `${base}art/project-coast-polished-v2/shore-a.png`,
   depthUrl: `${base}art/project-coast-balanced-v1/far-water-soft.png`,
 });
 const FIRST_STAGE_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.freeze({
   ...layer, id: `coast-balanced-${layer.role}`, sceneId: FIRST_STAGE_SCENE.id,
   // A four-strip composition keeps island layouts stable through UV wrap.
-  ...(layer.motionGroup==='terrain'?{cycleTiles:4}:{}),
+  ...(layer.motionGroup==='terrain'?{cycleTiles:layer.role==='foreground'?2:4}:{}),
   ...(layer.role==='midground'?{layout:'coast-islands'}:{}),
+  ...(layer.role==='cloud'?{cycleTiles:8}:{}),
   // Authored transparent shoreline uses the existing RGBA shader path.
-  ...(layer.role === 'foreground' ? { kind: 2, fullAlpha: true } : {}),
+  ...(layer.role === 'foreground' ? { kind: 2, fullAlpha: true, shoreVariants:true } : {}),
 })));
 const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
   [FIRST_STAGE_SCENE.id, Object.freeze({ layers: FIRST_STAGE_LAYERS, urls: Object.freeze({
-    ...COAST_EXTRA_URLS, islands: `${base}art/project-chapters-balanced-v1/coast/midground.png`,
+    ...COAST_EXTRA_URLS, islands: `${base}art/project-coast-polished-v2/island-landmarks.png`,
+    groundAlt: `${base}art/project-coast-polished-v2/shore-b.png`,
     cloud: `${base}art/project-coast-balanced-v1/near-clouds.png`,
   }) })],
   ['coast', Object.freeze({ layers: COAST_LAYERS, urls: COAST_EXTRA_URLS })],
@@ -189,6 +192,10 @@ export const FIVE_LAYER_SCENES = Object.freeze({
       layers: Object.freeze(ORIGINAL_FIVE_LAYER_SCENES[theme].layers.map(layer => Object.freeze({
         ...layer, id: `${scene.id}-${layer.role}`, sceneId: scene.id,
         ...(layer.role === 'foreground' ? { kind: 2, fullAlpha: true } : {}),
+        ...(layer.motionGroup==='terrain'&&mapSceneLayout(theme).bridgeCadence?{cycleTiles:4}:{}),
+        ...(layer.role==='cloud'?{cycleTiles:8}:{}),
+        ...(layer.role==='midground'&&mapSceneLayout(theme).bridgeCadence?{bridgeCadence:mapSceneLayout(theme).bridgeCadence}:{}),
+        ...(layer.role==='midground'&&mapSceneLayout(theme).detailScale<1?{width:layer.width*mapSceneLayout(theme).detailScale,edgeFade:true}:{}),
         // Pull bright asteroid faces behind the white aircraft silhouettes.
         ...(theme === 'space' && layer.role === 'midground' ? { tint: 0xc4cce0 } : {}),
       }))),

@@ -291,7 +291,14 @@ void main() {
 
 /** Matrices are mandatory to avoid accidentally using viewport pixels as source
  * local/world coordinates. Texture defaults are not silently invented. */
+type UniformUpload={uniform:CanvasUniform;matrix:boolean;size:number;method:string;premult:string};
+const NON_FINITE=(value:number)=>!Number.isFinite(value);
+const ZERO_PALETTE:[number,number,number,number]=[0,0,0,0];
+const WHITE_MODULATE:[number,number,number,number]=[1,1,1,1];
+const FULL_UV:[number,number,number,number]=[0,0,1,1];
 export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeline {
+  // The compiled layout is fixed; values and texture validation remain live.
+  private readonly uniformUploads:UniformUpload[];
   // WebGL copies matrix values synchronously. Phaser passes force=true for
   // matrix uniforms, so reusing these upload buffers cannot suppress updates.
   private readonly screenMatrix=new Float32Array(9);
@@ -299,6 +306,11 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
   private readonly modelMatrix=new Float32Array(16);
   constructor(game: Phaser.Game, readonly program: CompiledCanvasShader) {
     super({ game, vertShader: program.vertex, fragShader: program.fragment });
+    this.uniformUploads=program.uniforms.map(uniform=>{
+      const matrix=uniform.type.startsWith('mat'),dimension=matrix?Number(uniform.type.at(-1)):Number(/vec([234])$/.exec(uniform.type)?.[1]??1);
+      return {uniform,matrix,size:matrix?dimension*dimension:dimension,
+        method:matrix?`setMatrix${dimension}fv`:`set${dimension}${/^(?:int|bool|ivec|bvec)/.test(uniform.type)?'i':'f'}`,premult:`pgPremult_${uniform.name}`};
+    });
   }
   onBind(object?: Phaser.GameObjects.GameObject) {
     // PipelineManager.set(pipeline) is also a legal lifecycle bind without a
@@ -316,9 +328,9 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
     this.flush();
     this.set1f('uPgTime', data.time);
     this.set4f('uPgColor', ...data.color);
-    this.set4f('uPgProjectilePalette', ...(data.projectilePalette ?? [0,0,0,0]) as [number,number,number,number]);
-    this.set4f('uPgCanvasModulate', ...(data.canvasModulate || [1, 1, 1, 1]) as [number, number, number, number]);
-    this.set4f('uPgUvRect', ...(data.uvRect || [0, 0, 1, 1]) as [number, number, number, number]);
+    this.set4f('uPgProjectilePalette', ...(data.projectilePalette ?? ZERO_PALETTE) as [number,number,number,number]);
+    this.set4f('uPgCanvasModulate', ...(data.canvasModulate || WHITE_MODULATE) as [number, number, number, number]);
+    this.set4f('uPgUvRect', ...(data.uvRect || FULL_UV) as [number, number, number, number]);
     this.set2f('uPgTexturePixelSize', 1 / data.textureSize[0], 1 / data.textureSize[1]);
     this.screenMatrix.set(data.screenToLocal);this.localMatrix.set(data.localToScreen);this.modelMatrix.set(data.modelMatrix);
     this.setMatrix3fv('uPgScreenToLocal', false, this.screenMatrix);
@@ -327,7 +339,8 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
     this.set1f('pgPremult_TEXTURE', data.mainPremultiplied === false ? 0 : 1);
     this.set1f('uPgMainRepeat',data.mainRepeat?1:0);
     let unit = 1;
-    for (const uniform of this.program.uniforms) {
+    for (const upload of this.uniformUploads) {
+      const uniform=upload.uniform;
       if (uniform.type === 'sampler2D') {
         const binding = data.textures?.[uniform.name];
         if (!binding) throw new PathogenicShaderCoverageError(this.program.source.path, `missing texture ${uniform.name} (${uniform.hints || 'no default'})`);
@@ -335,22 +348,22 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
         if (unit >= this.renderer.maxTextures) fail('texture unit capacity exceeded');
         this.bindTexture(binding.texture, unit);
         this.set1i(uniform.name, unit++);
-        this.set1f(`pgPremult_${uniform.name}`, binding.premultiplied ? 1 : 0);
+        this.set1f(upload.premult, binding.premultiplied ? 1 : 0);
         continue;
       }
       const value = data.uniforms?.[uniform.name] ?? uniform.defaultValue;
       if (value === undefined) fail(`missing uniform ${uniform.name}`);
-      const values = Array.isArray(value) ? value : [Number(value)];
-      if (values.some(v => !Number.isFinite(v))) fail(`non-finite uniform ${uniform.name}`);
-      const integer = /^(?:int|bool|ivec|bvec)/.test(uniform.type);
-      if (uniform.type.startsWith('mat')) {
-        const n = Number(uniform.type.at(-1));
-        if (values.length !== n * n) fail(`wrong matrix size ${uniform.name}`);
-        (this as any)[`setMatrix${n}fv`](uniform.name, false, values);
-      } else {
-        const dimension = /vec([234])$/.exec(uniform.type);
-        if (values.length !== (dimension ? Number(dimension[1]) : 1)) fail(`wrong uniform vector size ${uniform.name}`);
-        (this as any)[`set${values.length}${integer ? 'i' : 'f'}`](uniform.name, ...values);
+      if(Array.isArray(value)){
+        if(value.some(NON_FINITE))fail(`non-finite uniform ${uniform.name}`);
+        if(value.length!==upload.size)fail(upload.matrix?`wrong matrix size ${uniform.name}`:`wrong uniform vector size ${uniform.name}`);
+        if(upload.matrix)(this as any)[upload.method](uniform.name,false,value);
+        else (this as any)[upload.method](uniform.name,...value);
+      }else{
+        const scalar=Number(value);
+        if(!Number.isFinite(scalar))fail(`non-finite uniform ${uniform.name}`);
+        if(upload.matrix)fail(`wrong matrix size ${uniform.name}`);
+        if(upload.size!==1)fail(`wrong uniform vector size ${uniform.name}`);
+        (this as any)[upload.method](uniform.name,scalar);
       }
     }
   }
