@@ -1,124 +1,105 @@
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { loadFighterPackages, instantiateFighterPackage } from '../three/aircraft/fighter-packages.js';
-import { hangarPose, HANGAR_VISUAL_TIMEOUT_MS } from './sortie-hangar-motion.js';
-import { hangarPivot } from './sortie-hangar-pivot.js';
-import { createAircraftStyle } from '../three/aircraft/aircraft-style.js';
-import { AIRCRAFT_RENDER_STYLE, createAircraftLighting } from '../three/aircraft/aircraft-lighting.js';
+import {loadFighterPackages} from '../three/aircraft/fighter-packages.js';
+import {AIRCRAFT_RENDER_STYLE} from '../three/aircraft/aircraft-lighting.js';
+import {HANGAR_RISE_SECONDS,HANGAR_VISUAL_TIMEOUT_MS} from './sortie-hangar-motion.js';
+import {createSortieHangarScene} from './sortie-hangar-scene.js';
+import {createHangarLift} from './sortie-hangar-lift.js';
 
-// Follow the existing aircraft on its elevator inside the illustrated shaft.
-// No procedural hangar geometry or graphic radar is used here.
-export function createSortieHangar(host, aircraftId, {onPhase=()=>{}}={}) {
-  let renderer, asset, environment, observer, scene, camera, mount, normalized, aircraftStyle;
-  let undersideOffset=0;
+export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   const elevator=host.parentElement.querySelector('.sortie-hangar__elevator');
+  const lift=createHangarLift(host,elevator),reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   host.dataset.aircraftId=aircraftId;
-  let disposed=false, paused=false, finished=false, frame=0, elapsed=0, last=0;
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
-  let resolveReady;
-  const ready=new Promise(resolve=>{resolveReady=resolve;});
+  let renderer,model,worker,canvas,frame=0,epoch=0,elapsed=0,paused=false,disposed=false,finished=false,started=false,mainStarted=false;
+  let resolveReady;const ready=new Promise(resolve=>{resolveReady=resolve;});
   const settle=()=>{if(finished)return;finished=true;clearTimeout(deadline);resolveReady();};
-  const deadline=window.setTimeout(()=>{if(!asset)host.dataset.phase='fallback';settle();},HANGAR_VISUAL_TIMEOUT_MS);
-  const pose=()=>{
-    if(!mount)return;
-    const state=hangarPose(elapsed,reduced.matches);
-    mount.position.set(state.x,state.y,state.z);mount.rotation.y=state.yaw;
-    host.parentElement.style.setProperty('--elevator-lift',String(state.lift));
-    if(host.dataset.phase!==state.phase){host.dataset.phase=state.phase;onPhase(state.phase);}
-    if(state.complete)settle();
-  };
-  function draw() {
-    if(disposed||!renderer||!asset)return;
-    pose();
-    if(!document.hidden)renderer.render(scene,camera);
-  }
-  function tick(now) {
-    frame=0;
-    if(disposed||paused||document.hidden||!asset)return;
-    elapsed+=last?Math.min(.08,(now-last)/1000):0;last=now;
-    draw();
-    if(!reduced.matches)frame=requestAnimationFrame(tick);
-  }
-  const visibility=()=>{
-    cancelAnimationFrame(frame);frame=0;last=0;
-    if(!document.hidden&&!disposed&&!paused&&asset){draw();if(!reduced.matches)frame=requestAnimationFrame(tick);}
-  };
-  const reduceChanged=()=>{if(reduced.matches){draw();settle();cancelAnimationFrame(frame);frame=0;}else visibility();};
-  document.addEventListener('visibilitychange',visibility);
-  reduced.addEventListener('change',reduceChanged);
-  const releaseGpu=()=>{
-    cancelAnimationFrame(frame);frame=0;observer?.disconnect();
-    aircraftStyle?.dispose();aircraftStyle=null;
-    asset?.dispose();asset=null;environment?.dispose();environment=null;
-    if(renderer){renderer.domElement.remove();renderer.dispose();renderer.forceContextLoss();renderer=null;}
-    scene?.clear();
-  };
-  const fallback=()=>{
-    host.classList.remove('has-model');host.dataset.phase='fallback';
-    releaseGpu();settle();
-  };
-  const resize=()=>{
-    if(disposed||!renderer)return;
-    const {width,height}=host.getBoundingClientRect();
-    if(width<=0||height<=0)return;
-    renderer.setSize(Math.round(width),Math.round(height),false);
-    const halfHeight=8,halfWidth=halfHeight*width/height;
-    Object.assign(camera,{left:-halfWidth,right:halfWidth,top:halfHeight,bottom:-halfHeight});
-    if(normalized){
-      // The deck is 44.5% down the raster, including its transparent padding.
-      // Anchor each aircraft's lowest point to that surface at every aspect ratio.
-      const deckWidth=elevator.getBoundingClientRect().width;
-      const deckHeight=deckWidth*(elevator.naturalHeight/elevator.naturalWidth||1/3);
-      const gap=Math.max(2,Math.min(5,width*.009));
-      normalized.position.y=undersideOffset+camera.position.y-halfHeight
-        +(deckHeight*(1-.445)+gap)*2*halfHeight/height;
+  const deadline=setTimeout(()=>{if(!started)fallback();else settle();},HANGAR_VISUAL_TIMEOUT_MS);
+  const phase=value=>{if(host.dataset.phase!==value){host.dataset.phase=value;onPhase(value);}};
+  function stop(){if(frame)cancelAnimationFrame(frame);frame=0;}
+  function release(){
+    stop();
+    if(worker){
+      const retiring=worker;worker=null;retiring.onmessage=null;retiring.onerror=null;
+      retiring.postMessage({type:'dispose'});setTimeout(()=>retiring.terminate(),250);
     }
-    camera.updateProjectionMatrix();draw();
-  };
-  elevator.addEventListener('load',resize);
-  void (async()=>{
-    try {
-      await loadFighterPackages({pilotIds:[aircraftId]});
-      if(disposed||finished)return;
-      renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'low-power'});
-      renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
-      renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
+    model?.dispose();model=null;
+    renderer?.dispose();renderer?.forceContextLoss();renderer=null;canvas?.remove();canvas=null;
+  }
+  function fallback(){release();lift.dispose();host.classList.remove('has-model');phase('fallback');settle();}
+  function dimensions(){
+    const {width,height}=host.getBoundingClientRect();
+    const deckWidth=elevator.getBoundingClientRect().width;
+    return{width,height,deckHeight:deckWidth*(elevator.naturalHeight/elevator.naturalWidth||1/3)};
+  }
+  function draw(){
+    if(disposed||!model)return;
+    model.draw(elapsed,reduced.matches);lift.update(elapsed);
+    if(elapsed>=HANGAR_RISE_SECONDS||reduced.matches){phase('ready');settle();}
+  }
+  function tick(time){
+    frame=0;if(disposed||paused||document.hidden||!model)return;
+    elapsed=(time-epoch)/1000;draw();if(!reduced.matches)frame=requestAnimationFrame(tick);
+  }
+  function begin(){
+    if(disposed||finished)return;
+    started=true;host.classList.add('has-model');host.dataset.aircraftStyle='equipment';phase(reduced.matches?'ready':'elevator');
+    resize();lift.start(reduced.matches);epoch=performance.now();elapsed=0;
+    if(worker)worker.postMessage({type:'start',epoch:performance.timeOrigin+epoch});
+    else{draw();if(!reduced.matches)frame=requestAnimationFrame(tick);}
+    if(paused||document.hidden)visibility();
+    if(reduced.matches)settle();
+  }
+  function resize(){
+    if(disposed)return;const size=dimensions();if(size.width<=0||size.height<=0)return;
+    lift.resize(size.height);
+    if(worker)worker.postMessage({type:'resize',...size});
+    else if(model){model.resize(size.width,size.height,size.deckHeight);if(started)draw();}
+  }
+  function visibility(){
+    if(disposed||!started)return;
+    if(document.hidden||paused){
+      if(!worker&&frame)elapsed=(performance.now()-epoch)/1000;
+      stop();lift.pause();worker?.postMessage({type:'pause'});
+    }else{
+      lift.resume();
+      if(worker)worker.postMessage({type:'resume'});
+      else{epoch=performance.now()-elapsed*1000;stop();draw();if(!reduced.matches)frame=requestAnimationFrame(tick);}
+    }
+  }
+  function reduceChanged(){lift.reduce(reduced.matches);worker?.postMessage({type:'reduce',value:reduced.matches});if(reduced.matches){stop();draw();phase('ready');settle();}else visibility();}
+  function newCanvas(){const element=document.createElement('canvas');element.className='sortie-hangar__canvas';element.setAttribute('aria-hidden','true');host.append(element);return element;}
+  async function mainThread(){
+    if(disposed||finished||mainStarted)return;mainStarted=true;release();host.dataset.renderer='main';
+    try{
+      await loadFighterPackages({pilotIds:[aircraftId]});if(disposed||finished)return;
+      canvas=newCanvas();renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
+      renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
       renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=AIRCRAFT_RENDER_STYLE.exposure;
-      scene=new THREE.Scene();mount=new THREE.Group();scene.add(mount);
-      camera=new THREE.OrthographicCamera(-8,8,8,-8,.1,100);
-      // Straight-on orthographic section: no lateral bearing or camera pitch.
-      camera.position.set(0,4.7,-24);camera.up.set(0,1,0);camera.lookAt(0,4.7,0);
-      createAircraftLighting(scene);
-      const room=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);
-      try{environment=pmrem.fromScene(room,.04);}finally{room.dispose();pmrem.dispose();}
-      scene.environment=environment.texture;
-      asset=instantiateFighterPackage(aircraftId);
-      const bounds=new THREE.Box3().setFromObject(asset.solid,true),size=bounds.getSize(new THREE.Vector3()),center=hangarPivot(asset.solid,bounds);
-      normalized=new THREE.Group();normalized.scale.setScalar(10/Math.max(size.x,size.z,1));
-      undersideOffset=(center.y-bounds.min.y)*normalized.scale.y;
-      asset.solid.position.sub(center);normalized.add(asset.solid);mount.add(normalized);
-      asset.solid.traverse(node=>{
-        if(node.isLight)node.visible=false;
-        for(const material of [].concat(node.material||[])){
-          if(material.isMeshPhysicalMaterial)material.transmission=0;
-          material.needsUpdate=true;
-        }
-      });
-      // This elevator owns a separate renderer and raw package instance. Apply
-      // the same finish as the equipment page after computing its deck pivot.
-      aircraftStyle=createAircraftStyle(normalized,{outlineScale:10/15.75509262084961});
-      aircraftStyle.setEnabled(true);host.dataset.aircraftStyle='equipment';
-      const canvas=renderer.domElement;canvas.className='sortie-hangar__canvas';canvas.setAttribute('aria-hidden','true');
       canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(!disposed)fallback();},{once:true});
-      host.append(canvas);host.classList.add('has-model');
-      observer=new ResizeObserver(resize);observer.observe(host);resize();
-      if(reduced.matches){elapsed=99;draw();settle();}else visibility();
+      model=createSortieHangarScene(renderer,aircraftId);resize();await model.warmup();if(!disposed&&!finished)begin();
     }catch(error){if(!disposed){console.warn('[sortie presentation] using aircraft image',error);fallback();}}
-  })();
-  if(reduced.matches){host.dataset.phase='fallback';settle();}
+  }
+  const observer=new ResizeObserver(resize);observer.observe(host);
+  elevator.addEventListener('load',resize);document.addEventListener('visibilitychange',visibility);reduced.addEventListener('change',reduceChanged);
+  resize();
+  if(reduced.matches){phase('fallback');settle();}
+  else if(typeof Worker!=='undefined'&&HTMLCanvasElement.prototype.transferControlToOffscreen){
+    try{
+      canvas=newCanvas();const offscreen=canvas.transferControlToOffscreen();
+      worker=new Worker(new URL('./sortie-hangar.worker.js',import.meta.url),{type:'module'});host.dataset.renderer='worker';
+      worker.onmessage=({data})=>{
+        if(disposed)return;
+        if(data.type==='ready')begin();
+        else if(data.type==='complete'){phase('ready');settle();}
+        else if(data.type==='error'){console.warn('[sortie worker]',data.message);if(started)fallback();else void mainThread();}
+      };
+      worker.onerror=()=>{if(disposed)return;if(started)fallback();else void mainThread();};
+      worker.postMessage({type:'init',canvas:offscreen,aircraftId,assetBase:new URL(import.meta.env?.BASE_URL||'/',document.baseURI).href,
+        ...dimensions(),pixelRatio:Math.min(2,window.devicePixelRatio||1),reduced:reduced.matches},[offscreen]);
+    }catch{void mainThread();}
+  }else void mainThread();
   return {
     ready,
-    freeze(){paused=true;cancelAnimationFrame(frame);frame=0;draw();settle();},
-    dispose(){if(disposed)return;disposed=true;clearTimeout(deadline);settle();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',reduceChanged);elevator.removeEventListener('load',resize);releaseGpu();},
+    freeze(){paused=true;visibility();settle();},
+    dispose(){if(disposed)return;disposed=true;settle();observer.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',reduceChanged);elevator.removeEventListener('load',resize);release();lift.dispose();},
   };
 }

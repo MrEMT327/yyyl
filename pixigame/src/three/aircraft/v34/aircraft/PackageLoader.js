@@ -24,7 +24,7 @@ export function applyMaterialPatches(patches,materials){
   mat.customProgramCacheKey=()=>patch.cacheKey+':'+JSON.stringify(patch.replacements);mat.needsUpdate=true;
  }
 }
-export async function loadPackage(entry,{signal,read=null,skipTextures=false}={}){
+export async function loadPackage(entry,{signal,read=null,skipTextures=false,objectLoader=null}={}){
  const base=read?null:new URL(`../../public/fighters/${entry.slug}/`,import.meta.url),urls=[];let solid=null,fx=null;
  const nativeAssets=globalThis.__THUNDER_RUNTIME_GLOBALS__;
  const revoke=url=>nativeAssets?.revokeAssetBytesUrl?nativeAssets.revokeAssetBytesUrl(url):URL.revokeObjectURL(url);
@@ -54,7 +54,7 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false}={}
     const url=nativeAssets?.createAssetBytesUrl?nativeAssets.createAssetBytesUrl(bytes,'image/png'):URL.createObjectURL(new Blob([bytes],{type:'image/png'}));urls.push(url);image.url=url;
    }
   }
-  const loader=new T.ObjectLoader();solid=await loader.parseAsync(structure.scene);fx=await loader.parseAsync(effects.graph);
+  const loader=objectLoader||new T.ObjectLoader();solid=await loader.parseAsync(structure.scene);fx=await loader.parseAsync(effects.graph);
   if(signal?.aborted)throw new DOMException('已切换到其他 Tab','AbortError');
   const combo=new T.Group();combo.add(solid,fx);const {nodes,materials}=indexObjects(combo);applyMaterialPatches(effects.materialPatches,materials);
   for(const node of nodes.values()){node.updateMatrix();if(!node.matrix.elements.every(Number.isFinite))throw new Error('资源变换包含非有限数：'+node.name);}

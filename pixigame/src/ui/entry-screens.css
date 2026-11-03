@@ -151,8 +151,8 @@
 .sortie-loading__backdrop { opacity:.8;object-position:52% center; }
 .sortie-loading__shade { background:linear-gradient(#071520aa 0%,#07152000 28%,#07152000 72%,#071520b3 100%); }
 .sortie-hangar { position:absolute;left:0;top:20%;width:100%;height:54%;isolation:isolate;pointer-events:none; }
-.sortie-hangar__elevator { position:absolute;left:7%;bottom:calc(var(--elevator-lift,0) * 32.5%);width:86%;height:auto;z-index:1; }
-.sortie-hangar__model { position:absolute;inset:0;z-index:1; }
+.sortie-hangar__elevator { position:absolute;left:7%;bottom:0;width:86%;height:auto;z-index:1;will-change:transform; }
+.sortie-hangar__model { position:absolute;inset:0;z-index:1;will-change:transform; }
 .sortie-hangar__canvas { display:block;width:100%;height:100%; }
 .sortie-hangar__fallback { position:absolute;left:0;top:0;width:100%;height:70%;object-fit:contain;opacity:0; }
 .sortie-hangar__model[data-phase='fallback'] .sortie-hangar__fallback { opacity:1; }

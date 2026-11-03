@@ -28,13 +28,13 @@ export function isFighterPackageReady(pilotId) {
 }
 // Old galleries can still request the complete catalog. The game requests only
 // the aircraft it is about to display; concurrent requests share one load.
-export function loadFighterPackages({ read, skipTextures = false, pilotIds } = {}) {
+export function loadFighterPackages({ read, skipTextures = false, pilotIds, objectLoader } = {}) {
   const entries = pilotIds ? [...new Set(pilotIds.map(id => fighterForPilot(id)))] : catalog;
   return Promise.all(entries.map(entry => {
     if (templates.has(entry.slug)) return templates.get(entry.slug);
     if (pending.has(entry.slug)) return pending.get(entry.slug);
     const request = loadPackage(entry, {
-      skipTextures,
+      skipTextures, objectLoader,
       read: async (name, _url, signal) => {
         if (read) return read(entry.slug, name);
         const base = import.meta.env.BASE_URL;
