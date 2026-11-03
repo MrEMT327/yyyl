@@ -116,16 +116,16 @@
 #gui-casual-lobby .ag-equipment-skills{background:#d4e0e9;border:1px solid #8da5b7;min-height:49cqw}
 #gui-casual-lobby .ag-equipment-skills h3{margin:0;padding:6px 10px;background:#a8bdce;border-bottom:1px solid #8da5b7;font-size:15px}
 #gui-casual-lobby .ag-equipment-skills ul{list-style:none;padding:3px 0 10px;margin:0}
-#gui-casual-lobby .ag-equipment-skills li{--skill-color:#26766b;display:flex;gap:9px;align-items:flex-start;padding:7px 10px;font-size:clamp(12px,3.55cqw,16px);font-weight:700;line-height:1.4;color:#2a475d;overflow-wrap:anywhere}
-#gui-casual-lobby .ag-equipment-skills li[data-quality='30']{--skill-color:#2872a6}
-#gui-casual-lobby .ag-equipment-skills li[data-quality='40']{--skill-color:#8550af}
-#gui-casual-lobby .ag-equipment-skills li[data-quality='50']{--skill-color:#a66e1c}
-#gui-casual-lobby .ag-equipment-skills li[data-quality='60']{--skill-color:#b74750}
+#gui-casual-lobby .ag-equipment-skills li{--skill-color:#26766b;--skill-lock-art:url('/art/equipment-skill-lock-v1/20.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/20.webp');display:flex;gap:9px;align-items:flex-start;padding:7px 10px;font-size:clamp(12px,3.55cqw,16px);font-weight:700;line-height:1.4;color:#2a475d;overflow-wrap:anywhere}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='30']{--skill-color:#2872a6;--skill-lock-art:url('/art/equipment-skill-lock-v1/30.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/30.webp')}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='40']{--skill-color:#8550af;--skill-lock-art:url('/art/equipment-skill-lock-v1/40.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/40.webp')}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='50']{--skill-color:#a66e1c;--skill-lock-art:url('/art/equipment-skill-lock-v1/50.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/50.webp')}
+#gui-casual-lobby .ag-equipment-skills li[data-quality='60']{--skill-color:#b74750;--skill-lock-art:url('/art/equipment-skill-lock-v1/60.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/60.webp')}
 #gui-casual-lobby .ag-equipment-skills .is-unlocked{color:var(--skill-color);background:#e7eff4a8}
 #gui-casual-lobby .ag-equipment-skills .is-locked{color:#637181}
-#gui-casual-lobby .ag-skill-mark{position:relative;flex:none;box-sizing:border-box;width:13px;height:13px;background:var(--skill-color);border:2px solid #30485c;transform:rotate(45deg);margin:4px 2px 0}
-#gui-casual-lobby .ag-skill-mark.is-lock{transform:none;margin-top:7px;height:11px;border-radius:2px}
-#gui-casual-lobby .ag-skill-mark.is-lock::before{content:'';position:absolute;left:1px;bottom:7px;width:7px;height:7px;box-sizing:border-box;border:2px solid #30485c;border-bottom:0;border-radius:5px 5px 0 0}
+/* Both states share the same metal bevels, quality colors and icon column. */
+#gui-casual-lobby .ag-skill-mark{position:relative;flex:none;box-sizing:border-box;width:18px;height:18px;margin:0;border:0;border-radius:0;background:var(--skill-unlocked-art) center/contain no-repeat}
+#gui-casual-lobby .ag-skill-mark.is-lock{background-image:var(--skill-lock-art)}
 #gui-casual-lobby .ag-equipment-detail .ag-modal-footer{border-top:0;padding:8px 0 2px}
 #gui-casual-lobby .ag-equipment-detail .ag-equipment-primary{display:flex;justify-content:center;margin:0}
 #gui-casual-lobby .ag-equipment-primary .ag-button{width:58%;min-height:48px;--psd-button-corner:10px;font-size:20px}

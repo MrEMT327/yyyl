@@ -33,7 +33,10 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     const family=Object.values(sim.content.combat.families).find(f=>f.entityId===weapon.entityId);
     const state=weapon.entityId===sim.content.chapter.player.weaponEntityId?sim.cannon:sim.secondary.get(weapon.entityId);
     const card={id:state?.stageId,star:weapon.star,group:family?.id,icon:weapon.icon};
-    return {id:String(weapon.entityId),itemId:keyFor(card),name:weapon.name,level:weapon.star,slots:[]};
+    const stage=family?.stages.find(row=>row.skillId===state?.stageId);
+    return {id:String(weapon.entityId),itemId:keyFor(card),name:weapon.name,level:weapon.star,
+      quality:stage?.raw?.Quality??stage?.quality,
+      description:description(stage||{})||family?.description||'',slots:[]};
   });
   const currentPassives=()=>{
     // learned is history; one slot per passive family, showing its current tier.

@@ -11,7 +11,7 @@ import './airframe-equipment-page.css';
 const base=import.meta.env?.BASE_URL??'/';
 // Configuration changes invalidate native combat details until recalculation finishes.
 const combatStat=(value,format)=>Number.isFinite(value)?format(value):'—';
-const combatStatIcon=(kind,label)=>`<img class="ag-stat-icon" src="${base}art/combat-stat-icons-v2/${kind}.png" alt="${label}" title="${label}" draggable="false">`;
+const combatStatIcon=(kind,label)=>`<img class="ag-stat-icon" src="${base}art/combat-stat-icons-v3/${kind}.svg" alt="${label}" title="${label}" draggable="false">`;
 export const gearArt=id=>base+equipmentArtPath(id);
 const entryIcon=kind=>`<span class="ag-entry-icon ag-entry-${kind}" aria-hidden="true"></span>`;
 const btn=(action,label,data='',disabled=false)=>`<button type="button" class="wc-button ag-button" data-action="${action}" ${data} ${disabled?'disabled':''}>${label}</button>`;

@@ -1,5 +1,6 @@
 import {createOrangeSurfaceConstraints} from './orange-surface-constraints.js';
 import {createOrangeMaterialRetarget} from './orange-material-retarget.js';
+import {orangeTargetLayerOrder} from './orange-jetboard-layering.js';
 import {createOrangeElbowJoin} from './orange-elbow-join.js';
 import {evaluateOrangeHeldCard,evaluateOrangeHandTurn,turnOrangeHandPoint} from './orange-held-card.js';
 import {createCubismPortraitPlayer} from './cubism-portrait-player.js';
@@ -123,7 +124,7 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
    if(layer.handPose!==undefined)opacity=activeHand===layer.handPose?1:0;
    if(layer.handPoseFallback&&[19,114,126].includes(activeHand))opacity=0;
    if(layer.nativeOpacityIndex!==undefined)opacity*=Math.max(0,Math.min(1,model.getDrawableOpacity(layer.nativeOpacityIndex)));
-   opacities[j]=opacity;orders[j]=layer.order;visibility[j]=!debugLayers||debugLayers.has(layer.id)?1:0;
+   opacities[j]=opacity;orders[j]=orangeTargetLayerOrder(layer,manifest.materialRevision);visibility[j]=!debugLayers||debugLayers.has(layer.id)?1:0;
    // The sleeve owns the elbow cuff. Its overlap must cover the duplicate
    // cuff painted at the far end of the forearm during a bent-arm pose.
    if(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='front-forearm')orders[j]=419.5;
@@ -179,7 +180,6 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');Object.assign(canvas.style,{position:'absolute',inset:'0',width:'100%',height:'100%'});
   const shorts=layers.find(layer=>layer.id==='shorts-underlap'),backHair=layers.find(layer=>layer.id==='hair-back-right');
   const meshManifest={width:manifest.view?.width||manifest.width,height:manifest.view?.height||manifest.height,camera:{scale:1,offset:manifest.view?.offset||[0,0]},meshes:layers.map((layer,i)=>({id:layer.id,texture:layer.texture,vertices:layer.vertices,uvs:layer.uvs,indices:layer.indices,stateOffset:offsets[i],masks:layer.masks||[],blend:layer.blend||'normal',invertedMask:Boolean(layer.invertedMask),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='body'&&shorts?{seamUnderlay:{texture:shorts.texture,bodyCrop:layer.crop,underlayCrop:shorts.crop,fadeY:[638,645]},...(backHair?{fixedHairPatch:{texture:backHair.texture,crop:backHair.crop}}:{})}:{}),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='rear-leg'?{fixedSkinPatch:{size:[325,771],rect:[258,113,311,142],sample:[265,100]}}:{})}))};
-  if(manifest.materialRevision==='jetboard-v5-clean-r5'&&shorts){const leg=meshManifest.meshes.find(mesh=>mesh.id==='front-leg');if(leg)leg.frontHemOverlay={source:shorts.id,crop:shorts.crop};}
   renderer=createGoldenMeshRenderer(canvas,meshManifest,textures);images.clear();
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();fail(Error('角色画布连接已中断'));},{signal:controller.signal});
   host?.appendChild(canvas);state='ready';fit();sync();return true;

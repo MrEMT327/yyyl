@@ -52,7 +52,9 @@ export function createUiMotion(root) {
   function clear(){epoch++;press?.animation?.cancel();press=null;for(const id of frames)view.cancelAnimationFrame(id);frames.clear();for(const a of motions)a.cancel();motions.clear();for(const n of [...effects])discard(n);}
   const control=e=>e.target.closest?.('button,[role="tab"],[role="menuitemradio"]');
   const stopControlFeedback=node=>node.getAnimations?.().filter(a=>['ui-press','ui-release','ui-keyboard'].includes(a.id)).forEach(a=>a.cancel());
-  function down(e){const node=control(e);if(e.button!==0||!node||node.disabled||quiet()||root.getAttribute('aria-busy')==='true')return;
+  // Patrol owns its contour feedback; filtering its transparent hotspot would
+  // isolate the locked-state backdrop filter from the underlying PSD artwork.
+  function down(e){const node=control(e);if(e.button!==0||!node||node.disabled||node.classList.contains('psd-hit-patrol')||quiet()||root.getAttribute('aria-busy')==='true')return;
     press?.animation?.cancel();stopControlFeedback(node);press={node,id:e.pointerId,x:e.clientX,y:e.clientY};
     press.animation=animate(node,[{filter:'brightness(1)'},{filter:'brightness(.84)'}],{duration:T.press,fill:'forwards',easing:'ease-out'},'press');
   }
@@ -62,7 +64,7 @@ export function createUiMotion(root) {
   const move=e=>{if(press&&Math.hypot(e.clientX-press.x,e.clientY-press.y)>8)release(e,true);};
   const up=e=>release(e),cancel=e=>release(e,true);
   function clicked(e){const node=control(e);if(!node||node.disabled||quiet())return;
-    if(e.detail===0){stopControlFeedback(node);animate(node,[{filter:'brightness(.84)'},{filter:'brightness(1)'}],{duration:T.release},'keyboard');}
+    if(e.detail===0&&!node.classList.contains('psd-hit-patrol')){stopControlFeedback(node);animate(node,[{filter:'brightness(.84)'},{filter:'brightness(1)'}],{duration:T.release},'keyboard');}
     const data={...node.dataset},action=data.action;
     if(!['gearMaterial','pickSlot','catalogSelect','workshopSelect','fleetSkillSlot','recruitPreview','workshopFilterSet'].includes(action))return;
     later(()=>{const target=[...root.querySelectorAll(`[data-action="${action}"]`)].find(n=>['id','slot','kind'].every(k=>!data[k]||n.dataset[k]===data[k]));if(target)flash(target);});

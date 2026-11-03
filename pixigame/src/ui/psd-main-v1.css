@@ -53,12 +53,26 @@
 .battle-psd-main .psd-main-hotspot>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .battle-psd-main .psd-main-hotspot:focus-visible{opacity:1;outline:2px solid #fff;outline-offset:-3px;border-radius:5px}
 .battle-psd-main .psd-main-hotspot:active{opacity:.08;background:#fff}
-.battle-psd-main .psd-hit-patrol[data-chapter-locked]{opacity:1}
+/* Patrol's face is baked into the PSD. A white hotspot background obscures it
+   when the locked-state grayscale layer keeps the hotspot fully opaque. */
+#gui-casual-lobby.battle-psd-main .psd-hit-patrol{
+  --patrol-button-shape:polygon(8.2% 17%,95.6% 17%,95.6% 74%,86.8% 89.2%,.5% 89.2%,.5% 32.4%);
+  opacity:1;background:transparent;filter:none;
+}
+#gui-casual-lobby.battle-psd-main .psd-hit-patrol:active{opacity:1;background:transparent;filter:none;transform:none}
+#gui-casual-lobby.battle-psd-main .psd-hit-patrol::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  clip-path:var(--patrol-button-shape);background:linear-gradient(#071c2d18,#071c2d38);
+  opacity:0;transition:opacity 90ms ease-out;
+}
+#gui-casual-lobby.battle-psd-main .psd-hit-patrol:active::after{opacity:1}
+#gui-casual-lobby.battle-psd-main .psd-hit-patrol[aria-disabled='true']:active::after{opacity:.45}
 .battle-psd-main .psd-hit-patrol[data-chapter-locked]::before{
   content:"";position:absolute;inset:0;pointer-events:none;
   -webkit-backdrop-filter:grayscale(1) brightness(.65);backdrop-filter:grayscale(1) brightness(.65);
-  clip-path:polygon(8.2% 17%,95.6% 17%,95.6% 74%,86.8% 89.2%,.5% 89.2%,.5% 32.4%);
+  clip-path:var(--patrol-button-shape);
 }
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby.battle-psd-main .psd-hit-patrol::after{transition:none}}
 .battle-psd-main .pl-modal-host{z-index:100}
 
 /* No retired hangar skin below the PSD artwork. */

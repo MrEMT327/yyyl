@@ -1,5 +1,11 @@
 const transform=(m,p)=>[m[0]*p[0]+m[1]*p[1]+m[2],m[3]*p[0]+m[4]*p[1]+m[5]];
 const vector=(m,p)=>[m[0]*p[0]+m[1]*p[1],m[3]*p[0]+m[4]*p[1]];
+const smooth=t=>t*t*(3-2*t);
+
+export function orangeRaisedThighTorsoWeight(x,y){
+ const a=Math.max(0,Math.min(1,(x-680)/100)),b=Math.max(0,Math.min(1,(820-y)/100));
+ return .8*smooth(a)*smooth(b);
+}
 
 // Reference geometry stays in its original coordinate system until this final
 // material-space pass. Each new painted island keeps its authored rest shape.
@@ -48,6 +54,16 @@ export function createOrangeMaterialRetarget(manifest){
     legs[id]={length,currentLength:Math.hypot(end[0]-start[0],end[1]-start[1]),sourceMappedRatio:Math.hypot(rawB[0]-rawA[0],rawB[1]-rawA[1])/length};
    }
    for(let v=0;v<l.skin.length;v++){let x=0,y=0;for(const [id,w]of l.skin[v]){const t=bones[id],dx=rest[v*2]-t.a[0],dy=rest[v*2+1]-t.a[1];x+=(t.p[0]+dx*t.c-dy*t.s)*w;y+=(t.p[1]+dx*t.s+dy*t.c)*w;}positions[o+v*2]=x;positions[o+v*2+1]=y;}
+  }
+  // The raised thigh reaches into the shorts, so its top edge must follow the
+  // torso there. Applying the thigh rotation all the way to the waist exposes
+  // the skin between the two garments during idle and body reactions.
+  if(torsoPoint&&manifest.materialRevision==='jetboard-v5-clean-r5'){
+   const j=byId.get('front-leg'),o=offsets[j],rest=restManifest.layers[j].vertices;
+   for(let v=0;v<rest.length;v+=2){
+    const x=rest[v],y=rest[v+1],w=orangeRaisedThighTorsoWeight(x,y),p=torsoPoint([x,y]);
+    positions[o+v]+=(p[0]-positions[o+v])*w;positions[o+v+1]+=(p[1]-positions[o+v+1])*w;
+   }
   }
   const join=manifest.materialWrist,socket=manifest.wristSockets?.[activeHand];let wrist=null;
   if(join&&socket){

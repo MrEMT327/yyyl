@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <filter id="outline" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="2.25" result="edge"/>
+      <feFlood flood-color="#123047" result="ink"/>
+      <feComposite in="ink" in2="edge" operator="in" result="border"/>
+      <feMerge><feMergeNode in="border"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#outline)">
+    <path d="M37 4 10 36h18l-6 24 32-38H36l7-18Z" fill="#f49b24"/>
+    <path d="M37 4 10 36h18l-6 24 15-29H24L43 4Z" fill="#ffcc55"/>
+  </g>
+</svg>

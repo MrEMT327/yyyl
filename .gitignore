@@ -44,6 +44,9 @@ test-results/
 /psd/
 /立绘new/
 /拆解/*.apk
+/拆解/
+/IceSwordSkyfall/
+/pixigame/design/
 
 # 本地浏览器自动化输出、测试证据和未接入的美术变体（保留在本地，不提交）
 .playwright-cli/

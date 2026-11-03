@@ -1,5 +1,6 @@
 import { Container, Rectangle } from '../three/display.js';
 import { combatPauseModel } from './combat-pause-model.js';
+import { combatWeaponDetail, combatDetailLines } from './combat-weapon-detail-model.js';
 import { paintCombatArt } from './combat-art.js';
 import { paintPsdPopup } from './psd-popup-art.js';
 import { drawUiSymbol } from './ui-symbols.js';
@@ -33,6 +34,33 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   const navigate=mode=>{game.pauseMode=mode;bridge.pixiCombatUi?.render();};
   const refresh=()=>bridge.pixiCombatUi?.render();
   const mode=game.pauseMode||'pause';
+  if(mode==='detail'&&game.pauseDetail?.kind==='weapons') {
+    const item=game.pauseDetail,detail=combatWeaponDetail(item);
+    const lines=combatDetailLines(detail.description),extra=Math.max(0,lines.length-1)*26;
+    const x=73,width=454,height=539+extra,y=(1300-height)/2;
+    surface(panel,s=>{
+      paintPsdPopup(s,'primary',x,y,width,height);
+      s.text('武器详情',x+37,y+41,{size:27,color:'#fff',weight:800});
+      s.quad(268,y+82,64,23,'#dce7ef');
+      s.text(detail.qualityName,300,y+94,{size:15,color:'#4a6175',align:'center'});
+      s.text(detail.name,300,y+134,{size:32,color:'#203b50',weight:800,align:'center',maxWidth:360});
+      s.text(detail.levelLabel,300,y+168,{size:22,color:'#29465c',weight:800,align:'center'});
+      weaponImage(s,art?.get(item.itemId),item.itemId,{x:192,y:y+199,width:216,height:171});
+      if(lines.length) {
+        s.quad(106,y+395,388,44+extra,'#d8e5ef');
+        s.quad(106,y+395,4,44+extra,'#527f9b');
+        lines.forEach((line,i)=>s.text(line,300,y+417+i*26,{size:20,color:'#203d52',align:'center',maxWidth:360}));
+      }
+    });
+    if(item.canFocus) {
+      control('focus',91,y+465+extra,190,51,item.selected?'已优先强化':'优先强化',()=>{
+        if(bridge.focusFixedWeapon?.(item.id)!==false){bridge.saveFixedGrowthCheckpoint?.();game.pauseDetail={...item,selected:true};}
+        refresh();
+      },true);
+      control('back',319,y+465+extra,190,51,'返回',()=>navigate('pause'));
+    } else control('back',201,y+465+extra,198,51,'返回',()=>navigate('pause'));
+    return;
+  }
   if(mode==='settings'||mode==='stats'||mode==='detail') {
     surface(panel,s=>paintPsdPopup(s,'primary',42,325,516,630));
     label(mode==='settings'?'设置':mode==='stats'?(Array.isArray(model.damage)?'伤害统计':'本局统计'):game.pauseDetail?.name||'强化详情',86,390,32,'#f5faff');
@@ -99,7 +127,7 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
     for(let i=0;i<5;i++) {
       const item=items[page*5+i],x=46+i*103,sy=y+72;
       const node=item?control(kind+'-'+item.id,x,sy,96,120,'',()=>{
-        game.pauseDetail={...item};navigate('detail');
+        game.pauseDetail={...item,kind};navigate('detail');
       },false,'pauseSlot'):new Container();
       if(!item){node.label='pause-'+kind+'-empty-'+i;node.position.set(x,sy);panel.addChild(node);}
       surface(node,s=>{
