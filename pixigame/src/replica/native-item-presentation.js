@@ -47,7 +47,7 @@ export function nativeItemPresentation(id) {
   const researchBlueprint=id>=801&&id<=811;
   const displayQuality=nativeItemDisplayQuality(id);
   const replacement=MATERIAL_REPLACEMENTS[id];
-  const description=id===3132505?'原包签到奖励，按原物品保存；芯片装备系统暂未接入。':replacement?`可在背包按1:1兑换为${nativeCollectionDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
+  const description=id===3132505?'旧签到遗留芯片，已停用并从库存清理。':replacement?`可在背包按1:1兑换为${nativeCollectionDisplayName(replacement)||catalog.itemNames[replacement]||items.get(replacement)?.note||'当前可用材料'}。`
     :part?`用于强化${part.name}，与金币一同消耗。`
     :id===10010007?'随机获得五种装备部位图纸中的一种。'
     :id===10010008?'随机获得十一种科研图纸中的一种。'

@@ -3,7 +3,8 @@ import { equipmentRewards, nativeResourceRewards } from './native-reward-resourc
 import catalog from './native-economy-catalog.json' with {type:'json'};
 
 const nonnegative=value=>Number.isSafeInteger(value)&&value>=0?value:0;
-const ids=kind=>new Set(catalog[kind].map(row=>row.id));
+// Closed collections cannot increase a player's achievement requirement.
+const ids=kind=>new Set(catalog[kind].filter(row=>!row.closed).map(row=>row.id));
 const gunIds=ids('guns'),planeIds=ids('skins');
 const definitions=ACHIEVEMENTS.map(row=>{
   const reward=equipmentRewards(row.reward);

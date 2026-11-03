@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "method": "Independent project-authored analytic SVG rounded rectangles, rasterized with deterministic 16x coverage sampling. No original PNGs or alpha masks read.",
+  "generator": "tools/generate-enemy-health-art.mjs",
+  "behavior": "Existing EnemyHealthBar retains source positioning, nine-slice geometry, tint and animation clocks.",
+  "assets": [
+    {
+      "key": "original_hp_progress_bg_black3",
+      "file": "normal-track.png",
+      "vector": "normal-track.svg",
+      "width": 228,
+      "height": 56,
+      "sha256": "cc94ff5559dac4b2e452c4e659da77bf97c66989c9bf3e6d3a4bb6ee1f2c1219",
+      "vectorSha256": "02f228c2ea3c2717a58b2786d0256b374af90e3cd891019edf17ba2c8cc1f5c7",
+      "border": [
+        103,
+        27,
+        95,
+        26
+      ]
+    },
+    {
+      "key": "original_hp_progress_fg_white",
+      "file": "normal-fill.png",
+      "vector": "normal-fill.svg",
+      "width": 30,
+      "height": 44,
+      "sha256": "98800b036ba30a03827248fd2a8c6bc2df90ec34f96200a83afad4e639c4b462",
+      "vectorSha256": "6f5591b08addc7ad342cd4ffb95ffe24ba8f3a2e687f23a5959e6b31a91ac16b",
+      "border": [
+        13,
+        0,
+        13,
+        0
+      ]
+    },
+    {
+      "key": "original_hp_progress_EliteMonster_di",
+      "file": "elite-track.png",
+      "vector": "elite-track.svg",
+      "width": 119,
+      "height": 43,
+      "sha256": "a21b36d04c6075465cc18468f5e90d9509725cf79dc7b630d49129654225ad68",
+      "vectorSha256": "03140bc7054c75b835d9ad13914b952d80bf8ec9fa4857589db2bc330f267c6a",
+      "border": [
+        46,
+        0,
+        49,
+        0
+      ]
+    },
+    {
+      "key": "original_hp_progress_EliteMonster_white",
+      "file": "elite-fill.png",
+      "vector": "elite-fill.svg",
+      "width": 105,
+      "height": 30,
+      "sha256": "35e7065316ce3a55536a252e3ca569971603df5796aefef9849de8acdcb53a4e",
+      "vectorSha256": "e90e082fd1e0a27faddfb92f8cccb741720f7693f83616d13256ef257a1266ef",
+      "border": [
+        40,
+        0,
+        43,
+        0
+      ]
+    }
+  ]
+}

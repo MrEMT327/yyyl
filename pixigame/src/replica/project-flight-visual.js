@@ -26,9 +26,12 @@ export function sampleFlightVisual(state,{clock,runId,flight,visible=true,render
   const moving=Math.hypot(vx,vz)>.015;
   const target={bank:clamp(-vx,-1,1)*.22,pitch:clamp(-vz,-1,1)*.045,
     thrust:moving?clamp(Math.hypot(vx,vz)*.65+Math.max(0,vz)*.35,0,1):0};
-  const reversing=state.pose.bank*target.bank<0;
-  const blend=1-Math.exp(-(reversing?64:moving?34:54)*dt);
   for(const key of ['bank','pitch','thrust']){
+    // Both lateral and vertical reversals acknowledge the new direction.
+    // Attitude can ease, but stopping should promptly settle the hull/exhaust.
+    const reversing=state.pose[key]*target[key]<0;
+    const response=reversing?128:Math.abs(target[key])<.0001?96:48;
+    const blend=1-Math.exp(-response*dt);
     state.pose[key]+=(target[key]-state.pose[key])*blend;
     if(Math.abs(state.pose[key])<.0001)state.pose[key]=0;
   }

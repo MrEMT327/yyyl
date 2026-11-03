@@ -22,7 +22,8 @@ export const MODULE_ITEM_PROFILES: Readonly<Record<number, Profile>> = {
 };
 
 export function moduleProfile(pickup: Pick<Pickup, 'kind' | 'itemId'>): Profile | undefined {
-  if(pickup.kind === 'trigger' && pickup.itemId === 159)return 'missile';
+  // Passive missile airdrop (114) and equipment support (159) share project art.
+  if(pickup.kind === 'trigger' && (pickup.itemId === 114 || pickup.itemId === 159))return 'missile';
   return pickup.kind === 'buff' ? MODULE_ITEM_PROFILES[pickup.itemId] ?? 'generic' : undefined;
 }
 

@@ -21,6 +21,17 @@ export function validateReplicaInventory(value) {
   }
   return { version: 1, revision: value.revision, items };
 }
+// Retired APK sign-in chip; its equipment system is not part of this game.
+// Keep historical reward receipts, and remove only the unusable inventory item.
+export function planRetiredChipCleanup(rawInventory) {
+  if (!Object.hasOwn(rawInventory.items,3132505)) return null;
+  const inventory=validateReplicaInventory(rawInventory);
+  if (!Number.isSafeInteger(inventory.revision+1)) throw new Error('库存版本超出范围');
+  delete inventory.items[3132505];
+  inventory.revision++;
+  return inventory;
+}
+
 function costsFor(row, owned) {
   if (!owned?.active) return row.unlockCost;
   if (!row.stages.some(stage => stage.star === owned.star + 1)) return null;

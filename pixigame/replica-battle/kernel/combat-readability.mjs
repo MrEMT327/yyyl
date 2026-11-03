@@ -1,17 +1,10 @@
+import {damageTextPresentation} from './combat-hit-presentation.mjs';
 // Presentation only. These values never enter simulation or collision data.
 export const COMBAT_LAYERS=Object.freeze({area:30,playerShot:32,impact:34,player:37,status:38,text:42,enemyShot:44,warning:47});
 export function playerVisibility(clock,invincible,phantom=false){
   return (invincible>0?.76+.24*Math.abs(Math.sin(clock*8)):1)*(phantom?.68:1);
 }
-export function damageTextPose(fx){
-  const t=Math.max(0,Math.min(1,fx.duration>0?fx.age/fx.duration:1));
-  const hurt=String(fx.value??'').startsWith('−'),strong=hurt||fx.critical;
-  const lane=((fx.uid%5)+5)%5-2;
-  const spacing=Math.max(44,Math.min(72,String(fx.value??'').length*9+10));
-  return {x:lane*spacing,y:-8-(Math.floor(fx.uid/5)%3)*24-t*36,
-    alpha:(strong?1:.78)*Math.pow(1-t,.8),fontSize:hurt?21:fx.critical?21:15,
-    color:hurt?'#ff7277':fx.critical?'#ffed91':'#d9e4e8',depth:COMBAT_LAYERS.text};
-}
+export function damageTextPose(fx){return damageTextPresentation(fx);}
 // Decide once at birth. Rejected contacts never appear later in their life.
 // Two different contact families may share a small area; later decorative
 // contacts wait for a new real hit. Explosions and essential cues are untouched.

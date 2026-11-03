@@ -1,5 +1,6 @@
 import atlas from './skill-icon-atlas.json' with {type:'json'};
 import './weapon-skill-art.css';
+import { currentWeaponSkillIconUrl, nativeWeaponSkillArt } from '../replica/native-weapon-skill-art.js';
 
 // Bind existing gameplay IDs by attack motif, never by the order of the sheet.
 export const WEAPON_SKILL_ICONS = Object.freeze({
@@ -16,14 +17,19 @@ export const WEAPON_SKILL_ICONS = Object.freeze({
 });
 const source = `${import.meta.env?.BASE_URL??'/'}art/skill-icons-anime-v1/approved-sheet.png`;
 
-const nativeFamilies=Object.freeze({10000101:'aux_cannon',10000701:'aux_rocket',10001501:'aux_laser',
-  10000201:'aux_toxin',10000601:'aux_freeze',10000401:'aux_lightning',10001701:'aux_beam',
-  10001101:'aux_blades',10001601:'aux_shield',10000301:'aux_orb',10000901:'aux_gravity'});
+const nativeFamilies=Object.freeze({10000101:20101,10000701:20201,10001501:20301,
+  10000201:20401,10000601:20501,10000401:20601,10001701:20701,
+  10001101:20801,10001601:20901,10000301:21001,10000901:21101});
 export const nativeWeaponSkillArtwork=skillId=>weaponSkillArtwork({id:nativeFamilies[Number(skillId)]});
 
 export function weaponSkillArtwork(weapon) {
-  const id=WEAPON_SKILL_ICONS[weapon?.id],rect=atlas.rects[id];
+  const id=WEAPON_SKILL_ICONS[weapon?.id];
+  // Native identities and redrawn legacy motifs share the current skill pack.
+  // Only unrelated prototype effects still need the older, distinct artwork.
+  const current=nativeWeaponSkillArt(weapon)||currentWeaponSkillIconUrl(id);
+  if(current)return `<img class="weapon-skill-icon native-weapon-skill-icon" data-skill-icon="${id||weapon?.id}" src="${current}" alt="" aria-hidden="true" draggable="false">`;
   if(!id)return '';
+  const rect=atlas.rects[id];
   if(!rect) {
     const image = `${import.meta.env?.BASE_URL??'/'}art/skill-icons-anime-v2/${id}.webp`;
     return `<span class="weapon-skill-icon" data-skill-icon="${id}" aria-hidden="true" style="background-image:url('${image}');background-size:cover;background-position:center"></span>`;

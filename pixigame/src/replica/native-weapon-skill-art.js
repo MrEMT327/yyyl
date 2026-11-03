@@ -9,7 +9,10 @@ const icons = Object.freeze({
   21001:'arc-blast',21101:'corrosive-black-hole',
 });
 
+const currentEffects = new Set(Object.values(icons));
+export function currentWeaponSkillIconUrl(icon) {
+  return currentEffects.has(icon) ? cloudAssetBase+'art/project-weapon-skill-icons-v2/'+icon+'.webp' : null;
+}
 export function nativeWeaponSkillArt(row) {
-  const icon = icons[nativeWeaponGroupId(row)];
-  return icon ? cloudAssetBase+'art/project-weapon-skill-icons-v2/'+icon+'.webp' : null;
+  return currentWeaponSkillIconUrl(icons[nativeWeaponGroupId(row)]);
 }

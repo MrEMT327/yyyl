@@ -1,6 +1,10 @@
+import {damageTextPresentation,sampleEnemyHitMotion,sampleCombatResults} from './combat-hit-presentation.mjs';
 import {sampleHealingReceipt} from './healing-receipt.mjs';
-import {COMBAT_LAYERS,damageTextPose,playerVisibility} from './combat-readability.mjs';
+import {drawPlayerDamageVignette,PLAYER_DAMAGE_VIGNETTE_DEPTH} from './player-damage-vignette.mjs';
+import {playerHealthBarColor} from '../../src/replica/player-health-display.js';
+import {COMBAT_LAYERS,playerVisibility} from './combat-readability.mjs';
 import {CombatRenderSamples,CombatStatusIndex} from '../../src/replica/combat-render-samples.mjs';
+import {MissileWingMounts} from '../../src/replica/missile-wing-mounts.mjs';
 import {captureEnemyDeathBody,enemyDeathVisualScale} from '../small-death-visual.js';
 import {sampleNativeUrgencyWarning} from './enemy-warning';
 import {applySourceStatusTint} from './pathogenic/source-status-tint';
@@ -72,6 +76,7 @@ type Display = Phaser.GameObjects.Container | Phaser.GameObjects.Image | Phaser.
 export class BattleView extends Phaser.Scene {
   private objects = new Map<string, Display>();
   private readonly renderSamples = new CombatRenderSamples();
+  private readonly missileWingMounts = new MissileWingMounts();
   private readonly statusIndex = new CombatStatusIndex();
   private readonly liveViews = new Set<string>();
   private readonly liveEnemyIds = new Set<number>();
@@ -200,7 +205,7 @@ export class BattleView extends Phaser.Scene {
     if (!this.appearance?.replaceTerrain) this.createTerrain();
     this.beams = this.add.graphics().setDepth(30);
     this.bars = this.add.graphics().setDepth(50);
-    this.playerDamage = this.add.graphics().setDepth(COMBAT_LAYERS.enemyShot + 1);
+    this.playerDamage = this.add.graphics().setDepth(PLAYER_DAMAGE_VIGNETTE_DEPTH);
     this.debug = this.add.graphics().setDepth(90);
     const playerModel = this.content.assets.prefabs[this.prefabByModel.get(this.content.chapter.entities[this.content.chapter.player.entityId].modelId)!];
     const appearance = selectPlayerAppearance(this.content);
@@ -454,7 +459,7 @@ export class BattleView extends Phaser.Scene {
     const statusIndex = this.statusIndex.update(s);
     const sourceCamera=this.screen(0,0);this.pathogenic.setCameraOffset(sourceCamera.x,sourceCamera.y);
     let playerBulletCount=0;for(const bullet of s.projectiles)if(bullet.owner==='player'&&!bullet.dead)playerBulletCount++;
-    this.pathogenic.beginFrame(s.clock,s.runId,{playerBulletCount,visualClock});
+    this.pathogenic.beginFrame(s.clock,s.runId,{playerBulletCount,visualClock,escortSwords:s.projectiles,escortPlayer:s.player});
     if(this.vfxRunId!==s.runId||s.phase==='ready'){this.enemyViewPositions.clear();this.vfxRunId=s.runId;}
     this.drawNativeTerrain(live);
     const mapLength = this.content.assets.map.loopLength || 192;
@@ -490,8 +495,8 @@ export class BattleView extends Phaser.Scene {
       flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed,
         radius: playerEntity.stats.shape[0] * s.playerScale, active: s.phase === 'playing' && s.player.hp > 0 },
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
-    if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, s.player.hitFlash > .14 ? 0xff7777 : 0x3ee4a1);
-    if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(s.player.hitFlash);
+    if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, playerHealthBarColor(s.player.hp / s.player.maxHp, s.player.hitFlash > .14));
+    if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(this.renderSamples.age(.3 - s.player.hitFlash));
     const enemyIds = this.liveEnemyIds; enemyIds.clear();
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
     const gunboatShots = scatterGunboatShots(s.enemies, s.projectiles, s.clock);
@@ -593,6 +598,8 @@ export class BattleView extends Phaser.Scene {
           child.setTexture(frame).setOrigin(sprite.pivot.x, 1 - sprite.pivot.y);
         }
       }
+      const hitMotion=sampleEnemyHitMotion(enemy,visualClock,statusIndex.frozen.has(enemy.uid));
+      view.setPosition(view.x+hitMotion.x,view.y+hitMotion.y).setScale(view.scaleX*hitMotion.scaleX,view.scaleY*hitMotion.scaleY).setRotation(view.rotation+hitMotion.rotation);
       applySourceStatusTint(view,enemy.hitFlash>0,statusIndex.frozen.has(enemy.uid),visualClock,{boss:enemy.boss});
       const health = this.content.assets.enemyHealthBars;
       const healthConfig = health.entities[enemy.entityId];
@@ -617,10 +624,14 @@ export class BattleView extends Phaser.Scene {
       updateSupplyChestVisual(view, chest, chestAnimations.clips[chest.animation].duration);
       if (chest.progress > 0 && chest.animation !== 'Death') this.healthBar(point.x, point.y + 32, 50, chest.progress, 0xffdc45);
     }
+    const missileMounts=this.appearance?.missileMounts?.().map(point=>({
+      x:s.player.x+(point.x-pp.x)/this.px,z:s.player.z-(point.y-pp.y)/this.px,
+    }));
+    this.missileWingMounts.beginFrame(s.clock,s.runId,s.projectiles,missileMounts);
     for(const bullet of s.projectiles){
       // Native primary-gun shots use familyId 0. Resolve only their view identity.
       const sourceBullet=thunderBeam(bullet)??bullet;
-      const visualBullet=this.renderSamples.projectile(sourceBullet,this.content.chapter.player.weaponEntityId);
+      const visualBullet=this.missileWingMounts.projectile(this.renderSamples.projectile(sourceBullet,this.content.chapter.player.weaponEntityId));
       // All kinetic shots share the authored presentation route.
       this.pathogenic.equipmentAccent(visualBullet,s.equipmentProjectileAccent(bullet),(x,z)=>this.screen(x,z));
       if(this.pathogenic.weaponSkinProjectile(visualBullet,(x,z)=>this.screen(x,z)))continue;
@@ -657,6 +668,7 @@ export class BattleView extends Phaser.Scene {
       }else this.pathogenic.status(buff,(x,z)=>this.screen(x,z));
     }
     for(const fx of s.effects)this.drawEffect(fx,live);
+    for(const receipt of sampleCombatResults(s))this.drawEffect(receipt,live);
     const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
     this.pathogenic.endFrame();
     if (this.debugOn) {
@@ -725,16 +737,8 @@ export class BattleView extends Phaser.Scene {
       child.setPosition(m[3] * this.px, -m[11] * this.px).setScale(this.px / sprite.ppu * sx, this.px / sprite.ppu * sy).setRotation(Math.atan2(b, a)).setAlpha(m[12]);
     }
   }
-  private drawPlayerDamage(remaining: number) {
-    // Narrow, translucent edge cues do not cover the aircraft or projectiles.
-    const strength = Math.min(1, Math.max(0, remaining / .3));
-    const g = this.playerDamage;
-    for (let i = 0; i < 3; i++) {
-      const inset = i * 5;
-      g.fillStyle(0xff3434, (.13 - i * .035) * strength);
-      g.fillRect(inset, 0, 5, HEIGHT).fillRect(WIDTH - inset - 5, 0, 5, HEIGHT);
-      g.fillRect(0, inset, WIDTH, 5).fillRect(0, HEIGHT - inset - 5, WIDTH, 5);
-    }
+  private drawPlayerDamage(age: number) {
+    drawPlayerDamageVignette(this.playerDamage, age, WIDTH, HEIGHT);
   }
   private healthBar(x: number, y: number, width: number, ratio: number, color: number) {
     this.bars.fillStyle(0x091014, .9).fillRect(x - width / 2 - 2, y - 2, width + 4, 9);
@@ -746,10 +750,10 @@ export class BattleView extends Phaser.Scene {
     if(fx.ownerUid){const owner=this.sim.enemies.find(e=>e.uid===fx.ownerUid&&!e.dead);if(!owner)return;const pos=this.enemyViewPositions.get(owner.uid)?.view.position??owner;fx.x=pos.x;fx.z=pos.z;}
     if(fx.kind!=='text'){this.pathogenic.effect(fx,(x,z)=>this.screen(x,z),enemyDeathVisualScale(fx));return;}
     const key=`fx:${fx.uid}`;live.add(key);let view=this.objects.get(key) as Phaser.GameObjects.Text|undefined;
-    const layout=damageTextPose({...fx,age:this.renderSamples.age(fx.age)});
+    const layout=damageTextPresentation(fx,this.renderSamples.age(fx.age));
     if(!view){view=this.add.text(0,0,fx.value||'',{fontFamily:'DankeUI, Microsoft YaHei',fontSize:layout.fontSize+'px',color:layout.color,stroke:'#18272e',strokeThickness:2}).setOrigin(.5).setDepth(layout.depth);this.objects.set(key,view);}
-    const pos=this.screen(fx.x,fx.z),margin=view.width/2+4;
-    view.setPosition(Math.max(margin,Math.min(WIDTH-margin,pos.x+layout.x)),Math.max(30,Math.min(HEIGHT-12,pos.y+layout.y))).setAlpha(layout.alpha);
+    const pos=this.screen(fx.x,fx.z),margin=view.width*layout.scale/2+4;
+    view.setPosition(Math.max(margin,Math.min(WIDTH-margin,pos.x+layout.x)),Math.max(30,Math.min(HEIGHT-12,pos.y+layout.y))).setAlpha(layout.alpha).setScale(layout.scale);
   }
   private sourceRaycast(q:{origin:{x:number;y:number};direction:{x:number;y:number};maxDistance:number}){
     const zero=this.screen(0,0),from={x:(q.origin.x-zero.x)/this.px,z:-(q.origin.y-zero.y)/this.px};

@@ -1,3 +1,4 @@
+import {markDamageText,recordEnemyHit,recordCombatResult} from './combat-hit-presentation.mjs';
 import {recordHealingReceipt} from './healing-receipt.mjs';
 import {markImpactDirection} from './impact-direction.mjs';
 import { projectileSound } from './combat-audio';
@@ -3666,6 +3667,7 @@ export class Simulation {
             this.refreshLiveProjectile(b);
           }
           const damageAccepted = characterAccepts && !this.statuses.consumeShield(hit.enemy.uid, true);
+          if (!damageAccepted && !b.damageDisabled) recordCombatResult(this, hit.enemy, characterAccepts ? 'blocked' : 'immune');
           const nativeContributions = nativeInstalledAttributeContributions((this.installedWeaponActions.get(b.familyId || this.content.chapter.player.weaponEntityId) || []).filter(c => [101, 109, 176].includes(c.action)), {
             weaponId: b.weaponId, weaponType: Number(this.content.chapter.entities[b.familyId || this.content.chapter.player.weaponEntityId].raw.SecondWeapenType),
             firstTarget: this.firstBulletTargets.get(b) === hit.enemy.uid, targetType: Number(this.content.chapter.entities[hit.enemy.entityId].raw.Type), targetBuffFlags: this.statuses.flags(hit.enemy.uid),
@@ -3755,7 +3757,8 @@ export class Simulation {
     }
   }
   private damageEnemy(e: Enemy, damage: number, critical: boolean, sourceEntityId: number, element = 0, traits = 0, projectile?: Projectile, hurtType = 1, hitAttributes?: Record<string, number>) {
-    if (this.statuses.modifiers(e.uid).invincible || this.statuses.consumeShield(e.uid)) return;
+    const immune = this.statuses.modifiers(e.uid).invincible;
+    if (immune || this.statuses.consumeShield(e.uid)) { recordCombatResult(this, e, immune ? 'immune' : 'blocked'); return; }
     const entity = this.content.chapter.entities[e.entityId];
     const attrs = hitAttributes || this.loadoutDamageAttributes(sourceEntityId, projectile, e);
     const emittedAttrs = projectile ? this.bulletBase.get(projectile)?.attributes || this.weaponAttributes(sourceEntityId) : {};
@@ -3779,12 +3782,13 @@ export class Simulation {
     if (e.dead || damage <= 0) return;
     if (critical && damage >= e.hp) this.dispatchWeaponEvent(37, sourceEntityId, { weaponId: projectile?.weaponId, bullet: projectile, target: e, point: e, critical: true, skipPlayer: true });
     const dealt = Math.min(e.hp, damage); e.hp -= damage; e.hitFlash = 0.065; this.damageDealt += dealt;
+    recordEnemyHit(e, this.clock, critical, projectile, this.player);
     if (dealt > 0) this.sounds.push(projectile?.familyId === 200101 && projectile.trajectory === 'SemiCircleMov2Mod' ? -18 : -9);
     // Projectile.familyId is the owning weapon entity (0 denotes the cannon),
     // not the bullet ID: replacements and explosions stay in the same row.
     const weaponId = sourceEntityId || this.content.chapter.player.weaponEntityId;
     this.damageByWeapon.set(weaponId, (this.damageByWeapon.get(weaponId) || 0) + dealt);
-    if (this.effects.filter(fx => fx.kind === 'text').length < 32) { const fx = this.effect('text', e.x, e.z, 0.65, critical ? 1.2 : 1, `${Math.round(damage)}`); fx.critical = critical; }
+    if (this.effects.filter(fx => fx.kind === 'text').length < 32) { const fx = this.effect('text', e.x, e.z, 0.65, critical ? 1.2 : 1, `${Math.round(damage)}`); fx.critical = critical; markDamageText(fx, element); }
     if (e.hp > 0) return;
     this.dispatchWeaponEvent(32, sourceEntityId, { weaponId: projectile?.weaponId, bullet: projectile, target: e, point: e, critical });
     this.beginEnemyDeath(e, false, hurtType);
@@ -3934,8 +3938,9 @@ export class Simulation {
     }
   }
   private damagePlayer(damage: number, contact = true, projectile?: Projectile, attacker?: Enemy) {
-    if (this.playerStatuses.modifiers(0).invincible || this.playerStatuses.consumeShield(0)) {
-      return;
+    const immune = this.playerStatuses.modifiers(0).invincible;
+    if (immune || this.playerStatuses.consumeShield(0)) {
+      recordCombatResult(this, this.player, immune ? 'immune' : 'blocked'); return;
     }
     const attackerUid = attacker?.uid ?? projectile?.ownerUid;
     const source = attacker || (projectile ? this.enemies.find(e => e.uid === projectile.ownerUid) : undefined);
@@ -3959,7 +3964,9 @@ export class Simulation {
     const attrs = mergeNativeConditionalAttributeGroups(this.playerCombatAttributes(), groups, this.content.combat.attributeDefinitions);
     const sourceData = source && this.content.chapter.entities[source.entityId]?.raw;
     const miss = nativeLoadoutMissChance(attrs, Number(sourceData?.HitRate || 0), source ? Math.hypot(source.x - this.player.x, source.z - this.player.z) : 0, projectile?.traits || 0);
-    if (this.playerStatuses.consumeShield(0, true) || miss.ordinary > 0 && this.random() < miss.ordinary || miss.trait > 0 && this.random() < miss.trait) {
+    let shieldBlocked = false;
+    if ((shieldBlocked = this.playerStatuses.consumeShield(0, true)) || miss.ordinary > 0 && this.random() < miss.ordinary || miss.trait > 0 && this.random() < miss.trait) {
+      recordCombatResult(this, this.player, shieldBlocked ? 'blocked' : 'miss');
       this.dispatchPlayerEvent(13, { attackerUid, attackerPoint: source || projectile }); return;
     }
     const incoming = nativeLoadoutIncomingDamageFactors(attrs, { attackerKind: projectile ? 'bullet' : source ? 'body' : 'other', attackerType: sourceData?.Type,

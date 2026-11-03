@@ -2,12 +2,14 @@ import { cloudAssetBase } from './cloud-asset-base.js';
 import { Container, Rectangle, Sprite, Texture } from '../three/display.js';
 import { battleProgress } from './battle-progress.js';
 import { COMBAT_TYPE } from './combat-theme.js';
+import { PLAYER_LOW_HEALTH_RATIO,PLAYER_LOW_HEALTH_COLOR } from '../replica/player-health-display.js';
 
 // PSD coordinates are authoritative. Only the presentation is scaled to the
 // existing 600 × 1300 combat scene; the world and flight input stay untouched.
 const W = 750, H = 1624;
 const assets = new Map();
 const loaded = new Set();
+const lowHealthArt = new WeakMap();
 const definitions = {
   pause:[4,16,132,132], stats:[460,36,273,111], grade:[133,50,163,63],
   wave:[182,193,387,47], combo:[266,250,218,68],
@@ -33,7 +35,26 @@ function canvasLayer(parent, y, height) {
   sprite.y = y; sprite.eventMode = 'none'; parent.addChild(sprite);
   return {canvas, ctx:canvas.getContext('2d'), sprite, key:null};
 }
-function artwork(ctx, name, offsetY = 0, ratio = 1) {
+// Cache one recoloured copy of the supplied PSD fill. Preserve its alpha,
+// bevel, dark outline and bright highlights; the source image stays untouched.
+function lowHealthFill(image) {
+  if(lowHealthArt.has(image))return lowHealthArt.get(image);
+  const canvas=globalThis.wx?.createCanvas?.()||document.createElement('canvas');
+  canvas.width=image.naturalWidth||image.width;canvas.height=image.naturalHeight||image.height;
+  const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);
+  const pixels=ctx.getImageData(0,0,canvas.width,canvas.height),data=pixels.data;
+  const red=PLAYER_LOW_HEALTH_COLOR>>16&255,green=PLAYER_LOW_HEALTH_COLOR>>8&255,blue=PLAYER_LOW_HEALTH_COLOR&255;
+  for(let i=0;i<data.length;i+=4){
+    if(!data[i+3])continue;
+    const r=data[i],g=data[i+1],b=data[i+2];
+    const light=Math.sqrt((.2126*r+.7152*g+.0722*b)/255),highlight=(Math.min(r,g,b)/255)**4;
+    data[i]=Math.round(red*light);
+    data[i+1]=Math.round((green+(255-green)*highlight)*light);
+    data[i+2]=Math.round((blue+(255-blue)*highlight)*light);
+  }
+  ctx.putImageData(pixels,0,0);lowHealthArt.set(image,canvas);return canvas;
+}
+function artwork(ctx, name, offsetY = 0, ratio = 1, critical = false) {
   const image = assets.get(name);
   if (!loaded.has(name)) return;
   const [x,y,w,h] = definitions[name];
@@ -41,7 +62,7 @@ function artwork(ctx, name, offsetY = 0, ratio = 1) {
   if (['combo','level-decoration'].includes(name)) {
     ctx.shadowColor='#28dcff';ctx.shadowBlur=8;
   }
-  ctx.drawImage(image,x,y-offsetY,w*ratio,h);
+  ctx.drawImage(critical&&name==='health-fill'?lowHealthFill(image):image,x,y-offsetY,w*ratio,h);
   ctx.restore();
 }
 function text(ctx, value, x, y, size, {align='left', color='#fff', glow='', stroke=0}={}) {
@@ -110,7 +131,7 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const ratio=Math.min(1,hp/maxHp),level=Math.max(1,Math.round(game.level||1));
     repaint(bottom,JSON.stringify([ready,hp,maxHp,level]),ctx=>{
       artwork(ctx,'health-track',1500);
-      if(ratio>0) artwork(ctx,'health-fill',1500,684*ratio/557);
+      if(ratio>0) artwork(ctx,'health-fill',1500,684*ratio/557,ratio<=PLAYER_LOW_HEALTH_RATIO);
       artwork(ctx,'heart',1500);artwork(ctx,'level-decoration',1500);
       text(ctx,`等级  ${level}`,105,17,30,{glow:'#00cfff'});
       text(ctx,`生命 ${Math.ceil(hp)}/${Math.ceil(maxHp)}`,705,24,24,{align:'right',glow:'#ff4568'});

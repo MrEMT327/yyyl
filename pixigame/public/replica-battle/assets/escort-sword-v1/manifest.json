@@ -1,0 +1,16 @@
+{
+  "name": "伴飞科技剑",
+  "generator": "built-in image_gen",
+  "originalArtwork": true,
+  "filename": "escort-sword-v1.png",
+  "sha256": "7ada726a3afbc7347c04126240a1358b322b7496a107cb1d2ef6cb254fc43f31",
+  "width": 2172,
+  "height": 724,
+  "region": [
+    98,
+    132,
+    1974,
+    465
+  ],
+  "prompt": "Use case: stylized-concept. Asset type: one production-ready 2D transparent sprite for an anime science-fiction vertical airplane shooter.\nCreate exactly ONE original hovering escort sword, a complete independent weapon. Horizontal broadside orthographic view, pointed blade tip at LEFT, short grip and pommel at RIGHT. Centered, fully in frame, fills about 85 percent of a wide canvas. Crisp readable silhouette at only 50-65 game pixels long.\nDesign: a broad tapered leaf-shaped double-edged blade made from ivory-white titanium armor, a dark navy recessed spine channel, one restrained cyan energy slit, two short swept cobalt guard fins, compact dark graphite grip, and a small hexagonal pommel with a tiny amber indicator. Blade about 70% of total length, total silhouette about 3.4 times as long as tall. Hard-surface mechanical construction, large clean facets, smooth stylized volume, polished mobile game weapon rendering, controlled highlights. Soft three-tone shading and thin dark blue outline.\nReference intent: the clear, substantial floating sword silhouette of a casual airplane shooter, redesigned with new blade profile, guard construction and materials for our existing blue-white anime/mecha game. Do not reproduce a specific existing sword, image or six-frame sprite sheet.\nConstraints: single sword only; no character, no airplane, no hands, no pedestal, no floor, no cast shadow, no particles, no external aura, no lettering, no border, no UI frame, no watermark, no duplicate weapon, no extra panels. Genuine transparent background with clean alpha; do not bake checkerboard into the image. The cyan slit is a small material detail; preserve solid readable metal surfaces and avoid blown-out bloom.\n"
+}

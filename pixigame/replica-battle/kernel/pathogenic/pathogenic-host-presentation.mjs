@@ -195,11 +195,23 @@ void fragment(){
   resources['host://cool-electric-v1/arc']={type:'ShaderMaterial',properties:{shader:{$external:'host://cool-electric-v1/shader'}}};
   shaders['host://cool-electric-v1/shader']={code:`shader_type canvas_item;
 render_mode unshaded, blend_add;
+varying float arc_alpha;
+varying float arc_energy;
+void vertex(){
+  arc_alpha=COLOR.a;
+  arc_energy=clamp(max(COLOR.r,max(COLOR.g,COLOR.b)),1.0,3.0);
+}
 void fragment(){
-  vec3 source=texture(TEXTURE,UV).rgb;
-  float light=max(source.r,max(source.g,source.b));
-  vec3 electric=mix(vec3(0.30,0.18,1.05),vec3(0.84,0.80,1.22),smoothstep(0.35,0.95,light));
-  COLOR=vec4(electric*(0.85+0.85*light),COLOR.a);
+  vec4 source=texture(TEXTURE,UV);
+  float mask=source.a;
+  float core=smoothstep(0.14,0.55,mask);
+  float beat=floor(TIME*18.0);
+  float flicker=0.84+0.16*sin(beat*1.73+UV.x*8.0);
+  float packet=pow(0.5+0.5*sin(UV.x*29.0-TIME*25.0),7.0);
+  vec3 electric=mix(vec3(0.14,0.56,1.30),vec3(1.10,1.60,2.10),core);
+  electric+=vec3(0.16,0.42,0.68)*packet*core;
+  // Restore bounded source HDR energy, while the native fade still owns opacity.
+  COLOR=vec4(electric*arc_energy*flicker,arc_alpha*mask);
 }`};
   return [withOrdinaryIceMaterials,withPlayerShotMaterials,withMissilePresentationResources,withIaidoResources,withAcidCloudResources,withAcidVortexResources,withAcidDropletResources,withAreaWeaponResources,withAircraftPulseResources,withConstructWeaponResources,withCorrectedStatusResources,withCorrectedEnemyResources,withEnemyProjectileMaterialResources].reduce((g,adapt)=>adapt(g),{...graph,resources,textures,shaders});
 }

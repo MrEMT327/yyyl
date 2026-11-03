@@ -25,6 +25,9 @@ export function enemyDeathVisualScale(effect){
   const gain=body.boss?1.12:body.elite?1.05:1,min=body.boss?1.6:body.elite?.9:.65,max=body.boss?9:body.elite?6:4.5;
   const diameter=Math.max(min,Math.min(max,body.span*.9*gain));return diameter/effect.size;
 }
+export function enemyDeathVisualKind(effect){
+  const body=deathBodies.get(effect);return body?body.boss?'boss':body.elite?'elite':'ordinary':null;
+}
 export function isOrdinaryDeathVisual(effect) { return ordinaryDeaths.has(effect); }
 export function markOrdinaryDeathVisual(effect, enemy) {
   deathBodies.set(effect,{span:deathBodySpan(enemy),boss:Boolean(enemy.boss),elite:Boolean(enemy.elite)});

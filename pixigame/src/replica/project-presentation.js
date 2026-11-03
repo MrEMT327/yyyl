@@ -249,6 +249,14 @@ export async function createProjectPresentation({ content, appearance, onError, 
     weaponIcon(weapon) {
       return icons.get(weapon);
     },
+    missileMounts() {
+      if (disposed || !pose?.visible) return [];
+      const tips = projectWingtipPositions(fighter, aircraftCamera, pose);
+      if (tips.length !== 2) return [];
+      const halfSpan = Math.max(...tips.map(tip => Math.abs(tip.x - pose.x))) * .9;
+      const y = pose.y + ((tips[0].y + tips[1].y) / 2 - pose.y) * .35;
+      return [{x: pose.x - halfSpan, y}, {x: pose.x + halfSpan, y}];
+    },
     playerSkin: {
       // Authored original skeleton bounds, in original skeleton units.
       width: 273.2, height: 254.54,

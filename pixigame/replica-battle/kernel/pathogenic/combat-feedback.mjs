@@ -55,13 +55,19 @@ ${cloud}
 void fragment(){${phase}
  float n=fbNoise(p*4.0+vec2(t*3.0,-t*2.0))*0.65+fbNoise(p*8.5-vec2(t*2.0))*0.35;
  float radius=0.20+0.64*sin(min(1.0,t*1.6)*1.5707963);
- float body=1.0-smoothstep(radius-0.20,radius+0.08,r+(n-0.5)*0.20);
+ float angle=atan(p.y,p.x);
+ float lobes=sin(angle*5.0+t*4.0)*0.045+sin(angle*9.0-t*7.0)*0.022;
+ float body=1.0-smoothstep(radius-0.20,radius+0.08,r+(n-0.5)*0.20+lobes);
  float fire=(1.0-smoothstep(0.16,0.68,t));
  float smoke=smoothstep(0.08,0.30,t)*(1.0-smoothstep(0.52,1.0,t));
  float hot=exp(-r*r*10.0/(0.3+t))*fire;
  float folds=0.28+0.72*n;
+ float warm=step(COLOR.g+0.05,COLOR.r);
  vec3 flame=mix(COLOR.rgb*0.30,COLOR.rgb*1.35+vec3(0.35),folds);
- flame=mix(flame,vec3(1.5,1.24,0.74),hot*0.70);
+ flame=mix(flame,mix(vec3(0.35,0.055,0.014),vec3(1.65,0.49,0.055),folds),warm);
+ float foldsHot=smoothstep(0.32,0.76,n)*hot;
+ vec3 hotColor=mix(COLOR.rgb*1.15+vec3(0.25),vec3(2.0,1.08,0.26),warm);
+ flame=mix(flame,hotColor,clamp(hot*0.55+foldsHot*0.42,0.0,0.93));
  vec3 soot=mix(vec3(0.035,0.055,0.065),vec3(0.26,0.30,0.31),n*0.55+(0.4-p.y)*0.18);
  vec3 color=mix(soot,flame,fire);
  float alpha=body*(fire*0.78+smoke*0.44)*(1.0-smoothstep(0.80,1.0,t));
@@ -70,10 +76,11 @@ void fragment(){${phase}
  'blast-light':`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){${phase}
  float core=exp(-r*r*28.0/(0.13+t))*exp(-t*12.0);
- float wave=exp(-abs(r-(0.12+t*1.12))*70.0)*exp(-t*7.0);
+ float ringR=length(vec2(p.x,p.y*1.35));
+ float wave=exp(-abs(ringR-(0.12+t*1.12))*70.0)*exp(-t*7.0);
  float a=atan(p.y,p.x),spark=pow(max(0.0,cos(a*9.0+r*8.0)),34.0);
  spark*=smoothstep(t*0.8,t*0.8+0.10,r)*(1.0-smoothstep(t*0.8+0.22,t*0.8+0.30,r))*exp(-t*7.0);
- COLOR=vec4(mix(COLOR.rgb*3.2,vec3(4.0,3.4,2.2),core),clamp(core*0.75+wave*0.35+spark*0.65,0.0,1.0));
+ COLOR=vec4(mix(COLOR.rgb*2.8,vec3(3.4,2.75,1.45),core),clamp(core*0.62+wave*0.28+spark*0.72,0.0,1.0));
 }`,
  contact:`shader_type canvas_item;render_mode unshaded,blend_add;
 uniform float feedback_family=0.0;
@@ -93,7 +100,7 @@ void fragment(){
    vec2 axis=vec2(cos(turn),sin(turn)),crossAxis=vec2(-axis.y,axis.x);
    float along=dot(p,axis),side=dot(p,crossAxis);
    float reach=.22+.47*(1.0-exp(-t*6.0));
-   float kink=(abs(fract(along*(5.5+k*.7)+seed*.11)-.5)*4.0-1.0)*(.034+k*.009);
+   float kink=(abs(fract(along*(5.5+k*.7)+seed*.11+floor(t*4.0)*.173)-.5)*4.0-1.0)*(.034+k*.009);
    kink+=sin(along*28.0+seed+t*8.0)*.009;
    float line=exp(-pow((side-kink)*65.0,2.0));
    float fineCore=exp(-pow((side-kink)*126.0,2.0)),sheath=exp(-pow((side-kink)*29.0,2.0));
@@ -105,6 +112,7 @@ void fragment(){
    float fade=pow(max(0.0,1.0-t*(1.12+k*.08)),1.7);
    detail+=((line*.94+sheath*.085)*envelope+branch*.40+terminal*.52)*pulse*fade;highlight+=terminal*fade;
    emission+=(fineCore*envelope*.72+terminal*.85)*pulse*fade;
+   emission+=exp(-r*r*300.0)*exp(-t*6.0)*0.28;
   }
  }else if(feedback_family>1.5){
   detail=0.0;
@@ -120,8 +128,8 @@ void fragment(){
    float tail=exp(-side*side*2100.0)*smoothstep(-.25,-.15,along)*(1.0-smoothstep(-.055,0.0,along));
    float pin=exp(-pow((along+.19)*54.0,2.0)-pow((side-.035*sin(k+seed))*70.0,2.0));
    float fade=pow(max(0.0,1.0-t*(1.03+k*.07)),1.65);
-   detail+=(body*.30+wet*.40+shine*.85+tail*.16+pin*.24)*fade;highlight+=shine*fade;
-   emission+=shine*fade*.25;
+   detail+=(body*.24+wet*.44+shine*.74+tail*.22+pin*.24)*fade;highlight+=shine*fade;
+   emission+=(shine*.32+wet*.055)*fade;
   }
  }else if(feedback_family>.5){
   detail=0.0;
@@ -132,7 +140,7 @@ void fragment(){
    vec2 q=p-axis*travel;
    float spin=seed*.39+k*.8+t*(2.7-k*1.48),c=cos(spin),s=sin(spin);
    vec2 local=vec2(c*q.x+s*q.y,-s*q.x+c*q.y);
-   float diamond=abs(local.x)*1.25+abs(local.y)*2.25,size=.094+.016*k;
+   float diamond=abs(local.x)*1.05+abs(local.y)*2.65,size=.094+.016*k;
    float body=1.0-smoothstep(size*.65,size,diamond),edge=exp(-abs(diamond-size*.79)*120.0);
    float facet=smoothstep(-.02,.025,local.x-local.y*.4),glint=pow(max(0.0,cos(spin*3.0+k)),12.0);
    float along=dot(q,axis),side=dot(q,vec2(-axis.y,axis.x));

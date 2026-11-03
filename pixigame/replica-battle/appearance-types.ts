@@ -18,6 +18,8 @@ export interface BattleAppearance {
   setWeapons?(weapons: readonly WeaponAppearance[]): void;
   weaponIcon?(weapon: WeaponAppearance): WeaponIcon;
   playerSkin?: PlayerSkin;
+  /** Project aircraft wing sockets in screen pixels; visual mounting only. */
+  missileMounts?(): readonly {x:number;y:number}[];
   preload(scene: Phaser.Scene): void;
   create(scene: Phaser.Scene): void;
   update?(frame: {

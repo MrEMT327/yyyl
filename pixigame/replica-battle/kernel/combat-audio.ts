@@ -9,6 +9,8 @@ const files: Record<string,string> = {
   hit2:'enemy_hit2.wav', hit3:'enemy_hit3.wav', hit4:'enemy_hit4.wav', enemyShot:'shots/macrophage_shot.wav', deflect:'shots/deflect_shot.wav',
   charge:'shots/noise_charge.wav', laserCharge:'shots/beholder_laser_charge.wav', swordHit:'shots/sword_impact_gore2.wav',
   explosion:'shots/Explosion.wav',
+  // Pathogenic orb.tscn AudioStreamRandomizer_fh24i uses this short orb launch sample.
+  blackHole:'shot_hit.wav',
   pickup:'pickup_sound.wav', heal:'heal_sfx2.wav', upgrade:'upgrade_sound.wav',
   bossArrival:'beholder_spawn.wav', eliteArrival:'scolex_spawn.wav', specialPickup:'plasmid_pickup.wav',
   burn:'shots/flamethrower.wav', revive:'heal_effect.wav',
@@ -39,6 +41,7 @@ export const combatCues: Record<number,Cue> = {
   [-25]:{key:'mixkit:ice',volume:.08,interval:.7},
   [-26]:{key:'mixkit:bossDeath',volume:.18,interval:.5},
   [-24]:cue('eliteArrival',.14,3),
+  [-27]:cue('blackHole',.14,.24),
   100007:cue('bossArrival',.14,3),
   270001:cue('revive',.24,.5), 270012:cue('burn',.065,.3), 270015:cue('specialPickup',.16,.25),
   260002:cue('pickup',.24,.07), 260003:cue('heal',.36,.3), 410001:cue('upgrade',.38,.4),
@@ -80,9 +83,10 @@ export function projectileSound(b: AudioProjectile & Pick<Projectile,'modelId'>,
   if(family===200151)return b.modelId===1000049?-2:b.modelId===1000050?-3:-1;
   if(family===200041)return b.trajectory==='OverLapShapeAndStay'?-10:-4;
   if(family===200101)return -5;
+  if(family===200091&&original===320001)return -27; // Verified base/variant black-hole launch only.
   if(family===200011||family===200001)return -6;
   if(family===200121||family===200171)return -7;
-  return original; // Other ice, poison, black hole and unknown branches retain their existing sound.
+  return original; // Other ice, poison and unverified branches retain their existing sound.
 }
 export function activeCombatSounds(projectiles:Projectile[], playing:boolean, enemies:Enemy[]=[] ) {
   if(!playing)return [];

@@ -26,7 +26,7 @@ void fragment(){
   float t=TIME;
   float edge=1.0-smoothstep(0.88,0.99,r);
   float band=smoothstep(0.18,0.33,r)*(1.0-smoothstep(0.77,0.96,r));
-  float phase=a*3.0+r*15.0-t*2.4;
+  float phase=a*3.0+r*15.0-t*2.4+0.12*sin(r*11.0-t*3.0);
   float flow=0.5+0.5*cos(phase);
   float strands=pow(flow,18.0)*band;
   float haze=pow(flow,3.0)*band;
@@ -55,6 +55,11 @@ void fragment(){
   color=mix(color,vec3(0.14,0.39,0.18),underflow*0.38);
   color=mix(color,vec3(0.51,0.89,0.24),clamp(strands*0.60+inner*0.50+rim*0.35,0.0,0.9));
   color+=vec3(0.65,1.05,0.30)*particles*0.65;
+  // Fine hot filaments spiral around an opaque dark core, with no extra draws.
+  float filament=pow(flow,34.0)*band;
+  float movingGlint=pow(0.5+0.5*cos(a*2.0-r*8.0+t*3.7),8.0);
+  float emission=clamp(filament*(0.72+0.30*movingGlint)+inner*0.82+rim*0.38+particles*0.65,0.0,1.25);
+  color+=vec3(0.24,1.48,0.46)*emission*(1.0-core);
   color=mix(color,vec3(0.003,0.013,0.010),core);
   float atmosphere=exp(-r*r*2.6)*(1.0-core);
   float alpha=clamp(core*0.95+atmosphere*0.20+band*0.10+haze*0.20+underflow*0.12

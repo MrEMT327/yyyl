@@ -1,8 +1,9 @@
 import type { NativeScrollCameraBounds } from './native-scroll-camera';
 import { clampNativePlayerTarget } from './native-camera-projection';
 
-// Keep at most 60ms of future drag travel. Overflow is consumed, never saved
-// as an invisible offset; small relative corrections retain their full distance.
+// Retain a short target across native ticks so low render rates do not eat
+// valid drag distance. Bound catch-up to 60ms of current speed; reversal and
+// release discard the old direction instead of making the player repay it.
 const MAX_DRAG_LEAD_SECONDS = .06;
 
 export class Controls {
@@ -105,13 +106,14 @@ export class Controls {
       // Idle fingers keep their accepted target while the camera moves.
       this.rawTarget ??= { ...position };
       this.lastDragCamera ??= { ...camera };
-      if (!this.target || this.dx !== 0 || this.dy !== 0) {
-        const reverseX = this.reverseX || this.dx * (this.rawTarget.x - position.x) < 0 && Math.abs(this.dx) + Number.EPSILON >= this.dragAxes.x.threshold;
-        const reverseY = this.reverseY || this.dy * (this.rawTarget.y - position.y) < 0 && Math.abs(this.dy) + Number.EPSILON >= this.dragAxes.y.threshold;
-        // Rebase only the reversed axis: preserve perpendicular travel and
-        // honour the same speed cap, even when the old target was not reached.
-        this.rawTarget.x = (reverseX ? position.x : this.rawTarget.x + camera.x - this.lastDragCamera.x) + this.dx * width;
-        this.rawTarget.y = (reverseY ? position.y : this.rawTarget.y + camera.y - this.lastDragCamera.y) + this.dy * height;
+      if (!this.target || this.dx !== 0 || this.dy !== 0 || speed <= 0) {
+        const reverseX = this.reverseX || this.dx * (this.rawTarget.x - position.x) < 0;
+        const reverseY = this.reverseY || this.dy * (this.rawTarget.y - position.y) < 0;
+        // An accepted drag can reverse at subpixel precision. Within a new
+        // event batch, appendDragStroke still rejects tiny reversal noise.
+        // When new input moves only one axis, stop the other axis immediately.
+        this.rawTarget.x = this.dx === 0 ? position.x : (reverseX ? position.x : this.rawTarget.x + camera.x - this.lastDragCamera.x) + this.dx * width;
+        this.rawTarget.y = this.dy === 0 ? position.y : (reverseY ? position.y : this.rawTarget.y + camera.y - this.lastDragCamera.y) + this.dy * height;
         this.lastDragCamera = { ...camera };
         const target = clampNativePlayerTarget({ x: this.rawTarget.x, z: -this.rawTarget.y }, bounds);
         const tx = target.x - position.x, ty = -target.z - position.y;
@@ -124,7 +126,14 @@ export class Controls {
       const distance = Math.hypot(dx, dy), step = Math.min(distance, speed * dt);
       this.dx = this.dy = 0; this.reverseX = this.reverseY = false;
       this.dragAxes.x.unreadOpposed = this.dragAxes.y.unreadOpposed = 0;
-      return { x: distance ? dx / distance * step : 0, y: distance ? dy / distance * step : 0, dirX: dx, dirZ: -dy, rawX: dx };
+      const moveX = distance ? dx / distance * step : 0, moveY = distance ? dy / distance * step : 0;
+      // Preserve only the bounded remainder; discard rounding residue once
+      // the target is reached so tiny corrections never create a later nudge.
+      if (step >= distance) {
+        this.target = { x: position.x + moveX, y: position.y + moveY };
+        this.rawTarget = { ...this.target };
+      }
+      return { x: moveX, y: moveY, dirX: dx, dirZ: -dy, rawX: dx };
     }
     const length = Math.hypot(x, y) || 1;
     const dirX = x / length, dirZ = -y / length;

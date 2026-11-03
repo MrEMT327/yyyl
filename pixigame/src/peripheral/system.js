@@ -15,7 +15,7 @@ import { REPLICA_WALLET_SOURCE, REPLICA_RESOURCE_IDS, replicaResourceWallet, app
 import { nativeCollectionIdentity } from '../replica/native-collection-access.js';
 import { nativeAcquisitionSnapshot, planNativeAcquisition } from '../replica/native-acquisition.js';
 import { replicaGearSnapshot, planReplicaGear } from '../replica/native-equipment-economy.js';
-import { createReplicaInventory, validateReplicaInventory, replicaCollectionSnapshot, planReplicaCollection, planNativeLabSynchronization } from '../replica/native-economy.js';
+import { createReplicaInventory, validateReplicaInventory, replicaCollectionSnapshot, planReplicaCollection, planNativeLabSynchronization, planRetiredChipCleanup } from '../replica/native-economy.js';
 import { createReplicaProgression, selectReplicaProgression, validateReplicaProgression } from '../replica/native-progression.js';
 import { replicaChapter, replicaChapterForStage, replicaCampaignProgress, replicaStageAccessible } from '../replica/chapter-contract.js';
 import { createReplicaConfiguration, replicaConfigurationKey, validateReplicaConfiguration } from '../replica/loadout-contract.js';
@@ -296,6 +296,17 @@ export function createPeripheralSystem({
       equipment:replicaGearSnapshot(state.equipment,state.replicaInventory)} : {});
     persist();
   }
+  function syncRetiredChipInventory(){
+    if (!storageCurrent()) return;
+    // Existing reward receipts must settle before changing the inventory revision.
+    if(activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    try{
+      const next=planRetiredChipCleanup(state.replicaInventory);if(!next)return;
+      const previous=state.replicaInventory;state.replicaInventory=next;
+      if(!persist())state.replicaInventory=previous;
+    }catch(error){storageWarning=error.message;}
+  }
+  syncRetiredChipInventory();
   let starterGrantsAttempted=false;
   function syncStarterGrants(){
     if (!storageCurrent()) return;
@@ -793,6 +804,16 @@ export function createPeripheralSystem({
       const previous=state.onboarding;state.onboarding=completeGuide(previous,group);
       if(!persist()){state.onboarding=previous;return fail('引导进度未能保存');}
       onChange();return pass('');
+    }
+    if (type === 'developerChaptersUnlock') {
+      const access = developerToolsAccess();
+      if (!access.ok) return access;
+      if (payload.expectedRevision !== state.replicaInventory.revision) return fail('资源已变化，请重新点击');
+      if (state.replicaCampaign.developmentChaptersUnlocked === true) return pass('所有关卡已解锁');
+      const replicaCampaign = replicaCampaignProgress([], { ...state.replicaCampaign, developmentChaptersUnlocked: true });
+      if (!saveDailyState({ ...state, replicaCampaign })) return fail('关卡解锁未保存，请重试');
+      onChange();
+      return pass('所有关卡已解锁');
     }
     if (type === 'developerResearchUnlock') {
       const access = developerToolsAccess();
@@ -1425,7 +1446,7 @@ export function createPeripheralSystem({
   function snapshot() {
     if (storageCurrent()) {
       syncDay(); if(!state.dailyRewardReceipt && !unsavedPatrolReward)syncPilotUnlocks(); syncSamplePatrol();
-      if(recoverReplicaSettlement())recoverInterruptedSortie();syncStarterGrants();
+      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncStarterGrants();
       if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !unsavedPatrolReward && !state.firstClearWeaponClaimed) claimStageOneWeapon();
     }
     const flightRewards = state.flightRewards ?? flightLedger(null,loadDailyLoginState(storage));

@@ -12,7 +12,7 @@ export interface DamageTextInput {
   uid: number; age: number; duration: number; value?: unknown; critical?: boolean;
 }
 export interface DamageTextPose {
-  x: number; y: number; alpha: number; fontSize: number; color: string; depth: number;
+  x: number; y: number; alpha: number; scale:number; fontSize: number; color: string; depth: number;
 }
 export function damageTextPose(fx: DamageTextInput): DamageTextPose;
 

@@ -2,15 +2,17 @@ import Phaser from 'phaser';
 import nativeSpriteFragment from 'phaser/src/renderer/webgl/shaders/Single-frag.js';
 import type {PathogenicSceneView} from './pathogenic-scene-view';
 
-// Project-owned first-chapter treatment. The captured compatibility profile
-// remains the default for all other chapters. `bloom` is the full-image floor,
-// not the enable switch: keep it at zero so ordinary map pixels stay unlit.
-export const FIRST_CHAPTER_BLOOM=Object.freeze({
-  glowEnabled:true,intensity:1.1,threshold:1,scale:.25,bloom:0,cap:3.0,
+// Project combat profile. Select HDR highlights before blurring so ordinary
+// map pixels do not feed the halo. Keep the existing three-level pyramid;
+// stronger bloom adds no render targets or blur passes to the first chapter.
+export const COMBAT_BLOOM=Object.freeze({
+  glowEnabled:true,intensity:1.45,threshold:1,scale:.25,bloom:0,cap:3.0,
   bloomLevels:3,prefilterBrightPixels:true,
 });
+// Compatibility export for existing callers and preview tools.
+export const FIRST_CHAPTER_BLOOM=COMBAT_BLOOM;
 export const FIRST_CHAPTER_SPRITE_PIPELINE='ProjectFirstChapterEmission';
-export function chapterBloomSettings(chapterId:number){return chapterId===1?FIRST_CHAPTER_BLOOM:undefined;}
+export function chapterBloomSettings(chapterId:number){return Number.isInteger(chapterId)&&chapterId>0?COMBAT_BLOOM:undefined;}
 export function firstChapterEmissionFragment(source:string){
   const anchor='    gl_FragColor = color;';
   if(typeof source!=='string'||source.split(anchor).length!==2)throw Error('First-chapter bloom requires the Phaser single-sprite shader');
