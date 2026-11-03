@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "id": "prism",
   "slug": "prism",
-  "version": "1.0.1",
+  "version": "39.0.0",
   "name": "棱脉战机",
   "continuous": true,
   "rendererRevision": "185",
   "ui": {
     "title": "棱脉<span>战机</span>",
-    "subtitle": "PX–11 PRISM / SPLIT-WING STRIKER",
-    "label": "棱脉战机",
+    "subtitle": "FOXPEN / PRISM / ARTICULATED AIRFRAME",
+    "label": "08 棱脉",
     "cast": "棱核加力",
     "continuous": true,
     "phases": [
@@ -19,37 +19,48 @@
       "双联脉冲炮",
       "护盾"
     ],
-    "flash": "#bbff72",
+    "flash": "#bc91ef",
     "glyph": "<path d=\"M16 2l4 5v8l8 3-8 3-4 9-4-9-8-3 8-3V7zM9 15h14\"/>"
   },
   "stats": {
-    "model": 8156,
-    "vfx": 8364,
-    "total": 16520,
-    "submitted": 14248,
-    "objects": 110
+    "model": 103550,
+    "vfx": 2332,
+    "total": 105882,
+    "submitted": 104042,
+    "objects": 1402
   },
   "files": {
     "structure": "structure.json",
     "effects": "effects.json",
     "view": "view.json",
     "defaults": "defaults.json",
-    "buffers": "buffers.bin"
+    "buffers": "buffers.bin",
+    "design": "design.json",
+    "surface0": "paint-satin-normal.png",
+    "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "buffers.bin": "7663321aafccbaede210fb47f7850545bbae648ecc659272ba7b5447b752b79f",
-    "structure.json": "38262376f6faa602af518bc7a9a26a0a7651f37a47c28d1501226482f87445dd",
-    "effects.json": "54642f90e3c9f064362dd27585b02666f12c95193467e975afe03f6d8780997a",
-    "view.json": "44951fc9f904669899829aaa55ae81dfcf8d536a879353bed7ee12f5f32b41aa",
-    "defaults.json": "4be38e3ed05bca0577e8f32edbb8f84cbb93709a3454007157bf24cac000e9f8",
-    "nameplate-8109937e.png": "6e78e67702e0ea10fd157db89ca417750573e97074235a77608662812a0e47ee"
+    "structure.json": "6d1707aab30dc60d87d52f1d77d6f2b04efff55f776471284dab1478fe0f3c5a",
+    "effects.json": "d562259253a1fcfb706cd4618a27fab02db9424d06125e0742cd03c7cff5cbd5",
+    "view.json": "5f4cb9b0d85a6dbef9a7d14637c39f869718a0df833a9d18955e4121c88fd65b",
+    "defaults.json": "4c42a3438224ab0922026b5e8879f9b798448ccd6654975ebad2da2ca499edd9",
+    "buffers.bin": "2f7be3d6537cd473c50e7064a4b0fb4f9ad04e47168a4d908bf0c748e189cbc5",
+    "design.json": "d8119fd165b45a8c186aba4bbadccc20ab3d2b0361e05f94ccb5f23bbc9d5420",
+    "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
+    "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V12 except restored V9 Crimson + upper nacelle assembly; local Blender fleet volume refinement",
+  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
   "parameters": [
+    {
+      "key": "deployed",
+      "type": "boolean",
+      "label": "展开 / 收回",
+      "group": "飞行与武器"
+    },
     {
       "key": "cruise",
       "type": "boolean",
-      "label": "巡航摆动",
+      "label": "实际巡航（启停轨迹）",
       "group": "飞行与武器"
     },
     {
@@ -61,7 +72,7 @@
     {
       "key": "firing",
       "type": "boolean",
-      "label": "双联脉冲炮",
+      "label": "武器演示 / 开火",
       "group": "飞行与武器"
     },
     {
@@ -82,7 +93,7 @@
     {
       "key": "altitude",
       "type": "number",
-      "min": 4,
+      "min": 1,
       "max": 12,
       "step": 0.1,
       "label": "飞行高度",
@@ -152,49 +163,10 @@
       "group": "飞行与武器"
     },
     {
-      "key": "bodyFx",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "机体附着特效",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "coreGlow",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "环核亮度",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "arcGain",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "附着电弧",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "surfaceGlow",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "装甲扫光",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "ringSpeed",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "环轨转速",
-      "group": "机体能量系统"
+      "key": "accentColor",
+      "type": "color",
+      "label": "副能量色",
+      "group": "配色"
     },
     {
       "key": "lightIntensity",
@@ -212,24 +184,122 @@
       "group": "配色"
     },
     {
-      "key": "accentColor",
-      "type": "color",
-      "label": "副能量色",
-      "group": "配色"
-    },
-    {
       "key": "hullColor",
       "type": "color",
       "label": "机身装甲",
       "group": "配色"
+    },
+    {
+      "key": "flightSpeed",
+      "type": "number",
+      "label": "实际轨迹速度倍率",
+      "group": "飞行与武器",
+      "min": 0,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "key": "glassTransmission",
+      "type": "number",
+      "label": "透射率",
+      "min": 0,
+      "max": 1,
+      "step": 0.01,
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "glassRoughness",
+      "type": "number",
+      "label": "玻璃粗糙度",
+      "min": 0.02,
+      "max": 0.35,
+      "step": 0.005,
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "glassIor",
+      "type": "number",
+      "label": "折射率",
+      "min": 1.01,
+      "max": 2,
+      "step": 0.01,
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "glassThickness",
+      "type": "number",
+      "label": "光学厚度",
+      "min": 0.01,
+      "max": 0.5,
+      "step": 0.01,
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "glassAbsorptionDistance",
+      "type": "number",
+      "label": "颜色吸收距离",
+      "min": 0.25,
+      "max": 5,
+      "step": 0.05,
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "glassReflection",
+      "type": "number",
+      "label": "环境反光",
+      "min": 0,
+      "max": 3,
+      "step": 0.05,
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "label": "玻璃吸收色",
+      "group": "棱脉 / 座舱玻璃"
+    },
+    {
+      "key": "weaponEffectScale",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.05,
+      "label": "武器特效强度",
+      "group": "武器演示"
+    },
+    {
+      "key": "deploymentEffects",
+      "type": "boolean",
+      "label": "展开能量特效",
+      "group": "武器演示"
     }
   ],
-  "reviewStatus": "fleet-volume-refinement-local",
-  "revision": 9,
-  "localRevision": {
-    "id": "prism-volume-v1",
-    "baseManifestHash": "c6f4a00dfbe3bffe4c96d886bc99ea72aa984f26aff67ed3aa5c8a511cc3ea58",
-    "authoring": "art/fleet-volume/prism/prism-volume.blend",
-    "intent": "增厚细长龙骨与大翼根，座舱和反应环连贯抬升"
+  "reviewStatus": "runtime-model-for-visual-review",
+  "revision": 40,
+  "paintSurface": {
+    "version": 1,
+    "width": 512,
+    "height": 512,
+    "roughnessMapMinimum": 0.7803921568627451,
+    "roughnessMapMaximum": 0.9450980392156862,
+    "roughnessMapMean": 0.8627513062720206,
+    "roughnessCompensation": 1.1590909090909092,
+    "maximumNormalTiltDegrees": 0.9722482927806787,
+    "normalScale": 0.12,
+    "repeat": 4,
+    "baseColorUnchanged": true,
+    "metalnessUnchanged": true,
+    "images": [
+      {
+        "file": "paint-satin-normal.png",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "file": "paint-satin-orm.png",
+        "width": 512,
+        "height": 512
+      }
+    ]
   }
 }

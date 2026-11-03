@@ -1,0 +1,1001 @@
+{
+  "schemaVersion": 38,
+  "id": "fighter",
+  "slug": "kestrel",
+  "name": "游隼",
+  "number": 1,
+  "reference": "01-kestrel.png",
+  "deploymentName": "三管速射炮 · 双翼微型导弹仓",
+  "palette": {
+    "shell": "#d9d4c7",
+    "accent": "#344a5d",
+    "dark": "#18202a",
+    "metal": "#6a7278",
+    "trim": "#a18b63",
+    "energy": "#66d7f0",
+    "glass": "#233d50"
+  },
+  "transformation": {
+    "name": "三管速射炮 · 双翼微型导弹仓",
+    "version": 38,
+    "baseGeometry": "V36 hull + V37 rig",
+    "duration": 2.37,
+    "keyframed": true
+  },
+  "weaponIdentity": {
+    "role": "游隼 · 灵巧先锋",
+    "primary": "三管速射炮",
+    "secondary": "双翼微型导弹仓"
+  },
+  "authoringModule": "scripts/author/v35/kestrel.mjs",
+  "articulations": [
+    {
+      "node": "94cdc282-3464-5525-ab58-09255f5b387c",
+      "name": "deploy/outer-wing--1",
+      "pivot": [
+        -2.89,
+        0.43,
+        0.61
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": -0.6981317007977318,
+      "translation": [
+        -0.32,
+        0.08,
+        -0.1
+      ],
+      "duration": 1.74,
+      "delay": 0.08,
+      "restPosition": [
+        -2.89,
+        0.43,
+        0.61
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "angle": -0.15707963267948966
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "74b64c21-c53b-583e-a1dd-4d3460d47ed8",
+      "name": "deploy/outer-wing-1",
+      "pivot": [
+        2.89,
+        0.43,
+        0.61
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0.6981317007977318,
+      "translation": [
+        0.32,
+        0.08,
+        -0.1
+      ],
+      "duration": 1.74,
+      "delay": 0.08,
+      "restPosition": [
+        2.89,
+        0.43,
+        0.61
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "angle": 0.15707963267948966
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "64b8a770-224c-50d7-ad64-aac67f37bce1",
+      "name": "V37/elevon--1",
+      "pivot": [
+        -3.36,
+        0.56,
+        2.25
+      ],
+      "axis": [
+        1,
+        0,
+        -0.33
+      ],
+      "angle": -0.41887902047863906,
+      "translation": [
+        0,
+        0.045,
+        0.07
+      ],
+      "delay": 1.02,
+      "duration": 0.82,
+      "restPosition": [
+        -0.46999999999999975,
+        0.13000000000000006,
+        1.6400000000000001
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.02
+        ],
+        [
+          0.61,
+          1.045
+        ],
+        [
+          0.8,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "de6fda12-3485-5ffe-a277-bca1e6f2c46f",
+      "name": "V37/tail-fan--1",
+      "pivot": [
+        -2.22,
+        0.94,
+        3.45
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 0.3141592653589793,
+      "translation": [
+        -0.06,
+        0,
+        0
+      ],
+      "delay": 1.28,
+      "duration": 0.9,
+      "restPosition": [
+        -2.22,
+        0.94,
+        3.45
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.02
+        ],
+        [
+          0.61,
+          1.045
+        ],
+        [
+          0.8,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "3760f7c3-71a9-5f4e-a0c4-3f70ce00dae0",
+      "name": "V37/elevon-1",
+      "pivot": [
+        3.36,
+        0.56,
+        2.25
+      ],
+      "axis": [
+        1,
+        0,
+        0.33
+      ],
+      "angle": -0.41887902047863906,
+      "translation": [
+        0,
+        0.045,
+        0.07
+      ],
+      "delay": 1.02,
+      "duration": 0.82,
+      "restPosition": [
+        0.46999999999999975,
+        0.13000000000000006,
+        1.6400000000000001
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.02
+        ],
+        [
+          0.61,
+          1.045
+        ],
+        [
+          0.8,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "ce03cd25-c2de-5b13-a1f4-196dbce80842",
+      "name": "V37/tail-fan-1",
+      "pivot": [
+        2.22,
+        0.94,
+        3.45
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -0.3141592653589793,
+      "translation": [
+        0.06,
+        0,
+        0
+      ],
+      "delay": 1.28,
+      "duration": 0.9,
+      "restPosition": [
+        2.22,
+        0.94,
+        3.45
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.02
+        ],
+        [
+          0.61,
+          1.045
+        ],
+        [
+          0.8,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "abfff877-b94a-5855-a9f1-b3cd6fa84fe3",
+      "name": "V38/kestrel-belly-drop",
+      "pivot": [
+        0,
+        -0.35,
+        -2.3
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        -0.55,
+        -0.45
+      ],
+      "duration": 1.02,
+      "delay": 1.1,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0,
+        -0.35,
+        -2.3
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "03e8b4d0-1c58-54a1-a925-484e54d4d60c",
+      "name": "V38/kestrel-microbay--1/lid",
+      "pivot": [
+        -5.1263000000000005,
+        0.9391,
+        2.13
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 1.7976891295541593,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.7,
+      "delay": 0.64,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -0.42630000000000035,
+        0.32910000000000006,
+        0
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "72cc9590-e49c-54b0-a361-e7eb417a523b",
+      "name": "V38/kestrel-missile-carriage--1",
+      "pivot": [
+        -4.7,
+        0.61,
+        2.13
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.23,
+        -0.1
+      ],
+      "duration": 1.03,
+      "delay": 1.34,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -4.7,
+        0.61,
+        2.13
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "0f7a4cdb-124f-51c5-ab3c-7784c12d77af",
+      "name": "V38/kestrel-microbay-1/lid",
+      "pivot": [
+        5.1263000000000005,
+        0.9391,
+        2.13
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -1.7976891295541593,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.7,
+      "delay": 0.64,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.42630000000000035,
+        0.32910000000000006,
+        0
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "6be08a11-cd4f-5c2a-a2a8-8f2b65f0d1f6",
+      "name": "V38/kestrel-missile-carriage-1",
+      "pivot": [
+        4.7,
+        0.61,
+        2.13
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.23,
+        -0.1
+      ],
+      "duration": 1.03,
+      "delay": 1.34,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        4.7,
+        0.61,
+        2.13
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "arsenal": {
+    "version": 38,
+    "role": "游隼 · 灵巧先锋",
+    "primary": "三管速射炮",
+    "secondary": "双翼微型导弹仓",
+    "weapons": [
+      {
+        "id": "V38/kestrel-autocannon",
+        "kind": "autocannon",
+        "node": "4988ca85-cfc0-5867-aa1f-1489d71243ef",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.068,
+        "cycle": 0.18,
+        "power": 0.6,
+        "color": "#b7e9ff",
+        "offset": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/kestrel-microbay--1/round-0-0",
+        "kind": "missile",
+        "node": "fc89d06b-0a6c-5949-a9bc-702358383188",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "61dfe23f-71ab-5734-a8a3-2cfe613341d3"
+        },
+        "radius": 0.07215999999999999,
+        "length": 1.1288,
+        "cycle": 4.6,
+        "offset": 0.13,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/kestrel-microbay--1/round-0-1",
+        "kind": "missile",
+        "node": "5fd09365-e37f-5f51-a12d-a8b2918ca5ba",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "d2be2997-a1eb-5dfd-a0d7-09aa08ca5087"
+        },
+        "radius": 0.07215999999999999,
+        "length": 1.1288,
+        "cycle": 4.6,
+        "offset": 0.16,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/kestrel-microbay--1/round-0-2",
+        "kind": "missile",
+        "node": "85d1d9c4-fe85-5eed-aa7a-87e53fcf4d9c",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "742fa728-2744-5f68-aad7-d93ee4e1d1f8"
+        },
+        "radius": 0.07215999999999999,
+        "length": 1.1288,
+        "cycle": 4.6,
+        "offset": 0.45,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/kestrel-microbay-1/round-0-0",
+        "kind": "missile",
+        "node": "326b9ae1-8f7f-5c2e-aa5f-aa82c19e511f",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "ac743d65-198b-5d3a-a4d1-9c42c574483c"
+        },
+        "radius": 0.07215999999999999,
+        "length": 1.1288,
+        "cycle": 4.6,
+        "offset": 0,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/kestrel-microbay-1/round-0-1",
+        "kind": "missile",
+        "node": "13f6c384-e6df-58d9-a622-bb8f87711c68",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "bac7a2fa-1551-50d1-a28f-7dc259299f18"
+        },
+        "radius": 0.07215999999999999,
+        "length": 1.1288,
+        "cycle": 4.6,
+        "offset": 0.29000000000000004,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/kestrel-microbay-1/round-0-2",
+        "kind": "missile",
+        "node": "5a46fb49-4097-5672-aee3-154f5b1d3d62",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "a311c4e7-4377-5c17-a74d-77e0892ddd76"
+        },
+        "radius": 0.07215999999999999,
+        "length": 1.1288,
+        "cycle": 4.6,
+        "offset": 0.32,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      }
+    ],
+    "blades": [],
+    "drones": [],
+    "chargeMaterials": [
+      "5913d410-f90b-54b9-a71a-f8a7d6921a3e",
+      "42e2f831-f068-531c-a22c-6902a8c3aadc"
+    ],
+    "bladeMaterials": [
+      "a86f978e-5c01-5428-a7f4-37e56ee16f2a"
+    ],
+    "color": "#66d7f0",
+    "requiresDeployed": true,
+    "demonstrationOnly": true
+  },
+  "engineSockets": [
+    {
+      "name": "engine--1/exhaust",
+      "node": "340ecc1b-d266-5d26-af24-cb20dae622bb",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -1.88,
+        0.58,
+        6.155
+      ],
+      "radius": 0.4779
+    },
+    {
+      "name": "engine-1/exhaust",
+      "node": "be35c92d-f86d-5a02-a10a-b6bf48a9cfc3",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        1.88,
+        0.58,
+        6.155
+      ],
+      "radius": 0.4779
+    }
+  ],
+  "gunSockets": [
+    {
+      "name": "V38/kestrel-autocannon/muzzle",
+      "node": "4988ca85-cfc0-5867-aa1f-1489d71243ef",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        -0.41,
+        -3.676
+      ],
+      "radius": 0.068
+    },
+    {
+      "name": "V38/kestrel-microbay--1/round-0-0/muzzle",
+      "node": "fc89d06b-0a6c-5949-a9bc-702358383188",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.930000000000001,
+        0.73,
+        1.4036
+      ],
+      "radius": 0.07215999999999999
+    },
+    {
+      "name": "V38/kestrel-microbay--1/round-0-1/muzzle",
+      "node": "5fd09365-e37f-5f51-a12d-a8b2918ca5ba",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.7,
+        0.73,
+        1.4036
+      ],
+      "radius": 0.07215999999999999
+    },
+    {
+      "name": "V38/kestrel-microbay--1/round-0-2/muzzle",
+      "node": "85d1d9c4-fe85-5eed-aa7a-87e53fcf4d9c",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.47,
+        0.73,
+        1.4036
+      ],
+      "radius": 0.07215999999999999
+    },
+    {
+      "name": "V38/kestrel-microbay-1/round-0-0/muzzle",
+      "node": "326b9ae1-8f7f-5c2e-aa5f-aa82c19e511f",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.47,
+        0.73,
+        1.4036
+      ],
+      "radius": 0.07215999999999999
+    },
+    {
+      "name": "V38/kestrel-microbay-1/round-0-1/muzzle",
+      "node": "13f6c384-e6df-58d9-a622-bb8f87711c68",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.7,
+        0.73,
+        1.4036
+      ],
+      "radius": 0.07215999999999999
+    },
+    {
+      "name": "V38/kestrel-microbay-1/round-0-2/muzzle",
+      "node": "5a46fb49-4097-5672-aee3-154f5b1d3d62",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.930000000000001,
+        0.73,
+        1.4036
+      ],
+      "radius": 0.07215999999999999
+    }
+  ],
+  "referenceImage": "docs/v35/references/01-kestrel.png"
+}

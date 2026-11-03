@@ -48,7 +48,8 @@ export function updateFlightFighter(fighter,clock,pose){
   }
   const quiet=1-clamp(pose.thrust,0,1)*.7;
   fighter.updateAircraft(clock,{bank:pose.bank+Math.sin(clock*1.65)*.018*quiet,
-    pitch:pose.pitch+Math.sin(clock*1.2+.4)*.012*quiet,roll:pose.roll||0});
+    pitch:pose.pitch+Math.sin(clock*1.2+.4)*.012*quiet,roll:pose.roll||0,
+    ...(runtime?.asset.solid.userData.cleanAircraftSurface?{boost:pose.thrust>.6}:{} )});
   fighter.object3D.rotation.y=Math.sin(clock*1.4)*.018*quiet;
   if(!runtime)return;
   const thrust=clamp(pose.thrust,0,1),saved=[];
@@ -62,7 +63,7 @@ export function updateFlightFighter(fighter,clock,pose){
     const axis=jet.axis||[0,0,1],pulse= .88+.22*Math.sin(clock*13+index*2.3);
     for(const [index,key]of ['x','y','z'].entries())if(Math.abs(axis[index])>.5)object.scale[key]*=(.94+thrust*.22)*pulse;
     if(uniforms.uGain)uniforms.uGain.value*=(1.02+thrust*.25)*(1+.16*Math.sin(clock*11+index*2.3));
-    if(uniforms.uThrottle)uniforms.uThrottle.value=.08+thrust*.5;
+    if(uniforms.uThrottle)uniforms.uThrottle.value=runtime.asset.solid.userData.cleanAircraftSurface?Math.max(uniforms.uThrottle.value,.46+thrust*.54):.08+thrust*.5;
   }
   previousJets.set(runtime,saved);
 }

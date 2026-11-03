@@ -1,770 +1,908 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 38,
   "id": "wraith",
+  "slug": "wraith",
   "name": "白矛",
-  "reference": {
-    "sheet": "84a91970-458d-483f-9149-8a863c6a4ffa.png",
-    "row": 5,
-    "column": 4,
-    "reading": "top to bottom, left to right"
-  },
-  "geometryOrigin": "New locally authored geometry; no legacy airframe imported",
+  "number": 4,
+  "reference": "04-wraith.png",
+  "deploymentLabel": "双矛外移 · 中央轨炮前伸",
   "palette": {
-    "shell": "#d6dedc",
-    "accent": "#eceee6",
-    "dark": "#222e35",
-    "metal": "#92a9ae",
-    "energy": "#9ce6fa",
-    "glass": "#e6f8ff",
-    "secondary": "#d3f5ff"
+    "shell": "#e7e7e3",
+    "accent": "#d9dcdb",
+    "dark": "#222730",
+    "metal": "#707783",
+    "trim": "#a49a84",
+    "energy": "#a58af0",
+    "glass": "#304653"
   },
-  "parts": [
+  "deploymentName": "两级聚焦激光 · 双体脉冲副炮",
+  "transformation": {
+    "name": "两级聚焦激光 · 双体脉冲副炮",
+    "version": 38,
+    "baseGeometry": "V36 hull + V37 rig",
+    "duration": 2.9349999999999996,
+    "keyframed": true
+  },
+  "weaponIdentity": {
+    "role": "白矛 · 远程穿刺",
+    "primary": "两级聚焦激光",
+    "secondary": "双体脉冲副炮"
+  },
+  "authoringModule": "scripts/author/v35/wraith.mjs",
+  "articulations": [
     {
-      "kind": "plate",
-      "name": "egg-keel",
-      "points": [
+      "node": "cc2f2ef4-b8bc-5bac-a2df-de782ade335a",
+      "name": "lance-hull-slide--1",
+      "pivot": [
+        -3.12,
+        0.1,
+        2.05
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        -1.47,
+        0.14,
+        0
+      ],
+      "duration": 1.76,
+      "delay": 0.06,
+      "restPosition": [
+        -3.12,
+        0.1,
+        2.05
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
         [
           0,
-          -3.7
+          0
         ],
         [
-          1.18,
-          -2.94
+          0.18,
+          0.025
         ],
         [
-          1.89,
-          -1.39
+          0.32,
+          0.09
         ],
         [
-          2.04,
-          0.74
+          0.73,
+          1.018
         ],
         [
-          1.48,
-          2.51
+          0.88,
+          0.996
         ],
         [
-          0.86,
-          3.62
-        ],
-        [
-          -0.86,
-          3.62
-        ],
-        [
-          -1.48,
-          2.51
-        ],
-        [
-          -2.04,
-          0.74
-        ],
-        [
-          -1.89,
-          -1.39
-        ],
-        [
-          -1.18,
-          -2.94
+          1,
+          1
         ]
       ],
-      "y": -0.35,
-      "height": 0.63,
-      "material": "dark",
-      "pair": false
+      "motionVersion": 37
     },
     {
-      "kind": "plate",
-      "name": "white-oval-rim",
-      "points": [
+      "node": "5ba805ff-360d-5c8a-a7d2-204a911dffe1",
+      "name": "lance-hull-slide-1",
+      "pivot": [
+        3.12,
+        0.1,
+        2.05
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        1.47,
+        0.14,
+        0
+      ],
+      "duration": 1.76,
+      "delay": 0.06,
+      "restPosition": [
+        3.12,
+        0.1,
+        2.05
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
         [
           0,
-          -3.42
+          0
         ],
         [
-          1.01,
-          -2.73
+          0.18,
+          0.025
         ],
         [
-          1.7,
-          -1.21
+          0.32,
+          0.09
         ],
         [
-          1.84,
-          0.61
+          0.73,
+          1.018
         ],
         [
-          1.3,
-          2.29
+          0.88,
+          0.996
         ],
         [
-          0.76,
-          3.26
-        ],
-        [
-          -0.76,
-          3.26
-        ],
-        [
-          -1.3,
-          2.29
-        ],
-        [
-          -1.84,
-          0.61
-        ],
-        [
-          -1.7,
-          -1.21
-        ],
-        [
-          -1.01,
-          -2.73
+          1,
+          1
         ]
       ],
-      "y": 0.28,
-      "height": 0.17,
-      "material": "shell",
-      "pair": false
+      "motionVersion": 37
     },
     {
-      "kind": "plate",
-      "name": "tusk-horn",
-      "points": [
-        [
-          0.45,
-          -2.64
-        ],
-        [
-          0.67,
-          -3.49
-        ],
-        [
-          1.5,
-          -5.3
-        ],
-        [
-          1.47,
-          -4.0
-        ],
-        [
-          1.25,
-          -2.2
-        ],
-        [
-          0.96,
-          -1.71
-        ]
+      "node": "938f4c8c-5ea2-591e-a2dc-3a36550a0ecc",
+      "name": "central-rail-cannon",
+      "pivot": [
+        0,
+        -0.32,
+        1.74
       ],
-      "y": 0.3,
-      "height": 0.42,
-      "material": "accent",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "wide-shoulder",
-      "points": [
-        [
-          1.36,
-          -0.65
-        ],
-        [
-          5.96,
-          -1.21
-        ],
-        [
-          5.43,
-          0.19
-        ],
-        [
-          4.42,
-          1.08
-        ],
-        [
-          3.57,
-          2.73
-        ],
-        [
-          2.42,
-          2.39
-        ],
-        [
-          1.5,
-          1.22
-        ]
+      "axis": [
+        1,
+        0,
+        0
       ],
-      "y": -0.2,
-      "height": 0.42,
-      "material": "shell",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "outer-black-slot",
-      "points": [
-        [
-          4.46,
-          -0.7
-        ],
-        [
-          5.51,
-          -0.84
-        ],
-        [
-          5.29,
-          -0.22
-        ],
-        [
-          4.07,
-          0.59
-        ]
+      "angle": 0,
+      "translation": [
+        0,
+        -0.48,
+        -2.64
       ],
-      "y": 0.26,
-      "height": 0.035,
-      "material": "dark",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "trailing-spur",
-      "points": [
-        [
-          3.72,
-          0.96
-        ],
-        [
-          4.36,
-          0.57
-        ],
-        [
-          3.65,
-          3.12
-        ],
-        [
-          2.98,
-          3.69
-        ],
-        [
-          3.1,
-          2.15
-        ]
+      "duration": 1.44,
+      "delay": 0.73,
+      "restPosition": [
+        0,
+        -0.32,
+        1.74
       ],
-      "y": 0.07,
-      "height": 0.19,
-      "material": "accent",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "inner-wing-black",
-      "points": [
-        [
-          1.87,
-          -0.28
-        ],
-        [
-          3.7,
-          -0.55
-        ],
-        [
-          2.9,
-          0.99
-        ],
-        [
-          2.04,
-          0.75
-        ]
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
       ],
-      "y": 0.25,
-      "height": 0.035,
-      "material": "dark",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "stern-shell",
-      "points": [
+      "curve": [
         [
           0,
-          1.38
+          0
         ],
         [
-          1.19,
-          2.02
+          0.18,
+          0.025
         ],
         [
-          1.31,
-          3.8
+          0.32,
+          0.09
         ],
         [
-          0.44,
-          4.35
+          0.73,
+          1.018
         ],
         [
-          0,
-          3.63
+          0.88,
+          0.996
         ],
         [
-          -0.44,
-          4.35
-        ],
-        [
-          -1.31,
-          3.8
-        ],
-        [
-          -1.19,
-          2.02
+          1,
+          1
         ]
       ],
-      "y": 0.22,
-      "height": 0.23,
-      "material": "shell",
-      "pair": false
+      "motionVersion": 37
     },
     {
-      "kind": "box",
-      "name": "stern-tail-rod",
-      "position": [
-        0.56,
-        -0.06,
-        4.13
+      "node": "93ff515a-e515-5197-a4bb-a47fb6c1fd41",
+      "name": "V38/wraith-long-lance-laser/focus-jaw-0",
+      "pivot": [
+        0.25110000000000005,
+        -0.4,
+        -0.9352000000000001
       ],
-      "size": [
-        0.16,
-        0.24,
-        2.21
+      "axis": [
+        0,
+        -0.25110000000000005,
+        0
       ],
-      "material": "dark",
-      "pair": true
-    },
-    {
-      "kind": "vent",
-      "name": "wing-intakes",
-      "position": [
-        3.36,
-        0.26,
-        -0.44
+      "angle": 0.41887902047863906,
+      "translation": [
+        0.04017600000000001,
+        0,
+        -0.18
       ],
-      "width": 0.7,
-      "length": 0.82,
-      "count": 4,
-      "pair": true,
-      "angle": 0.12
-    },
-    {
-      "kind": "ring",
-      "name": "outer-sensor",
-      "position": [
-        5.0,
-        0.3,
-        -0.62
-      ],
-      "radius": 0.13,
-      "tube": 0.035,
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "bolts",
-      "name": "fasteners-11",
-      "positions": [
-        [
-          -5.21,
-          0.29,
-          -0.63
-        ],
-        [
-          -4.5,
-          0.29,
-          0.18
-        ],
-        [
-          -2.79,
-          0.29,
-          1.46
-        ],
-        [
-          5.21,
-          0.29,
-          -0.63
-        ],
-        [
-          4.5,
-          0.29,
-          0.18
-        ],
-        [
-          2.79,
-          0.29,
-          1.46
-        ]
-      ],
-      "radius": 0.055
-    },
-    {
-      "kind": "plate",
-      "name": "Detail/stern-black-saddle",
-      "points": [
+      "duration": 0.72,
+      "delay": 2.08,
+      "curve": [
         [
           0,
-          2.01
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
         ],
         [
           0.77,
-          2.39
+          1.025
         ],
         [
-          0.83,
-          3.44
+          0.91,
+          0.995
         ],
         [
-          0.36,
-          3.95
-        ],
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.25110000000000005,
+        0.009999999999999953,
+        -1.6852
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "046371d6-9356-5671-ab70-f171c8673bf1",
+      "name": "V38/wraith-long-lance-laser/focus-jaw-1",
+      "pivot": [
+        1.537544056329502e-17,
+        -0.14889999999999998,
+        -0.9352000000000001
+      ],
+      "axis": [
+        0.25110000000000005,
+        -1.537544056329502e-17,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        2.4600704901272034e-18,
+        0.04017600000000001,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.125,
+      "curve": [
         [
           0,
-          3.59
+          0
         ],
         [
-          -0.36,
-          3.95
+          0.2,
+          0
         ],
         [
-          -0.83,
-          3.44
+          0.6,
+          0.94
         ],
         [
-          -0.77,
-          2.39
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "y": 0.5,
-      "height": 0.035,
-      "material": "dark",
-      "pair": false,
-      "bevel": 0.018
-    },
-    {
-      "kind": "vent",
-      "name": "Detail/stern-grille",
-      "position": [
-        0.45,
-        0.57,
-        3.06
+      "motionVersion": 38,
+      "restPosition": [
+        1.537544056329502e-17,
+        0.2611,
+        -1.6852
       ],
-      "width": 0.32,
-      "length": 0.88,
-      "count": 5,
-      "pair": true
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "kind": "plate",
-      "name": "Detail/shoulder-seam",
-      "points": [
+      "node": "1b839007-20ec-525d-a2b4-f46fbf0bbe82",
+      "name": "V38/wraith-long-lance-laser/focus-jaw-2",
+      "pivot": [
+        -0.25110000000000005,
+        -0.39999999999999997,
+        -0.9352000000000001
+      ],
+      "axis": [
+        3.075088112659004e-17,
+        0.25110000000000005,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -0.04017600000000001,
+        4.920140980254407e-18,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.17,
+      "curve": [
         [
-          1.69,
-          -0.55
+          0,
+          0
         ],
         [
-          2.31,
-          -0.64
+          0.2,
+          0
         ],
         [
-          2.37,
-          0.5
+          0.6,
+          0.94
         ],
         [
-          1.89,
-          0.82
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "y": 0.295,
-      "height": 0.035,
-      "material": "metal",
-      "pair": true,
-      "bevel": 0.018
+      "motionVersion": 38,
+      "restPosition": [
+        -0.25110000000000005,
+        0.010000000000000009,
+        -1.6852
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "kind": "plate",
-      "name": "Detail/shoulder-top",
-      "points": [
+      "node": "751e24cc-0eca-522d-ab85-f6b051bc0e7b",
+      "name": "V38/wraith-long-lance-laser/focus-jaw-3",
+      "pivot": [
+        -4.612632168988506e-17,
+        -0.6511,
+        -0.9352000000000001
+      ],
+      "axis": [
+        -0.25110000000000005,
+        4.612632168988506e-17,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -7.38021147038161e-18,
+        -0.04017600000000001,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.215,
+      "curve": [
         [
-          1.83,
-          -0.39
+          0,
+          0
         ],
         [
-          2.11,
-          -0.46
+          0.2,
+          0
         ],
         [
-          2.18,
-          0.39
+          0.6,
+          0.94
         ],
         [
-          1.96,
-          0.56
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "y": 0.38,
-      "height": 0.095,
-      "material": "accent",
-      "pair": true,
-      "bevel": 0.018
+      "motionVersion": 38,
+      "restPosition": [
+        -4.612632168988506e-17,
+        -0.24110000000000004,
+        -1.6852
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "kind": "plate",
-      "name": "Detail/tusk-inset",
-      "points": [
-        [
-          0.88,
-          -2.49
-        ],
-        [
-          1.1,
-          -3.01
-        ],
-        [
-          1.3,
-          -4.47
-        ],
-        [
-          1.04,
-          -3.4
-        ]
-      ],
-      "y": 0.805,
-      "height": 0.018,
-      "material": "metal",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "plate",
-      "name": "Detail/outer-wing-seam",
-      "points": [
-        [
-          4.09,
-          0.31
-        ],
-        [
-          4.67,
-          -0.2
-        ],
-        [
-          4.21,
-          0.82
-        ],
-        [
-          3.61,
-          1.47
-        ]
-      ],
-      "y": 0.32,
-      "height": 0.03,
-      "material": "dark",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "box",
-      "name": "Detail/wing-fastener-0.4",
-      "position": [
-        3.72,
-        0.34,
-        0.4
-      ],
-      "size": [
-        0.09,
-        0.056,
-        0.09
-      ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/wing-fastener-0.75",
-      "position": [
-        3.72,
-        0.34,
+      "node": "6e6a2a0b-a67f-5304-affc-7355dfdfe6b1",
+      "name": "V38/wraith-focus-stage",
+      "pivot": [
+        0,
+        -0.41,
         0.75
       ],
-      "size": [
-        0.09,
-        0.056,
-        0.09
+      "axis": [
+        0,
+        1,
+        0
       ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/wing-fastener-1.1",
-      "position": [
-        3.72,
-        0.34,
-        1.1
+      "angle": 0,
+      "translation": [
+        0,
+        0,
+        -0.7
       ],
-      "size": [
-        0.09,
-        0.056,
-        0.09
-      ],
-      "material": "metal",
-      "pair": true
-    }
-  ],
-  "engines": [
-    {
-      "name": "thruster-0",
-      "anchor": [
-        2.55,
-        -0.25,
-        2.48
-      ],
-      "radius": 0.6,
-      "length": 1.74,
-      "pair": true
-    }
-  ],
-  "weapons": [
-    {
-      "name": "weapon-0",
-      "muzzle": [
-        4.8,
-        0.25,
-        -0.25
-      ],
-      "radius": 0.115,
-      "length": 1.33,
-      "pair": true
-    }
-  ],
-  "energyPaths": [
-    {
-      "name": "tusk-track",
-      "points": [
+      "duration": 0.92,
+      "delay": 1.64,
+      "curve": [
         [
-          0.74,
-          0.79,
-          -2.72
+          0,
+          0
         ],
         [
-          0.93,
-          0.79,
-          -3.7
+          0.2,
+          0
         ],
         [
-          1.39,
-          0.79,
-          -4.72
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "width": 0.035,
-      "pair": true,
-      "gain": 0.38
+      "motionVersion": 38,
+      "restPosition": [
+        0,
+        -0.41,
+        0.75
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "name": "wing-trailing-outline",
-      "points": [
+      "node": "2866221d-4e33-5e3b-a472-0c345f4ccf00",
+      "name": "V38/wraith-piercing-emitter--1/focus-jaw-0",
+      "pivot": [
+        -2.5684,
+        -0.2,
+        -3.3676
+      ],
+      "axis": [
+        0,
+        -0.1116,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        0.017856,
+        0,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 1.3,
+      "curve": [
         [
-          1.9,
-          0.27,
-          0.8
+          0,
+          0
         ],
         [
-          2.62,
-          0.27,
-          1.78
+          0.2,
+          0
         ],
         [
-          3.39,
-          0.27,
-          2.15
+          0.6,
+          0.94
         ],
         [
-          4.17,
-          0.27,
-          0.73
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "width": 0.04,
-      "pair": true,
-      "gain": 0.48
-    }
-  ],
-  "arcPaths": [
-    {
-      "start": [
-        1.7,
-        0.6,
-        0.8
+      "motionVersion": 38,
+      "restPosition": [
+        -2.5684,
+        -0.2,
+        -3.3676
       ],
-      "end": [
-        2.46,
-        0.45,
-        1.75
-      ],
-      "pair": true
-    }
-  ],
-  "veils": [
-    {
-      "anchor": [
-        3.23,
-        -0.28,
-        2.23
-      ],
-      "length": 2.02,
-      "width": 0.33,
-      "pair": true
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "anchor": [
-        0.93,
-        -0.1,
-        3.32
+      "node": "771dc01f-e640-5eca-ac8c-695443a02a3c",
+      "name": "V38/wraith-piercing-emitter--1/focus-jaw-1",
+      "pivot": [
+        -2.7916000000000003,
+        -0.2,
+        -3.3676
       ],
-      "length": 1.54,
-      "width": 0.27,
-      "pair": true
-    }
-  ],
-  "decals": [
+      "axis": [
+        1.366705827848446e-17,
+        0.1116,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -0.017856,
+        2.1867293245575137e-18,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 1.345,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -2.7916000000000003,
+        -0.2,
+        -3.3676
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
     {
-      "position": [
-        3.8,
-        0.46,
-        -0.46
+      "node": "3723d387-ed07-53f9-ab5b-7a4fab97d20a",
+      "name": "V38/wraith-piercing-emitter-1/focus-jaw-0",
+      "pivot": [
+        2.7916000000000003,
+        -0.2,
+        -3.3676
       ],
-      "size": [
-        0.86,
-        0.23
+      "axis": [
+        0,
+        -0.1116,
+        0
       ],
-      "angle": 0.12,
-      "pair": true,
-      "text": "FOXPEN"
+      "angle": 0.41887902047863906,
+      "translation": [
+        0.017856,
+        0,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 1.3,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        2.7916000000000003,
+        -0.2,
+        -3.3676
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "0fe2a125-ef48-5b27-adf9-6d4fb495c228",
+      "name": "V38/wraith-piercing-emitter-1/focus-jaw-1",
+      "pivot": [
+        2.5684,
+        -0.2,
+        -3.3676
+      ],
+      "axis": [
+        1.366705827848446e-17,
+        0.1116,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -0.017856,
+        2.1867293245575137e-18,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 1.345,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        2.5684,
+        -0.2,
+        -3.3676
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     }
   ],
-  "camera": {
-    "defaultDirection": [
-      17,
-      24,
-      -23
-    ]
-  },
-  "cockpit": {
-    "center": [
-      0,
-      0.59,
-      -0.2
+  "arsenal": {
+    "version": 38,
+    "role": "白矛 · 远程穿刺",
+    "primary": "两级聚焦激光",
+    "secondary": "双体脉冲副炮",
+    "weapons": [
+      {
+        "id": "V38/wraith-long-lance-laser",
+        "kind": "laserLance",
+        "node": "65e28f15-4a8a-5b87-a8ae-74315f3dcda6",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.081,
+        "power": 1.8,
+        "cycle": 2.3,
+        "beamWidth": 0.054000000000000006,
+        "beamLength": 17,
+        "color": "#a58af0",
+        "offset": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/wraith-piercing-emitter--1",
+        "kind": "laserRapid",
+        "node": "640d0689-c5b0-517b-a4fa-64ba7a98cb9d",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.036,
+        "power": 0.45,
+        "cycle": 0.4,
+        "beamWidth": 0.024,
+        "beamLength": 17,
+        "color": "#a58af0",
+        "offset": 0.13,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/wraith-piercing-emitter-1",
+        "kind": "laserRapid",
+        "node": "f05459ca-ffaf-5f7b-a31b-53d38084c9ef",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.036,
+        "power": 0.45,
+        "cycle": 0.4,
+        "beamWidth": 0.024,
+        "beamLength": 17,
+        "color": "#a58af0",
+        "offset": 0,
+        "enabledAfter": 0.985
+      }
     ],
-    "width": 3.0,
-    "length": 3.68,
-    "height": 1.13,
-    "interior": "cockpit",
-    "segments": 48
-  }
+    "blades": [],
+    "drones": [],
+    "chargeMaterials": [
+      "5f53a5c0-1ca0-57d0-a96b-db2cb36104de",
+      "cb80c755-0361-5148-a0e1-aef5a306b65e"
+    ],
+    "bladeMaterials": [
+      "2292ab08-00bf-5cf5-aace-0ad9b46515a5"
+    ],
+    "color": "#a58af0",
+    "requiresDeployed": true,
+    "demonstrationOnly": true
+  },
+  "engineSockets": [
+    {
+      "name": "lance/ion-engine--1/exhaust",
+      "node": "4dc8d0ec-6776-50d0-a246-1b9185dcf598",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.12,
+        0.07,
+        5.985
+      ],
+      "radius": 0.5103000000000001
+    },
+    {
+      "name": "lance/ion-engine-1/exhaust",
+      "node": "87f0b90b-b34a-50c3-ab78-841f9ddbc2d7",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.12,
+        0.07,
+        5.985
+      ],
+      "radius": 0.5103000000000001
+    }
+  ],
+  "gunSockets": [
+    {
+      "name": "V38/wraith-long-lance-laser/muzzle",
+      "node": "65e28f15-4a8a-5b87-a8ae-74315f3dcda6",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        -0.4,
+        -1.4552
+      ],
+      "radius": 0.081
+    },
+    {
+      "name": "V38/wraith-piercing-emitter--1/muzzle",
+      "node": "640d0689-c5b0-517b-a4fa-64ba7a98cb9d",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.68,
+        -0.2,
+        -3.8876
+      ],
+      "radius": 0.036
+    },
+    {
+      "name": "V38/wraith-piercing-emitter-1/muzzle",
+      "node": "f05459ca-ffaf-5f7b-a31b-53d38084c9ef",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.68,
+        -0.2,
+        -3.8876
+      ],
+      "radius": 0.036
+    }
+  ],
+  "referenceImage": "docs/v35/references/04-wraith.png"
 }

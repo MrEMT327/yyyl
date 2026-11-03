@@ -1,915 +1,2016 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 38,
   "id": "bastion",
+  "slug": "bastion",
   "name": "苍垒",
-  "reference": {
-    "sheet": "84a91970-458d-483f-9149-8a863c6a4ffa.png",
-    "row": 5,
-    "column": 5,
-    "reading": "top to bottom, left to right"
-  },
-  "geometryOrigin": "New locally authored geometry; no legacy airframe imported",
+  "number": 3,
+  "reference": "03-bastion.png",
+  "deploymentName": "十八联导弹巢 · 中央攻城炮 / 肩部火箭",
   "palette": {
-    "shell": "#2866b5",
-    "accent": "#c9e1f2",
-    "dark": "#152432",
-    "metal": "#6e859c",
-    "energy": "#6fd5ff",
-    "glass": "#c7ebff",
-    "secondary": "#a4bdff"
+    "shell": "#3d4a5c",
+    "accent": "#d7d2c5",
+    "dark": "#20262e",
+    "metal": "#6c747c",
+    "trim": "#ad9368",
+    "energy": "#ffc17a",
+    "glass": "#263a43"
   },
-  "parts": [
+  "transformation": {
+    "name": "十八联导弹巢 · 中央攻城炮 / 肩部火箭",
+    "version": 38,
+    "baseGeometry": "V36 hull + V37 rig",
+    "duration": 2.52,
+    "keyframed": true
+  },
+  "weaponIdentity": {
+    "role": "苍垒 · 空中武库",
+    "primary": "十八联导弹巢",
+    "secondary": "中央攻城炮 / 肩部火箭"
+  },
+  "authoringModule": "scripts/author/v35/bastion.mjs",
+  "articulations": [
     {
-      "kind": "plate",
-      "name": "stepped-keel",
-      "points": [
+      "node": "57a7e155-3092-5280-a82c-3da8d71c1a1f",
+      "name": "deploy/armoured-bay-door--1",
+      "pivot": [
+        -3.43,
+        1.21,
+        0.62
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 1.413716694115407,
+      "translation": [
+        -0.06,
+        0.09,
+        0
+      ],
+      "duration": 1.44,
+      "delay": 0,
+      "restPosition": [
+        -3.43,
+        1.21,
+        0.62
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
         [
           0,
-          -5.6
+          0
         ],
         [
-          1.0,
-          -4.84
+          0.16,
+          0.025
         ],
         [
-          1.35,
-          -3.22
+          0.28,
+          0.045
         ],
         [
-          2.15,
-          -2.7
+          0.64,
+          1.018
         ],
         [
-          2.25,
-          2.44
+          0.82,
+          0.995
         ],
         [
-          1.62,
-          3.96
-        ],
-        [
-          -1.62,
-          3.96
-        ],
-        [
-          -2.25,
-          2.44
-        ],
-        [
-          -2.15,
-          -2.7
-        ],
-        [
-          -1.35,
-          -3.22
-        ],
-        [
-          -1.0,
-          -4.84
+          1,
+          1
         ]
       ],
-      "y": -0.56,
-      "height": 0.83,
-      "material": "dark",
-      "pair": false
+      "motionVersion": 37
     },
     {
-      "kind": "plate",
-      "name": "upper-body-deck",
-      "points": [
+      "node": "17942f42-4248-50d8-af8a-6fbc08397bb2",
+      "name": "deploy/triple-cannon-platform--1",
+      "pivot": [
+        -2.66,
+        0.62,
+        -0.84
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.15707963267948966,
+      "translation": [
+        0,
+        1.37,
+        -0.35
+      ],
+      "duration": 1.4,
+      "delay": 0.7,
+      "restPosition": [
+        -2.66,
+        0.62,
+        -0.84
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
         [
           0,
-          -5.1
+          0
         ],
         [
-          0.8,
-          -4.47
+          0.18,
+          0.025
         ],
         [
-          1.04,
-          -2.91
+          0.32,
+          0.09
         ],
         [
-          1.97,
-          -2.42
+          0.73,
+          1.018
         ],
         [
-          1.98,
-          2.33
+          0.88,
+          0.996
         ],
         [
-          1.4,
-          3.63
-        ],
-        [
-          -1.4,
-          3.63
-        ],
-        [
-          -1.98,
-          2.33
-        ],
-        [
-          -1.97,
-          -2.42
-        ],
-        [
-          -1.04,
-          -2.91
-        ],
-        [
-          -0.8,
-          -4.47
+          1,
+          1
         ]
       ],
-      "y": 0.24,
-      "height": 0.4,
-      "material": "shell",
-      "pair": false
+      "motionVersion": 37
     },
     {
-      "kind": "plate",
-      "name": "stair-wing",
-      "points": [
-        [
-          1.83,
-          -2.75
-        ],
-        [
-          2.91,
-          -2.51
-        ],
-        [
-          3.09,
-          -0.35
-        ],
-        [
-          3.88,
-          -0.15
-        ],
-        [
-          4.04,
-          1.4
-        ],
-        [
-          5.04,
-          1.57
-        ],
-        [
-          7.08,
-          4.85
-        ],
-        [
-          4.77,
-          4.48
-        ],
-        [
-          3.61,
-          3.61
-        ],
-        [
-          1.84,
-          3.0
-        ]
-      ],
-      "y": -0.32,
-      "height": 0.42,
-      "material": "shell",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "stair-wing-tip-white",
-      "points": [
-        [
-          4.54,
-          1.95
-        ],
-        [
-          5.03,
-          2.05
-        ],
-        [
-          6.76,
-          4.52
-        ],
-        [
-          5.36,
-          4.31
-        ],
-        [
-          4.76,
-          3.2
-        ]
-      ],
-      "y": 0.18,
-      "height": 0.055,
-      "material": "accent",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "tier-shoulder-casing",
-      "points": [
-        [
-          1.45,
-          -3.66
-        ],
-        [
-          2.04,
-          -3.88
-        ],
-        [
-          2.55,
-          -2.82
-        ],
-        [
-          2.6,
-          1.99
-        ],
-        [
-          1.93,
-          2.67
-        ],
-        [
-          1.6,
-          1.89
-        ]
-      ],
-      "y": 0.5,
-      "height": 0.44,
-      "material": "shell",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "tier-shoulder-white",
-      "points": [
-        [
-          1.63,
-          -3.34
-        ],
-        [
-          1.95,
-          -3.49
-        ],
-        [
-          2.29,
-          -2.54
-        ],
-        [
-          2.27,
-          0.98
-        ],
-        [
-          1.97,
-          1.43
-        ],
-        [
-          1.68,
-          0.76
-        ]
-      ],
-      "y": 1.03,
-      "height": 0.042,
-      "material": "accent",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "side-thruster-armor",
-      "points": [
-        [
-          2.83,
-          -0.29
-        ],
-        [
-          3.52,
-          -0.05
-        ],
-        [
-          3.73,
-          2.9
-        ],
-        [
-          3.11,
-          3.49
-        ],
-        [
-          2.74,
-          2.58
-        ]
-      ],
-      "y": 0.16,
-      "height": 0.34,
-      "material": "dark",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "cannon-bulwark",
-      "points": [
-        [
-          0.39,
-          -4.05
-        ],
-        [
-          0.78,
-          -4.73
-        ],
-        [
-          0.98,
-          -3.78
-        ],
-        [
-          0.79,
-          -1.94
-        ],
-        [
-          0.38,
-          -2.11
-        ]
-      ],
-      "y": 0.81,
-      "height": 0.3,
-      "material": "accent",
-      "pair": true
-    },
-    {
-      "kind": "vent",
-      "name": "outer-wing-slats",
-      "position": [
+      "node": "ada9bc79-d2b3-53c0-adbc-0ff5b2b8f2e8",
+      "name": "deploy/armoured-bay-door-1",
+      "pivot": [
         3.43,
-        0.66,
-        1.85
+        1.21,
+        0.62
       ],
-      "width": 0.56,
-      "length": 1.0,
-      "count": 5,
-      "pair": true,
-      "angle": 0
-    },
-    {
-      "kind": "vent",
-      "name": "aft-heavy-radiator",
-      "position": [
-        1.08,
-        0.78,
-        2.63
+      "axis": [
+        0,
+        0,
+        1
       ],
-      "width": 0.58,
-      "length": 1.13,
-      "count": 6,
-      "pair": true,
-      "angle": 0
-    },
-    {
-      "kind": "vent",
-      "name": "forward-vent",
-      "position": [
-        0.99,
-        0.88,
-        -2.5
+      "angle": -1.413716694115407,
+      "translation": [
+        0.06,
+        0.09,
+        0
       ],
-      "width": 0.38,
-      "length": 0.72,
-      "count": 5,
-      "pair": true,
-      "angle": 0
-    },
-    {
-      "kind": "bolts",
-      "name": "fasteners-11",
-      "positions": [
+      "duration": 1.44,
+      "delay": 0,
+      "restPosition": [
+        3.43,
+        1.21,
+        0.62
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
         [
-          -5.6,
-          0.31,
-          4.13
+          0,
+          0
         ],
         [
-          -4.68,
-          0.31,
-          2.56
+          0.16,
+          0.025
         ],
         [
-          -3.55,
-          0.31,
-          0.24
+          0.28,
+          0.045
         ],
         [
-          -2.73,
-          0.31,
-          -1.77
+          0.64,
+          1.018
         ],
         [
-          5.6,
-          0.31,
-          4.13
+          0.82,
+          0.995
         ],
         [
-          4.68,
-          0.31,
-          2.56
-        ],
-        [
-          3.55,
-          0.31,
-          0.24
-        ],
-        [
-          2.73,
-          0.31,
-          -1.77
+          1,
+          1
         ]
       ],
-      "radius": 0.055
+      "motionVersion": 37
     },
     {
-      "kind": "plate",
-      "name": "Detail/broad-top-recess",
-      "points": [
+      "node": "3bc7f190-609d-54ba-ae4c-7e9fbce40f5a",
+      "name": "deploy/triple-cannon-platform-1",
+      "pivot": [
+        2.66,
+        0.62,
+        -0.84
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.15707963267948966,
+      "translation": [
+        0,
+        1.37,
+        -0.35
+      ],
+      "duration": 1.4,
+      "delay": 0.7,
+      "restPosition": [
+        2.66,
+        0.62,
+        -0.84
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
         [
-          0.69,
-          -1.7
+          0,
+          0
         ],
         [
-          1.27,
-          -1.66
+          0.18,
+          0.025
         ],
         [
-          1.24,
-          0.95
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "4d1b6b01-f608-5b4e-a8d6-ae6c6c0510c5",
+      "name": "V37/actuator/deploy/triple-cannon-platform--1/-1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.815,
+        -0.45
+      ],
+      "restPosition": [
+        -2.7550000000000003,
+        0.5237036930001183,
+        -0.7368302599387156
+      ],
+      "restQuaternion": [
+        -0.24957867223963992,
+        0,
+        0,
+        0.9683545251420568
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8619613314996635,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.47,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "67a7228d-31fa-50a3-a332-68730268cc34",
+      "name": "V37/actuator/deploy/triple-cannon-platform--1/1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.815,
+        -0.45
+      ],
+      "restPosition": [
+        -2.565,
+        0.5237036930001183,
+        -0.7368302599387156
+      ],
+      "restQuaternion": [
+        -0.24957867223963992,
+        0,
+        0,
+        0.9683545251420568
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8619613314996635,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.47,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "d27b8ba1-95c7-57f9-a6e7-093557f2208c",
+      "name": "V37/actuator/deploy/triple-cannon-platform-1/-1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.815,
+        -0.45
+      ],
+      "restPosition": [
+        2.565,
+        0.5237036930001183,
+        -0.7368302599387156
+      ],
+      "restQuaternion": [
+        -0.24957867223963992,
+        0,
+        0,
+        0.9683545251420568
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8619613314996635,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.47,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "7e65ff50-063e-5a45-a781-c13802d3f389",
+      "name": "V37/actuator/deploy/triple-cannon-platform-1/1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.815,
+        -0.45
+      ],
+      "restPosition": [
+        2.7550000000000003,
+        0.5237036930001183,
+        -0.7368302599387156
+      ],
+      "restQuaternion": [
+        -0.24957867223963992,
+        0,
+        0,
+        0.9683545251420568
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8619613314996635,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.47,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "7724eaa0-1360-5511-a023-fa15deb160c3",
+      "name": "V38/bastion-launcher-tilt--1",
+      "pivot": [
+        -2.66,
+        0.79,
+        0.1
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.24434609527920614,
+      "translation": [
+        0,
+        0.08,
+        0
+      ],
+      "duration": 1.02,
+      "delay": 1.5,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
         ],
         [
           0.77,
-          1.45
+          1.025
         ],
         [
-          0.59,
-          0.79
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "y": 0.7,
-      "height": 0.04,
-      "material": "dark",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "plate",
-      "name": "Detail/broad-top-panel",
-      "points": [
-        [
-          0.81,
-          -1.43
-        ],
-        [
-          1.11,
-          -1.4
-        ],
-        [
-          1.12,
-          0.66
-        ],
-        [
-          0.78,
-          1.03
-        ]
+      "motionVersion": 38,
+      "restPosition": [
+        -2.66,
+        0.79,
+        0.1
       ],
-      "y": 0.77,
-      "height": 0.085,
-      "material": "shell",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "vent",
-      "name": "Detail/center-aft-heat-exchanger",
-      "position": [
+      "restQuaternion": [
         0,
-        0.77,
-        2.28
-      ],
-      "width": 1.02,
-      "length": 0.94,
-      "count": 6,
-      "pair": false
-    },
-    {
-      "kind": "plate",
-      "name": "Detail/aft-reactor-shoulder",
-      "points": [
-        [
-          0.27,
-          1.18
-        ],
-        [
-          0.67,
-          1.34
-        ],
-        [
-          0.54,
-          2.02
-        ],
-        [
-          0.24,
-          1.9
-        ]
-      ],
-      "y": 0.76,
-      "height": 0.3,
-      "material": "metal",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "plate",
-      "name": "Detail/tower-cover",
-      "points": [
-        [
-          1.63,
-          -2.34
-        ],
-        [
-          2.2,
-          -2.2
-        ],
-        [
-          2.2,
-          0.69
-        ],
-        [
-          1.75,
-          1.07
-        ]
-      ],
-      "y": 1.16,
-      "height": 0.12,
-      "material": "shell",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "vent",
-      "name": "Detail/tower-grille",
-      "position": [
-        1.95,
-        1.355,
-        -0.63
-      ],
-      "width": 0.32,
-      "length": 1.14,
-      "count": 7,
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/tower-fastener--1.76",
-      "position": [
-        2.26,
-        1.055,
-        -1.76
-      ],
-      "size": [
-        0.105,
-        0.057,
-        0.105
-      ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/tower-fastener--1.21",
-      "position": [
-        2.26,
-        1.055,
-        -1.21
-      ],
-      "size": [
-        0.105,
-        0.057,
-        0.105
-      ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/tower-fastener--0.66",
-      "position": [
-        2.26,
-        1.055,
-        -0.66
-      ],
-      "size": [
-        0.105,
-        0.057,
-        0.105
-      ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/tower-fastener--0.11",
-      "position": [
-        2.26,
-        1.055,
-        -0.11
-      ],
-      "size": [
-        0.105,
-        0.057,
-        0.105
-      ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "box",
-      "name": "Detail/tower-fastener-0.44",
-      "position": [
-        2.26,
-        1.055,
-        0.44
-      ],
-      "size": [
-        0.105,
-        0.057,
-        0.105
-      ],
-      "material": "metal",
-      "pair": true
-    },
-    {
-      "kind": "plate",
-      "name": "Detail/wing-seam",
-      "points": [
-        [
-          4.25,
-          2.22
-        ],
-        [
-          4.94,
-          2.65
-        ],
-        [
-          5.6,
-          3.92
-        ],
-        [
-          5.14,
-          3.58
-        ]
-      ],
-      "y": 0.23,
-      "height": 0.037,
-      "material": "dark",
-      "pair": true,
-      "bevel": 0.018
-    },
-    {
-      "kind": "box",
-      "name": "Detail/spine-contact--4.6",
-      "position": [
         0,
-        0.728,
-        -4.6
+        0,
+        1
+      ]
+    },
+    {
+      "node": "a48fa021-7ae1-5661-afc3-2acd67dace11",
+      "name": "V38/bastion-short-range-rockets--1/lid",
+      "pivot": [
+        -4.743,
+        1.037,
+        0.85
       ],
-      "size": [
-        0.39,
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 1.7976891295541593,
+      "translation": [
+        0,
         0.04,
-        0.08
+        0
       ],
-      "material": "metal",
-      "pair": false
-    },
-    {
-      "kind": "box",
-      "name": "Detail/spine-contact--4.13",
-      "position": [
-        0,
-        0.728,
-        -4.13
-      ],
-      "size": [
-        0.39,
-        0.04,
-        0.08
-      ],
-      "material": "metal",
-      "pair": false
-    },
-    {
-      "kind": "box",
-      "name": "Detail/spine-contact--3.66",
-      "position": [
-        0,
-        0.728,
-        -3.66
-      ],
-      "size": [
-        0.39,
-        0.04,
-        0.08
-      ],
-      "material": "metal",
-      "pair": false
-    }
-  ],
-  "engines": [
-    {
-      "name": "thruster-0",
-      "anchor": [
-        1.2,
-        -0.12,
-        3.7
-      ],
-      "radius": 0.63,
-      "length": 1.96,
-      "pair": true
-    },
-    {
-      "name": "thruster-1",
-      "anchor": [
-        3.43,
-        -0.2,
-        3.42
-      ],
-      "radius": 0.43,
-      "length": 1.52,
-      "pair": true
-    }
-  ],
-  "weapons": [
-    {
-      "name": "weapon-0",
-      "muzzle": [
-        0.46,
-        1.1,
-        -6.45
-      ],
-      "radius": 0.12,
-      "length": 2.8,
-      "pair": true
-    },
-    {
-      "name": "weapon-1",
-      "muzzle": [
-        1.45,
-        1.14,
-        -5.68
-      ],
-      "radius": 0.14,
-      "length": 2.9,
-      "pair": true
-    },
-    {
-      "name": "weapon-2",
-      "muzzle": [
-        3.09,
-        0.53,
-        -2.71
-      ],
-      "radius": 0.13,
-      "length": 1.82,
-      "pair": true
-    }
-  ],
-  "energyPaths": [
-    {
-      "name": "stepped-emitter",
-      "points": [
+      "duration": 0.7,
+      "delay": 0.48,
+      "curve": [
         [
-          2.73,
-          0.24,
-          -2.21
+          0,
+          0
         ],
         [
-          2.87,
-          0.24,
-          0.1
+          0.2,
+          0
         ],
         [
-          3.71,
-          0.24,
-          0.35
+          0.6,
+          0.94
         ],
         [
-          3.87,
-          0.24,
-          1.68
+          0.77,
+          1.025
         ],
         [
-          4.7,
-          0.24,
-          1.9
+          0.91,
+          0.995
         ],
         [
-          6.3,
-          0.24,
-          4.21
+          1,
+          1
         ]
       ],
-      "width": 0.075,
-      "pair": true,
-      "gain": 0.63
+      "motionVersion": 38,
+      "restPosition": [
+        -0.34299999999999997,
+        0.4969999999999999,
+        -0.030000000000000027
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "name": "armored-rail",
-      "points": [
+      "node": "d4d39f5a-a5aa-5030-a95d-ae15c6ef3a47",
+      "name": "V38/bastion-shoulder-rocket-lift--1",
+      "pivot": [
+        -4.4,
+        0.54,
+        0.88
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.3490658503988659,
+      "translation": [
+        0,
+        0.48,
+        -0.16
+      ],
+      "duration": 1.08,
+      "delay": 1.23,
+      "curve": [
         [
-          1.78,
-          1.1,
-          -3.27
+          0,
+          0
         ],
         [
-          1.96,
-          1.1,
-          -2.24
+          0.2,
+          0
         ],
         [
-          1.96,
-          1.1,
-          0.67
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
         ]
       ],
-      "width": 0.06,
-      "pair": true,
-      "gain": 0.6
-    }
-  ],
-  "arcPaths": [
-    {
-      "start": [
-        1.91,
-        1.04,
-        0.86
+      "motionVersion": 38,
+      "restPosition": [
+        -4.4,
+        0.54,
+        0.88
       ],
-      "end": [
-        3.45,
-        0.63,
-        1.42
-      ],
-      "pair": true
-    }
-  ],
-  "veils": [
-    {
-      "anchor": [
-        3.72,
-        -0.3,
-        3.08
-      ],
-      "length": 2.26,
-      "width": 0.42,
-      "pair": true
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     },
     {
-      "anchor": [
-        5.36,
-        -0.3,
-        3.54
+      "node": "1d831419-62d0-5e60-a971-b5b6d306f3cd",
+      "name": "V38/bastion-launcher-tilt-1",
+      "pivot": [
+        2.66,
+        0.79,
+        0.1
       ],
-      "length": 1.95,
-      "width": 0.28,
-      "pair": true
-    }
-  ],
-  "decals": [
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.24434609527920614,
+      "translation": [
+        0,
+        0.08,
+        0
+      ],
+      "duration": 1.02,
+      "delay": 1.5,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        2.66,
+        0.79,
+        0.1
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
     {
-      "position": [
-        4.48,
-        0.42,
-        3.61
+      "node": "a29d2613-fccc-5e49-a0a5-5249f7291365",
+      "name": "V38/bastion-short-range-rockets-1/lid",
+      "pivot": [
+        4.743,
+        1.037,
+        0.85
       ],
-      "size": [
-        1.1,
-        0.25
+      "axis": [
+        0,
+        0,
+        1
       ],
-      "angle": -0.4,
-      "pair": true,
-      "text": "FOXPEN"
+      "angle": -1.7976891295541593,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.7,
+      "delay": 0.48,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.34299999999999997,
+        0.4969999999999999,
+        -0.030000000000000027
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "4b123295-4288-559b-af41-997baa343da7",
+      "name": "V38/bastion-shoulder-rocket-lift-1",
+      "pivot": [
+        4.4,
+        0.54,
+        0.88
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.3490658503988659,
+      "translation": [
+        0,
+        0.48,
+        -0.16
+      ],
+      "duration": 1.08,
+      "delay": 1.23,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        4.4,
+        0.54,
+        0.88
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "0379360f-3004-56f2-ac8c-d5a34fee16b4",
+      "name": "V38/bastion-dorsal-trunnion",
+      "pivot": [
+        0,
+        1.36,
+        0.9
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.13962634015954636,
+      "translation": [
+        0,
+        0.94,
+        -0.32
+      ],
+      "duration": 1.35,
+      "delay": 1.12,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0,
+        1.36,
+        0.9
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
     }
   ],
-  "camera": {
-    "defaultDirection": [
-      17,
-      24,
-      -23
-    ]
-  },
-  "cockpit": {
-    "center": [
-      0,
-      0.69,
-      -0.4
+  "arsenal": {
+    "version": 38,
+    "role": "苍垒 · 空中武库",
+    "primary": "十八联导弹巢",
+    "secondary": "中央攻城炮 / 肩部火箭",
+    "weapons": [
+      {
+        "id": "V38/bastion-nine-cell--1/round-0-0",
+        "kind": "missile",
+        "node": "54591aa7-7e3f-5424-ac27-125a2171a326",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "3d2afd4a-563b-5ca0-a470-e047ed27062f"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-0-1",
+        "kind": "missile",
+        "node": "b1b80b93-2ec6-529a-ae69-6b8cbc655ef6",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "e6e781ac-0b2a-57e7-a2a8-17801c449817"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.29000000000000004,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-0-2",
+        "kind": "missile",
+        "node": "275318e6-4b0f-505c-a4da-8860d7f0b93d",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "b0ef86f0-8d2b-5bd7-aa26-cfd2af23f91d"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.32,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-1-0",
+        "kind": "missile",
+        "node": "6bf31226-9db5-57f2-ab62-84309db4aa43",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "5687f19c-24bf-55df-a4e3-d523ad60e27f"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.61,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-1-1",
+        "kind": "missile",
+        "node": "e47a19cb-dcb8-5674-aca7-6a03375620da",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "0ef427eb-c61d-5ad4-a489-7db554e54773"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.64,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-1-2",
+        "kind": "missile",
+        "node": "cbc83c5f-41bd-583e-a350-488bb3d52e02",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "c397f9a9-aae5-5c80-a432-791043b233e5"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.93,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-2-0",
+        "kind": "missile",
+        "node": "1e8a98a4-565a-5876-a5d4-79d02df0f3ef",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "6ff08f5d-f0d5-5e80-aa9d-99c95481124c"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.96,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-2-1",
+        "kind": "missile",
+        "node": "0eea0e07-b4a7-5bc1-a5d7-03ce29783248",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "3bed403a-1af5-59ff-a089-7d37a256ae8c"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 1.25,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell--1/round-2-2",
+        "kind": "missile",
+        "node": "60914e23-9623-5723-a738-61807a3e008e",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "2a0ce456-3695-599b-a463-26dd2807a218"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 1.28,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets--1/round-0-0",
+        "kind": "rocket",
+        "node": "e8c069cf-99cc-5414-a704-11a9482992e1",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "2ac8a9f7-18fb-5848-a65a-517c89ee39f4"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.13,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets--1/round-0-1",
+        "kind": "rocket",
+        "node": "5c5b21bb-d472-505c-a672-c257758821f1",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "e9ffd0e7-2e05-5adf-a690-dcb928e443e3"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.16,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets--1/round-1-0",
+        "kind": "rocket",
+        "node": "6609313f-3933-5fcf-a086-3b60bee31bed",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "8a34aab2-6559-59fe-afea-dff8be23e44b"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.45,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets--1/round-1-1",
+        "kind": "rocket",
+        "node": "d8b5c8ad-853a-5073-a15e-ab9a5a03c570",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "03aa2fd9-deed-54d3-a0c6-6aca407492b8"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.48,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": -1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-0-0",
+        "kind": "missile",
+        "node": "3cf3488c-6bb9-5f26-abbc-e43acd373415",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "652f4acf-6d4d-54b2-a535-60db3316175a"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.13,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-0-1",
+        "kind": "missile",
+        "node": "2af3f9ee-0afa-557e-ab8d-b8d0975b2e0d",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "03008261-9666-518e-a67d-61ea66a458c9"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.16,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-0-2",
+        "kind": "missile",
+        "node": "8232f6e3-e2dc-5b8f-ad13-a0b7f6694c0a",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "2a3e39f3-a8e6-595b-a708-ec698826b15e"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.45,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-1-0",
+        "kind": "missile",
+        "node": "d365aeb4-f711-5336-a1a7-beaf10429add",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "69970aa2-1c02-5de7-a2b3-b0610f160dcb"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.48,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-1-1",
+        "kind": "missile",
+        "node": "6b5e3317-cefc-58a5-a5ee-5e2fa0c85d63",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "8f7a2aa9-4a65-55d9-a7d3-92012cfe78a2"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.77,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-1-2",
+        "kind": "missile",
+        "node": "fe11fe40-625d-5675-ad32-1d81b4c84dc9",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "990aa59a-0191-565f-a4f9-bb09599aaab1"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 0.8,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-2-0",
+        "kind": "missile",
+        "node": "8fde8785-1505-5487-a2ae-e26941de7d44",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "0cd99797-0979-5312-a53c-c4f11285a445"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 1.0899999999999999,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-2-1",
+        "kind": "missile",
+        "node": "041af3b0-daa8-523e-aaf9-6e62bc796043",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "88440916-2755-5487-aa9a-671aaa12c718"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 1.12,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-nine-cell-1/round-2-2",
+        "kind": "missile",
+        "node": "0ee5291b-f681-5db7-ab39-59a53d003f98",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "6bf9587d-31fc-57d2-afab-de7d3cb46651"
+        },
+        "radius": 0.1107,
+        "length": 1.3114,
+        "cycle": 4.6,
+        "offset": 1.4100000000000001,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets-1/round-0-0",
+        "kind": "rocket",
+        "node": "ba98c38d-4f71-55b8-ab61-bf360044850d",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "1520d776-c8a5-51e8-a784-cc76b3aedf2f"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets-1/round-0-1",
+        "kind": "rocket",
+        "node": "fabec231-54ea-5221-abcc-9af11ffbd71c",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "26907212-51a0-5216-a6b1-c7f8185d64c4"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.29000000000000004,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets-1/round-1-0",
+        "kind": "rocket",
+        "node": "b5512c0a-6da8-5be9-a50a-f74889aa4e09",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "62a56b4a-f800-536e-a00c-876ab964b5f1"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.32,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-short-range-rockets-1/round-1-1",
+        "kind": "rocket",
+        "node": "5cf3eaff-47af-50d7-a47d-928faf2238fa",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "0385fcec-340d-52c5-a206-eeb9f5881ddd"
+        },
+        "radius": 0.082,
+        "length": 0.8798,
+        "cycle": 2.9,
+        "offset": 0.61,
+        "color": "#ffae68",
+        "power": 0.7,
+        "side": 1,
+        "launchDrop": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/bastion-siege-cannon",
+        "kind": "siege",
+        "node": "e7d4b0f1-3dfa-554c-ab27-d4cb5c5058a9",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.245,
+        "cycle": 2.2,
+        "power": 1.5,
+        "color": "#ffd19a",
+        "offset": 0,
+        "enabledAfter": 0.985
+      }
     ],
-    "width": 1.49,
-    "length": 2.36,
-    "height": 0.68,
-    "interior": "cockpit",
-    "segments": 12
-  }
+    "blades": [],
+    "drones": [],
+    "chargeMaterials": [
+      "a4a15bd8-2f97-50c7-a407-ea4150bcd634",
+      "68bfb039-49d9-58dd-a2f6-cb23baf2227b"
+    ],
+    "bladeMaterials": [
+      "9498574b-74ff-5284-a44a-222bcb6335c5"
+    ],
+    "color": "#ffc17a",
+    "requiresDeployed": true,
+    "demonstrationOnly": true
+  },
+  "engineSockets": [
+    {
+      "name": "engine-0/exhaust",
+      "node": "064b20ba-04e9-5884-af74-b1d918181d1b",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -1.8,
+        1.2,
+        6.725
+      ],
+      "radius": 0.4131
+    },
+    {
+      "name": "engine-1/exhaust",
+      "node": "f0b303a7-c24f-5a4f-ab97-57c6e1f56c39",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        1.2,
+        6.725
+      ],
+      "radius": 0.4131
+    },
+    {
+      "name": "engine-2/exhaust",
+      "node": "167ae53a-3f9f-52be-ab53-0ab1764b9209",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        1.8,
+        1.2,
+        6.725
+      ],
+      "radius": 0.4131
+    }
+  ],
+  "gunSockets": [
+    {
+      "name": "V38/bastion-nine-cell--1/round-0-0/muzzle",
+      "node": "54591aa7-7e3f-5424-ac27-125a2171a326",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3,
+        0.69,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-0-1/muzzle",
+      "node": "b1b80b93-2ec6-529a-ae69-6b8cbc655ef6",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.66,
+        0.69,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-0-2/muzzle",
+      "node": "275318e6-4b0f-505c-a4da-8860d7f0b93d",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.3200000000000003,
+        0.69,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-1-0/muzzle",
+      "node": "6bf31226-9db5-57f2-ab62-84309db4aa43",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3,
+        1.03,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-1-1/muzzle",
+      "node": "e47a19cb-dcb8-5674-aca7-6a03375620da",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.66,
+        1.03,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-1-2/muzzle",
+      "node": "cbc83c5f-41bd-583e-a350-488bb3d52e02",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.3200000000000003,
+        1.03,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-2-0/muzzle",
+      "node": "1e8a98a4-565a-5876-a5d4-79d02df0f3ef",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3,
+        1.37,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-2-1/muzzle",
+      "node": "0eea0e07-b4a7-5bc1-a5d7-03ce29783248",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.66,
+        1.37,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell--1/round-2-2/muzzle",
+      "node": "60914e23-9623-5723-a738-61807a3e008e",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.3200000000000003,
+        1.37,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-short-range-rockets--1/round-0-0/muzzle",
+      "node": "e8c069cf-99cc-5414-a704-11a9482992e1",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.53,
+        0.55,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-short-range-rockets--1/round-0-1/muzzle",
+      "node": "5c5b21bb-d472-505c-a672-c257758821f1",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.2700000000000005,
+        0.55,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-short-range-rockets--1/round-1-0/muzzle",
+      "node": "6609313f-3933-5fcf-a086-3b60bee31bed",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.53,
+        0.81,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-short-range-rockets--1/round-1-1/muzzle",
+      "node": "d8b5c8ad-853a-5073-a15e-ab9a5a03c570",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.2700000000000005,
+        0.81,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-0-0/muzzle",
+      "node": "3cf3488c-6bb9-5f26-abbc-e43acd373415",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.3200000000000003,
+        0.69,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-0-1/muzzle",
+      "node": "2af3f9ee-0afa-557e-ab8d-b8d0975b2e0d",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.66,
+        0.69,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-0-2/muzzle",
+      "node": "8232f6e3-e2dc-5b8f-ad13-a0b7f6694c0a",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3,
+        0.69,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-1-0/muzzle",
+      "node": "d365aeb4-f711-5336-a1a7-beaf10429add",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.3200000000000003,
+        1.03,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-1-1/muzzle",
+      "node": "6b5e3317-cefc-58a5-a5ee-5e2fa0c85d63",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.66,
+        1.03,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-1-2/muzzle",
+      "node": "fe11fe40-625d-5675-ad32-1d81b4c84dc9",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3,
+        1.03,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-2-0/muzzle",
+      "node": "8fde8785-1505-5487-a2ae-e26941de7d44",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.3200000000000003,
+        1.37,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-2-1/muzzle",
+      "node": "041af3b0-daa8-523e-aaf9-6e62bc796043",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.66,
+        1.37,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-nine-cell-1/round-2-2/muzzle",
+      "node": "0ee5291b-f681-5db7-ab39-59a53d003f98",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3,
+        1.37,
+        -1.2942
+      ],
+      "radius": 0.1107
+    },
+    {
+      "name": "V38/bastion-short-range-rockets-1/round-0-0/muzzle",
+      "node": "ba98c38d-4f71-55b8-ab61-bf360044850d",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.2700000000000005,
+        0.55,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-short-range-rockets-1/round-0-1/muzzle",
+      "node": "fabec231-54ea-5221-abcc-9af11ffbd71c",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.53,
+        0.55,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-short-range-rockets-1/round-1-0/muzzle",
+      "node": "b5512c0a-6da8-5be9-a50a-f74889aa4e09",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.2700000000000005,
+        0.81,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-short-range-rockets-1/round-1-1/muzzle",
+      "node": "5cf3eaff-47af-50d7-a47d-928faf2238fa",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.53,
+        0.81,
+        0.2706
+      ],
+      "radius": 0.082
+    },
+    {
+      "name": "V38/bastion-siege-cannon/muzzle",
+      "node": "e7d4b0f1-3dfa-554c-ab27-d4cb5c5058a9",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        1.57,
+        -1.1812000000000002
+      ],
+      "radius": 0.245
+    }
+  ],
+  "referenceImage": "docs/v35/references/03-bastion.png"
 }

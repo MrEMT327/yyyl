@@ -46,7 +46,7 @@ export function equipmentPage(ctx, {filter='owned',sort='quality',selectedWeapon
   const slotMount = (slot,position) => {const w=s.weapons.find(w=>w.id===valueId(s.loadout[slot]));return mount(equipmentSlotLabel(slot),position,w,'equipmentSlot',`data-slot="${slot}"`,w?.canUpgrade);};
   const card = w => equipmentWeaponCard(w, ctx, {selected, innateId});
   return `<section class="eq-page" aria-label="战机装备"><div class="eq-hangar">
-    <div class="eq-aircraft-stage pl-live-model" aria-label="${e(a?.name||'当前战机')}">${h.preview?.(a?.id,{name:a?.name})||h.thumbnail(a?.id,'eq-aircraft-fallback')}</div>
+    <div class="eq-aircraft-stage pl-live-model" aria-label="${e(a?.name||'当前战机')}">${h.preview?.(a?.id,{name:a?.name,view:'equipment'})||h.thumbnail(a?.id,'eq-aircraft-fallback')}</div>
     ${mount('专属武器','is-main',main,'weapon',`data-id="${e(innateId)}"`,main?.canUpgrade)}
     ${slotMount('W3','is-aux-one')}${slotMount('W4','is-aux-two')}
     ${mount('专属武器','is-aircraft',main,'weapon',`data-id="${e(innateId)}"`,main?.canUpgrade)}

@@ -21,7 +21,11 @@ const STATIONS = {
 };
 
 export function resolveAircraftSlots(fighter) {
-  const profile = STATIONS[fighter.fighterId];
+  // V37's crescent wings sit behind the narrow nose, unlike the V34 hull.
+  const articulated = Boolean(fighter.runtime.asset.effects?.articulations?.length);
+  const profile = articulated && fighter.fighterId === 'auric'
+    ? { wings: [[.27,.56],[.74,.64],[.26,.73]], spine: [.40,.58,.77], scale: .9 }
+    : STATIONS[fighter.fighterId];
   if (!profile) throw new Error(`缺少机型挂点：${fighter.fighterId}`);
   fighter.object3D.updateMatrixWorld(true);
   const solid = fighter.runtime.asset.solid;
@@ -31,7 +35,7 @@ export function resolveAircraftSlots(fighter) {
   const length = bounds.max.z - bounds.min.z;
   const meshes = [];
   solid.traverseVisible(node => {
-    if (node.isMesh && ![].concat(node.material).every(material => material.isShaderMaterial || material.opacity < .3)) meshes.push(node);
+    if (node.isMesh && !node.userData.aircraftInkOverlay && ![].concat(node.material).every(material => material.isShaderMaterial || material.opacity < .3)) meshes.push(node);
   });
   function seat(x, z, used, side) {
     // Search locally around the authored station; never put a mount in a wing cutout.
@@ -47,7 +51,16 @@ export function resolveAircraftSlots(fighter) {
       if (used.some(point => Math.hypot(point[0] - px, point[2] - pz) < 1.1 * profile.scale)) continue;
       ray.ray.origin.set(px, bounds.max.y + 3, pz);
       const hit = ray.intersectObjects(meshes, false)[0];
-      if (hit) return [px, hit.point.y + .25 * profile.scale, pz];
+      if (!hit) continue;
+      if (side && articulated) {
+        // Find a real seat on both wings together. Small asymmetric trim must
+        // not send the paired weapons to different stations or different heights.
+        ray.ray.origin.x = -px;
+        const mate = ray.intersectObjects(meshes, false)[0];
+        if (!mate || Math.abs(mate.point.y - hit.point.y) > .04) continue;
+        return [px, Math.max(hit.point.y, mate.point.y) + .25 * profile.scale, pz];
+      }
+      return [px, hit.point.y + .25 * profile.scale, pz];
     }
     throw new Error(`无法定位 ${fighter.fighterId} 的实体挂点 (${x.toFixed(1)}, ${z.toFixed(1)})`);
   }
@@ -55,9 +68,22 @@ export function resolveAircraftSlots(fighter) {
   const slots = DEMO_SLOTS.map((slot, index) => {
     const side = slot.kind === 'weapon' ? index % 2 ? 1 : -1 : 0;
     const [fraction, depth] = side ? profile.wings[Math.floor(index / 2)] : [0, profile.spine[index - 6]];
-    const position = seat(side * halfSpan * fraction, bounds.min.z + length * depth, used, side);
+    const position = side === 1 && articulated
+      ? [-used[index - 1][0], used[index - 1][1], used[index - 1][2]]
+      : seat(side * halfSpan * fraction, bounds.min.z + length * depth, used, side);
     used.push(position);
-    return { ...slot, position, scale: profile.scale };
+    let mountAnchor;
+    if (articulated) {
+      ray.ray.origin.set(position[0], bounds.max.y + 3, position[2]);
+      const hit = ray.intersectObjects(meshes, false)[0];
+      const joints = new Set(fighter.runtime.asset.effects.articulations.map(part => part.node));
+      let joint = hit?.object;
+      while (joint && !joints.has(joint.uuid)) joint = joint.parent;
+      if (joint) mountAnchor = { node: joint.uuid,
+        position: joint.worldToLocal(new T.Vector3(...position)).toArray(),
+        quaternion: joint.getWorldQuaternion(new T.Quaternion()).toArray() };
+    }
+    return { ...slot, position, scale: profile.scale, ...(mountAnchor ? { mountAnchor } : {}) };
   });
   return slots;
 }

@@ -1,0 +1,1379 @@
+{
+  "schemaVersion": 38,
+  "id": "prism",
+  "slug": "prism",
+  "name": "棱脉",
+  "number": 8,
+  "reference": "08-prism.png",
+  "deploymentName": "中轴棱镜主炮 · 四翼聚焦阵列 / 双浮游光学炮",
+  "palette": {
+    "shell": "#d4d0c9",
+    "accent": "#ebe6da",
+    "dark": "#25252b",
+    "metal": "#797983",
+    "trim": "#71647f",
+    "energy": "#bc91ef",
+    "glass": "#1d2b3c"
+  },
+  "transformation": {
+    "name": "中轴棱镜主炮 · 四翼聚焦阵列 / 双浮游光学炮",
+    "version": 38,
+    "baseGeometry": "V36 hull + V37 rig",
+    "duration": 2.875,
+    "keyframed": true
+  },
+  "weaponIdentity": {
+    "role": "棱脉 · 棱镜阵列",
+    "primary": "中轴棱镜主炮",
+    "secondary": "四翼聚焦阵列 / 双浮游光学炮"
+  },
+  "authoringModule": "scripts/author/v35/prism.mjs",
+  "articulations": [
+    {
+      "node": "9a98acb0-013d-5643-a9ca-2452799ae667",
+      "name": "Prism/front-array-wing--1",
+      "pivot": [
+        -1.1,
+        0.62,
+        -0.44
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -0.6981317007977318,
+      "translation": [
+        -0.29,
+        0.19,
+        -0.16
+      ],
+      "duration": 1.75,
+      "delay": 0.04,
+      "restPosition": [
+        -1.1,
+        0.62,
+        -0.44
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "angle": -0.10471975511965977
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "507385e8-bfcf-5890-ac47-f66af22edcbc",
+      "name": "Prism/rear-array-wing--1",
+      "pivot": [
+        -1.12,
+        0.05,
+        1.25
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 0.4537856055185257,
+      "translation": [
+        -0.3,
+        0.28,
+        0.12
+      ],
+      "duration": 1.82,
+      "delay": 0.27,
+      "restPosition": [
+        -1.12,
+        0.05,
+        1.25
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "angle": 0.12217304763960307
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "8d674e8a-6376-5cf4-ac6f-f60ff4a08b9d",
+      "name": "Prism/front-array-wing-1",
+      "pivot": [
+        1.1,
+        0.62,
+        -0.44
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 0.6981317007977318,
+      "translation": [
+        0.29,
+        0.19,
+        -0.16
+      ],
+      "duration": 1.75,
+      "delay": 0.04,
+      "restPosition": [
+        1.1,
+        0.62,
+        -0.44
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "angle": 0.10471975511965977
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "5fbffcba-3320-525f-a817-be4ed4d11067",
+      "name": "Prism/rear-array-wing-1",
+      "pivot": [
+        1.12,
+        0.05,
+        1.25
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -0.4537856055185257,
+      "translation": [
+        0.3,
+        0.28,
+        0.12
+      ],
+      "duration": 1.82,
+      "delay": 0.27,
+      "restPosition": [
+        1.12,
+        0.05,
+        1.25
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          1,
+          0
+        ],
+        "angle": -0.12217304763960307
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "cee517d5-fe5a-52b7-a911-093c6c052bae",
+      "name": "V38/prism-central/armour-petal--1",
+      "pivot": [
+        -0.46799999999999997,
+        1.29,
+        1.17
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 1.1519173063162575,
+      "translation": [
+        -0.1,
+        0,
+        0
+      ],
+      "duration": 0.95,
+      "delay": 0.55,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -0.46799999999999997,
+        1.29,
+        1.17
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "d853b423-3b0c-5176-aeea-94efc14501aa",
+      "name": "V38/prism-central/armour-petal-1",
+      "pivot": [
+        0.46799999999999997,
+        1.29,
+        1.17
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -1.1519173063162575,
+      "translation": [
+        0.1,
+        0,
+        0
+      ],
+      "duration": 0.95,
+      "delay": 0.55,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.46799999999999997,
+        1.29,
+        1.17
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "6cb309b9-d2d7-517c-a3da-afc662ac95e6",
+      "name": "V38/prism-central/emitter/focus-jaw-0",
+      "pivot": [
+        0.3627,
+        1.35,
+        0.73
+      ],
+      "axis": [
+        0,
+        -0.3627,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        0.05803200000000001,
+        0,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.02,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.3627,
+        0.1200000000000001,
+        -0.43999999999999995
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "176a9524-22c3-545d-a00e-1da78b58b323",
+      "name": "V38/prism-central/emitter/focus-jaw-1",
+      "pivot": [
+        2.220896970253725e-17,
+        1.7127000000000001,
+        0.73
+      ],
+      "axis": [
+        0.3627,
+        -2.220896970253725e-17,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        3.55343515240596e-18,
+        0.05803200000000001,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.065,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        2.220896970253725e-17,
+        0.48270000000000013,
+        -0.43999999999999995
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "150aa7b0-df78-5a22-a97c-e25db4516e67",
+      "name": "V38/prism-central/emitter/focus-jaw-2",
+      "pivot": [
+        -0.3627,
+        1.35,
+        0.73
+      ],
+      "axis": [
+        4.44179394050745e-17,
+        0.3627,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -0.05803200000000001,
+        7.10687030481192e-18,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.11,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -0.3627,
+        0.1200000000000001,
+        -0.43999999999999995
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "bcc961a4-4df6-53a1-a24c-0b905872297e",
+      "name": "V38/prism-central/emitter/focus-jaw-3",
+      "pivot": [
+        -6.662690910761176e-17,
+        0.9873000000000001,
+        0.73
+      ],
+      "axis": [
+        -0.3627,
+        6.662690910761176e-17,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -1.0660305457217882e-17,
+        -0.05803200000000001,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.1550000000000002,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -6.662690910761176e-17,
+        -0.24269999999999992,
+        -0.43999999999999995
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "5abdb738-3841-5926-adf5-02444bba25ca",
+      "name": "V38/prism-central/elevator",
+      "pivot": [
+        0,
+        1.23,
+        1.17
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        1.25,
+        -0.45
+      ],
+      "duration": 1.15,
+      "delay": 1.27,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0,
+        1.23,
+        1.17
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "c177c54d-58cd-5b7d-a27e-6e2fb85e60a2",
+      "name": "V38/prism-fore--1/optical-panel",
+      "pivot": [
+        -3.85,
+        0.74,
+        -2.14
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.15707963267948966,
+      "translation": [
+        0,
+        0.26,
+        -0.15
+      ],
+      "duration": 1.08,
+      "delay": 1.2,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -3.85,
+        0.74,
+        -2.14
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "16a52c96-cbf5-55c5-a0f2-a76cf098c5db",
+      "name": "V38/prism-aft--1/optical-panel",
+      "pivot": [
+        -4.05,
+        0.32,
+        2.16
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.15707963267948966,
+      "translation": [
+        0,
+        0.26,
+        -0.15
+      ],
+      "duration": 1.08,
+      "delay": 1.48,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -4.05,
+        0.32,
+        2.16
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "c3d38a82-dc02-57ed-a05f-5d09b39a0df5",
+      "name": "V38/prism-fore-1/optical-panel",
+      "pivot": [
+        3.85,
+        0.74,
+        -2.14
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.15707963267948966,
+      "translation": [
+        0,
+        0.26,
+        -0.15
+      ],
+      "duration": 1.08,
+      "delay": 1.2,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        3.85,
+        0.74,
+        -2.14
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "1fc94ecb-c366-5a31-a3c9-c0491143d758",
+      "name": "V38/prism-aft-1/optical-panel",
+      "pivot": [
+        4.05,
+        0.32,
+        2.16
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.15707963267948966,
+      "translation": [
+        0,
+        0.26,
+        -0.15
+      ],
+      "duration": 1.08,
+      "delay": 1.48,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        4.05,
+        0.32,
+        2.16
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "48cf5166-122c-591f-a2a9-f2fc498012fa",
+      "name": "V38/prism-seeker--1/flight",
+      "pivot": [
+        -1.75,
+        1.01,
+        0.02
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0.17453292519943295,
+      "translation": [
+        -1.55,
+        1.68,
+        -1.18
+      ],
+      "duration": 1.12,
+      "delay": 1.73,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -1.75,
+        1.01,
+        0.02
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "6d74b6b7-9a82-5f7a-a4ed-aa2e117e4376",
+      "name": "V38/prism-seeker-1/flight",
+      "pivot": [
+        1.75,
+        1.01,
+        0.02
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": -0.17453292519943295,
+      "translation": [
+        1.55,
+        1.68,
+        -1.18
+      ],
+      "duration": 1.12,
+      "delay": 1.73,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        1.75,
+        1.01,
+        0.02
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "arsenal": {
+    "version": 38,
+    "role": "棱脉 · 棱镜阵列",
+    "primary": "中轴棱镜主炮",
+    "secondary": "四翼聚焦阵列 / 双浮游光学炮",
+    "weapons": [
+      {
+        "id": "V38/prism-central/emitter",
+        "kind": "prism",
+        "node": "6498329f-1b0b-59ad-aada-f810a2f3d865",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.11699999999999999,
+        "power": 1.8,
+        "cycle": 2.65,
+        "beamWidth": 0.07800000000000001,
+        "beamLength": 17,
+        "color": "#bc91ef",
+        "offset": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/prism-fore--1",
+        "kind": "array",
+        "node": "27c3e75a-85eb-5c50-aaea-6009fe5d99e5",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.05,
+        "beamWidth": 0.035,
+        "cycle": 2.65,
+        "offset": 0,
+        "power": 0.6,
+        "color": "#bc91ef",
+        "converge": [
+          0,
+          2.55,
+          -10.5
+        ],
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/prism-aft--1",
+        "kind": "array",
+        "node": "aaf54515-64f6-58c2-a9ed-1a267b8824f5",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.05,
+        "beamWidth": 0.035,
+        "cycle": 2.65,
+        "offset": 0,
+        "power": 0.6,
+        "color": "#bc91ef",
+        "converge": [
+          0,
+          2.55,
+          -10.5
+        ],
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/prism-fore-1",
+        "kind": "array",
+        "node": "ccb773d3-9c03-5738-ac77-76608daf18e6",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.05,
+        "beamWidth": 0.035,
+        "cycle": 2.65,
+        "offset": 0,
+        "power": 0.6,
+        "color": "#bc91ef",
+        "converge": [
+          0,
+          2.55,
+          -10.5
+        ],
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/prism-aft-1",
+        "kind": "array",
+        "node": "14f084ab-eb69-5eb3-a560-d8b90bd4fd6c",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.05,
+        "beamWidth": 0.035,
+        "cycle": 2.65,
+        "offset": 0,
+        "power": 0.6,
+        "color": "#bc91ef",
+        "converge": [
+          0,
+          2.55,
+          -10.5
+        ],
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/prism-seeker--1",
+        "kind": "opticDrone",
+        "node": "8f486677-c8d4-591f-a9bb-e706a88864d3",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.055,
+        "cycle": 1.1,
+        "offset": 0.13,
+        "beamWidth": 0.025,
+        "beamLength": 14,
+        "color": "#bc91ef",
+        "power": 0.45,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/prism-seeker-1",
+        "kind": "opticDrone",
+        "node": "6e16a77a-b806-5cae-a31a-c1d2018b8587",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.055,
+        "cycle": 1.1,
+        "offset": 0.18,
+        "beamWidth": 0.025,
+        "beamLength": 14,
+        "color": "#bc91ef",
+        "power": 0.45,
+        "enabledAfter": 0.985
+      }
+    ],
+    "blades": [],
+    "drones": [
+      {
+        "node": "48cf5166-122c-591f-a2a9-f2fc498012fa"
+      },
+      {
+        "node": "6d74b6b7-9a82-5f7a-a4ed-aa2e117e4376"
+      }
+    ],
+    "chargeMaterials": [
+      "a1de9eeb-a200-5fe4-a236-0530bf6e0593",
+      "34a01a00-7794-5aba-a161-983a3562d130"
+    ],
+    "bladeMaterials": [
+      "44283841-15be-508d-a618-9af75ec967d8"
+    ],
+    "color": "#bc91ef",
+    "requiresDeployed": true,
+    "demonstrationOnly": true
+  },
+  "engineSockets": [
+    {
+      "name": "Prism/rectangular-main-thrust/exhaust",
+      "node": "2187f6d0-6d73-54bc-a774-f1f2ea804aeb",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        0.28,
+        5.395
+      ],
+      "radius": 0.7209000000000001
+    }
+  ],
+  "gunSockets": [
+    {
+      "name": "V38/prism-central/emitter/muzzle",
+      "node": "6498329f-1b0b-59ad-aada-f810a2f3d865",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        1.35,
+        0.20999999999999996
+      ],
+      "radius": 0.11699999999999999
+    },
+    {
+      "name": "V38/prism-fore--1/muzzle",
+      "node": "27c3e75a-85eb-5c50-aaea-6009fe5d99e5",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.85,
+        0.86,
+        -2.5700000000000003
+      ],
+      "radius": 0.05
+    },
+    {
+      "name": "V38/prism-aft--1/muzzle",
+      "node": "aaf54515-64f6-58c2-a9ed-1a267b8824f5",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -4.05,
+        0.44,
+        1.7300000000000002
+      ],
+      "radius": 0.05
+    },
+    {
+      "name": "V38/prism-fore-1/muzzle",
+      "node": "ccb773d3-9c03-5738-ac77-76608daf18e6",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.85,
+        0.86,
+        -2.5700000000000003
+      ],
+      "radius": 0.05
+    },
+    {
+      "name": "V38/prism-aft-1/muzzle",
+      "node": "14f084ab-eb69-5eb3-a560-d8b90bd4fd6c",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        4.05,
+        0.44,
+        1.7300000000000002
+      ],
+      "radius": 0.05
+    },
+    {
+      "name": "V38/prism-seeker--1/muzzle",
+      "node": "8f486677-c8d4-591f-a9bb-e706a88864d3",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -1.75,
+        1.05,
+        -0.59
+      ],
+      "radius": 0.055
+    },
+    {
+      "name": "V38/prism-seeker-1/muzzle",
+      "node": "6e16a77a-b806-5cae-a31a-c1d2018b8587",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        1.75,
+        1.05,
+        -0.59
+      ],
+      "radius": 0.055
+    }
+  ],
+  "referenceImage": "docs/v35/references/08-prism.png"
+}

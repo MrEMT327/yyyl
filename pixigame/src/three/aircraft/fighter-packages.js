@@ -82,8 +82,13 @@ export function instantiateFighterPackage(pilotId) {
   const solid = cloneTree(template.solid), fx = cloneTree(template.fx, true);
   applyMaterialPatches(template.effects.materialPatches, materials);
   for (const patch of template.effects.materialPatches) materials.get(patch.material).userData.nativeBatchExclude = true;
-  refineAircraftMaterials({ entry, materials, view:template.view });
-  const detailKit=addAircraftDetails({entry,materials,solid,nodes,view:template.view,effects:template.effects});
+  const cleanSurface = Number(entry.version.split('.')[0]) >= 39;
+  solid.userData.cleanAircraftSurface = cleanSurface;
+  if (cleanSurface) for (const material of materials.values()) material.userData.cleanAircraftSurface = true;
+  // V39 authors its own surface treatment. Reapplying legacy service panels,
+  // nozzle petals and analytic engraving would undo the clean-hull revision.
+  if (!cleanSurface) refineAircraftMaterials({ entry, materials, view:template.view });
+  const detailKit=cleanSurface ? null : addAircraftDetails({entry,materials,solid,nodes,view:template.view,effects:template.effects});
   let disposed = false;
   return {
     entry, manifest: template.manifest, view: template.view, effects: template.effects,
@@ -91,7 +96,7 @@ export function instantiateFighterPackage(pilotId) {
     dispose() {
       if (disposed) return;
       disposed = true;
-      detailKit.dispose();
+      detailKit?.dispose();
       for (const node of nodes.values()) if (node.isInstancedMesh) node.dispose();
       for (const geometry of geometries.values()) geometry.dispose();
       const ownedTextures = new Set([...materials.values()].flatMap(texturesOf).filter(texture => !sharedTextures.has(texture)));

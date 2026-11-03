@@ -5,7 +5,7 @@ import { makeBindings } from './v34/aircraft/Expressions.js';
 import { fighterForPilot, instantiateFighterPackage } from './fighter-packages.js';
 import { createKestrelEquipment } from './kestrel-equipment.js';
 import { createFixedPartMounts } from '../../fixed-parts/mounts.js';
-import { createAircraftStyle, AIRCRAFT_FINISH_CONFIG } from './aircraft-style.js';
+import { createAircraftStyle, aircraftFinishConfig } from './aircraft-style.js';
 
 function supportClipping(material) {
   if (!material.isShaderMaterial || material.userData.fighterClipping) return;
@@ -97,7 +97,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     view.label = `${entry.slug}-three-model`;
     const span = Math.max(asset.view.bounds.max[0]-asset.view.bounds.min[0], asset.view.bounds.max[2]-asset.view.bounds.min[2]);
     attitude.scale.setScalar(15.75509262084961 / span);
-    const config = {...entry.defaults, ...AIRCRAFT_FINISH_CONFIG, cruise:false, firing:false, altitude:0, scale:1, lightIntensity:0};
+    const config = {...entry.defaults, ...aircraftFinishConfig(entry), cruise:false, firing:false, weaponFireEffects:false, altitude:0, scale:1, lightIntensity:asset.solid.userData.cleanAircraftSurface?entry.defaults.lightIntensity:0};
     runtime = new ConfigFighter({ scene:attitude, asset, config, globals:{glow:1,particleCount:1} });
     // Find the package's explicit protection shell, not hull accents that also
     // react to shield state. Keep immutable scales and re-evaluate its bindings
@@ -121,7 +121,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     ), asset.nodes, asset.materials);
     // The game supplies shared scene lighting. Zero-intensity demo lamps must
     // also leave the scene, or Three still compiles a light slot for every one.
-    for (const light of runtime.lights) light.object.removeFromParent();
+    if (!asset.solid.userData.cleanAircraftSurface) for (const light of runtime.lights) light.object.removeFromParent();
     // Player movement and banking come from the game's input. Package motion
     // remains in local aircraft space, including trails and cloth attachments.
     runtime.flight = null;
@@ -148,7 +148,6 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     if (options.shieldStrength !== undefined) shieldStrength = Number.isFinite(options.shieldStrength) ? THREE.MathUtils.clamp(options.shieldStrength,0,1) : 1;
     if (options.boost !== undefined) boost = options.boost;
     attitude.rotation.set(pose.pitch,0,pose.bank+pose.roll);
-    view.fixedParts?.update();
     if (!runtime) return;
     runtime.config.shield = shielded; runtime.config.boost = boost;
     if (!options.poseOnly) {
@@ -176,6 +175,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     for (const update of shieldBindings) update(runtime.context);
     for (const material of shieldMaterials) if (material.uniforms?.uGain) material.uniforms.uGain.value *= shieldStrength;
     for (const { object, scale } of shieldNodes) object.scale.copy(scale).multiplyScalar(.94 + .06 * shieldStrength);
+    view.fixedParts?.update();
   };
   view._disposeVisuals = () => {disposeFixedParts();hullStyle?.dispose();hullStyle=null;equipment?.dispose();runtime?.dispose();equipment=null;runtime=null;view.runtime=null;shieldNodes=[];shieldMaterials=[];shieldBindings=[];};
   view.setPilot(pilotId);

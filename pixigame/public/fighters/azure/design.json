@@ -1,0 +1,1030 @@
+{
+  "schemaVersion": 38,
+  "id": "azure",
+  "slug": "azure",
+  "name": "苍锋",
+  "number": 7,
+  "reference": "07-azure.png",
+  "deploymentName": "四枚翼下拦截导弹 · 腹部高速激光 / 聚能模式",
+  "palette": {
+    "shell": "#315788",
+    "accent": "#dbd9d1",
+    "dark": "#20252c",
+    "metal": "#737882",
+    "trim": "#a38d66",
+    "energy": "#65d8f5",
+    "glass": "#173043"
+  },
+  "transformation": {
+    "name": "四枚翼下拦截导弹 · 腹部高速激光 / 聚能模式",
+    "version": 38,
+    "baseGeometry": "V36 hull + V37 rig",
+    "duration": 2.75,
+    "keyframed": true
+  },
+  "weaponIdentity": {
+    "role": "苍锋 · 猎杀拦截",
+    "primary": "四枚翼下拦截导弹",
+    "secondary": "腹部高速激光 / 聚能模式"
+  },
+  "authoringModule": "scripts/author/v35/azure.mjs",
+  "articulations": [
+    {
+      "node": "a58d559d-1556-52ef-aa93-e63854c7fd19",
+      "name": "Azure/sweep-wing--1",
+      "pivot": [
+        -1.48,
+        0.23,
+        0.2
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0.6981317007977318,
+      "translation": [
+        -0.15,
+        0.1,
+        0
+      ],
+      "duration": 1.68,
+      "delay": 0.04,
+      "restPosition": [
+        -1.48,
+        0.23,
+        0.2
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "angle": -0.15707963267948966
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "f19ced94-cb73-5cb3-a4f9-ca116bcb6814",
+      "name": "Azure/sweep-wing-1",
+      "pivot": [
+        1.48,
+        0.23,
+        0.2
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": -0.6981317007977318,
+      "translation": [
+        0.15,
+        0.1,
+        0
+      ],
+      "duration": 1.68,
+      "delay": 0.04,
+      "restPosition": [
+        1.48,
+        0.23,
+        0.2
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "secondaryRotation": {
+        "axis": [
+          0,
+          0,
+          1
+        ],
+        "angle": 0.15707963267948966
+      },
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          -0.028
+        ],
+        [
+          0.25,
+          -0.028
+        ],
+        [
+          0.59,
+          1.035
+        ],
+        [
+          0.77,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "f9f07ba8-d95a-5800-af1e-0824309ea842",
+      "name": "V37/azure-tail-spread--1",
+      "pivot": [
+        -1.59,
+        0.55,
+        3.38
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 0.3316125578789226,
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "delay": 1.08,
+      "duration": 0.84,
+      "restPosition": [
+        -1.59,
+        0.55,
+        3.38
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.02
+        ],
+        [
+          0.61,
+          1.045
+        ],
+        [
+          0.8,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "fd10e6b3-5e62-532f-a309-83c8e4347621",
+      "name": "V37/azure-tail-spread-1",
+      "pivot": [
+        1.59,
+        0.55,
+        3.38
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -0.3316125578789226,
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "delay": 1.08,
+      "duration": 0.84,
+      "restPosition": [
+        1.59,
+        0.55,
+        3.38
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.02
+        ],
+        [
+          0.61,
+          1.045
+        ],
+        [
+          0.8,
+          0.989
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "db533b4f-981a-520a-ab17-7b39d692e37b",
+      "name": "V38/azure-rotary-ejector--1",
+      "pivot": [
+        -3.25,
+        0.24,
+        -0.78
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -0.13962634015954636,
+      "translation": [
+        0,
+        -0.74,
+        -0.2
+      ],
+      "duration": 1.13,
+      "delay": 1.02,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -3.25,
+        0.24,
+        -0.78
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "e8799229-b02d-5ca4-a482-8d6371274d55",
+      "name": "V38/azure-tip-brake--1",
+      "pivot": [
+        -6.65,
+        0.52,
+        -2.95
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.6632251157578452,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.92,
+      "delay": 1.73,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -6.65,
+        0.52,
+        -2.95
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "239f3ee7-5e39-53ca-a69c-19434c916427",
+      "name": "V38/azure-rotary-ejector-1",
+      "pivot": [
+        3.25,
+        0.24,
+        -0.78
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 0.13962634015954636,
+      "translation": [
+        0,
+        -0.74,
+        -0.2
+      ],
+      "duration": 1.13,
+      "delay": 1.02,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        3.25,
+        0.24,
+        -0.78
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "fb01d3e9-3356-5c23-a099-4aa643b3ecd1",
+      "name": "V38/azure-tip-brake-1",
+      "pivot": [
+        6.65,
+        0.52,
+        -2.95
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0.6632251157578452,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.92,
+      "delay": 1.73,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        6.65,
+        0.52,
+        -2.95
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "cd192f9a-d352-5e44-aa55-3f1636de311e",
+      "name": "V38/azure-rapid-laser/focus-jaw-0",
+      "pivot": [
+        0.20925000000000002,
+        -0.43,
+        -2.5080000000000005
+      ],
+      "axis": [
+        0,
+        -0.20925000000000002,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        0.03348,
+        0,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 1.94,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.20925000000000002,
+        -0.06,
+        -0.5680000000000005
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "8c04ea35-f0bb-5e34-ac42-07628c70c3e2",
+      "name": "V38/azure-rapid-laser/focus-jaw-1",
+      "pivot": [
+        -0.10462499999999995,
+        -0.24878418425810617,
+        -2.5080000000000005
+      ],
+      "axis": [
+        0.18121581574189383,
+        0.10462499999999995,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -0.016739999999999994,
+        0.028994530518703012,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 1.9849999999999999,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -0.10462499999999995,
+        0.12121581574189383,
+        -0.5680000000000005
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "f7d5fb84-d983-5ac6-ab8b-003db0a82735",
+      "name": "V38/azure-rapid-laser/focus-jaw-2",
+      "pivot": [
+        -0.10462500000000009,
+        -0.6112158157418938,
+        -2.5080000000000005
+      ],
+      "axis": [
+        -0.18121581574189377,
+        0.10462500000000009,
+        0
+      ],
+      "angle": 0.41887902047863906,
+      "translation": [
+        -0.016740000000000015,
+        -0.028994530518703005,
+        -0.18
+      ],
+      "duration": 0.72,
+      "delay": 2.03,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -0.10462500000000009,
+        -0.24121581574189377,
+        -0.5680000000000005
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "50297acb-e497-5385-a84b-ed9ea59e182a",
+      "name": "V38/azure-belly-gimbal",
+      "pivot": [
+        0,
+        -0.37,
+        -1.94
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        -0.63,
+        -0.49
+      ],
+      "duration": 1.1,
+      "delay": 1.31,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0,
+        -0.37,
+        -1.94
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "arsenal": {
+    "version": 38,
+    "role": "苍锋 · 猎杀拦截",
+    "primary": "四枚翼下拦截导弹",
+    "secondary": "腹部高速激光 / 聚能模式",
+    "weapons": [
+      {
+        "id": "V38/azure-interceptor--1--1",
+        "kind": "interceptor",
+        "node": "bc69e2f1-d993-5b88-a8c6-3038989491cf",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "51ddd079-1b1b-531e-a0b2-8b5346f5138f"
+        },
+        "radius": 0.125,
+        "length": 2,
+        "cycle": 5.2,
+        "offset": 0,
+        "side": -1,
+        "launchDrop": 0.5,
+        "power": 1.2,
+        "color": "#7bdcff",
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/azure-interceptor--1-1",
+        "kind": "interceptor",
+        "node": "5e8bf6b7-4a66-5959-a75e-83407740c228",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "b45d0712-ee7c-537e-a2a3-12de9c832546"
+        },
+        "radius": 0.125,
+        "length": 2,
+        "cycle": 5.2,
+        "offset": 0.45,
+        "side": -1,
+        "launchDrop": 0.5,
+        "power": 1.2,
+        "color": "#7bdcff",
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/azure-interceptor-1--1",
+        "kind": "interceptor",
+        "node": "369e90f3-0db7-560f-afd8-dc46d178d67d",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "8dd1d54f-c516-5334-a765-56080733c07d"
+        },
+        "radius": 0.125,
+        "length": 2,
+        "cycle": 5.2,
+        "offset": 0,
+        "side": 1,
+        "launchDrop": 0.5,
+        "power": 1.2,
+        "color": "#7bdcff",
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/azure-interceptor-1-1",
+        "kind": "interceptor",
+        "node": "232fd200-70c4-59fb-ae77-882d4b139229",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "4e6e536d-8d87-50a7-abdb-055a572707e2"
+        },
+        "radius": 0.125,
+        "length": 2,
+        "cycle": 5.2,
+        "offset": 0.45,
+        "side": 1,
+        "launchDrop": 0.5,
+        "power": 1.2,
+        "color": "#7bdcff",
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/azure-rapid-laser",
+        "kind": "laserRapid",
+        "node": "8a925034-2916-51dd-a613-a705aab1f00e",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.0675,
+        "power": 0.8,
+        "cycle": 0.4,
+        "beamWidth": 0.045000000000000005,
+        "beamLength": 17,
+        "color": "#65d8f5",
+        "offset": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/azure-coax-charge",
+        "kind": "judgement",
+        "node": "79bf46c4-7e83-565a-a8bc-67923b8197c8",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.075,
+        "cycle": 3.8,
+        "offset": 0.68,
+        "power": 0.75,
+        "beamWidth": 0.085,
+        "beamLength": 17,
+        "color": "#7edbff",
+        "enabledAfter": 0.985
+      }
+    ],
+    "blades": [],
+    "drones": [],
+    "chargeMaterials": [
+      "107b1169-296c-5075-afae-34c180aaecad",
+      "71b2c441-ea66-5007-a4c2-75c0c855b9be"
+    ],
+    "bladeMaterials": [
+      "fa1c95ae-9ff2-5244-aa89-93588343cafc"
+    ],
+    "color": "#65d8f5",
+    "requiresDeployed": true,
+    "demonstrationOnly": true
+  },
+  "engineSockets": [
+    {
+      "name": "Azure/twin-afterburner--1/exhaust",
+      "node": "4b6dd97d-b90d-50ae-a5cf-e88093f8782a",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -1.1,
+        0.45,
+        5.555
+      ],
+      "radius": 0.486
+    },
+    {
+      "name": "Azure/twin-afterburner-1/exhaust",
+      "node": "3ded9737-fae0-5f70-a9d4-27bc47495961",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        1.1,
+        0.45,
+        5.555
+      ],
+      "radius": 0.486
+    }
+  ],
+  "gunSockets": [
+    {
+      "name": "V38/azure-interceptor--1--1/muzzle",
+      "node": "bc69e2f1-d993-5b88-a8c6-3038989491cf",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.61,
+        0.009999999999999981,
+        -1.8800000000000001
+      ],
+      "radius": 0.125
+    },
+    {
+      "name": "V38/azure-interceptor--1-1/muzzle",
+      "node": "5e8bf6b7-4a66-5959-a75e-83407740c228",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -2.89,
+        0.009999999999999981,
+        -1.8800000000000001
+      ],
+      "radius": 0.125
+    },
+    {
+      "name": "V38/azure-interceptor-1--1/muzzle",
+      "node": "369e90f3-0db7-560f-afd8-dc46d178d67d",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        2.89,
+        0.009999999999999981,
+        -1.8800000000000001
+      ],
+      "radius": 0.125
+    },
+    {
+      "name": "V38/azure-interceptor-1-1/muzzle",
+      "node": "232fd200-70c4-59fb-ae77-882d4b139229",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.61,
+        0.009999999999999981,
+        -1.8800000000000001
+      ],
+      "radius": 0.125
+    },
+    {
+      "name": "V38/azure-rapid-laser/muzzle",
+      "node": "8a925034-2916-51dd-a613-a705aab1f00e",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        -0.43,
+        -3.0280000000000005
+      ],
+      "radius": 0.0675
+    },
+    {
+      "name": "V38/azure-coax-charge/muzzle",
+      "node": "79bf46c4-7e83-565a-a8bc-67923b8197c8",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        0,
+        -0.4,
+        -3.08
+      ],
+      "radius": 0.075
+    }
+  ],
+  "referenceImage": "docs/v35/references/07-azure.png"
+}

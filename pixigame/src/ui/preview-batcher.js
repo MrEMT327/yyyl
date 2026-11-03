@@ -18,7 +18,12 @@ export function createPreviewBatcher(root){
     // Preserve the camera-dependent ordering of translucent surfaces.
     if(palette&&m.transparent&&m.blending!==THREE.AdditiveBlending)return null;
     const program=m.customProgramCacheKey();if(!programs.has(program))programs.set(program,programs.size);
-    return `${mesh.isLineSegments?'line':'mesh'}:${palette}:${programs.get(program)}:${properties.map(p=>m[p]).join(',')}:${mesh.castShadow}:${mesh.receiveShadow}:${mesh.layers.mask}:${mesh.renderOrder}:${m.userData.finishDetail?.value}:${m.userData.equipmentInk?.value}:${m.userData.equipmentGlass?.value}`;
+    let articulation=mesh;
+    while(articulation!==root&&!articulation.userData.uiArticulation)articulation=articulation.parent;
+    // A wing's batch follows its own joint. Mixing it with a stationary hull
+    // would rebuild merged geometry on every animation frame.
+    const joint=articulation.userData.uiArticulation?articulation.id:'';
+    return `${joint}:${mesh.isLineSegments?'line':'mesh'}:${palette}:${programs.get(program)}:${properties.map(p=>m[p]).join(',')}:${mesh.castShadow}:${mesh.receiveShadow}:${mesh.layers.mask}:${mesh.renderOrder}:${m.userData.finishDetail?.value}:${m.userData.equipmentInk?.value}:${m.userData.equipmentGlass?.value}`;
   }
   function makeMaterial(source,palette){
     const m=source.clone(),compile=source.onBeforeCompile,key=source.customProgramCacheKey();

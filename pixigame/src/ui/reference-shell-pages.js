@@ -25,7 +25,7 @@ export function referenceEquipmentPage(ctx) {
   return `<section class="ref-equipment">
     <div class="ref-equipment-hero" style="--ref-hangar:url('${asset('hangar')}')">
       <div class="ref-equipment-grid"></div><div class="ref-equipment-ring"></div>
-      <div class="ref-equipment-model pl-live-model">${h.preview?.(a?.id,{name:a?.name})||h.thumbnail(a?.id)}</div>
+      <div class="ref-equipment-model pl-live-model">${h.preview?.(a?.id,{name:a?.name,view:'equipment'})||h.thumbnail(a?.id)}</div>
       ${['W1','W2','W3','W4','W5','W6'].map((slot, i) => {
         const innate = i < 2, id = innate ? a?.weaponId : valueId(s.loadout[slot]), w = s.weapons.find(w => w.id === id);
         return `<button type="button" class="ref-mount ref-mount-${slot.toLowerCase()} ${innate ? 'is-innate' : ''} ${w ? 'is-filled' : ''}" data-action="${innate ? 'innateInfo' : 'slot'}" data-slot="${slot}" data-id="${e(id)}" aria-label="${slotLabel(slot)} ${innate ? '本机专武' : '通用挂点'} ${e(w?.name || '空闲')}"><small>${slotLabel(slot)}</small>${w ? thumbnail(id) : icon('weapon')}<span>${innate ? '本机' : w ? `Lv.${w.level}` : '+'}</span></button>`;

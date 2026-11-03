@@ -1,6 +1,11 @@
 import { BackSide, Color, EdgesGeometry, LineBasicMaterial, LineSegments, Mesh, ShaderMaterial, Vector3 } from 'three';
 
 export const AIRCRAFT_FINISH_CONFIG = Object.freeze({ bodyFx: .18, coreGlow: .6, surfaceGlow: .35, weaponGlow: .25 });
+export function aircraftFinishConfig(entry) {
+  return Number(entry.version.split('.')[0]) >= 39
+    ? {...AIRCRAFT_FINISH_CONFIG, weaponGlow:entry.defaults.weaponGlow??1}
+    : AIRCRAFT_FINISH_CONFIG;
+}
 
 // One illustrated finish for hangar, catalog, launch and combat aircraft.
 // Each instance owns its overrides; source package materials stay untouched.
@@ -83,6 +88,7 @@ export function createAircraftStyle(root, { outlineScale = 1 } = {}) {
     silhouette.name = 'equipment-silhouette'; silhouette.userData.aircraftInkOverlay = true; silhouette.visible = false;
     silhouette.raycast = () => {};
     mesh.add(silhouette); outlines.push(silhouette);
+    if (material.userData.cleanAircraftSurface) continue;
     // Restrict crease lines to armor. Thin weapon barrels only need a silhouette.
     if (!/\/(shell|white|bright|accent)$|pearl ceramic/.test(material.name)) continue;
     const geometry = new EdgesGeometry(mesh.geometry, 38);
@@ -101,10 +107,11 @@ export function createAircraftStyle(root, { outlineScale = 1 } = {}) {
       for (const outline of outlines) outline.visible = enabled;
       for (const [material, {state, color, detail}] of materials) {
         Object.assign(material, state); material.color.copy(color);
-        material.userData.equipmentInk.value = enabled && !/\/glass$/.test(material.name) ? 1 : 0;
-        material.userData.equipmentGlass.value = enabled && /\/glass$/.test(material.name) ? 1 : 0;
+        const authored = material.userData.cleanAircraftSurface;
+        material.userData.equipmentInk.value = enabled && !authored && !/\/glass$/.test(material.name) ? 1 : 0;
+        material.userData.equipmentGlass.value = enabled && !authored && /\/glass$/.test(material.name) ? 1 : 0;
         if (detail !== undefined) material.userData.finishDetail.value = enabled ? .18 : detail;
-        if (enabled) {
+        if (enabled && !authored) {
           const name = material.name || '', role = name.split('/').at(-1);
           if (['shell','white','bright','accent'].includes(role) || /pearl ceramic/.test(name)) {
             material.metalness = .05; material.roughness = .65; material.envMapIntensity = .32;

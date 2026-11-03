@@ -9,8 +9,19 @@ export function createFixedPartMounts({ view, mount, attitude, runtime, loadout,
     // Resolve seats in the same neutral, normalized coordinates as the hangar.
     // Clone only object transforms; the shared hull geometry is never disposed.
     const canonical = new T.Group(), hull = runtime.asset.solid.clone(true);
+    const originals = [], copies = [];
+    runtime.asset.solid.traverse(node => originals.push(node));
+    hull.traverse(node => copies.push(node));
+    copies.forEach((node, index) => { node.uuid = originals[index].uuid; });
+    const nodes = new Map(copies.map(node => [node.uuid, node]));
+    for (const part of runtime.asset.effects.articulations || []) {
+      const node = nodes.get(part.node);
+      if (part.restPosition) node.position.fromArray(part.restPosition);
+      if (part.restQuaternion) node.quaternion.fromArray(part.restQuaternion);
+      if (part.restScale) node.scale.fromArray(part.restScale);
+    }
     canonical.scale.copy(attitude.scale); canonical.add(hull);
-    layouts.set(view.fighterId, resolveAircraftSlots({ object3D: canonical, runtime: { asset: { solid: hull } }, fighterId: view.fighterId }));
+    layouts.set(view.fighterId, resolveAircraftSlots({ object3D: canonical, runtime: { asset: { solid: hull, effects: runtime.asset.effects } }, fighterId: view.fighterId }));
   }
   const slots = layouts.get(view.fighterId), root = new T.Group(), mounted = new Map();
   root.name = 'fixed-parts-combat'; mount.add(root);
@@ -18,16 +29,36 @@ export function createFixedPartMounts({ view, mount, attitude, runtime, loadout,
     const slot = slots.find(s => s.id === id), kit = geometryFactory(ITEM_BY_ID.get(item.itemId), item);
     kit.position.fromArray(slot.position); kit.scale.setScalar(slot.scale);
     if (slot.kind === 'weapon' && slot.position[0] < 0) kit.scale.x *= -1;
+    if (slot.mountAnchor) kit.userData.uiArticulation = true;
     root.add(kit); mounted.set(id, kit);
   }
   const point = new T.Vector3();
+  const anchorPoint = new T.Vector3(), rootRotation = new T.Quaternion(), anchorRotation = new T.Quaternion();
+  const anchors = slots.filter(slot => slot.mountAnchor && mounted.has(slot.id)).map(slot => ({
+    kit: mounted.get(slot.id), object: runtime.asset.nodes.get(slot.mountAnchor.node),
+    position: new T.Vector3().fromArray(slot.mountAnchor.position),
+    inverseRest: new T.Quaternion().fromArray(slot.mountAnchor.quaternion).invert(),
+  }));
+  function update() {
+    root.rotation.copy(attitude.rotation);
+    root.updateWorldMatrix(true, false);
+    root.getWorldQuaternion(rootRotation).invert();
+    for (const anchor of anchors) {
+      anchor.object.updateWorldMatrix(true, false);
+      anchorPoint.copy(anchor.position); anchor.object.localToWorld(anchorPoint);
+      root.worldToLocal(anchorPoint); anchor.kit.position.copy(anchorPoint);
+      anchor.object.getWorldQuaternion(anchorRotation);
+      anchor.kit.quaternion.copy(rootRotation).multiply(anchorRotation).multiply(anchor.inverseRest);
+    }
+  }
+  update();
   return {
     root, slots, mounted,
-    update() { root.rotation.copy(attitude.rotation); },
+    update,
     muzzle(slotId, barrel, space) {
       const kit = mounted.get(slotId);
       if (!kit) return null;
-      root.rotation.copy(attitude.rotation); root.updateWorldMatrix(true, true);
+      update(); root.updateWorldMatrix(true, true);
       const item=ITEM_BY_ID.get(loadout.weapons.find(w=>w.slots.includes(slotId))?.itemId),model=item?.modelId||item?.id;
       if(model==='missile')point.set([-.58,0,.58][barrel%3],barrel<3?.4:1,-2.04);
       else if(model==='rail')point.set(0,.57,-3.95);

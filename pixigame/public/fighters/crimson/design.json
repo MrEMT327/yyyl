@@ -1,0 +1,1162 @@
+{
+  "schemaVersion": 38,
+  "id": "crimson",
+  "slug": "crimson",
+  "name": "赤刃",
+  "number": 2,
+  "reference": "02-crimson.png",
+  "deploymentName": "双舷磁轨加速炮 · 前舱微型导弹",
+  "palette": {
+    "shell": "#a83431",
+    "accent": "#d8cebb",
+    "dark": "#24272c",
+    "metal": "#717377",
+    "trim": "#b39666",
+    "energy": "#ffb453",
+    "glass": "#293e4b"
+  },
+  "transformation": {
+    "name": "双舷磁轨加速炮 · 前舱微型导弹",
+    "version": 38,
+    "baseGeometry": "V36 hull + V37 rig",
+    "duration": 2.43,
+    "keyframed": true
+  },
+  "weaponIdentity": {
+    "role": "赤刃 · 磁轨强袭",
+    "primary": "双舷磁轨加速炮",
+    "secondary": "前舱微型导弹"
+  },
+  "authoringModule": "scripts/author/v35/crimson.mjs",
+  "articulations": [
+    {
+      "node": "3034ea4c-3a0b-5de0-aeaa-8ff860668b68",
+      "name": "deploy/pod-cover--1",
+      "pivot": [
+        -4.1899999999999995,
+        0.57,
+        0.33
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 1.4486232791552935,
+      "translation": [
+        -0.08,
+        0.09,
+        0
+      ],
+      "duration": 1.24,
+      "delay": 0,
+      "restPosition": [
+        -4.1899999999999995,
+        0.57,
+        0.33
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.025
+        ],
+        [
+          0.28,
+          0.045
+        ],
+        [
+          0.64,
+          1.018
+        ],
+        [
+          0.82,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "e806558d-8a63-57e5-a724-d62279a84309",
+      "name": "deploy/weapon-carriage--1",
+      "pivot": [
+        -3.26,
+        0.55,
+        0.16
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        1.38,
+        -1.16
+      ],
+      "duration": 1.32,
+      "delay": 0.7,
+      "restPosition": [
+        -3.26,
+        0.55,
+        0.16
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "17f8f361-4310-51ce-a994-b6fa2dd29f1a",
+      "name": "deploy/pod-cover-1",
+      "pivot": [
+        4.1899999999999995,
+        0.57,
+        0.33
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -1.4486232791552935,
+      "translation": [
+        0.08,
+        0.09,
+        0
+      ],
+      "duration": 1.24,
+      "delay": 0,
+      "restPosition": [
+        4.1899999999999995,
+        0.57,
+        0.33
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.16,
+          0.025
+        ],
+        [
+          0.28,
+          0.045
+        ],
+        [
+          0.64,
+          1.018
+        ],
+        [
+          0.82,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "5b6269a0-a065-536f-a919-89564bb364dd",
+      "name": "deploy/weapon-carriage-1",
+      "pivot": [
+        3.26,
+        0.55,
+        0.16
+      ],
+      "axis": [
+        1,
+        0,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        1.38,
+        -1.16
+      ],
+      "duration": 1.32,
+      "delay": 0.7,
+      "restPosition": [
+        3.26,
+        0.55,
+        0.16
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "9e3a6a0c-c74e-5f0e-a378-fcf13f3d73b7",
+      "name": "V37/actuator/deploy/weapon-carriage--1/-1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.69,
+        -0.58
+      ],
+      "restPosition": [
+        -3.355,
+        0.4657965102130103,
+        0.2807797450383393
+      ],
+      "restQuaternion": [
+        -0.34242789694268766,
+        0,
+        0,
+        0.9395441104043004
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8027756377319946,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.32,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "67a94656-039d-51b6-ae43-30c34c02d2aa",
+      "name": "V37/actuator/deploy/weapon-carriage--1/1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.69,
+        -0.58
+      ],
+      "restPosition": [
+        -3.1649999999999996,
+        0.4657965102130103,
+        0.2807797450383393
+      ],
+      "restQuaternion": [
+        -0.34242789694268766,
+        0,
+        0,
+        0.9395441104043004
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8027756377319946,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.32,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "ccde6436-a60d-5cff-ae5f-ae46cf37e81f",
+      "name": "V37/actuator/deploy/weapon-carriage-1/-1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.69,
+        -0.58
+      ],
+      "restPosition": [
+        3.1649999999999996,
+        0.4657965102130103,
+        0.2807797450383393
+      ],
+      "restQuaternion": [
+        -0.34242789694268766,
+        0,
+        0,
+        0.9395441104043004
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8027756377319946,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.32,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "88640b6b-d34d-5579-a67c-7eff5dd2ae72",
+      "name": "V37/actuator/deploy/weapon-carriage-1/1",
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.69,
+        -0.58
+      ],
+      "restPosition": [
+        3.355,
+        0.4657965102130103,
+        0.2807797450383393
+      ],
+      "restQuaternion": [
+        -0.34242789694268766,
+        0,
+        0,
+        0.9395441104043004
+      ],
+      "restScale": [
+        1,
+        0.22,
+        1
+      ],
+      "scaleDelta": [
+        0,
+        1.8027756377319946,
+        0
+      ],
+      "delay": 0.7,
+      "duration": 1.32,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.18,
+          0.025
+        ],
+        [
+          0.32,
+          0.09
+        ],
+        [
+          0.73,
+          1.018
+        ],
+        [
+          0.88,
+          0.996
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 37
+    },
+    {
+      "node": "08fd5b81-188c-5c6e-a533-3cba45bfe990",
+      "name": "V38/crimson-rail-slide--1",
+      "pivot": [
+        -3.26,
+        0.88,
+        -0.1
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0,
+        -0.74
+      ],
+      "duration": 0.88,
+      "delay": 1.55,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -3.26,
+        0.88,
+        -0.1
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "dc3ee78d-d583-543f-acc5-96969fe7d366",
+      "name": "V38/crimson-nose-microbay--1/lid",
+      "pivot": [
+        -3.5833999999999997,
+        0.7442,
+        -4.62
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": 1.7976891295541593,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.7,
+      "delay": 0.58,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -0.3233999999999999,
+        0.2642,
+        0
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "d33f66c6-f1f1-5855-a152-a8888c2aa738",
+      "name": "V38/crimson-forward-missile-lift--1",
+      "pivot": [
+        -3.26,
+        0.48,
+        -4.62
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.28,
+        0
+      ],
+      "duration": 0.85,
+      "delay": 1.02,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        -3.26,
+        0.48,
+        -4.62
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "a9bec47d-756c-53d8-a99f-80d8e67e37e2",
+      "name": "V38/crimson-rail-slide-1",
+      "pivot": [
+        3.26,
+        0.88,
+        -0.1
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0,
+        -0.74
+      ],
+      "duration": 0.88,
+      "delay": 1.55,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        3.26,
+        0.88,
+        -0.1
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "5f618154-9081-5bff-a38a-7b72bdd79c95",
+      "name": "V38/crimson-nose-microbay-1/lid",
+      "pivot": [
+        3.5833999999999997,
+        0.7442,
+        -4.62
+      ],
+      "axis": [
+        0,
+        0,
+        1
+      ],
+      "angle": -1.7976891295541593,
+      "translation": [
+        0,
+        0.04,
+        0
+      ],
+      "duration": 0.7,
+      "delay": 0.58,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        0.3233999999999999,
+        0.2642,
+        0
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "node": "8102b00e-1097-597e-a559-ef58e340809b",
+      "name": "V38/crimson-forward-missile-lift-1",
+      "pivot": [
+        3.26,
+        0.48,
+        -4.62
+      ],
+      "axis": [
+        0,
+        1,
+        0
+      ],
+      "angle": 0,
+      "translation": [
+        0,
+        0.28,
+        0
+      ],
+      "duration": 0.85,
+      "delay": 1.02,
+      "curve": [
+        [
+          0,
+          0
+        ],
+        [
+          0.2,
+          0
+        ],
+        [
+          0.6,
+          0.94
+        ],
+        [
+          0.77,
+          1.025
+        ],
+        [
+          0.91,
+          0.995
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "motionVersion": 38,
+      "restPosition": [
+        3.26,
+        0.48,
+        -4.62
+      ],
+      "restQuaternion": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
+  ],
+  "arsenal": {
+    "version": 38,
+    "role": "赤刃 · 磁轨强袭",
+    "primary": "双舷磁轨加速炮",
+    "secondary": "前舱微型导弹",
+    "weapons": [
+      {
+        "id": "V38/crimson-magnetic-accelerator--1",
+        "kind": "rail",
+        "node": "105fcdcf-c75a-54bb-a090-45060c95f55a",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.085,
+        "power": 1.2,
+        "cycle": 1.25,
+        "beamLength": 16,
+        "beamWidth": 0.065,
+        "color": "#ffb453",
+        "offset": 0,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/crimson-nose-microbay--1/round-0-0",
+        "kind": "missile",
+        "node": "8b1c5c03-5f13-58d2-aaf2-83d60f0720e4",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "7bcd77d0-73e7-55d2-a3de-5f433949b27a"
+        },
+        "radius": 0.07379999999999999,
+        "length": 0.9793999999999999,
+        "cycle": 4.6,
+        "offset": 0.13,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/crimson-nose-microbay--1/round-0-1",
+        "kind": "missile",
+        "node": "5a9b91b5-365f-5eff-a287-4587fde2e0bf",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "da594c74-c024-58c5-a421-951037177df8"
+        },
+        "radius": 0.07379999999999999,
+        "length": 0.9793999999999999,
+        "cycle": 4.6,
+        "offset": 0.16,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": -1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/crimson-magnetic-accelerator-1",
+        "kind": "rail",
+        "node": "fcf3ca42-8a09-5e6b-a8c6-a0c6f104968f",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "radius": 0.085,
+        "power": 1.2,
+        "cycle": 1.25,
+        "beamLength": 16,
+        "beamWidth": 0.065,
+        "color": "#ffb453",
+        "offset": 0.13,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/crimson-nose-microbay-1/round-0-0",
+        "kind": "missile",
+        "node": "b65092c3-04cc-5da3-a59e-ad68607a0a88",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "36bd883f-2f14-5841-a1f9-46182234bbaf"
+        },
+        "radius": 0.07379999999999999,
+        "length": 0.9793999999999999,
+        "cycle": 4.6,
+        "offset": 0,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      },
+      {
+        "id": "V38/crimson-nose-microbay-1/round-0-1",
+        "kind": "missile",
+        "node": "91cdb237-02ac-5b1c-a031-c5f456b9864a",
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "source": {
+          "node": "6dc147e0-7466-5606-aa4b-32847e6725f1"
+        },
+        "radius": 0.07379999999999999,
+        "length": 0.9793999999999999,
+        "cycle": 4.6,
+        "offset": 0.29000000000000004,
+        "color": "#b9e7ff",
+        "power": 1,
+        "side": 1,
+        "launchDrop": 0.35,
+        "enabledAfter": 0.985
+      }
+    ],
+    "blades": [],
+    "drones": [],
+    "chargeMaterials": [
+      "b0f477f5-44e4-5377-a4d0-44255477d121",
+      "475dffc3-6bbc-5d7f-aa93-d1400568e097"
+    ],
+    "bladeMaterials": [
+      "b6357c51-c333-5e4a-a72e-04f88bf88fa3"
+    ],
+    "color": "#ffb453",
+    "requiresDeployed": true,
+    "demonstrationOnly": true
+  },
+  "engineSockets": [
+    {
+      "name": "engine--1/exhaust",
+      "node": "a742eb49-161c-596a-ae4a-ebf4fdc0c9e0",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.26,
+        0.23,
+        6.095
+      ],
+      "radius": 0.43740000000000007
+    },
+    {
+      "name": "engine-1/exhaust",
+      "node": "6524d532-952a-5b18-a8c2-970f2855bdc2",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.26,
+        0.23,
+        6.095
+      ],
+      "radius": 0.43740000000000007
+    }
+  ],
+  "gunSockets": [
+    {
+      "name": "V38/crimson-magnetic-accelerator--1/muzzle",
+      "node": "105fcdcf-c75a-54bb-a090-45060c95f55a",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.26,
+        1.02,
+        -2.75
+      ],
+      "radius": 0.085
+    },
+    {
+      "name": "V38/crimson-nose-microbay--1/round-0-0/muzzle",
+      "node": "8b1c5c03-5f13-58d2-aaf2-83d60f0720e4",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.38,
+        0.53,
+        -5.2581999999999995
+      ],
+      "radius": 0.07379999999999999
+    },
+    {
+      "name": "V38/crimson-nose-microbay--1/round-0-1/muzzle",
+      "node": "5a9b91b5-365f-5eff-a287-4587fde2e0bf",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        -3.1399999999999997,
+        0.53,
+        -5.2581999999999995
+      ],
+      "radius": 0.07379999999999999
+    },
+    {
+      "name": "V38/crimson-magnetic-accelerator-1/muzzle",
+      "node": "fcf3ca42-8a09-5e6b-a8c6-a0c6f104968f",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.26,
+        1.02,
+        -2.75
+      ],
+      "radius": 0.085
+    },
+    {
+      "name": "V38/crimson-nose-microbay-1/round-0-0/muzzle",
+      "node": "b65092c3-04cc-5da3-a59e-ad68607a0a88",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.1399999999999997,
+        0.53,
+        -5.2581999999999995
+      ],
+      "radius": 0.07379999999999999
+    },
+    {
+      "name": "V38/crimson-nose-microbay-1/round-0-1/muzzle",
+      "node": "91cdb237-02ac-5b1c-a031-c5f456b9864a",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "worldPosition": [
+        3.38,
+        0.53,
+        -5.2581999999999995
+      ],
+      "radius": 0.07379999999999999
+    }
+  ],
+  "referenceImage": "docs/v35/references/02-crimson.png"
+}

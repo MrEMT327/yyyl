@@ -1,1 +1,4 @@
 .ui-aircraft-preview{position:relative;width:100%;height:100%;isolation:isolate}.ui-aircraft-still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none}
+.ui-aircraft-preview>.pl-model-canvas{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:contain;display:block;opacity:0;pointer-events:none}
+.ui-aircraft-preview:has(>.pl-model-canvas[data-model-ready='true'])>.ui-aircraft-still{visibility:hidden}
+.ui-aircraft-preview>.pl-model-canvas[data-model-ready='true']{opacity:1;pointer-events:auto}

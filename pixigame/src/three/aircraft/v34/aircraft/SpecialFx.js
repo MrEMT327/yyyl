@@ -432,6 +432,7 @@ function mergeSpecialSpec(spec,variant){
  * decorative, excluded from triangle accounting, and persist with each fighter.
  */
 export function buildSpecialFx(spec,config,ownedGeometries,ownedMaterials,variant){
+ if(spec?.disabled)return null;
  spec=mergeSpecialSpec(spec,variant);
  if(!spec)return null;
  const root=new T.Group();root.name='special-fx';root.userData.statsExclude=true;

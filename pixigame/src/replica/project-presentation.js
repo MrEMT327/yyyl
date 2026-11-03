@@ -13,6 +13,7 @@ import { createPhantomTrailState, samplePhantomTrail } from './project-phantom-v
 import { createFlightVisualState, sampleFlightVisual, updateFlightFighter } from './project-flight-visual.js';
 import {createFlightPositionState,sampleFlightPosition} from './project-flight-position.js';
 import { createCombatAircraftRenderer } from './project-aircraft-render.js';
+import {createAircraftFxRenderer} from '../three/aircraft/aircraft-fx-renderer.js';
 import {sampleCombatEngineWake,drawCombatEngineWake} from './combat-engine-wake.js';
 import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails,drawWingtipHighlights} from './project-wingtip-trails.js';
 
@@ -32,6 +33,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   const aircraftRenderer = createCombatAircraftRenderer(renderer, TEXTURE_SIZE);
+  const aircraftFxRenderer = createAircraftFxRenderer(renderer);
   const surface = renderer.domElement;
   let disposed = false, fighter, scene, playerImage, playerTexture, worldTexture, pose, wingtipGraphics, wingtipHighlightGraphics;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };
@@ -158,7 +160,15 @@ export async function createProjectPresentation({ content, appearance, onError, 
     updateFlightFighter(fighter, visualClock, visualPose);
     renderer.setScissorTest(true); renderer.setScissor(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
     renderer.setViewport(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
-    renderer.setClearColor(0x000000, 0); renderer.clear(); renderWithAircraftStyle(renderer, () => aircraftRenderer.render(aircraftScene, aircraftCamera, fighter));
+    renderer.setClearColor(0x000000, 0); renderer.clear(); renderWithAircraftStyle(renderer, () => {
+      const draw=()=>aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
+      if(fighter.runtime.asset.solid.userData.cleanAircraftSurface){
+        renderer.toneMappingExposure=.92;
+        aircraftFxRenderer.setColor(fighter.runtime.config.engineColor||'#66d7f0');
+        aircraftFxRenderer.render(draw,TEXTURE_SIZE,TEXTURE_SIZE);
+      }
+      else draw();
+    });
     playerContext.clearRect(0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
     if (displaySize > 0) drawCombatEngineWake(playerContext,sampleCombatEngineWake(fighter,aircraftCamera,{clock:visualClock,displaySize,textureSize:TEXTURE_SIZE,thrust:visualPose.thrust}));
     playerContext.drawImage(surface, 0, HEIGHT - TEXTURE_SIZE, TEXTURE_SIZE, TEXTURE_SIZE, 0, 0, TEXTURE_SIZE, TEXTURE_SIZE);
@@ -175,7 +185,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
     for (const image of phantomImages) image.destroy(); phantomImages.length = 0; phantomTrail.history.length = 0;
     wingtipGraphics?.destroy(); wingtipHighlightGraphics?.destroy(); wingtipTrail.tracks.forEach(track => { track.length = 0; });
     icons?.dispose(); environment.dispose(); fighter?._disposeVisuals(); fighter?.object3D.removeFromParent();
-    lighting.dispose(); aircraftRenderer.dispose(); renderer.dispose(); renderer.forceContextLoss(); surface.remove();
+    lighting.dispose(); aircraftRenderer.dispose(); aircraftFxRenderer.dispose(); renderer.dispose(); renderer.forceContextLoss(); surface.remove();
     playerCanvas.width = playerCanvas.height = worldCanvas.width = worldCanvas.height = 0;
   }
   window.addEventListener('pagehide', dispose, { once: true });

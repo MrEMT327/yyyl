@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "id": "fighter",
   "slug": "kestrel",
-  "version": "1.3.1",
+  "version": "39.0.0",
   "name": "游隼战机",
   "continuous": true,
   "rendererRevision": "185",
   "ui": {
     "title": "游隼<span>战机</span>",
-    "subtitle": "XF–07 KESTREL / CONTINUOUS FLIGHT",
-    "label": "游隼战机",
+    "subtitle": "FOXPEN / KESTREL / ARTICULATED AIRFRAME",
+    "label": "01 游隼",
     "cast": "加力推进",
     "continuous": true,
     "phases": [
@@ -19,33 +19,44 @@
       "双联脉冲炮",
       "护盾"
     ],
-    "flash": "#76cdff",
+    "flash": "#66d7f0",
     "glyph": "<path d=\"M16 2l3 12 11 10-11-3-3 9-3-9-11 3 11-10zM12 22v6m8-6v6\"/>"
   },
   "stats": {
-    "model": 13124,
-    "vfx": 14870,
-    "total": 27994,
-    "submitted": 24354,
-    "objects": 237
+    "model": 58604,
+    "vfx": 2440,
+    "total": 61044,
+    "submitted": 59204,
+    "objects": 1745
   },
   "files": {
     "structure": "structure.json",
     "effects": "effects.json",
     "view": "view.json",
     "defaults": "defaults.json",
-    "buffers": "buffers.bin"
+    "buffers": "buffers.bin",
+    "design": "design.json",
+    "surface0": "paint-satin-normal.png",
+    "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "buffers.bin": "b8445cc7c5c4f14bcfc79fb27b0e0a5cb7294534f599200d572937ab0ad2d1b9",
-    "structure.json": "693b3befedba9bd7ba675755ec9621c2968749062606c158e6546406c59dbb2d",
-    "effects.json": "88893d8b68cf32323a577d98c5bc15554e48c8ef90045054ccc10966ddf1c553",
-    "view.json": "33bbd825a46aa04f1dcf98806ae31d54203afbc1a281b32fc81d3edef29dcfc5",
-    "defaults.json": "eade3c80044863b9b82fc5ed0f9f4832c8f0265203e7463ea7ee73126ee98300",
-    "nameplate-9bfaa8cb.png": "5efc66be0ae7e55e4ad0ab853e104b45eb51824154dbe2db473de4493b769f1a"
+    "structure.json": "09375a517fcf11a824462356667f7b94647730cf67e94fdcefdd4a89ec391a0f",
+    "effects.json": "387e3a4dbd1b7c0b1a88a304e83f5407c6e0bdf4d4fd883498a5179f054cf5c1",
+    "view.json": "905e2cb86e7de4eb3f06db7c083c2f7dd81eca2c135da48bb1cfd04e02ea563f",
+    "defaults.json": "056805f0cb010927901f57a655fc384379d991fad7aac40803f7444abbb3d603",
+    "buffers.bin": "f3ce61cc093f386ba2d4bc08bc59794c73bb5fc8f4570bcfc6ee8e151963253f",
+    "design.json": "058982e656c74981e097637a4a0cd8a21fd44af9e3f08c8c165e26ff6afd73ac",
+    "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
+    "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V25, cockpit-only clearance and PBR optics repair; local Blender volume refinement of original geometry",
+  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
   "parameters": [
+    {
+      "key": "deployed",
+      "type": "boolean",
+      "label": "展开 / 收回",
+      "group": "飞行与武器"
+    },
     {
       "key": "cruise",
       "type": "boolean",
@@ -61,7 +72,7 @@
     {
       "key": "firing",
       "type": "boolean",
-      "label": "双联脉冲炮",
+      "label": "武器演示 / 开火",
       "group": "飞行与武器"
     },
     {
@@ -82,7 +93,7 @@
     {
       "key": "altitude",
       "type": "number",
-      "min": 4,
+      "min": 1,
       "max": 12,
       "step": 0.1,
       "label": "飞行高度",
@@ -152,51 +163,6 @@
       "group": "飞行与武器"
     },
     {
-      "key": "bodyFx",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "机体附着特效",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "coreGlow",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "环核亮度",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "arcGain",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "附着电弧",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "surfaceGlow",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "装甲扫光",
-      "group": "机体能量系统"
-    },
-    {
-      "key": "ringSpeed",
-      "type": "number",
-      "min": 0,
-      "max": 2,
-      "step": 0.01,
-      "label": "环轨转速",
-      "group": "机体能量系统"
-    },
-    {
       "key": "accentColor",
       "type": "color",
       "label": "副能量色",
@@ -224,65 +190,11 @@
       "group": "配色"
     },
     {
-      "key": "veilOpacity",
-      "type": "number",
-      "label": "棱脉薄膜强度",
-      "group": "游隼 / 透明下垂飘带",
-      "min": 0,
-      "max": 0.45,
-      "step": 0.01
-    },
-    {
-      "key": "veilDroop",
-      "type": "number",
-      "label": "重力倍率",
-      "group": "游隼 / 透明下垂飘带",
-      "min": 0,
-      "max": 2.2,
-      "step": 0.05
-    },
-    {
-      "key": "veilSoftness",
-      "type": "number",
-      "label": "带体柔度",
-      "group": "游隼 / 透明下垂飘带",
-      "min": 0,
-      "max": 2,
-      "step": 0.05
-    },
-    {
-      "key": "veilDots",
-      "type": "number",
-      "label": "内部点纹密度",
-      "group": "游隼 / 透明下垂飘带",
-      "min": 0,
-      "max": 2,
-      "step": 0.05
-    },
-    {
-      "key": "veilFlow",
-      "type": "number",
-      "label": "原材质扫光速度",
-      "group": "游隼 / 透明下垂飘带",
-      "min": 0,
-      "max": 2,
-      "step": 0.05
-    },
-    {
       "key": "flightSpeed",
       "type": "number",
       "label": "实际轨迹速度倍率",
       "group": "飞行与武器",
       "min": 0,
-      "max": 3,
-      "step": 0.05
-    },
-    {
-      "key": "veilAirDrag",
-      "type": "number",
-      "label": "空气阻力系数倍率",
-      "group": "游隼 / 透明下垂飘带",
-      "min": 0.1,
       "max": 3,
       "step": 0.05
     },
@@ -345,15 +257,49 @@
       "type": "color",
       "label": "玻璃吸收色",
       "group": "游隼 / 座舱玻璃"
+    },
+    {
+      "key": "weaponEffectScale",
+      "type": "number",
+      "min": 0,
+      "max": 2,
+      "step": 0.05,
+      "label": "武器特效强度",
+      "group": "武器演示"
+    },
+    {
+      "key": "deploymentEffects",
+      "type": "boolean",
+      "label": "展开能量特效",
+      "group": "武器演示"
     }
   ],
-  "reviewStatus": "kestrel-volume-sample-awaiting-user-review",
-  "revision": 17,
-  "localRevision": {
-    "id": "kestrel-volume-v1",
-    "baseManifestHash": "99d7ebbf0985f2fb724a7a47dde5599399a65c0a16fd41202e9b2072fb083804",
-    "authoring": "art/kestrel-volume/kestrel-volume.blend",
-    "changedNativeMeshes": 94,
-    "newDetailMeshes": 39
+  "reviewStatus": "runtime-model-for-visual-review",
+  "revision": 39,
+  "paintSurface": {
+    "version": 1,
+    "width": 512,
+    "height": 512,
+    "roughnessMapMinimum": 0.7803921568627451,
+    "roughnessMapMaximum": 0.9450980392156862,
+    "roughnessMapMean": 0.8627513062720206,
+    "roughnessCompensation": 1.1590909090909092,
+    "maximumNormalTiltDegrees": 0.9722482927806787,
+    "normalScale": 0.12,
+    "repeat": 4,
+    "baseColorUnchanged": true,
+    "metalnessUnchanged": true,
+    "images": [
+      {
+        "file": "paint-satin-normal.png",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "file": "paint-satin-orm.png",
+        "width": 512,
+        "height": 512
+      }
+    ]
   }
 }

@@ -109,7 +109,9 @@ function buildEngine(root, profile, plumes) {
 }
 
 export function createKestrelEquipment(asset) {
-  if (asset.entry.slug !== 'kestrel') return null;
+  // V37 owns articulated wing/engine assemblies; the old flat part indices
+  // must never replace or reparent that hardware.
+  if (asset.entry.slug !== 'kestrel' || asset.effects.articulations?.length) return null;
   const native = {}, replacements = {}, mounted = {}, plumes = [];
   for (const [slot, indices] of Object.entries(COMPONENTS)) {
     const original = new T.Group(); original.name = `Kestrel/original-${slot}`;

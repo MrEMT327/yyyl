@@ -34,6 +34,11 @@ export function createCombatAircraftRenderer(renderer, width, height = width) {
   const resolution = new THREE.Vector2(width, height);
   const states=[];let depth=0;
   return {
+    resize(nextWidth, nextHeight = nextWidth) {
+      nextWidth=Math.max(1,Math.round(nextWidth));nextHeight=Math.max(1,Math.round(nextHeight));
+      if(nextWidth===width&&nextHeight===height)return;
+      width=nextWidth;height=nextHeight;target.setSize(width,height);resolution.set(width,height);
+    },
     render(scene, camera, fighter) {
       const index=depth++,state=states[index]??(states[index]={viewport:new THREE.Vector4(),scissor:new THREE.Vector4(),jets:[],info:{texture:target.depthTexture,resolution,near:0,far:0}});
       const draw=()=>{
@@ -43,7 +48,9 @@ export function createCombatAircraftRenderer(renderer, width, height = width) {
         const previousDepth=fighter.runtime.depthInfo;
         try {
           for(const [object]of jets)object.visible=false;
-          renderer.setRenderTarget(target);renderer.setViewport(0,0,width,height);
+          // RenderTarget.viewport is already in physical pixels. setViewport
+          // would multiply it by canvas DPR again and misalign the depth map.
+          renderer.setRenderTarget(target);
           renderer.setScissorTest(false);renderer.clear();renderer.render(scene,camera);
         } catch(error){fighter.runtime.depthInfo=previousDepth;throw error;}
         finally {
@@ -51,7 +58,7 @@ export function createCombatAircraftRenderer(renderer, width, height = width) {
           renderer.setRenderTarget(previousTarget);renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(scissorTest);
         }
         state.info.near=camera.near;state.info.far=camera.far;fighter.runtime.depthInfo=state.info;
-        prepareCombatExhaust(fighter,camera);renderer.render(scene,camera);
+        prepareCombatExhaust(fighter,camera);fighter.runtime.prepareRender?.(camera);renderer.render(scene,camera);
       };
       try{return draw();}finally{depth--;}
     },
