@@ -1,16 +1,19 @@
 import type Phaser from 'phaser';
 
-const TEXTURE = 'licensed-military-supply-chest-v1';
+const TEXTURE = 'licensed-military-supply-chest-front-v2';
 const SIZE = 76;
 type ChestPose = { animation: string; animationAge: number; progress: number };
 
 export function preloadSupplyChestArt(scene: Phaser.Scene) {
-  scene.load.image(TEXTURE, './assets/licensed-supply-chest/military-green-v1.png');
+  scene.load.image(TEXTURE, './assets/licensed-supply-chest/military-green-front-v2.png');
 }
 
 export function createSupplyChestVisual(scene: Phaser.Scene): Phaser.GameObjects.Container {
-  const image = scene.add.image(0, -4, TEXTURE).setDisplaySize(SIZE, SIZE);
-  return scene.add.container(0, 0, [image]).setData('supplyChestBody', image);
+  const image = scene.add.image(0, -4, TEXTURE);
+  // Keep the generated front art proportional through every native animation.
+  const height = image.width > 0 && image.height > 0 ? SIZE * image.height / image.width : SIZE;
+  image.setDisplaySize(SIZE, height);
+  return scene.add.container(0, 0, [image]).setData('supplyChestBody', image).setData('supplyChestHeight', height);
 }
 
 /** The native NPC still owns contact, rewards and removal timing. */
@@ -31,5 +34,5 @@ export function updateSupplyChestVisual(view: Phaser.GameObjects.Container, ches
     if (chest.progress > 0 || chest.animation === 'Enter') rotation = Math.sin(chest.animationAge * 36) * .035;
   }
   view.setRotation(0).setScale(1).setAlpha(alpha);
-  image.setPosition(0, y).setDisplaySize(SIZE * size, SIZE * size).setRotation(rotation);
+  image.setPosition(0, y).setDisplaySize(SIZE * size, (view.getData('supplyChestHeight') || SIZE) * size).setRotation(rotation);
 }

@@ -5,6 +5,7 @@ import type { GameAudio } from './audio';
 import type { RecordData, Choice } from './model';
 import type { Simulation } from './simulation';
 import { OriginalUpgradeAnimation } from './ui-animation';
+import { UPGRADE_SELECTION_TIMING as selectionBeat } from '../../src/ui/upgrade-selection-timing.js';
 import { OriginalPunchboard } from './ui-punchboard';
 import { WaveUIPresentation } from './wave-ui';
 
@@ -20,6 +21,7 @@ export class Interface {
   private upgradeAnimation: OriginalUpgradeAnimation;
   private punchboard: OriginalPunchboard;
   private wavePresentation: WaveUIPresentation;
+  selectionStartedAt = 0;
   private selecting = false;
   private pauseView: 'inventory' | 'stats' | 'settings' = 'inventory';
   private selectionTimers: number[] = [];
@@ -78,6 +80,7 @@ export class Interface {
       if (this.sim.phase === 'playing') this.audio.resume();
       this.update();
     };
+    this.selectionStartedAt=performance.now();
     this.selecting = true;
     // Confirm the accepted press while combat is still paused, before its sounds resume.
     this.audio.feedback('choice');
@@ -87,7 +90,7 @@ export class Interface {
     this.upgradeAnimation.pressCard(button);
     if (!card.opensBreakthrough) {
       // BaseSkillSelectItem submits on the original .4s PressEnd event.
-      this.selectionTimers.push(window.setTimeout(commit, 400));
+      this.selectionTimers.push(window.setTimeout(commit, selectionBeat.normalCommit));
       return;
     }
     const copy = button.cloneNode(true) as HTMLButtonElement;
@@ -95,15 +98,16 @@ export class Interface {
     copy.classList.add('selected-card');
     Object.assign(copy.style, { position: 'absolute', left: `${bounds.left - host.left}px`, top: `${bounds.top - host.top}px`, width: `${bounds.width}px`, height: `${bounds.height}px`, opacity: '1', visibility: 'visible' });
     this.root.append(copy); copy.style.visibility = 'hidden';
-    this.upgradeAnimation.trackCopy(copy);
+    this.upgradeAnimation.trackCopy(copy,this.selectionStartedAt);
     // Native move tween .2s, then original show clip events at .85s / 1.166667s.
     this.selectionTimers.push(window.setTimeout(() => {
       button.style.visibility = 'hidden'; copy.style.visibility = 'visible';
-      copy.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${host.width / 2 - (bounds.left - host.left + bounds.width / 2)}px,${host.height / 2 - (bounds.top - host.top + bounds.height / 2)}px) scale(1.2)` }], { duration: 200, fill: 'forwards', easing: 'linear' });
-    }, 400));
-    this.selectionTimers.push(window.setTimeout(() => {this.upgradeAnimation.showBreakthrough(copy);this.audio.feedback('breakthrough');}, 600));
-    this.selectionTimers.push(window.setTimeout(commit, 1450));
-    this.selectionTimers.push(window.setTimeout(() => copy.remove(), 1767));
+      copy.animate([{ transform: 'translate(0,0) scale(1)' }, { transform: `translate(${host.width / 2 - (bounds.left - host.left + bounds.width / 2)}px,${host.height / 2 - (bounds.top - host.top + bounds.height / 2)}px) scale(1.2)` }], { duration: selectionBeat.reveal-selectionBeat.gatherStart, fill: 'forwards', easing: 'linear' });
+    }, selectionBeat.gatherStart));
+    this.selectionTimers.push(window.setTimeout(() => this.upgradeAnimation.showBreakthrough(copy,this.selectionStartedAt+selectionBeat.reveal), selectionBeat.reveal));
+    // The original Show has no verified separate impact sound; keep the accepted press cue.
+    this.selectionTimers.push(window.setTimeout(commit, selectionBeat.breakthroughCommit));
+    this.selectionTimers.push(window.setTimeout(() => copy.remove(), selectionBeat.finish));
   }
   private weaponIconKey(familyId: number, star: number, choice?: Choice, preview = false): string {
     const image = this.weaponIcon?.(familyId, star, choice, preview);

@@ -156,7 +156,7 @@ void fragment(){
   stepUV=TEXTURE_PIXEL_SIZE*9.0;
   float softInner=min(min(texture(TEXTURE,UV+vec2(stepUV.x,0.0)).a,texture(TEXTURE,UV-vec2(stepUV.x,0.0)).a),min(texture(TEXTURE,UV+vec2(0.0,stepUV.y)).a,texture(TEXTURE,UV-vec2(0.0,stepUV.y)).a));
   float glow=clamp((mask-softInner)*2.0,0.0,1.0);
-  COLOR=vec4(mix(vec3(0.025,0.14,1.0),vec3(0.48,0.70,1.15),edge),COLOR.a*(0.075+0.75*edge+0.22*glow));
+  COLOR=vec4(mix(vec3(0.65,0.32,0.075),vec3(1.75,1.48,0.92),edge),COLOR.a*(0.075+0.75*edge+0.22*glow));
 }`}};
   const continuousSword='host://continuous-blue-sword-v1/';
   resources[continuousSword+'material']={id:continuousSword+'material',type:'ShaderMaterial',properties:{shader:{$external:continuousSword+'shader'}}};
@@ -176,8 +176,8 @@ void fragment(){
   float vein=(1.0-smoothstep(0.002,0.014,abs(d-veinAt)))*(0.12+0.25*flow);
   float secondAt=0.21+0.019*sin(UV.x*31.0-swing_age*13.0);
   float thread=(1.0-smoothstep(0.002,0.009,abs(d-secondAt)))*flow*0.1;
-  vec3 energy=mix(vec3(0.025,0.14,1.0),vec3(0.14,0.48,1.2),rim);
-  energy=mix(energy,vec3(0.90,1.08,1.4),core);
+  vec3 energy=mix(vec3(0.48,0.22,0.035),vec3(1.35,0.94,0.38),rim);
+  energy=mix(energy,vec3(2.05,1.91,1.52),core);
   float alpha=clamp(core*0.9+rim*0.38+wake+vein+thread,0.0,1.0);
   COLOR=vec4(energy,COLOR.a*sweep*alpha*layer_strength);
 }`};
@@ -190,7 +190,7 @@ void fragment(){
   float tip=1.0-smoothstep(0.55,1.0,abs(q.x));
   float halo=exp(-q.y*q.y*5.0)*tip;
   float core=exp(-q.y*q.y*40.0)*tip;
-  COLOR=vec4(mix(COLOR.rgb,vec3(0.85,1.03,1.35),core),COLOR.a*(core*0.8+halo*0.2));
+  COLOR=vec4(mix(COLOR.rgb,vec3(1.70,1.52,1.12),core),COLOR.a*(core*0.8+halo*0.2));
 }`};
   resources['host://cool-electric-v1/arc']={type:'ShaderMaterial',properties:{shader:{$external:'host://cool-electric-v1/shader'}}};
   shaders['host://cool-electric-v1/shader']={code:`shader_type canvas_item;

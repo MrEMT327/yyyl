@@ -1,5 +1,5 @@
 // PATROL_SAMPLE records one observed screenshot, not a server formula.
-// Runtime settlement uses local chapter curves and an 11-type rotation below.
+// Gold uses the captured native chapter rate; material rotation remains local.
 import { nativePatrolSnapshot } from './native-patrol.js';
 import { UNLOCK_ALL_CONTENT, UNLIMITED_RESOURCES } from '../development-resources.js';
 import { validateReplicaInventory } from './native-economy.js';
@@ -14,7 +14,7 @@ export const PATROL_SAMPLE = Object.freeze([
   [105,13,'座舱装甲图纸'],[106,20,'火控模组图纸'],[107,20,'机身装甲图纸'],
   [108,17,'引擎装甲图纸'],[109,14,'增幅核心图纸'],
   [801,5,'速射机炮图纸'],[802,5,'爆燃导弹图纸'],[803,1,'高能激光图纸'],
-  [804,4,'酸液枪图纸'],[805,2,'冰刃弹图纸'],[807,2,'灼热射线图纸'],
+  [804,4,'酸液枪图纸'],[806,2,'电磁散射器图纸'],[807,2,'灼热射线图纸'],
   [808,1,'能量光剑图纸'],[810,6,'电弧枪图纸'],[811,4,'酸性黑洞图纸'],
 ].map(([id,count,name])=>Object.freeze({id,count,name})));
 
@@ -45,12 +45,12 @@ export function samplePatrolSnapshot(raw,campaign,time,revision,progression) {
     rewards:seconds>=INTERVAL?{coins:1}:{},rewardRows:preview(ledger,rates,Math.floor(seconds/INTERVAL)*INTERVAL,native.researchBonus),
     quickRewardRows:preview(ledger,rates,QUICK_SECONDS,native.researchBonus),
     rateItems:[{id:1,name:'金币',perHour:Math.floor(rates.gold*(100+native.researchBonus)/100)},
-      {id:105,artId:10010007,name:'装备图纸（五种轮换合计）',perHour:Math.floor(rates.gear*(100+native.researchBonus)/100)},
-      {id:801,artId:10010008,name:'科研图纸（十一种轮换合计）',perHour:Math.floor(rates.research*(100+native.researchBonus)/100)},
-      {id:113,name:'普通装备箱券',perHour:rates.basic*(100+native.researchBonus)/800},
-      {id:112,name:'高级装备箱券',perHour:rates.advanced*(100+native.researchBonus)/800}],
+      {id:105,artId:10010007,name:'装备图纸（五种轮换合计）',perHour:rates.gear*(100+native.researchBonus)/100,
+        displayAmount:Math.floor(rates.gear*8*(100+native.researchBonus)/100),displayPeriodHours:8},
+      {id:801,artId:10010008,name:'科研图纸（十一种轮换合计）',perHour:rates.research*(100+native.researchBonus)/100,
+        displayAmount:Math.floor(rates.research*8*(100+native.researchBonus)/100),displayPeriodHours:8}],
     capNote:'离线兼容：最多积累8小时，10分钟起领；UTC+8每日重置快速次数。',
-    multiplierNote:'章节分段兼容产出，巡逻天赋只加成一次；不是原服结算公式。',referenceRows:[],referenceNote:''};
+    multiplierNote:'金币按原版逐章时薪；图纸按8小时参考奖励，巡逻天赋只加成一次。',referenceRows:[],referenceNote:''};
 }
 function continuousChapter(campaign){
   const cleared=new Set(campaign.clearedChapterIds||[]);let chapter=1;

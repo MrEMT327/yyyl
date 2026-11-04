@@ -7,6 +7,16 @@ const phase='float t=clamp((COLOR.a-.1)/.8,0.0,1.0);vec2 p=UV*2.0-1.0;float r=le
 const noise=`float nHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float nField(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(nHash(i),nHash(i+vec2(1,0)),f.x),mix(nHash(i+vec2(0,1)),nHash(i+vec2(1,1)),f.x),f.y);}`;
 const shaders={
+ muzzle:`shader_type canvas_item;render_mode unshaded,blend_add;
+void fragment(){${phase}
+ float fade=1.0-smoothstep(.18,1.0,t);
+ float stem=1.0-smoothstep(.58,.96,abs(p.x)*2.6+abs(p.y+.18)*.90);
+ float wings=1.0-smoothstep(.48,.78,abs(p.x)*.90+abs(p.y-.18)*3.8);
+ float core=exp(-p.x*p.x*18.0-(p.y+.08)*(p.y+.08)*5.0);
+ float halo=exp(-r*r*5.5)*.065;
+ vec3 color=mix(COLOR.rgb,vec3(1.5,1.42,1.18),core*.88);
+ COLOR=vec4(color,min(.95,(max(stem,wings*.62)*.88+halo)*fade));
+}`,
  fire:`shader_type canvas_item;render_mode unshaded,blend_mix;${noise}
 void fragment(){${phase}
  float n=nField(p*4.2+vec2(t*2.0,-t*2.7))*.68+nField(p*8.5-vec2(t*1.8))*.32;
@@ -94,13 +104,14 @@ export class LayeredCombatBursts{
   if(age!==f.age)f={...f,age};
   if(![f.x,f.z,f.age,f.size,f.duration,visualScale].every(Number.isFinite)||f.age<0||f.age>=f.duration||f.size<=0)return true;
   if(muzzle){
-   if(this.counts.muzzle++>=40||f.age>=.16)return true;
-   const r=clamp(f.size*.28*visualScale,.13,.65),a=f.angle??0,dx=Math.sin(a),dz=Math.cos(a);
-   if(f.age<.065)this.quad('light',f.x,f.z,r*.72,r*1.18,a,[1.35,1.1,.66],f.age/.065,screen);
-   if(f.age>=.012&&f.age<.12)this.quad('ring',f.x+dx*r*.22,f.z+dz*r*.22,r*.85,r*1.35,a,[.95,.68,.29],(f.age-.012)/.108,screen);
-   if(f.age>=.025){const t=(f.age-.025)/.135;for(const side of [-1,1]){
-    const turn=a+side*.65,travel=r*(.18+t*.9);
-    this.quad('fragment',f.x+Math.sin(turn)*travel,f.z+Math.cos(turn)*travel,r*.09,r*.17,turn,[1.2,.92,.50],t,screen);
+   if(f.age>=.12||this.counts.muzzle++>=40)return true;
+   // Give a 30 Hz shot several visible frames. Keep this dedicated flash
+   // separate from explosion lights, whose tiny core fades much faster.
+   const r=clamp(f.size*.92*visualScale*(f.originalScale??1),.28,.65),a=f.angle??0,dx=Math.sin(a),dz=Math.cos(a);
+   this.quad('muzzle',f.x+dx*r*.30,f.z+dz*r*.30,r*.85,r*1.15,a,[1.25,.93,.39],f.age/.12,screen);
+   if(f.age>=.025){const t=(f.age-.025)/.095;for(const side of [-1,1]){
+    const turn=a+side*.65,travel=r*(.18+t*.75);
+    this.quad('fragment',f.x+Math.sin(turn)*travel,f.z+Math.cos(turn)*travel,r*.07,r*.12,turn,[1.2,.96,.60],t,screen);
    }}
    return true;
   }
@@ -125,6 +136,6 @@ export class LayeredCombatBursts{
   }
   return true;
  }
- draw(view){for(const name of ['smoke','fire','ring','light','fragment']){const mesh=this.meshes.get(name);if(mesh?.indices.length)view.drawMeshes('layered-bursts:'+name,[mesh],undefined,{presentationDepth:34});}}
+ draw(view){for(const name of ['smoke','fire','ring','light','muzzle','fragment']){const mesh=this.meshes.get(name);if(mesh?.indices.length)view.drawMeshes('layered-bursts:'+name,[mesh],undefined,{presentationDepth:34});}}
  reset(){this.beginFrame(this.viewport);this.buffers.clear();}
 }

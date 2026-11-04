@@ -155,7 +155,7 @@ const report = { kind:'static-file-and-correspondence-comparison', engine:manife
     breakthroughBranches:[...kinds.values()].filter(kind=>kind==='breakthrough').length,
     cloudBaseModels:Object.values(mapping.families).filter(row=>row.kind==='cloud-model').length,
     replicaBaseFallbacks:Object.values(mapping.families).filter(row=>row.kind==='replica').length,
-    composedForms:0, branchArtwork:'native source sprites retained for evidence; UI uses project-weapon-themes-v1 and project-battle-passives-v2 via battle-skill-art.js',
+    composedForms:0, branchArtwork:'native source sprites retained for evidence; UI uses project-weapon-themes-v1 and project-battle-passives-v3 via battle-skill-art.js',
     originalIconFiles:sourceIcons.size },
   dependencies:{phaser:host.dependencies.phaser,typescript:host.devDependencies.typescript,vite:host.devDependencies.vite},
   loadoutEquipment:{ mappedIds:expectedEquipment.length, cloudRecords:equipmentReference.equip.length, calculationSource:"unchanged kernel/loadout-state.ts" },

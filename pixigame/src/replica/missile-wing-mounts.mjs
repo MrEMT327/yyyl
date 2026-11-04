@@ -11,34 +11,28 @@ export class MissileWingMounts {
     this.run=run;this.clock=clock;
     this.mounts=mounts?.length===2&&mounts.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.z))?mounts:null;
     if(!this.mounts){this.records.clear();return;}
-    const held=[],waiting=[],ids=new Set();
-    for(const b of projectiles)if(rocket(b)&&b.held){held.push(b);ids.add(b.uid);if(!(b.targetUid>0))waiting.push(b);}
+    const held=[],ids=new Set();
+    for(const b of projectiles)if(rocket(b)&&b.held){held.push(b);ids.add(b.uid);}
     for(const uid of this.records.keys())if(!ids.has(uid))this.records.delete(uid);
     const center={x:(mounts[0].x+mounts[1].x)/2,z:(mounts[0].z+mounts[1].z)/2};
     const span=Math.abs(mounts[1].x-mounts[0].x)/2;
     const scale=held.reduce((max,b)=>Math.max(max,b.scale||1),1);
     const spacing=Math.max(.9,scale*.4),rowSpacing=Math.max(2.4,scale*1.1);
     const blend=1-Math.exp(-32*dt);
-    const layout=(index,count)=>{
-      const odd=count%2,middle=odd&&index===0,pairIndex=index-odd;
-      const pair=Math.floor(pairIndex/2),side=pairIndex%2===0?-1:1;
-      return {dx:middle?0:side*(span+(pair%8)*spacing),
-        dz:middle?Math.max(1.8,scale*.75):Math.floor(pair/8)*rowSpacing};
+    const layout=slot=>{
+      const pair=Math.floor(slot/2),side=slot%2===0?-1:1;
+      return {dx:side*(span+(pair%8)*spacing),dz:Math.floor(pair/8)*rowSpacing};
     };
-    held.sort((a,b)=>a.uid-b.uid);waiting.sort((a,b)=>a.uid-b.uid);
-    for(let i=0;i<held.length;i++){
-      const b=held[i];
-      // A native tick may already have started preparing the first round before
-      // its first rendered frame. Give the complete new batch distinct seats.
-      if(!this.records.has(b.uid))this.records.set(b.uid,{preparingAt:null,offset:null,...layout(i,held.length),view:{}});
-      const record=this.records.get(b.uid);
-      record.point={x:center.x+(record.dx??(b.x<center.x?-span:span)),z:center.z+(record.dz??0)};
-    }
-    for(let i=0;i<waiting.length;i++){
-      const record=this.records.get(waiting[i].uid);
-      // Mirror pairs across the fuselage. An odd round stays ahead of the nose,
-      // rather than adding another rocket to one wing or duplicating ammunition.
-      const {dx,dz}=layout(i,waiting.length);
+    // A real round owns a wing seat until release/removal. Odd counts use a
+    // wing too, and firing one round never pulls its neighbour across the nose.
+    const used=new Set([...this.records.values()].map(record=>record.slot));
+    held.sort((a,b)=>a.uid-b.uid);
+    for(const b of held){
+      if(!this.records.has(b.uid)){
+        let slot=0;while(used.has(slot))slot++;used.add(slot);
+        this.records.set(b.uid,{slot,preparingAt:null,offset:null,dx:null,dz:null,view:{}});
+      }
+      const record=this.records.get(b.uid),{dx,dz}=layout(record.slot);
       record.dx=record.dx===null?dx:record.dx+(dx-record.dx)*blend;
       record.dz=record.dz===null?dz:record.dz+(dz-record.dz)*blend;
       record.point={x:center.x+record.dx,z:center.z+record.dz};

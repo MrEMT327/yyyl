@@ -11,12 +11,14 @@ import choiceIconCrops from './psd-choice-icon-crops.json' with { type: 'json' }
 import { paintPsdChoiceArt } from './psd-choice-art.js';
 import { drawUiSymbol } from './ui-symbols.js';
 import { upgradeChoiceSlot } from './upgrade-choice-slots.js';
+import {attachUpgradeChoiceBorderFlow} from './upgrade-choice-border-flow.js';
 import { drawBattleElementBadge, BATTLE_ELEMENT_BADGE_SIZE } from './battle-element-badge.js';
 
 function attachSurface(parent,surface){const node=new Container();node.object3D.add(surface.group);node._disposeVisuals=()=>surface.destroy();parent.addChild(node);return node;}
 
 function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton, backdrop, choose }) {
   const state = bridge.game.fixedGrowth.state;
+  const revealAt=bridge.selectionLayer?.getChoiceRevealAt(state.offer)||0;
   // 三选一.psd is a 750×1624 composition. Only its UI layers are drawn here;
   // the live battlefield, aircraft and HUD keep their existing renderers.
   const scaleX = 600 / 750, scaleY = 1300 / 1624;
@@ -50,8 +52,10 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     const card = makeButton({x:px(frame.x),y:py(frame.y),width,height,
       fill:0x0d1521,fillAlpha:0,strokeAlpha:0,pressedFill:0x20384a,
       onPress:() => choose(card,width,height,skill)});
+    card.__choiceRevealAt=revealAt;
     card.__fixedCardId = skill.id; card.__fixedOwnerId = skill.ownerId;
     card.__upgradeConfirmRect = {x:3,y:3,width:width-6,height:height-6};
+    card.__upgradeConfirmFocus = {x:300,y:650};
     card.__fixedUpgradeView = bridge.presentation ? model : fixedUpgradeView(skill,state);
     card.cardSnapshot = () => ({...model,summary:effect,recipientMarker,presentation:'psd-three-choice'});
     const surface = createThreeSurface({textResolution:3});
@@ -95,6 +99,8 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     const prefix = model.evolving ? (bridge.presentation ? '突破 · ' : '进化 · ') : model.terminal ? '觉醒 · ' : '';
     const footer = text(card,model.instant?'立即生效':`${prefix}Lv.${model.level} → ${model.nextLevel}`,width/2,height-(bridge.presentation?82:65),20,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(footer.width>width-24)footer.scale.set((width-24)/footer.width);
+    if(!model.instant)card.__upgradeLevelLabel=footer;
+    attachUpgradeChoiceBorderFlow(card,{width,height,art:frame.art,index});
     panel.addChild(card);
   });
   if(state.pendingLevels>1)text(panel,`还可选 ${state.pendingLevels} 次`,
@@ -146,9 +152,20 @@ export function renderFixedUpgradeUi({ root, bridge, art, makeText, place, makeB
   const originalButton = makeButton;
   makeButton = options => originalButton({...options,onPress:()=>{if(!confirming)options.onPress?.();}});
   const choose = (card,width,height,skill) => {
-    if (confirming || bridge.game.state !== 'levelup') return;
+    if (confirming || bridge.game.state !== 'levelup' || performance.now()<(card.__choiceReadyAt||0)) return;
+    const offer={...bridge.game.fixedGrowth.state.offer};
     confirming = true;
-    if(bridge.presentation){bridge.chooseSkill(skill);confirmUpgradeCard(card,width,height,()=>{confirming=false;},()=>bridge.game.state==='levelup',skill);return;}
+    if (bridge.presentation) {
+      if (bridge.chooseSkill(skill) === false) { confirming = false; return; }
+      const runId=bridge.game.fixedGrowth.state.offer?.runId;
+      const selectionLayer=bridge.selectionLayer;
+      if(!skill.opensBreakthrough)selectionLayer?.cancel();
+      const valid=()=>skill.opensBreakthrough&&selectionLayer
+        ? !selectionLayer.disposed&&bridge.game.fixedGrowth.state.offer?.runId===runId&&['levelup','playing'].includes(bridge.game.state)
+        : bridge.game.state==='levelup';
+      confirmUpgradeCard(card,width,height,()=>{confirming=false;},valid,skill,{nativeTiming:true,selectionLayer,offer,startedAt:bridge.selectionStartedAt});
+      return;
+    }
     confirmUpgradeCard(card,width,height,()=>{confirming=false;bridge.chooseSkill(skill);},()=>bridge.game.state==='levelup',skill);
   };
   if(bridge.presentation || bridge.currentUpgradeChoices.every(skill=>skill.airframe))return renderAirframeChoices({root,bridge,art,makeText,place,makeButton,backdrop,choose});

@@ -1,4 +1,5 @@
 import {damageTextPresentation,sampleEnemyHitMotion,sampleCombatResults} from './combat-hit-presentation.mjs';
+import {preloadDamageNumberArt,updateDamageTextView,type DamageTextView} from './damage-number-art';
 import {sampleHealingReceipt} from './healing-receipt.mjs';
 import {drawPlayerDamageVignette,PLAYER_DAMAGE_VIGNETTE_DEPTH} from './player-damage-vignette.mjs';
 import {playerHealthBarColor} from '../../src/replica/player-health-display.js';
@@ -71,7 +72,7 @@ import { preloadChapter3Enemies, createChapter3Enemy, updateChapter3Enemy } from
 import { preloadChapter2Enemies, createChapter2Enemy, updateChapter2Enemy } from '../chapter2-enemy-art';
 
 const WIDTH = 540, HEIGHT = 960;
-type Display = Phaser.GameObjects.Container | Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.Graphics | OriginalParticleMesh;
+type Display = Phaser.GameObjects.Container | Phaser.GameObjects.Image | Phaser.GameObjects.Text | Phaser.GameObjects.BitmapText | Phaser.GameObjects.Graphics | OriginalParticleMesh;
 
 export class BattleView extends Phaser.Scene {
   private objects = new Map<string, Display>();
@@ -109,6 +110,7 @@ export class BattleView extends Phaser.Scene {
     for (const [key, sprite] of Object.entries(content.assets.sprites) as [string, RecordData][]) if (sprite.pathId) this.spriteByPathId.set(String(sprite.pathId), key);
   }
   preload() {
+    preloadDamageNumberArt(this);
     preloadPickupArt(this);
     preloadSupplyChestArt(this);
     this.pathogenic=new PathogenicBattleEffects(this,pathogenicGraph);
@@ -749,9 +751,9 @@ export class BattleView extends Phaser.Scene {
     if(fx.followPlayer){fx.x=this.sim.player.x+(fx.followOffset?.x||0);fx.z=this.sim.player.z+(fx.followOffset?.z||0);}
     if(fx.ownerUid){const owner=this.sim.enemies.find(e=>e.uid===fx.ownerUid&&!e.dead);if(!owner)return;const pos=this.enemyViewPositions.get(owner.uid)?.view.position??owner;fx.x=pos.x;fx.z=pos.z;}
     if(fx.kind!=='text'){this.pathogenic.effect(fx,(x,z)=>this.screen(x,z),enemyDeathVisualScale(fx));return;}
-    const key=`fx:${fx.uid}`;live.add(key);let view=this.objects.get(key) as Phaser.GameObjects.Text|undefined;
+    const key=`fx:${fx.uid}`;live.add(key);let view=this.objects.get(key) as DamageTextView|undefined;
     const layout=damageTextPresentation(fx,this.renderSamples.age(fx.age));
-    if(!view){view=this.add.text(0,0,fx.value||'',{fontFamily:'DankeUI, Microsoft YaHei',fontSize:layout.fontSize+'px',color:layout.color,stroke:'#18272e',strokeThickness:2}).setOrigin(.5).setDepth(layout.depth);this.objects.set(key,view);}
+    view=updateDamageTextView(this,view,fx.value||'',layout);this.objects.set(key,view);
     const pos=this.screen(fx.x,fx.z),margin=view.width*layout.scale/2+4;
     view.setPosition(Math.max(margin,Math.min(WIDTH-margin,pos.x+layout.x)),Math.max(30,Math.min(HEIGHT-12,pos.y+layout.y))).setAlpha(layout.alpha).setScale(layout.scale);
   }

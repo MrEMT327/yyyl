@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "date": "2026-11-04",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: ui-mockup / bitmap typography sprite atlas. Asset type: ONE production-ready numeric glyph sprite sheet for floating damage numbers in a polished vertical aircraft action game. Draw EXACTLY TWELVE separate glyphs in a perfectly even 4-COLUMN by 3-ROW GRID, with no visible grid lines. Exact order left to right: top row '0' '1' '2' '3'; middle row '4' '5' '6' '7'; bottom row '8' '9' '+' '-'. Each cell contains only its one glyph, centered. All digits have exactly the same cap height and aligned baselines; plus and minus are centered vertically with matching stroke thickness. Generous empty transparent gutters between cells. Main art direction: custom compact bold slightly condensed action-game numerals, subtly forward slanted lettering but straight-on front-facing drawing, controlled chamfered corners, clear open counters, confidently drawn consistent stroke weight. Number 0 has one clear oval/angular counter, 8 has two distinct counters, 1 has a small clear flag, 4 remains unambiguous, 6 and 9 must be distinct. Warm ivory-white face with a subtle cool light-gray lower-face shade and a tiny ivory highlight on the top edge. One narrow clean dark navy outer stroke and a very short dark lower-edge keyline keep digits legible over water and explosions. Light illustrated volume ONLY, no deep 3D extrusion. This is reusable readable game typography, not metallic machinery, gun parts, decorative icon tiles or a random type specimen. No cracks, scratches, halftone, lightning, starburst, blobs, floating particles, glow fog, surrounding badges, plates, labels, captions, alphabetical letters, extra digits or watermarks. All 12 glyphs must be complete, uncropped, separated and readable at a final height of about 20 pixels. Use a square sheet with twelve equal rectangular cells in the 4x3 layout, full transparent alpha background, no background color, no checkerboard drawn into the image. Do not include quotation marks.",
+  "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-1c97a7a2-7c38-4b36-96a6-fa763ffdb545.png",
+  "sourceSha256": "df50b4d4d7a2ffdcdfa1cb8d9cd6bf20a385cbef0c1fd4cff23e5e2f92fb7a24",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "processing": "Fixed 4×3 glyph extraction, alpha-bound cropping and uniform per-glyph scaling only. Original generated colors and alpha retained. Unicode minus shares the minus glyph.",
+  "fontSize": 72,
+  "lineHeight": 76,
+  "chars": [
+    {
+      "id": 48,
+      "letter": "0",
+      "x": 2,
+      "y": 2,
+      "width": 57,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 58,
+      "page": 0,
+      "sourceCrop": {
+        "left": 36,
+        "top": 119,
+        "width": 259,
+        "height": 292
+      }
+    },
+    {
+      "id": 49,
+      "letter": "1",
+      "x": 82,
+      "y": 2,
+      "width": 43,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 44,
+      "page": 0,
+      "sourceCrop": {
+        "left": 367,
+        "top": 117,
+        "width": 196,
+        "height": 294
+      }
+    },
+    {
+      "id": 50,
+      "letter": "2",
+      "x": 162,
+      "y": 2,
+      "width": 57,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 58,
+      "page": 0,
+      "sourceCrop": {
+        "left": 645,
+        "top": 119,
+        "width": 262,
+        "height": 292
+      }
+    },
+    {
+      "id": 51,
+      "letter": "3",
+      "x": 242,
+      "y": 2,
+      "width": 57,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 58,
+      "page": 0,
+      "sourceCrop": {
+        "left": 966,
+        "top": 119,
+        "width": 258,
+        "height": 292
+      }
+    },
+    {
+      "id": 52,
+      "letter": "4",
+      "x": 2,
+      "y": 90,
+      "width": 54,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 55,
+      "page": 0,
+      "sourceCrop": {
+        "left": 24,
+        "top": 498,
+        "width": 251,
+        "height": 296
+      }
+    },
+    {
+      "id": 53,
+      "letter": "5",
+      "x": 82,
+      "y": 90,
+      "width": 57,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 58,
+      "page": 0,
+      "sourceCrop": {
+        "left": 340,
+        "top": 499,
+        "width": 263,
+        "height": 295
+      }
+    },
+    {
+      "id": 54,
+      "letter": "6",
+      "x": 162,
+      "y": 90,
+      "width": 58,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 59,
+      "page": 0,
+      "sourceCrop": {
+        "left": 651,
+        "top": 499,
+        "width": 268,
+        "height": 295
+      }
+    },
+    {
+      "id": 55,
+      "letter": "7",
+      "x": 242,
+      "y": 90,
+      "width": 51,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 52,
+      "page": 0,
+      "sourceCrop": {
+        "left": 994,
+        "top": 499,
+        "width": 235,
+        "height": 294
+      }
+    },
+    {
+      "id": 56,
+      "letter": "8",
+      "x": 2,
+      "y": 178,
+      "width": 58,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 59,
+      "page": 0,
+      "sourceCrop": {
+        "left": 23,
+        "top": 885,
+        "width": 266,
+        "height": 295
+      }
+    },
+    {
+      "id": 57,
+      "letter": "9",
+      "x": 82,
+      "y": 178,
+      "width": 57,
+      "height": 64,
+      "xoffset": 0,
+      "yoffset": 6,
+      "xadvance": 58,
+      "page": 0,
+      "sourceCrop": {
+        "left": 335,
+        "top": 885,
+        "width": 265,
+        "height": 295
+      }
+    },
+    {
+      "id": 43,
+      "letter": "+",
+      "x": 162,
+      "y": 178,
+      "width": 53,
+      "height": 50,
+      "xoffset": 0,
+      "yoffset": 13,
+      "xadvance": 54,
+      "page": 0,
+      "sourceCrop": {
+        "left": 658,
+        "top": 922,
+        "width": 242,
+        "height": 229
+      }
+    },
+    {
+      "id": 45,
+      "letter": "-",
+      "x": 242,
+      "y": 178,
+      "width": 50,
+      "height": 21,
+      "xoffset": 0,
+      "yoffset": 28,
+      "xadvance": 51,
+      "page": 0,
+      "sourceCrop": {
+        "left": 983,
+        "top": 988,
+        "width": 229,
+        "height": 96
+      }
+    },
+    {
+      "id": 8722,
+      "letter": "−",
+      "x": 242,
+      "y": 178,
+      "width": 50,
+      "height": 21,
+      "xoffset": 0,
+      "yoffset": 28,
+      "xadvance": 51,
+      "page": 0,
+      "sourceCrop": {
+        "left": 983,
+        "top": 988,
+        "width": 229,
+        "height": 96
+      }
+    }
+  ],
+  "assets": [
+    {
+      "file": "digits.png",
+      "sha256": "45a251e2e95220141e469c11d5dfd3b7afccb64bd1198fe73c88a9811b112513",
+      "bytes": 69636,
+      "width": 320,
+      "height": 264
+    },
+    {
+      "file": "digits.xml",
+      "sha256": "60969698d6ed10ceecc0044999ead8ff1dc4809b346c43f0e713481ae57a1201",
+      "bytes": 1709
+    }
+  ]
+}

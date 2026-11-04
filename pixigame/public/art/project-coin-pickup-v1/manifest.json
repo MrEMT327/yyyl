@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "method": "Built-in image_gen edit with transparent background. Generated pixels are retained unchanged.",
+  "purpose": "Orthographic circular coin for battle pickup rotation. The oblique currency UI icon remains the reference identity.",
+  "reference": {
+    "file": "public/art/project-resource-icons-v2/coins.png",
+    "sha256": "e3b97ef6c7b7fd1c3c39a16f4e984f042d669da3a469bbcee154f209e1a3405b"
+  },
+  "prompt": "Use case: precise-object-edit. Asset type: transparent game pickup coin sprite. Edit target: the existing project gold coin icon at public/art/project-resource-icons-v2/coins.png. Correct only its viewing angle: create a dead-on orthographic FRONT VIEW of this same coin, centered on a square canvas. The outer contour and inner circular rim must be true perfect circles with equal horizontal and vertical diameter, no tilt, no ellipse, no perspective foreshortening. Keep the established glossy low-poly triangular gold facets, yellow-to-orange-gold palette, strong dark-brown outer outline, bevelled circular rim, and restrained white sparkling highlights. Keep the clean readable silhouette for a 32-pixel in-game pickup. The uniform circular bevel may show depth, but no one-sided side wall or cast perspective. Exactly one coin, no numerals, no lettering, no heart, no star emblem, no additional objects, no floor, no drop shadow outside the coin, no glow leaking outside the contour. Single square transparent PNG asset with genuine alpha, coin occupying about 90% of canvas with an even transparent margin on all sides. Preserve the current coin's identity and style.\n",
+  "assets": [
+    {
+      "file": "coin-front-v1.png",
+      "sha256": "43af5a4ffd8ea279284d77e95f8e37886f720427e8a6526018960ae8bab2b0eb",
+      "size": [
+        1254,
+        1254
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "opaqueBounds": {
+        "x": 64,
+        "y": 55,
+        "width": 1118,
+        "height": 1138
+      },
+      "principalAxisRatio": 1.0190471487749184
+    }
+  ],
+  "display": {
+    "height": 32,
+    "width": 32.57245080500894,
+    "reason": "Equalize visible alpha-bound diameters at runtime."
+  }
+}

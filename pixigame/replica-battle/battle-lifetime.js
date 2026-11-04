@@ -23,7 +23,9 @@ export function disposeNativeUi(ui) {
   // Access is confined to teardown, just like the existing presentation adapter.
   for (const timer of ui.selectionTimers) clearTimeout(timer);
   ui.selectionTimers.length = 0;
-  ui.upgradeAnimation.stop(); ui.upgradeAnimation.clearWarning(); ui.punchboard.stop();
+  if (ui.upgradeAnimation.dispose) ui.upgradeAnimation.dispose();
+  else { ui.upgradeAnimation.stop(); ui.upgradeAnimation.clearWarning(); }
+  ui.punchboard.stop();
   ui.update = () => {};
   ui.root.replaceChildren();
 }

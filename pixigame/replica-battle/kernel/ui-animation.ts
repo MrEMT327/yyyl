@@ -5,7 +5,7 @@ import tiers from '../public/data/ui-tier-animation.json';
 import tierMedia from '../public/data/ui-tier-assets.json';
 import wavePresentation from '../public/data/wave-presentation.json';
 import { OriginalUiRoll } from './ui-roll';
-import { OriginalUiBurst } from './ui-burst';
+import { ProjectUpgradeBurst } from './ui-burst';
 import type { RecordData } from './model';
 
 type Clip = typeof data.clips.Anim_UIFX_STG_SkillSelection;
@@ -27,7 +27,7 @@ export class OriginalUpgradeAnimation {
   private warningFinish?: () => void;
   private warningClock: () => number = () => performance.now() / 1000;
   private roll = new OriginalUiRoll();
-  private burst = new OriginalUiBurst();
+  private burst = new ProjectUpgradeBurst();
   constructor(private sprites: RecordData) {
     this.sprites = { ...sprites, ...media.sprites, ...tierMedia.sprites };
     for (const n of [...Object.values(tiers.tiers).flatMap(t => t.nodes), ...data.warning]) if (n.sprite && this.sprites[n.sprite]) {
@@ -37,6 +37,11 @@ export class OriginalUpgradeAnimation {
       if (!this.images.has(key) && this.sprites[key]) { const image = new Image(); image.src = this.sprites[key].url; this.images.set(key, image); }
     }
   }
+  dispose() {
+    this.stop(); this.clearWarning();
+    for (const copy of this.copies) copy.card.remove();
+    this.copies = []; this.burst.prune([]);
+  }
   start(host: HTMLElement) {
     this.host = host; this.started = performance.now();
     this.cubes = [...host.querySelectorAll<HTMLCanvasElement>('.original-cube')];
@@ -45,13 +50,13 @@ export class OriginalUpgradeAnimation {
   stop() { this.host = null; this.cubes = []; }
   // Cloned Unity card remains alive across the ordinary -> special panel handoff.
   // cloneNode does not copy canvas pixels, so it needs an independent renderer.
-  trackCopy(card: HTMLElement) {
-    this.copies.push({ card, started: performance.now(), showAt: Infinity });
+  trackCopy(card: HTMLElement, startedAt=performance.now()) {
+    this.copies.push({ card, started: startedAt, showAt: Infinity });
     card.querySelectorAll<HTMLCanvasElement>('.original-cube').forEach(c => this.drawCube(c, 0));
   }
-  showBreakthrough(card: HTMLElement) {
+  showBreakthrough(card: HTMLElement, showAt=performance.now()) {
     const copy = this.copies.find(c => c.card === card);
-    if (copy) copy.showAt = performance.now();
+    if (copy) copy.showAt = showAt;
   }
   pressCard(card: HTMLElement) {
     const clip = popup.clips.Anim_skillSelectItemPressEnd;

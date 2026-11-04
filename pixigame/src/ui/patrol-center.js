@@ -58,8 +58,8 @@ export function patrolPanel(snapshot, h) {
     <div class="pt-scroll" data-patrol-scroll="idle">
       ${scene}
       ${p.nativeSettlementPending?'':`<div class="pt-timing" role="group" aria-label="巡逻时间"><span data-patrol-clock="label">${clock.label}</span><strong data-patrol-clock="time">${clock.time}</strong></div>`}
-      <p class="pt-note">每小时收益${bonusPercent ? ` · 科技加成 +${amount(bonusPercent)}%` : ''}</p>
-      <div class="pt-rates" aria-label="每小时收益" style="--pt-rate-columns:${Math.max(1,Math.min(5,p.native?(p.rateItems||[]).length:resources.length))}">${p.native ? (p.rateItems||[]).map(r => `<div title="${e(r.name)}" aria-label="${e(r.name)}，${amount(r.perHour)}每小时"><span>${nativeArt(r,h)}${e(rateNames[r.id]||r.name)}</span><b>${amount(r.perHour)}</b></div>`).join('') : resources.map(r => `<div><span>${icon(r.icon)}${r.name}</span><b>${amount(p.perHour?.[r.key])}</b></div>`).join('')}</div>
+      <p class="pt-note">收益速率${bonusPercent ? ` · 科技加成 +${amount(bonusPercent)}%` : ''}</p>
+      <div class="pt-rates" aria-label="巡逻收益速率" style="--pt-rate-columns:${Math.max(1,Math.min(5,p.native?(p.rateItems||[]).length:resources.length))}">${p.native ? (p.rateItems||[]).map(r => `<div title="${e(r.name)}" aria-label="${e(r.name)}，${amount(r.displayAmount??r.perHour)}每${r.displayPeriodHours||1}小时"><span>${nativeArt(r,h)}${e(rateNames[r.id]||r.name)}</span><b>${amount(r.displayAmount??r.perHour)}<small>/${r.displayPeriodHours?`${r.displayPeriodHours}小时`:'小时'}</small></b></div>`).join('') : resources.map(r => `<div><span>${icon(r.icon)}${r.name}</span><b>${amount(p.perHour?.[r.key])}</b></div>`).join('')}</div>
 
       <h3 class="pt-section-title">累计奖励</h3>
       ${p.nativeSettlementPending ? '<p class="pt-empty">奖励暂不可领取</p>' : available ? (p.sampleBased?nativeRewards(p.rewardRows,h):rewards(p.rewards, h)) : `<p class="pt-empty">${p.clockRollback?'设备日期异常，请恢复后领取':'奖励积累中'}</p>`}

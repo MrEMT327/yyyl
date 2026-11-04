@@ -16,6 +16,7 @@ import { createCombatAircraftRenderer } from './project-aircraft-render.js';
 import {createAircraftFxRenderer} from '../three/aircraft/aircraft-fx-renderer.js';
 import {sampleCombatEngineWake,drawCombatEngineWake} from './combat-engine-wake.js';
 import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails,drawWingtipHighlights} from './project-wingtip-trails.js';
+import {projectMissileWingMounts} from './project-missile-mounts.js';
 
 const WIDTH = 540, HEIGHT = 960;
 const TEXTURE_SIZE = 256;
@@ -264,12 +265,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
       return icons.get(weapon);
     },
     missileMounts() {
-      if (disposed || !pose?.visible) return [];
-      const tips = projectWingtipPositions(fighter, aircraftCamera, pose);
-      if (tips.length !== 2) return [];
-      const halfSpan = Math.max(...tips.map(tip => Math.abs(tip.x - pose.x))) * .9;
-      const y = pose.y + ((tips[0].y + tips[1].y) / 2 - pose.y) * .35;
-      return [{x: pose.x - halfSpan, y}, {x: pose.x + halfSpan, y}];
+      return disposed ? [] : projectMissileWingMounts(fighter, aircraftCamera, pose);
     },
     playerSkin: {
       // Authored original skeleton bounds, in original skeleton units.

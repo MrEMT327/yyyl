@@ -1,0 +1,39 @@
+{
+  "name": "Armored front-facing medical case",
+  "file": "medical-case-front-v1.png",
+  "tool": "OpenAI built-in image_gen",
+  "processing": "AI-assisted full sprite redesign, true transparent alpha; generated PNG unchanged. Runtime selects 1024x1024 frame at [115,94] to retain the previous visible size at 42px display.",
+  "canvas": [
+    1254,
+    1254
+  ],
+  "runtimeFrame": [
+    115,
+    94,
+    1024,
+    1024
+  ],
+  "editedFrom": {
+    "file": "../licensed-pickups/medkit-front-v2.png",
+    "author": "Quaternius",
+    "license": "CC0-1.0",
+    "source": "https://poly.pizza/m/cc9Kueieyl"
+  },
+  "styleReferences": [
+    {
+      "file": "../airdrop-modules-v1/module-shell.png",
+      "role": "Project sci-fi metal shading and bevel reference"
+    },
+    {
+      "file": "../licensed-supply-chest/military-green-front-v2.png",
+      "role": "Painted olive sci-fi panel style reference",
+      "author": "CraftPix.net 2D Game Assets",
+      "source": "https://opengameart.org/content/different-sci-fi-item-icons",
+      "license": "OGA-BY-3.0",
+      "licenseUrl": "https://static.opengameart.org/OGA-BY-3.0.txt"
+    }
+  ],
+  "license": "OGA-BY-3.0",
+  "licenseNote": "Retain attribution for the referenced licensed supply chest conservatively; no competitor game art was used.",
+  "promptRecord": "C:/Users/lvan/Documents/ChatGPT/模板/medkit-style-20261103/PROMPT.txt"
+}

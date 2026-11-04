@@ -4989,7 +4989,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     if (refs.revive) refs.revive.text = String(Math.max(0, Math.ceil(game.reviveCountdown || 0)));
   };
   const isActionButtonAt = (button, global) => {
-    if (!button?.visible || !button.enabled || !button.__pixiUiAction || !button.hitArea) {
+    if (!button?.visible || button.destroyed || !button.parent || button.eventMode==='none' || performance.now()<(button.__choiceReadyAt||0) || !button.enabled || !button.__pixiUiAction || !button.hitArea) {
       return false;
     }
     const local = button.toLocal(global);

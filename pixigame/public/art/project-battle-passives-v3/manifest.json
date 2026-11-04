@@ -1,0 +1,460 @@
+{
+  "version": 3,
+  "date": "2026-11-04",
+  "generator": "built-in image_gen",
+  "style": "保留功能图形；正视为主，左右结构对称；细描边、金属倒角和轻体积感与武器强化图标统一。",
+  "normalization": "Alpha-bounds crop and uniform fit only; transparent 320px WebP; no recoloring or painting.",
+  "assets": [
+    {
+      "key": "11000101",
+      "name": "生命模块",
+      "category": "passive",
+      "file": "11000101.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23670,
+      "sha256": "a12a169fd63ad2d80c706156609108450d5dbabdb9b39c008740b232a391fd09",
+      "alphaBounds": [
+        16,
+        25,
+        304,
+        295
+      ],
+      "sourceFile": "originals/11000101.png",
+      "sourceSha256": "eb708f8226bde123ff16476ee3c0208d7d0d7a8551641845f6b4fe34557d9468",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 76,
+        "top": 99,
+        "width": 1103,
+        "height": 1035
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements: The emerald HEALTH HEART must be bilaterally symmetric, with identical left and right lobes at identical heights. The ivory ECG remains horizontal across its flat central face. Center the top and bottom metal caps; paired side brackets are identical in shape, width and visible thickness. No right side projects farther back than the left side. Render as the exact frontal elevation of a compact heart-shaped health emblem; not a perspective object.",
+      "referenceImages": [
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-04f404af-bd6e-4686-b770-ac9c4f15fa6a.png"
+      ]
+    },
+    {
+      "key": "11000201",
+      "name": "攻击模块",
+      "category": "passive",
+      "file": "11000201.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21632,
+      "sha256": "077c72f670ae4ca74fe1121120d262e53441d06958019d446ad4c9f20c8282a4",
+      "alphaBounds": [
+        31,
+        16,
+        289,
+        304
+      ],
+      "sourceFile": "originals/11000201.png",
+      "sourceSha256": "577142ed4e74e2e60298775691872766c5d0c4937bce0cdf5fb277270c72c69e",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-96421770-ab3c-492c-878c-bba4d947cb66.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 167,
+        "top": 96,
+        "width": 919,
+        "height": 1025
+      },
+      "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET. Images 2 and 3 are STYLE references ONLY, for the project's weapon icon rendering. Preserve the target's subject identity, compact overall silhouette, functional pictogram, dominant accent color, subparts, and mostly front-facing view. Reference only the weapons' fine precise navy contours, crisp beveled planes, graphite metal, small ivory accents, clean directional highlights and believable light illustrated volume. Do not copy a weapon's silhouette, long rectangular body, barrel, ammunition cartridge or camera angle. Do NOT redesign a symbolic upgrade into a gun or equipment cartridge. Refine the ORIGINAL existing design with thinner contours, less inflated shapes, smaller restrained reflections and clearer material separation; reduce chunky decorative rim thickness slightly. Avoid toy-like plastic, huge candy highlights, heavy comic outlines, excessive tiny greebles, excessive bloom. Keep the main function symbol clear at 40 pixels. Not photorealistic. One SINGLE centered icon, SQUARE canvas, original compact composition, even 8% margins, genuinely transparent alpha background. No extra enclosing frame, floor, shadow, background, atmospheric glow fog, text, digits, watermark. Icon-specific invariants: Keep the large ivory upward arrow as the key silhouette on its orange-yellow and graphite angular power plate. The arrow stays dominant and clearly points upward. Refine orange armor facets and thin metal edging; do not elongate the plate into a gun-like power cartridge.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11000201.webp",
+        "D:/少女航线/yyyl/pixigame/public/art/project-weapon-themes-v1/20101.webp",
+        "D:/少女航线/yyyl/pixigame/public/art/project-weapon-themes-v1/20901.webp"
+      ]
+    },
+    {
+      "key": "11000301",
+      "name": "增幅模块",
+      "category": "passive",
+      "file": "11000301.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21728,
+      "sha256": "03f3d34d0035c8987b4ff20223f44c349a980db1021b96480bd7eebb3532bb11",
+      "alphaBounds": [
+        18,
+        16,
+        302,
+        304
+      ],
+      "sourceFile": "originals/11000301.png",
+      "sourceSha256": "d8ed28ad688bfa839a4de1ad9bd15deb338ed5860a23e09172d791ac3a2499dc",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-e312b8c0-f0e2-4ab4-a8a7-ed58108e73bb.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 97,
+        "top": 80,
+        "width": 1058,
+        "height": 1072
+      },
+      "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET. Images 2 and 3 are STYLE references ONLY, for the project's weapon icon rendering. Preserve the target's subject identity, compact overall silhouette, functional pictogram, dominant accent color, subparts, and mostly front-facing view. Reference only the weapons' fine precise navy contours, crisp beveled planes, graphite metal, small ivory accents, clean directional highlights and believable light illustrated volume. Do not copy a weapon's silhouette, long rectangular body, barrel, ammunition cartridge or camera angle. Do NOT redesign a symbolic upgrade into a gun or equipment cartridge. Refine the ORIGINAL existing design with thinner contours, less inflated shapes, smaller restrained reflections and clearer material separation; reduce chunky decorative rim thickness slightly. Avoid toy-like plastic, huge candy highlights, heavy comic outlines, excessive tiny greebles, excessive bloom. Keep the main function symbol clear at 40 pixels. Not photorealistic. One SINGLE centered icon, SQUARE canvas, original compact composition, even 8% margins, genuinely transparent alpha background. No extra enclosing frame, floor, shadow, background, atmospheric glow fog, text, digits, watermark. Icon-specific invariants: Keep the violet circular lens and four outward-pointing violet arrows in a compact cross composition. Arrows remain actual readable arrows, not gun parts. Give the lens restrained faceted shading and the dark mounting hub subtle machined-metal depth. Keep a clean cross silhouette.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11000301.webp",
+        "D:/少女航线/yyyl/pixigame/public/art/project-weapon-themes-v1/20101.webp",
+        "D:/少女航线/yyyl/pixigame/public/art/project-weapon-themes-v1/20901.webp"
+      ]
+    },
+    {
+      "key": "11000601",
+      "name": "冷却模块",
+      "category": "passive",
+      "file": "11000601.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 26720,
+      "sha256": "d3e9051ec960d2540e41b4573afc6d14d97526750da38b5df2b68a5080b49abc",
+      "alphaBounds": [
+        29,
+        16,
+        291,
+        304
+      ],
+      "sourceFile": "originals/11000601.png",
+      "sourceSha256": "41ad9b8701ae0a57bcc0792712e333abb9daa41f360d9c3624534800bd854ca9",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 155,
+        "top": 109,
+        "width": 943,
+        "height": 1036
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements: The cyan CLOCK FACE must be a geometrically perfect CIRCLE, width exactly equal to height, concentric with the circular graphite housing. Ivory hands remain clearly recognizable at center. The broad clockwise cyan arrow follows the same circle centered on the clock. Case fittings may retain their blue/gold/ivory colors but their geometry must balance symmetrically and have equal visible thickness left and right. Do not tilt or lean the clock. No thick visible side wall on one side.",
+      "referenceImages": [
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-6b303503-8ae4-437e-a0d6-856223517ba4.png"
+      ]
+    },
+    {
+      "key": "11000307",
+      "name": "暴击模块",
+      "category": "passive",
+      "file": "11000307.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23626,
+      "sha256": "2cf2c654a8a67e76f9174334fbebb6aa68745f8deab27ca3087a3e077f6ba07e",
+      "alphaBounds": [
+        19,
+        16,
+        301,
+        304
+      ],
+      "sourceFile": "originals/11000307.png",
+      "sourceSha256": "a44e65d5f589102e6ae7a860cfe8a78a54468991dab08bd99163fe8d2fb43867",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-bacb69be-b500-4e7c-8be2-456e41ce0508.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 116,
+        "top": 96,
+        "width": 1023,
+        "height": 1044
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. A centered GOLD FOUR-POINT STAR on a red faceted diamond, graphite and ivory four-corner fittings, and one small red lightning mark at upper right. Keep this critical-hit icon, not a gun optic. The main red diamond and mounting structure have balanced mirror-symmetric geometry and face the viewer exactly.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11000307.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11000801",
+      "name": "能量护盾",
+      "category": "passive",
+      "file": "11000801.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23522,
+      "sha256": "9460730e9a69ca40539e3218a38b218efbf410d54987ef1174ea9656321d6278",
+      "alphaBounds": [
+        32,
+        16,
+        289,
+        304
+      ],
+      "sourceFile": "originals/11000801.png",
+      "sourceSha256": "6eeb5945d4d4b6684f3be982dd75c7cd39e42fcc890f191e937392cacf419f23",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-623b32fd-e0ee-4bf9-a5f3-a8a43b4df623.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 206,
+        "top": 139,
+        "width": 839,
+        "height": 939
+      },
+      "prompt": "Use case: style-transfer. Image 1 is the EDIT TARGET. Images 2 and 3 are STYLE references ONLY, for the project's weapon icon rendering. Preserve the target's subject identity, compact overall silhouette, functional pictogram, dominant accent color, subparts, and mostly front-facing view. Reference only the weapons' fine precise navy contours, crisp beveled planes, graphite metal, small ivory accents, clean directional highlights and believable light illustrated volume. Do not copy a weapon's silhouette, long rectangular body, barrel, ammunition cartridge or camera angle. Do NOT redesign a symbolic upgrade into a gun or equipment cartridge. Refine the ORIGINAL existing design with thinner contours, less inflated shapes, smaller restrained reflections and clearer material separation; reduce chunky decorative rim thickness slightly. Avoid toy-like plastic, huge candy highlights, heavy comic outlines, excessive tiny greebles, excessive bloom. Keep the main function symbol clear at 40 pixels. Not photorealistic. One SINGLE centered icon, SQUARE canvas, original compact composition, even 8% margins, genuinely transparent alpha background. No extra enclosing frame, floor, shadow, background, atmospheric glow fog, text, digits, watermark. Icon-specific invariants: Keep the cyan SHIELD shape with a simple ivory aircraft silhouette at center, blue and ivory small edge fittings, and a graphite rim. The shield remains a shield, not a gun-shaped projector. Make its glass, armor bevels and thin outlines match the weapon rendering style, with modest volume.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11000801.webp",
+        "D:/少女航线/yyyl/pixigame/public/art/project-weapon-themes-v1/20101.webp",
+        "D:/少女航线/yyyl/pixigame/public/art/project-weapon-themes-v1/20901.webp"
+      ]
+    },
+    {
+      "key": "11001101",
+      "name": "缩小！",
+      "category": "passive",
+      "file": "11001101.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 30890,
+      "sha256": "864c78432f097906436f8da416107307e5b798d733254ce6faaf4d98d6b2c69d",
+      "alphaBounds": [
+        16,
+        36,
+        304,
+        285
+      ],
+      "sourceFile": "originals/11001101.png",
+      "sourceSha256": "c0a14ce7275f43ab460fd4dba5a017917ecec7c8b322914650cbf06fd3971ff0",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-58632d2f-f0c4-4199-9e2c-8822fcb94734.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 84,
+        "top": 152,
+        "width": 1086,
+        "height": 940
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the compact ivory AIRCRAFT PICTOGRAM viewed from above, between TWO CYAN ARROWS pointing inward, supported by an open graphite/ivory U frame. The pictogram itself is flat on the image plane; do not render the actual airplane head-on. Left and right arrows have identical size and matched angles. Refine metal and glass materials without adding perspective or making a gun.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11001101.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11001401",
+      "name": "维修强化",
+      "category": "passive",
+      "file": "11001401.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21738,
+      "sha256": "0c19a1ca6c350605fd2e4ba3e7372f532b972bbd28396ea2c458f5edb90ef482",
+      "alphaBounds": [
+        40,
+        16,
+        281,
+        304
+      ],
+      "sourceFile": "originals/11001401.png",
+      "sourceSha256": "ffdeb35036075a983a1a42f37da1d6ce55beb88bc46922bb93889bdf77b5eab4",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-5f81b6d3-6cb1-4a2a-988e-ad8228fc7990.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 197,
+        "top": 115,
+        "width": 860,
+        "height": 1027
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the compact GREEN/GRAPHITE REPAIR TOOL CASE seen directly from the front, with one diagonally mounted IVORY WRENCH and a small GREEN UPWARD CHEVRON. The case silhouette, handle and paired corner caps are bilaterally symmetric, with no top-plane or thick side-wall view. The wrench may stay diagonal as a flat front-face pictogram. Thin precise edges and restrained metal depth.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11001401.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11001601",
+      "name": "狂暴空投",
+      "category": "passive",
+      "file": "11001601.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21140,
+      "sha256": "c94cc37ba27483bf346f8d63f2c8a1570e680e09dd32d2c529e6f782f1382cde",
+      "alphaBounds": [
+        52,
+        16,
+        268,
+        304
+      ],
+      "sourceFile": "originals/11001601.png",
+      "sourceSha256": "4f4451a3a3035b3b5a66fa7ad243c39b899cae0c7fe89bedccb884c373234e31",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-21ba944f-3723-4d8b-a6a6-5ce8d3d7efae.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 226,
+        "top": 90,
+        "width": 799,
+        "height": 1066
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the ORANGE/IVORY PARACHUTE above a compact ORANGE/GRAPHITE SUPPLY BOX with an ivory LIGHTNING symbol. Exactly frontal canopy and box; matching left/right canopy lobes, suspension straps and box corner geometry. Keep parachute cloth shading and metal box bevels refined, not puffy cartoon plastic. No angled crate or gun.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11001601.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11001701",
+      "name": "导弹空投",
+      "category": "passive",
+      "file": "11001701.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23622,
+      "sha256": "f55a486a7f1585e0f7d85719ed36a131d4d5cdf864712ccf0415672284d814fa",
+      "alphaBounds": [
+        50,
+        16,
+        270,
+        304
+      ],
+      "sourceFile": "originals/11001701.png",
+      "sourceSha256": "1b0c572902d39f5d0fc970f127c421fa140ff14b40b8ef3f2931db130c31d3a6",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-064865b2-2865-4ab2-9043-bf8904ed4f73.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 210,
+        "top": 76,
+        "width": 831,
+        "height": 1086
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the RED/IVORY PARACHUTE above a compact RED/GRAPHITE SUPPLY BOX with a small IVORY/GOLD MISSILE PICTOGRAM on its face. Exactly frontal canopy and box; matching canopy lobes, straps and corner geometry. The missile pictogram can stay horizontal, drawn as a flat symbol. No receding crate sides or large launcher.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11001701.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11002001",
+      "name": "震荡波空投",
+      "category": "passive",
+      "file": "11002001.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 25396,
+      "sha256": "ae90f0bcbefca8989757b3c1a32b09cacbd405f8faa893387e039fcbd01e1737",
+      "alphaBounds": [
+        57,
+        16,
+        263,
+        304
+      ],
+      "sourceFile": "originals/11002001.png",
+      "sourceSha256": "2f6e932536506e96884beff94d675be64bb925d364c23a9b2d1d5c9c6c58255e",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-1a793ac3-83fc-4687-9e8d-58b5043e9687.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 227,
+        "top": 69,
+        "width": 799,
+        "height": 1115
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the PURPLE/IVORY PARACHUTE above a compact PURPLE/GRAPHITE SUPPLY BOX with clear CYAN CONCENTRIC SHOCKWAVE ARCS on its face. Exactly frontal view, matching canopy halves, straps and box corners. The cyan circular inset is a true circle. Restrained cloth shading and crisp metal bevels, no side-view pod.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11002001.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11002201",
+      "name": "维修空投",
+      "category": "passive",
+      "file": "11002201.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21238,
+      "sha256": "78b2148b66aa56a3b8554b941e0e772185a5d0aacc23df091d2f593fa828403e",
+      "alphaBounds": [
+        54,
+        16,
+        266,
+        304
+      ],
+      "sourceFile": "originals/11002201.png",
+      "sourceSha256": "13b0b90d96ed30fd081b36529c0f78c888a19fec6903bb497ca5c5bd19beb9d5",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-7cd7eda8-0f90-4597-b8be-12b06302fb1e.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 231,
+        "top": 91,
+        "width": 791,
+        "height": 1073
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the GREEN/IVORY PARACHUTE above a compact GREEN/GRAPHITE MEDICAL SUPPLY BOX carrying a large IVORY MEDICAL CROSS. Strict frontal view; mirrored canopy halves, suspension straps and case corners; a clear upright symmetric medical cross. Retain cloth and metal identity, refine details without huge toy highlights. No angled crate.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11002201.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    },
+    {
+      "key": "11002501",
+      "name": "复活芯片",
+      "category": "passive",
+      "file": "11002501.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 22148,
+      "sha256": "447f70ec4819bd7d00ae24ac6106db6e25bb2d8bd5618c7da8986565596ca3ab",
+      "alphaBounds": [
+        45,
+        16,
+        275,
+        304
+      ],
+      "sourceFile": "originals/11002501.png",
+      "sourceSha256": "64e4ed209e8ad03512c8d4a04242c573d8cdfe06099278e38da33709548c0d13",
+      "sourceGeneratedPath": "C:\\Users\\lvan\\.codex\\generated_images\\01a162ab-afec-7aa3-8c19-e8a4910290ff\\exec-1c2fecfe-5e69-42c4-aea7-e0fdb8303cbf.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceCrop": {
+        "left": 207,
+        "top": 100,
+        "width": 840,
+        "height": 1053
+      },
+      "prompt": "Use case: precise-object-edit. Image 1 is the edit target. The ONLY required structural correction is to rebuild it as a STRICTLY STRAIGHT-ON FRONT ORTHOGRAPHIC ICON. Camera optical axis is exactly perpendicular to the front surface: yaw=0, pitch=0, roll=0. No isometric view, no three-quarter view, no receding side wall, no visible top plane from a tilted camera, no foreshortening, no ellipse caused by perspective. Construct the main housing, front face and outline around the SAME centered axis, with mirror-symmetric left/right geometry and equally sized paired fittings. Keep shallow depth only through front-facing bevels, edge highlights and lighting. Keep the target's function symbol, palette, precise fine linework and graphite/ivory/colored metal materials. Avoid chunky black cartoon contours and inflated glossy toy shapes. Preserve the compact original functional icon rather than redesigning it as a gun or long cartridge. One centered isolated icon on a square canvas, 8% safe margins, real transparent alpha background, no floor shadow, no background, no surrounding card, no text, watermark or digits. Additional exact requirements:  Image 2 and image 3, if present, are approved FRONTAL STYLE references ONLY. Keep image 1's subject and silhouette. Match references' restrained facet shading, precise thin contours and clear material separation, but never copy their heart, ECG or clock symbols unless they belong to image 1. Keep the compact square GRAPHITE REVIVAL CHIP with gold connector tabs, CYAN CIRCULAR REBOOT ARROW and small GREEN HEART at center. The chip front face is exactly square, flat parallel to the image plane, symmetric housing and equal left/right thickness. Reboot arrow and heart stay readable, no side wall, perspective or elongated cartridge.",
+      "referenceImages": [
+        "D:/少女航线/yyyl/pixigame/public/art/project-battle-passives-v2/11002501.webp",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-b4d153fa-a22c-4ab9-9a6d-9c5763267ddf.png",
+        "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-33fd0740-0373-431f-bbb2-71ddafc7d222.png"
+      ]
+    }
+  ]
+}

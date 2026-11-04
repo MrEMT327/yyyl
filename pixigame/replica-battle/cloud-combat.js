@@ -1,6 +1,7 @@
 import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js';
 import {createBattleUiFrame} from './battle-ui-frame.js';
 import { bindCloudPointerInput } from './cloud-pointer-input.js';
+import { createUpgradeSelectionLayer } from '../src/ui/upgrade-selection-layer.js';
 import { Container, WebGLRenderer } from '../src/three/display.js';
 import { createPixiCombatUi } from '../src/ui/pixi-lobby.js';
 import { TextureLoader, SRGBColorSpace } from 'three';
@@ -25,6 +26,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   onGraphicsContext?.(canvas,context);
   renderer.three.setClearColor(0,0);renderer.setBloomEnabled(false);
   const scene=new Container(),textures=new Map(),loader=new TextureLoader();
+  const selectionLayer=createUpgradeSelectionLayer(scene);
   const keyFor=card=>{
     const url=battleCardIconUrl(card),key=url||`native:${card.icon}`;
     if(url&&!textures.has(key)){const texture=loader.load(url);texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;textures.set(key,texture);}
@@ -51,7 +53,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,skills:{},activeWeapons:[],fixedPartsMode:true,
     fixedGrowth:{state:{nodes:{},pendingLevels:1,rerolls:0}},fixedLoadout:{weapons:[]},pauseMode:'pause'};
   const clickNative=action=>ui.overlay.querySelector(`button[data-action="${action}"]`)?.click();
-  const bridge={game,presentation,scene,app:{renderer},ui:{},runStats:{},
+  const bridge={game,presentation,scene,selectionLayer,app:{renderer},ui:{},runStats:{},
     showPauseMenu(){
       if(sim.phase!=='playing'&&sim.phase!=='paused')return;
       game.pauseMode='pause';
@@ -69,7 +71,12 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     requestAdRevive(){requestReviveAd?.();},
     declineRevive(){sim.declineRevive();ui.update();},
     confirmExitRun(){clickNative('home');},finishBattleResult(){clickNative('home');},
-    chooseSkill(skill){const button=ui.overlay.querySelector(`button[data-action="choose"][data-id="${skill.id}"]`);if(button)ui.selectCard(button);},
+    chooseSkill(skill){
+      if(ui.selecting||sim.phase!=='upgrade')return false;
+      const button=ui.overlay.querySelector(`button[data-action="choose"][data-id="${skill.id}"]`);
+      if(!button)return false;
+      ui.selectCard(button);bridge.selectionStartedAt=ui.selectionStartedAt;return ui.selecting;
+    },
     rerollFixedUpgrade(){if(!ui.selecting&&sim.rerollUpgrade())ui.update();},
     startBattleSupply(){clickNative('punchboard');},skipBattleSupply(){clickNative('punchboard');},claimBattleSupply(){clickNative('punchboard');},
   };
@@ -135,7 +142,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const frame=createBattleUiFrame(()=>{sync();cloud.update();renderer.render({container:scene});});
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
-  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
+  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
   window.addEventListener('pagehide',destroy,{once:true});update();
   return {update,destroy,frame:frame.run,setSettlement(receipt){settlement=receipt;update();}};
 }

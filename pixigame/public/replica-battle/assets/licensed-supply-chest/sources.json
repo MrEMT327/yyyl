@@ -7,5 +7,19 @@
   "licenseUrl": "https://static.opengameart.org/OGA-BY-3.0.txt",
   "originalFile": "PNG/4.png",
   "file": "military-green-v1.png",
-  "changes": "Original transparent PNG unchanged; display size, bob, arrival and fade animated by the game."
+  "changes": "Original transparent PNG unchanged; display size, bob, arrival and fade animated by the game.",
+  "frontView": {
+    "file": "military-green-front-v2.png",
+    "derivedFrom": "military-green-v1.png",
+    "author": "CraftPix.net 2D Game Assets",
+    "source": "https://opengameart.org/content/different-sci-fi-item-icons",
+    "license": "OGA-BY-3.0",
+    "licenseUrl": "https://static.opengameart.org/OGA-BY-3.0.txt",
+    "changes": "AI-assisted orthographic front redraw of the supplied licensed chest; same palette, body bands and centered gold latch. Transparent background; aspect ratio preserved by runtime.",
+    "tool": "OpenAI built-in image_gen",
+    "sourceCanvas": [
+      1345,
+      1170
+    ]
+  }
 }

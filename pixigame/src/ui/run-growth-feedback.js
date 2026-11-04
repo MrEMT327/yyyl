@@ -2,6 +2,9 @@ import { Graphics, Text } from '../three/display.js';
 import { COMBAT_UI,COMBAT_TYPE } from './combat-theme.js';
 import {upgradeFeedbackProfile} from './upgrade-feedback-profile.js';
 import { XP_PRESENTATION } from '../experience-presentation.js';
+import { upgradeConfirmationTiming, upgradeConfirmationPose } from './upgrade-confirm-motion.js';
+import {UPGRADE_SELECTION_TIMING as SELECTION_BEAT} from './upgrade-selection-timing.js';
+import {UPGRADE_TRANSITION,upgradeOfferKey} from './upgrade-transition-motion.js';
 let levelLight = { until: 0, started: 0, milestone: false };
 let upgradeLight=null;
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -48,33 +51,59 @@ export function updateGrowthHud(refs, now) {
     light.roundRect(12+520*progress,xpY,56,5,2).fill({color:0xffffff,alpha:.85*fade});
   }
 }
-export function confirmUpgradeCard(card, width, height, commit, valid, skill) {
-  card.__entryCancelled=true;card.alpha=1;
-  const light = new Graphics(); light.eventMode = 'none'; card.addChild(light);
-  const target = card.__upgradeConfirmRect || {x:12,y:height-52,width:width-24,height:38};
-  const profile=upgradeFeedbackProfile(skill);
-  const badge=new Text({text:profile.label,style:{fontFamily:COMBAT_TYPE.family,fontSize:21,fontWeight:'900',fill:profile.color}});
-  badge.anchor.set(.5,0);badge.position.set(width/2,height-64);badge.eventMode='none';card.addChild(badge);
-  const start = performance.now(), duration = reducedMotion() ? 120 : profile.duration;
-  const siblings = card.parent.children.filter(n => n !== card && n.__fixedCardId);
-  const originalY = card.y,originalX=card.x,originalScale=card.scale.x;
-  function frame(now) {
-    if (card.destroyed || !card.parent || !valid()) { if (!light.destroyed) light.destroy(); if(!badge.destroyed)badge.destroy(); return; }
-    const t = Math.min(1,(now-start)/duration);
-    if (!reducedMotion()) {
-      const exit = Math.max(0,(t-.55)/.45),pop=1+(profile.stage?.045:.025)*Math.sin(Math.min(1,t/.55)*Math.PI);
-      siblings.forEach(n => { if (!n.destroyed) n.alpha = 1-exit; });
-      card.scale.set(originalScale*pop);card.x=originalX-width*originalScale*(pop-1)/2;
-      card.y = originalY-height*originalScale*(pop-1)/2-12*exit;
-      card.alpha = 1 - .75*exit;
-    }
-    light.clear().roundRect(2,2,width-4,height-4,8).stroke({color:profile.color,width:7,alpha:.22})
-      .roundRect(3,3,width-6,height-6,7).stroke({color:profile.color,width:2.5,alpha:1})
-      .roundRect(target.x,target.y,target.width,target.height,4).fill({color:0xffffff,alpha:.12*(1-t)})
-      .roundRect(8,height-72,width-16,58,4).fill({color:COMBAT_UI.deep,alpha:.98});
-    if (!reducedMotion()) light.roundRect(target.x+(target.width-20)*t,target.y+2,20,target.height-4,2).fill({color:0xffffff,alpha:.65*Math.sin(Math.PI*t)});
-    if (t < 1) requestAnimationFrame(frame);
-    else { light.destroy(); commit(); }
+export function confirmUpgradeCard(card, width, height, commit, valid, skill, options = {}) {
+  card.__upgradeConfirmCancel?.();
+  const profile=upgradeFeedbackProfile(skill),reduced=reducedMotion();
+  const timing=upgradeConfirmationTiming(skill,profile,Boolean(options.nativeTiming),reduced);
+  timing.cardWidth=width;timing.cardHeight=height;
+  const color=timing.breakthrough?({y:0xffcd76,r:0xffa47e,c:0xb6c6ff}[timing.tier]):profile.color;
+  const light=new Graphics();light.eventMode='none';card.addChild(light);
+  const peers=card.parent.children.filter(node=>node!==card);
+  const saved=[card,...peers].map(node=>({node,x:node.x,y:node.y,alpha:node.alpha,scaleX:node.scale.x,scaleY:node.scale.y}));
+  for(const {node}of saved)node.__entryCancelled=true;
+  const original=saved[0],focus=card.__upgradeConfirmFocus||{x:300,y:650};
+  const level=card.__upgradeLevelLabel,levelState=level&&{x:level.x,y:level.y,scaleX:level.scale.x,scaleY:level.scale.y,tint:level.tint??0xffffff};
+  const owner=timing.breakthrough?options.selectionLayer:null;
+  const start=Number.isFinite(options.startedAt)?options.startedAt:performance.now();let request=0,finished=false,committed=false,owned=false;
+  function restoreLevel(){if(levelState&&!level.destroyed){level.position.set(levelState.x,levelState.y);level.scale.set(levelState.scaleX,levelState.scaleY);level.tint=levelState.tint;}}
+  function cleanup(){
+    cancelAnimationFrame(request);restoreLevel();if(!light.destroyed)light.destroy();
+    if(card.__upgradeConfirmCancel===cancel)delete card.__upgradeConfirmCancel;
+    if(owned)owner.release(card);
   }
-  requestAnimationFrame(frame);
+  function cancel(){
+    if(finished)return;finished=true;
+    for(const state of saved)if(!state.node.destroyed&&(!owned||state.node!==card)){
+      state.node.position.set(state.x,state.y);state.node.scale.set(state.scaleX,state.scaleY);state.node.alpha=state.alpha;
+    }
+    cleanup();
+  }
+  card.__upgradeConfirmCancel=cancel;
+  if(owner){const point=owner.claim(card,cancel,{offerKey:upgradeOfferKey(options.offer),runId:options.offer?.runId,revealAt:reduced?0:start+SELECTION_BEAT.hide+UPGRADE_TRANSITION.nextDelay});if(!point){cancel();return cancel;}owned=true;original.x=point.x;original.y=point.y;}
+  const blendTint=(from,to,weight)=>[16,8,0].reduce((value,shift)=>value|(Math.round(((from>>shift)&255)*(1-weight)+((to>>shift)&255)*weight)<<shift),0);
+  function frame(now){
+    if(finished)return;
+    if(card.destroyed||!card.parent||!valid()){cancel();return;}
+    const pose=upgradeConfirmationPose(now-start,timing);
+    for(const state of saved.slice(1))if(!state.node.destroyed){
+      const isCard=Boolean(state.node.__fixedCardId);state.node.alpha=state.alpha*(isCard?pose.otherAlpha:pose.extrasAlpha);
+      if(isCard)state.node.y=state.y+pose.otherOffset;
+    }
+    card.scale.set(original.scaleX*pose.scaleX,original.scaleY*pose.scaleY);
+    card.x=original.x-width*original.scaleX*(pose.scaleX-1)/2+(focus.x-original.x-width*original.scaleX/2)*pose.gather+pose.shakeX;
+    card.y=original.y-height*original.scaleY*(pose.scaleY-1)/2+pose.lift+(focus.y-original.y-height*original.scaleY/2)*pose.gather+pose.shakeY;
+    card.alpha=pose.alpha;
+    if(levelState&&!level.destroyed){level.scale.set(levelState.scaleX*pose.levelScale,levelState.scaleY*pose.levelScale);level.tint=blendTint(levelState.tint,color,pose.levelGlow*.6);}
+    const target=card.__upgradeConfirmRect||{x:3,y:3,width:width-6,height:height-6};
+    const {x,y,width:w,height:h}=target,cut=8;
+    const outline=()=>light.moveTo(x+cut,y).lineTo(x+w-cut,y).lineTo(x+w,y+cut).lineTo(x+w,y+h-cut).lineTo(x+w-cut,y+h).lineTo(x+cut,y+h).lineTo(x,y+h-cut).lineTo(x,y+cut).closePath();
+    light.clear();outline().stroke({color,width:6,alpha:pose.glow*.18});outline().stroke({color,width:1.8,alpha:pose.glow});
+    if(levelState&&pose.levelGlow>0){const half=Math.min(width*.23,40);light.moveTo(width/2-half,levelState.y+26).lineTo(width/2+half,levelState.y+26).stroke({color,width:1.5,alpha:pose.levelGlow*.4});}
+    if(pose.sweepAlpha>0){const head=x+cut+(w-cut*2-24)*pose.sweep;light.moveTo(head,y+1).lineTo(head+24,y+1).stroke({color:0xf5fcff,width:3,alpha:pose.sweepAlpha});}
+    if(pose.burstAlpha>0&&!timing.breakthrough){const radius=Math.min(width*.42,78)*(.65+pose.expansion*.6);light.circle(width/2,Math.min(166,height*.4),radius).stroke({color,width:2,alpha:pose.burstAlpha});}
+    if(pose.done){finished=true;cleanup();if(!committed){committed=true;commit();}return;}
+    if(pose.commitDue&&!committed){committed=true;commit();if(finished||card.destroyed)return;}
+    request=requestAnimationFrame(frame);
+  }
+  frame(performance.now());return cancel;
 }

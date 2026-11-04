@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "originalArtwork": true,
+  "generator": "built-in image_gen",
+  "file": "hilt-v2.png",
+  "width": 2021,
+  "height": 778,
+  "region": [
+    235,
+    142,
+    1606,
+    507
+  ],
+  "sha256": "03004c1b15262687fb986b7c433b9aa76d5b8a1b539183c719587f7ddfdf98ef",
+  "prompt": "generation-prompt.txt",
+  "blade": "Procedural HDR warm-white core and pale-gold sheath, composited through existing combat bloom.",
+  "source": "Original compact hilt generated for this project; no competitor artwork."
+}

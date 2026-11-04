@@ -1,17 +1,27 @@
 import {VfxMeshBuffer,quadVisible} from './vfx-buffers.mjs';
 
-const ROOT='host://escort-sword-v1/',TEXTURE=ROOT+'body';
+const ROOT='host://escort-warm-light-sword-v2/',TEXTURE=ROOT+'hilt';
 export const ESCORT_SWORD_LIMIT=24;
-export const ESCORT_SWORD_ART=Object.freeze({width:2172,height:724,region:[98,132,1974,465],url:'assets/escort-sword-v1/escort-sword-v1.png'});
+export const ESCORT_SWORD_ART=Object.freeze({width:2021,height:778,region:Object.freeze([235,142,1606,507]),url:'assets/escort-light-sword-v2/hilt-v2.png'});
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 export const isStoredEscortSword=b=>Boolean(b&&b.owner==='player'&&b.familyId===200101&&b.modelId>0&&b.held&&b.collisionDisabled&&!b.dead&&!b.visualHidden);
 
 export function withSwordEscortResources(graph){
- return {...graph,textures:{...graph.textures,[TEXTURE]:{width:ESCORT_SWORD_ART.width,height:ESCORT_SWORD_ART.height,url:ESCORT_SWORD_ART.url,file:'escort-sword-v1.png'}},
+ return {...graph,textures:{...graph.textures,[TEXTURE]:{width:ESCORT_SWORD_ART.width,height:ESCORT_SWORD_ART.height,url:ESCORT_SWORD_ART.url,file:'hilt-v2.png'}},
   resources:{...graph.resources,[ROOT+'metal']:{type:'CanvasItemMaterial',properties:{blend_mode:0,light_mode:1}},
-   [ROOT+'halo']:{type:'ShaderMaterial',properties:{shader:{$external:ROOT+'halo-shader'}}}},
-  shaders:{...graph.shaders,[ROOT+'halo-shader']:{code:`shader_type canvas_item;render_mode unshaded,blend_add;
-void fragment(){vec2 p=UV*2.0-1.0;float light=exp(-dot(p,p)*5.5)*(1.0-smoothstep(.65,1.0,length(p)));COLOR=vec4(COLOR.rgb,COLOR.a*light*.20);}`}}};
+   [ROOT+'blade']:{type:'ShaderMaterial',properties:{shader:{$external:ROOT+'blade-shader'}}}},
+  shaders:{...graph.shaders,[ROOT+'blade-shader']:{code:`shader_type canvas_item;render_mode unshaded,blend_add;
+void fragment(){
+ vec2 p=UV*2.0-1.0;
+ float cap=smoothstep(-1.0,-.87,p.x)*(1.0-smoothstep(.93,1.0,p.x));
+ float width=.22+.11*smoothstep(-.85,-.55,p.x);
+ float r=abs(p.y)/width;
+ float core=exp(-r*r*3.4);
+ float sheath=1.0-smoothstep(.72,1.2,r);
+ float glow=exp(-p.y*p.y*11.0)*.14;
+ vec3 light=mix(vec3(1.30,.91,.40),vec3(2.15,2.04,1.78),core);
+ COLOR=vec4(light,COLOR.a*cap*clamp(sheath*.90+glow,0.0,1.0));
+}`}}};
 }
 
 // These are display poses for real stored swords. No combat object, attack
@@ -62,18 +72,18 @@ export class SwordEscortPresentation{
    angle:Math.PI/2+Math.sin(phase*.8+record.slot)*.065,scale:.90+near*.10,
    alpha:(.25+.75*clamp((this.clock-record.bornAt)/.13,0,1))*(.86+near*.14),front:Math.sin(phase)<0,departing:false};
  }
- buffer(key,halo){
-  let buffer=this.buffers.get(key);if(!buffer){buffer=new VfxMeshBuffer(key,ROOT+(halo?'halo':'metal'),0);if(!halo)buffer.mesh.texture={$external:TEXTURE};this.buffers.set(key,buffer);}return buffer;
+ buffer(key,blade){
+  let buffer=this.buffers.get(key);if(!buffer){buffer=new VfxMeshBuffer(key,ROOT+(blade?'blade':'metal'),0);if(!blade)buffer.mesh.texture={$external:TEXTURE};this.buffers.set(key,buffer);}return buffer;
  }
- quad(buffer,center,rx,ry,angle,alpha,halo=false){
+ quad(buffer,center,rx,ry,angle,alpha,blade=false){
   const c=Math.cos(angle),s=Math.sin(angle);
   for(let i=0;i<4;i++){const x=i===1||i===2?rx:-rx,y=i>=2?ry:-ry;this.points[i].x=center.x+x*c-y*s;this.points[i].y=center.y+x*s+y*c;}
   if(!quadVisible(this.points,this.viewport))return;
   const start=buffer.mesh.vertices.length,[left,top,width,height]=ESCORT_SWORD_ART.region;
   for(let i=0;i<4;i++){
    const right=i===1||i===2,bottom=i>=2;
-   buffer.vertex(this.points[i].x,this.points[i].y,halo?(right?1:0):(left+(right?width:0))/ESCORT_SWORD_ART.width,
-    halo?(bottom?1:0):(top+(bottom?height:0))/ESCORT_SWORD_ART.height,halo?.13:1,halo?.68:1,halo?1.0:1,alpha);
+   buffer.vertex(this.points[i].x,this.points[i].y,blade?(right?1:0):(left+(right?width:0))/ESCORT_SWORD_ART.width,
+    blade?(bottom?1:0):(top+(bottom?height:0))/ESCORT_SWORD_ART.height,1,1,1,alpha);
   }
   buffer.mesh.indices.push(start,start+1,start+2,start,start+2,start+3);
  }
@@ -84,12 +94,16 @@ export class SwordEscortPresentation{
   for(const record of this.records.values()){
    const pose=this.pose(record);if(record.departAt===null)record.pose=pose;
    if(!(pose.alpha>0)||!Number.isFinite(pose.x+pose.z))continue;
-   const point=screen(pose.x,pose.z),length=clamp(px*2.05,34,74)*pose.scale,rx=length/2,ry=length*ESCORT_SWORD_ART.region[3]/ESCORT_SWORD_ART.region[2]/2;
+   const point=screen(pose.x,pose.z),length=clamp(px*2.05,34,74)*pose.scale,c=Math.cos(pose.angle),s=Math.sin(pose.angle);
    const side=pose.front?'front':'back';
-   this.quad(this.buffer('halo-'+side,true),point,rx*.85,ry*1.5,pose.angle,pose.alpha*.36,true);
-   this.quad(this.buffer('body-'+side,false),point,rx,ry,pose.angle,pose.alpha);
+   // Local -X is the blade tip. Upright rotation keeps it toward the enemy.
+   // The HDR core feeds the existing bloom; its soft sheath needs no extra pass.
+   const blade={x:point.x-c*length*.13,y:point.y-s*length*.13};
+   const hilt={x:point.x+c*length*.365,y:point.y+s*length*.365};
+   this.quad(this.buffer('blade-'+side,true),blade,length*.38,length*.12,pose.angle,pose.alpha,true);
+   this.quad(this.buffer('body-'+side,false),hilt,length*.135,length*.135*ESCORT_SWORD_ART.region[3]/ESCORT_SWORD_ART.region[2],pose.angle,pose.alpha);
   }
-  for(const side of ['back','front'])for(const kind of ['halo','body']){
+  for(const side of ['back','front'])for(const kind of ['blade','body']){
    const mesh=this.buffers.get(kind+'-'+side)?.mesh;if(mesh?.indices.length)view.drawMeshes('escort-sword:'+kind+'-'+side,[mesh],undefined,{presentationDepth:side==='back'?36.5:37.8});
   }
  }

@@ -52,9 +52,10 @@ export async function inspectOriginalUiArt({shippingRoot=resolve(project,'public
     try {await readFile(resolve(shippingRoot,url.replace(/^\//,'')));}
     catch {violations.push({type:'missing-registered-icon',name,path:url});}
   }
-  for(const dir of ['project-ui-icons-v1','project-resource-icons-v2','project-battle-skills-v1','project-battle-passives-v2','project-flight-blueprints-v1','project-talents-v1','project-research-blueprints-v1','project-research-blueprints-v2','project-supplement-icons-v1','project-enemy-health-v1'])try {
+  for(const dir of ['project-ui-icons-v1','project-resource-icons-v2','project-battle-skills-v1','project-battle-passives-v2','project-battle-passives-v3','project-flight-blueprints-v1','project-talents-v1','project-research-blueprints-v1','project-research-blueprints-v2','project-supplement-icons-v1','project-enemy-health-v1','project-damage-numbers-v1'])try {
     const manifest=JSON.parse(await readFile(resolve(shippingRoot,'art',dir,'manifest.json'),'utf8'));
     if(dir==='project-battle-skills-v1'&&JSON.stringify(manifest.assets.map(entry=>entry.key))!==JSON.stringify(BATTLE_SKILL_ART_KEYS))violations.push({type:'battle-skill-icon-coverage',directory:dir});
+    if(dir==='project-battle-passives-v3'&&JSON.stringify(manifest.assets.map(entry=>entry.key))!==JSON.stringify(BATTLE_SKILL_ART_KEYS.filter(key=>key.startsWith('110'))))violations.push({type:'passive-skill-icon-coverage',directory:dir});
     if(dir==='project-talents-v1'&&JSON.stringify(manifest.assets.map(entry=>entry.key).sort())!==JSON.stringify(TALENT_ART_KEYS))violations.push({type:'talent-icon-coverage',directory:dir});
     if(dir.startsWith('project-research-blueprints-')&&JSON.stringify(manifest.assets.map(entry=>entry.nativeItemId))!==JSON.stringify(RESEARCH_BLUEPRINT_ART.map(entry=>entry.nativeItemId)))violations.push({type:'research-blueprint-coverage',directory:dir});
     for(const entry of manifest.assets) {
