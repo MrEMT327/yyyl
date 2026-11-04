@@ -12,7 +12,6 @@ import { validateReplicaProgression } from './native-progression.js';
 import { flightDay } from './flight-rewards.js';
 import { nativeItemArt } from './native-item-presentation.js';
 import { nativeItemDisplayName } from './native-item-names.js';
-import { pilotFragmentForPilot } from './native-pilot-fragments.js';
 import { PILOT_TASK_POINTS, PILOT_WEEKLY_TASK_POINTS, PILOT_TASK_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PILOT_WEEKLY_ACTIVITY_REWARDS, PILOT_AD_REWARDS } from './pilot-supply-reward-policy.js';
 
 const exchangeRoster=catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id));
@@ -214,12 +213,12 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
       pity:{pilot:l.directRecruit.pilot,ssr:l.directRecruit.ssr,ur:l.directRecruit.ur},
       pityDetails:[{id:'pilot',triggerAt:RECRUIT_PITY.pilot}],
       guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员`,
-      duplicateText:'重复驾驶员转为对应碎片 ×50。',
+      duplicateText:'重复获得同名卡，用于手动升星；满星后转为积分。',
       rules:[`单次${RECRUIT_COST}钻石，十次${RECRUIT_COST*10}钻石。`,
         `基础概率：驾驶员${DIRECT_RECRUIT_PILOT_WEIGHT}%、${DIRECT_RECRUIT_RESOURCES.map(row=>row.name+row.weight+'%').join('、')}。`,
         `驾驶员稀有度条件概率：${Object.keys(DIRECT_RECRUIT_RATES).join('／')}为${Object.values(DIRECT_RECRUIT_RATES).map(rate=>rate*100+'%').join('／')}。`,
         `${RECRUIT_PITY.pilot}抽内必得驾驶员。单抽与十连共享保底。`,
-        '首次获得激活驾驶员；重复驾驶员转为对应碎片，可在背包合成同名卡。']},
+        '首次获得激活驾驶员；重复获得同名卡，在驾驶员界面手动升星。满星后重复获得转为积分。']},
     candidates:roster.map(row=>({id:row.id,skinId:NATIVE_PILOT_SKINS[row.id],name:pilotName(row),
       owned:progression.pilots.some(p=>p.id===row.id&&p.active),
       copies:inventory.items[row.id]||0,maxed:progression.pilots.some(p=>p.id===row.id&&p.active&&p.star>=maxStar(row))})),
@@ -268,25 +267,9 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
         const row=pool[randomTicket(pool.length)];
         if(!row)throw Error('招募奖池配置无效');
         const rarity=recruitPilot(row)?.rarity||'未标注';
-        const owned=progression.pilots.find(p=>p.id===row.id&&p.active);
-        if(!owned){
-          const grant=grantPilotCards(inventory,progression,row.id,1,{activate:true});
-          rewards.push({type:'pilot',id:NATIVE_PILOT_SKINS[row.id],nativeId:row.id,name:pilotName(row),amount:1,rarity,...grant,nativeRecruit:true});
-        }else{
-          // One same-name card is exactly one configured fragment bundle.
-          // Store fragments atomically; the presentation only animates the receipt.
-          const fragment=pilotFragmentForPilot(row.id);
-          if(!fragment)throw Error('驾驶员碎片配置缺失');
-          const balance=(inventory.items[fragment.id]||0)+fragment.cost;
-          if(!safe(balance))throw Error('驾驶员碎片数量超限');
-          inventory.items[fragment.id]=balance;
-          const convertedFragment=itemReward(fragment.id,fragment.cost);
-          // Resolve artwork from the canonical item ID in the current runtime;
-          // never persist an absolute URL tied to a preview server's port.
-          delete convertedFragment.image;
-          rewards.push({type:'pilot',id:NATIVE_PILOT_SKINS[row.id],nativeId:row.id,name:pilotName(row),amount:1,rarity,
-            isNew:false,stars:owned.star,nativeRecruit:true,convertedFragment});
-        }
+        const grant=grantPilotCards(inventory,progression,row.id,1,{activate:true});
+        l.cardCredits+=grant.creditsAdded;
+        rewards.push({type:'pilot',id:NATIVE_PILOT_SKINS[row.id],nativeId:row.id,name:pilotName(row),amount:1,rarity,...grant,nativeRecruit:true});
         pity.pilot=0;
         pity.ssr=['SSR','UR'].includes(group)?0:pity.ssr+1;
         pity.ur=group==='UR'?0:pity.ur+1;

@@ -183,7 +183,7 @@ export function cloudNativeWeaponPreview(id,mode,s,h){
   const family=base.stage.skills.map(skill=>weaponPreview.families[skill.id]).find(Boolean);
   if(mode==='base'){
     const description=family?.description||row.stage.skills[0]?.description||row.description;
-    return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${weaponSkillArtwork(row,e)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};
+    return {title:'基础攻击',content:`<article class="wc-skill-detail"><div class="wc-skill-detail-head"><div class="wc-skill-detail-art">${weaponSkillArtwork(base,e)}</div><div><h3>${e(row.name)}</h3></div></div><p class="wc-skill-description">${e(plain(description))}</p></article>`};
   }
   const stages=family?.stages.filter(stage=>stage.star>1)||[];
   const rows=stages.map(stage=>`<details class="wc-growth-section"><summary>${stage.star} 星 · ${stage.kind==='breakthrough'?'突破':stage.kind==='minor'?'强化':'升级'}</summary>${stage.options.length?stage.options.map(skill=>`<div class="wc-growth-rule"><h5>${e(plain(skill.name))}</h5><p>${e(plain(skill.description))}</p></div>`).join(''):`<div class="wc-growth-rule"><p>${e(plain(stage.description))}</p></div>`}</details>`).join('');

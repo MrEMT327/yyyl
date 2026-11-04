@@ -53,7 +53,7 @@ export function recruitModal(type,s,h,view){
     const entries=(info.direct?(s.pilotSupply?.directHistory||[]):(s.recruitHistory||[]).filter(entry=>!entry.pool||entry.pool==='pilot'))
       .filter(entry=>!(entry.results||[]).some(isLegacyBoxReward));
     const list=entries.length?`<ol class="recruit-history-entries">${entries.slice().reverse().map(entry=>`<li>${entry.results.map(result=>{
-      const reward=result.convertedFragment||result;
+      const reward=result;
       return `<p><span>${e(nativeRewardPresentation(reward).name||reward.name)} ×${n(reward.amount??1)}</span></p>`;
     }).join('')}</li>`).join('')}</ol>`:'<p class="recruit-modal-empty">暂无记录</p>';
     const total=info.direct?info.directTotalPulls??0:info.totalPulls??0;

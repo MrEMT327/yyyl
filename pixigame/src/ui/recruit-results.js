@@ -32,15 +32,7 @@ export function pilotRecruitResults(rewards,pilots,{number,renderReward,grid=fal
     if(!pilot){
       return `<div class="rr-result-slot is-material" style="--reveal-delay:${Math.min(index,9)*65}ms">${materialFace(reward)}</div>`;
     }
-    if(reward.convertedFragment){
-      const target=grid?materialFace(reward.convertedFragment,{rarity:pilot.rarity,pilotQualityRank:pilot.qualityRank,pilotQualityKnown:pilot.qualityKnown,fragment:true}):renderReward(reward.convertedFragment,true);
-      const source=pilotHoloCard({...pilot,stars:reward.stars??pilot.stars},{compact:rewards.length>1});
-      const label=`${escape(pilot.name)}，${escape(reward.convertedFragment.name||'碎片')} ×${number(reward.convertedFragment.amount)}`;
-      const turn=`<div class="rr-conversion-turn"><div class="rr-conversion-source" aria-hidden="true">${source}</div><div class="rr-conversion-target" aria-hidden="true">${target}</div></div>`;
-      const interactive=grid?`<div class="rr-holo-target" data-holo-card data-holo-interactive tabindex="0" aria-label="${label}">${turn}</div>`:turn;
-      return `<div class="pl-card-result rr-result-slot rr-conversion" style="--reveal-delay:${Math.min(index,9)*65}ms"${grid?'':` aria-label="${label}"`}>${idleCard(interactive)}</div>`;
-    }
-    const note=reward.nativeRecruit?(reward.creditsAdded?`积分 +${reward.creditsAdded}`:reward.isNew?'':`同名卡 ×${reward.copiesAdded}`):reward.copiesAdded?`同名卡 ×${reward.copiesAdded}`:reward.isNew?'':reward.type==='pilot'?`${reward.beforeStars} → ${reward.stars} 星`:`碎片 ×${number(reward.amount)}`;
+    const note=reward.nativeRecruit?(reward.creditsAdded?`积分 +${reward.creditsAdded}`:reward.isNew?'':`同名卡 ×${reward.copiesAdded??reward.amount??1}`):reward.copiesAdded?`同名卡 ×${reward.copiesAdded??reward.amount??1}`:reward.isNew?'':reward.type==='pilot'?`${reward.beforeStars} → ${reward.stars} 星`:`碎片 ×${number(reward.amount)}`;
     const character=pilotHoloCard({...pilot,stars:reward.stars??pilot.stars},{interactive:true,compact:rewards.length>1,reveal:true,status:reward.creditsAdded?'满星转换':reward.requiresActivation?'待激活':reward.copiesAdded?'同名卡':reward.manualCards?'同名卡已足':reward.isNew?'NEW':''});
     return `<div class="pl-card-result rr-result-slot" style="--reveal-delay:${Math.min(index,9)*65}ms">${idleCard(character)}${note?`<p class="rr-result-note">${note}</p>`:''}</div>`;
   }).join('')}</div>`;

@@ -56,7 +56,7 @@ export function nativeItemPresentation(id) {
     :id===113?'开启普通装备箱时消耗。'
     :id===903?'在每日成长补给领取；开启时自选一种装备图纸。'
     :id===934?'通关第8章并完成每周5天满活跃，可在每周成长补给领取；开启时自选一件史诗装备。'
-    :fragment?`${fragment.cost}个碎片合成对应驾驶员同名卡；每日和每周成长补给可定向选择已拥有、未满星驾驶员的碎片。`
+    :fragment?'旧版驾驶员材料已停用，重新进入游戏后自动折算为同名卡和钻石。'
     :id===925?'在背包中开启，获得驾驶员或同名卡。'
     :id===926?'50 个碎片合成 1 个角色箱。'
     :unit?catalog.guns.some(row=>row.id===id)?'高级装备箱随机获得；首次解锁武器，重复获得用于升星。':catalog.pilots.some(row=>row.id===id)?'用于对应驾驶员激活或升星；满星后库存同名卡可在背包转换积分。':catalog.skins.some(row=>row.id===id&&!row.closed)?'高级装备箱随机获得；首次解锁飞机，重复获得同名卡用于升星。':'用于对应收藏的激活或升星。':undefined;

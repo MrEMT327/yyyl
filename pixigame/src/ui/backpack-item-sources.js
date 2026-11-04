@@ -34,14 +34,6 @@ export function backpackItemSources(item,s,rule,h,go) {
     lines.push('章节奖励：达标后前往领取。');
     if(id>=801&&id<=811){lines.push('每日商店：查看本期图纸商品。');link('查看每日商店','shop');}
     link('查看巡逻收益','patrol');link('查看章节奖励','materials');
-  }else if(rule?.kind==='compose'){
-    const daily=p?.growth?.daily,week=p?.growth?.week;
-    if(daily)lines.push(`每日成长：${daily.fragments}个指定碎片。${daily.requirement}。`);
-    if(week)lines.push(`每周成长：${week.fragments}个指定碎片。${week.requirement}。`);
-    lines.push('普通模式仅可选已拥有、未满星且缺材料的驾驶员。');
-    link('每日成长补给','growthDaily');link('每周成长补给','growthWeek');
-    lines.push('招募重复驾驶员可获得对应碎片。');
-    link('积分兑换','supplyBoxes');
   }else if(rule?.kind==='pilotCard'){
     const inRoleBox=p?.candidates.some(row=>row.id===id);
     lines.push(inRoleBox?'驾驶员招募／角色箱可出。':'新手奖励、签到或积分兑换；角色箱不含此驾驶员。');

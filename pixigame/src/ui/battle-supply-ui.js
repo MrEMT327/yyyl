@@ -1,9 +1,28 @@
 import {Container, Graphics} from '../three/display.js';
+import {TextureLoader, SRGBColorSpace, LinearFilter} from 'three';
+import {cloudAssetBase} from './cloud-asset-base.js';
 import {SUPPLY_RING, supplyMotion} from './battle-supply-motion.js';
 import {upgradeIconLayout} from './upgrade-icon-layout.js';
 import {upgradeFeedbackProfile} from './upgrade-feedback-profile.js';
 import {paintPsdPopup} from './psd-popup-art.js';
 import {paintCombatArt} from './combat-art.js';
+
+let lightAtlas;
+function weaponLight(center,surface,ready) {
+  // Reuse the project's soft alpha artwork; never rebuild textures per frame.
+  if(!lightAtlas){
+    lightAtlas=new TextureLoader().load(cloudAssetBase+'art/project-breakthrough-vfx-v1/energy-atlas-v1.png');
+    lightAtlas.colorSpace=SRGBColorSpace;lightAtlas.generateMipmaps=false;lightAtlas.minFilter=LinearFilter;
+  }
+  const layer=(cell,size,alpha)=>{
+    const node=new Container();node.position.set(145,112);node.eventMode='none';
+    node.additive=true;node.tint=ready?0xffd27a:0x78c8ff;node.alpha=alpha;
+    surface(node,s=>s.image(lightAtlas,-size/2,-size/2,size,size,
+      {x:(cell%4)/4+.0005,y:Math.floor(cell/4)/2+.001,width:.249,height:.498}));
+    center.addChild(node);return node;
+  };
+  return {glow:layer(1,286,.36),rays:layer(0,281,.34),halo:layer(2,255,.1)};
+}
 
 export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,backdrop,surface,symbol}) {
   const supply=bridge.game.battleSupply;
@@ -25,7 +44,7 @@ export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,
   };
   const plate=(parent,kind,x,y,w,h)=>surface(parent,s=>paintCombatArt(s,kind,x,y,w,h));
   surface(root,s=>paintPsdPopup(s,'primary',28,190,544,676));
-  label(root,'战斗补给',300,216,34);
+  place(root,text('战斗补给',{size:34,fill:0xf3f5f7,weight:'900'}),82,216);
   label(root,supply.subtitle || (supply.evolutionExhausted?'形态已满 · 获得武装强化':'精英击破 · 必得形态强化'),300,289,18,0x23415a);
   const icon=(parent,card,x,y,size)=>{
     const weapon=bridge.game.fixedLoadout.weapons.find(w=>w.id===card.ownerId);
@@ -48,12 +67,7 @@ export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,
   });
   const center=new Container();center.position.set(155,437);
   plate(center,'card',0,0,290,270);
-  const rays=new Container();rays.position.set(145,132);
-  for(let i=0;i<10;i++){
-    const a=i*Math.PI/5;
-    rays.addChild(new Graphics().poly([0,0,Math.cos(a)*125,Math.sin(a)*125,Math.cos(a+.2)*125,Math.sin(a+.2)*125]).fill({color:ready?gold:0x47baff,alpha:.12}));
-  }
-  center.addChild(rays);
+  const {glow,rays,halo}=weaponLight(center,surface,ready);
   const hero=new Container();icon(hero,ready?supply.reward:supply.slots[0],0,0,216);hero.pivot.set(108,108);hero.position.set(145,113);center.addChild(hero);
   label(center,ready?'强化已锁定':'本局武装',145,221,23,ready?gold:0xe4edf7,264);
   root.addChild(center);
@@ -70,9 +84,9 @@ export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,
     sparks.addChild(spark);
   }
   root.addChild(button({x:104,y:1032,width:392,height:92,variant:'primary',
-    text:ready?'收下强化 · 继续战斗':rolling?'点击跳过':'开始',fontSize:ready?24:34,
+    text:ready?'继续战斗':rolling?'点击跳过':'开始',fontSize:34,
     onPress:()=>{if(supply.disabled)return;return ready?bridge.claimBattleSupply():rolling?bridge.skipBattleSupply():bridge.startBattleSupply();}}));
-  refs.battleSupplyBoard={cells,rays,hero,sparks,result,rewardProfile,lastStep:-1,entry:root,pickup,
+  refs.battleSupplyBoard={cells,glow,rays,halo,hero,sparks,result,rewardProfile,lastStep:-1,entry:root,pickup,
     pickupScale:pickup?.scale.x||1,pickupX:supply.pickupX,pickupY:supply.pickupY};
 }
 
@@ -105,7 +119,14 @@ export function updateBattleSupply(refs,supply,now,onTick) {
     board.lastStep=motion.step;
   }
   const t=revealT;
-  board.rays.rotation=reduced?0:supply.phase==='ready'?Math.min(t,1.25)*.35:now/6500;
+  // Presentation keeps running while waiting for confirmation, including after
+  // the reveal burst. The same clock in every phase prevents an angular reset.
+  const lightTime=now/1000,ready=supply.phase==='ready';
+  board.rays.rotation=reduced?0:lightTime*.23;
+  board.halo.rotation=reduced?0:.35-lightTime*.13;
+  board.glow.alpha=(ready?.46:.36)*(reduced?1:.94+.06*Math.sin(lightTime*1.8));
+  board.glow.scale.set(reduced?1:1+.035*Math.sin(lightTime*1.8));
+  board.rays.alpha=ready?.48:.34;board.halo.alpha=ready?.18:.1;
   const strong=board.rewardProfile?.stage>0;
   board.hero.scale.set(!reduced&&supply.phase==='ready'?1+(strong?.17:.1)*Math.exp(-5*t)*Math.sin(t*15):1);
   board.result.alpha=supply.phase==='ready'&&!reduced?Math.min(1,.35+t*4):1;

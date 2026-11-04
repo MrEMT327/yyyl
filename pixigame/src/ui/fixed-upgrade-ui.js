@@ -100,7 +100,7 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     const footer = text(card,model.instant?'立即生效':`${prefix}Lv.${model.level} → ${model.nextLevel}`,width/2,height-(bridge.presentation?82:65),20,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(footer.width>width-24)footer.scale.set((width-24)/footer.width);
     if(!model.instant)card.__upgradeLevelLabel=footer;
-    attachUpgradeChoiceBorderFlow(card,{width,height,art:frame.art,index});
+    attachUpgradeChoiceBorderFlow(card,{width,height});
     panel.addChild(card);
   });
   if(state.pendingLevels>1)text(panel,`还可选 ${state.pendingLevels} 次`,

@@ -878,8 +878,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   }
   function openGrowthSupply(period,target) {
     const view=snapshot.pilotSupply?.growth?.[period];if(!view)return;
-    const selected=view.claimed?view.candidates.find(row=>row.id===view.claimedId):view.candidates.find(row=>row.selectable);
-    modal={type:'growthSupplyChoice',period,choiceId:selected?.id,opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();
+    modal={type:'growthSupplyChoice',period,opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();
   }
   function scrollEquipmentInventory() {
     const scroller = body.querySelector('.eq-inventory');
@@ -904,10 +903,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (modal?.type==='playerInfo' && event.target.matches('[data-player-name]')) modal.nameDraft=event.target.value;
   });
   root.addEventListener('change', event => {
-    if(modal?.type==='growthSupplyChoice'&&event.target.matches('[data-growth-choice]')&&!busy){
-      modal.choiceId=Number(event.target.value);renderModal();
-      modalHost.querySelector('[data-growth-choice]')?.focus({preventScroll:true});return;
-    }
 
     if(modal?.type==='backpack'&&event.target.matches('[data-bag-choice]')&&!busy){
       modal.bagChoice=Number(event.target.value);return;

@@ -6,6 +6,7 @@ import {rewardDisplayQuality} from '../replica/item-display-quality.js';
 import {rewardItemSlot} from './reward-item-slot.js';
 import './backpack-assets.css';
 import './backpack-reference.css';
+import {nativePilotFragment} from '../replica/native-pilot-fragments.js';
 
 export const BACKPACK_TABS = Object.freeze([
   { id: 'all', label: '道具' },
@@ -19,7 +20,7 @@ const resourceQuality = id => rewardDisplayQuality({type:id}).qualityRank;
 export function backpackItems(snapshot) {
   const wallet = snapshot.wallet || {};
   if(snapshot.nativeAcquisition) {
-    const rows=snapshot.nativeAcquisition.materials.map(row=>{
+    const rows=snapshot.nativeAcquisition.materials.filter(row=>!nativePilotFragment(row.id)).map(row=>{
       const presentation=nativeItemPresentation(row.id);
       return {
         id:'native:'+row.id,nativeId:row.id,name:presentation.name||row.name,count:row.count,

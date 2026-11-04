@@ -9,7 +9,7 @@ import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { nativeItemArt } from './native-item-presentation.js';
 import { localRandomMaterials } from './local-economy-policy.js';
 
-import {STARTER_PLANE,LOCAL_SIGNIN_POLICY_ID,APK_SIGNIN_POLICY_ID,SIGNIN_PILOT,signinRewards,capturedSigninRewards,SIGNIN_LAST_DAY,SIGNIN_SOURCE,LEGACY_FLIGHT_SIGNIN} from './local-signin-policy.js';
+import {STARTER_PLANE,LOCAL_SIGNIN_POLICY_ID,PREVIOUS_SIGNIN_POLICY_ID,APK_SIGNIN_POLICY_ID,SIGNIN_PILOT,signinRewards,previousSigninRewards,capturedSigninRewards,SIGNIN_LAST_DAY,SIGNIN_SOURCE,LEGACY_FLIGHT_SIGNIN} from './local-signin-policy.js';
 export {STARTER_PLANE,STARTER_PILOT,FLIGHT_SIGNIN} from './local-signin-policy.js';
 const item = (id,count) => ({kind:'item',id,count});
 const unit = (kind,id) => ({kind,id,count:1});
@@ -38,7 +38,7 @@ export function flightLedger(value,legacy={}) {
   if(!Object.hasOwn(result,'signinHistory')){
     result.signinHistory=Array.from({length:result.signCount},(_,i)=>{
       const oldLocal=i<(result.legacySignIn?.count||0);
-      const rewards=oldLocal?LEGACY_FLIGHT_SIGNIN[i]:result.signinPolicy===APK_SIGNIN_POLICY_ID?capturedSigninRewards(i+1):signinRewards(i+1);
+      const rewards=oldLocal?LEGACY_FLIGHT_SIGNIN[i]:result.signinPolicy===APK_SIGNIN_POLICY_ID?capturedSigninRewards(i+1):result.signinPolicy===PREVIOUS_SIGNIN_POLICY_ID?previousSigninRewards(i+1):signinRewards(i+1);
       return {day:i+1,policy:oldLocal?'girl-flight-signin-v1':result.signinPolicy||LOCAL_SIGNIN_POLICY_ID,rewards:structuredClone(rewards)};
     });
   }

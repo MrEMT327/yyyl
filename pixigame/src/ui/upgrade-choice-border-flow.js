@@ -3,9 +3,9 @@ import {Container} from '../three/display.js';
 
 // A thin ribbon follows the PSD's top-left and bottom-right cut corners.
 // Geometry stays fixed; the existing UI render pass only advances a uniform.
-export function attachUpgradeChoiceBorderFlow(card,{width,height,art,index=0}){
+export function attachUpgradeChoiceBorderFlow(card,{width,height}){
   if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return null;
-  const scale=Math.min(width/224,height/562),inset=3*scale,cut=20*scale,halfWidth=4.8*scale;
+  const scale=Math.min(width/224,height/562),inset=3*scale,cut=20*scale,halfWidth=9*scale;
   const points=[[inset+cut,inset],[width-inset,inset],[width-inset,height-inset-cut],
     [width-inset-cut,height-inset],[inset,height-inset],[inset,inset+cut]];
   const count=points.length,arcs=[0],offsets=[];
@@ -27,7 +27,8 @@ export function attachUpgradeChoiceBorderFlow(card,{width,height,art,index=0}){
   geometry.setAttribute('position',new Float32BufferAttribute(positions,3));
   geometry.setAttribute('aDistance',new Float32BufferAttribute(distances,1));
   geometry.setAttribute('aAcross',new Float32BufferAttribute(across,1));geometry.setIndex(indices);
-  const colors=art==='card-red'?[0xff8b8d,0xffc1a6]:art==='card-blue'?[0x77dfff,0xc1f4ff]:[0xa6acff,0x83ffe7];
+  // Every reinforcement uses the same warm gold, independent of its PSD frame.
+  const colors=[0xffba3b,0xffe294];
   const material=new ShaderMaterial({
     uniforms:{uPhase:{value:0},uLength:{value:arcs[count]},uOpacity:{value:1},
       uColorA:{value:new Color(colors[0])},uColorB:{value:new Color(colors[1])}},
@@ -38,16 +39,19 @@ export function attachUpgradeChoiceBorderFlow(card,{width,height,art,index=0}){
       uniform float uPhase; uniform float uLength; uniform float uOpacity;
       uniform vec3 uColorA; uniform vec3 uColorB;
       void main(){
-        float behind=mod(uPhase*uLength-vDistance+uLength,uLength);
-        float nearHead=min(behind,uLength-behind);
-        float head=exp(-pow(nearHead/13.,2.));
-        float tail=pow(max(0.,1.-behind/190.),1.65);
+        // Two equal light trails stay half a perimeter apart.
+        float halfLength=uLength*.5;
+        float behind=mod(uPhase*uLength-vDistance+uLength,halfLength);
+        float nearHead=min(behind,halfLength-behind);
+        float head=exp(-pow(nearHead/22.,2.));
+        float tail=pow(max(0.,1.-behind/300.),1.1);
         float edge=abs(vAcross);
-        float core=1.-smoothstep(.10,.38,edge);
-        float halo=exp(-edge*edge*4.4)*(1.-smoothstep(.72,1.,edge));
-        float alpha=(core*.64+halo*.32)*max(tail*.8,head)*uOpacity;
-        vec3 color=mix(uColorA,uColorB,.5+.5*sin(vDistance/uLength*6.283185));
-        gl_FragColor=vec4(mix(color,vec3(1.),head*.58),alpha);
+        float core=1.-smoothstep(.12,.36,edge);
+        float halo=exp(-edge*edge*3.2)*(1.-smoothstep(.72,1.,edge));
+        float light=max(tail,head*1.25);
+        float alpha=clamp((core*.9+halo*.62)*(light+.035),0.,1.)*uOpacity;
+        vec3 color=mix(uColorA,uColorB,.5+.5*sin(vDistance/halfLength*6.283185));
+        gl_FragColor=vec4(mix(color,vec3(1.),head*.35),alpha);
         #include <colorspace_fragment>
       }`,
     transparent:true,depthTest:false,depthWrite:false,toneMapped:false,side:DoubleSide,
@@ -60,7 +64,8 @@ export function attachUpgradeChoiceBorderFlow(card,{width,height,art,index=0}){
     const now=performance.now();
     if(card.__entryCancelled&&stoppedAt===null)stoppedAt=now;
     const fade=stoppedAt===null?1:Math.max(0,1-(now-stoppedAt)/120);
-    material.uniforms.uPhase.value=((stoppedAt??now)/3800+index*.43)%1;
+    // All choice borders follow the same absolute clock, without per-card offsets.
+    material.uniforms.uPhase.value=((stoppedAt??now)/3800)%1;
     material.uniforms.uOpacity.value=material.opacity*fade;
     if(fade===0)mesh.visible=false;
   };

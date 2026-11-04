@@ -1,0 +1,285 @@
+{
+  "version": 1,
+  "date": "2026-11-04",
+  "generator": "OpenAI built-in image_gen",
+  "mode": "built-in edit",
+  "scope": "Exclusive weapon-variant passive icons in skill lists, equipped skill slots and star-up descriptions. Base attack artwork remains independently mapped.",
+  "normalization": "Generated square source PNGs resized to 320px PNGs with high-quality bicubic sampling; no painted overlays, recoloring, or competitor image inputs.",
+  "assets": [
+    {
+      "weaponId": 20102,
+      "name": "狂热射击",
+      "file": "frenzied-fire.png",
+      "skillIds": [
+        10601021,
+        10601022,
+        10601023,
+        10601024,
+        10601025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 204474,
+      "sha256": "60308b13b0a4d4f072a0f8c7a7dc02205eb03636fd20cb08c361355892e84a5a",
+      "sourceFile": "exec-cfeb779e-0aa7-4ab4-a54c-7b0084a8b585.png",
+      "sourceSha256": "ad41c5ff6b81f0a059832e6180de41c323e84e59f4be61da512a479fb72836c6",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "rapid-autocannon.webp",
+      "referenceSha256": "3e484654212abce469c88ca003e81a87240ea2a914e932d5015c576a03f25d3c",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: a single large upright golden tracer bullet wrapped in a sharp orange-red overdrive flame. Three short densely stacked golden afterimage streaks sweep upward behind one side, showing explosive rapid fire; two small heat-wave tongues crown the flame. Compact blazing speed silhouette. Amber, orange, ivory, deep navy. Replace the original five-way fan volley entirely."
+    },
+    {
+      "weaponId": 20202,
+      "name": "导弹增载",
+      "file": "missile-overload.png",
+      "skillIds": [
+        10607021,
+        10607022,
+        10607023,
+        10607024,
+        10607025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 192834,
+      "sha256": "a3273c8e62d943df6c06fa3853494d026f9dd4031dff14568bc9dcebfe639813",
+      "sourceFile": "exec-d9dab2f9-b267-4c7f-aec2-a11195156889.png",
+      "sourceSha256": "8c5abefcb333b951d730c4272a8eb90e032ed2262220d990cd5d259f0a755d7a",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "he-missile.webp",
+      "referenceSha256": "af3a384babbea122666e0606daed964683b3f27262851ed6d727f57c75c3cb94",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: a compact overloaded salvo of FIVE simple ivory-and-coral micro rockets, four arranged as two close side pairs and one luminous golden rocket rising between them. A short branching yellow exhaust plume visually feeds the additional centre rocket. Large uncomplicated fins, graphic ivory highlights, strong compact clustered silhouette. Coral, warm gold, ivory. Replace the original three-rocket triangle."
+    },
+    {
+      "weaponId": 20302,
+      "name": "激光齐射",
+      "file": "laser-salvo.png",
+      "skillIds": [
+        10615021,
+        10615022,
+        10615023,
+        10615024,
+        10615025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 177346,
+      "sha256": "1b0527c1387a05e0a59f646a648bde25944f35e97b2646e02e7cdbca3791a4cd",
+      "sourceFile": "exec-aa199787-aa17-48fd-8716-ed86f8d16778.png",
+      "sourceSha256": "2144bfc99e4b08798904388682f30af664acd6eb28e6ae3224f52f0ea9a9cc1e",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "high-energy-laser.webp",
+      "referenceSha256": "99f0222bc18573989371418f02a4293aeee3d63360eb07081e069b630b6fbc0b",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: THREE separate cyan laser lances firing together upward in a broad forward volley from one low angular blue-white flare. Each lance has a distinct rectangular white core, a turquoise edge and a tiny pointed endpoint flash; violet-blue afterimages echo one lance to imply an immediate repeat salvo. The beams are individually separated, with no large central pillar and no circular collars. Cyan, turquoise, ivory, violet blue."
+    },
+    {
+      "weaponId": 20402,
+      "name": "泡泡散射",
+      "file": "bubble-scatter.png",
+      "skillIds": [
+        10602021,
+        10602022,
+        10602023,
+        10602024,
+        10602025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 195068,
+      "sha256": "ed6e64d851b32f9f2168d8a4d317718e7c8568444b2fea1314e967c5ed9a25ab",
+      "sourceFile": "exec-88813920-9c43-4b95-bce8-42fccf477e59.png",
+      "sourceSha256": "100aeb054e77b9d1cba06d3e5efe9fde926a492f0c3de97e948bd91cef8f7b8d",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "acid-projectile.webp",
+      "referenceSha256": "536b58779bf7a1c18e5eed9bbdf7d700fe3cc3c6bc8f55bbd3643820dbe64756",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: one large lime-green translucent slime bubble bursting at the centre into SIX small round green bubbles radiating outward. The large bubble has an open jagged rupture and two bold white curved reflections; round bubbles and tiny splash tongues form a wide radial scatter. A few small lime droplets, no downward falling teardrop trio and no flat acid puddle. Acid lime, yellow-green, ivory highlights."
+    },
+    {
+      "weaponId": 20502,
+      "name": "冰刺迸裂",
+      "file": "ice-spike-burst.png",
+      "skillIds": [
+        10606021,
+        10606022,
+        10606023,
+        10606024,
+        10606025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 178956,
+      "sha256": "bcbe6ac26f2c4125afab5fb53587322cdcad7673794b74e910655ab9fd7bde5b",
+      "sourceFile": "exec-2f3d7eea-8271-4b99-b28b-44863d09f246.png",
+      "sourceSha256": "bd7fea93a501a4f1e360f959b9a60a7086b517abb79140bf41265d7cb4c369d5",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "frost-blades.webp",
+      "referenceSha256": "2235aacdec7fef6a4f0acf93409b8ea7c03da05e1238f1a603b412ec0e8794f7",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: a shattered icy diamond core detonating outward into THREE large sharp crystalline ice spikes pointing up-left, upward and right, plus a few tiny blue crystal fragments around a compact brilliant white impact star. The composition is a radial brittle ice explosion, with flat faceted cyan/white shards and navy edges; do not use three intact parallel flying blades. Ice cyan, glacier blue, ivory."
+    },
+    {
+      "weaponId": 20602,
+      "name": "雷霆乐章",
+      "file": "thunder-symphony.png",
+      "skillIds": [
+        10604021,
+        10604022,
+        10604023,
+        10604024,
+        10604025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 200675,
+      "sha256": "0f1b7a853a29f3026adbe8670d63098b8afb4efb8d1021f2d11a4603350ff9f4",
+      "sourceFile": "exec-dcc3bd47-fc17-462a-aeb3-94259856f673.png",
+      "sourceSha256": "14539982bf529b5657d2cf4e89bb814ec18d7a9c4777ead9b41e34089cf0b661",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "magstorm.webp",
+      "referenceSha256": "82f8306127c4ac7226f7ca9e494d05597f59f3a7184e4ea8c62245496162b8f0",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: one large stylized cyan electric musical eighth-note symbol whose stem forks into THREE downward lightning strikes. Each strike ends in a small blue-white ground spark. A single curved violet rhythm swoosh passes behind the note. Make the note-and-three-bolts silhouette obvious at small scale, without letters or written music staff. Cyan, electric blue, violet and ivory. Replace the original central magnetic star and four orbiting loops."
+    },
+    {
+      "weaponId": 20702,
+      "name": "路径灼烧",
+      "file": "scorch-path.png",
+      "skillIds": [
+        10617021,
+        10617022,
+        10617023,
+        10617024,
+        10617025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 203343,
+      "sha256": "8acf593edbc1e6f4528f4ec5b71f4d57df89d1296c450928004e9594facda113",
+      "sourceFile": "exec-2efb38bc-4e7c-4f2a-8f72-9e693327670b.png",
+      "sourceSha256": "225a23b5be392427ef97ef6e47e90e5223d65e6a4525fa38e624e69806f34ac2",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "scorch-ray.webp",
+      "referenceSha256": "a29e20ba28dc507c9b51522f1b4e28d66024ab0e41df4e1d8ac55c409de1c0bd",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: one continuous diagonal searing orange-white beam traces a scorched zigzag path from lower-left to upper-right, with THREE distinct flame tongues rising along its length and a glowing red-orange burn wake behind it. The path itself is visible between the flame patches, showing damage along the entire route. A single connected burning trail, not the original two parallel horizontal flame rays. Vermilion, orange, molten yellow and ivory."
+    },
+    {
+      "weaponId": 20802,
+      "name": "环形剑气",
+      "file": "ring-slash.png",
+      "skillIds": [
+        10611021,
+        10611022,
+        10611023,
+        10611024,
+        10611025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 182917,
+      "sha256": "068422eb96600bb4595b3ab2437c1a4322d609e8299c93b9c96c0c8386ec31a0",
+      "sourceFile": "exec-3e103bb6-0f02-44e2-b262-d3efd52fc3bf.png",
+      "sourceSha256": "4add8d13166e342bcb0a760fa4c681a4e2a81d73b39ab31920742d616e6a7f32",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "energy-blade.webp",
+      "referenceSha256": "9a86f9aa59519fcedac740b6518a078e29c5e6cead75ee27a3878dcb53f83048",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: a sweeping nearly complete CIRCULAR cyan sword-energy slash, formed by two opposing large curved blade crescents orbiting an open centre. Bright tapered ivory cutting edges, long turquoise motion tips and one small angular strike spark on the upper-right curve. This is a circular cutting attack, not a decorative badge or medallion; no enclosing frame and no crossed X-shaped swords. Cyan, turquoise, ice white."
+    },
+    {
+      "weaponId": 20902,
+      "name": "冰棘环射",
+      "file": "ice-thorn-volley.png",
+      "skillIds": [
+        10616021,
+        10616022,
+        10616023,
+        10616024,
+        10616025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 166601,
+      "sha256": "0b1f68f0c5000117406709550958077047ba58df9ddb61c5f7ee69fb9494649a",
+      "sourceFile": "exec-3bd10af6-1a47-4ea8-b1f5-a34b66055113.png",
+      "sourceSha256": "2ae523c34bd7fc38b48e50949b06d4bd55ef58a35825092139c1ef6b423d4922",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "frost-sawblade.webp",
+      "referenceSha256": "de6038a7994f97356a0ad6314b13f39b27f782ef3f2accb706d5f0febc0dd5da",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: one compact faceted frosty blue orb at centre launches THREE long crystalline icicle darts radially outward at widely separated angles. Short icy curved motion strokes connect the darts around the orb, giving a burst volley around it. Keep the orb and three icicles distinct; no rotating saw teeth, no six-blade rotor, no central mechanical hub. Glacial blue, cyan, ivory with navy facets."
+    },
+    {
+      "weaponId": 21002,
+      "name": "节拍雷鸣",
+      "file": "beat-thunder.png",
+      "skillIds": [
+        10603021,
+        10603022,
+        10603023,
+        10603024,
+        10603025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 199086,
+      "sha256": "e87ea430e59840a37fb5b96f3a22ac8eec3f206e850ef023e387fa8c6066c263",
+      "sourceFile": "exec-95963ff7-6d2e-4df9-8553-89b2428a6cf5.png",
+      "sourceSha256": "e34d533c7ff6c133e6d5203bbb4624f2b6d0ebee39d0160777adee2efaa81444",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "arc-blast.webp",
+      "referenceSha256": "396795fa49092a3a750098a62c52bcd64250d46108ef54393d55027ddfcab986",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: one bold central magenta-and-cyan lightning bolt strikes a small brilliant blue pulse node, sending two broad sharp electric rhythm-wave arcs outward to the left and right like a thunder beat. Add one offset echo arc to show a repeated beat. Strong vertical-bolt plus horizontal-wave silhouette; no musical note, no triangular chain of three connected whirlpools. Neon cyan, royal blue, magenta accents, ivory."
+    },
+    {
+      "weaponId": 21102,
+      "name": "吞噬脉冲",
+      "file": "devouring-pulse.png",
+      "skillIds": [
+        10609021,
+        10609022,
+        10609023,
+        10609024,
+        10609025
+      ],
+      "width": 320,
+      "height": 320,
+      "bytes": 203697,
+      "sha256": "056959a619b48d25c8357cc76f9d08fb7fb2b397802084f24e15d4ed8ebebd55",
+      "sourceFile": "exec-1f2f820c-a552-426a-888d-f5b049cf03fa.png",
+      "sourceSha256": "3314b683cae1eb89e55b4d4f4f73ab8f2294eb4cdd32cbdda643f4665f761531",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "corrosive-black-hole.webp",
+      "referenceSha256": "04c00106f37ac0b7509a24335be716b7264382364372d8253a26777f6cd81a18",
+      "prompt": "Use case: style-transfer. Asset type: one exclusive 2D game skill icon for the project's weapon variant.\nEdit target and style reference: the attached original project base-skill icon. Create a separate variant icon in exactly this visual system, with a completely new central effect glyph and composition.\nPreserve the square blue/slate aviation tactical-display background, faint thin broken cyan radar arcs, sparse calibration ticks and one narrow vertical cyan accent. Preserve thick dark navy contour lines, bold clean 2–3 tone cel shading, bright ivory highlights and playful hand-drawn cartoon readability.\nThe NEW glyph must fill about 72–78% of the square with an 8% safety margin and remain immediately readable at 64px. Use a small number of large, distinct shapes. No inventory weapon renders, realistic machinery, characters, enclosing badge, hexagon, halftone dots, broad diagonal background stripes, letters, numbers, text, logos, watermark or outer card border. Opaque full-bleed background. Deliver a single square icon, not a sheet or UI screenshot.\nNEW glyph: a compact deep-black circular void surrounded by a bright acid-green expanding SHOCKWAVE ring, with four broad outward pulse wedges and a few small fragments being drawn toward the void. The ring is a thick energetic rippling ellipse with a bright upper edge and darker green lower edge. Focus on a black hole emitting a radial pulse, not the original three-arm green spiral. Acid green, mint, emerald, near-black, ivory highlights."
+    }
+  ]
+}

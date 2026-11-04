@@ -13,7 +13,7 @@ export function pilotCreditReward(amount,sourcePilotId) {
 }
 // Mutates only the caller's planned inventory / progression copies. The caller
 // must commit creditsAdded to pilotSupply in the SAME storage transaction.
-// Fragment composition retains manual activation; boxes and gifts activate.
+// Legacy conversion retains manual activation; recruitment, boxes and gifts activate.
 export function grantPilotCards(inventory,progression,id,amount,{activate=false}={}) {
   const row=pilots.get(id);
   if(!row||!Number.isSafeInteger(amount)||amount<1)throw Error('驾驶员同名卡奖励无效');

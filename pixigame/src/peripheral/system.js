@@ -2,6 +2,7 @@ import { createPeripheralSaveGuard } from './save-guard.js';
 import {localFailureCount,recordLocalFailureProtection,LOCAL_FAILURE_PROTECTION_VERSION} from '../replica/local-failure-protection.js';
 import {planNativeStarterItems,NATIVE_INITIAL_STAMINA} from '../replica/native-starter-items.js';
 import {planNativeStarterCore} from '../replica/native-starter-core.js';
+import {planRetiredPilotFragments} from '../replica/retired-pilot-fragments.js';
 import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide} from './onboarding.js';
 import { backpackUseRule, planBackpackUse } from '../replica/native-backpack-use.js';
 import { nativeStarRewardSnapshot, planNativeStarClaim } from '../replica/native-star-rewards.js';
@@ -307,6 +308,20 @@ export function createPeripheralSystem({
     }catch(error){storageWarning=error.message;}
   }
   syncRetiredChipInventory();
+  function syncRetiredPilotFragments(){
+    if(!storageCurrent()||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    try{
+      const plan=planRetiredPilotFragments(state.replicaInventory,state.replicaLoadout);if(!plan)return;
+      const previous=state,next=copy(state);
+      next.replicaInventory=plan.inventory;
+      if(plan.creditsAdded)next.pilotSupply=addPilotSupplyCredits(state.pilotSupply,currentTime(),plan.creditsAdded);
+      next.pilotFragmentRetirement={version:1,at:currentTime(),converted:plan.converted,
+        previous:state.pilotFragmentRetirement||null};
+      state=next;
+      if(!persist())state=previous;
+    }catch(error){storageWarning=error.message;}
+  }
+  syncRetiredPilotFragments();
   let starterGrantsAttempted=false;
   function syncStarterGrants(){
     if (!storageCurrent()) return;
@@ -1446,7 +1461,7 @@ export function createPeripheralSystem({
   function snapshot() {
     if (storageCurrent()) {
       syncDay(); if(!state.dailyRewardReceipt && !unsavedPatrolReward)syncPilotUnlocks(); syncSamplePatrol();
-      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncStarterGrants();
+      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();
       if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !unsavedPatrolReward && !state.firstClearWeaponClaimed) claimStageOneWeapon();
     }
     const flightRewards = state.flightRewards ?? flightLedger(null,loadDailyLoginState(storage));

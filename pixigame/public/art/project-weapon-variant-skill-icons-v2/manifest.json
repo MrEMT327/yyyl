@@ -1,0 +1,286 @@
+{
+  "version": 2,
+  "date": "2026-11-04",
+  "generator": "OpenAI built-in image_gen",
+  "mode": "built-in precise-object-edit",
+  "scope": "Clean skill artwork: long vertical edge accents and translucent side bands removed; existing effect motifs retained. Frenzied Fire bullet corrected to point straight up; its flame aura follows the upright composition.",
+  "normalization": "Generated square cleanup PNGs smoothly resized to 320px and encoded as WebP quality 0.92 using browser Canvas. No code-painted inpainting or recoloring.",
+  "assets": [
+    {
+      "weaponId": 20102,
+      "skillIds": [
+        10601021,
+        10601022,
+        10601023,
+        10601024,
+        10601025
+      ],
+      "name": "狂热射击",
+      "file": "frenzied-fire-upright.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 20128,
+      "sha256": "666fbc1c9848f8a938302503cc0ee8514355a57d0f93358d2a1eea8819479d38",
+      "sourceFile": "exec-1e5616b8-c784-49f9-b277-6b76372ae0c2.png",
+      "sourceSha256": "8a0f0d6bd9d269d86d4b7195f93048e5902f7c33d6531351bee9bca9902e9eca",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v2/frenzied-fire.webp",
+      "referenceSha256": "cddfef08697dde3be7357048ca1d871e60354fe3e2cffc29552a2e40947a8b17",
+      "prompt": "Use case: precise-object-edit.\nAsset type: one existing square 2D game skill icon, 狂热射击 (Frenzied Fire).\nInput image: edit target, the attached clean-blue-background flaming bullet icon.\nPrimary request: correct the bullet orientation. Redraw the central gold cartridge so its straight longitudinal axis is perfectly VERTICAL, pointing directly UP at 12 o'clock: pointed tip at the top center, round cartridge base at the bottom center. Keep both centered on the same vertical x coordinate. The bullet must not lean left or right and must not use a diagonal perspective. Keep it one recognisable golden machine-gun bullet, not a rocket or missile.\nPreserve the original crisp cartoon outlines, chunky cel shading, gold/orange/white palette, and similar large foreground size. Reorient the red-orange flame aura and yellow flame streaks naturally around the upright bullet: fire trails mostly below and outwards, a strong energetic effect. Keep the clean slate-blue gradient background and thin broken circular cyan radar rings and short ticks. Do not rotate the square background or the radar ring.\nConstraints: change only the orientation and accompanying flame arrangement. Preserve square opaque format and overall established visual style. No side bars, no vertical decorative edge stripes, no frames, no text, no letters, no numbers, no watermarks. Exactly one upright bullet. Deliver a clean finished game icon.\n",
+      "revision": "upright-bullet"
+    },
+    {
+      "weaponId": 20202,
+      "skillIds": [
+        10607021,
+        10607022,
+        10607023,
+        10607024,
+        10607025
+      ],
+      "name": "导弹增载",
+      "file": "missile-overload.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23298,
+      "sha256": "24a66625803563b057dd022e6ab2bc11fe4fd48d8bf8b8c9af8e347ae3e6e340",
+      "sourceFile": "exec-b60636e8-9a36-4266-9149-201dd6348222.png",
+      "sourceSha256": "cbda012e9a7f67fb86332e7f955e29d2f07e7149f65d07a26de4a56800c4209b",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/missile-overload.png",
+      "referenceSha256": "a3273c8e62d943df6c06fa3853494d026f9dd4031dff14568bc9dcebfe639813",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"导弹增载\" (missile-overload). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20302,
+      "skillIds": [
+        10615021,
+        10615022,
+        10615023,
+        10615024,
+        10615025
+      ],
+      "name": "激光齐射",
+      "file": "laser-salvo.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 19978,
+      "sha256": "0fcb7e02779fc089a6abece73e32c20ed4ce5481e96e4d39d74a208bc792c06b",
+      "sourceFile": "exec-08168640-2f8c-4c4b-b2a6-eb0c5cbb86fd.png",
+      "sourceSha256": "18654a0ecca7b88ce95c57042996339f056cf9a4592576290206b1dea053e3f9",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/laser-salvo.png",
+      "referenceSha256": "1b0527c1387a05e0a59f646a648bde25944f35e97b2646e02e7cdbca3791a4cd",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"激光齐射\" (laser-salvo). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20402,
+      "skillIds": [
+        10602021,
+        10602022,
+        10602023,
+        10602024,
+        10602025
+      ],
+      "name": "泡泡散射",
+      "file": "bubble-scatter.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 24302,
+      "sha256": "b33a47f6bfee52a6fc5fe98d26064711b8ceb1644b164f6972b1e5c076d9b2ad",
+      "sourceFile": "exec-1ee1b5f6-d1c2-4c23-b3af-0f477d9d42a3.png",
+      "sourceSha256": "49a302901524333335a7ce8bad999e4295a41a190409812b700a65e7f00aac98",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/bubble-scatter.png",
+      "referenceSha256": "ed6e64d851b32f9f2168d8a4d317718e7c8568444b2fea1314e967c5ed9a25ab",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"泡泡散射\" (bubble-scatter). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20502,
+      "skillIds": [
+        10606021,
+        10606022,
+        10606023,
+        10606024,
+        10606025
+      ],
+      "name": "冰刺迸裂",
+      "file": "ice-spike-burst.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 21970,
+      "sha256": "dd4f3ca97ccdd33d598292c1d8335a199a8017751ad9ac3f9d246b0be928236d",
+      "sourceFile": "exec-900eeba0-ab0f-48b2-9994-8b7d0dc8641c.png",
+      "sourceSha256": "813bd5d8cbd36e322ba26db8706ff2cc1dd7a5b414819f78a156deb598caceed",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/ice-spike-burst.png",
+      "referenceSha256": "bcbe6ac26f2c4125afab5fb53587322cdcad7673794b74e910655ab9fd7bde5b",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"冰刺迸裂\" (ice-spike-burst). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20602,
+      "skillIds": [
+        10604021,
+        10604022,
+        10604023,
+        10604024,
+        10604025
+      ],
+      "name": "雷霆乐章",
+      "file": "thunder-symphony.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 22034,
+      "sha256": "37c3cb5c055875b17f429d1d662d7fe4412aa782150639e1a2edbdfabd3e6c3d",
+      "sourceFile": "exec-f587fef9-1005-4e2d-8d44-8f61ae2f3079.png",
+      "sourceSha256": "ffae4bee7c8a67fe83bfa59b1e64b30663171835b3d17fefc5732d8d96473c91",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/thunder-symphony.png",
+      "referenceSha256": "0f1b7a853a29f3026adbe8670d63098b8afb4efb8d1021f2d11a4603350ff9f4",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"雷霆乐章\" (thunder-symphony). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20702,
+      "skillIds": [
+        10617021,
+        10617022,
+        10617023,
+        10617024,
+        10617025
+      ],
+      "name": "路径灼烧",
+      "file": "scorch-path.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 23360,
+      "sha256": "769d58d666f82d589b444b15ec2b2c181fab84079e7408a61a2df135cdadbf4c",
+      "sourceFile": "exec-e5ee956e-8aee-4dd8-b7da-74135102601e.png",
+      "sourceSha256": "870ba95687a20d6e9e80c3aeed648d02860a835eb5ff6c73898f97c992447843",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/scorch-path.png",
+      "referenceSha256": "8acf593edbc1e6f4528f4ec5b71f4d57df89d1296c450928004e9594facda113",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"路径灼烧\" (scorch-path). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20802,
+      "skillIds": [
+        10611021,
+        10611022,
+        10611023,
+        10611024,
+        10611025
+      ],
+      "name": "环形剑气",
+      "file": "ring-slash.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 19620,
+      "sha256": "9a5758625c79d091bab8a94cfc984a4c4d977357a9c8ebb31cea4a57d3deb02e",
+      "sourceFile": "exec-e1637dda-2d3f-497f-81f2-27dc28882587.png",
+      "sourceSha256": "2a164126e4d343fc6e59a89109c243387dd2805b0e456db98f54c97b70b915b0",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/ring-slash.png",
+      "referenceSha256": "068422eb96600bb4595b3ab2437c1a4322d609e8299c93b9c96c0c8386ec31a0",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"环形剑气\" (ring-slash). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 20902,
+      "skillIds": [
+        10616021,
+        10616022,
+        10616023,
+        10616024,
+        10616025
+      ],
+      "name": "冰棘环射",
+      "file": "ice-thorn-volley.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 19054,
+      "sha256": "7e0db5bf864b33ca059daeaec98626ec2d1042df3c26fc31f421fe22fb091064",
+      "sourceFile": "exec-72a3e83b-ad63-4ee0-929a-c9ebfcdcffbb.png",
+      "sourceSha256": "58780192f060037d105fefea6b47254033d96168a0aed85fdbd836c1f737833e",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/ice-thorn-volley.png",
+      "referenceSha256": "0b1f68f0c5000117406709550958077047ba58df9ddb61c5f7ee69fb9494649a",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"冰棘环射\" (ice-thorn-volley). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 21002,
+      "skillIds": [
+        10603021,
+        10603022,
+        10603023,
+        10603024,
+        10603025
+      ],
+      "name": "节拍雷鸣",
+      "file": "beat-thunder.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 24608,
+      "sha256": "0b183b6638cefccd38f6417cd27f9857603398ec8cd044a37cc6240c0adb5e57",
+      "sourceFile": "exec-357925f4-de2d-4336-976d-88b2dd900b1f.png",
+      "sourceSha256": "456db9b03f54f724d3a2f922c693fb8e82bff88a7eb482b4f65f607755b952e5",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/beat-thunder.png",
+      "referenceSha256": "e87ea430e59840a37fb5b96f3a22ac8eec3f206e850ef023e387fa8c6066c263",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"节拍雷鸣\" (beat-thunder). Preserve its exclusive effect glyph unchanged."
+    },
+    {
+      "weaponId": 21102,
+      "skillIds": [
+        10609021,
+        10609022,
+        10609023,
+        10609024,
+        10609025
+      ],
+      "name": "吞噬脉冲",
+      "file": "devouring-pulse.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 25150,
+      "sha256": "3c3b3011df7cdbdaf6a95a87e3c12e77c42cf6ac8cfcdf9bd9dcc03bec0419f0",
+      "sourceFile": "exec-58c10496-d498-4576-b512-88055dc65caf.png",
+      "sourceSha256": "5795294676b141773b0e249763840d591acbbf8511f6fe69d8f7f1a82625b803",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "referenceFile": "art/project-weapon-variant-skill-icons-v1/devouring-pulse.png",
+      "referenceSha256": "056959a619b48d25c8357cc76f9d08fb7fb2b397802084f24e15d4ed8ebebd55",
+      "prompt": "Use case: precise-object-edit. Asset type: targeted cleanup of ONE existing square 2D game skill icon.\nEdit target: the attached icon. Remove ONLY the long straight vertical decorative background bars, side stripes and translucent rectangular bands near BOTH side edges. This includes continuous cyan/turquoise strips, broken vertical accent bars and darker/lighter parallel side bands. Seamlessly reconstruct the original blue/slate gradient in those narrow background areas, with no seam or rectangular color transition.\nPreserve the central illustrated skill glyph EXACTLY: same silhouette, placement, proportions, orientation, contour shapes, cel shading, colors, highlights and existing effect details. Preserve the thin broken CIRCULAR radar arcs and short calibration ticks. Central laser beams, lightning bolts, projectiles, rocket exhaust and other foreground strokes belong to the skill and must remain intact, even when they are vertical.\nThe whole image should have clean blue background to the left and right around the glyph. Do not crop, zoom, shift or redraw the subject; do not add badges, frames, border lines, accent stripes, text, letters, numbers, logos or watermarks. Preserve the original square format and opaque background. Deliver one cleaned icon.\nThis is the variant skill \"吞噬脉冲\" (devouring-pulse). Preserve its exclusive effect glyph unchanged."
+    }
+  ]
+}

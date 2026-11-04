@@ -1,18 +1,20 @@
 import captured from './native-signin-source.json' with {type:'json'};
 
-export const LOCAL_SIGNIN_POLICY_ID='project-signin-driver-v2';
+export const LOCAL_SIGNIN_POLICY_ID='project-signin-aircraft-v3';
+export const PREVIOUS_SIGNIN_POLICY_ID='project-signin-driver-v2';
 export const APK_SIGNIN_POLICY_ID='dkzj-1.1.6-signin-v1';
 export const STARTER_PLANE=10104; // Historical starter receipt only.
+export const SIGNIN_PLANE=10101; // 幽幕式隐形截击机; no intrinsic aircraft skill.
 export const STARTER_PILOT=40200;
 export const SIGNIN_PILOT=40200; // 绯雨·桃乐丝; real driver, not an aircraft skin.
 export const SIGNIN_LAST_DAY=9999;
-export const SIGNIN_SOURCE='项目签到奖励：可用养成资源与第七天驾驶员';
+export const SIGNIN_SOURCE='项目签到奖励：第二天飞机、第七天驾驶员与养成资源';
 const item=(id,count)=>({kind:'item',id,count});
 const freezeWeek=week=>Object.freeze(week.map(rows=>Object.freeze(rows.map(Object.freeze))));
 // The competitor informs the seven-card layout. Every live reward belongs to
-// an implemented project feature: currency, gear/research sheets, or a pilot.
+// an implemented project feature: currency, gear/research sheets, aircraft or pilots.
 export const FLIGHT_SIGNIN=freezeWeek([
-  [item(2,100)],[item(1,3000)],[item(10010007,50)],
+  [item(2,100)],[{kind:'skins',id:SIGNIN_PLANE,count:1}],[item(10010007,50)],
   [item(2,200)],[item(10010008,50)],[item(1,5000)],
   [{kind:'pilots',id:SIGNIN_PILOT,count:1},item(2,300),item(1,5000)],
 ]);
@@ -24,6 +26,10 @@ const repeatWeek=freezeWeek([
 export function signinRewards(day) {
   if(!Number.isSafeInteger(day)||day<1||day>SIGNIN_LAST_DAY)throw Error('签到天数无效');
   return structuredClone((day<=7?FLIGHT_SIGNIN:repeatWeek)[(day-1)%7]);
+}
+// Reconstruct missing historical receipts using the reward actually earned.
+export function previousSigninRewards(day) {
+  return day===2?[item(1,3000)]:signinRewards(day);
 }
 // Captured APK rows are used ONLY to describe awards already earned under the
 // rejected APK policy. Never grant its keys/chips/drone materials again.
