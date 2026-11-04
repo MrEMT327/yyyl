@@ -1,8 +1,9 @@
 import {damageTextPresentation,sampleEnemyHitMotion,sampleCombatResults} from './combat-hit-presentation.mjs';
 import {preloadDamageNumberArt,updateDamageTextView,type DamageTextView} from './damage-number-art';
 import {sampleHealingReceipt} from './healing-receipt.mjs';
+import {sampleCoinPickupReceipt} from './coin-pickup-feedback.mjs';
 import {drawPlayerDamageVignette,PLAYER_DAMAGE_VIGNETTE_DEPTH} from './player-damage-vignette.mjs';
-import {playerHealthBarColor} from '../../src/replica/player-health-display.js';
+import {playerHealthBarColor,playerHealthFrame} from '../../src/replica/player-health-display.js';
 import {COMBAT_LAYERS,playerVisibility} from './combat-readability.mjs';
 import {CombatRenderSamples,CombatStatusIndex} from '../../src/replica/combat-render-samples.mjs';
 import {MissileWingMounts} from '../../src/replica/missile-wing-mounts.mjs';
@@ -87,6 +88,8 @@ export class BattleView extends Phaser.Scene {
   private cameraTargetRevision = -1;
   private readonly mapCameraOffsets = new NativeMapCameraOffsets();
   private vfxRunId = -1;
+  private playerHealthDisplay: ReturnType<typeof playerHealthFrame> | null = null;
+  private readonly healthReducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   private pathogenic!: PathogenicBattleEffects;
   private chapterBloomPipeline?:string;
   private terrain: { image: Phaser.GameObjects.Image; z: number; x: number }[] = [];
@@ -497,7 +500,8 @@ export class BattleView extends Phaser.Scene {
       flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed,
         radius: playerEntity.stats.shape[0] * s.playerScale, active: s.phase === 'playing' && s.player.hp > 0 },
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
-    if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, s.player.hp / s.player.maxHp, playerHealthBarColor(s.player.hp / s.player.maxHp, s.player.hitFlash > .14));
+    this.playerHealthDisplay=playerHealthFrame(this.playerHealthDisplay,s.player.hp,s.player.maxHp,visualClock,s.runId,this.healthReducedMotion?.matches??false);
+    if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, this.playerHealthDisplay.value, playerHealthBarColor(this.playerHealthDisplay.value, s.player.hitFlash > .14));
     if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(this.renderSamples.age(.3 - s.player.hitFlash));
     const enemyIds = this.liveEnemyIds; enemyIds.clear();
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
@@ -672,6 +676,7 @@ export class BattleView extends Phaser.Scene {
     for(const fx of s.effects)this.drawEffect(fx,live);
     for(const receipt of sampleCombatResults(s))this.drawEffect(receipt,live);
     const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
+    const coinReceiptVisual=sampleCoinPickupReceipt(s);if(coinReceiptVisual)this.drawEffect(coinReceiptVisual,live);
     this.pathogenic.endFrame();
     if (this.debugOn) {
       const radius = this.content.chapter.entities[this.content.chapter.player.entityId].stats.shape[0];

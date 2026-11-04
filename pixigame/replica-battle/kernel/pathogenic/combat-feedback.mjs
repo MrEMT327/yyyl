@@ -1,4 +1,5 @@
 import {impactDirectionYaw} from '../impact-direction.mjs';
+import {coinPickupFeedback,COIN_FEEDBACK_SECONDS,COIN_GLOW_COLOR,sampleCoinPickupGlow} from '../coin-pickup-feedback.mjs';
 import {BeamFootprints} from './beam-footprint.mjs';
 import {VfxMeshBuffer,quadVisible,packedScalar} from './vfx-buffers.mjs';
 // Transient feedback reads snapshots only. Eight bounded batches replace many
@@ -11,6 +12,7 @@ const COLD=new Set([210035,210051,220022]),ACID=new Set([210043,210049,210065,21
 export function feedbackKind(f){
  if(f.kind==='text')return null;
  if(f.kind==='heal'||f.kind==='level')return'restore';
+ if(coinPickupFeedback(f))return'coin-collect';
  if(COLLECT.has(f.modelId))return'collect';
  if(f.kind==='explosion')return'blast';
  if(f.kind==='hit'&&(!f.modelId||CONTACT.has(f.modelId)))return'contact';
@@ -19,6 +21,7 @@ export function feedbackKind(f){
 }
 export const isOrdinaryContact=f=>feedbackKind(f)==='contact'&&!COLD.has(f.modelId)&&!ACID.has(f.modelId)&&!ELECTRIC.has(f.modelId);
 function palette(f){
+ if(coinPickupFeedback(f))return COIN_GLOW_COLOR;
  if(ACID.has(f.modelId))return[.32,.86,.14];
  if(COLD.has(f.modelId))return[.20,.72,1];
  if(f.modelId===220029)return[1,.72,.18];
@@ -180,15 +183,29 @@ void fragment(){${phase}
   float k=float(i),life=clamp((t-k*.047)/.72,0.0,1.0);
   float x=sin(k*2.4)*(.24+.042*k),y=.40-life*.92+k*.035;
   vec2 q=p-vec2(x,y);
-  float cross=max(exp(-q.x*q.x*6200.0-q.y*q.y*740.0),exp(-q.y*q.y*6200.0-q.x*q.x*740.0));
+  // Solid medical crosses stay readable at phone size, with a soft green halo.
+  float arm=.065+.035*(1.0-step(.5,k)),width=arm*.34;
+  vec2 v=abs(q);
+  float d=min(max(v.x-width,v.y-arm),max(v.x-arm,v.y-width));
+  float body=1.0-smoothstep(-.006,.008,d);
+  float cross=body+exp(-max(0.0,d)*48.0)*(1.0-body)*.22;
   float crystal=1.0-smoothstep(.018,.036,abs(q.x)+abs(q.y)*.62);
   float fade=smoothstep(0.0,.12,life)*(1.0-smoothstep(.45,1.0,life));
   particles+=mix(crystal,cross,healing)*fade;
  }
  vec3 color=COLOR.rgb*(2.5+ring*6.8)+vec3(.15)+mix(COLOR.rgb,vec3(1.0),.35)*particles*1.1;
- COLOR=vec4(color,ring*.22+sheen*.16+particles*.62);
+ COLOR=vec4(color,clamp(ring*mix(.22,.13,healing)+sheen*.16+particles*mix(.62,.82,healing),0.0,1.0));
 }
 `,
+ 'coin-collect':`shader_type canvas_item;render_mode unshaded,blend_add;
+void fragment(){
+ vec2 p=UV*2.0-1.0;float r2=dot(p,p);
+ float body=exp(-r2*4.4)*(1.0-smoothstep(.72,1.0,sqrt(r2)));
+ float core=exp(-r2*25.0);
+ vec3 warm=mix(COLOR.rgb,vec3(1.0,.98,.78),core*.25);
+ COLOR=vec4(warm*(body+core*.10),COLOR.a);
+}`,
+
  collect:`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){${phase}
  float a=atan(p.y,p.x),rays=pow(max(0.0,cos(a*4.0+t*1.8)),20.0);
@@ -271,7 +288,7 @@ function batch(name){return{key:name,z:name.endsWith('body')?0:2,material:{$ref:
 function append(mesh,points,color,t){const start=mesh.vertices.length;points.forEach((p,i)=>mesh.vertices.push({position:[p.x,p.y],uv:[[0,0],[1,0],[1,1],[0,1]][i],color:[...color,.1+.8*clamp(t)]}));mesh.indices.push(start,start+1,start+2,start,start+2,start+3);}
 export class CombatFeedback{
  constructor(){this.beams=new BeamFootprints(ROOT+'beam-footprint',ROOT+'beam-flow');this.batches=new Map();this.pool=new Map();this.points=Array.from({length:4},()=>({x:0,y:0}));this.packed=[0,0,0];this.frame=0;this.statusGroups=[];this.statusLatest=new Map();this.beginFrame();}
- beginFrame(viewport){for(const name of this.batches.keys())this.pool.get(name).reset();this.batches.clear();this.beams.beginFrame(viewport);this.contactCount=0;this.count=0;this.normalCount=0;this.restoreCounts={heal:0,level:0};this.pickups=0;this.statuses=0;this.culled=0;this.statusGroups.length=0;this.statusLatest.clear();this.submittedStatuses=0;this.viewport=viewport;this.frame++;
+ beginFrame(viewport){for(const name of this.batches.keys())this.pool.get(name).reset();this.batches.clear();this.beams.beginFrame(viewport);this.contactCount=0;this.count=0;this.normalCount=0;this.restoreCounts={heal:0,level:0};this.coinCount=0;this.pickups=0;this.statuses=0;this.culled=0;this.statusGroups.length=0;this.statusLatest.clear();this.submittedStatuses=0;this.viewport=viewport;this.frame++;
   // Old age buckets must not accumulate through long or repeated battles.
   for(const [key,buffer]of this.pool)if(this.frame-buffer.lastUsed>120)this.pool.delete(key);
  }
@@ -291,16 +308,29 @@ export class CombatFeedback{
  // Keep eight shared-budget slots for essential receipts, four of each kind.
  admitNativeContact(){if(this.normalCount>=112||this.contactCount>=96)return false;this.count++;this.normalCount++;this.contactCount++;return true;}
  beam(projectile,screen){this.beams.projectile(projectile,screen);}
- effect(f,screen,visualScale=1){
+ effect(f,screen,visualScale=1,age=f.age){
   const kind=feedbackKind(f);if(!kind)return false;
-  if(!Number.isFinite(f.x)||!Number.isFinite(f.z)||!Number.isFinite(f.age)||!Number.isFinite(f.size)||!Number.isFinite(visualScale)||!(f.duration>0)||f.age<0||f.age>=f.duration)return true;
-  const lifetime=Math.min(f.duration,kind==='muzzle'?.12:kind==='contact'?.26:kind==='blast'?1.05:.7);if(f.age>=lifetime||(kind==='restore'?this.restoreCounts[f.kind]>=4:this.normalCount>=112)||(kind==='contact'&&this.contactCount>=96))return true;
+  const coin=kind==='coin-collect';if(coin&&!coinPickupFeedback(f).admitted)return true;
+  if(!Number.isFinite(f.x)||!Number.isFinite(f.z)||!Number.isFinite(age)||!Number.isFinite(f.size)||!Number.isFinite(visualScale)||!(f.duration>0)||age<0||age>=f.duration)return true;
+  const lifetime=Math.min(f.duration,coin?COIN_FEEDBACK_SECONDS:kind==='muzzle'?.12:kind==='contact'?.26:kind==='blast'?1.05:f.kind==='heal'?.95:.7);if(age>=lifetime||(coin?this.coinCount>=3:kind==='restore'?this.restoreCounts[f.kind]>=4:this.normalCount>=112)||(kind==='contact'&&this.contactCount>=96))return true;
+  if(coin){
+   const pulse=sampleCoinPickupGlow(age),r=clamp(f.size*visualScale,.5,1.5)*pulse.size;
+   if(pulse.alpha<=0)return true;
+   const color=palette(f);let visible=false;
+   // Two filled glows, the second lifted by0.5 native units. Shared batch,
+   // real pickup time and body position; no hollow rings or drifting sparks.
+   for(const lift of [0,.5]){
+    this.corners(f.x,f.z+lift*visualScale,r,r,0,screen);if(!this.visible())continue;
+    this.buffer('coin-collect').quad(this.points,color[0],color[1],color[2],pulse.alpha);visible=true;
+   }
+   if(visible){this.count++;this.coinCount++;}return true;
+  }
   const radius=clamp(f.size*(kind==='muzzle'?.65:.5)*visualScale,.12,6),extent=kind==='blast'?1.55:kind==='contact'?1.55:1;
   const family=COLD.has(f.modelId)?1:ACID.has(f.modelId)?2:ELECTRIC.has(f.modelId)?3:0;
   const yaw=kind==='contact'&&family?impactDirectionYaw(f):undefined;
   this.corners(f.x,f.z,radius*(kind==='muzzle'?.7:1)*extent,radius*(kind==='muzzle'?1.4:1)*extent,yaw??f.angle??0,screen);if(!this.visible())return true;this.count++;if(kind==='contact')this.contactCount++;
-  if(kind==='restore')this.restoreCounts[f.kind]++;else this.normalCount++;
-  const color=palette(f),t=f.age/lifetime;if(kind==='blast'){this.queue('blast-body',this.points,color,t);this.queue('blast-light',this.points,color,t);}else this.queue(kind,this.points,color,t,family,(Math.imul((f.uid??0)|0,1664525)>>>0)%32,yaw!==undefined);return true;
+  if(coin)this.coinCount++;else if(kind==='restore')this.restoreCounts[f.kind]++;else this.normalCount++;
+  const color=palette(f),t=age/lifetime;if(kind==='blast'){this.queue('blast-body',this.points,color,t);this.queue('blast-light',this.points,color,t);}else this.queue(kind,this.points,color,t,family,(Math.imul((f.uid??0)|0,1664525)>>>0)%32,yaw!==undefined);return true;
  }
  pickup(p,screen){
   if(this.pickups>=64||p.age<p.delay||!Number.isFinite(p.x)||!Number.isFinite(p.z)||!Number.isFinite(p.age))return;
@@ -327,7 +357,7 @@ export class CombatFeedback{
   packedScalar(value,range,this.packed);buffer.quad(this.points,this.packed[0],this.packed[1],this.packed[2],alpha);this.statuses++;return true;
  }
  flushStatuses(view){while(this.submittedStatuses<this.statusGroups.length){const buffer=this.statusGroups[this.submittedStatuses++];view.drawMeshes('combat-feedback:'+buffer.mesh.key,[buffer.mesh],undefined,{presentationDepth:38});}this.statusLatest.clear();}
- draw(view){this.beams.draw(view);for(const [name,mesh]of this.batches)if(mesh.indices.length&&(!name.startsWith('status:')||this.pool.get(name).statusOrder>=this.submittedStatuses))view.drawMeshes('combat-feedback:'+name,[mesh],undefined,{presentationDepth:name==='pickup'?18.8:name==='restore'?39:name.startsWith('status:')?38:34});}
+ draw(view){this.beams.draw(view);for(const [name,mesh]of this.batches)if(mesh.indices.length&&(!name.startsWith('status:')||this.pool.get(name).statusOrder>=this.submittedStatuses))view.drawMeshes('combat-feedback:'+name,[mesh],undefined,{presentationDepth:name==='pickup'?18.8:name==='restore'||name==='coin-collect'?39:name.startsWith('status:')?38:34});}
  reset(){this.beginFrame(this.viewport);this.beams.reset();this.pool.clear();}
 }
 export const isRefinedBasicStatus=b=>[170001,170004,170012,220022,170000].includes(b.modelId);

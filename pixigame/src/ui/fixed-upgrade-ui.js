@@ -12,6 +12,7 @@ import { paintPsdChoiceArt } from './psd-choice-art.js';
 import { drawUiSymbol } from './ui-symbols.js';
 import { upgradeChoiceSlot } from './upgrade-choice-slots.js';
 import {attachUpgradeChoiceBorderFlow} from './upgrade-choice-border-flow.js';
+import {attachBreakthroughChoiceFrame,attachBreakthroughChoiceCardAura,isBreakthroughBranchOffer} from './breakthrough-choice-frame.js';
 import { drawBattleElementBadge, BATTLE_ELEMENT_BADGE_SIZE } from './battle-element-badge.js';
 
 function attachSurface(parent,surface){const node=new Container();node.object3D.add(surface.group);node._disposeVisuals=()=>surface.destroy();parent.addChild(node);return node;}
@@ -42,6 +43,9 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
   for (const offer of offers) offer.recipientMarker = offers.some(other =>
     other.model.itemId === offer.model.itemId && other.model.ownerId !== offer.model.ownerId)
     ? offer.slots.join('/') || offer.model.owner : '';
+
+  const breakthroughBranches=isBreakthroughBranchOffer(offers);
+  if(breakthroughBranches)attachBreakthroughChoiceFrame(panel,{revealAt});
 
   // Keep the attribute on the final row, below quality and run level.
   const width = px(224), height = py(bridge.presentation ? 606 : 562);
@@ -101,6 +105,7 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     if(footer.width>width-24)footer.scale.set((width-24)/footer.width);
     if(!model.instant)card.__upgradeLevelLabel=footer;
     attachUpgradeChoiceBorderFlow(card,{width,height});
+    if(breakthroughBranches)attachBreakthroughChoiceCardAura(card,{width,height,revealAt});
     panel.addChild(card);
   });
   if(state.pendingLevels>1)text(panel,`还可选 ${state.pendingLevels} 次`,

@@ -28,7 +28,10 @@ export const pathogenicAudioManifest = { ...Object.fromEntries(Object.entries(fi
 type Cue = {key:string;volume:number;interval:number};
 const cue=(key:string,volume:number,interval:number):Cue=>({key:`pathogenic:${key}`,volume,interval});
 export const combatCues: Record<number,Cue> = {
-  [-1]:cue('gun',.18,.075), [-2]:cue('sniper',.22,.14), [-3]:cue('cannon',.25,.18),
+  // APK 1.1.6 bullets 200151/200152/200153 share sound 300002. Reuse one
+  // short project sample and voice key so mixed requests cannot stack sounds.
+  // Keep the existing local minimum spacings; weapon cadence is unchanged.
+  [-1]:cue('gun',.18,.075), [-2]:cue('gun',.18,.14), [-3]:cue('gun',.18,.18),
   [-4]:cue('grenade',.23,.18), [-5]:cue('sword',.20,.18), [-6]:cue('lightning',.16,.18),
   [-7]:cue('laser',.12,.28), [-8]:cue('shotgun',.22,.14), [-9]:cue('hit',.075,.12), [-10]:cue('impact',.24,.18), [-11]:cue('heavyDeath',.21,.25), [-12]:cue('death',.15,.14),
   [-13]:cue('enemyShot',.065,.18), [-14]:cue('deflect',.085,.18),

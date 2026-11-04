@@ -29,17 +29,31 @@ export function recordEnemyHit(enemy,time,critical,projectile,player){
  if(!Number.isFinite(x)||!Number.isFinite(z)||Math.hypot(x,z)<1e-5){const from=projectile||player||enemy;x=enemy.x-from.x;z=enemy.z-from.z;}
  const length=Math.hypot(x,z)||1;hits.set(enemy,{at:time,x:x/length,z:z/length,critical:Boolean(critical)});
 }
+// Different impulse envelopes make light wings snap back and heavy bodies
+// settle with inertia. These are pixel offsets on the view, never knockback.
+const HIT_MOTION={
+ light:{duration:.20,decay:3.8,frequency:9.5,kick:2.2,squash:.022,roll:.020},
+ standard:{duration:.25,decay:4.0,frequency:8.0,kick:1.65,squash:.014,roll:.010},
+ wing:{duration:.27,decay:3.6,frequency:7.0,kick:1.65,squash:.010,roll:.024},
+ heavy:{duration:.34,decay:4.2,frequency:5.6,kick:.80,squash:.004,roll:.004},
+ boss:{duration:.28,decay:5.2,frequency:8.0,kick:.38,squash:0,roll:.002},
+};
 export function sampleEnemyHitMotion(enemy,time,frozen=false){
  const rest={x:0,y:0,scaleX:1,scaleY:1,rotation:0},hit=hits.get(enemy);
  if(!hit||enemy.dead||!Number.isFinite(time)||time<hit.at)return rest;
- const age=time-hit.at;if(age>=.22)return rest;
- const envelope=Math.exp(-age*17)*Math.sin(age*44),squash=Math.sin(Math.min(1,age/.16)*Math.PI)*Math.exp(-age*7);
- const amount=(hit.critical?1.25:1)*(enemy.boss?.24:enemy.elite?.72:1)*(frozen?.40:1);
- const size=clamp(Math.sqrt(Math.max(.01,(enemy.radiusX||.5)*(enemy.radiusZ||.5))),.3,1.8);
- const kick=(1.4+size*.35)*amount;
- return {x:hit.x*envelope*kick,y:-hit.z*envelope*kick,
-  scaleX:1+squash*.045*amount,scaleY:1-squash*.035*amount,
-  rotation:envelope*.014*amount*(hit.x<0?-1:1)};
+ const rx=Number.isFinite(enemy.radiusX)&&enemy.radiusX>0?enemy.radiusX:.8;
+ const rz=Number.isFinite(enemy.radiusZ)&&enemy.radiusZ>0?enemy.radiusZ:rx;
+ const size=Math.sqrt(rx*rz),wide=rx/rz>1.45;
+ const p=enemy.boss?HIT_MOTION.boss:size>=2.1?HIT_MOTION.heavy:wide?HIT_MOTION.wing:size<.8?HIT_MOTION.light:HIT_MOTION.standard;
+ const age=time-hit.at;if(age>=p.duration)return rest;
+ const t=age/p.duration,fade=clamp((1-t)/.25,0,1),tail=fade*fade*(3-2*fade);
+ const envelope=Math.exp(-t*p.decay)*Math.sin(t*p.frequency)*tail;
+ const amount=(hit.critical?1.22:1)*(enemy.elite?.85:1)*(frozen?.28:1);
+ const angle=Number.isFinite(enemy.angle)?enemy.angle:0;
+ const lateral=hit.x*Math.cos(angle)-hit.z*Math.sin(angle);
+ const squash=frozen?0:Math.sin(Math.PI*Math.min(1,t/.65))*Math.exp(-t*4)*p.squash*amount;
+ return {x:hit.x*envelope*p.kick*amount,y:-hit.z*envelope*p.kick*amount,
+  scaleX:1+squash,scaleY:1-squash*.75,rotation:envelope*p.roll*lateral*amount};
 }
 
 function receiptState(sim){

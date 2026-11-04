@@ -27,9 +27,11 @@ export function upgradeConfirmationPose(elapsed,timing){
       expansion:0,burstAlpha:0,commitDue:age>=duration,done:age>=visualDuration};
   }
   const exit=smooth(range(age,duration*(breakthrough?.92:.7),duration)),pressTime=t*400;
-  const press=pressTime<55?blend(1,.982,smooth(range(pressTime,0,55))):pressTime<150?blend(.982,1.035,1-(1-range(pressTime,55,150))**3):blend(1.035,1.008,smooth(range(pressTime,150,250)));
+  // Use the captured ordinary press: 1 -> .93 -> 1.1, then hold the enlarged
+  // selected card through the existing fade. Submission stays at the host beat.
+  const press=sampleNativeTrack(NATIVE.press.rootMotion.scaleX,Math.min(pressTime/1000,NATIVE.press.duration),NATIVE.press.duration);
   const impact=Math.sin(Math.PI*range(age,0,duration*.85)),sweep=range(age,duration*.12,duration*.75),expansion=range(age,duration*.28,duration*.88);
-  const scale=reducedMotion?1:blend(press,.97,exit);
+  const scale=reducedMotion?1:press;
   return {scale,scaleX:scale,scaleY:scale,shakeX:0,shakeY:0,alpha:1-exit,lift:reducedMotion?0:-10*exit,gather:0,
     otherAlpha:peers,otherOffset:reducedMotion?0:10*(1-peers),extrasAlpha:extras,
     levelScale:reducedMotion?1:1+.075*pulse,levelGlow,glow:(.24+.65*impact)*(1-exit),sweep,sweepAlpha:reducedMotion?0:.85*Math.sin(Math.PI*sweep)*(1-exit),

@@ -1,0 +1,10 @@
+import type {Effect} from './model';
+export function markCoinPickupEffect(effect:Effect,owner:{clock:number;runId:number}):Effect;
+export function coinPickupFeedback(effect:Effect):{admitted:boolean}|undefined;
+export const COIN_FEEDBACK_SECONDS:number;
+export const COIN_FEEDBACK_INTERVAL:number;
+export const COIN_GLOW_COLOR:readonly number[];
+export function sampleCoinPickupGlow(age:number):{size:number;alpha:number};
+type ReceiptOwner={clock:number;runId:number;player:{x:number;z:number;hp:number}};
+export function recordCoinPickupReceipt(owner:ReceiptOwner):void;
+export function sampleCoinPickupReceipt(owner:ReceiptOwner):Effect|null;

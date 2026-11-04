@@ -2,7 +2,7 @@ import { cloudAssetBase } from './cloud-asset-base.js';
 import { Container, Rectangle, Sprite, Texture } from '../three/display.js';
 import { battleProgress } from './battle-progress.js';
 import { COMBAT_TYPE } from './combat-theme.js';
-import { PLAYER_LOW_HEALTH_RATIO,PLAYER_LOW_HEALTH_COLOR } from '../replica/player-health-display.js';
+import { PLAYER_LOW_HEALTH_RATIO,PLAYER_LOW_HEALTH_COLOR,playerHealthFrame } from '../replica/player-health-display.js';
 
 // PSD coordinates are authoritative. Only the presentation is scaled to the
 // existing 600 × 1300 combat scene; the world and flight input stay untouched.
@@ -88,10 +88,14 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
   const pause = new Container(); pause.label='暂停';pause.position.set(4,16);
   pause.hitArea=new Rectangle(0,0,132,132);pause.enabled=true;pause.eventMode='static';
   pause.__pixiUiAction=()=>bridge.showPauseMenu();mount.addChild(pause);
-  let lastUpdate=-Infinity;
+  let lastUpdate=-Infinity,healthDisplay=null;
+  const reducedMotion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   return {update(now) {
-    if (now-lastUpdate<80) return;lastUpdate=now;
     const game=bridge.game, boss=bridge.boss, stats=bridge.runStats||{};
+    const maxHp=Math.max(1,Number(stats.maxHp)||100),hp=Math.min(maxHp,Math.max(0,Number(game.hp)||0));
+    const healthChanged=!healthDisplay||healthDisplay.hp!==hp||healthDisplay.maxHp!==maxHp;
+    healthDisplay=playerHealthFrame(healthDisplay,hp,maxHp,Number(game.elapsed)||0,game.fixedGrowth?.state?.runId??game.peripheralSnapshot?.id??null,reducedMotion?.matches??false);
+    if (!healthChanged&&now-lastUpdate<(healthDisplay.animating?1000/30:80)) return;lastUpdate=now;
     const ready=loaded.size;
     const seconds=Math.max(0,Math.floor(game.elapsed||0));
     const time=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
@@ -127,14 +131,13 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
       }
       if(showNotice)text(ctx,notice.text,375,bossActive?396:354,24,{align:'center',glow:'#00cfff'});
     });
-    const hp=Math.max(0,Number(game.hp)||0),maxHp=Math.max(1,Number(stats.maxHp)||100);
-    const ratio=Math.min(1,hp/maxHp),level=Math.max(1,Math.round(game.level||1));
-    repaint(bottom,JSON.stringify([ready,hp,maxHp,level]),ctx=>{
+    const ratio=healthDisplay.value,shownHp=Math.ceil(ratio*maxHp),level=Math.max(1,Math.round(game.level||1));
+    repaint(bottom,JSON.stringify([ready,shownHp,maxHp,level,Math.round(ratio*684)]),ctx=>{
       artwork(ctx,'health-track',1500);
       if(ratio>0) artwork(ctx,'health-fill',1500,684*ratio/557,ratio<=PLAYER_LOW_HEALTH_RATIO);
       artwork(ctx,'heart',1500);artwork(ctx,'level-decoration',1500);
       text(ctx,`等级  ${level}`,105,17,30,{glow:'#00cfff'});
-      text(ctx,`生命 ${Math.ceil(hp)}/${Math.ceil(maxHp)}`,705,24,24,{align:'right',glow:'#ff4568'});
+      text(ctx,`生命 ${shownHp}/${Math.ceil(maxHp)}`,705,24,24,{align:'right',glow:'#ff4568'});
       text(ctx,`${Math.round(ratio*100)}%`,375,49,36,{align:'center',stroke:7});
     });
   }};

@@ -1,5 +1,5 @@
 import {markDamageText,recordEnemyHit,recordCombatResult} from './combat-hit-presentation.mjs';
-import {recordHealingReceipt} from './healing-receipt.mjs';
+import {recordHealingReceipt,recordMedicalPickupReceipt} from './healing-receipt.mjs';
 import {markImpactDirection} from './impact-direction.mjs';
 import { projectileSound } from './combat-audio';
 import {nativeProtectHpRateRaw} from '../../src/replica/native-failure-protection.js';
@@ -7,6 +7,7 @@ import {firstGuideChoices} from '../battle-onboarding';
 import { clamp, lerp, sweep, newWeapon, type WeaponState, type Choice, type Effect, type Enemy, type GameContent, type Phase, type Pickup, type Point, type Projectile, type RecordData, type Spawn } from './model';
 import { advancePickup, createPickup } from './drop-motion';
 import { markOrdinaryDeathVisual } from '../small-death-visual.js';
+import { markCoinPickupEffect, recordCoinPickupReceipt } from './coin-pickup-feedback.mjs';
 import { markAcidHitVisual } from '../acid-weapon-visual.js';
 import { markWeaponSkinEffect } from './weapon-skin-identity.mjs';
 import { markBlackHoleHitVisual } from '../black-hole-hit-visual.js';
@@ -4009,6 +4010,7 @@ export class Simulation {
         distance: 6 + (this.playerCombatAttributes().PickDistanceBuff || 0), dropSpeed: special.dropSpeed,
         beginAbsorb: () => ({ retreatDistance: 2 + this.random(), retreatDuration: .15 + this.random() * .05 }),
       } : item.kind === 'heart' ? { distance: (8 + (this.playerCombatAttributes().PickDistanceHp || 0)) * (1 + (this.playerCombatAttributes()['PickDistanceHp%'] || 0)) } : {})) continue;
+      if(item.kind==='heart'||item.kind==='trigger'&&item.modelId===1300008)recordMedicalPickupReceipt(this);
       if (special) {
         const effect = nativeLoadoutPickupEffect(special);
         if (effect.kind === 'buff') {
@@ -4020,7 +4022,7 @@ export class Simulation {
           this.playerSkillProgram.enqueueOnceTrigger(compileNativeSkillTrigger(raw, 0), this.clock);
         }
       } else if (item.kind === 'exp') this.addExp(item.value);
-      else if (item.kind === 'gold') this.gold += item.value;
+      else if (item.kind === 'gold') { this.gold += item.value; recordCoinPickupReceipt(this); }
       else this.healPlayer(p.maxHp * item.value, 1);
       for (const familyId of this.weaponPrograms.keys()) this.dispatchWeaponEvent(10, familyId, { dropItemType: Number(this.content.assets.battleItems[item.itemId]?.dropType ?? item.itemId), point: item, skipPlayer: true });
       this.dispatchPlayerEvent(10, { dropItemType: Number(this.content.assets.battleItems[item.itemId]?.dropType ?? item.itemId), point: item });
@@ -4031,6 +4033,7 @@ export class Simulation {
       if (config?.collectEffectId && this.content.assets.originalEffects.effects[config.collectEffectId]) {
         const fx = this.effect('muzzle', p.x, p.z, config.EffectTime / 65536, 1, undefined, config.collectEffectId);
         fx.originalScale = config.EffectScale / 65536; fx.followPlayer = true;
+        if (item.kind === 'gold') markCoinPickupEffect(fx, this);
       }
       remove();
     }
