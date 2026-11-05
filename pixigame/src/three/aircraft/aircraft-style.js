@@ -27,7 +27,9 @@ export function createAircraftStyle(root, { outlineScale = 1 } = {}) {
     if (!object.isMesh) return;
     meshes.push([object, object.castShadow, object.receiveShadow]);
     for (const material of [].concat(object.material || [])) {
-      if (!material.isMeshStandardMaterial || materials.has(material)) continue;
+      // V39 already authors the paint and panel breaks. Patching a disabled
+      // ink shader still creates another program variant during loading.
+      if (!material.isMeshStandardMaterial || material.userData.cleanAircraftSurface || materials.has(material)) continue;
       const state = {};
       for (const key of ['metalness','roughness','envMapIntensity','transmission','clearcoat','clearcoatRoughness']) {
         if (key in material) state[key] = material[key];
@@ -79,6 +81,9 @@ export function createAircraftStyle(root, { outlineScale = 1 } = {}) {
     if (mesh.isInstancedMesh || mesh.isSkinnedMesh || Array.isArray(mesh.material)) continue;
     const material = mesh.material;
     if (!material?.isMeshStandardMaterial || material.transparent || material.opacity < 1) continue;
+    // These hulls consist of hundreds of adjacent beveled plates. Extruding
+    // each plate draws internal black seams, not just the aircraft contour.
+    if (material.userData.cleanAircraftSurface) continue;
     if (/Detail|light|glow|emissive/i.test(material.name)) continue;
     mesh.geometry.computeBoundingBox();
     const size = mesh.geometry.boundingBox.getSize(new Vector3());
@@ -88,7 +93,6 @@ export function createAircraftStyle(root, { outlineScale = 1 } = {}) {
     silhouette.name = 'equipment-silhouette'; silhouette.userData.aircraftInkOverlay = true; silhouette.visible = false;
     silhouette.raycast = () => {};
     mesh.add(silhouette); outlines.push(silhouette);
-    if (material.userData.cleanAircraftSurface) continue;
     // Restrict crease lines to armor. Thin weapon barrels only need a silhouette.
     if (!/\/(shell|white|bright|accent)$|pearl ceramic/.test(material.name)) continue;
     const geometry = new EdgesGeometry(mesh.geometry, 38);

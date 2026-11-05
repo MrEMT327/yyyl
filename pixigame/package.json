@@ -1,14 +1,16 @@
 {
   "name": "thunder-vector",
-  "version": "0.1.113",
+  "version": "0.1.188",
   "private": true,
   "type": "module",
   "scripts": {
+    "assets:aircraft-lod": "node tools/build-aircraft-game-lod.mjs",
+    "check:aircraft-lod": "node tools/build-aircraft-game-lod.mjs --check",
     "assets:sfx": "node tools/generate-combat-sfx.mjs",
     "assets:wechat-audio": "node wechat/tools/prepare-audio.mjs",
     "dev": "vite",
     "dev:wechat": "npm run build:wechat",
-    "prebuild": "npm run check:player-state && node tools/audit-replica-snapshot.mjs && node tools/check-original-ui-art.mjs && node tools/generate-native-economy.mjs --check && node tools/generate-native-weapon-preview.mjs --check && node tools/generate-native-equipment-effects.mjs --check",
+    "prebuild": "npm run check:aircraft-lod && npm run check:player-state && node tools/audit-replica-snapshot.mjs && node tools/check-original-ui-art.mjs && node tools/generate-native-economy.mjs --check && node tools/generate-native-weapon-preview.mjs --check && node tools/generate-native-equipment-effects.mjs --check",
     "build": "vite build",
     "prebuild:economy": "npm run check:player-state && node tools/check-original-ui-art.mjs",
     "build:economy": "vite build --mode economy --outDir dist-economy",

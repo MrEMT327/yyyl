@@ -7,6 +7,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 export class CombatBloomPass extends UnrealBloomPass {
   constructor(resolution = new Vector2(1, 1), strength = 1.25, radius = 0, threshold = .16) {
     super(resolution, strength, radius, threshold);
+    this.activeMips = 4;
     this.zeroMip = new DataTexture(new Uint8Array(4), 1, 1);
     this.zeroMip.needsUpdate = true;
   }
@@ -14,11 +15,12 @@ export class CombatBloomPass extends UnrealBloomPass {
   render(renderer, writeBuffer, readBuffer, delta, maskActive) {
     const u = this.compositeMaterial.uniforms;
     // Preserve standard behavior if a diagnostic changes the bloom profile.
-    if (maskActive || this.renderToScreen || this.radius !== 0 || u.bloomFactors.value[4] !== 0) {
-      u.blurTexture5.value = this.renderTargetsVertical[4].texture;
+    const mips = Math.max(1, Math.min(4, Math.round(this.activeMips)));
+    if (maskActive || this.renderToScreen || this.radius !== 0 || u.bloomFactors.value.slice(mips).some(value => value !== 0)) {
+      for (let i = 0; i < 5; i++) u[`blurTexture${i + 1}`].value = this.renderTargetsVertical[i].texture;
       return super.render(renderer, writeBuffer, readBuffer, delta, maskActive);
     }
-    u.blurTexture5.value = this.zeroMip;
+    for (let i = 0; i < 5; i++) u[`blurTexture${i + 1}`].value = i < mips ? this.renderTargetsVertical[i].texture : this.zeroMip;
     renderer.getClearColor(this._oldClearColor);
     const alpha = renderer.getClearAlpha(), autoClear = renderer.autoClear;
     try {
@@ -28,7 +30,7 @@ export class CombatBloomPass extends UnrealBloomPass {
       this._fsQuad.material = this.materialHighPassFilter;
       renderer.setRenderTarget(this.renderTargetBright); renderer.clear(); this._fsQuad.render(renderer);
       let input = this.renderTargetBright;
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < mips; i++) {
         const material = this.separableBlurMaterials[i]; this._fsQuad.material = material;
         material.uniforms.colorTexture.value = input.texture;
         material.uniforms.direction.value = UnrealBloomPass.BlurDirectionX;

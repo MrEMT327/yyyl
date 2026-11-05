@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "fighter",
   "slug": "kestrel",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "游隼战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<path d=\"M16 2l3 12 11 10-11-3-3 9-3-9-11 3 11-10zM12 22v6m8-6v6\"/>"
   },
   "stats": {
-    "model": 58604,
+    "model": 48892,
     "vfx": 2440,
-    "total": 61044,
-    "submitted": 59204,
-    "objects": 1745
+    "total": 51332,
+    "submitted": 49492,
+    "objects": 824
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "09375a517fcf11a824462356667f7b94647730cf67e94fdcefdd4a89ec391a0f",
-    "effects.json": "387e3a4dbd1b7c0b1a88a304e83f5407c6e0bdf4d4fd883498a5179f054cf5c1",
+    "structure.json": "eb5ebbcb4ebd38a6fad8e4a8a766175ffe222c9602c0b47fd5a13e552dc13fdc",
+    "effects.json": "c992a1673d9e79dff17054a941805276751f987bffec0c2296009b154e418538",
     "view.json": "905e2cb86e7de4eb3f06db7c083c2f7dd81eca2c135da48bb1cfd04e02ea563f",
     "defaults.json": "056805f0cb010927901f57a655fc384379d991fad7aac40803f7444abbb3d603",
-    "buffers.bin": "f3ce61cc093f386ba2d4bc08bc59794c73bb5fc8f4570bcfc6ee8e151963253f",
-    "design.json": "058982e656c74981e097637a4a0cd8a21fd44af9e3f08c8c165e26ff6afd73ac",
+    "buffers.bin": "080e08c3449a82bb8726ae4e3ece4ab6ca4e84340e22d8bc2fd626e6e4428d4c",
+    "design.json": "c650d873fb2e27dbad9816291b6d8022d85feeb42f3af373438a24d28b3b78a9",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 39,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

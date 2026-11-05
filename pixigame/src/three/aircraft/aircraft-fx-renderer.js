@@ -1,13 +1,17 @@
 import * as T from 'three';
 import {FullScreenQuad} from 'three/addons/postprocessing/Pass.js';
 import {CombatBloomPass} from '../combat-bloom-pass.js';
+import {aircraftFxBudget} from './aircraft-fx-budget.js';
 
 // HDR light is composed with its own coverage, retaining transparent hangar
 // backgrounds. Only the aircraft texture is graded, never the surrounding UI.
-export function createAircraftFxRenderer(renderer) {
-  const source=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType});
+export function createAircraftFxRenderer(renderer,{samples=0}={}) {
+  // Canvas antialiasing does not reach this offscreen HDR pass. UI previews
+  // opt in explicitly; small combat textures retain their existing budget.
+  const source=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:Math.min(samples,renderer.capabilities?.maxSamples??0)});
   const bloom=new CombatBloomPass(new T.Vector2(1,1),.55,0,4.2);
-  bloom.compositeMaterial.uniforms.bloomFactors.value=[1,.35,.08,.01,0];
+  bloom.activeMips=aircraftFxBudget(256).bloomMips;
+  bloom.compositeMaterial.uniforms.bloomFactors.value=[1,.35,0,0,0];
   const material=new T.ShaderMaterial({
     depthTest:false,depthWrite:false,blending:T.NoBlending,premultipliedAlpha:true,
     uniforms:{source:{value:source.texture},halo:{value:bloom.renderTargetsHorizontal[0].texture},haloTint:{value:new T.Color('#66d7f0')}},
@@ -33,7 +37,7 @@ export function createAircraftFxRenderer(renderer) {
     render(draw,nextWidth,nextHeight){
       if(width!==nextWidth||height!==nextHeight){
         width=nextWidth;height=nextHeight;source.setSize(width,height);
-        const w=Math.min(512,width),h=Math.max(1,Math.round(height*w/width));bloom.setSize(w,h);
+        const w=aircraftFxBudget(width).bloomWidth,h=Math.max(1,Math.round(height*w/width));bloom.setSize(w,h);
       }
       const target=renderer.getRenderTarget(),scissorTest=renderer.getScissorTest(),autoClear=renderer.autoClear,
         alpha=renderer.getClearAlpha(),toneMapping=renderer.toneMapping;

@@ -27,10 +27,8 @@ export class WeaponSystem{
    const optical=this.mesh(this.geometry('convergence-crystal',()=>new T.OctahedronGeometry(.13,0)),this.material('convergence-core','#f5eaff',.85),group);
    const orbit=this.mesh(this.geometry('convergence-orbit',()=>new T.TorusGeometry(.32,.010,6,4)),this.material('convergence-ring',definition.color,.6),group);this.focusKnot={root:group,optical,orbit};
   }
-  this.rings=Array.from({length:3},(_,i)=>{
-   const m=this.material('deploy-ring-'+i,definition.color,.3),mesh=this.mesh(this.geometry('deployment-ring',()=>new T.TorusGeometry(1,.006,6,96)),m,this.attachedRoot);
-   mesh.rotation.x=Math.PI/2;mesh.visible=false;return mesh;
-  });
+  // Preserve the preview inspection API without creating deployment pulse rings.
+  this.rings=[];
   const data=new Float32Array(48*3),g=new T.BufferGeometry();g.setAttribute('position',new T.BufferAttribute(data,3));this.geometries.add(g);
   const pm=new T.PointsMaterial({map:this.radial,color:definition.color,size:.12,transparent:true,opacity:.65,blending:T.AdditiveBlending,depthWrite:false,sizeAttenuation:true});this.materials.add(pm);
   this.sparks=new T.Points(g,pm);this.sparks.frustumCulled=false;this.sparks.layers.set(1);this.sparks.userData.triangleCategory='vfx';this.attachedRoot.add(this.sparks);this.sparks.visible=false;
@@ -182,10 +180,6 @@ export class WeaponSystem{
   }
   if(this.focusKnot){const active=this.channels.some(c=>c.spec.kind==='array'&&c.beam?.root.visible);this.focusKnot.root.visible=active&&gain>0;this.focusKnot.optical.rotation.y=time*1.6;this.focusKnot.orbit.rotation.z=-time*.8;this.focusKnot.orbit.material.opacity=(.35+Math.sin(time*15)*.10)*gain;}
   const enabled=cfg.deploymentEffects!==false&&gain>0&&rig.target&&rig.moving;
-  for(let i=0;i<this.rings.length;i++){
-   const ring=this.rings[i],u=(rig.progress-[.25,.51,.80][i])/.20;
-   ring.visible=enabled&&u>=0&&u<1;if(ring.visible){ring.position.set(0,.15+i*.06,.65);ring.scale.setScalar(1.4+u*(4.5+i*.5));ring.material.opacity=Math.sin(u*Math.PI)*.20*gain;}
-  }
   this.sparks.visible=enabled&&rig.progress>.42&&rig.progress<.98;
   if(this.sparks.visible){const a=this.sparks.geometry.attributes.position,p=rig.progress;for(let i=0;i<a.count;i++){const angle=i*2.39996,r=1.6+(i%7)*.30+Math.max(0,p-.45)*2.4;a.setXYZ(i,Math.cos(angle)*r,.35+((i*17)%13)/13*(.4+p),Math.sin(angle)*r+.55);}a.needsUpdate=true;this.sparks.material.opacity=Math.sin(p*Math.PI)*.52*gain;}
   this.root.visible=this.fighter.active;this.attachedRoot.visible=this.fighter.active;

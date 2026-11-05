@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "crimson",
   "slug": "crimson",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "赤刃战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<path d=\"M16 2l4 4v10l-4 5-4-5V6zM12 14H5l-4 5h9M20 14h7l4 5h-9M8 13V6m16 7V6M12 22l-1 6m9-6 1 6\"/>"
   },
   "stats": {
-    "model": 73874,
+    "model": 62978,
     "vfx": 2440,
-    "total": 76314,
-    "submitted": 74474,
-    "objects": 2152
+    "total": 65418,
+    "submitted": 63578,
+    "objects": 973
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "32af2cf13ee5abfd3ab8232d0735580ddfbcc0e9f1221b7c9d28a00edec4126b",
-    "effects.json": "16db12cf9d450c50a954ed2549c4b084527746b80b0f863ae85a317b5aaf9d84",
+    "structure.json": "caac68f24568b3fda027441966629a287683af83edde3676ed49046ca6c516f4",
+    "effects.json": "90e84e62e14191e53dddd2fe3378f37085b8cca7345c554225f538ab893a3995",
     "view.json": "7ad32c247829dd6ed493ba002d89ff1d31f6a25d1b192e5d0dec84f8a051b20a",
     "defaults.json": "295a62052d2b945fd4b6a9fcaaac41a09e3fdf8b7948f625ede99102ccf254af",
-    "buffers.bin": "d56ec47a2f6b280fedabbc5e52b3dc30d5a4129f0c63ed081225a0ee40fcc57e",
-    "design.json": "bf0c5339d9bc6ac0d9cdf7ef6decc3f9e89f190106808f22d067d6819f099384",
+    "buffers.bin": "6033cd2da00944ae0397e64209519140d9bd12db0f193e314652ce6f32bbe04b",
+    "design.json": "650974f33c3f52a0e888e9f433a0b1e0b201f3ef64e6f073e65bb8253a78142c",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 40,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

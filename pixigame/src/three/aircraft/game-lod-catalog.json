@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "relativeError": 0.0006,
+  "targetRatio": 0.15,
+  "entries": {
+    "kestrel": {
+      "sourceManifestHash": "52d39abca230eaf5f6e0383bbc9050c29623503681ff2680fb5b23a791384f2a",
+      "manifestHash": "8566696d4b158f43cabbcc973640d09c526f52006e0b90e397bcf5b93be208f7",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005999280140400493,
+      "targetRatio": 0.15,
+      "originalTriangles": 48892,
+      "triangles": 27286,
+      "changedGeometries": 80,
+      "originalBufferBytes": 2342784,
+      "bufferBytes": 1826076
+    },
+    "crimson": {
+      "sourceManifestHash": "530350da806d4af7c050af5573ea11cf39794951b501386cc055a04bbdebf700",
+      "manifestHash": "9b0dfe3709490df11c23ffa2970f6612d07d6e198e1f545240e84561d4390e30",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005984002589536046,
+      "targetRatio": 0.15,
+      "originalTriangles": 62978,
+      "triangles": 40520,
+      "changedGeometries": 67,
+      "originalBufferBytes": 4046084,
+      "bufferBytes": 2928136
+    },
+    "azure": {
+      "sourceManifestHash": "e08b86846a1debe666a362d4d123e404728d79dabeb5ca19d1cd71b9a3898b4d",
+      "manifestHash": "da0079a4bc7a35c5a90196c51f8bed4506e017b2f6dbcf545ca04a944ef6ff24",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005987014645022126,
+      "targetRatio": 0.15,
+      "originalTriangles": 95562,
+      "triangles": 34628,
+      "changedGeometries": 158,
+      "originalBufferBytes": 3548248,
+      "bufferBytes": 2111860
+    },
+    "prism": {
+      "sourceManifestHash": "f657813541148968c7430f2009acd19aee88dde0cb22d48788acbb706f26cfa4",
+      "manifestHash": "27257185c6b8860df024b5f9b7608a321799b6979b8f7253d51ded8021c25261",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005982820738285566,
+      "targetRatio": 0.15,
+      "originalTriangles": 91520,
+      "triangles": 32530,
+      "changedGeometries": 153,
+      "originalBufferBytes": 3543380,
+      "bufferBytes": 2175776
+    },
+    "verdure": {
+      "sourceManifestHash": "66c91c112e8a1e74ea7cc68e1bb2450d0cb77a68e3ef63e7cdaf4ef2090bd210",
+      "manifestHash": "e7b88bffe479ed9f78fc94168f48184d79231622148c1c5c9ace61be23e97c62",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005998395859776032,
+      "targetRatio": 0.15,
+      "originalTriangles": 147960,
+      "triangles": 60822,
+      "changedGeometries": 207,
+      "originalBufferBytes": 9445656,
+      "bufferBytes": 3557796
+    },
+    "bastion": {
+      "sourceManifestHash": "5cad2d5e2a8d52d9f681cc85d50e57330f74ff8d537853b04fff407f6096097d",
+      "manifestHash": "0740be22c1db420a901402af6ce48a71bfdd0cd60ff7bcf420b7901839281780",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005999950752142936,
+      "targetRatio": 0.15,
+      "originalTriangles": 84418,
+      "triangles": 51846,
+      "changedGeometries": 182,
+      "originalBufferBytes": 4089964,
+      "bufferBytes": 3289572
+    },
+    "wraith": {
+      "sourceManifestHash": "ab2f66c82058a2996fca608a51a1cacd2b31d859cff846ee61c0e89df8465f56",
+      "manifestHash": "cc742dcb234ad2a78120889c2cafd376b553a4d0cd74830545c6dfc03cfa8bb8",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005995853196700839,
+      "targetRatio": 0.15,
+      "originalTriangles": 113180,
+      "triangles": 41984,
+      "changedGeometries": 153,
+      "originalBufferBytes": 6952304,
+      "bufferBytes": 2532360
+    },
+    "auric": {
+      "sourceManifestHash": "5f4839b0916346027d7bb61f0429142a01c5713e9cabc73641d94eef3c6f3022",
+      "manifestHash": "f747fbf23044d648594e60b69f5093d3151cb618d385e00af94e4205db3fa5d6",
+      "relativeError": 0.0006,
+      "maximumError": 0.0005985976812685198,
+      "targetRatio": 0.15,
+      "originalTriangles": 95322,
+      "triangles": 35302,
+      "changedGeometries": 127,
+      "originalBufferBytes": 4008132,
+      "bufferBytes": 2229800
+    }
+  }
+}

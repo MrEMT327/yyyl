@@ -1,5 +1,6 @@
 import * as T from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+import {cloneIndexedGeometry} from '../../../indexed-geometry.js';
 import {RibbonGeometry} from '../fighter/upstream/RibbonGeometry.js';
 import {compileExpression,makeBindings} from './Expressions.js';
 import {poseAt} from './Motion.js';
@@ -77,11 +78,8 @@ export class ConfigFighter{
   const batches=new Map();
   for(const obj of [...root.children]){
    if(!obj.isMesh||obj.isInstancedMesh||obj.children.length||animated.has(obj.uuid)||obj.material?.isShaderMaterial||Array.isArray(obj.material))continue;
-   obj.updateMatrix();const geo=obj.geometry.index?obj.geometry.toNonIndexed():obj.geometry.clone();geo.applyMatrix4(obj.matrix);
+   obj.updateMatrix();const geo=cloneIndexedGeometry(obj.geometry,obj.matrix);
    if(!geo.attributes.uv)geo.setAttribute('uv',new T.BufferAttribute(new Float32Array(geo.attributes.position.count*2),2));
-   if(obj.matrix.determinant()<0)for(const attr of Object.values(geo.attributes))for(let i=0;i<attr.count;i+=3)for(let j=0;j<attr.itemSize;j++){
-    const a=(i+1)*attr.itemSize+j,b=(i+2)*attr.itemSize+j,v=attr.array[a];attr.array[a]=attr.array[b];attr.array[b]=v;
-   }
    const key=[obj.material.uuid,obj.visible,obj.castShadow,obj.receiveShadow,obj.renderOrder,obj.layers.mask,obj.frustumCulled].join('|');
    if(!batches.has(key))batches.set(key,{sample:obj,geos:[]});batches.get(key).geos.push(geo);obj.removeFromParent();
   }
@@ -145,6 +143,7 @@ export class ConfigFighter{
    if(u.uThrottle)u.uThrottle.value=c.boost?1:.46;
   }
   for(const tr of this.trails){
+   if(c.trails===0||c.trails===false)continue;
    const life=tr.baseLifetime*c.trailLength,speed=(c.boost?tr.speed.boost:tr.speed.idle)*tr.speedFactor;
    for(let i=0;i<tr.points.length;i++){
     const age=i/(tr.points.length-1)*life,birth=Math.max(0,this.age-age),v=tr.points[i];this.pointAt(birth,tr.socket,v);
@@ -153,6 +152,7 @@ export class ConfigFighter{
    }
   }
   for(const ps of this.particles){
+   if(c.particles===0||c.particles===false)continue;
    const serial=Math.floor(this.age*ps.rate);let signature=[c.scale,c.altitude,c.cruise,c.boost].join('|');
    for(const anchor of ps.sockets){this.anchorLocal(anchor,this._v);signature+='|'+this._v.x+','+this._v.y+','+this._v.z;if(ps.rotateWithSocket){this._dir.set(0,0,1);this.anchorDirectionLocal(anchor,this._dir);signature+='|'+this._dir.x+','+this._dir.y+','+this._dir.z;}}
    if(serial===ps.serial&&signature===ps.signature)continue;ps.serial=serial;ps.signature=signature;
@@ -173,10 +173,12 @@ export class ConfigFighter{
   this.group.updateMatrixWorld(true);
  }
  prepareRender(camera){
-  this.group.updateMatrixWorld(true);camera.updateMatrixWorld(true);camera.getWorldPosition(this._world);this._local.copy(this._world);this.group.worldToLocal(this._local);
-  for(const tr of this.trails)tr.ribbon.build(tr.points,{width:tr.width,cameraPosition:this._local,widthProfile:tr.profile});
+  // Camera-facing effects need the group and jet transforms. Each lookup
+  // updates its ancestor chain; the renderer updates the hull when drawing it.
+  camera.updateMatrixWorld(true);camera.getWorldPosition(this._world);this._local.copy(this._world);this.group.worldToLocal(this._local);
+  if(this.config.trails!==0&&this.config.trails!==false)for(const tr of this.trails)tr.ribbon.build(tr.points,{width:tr.width,cameraPosition:this._local,widthProfile:tr.profile});
   this.specialFx?.prepareRender(this._local);
-  for(const j of this.jets){const o=j.object,u=o.material.uniforms;this._inverse.copy(o.matrixWorld).invert();u.uEye.value.copy(this._world).applyMatrix4(this._inverse);u.uObjectView.value.multiplyMatrices(camera.matrixWorldInverse,o.matrixWorld);
+  for(const j of this.jets){const o=j.object,u=o.material.uniforms;o.updateWorldMatrix(true,false);this._inverse.copy(o.matrixWorld).invert();u.uEye.value.copy(this._world).applyMatrix4(this._inverse);u.uObjectView.value.multiplyMatrices(camera.matrixWorldInverse,o.matrixWorld);
    const d=this.depthInfo;if(d?.texture){u.uDepth.value=d.texture;u.uUseDepth.value=1;u.uResolution.value.copy(d.resolution);u.uNear.value=d.near;u.uFar.value=d.far;}
   }
  }

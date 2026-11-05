@@ -1158,5 +1158,13 @@
       "radius": 0.07379999999999999
     }
   ],
-  "referenceImage": "docs/v35/references/02-crimson.png"
+  "referenceImage": "docs/v35/references/02-crimson.png",
+  "lineCleanup": {
+    "version": 46,
+    "baseline": "V39",
+    "targetSide": 0.7,
+    "targetFront": 0.3,
+    "method": "closed connected courses, fewer shallow seams, selected decorative service parts removed",
+    "note": "Targets are not measured attainment; inspect render evidence."
+  }
 }

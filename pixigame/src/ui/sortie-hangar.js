@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {loadFighterPackages} from '../three/aircraft/fighter-packages.js';
+import {loadFighterPackages,isFighterPackageReady} from '../three/aircraft/fighter-packages.js';
 import {AIRCRAFT_RENDER_STYLE} from '../three/aircraft/aircraft-lighting.js';
 import {HANGAR_RISE_SECONDS,HANGAR_VISUAL_TIMEOUT_MS} from './sortie-hangar-motion.js';
 import {createSortieHangarScene} from './sortie-hangar-scene.js';
@@ -82,6 +82,9 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   elevator.addEventListener('load',resize);document.addEventListener('visibilitychange',visibility);reduced.addEventListener('change',reduceChanged);
   resize();
   if(reduced.matches){phase('fallback');settle();}
+  // The lobby normally owns this exact package already. Reuse its parsed
+  // geometry/textures rather than fetching and parsing it again in a worker.
+  else if(isFighterPackageReady(aircraftId))void mainThread();
   else if(typeof Worker!=='undefined'&&HTMLCanvasElement.prototype.transferControlToOffscreen){
     try{
       canvas=newCanvas();const offscreen=canvas.transferControlToOffscreen();

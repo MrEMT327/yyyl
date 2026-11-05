@@ -2078,7 +2078,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4197052,
+                "byteOffset": 3488392,
                 "length": 72,
                 "type": "Float32Array"
               },
@@ -2089,7 +2089,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4197340,
+                "byteOffset": 3488680,
                 "length": 72,
                 "type": "Float32Array"
               },
@@ -2100,7 +2100,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4197628,
+                "byteOffset": 3488968,
                 "length": 48,
                 "type": "Float32Array"
               },
@@ -2111,7 +2111,7 @@
             "type": "Uint16Array",
             "array": {
               "buffer": "buffers.bin",
-              "byteOffset": 4197820,
+              "byteOffset": 3489160,
               "length": 36,
               "type": "Uint16Array"
             }
@@ -2160,7 +2160,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4197892,
+                "byteOffset": 3489232,
                 "length": 3075,
                 "type": "Float32Array"
               },
@@ -2171,7 +2171,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4210192,
+                "byteOffset": 3501532,
                 "length": 3075,
                 "type": "Float32Array"
               },
@@ -2182,7 +2182,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4222492,
+                "byteOffset": 3513832,
                 "length": 2050,
                 "type": "Float32Array"
               },
@@ -2193,7 +2193,7 @@
             "type": "Uint16Array",
             "array": {
               "buffer": "buffers.bin",
-              "byteOffset": 4230692,
+              "byteOffset": 3522032,
               "length": 5520,
               "type": "Uint16Array"
             }
@@ -2210,7 +2210,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4241732,
+                "byteOffset": 3533072,
                 "length": 294,
                 "type": "Float32Array"
               },
@@ -2222,7 +2222,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4242908,
+                "byteOffset": 3534248,
                 "length": 196,
                 "type": "Float32Array"
               },
@@ -2234,7 +2234,7 @@
             "type": "Uint16Array",
             "array": {
               "buffer": "buffers.bin",
-              "byteOffset": 4243692,
+              "byteOffset": 3535032,
               "length": 288,
               "type": "Uint16Array"
             }
@@ -2259,7 +2259,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4244268,
+                "byteOffset": 3535608,
                 "length": 12,
                 "type": "Float32Array"
               },
@@ -2270,7 +2270,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4244316,
+                "byteOffset": 3535656,
                 "length": 8,
                 "type": "Float32Array"
               },
@@ -2281,7 +2281,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4244348,
+                "byteOffset": 3535688,
                 "length": 576,
                 "type": "Float32Array"
               },
@@ -2294,7 +2294,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4246652,
+                "byteOffset": 3537992,
                 "length": 576,
                 "type": "Float32Array"
               },
@@ -2307,7 +2307,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4248956,
+                "byteOffset": 3540296,
                 "length": 192,
                 "type": "Float32Array"
               },
@@ -2320,7 +2320,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4249724,
+                "byteOffset": 3541064,
                 "length": 192,
                 "type": "Float32Array"
               },
@@ -2333,7 +2333,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4250492,
+                "byteOffset": 3541832,
                 "length": 192,
                 "type": "Float32Array"
               },
@@ -2346,7 +2346,7 @@
               "type": "Float32Array",
               "array": {
                 "buffer": "buffers.bin",
-                "byteOffset": 4251260,
+                "byteOffset": 3542600,
                 "length": 192,
                 "type": "Float32Array"
               },
@@ -2359,7 +2359,7 @@
             "type": "Uint16Array",
             "array": {
               "buffer": "buffers.bin",
-              "byteOffset": 4252028,
+              "byteOffset": 3543368,
               "length": 6,
               "type": "Uint16Array"
             }

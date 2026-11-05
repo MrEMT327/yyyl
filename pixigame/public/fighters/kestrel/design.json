@@ -997,5 +997,13 @@
       "radius": 0.07215999999999999
     }
   ],
-  "referenceImage": "docs/v35/references/01-kestrel.png"
+  "referenceImage": "docs/v35/references/01-kestrel.png",
+  "lineCleanup": {
+    "version": 46,
+    "baseline": "V39",
+    "targetSide": 0.7,
+    "targetFront": 0.3,
+    "method": "closed connected courses, fewer shallow seams, selected decorative service parts removed",
+    "note": "Targets are not measured attainment; inspect render evidence."
+  }
 }

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "auric",
   "slug": "auric",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "曜金战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<path d=\"M16 2l4 5v8l8 3-8 3-4 9-4-9-8-3 8-3V7zM9 15h14\"/>"
   },
   "stats": {
-    "model": 112664,
+    "model": 95322,
     "vfx": 2440,
-    "total": 115104,
-    "submitted": 113264,
-    "objects": 1302
+    "total": 97762,
+    "submitted": 95922,
+    "objects": 807
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "035fa2605ca35e326c7625de59ed4737b0067f8733841377b7d0c788468fc90b",
-    "effects.json": "7adb4c54985f5297c9f7672b1703a25ec59adbed6c004a95c1548bb121a758f1",
+    "structure.json": "e17ecd624611f88bce042e0e782b55616e3a972d90658abb83eadd64c4d53abd",
+    "effects.json": "cdc456eb694dd5ffe3ac52606482cb9530410458e724f44594a00c8a49330b2a",
     "view.json": "379ae16560cb132242c209c74e884e63ccf3bdd0e9a3ecef49ad725446891fda",
     "defaults.json": "e66fd4233c7ddae528fac6ac448fe4ed041f5458b87c268867385c260cde6feb",
-    "buffers.bin": "73eb5103c24be773da0b47cdf7b57619fdc171f9b9b40eca99a43516b9152133",
-    "design.json": "0c2cbf109a9508e3389aa6e2c4e362ce9fae393a6769cf7da72fcd9415ae8909",
+    "buffers.bin": "59883e95eae63348c736a7548a2bdfcfab833348703007f4cedd09615187a0c5",
+    "design.json": "c10279c93dbc01beee7e1c35cdfaa487d9a7a403acb1c67e0370a51df6f1dee5",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 40,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

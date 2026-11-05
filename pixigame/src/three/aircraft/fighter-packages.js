@@ -1,6 +1,9 @@
 import { addAircraftDetails } from './aircraft-details.js';
+import { DoubleSide } from 'three';
 import { refineAircraftMaterials } from './premium-finish.js';
+import { softenArmorSeams } from './armor-seams.js';
 import catalog from './v34/catalog.json' with { type: 'json' };
+import gameLod from './game-lod-catalog.json' with { type: 'json' };
 import { loadPackage, applyMaterialPatches } from './v34/aircraft/PackageLoader.js';
 
 export const PILOT_FIGHTERS = Object.freeze({
@@ -28,17 +31,25 @@ export function isFighterPackageReady(pilotId) {
 }
 // Old galleries can still request the complete catalog. The game requests only
 // the aircraft it is about to display; concurrent requests share one load.
-export function loadFighterPackages({ read, skipTextures = false, pilotIds, objectLoader } = {}) {
+export function loadFighterPackages({ read, skipTextures = false, pilotIds, objectLoader, assetBase } = {}) {
   const entries = pilotIds ? [...new Set(pilotIds.map(id => fighterForPilot(id)))] : catalog;
   return Promise.all(entries.map(entry => {
     if (templates.has(entry.slug)) return templates.get(entry.slug);
     if (pending.has(entry.slug)) return pending.get(entry.slug);
-    const request = loadPackage(entry, {
+    const derived = gameLod.entries[entry.slug];
+    // A newly imported source cannot silently receive an older geometry LOD.
+    const useGameLod = derived?.sourceManifestHash === entry.manifestHash;
+    const request = loadPackage(useGameLod ? { ...entry, manifestHash: derived.manifestHash } : entry, {
+      manifestFile: useGameLod ? 'game-lod-manifest.json' : 'manifest.json',
       skipTextures, objectLoader,
-      read: async (name, _url, signal) => {
+      read: async (name, _url, signal, expectedHash) => {
         if (read) return read(entry.slug, name);
-        const base = import.meta.env.BASE_URL;
-        const response = await fetch(`${base}fighters/${entry.slug}/${name}`, { signal });
+        const base = assetBase || new URL(import.meta.env.BASE_URL, document.baseURI);
+        const url = new URL(`fighters/${entry.slug}/${name}`, base);
+        // Content-addressed requests can reuse the browser cache across the
+        // lobby and battle iframe without mixing imported package revisions.
+        url.searchParams.set('v', expectedHash || entry.manifestHash);
+        const response = await fetch(url, { signal });
         if (!response.ok) throw new Error(`战机资源加载失败：${entry.name}/${name} (${response.status})`);
         return response.arrayBuffer();
       },
@@ -85,10 +96,21 @@ export function instantiateFighterPackage(pilotId) {
   const cleanSurface = Number(entry.version.split('.')[0]) >= 39;
   solid.userData.cleanAircraftSurface = cleanSurface;
   if (cleanSurface) for (const material of materials.values()) material.userData.cleanAircraftSurface = true;
+  // V39 armor includes open sheets (notably the wing's structural airfoil).
+  // Their reverse side must remain visible when orbiting below the aircraft
+  // or looking across it on the lift. Do not turn jets/glass into two-pass FX
+  // or change the immutable package's material/geometry buffers.
+  if (cleanSurface) solid.traverse(node => {
+    for (const material of [].concat(node.material || [])) {
+      if (material.isMeshStandardMaterial && !material.transparent && material.opacity === 1)
+        material.side = DoubleSide;
+    }
+  });
   // V39 authors its own surface treatment. Reapplying legacy service panels,
   // nozzle petals and analytic engraving would undo the clean-hull revision.
   if (!cleanSurface) refineAircraftMaterials({ entry, materials, view:template.view });
   const detailKit=cleanSurface ? null : addAircraftDetails({entry,materials,solid,nodes,view:template.view,effects:template.effects});
+  const seamTreatment=softenArmorSeams({entry,solid,materials});
   let disposed = false;
   return {
     entry, manifest: template.manifest, view: template.view, effects: template.effects,
@@ -97,6 +119,7 @@ export function instantiateFighterPackage(pilotId) {
       if (disposed) return;
       disposed = true;
       detailKit?.dispose();
+      seamTreatment?.dispose();
       for (const node of nodes.values()) if (node.isInstancedMesh) node.dispose();
       for (const geometry of geometries.values()) geometry.dispose();
       const ownedTextures = new Set([...materials.values()].flatMap(texturesOf).filter(texture => !sharedTextures.has(texture)));

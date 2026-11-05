@@ -3,6 +3,14 @@ import {sha256} from './digest.js';
 import {hydrateBuffers} from './buffers.js';
 export {hydrateBuffers} from './buffers.js';
 const decoder=new TextDecoder();
+export class PackageObjectLoader extends T.ObjectLoader{
+ // Retain Three's exact image decoder/color/orientation rules, but do not
+ // serialize independent normal, ORM and nameplate image decodes.
+ async parseImagesAsync(images){
+  if(!images?.length)return {};
+  return Object.assign({},...await Promise.all(images.map(image=>super.parseImagesAsync([image]))));
+ }
+}
 export function indexObjects(root){const nodes=new Map(),materials=new Map();root.traverse(o=>{nodes.set(o.uuid,o);for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])materials.set(m.uuid,m);});return {nodes,materials};}
 export function disposeTree(root){
  const geometry=new Set(),materials=new Set(),textures=new Set();
@@ -21,10 +29,11 @@ export function applyMaterialPatches(patches,materials){
     shader[key]=shader[key].replace(edit.find,edit.replace);
    }
   };
-  mat.customProgramCacheKey=()=>patch.cacheKey+':'+JSON.stringify(patch.replacements);mat.needsUpdate=true;
+  const programKey=patch.cacheKey+':'+JSON.stringify(patch.replacements);
+  mat.customProgramCacheKey=()=>programKey;mat.needsUpdate=true;
  }
 }
-export async function loadPackage(entry,{signal,read=null,skipTextures=false,objectLoader=null}={}){
+export async function loadPackage(entry,{signal,read=null,skipTextures=false,objectLoader=null,manifestFile='manifest.json'}={}){
  const base=read?null:new URL(`../../public/fighters/${entry.slug}/`,import.meta.url),urls=[];let solid=null,fx=null;
  const nativeAssets=globalThis.__THUNDER_RUNTIME_GLOBALS__;
  const revoke=url=>nativeAssets?.revokeAssetBytesUrl?nativeAssets.revokeAssetBytesUrl(url):URL.revokeObjectURL(url);
@@ -32,14 +41,14 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false,obj
   if(!/^[\w.-]+$/.test(name)||name.startsWith('.'))throw new Error('非法资源文件名');
   const url=read?null:new URL(name,base);url?.searchParams.set('v',expected?.slice(0,16)||entry.version);
   let bytes;
-  if(read)bytes=await read(name,url,signal);else{const r=await fetch(url,{signal,cache:'no-cache'});if(!r.ok)throw new Error(name+'：HTTP '+r.status);bytes=await r.arrayBuffer();}
+  if(read)bytes=await read(name,url,signal,expected);else{const r=await fetch(url,{signal,cache:'no-cache'});if(!r.ok)throw new Error(name+'：HTTP '+r.status);bytes=await r.arrayBuffer();}
   if(bytes instanceof Uint8Array)bytes=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
   if(signal?.aborted)throw new DOMException('已切换到其他 Tab','AbortError');
   if(expected&&await sha256(bytes)!==expected)throw new Error(name+' 校验失败：资源版本混用或文件被改动，请重新打包目录');
   return bytes;
  }
  try{
-  const manifest=JSON.parse(decoder.decode(await get('manifest.json',entry.manifestHash)));
+  const manifest=JSON.parse(decoder.decode(await get(manifestFile,entry.manifestHash)));
   if(manifest.schemaVersion!==1||manifest.id!==entry.id||manifest.rendererRevision!==T.REVISION)throw new Error('战机包 ID / 格式 / 渲染器版本不匹配');
   const files=Object.entries(manifest.files),loaded=await Promise.all(files.map(async([k,n])=>[k,await get(n,manifest.hashes[n])]));
   const data=Object.fromEntries(loaded);
@@ -50,11 +59,14 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false,obj
    if(skipTextures){graph.images=[];graph.textures=[];for(const m of graph.materials||[])for(const k of Object.keys(m))if(k==='map'||k.endsWith('Map'))delete m[k];}
    else for(const image of graph.images||[]){
     const name=image.url;if(!manifest.hashes[name])throw new Error('纹理不在版本清单内');
-    const bytes=await get(name,manifest.hashes[name]);
+    // Surface files were already fetched and verified with the package above.
+    // Reuse those bytes rather than downloading every normal/ORM map twice.
+    const loadedKey=files.find(([,file])=>file===name)?.[0];
+    const bytes=loadedKey===undefined?await get(name,manifest.hashes[name]):data[loadedKey];
     const url=nativeAssets?.createAssetBytesUrl?nativeAssets.createAssetBytesUrl(bytes,'image/png'):URL.createObjectURL(new Blob([bytes],{type:'image/png'}));urls.push(url);image.url=url;
    }
   }
-  const loader=objectLoader||new T.ObjectLoader();solid=await loader.parseAsync(structure.scene);fx=await loader.parseAsync(effects.graph);
+  const loader=objectLoader||new PackageObjectLoader();solid=await loader.parseAsync(structure.scene);fx=await loader.parseAsync(effects.graph);
   if(signal?.aborted)throw new DOMException('已切换到其他 Tab','AbortError');
   const combo=new T.Group();combo.add(solid,fx);const {nodes,materials}=indexObjects(combo);applyMaterialPatches(effects.materialPatches,materials);
   for(const node of nodes.values()){node.updateMatrix();if(!node.matrix.elements.every(Number.isFinite))throw new Error('资源变换包含非有限数：'+node.name);}

@@ -55,7 +55,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   const canvas = renderer.domElement; canvas.className = 'pl-model-canvas';
   const exhaustRenderer = createCombatAircraftRenderer(renderer, 1, 1);
-  const fxRenderer = createAircraftFxRenderer(renderer);
+  const fxRenderer = createAircraftFxRenderer(renderer,{samples:2});
   const drawingSize = new THREE.Vector2();
   const exhaustFighter = {runtime:null};
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -203,7 +203,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
         canvas.dataset.fxJets=JSON.stringify(runtime.jets.map(({object})=>({visible:object.visible,mask:object.layers.mask,camera:camera.layers.mask,gain:object.material.uniforms.uGain.value,scale:object.scale.toArray()})));
         if(cleanSurface){
           renderer.getDrawingBufferSize(drawingSize);exhaustRenderer.resize(drawingSize.x,drawingSize.y);exhaustFighter.runtime=runtime;
-          fxRenderer.render(()=>exhaustRenderer.render(scene,camera,exhaustFighter),drawingSize.x,drawingSize.y);
+          fxRenderer.render(()=>exhaustRenderer.render(scene,camera,exhaustFighter,canvas.clientWidth||drawingSize.x),drawingSize.x,drawingSize.y);
         }
         else renderer.render(scene,camera);
       }finally{batcher.restore();for(const [node,wasVisible]of hiddenFx)node.visible=wasVisible;}

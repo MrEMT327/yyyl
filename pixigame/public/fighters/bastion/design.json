@@ -2012,5 +2012,13 @@
       "radius": 0.245
     }
   ],
-  "referenceImage": "docs/v35/references/03-bastion.png"
+  "referenceImage": "docs/v35/references/03-bastion.png",
+  "lineCleanup": {
+    "version": 46,
+    "baseline": "V39",
+    "targetSide": 0.7,
+    "targetFront": 0.3,
+    "method": "closed connected courses, fewer shallow seams, selected decorative service parts removed",
+    "note": "Targets are not measured attainment; inspect render evidence."
+  }
 }

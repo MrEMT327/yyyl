@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "wraith",
   "slug": "wraith",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "白矛战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<path d=\"M16 2l3 12 11 10-11-3-3 9-3-9-11 3 11-10zM12 22v6m8-6v6\"/>"
   },
   "stats": {
-    "model": 151018,
+    "model": 113180,
     "vfx": 2440,
-    "total": 153458,
-    "submitted": 151618,
-    "objects": 1361
+    "total": 115620,
+    "submitted": 113780,
+    "objects": 678
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "9f4296bcfa06aaeb01d7ccd3ee85c1e6718053aa1ab6655f5f56ab3ad892026f",
-    "effects.json": "85528a424838c192afd63dfeeafb4f4697ae5af1c44724312fda7d7828c8754f",
+    "structure.json": "403ae6a6815e98117f10db03b36944a2bb6a369e224eaf058efe6e87398edbfa",
+    "effects.json": "a3e985c05b5c207ef2f7cf2708916afe7be4bed7e3c53a2ebc04c51e310e2e86",
     "view.json": "d520d4cf5988482fb4151122e0a98aa8993ed7b1c949ddfc5912d7f62fcc4f66",
     "defaults.json": "019139c7c9de15b079cd629ff78a03ff77cfbbd483f1d47e6107c10b49d28085",
-    "buffers.bin": "9bf388e70eed5dd349c07356d4abc2f7c7e3365a2f2cef2ac7c8a116cb8d27b7",
-    "design.json": "854a188c57563d05a66f749f98dd3dc5dbd5f530d05983a7f5b3ef491f2c7f52",
+    "buffers.bin": "13f27dda8e08aa80957644118b33fff7507a77372579b79230c3e2cdf0998919",
+    "design.json": "e5127a746a4aa5274527723357424dfc918f5ba4288a7d6ade5a210ab687f347",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 40,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

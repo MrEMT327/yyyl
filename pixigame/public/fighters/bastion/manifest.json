@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bastion",
   "slug": "bastion",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "苍垒战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<path d=\"M16 2l5 4v7l7 2 3 6-9-1-6 8-6-8-9 1 3-6 7-2V6zM9 13h14M16 20v8\"/>"
   },
   "stats": {
-    "model": 90870,
+    "model": 84418,
     "vfx": 2548,
-    "total": 93418,
-    "submitted": 91578,
-    "objects": 2023
+    "total": 86966,
+    "submitted": 85126,
+    "objects": 1352
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "be5bcc2fa0934c1f3503a00897e6adbc62d0c3b7fabeee17df799f4c0a48a92c",
-    "effects.json": "d9d0329120703c157a5cb3fb18c970c42ffc9b4da887bbb21f1bb9e1636bdc67",
+    "structure.json": "cc829e944a9b1f9c9e34dabeb5eeb7ab7850afff17f4f350d6aeed9885923416",
+    "effects.json": "20b9317ee95c0dd87c4d44631e93c2940e472f4b4debe9ccc0cd43a6495dffad",
     "view.json": "8f3d27d2ffab87475e8d26547aadef38435444578b20970c0795b98fe848859a",
     "defaults.json": "00db7d55b5dd08d3e5dfb4cc5826d6503c3c77a038a428ce28f70857e371f57b",
-    "buffers.bin": "a7473fad19015787fcd2213cc5717d281aa9660d68a03550be1d70bd8240e3ab",
-    "design.json": "d59e44e8898d3cdbcd09a26737ea5f96ac14eeb04dda680525ca37299c9c3ee7",
+    "buffers.bin": "c0e7151dea672d730513d7bfb75b59a4c0455075e28f14de87708310306bd7aa",
+    "design.json": "a36c3792a4f877c4a88b1975ac87ede93bfed8c8ef1bb248b653b2d0a9cb5c2d",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 40,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "verdure",
   "slug": "verdure",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "翠核战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<circle cx=\"16\" cy=\"15\" r=\"6\"/><path d=\"M8 11L4 5 1 4l2 16 6 3 2-3m13-9 4-6 3-1-2 16-6 3-2-3M13 22l-2 6 5-2 5 2-2-6M16 3v4\"/>"
   },
   "stats": {
-    "model": 175478,
+    "model": 147960,
     "vfx": 2548,
-    "total": 178026,
-    "submitted": 176186,
-    "objects": 1844
+    "total": 150508,
+    "submitted": 148668,
+    "objects": 1154
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "a3ebb2fc78a118358d51217e08a0f6075165e6d40ef13db796b14bd2b8d4d4d9",
-    "effects.json": "51b41fe76420360ac132d38693adbed05cdbb34cb40acba9aa4a522aac35030e",
+    "structure.json": "96c6ccac02acd0f251cba2c323c8a5ea265a2e8e36cdd3e6031430ce4aa33435",
+    "effects.json": "cd4213f0ed14a13e0c23d1247880a5eddd26bc55e9e3c83e02b89f51cba7e0cc",
     "view.json": "2c36d97689600236adc38a35ec178c7f056c8da068ae52c2621bddbb05e45014",
     "defaults.json": "6d82084c47e0f28f90e4a4b04bd262dafd613b6dd730df46815c13944c93d432",
-    "buffers.bin": "afc747d6669afd1d029b8308e6e24b4834466e24e89c60fa671d55dfb5822752",
-    "design.json": "0f46cd17c7c702cf2d39007f842baa64fc5cf3b74cdf4a0cf974847365ff8b82",
+    "buffers.bin": "fae11e8cf46710d900d00be2c6c74e68461568bb7cfb5d947317d0af40ec724f",
+    "design.json": "f7877daa15399e6b4b37eb1467c0a27dcc37ce0d881a643ff13673bb23cda415",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 40,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

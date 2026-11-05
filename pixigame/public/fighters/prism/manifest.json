@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "prism",
   "slug": "prism",
-  "version": "39.0.0",
+  "version": "46.0.0",
   "name": "棱脉战机",
   "continuous": true,
   "rendererRevision": "185",
@@ -23,11 +23,11 @@
     "glyph": "<path d=\"M16 2l4 5v8l8 3-8 3-4 9-4-9-8-3 8-3V7zM9 15h14\"/>"
   },
   "stats": {
-    "model": 103550,
+    "model": 91520,
     "vfx": 2332,
-    "total": 105882,
-    "submitted": 104042,
-    "objects": 1402
+    "total": 93852,
+    "submitted": 92012,
+    "objects": 1103
   },
   "files": {
     "structure": "structure.json",
@@ -40,16 +40,16 @@
     "surface1": "paint-satin-orm.png"
   },
   "hashes": {
-    "structure.json": "6d1707aab30dc60d87d52f1d77d6f2b04efff55f776471284dab1478fe0f3c5a",
-    "effects.json": "d562259253a1fcfb706cd4618a27fab02db9424d06125e0742cd03c7cff5cbd5",
+    "structure.json": "77bc6c4812cf4eb0cb152206a790871e15d2ce58e24ddc964cef348af5856a66",
+    "effects.json": "b5dd5ae70d0b52acf25583ff941c5d944c30d400d863c7982ecd54e128773914",
     "view.json": "5f4cb9b0d85a6dbef9a7d14637c39f869718a0df833a9d18955e4121c88fd65b",
     "defaults.json": "4c42a3438224ab0922026b5e8879f9b798448ccd6654975ebad2da2ca499edd9",
-    "buffers.bin": "2f7be3d6537cd473c50e7064a4b0fb4f9ad04e47168a4d908bf0c748e189cbc5",
-    "design.json": "d8119fd165b45a8c186aba4bbadccc20ab3d2b0361e05f94ccb5f23bbc9d5420",
+    "buffers.bin": "56dda8986d4ee658b0fe49d5b0c59f858aa36817667bb94984e98ef06ffa9e0b",
+    "design.json": "e6c971788da23084011f477f70d9faee5f5822d6b778642a1666ec453e366f5a",
     "paint-satin-normal.png": "e5559e9c2569ec8df7ddfbde8163e175a97576d855d50e57d1823cf50428c1e3",
     "paint-satin-orm.png": "bdc66a4031da08e894db3b80feafe016578ef4dcd98e9a110a2e9f89e735909e"
   },
-  "source": "V38 differentiated weapon fleet, compiled from source modules; independently movable model assemblies.",
+  "source": "V46 recompiled from V39 geometry authoring, V39 effects and material settings retained",
   "parameters": [
     {
       "key": "deployed",
@@ -275,7 +275,7 @@
     }
   ],
   "reviewStatus": "runtime-model-for-visual-review",
-  "revision": 40,
+  "revision": 46,
   "paintSurface": {
     "version": 1,
     "width": 512,

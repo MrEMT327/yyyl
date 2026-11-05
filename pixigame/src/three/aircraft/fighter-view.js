@@ -30,6 +30,16 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
   let runtime, equipment, appearance, time = 0, animationTime = 0, shielded = false, shieldStrength = 1, boost = false;
   let shieldNodes = [], shieldMaterials = [], shieldBindings = [];
   const visualMaterials = new Set();
+  let preparedPassCamera = null;
+  // A combat texture uses a depth pass and a color pass for the same pose.
+  // Keep camera-facing geometry identical through both; standalone renders
+  // still prepare via onBeforeRender as before.
+  view.withPreparedRender = (camera, draw) => {
+    const previous = preparedPassCamera;
+    runtime.prepareRender(camera);
+    preparedPassCamera = camera;
+    try { return draw(); } finally { preparedPassCamera = previous; }
+  };
   let hullStyle, partsStyle, cachedFixedParts = null, fixedPartsKey = '';
   const style = root => { const next = createAircraftStyle(root, { outlineScale: size }); next.setEnabled(true); return next; };
   const disposeFixedParts = () => {
@@ -41,6 +51,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     visualMaterials.clear();
     let preparedFrame = -1, preparedCamera;
     const prepare = (renderer, _scene, camera) => {
+      if (preparedPassCamera === camera) return;
       if (preparedFrame === renderer.info.render.frame && preparedCamera === camera) return;
       preparedFrame = renderer.info.render.frame; preparedCamera = camera;
       runtime.prepareRender(camera);
