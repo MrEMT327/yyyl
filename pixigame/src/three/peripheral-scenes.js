@@ -2,7 +2,7 @@ import {ADVANCED_CHAPTERS} from '../advanced-chapters.js';
 import {mapSceneLayout} from './map-scene-polish.js';
 import {chapterMapRepresentativeStage} from '../replica/chapter-map-reuse.js';
 import {STAGE1_COAST_CLOUDS} from './stage1-cloud-modules.js';
-import {STAGE1_FLOATING_PROPS} from './stage1-floating-props.js';
+import {MODULAR_ASSETS,MODULAR_TERRAIN_SETTINGS} from './stage1-modular-layout.js';
 // Original generated terrain. APK artwork remains design evidence under doc.
 const base = import.meta.env?.BASE_URL || '/';
 // New chapters reuse quiet original depth textures, not flattened chapter art.
@@ -126,21 +126,24 @@ const BALANCED_COAST_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.fre
 // Chapter 1 owns this trial artwork. Later coast chapters keep the shared set.
 export const FIRST_STAGE_SCENE = Object.freeze({
   ...SHARED_COAST_SCENE, id: 'coast-defense-balanced', smoothBackground: true,
-  artUrl: `${base}art/stage1-coastal-defense-v1/coastal-ground.png`,
-  ground: 0x12364b, edge: 0x708596, accent: 0x65afbf,
+  artUrl: `${base}art/stage1-anime-v8/ocean.png`,
+  ground: 0x164e87, edge: 0x426a91, accent: 0x518eb1,
 });
-// Ocean, reefs, their submerged footings and the coast form one rigid ground
-// image. Water motion follows its pixels; sparse clouds only establish altitude.
+// Independent sea, island and facility sprites share one parent motion frame.
+// Clouds are separate altitude planes, not substitutes for terrain variety.
 const FIRST_STAGE_LAYERS = Object.freeze([
-  { ...COAST_LAYERS[0], source:'ground', fullSceneBase:true, coastalWater:true,
-    shoreVariants:true,coastSequence:true,cycleTiles:6,
-    nativeLayer:0, motionGroup:'terrain', scrollScale:.5, speed:20 },
-  { ...COAST_LAYERS[4],id:'floating-props',role:'props',name:'水面·浮标与漂流物',nativeLayer:0,
-    modules:STAGE1_FLOATING_PROPS,nativeSpeed:2,scrollScale:.5,moduleLoopLength:340,depth:-800,opacity:1 },
-  { ...COAST_LAYERS[4], id:'large-clouds',name:'边缘·稀疏云',nativeLayer:2,
-    modules:STAGE1_COAST_CLOUDS[2],nativeSpeed:2,depth:-300,tint:0xffffff,whiteness:.25,opacity:1 },
+  { ...COAST_LAYERS[0],id:'terrain',role:'terrain',name:'海面·岛礁·设施',source:'ground',rigidTerrain:true,
+    modules:Object.keys(MODULAR_ASSETS).map(key=>[key]),nativeLayer:0,motionGroup:'terrain',
+    scrollScale:MODULAR_TERRAIN_SETTINGS.scrollScale,nativeSpeed:MODULAR_TERRAIN_SETTINGS.nativeSpeed },
+  { ...COAST_LAYERS[4], id:'distant-clouds',name:'远层·蓝色薄云',nativeLayer:2,
+    modules:STAGE1_COAST_CLOUDS.far,nativeSpeed:2,travelScale:.4,depth:-650,
+    tint:0x91b9e5,whiteness:.12,opacity:.32,softness:.008 },
+  { ...COAST_LAYERS[4], id:'large-clouds',name:'中层·白色云体',nativeLayer:2,
+    modules:STAGE1_COAST_CLOUDS[2],nativeSpeed:2,travelScale:1.1,depth:-300,
+    tint:0xe7f1ff,whiteness:.12,opacity:1,softness:.0025 },
   { ...COAST_LAYERS[4], id:'near-clouds',name:'近层·掠过云',nativeLayer:5,
-    modules:STAGE1_COAST_CLOUDS[5],nativeSpeed:12,depth:-10,tint:0xffffff,whiteness:.42,opacity:.62 },
+    modules:STAGE1_COAST_CLOUDS[5],nativeSpeed:12,travelScale:.55,depth:-10,
+    tint:0xd5e5ff,whiteness:.10,opacity:.78,softness:.005 },
 ].map(layer => Object.freeze({
   ...layer, id:`coast-defense-${layer.modules?layer.id:layer.role}`, sceneId:FIRST_STAGE_SCENE.id,
 })));
@@ -151,13 +154,10 @@ const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
     cloud: `${base}art/project-coast-balanced-v1/near-clouds.png`,
   }) })],
   [FIRST_STAGE_SCENE.id, Object.freeze({ layers: FIRST_STAGE_LAYERS, urls: Object.freeze({
-    groundAlt: `${base}art/stage1-maritime-v1/harbor.png`,
-    groundThird: `${base}art/stage1-maritime-v1/reef.png`,
-    buoy: `${base}art/stage1-maritime-v1/buoy.png`,
-    cargo: `${base}art/stage1-maritime-v1/cargo.png`,
-    skiff: `${base}art/stage1-maritime-v1/skiff.png`,
-    cloudLargeA: `${base}art/stage1-coastal-defense-v1/cloud-modules-v1/large-a.png`,
-    cloudLargeB: `${base}art/stage1-coastal-defense-v1/cloud-modules-v1/large-b.png`,
+    ...Object.fromEntries(Object.entries(MODULAR_ASSETS).filter(([key])=>key!=='ground').map(([key,asset])=>[key,`${base}art/${asset.url}`])),
+    cloudBank: `${base}art/stage1-anime-v8/cloud-bank.png`,
+    cloudLargeA: `${base}art/stage1-anime-v8/cloud-large-a.png`,
+    cloudLargeB: `${base}art/stage1-anime-v8/cloud-large-b.png`,
   }) })],
   ['coast', Object.freeze({ layers: COAST_LAYERS, urls: COAST_EXTRA_URLS })],
   ...chapterStyles.map(style => [style.id, Object.freeze({

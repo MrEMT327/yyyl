@@ -122,7 +122,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const original = definition.nativeLayer !== undefined ? sourceMap.layers.find(layer => layer.layer === definition.nativeLayer) : sourceLayers[definition.id];
       if (!original) throw new Error(`当前关卡缺少背景层：${definition.id}`);
       const offset = frame.mapCameraOffset(original);
-      if(definition.role==='props')return {
+      if(definition.rigidTerrain || definition.role==='props')return {
         moduleTravel:(-nativeMapScrollZ(original,elapsed)*(definition.scrollScale??1)+offset.z)*unitsPerWorld,
         moduleUnitsPerWorld:unitsPerWorld,
         lateralOffset:coastIslandLateralOffset(frame.camera.x,offset.x,unitsPerWorld),

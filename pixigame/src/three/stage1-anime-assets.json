@@ -1,0 +1,139 @@
+{
+  "harbor-east": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.8372395833333334,
+    "visibleHeightFraction": 0.8984375,
+    "coreBounds": [
+      62,
+      39,
+      705,
+      729
+    ]
+  },
+  "airfield-west": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.76953125,
+    "visibleHeightFraction": 0.8984375,
+    "coreBounds": [
+      88,
+      39,
+      679,
+      729
+    ]
+  },
+  "radar-east": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.71484375,
+    "visibleHeightFraction": 0.8997395833333334,
+    "coreBounds": [
+      109,
+      39,
+      658,
+      730
+    ]
+  },
+  "harbor-west": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.8216145833333334,
+    "visibleHeightFraction": 0.90234375,
+    "coreBounds": [
+      68,
+      39,
+      699,
+      732
+    ]
+  },
+  "headland-east": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.8854166666666666,
+    "visibleHeightFraction": 0.8984375,
+    "coreBounds": [
+      44,
+      39,
+      724,
+      729
+    ]
+  },
+  "supply-west": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.8216145833333334,
+    "visibleHeightFraction": 0.8984375,
+    "coreBounds": [
+      68,
+      39,
+      699,
+      729
+    ]
+  },
+  "cloud-bank": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.89453125,
+    "visibleHeightFraction": 0.5950520833333334,
+    "coreBounds": [
+      41,
+      155,
+      728,
+      612
+    ]
+  },
+  "cloud-large-a": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.7096354166666666,
+    "visibleHeightFraction": 0.8997395833333334,
+    "coreBounds": [
+      112,
+      38,
+      657,
+      729
+    ]
+  },
+  "cloud-large-b": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.8984375,
+    "visibleHeightFraction": 0.70703125,
+    "coreBounds": [
+      39,
+      112,
+      729,
+      655
+    ]
+  },
+  "ocean": {
+    "width": 1024,
+    "height": 1536,
+    "visibleFraction": 1
+  },
+  "seabed": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.8984375,
+    "visibleHeightFraction": 0.7122395833333334,
+    "coreBounds": [
+      39,
+      110,
+      729,
+      657
+    ]
+  },
+  "cutter": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.37109375,
+    "visibleHeightFraction": 0.8802083333333334,
+    "coreBounds": [
+      241,
+      46,
+      526,
+      722
+    ]
+  }
+}

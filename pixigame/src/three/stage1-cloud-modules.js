@@ -70,22 +70,26 @@ export const STAGE1_CLOUD_MODULES = Object.freeze({
 export const STAGE1_CLOUD_SPRITES = Object.freeze({
   cloudSmallA: Object.freeze({width:256,height:256}),
   cloudSmallB: Object.freeze({width:256,height:256}),
-  cloudLargeA: Object.freeze({width:384,height:512}),
-  cloudLargeB: Object.freeze({width:432,height:512}),
+  cloudLargeA: Object.freeze({width:768,height:768}),
+  cloudLargeB: Object.freeze({width:768,height:768}),
+  cloudBank: Object.freeze({width:768,height:768}),
 });
 
-// Coastal adaptation: source cloud groups sit behind elevated terrain. They
-// cannot be copied wholesale over an opaque sea. Keep only sparse edge passes.
+// Authored altitude composition. Native assets are never used. Large, offset
+// masses pass through different parts of the view instead of outlining banks.
 export const STAGE1_COAST_CLOUDS = Object.freeze({
+  far: Object.freeze([
+    ['cloudLargeB',-10.8,2,16], ['cloudLargeA',11.5,38,18],
+    ['cloudLargeA',-11.2,76,16], ['cloudLargeB',11.4,-88,17],
+    ['cloudLargeA',-10.3,-52,18], ['cloudLargeB',11.5,-20,16],
+  ].map(Object.freeze)),
   2: Object.freeze([
-    ['cloudLargeA',-12.6,8,11], ['cloudLargeB',13.2,64,10],
-    ['cloudLargeA',-13.4,-66,10], ['cloudLargeB',12.8,-32,11],
-    ['cloudLargeB',12.4,30,9.5], ['cloudLargeA',-13.2,91,12],
-    ['cloudLargeB',-12.5,-23,9], ['cloudLargeA',13.4,-91,11],
+    ['cloudBank',-14.5,-9,22], ['cloudLargeB',13.1,43,12],
+    ['cloudBank',14.8,92,21], ['cloudLargeA',-13.8,-64,12],
   ].map(Object.freeze)),
   5: Object.freeze([
-    ['cloudLargeB',15.2,38,15], ['cloudLargeA',-15.0,-42,15],
-    ['cloudLargeB',15.5,96,14], ['cloudLargeA',-15.6,65,16],
-    ['cloudLargeB',14.8,-10,13], ['cloudLargeA',-15.5,-91,14],
+    ['cloudBank',14.5,7,24], ['cloudLargeA',-14.8,42,19],
+    ['cloudLargeB',13.5,79,19], ['cloudLargeA',-12.4,-85,21],
+    ['cloudLargeB',14.5,-48,18], ['cloudLargeA',-13.7,-20,19],
   ].map(Object.freeze)),
 });

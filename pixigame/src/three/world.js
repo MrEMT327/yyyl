@@ -3,6 +3,7 @@ import {mapLayerGrade,mapAtmosphereShape,COAST_ISLAND_LAYOUT,COAST_ISLAND_Y_OFFS
 import {createCloudModuleLayer,syncCloudModuleLayer} from './cloud-module-layer.js';
 import {coastalWaterShader} from './coastal-water-shader.js';
 import {createFloatingPropLayer,syncFloatingPropLayer} from './floating-prop-layer.js';
+import {createRigidTerrainLayer,syncRigidTerrainLayer} from './rigid-terrain-layer.js';
 import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
 
 const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
@@ -28,6 +29,10 @@ uniform vec3 base;uniform vec3 edge;uniform vec3 accent;uniform vec3 mist;unifor
 // authored orientation, while premultiplied interpolation preserves cutout edges.
 #if SHORE_VARIANTS == 1
 vec4 sampleShore(float stripIndex,vec2 uv,vec2 gx,vec2 gy){
+  #if AERIAL_GROUND == 1
+  // Fine detail sits below the flight plane. Land and water share one filter.
+  gx*=3.5;gy*=3.5;
+  #endif
   #if COAST_SEQUENCE == 1
   float section=mod(mod(stripIndex,6.)+6.,6.);
   if(section<.5||(section>2.5&&section<3.5))return textureGrad(artwork,uv,gx,gy);
@@ -51,8 +56,7 @@ vec4 sampleArtwork(vec2 uv){
     cutout.a=smoothstep(.012,.18,cutout.a);
     return cutout;
   #elif SHORE_VARIANTS == 1
-    // Two complete tall coast sections. Architecture stays upright and only
-    // plain rock/sand endpoint regions participate in the narrow transition.
+    // Complete directional sections; only their open-water ends crossfade.
     const float overlap=.025;
     vec2 gx=dFdx(uv)*vec2(1.,1.-overlap),gy=dFdy(uv)*vec2(1.,1.-overlap);
     float stripIndex=floor(uv.y),y=fract(uv.y)*(1.-overlap);
@@ -92,6 +96,12 @@ void main(){
   vec4 picture=vec4(base,1.);
   if(hasArt>.5)picture=sampleArtwork(uv);
   vec3 originalColor=picture.rgb;
+  #if AERIAL_GROUND == 1
+    // Match the quiet open-water ends, including the last-to-first join.
+    float endDistance=min(fract(uv.y),1.-fract(uv.y));
+    picture.rgb=mix(base,picture.rgb,smoothstep(.025,.13,endDistance));
+    picture.rgb=mix(picture.rgb,base,.10);
+  #endif
   picture.rgb*=chapterTint*layerTint;
   float border=abs(terrainUv.x-.5);
   #if BRIDGE_CADENCE == 1
@@ -210,13 +220,14 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     const definitions=FIVE_LAYER_SCENES[current.id]?.layers || PERIPHERAL_LAYERS;
     layers=definitions.map((definition,index)=>{
       if(definition.modules){
-        const record=(definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer)(definition,-1000+index*10);
+        const create=definition.rigidTerrain?createRigidTerrainLayer:definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer;
+        const record=create(definition,-1000+index*10);
         group.add(record.mesh);
         return record;
       }
       const kind = definition.kind ?? index;
       const material = new T.ShaderMaterial({
-        defines: { COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
+        defines: { AERIAL_GROUND: definition.aerialGround ? 1 : 0, COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
         uniforms: {
           sceneTime: {value:0},
           visualGrade: {value:new T.Vector4(1,1,0,0)},
@@ -259,7 +270,8 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       mesh.visible = FIVE_LAYER_SCENES[current.id] ? definition.sceneId === current.id : !definition.sceneId && (!current.singleLayer || definition.id === 'middle');
       if (!mesh.visible) continue;
       if(definition.modules){
-        (definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer)(record,textures,current.textureId||current.id,elapsed,layerMotion?.(definition,elapsed,1));
+        const sync=definition.rigidTerrain?syncRigidTerrainLayer:definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer;
+        sync(record,textures,current.textureId||current.id,elapsed,layerMotion?.(definition,elapsed,1));
         continue;
       }
       const key = `${current.textureId||current.id}/${definition.source}`;

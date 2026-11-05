@@ -10,6 +10,16 @@ float seaMask(vec3 c){
 vec3 animateCoastalWater(vec3 color,vec3 original,vec2 uv,float t){
   float water=seaMask(original);
   float shallow=water*smoothstep(.57,.83,original.g/max(original.b,.0001));
+  #if AERIAL_GROUND == 1
+  // Kilometer-scale current bands. Fine shore foam and caustics would pull
+  // the camera perceptually back down to the sea surface.
+  float current=sin(uv.x*9.+uv.y*6.283185-t*.16
+    +sin(uv.x*4.-uv.y*12.566371+t*.09)*.8);
+  float sheen=smoothstep(.55,.98,sin(uv.y*18.849556+sin(uv.x*8.)-t*.23))
+    *smoothstep(-.2,.8,sin(uv.x*7.-uv.y*6.283185+t*.07));
+  color*=1.+water*current*.065;
+  return mix(color,vec3(.035,.13,.25),water*sheen*.045+shallow*.018);
+  #else
   // Broad slow currents give open water depth without turning it into fog.
   float flow=sin(uv.x*15.+uv.y*12.566371-t*.19
     +sin(uv.x*8.-uv.y*6.283185+t*.11)*1.1);
@@ -34,6 +44,7 @@ vec3 animateCoastalWater(vec3 color,vec3 original,vec2 uv,float t){
   float tide=.35+.65*smoothstep(-.4,.8,sin(uv.y*37.699112+uv.x*35.-t*1.3));
   color=mix(color,vec3(.36,.58,.60),shore*tide*.30);
   return color;
+  #endif
 }
 #endif
 `;
