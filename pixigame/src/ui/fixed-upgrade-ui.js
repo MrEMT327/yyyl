@@ -45,7 +45,7 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     ? offer.slots.join('/') || offer.model.owner : '';
 
   const breakthroughBranches=isBreakthroughBranchOffer(offers);
-  if(breakthroughBranches)attachBreakthroughChoiceFrame(panel,{revealAt});
+  if(breakthroughBranches)attachBreakthroughChoiceFrame(panel,{revealAt,star:offers[0]?.skill.star});
 
   // Keep the attribute on the final row, below quality and run level.
   const width = px(224), height = py(bridge.presentation ? 606 : 562);

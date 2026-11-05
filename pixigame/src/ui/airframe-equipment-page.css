@@ -176,3 +176,8 @@
 #gui-casual-lobby .pl-modal[data-modal-type='gearAttributes'] .ag-combat-attribute :is(dt,dd,dt>span) {color:#1d394d!important;text-shadow:none!important;-webkit-text-stroke:0}
 
 #gui-casual-lobby .ag-combat-attribute .ag-stat-icon {width:7cqw;height:7cqw;object-fit:contain;flex:none}
+
+/* Better-quality replacement is independent of merge, upgrade and selection marks. */
+#gui-casual-lobby .ag-card .ag-better{position:absolute;right:-1px;top:-2px;z-index:4;display:block;width:clamp(17px,5cqw,23px);height:auto;aspect-ratio:1;line-height:0;pointer-events:none;filter:drop-shadow(0 1px 1px #04151bd9)}
+#gui-casual-lobby .ag-card .ag-better>img{display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card.has-better .ag-lock{top:36%;right:6%}
