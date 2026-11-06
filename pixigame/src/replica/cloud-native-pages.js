@@ -18,6 +18,7 @@ import { recruitPage } from '../ui/recruit-page.js';
 import weaponPreview from './native-weapon-preview-index.json' with {type:'json'};
 import { projectIcon } from '../ui/project-ui-art.js';
 import { collectionQualityRank } from './native-quality.js';
+import {qualityDisplayLabel} from '../ui/quality-display-label.js';
 const groupFor={weapon:'guns',aircraft:'skins',pilot:'pilots'};
 // Native pilot IDs do not belong to the retired cloud combat categories.
 // Filter the actual collection state without assigning invented skill types.
@@ -74,7 +75,7 @@ export function cloudNativeCatalog(ctx){
     node.dataset.psdQuality=String(collectionQualityRank(row.quality));
     node.removeAttribute('data-rarity');
     const access=nativeCollectionAccess(group,s,row);
-    node.setAttribute('aria-label',`${row.name}，${row.qualityName}，${row.star}星${row.baseOnly||access.basicOnly?'，可用':row.owned?'':'，未激活'}${access.using?'，使用中':''}${node.getAttribute('aria-pressed')==='true'&&!access.using?'，预览中':''}`);
+    node.setAttribute('aria-label',`${[row.name,qualityDisplayLabel(row.qualityName,row.qualityKnown),`${row.star}星`].filter(Boolean).join('，')}${row.baseOnly||access.basicOnly?'，可用':row.owned?'':'，未激活'}${access.using?'，使用中':''}${node.getAttribute('aria-pressed')==='true'&&!access.using?'，预览中':''}`);
     const stars=node.querySelector('.wc-stars');
     if(stars){
       stars.setAttribute('aria-label',`${row.star}星`);
@@ -86,7 +87,7 @@ export function cloudNativeCatalog(ctx){
     const row=byId.get(node.dataset.id),art=node.querySelector('.wc-skill-art');
     if(!row||!art)continue;
     art.dataset.psdQuality=String(collectionQualityRank(row.quality));
-    node.setAttribute('aria-label',`浏览${row.name}技能，武器品质${row.qualityName}`);
+    node.setAttribute('aria-label',`浏览${row.name}技能${qualityDisplayLabel(row.qualityName,row.qualityKnown)?`，武器品质${qualityDisplayLabel(row.qualityName,row.qualityKnown)}`:''}`);
   }
   // No invented cloud combat attributes or one-copy star costs.
   t.content.querySelector('.fc-header-stats')?.remove();

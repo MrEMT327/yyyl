@@ -273,11 +273,11 @@ export function createLifecycleContext(graph,scenePath,input={}){
     result.provenance.push('scn/environ/explosion.gd');
   }
   mergeContext(context,input);
-  // A host projectile can die before a source-only area/attack clip ends.
-  // Remove its damaging body immediately; keep particle nodes alive so stopAge
-  // can finish already emitted tails. Explicit explode animations still own
-  // their authored exit and are deliberately excluded.
-  if(input.hostProjectileLifetime&&exitAt!==null&&age>=exitAt&&!available.explode){
+  // Host removal ends travelling shot bodies, including source scenes whose
+  // explode clip would otherwise park the body for another 0.2 seconds.
+  // Keep their particle nodes and independent hit effects. Other authored
+  // exits (fields, shield collapse and standalone source playback) stay intact.
+  if(input.hostProjectileLifetime&&exitAt!==null&&age>=exitAt&&(!available.explode||(input.hideBodyOnHostExit&&finite(input.exitAt)))){
     for(const node of scene.nodes)if(['Sprite2D','AnimatedSprite2D','Line2D','Polygon2D'].includes(node.type))
       addOverride(context,node.path,{visible:false});
     result.phase='exit';

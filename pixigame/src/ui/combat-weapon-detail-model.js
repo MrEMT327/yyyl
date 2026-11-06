@@ -1,4 +1,4 @@
-const qualityNames=['未标注','普通','优秀','精良','史诗','传说','神话'];
+const qualityNames=['','普通','优秀','精良','史诗','传说','神话'];
 const plain=value=>String(value??'').replace(/<br\s*\/?\s*>/gi,'\n').replace(/<[^>]*>/g,'').replace(/\\n/g,'\n').trim();
 
 export function combatWeaponDetail(item={}) {
@@ -13,7 +13,7 @@ export function combatWeaponDetail(item={}) {
   const quality=Number(item.quality);
   return {name,description,
     levelLabel:`Lv.${Number.isSafeInteger(item.level)&&item.level>0?item.level:1}`,
-    qualityName:Number.isInteger(quality)&&quality>=1&&quality<=6?qualityNames[quality]:'未标注',
+    qualityName:Number.isInteger(quality)&&quality>=1&&quality<=6?qualityNames[quality]:'',
   };
 }
 

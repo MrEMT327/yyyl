@@ -1,3 +1,4 @@
+import {syncBossHud} from '../src/ui/boss-encounter-hud.js';
 import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js';
 import {createBattleUiFrame} from './battle-ui-frame.js';
 import { bindCloudPointerInput } from './cloud-pointer-input.js';
@@ -49,7 +50,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     return [...latest.values()].map(card=>({id:String(card.group),itemId:keyFor(card),
       name:nativeWeaponDisplayText(card.name),icon:card.icon,level:card.star,owner:'被动强化',description:description(card)}));
   };
-  const presentation={art:textures,fullStageResultBackdrop:true,fullStagePauseBackdrop:true,fullStageUpgradeBackdrop:true,exitCopy:'结束战斗，返回航母',grade:'—',score:'—',reroll:false,choices:[],weapons:[],upgrades:[]};
+  const presentation={art:textures,fullStageResultBackdrop:true,fullStagePauseBackdrop:true,fullStageUpgradeBackdrop:true,fullStageSupplyBackdrop:true,exitCopy:'结束战斗，返回航母',grade:'—',score:'—',reroll:false,choices:[],weapons:[],upgrades:[]};
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,skills:{},activeWeapons:[],fixedPartsMode:true,
     fixedGrowth:{state:{nodes:{},pendingLevels:1,rerolls:0}},fixedLoadout:{weapons:[]},pauseMode:'pause'};
   const clickNative=action=>ui.overlay.querySelector(`button[data-action="${action}"]`)?.click();
@@ -86,6 +87,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     stage.classList.toggle('cloud-result-visible',sim.phase==='won'||sim.phase==='lost');
     stage.classList.toggle('cloud-pause-visible',sim.phase==='paused');
     stage.classList.toggle('cloud-upgrade-visible',sim.phase==='upgrade');
+    stage.classList.toggle('cloud-supply-visible',sim.phase==='treasure');
     if(lastPhase!==sim.phase){if(sim.phase==='paused')game.pauseMode='pause';lastPhase=sim.phase;}
     Object.assign(game,{elapsed:sim.clock,stageElapsed:sim.clock,kills:sim.kills,hp:sim.player.hp,level:sim.level,waveIndex:sim.wave,
       waveStatus:{total:sim.content.chapter.chapter.waveCount,completed:Math.max(0,sim.wave-1)},victory:sim.phase==='won'});
@@ -98,7 +100,8 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
       hp:sim.player.hp,maxHp:sim.player.maxHp,revivesUsed:sim.revivesUsed});
     presentation.grade=`${(sim.phase==='won'||sim.phase==='lost'?assessment:potential)?.stars??0}星`;
     presentation.progress=sim.expProgress;
-    bridge.boss=sim.boss?{hp:sim.boss.hp,maxHp:sim.boss.maxHp,visualSpec:{name:sim.boss.name||'旗舰'}}:null;
+    bridge.boss=syncBossHud(bridge.boss,sim.boss);
+    presentation.bossWarning=ui.upgradeAnimation.warningPresentation;
     game.battleNotice=sim.noticeUntil>sim.clock?{text:sim.notice,at:sim.clock,duration:1}:null;
     presentation.weapons=currentWeapons();game.fixedLoadout.weapons=presentation.weapons;
     presentation.upgrades=currentPassives();
@@ -142,7 +145,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const frame=createBattleUiFrame(()=>{sync();cloud.update();renderer.render({container:scene});});
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
-  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
+  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible','cloud-supply-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
   window.addEventListener('pagehide',destroy,{once:true});update();
   return {update,destroy,frame:frame.run,setSettlement(receipt){settlement=receipt;update();}};
 }

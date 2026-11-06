@@ -1,0 +1,21 @@
+{
+  "name": "Stylized airdrop battle supply crate",
+  "file": "airdrop-crate-front-v1.png",
+  "tool": "OpenAI built-in image_gen",
+  "date": "2026-11-06",
+  "origin": "New AI-generated project artwork; no extracted competitor image or copied game asset.",
+  "style": "Cel-shaded red crate with blue tarp and charcoal webbing; near-orthographic front view.",
+  "canvas": [
+    1287,
+    1222
+  ],
+  "alphaBounds": [
+    0,
+    0,
+    1273,
+    1222
+  ],
+  "sha256": "2a01ec64cc0df836ebbfc16370b16731350922c3acadfc7d550db5778fd9975f",
+  "promptFile": "generation-prompt.txt",
+  "runtime": "Replaces crate body only; existing birth beam, idle, pickup timing and collision rules retained."
+}

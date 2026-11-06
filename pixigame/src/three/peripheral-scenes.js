@@ -3,6 +3,7 @@ import {mapSceneLayout} from './map-scene-polish.js';
 import {chapterMapRepresentativeStage} from '../replica/chapter-map-reuse.js';
 import {STAGE1_COAST_CLOUDS} from './stage1-cloud-modules.js';
 import {MODULAR_ASSETS,MODULAR_TERRAIN_SETTINGS} from './stage1-modular-layout.js';
+import {COAST_CLOUD_MOTION} from './coast-cloud-motion.js';
 // Original generated terrain. APK artwork remains design evidence under doc.
 const base = import.meta.env?.BASE_URL || '/';
 // New chapters reuse quiet original depth textures, not flattened chapter art.
@@ -147,6 +148,61 @@ const FIRST_STAGE_LAYERS = Object.freeze([
 ].map(layer => Object.freeze({
   ...layer, id:`coast-defense-${layer.modules?layer.id:layer.role}`, sceneId:FIRST_STAGE_SCENE.id,
 })));
+// Chapter 2 reuses chapter 1's rigid full-scene composition, keeping its own
+// city identity. Other ruined-city packages and source motion remain intact.
+export const SECOND_STAGE_SCENE = Object.freeze({
+  ...PERIPHERAL_SCENES[1], id:'lost-city-restored-balanced', smoothBackground:true,
+  artUrl:`${base}art/stage2-high-altitude-v9/residential.png`,
+  ground:0x263642,edge:0x74818a,accent:0x7dacae,mist:0x85959d,
+});
+// Preserve chapter 1 cloud/ground speed differences over the faster city ground.
+// This drift is authored presentation only; native map speeds remain intact.
+const CITY_TERRAIN_SCROLL_SCALE=.6;
+const CITY_CLOUD_GROUND_DRIFT=5.5*CITY_TERRAIN_SCROLL_SCALE-MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale;
+const cityCloudLayer=(firstId,id,name,profile)=>{
+  const layer=FIRST_STAGE_LAYERS.find(row=>row.id===firstId);
+  return {...layer,id,name,nativeLayer:undefined,
+    cloudMotion:Object.freeze({...profile,groundDrift:CITY_CLOUD_GROUND_DRIFT/(layer.travelScale??1)})};
+};
+const SECOND_STAGE_LAYERS=Object.freeze([
+  {id:'city-ground',role:'background',name:'地面·手绘废墟街区',source:'ground',kind:0,
+    fullSceneBase:true,lostCitySurface:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
+    nativeLayer:2,motionGroup:'terrain',scrollScale:CITY_TERRAIN_SCROLL_SCALE,sourceHeight:.89,depth:-1000,speed:20,opacity:1},
+  // Vehicles/rubble and their contacts are painted into each complete street region.
+  {id:'city-dust',role:'effects',name:'空气·稀疏浮尘',source:'effects',kind:3,effectStyle:1,
+    nativeLayer:0,scrollScale:.65,depth:-35,speed:40,opacity:.07},
+  cityCloudLayer('coast-defense-distant-clouds','city-distant-clouds','远层·蓝色薄云',COAST_CLOUD_MOTION.far),
+  cityCloudLayer('coast-defense-large-clouds','city-edge-clouds','中层·白色云体',COAST_CLOUD_MOTION.far),
+  cityCloudLayer('coast-defense-near-clouds','city-near-clouds','近层·掠过云',COAST_CLOUD_MOTION.near),
+].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
+  ...layer,id:'lost-city-'+layer.id,sceneId:SECOND_STAGE_SCENE.id})));
+
+// Chapter 3 adopts chapter 1's high-altitude scale and three independent
+// cloud planes. Facilities, paths, ledges and shadows share one terrain image;
+// later volcanic chapters retain their existing scene and native bindings.
+export const THIRD_STAGE_SCENE = Object.freeze({
+  ...PERIPHERAL_SCENES[2],id:'volcanic-outpost-restored-balanced',smoothBackground:true,
+  artUrl:`${base}art/stage3-anime-volcano-v1/geothermal.png`,
+  ground:0x565e79,edge:0x9b8da5,accent:0xb76b45,mist:0x99a2b8,
+});
+// Native chapter 3 layer 1 moves at 0.5 units/s. Presentation scale matches
+// chapter 1's 1.6 * 1.21875 ground travel; simulation map data is untouched.
+const VOLCANO_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/.5;
+const volcanoCloudLayer=(firstId,id,name,profile)=>({
+  ...FIRST_STAGE_LAYERS.find(layer=>layer.id===firstId),id,name,nativeLayer:undefined,cloudMotion:profile,
+});
+const THIRD_STAGE_LAYERS=Object.freeze([
+  {id:'volcano-ground',role:'background',name:'地面·玄武岩台地与地热设施',source:'ground',kind:0,
+    fullSceneBase:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
+    nativeLayer:1,motionGroup:'terrain',scrollScale:VOLCANO_TERRAIN_SCROLL_SCALE,depth:-1000,speed:20,opacity:1},
+  {id:'volcano-ash',role:'effects',name:'空气·稀疏余烬',source:'effects',kind:3,effectStyle:2,
+    nativeLayer:0,scrollScale:.6,depth:-35,speed:40,opacity:.025},
+  volcanoCloudLayer('coast-defense-distant-clouds','volcano-distant-clouds','远层·蓝色薄云',COAST_CLOUD_MOTION.far),
+  volcanoCloudLayer('coast-defense-large-clouds','volcano-large-clouds','中层·白色云体',COAST_CLOUD_MOTION.far),
+  volcanoCloudLayer('coast-defense-near-clouds','volcano-near-clouds','近层·掠过云',COAST_CLOUD_MOTION.near),
+].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
+  ...layer,id:'volcanic-outpost-'+layer.id,sceneId:THIRD_STAGE_SCENE.id})));
+
 const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
   [SHARED_COAST_SCENE.id, Object.freeze({ layers: BALANCED_COAST_LAYERS, urls: Object.freeze({
     ...COAST_EXTRA_URLS, islands: `${base}art/project-coast-polished-v2/island-landmarks.png`,
@@ -216,9 +272,24 @@ const balancedByTheme = Object.freeze(Object.fromEntries([...new Set(BALANCED_CH
     depthUrl: `${base}art/project-chapters-balanced-v1/${theme}/depth.png`,
   }),
 ])));
-export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map((theme, index) => index === 0 ? FIRST_STAGE_SCENE : balancedByTheme[theme]));
+export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map((theme, index) => index === 0 ? FIRST_STAGE_SCENE : index === 1 ? SECOND_STAGE_SCENE : index === 2 ? THIRD_STAGE_SCENE : balancedByTheme[theme]));
 export const FIVE_LAYER_SCENES = Object.freeze({
   ...ORIGINAL_FIVE_LAYER_SCENES,
+  [THIRD_STAGE_SCENE.id]:Object.freeze({layers:THIRD_STAGE_LAYERS,urls:Object.freeze({
+    groundAlt:`${base}art/stage3-anime-volcano-v1/fractured-caldera.png`,
+    groundThird:`${base}art/stage3-anime-volcano-v1/extraction-works.png`,
+    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
+    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
+    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
+  })}),
+
+  [SECOND_STAGE_SCENE.id]:Object.freeze({layers:SECOND_STAGE_LAYERS,urls:Object.freeze({
+    groundAlt:`${base}art/stage2-high-altitude-v9/commercial.png`,
+    groundThird:`${base}art/stage2-high-altitude-v9/service-block.png`,
+    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
+    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
+    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
+  })}),
   ...Object.fromEntries(Object.entries(balancedByTheme).filter(([theme]) => theme !== 'coast').map(([theme, scene]) => [
     scene.id, Object.freeze({
       layers: Object.freeze(ORIGINAL_FIVE_LAYER_SCENES[theme].layers.map(layer => Object.freeze({

@@ -1,8 +1,12 @@
 // Presentation-only player-death trial. WeakSet tags never change gameplay fields.
 export const PLAYER_DEATH_TRIAL_ENABLED = true;
 export const PLAYER_DEATH_TEXTURE = 'pathogenic-player-death-trial';
-const playerDeaths = new WeakSet();
-export function markPlayerDeathVisual(effect) { playerDeaths.add(effect); }
+const playerDeaths = new WeakMap();
+export function markPlayerDeathVisual(effect, footprint = 1) {
+  playerDeaths.set(effect, Math.max(.65, Math.min(2.2, Number.isFinite(footprint) ? footprint : 1)));
+}
+// Presentation identity stays out of serialized combat fields and random streams.
+export function playerDeathFootprint(effect) { return playerDeaths.get(effect); }
 export function playerDeathFrame(effect) {
   if (!PLAYER_DEATH_TRIAL_ENABLED || !playerDeaths.has(effect) || effect.age < 0 || !(effect.duration > 0)) return null;
   const t = effect.age / Math.min(.7, effect.duration);

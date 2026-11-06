@@ -79,6 +79,10 @@ test-results/
 !/pixigame/tools/gm.html
 !/pixigame/tools/check-original-ui-art.mjs
 !/pixigame/tools/check-player-state.mjs
+!/pixigame/tools/check-recurring-rewards.mjs
+!/pixigame/tools/check-account-experience.mjs
+!/pixigame/tools/check-battle-gold-rewards.mjs
+!/pixigame/tools/check-battle-material-rewards.mjs
 !/pixigame/tools/audit-replica-snapshot.mjs
 !/pixigame/tools/generate-native-economy.mjs
 !/pixigame/tools/generate-native-weapon-preview.mjs

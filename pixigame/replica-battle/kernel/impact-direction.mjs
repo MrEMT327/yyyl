@@ -1,7 +1,10 @@
 // Cosmetic hit metadata follows the actual collision segment, including a
 // reflected beam. It never edits a projectile, combat angle or random stream.
-export function markImpactDirection(effect, source, segment) {
+const weaponSources=new WeakMap();
+export function impactWeaponSource(effect){return weaponSources.get(effect);}
+export function markImpactDirection(effect, source, segment, defaultFamilyId=0) {
  if(effect.kind!=='hit'||source?.owner!=='player')return effect;
+ weaponSources.set(effect,Object.freeze({familyId:source.familyId||defaultFamilyId,weaponId:source.weaponId||0,modelId:source.modelId||0}));
  let dx=segment?.to?.x-segment?.from?.x,dz=segment?.to?.z-segment?.from?.z;
  let length=Math.hypot(dx,dz);
  if(!Number.isFinite(length)||length<1e-7){dx=source.vx;dz=source.vz;length=Math.hypot(dx,dz);}

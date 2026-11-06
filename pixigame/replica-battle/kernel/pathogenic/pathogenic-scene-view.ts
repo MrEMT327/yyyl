@@ -1,6 +1,7 @@
 import {createSourceMeshShaderData,updateSourceMeshShaderData} from './source-mesh-shader-data.mjs';
 import {updateSourceMeshGeometry} from './source-mesh-update.mjs';
 import Phaser from 'phaser';
+import type {DimensionSwordCut} from './dimension-sword-presentation.mjs';
 import {trimEmitterHistory,VisualMeshPool} from '../combat-readability.mjs';
 import {PathogenicHdrComposite,type PathogenicBloomOptions} from './pathogenic-hdr-composite';
 import {sampleSceneForRender,resolveTexture,resource} from './source-scene-sampler.mjs';
@@ -64,9 +65,10 @@ export class PathogenicSceneView {
   configureDisplay(settings:Readonly<PathogenicBloomOptions>){
     this.display?.configure(settings);this.displaySettings={...settings};
   }
+  dimensionCut(cut:DimensionSwordCut){this.display?.addDimensionCut(cut);}
   beginFrame(time:number){
     if(!this.materials){this.display=new PathogenicHdrComposite(this.scene);if(this.displaySettings)this.display.configure(this.displaySettings);this.snapshot=new PathogenicScreenSnapshot(this.scene);this.capture=this.snapshot.createCaptureObject(29);this.materials=new PathogenicMaterials(this.scene,this.graph,this.snapshot);}
-    if(time<this.clock)this.reset();this.snapshot!.beginFrame();this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();this.diagnostics=[];
+    if(time<this.clock)this.reset();this.display!.clearDimensionCuts();this.snapshot!.beginFrame();this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();this.diagnostics=[];
   }
   draw(id:string,path:string,ctx:Any={}){
     const result:any=sampleSceneForRender(this.graph,path,ctx);
@@ -181,6 +183,6 @@ export class PathogenicSceneView {
     for(const [id,player]of this.players)if(!this.livePlayers.has(id)){player.reset();this.players.delete(id);}
     for(const key of this.histories.keys())if(!this.liveHistories.has(key))this.histories.delete(key);
   }
-  reset(){this.snapshot?.beginFrame();for(const v of this.views.values())v.destroy();this.views.clear();this.meshPool.clear();for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();}
+  reset(){this.display?.clearDimensionCuts();this.snapshot?.beginFrame();for(const v of this.views.values())v.destroy();this.views.clear();this.meshPool.clear();for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();}
   destroy(){this.display?.destroy();this.reset();this.capture?.destroy();this.capture=undefined;this.snapshot?.destroy();}
 }

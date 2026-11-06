@@ -38,7 +38,7 @@ function readyCount(s,period) {
     ?(supply.week.milestones||[supply.week])
     :(supply.activity.milestones||[supply.activity]);
   return rewards.filter(row=>row?.canClaim).length
-    +(period==='weekly'?0:supply.tasks.filter(task=>task.canClaim).length);
+    +(period==='weekly'?(supply.week.tasks||[]).filter(task=>task.canClaim).length:supply.tasks.filter(task=>task.canClaim).length);
 }
 const hasReady=(s,id)=>!s.rewardPending && !s.rewardBusy && (id==='signin'?s.signIn?.canClaim:id==='achievements'?s.achievements?.items?.some(t=>t.claimable):readyCount(s,id)>0);
 
@@ -89,7 +89,7 @@ function signInContent(snapshot,h) {
   const busy=Boolean(snapshot.rewardBusy),pending=Boolean(snapshot.rewardPending);
   const claimedMark=`<img class="dc-signin-claimed-mark" src="${base}art/project-signin-icons-v2/claimed.png" alt="" aria-hidden="true" draggable="false">`;
   const rewardHtml=(item,claimed=false)=>`<span class="dc-signin-reward"${item.id?` data-reward-id="${e(item.id)}"`:''}>${rewardItemSlot({name:item.name||names[item.type]||item.title||'奖励',amount:item.count??item.amount??1,artwork:prizeArt(item,snapshot,h),...rewardDisplayQuality(item),itemId:rewardNativeItemId(item),overlay:claimed?claimedMark:''},h)}</span>`;
-  return `<div class="dc-scroll dc-signin" data-daily-scroll="signin">
+  return `<div class="dc-scroll dc-signin" data-daily-scroll="signin">${signin.gate?.reached===false?`<p class="dc-reset">${e(signin.gate.reason)}</p>`:''}
     <div class="dc-signin-grid">${days.map(day=>{
       const today=day.active&&signin.canClaim&&!pending;
       const items=Array.isArray(day.rewards)&&day.rewards.length?day.rewards:[day];
@@ -124,7 +124,7 @@ export function dailyCenter(snapshot,modal,h) {
 export function dailyActivities(snapshot,h) {
   const {number:n,icon}=h,signin=snapshot.signIn||{},patrol=snapshot.patrol||{};
   const tasks=snapshot.tasks||[];
-  const taskDetail=snapshot.pilotSupply?`每日 ${snapshot.pilotSupply.tasks.filter(t=>t.claimed||t.canClaim).length} / ${snapshot.pilotSupply.tasks.length} · 每周活跃 ${snapshot.pilotSupply.week.days} / 5 天`: `每日 ${tasks.filter(t=>t.type==='daily'&&t.progress>=t.target).length} / ${tasks.filter(t=>t.type==='daily').length} · 每周 ${tasks.filter(t=>t.type==='weekly'&&t.progress>=t.target).length} / ${tasks.filter(t=>t.type==='weekly').length}`;
+  const taskDetail=snapshot.pilotSupply?`每日 ${snapshot.pilotSupply.tasks.filter(t=>t.claimed||t.canClaim).length} / ${snapshot.pilotSupply.tasks.length} · 每周活跃 ${snapshot.pilotSupply.week.points} / 100`: `每日 ${tasks.filter(t=>t.type==='daily'&&t.progress>=t.target).length} / ${tasks.filter(t=>t.type==='daily').length} · 每周 ${tasks.filter(t=>t.type==='weekly'&&t.progress>=t.target).length} / ${tasks.filter(t=>t.type==='weekly').length}`;
   const taskReady=readyCount(snapshot,'daily')+readyCount(snapshot,'weekly')+(snapshot.achievements?.items||[]).filter(t=>t.claimable).length;
   const stored=Math.max(0,patrol.storedMinutes||0);
   const patrolReady=patrol.unlocked && !patrol.clockRollback && !patrol.nativeSettlementPending && Object.values(patrol.rewards||{}).some(v=>v>0);

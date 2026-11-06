@@ -2,8 +2,10 @@ import * as T from 'three';
 import {mapLayerGrade,mapAtmosphereShape,COAST_ISLAND_LAYOUT,COAST_ISLAND_Y_OFFSETS} from './map-scene-polish.js';
 import {createCloudModuleLayer,syncCloudModuleLayer} from './cloud-module-layer.js';
 import {coastalWaterShader} from './coastal-water-shader.js';
+import {lostCitySurfaceShader} from './lost-city-surface-shader.js';
 import {createFloatingPropLayer,syncFloatingPropLayer} from './floating-prop-layer.js';
 import {createRigidTerrainLayer,syncRigidTerrainLayer} from './rigid-terrain-layer.js';
+import {createGroundPropLayer,syncGroundPropLayer} from './ground-prop-layer.js';
 import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
 
 const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
@@ -12,7 +14,7 @@ const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Positio
 const fragmentShader = `
 varying vec2 terrainUv;
 uniform sampler2D artwork;uniform float hasArt;uniform float repeatY;uniform float scroll;
-uniform float sourceWidth;uniform vec2 opening;uniform float opacity;uniform float completeScene;
+uniform float sourceWidth;uniform float sourceHeight;uniform vec2 opening;uniform float opacity;uniform float completeScene;
 uniform vec4 visualGrade;uniform vec2 cloudForm;uniform vec4 bridgePattern;
 uniform float sceneTime;
 #if SHORE_VARIANTS == 1
@@ -29,6 +31,9 @@ uniform vec3 base;uniform vec3 edge;uniform vec3 accent;uniform vec3 mist;unifor
 // authored orientation, while premultiplied interpolation preserves cutout edges.
 #if SHORE_VARIANTS == 1
 vec4 sampleShore(float stripIndex,vec2 uv,vec2 gx,vec2 gy){
+  // Opt-in portrait crop excludes oversized empty tile margins. Keep physical
+  // proportions by using this same height in repeatY and native travel period.
+  uv.y=.5+(uv.y-.5)*sourceHeight;gx.y*=sourceHeight;gy.y*=sourceHeight;
   #if AERIAL_GROUND == 1
   // Fine detail sits below the flight plane. Land and water share one filter.
   gx*=3.5;gy*=3.5;
@@ -83,6 +88,7 @@ vec4 sampleArtwork(vec2 uv){
   #endif
 }
 ${coastalWaterShader}
+${lostCitySurfaceShader}
 void main(){
   vec2 uv=vec2(.5+(terrainUv.x-.5)*sourceWidth,terrainUv.y*repeatY+scroll);
   float cloudDensity=1.;
@@ -126,6 +132,9 @@ void main(){
     // Keep their authored value relationship instead of grading it as far fog.
     #if COASTAL_WATER == 1
     picture.rgb=animateCoastalWater(picture.rgb,originalColor,uv,sceneTime);
+    #endif
+    #if LOST_CITY_SURFACE == 1
+    picture.rgb=animateLostCitySurface(picture.rgb,originalColor,uv,sceneTime);
     #endif
     gl_FragColor=vec4(picture.rgb,1.);
     #else
@@ -220,14 +229,14 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     const definitions=FIVE_LAYER_SCENES[current.id]?.layers || PERIPHERAL_LAYERS;
     layers=definitions.map((definition,index)=>{
       if(definition.modules){
-        const create=definition.rigidTerrain?createRigidTerrainLayer:definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer;
-        const record=create(definition,-1000+index*10);
+        const createLayer=definition.rigidTerrain?createRigidTerrainLayer:definition.groundedProps?createGroundPropLayer:definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer;
+        const record=createLayer(definition,-1000+index*10);
         group.add(record.mesh);
         return record;
       }
       const kind = definition.kind ?? index;
       const material = new T.ShaderMaterial({
-        defines: { AERIAL_GROUND: definition.aerialGround ? 1 : 0, COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
+        defines: { LOST_CITY_SURFACE: definition.lostCitySurface ? 1 : 0, AERIAL_GROUND: definition.aerialGround ? 1 : 0, COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
         uniforms: {
           sceneTime: {value:0},
           visualGrade: {value:new T.Vector4(1,1,0,0)},
@@ -236,7 +245,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
           ...(definition.coastSequence?{thirdArt:{value:null}}:{}),
           ...(definition.layout==='coast-islands'?{islandLayout:{value:COAST_ISLAND_LAYOUT.map(row=>new T.Vector4(...row))},islandOffsets:{value:[...COAST_ISLAND_Y_OFFSETS]}}:{}),
           artwork: { value: null }, hasArt: { value: 0 }, repeatY: { value: definition.length / (definition.width * 1.5) }, scroll: { value: 0 },
-          sourceWidth: { value: definition.sourceWidth }, opening: { value: new T.Vector2(...(definition.opening || [0, 1])) }, opacity: { value: definition.opacity }, completeScene: { value: 0 },
+          sourceHeight: { value: definition.sourceHeight ?? 1 }, sourceWidth: { value: definition.sourceWidth }, opening: { value: new T.Vector2(...(definition.opening || [0, 1])) }, opacity: { value: definition.opacity }, completeScene: { value: 0 },
           base: { value: new T.Color() }, edge: { value: new T.Color() }, accent: { value: new T.Color() }, mist: { value: new T.Color() }, layerTint: { value: new T.Color(definition.tint ?? 0xffffff) },
         },
         transparent: kind > 0, depthWrite: kind === 0, toneMapped: false,
@@ -270,13 +279,13 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       mesh.visible = FIVE_LAYER_SCENES[current.id] ? definition.sceneId === current.id : !definition.sceneId && (!current.singleLayer || definition.id === 'middle');
       if (!mesh.visible) continue;
       if(definition.modules){
-        const sync=definition.rigidTerrain?syncRigidTerrainLayer:definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer;
-        sync(record,textures,current.textureId||current.id,elapsed,layerMotion?.(definition,elapsed,1));
+        const syncLayer=definition.rigidTerrain?syncRigidTerrainLayer:definition.groundedProps?syncGroundPropLayer:definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer;
+        syncLayer(record,textures,current.textureId||current.id,elapsed,layerMotion?.(definition,elapsed,1));
         continue;
       }
       const key = `${current.textureId||current.id}/${definition.source}`;
       const texture = textures.get(key);
-      const aspect = texture ? texture.image.height / texture.image.width : 1.5;
+      const aspect = (texture ? texture.image.height / texture.image.width : 1.5) * (definition.sourceHeight ?? 1);
       const u = material.uniforms;
       u.sceneTime.value=elapsed;
       if(u.alternateArt)u.alternateArt.value=textures.get(`${current.textureId||current.id}/groundAlt`)||texture||null;

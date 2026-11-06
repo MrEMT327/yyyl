@@ -177,7 +177,12 @@
 
 #gui-casual-lobby .ag-combat-attribute .ag-stat-icon {width:7cqw;height:7cqw;object-fit:contain;flex:none}
 
-/* Better-quality replacement is independent of merge, upgrade and selection marks. */
-#gui-casual-lobby .ag-card .ag-better{position:absolute;right:-1px;top:-2px;z-index:4;display:block;width:clamp(17px,5cqw,23px);height:auto;aspect-ratio:1;line-height:0;pointer-events:none;filter:drop-shadow(0 1px 1px #04151bd9)}
-#gui-casual-lobby .ag-card .ag-better>img{display:block;width:100%;height:100%;object-fit:contain}
-#gui-casual-lobby.equipment-reference .ag-page .ag-card.has-better .ag-lock{top:36%;right:6%}
+/* Compact green badges keep upgrade and replacement hints readable over every equipment quality. */
+#gui-casual-lobby .ag-card .ag-gear-notice{position:absolute;right:-1px;top:-2px;z-index:4;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:clamp(16px,4.6cqw,20px);height:auto;aspect-ratio:1;padding:2px;border:1px solid #285a28;border-radius:3px;background:linear-gradient(180deg,#b9f77e,#77d944);box-shadow:inset 0 1px 0 #e0ffb1,inset 0 -1px 0 #52ac2c,0 1px 2px #04151bc4;line-height:0;pointer-events:none}
+#gui-casual-lobby .ag-card .ag-gear-notice>img{display:block;width:100%;height:100%;object-fit:contain;filter:brightness(.27) saturate(.7)}
+#gui-casual-lobby .ag-card .ag-upgrade{animation:ag-upgrade-hop 1.4s ease-in-out infinite}
+#gui-casual-lobby .ag-card .ag-better{padding:1px}
+#gui-casual-lobby .ag-card .ag-replace-glyph{display:block;flex:none;width:100%;height:100%;overflow:visible;fill:#205923}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:is(.has-better,.has-upgrade) .ag-lock{top:36%;right:6%}
+@keyframes ag-upgrade-hop{0%,55%,100%{transform:translateY(0)}25%{transform:translateY(-3px)}}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby .ag-card .ag-upgrade{animation:none}}

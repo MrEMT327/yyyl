@@ -191,6 +191,7 @@ export class Simulation {
   level = 1;
   exp = 0;
   kills = 0;
+  bossKills = 0;
   gold = 0;
   private protectHpRate = 1;
   damageDealt = 0;
@@ -393,7 +394,7 @@ export class Simulation {
   reset() {
     this.protectHpRate = 1;
     this.skillSlashAudioAt = -Infinity;
-    this.phase = 'ready'; this.time = this.clock = this.exp = this.kills = this.gold = this.damageDealt = 0;
+    this.phase = 'ready'; this.time = this.clock = this.exp = this.kills = this.bossKills = this.gold = this.damageDealt = 0;
     this.wave = this.level = 1; this.serial = 1; this.shots = []; this.pendingLevels = 0; this.seed = 0x1badf00d;
     this.playerBulletHurtCount = 0;
     this.rerollsUsed = 0; this.skillChoiceCategory.index = 0; this.breakthroughChoice = false;
@@ -860,7 +861,7 @@ export class Simulation {
     try { effectId = Number(JSON.parse(entity.raw.deathParams || '{}').ExplosionEffectId || 0); } catch {}
     if (effectId) {
       const effect = this.effect('explosion', this.player.x, this.player.z, 1, 1, undefined, effectId);
-      markPlayerDeathVisual(effect);
+      markPlayerDeathVisual(effect, Math.max(.85, nativeShapeRadii(entity.stats.shape).radius * 2) * this.playerScale);
       effect.originalScale = 1;
     }
     if (entity.raw.deadSoundId) this.sounds.push(entity.raw.deadSoundId);
@@ -906,6 +907,7 @@ export class Simulation {
     this.phase = 'playing';
   }
   private advancePresentation(dt: number) {
+    if (this.player.hp <= 0) this.player.hitFlash = Math.max(0, this.player.hitFlash - dt);
     for (const chest of this.treasures) {
       chest.animationAge += dt;
       if (chest.animation === 'Born' && chest.animationAge >= chestAnimations.clips.Born.duration) {
@@ -963,9 +965,10 @@ export class Simulation {
       hasNpc: this.treasures.length > 0, heroDead: this.player.hp <= 0 }));
   }
   advanceResultPresentation(dt: number) {
-    // Let the original smoke finish underneath the result overlay without
-    // advancing battle time, attacks, damage, rewards or upgrade selection.
-    if (this.phase === 'lost') {
+    // Visual tails keep dissipating behind either overlay. No battle clock,
+    // enemies, damage, pickups, rewards or revive quota advance here.
+    if (this.phase === 'lost' || this.phase === 'revive') {
+      this.player.hitFlash = Math.max(0, this.player.hitFlash - dt);
       for (const fx of this.effects) fx.age += dt;
       this.effects = this.effects.filter(fx => fx.age < fx.duration);
     }
@@ -2243,7 +2246,15 @@ export class Simulation {
         const shot = nativeSwordCompletionShot(this.player, event.point || target || this.player);
         const replacements = this.installedWeaponActions.get(familyId) || [];
         const weaponId = replacements.filter(c => c.kind === 'replaceWeapon' && c.args.SrcWeaponId === args.WeaponId).reduce((id, c) => Number(c.args.DestWeaponId), Number(args.WeaponId));
-        fire(weaponId, shot.origin, shot.yawDegrees * Math.PI / 180); return;
+        // WeaponFire owns the native salvo. The upgraded 200103 wave has
+        // WeaponSalvoMod(Count=3); directly creating a bullet loses two waves.
+        const firstShot = this.shots.length;
+        this.queueWeapon(weaponId, 'player', shot.origin, 0, this.player.attack, shot.yawDegrees * Math.PI / 180, undefined, 0, fireFamilyId);
+        for (const queued of this.shots.slice(firstShot)) {
+          queued.origin = { ...shot.origin }; queued.anchor = undefined; queued.localAnchor = false;
+          queued.flags = 0x88; queued.fireEvent = false;
+        }
+        return;
       }
       case 90:
         this.voidSlashes ??= new NativeVoidSlashRuntime({ random: () => this.random(), fire: (weaponId, origin, yawDegrees, flags) => { fire(weaponId, origin, yawDegrees * Math.PI / 180, undefined, flags); } });
@@ -3686,7 +3697,7 @@ export class Simulation {
           const bulletConfig = this.content.chapter.bullets[b.bulletId]?.parameters;
           const segmentIndex = Math.min(segments.length - 1, Math.floor(hit.at));
           const segment = segments[segmentIndex], contactTime = hit.at - segmentIndex;
-          if (bulletConfig?.hitCharacterPrefabId && segment) markImpactDirection(markWeaponSkinEffect(markSwordHitVisual(markIceSawHitVisual(markBlackHoleHitVisual(markScorchHitVisual(markLaserHitVisual(markMagneticHitVisual(markIceHitVisual(markAcidHitVisual(this.effect('hit', lerp(segment.from.x, segment.to.x, contactTime), lerp(segment.from.z, segment.to.z, contactTime), .16, .8, undefined, bulletConfig.hitCharacterPrefabId), b), b), b), b), b), b), b), b),b,this.content.chapter.player.weaponEntityId),b,segment);
+          if (bulletConfig?.hitCharacterPrefabId && segment) markImpactDirection(markWeaponSkinEffect(markSwordHitVisual(markIceSawHitVisual(markBlackHoleHitVisual(markScorchHitVisual(markLaserHitVisual(markMagneticHitVisual(markIceHitVisual(markAcidHitVisual(this.effect('hit', lerp(segment.from.x, segment.to.x, contactTime), lerp(segment.from.z, segment.to.z, contactTime), .16, .8, undefined, bulletConfig.hitCharacterPrefabId), b), b), b), b), b), b), b), b),b,this.content.chapter.player.weaponEntityId),b,segment,this.content.chapter.player.weaponEntityId);
           const hurtType = nativeHurtTypeFromExpressions(bulletConfig?.hurtAttributes);
           if (damageAccepted && !b.damageDisabled && hurtType !== undefined)
             this.damageEnemy(hit.enemy, damage, critical, b.familyId, Number(bulletConfig?.Element || 0), Number(b.traits ?? bulletConfig?.BulletTrait ?? 0), b, hurtType, hitAttributes);
@@ -3848,7 +3859,7 @@ export class Simulation {
     this.sameTargetCombos.forgetTarget(e.uid);
     // AddKillCount always increments KillCount. AttackerType.Self(5) only
     // suppresses RealKillCount, which supplies the visible kill statistic.
-    if (!self) this.kills++;
+    if (!self) {this.kills++;if(e.boss)this.bossKills++;}
     this.removeMonsterSkills(e.uid);
     this.statuses.clear(e.uid);
     e.deathAge = 0;

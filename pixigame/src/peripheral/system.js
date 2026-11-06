@@ -9,6 +9,8 @@ import { nativeStarRewardSnapshot, planNativeStarClaim } from '../replica/native
 import { nativeAchievementSnapshot } from '../replica/native-achievements.js';
 import { BATTLE_MATERIAL_POLICY, battleMaterialSnapshot, prepareBattleMaterialRewards } from '../replica/battle-material-rewards.js';
 import { planNativeSettlement } from '../replica/native-settlement.js';
+import {prepareBattleGoldSettlement} from '../replica/battle-gold-rewards.js';
+import {createAccountExperience,accountExperienceSnapshot,planAccountBattleExperience,planAccountExperienceRepair} from '../replica/account-experience.js';
 import { assessReplicaBattle, countStars as countReplicaStars } from '../replica/native-battle-rating.js';
 import { nativeEconomyView, NATIVE_PENDING_ECONOMY_ACTIONS, NATIVE_PENDING_ECONOMY_MESSAGE } from '../replica/native-economy-availability.js';
 import { flightDay, flightLedger, flightRewardsSnapshot, planFlightReward, flightRewardView } from '../replica/flight-rewards.js';
@@ -26,7 +28,7 @@ import { UNLIMITED_RESOURCES, DEVELOPMENT_BALANCE } from '../development-resourc
 import { planDeveloperCurrency } from '../developer-tools.js';
 import { prepareDevelopmentInventory } from '../replica/development-inventory.js';
 import { prepareDevelopmentUnlocks } from '../replica/development-unlocks.js';
-import { pilotSupplySnapshot, planPilotSupply, recordPilotSupplyBattle, recordPilotSupplyUpgrade, addPilotSupplyCredits } from '../replica/pilot-supply.js';
+import { pilotSupplySnapshot, planPilotSupply, recordPilotSupplyBattle, recordPilotSupplyUpgrade, recordPilotSupplyEvent, addPilotSupplyCredits } from '../replica/pilot-supply.js';
 import { initializeSamplePatrol, samplePatrolSnapshot, planSamplePatrol } from '../replica/sample-patrol.js';
 import { COMMON_WEAPONS, commonWeaponStats } from '../fixed-parts/common-weapons.js';
 import { weaponLevelCap, weaponLevelLimitMessage } from '../fixed-parts/weapon-progression-config.js';
@@ -183,6 +185,12 @@ export function createPeripheralSystem({
     }
     const week = weekKey(currentTime());
     if (!state.weekly || week > state.weekly.date) { state.weekly = { date: week, counters: {}, claimed: [] }; persist(); }
+    const taskDay=flightDay(currentTime());
+    if(state.replicaLoadout&&(!state.pilotSupply?.week?.loginDays?.includes(taskDay)||state.pilotSupply.daily?.day!==taskDay)){
+      const before=state.pilotSupply;
+      try{state.pilotSupply=recordPilotSupplyEvent(before,currentTime());if(!persist())state.pilotSupply=before;}
+      catch(error){storageWarning=error.message;}
+    }
     if (state.shop?.pending || state.starRewards?.pending) return; // Do not regenerate a wallet with an unsettled receipt.
     const elapsed = Math.max(0, currentTime() - state.staminaUpdatedAt);
     const ticks = Math.floor(elapsed / STAMINA_INTERVAL_MS);
@@ -339,6 +347,18 @@ export function createPeripheralSystem({
   if (JSON.stringify(nativeCampaign) !== JSON.stringify(state.replicaCampaign)) {
     state.replicaCampaign = nativeCampaign; persist();
   }
+  function syncAccountExperience(){
+    if(!storageCurrent()||(state.replicaAccountExperience?.defeatExperienceRestored===true&&state.replicaAccountExperience?.quitExperienceRestored===true)
+      ||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    try{
+      const plan=planAccountExperienceRepair(state.replicaLoadout,state.replicaInventory,state.equipment,state.replicaAccountExperience,state.replicaCampaign,state.replicaResults);
+      const previous=state,next=copy(state);
+      if(plan){next.replicaLoadout=plan.progression;next.replicaInventory=plan.inventory;next.equipment=plan.gear;}
+      next.replicaAccountExperience=plan?.account??createAccountExperience(state.replicaLoadout);
+      state=next;if(!persist())state=previous;
+    }catch(error){storageWarning=error.message;}
+  }
+  syncAccountExperience();
   try {
     const next=planNativeLabSynchronization(state.replicaLoadout,state.replicaInventory,state.replicaCampaign);
     if(next){
@@ -439,6 +459,10 @@ export function createPeripheralSystem({
       const marked=nextShop.pending&&!state.shop?.pending
         ? {...nextShop,pending:{...nextShop.pending,walletSource:REPLICA_WALLET_SOURCE}} : nextShop;
       const next = {...state,shop:marked};
+      if(nextShop.pending&&!state.shop?.pending&&nextShop.pending.taskEvent?.shopPurchases){
+        try{next.pilotSupply=recordPilotSupplyEvent(state.pilotSupply,currentTime(),{shopPurchases:nextShop.pending.taskEvent.shopPurchases});}
+        catch{return false;}
+      }
       return saveDailyState(next);
     },
     applyWallet:receipt=>{
@@ -734,10 +758,13 @@ export function createPeripheralSystem({
   function saveSamplePatrolPlan(plan) {
     if (!storageCurrent()) return fail(storageWarning);
     // One save commits native items, timer/fractions, daily uses and stamina.
-    const before=[state.samplePatrol,state.replicaInventory,state.stamina];
-    state.samplePatrol=plan.ledger;state.replicaInventory=plan.inventory;state.stamina-=plan.staminaCost;
+    let supply;
+    try{supply=recordPilotSupplyEvent(state.pilotSupply,currentTime(),{patrolClaims:1,staminaSpent:plan.staminaCost});}
+    catch(error){return fail(error.message);}
+    const before=[state.samplePatrol,state.replicaInventory,state.stamina,state.pilotSupply];
+    state.samplePatrol=plan.ledger;state.replicaInventory=plan.inventory;state.stamina-=plan.staminaCost;state.pilotSupply=supply;
     if(!persist()){
-      [state.samplePatrol,state.replicaInventory,state.stamina]=before;
+      [state.samplePatrol,state.replicaInventory,state.stamina,state.pilotSupply]=before;
       return fail('巡逻奖励未能保存，请重试；本次未扣体力');
     }
     onChange();return pass('巡逻奖励已存入库存',{title:plan.title,rewards:plan.rewards});
@@ -1044,6 +1071,10 @@ export function createPeripheralSystem({
         next.daily.counters.upgrades=integer(next.daily.counters.upgrades)+levels;
         next.weekly.counters.upgrades=integer(next.weekly.counters.upgrades)+levels;
       }
+      if(operation==='supply'){
+        try{next.pilotSupply=recordPilotSupplyEvent(next.pilotSupply,currentTime(),{boxesOpened:Number(payload.count||1)});}
+        catch(error){return fail(error.message);}
+      }
       next.replicaInventory=plan.inventory;
       const before=state;state=next;
       if(!persist()){state=before;return fail('装备操作未能保存，材料未扣除');}
@@ -1280,10 +1311,10 @@ export function createPeripheralSystem({
         ...loadout.statModifiers.gearModifiers.sources.map(source=>({type:'equipment',...copy(source)})),
         ...loadout.weapons.map(w => ({ type: w.innate ? 'innate' : 'weapon', id: w.id, itemId: w.itemId, slots: [...w.slots], level: w.level, qualityRank: w.qualityRank }))] });
     if (engine === 'danke-replica-v1' && !trial) {
-      const before = { stamina: state.stamina, replicaMainline: state.replicaMainline, replicaInterruptedSortie: state.replicaInterruptedSortie };
+      const before = { stamina: state.stamina, replicaMainline: state.replicaMainline, replicaInterruptedSortie: state.replicaInterruptedSortie, pilotSupply:state.pilotSupply };
       state.replicaInterruptedSortie = {snapshot:copy(snapshot)};
       state.replicaMainline = true;
-      if (!UNLIMITED_RESOURCES) state.stamina -= SORTIE_STAMINA;
+      if (!UNLIMITED_RESOURCES) {state.stamina -= SORTIE_STAMINA;state.pilotSupply=recordPilotSupplyEvent(state.pilotSupply,currentTime(),{staminaSpent:SORTIE_STAMINA});}
       if (!persist()) { Object.assign(state, before); return fail('出击记录未保存，请重试'); }
     } else if (!trial && !UNLIMITED_RESOURCES) {
       const before = state.stamina; state.stamina -= SORTIE_STAMINA;
@@ -1302,9 +1333,16 @@ export function createPeripheralSystem({
     if (legacy && profile.coins !== pending.coinsBefore && profile.coins !== pending.coinsAfter) {
       storageWarning = '复刻战斗奖励余额待核对'; return false;
     }
-    let settlement, protection;
+    let settlement, protection, accountExperience;
     try { if (!state.processedRuns.includes(pending.result.runId)) {
       settlement = planNativeSettlement(state.replicaInventory, state.equipment, state.replicaFirstClearClaims, pending.result, state.replicaBattleMaterials);
+      const repair=planAccountExperienceRepair(state.replicaLoadout,settlement.inventory,settlement.gear,state.replicaAccountExperience,state.replicaCampaign,state.replicaResults);
+      accountExperience=planAccountBattleExperience(repair?.progression??state.replicaLoadout,repair?.inventory??settlement.inventory,
+        repair?.gear??settlement.gear,repair?.account??state.replicaAccountExperience,pending.result);
+      if(repair){
+        if(accountExperience){accountExperience.rewards=[...repair.rewards,...accountExperience.rewards];accountExperience.transition.recoveredExperience=repair.transition.experience;}
+        else accountExperience=repair;
+      }
       if(pending.result.failureProtectionPolicyVersion===LOCAL_FAILURE_PROTECTION_VERSION)
         protection=recordLocalFailureProtection(state.localFailureProtection,pending.result);
     } }
@@ -1313,17 +1351,22 @@ export function createPeripheralSystem({
     catch { storageWarning = '复刻战斗奖励待保存'; return false; }
     const before = copy(state);
     if (!state.processedRuns.includes(pending.result.runId)) {
-      state.replicaInventory = settlement.inventory;
-      state.equipment = settlement.gear;
+      state.replicaInventory = accountExperience?.inventory??settlement.inventory;
+      state.equipment = accountExperience?.gear??settlement.gear;
+      if(accountExperience){
+        state.replicaLoadout=accountExperience.progression;state.replicaAccountExperience=accountExperience.account;
+        pending.result.accountExperience=accountExperience.transition;
+      }
       state.replicaFirstClearClaims = settlement.claims;
       state.replicaBattleMaterials = settlement.materials;
       if(protection)state.localFailureProtection=protection;
-      pending.result.settlementRewards = settlement.rewards;
+      state.replicaAccountExperience??=createAccountExperience(state.replicaLoadout);
+      pending.result.settlementRewards = [...settlement.rewards,...(accountExperience?.rewards||[])];
       state.processedRuns.push(pending.result.runId); state.processedRuns = state.processedRuns.slice(-50);
       state.replicaResults ||= []; state.replicaResults.push(pending.result); state.replicaResults = state.replicaResults.slice(-50);
       if (!pending.result.trial && !pending.result.abandoned && pending.result.endReason !== 'quit') {
         const time=currentTime();
-        try{state.pilotSupply=recordPilotSupplyBattle(state.pilotSupply,time,{won:pending.result.won,taskCounters:taskCounters(time)});}
+        try{state.pilotSupply=recordPilotSupplyBattle(state.pilotSupply,time,{won:pending.result.won,kills:pending.result.kills??0,bossKills:pending.result.bossKills??0,taskCounters:taskCounters(time)});}
         catch(error){state=before;storageWarning=error.message;return false;}
         count('sorties'); if (pending.result.won) count('victories');
       }
@@ -1348,17 +1391,24 @@ export function createPeripheralSystem({
     if(!trial&&!abandoned&&result.endReason!=='quit'
       &&(!Number.isInteger(result.wave)||result.wave<1||result.wave>chapter.waveCount
         ||result.won&&result.wave!==chapter.waveCount))return fail('战斗波次与出击关卡不一致');
-    const record = { ...copy(result), runId, trial, abandoned, won: Boolean(result.won) && !abandoned,
+    const record = { ...copy(result), runId, trial, abandoned, won: Boolean(result.won) && !abandoned && result.endReason!=='quit',
       failureProtectionPolicyVersion:LOCAL_FAILURE_PROTECTION_VERSION, nativeDefeatCount:activeSortie.snapshot.nativeDefeatCount,
       materialPolicyVersion:BATTLE_MATERIAL_POLICY.version,
       chapterId: chapter.id, stageIndex: chapter.stageIndex, replicaConfiguration: copy(activeSortie.snapshot.replicaConfiguration) };
-    record.localMaterialRewards=prepareBattleMaterialRewards(record);
-    record.collectedGold=Math.floor(gold);
-    // The reported gold already comes from native battle pickup accounting.
+    try{record.localMaterialRewards=prepareBattleMaterialRewards(record);}
+    catch(error){return fail(error.message);}
+    // Battle input is pickup gold. Freeze the approved chapter-7 progress
+    // reward into this pending receipt; recovery must never recalculate it.
+    let battleGold;
+    try{battleGold=prepareBattleGoldSettlement({...record,gold});}
+    catch(error){return fail(error.message);}
+    record.collectedGold=battleGold.collectedGold;
+    record.gold=battleGold.gold;
+    delete record.progressGoldReward;
+    if(battleGold.progressGoldReward)record.progressGoldReward=battleGold.progressGoldReward;
     // BattleGold% is not a second multiplier over ordinary collected coins.
     delete record.battleGoldCompatibilityVersion;
     delete record.battleGoldBonus;
-    record.gold=record.collectedGold;
     const assessment=assessReplicaBattle(record);
     // Recompute from the simulation's outcome; do not trust a posted star mask.
     Object.assign(record,assessment||{starMask:0,stars:0,starObjectives:[]});
@@ -1461,7 +1511,7 @@ export function createPeripheralSystem({
   function snapshot() {
     if (storageCurrent()) {
       syncDay(); if(!state.dailyRewardReceipt && !unsavedPatrolReward)syncPilotUnlocks(); syncSamplePatrol();
-      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();
+      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();syncAccountExperience();
       if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !unsavedPatrolReward && !state.firstClearWeaponClaimed) claimStageOneWeapon();
     }
     const flightRewards = state.flightRewards ?? flightLedger(null,loadDailyLoginState(storage));
@@ -1505,6 +1555,7 @@ export function createPeripheralSystem({
     const identity = nativeCollectionIdentity(nativeCollection,state);
     return nativeEconomyView({
       version: 1, playerName:nativePlayerIdentity(state.replicaPlayerIdentity,profile.playerName).name,
+      accountExperience:accountExperienceSnapshot(state.replicaLoadout,state.replicaAccountExperience),
       playerRename:nativePlayerRenameQuote(state.replicaPlayerIdentity,state.replicaInventory,profile.playerName), ...identity,
       fleet:{revision:state.fleet.revision,mode:state.fleet.mode,...currentFleetBanks(),recruitPresentation:copy(state.fleet.recruitPresentation||null)},
       wallet: { ...replicaResourceWallet(state.replicaInventory), stamina: UNLIMITED_RESOURCES ? DEVELOPMENT_BALANCE : state.stamina,

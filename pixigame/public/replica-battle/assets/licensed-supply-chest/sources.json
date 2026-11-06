@@ -21,5 +21,21 @@
       1345,
       1170
     ]
+  },
+  "frontViewV3": {
+    "file": "military-green-front-v3.png",
+    "derivedFrom": "military-green-front-v2.png",
+    "author": "CraftPix.net 2D Game Assets",
+    "source": "https://opengameart.org/content/different-sci-fi-item-icons",
+    "license": "OGA-BY-3.0",
+    "licenseUrl": "https://static.opengameart.org/OGA-BY-3.0.txt",
+    "changes": "AI-assisted medium-detail redraw: retain two reinforcing bands, four corner guards and a central gold clasp; remove dense ribs, camouflage, nested frames and tiny decorations. Transparent front view; runtime size and arrival light unchanged.",
+    "tool": "OpenAI built-in image_gen",
+    "date": "2026-11-06",
+    "canvas": [
+      1345,
+      1170
+    ],
+    "sha256": "46145f01d62c6ba7e0b19fda289ddcde3084e2bb7d2fa9759de7a6df4c8fe6fb"
   }
 }

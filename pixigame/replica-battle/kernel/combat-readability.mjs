@@ -1,4 +1,5 @@
 import {damageTextPresentation} from './combat-hit-presentation.mjs';
+import {weaponImpactStyle} from './weapon-impact-style.mjs';
 // Presentation only. These values never enter simulation or collision data.
 export const COMBAT_LAYERS=Object.freeze({area:30,playerShot:32,impact:34,player:37,status:38,text:42,enemyShot:44,warning:47});
 export function playerVisibility(clock,invincible,phantom=false){
@@ -20,9 +21,10 @@ export class HitSparkAdmission {
     for(const [key,rows]of this.cells){const live=rows.filter(r=>clock-r.at<=SPARK_INTERVAL);if(live.length)this.cells.set(key,live);else this.cells.delete(key);}
   }
   accepts(fx,point){
-    if(fx.kind!=='hit'||!CONTACT_MODELS.has(fx.modelId??0))return true;
+    const style=weaponImpactStyle(fx);
+    if(fx.kind!=='hit'||(!CONTACT_MODELS.has(fx.modelId??0)&&!style))return true;
     const known=this.events.get(fx.uid);if(known)return known.allowed;
-    const valid=Number.isFinite(point.x)&&Number.isFinite(point.y),family=contactFamily(fx.modelId??0);
+    const valid=Number.isFinite(point.x)&&Number.isFinite(point.y),family=style==='ice'?'cold':style||contactFamily(fx.modelId??0);
     const cx=Math.floor(point.x/SPARK_RADIUS),cy=Math.floor(point.y/SPARK_RADIUS);let nearby=0,same=false;
     if(valid)for(let x=cx-1;x<=cx+1;x++)for(let y=cy-1;y<=cy+1;y++)for(const row of this.cells.get(x+':'+y)||[]){
       if(this.clock-row.at<SPARK_INTERVAL&&(row.x-point.x)**2+(row.y-point.y)**2<=SPARK_RADIUS**2){nearby++;if(row.family===family)same=true;}

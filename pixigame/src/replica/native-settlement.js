@@ -7,8 +7,9 @@ import { gearName } from '../peripheral/equipment-system.js';
 import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { replicaInventoryAfterSettlement, validateReplicaInventory } from './native-economy.js';
 
-// Request gold is earned battle gold, not a cloud win/loss bonus. The only
-// fixed grants come from Chapter_MainChapter.FirstReward. Repeat material settlement is unverified; FinishReward is not treated as a server grant table.
+// Result gold is the durable total prepared from pickups and any approved
+// local progress curve. FirstReward remains once-only; FinishReward is not
+// treated as a server grant table for unverified repeat materials.
 export function planNativeSettlement(rawInventory, rawGear, rawClaims, result, rawMaterials) {
   const inventory=replicaInventoryAfterSettlement(rawInventory,result);
   const claims=structuredClone(rawClaims ?? {});

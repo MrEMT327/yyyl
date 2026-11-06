@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import {DIMENSION_CUT_LIMIT,type DimensionSwordCut} from './dimension-sword-presentation.mjs';
+import {DIMENSION_SWORD_GLSL} from './dimension-sword-shader.mjs';
 import {makeFloatTarget} from './pathogenic-float-target';
 import {PATHOGENIC_DISPLAY_PROFILE,type PathogenicDisplayProfile} from './pathogenic-display-profile';
 import {GLES_GLOW_GLSL} from './pathogenic-color-math.mjs';
@@ -20,6 +22,13 @@ export class PathogenicHdrComposite {
   private savedAddBlend:any;
   private program?:WebGLProgram;private buffer?:WebGLBuffer;
   private uniforms=new Map<string,WebGLUniformLocation|null>();
+  private dimensionCuts:DimensionSwordCut[]=[];
+  clearDimensionCuts(){this.dimensionCuts.length=0;}
+  addDimensionCut(cut:DimensionSwordCut){
+    const previous=this.dimensionCuts.findIndex(c=>c.uid===cut.uid);
+    if(previous>=0)this.dimensionCuts[previous]=cut;
+    else{if(this.dimensionCuts.length>=DIMENSION_CUT_LIMIT)this.dimensionCuts.shift();this.dimensionCuts.push(cut);}
+  }
   private objects:Phaser.GameObjects.Extern[]=[];
   private r:Phaser.Renderer.WebGL.WebGLRenderer;
   private profile:PathogenicDisplayProfile={...PATHOGENIC_DISPLAY_PROFILE};
@@ -47,7 +56,7 @@ export class PathogenicHdrComposite {
     if(this.started)(this.r as any).blendModes[Phaser.BlendModes.ADD]=this.savedAddBlend;
     this.started=false;this.destination=null;
   }
-  private onContextRestored(){this.program=undefined;this.buffer=undefined;this.uniforms.clear();this.started=false;}
+  private onContextRestored(){this.program=undefined;this.buffer=undefined;this.uniforms.clear();this.dimensionCuts.length=0;this.started=false;}
   private compile(){
     if(this.program)return;const gl=this.r.gl;
     const compile=(type:number,source:string)=>{const shader=gl.createShader(type)!;gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS))throw Error('HDR shader: '+gl.getShaderInfoLog(shader));return shader;};
@@ -56,6 +65,7 @@ export class PathogenicHdrComposite {
 varying vec2 vUv;uniform sampler2D uInput;uniform sampler2D uScene;
 uniform vec2 uPixel;uniform float uMode;uniform vec4 uFilter;uniform float uIntensity;uniform float uExposure;
 ${GLES_GLOW_GLSL}
+${DIMENSION_SWORD_GLSL}
 ${this.prefilterBrightPixels?`// Project first-chapter bloom: select hot source pixels before spatial mixing.
 vec3 projectBloomTap(vec2 uv){
   vec3 c=texture2D(uInput,uv).rgb;float peak=max(c.r,max(c.g,c.b));
@@ -73,7 +83,7 @@ void main(){
  else if(uMode<1.5){${this.prefilterBrightPixels?'gl_FragColor=projectBloomDownsample();':'vec4 c=godotGlowDownsample(uInput,vUv,uPixel);c.rgb=godotGlowFilter(c.rgb,uFilter.x,uFilter.y,uFilter.z,uFilter.w);gl_FragColor=c;'}}
  else if(uMode<2.5)gl_FragColor=godotGlowDownsample(uInput,vUv,uPixel);
  else if(uMode<3.5)gl_FragColor=godotGlowUpsample(uInput,vUv,uPixel);
- else {vec4 c=texture2D(uScene,vUv);vec3 glow=godotGlowUpsample(uInput,vUv,uPixel).rgb;gl_FragColor=vec4(godotGlowResolve(c.rgb,glow,uIntensity),c.a);}
+ else gl_FragColor=dimensionResolve();
 }`);
     const program=gl.createProgram()!;gl.attachShader(program,vertex);gl.attachShader(program,fragment);gl.bindAttribLocation(program,0,'aPosition');gl.linkProgram(program);
     gl.deleteShader(vertex);gl.deleteShader(fragment);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('HDR program: '+gl.getProgramInfoLog(program));
@@ -94,6 +104,15 @@ void main(){
     gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,mode===4?this.world!.texture.webGLTexture:input.webGLTexture);gl.uniform1i(this.uniform('uScene'),1);
     gl.uniform2f(this.uniform('uPixel'),1/width,1/height);gl.uniform1f(this.uniform('uMode'),mode);
     const p=this.profile;gl.uniform4f(this.uniform('uFilter'),p.threshold,p.scale,p.bloom,p.cap);gl.uniform1f(this.uniform('uIntensity'),p.glowEnabled?p.intensity:0);gl.uniform1f(this.uniform('uExposure'),mode===0?p.exposure:1);
+    if(mode===4){
+      gl.uniform1f(this.uniform('uDimensionCount'),this.dimensionCuts.length);
+      gl.uniform2f(this.uniform('uDimensionViewport'),this.scene.scale.width,this.scene.scale.height);
+      for(let i=0;i<this.dimensionCuts.length;i++){const cut=this.dimensionCuts[i];
+        gl.uniform4fv(this.uniform(`uDimensionLine[${i}]`),cut.line);
+        gl.uniform4fv(this.uniform(`uDimensionShape[${i}]`),cut.shape);
+        gl.uniform4fv(this.uniform(`uDimensionStyle[${i}]`),cut.style);
+      }
+    }
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4);this.diagnostics.passes++;
   }
   private raw(action:()=>void){
@@ -142,6 +161,6 @@ void main(){
     this.started=false;this.diagnostics.frames++;
   }
   private freeTargets(){this.world?.destroy();this.world=undefined;for(const t of [...this.down,...this.up])t.destroy();this.down=[];this.up=[];if(this.base)this.r.deleteTexture(this.base);this.base=undefined;}
-  destroy(){if(this.destroyed)return;this.destroyed=true;for(const object of this.objects)object.destroy();this.objects=[];this.r.off('losewebgl',this.onContextLost,this);this.r.off('restorewebgl',this.onContextRestored,this);this.freeTargets();const gl=this.r.gl;if(this.program)gl.deleteProgram(this.program);if(this.buffer)gl.deleteBuffer(this.buffer);}
+  destroy(){if(this.destroyed)return;this.destroyed=true;for(const object of this.objects)object.destroy();this.objects=[];this.dimensionCuts.length=0;this.r.off('losewebgl',this.onContextLost,this);this.r.off('restorewebgl',this.onContextRestored,this);this.freeTargets();const gl=this.r.gl;if(this.program)gl.deleteProgram(this.program);if(this.buffer)gl.deleteBuffer(this.buffer);}
 }
 

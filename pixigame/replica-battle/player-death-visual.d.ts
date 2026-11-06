@@ -3,7 +3,8 @@ import type { HitVisualEffect, ImageVisualScene, ScreenPoint, VisualLoaderScene,
 
 export const PLAYER_DEATH_TRIAL_ENABLED: true;
 export const PLAYER_DEATH_TEXTURE: 'pathogenic-player-death-trial';
-export function markPlayerDeathVisual(effect: object): void;
+export function markPlayerDeathVisual(effect: object, footprint?: number): void;
+export function playerDeathFootprint(effect: object): number | undefined;
 export function playerDeathFrame(effect: Pick<Effect, 'age' | 'duration'>): number | null;
 export function preloadPlayerDeathVisual(scene: VisualLoaderScene): void;
 export function drawPlayerDeathVisual(scene: ImageVisualScene, effect: HitVisualEffect, point: ScreenPoint, px: number, objects: VisualObjectMap, live: Set<string>): boolean;

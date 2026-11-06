@@ -50,10 +50,14 @@ export function updateFlightFighter(fighter,clock,pose){
     if(saved.throttle!==undefined)saved.object.material.uniforms.uThrottle.value=saved.throttle;
   }
   const quiet=1-clamp(pose.thrust,0,1)*.7;
-  fighter.updateAircraft(clock,{bank:pose.bank+Math.sin(clock*1.65)*.018*quiet,
+  // A barrel roll owns lateral attitude for the flight. Its serial stays set
+  // after completion, so a held drag cannot add a second bank on the next frame.
+  // Keep pitch/thrust feedback, but end every whole revolution exactly level.
+  const rollOwnsBank=(pose.rollSerial||0)>0;
+  fighter.updateAircraft(clock,{bank:rollOwnsBank?0:pose.bank+Math.sin(clock*1.65)*.018*quiet,
     pitch:pose.pitch+Math.sin(clock*1.2+.4)*.012*quiet,roll:pose.roll||0,
     ...(runtime?.asset.solid.userData.cleanAircraftSurface?{boost:pose.thrust>.6}:{} )});
-  fighter.object3D.rotation.y=Math.sin(clock*1.4)*.018*quiet;
+  fighter.object3D.rotation.y=rollOwnsBank?0:Math.sin(clock*1.4)*.018*quiet;
   if(!runtime)return;
   const thrust=clamp(pose.thrust,0,1),saved=[];
   for(const [index,jet]of runtime.jets.entries()){

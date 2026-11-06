@@ -4,6 +4,7 @@ import './interface-clarity.css';
 import { developerSkillsEnabled, setDeveloperSkillsEnabled } from '../developer-battle-settings.js';
 import { researchArt } from './research-art.js';
 import {createLobbyOnboarding} from './lobby-onboarding.js';
+import {qualityDisplayLabel} from './quality-display-label.js';
 import { nativeRewardPresentation } from '../replica/native-item-presentation.js';
 import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
 import {rewardItemSlot} from './reward-item-slot.js';
@@ -119,6 +120,7 @@ import './flat-sections.css';
 import {dockGearActions} from './modal-action-layout.js';
 import {playerInfoPanel, PLAYER_INFO_TABS} from './player-info.js';
 import './player-info.css';
+import './small-text.css';
 
 const TABS = [{ id: 'shop', title: '商城', icon: 'shop' }, { id: 'assembly', title: '装备', icon: 'weapon' }, { id: 'battle', title: '战役', icon: 'plane' }, { id: 'research', title: '科技研究', icon: 'research' }, { id: 'supply', title: '招募', icon: 'crate' }];
 const QUALITIES = ['#9baebd', '#66c58d', '#62bdf5', '#b584ed', '#ffc864', '#f4769c'];
@@ -365,7 +367,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       const artwork = gearImage || (ownResource ? img(`${import.meta.env.BASE_URL}art/${ownResource}.png`,'','pl-icon') : '') || thumbnail(id) || icon(({ aircraft:'plane', weapon:'weapon' })[type] || 'crate');
       const name=native.name || resourceName || r.name || known?.aircraftName || known?.name || '补给';
       const interactive=projectAssets&&r.gearUid;
-      const tag=interactive?'button':'div',action=interactive?`type="button" data-action="gearDetail" data-id="${escape(r.gearUid)}" aria-label="${escape(name)}，${escape(quality.qualityName)}，查看当前装备"`:'';
+      const tag=interactive?'button':'div',action=interactive?`type="button" data-action="gearDetail" data-id="${escape(r.gearUid)}" aria-label="${escape([name,qualityDisplayLabel(quality.qualityName,quality.qualityKnown),'查看当前装备'].filter(Boolean).join('，'))}"`:'';
       const slot=rewardItemSlot({name,amount:r.amount??r.count??1,artwork,...quality,itemId:rewardNativeItemId(r)??id},{escape});
       return `<${tag} class="pl-reward-item" data-reward-resource="${escape(type)}" data-reward-rank="${rank}" ${action}>${slot}<b>${escape(name)}</b>${r.receiptStatus?`<small>${escape(r.receiptStatus)}</small>`:''}</${tag}>`;
     }
@@ -960,7 +962,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(action==='flightReward'){await act('flightReward',{action:target.dataset.operation,revision:Number(target.dataset.revision)});return;}
     if(action==='pilotSupply'){
       await act('pilotSupply',{action:target.dataset.operation,count:target.dataset.count===undefined?undefined:Number(target.dataset.count),
-        id:target.dataset.operation==='task'?id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
+        id:['task','weeklyTask'].includes(target.dataset.operation)?id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
     }
     if(action==='nativeWeaponSkinSelect'){
       const rows=snapshot.replicaCollection?.guns||[],current=rows.find(row=>row.id===Number(modal?.id)),next=rows.find(row=>row.id===Number(id));
@@ -1145,6 +1147,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         else if(['guns','skins','pilots'].includes(kind))modal={type:'nativeCollectionDetail',kind,id:Number(id),returnTo:origin};
         else if(kind==='growthDaily'||kind==='growthWeek'){openGrowthSupply(kind==='growthDaily'?'daily':'week',target);return;}
         else if(kind==='supplyTasks')modal={type:'tasks',period:'daily',returnTo:origin};
+        else if(kind==='signin')modal={type:'tasks',period:'signin',returnTo:origin};
         else if(kind==='supplyBoxes')modal={type:'pilotSupplyBoxes',returnTo:origin};
         else if(kind==='patrol'){const lock=patrolUnlockMessage();if(lock){toast(lock);return;}patrolScrollPositions.clear();modal={type:'patrol',returnTo:origin};}
         else if(kind==='nativeStars')modal={type:'nativeStarRewards',returnTo:origin};
@@ -1289,6 +1292,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(destination==='signin'){modal.period='signin';renderModal();return;}
       if(destination==='chapters'){modal={type:'chapters',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
       if(destination==='equipment'){switchTab('assembly');return;}
+      if(['shop','boxes'].includes(destination)){switchTab('shop');return;}
+      if(destination==='patrol'){const lock=patrolUnlockMessage();if(lock){toast(lock);return;}patrolScrollPositions.clear();modal={type:'patrol',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
       if(destination==='workshop'){openGearWorkshop(null,target);return;}
       if(['weapon','aircraft'].includes(destination)){modal=null;openCatalog(destination);return;}
       if(['battle','supply'].includes(destination)){switchTab(destination);return;}

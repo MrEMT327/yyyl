@@ -502,7 +502,7 @@ export class BattleView extends Phaser.Scene {
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
     this.playerHealthDisplay=playerHealthFrame(this.playerHealthDisplay,s.player.hp,s.player.maxHp,visualClock,s.runId,this.healthReducedMotion?.matches??false);
     if (s.phase !== 'ready' && s.player.hp > 0) this.healthBar(pp.x, pp.y + 40, 65, this.playerHealthDisplay.value, playerHealthBarColor(this.playerHealthDisplay.value, s.player.hitFlash > .14));
-    if (s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > 0) this.drawPlayerDamage(this.renderSamples.age(.3 - s.player.hitFlash));
+    if ((s.phase === 'playing' || s.player.hp <= 0) && s.phase !== 'ready' && s.player.hitFlash > 0) this.drawPlayerDamage(this.renderSamples.age(.3 - s.player.hitFlash));
     const enemyIds = this.liveEnemyIds; enemyIds.clear();
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
     const gunboatShots = scatterGunboatShots(s.enemies, s.projectiles, s.clock);

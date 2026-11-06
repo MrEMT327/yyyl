@@ -3,6 +3,7 @@ import { COMBAT_UI,COMBAT_TYPE } from './combat-theme.js';
 import {upgradeFeedbackProfile} from './upgrade-feedback-profile.js';
 import { XP_PRESENTATION } from '../experience-presentation.js';
 import { upgradeConfirmationTiming, upgradeConfirmationPose } from './upgrade-confirm-motion.js';
+import {createUpgradeSelectionParticles} from './upgrade-selection-particles.js';
 import {UPGRADE_SELECTION_TIMING as SELECTION_BEAT} from './upgrade-selection-timing.js';
 import {UPGRADE_TRANSITION,upgradeOfferKey} from './upgrade-transition-motion.js';
 let levelLight = { until: 0, started: 0, milestone: false };
@@ -61,13 +62,14 @@ export function confirmUpgradeCard(card, width, height, commit, valid, skill, op
   const peers=card.parent.children.filter(node=>node!==card);
   const saved=[card,...peers].map(node=>({node,x:node.x,y:node.y,alpha:node.alpha,scaleX:node.scale.x,scaleY:node.scale.y}));
   for(const {node}of saved)node.__entryCancelled=true;
+  const particles=!timing.breakthrough&&!reduced?createUpgradeSelectionParticles(card,width,height,color):null;
   const original=saved[0],focus=card.__upgradeConfirmFocus||{x:300,y:650};
   const level=card.__upgradeLevelLabel,levelState=level&&{x:level.x,y:level.y,scaleX:level.scale.x,scaleY:level.scale.y,tint:level.tint??0xffffff};
   const owner=timing.breakthrough?options.selectionLayer:null;
   const start=Number.isFinite(options.startedAt)?options.startedAt:performance.now();let request=0,finished=false,committed=false,owned=false;
   function restoreLevel(){if(levelState&&!level.destroyed){level.position.set(levelState.x,levelState.y);level.scale.set(levelState.scaleX,levelState.scaleY);level.tint=levelState.tint;}}
   function cleanup(){
-    cancelAnimationFrame(request);restoreLevel();if(!light.destroyed)light.destroy();
+    cancelAnimationFrame(request);particles?.destroy();restoreLevel();if(!light.destroyed)light.destroy();
     if(card.__upgradeConfirmCancel===cancel)delete card.__upgradeConfirmCancel;
     if(owned)owner.release(card);
   }
@@ -93,6 +95,7 @@ export function confirmUpgradeCard(card, width, height, commit, valid, skill, op
     card.x=original.x-width*original.scaleX*(pose.scaleX-1)/2+(focus.x-original.x-width*original.scaleX/2)*pose.gather+pose.shakeX;
     card.y=original.y-height*original.scaleY*(pose.scaleY-1)/2+pose.lift+(focus.y-original.y-height*original.scaleY/2)*pose.gather+pose.shakeY;
     card.alpha=pose.alpha;
+    particles?.update(now-start);
     if(levelState&&!level.destroyed){level.scale.set(levelState.scaleX*pose.levelScale,levelState.scaleY*pose.levelScale);level.tint=blendTint(levelState.tint,color,pose.levelGlow*.6);}
     const target=card.__upgradeConfirmRect||{x:3,y:3,width:width-6,height:height-6};
     const {x,y,width:w,height:h}=target,cut=8;

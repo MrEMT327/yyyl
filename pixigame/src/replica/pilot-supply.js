@@ -12,7 +12,8 @@ import { validateReplicaProgression } from './native-progression.js';
 import { flightDay } from './flight-rewards.js';
 import { nativeItemArt } from './native-item-presentation.js';
 import { nativeItemDisplayName } from './native-item-names.js';
-import { PILOT_TASK_POINTS, PILOT_WEEKLY_TASK_POINTS, PILOT_TASK_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PILOT_WEEKLY_ACTIVITY_REWARDS, PILOT_AD_REWARDS } from './pilot-supply-reward-policy.js';
+import { PILOT_DAILY_TASKS, PILOT_WEEKLY_TASKS, PREVIOUS_PILOT_TASK_POINTS, PILOT_ACTIVITY_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PILOT_WEEKLY_ACTIVITY_REWARDS, PILOT_AD_REWARDS, recurringProgressGate } from './pilot-supply-reward-policy.js';
+import {localRandomMaterials} from './local-economy-policy.js';
 
 const exchangeRoster=catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id));
 const roster=exchangeRoster.filter(row=>![40100,40101].includes(row.id));
@@ -44,22 +45,9 @@ const RECRUIT_PITY=Object.freeze({pilot:10,ssr:30,ur:70});
 const RESOURCE_KEYS={1:'coins',113:'basicKey',blueprint:'blueprint',112:'advancedKey'};
 const blueprints=[105,106,107,108,109];
 const activitySteps=[20,40,60,80,100];
-// Intermediate prizes use resources already available in this project; retain the existing final prize.
-const milestoneRewards={daily:{20:[{id:1,amount:1000}],40:[{id:105,amount:5}],60:[{id:113,amount:1}],80:[{id:106,amount:5}],100:PILOT_DAILY_ACTIVITY_REWARDS},
-  weekly:{20:[{id:1,amount:1000}],40:[{id:105,amount:5}],60:[{id:113,amount:1}],80:[{id:106,amount:10}],100:PILOT_WEEKLY_ACTIVITY_REWARDS}};
-const INTRO_BATTLE_REWARDS=[{id:1,amount:300},{id:106,amount:5}];
-// Retain task IDs so existing claims cannot be paid again after the change.
-const tasks=[{id:'login',name:'每日报到',target:1,counter:'login',starter:40100},
-  {id:'battle1',name:'完成 1 次出击',target:1,counter:'battles',destination:'battle'},
-  {id:'battle3',name:'赢得 1 场战斗',target:1,counter:'victories',destination:'battle'},
-  {id:'upgrade',name:'完成 1 次基础强化',target:1,counter:'upgrades',destination:'equipment'},
-  {id:'recruit',name:'完成 1 次招募',target:1,counter:'recruits',destination:'supply'}]
-  .map(task=>({...task,points:PILOT_TASK_POINTS[task.id],rewards:PILOT_TASK_REWARDS[task.id]}));
-const weekTasks=[
-  {id:'weekly-sorties',name:'每周完成 5 次出击',target:5,counter:'battles',points:PILOT_WEEKLY_TASK_POINTS.sorties,destination:'battle'},
-  {id:'weekly-victories',name:'每周取得 3 次胜利',target:3,counter:'victories',points:PILOT_WEEKLY_TASK_POINTS.victories,destination:'battle'},
-  {id:'weekly-upgrades',name:'每周完成 5 次强化',target:5,counter:'upgrades',points:PILOT_WEEKLY_TASK_POINTS.upgrades,destination:'equipment'},
-];
+const milestoneRewards=PILOT_ACTIVITY_REWARDS;
+const tasks=PILOT_DAILY_TASKS,weekTasks=PILOT_WEEKLY_TASKS;
+const legacyTaskIds=Object.keys(PREVIOUS_PILOT_TASK_POINTS);
 const names={925:'角色箱',926:'角色箱碎片',113:'普通装备箱券',112:'高级装备箱券',1:'金币',2:'钻石'};
 const safe=n=>Number.isSafeInteger(n)&&n>=0;
 const date=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value);
@@ -107,11 +95,25 @@ function ledger(raw,time) {
   // New one-time resource reward; existing daily claims and all granted pilots survive.
   l.introBattleRewardClaimed ??= false;
   if(typeof l.introBattleRewardClaimed!=='boolean')throw Error('新手出击奖励记录无效');
+  if(l.daily.taskVersion===2){
+    if(l.daily.activityOffset>40)throw Error('旧活跃积分无效');
+    const old=Math.min(100,l.daily.activityOffset+l.daily.claimed.reduce((n,id)=>n+(PREVIOUS_PILOT_TASK_POINTS[id]||0),0));
+    const retained=tasks.filter(t=>l.daily.claimed.includes(t.id)).reduce((n,t)=>n+t.points,0);
+    l.daily.activityOffset=Math.max(0,old-retained);l.daily.taskVersion=3;
+  }
+  if(l.week.taskVersion===undefined){
+    l.week.activityOffset=Math.min(100,Math.max(l.week.activeDays.length*20,
+      (l.week.battles>=5?60:0)+(l.week.victories>=3?40:0)+(l.week.upgrades>=5?30:0)));
+    l.week.taskVersion=3;l.week.taskClaims=[];
+  }
+  if(l.week.taskVersion!==3||!safe(l.week.activityOffset)||l.week.activityOffset>100
+    ||!Array.isArray(l.week.taskClaims)||new Set(l.week.taskClaims).size!==l.week.taskClaims.length
+    ||l.week.taskClaims.some(id=>!weekTasks.some(t=>t.id===id)))throw Error('每周任务领取记录无效');
   if(l.version!==1||![l.total,l.boxOpened,l.boxMisses,l.cardCredits].every(safe)||l.boxMisses>4||
     typeof l.newbieTenClaimed!=='boolean'||!date(l.daily?.day)||!safe(l.daily.battles)||!safe(l.daily.ads)||l.daily.ads>2||
-    l.daily.taskVersion!==2||!safe(l.daily.activityOffset)||l.daily.activityOffset>40||
+    l.daily.taskVersion!==3||!safe(l.daily.activityOffset)||l.daily.activityOffset>100||
     ![l.daily.victories,l.daily.upgrades,l.daily.recruits].every(safe)||
-    !Array.isArray(l.daily.claimed)||new Set(l.daily.claimed).size!==l.daily.claimed.length||l.daily.claimed.some(id=>!tasks.some(t=>t.id===id))||
+    !Array.isArray(l.daily.claimed)||new Set(l.daily.claimed).size!==l.daily.claimed.length||l.daily.claimed.some(id=>!tasks.some(t=>t.id===id)&&!legacyTaskIds.includes(id))||
     typeof l.daily.activityClaimed!=='boolean'||!date(l.week?.start)||!Array.isArray(l.week.activeDays)||
     l.week.activeDays.length>7||new Set(l.week.activeDays).size!==l.week.activeDays.length||l.week.activeDays.some(d=>!date(d)||weekStart(d)!==l.week.start)||
     ![l.week.battles,l.week.victories,l.week.upgrades].every(safe)||
@@ -127,8 +129,15 @@ function ledger(raw,time) {
   }
   l.history=history(l.history);l.boxHistory=history(l.boxHistory,true);
   if(today<l.daily.day||week<l.week.start)throw Error('日期异常，请恢复设备日期');
-  if(today>l.daily.day)l.daily={day:today,battles:0,victories:0,upgrades:0,recruits:0,taskVersion:2,activityOffset:0,claimed:[],activityClaimed:false,activityClaims:[],ads:0,collectionChoice:null};
-  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,activityClaims:[],battles:0,victories:0,upgrades:0,collectionChoice:null};
+  if(today>l.daily.day)l.daily={day:today,battles:0,victories:0,upgrades:0,recruits:0,taskVersion:3,activityOffset:0,claimed:[],activityClaimed:false,activityClaims:[],ads:0,collectionChoice:null};
+  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,activityClaims:[],battles:0,victories:0,upgrades:0,collectionChoice:null,taskVersion:3,activityOffset:0,taskClaims:[],loginDays:[]};
+  l.week.loginDays??=[...l.week.activeDays];
+  if(!Array.isArray(l.week.loginDays)||new Set(l.week.loginDays).size!==l.week.loginDays.length
+    ||l.week.loginDays.some(day=>!date(day)||weekStart(day)!==l.week.start))throw Error('每周登录记录无效');
+  if(!l.week.loginDays.includes(today))l.week.loginDays.push(today);
+  for(const record of [l.daily,l.week])for(const key of ['enemyKills','bossKills','boxesOpened','patrolClaims','shopPurchases','staminaSpent']){
+    record[key]??=0;if(!safe(record[key]))throw Error('任务计数无效');
+  }
   normalizeGrowthSupplyClaims(l);
   return l;
 }
@@ -141,6 +150,7 @@ export function addPilotSupplyCredits(raw,time,amount) {
 const counter=value=>safe(value)?value:0;
 function taskCount(task,l,external={},weekly=false) {
   if(task.counter==='login')return 1;
+  if(task.counter==='loginDays')return l.week.loginDays.length;
   const period=weekly?l.week:l.daily;
   const legacyKey=task.counter==='battles'?'sorties':task.counter;
   const history=task.counter==='recruits'&&!weekly
@@ -148,11 +158,20 @@ function taskCount(task,l,external={},weekly=false) {
   return Math.max(counter(period[task.counter]),counter(external[legacyKey]),history);
 }
 function weeklyTaskView(l,external={}) {
-  const rows=weekTasks.map(task=>({...task,progress:Math.min(task.target,taskCount(task,l,external,true))}));
-  const objectivePoints=rows.filter(task=>task.progress>=task.target).reduce((sum,task)=>sum+task.points,0);
-  return {rows,points:Math.min(100,Math.max(objectivePoints,l.week.activeDays.length*20))};
+  const rows=weekTasks.map(task=>({...task,progress:Math.min(task.target,taskCount(task,l,external,true)),
+    claimed:l.week.taskClaims.includes(task.id),canClaim:!l.week.taskClaims.includes(task.id)&&(UNLOCK_ALL_CONTENT||taskCount(task,l,external,true)>=task.target)}));
+  return {rows,points:Math.min(100,l.week.activityOffset+rows.filter(task=>task.claimed).reduce((sum,task)=>sum+task.points,0))};
 }
-export function recordPilotSupplyBattle(raw,time,{won=false,taskCounters={}}={}) {
+export function recordPilotSupplyEvent(raw,time,updates={}) {
+  const l=ledger(raw,time);
+  const allowed=['enemyKills','bossKills','boxesOpened','patrolClaims','shopPurchases','staminaSpent'];
+  for(const [key,amount]of Object.entries(updates)){
+    if(!allowed.includes(key)||!safe(amount))throw Error('任务事件无效');
+    for(const record of [l.daily,l.week]){record[key]+=amount;if(!safe(record[key]))throw Error('任务计数超限');}
+  }
+  return l;
+}
+export function recordPilotSupplyBattle(raw,time,{won=false,taskCounters={},kills=0,bossKills=0}={}) {
   const l=ledger(raw,time),daily=taskCounters.daily||{},weekly=taskCounters.weekly||{};
   l.daily.battles=Math.max(l.daily.battles,counter(daily.sorties))+1;
   l.week.battles=Math.max(l.week.battles,counter(weekly.sorties))+1;
@@ -161,7 +180,8 @@ export function recordPilotSupplyBattle(raw,time,{won=false,taskCounters={}}={})
     l.week.victories=Math.max(l.week.victories,counter(weekly.victories))+1;
   }
   if(![l.daily.battles,l.week.battles,l.daily.victories,l.week.victories].every(safe))throw Error('出击次数超限');
-  return l;
+  if(!safe(kills)||!safe(bossKills)||bossKills>kills)throw Error('击杀计数无效');
+  return recordPilotSupplyEvent(l,time,{enemyKills:kills-bossKills,bossKills});
 }
 export function recordPilotSupplyUpgrade(raw,time,amount=1,{taskCounters={}}={}) {
   if(!safe(amount)||amount<1)throw Error('强化次数无效');
@@ -198,12 +218,19 @@ function directRecruitHistory(l) {
   return recent.reverse();
 }
 export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaign={},taskCounters={}) {
-  const l=ledger(raw,time),inventory=validateReplicaInventory(rawInventory),progression=validateReplicaProgression(rawProgression);
+  const today=flightDay(time),savedDay=raw?.daily?.day,savedWeek=raw?.week?.start;
+  const clockRollback=date(savedDay)&&today<savedDay||date(savedWeek)&&weekStart(today)<savedWeek;
+  // Read-only views freeze the last valid period on clock rollback; transactions
+  // still reject the real time through ledger(). Never reset or pay future claims.
+  const viewTime=clockRollback?Date.parse(`${[savedDay,savedWeek].filter(date).sort().at(-1)}T00:00:00Z`):time;
+  const l=ledger(raw,viewTime),inventory=validateReplicaInventory(rawInventory),progression=validateReplicaProgression(rawProgression);
   const missing=roster.filter(row=>!progression.pilots.some(p=>p.id===row.id&&p.active));
+  const gate=recurringProgressGate(campaign),unlocked=!clockRollback&&(UNLOCK_ALL_CONTENT||gate.reached);
   const weekly=weeklyTaskView(l,taskCounters.weekly);
+  for(const task of weekly.rows)task.canClaim&&=unlocked;
   return {revision:inventory.revision,history:l.history,directHistory:directRecruitHistory(l),boxHistory:l.boxHistory,development:UNLOCK_ALL_CONTENT,
     collection:{},
-    growth:growthSupplySnapshot(progression,inventory,l,campaign),
+    clockRollback,taskGate:{...gate,reached:unlocked,...(clockRollback?{reason:'日期异常，请恢复设备日期'}:{})},growth:growthSupplySnapshot(progression,inventory,l,campaign),
     pool:{id:'pilot',mixed:false,direct:true,originLabel:'驾驶员招募',development:UNLOCK_ALL_CONTENT,
       singleCost:UNLOCK_ALL_CONTENT?0:RECRUIT_COST,tenCost:UNLOCK_ALL_CONTENT?0:RECRUIT_COST*10,totalPulls:l.total,directTotalPulls:l.directRecruit.total,
       probabilities:{pilot:DIRECT_RECRUIT_PILOT_WEIGHT/100,...Object.fromEntries(DIRECT_RECRUIT_RESOURCES.map(row=>[RESOURCE_KEYS[row.id],row.weight/100]))},
@@ -227,17 +254,21 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
       maxed:pilotAtMaxStar(progression,row.id)})),creditCost:PILOT_CREDIT_COST,
     box:{count:inventory.items[925]||0,fragments:inventory.items[926]||0,required:50,opened:l.boxOpened,
       missing:missing.length,remaining:missing.length?(l.boxOpened<2?1:5-l.boxMisses):null,credits:l.cardCredits},
-    tasks:tasks.map(t=>{const progress=Math.min(t.target,taskCount(t,l,taskCounters.daily));return {...t,rewards:t.rewards.map(r=>itemReward(r.id,r.amount)),introRewards:t.id==='battle1'&&!l.introBattleRewardClaimed?INTRO_BATTLE_REWARDS.map(r=>itemReward(r.id,r.amount)):[],starterName:t.starter&&!progression.pilots.some(p=>p.id===t.starter&&p.active)?nativePilotDisplayName(t.starter):null,progress,claimed:l.daily.claimed.includes(t.id),
-      canClaim:!l.daily.claimed.includes(t.id)&&(UNLOCK_ALL_CONTENT||progress>=t.target)};}),
-    activity:{rewards:PILOT_DAILY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),points:points(l),claimed:l.daily.activityClaimed,canClaim:!l.daily.activityClaimed&&points(l)>=100,milestones:milestoneViews('daily',l.daily,points(l))},
-    ad:{count:l.daily.ads,limit:2,canClaim:l.daily.ads<2,rewards:PILOT_AD_REWARDS.map(r=>itemReward(r.id,r.amount))},
-    week:{rewards:PILOT_WEEKLY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),days:l.week.activeDays.length,points:weekly.points,tasks:weekly.rows,claimed:l.week.claimed,canClaim:!l.week.claimed&&(UNLOCK_ALL_CONTENT||weekly.points>=100),milestones:milestoneViews('weekly',l.week,weekly.points)}};
+    tasks:tasks.map(t=>{const progress=Math.min(t.target,taskCount(t,l,taskCounters.daily));return {...t,rewards:t.rewards.map(r=>itemReward(r.id,r.amount)),introRewards:[],starterName:t.starter&&!progression.pilots.some(p=>p.id===t.starter&&p.active)?nativePilotDisplayName(t.starter):null,progress,claimed:l.daily.claimed.includes(t.id),
+      canClaim:unlocked&&!l.daily.claimed.includes(t.id)&&(UNLOCK_ALL_CONTENT||progress>=t.target)};}),
+    activity:{rewards:PILOT_DAILY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),points:points(l),claimed:l.daily.activityClaimed,canClaim:unlocked&&!l.daily.activityClaimed&&points(l)>=100,milestones:milestoneViews('daily',l.daily,points(l)).map(row=>({...row,canClaim:unlocked&&row.canClaim}))},
+    ad:{count:l.daily.ads,limit:2,canClaim:!clockRollback&&l.daily.ads<2,rewards:PILOT_AD_REWARDS.map(r=>itemReward(r.id,r.amount))},
+    week:{rewards:PILOT_WEEKLY_ACTIVITY_REWARDS.map(r=>itemReward(r.id,r.amount)),days:l.week.activeDays.length,points:weekly.points,tasks:weekly.rows,claimed:l.week.claimed,canClaim:unlocked&&!l.week.claimed&&(UNLOCK_ALL_CONTENT||weekly.points>=100),milestones:milestoneViews('weekly',l.week,weekly.points).map(row=>({...row,canClaim:unlocked&&row.canClaim}))}};
 }
 export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,time,{adCompleted=false,campaign={},taskCounters={},randomTicket=ticket}={}) {
   const inventory=validateReplicaInventory(rawInventory),progression=validateReplicaProgression(rawProgression),l=ledger(rawRecord,time);
   if(operation.expectedRevision!==inventory.revision)throw Error('库存已更新，请重新操作');
+  if(['task','weeklyTask','activity','weekly'].includes(operation.action)&&!UNLOCK_ALL_CONTENT&&!recurringProgressGate(campaign).reached)throw Error(recurringProgressGate(campaign).reason);
   const rewards=[];
-  const add=(id,count)=>{inventory.items[id]=(inventory.items[id]||0)+count;rewards.push(itemReward(id,count));};
+  const add=(id,count)=>{
+    if([10010007,10010008].includes(id)){localRandomMaterials(id,count,()=>randomTicket(1000000)/1000000).forEach(([target,n])=>add(target,n));return;}
+    const total=(inventory.items[id]||0)+count;if(!safe(total))throw Error('库存数量超限');inventory.items[id]=total;rewards.push(itemReward(id,count));
+  };
   const debit=(id,count)=>{
     if(!safe(count))throw Error('消耗数量无效');
     const balance=inventory.items[id]??0;
@@ -314,9 +345,6 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
     if(!task||l.daily.claimed.includes(task.id)||!UNLOCK_ALL_CONTENT&&taskCount(task,l,taskCounters.daily)<task.target)throw Error('任务未完成或已领取');
     const beforePoints=points(l);
     l.daily.claimed.push(task.id);task.rewards.forEach(r=>add(r.id,r.amount));taskActivityPoints=points(l)-beforePoints;
-    if(task.id==='battle1'&&!l.introBattleRewardClaimed){
-      INTRO_BATTLE_REWARDS.forEach(r=>add(r.id,r.amount));l.introBattleRewardClaimed=true;
-    }
     // Only the base pilot is granted at login; other pilots keep their acquisition routes.
     if(task.starter&&!progression.pilots.some(p=>p.id===task.starter&&p.active)){
       const row=catalog.pilots.find(p=>p.id===task.starter);
@@ -325,6 +353,11 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
         amount:1,isNew:true,stars:row.defaultStar,nativeRecruit:true});
     }
     taskActivityOnly=rewards.length===0;
+  }else if(operation.action==='weeklyTask') {
+    const task=weekTasks.find(t=>t.id===operation.id);
+    if(!task||l.week.taskClaims.includes(task.id)||!UNLOCK_ALL_CONTENT&&taskCount(task,l,taskCounters.weekly,true)<task.target)throw Error('每周任务未完成或已领取');
+    const before=weeklyTaskView(l,taskCounters.weekly).points;l.week.taskClaims.push(task.id);
+    taskActivityOnly=true;taskActivityPoints=weeklyTaskView(l,taskCounters.weekly).points-before;
   }else if(operation.action==='activity') {
     const step=operation.id==null||Number.isNaN(operation.id)?100:operation.id;
     if(!activitySteps.includes(step)||l.daily.activityClaims.includes(step)||points(l)<step)throw Error(`请先领取每日任务，达到 ${step} 活跃，且奖励未领取`);

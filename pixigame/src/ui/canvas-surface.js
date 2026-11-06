@@ -54,7 +54,9 @@ export function createCanvasSurface(canvas, assets) {
     ctx.fillText(String(value ?? ''), x, y, maxWidth);
   }
   function wrap(value, x, y, width, size = 23, color = '#b9d0de', maxLines = 6) {
-    ctx.font = `500 ${size}px sans-serif`; let line = '', row = 0;
+    // Measure with the same weight used by text(), so wrapped CJK lines do
+    // not get squeezed or lose their last stroke when they are painted.
+    ctx.font = `600 ${size}px sans-serif`; let line = '', row = 0;
     for (const char of String(value ?? '')) {
       if (char === '\n' || ctx.measureText(line + char).width > width) {
         text(line, x, y + row * size * 1.5, size, color); row++; line = '';

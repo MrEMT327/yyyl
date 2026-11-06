@@ -1,6 +1,8 @@
 import { createPsdCombatHud } from './psd-combat-hud.js';
 import { renderCombatPause } from './combat-pause-ui.js';
+import {qualityDisplayLabel} from './quality-display-label.js';
 import { renderDefeatResult } from './defeat-result-ui.js';
+import { updateReviveCountdown } from './defeat-result-motion.js';
 import { addChildren } from './pixi-display.js';
 import { resumeDodgeTutorialPointer } from '../dodge-tutorial.js';
 import { edgeThreats } from './threat-feedback.js';
@@ -54,7 +56,7 @@ import { drawUiSymbol, drawRank } from './ui-symbols.js';
 
 const CAMPAIGN = tuneMainlineCampaign(SOURCE_CAMPAIGN);
 
-function addVisualSurface(parent,draw){const s=createThreeSurface(),node=new Container();draw(s);node.object3D.add(s.group);node._disposeVisuals=()=>s.destroy();parent.addChild(node);return node;}
+function addVisualSurface(parent,draw,options){const s=createThreeSurface(options),node=new Container();draw(s);node.object3D.add(s.group);node._disposeVisuals=()=>s.destroy();parent.addChild(node);return node;}
 function addSymbol(parent,key,x,y,size=24,tint='#bdd4e2'){return addVisualSurface(parent,s=>drawUiSymbol(s,key,x,y,size,tint));}
 function makeResourceIcon(name,size=24){
   const node=new Container();
@@ -269,7 +271,7 @@ function makeText(value, {
     text: String(value),
     // The complete scene is scaled to the phone viewport. Rasterizing text at
     // a stable high resolution keeps small HUD labels crisp after that scale.
-    resolution: TEXT_RESOLUTION,
+    resolution: renderedSize <= 24 ? 3 : TEXT_RESOLUTION,
     roundPixels: true,
     style: {
       fontFamily: FONT_FAMILY,
@@ -356,7 +358,7 @@ function makeRawText(value, {
   const renderedSize = scaledFontSize(size);
   const view = new Text({
     text: String(value),
-    resolution: TEXT_RESOLUTION,
+    resolution: renderedSize <= 24 ? 3 : TEXT_RESOLUTION,
     roundPixels: true,
     style: {
       fontFamily: family,
@@ -1903,7 +1905,7 @@ function makePilotArtModal(bridge, pilot, onClose) {
       ])
       .fill({ color: 0x050414, alpha: 0.93 }),
   );
-  place(modal, makeRawText(`${pilot.rarity} 飞行员 · ${pilot.aircraft}`, {
+  place(modal, makeRawText(`${[qualityDisplayLabel(pilot.rarity,pilot.qualityKnown),'飞行员'].filter(Boolean).join(' ')} · ${pilot.aircraft}`, {
     size: 16,
     fill: tint,
     weight: '900',
@@ -4410,7 +4412,7 @@ function addReviveCombatUi(root, bridge, refs) {
     .fill({ color: COMBAT_UI.panel })
     .stroke({ color: COMBAT_UI.gold, alpha: 0.7, width: 2 }));
   addSymbol(root,'heart',278,414,30,'#a9e8bc');
-  refs.revive = place(root, makeRawText('10', {
+  refs.revive = place(root, makeRawText(String(Math.max(0, Math.ceil(bridge.game.reviveCountdown || 0))), {
     size: 48, fill: COLORS.white, weight: '900', anchorX: 0.5, anchorY: 0.5,
   }), 293, 514);
   place(root, makeRawText('是否复活？', {
@@ -4422,7 +4424,7 @@ function addReviveCombatUi(root, bridge, refs) {
   place(root, makeRawText(`${wave} · 倒计时结束后结算`, {
     size: 16, fill: 0x30465c, weight: '700', anchorX: 0.5,
   }), 293, 641);
-  place(root, makeRawText(bridge.presentation?.reviveCopy || '恢复 50% 生命 · 仅限 1 次', {
+  place(root, makeRawText(bridge.presentation?.reviveCopy || '恢复全部生命 · 广告复活仅限1次', {
     size: 16, fill: 0x30465c, weight: '700', anchorX: 0.5,
   }), 293, 668);
   root.addChild(makeCombatButton({
@@ -4740,7 +4742,7 @@ function addVictoryRewardDoubleDialog(root, bridge) {
   }));
 }
 
-function addResultCombatUi(root, bridge, art) {
+function addResultCombatUi(root, bridge, art, refs) {
   const game = bridge.game;
   // The embedded battle owns a stage-wide backdrop; painting another one in
   // this fitted UI canvas would darken only the middle for a second time.
@@ -4748,7 +4750,7 @@ function addResultCombatUi(root, bridge, art) {
     if (!bridge.presentation?.fullStageResultBackdrop) addCombatBackdrop(target, 0x12161c, .68);
   };
   const defeated = game.state === 'defeat_result' || game.state === 'fixed_result';
-  if (defeated) return renderDefeatResult(root, bridge, {
+  if (defeated) return refs.defeatMotion = renderDefeatResult(root, bridge, {
     surface:addVisualSurface, button:makeCombatButton, backdrop:resultBackdrop, stars:makeStarRating,
   });
   const completion = game.completionSummary || {};
@@ -4870,7 +4872,8 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     if(bridge.game.state==='battle-supply')bridge.game.battleSupply?.pickupView?.removeFromParent();
     root.externalStageBackdrop = Boolean(
       bridge.presentation?.fullStagePauseBackdrop && bridge.game.state === 'paused' ||
-      bridge.presentation?.fullStageUpgradeBackdrop && bridge.game.state === 'levelup');
+      bridge.presentation?.fullStageUpgradeBackdrop && bridge.game.state === 'levelup' ||
+      bridge.presentation?.fullStageSupplyBackdrop && bridge.game.state === 'battle-supply');
     root.removeChildren().forEach((child) => { if (child !== skillCutInMount) child.destroy({ children: true }); });
     buttons = [];
     Object.keys(refs).forEach((key) => delete refs[key]);
@@ -4910,7 +4913,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     else if (state === 'battle-supply') renderBattleSupply({root,bridge,refs,art:fixedPartArt.textures,
       place,text:makeRawText,button:makeCombatButton,backdrop:addCombatBackdrop,surface:addVisualSurface,symbol:addSymbol});
     else if (['evolving', 'victory_cinematic'].includes(state)) addCinematicCombatUi(root, bridge, refs);
-    else if (['victory_result','fixed_result','defeat_result'].includes(state)) addResultCombatUi(root, bridge, fixedPartArt.textures);
+    else if (['victory_result','fixed_result','defeat_result'].includes(state)) addResultCombatUi(root, bridge, fixedPartArt.textures, refs);
     if (state === 'paused') {
       const key = `${state}:${bridge.game.pauseMode}`;
       if (key !== menuMotionKey) menuRevealAt = performance.now();
@@ -4986,7 +4989,9 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     }
     if (game.state === 'evolving') updateUltimateEvolutionCinematic(refs, game);
     refs.psdHud?.update(now);
-    if (refs.revive) refs.revive.text = String(Math.max(0, Math.ceil(game.reviveCountdown || 0)));
+    const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    if (refs.revive) updateReviveCountdown(refs.revive, game.reviveCountdown, now, reducedMotion);
+    refs.defeatMotion?.(now, reducedMotion);
   };
   const isActionButtonAt = (button, global) => {
     if (!button?.visible || button.destroyed || !button.parent || button.eventMode==='none' || performance.now()<(button.__choiceReadyAt||0) || !button.enabled || !button.__pixiUiAction || !button.hitArea) {

@@ -4,5 +4,8 @@
 .cloud-ui-mode[data-awaiting-start]>.cloud-combat-canvas{visibility:hidden}
 /* Results use the whole battle viewport, independently of the narrower UI canvas. */
 .cloud-ui-mode.cloud-result-visible::after,.cloud-ui-mode.cloud-pause-visible::after,.cloud-ui-mode.cloud-upgrade-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(18,22,28,.68);pointer-events:none}
+/* UI_Punchboard's packaged default is a full-stretch black Image, alpha 192/255.
+   Dimming belongs to the battle viewport, not the narrower card canvas. */
+.cloud-ui-mode.cloud-supply-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(0,0,0,.7529411765);pointer-events:none}
 /* Breakthrough backdrop occupies 19; keep the dimmer behind it and cards at 20. */
 .cloud-ui-mode.cloud-upgrade-visible::after{z-index:18}

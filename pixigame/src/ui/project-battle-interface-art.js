@@ -33,7 +33,7 @@ export function projectBattleInterfaceIcon(key) {
     stg_pause_resume_1:`${cloudAssetBase}art/psd-equipment-v1/button-gold.png`,
     damage_close:projectIconUrl('close'), stg_Pos:projectIconUrl('upgrade-arrow'),
   };
-  if (/^bossProgress_icon/.test(key)) return own('boss');
+  if (/^bossProgress_icon/.test(key)) return `${cloudAssetBase}art/project-enemy-markers-v1/elite.png`;
   return icons[key] || null;
 }
 

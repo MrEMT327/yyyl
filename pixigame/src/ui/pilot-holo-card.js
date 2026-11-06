@@ -1,5 +1,6 @@
 // Shared pilot card uses the in-battle 三选一.psd skin. Portraits stay unfiltered.
 import {pilotCardQuality} from './pilot-card-quality.js';
+import {qualityDisplayLabel} from './quality-display-label.js';
 const RARITIES = new Set(['R', 'SR', 'SSR']);
 const BASE_URL = import.meta.env?.BASE_URL || '/';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
@@ -38,6 +39,7 @@ export function pilotHoloCard(pilot, {
   const grade={2:'R',3:'SR',4:'SSR'}[pilot.qualityRank];
   const rank = pilot.qualityKnown===false || (Number.isInteger(pilot.qualityRank) && !grade)
     ? '未标注' : grade || (rarity==='UR'?'SSR':RARITIES.has(rarity)?rarity:'未标注');
+  const rankLabel=qualityDisplayLabel(rank,pilot.qualityKnown);
   const quality=pilotCardQuality(rank,pilot.qualityRank,pilot.qualityKnown);
   const framePath=`${BASE_URL}art/psd-choice-v1/${quality.choiceFrame}`;
   const frame=globalThis.document?.baseURI?new URL(framePath,globalThis.document.baseURI).href:framePath;
@@ -46,7 +48,7 @@ export function pilotHoloCard(pilot, {
   const focusX = clamp(Number(pilot.portraitFocus?.x) || 50, 25, 75);
   const portrait = String(pilot.image || '').replace(/^\.\/assets\//, `${BASE_URL}assets/`);
   const nativeQuality=pilot.qualityKnown!==false&&Number.isInteger(pilot.qualityRank)&&pilot.qualityRank>=0&&pilot.qualityRank<=5?` data-pilot-quality="${pilot.qualityRank}"`:'';
-  return `<article class="${classes}" data-holo-card data-holo-rarity="${rank}"${nativeQuality} data-pilot-id="${escape(pilot.id)}"${interactive ? ' data-holo-interactive tabindex="0"' : ''} aria-label="${escape(`${rank} ${pilot.name} · ${pilot.title || '驾驶员'}${status ? ` · ${status}` : ''}`)}" style="--phc-art-x:${focusX}%;--phc-frame:url('${escape(frame)}');--phc-frame-filter:${quality.frameFilter};--phc-metal:${quality.color};--phc-metal-light:${quality.light};--phc-ink:${quality.ink};--phc-foil-idle:${quality.foil};--phc-foil-active:${quality.foilActive};--phc-glitter-opacity:${quality.glitter};">
+  return `<article class="${classes}" data-holo-card data-holo-rarity="${rank}"${nativeQuality} data-pilot-id="${escape(pilot.id)}"${interactive ? ' data-holo-interactive tabindex="0"' : ''} aria-label="${escape(`${rankLabel?rankLabel+' ':''}${pilot.name} · ${pilot.title || '驾驶员'}${status ? ` · ${status}` : ''}`)}" style="--phc-art-x:${focusX}%;--phc-frame:url('${escape(frame)}');--phc-frame-filter:${quality.frameFilter};--phc-metal:${quality.color};--phc-metal-light:${quality.light};--phc-ink:${quality.ink};--phc-foil-idle:${quality.foil};--phc-foil-active:${quality.foilActive};--phc-glitter-opacity:${quality.glitter};">
     <div class="phc-face">
       ${radianceLayer()}
       ${prismLayer()}
@@ -55,7 +57,7 @@ export function pilotHoloCard(pilot, {
       <div class="phc-glitter" aria-hidden="true"></div>
       <div class="phc-gloss" aria-hidden="true"></div>
       <div class="phc-lightpass" aria-hidden="true"></div>
-      <header class="phc-header"><strong class="phc-heading-name">${escape(pilot.name)}</strong><span class="phc-rarity">${rank}</span></header>
+      <header class="phc-header"><strong class="phc-heading-name">${escape(pilot.name)}</strong>${rankLabel?`<span class="phc-rarity">${rankLabel}</span>`:''}</header>
       <div class="phc-caption"><small class="phc-role">驾驶员</small><strong class="phc-title">${escape(pilot.title || '驾驶员')}</strong><strong class="phc-name">${escape(pilot.name)}</strong></div>
       <span class="phc-metadata">${Number.isFinite(pilot.stars) ? `<span aria-label="${pilot.stars} 星">${pilot.stars} 星</span>` : ''}${pilot.skillName ? ' · '+escape(pilot.skillName) : ''}</span>
       ${status ? `<span class="phc-status">${escape(status)}</span>` : ''}

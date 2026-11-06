@@ -4,6 +4,7 @@ import {nativeCollectionAccess} from '../replica/native-collection-access.js';
 import {collectionQualityRank} from '../replica/native-quality.js';
 import {projectIcon} from './project-ui-art.js';
 import './collection-detail.css';
+import {qualityDisplayLabel} from './quality-display-label.js';
 
 const plain=value=>String(value??'').replace(/<[^>]*>/g,'');
 const button=(action,label,attrs,disabled=false)=>`<button type="button" class="wc-button" data-action="${action}" ${attrs}${disabled?' disabled':''}>${label}</button>`;
@@ -25,6 +26,7 @@ export function collectionDetailModel(row,attributeNames={}){
 
 export function collectionDetail(group,row,snapshot,helpers,{preview=false}={}){
   const {escape:e}=helpers,model=collectionDetailModel(row,snapshot.replicaCollection.attributeNames);
+  const qualityName=qualityDisplayLabel(row.qualityName,row.qualityKnown);
   const attrs=`data-kind="${group}" data-id="${row.id}" data-revision="${snapshot.replicaCollection.revision}"`;
   const statRows=rows=>rows.map(stat=>`<div><dt>${e(stat.label)}</dt><dd>${e(stat.amount)}</dd></div>`).join('');
   const art=`<img src="${e(nativeCollectionArt(row))}" alt="${e(row.name)}">`;
@@ -43,7 +45,7 @@ export function collectionDetail(group,row,snapshot,helpers,{preview=false}={}){
   const growthLabel=row.maxed?'已满星':row.owned?'升星':'激活';
   const footer=preview?button('close','返回',''):button('nativeOperation',access.using?(isSkin?'已穿戴':'使用中'):(isSkin?'穿戴':group==='guns'?'装备':'使用'),`data-kind="${group}" data-id="${access.selectionId}" data-revision="${snapshot.replicaCollection.revision}" data-operation="select"`,!access.available||access.using)+button(growthAction,growthLabel,`${attrs} data-operation="${row.owned?'star':'unlock'}"${shortage?' data-shortage="true"':''}`,group==='pilots'?row.maxed:!row.canPurchase);
   return {title:preview?`${row.name} · 星级效果`:row.name,content:`<article class="collection-detail${preview?' is-preview':''}" data-collection-kind="${group}" data-quality="${collectionQualityRank(row.quality)}">
-    <div class="cd-scroll"><header class="cd-hero"><div class="cd-badges"><span>${e(row.qualityName||'')}</span><span>${state}</span></div><div class="cd-art">${art}</div><div class="cd-stars" aria-label="${row.owned?row.star:0} / ${model.maxStar} 星">${Array.from({length:model.maxStar},(_,index)=>projectIcon('star',row.owned&&index<row.star?'':'is-icon-muted')).join('')}</div><p>${row.owned?`${row.star} / ${model.maxStar} 星`:`未激活 · ${row.stage.star} 星预览`}</p></header>
+    <div class="cd-scroll"><header class="cd-hero"><div class="cd-badges">${qualityName?`<span>${e(qualityName)}</span>`:''}<span>${state}</span></div><div class="cd-art">${art}</div><div class="cd-stars" aria-label="${row.owned?row.star:0} / ${model.maxStar} 星">${Array.from({length:model.maxStar},(_,index)=>projectIcon('star',row.owned&&index<row.star?'':'is-icon-muted')).join('')}</div><p>${row.owned?`${row.star} / ${model.maxStar} 星`:`未激活 · ${row.stage.star} 星预览`}</p></header>
     ${appearance}${!preview&&model.attributes.length?`<section class="cd-attributes"><h3>${row.owned?'收藏属性':'激活后收藏属性'}</h3><dl>${statRows(model.attributes)}</dl></section>`:''}
     <section class="cd-current"><h3>${projectIcon('skill-tab')}${row.owned?'当前技能':'技能预览'}</h3>${model.skills.map(skill=>`<p data-skill-id="${skill.id}">${e(skill.text)}</p>`).join('')||'<p>当前星级无技能</p>'}</section>
     ${preview?stages:`<div class="cd-preview-link">${button('nativeSkillPreview','星级效果',attrs)}</div>`}${!preview&&group==='guns'?`<details class="cd-more"><summary>攻击预览</summary><div>${button('nativeWeaponPreview','基础攻击',`data-id="${row.id}" data-mode="base"`)}${button('nativeWeaponPreview','局内成长',`data-id="${row.id}" data-mode="growth"`)}</div></details>`:''}</div>

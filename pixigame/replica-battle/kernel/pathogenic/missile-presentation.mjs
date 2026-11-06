@@ -26,7 +26,7 @@ export function withMissilePresentationResources(graph){
   const add=(name,type,properties)=>{const id=PREFIX+name;resources[id]={id,type,properties};};
   for(const [name,width,height,region]of [['body',948,1659,BODY_REGION],['exhaust',724,2172,FLAME_REGION]]){
     const file=name+'.png';
-    textures[PREFIX+name]={width,height,file,url:'assets/missile-v2/'+file};
+    textures[PREFIX+name]={width,height,file,url:name==='body'?'assets/missile-v3/body.png':'assets/missile-v2/'+file};
     add(name+'-frame','AtlasTexture',{atlas:{$external:PREFIX+name},region});
   }
   add('body-material','CanvasItemMaterial',{blend_mode:0,light_mode:1});

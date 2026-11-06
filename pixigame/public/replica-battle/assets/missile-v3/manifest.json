@@ -1,0 +1,57 @@
+{
+  "version": 3,
+  "date": "2026-11-06",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: style-transfer / precise-object-edit.\nAsset type: transparent missile projectile body sprite for a polished vertical aircraft game.\nImage 1 is the EDIT TARGET: the currently used tall gold missile with orange-red pointed nose. Image 2 and Image 3 are STYLE REFERENCES ONLY: the game's simple, readable weapon icons. Output just ONE missile body, no icon tile, background, UI, fire or effects.\nPreserve the target's straight upright narrow silhouette, nose pointing up, exactly front-on symmetric view, two small swept tail fins and a short nozzle at bottom. Preserve its overall gold/yellow body and orange-red nose identity. The complete missile should have roughly the same 4.1:1 height-to-width ratio INCLUDING its tail fins. Center it with transparent padding on every side, no cropped points or fins.\nMain correction: the current missile is too detailed and polished like a different game. Redraw it with the clean illustrated simplicity of the reference weapons: confident smooth contours, a tidy narrow dark blue-gray outline, large clean color shapes, only two or three broad shaded planes plus ONE short restrained ivory highlight, light volume, very restrained bevel. The missile needs to remain readable at about 35 to 55 pixels high in play. Keep its center body mostly uninterrupted, with at most ONE simple joint near the lower tail, no stack of rings or strips. Nose one smooth orange-red shape, body one warm gold form, fins one simple gold form each, nozzle one small dark slate form. Outline narrow enough to avoid large black areas.\nRemove the repeated armored panels, long dark center seams, metal banding, chrome collars, multiple inset polygons, grooves, ribbed exhaust, fine edge highlights, realistic reflections and shiny cylindrical rendering. No scratches, texture, cracks, bolts, screw heads, labels, stripes, lettering, stars or decoration. Do not add rings or decorative framing. No glowing halo, no flame, no smoke, no shadow underneath, no drop shadow, no checkerboard painted into the image. Keep an actual transparent alpha background.\nThis is a clean stylized game SPRITE with modest broad shading, not a realistic 3D missile, not a glossy collectible icon, not an ultra-flat line pictogram. Match the references' visual simplicity while retaining the target's gold and orange-red palette.\n",
+  "sourceGeneratedPath": "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-8800a3bb-ca9b-45d9-b8a8-72b160dd59c9.png",
+  "sourceSha256": "5caa9140466e8261715c1dbddcf701b3897bb5cf2ac417ff4ff3edd6e9f9eadf",
+  "sourceSize": [
+    948,
+    1660
+  ],
+  "sourceCrop": {
+    "left": 299,
+    "top": 58,
+    "width": 351,
+    "height": 1512
+  },
+  "references": [
+    {
+      "role": "edit-target",
+      "path": "public/replica-battle/assets/missile-v2/body.png"
+    },
+    {
+      "role": "style-only",
+      "path": "public/art/project-weapon-skill-icons-v3/he-missile.webp"
+    },
+    {
+      "role": "style-only",
+      "path": "public/art/project-weapon-skill-icons-v3/rapid-autocannon.webp"
+    }
+  ],
+  "processing": "Alpha-bound crop, uniform scaling into the existing 361×1485 body region, transparent canvas padding only; no repaint, color edit, added detail or shape deformation.",
+  "runtime": {
+    "region": [
+      295,
+      56,
+      361,
+      1485
+    ],
+    "size": [
+      948,
+      1659
+    ],
+    "bodyHeight": 90,
+    "exhaust": "assets/missile-v2/exhaust.png",
+    "scope": "All player rocket bodies routed through missilePresentation: models 1000012, 1000013, 1000014, 1000059 and 200234. Gameplay fields unchanged."
+  },
+  "assets": [
+    {
+      "file": "body.png",
+      "sha256": "e8c8b6a96ff223b6b995be95359fcd83a9c0b89a3c7e8124ecceddf80868aa67",
+      "bytes": 464854,
+      "width": 948,
+      "height": 1659
+    }
+  ]
+}

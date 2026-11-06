@@ -48,7 +48,7 @@ export function playerInfoModel(snapshot={},callsign='') {
   const currentSkin=collection.skins.find(row=>row.id===collection.skinId&&row.owned);
   const currentPilot=collection.pilots.find(row=>row.equipped);
   const currentGun=collection.guns.find(row=>row.equipped);
-  return {...model,native:true,
+  return {...model,native:true,accountLevel:collection.playerLevel??1,
     aircraft:currentSkin?skin(currentSkin):{...baseAircraft,name:baseAircraft?.aircraftName||baseAircraft?.name||'基础战机',
       aircraftName:baseAircraft?.aircraftName||baseAircraft?.name||'基础战机',stars:0,level:undefined,owned:false,available:true},
     pilot:currentPilot?pilotRow(currentPilot):basePilot?{...basePilot,stars:0,owned:false,available:true,temporaryUnlocked:false,

@@ -1,5 +1,6 @@
 import {VfxMeshBuffer,quadVisible} from './vfx-buffers.mjs';
 import {enemyDeathVisualKind} from '../../small-death-visual.js';
+import {playerDeathFootprint} from '../../player-death-visual.js';
 
 const ROOT='host://layered-combat-bursts-v1/';
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
@@ -7,6 +8,14 @@ const phase='float t=clamp((COLOR.a-.1)/.8,0.0,1.0);vec2 p=UV*2.0-1.0;float r=le
 const noise=`float nHash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float nField(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(nHash(i),nHash(i+vec2(1,0)),f.x),mix(nHash(i+vec2(0,1)),nHash(i+vec2(1,1)),f.x),f.y);}`;
 const shaders={
+ debris:`shader_type canvas_item;render_mode unshaded,blend_mix;
+void fragment(){${phase}
+ float shape=abs(p.x)*.80+abs(p.y)*1.55;
+ float edge=1.0-smoothstep(.48,.65,shape);
+ vec3 metal=mix(vec3(.10,.14,.18),vec3(.52,.60,.64),clamp(p.x*.6+.5,0.0,1.0));
+ metal=mix(metal,vec3(1.05,.39,.08),exp(-t*9.0)*.65);
+ COLOR=vec4(metal,edge*(1.0-smoothstep(.40,1.0,t)));
+}`,
  muzzle:`shader_type canvas_item;render_mode unshaded,blend_add;
 void fragment(){${phase}
  float fade=1.0-smoothstep(.18,1.0,t);
@@ -72,7 +81,7 @@ export function withLayeredBurstResources(graph){
 // Time and positions come only from existing effects. No extra simulation events.
 export class LayeredCombatBursts{
  constructor(){this.buffers=new Map();this.meshes=new Map();this.points=Array.from({length:4},()=>({x:0,y:0}));this.beginFrame();}
- beginFrame(viewport){this.viewport=viewport;for(const b of this.buffers.values())b.reset();this.meshes.clear();this.counts={ordinary:0,elite:0,boss:0,muzzle:0};}
+ beginFrame(viewport){this.viewport=viewport;for(const b of this.buffers.values())b.reset();this.meshes.clear();this.counts={ordinary:0,elite:0,boss:0,muzzle:0,player:0};}
  quad(name,x,z,rx,rz,angle,color,t,screen){
   if(!(rx>0&&rz>0)||t<0||t>=1)return;
   const c=Math.cos(angle),s=Math.sin(angle);
@@ -98,11 +107,43 @@ export class LayeredCombatBursts{
    this.quad('fragment',x,z,s,s*.78,a+t*(i%2?2:-2),[1.25,.77,.32],t,screen);
   }
  }
+ playerDeath(f,screen,footprint){
+  // A dedicated, deterministic receipt: independent of all ordinary hit/death
+  // budgets, with no simulation serials or random-number consumption.
+  const age=f.age,r=clamp(footprint*1.55,.95,3.4),seed=(f.uid??0)*2.399963;
+  this.burst(f,screen,r,f.x,f.z,0,.68,1);
+  for(let i=0;i<3;i++){
+   const a=seed+i*2.094395,at=.055+i*.035;
+   this.burst(f,screen,r,f.x+Math.cos(a)*r*.28,f.z+Math.sin(a)*r*.25,at,.72,.48);
+  }
+  if(age<.15)this.quad('light',f.x,f.z,r*1.38,r*1.38,0,[1.4,1.04,.64],age/.15,screen);
+  if(age>=.02&&age<.47)this.quad('ring',f.x,f.z,r*1.7,r*1.28,0,[1.15,.77,.36],(age-.02)/.45,screen);
+  for(let i=0;i<6;i++){
+   const at=.04+i*.022,life=1.75+(i%3)*.15,t=(age-at)/life;
+   if(t<0||t>=1)continue;
+   const a=seed+i*2.399963,drift=.16+t*.48;
+   const x=f.x+Math.cos(a)*r*drift,z=f.z+Math.sin(a)*r*drift+r*t*.24;
+   const s=r*(.45+(i%2)*.11);
+   this.quad('smoke',x,z,s,s*.91,a*.15,[.50,.30,.17],t,screen);
+  }
+  for(let i=0;i<20;i++){
+   const life=.48+(i%5)*.10,t=(age-.025)/life;
+   if(t<0||t>=1)continue;
+   const a=seed+i*2.399963,speed=.65+(i%4)*.26;
+   const x=f.x+Math.cos(a)*r*(.12+speed*(1-Math.exp(-t*2.4))),z=f.z+Math.sin(a)*r*(.12+speed*(1-Math.exp(-t*2.4)))-r*.22*t*t;
+   const s=r*(i<8?.065:.022);
+   this.quad(i<8?'debris':'fragment',x,z,s,s*(i<8?.78:1.9),a+t*(i%2?3:-3),[1.25,.76,.29],t,screen);
+  }
+ }
  effect(f,screen,visualScale=1,age=f.age){
-  const kind=enemyDeathVisualKind(f),muzzle=f.kind==='muzzle'&&f.modelId===100001;
+  const footprint=playerDeathFootprint(f),kind=footprint!==undefined?'player':enemyDeathVisualKind(f),muzzle=f.kind==='muzzle'&&f.modelId===100001;
   if(!kind&&!muzzle)return false;
   if(age!==f.age)f={...f,age};
   if(![f.x,f.z,f.age,f.size,f.duration,visualScale].every(Number.isFinite)||f.age<0||f.age>=f.duration||f.size<=0)return true;
+  if(kind==='player'){
+   if(this.counts.player++<2)this.playerDeath(f,screen,footprint);
+   return true;
+  }
   if(muzzle){
    if(f.age>=.12||this.counts.muzzle++>=40)return true;
    // Give a 30 Hz shot several visible frames. Keep this dedicated flash
@@ -136,6 +177,6 @@ export class LayeredCombatBursts{
   }
   return true;
  }
- draw(view){for(const name of ['smoke','fire','ring','light','muzzle','fragment']){const mesh=this.meshes.get(name);if(mesh?.indices.length)view.drawMeshes('layered-bursts:'+name,[mesh],undefined,{presentationDepth:34});}}
+ draw(view){for(const name of ['smoke','fire','debris','ring','light','muzzle','fragment']){const mesh=this.meshes.get(name);if(mesh?.indices.length)view.drawMeshes('layered-bursts:'+name,[mesh],undefined,{presentationDepth:34});}}
  reset(){this.beginFrame(this.viewport);this.buffers.clear();}
 }

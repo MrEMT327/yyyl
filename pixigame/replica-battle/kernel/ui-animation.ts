@@ -80,6 +80,10 @@ export class OriginalUpgradeAnimation {
     this.warningClock = clock;
     this.warningCanvas = canvas; this.warningStarted = clock();
   }
+  get warningPresentation() {
+    if (!this.warningCanvas) return null;
+    return {type:this.warningType,elapsed:this.warningClock()-this.warningStarted,duration:data.clips.Anim_UIFX_Warning.duration};
+  }
   clearWarning() { this.warningCanvas?.remove(); this.warningCanvas = null; this.warningFinish = undefined; }
   update() {
     this.copies = this.copies.filter(copy => copy.card.isConnected);

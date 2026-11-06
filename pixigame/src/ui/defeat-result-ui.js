@@ -1,4 +1,5 @@
 import { Container } from '../three/display.js';
+import { createDefeatMotion } from './defeat-result-motion.js';
 import { TextureLoader, SRGBColorSpace, LinearFilter } from 'three';
 import { paintPsdPopup } from './psd-popup-art.js';
 import { paintCombatArt } from './combat-art.js';
@@ -48,11 +49,17 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, sta
   panel.label = 'battle-defeat-panel';
   panel.resultSnapshot = model;
   root.addChild(panel);
-  surface(panel, canvas => {
-    paintPsdPopup(canvas, 'primary', 28, 50, 544, 1200);
-    icon(canvas, projectIconUrl('nav-battle'), 244, 82, 112, 112);
+  surface(panel, canvas => paintPsdPopup(canvas, 'primary', 28, 50, 544, 1200));
+  const content = new Container(), badge = new Container(), title = new Container(), buttons = new Container();
+  panel.addChild(content, badge, title, buttons);
+  badge.pivot.set(300, 138); badge.position.set(300, 138);
+  title.pivot.set(300, 243); title.position.set(300, 243);
+  surface(badge, canvas => icon(canvas, projectIconUrl('nav-battle'), 244, 82, 112, 112));
+  surface(title, canvas => {
     paintCombatArt(canvas, 'secondary', 70, 202, 460, 80);
     canvas.text('战斗失败', 300, 243, {size:44, weight:900, align:'center'});
+  });
+  surface(content, canvas => {
     canvas.text(`第 ${model.chapter} 章`, 300, 331, {size:32, color:'#173449', weight:800, align:'center'});
     paintCombatArt(canvas, 'slot', 234, 364, 132, 132);
     canvas.text(String(model.wave), 300, 420, {size:72, color:'#ffe6a1', weight:900, align:'center'});
@@ -89,12 +96,15 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, sta
   });
   const rating = stars(model.stars, false, {radius:23, gap:62});
   rating.position.set(300, 531);
-  panel.addChild(rating);
+  content.addChild(rating);
   if (model.pageCount > 1) for (const [label, direction, left] of [['‹',-1,164],['›',1,366]]) {
-    panel.addChild(button({x:left, y:991, width:70, height:50, text:label, fontSize:30, variant:'secondary',
+    buttons.addChild(button({x:left, y:991, width:70, height:50, text:label, fontSize:30, variant:'secondary',
       disabled: model.page + direction < 0 || model.page + direction >= model.pageCount,
       onPress:() => {bridge.ui.defeatRewardPage = model.page + direction; bridge.pixiCombatUi?.render();}}));
   }
-  panel.addChild(button({x:76, y:1154, width:448, height:70, text:model.returnLabel, fontSize:27, variant:'primary',
+  buttons.addChild(button({x:76, y:1154, width:448, height:70, text:model.returnLabel, fontSize:27, variant:'primary',
     onPress:() => {bridge.ui.defeatRewardPage = 0; bridge.finishBattleResult();}}));
+  const updateMotion = createDefeatMotion(panel, {content, badge, title, buttons}, bridge.ui, receiptKey || bridge.game);
+  updateMotion(performance.now(), globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+  return updateMotion;
 }

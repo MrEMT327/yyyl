@@ -10,7 +10,7 @@ export function pilotSupplyTaskCenter(period,s,h) {
   const p=s.pilotSupply,e=h.escape,n=h.number,weekly=period==='weekly';
   const activity=weekly?p.week:p.activity,max=100;
   const value=Math.max(0,Math.min(max,Number(weekly?(activity.points??activity.days*20):activity.points)||0));
-  const blocked=Boolean(s.rewardPending||s.rewardBusy);
+  const blocked=Boolean(s.rewardPending||s.rewardBusy||p.taskGate?.reached===false);
   const label=weekly?'每周活跃':'每日活跃';
   const steps=[20,40,60,80,100];
   const milestones=steps.map(step=>{
@@ -26,13 +26,13 @@ export function pilotSupplyTaskCenter(period,s,h) {
   </section>`;
   const tasks=weekly?`<div class="dc-task-list dc-supply-task-list">${(p.week.tasks||[]).map(t=>{
     const progress=Math.max(0,Math.min(t.target,Number(t.progress)||0)),complete=progress>=t.target;
-    const action=complete?taskStatusMark('已完成')
+    const action=t.claimed?taskStatusMark('已领取'):t.canClaim?button('领取','weeklyTask',p,`data-id="${e(t.id)}"`,blocked)
       :`<button type="button" class="wc-button dc-button" aria-label="前往，${e(t.name)}" title="前往" data-action="dailyGo" data-destination="${e(t.destination)}" ${blocked?'disabled':''}>前往</button>`;
     return `<article class="dc-task"><div class="dc-task-badge"><img src="${taskArt('activity-medal')}" alt="" draggable="false"><b>+${n(t.points)}</b></div><div class="dc-task-body"><h3>${e(t.name)}</h3><div class="dc-progress"><progress max="${t.target}" value="${progress}" aria-label="${e(t.name)}进度"></progress><span>${n(progress)} / ${n(t.target)}</span></div></div>${action}</article>`;
   }).join('')}</div>`:`<div class="dc-task-list dc-supply-task-list">${p.tasks.map(t=>{
     const taskMax=Math.max(1,Number(t.target)||0);
     const progress=t.target?Math.max(0,Math.min(taskMax,Number(t.progress)||0)):Number(t.claimed||t.canClaim);
-    const taskName=t.id==='login'?'每日报到':t.name;
+    const taskName=t.name;
     const destination=t.destination||({battle1:'battle',battle3:'battle',sortie:'battle',victory:'battle',upgrade:'equipment',recruit:'supply'})[t.id];
     const taskAction=t.claimed?taskStatusMark():!t.canClaim&&destination
       ? `<button type="button" class="wc-button dc-button" aria-label="前往，${e(taskName)}" title="前往" data-action="dailyGo" data-destination="${e(destination)}" ${blocked?'disabled':''}>前往</button>`
@@ -43,5 +43,5 @@ export function pilotSupplyTaskCenter(period,s,h) {
       ${taskAction}
     </article>`;
   }).join('')}</div>`;
-  return `${header}<p class="dc-reset">${weekly?'每周一':'每日'} 00:00 刷新</p><div class="dc-scroll dc-restored-scroll" data-daily-scroll="${period}">${tasks}</div>`;
+  return `${header}<p class="dc-reset">${p.taskGate?.reached===false?e(p.taskGate.reason):`${weekly?'每周一':'每日'} 00:00 刷新`}</p><div class="dc-scroll dc-restored-scroll" data-daily-scroll="${period}">${tasks}</div>`;
 }

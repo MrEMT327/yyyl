@@ -1,0 +1,467 @@
+{
+  "source": "弹壳战机1.1.6 / Task_Task Type2+6, Task_ScoreBoxReward",
+  "tasks": [
+    {
+      "ID": 20101,
+      "Type": 2,
+      "Group": "",
+      "Sort": 1,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "登录游戏"
+    },
+    {
+      "ID": 20102,
+      "Type": 2,
+      "Group": "",
+      "Sort": 2,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":5,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20102",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "挑战主线章节{0}次"
+    },
+    {
+      "ID": 20106,
+      "Type": 2,
+      "Group": "",
+      "Sort": 3,
+      "ConditionId": 106,
+      "ConditionParams": "{\"Count\":2000,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20106",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "击杀{0}只小怪"
+    },
+    {
+      "ID": 20103,
+      "Type": 2,
+      "Group": "",
+      "Sort": 8,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":1,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20103",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          5,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 20105,
+      "Type": 2,
+      "Group": "",
+      "Sort": 4,
+      "ConditionId": 102,
+      "ConditionParams": "{\"Count\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20105",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "升级装备{0}次"
+    },
+    {
+      "ID": 20107,
+      "Type": 2,
+      "Group": "",
+      "Sort": 6,
+      "ConditionId": 104,
+      "ConditionParams": "{\"Count\":3}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20107",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "开启任意宝箱{0}次"
+    },
+    {
+      "ID": 20108,
+      "Type": 2,
+      "Group": "",
+      "Sort": 5,
+      "ConditionId": 109,
+      "ConditionParams": "{\"Count\":3}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20108",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "领取巡逻收益{0}次"
+    },
+    {
+      "ID": 20110,
+      "Type": 2,
+      "Group": "",
+      "Sort": 7,
+      "ConditionId": 112,
+      "ConditionParams": "{\"Count\":1,\"Type\":0,\"ShopId\":13}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20110",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "每日商店购买{0}次"
+    },
+    {
+      "ID": 20104,
+      "Type": 2,
+      "Group": "",
+      "Sort": 9,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":1,\"Type\":4}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20104",
+      "JumpId": 19,
+      "RewardItem": [
+        [
+          5,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "参与{0}次星空塔"
+    },
+    {
+      "ID": 20111,
+      "Type": 2,
+      "Group": "",
+      "Sort": 10,
+      "ConditionId": 110,
+      "ConditionParams": "{\"Count\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Daily_Text_20111",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          5,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "任意充值{0}次"
+    },
+    {
+      "ID": 60101,
+      "Type": 6,
+      "Group": "",
+      "Sort": 3,
+      "ConditionId": 106,
+      "ConditionParams": "{\"Count\":12000,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "击杀{0}只小怪"
+    },
+    {
+      "ID": 60102,
+      "Type": 6,
+      "Group": "",
+      "Sort": 4,
+      "ConditionId": 106,
+      "ConditionParams": "{\"Count\":20,\"Type\":3}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60102",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "击败{0}个首领"
+    },
+    {
+      "ID": 60103,
+      "Type": 6,
+      "Group": "",
+      "Sort": 5,
+      "ConditionId": 112,
+      "ConditionParams": "{\"Count\":5,\"Type\":0,\"ShopId\":13}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60103",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "每日商店购买{0}次"
+    },
+    {
+      "ID": 60104,
+      "Type": 6,
+      "Group": "",
+      "Sort": 7,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":5,\"Type\":4,\"Pass\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60104",
+      "JumpId": 19,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "通过星空塔{0}次"
+    },
+    {
+      "ID": 60105,
+      "Type": 6,
+      "Group": "",
+      "Sort": 6,
+      "ConditionId": 104,
+      "ConditionParams": "{\"Count\":100}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60105",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "开启任意宝箱{0}次"
+    },
+    {
+      "ID": 60106,
+      "Type": 6,
+      "Group": "",
+      "Sort": 1,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":4}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60106",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 60107,
+      "Type": 6,
+      "Group": "",
+      "Sort": 2,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":500,\"ItemId\":4}",
+      "Progress": "Count",
+      "LanguageId": "Task_Weekly_Text_60107",
+      "JumpId": 5,
+      "RewardItem": [
+        [
+          6,
+          20
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}体力"
+    }
+  ],
+  "milestones": [
+    {
+      "ID": 1001,
+      "Index": 1,
+      "Score": 20,
+      "Reward": [
+        [
+          1,
+          1000
+        ]
+      ]
+    },
+    {
+      "ID": 1002,
+      "Index": 2,
+      "Score": 40,
+      "Reward": [
+        [
+          10010007,
+          50
+        ]
+      ]
+    },
+    {
+      "ID": 1003,
+      "Index": 3,
+      "Score": 60,
+      "Reward": [
+        [
+          113,
+          1
+        ]
+      ]
+    },
+    {
+      "ID": 1004,
+      "Index": 4,
+      "Score": 80,
+      "Reward": [
+        [
+          10010008,
+          10
+        ]
+      ]
+    },
+    {
+      "ID": 1005,
+      "Index": 5,
+      "Score": 100,
+      "Reward": [
+        [
+          2,
+          50
+        ]
+      ]
+    },
+    {
+      "ID": 2001,
+      "Index": 1,
+      "Score": 20,
+      "Reward": [
+        [
+          10010007,
+          200
+        ]
+      ]
+    },
+    {
+      "ID": 2002,
+      "Index": 2,
+      "Score": 40,
+      "Reward": [
+        [
+          2,
+          100
+        ]
+      ]
+    },
+    {
+      "ID": 2003,
+      "Index": 3,
+      "Score": 60,
+      "Reward": [
+        [
+          10010008,
+          50
+        ]
+      ]
+    },
+    {
+      "ID": 2004,
+      "Index": 4,
+      "Score": 80,
+      "Reward": [
+        [
+          112,
+          1
+        ]
+      ]
+    },
+    {
+      "ID": 2005,
+      "Index": 5,
+      "Score": 100,
+      "Reward": [
+        [
+          111,
+          1
+        ]
+      ]
+    }
+  ],
+  "gates": {
+    "signin": {
+      "chapter": 2,
+      "wave": 14
+    },
+    "tasks": {
+      "chapter": 4,
+      "wave": 0
+    }
+  }
+}

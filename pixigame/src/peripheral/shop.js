@@ -84,7 +84,7 @@ export function planShopOrder(value,wallet,{id,token,time=Date.now(),adCompleted
   else {state.counts[id]=integer(state.counts[id])+quantity;if(id==='coin-ad')state.counts['exchange-coins']=integer(state.counts['exchange-coins'])+quantity;}
  }
  const before={},after={};for(const[k,n]of Object.entries(delta)){if(!Number.isFinite(wallet[k])||wallet[k]<0||wallet[k]+n<0)return fail('资源数据异常，请重新进入');before[k]=wallet[k];after[k]=wallet[k]+n;}
- state.revision++;state.pending={before,after,...(Object.keys(delta).some(k=>k.startsWith('blueprint')||k.endsWith('Keys'))?{gearRevision:{before:wallet.gearRevision,after:wallet.gearRevision+1}}:{})};
+ state.revision++;state.pending={before,after,...(!refresh&&item.section==='daily'?{taskEvent:{shopPurchases:quantity}}:{}),...(Object.keys(delta).some(k=>k.startsWith('blueprint')||k.endsWith('Keys'))?{gearRevision:{before:wallet.gearRevision,after:wallet.gearRevision+1}}:{})};
  return{ok:true,state,item,rewards:rewardView(Object.fromEntries(Object.entries(delta).filter(([,n])=>n>0)))};
 }
 export function createShopService({getState,getWallet,saveState,applyWallet,playAd,canUse=()=>true,now=Date.now,onChange=()=>{},rng=Math.random}){

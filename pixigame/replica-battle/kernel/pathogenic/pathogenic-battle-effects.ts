@@ -1,5 +1,6 @@
 import {SwordEscortPresentation,withSwordEscortResources} from './sword-escort-presentation.mjs';
 import {LayeredCombatBursts,withLayeredBurstResources} from './layered-combat-bursts.mjs';
+import {WeaponImpactParticles,withWeaponImpactResources} from './weapon-impact-particles.mjs';
 import {MissileSmokeTrails,withMissileSmokeResources} from './missile-smoke-trails.mjs';
 import {MissileImpactBursts,withMissileImpactResources} from './missile-impact-bursts.mjs';
 import {WeaponSkinVfx,withWeaponSkinResources} from './weapon-skin-vfx.mjs';
@@ -22,7 +23,8 @@ import {IaidoVfx} from './iaido-vfx.mjs';
 import {isAcidRainCloud,acidCloudScreenMeshes} from './acid-cloud-presentation.mjs';
 import {isAreaWeaponPresentation,areaWeaponScreenMeshes} from './area-weapon-presentation.mjs';
 import {isAircraftPulse,aircraftPulseScreenMeshes} from './aircraft-pulse-presentation.mjs';
-import {isDimensionSword,dimensionSwordScreenMeshes} from './dimension-sword-presentation.mjs';
+import {isDimensionSword,dimensionSwordScreenCut} from './dimension-sword-presentation.mjs';
+import {isSwordWave,swordWaveScreenMeshes,withSwordWaveResources} from './sword-wave-presentation.mjs';
 import {isConstructWeapon,constructWeaponScreenMeshes} from './construct-weapon-presentation.mjs';
 import {isCorrectedStatus,correctedStatusScreenMeshes} from './status-presentation.mjs';
 import {isCorrectedEnemyProjectile,correctedEnemyProjectileMeshes} from './enemy-projectile-presentation.mjs';
@@ -47,6 +49,7 @@ const rootProps=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>
 export class PathogenicBattleEffects {
   private feedback=new CombatFeedback();
   private bursts=new LayeredCombatBursts();
+  private impacts=new WeaponImpactParticles();
   private escortSwords=new SwordEscortPresentation();
   private escortScreen?: (x:number,z:number)=>ScreenPoint;
   private missileSmoke=new MissileSmokeTrails();
@@ -65,11 +68,11 @@ export class PathogenicBattleEffects {
   readonly swordTrails:SwordEnergyTrails;
   readonly iaido:IaidoVfx;
   readonly audit={draws:0,legacyDraws:0,scenes:new Set<string>(),issues:[] as any[],events:[] as any[],eventsDropped:0};
-  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSwordEscortResources(this.graph);this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
+  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph)));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
   preload(urlFor:(p:string,t:Row)=>string){this.source.preload(urlFor);}
-  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=this.scene.scale?.width??NaN;this.viewport.height=this.scene.scale?.height??NaN;this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);}
+  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=this.scene.scale?.width??NaN;this.viewport.height=this.scene.scale?.height??NaN;this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport);this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);}
   private recordAuditEvent(event:Row){
     const events=this.audit.events;
     if(events.length>=1024){const removed=events.length-512;events.splice(0,removed);this.audit.eventsDropped+=removed;}
@@ -217,9 +220,19 @@ export class PathogenicBattleEffects {
       if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,category==='enemy-projectile'&&b.modelId!==1100014?projectilePalette(b,element):undefined,{presentationDepth:category==='enemy-projectile'?COMBAT_LAYERS.enemyShot:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
       return;
     }
-    if(isAreaWeaponPresentation(b)||isAircraftPulse(b)||isDimensionSword(b)){
-      const category=isAircraftPulse(b)?'aircraft-pulse':isDimensionSword(b)?'dimension-sword':'area-weapon';
-      const meshes=isAircraftPulse(b)?aircraftPulseScreenMeshes(b,screen):isDimensionSword(b)?dimensionSwordScreenMeshes(b,screen):areaWeaponScreenMeshes(b,screen);
+    if(isSwordWave(b)){
+      const meshes=swordWaveScreenMeshes(b,screen);
+      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:sword-wave`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add('host:sword-wave');}
+      return;
+    }
+    if(isDimensionSword(b)){
+      const cut=dimensionSwordScreenCut(b,screen);
+      if(cut){this.source.dimensionCut(cut);this.audit.draws++;this.audit.scenes.add('host:dimension-sword');}
+      return;
+    }
+    if(isAreaWeaponPresentation(b)||isAircraftPulse(b)){
+      const category=isAircraftPulse(b)?'aircraft-pulse':'area-weapon';
+      const meshes=isAircraftPulse(b)?aircraftPulseScreenMeshes(b,screen):areaWeaponScreenMeshes(b,screen);
       if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.area,presentationOpacity:.82});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
       return;
     }
@@ -283,6 +296,13 @@ export class PathogenicBattleEffects {
       if(isNativeSwordSwing(fx))this.skinVfx.sword(fx,nativeSwordScreenMeshes(this.host.nativeSwordEffects!,fx,screen,visualScale));
       else this.skinVfx.effect(fx,screen,visualScale);
       this.audit.draws++;this.audit.scenes.add('project:weapon-skin-impact-'+this.skinVfx.skinId);return;
+    }
+    if(this.impacts.matches(fx)){
+      if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
+      const before=this.impacts.count;
+      this.impacts.effect(fx,screen,visualScale,fx.age<0?fx.age:Math.max(0,fx.age-this.visualLag));
+      if(this.impacts.count>before){this.audit.draws++;this.audit.scenes.add('project:weapon-impact-particles');}
+      return;
     }
     if(this.missileImpacts.effect(fx,screen,visualScale,fx.age<0?fx.age:Math.max(0,fx.age-this.visualLag))){this.audit.draws++;this.audit.scenes.add('host:layered-missile-impact');return;}
     if(this.bursts.effect(fx,screen,visualScale,fx.age<0?fx.age:Math.max(0,fx.age-this.visualLag))){this.audit.draws++;this.audit.scenes.add('host:layered-combat-burst');return;}
@@ -392,9 +412,9 @@ export class PathogenicBattleEffects {
       // lifecycle for the remaining eight-second safety retention window.
       if(entry.visualComplete&&(entry.independent||entry.exitAt!==undefined))this.entries.delete(id);
     }
-    this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.bursts.draw(this.source);this.missileImpacts.draw(this.source,COMBAT_LAYERS.impact);if(this.escortScreen)this.escortSwords.draw(this.source,this.escortScreen);if(this.smokeScreen)this.missileSmoke.draw(this.source,this.smokeScreen);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();this.volumeMeshes.endFrame();
+    this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.impacts.draw(this.source,COMBAT_LAYERS.impact);this.bursts.draw(this.source);this.missileImpacts.draw(this.source,COMBAT_LAYERS.impact);if(this.escortScreen)this.escortSwords.draw(this.source,this.escortScreen);if(this.smokeScreen)this.missileSmoke.draw(this.source,this.smokeScreen);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();this.volumeMeshes.endFrame();
   }
-  reset(){this.escortSwords.reset();this.escortScreen=undefined;this.bursts.reset();this.missileImpacts.reset();this.missileSmoke.reset();this.smokeScreen=undefined;this.skinVfx.reset();this.volumeMeshes.reset();this.feedback.reset();this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
+  reset(){this.escortSwords.reset();this.escortScreen=undefined;this.bursts.reset();this.impacts.reset();this.missileImpacts.reset();this.missileSmoke.reset();this.smokeScreen=undefined;this.skinVfx.reset();this.volumeMeshes.reset();this.feedback.reset();this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
   destroy(){this.reset();this.source.destroy();}
 }
 

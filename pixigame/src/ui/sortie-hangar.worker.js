@@ -35,10 +35,9 @@ self.onmessage=async({data})=>{
   try{
     if(data.type==='init'){
       reduced=Boolean(data.reduced);
-      const base=data.assetBase;
-      await loadFighterPackages({pilotIds:[data.aircraftId],objectLoader:new BitmapObjectLoader(),read:async(slug,name)=>{
-        const r=await fetch(new URL(`fighters/${slug}/${name}`,base));if(!r.ok)throw Error(`Aircraft resource ${r.status}`);return r.arrayBuffer();
-      }});
+      // Share the main-thread loader's content-hash URLs. A custom reader here
+      // dropped the version key and could reuse an older cached manifest.
+      await loadFighterPackages({pilotIds:[data.aircraftId],objectLoader:new BitmapObjectLoader(),assetBase:data.assetBase});
       if(disposed)return;
       renderer=new THREE.WebGLRenderer({canvas:data.canvas,alpha:true,antialias:true,powerPreference:'low-power'});
       renderer.setPixelRatio(data.pixelRatio);renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;

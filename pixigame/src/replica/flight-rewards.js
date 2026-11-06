@@ -8,8 +8,10 @@ import acquisition from './native-acquisition-catalog.json' with { type: 'json' 
 import { nativeCollectionDisplayName } from './native-collection-names.js';
 import { nativeItemArt } from './native-item-presentation.js';
 import { localRandomMaterials } from './local-economy-policy.js';
+import {recurringProgressGate} from './pilot-supply-reward-policy.js';
+import {UNLOCK_ALL_CONTENT} from '../development-resources.js';
 
-import {STARTER_PLANE,LOCAL_SIGNIN_POLICY_ID,PREVIOUS_SIGNIN_POLICY_ID,APK_SIGNIN_POLICY_ID,SIGNIN_PILOT,signinRewards,previousSigninRewards,capturedSigninRewards,SIGNIN_LAST_DAY,SIGNIN_SOURCE,LEGACY_FLIGHT_SIGNIN} from './local-signin-policy.js';
+import {STARTER_PLANE,LOCAL_SIGNIN_POLICY_ID,PREVIOUS_SIGNIN_POLICY_ID,PREVIOUS_AIRCRAFT_SIGNIN_POLICY_ID,APK_SIGNIN_POLICY_ID,SIGNIN_PILOT,signinRewards,previousSigninRewards,previousAircraftSigninRewards,capturedSigninRewards,SIGNIN_LAST_DAY,SIGNIN_SOURCE,LEGACY_FLIGHT_SIGNIN} from './local-signin-policy.js';
 export {STARTER_PLANE,STARTER_PILOT,FLIGHT_SIGNIN} from './local-signin-policy.js';
 const item = (id,count) => ({kind:'item',id,count});
 const unit = (kind,id) => ({kind,id,count:1});
@@ -38,7 +40,7 @@ export function flightLedger(value,legacy={}) {
   if(!Object.hasOwn(result,'signinHistory')){
     result.signinHistory=Array.from({length:result.signCount},(_,i)=>{
       const oldLocal=i<(result.legacySignIn?.count||0);
-      const rewards=oldLocal?LEGACY_FLIGHT_SIGNIN[i]:result.signinPolicy===APK_SIGNIN_POLICY_ID?capturedSigninRewards(i+1):result.signinPolicy===PREVIOUS_SIGNIN_POLICY_ID?previousSigninRewards(i+1):signinRewards(i+1);
+      const rewards=oldLocal?LEGACY_FLIGHT_SIGNIN[i]:result.signinPolicy===APK_SIGNIN_POLICY_ID?capturedSigninRewards(i+1):result.signinPolicy===PREVIOUS_SIGNIN_POLICY_ID?previousSigninRewards(i+1):result.signinPolicy===PREVIOUS_AIRCRAFT_SIGNIN_POLICY_ID?previousAircraftSigninRewards(i+1):signinRewards(i+1);
       return {day:i+1,policy:oldLocal?'girl-flight-signin-v1':result.signinPolicy||LOCAL_SIGNIN_POLICY_ID,rewards:structuredClone(rewards)};
     });
   }
@@ -60,7 +62,8 @@ export function flightRewardView(reward) {
 }
 export function flightRewardsSnapshot(ledger,inventory,campaign,time) {
   const claims=flightLedger(ledger),today=flightDay(time);
-  const canSign=claims.starterPending || claims.driverPending || claims.signCount<SIGNIN_LAST_DAY&&today>claims.signDay;
+  const gate=recurringProgressGate(campaign,'signin'),unlocked=UNLOCK_ALL_CONTENT||gate.reached;
+  const canSign=claims.starterPending||claims.driverPending||unlocked&&claims.signCount<SIGNIN_LAST_DAY&&today>claims.signDay;
   // Keep the just-completed week visible for the rest of its claim day.
   const displayIndex=claims.starterPending||claims.driverPending?0:today>claims.signDay?claims.signCount:Math.max(0,claims.signCount-1);
   const weekStart=Math.floor(displayIndex/7)*7;
@@ -69,7 +72,7 @@ export function flightRewardsSnapshot(ledger,inventory,campaign,time) {
     misses:claims.misses,total:claims.total,history:(claims.history||[]).map(row=>({...row,rewards:row.rewards.map(r=>({...r,name:nativeCollectionDisplayName(r.id)||r.name}))})),
     chapters:[], // Compatibility only; use nativeAcquisition.rewards.
     ad:{canClaim:today>claims.adDay,rewards:FLIGHT_AD_REWARDS.map(flightRewardView)},
-    signIn:{ruleSource:LOCAL_SIGNIN_POLICY_ID,nativeRewardScheduleKnown:false,projectAdapted:true,referenceLayout:true,source:SIGNIN_SOURCE,serverRulesKnown:false,today,lastClaimDay:claims.signDay,claimedCount:claims.signCount,weekStart,
+    signIn:{ruleSource:LOCAL_SIGNIN_POLICY_ID,nativeRewardScheduleKnown:true,gate:{...gate,reached:unlocked},projectAdapted:true,referenceLayout:true,source:SIGNIN_SOURCE,serverRulesKnown:false,today,lastClaimDay:claims.signDay,claimedCount:claims.signCount,weekStart,
       completed:claims.signCount===SIGNIN_LAST_DAY&&!claims.starterPending&&!claims.driverPending,canClaim:canSign,starterPending:claims.starterPending,driverPending:Boolean(claims.driverPending),
       supplements:{},days:Array.from({length:7},(_,i)=>{
         const calendarDay=weekStart+i+1;
@@ -128,6 +131,7 @@ export function planFlightReward({ledger,inventory,progression,campaign,time},op
     if(l.driverPending){give(unit('pilots',SIGNIN_PILOT));l.driverPending=false;l.driverRecoveryDone=true;l.signinPolicy=LOCAL_SIGNIN_POLICY_ID;}
     else if(l.starterPending){give(unit('skins',STARTER_PLANE));l.starterPending=false;}
     else {
+      if(!UNLOCK_ALL_CONTENT&&!recurringProgressGate(campaign,'signin').reached)throw Error(recurringProgressGate(campaign,'signin').reason);
       if(l.signCount>=SIGNIN_LAST_DAY||today<=l.signDay)throw new Error('今日已签到、签到已完成或日期异常');
       const entitlement=signinRewards(l.signCount+1);
       entitlement.forEach(reward=>{

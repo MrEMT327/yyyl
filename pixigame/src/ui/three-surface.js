@@ -91,7 +91,7 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     return image(sharedResourceTexture(type),x+(size-width)/2,y,width,size);
   }
 
-  function text(value, x, y, { size = 20, color = '#edf6fb', weight = 500, align = 'left', maxWidth = 560, tracking = 0 } = {}) {
+  function text(value, x, y, { size = 20, color = '#edf6fb', weight = 600, align = 'left', maxWidth = 560, tracking = 0 } = {}) {
     const canvas = documentRef?.createElement('canvas') || globalThis.wx?.createCanvas?.();
     const ctx = canvas.getContext('2d');
     const font = `${weight} ${size}px ${COMBAT_TYPE.family}`;
@@ -99,7 +99,9 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     const metrics = ctx.measureText(String(value));
     const naturalWidth = metrics.width + Math.max(0, String(value).length - 1) * tracking;
     const width = Math.ceil(Math.min(maxWidth, naturalWidth) + 4), height = Math.ceil(size * 1.65);
-    const resolution = textResolution;
+    // Small CJK strokes need more source samples when the combat UI shrinks.
+    // Keep the quad's logical size; only the cached text bitmap is denser.
+    const resolution = Math.max(textResolution, size <= 24 ? 3 : 2);
     canvas.width = width * resolution; canvas.height = height * resolution;
     ctx.scale(resolution, resolution); ctx.font = font; ctx.fillStyle = color; ctx.textBaseline = 'alphabetic';
     // Center the visible glyphs, including CJK, rather than the font's em box.

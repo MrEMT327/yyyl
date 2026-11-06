@@ -15,7 +15,16 @@ import {isAcidVortex,acidVortexPresentation,withAcidVortexResources} from './aci
 import {isAcidDroplet,isAcidGammaRay,acidDropletPresentation,withAcidDropletResources} from './acid-droplet-presentation.mjs';
 import {playerShotMaterialPose,withPlayerShotMaterials} from './player-shot-material.mjs';
 import {withOrdinaryIceMaterials} from './ordinary-ice-materials.mjs';
+// A travelling shot's body ends with the host projectile. Source impact clips
+// may finish particles, but must not park a solid bullet at its final pose.
+const PLAYER_SHOT_BODIES=new Set([1000000,1000063,1000049,1000050,1000064,1000031,1000023,1000052,1000036]);
 export function projectilePresentation(b){
+  const presentation=sampleProjectilePresentation(b);
+  if(!b.beam&&(b.owner==='player'?PLAYER_SHOT_BODIES.has(b.modelId):b.owner==='enemy'&&ENEMY_SHOT_MODELS.has(b.modelId)))
+    presentation.pose.hideBodyOnHostExit=true;
+  return presentation;
+}
+function sampleProjectilePresentation(b){
   // Native magnetic fans keep the harpoon model ID but draw a beam scene.
   // Select their electric material before the ordinary circle-body adapter.
   if(b.owner==='player'&&b.weaponId!==360017&&[200001,200011].includes(b.familyId)

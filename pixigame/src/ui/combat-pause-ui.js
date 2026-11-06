@@ -37,22 +37,27 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   const mode=game.pauseMode||'pause';
   if(mode==='detail'&&game.pauseDetail?.kind==='weapons') {
     const item=game.pauseDetail,detail=combatWeaponDetail(item);
-    const lines=combatDetailLines(detail.description),extra=Math.max(0,lines.length-1)*26;
-    const x=73,width=454,height=539+extra,y=(1300-height)/2;
+    // Keep complete CJK strokes readable after the combat viewport scales down.
+    // Wrap first, instead of letting Canvas squeeze longer lines horizontally.
+    const lines=combatDetailLines(detail.description,14),lineHeight=34;
+    const extra=lines.length?8+Math.max(0,lines.length-1)*lineHeight:0;
+    const x=73,width=454,height=539+extra,y=Math.round((1300-height)/2);
     surface(panel,s=>{
       paintPsdPopup(s,'primary',x,y,width,height);
       s.text('武器详情',x+37,y+41,{size:27,color:'#fff',weight:800});
-      s.quad(268,y+82,64,23,'#dce7ef');
-      s.text(detail.qualityName,300,y+94,{size:15,color:'#4a6175',align:'center'});
+      if(detail.qualityName){
+        s.quad(268,y+82,64,23,'#dce7ef');
+        s.text(detail.qualityName,300,y+94,{size:18,color:'#3b5368',weight:600,align:'center'});
+      }
       s.text(detail.name,300,y+134,{size:32,color:'#203b50',weight:800,align:'center',maxWidth:360});
       s.text(detail.levelLabel,300,y+168,{size:22,color:'#29465c',weight:800,align:'center'});
       weaponImage(s,art?.get(item.itemId),item.itemId,{x:192,y:y+199,width:216,height:171});
       if(lines.length) {
         s.quad(106,y+395,388,44+extra,'#d8e5ef');
         s.quad(106,y+395,4,44+extra,'#527f9b');
-        lines.forEach((line,i)=>s.text(line,300,y+417+i*26,{size:20,color:'#203d52',align:'center',maxWidth:360}));
+        lines.forEach((line,i)=>s.text(line,300,y+421+i*lineHeight,{size:24,color:'#173449',weight:600,align:'center',maxWidth:360}));
       }
-    });
+    },{textResolution:3});
     if(item.canFocus) {
       control('focus',91,y+465+extra,190,51,item.selected?'已优先强化':'优先强化',()=>{
         if(bridge.focusFixedWeapon?.(item.id)!==false){bridge.saveFixedGrowthCheckpoint?.();game.pauseDetail={...item,selected:true};}

@@ -8,6 +8,7 @@ import { createWorldEnvironment } from '../three/world.js';
 import { BATTLE_VIEW, createBattleCamera } from '../three/battle-camera.js';
 import { peripheralSceneForStage, FIVE_LAYER_SCENES, authoredLayerMotion, coastIslandLateralOffset } from '../three/peripheral-scenes.js';
 import { nativeMapScrollZ } from '../../replica-battle/kernel/native-map-layers';
+import {sampleCoastCloudMotion} from '../three/coast-cloud-motion.js';
 import { WEAPON_SKINS, validateWeaponSkins, createWeaponForm, weaponSkinLoadout, createWeaponIcons } from './weapon-skins.js';
 import { createPhantomTrailState, samplePhantomTrail } from './project-phantom-visual.js';
 import { createFlightVisualState, sampleFlightVisual, updateFlightFighter } from './project-flight-visual.js';
@@ -118,6 +119,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
   const environment = replaceTerrain ? createWorldEnvironment(worldScene, {
     shadowsEnabled: false, textureLoader: loader, initialStage: stageIndex, sceneIds: [selectedScene.id],
     layerMotion(definition, elapsed, aspect) {
+      if (definition.cloudMotion) return sampleCoastCloudMotion(definition.cloudMotion, elapsed, frame.camera, unitsPerWorld);
       if (definition.authoredMotion) return authoredLayerMotion(definition, elapsed, aspect, frame.camera.x, unitsPerWorld);
       const original = definition.nativeLayer !== undefined ? sourceMap.layers.find(layer => layer.layer === definition.nativeLayer) : sourceLayers[definition.id];
       if (!original) throw new Error(`当前关卡缺少背景层：${definition.id}`);

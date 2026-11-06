@@ -553,7 +553,7 @@ export function pilotCardMarkup(pilot, {
   rarityColor = null,
 } = {}) {
   const requestedRarity = rarity || pilot.rarity || '未标注';
-  const displayRarity = requestedRarity === 'UR' ? 'SSR' : Object.hasOwn(AIRCRAFT_RARITY_PRESENTATION, requestedRarity) ? requestedRarity : '未标注';
+  const displayRarity = pilot.qualityKnown===false ? '' : requestedRarity === 'UR' ? 'SSR' : Object.hasOwn(AIRCRAFT_RARITY_PRESENTATION, requestedRarity) ? requestedRarity : '';
   const displayRarityColor = rarityColor
     || AIRCRAFT_RARITY_PRESENTATION[displayRarity]?.color
     || '#8899a2';
@@ -575,7 +575,7 @@ export function pilotCardMarkup(pilot, {
         <div class="pilot-card-art">
           <img src="${pilot.image}" alt="${pilot.name}与${pilot.aircraft}" loading="${reveal ? 'eager' : 'lazy'}" />
           <i class="pilot-card-shine" aria-hidden="true"></i>
-          <span class="pilot-card-rarity">${displayRarity}</span>
+          ${displayRarity?`<span class="pilot-card-rarity">${displayRarity}</span>`:''}
           <span class="pilot-card-code">${pilot.aircraft}</span>
           ${owned ? `<span class="pilot-card-resonance">R${resonance}</span>` : ''}
         </div>

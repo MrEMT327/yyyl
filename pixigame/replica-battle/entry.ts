@@ -247,7 +247,7 @@ async function initialize(appearance: any) {
     return {
       runId:currentRunId,won:!quit&&sim.phase==='won',abandoned:false,
       endReason:quit?'quit':sim.phase==='won'?'victory':'defeat',
-      chapterId:requestedChapter!.id,gold:sim.gold,kills:sim.kills,level:sim.level,
+      chapterId:requestedChapter!.id,gold:sim.gold,kills:sim.kills,bossKills:sim.bossKills,level:sim.level,
       wave:sim.wave,clock:sim.clock,damageDealt:sim.damageDealt,
       hp:sim.player.hp,maxHp:sim.player.maxHp,revivesUsed:sim.revivesUsed,adRevivesUsed:sim.adRevivesUsed,
       damageByWeapon:Array.from(sim.damageByWeapon),entry:activeEntry,

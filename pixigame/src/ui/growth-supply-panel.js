@@ -1,9 +1,9 @@
 import { projectIconUrl } from './project-ui-art.js';
 const resources=(rows,h)=>(rows||[]).map(reward=>`<span class="ps-resource">${h.img(reward.image,'','ps-item-art')}${h.escape(reward.name)} ×${reward.count}</span>`).join('、');
 const button=(action,label,attrs='',disabled=false)=>`<button type="button" class="wc-button" data-action="${action}" ${attrs} ${disabled?'disabled':''}>${label}</button>`;
-const supplyRewards=view=>view.supplemental?view.extraRewards:[view.box,view.material,...(view.extraRewards||[])];
+const supplyRewards=view=>(view.supplemental?view.extraRewards:[view.box,view.material,...(view.extraRewards||[])]).filter(Boolean);
 export function growthSupplyEntry(period,s,h,{compact=false}={}) {
-  const view=s.pilotSupply?.growth?.[period];if(!view)return '';
+  const view=s.pilotSupply?.growth?.[period];if(!view||view.available===false)return '';
   const e=h.escape,blocked=s.rewardPending||s.rewardBusy;
   if(compact){
     const tile=r=>`<span class="su-reward" title="${e(r.name)} ×${h.number(r.count)}" aria-label="${e(r.name)} ×${h.number(r.count)}">${h.img(r.image||(r.id===135?projectIconUrl('technology-core'):null),'','su-item-art')}<b>×${h.number(r.count)}</b>${r.id===135?'<small>星核</small>':''}</span>`;
@@ -24,12 +24,12 @@ export function growthSupplyDialog(s,state,h) {
   const blocked=s.rewardPending||s.rewardBusy;
   return {title:view.name,content:`<div class="pilot-supply-panel supply-ui su-selection cs-dialog">
     <div class="su-selection-intro"><span>${state.period==='week'?`第${view.chapter}章 · 活跃${view.days}天`:'每日满活跃后领取'}</span><b>${view.claimed?'已领取':view.canClaim?'可领取':'未达成'}</b></div>
-    <section class="su-card"><header class="su-card-heading"><h3>${view.supplemental?'星核补领':'材料补给'}</h3></header>
+    <section class="su-card"><header class="su-card-heading"><h3>${view.supplemental?'星核补领':'星核补给'}</h3></header>
       <div class="su-choice-rewards">${resources(supplyRewards(view),h)}</div>
       <p class="su-choice-hint">奖励存入背包</p>
       <div class="su-selection-claim">${button('growthSupplyClaim',view.supplemental?'补领星核':view.claimed?'本期已领取':!view.reached?'条件未达成':'领取补给',`data-primary="true" data-id="0" data-revision="${p.revision}"`,blocked||!view.canClaim)}</div>
     </section>
     <details class="su-details"><summary>领取规则</summary><p>${e(view.requirement)}。</p><p>${e(view.coreIncomeNote)}</p><p>北京时间00:00刷新，每周补给周一刷新。</p></details>
-    <div class="su-footer-actions">${button('bagOpen','打开宝箱',`data-id="${view.boxId}"`,!(s.nativeAcquisition.materials.some(row=>row.id===view.boxId&&row.count>0)))}${button('close','返回')}</div>
+    <div class="su-footer-actions">${view.box?button('bagOpen','打开宝箱',`data-id="${view.boxId}"`,!(s.nativeAcquisition.materials.some(row=>row.id===view.boxId&&row.count>0))):''}${button('close','返回')}</div>
   </div>`};
 }
