@@ -11,7 +11,10 @@ import { nativeItemDisplayQuality, rewardNativeItemId } from './item-display-qua
 import { nativeGearPresentation, nativeItemDisplayName } from './native-item-names.js';
 import { equipmentBlueprintArtPath, equipmentArtPath, equipmentArtFamily } from './equipment-art.js';
 import { researchBlueprintArt } from './research-blueprint-art.js';
-const base=import.meta.env?.BASE_URL||'/';
+import { cloudAssetBase } from '../ui/cloud-asset-base.js';
+// Battle results run in a nested document; use the same public-art root as
+// resource icons and research sheets instead of resolving art below the frame.
+const base=cloudAssetBase;
 const units=new Map([...catalog.guns,...catalog.skins,...catalog.pilots].map(row=>[row.id,row]));
 const items=new Map(acquisition.items.map(row=>[row.id,row]));
 export function nativeItemArt(id) {

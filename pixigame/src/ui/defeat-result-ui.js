@@ -68,21 +68,22 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, sta
     drawUiSymbol(canvas, 'target', 89, 582, 30, '#d8efff');
     canvas.text('击败敌人', 135, 598, {size:27, weight:800});
     canvas.text(String(model.kills), 506, 598, {size:32, weight:900, align:'right', maxWidth:180});
-    canvas.text(model.heading, 300, 665, {size:29, color:'#173449', weight:800, align:'center'});
+    canvas.text(model.heading, 300, 650, {size:29, color:'#173449', weight:800, align:'center'});
     if (!model.rewards.length) canvas.text(model.empty, 300, 803,
       {size:24, color:'#29465c', align:'center'});
     model.rewards.forEach((row, index) => {
       const columns = Math.min(4, model.rewards.length - Math.floor(index / 4) * 4);
       const left = (600 - (columns * 104 + (columns - 1) * 12)) / 2 + index % 4 * 116;
-      const top = 700 + Math.floor(index / 4) * 146;
+      const top = 684 + Math.floor(index / 4) * 166;
       paintCombatArt(canvas, 'slot', left, top, 104, 104);
       icon(canvas, row.image, left + 18, top + 9, 68, 64);
       canvas.text(String(row.amount), left + 94, top + 85, {size:26, weight:900, align:'right', maxWidth:88});
-      canvas.text(row.label.replace(/图纸$/, ''), left + 52, top + 121, {size:22, color:'#173449', weight:800, align:'center', maxWidth:110});
+      canvas.text(row.label, left + 52, top + 134, {size:20, color:'#173449', weight:800, align:'center',
+        maxWidth:96, wrap:true, maxLines:2, minSize:14, lineHeight:24});
     });
-    if (model.pageCount > 1) canvas.text(`${model.page + 1} / ${model.pageCount}`, 300, 1018,
-      {size:21, color:'#173449', align:'center'});
-    else if (model.rewards.length) canvas.text(model.note, 300, 965, {size:20, color:'#29465c', align:'center', maxWidth:450});
+    if (model.pageCount > 1) canvas.text(`${model.page + 1} / ${model.pageCount}`, 300, 1028,
+      {size:18, color:'#173449', align:'center'});
+    else if (model.rewards.length) canvas.text(model.note, 300, model.rewards.length > 4 ? 1030 : 965, {size:20, color:'#29465c', align:'center', maxWidth:450});
     if (model.recommendations.length) {
       paintCombatArt(canvas, 'card', 62, 1051, 476, 80);
       canvas.text(model.recommendationTitle, 80, 1091, {size:24, weight:800});
@@ -97,8 +98,8 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, sta
   const rating = stars(model.stars, false, {radius:23, gap:62});
   rating.position.set(300, 531);
   content.addChild(rating);
-  if (model.pageCount > 1) for (const [label, direction, left] of [['‹',-1,164],['›',1,366]]) {
-    buttons.addChild(button({x:left, y:991, width:70, height:50, text:label, fontSize:30, variant:'secondary',
+  if (model.pageCount > 1) for (const [label, direction, left] of [['‹',-1,140],['›',1,390]]) {
+    buttons.addChild(button({x:left, y:628, width:70, height:44, text:label, fontSize:26, variant:'secondary',
       disabled: model.page + direction < 0 || model.page + direction >= model.pageCount,
       onPress:() => {bridge.ui.defeatRewardPage = model.page + direction; bridge.pixiCombatUi?.render();}}));
   }

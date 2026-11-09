@@ -1,9 +1,13 @@
 import * as T from 'three';
+import {rainRippleShader} from './rain-ripple-shader.js';
+import {nightWaterShader} from './night-water-shader.js';
 import {MODULAR_ASSETS,MODULAR_ISLANDS,MODULAR_WATER_PROPS,MODULAR_SEABED_FIELDS,MODULAR_TERRAIN_SETTINGS as SETTINGS} from './stage1-modular-layout.js';
 
 const vertex='varying vec2 localUv;void main(){localUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}';
 const seaFragment=`varying vec2 localUv;uniform sampler2D artwork;uniform float time;
-uniform float scroll;uniform vec2 repeats;
+uniform float scroll;uniform vec2 repeats;uniform float rainAmount;uniform float rainTravel;
+${rainRippleShader}
+${nightWaterShader}
 vec2 mirrored(vec2 p){return abs(fract(p*.5)*2.-1.);}
 void main(){
   vec2 uv=localUv*repeats+vec2(0.,scroll);
@@ -15,6 +19,7 @@ void main(){
   float flow=sin(uv.x*3.141593+uv.y*6.283185-time*.18);
   float sheen=smoothstep(.78,.98,sin(uv.y*12.566371+sin(uv.x*6.283185)-time*.38));
   c*=1.+flow*.015;c=mix(c,vec3(.025,.12,.28),sheen*.012);
+  c=applyRainRipples(c,localUv*vec2(1800.,3000.)+vec2(0.,rainTravel),time,rainAmount);
   gl_FragColor=vec4(c,1.);
   #include <colorspace_fragment>
 }`;
@@ -34,11 +39,11 @@ export function rigidTerrainPose(elapsed,motion={}){
     lateral:Math.max(-12,Math.min(12,motion.lateralOffset??0)),tile:SETTINGS.waterTileUnits*units};
 }
 
-export function createRigidTerrainLayer(definition,renderOrder){
+export function createRigidTerrainLayer(definition,renderOrder,rain={value:0},night={value:0},nightResolution={value:new T.Vector2(540,960)}){
   const mesh=new T.Group();mesh.name=`chapter-${definition.id}-layer`;
   const geometry=new T.PlaneGeometry(1,1).rotateX(-Math.PI/2),materials=new Map();
   const seaMaterial=new T.ShaderMaterial({vertexShader:vertex,fragmentShader:seaFragment,toneMapped:false,
-    uniforms:{artwork:{value:null},time:{value:0},scroll:{value:0},repeats:{value:new T.Vector2()}},depthWrite:true});
+    uniforms:{artwork:{value:null},time:{value:0},nightAmount:night,nightResolution,rainAmount:rain,rainTravel:{value:0},scroll:{value:0},repeats:{value:new T.Vector2()}},depthWrite:true});
   materials.set('ground',seaMaterial);
   const sea=new T.Mesh(geometry,seaMaterial);sea.renderOrder=renderOrder;sea.position.y=definition.depth;mesh.add(sea);
   function sprite(asset,order){
@@ -100,7 +105,7 @@ export function syncRigidTerrainLayer(record,textures,sceneId,elapsed,motion={})
   // A fixed screen cover within the moving parent. UV compensation is exactly
   // the same displacement as the islands, including horizontal camera motion.
   sea.position.z=650-p.wrapped;sea.scale.set(1800,1,3000);sea.visible=!!materials.get('ground').uniforms.artwork.value;
-  const u=sea.material.uniforms;u.scroll.value=p.wrapped/p.tile;u.repeats.value.set(1800/p.tile,3000/p.tile);u.time.value=elapsed;
+  const u=sea.material.uniforms;u.scroll.value=p.wrapped/p.tile;u.repeats.value.set(1800/p.tile,3000/p.tile);u.time.value=elapsed;u.rainTravel.value=p.travel;
   let visible=0,visibleSites=0;
   for(const c of clusters){
     const {row,parent,island,sites,parts,copy}=c,w=row.width*p.units,h=w*MODULAR_ASSETS[row.asset].height/MODULAR_ASSETS[row.asset].width;

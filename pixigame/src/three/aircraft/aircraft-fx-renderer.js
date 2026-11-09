@@ -31,9 +31,16 @@ export function createAircraftFxRenderer(renderer,{samples=0}={}) {
       }`,
   });
   const quad=new FullScreenQuad(material),viewport=new T.Vector4(),scissor=new T.Vector4(),color=new T.Color();
-  let width=1,height=1;
+  let width=1,height=1,night=false;
   return {
     setColor(value){material.uniforms.haloTint.value.set(value);},
+    setNight(value){
+      const next=Boolean(value);if(next===night)return;night=next;
+      // Keep the same two blur levels and HDR target. Night adds bloom only
+      // around genuinely luminous parts; the daytime/hangar profile restores.
+      bloom.strength=night?.88:.55;bloom.threshold=night?3.4:4.2;
+      bloom.compositeMaterial.uniforms.bloomFactors.value[1]=night?.55:.35;
+    },
     render(draw,nextWidth,nextHeight){
       if(width!==nextWidth||height!==nextHeight){
         width=nextWidth;height=nextHeight;source.setSize(width,height);

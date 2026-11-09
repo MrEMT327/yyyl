@@ -25,6 +25,9 @@ export interface BattleAppearance {
   update?(frame: {
     time: number; coastBackgroundTime?: number; clock: number; renderDelta?: number; camera: Readonly<Point>;
     phantomActive?: boolean; playerHitFlash?: boolean; runId?: number;
+    /** Read-only visual events; local night light never feeds back into combat. */
+    lightingEffects?: readonly {kind:string;age:number;duration:number;size:number;x:number;z:number}[];
+    projectPoint?(x:number,z:number): {x:number;y:number};
     flight?: Readonly<{ x: number; z: number; speed: number; radius?: number; active: boolean }>;
     mapCameraOffset(layer: NativeMapLayer): Point;
   }): void;

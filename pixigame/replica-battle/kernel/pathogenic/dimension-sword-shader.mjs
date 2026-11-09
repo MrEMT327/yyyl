@@ -44,8 +44,13 @@ vec4 dimensionResolve() {
     vec3 ghost = dimensionResolvedAt(vUv - dimensionUvOffset(ghostShift)).rgb;
     color.rgb = mix(color.rgb, ghost, falloff * style.x * .12);
     float edge = exp(-d * 3.1);
-    float halo = exp(-d * .95) * .065;
-    vec3 light = vec3(.28, .62, 1.1) * halo + mix(vec3(.54, .86, 1.3), vec3(1.15, 1.3, 1.45), style.z) * edge;
+    // This cut is drawn in the final resolve, after the shared bloom texture.
+    // Supply its own compact falloff here without another full-screen pass.
+    float bloomGain = clamp(uIntensity / 1.7, 0., 1.25);
+    float nearGlow = exp(-d * d * .65) * .17;
+    float halo = exp(-d * d * .10) * .045;
+    vec3 light = vec3(.20, .52, 1.05) * (nearGlow + halo) * bloomGain
+      + mix(vec3(.64, .96, 1.4), vec3(1.20, 1.36, 1.5), style.z) * edge;
     float cell = floor((along + shape.z * 130.) / 63.);
     float rnd = fract(sin(cell * 43.17 + shape.z * 71.3) * 12731.);
     float sparkX = mod(along + shape.z * 130., 63.) - 31.5;

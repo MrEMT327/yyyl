@@ -4,6 +4,7 @@ import {markImpactDirection} from './impact-direction.mjs';
 import { projectileSound } from './combat-audio';
 import {nativeProtectHpRateRaw} from '../../src/replica/native-failure-protection.js';
 import {firstGuideChoices} from '../battle-onboarding';
+import {recordTransportFeedback,recordInterceptionFeedback} from './special-weapon-feedback.mjs';
 import { clamp, lerp, sweep, newWeapon, type WeaponState, type Choice, type Effect, type Enemy, type GameContent, type Phase, type Pickup, type Point, type Projectile, type RecordData, type Spawn } from './model';
 import { advancePickup, createPickup } from './drop-motion';
 import { markOrdinaryDeathVisual } from '../small-death-visual.js';
@@ -2282,7 +2283,10 @@ export class Simulation {
         if (target) {
           const plan = nativeBlackHoleTransportPlan({ position: target, radius: target.radiusX, camera: this.cameraBounds(), dead: target.dead, elite: target.elite, boss: target.boss,
             immuneControl: Boolean(nativeMonsterAttribute(this.content.chapter.entities[target.entityId].raw.MonsterAbility, 'ImmuneControl')), borderTypes: args.borderTypes, buffIds: args.buffIds, random: () => this.random() });
-          if (plan?.position && !this.statuses.modifiers(target.uid).immobile) this.setEnemyPositionImmediately(target, plan.position);
+          if (plan?.position && !this.statuses.modifiers(target.uid).immobile) {
+            recordTransportFeedback(this, target, plan.position, Math.max(target.radiusX, target.radiusZ), familyId, Number(event.weaponId || 0));
+            this.setEnemyPositionImmediately(target, plan.position);
+          }
           if (plan) this.applyStatusPulses(this.statuses.hit(target.uid, plan.buffIds.map(buffId => ({ buffId, probability: 1 })), { attack: this.player.attack, familyId, weaponId: Number(event.weaponId || 0), timeShieldExtraDuration: this.weaponAttributes(fireFamilyId).TimeShieldExtraDuration || 0 }, () => this.random()));
         }
         return;
@@ -2493,7 +2497,7 @@ export class Simulation {
       const result = eraser.runtime.contact({ uid: source.uid, weaponId: source.weaponId, ownerUid: source.familyId, dead: deathExplosionRadius === undefined && source.dead, hitCampMask: eraser.hitCampMask },
         { uid: target.uid, dead: target.dead, bulletTrait: target.traits || 0, hitCamp: 16 }, rate => this.random() < rate);
       for (const command of result.commands) {
-        if (command.kind === 'die') { const bullet = command.targetUid === source.uid ? source : target; if(bullet===target&&!target.dead)erased=true; bullet.dead = true; }
+        if (command.kind === 'die') { const bullet = command.targetUid === source.uid ? source : target; if(bullet===target&&!target.dead){erased=true;recordInterceptionFeedback(this,source,target);} bullet.dead = true; }
         else if (command.kind === 'incrementOwnerKillBulletCount') {
           const owner = source.familyId || this.content.chapter.player.weaponEntityId;
           for (const id of [source.weaponId, 0]) { const key = `${owner}:${id}`; this.killBulletCounts.set(key, (this.killBulletCounts.get(key) || 0) + 1); }

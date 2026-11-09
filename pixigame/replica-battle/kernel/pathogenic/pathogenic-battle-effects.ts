@@ -5,6 +5,7 @@ import {MissileSmokeTrails,withMissileSmokeResources} from './missile-smoke-trai
 import {MissileImpactBursts,withMissileImpactResources} from './missile-impact-bursts.mjs';
 import {WeaponSkinVfx,withWeaponSkinResources} from './weapon-skin-vfx.mjs';
 import {VfxMeshCache} from './vfx-buffers.mjs';
+import {isCounterRay,counterRayScreenMeshes,specialWeaponFeedbackMeshes,withSpecialWeaponResources} from './special-weapon-presentation.mjs';
 import {withBattleVfxFinish} from './battle-vfx-finish.mjs';
 import {CombatFeedback,feedbackKind,isOrdinaryContact,withCombatFeedbackResources,isRefinedBasicStatus,refinedBasicStatusMeshes} from './combat-feedback.mjs';
 import {isLayeredCorrosion,isLayeredIceCyclone,corrosionStatusMeshes,iceCycloneMeshes,withElementalVolumeResources} from './elemental-volume-presentation.mjs';
@@ -68,7 +69,7 @@ export class PathogenicBattleEffects {
   readonly swordTrails:SwordEnergyTrails;
   readonly iaido:IaidoVfx;
   readonly audit={draws:0,legacyDraws:0,scenes:new Set<string>(),issues:[] as any[],events:[] as any[],eventsDropped:0};
-  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph)));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
+  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSpecialWeaponResources(withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph))));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
   preload(urlFor:(p:string,t:Row)=>string){this.source.preload(urlFor);}
@@ -220,6 +221,11 @@ export class PathogenicBattleEffects {
       if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:${category}`,meshes,category==='enemy-projectile'&&b.modelId!==1100014?projectilePalette(b,element):undefined,{presentationDepth:category==='enemy-projectile'?COMBAT_LAYERS.enemyShot:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add(`host:${category}`);}
       return;
     }
+    if(isCounterRay(b)){
+      const meshes=counterRayScreenMeshes(b,screen,this.volumeMeshes.get('counter:'+b.uid));
+      if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:counter-ray`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add('host:counter-ray');}
+      return;
+    }
     if(isSwordWave(b)){
       const meshes=swordWaveScreenMeshes(b,screen);
       if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:sword-wave`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot});this.audit.draws++;this.audit.scenes.add('host:sword-wave');}
@@ -291,6 +297,11 @@ export class PathogenicBattleEffects {
     if(meshes.length){this.equipmentAccentCount++;this.source.drawMeshes(`equipment-accent:${b.uid}`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.playerShot+.01});}
   }
   effect(fx:Effect&Row,screen:(x:number,z:number)=>ScreenPoint,visualScale=1){
+    if(fx.specialFeedback){
+      const meshes=specialWeaponFeedbackMeshes(fx,screen,this.volumeMeshes.get('special:'+fx.uid));
+      if(meshes.length){this.source.drawMeshes(`feedback:${fx.uid}:${fx.specialFeedback}`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.impact});this.audit.draws++;this.audit.scenes.add('host:'+fx.specialFeedback);}
+      return;
+    }
     if(this.skinVfx.effectMatches(fx)){
       if(!this.hitAdmission.accepts(fx,screen(fx.x,fx.z)))return;
       if(isNativeSwordSwing(fx))this.skinVfx.sword(fx,nativeSwordScreenMeshes(this.host.nativeSwordEffects!,fx,screen,visualScale));

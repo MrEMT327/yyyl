@@ -19,8 +19,12 @@ export function sampleFlightVisual(state,{clock,runId,flight,visible=true,render
   }
   // Native snapshots still determine motion. Only attitude/engine animation
   // advances between ticks; pause, restart and teleport keep their reset rules.
-  const dt=Number.isFinite(renderDelta)?clamp(renderDelta,0,.05):snapshotDelta;
+  // This is elapsed display time, not a physics integration step. Capping it
+  // at 50 ms stretched a 0.72 s roll to 1.5 s at 10 Hz. Long suspensions rebase
+  // level; ordinary slow frames still finish the complete roll on time.
+  const dt=Number.isFinite(renderDelta)?Math.max(0,renderDelta):snapshotDelta;
   if(!flight.active||dt<=0)return {...state.pose};
+  if(dt>.25)return reset();
   state.visualClock+=dt;
   const {vx,vz}=state.motion;
   const moving=Math.hypot(vx,vz)>.015;
@@ -39,6 +43,19 @@ export function sampleFlightVisual(state,{clock,runId,flight,visible=true,render
   return {...state.pose};
 }
 
+// Endpoints must reach the texture even when cadence changes from 60 to 30 Hz
+// or a choice modal pauses the next frame. Unchanged paused poses stay cached.
+export function flightPoseNeedsRefresh(previous,next){
+  return !previous||previous.rollActive!==next.rollActive||previous.rollSerial!==next.rollSerial
+    ||['bank','pitch','thrust'].some(key=>next[key]===0&&previous[key]!==0);
+}
+// Spine's local scale/shear is its old 2D banking illusion. The rendered 3D
+// hull already rolls rigidly, so inheriting that deformation banks it twice
+// and can leave it narrow after the native track enters a held side pose.
+// World position, global size, visibility and damage tint remain host-owned.
+export function rigidAircraftSkinPose(pose){
+  return {...pose,scaleX:1,scaleY:1,shearX:0};
+}
 const previousJets=new WeakMap();
 export function updateFlightFighter(fighter,clock,pose){
   const runtime=fighter.runtime;

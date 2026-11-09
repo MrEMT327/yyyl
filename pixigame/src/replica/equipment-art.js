@@ -1,6 +1,7 @@
 // Legacy slot IDs and saved equipment families retain their gameplay identity.
 const DEFAULT_FAMILIES=Object.freeze({'cockpit':4100100,'fire-control':4200100,'fuselage':4300100,'amplifier':4400100,'engine-armor':4500100});
 const FAMILIES=new Set(Object.values(DEFAULT_FAMILIES).flatMap(base=>[base,base+100,base+200,base+300,base+10000]));
+const SAINT_FAMILIES=new Set(Object.values(DEFAULT_FAMILIES).map(base=>base+10000));
 
 export function equipmentArtKey(row) {
   if (!row || !Number.isInteger(row.ID) || !Number.isInteger(row.quality)) return null;
@@ -17,7 +18,9 @@ export function equipmentArtFamily(value) {
 
 export function equipmentArtPath(value) {
   const family=equipmentArtFamily(value);
-  return family==null?null:`art/project-flight-gear-v1/sets-v3/${family}.webp`;
+  if(family==null)return null;
+  const version=SAINT_FAMILIES.has(family)?'saint-ring-v4':'sets-v3';
+  return `art/project-flight-gear-v1/${version}/${family}.webp`;
 }
 
 export const equipmentBlueprintArtPath = partId => `art/project-flight-blueprints-v1/${partId}.webp`;

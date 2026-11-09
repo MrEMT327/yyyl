@@ -37,10 +37,16 @@ function sampleProjectilePresentation(b){
   if(b.owner==='player'&&[1000012,1000013,1000014,1000059,200234].includes(b.modelId))return missilePresentation(b);
   // Readability only: preserve source colors and gameplay collision shapes.
   if(b.owner==='enemy'&&!b.beam&&ENEMY_SHOT_MODELS.has(b.modelId))return{scale:1.3,retireImmediately:false,pose:enemyProjectileMaterialPose(b)};
-  if(b.owner==='player'&&b.familyId===200121&&b.modelId===220009)return{
+  if(b.owner==='player'&&b.familyId===200121&&[220009,220006].includes(b.modelId))return{
     scale:1,retireImmediately:false,pose:{overrides:{
       Visual:{position:[0,0]},
       'Visual/Line2D':{scale:[1,1],texture:{$ref:LASER+'texture'},material:{$ref:LASER+'material'}},
+    }},
+  };
+  if(b.owner==='player'&&b.familyId===200141&&b.modelId===200011)return{
+    scale:1,retireImmediately:false,pose:{overrides:{
+      Visual:{position:[0,0],modulate:[1,1,1,1]},
+      'Visual/Line2D':{width:12,modulate:[1,1,1,1],texture:{$ref:LASER+'ice-texture'},material:{$ref:LASER+'material'}},
     }},
   };
   // Compact the whole sword swing, including upgraded final strikes. Host
@@ -138,11 +144,16 @@ export function withScorchPresentationResources(graph){
   });
   const laserAdd=(name,type,properties)=>{const id=LASER+name;resources[id]={id,type,properties};return {$ref:id};};
   const laserGradient=laserAdd('gradient','Gradient',{offsets:[0,.2,.42,.5,.58,.8,1],colors:[
-    [.025,.08,.55,0],[.04,.20,1,.4],[.16,.42,1,.9],[.60,.78,1,1],
-    [.16,.42,1,.9],[.04,.20,1,.4],[.025,.08,.55,0],
+    [.025,.08,.55,0],[.04,.20,.85,.28],[.16,.46,1.25,.76],[1.25,1.65,2.20,1],
+    [.16,.46,1.25,.76],[.04,.20,.85,.28],[.025,.08,.55,0],
   ]});
   laserAdd('texture','GradientTexture2D',{gradient:laserGradient,use_hdr:true,width:32,height:128,fill_from:[0,1],fill_to:[0,0]});
   laserAdd('material','CanvasItemMaterial',{blend_mode:0,light_mode:1});
+  const iceRayGradient=laserAdd('ice-gradient','Gradient',{offsets:[0,.20,.43,.5,.57,.8,1],colors:[
+    [.1,.55,.9,0],[.12,.7,1,.22],[.4,.92,1.25,.68],[1.70,2.05,2.20,1],
+    [.4,.92,1.25,.68],[.12,.7,1,.22],[.1,.55,.9,0],
+  ]});
+  laserAdd('ice-texture','GradientTexture2D',{gradient:iceRayGradient,use_hdr:true,width:32,height:128,fill_from:[0,1],fill_to:[0,0]});
   const textures={...graph.textures};
   const iceAdd=(name,type,properties)=>{const id=ICE+name;resources[id]={id,type,properties};return {$ref:id};};
   for(const [name,file] of [['blade','ice-crescent-v2.png'],['saw','ice-saw-clean-v3.png']]){

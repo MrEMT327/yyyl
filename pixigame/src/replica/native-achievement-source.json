@@ -1,0 +1,3067 @@
+{
+  "source": "APK 1.1.6 Task_Task Type=1 and original language labels",
+  "taskTableSha256": "2f1e9cf8931887d633a68d1abc875cce9ef3c9be931edfc51d6a0849203f0e44",
+  "languageTableSha256": "b00947f7c13aa7d644324895ee3d81d80df49de182198224c07353f3d5bd3308",
+  "rows": [
+    {
+      "ID": 1201001,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 1,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201002,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 2,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201003,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 3,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":3}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201004,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 4,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":4}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201005,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 5,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":5}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201006,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 6,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":6}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201007,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 7,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":7}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201008,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 8,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":8}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201009,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 9,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":9}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201010,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 10,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":10}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201011,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 11,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":15}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201012,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 12,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":20}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201013,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 13,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":25}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201014,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 14,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":30}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201015,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 15,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":35}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201016,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 16,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":40}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201017,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 17,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":45}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201018,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 18,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":50}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201019,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 19,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":55}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201020,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 20,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":60}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201021,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 21,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":65}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201022,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 22,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":70}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201023,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 23,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":75}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201024,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 24,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":80}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201025,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 25,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":85}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201026,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 26,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":90}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201027,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 27,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":95}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201028,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 28,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":100}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201029,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 29,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":105}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201030,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 30,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":110}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201031,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 31,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":115}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201032,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 32,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":120}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201033,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 33,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":125}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201034,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 34,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":130}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201035,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 35,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":135}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201036,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 36,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":140}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201037,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 37,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":145}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201038,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 38,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":150}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201039,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 39,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":155}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201040,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 40,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":160}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201041,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 41,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":165}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201042,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 42,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":170}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201043,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 43,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":175}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201044,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 44,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":180}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201045,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 45,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":185}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201046,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 46,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":190}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201047,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 47,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":195}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201048,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 48,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":200}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201049,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 49,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":205}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201050,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 50,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":210}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201051,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 51,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":215}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201052,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 52,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":220}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201053,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 53,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":225}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201054,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 54,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":230}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201055,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 55,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":235}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201056,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 56,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":240}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201057,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 57,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":245}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201058,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 58,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":250}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201059,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 59,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":255}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201060,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 60,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":260}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201061,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 61,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":265}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201062,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 62,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":270}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201063,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 63,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":275}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201064,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 64,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":280}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201065,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 65,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":285}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201066,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 66,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":290}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201067,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 67,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":295}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1201068,
+      "Type": 1,
+      "Group": "1201",
+      "Sort": 68,
+      "ConditionId": 100,
+      "ConditionParams": "{\"Count\":300}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计登录{0}天"
+    },
+    {
+      "ID": 1202001,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 69,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":5}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202002,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 70,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":10}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202003,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 71,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":15}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202004,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 72,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":20}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202005,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 73,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":25}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202006,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 74,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":30}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202007,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 75,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":35}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202008,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 76,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":40}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202009,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 77,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":45}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1202010,
+      "Type": 1,
+      "Group": "1202",
+      "Sort": 78,
+      "ConditionId": 107,
+      "ConditionParams": "{\"Level\":50}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_120201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "玩家等级达到{0}级"
+    },
+    {
+      "ID": 1204001,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 79,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":10,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204002,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 80,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":20,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204003,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 81,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":30,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204004,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 82,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":40,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204005,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 83,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":50,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204006,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 84,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":100,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204007,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 85,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":120,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204008,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 86,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":140,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204009,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 87,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":160,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204010,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 88,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":180,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1204011,
+      "Type": 1,
+      "Group": "1204",
+      "Sort": 89,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":200,\"Type\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120401",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计挑战主线章节{0}次"
+    },
+    {
+      "ID": 1205001,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 90,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":5,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205002,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 91,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":10,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205003,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 92,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":15,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205004,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 93,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":20,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205005,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 94,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":25,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205006,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 95,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":30,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205007,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 96,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":35,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205008,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 97,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":40,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205009,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 98,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":45,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1205010,
+      "Type": 1,
+      "Group": "1205",
+      "Sort": 99,
+      "ConditionId": 103,
+      "ConditionParams": "{\"Count\":50,\"Type\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_120501",
+      "JumpId": 22,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计参与或扫荡陨石轰炸{0}次"
+    },
+    {
+      "ID": 1210001,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 100,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":1000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210002,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 101,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":2000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210003,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 102,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":3000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210004,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 103,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":4000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210005,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 104,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":5000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210006,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 105,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":10000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210007,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 106,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":20000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1210008,
+      "Type": 1,
+      "Group": "1210",
+      "Sort": 107,
+      "ConditionId": 105,
+      "ConditionParams": "{\"Count\":50000,\"ItemId\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121001",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计消耗{0}钻石"
+    },
+    {
+      "ID": 1211001,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 108,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":100}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211002,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 109,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":200}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211003,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 110,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":500}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211004,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 111,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":1000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211005,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 112,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":2000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211006,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 113,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":3000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211007,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 114,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":4000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1211008,
+      "Type": 1,
+      "Group": "1211",
+      "Sort": 115,
+      "ConditionId": 126,
+      "ConditionParams": "{\"Count\":5000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121101",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启装备宝箱{0}次"
+    },
+    {
+      "ID": 1212001,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 116,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":100}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212002,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 117,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":200}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212003,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 118,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":500}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212004,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 119,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":1000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212005,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 120,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":2000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212006,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 121,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":3000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212007,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 122,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":4000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1212008,
+      "Type": 1,
+      "Group": "1212",
+      "Sort": 123,
+      "ConditionId": 127,
+      "ConditionParams": "{\"Count\":5000}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121201",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计开启任意芯片宝箱{0}次"
+    },
+    {
+      "ID": 1213001,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 124,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":5}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213002,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 125,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":10}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213003,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 126,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":15}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213004,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 127,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":20}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213005,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 128,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":25}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213006,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 129,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":30}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213007,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 130,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":35}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213008,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 131,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":40}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213009,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 132,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":45}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213010,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 133,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":50}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213011,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 134,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":55}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213012,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 135,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":60}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213013,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 136,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":65}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213014,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 137,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":70}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213015,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 138,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":75}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213016,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 139,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":80}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213017,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 140,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":85}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213018,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 141,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":90}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213019,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 142,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":95}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1213020,
+      "Type": 1,
+      "Group": "1213",
+      "Sort": 143,
+      "ConditionId": 302,
+      "ConditionParams": "{\"Count\":1,\"Level\":100}",
+      "Progress": "Level",
+      "LanguageId": "Task_Achieve_Text_121301",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "将一件装备升至{1}级"
+    },
+    {
+      "ID": 1215001,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 144,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":1}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215002,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 145,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":2}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215003,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 146,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":3}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215004,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 147,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":4}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215005,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 148,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":5}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215006,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 149,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":6}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215007,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 150,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":7}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215008,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 151,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":8}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215009,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 152,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":9}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    },
+    {
+      "ID": 1215010,
+      "Type": 1,
+      "Group": "1215",
+      "Sort": 153,
+      "ConditionId": 700,
+      "ConditionParams": "{\"Count\":10}",
+      "Progress": "Count",
+      "LanguageId": "Task_Achieve_Text_121501",
+      "JumpId": 0,
+      "RewardItem": [
+        [
+          2,
+          10
+        ]
+      ],
+      "UnlockCondition": "",
+      "HighFiveBgType": 0,
+      "title": "累计获得{0}个战机"
+    }
+  ]
+}

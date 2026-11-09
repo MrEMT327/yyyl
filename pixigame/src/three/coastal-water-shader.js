@@ -1,7 +1,10 @@
-// Only the first chapter uses this pass. Sample the rigid painted ground in
-// place: no displacement of islands, architecture, coast or submerged rocks.
+// Sample the painted ground in place: terrain geometry never moves.
+// The canal opts into quiet high-altitude currents without shore caustics.
 export const coastalWaterShader = `
 #if COASTAL_WATER == 1
+#ifndef QUIET_WATER
+#define QUIET_WATER 0
+#endif
 float seaMask(vec3 c){
   return (1.-smoothstep(.20,.36,c.r/max(c.g,.0001)))
     *smoothstep(.006,.025,c.b-c.r)
@@ -9,8 +12,10 @@ float seaMask(vec3 c){
 }
 vec3 animateCoastalWater(vec3 color,vec3 original,vec2 uv,float t){
   float water=seaMask(original);
+  float teal=smoothstep(.04,.11,min(original.g,original.b)-original.r)*(1.-smoothstep(.48,.68,max(original.g,original.b)));
+  color=applyRainRipples(color,uv*rainWorldScale,t,rainAmount*smoothstep(.5,.9,max(water,teal)));
   float shallow=water*smoothstep(.57,.83,original.g/max(original.b,.0001));
-  #if AERIAL_GROUND == 1
+  #if AERIAL_GROUND == 1 || QUIET_WATER == 1
   // Kilometer-scale current bands. Fine shore foam and caustics would pull
   // the camera perceptually back down to the sea surface.
   float current=sin(uv.x*9.+uv.y*6.283185-t*.16

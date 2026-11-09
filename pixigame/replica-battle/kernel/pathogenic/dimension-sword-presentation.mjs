@@ -1,5 +1,5 @@
-// Energy-sword breakthrough 10811011: only presentation reads this projectile.
-export const isDimensionSword = b => b.owner === 'player' && b.weaponId === 360011 && b.modelId === 1000051;
+// Native void slash and dimensional formation share the same thin spatial cut.
+export const isDimensionSword = b => b.owner === 'player' && [200104,360011].includes(b.weaponId) && b.modelId === 1000051;
 export const DIMENSION_CUT_LIMIT = 3;
 const finite = Number.isFinite;
 const clamp = v => Math.max(0, Math.min(1, v));

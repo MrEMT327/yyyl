@@ -2,6 +2,9 @@ import * as T from 'three';
 import {mapLayerGrade,mapAtmosphereShape,COAST_ISLAND_LAYOUT,COAST_ISLAND_Y_OFFSETS} from './map-scene-polish.js';
 import {createCloudModuleLayer,syncCloudModuleLayer} from './cloud-module-layer.js';
 import {coastalWaterShader} from './coastal-water-shader.js';
+import {rainRippleShader} from './rain-ripple-shader.js';
+import {nightWaterShader} from './night-water-shader.js';
+import {sampleNightLandmarks} from './night-landmarks.js';
 import {lostCitySurfaceShader} from './lost-city-surface-shader.js';
 import {createFloatingPropLayer,syncFloatingPropLayer} from './floating-prop-layer.js';
 import {createRigidTerrainLayer,syncRigidTerrainLayer} from './rigid-terrain-layer.js';
@@ -15,6 +18,7 @@ const fragmentShader = `
 varying vec2 terrainUv;
 uniform sampler2D artwork;uniform float hasArt;uniform float repeatY;uniform float scroll;
 uniform float sourceWidth;uniform float sourceHeight;uniform vec2 opening;uniform float opacity;uniform float completeScene;
+uniform float rainAmount;uniform vec2 rainWorldScale;
 uniform vec4 visualGrade;uniform vec2 cloudForm;uniform vec4 bridgePattern;
 uniform float sceneTime;
 #if SHORE_VARIANTS == 1
@@ -38,15 +42,17 @@ vec4 sampleShore(float stripIndex,vec2 uv,vec2 gx,vec2 gy){
   // Fine detail sits below the flight plane. Land and water share one filter.
   gx*=3.5;gy*=3.5;
   #endif
+  vec4 sampled=vec4(0.);
   #if COAST_SEQUENCE == 1
   float section=mod(mod(stripIndex,6.)+6.,6.);
-  if(section<.5||(section>2.5&&section<3.5))return textureGrad(artwork,uv,gx,gy);
-  if(section<1.5||section>4.5)return textureGrad(alternateArt,uv,gx,gy);
-  return textureGrad(thirdArt,uv,gx,gy);
+  if(section<.5||(section>2.5&&section<3.5))sampled=textureGrad(artwork,uv,gx,gy);
+  else if(section<1.5||section>4.5)sampled=textureGrad(alternateArt,uv,gx,gy);
+  else sampled=textureGrad(thirdArt,uv,gx,gy);
   #else
-  if(mod(mod(stripIndex,2.)+2.,2.)<.5)return textureGrad(artwork,uv,gx,gy);
-  return textureGrad(alternateArt,uv,gx,gy);
+  if(mod(mod(stripIndex,2.)+2.,2.)<.5)sampled=textureGrad(artwork,uv,gx,gy);
+  else sampled=textureGrad(alternateArt,uv,gx,gy);
   #endif
+  return sampled;
 }
 #endif
 vec4 sampleArtwork(vec2 uv){
@@ -87,6 +93,8 @@ vec4 sampleArtwork(vec2 uv){
     return texture2D(artwork,uv);
   #endif
 }
+${rainRippleShader}
+${nightWaterShader}
 ${coastalWaterShader}
 ${lostCitySurfaceShader}
 void main(){
@@ -194,7 +202,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
   scene.add(group);
   let disposed = false, elapsed = 0, lateral = 0, lastTime = null, lastMotionRevision;
   let current = peripheralSceneForStage(initialStage);
-  const textures = new Map();
+  const textures = new Map(),rain={value:0},night={value:0},nightResolution={value:new T.Vector2(540,960)};
   const status = new Map();
   // Upload one decoded chapter texture per idle turn, not a stack on the
   // first combat draw. Ordinary rendering remains the fallback if started early.
@@ -230,15 +238,15 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     layers=definitions.map((definition,index)=>{
       if(definition.modules){
         const createLayer=definition.rigidTerrain?createRigidTerrainLayer:definition.groundedProps?createGroundPropLayer:definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer;
-        const record=createLayer(definition,-1000+index*10);
+        const record=createLayer(definition,-1000+index*10,rain,night,nightResolution);
         group.add(record.mesh);
         return record;
       }
       const kind = definition.kind ?? index;
       const material = new T.ShaderMaterial({
-        defines: { LOST_CITY_SURFACE: definition.lostCitySurface ? 1 : 0, AERIAL_GROUND: definition.aerialGround ? 1 : 0, COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
+        defines: { LOST_CITY_SURFACE: definition.lostCitySurface ? 1 : 0, AERIAL_GROUND: definition.aerialGround ? 1 : 0, COAST_SEQUENCE: definition.coastSequence ? 1 : 0, COASTAL_WATER: definition.coastalWater ? 1 : 0, QUIET_WATER: definition.quietWater ? 1 : 0, FULL_SCENE_BASE: definition.fullSceneBase ? 1 : 0, DIRECTIONAL_SEAM: definition.source === 'ground' || definition.source === 'depth' ? 1 : 0, LAYER_KIND: kind, CLOUD_LAYER: definition.role === 'cloud' ? 1 : 0, EFFECT_STYLE: definition.effectStyle || 0, ISLAND_LAYOUT: definition.layout === 'coast-islands' ? 1 : 0, SHORE_VARIANTS:definition.shoreVariants?1:0, BRIDGE_CADENCE:definition.bridgeCadence?1:0, DETACHED_DETAIL:definition.edgeFade?1:0 }, vertexShader, fragmentShader,
         uniforms: {
-          sceneTime: {value:0},
+          sceneTime: {value:0},nightAmount:night,nightResolution,rainAmount:rain,rainWorldScale:{value:new T.Vector2(definition.width,definition.width*1.5)},
           visualGrade: {value:new T.Vector4(1,1,0,0)},
           cloudForm:{value:new T.Vector2(1,1)},bridgePattern:{value:new T.Vector4(...(definition.bridgeCadence||[1,1,1,1]))},
           ...(definition.shoreVariants?{alternateArt:{value:null}}:{}),
@@ -287,7 +295,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       const texture = textures.get(key);
       const aspect = (texture ? texture.image.height / texture.image.width : 1.5) * (definition.sourceHeight ?? 1);
       const u = material.uniforms;
-      u.sceneTime.value=elapsed;
+      u.sceneTime.value=elapsed;u.rainWorldScale.value.set(definition.width/(definition.sourceWidth||1),definition.width*aspect);
       if(u.alternateArt)u.alternateArt.value=textures.get(`${current.textureId||current.id}/groundAlt`)||texture||null;
       if(u.thirdArt)u.thirdArt.value=textures.get(`${current.textureId||current.id}/groundThird`)||texture||null;
       if (mesh.userData.scene !== current || u.artwork.value !== (texture || null)) {
@@ -389,6 +397,9 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
   else syncLayers();
   return {
     update,
+    setNight(enabled,width=540,height=960){if(!disposed){night.value=enabled?1:0;nightResolution.value.set(width,height);}},
+    nightLights(camera,width=540,height=960){return disposed||!night.value?[]:sampleNightLandmarks(layers,camera,width,height);},
+    setRain(amount){if(!disposed)rain.value=Number.isFinite(amount)?Math.max(0,Math.min(1,amount)):0;},
     preload(stage) { return disposed ? Promise.resolve() : requestScene(peripheralSceneForStage(stage)); },
     setTextures() {},
     snapshot() { return structuredClone({ ...group.userData.terrain, loading: Object.fromEntries(status) }); },

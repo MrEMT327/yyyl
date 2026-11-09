@@ -6,6 +6,8 @@ import {MODULAR_ASSETS,MODULAR_TERRAIN_SETTINGS} from './stage1-modular-layout.j
 import {COAST_CLOUD_MOTION} from './coast-cloud-motion.js';
 // Original generated terrain. APK artwork remains design evidence under doc.
 const base = import.meta.env?.BASE_URL || '/';
+// Vacuum scenes have no terrestrial weather or foreground cloud veil.
+const VACUUM_SCENE_IDS=new Set(['space','sky-core','orbital-wreckage','ring-spaceport','lunar-outpost','lunar-ring-station','lunar-crater-field','lunar-research-camp']);
 // New chapters reuse quiet original depth textures, not flattened chapter art.
 const expandedDepth = {
   'frozen-rift': 'coast', 'storm-front': 'space', 'iron-dock': 'ruins',
@@ -21,9 +23,10 @@ export const PERIPHERAL_SCENES = Object.freeze([
   Object.freeze({ id: 'ruins', name: '失落都市', artUrl: `${base}art/peripheral-v1/canyon-ruins-walls-v2.webp`, depthUrl: `${base}art/peripheral-v1/canyon-ruins-depth-v2.webp`, foregroundUrl: `${base}art/peripheral-v1/foreground-ruins.webp`, ground: 0x273d49, edge: 0x697688, accent: 0x7199c2, mist: 0x718896 }),
   Object.freeze({ id: 'volcano', name: '熔火禁区', artUrl: `${base}art/peripheral-v1/canyon-volcano-walls-v2.webp`, depthUrl: `${base}art/peripheral-v1/canyon-volcano-depth-v2.webp`, foregroundUrl: `${base}art/peripheral-v1/foreground-volcano.webp`, ground: 0x302b32, edge: 0x775057, accent: 0xda885b, mist: 0x796b73 }),
   Object.freeze({ id: 'sewer', name: '地下暗渠', artUrl: `${base}art/peripheral-v1/canyon-sewer-walls-v2.webp`, depthUrl: `${base}art/peripheral-v1/canyon-sewer-depth-v2.webp`, ground: 0x182e28, edge: 0x536653, accent: 0x8bad65, mist: 0x556955 }),
-  Object.freeze({ id: 'space', name: '星际深空', artUrl: `${base}art/peripheral-v1/canyon-space-walls-v2.webp`, depthUrl: `${base}art/peripheral-v1/canyon-space-depth-v2.webp`, ground: 0x101327, edge: 0x424465, accent: 0x9a8fd4, mist: 0x373657, foregroundOpacity: 0 }),
+  Object.freeze({ id: 'space', name: '星际深空', weather:false, artUrl: `${base}art/peripheral-v1/canyon-space-walls-v2.webp`, depthUrl: `${base}art/peripheral-v1/canyon-space-depth-v2.webp`, ground: 0x101327, edge: 0x424465, accent: 0x9a8fd4, mist: 0x373657, foregroundOpacity: 0 }),
   ...ADVANCED_CHAPTERS.map(chapter => Object.freeze({
     id: chapter.id, name: chapter.name,
+    ...(VACUUM_SCENE_IDS.has(chapter.id)?{weather:false}:{}),
     artUrl: `${base}art/chapters-v1/${chapter.battleImage}`,
     ground: 0x101c2c, edge: chapter.color, accent: chapter.accent,
     mist: chapter.color, foregroundOpacity: 0, singleLayer: true,
@@ -38,7 +41,7 @@ export const PERIPHERAL_SCENES = Object.freeze([
     } : {}),
   })),
   ...[['lunar-ring-station','月环工站'],['lunar-crater-field','月海陨坑'],['lunar-research-camp','月面科研营']].map(([id,name])=>Object.freeze({
-    id, name, artUrl:`${base}art/peripheral-v1/${id}-walls-v1.png`,
+    id, name, weather:false, artUrl:`${base}art/peripheral-v1/${id}-walls-v1.png`,
     depthUrl:`${base}art/peripheral-v1/obsidian-wastes-depth-v1.png`,
     ground:0x30343f,edge:0x788491,accent:0x8ca4bb,mist:0x727c8b,
     foregroundOpacity:0,singleLayer:false,
@@ -203,6 +206,72 @@ const THIRD_STAGE_LAYERS=Object.freeze([
 ].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
   ...layer,id:'volcanic-outpost-'+layer.id,sceneId:THIRD_STAGE_SCENE.id})));
 
+// Chapter 4 keeps the drainage/canal identity at chapter 1's aerial scale.
+// Concrete banks, pipe supports and maintenance facilities are one painted
+// ground surface; only the translucent water vapor moves independently.
+export const FOURTH_STAGE_SCENE = Object.freeze({
+  ...PERIPHERAL_SCENES[3],id:'canal-works-restored-balanced',smoothBackground:true,
+  artUrl:`${base}art/stage4-anime-canal-v1/pumping-station.png`,
+  ground:0x214f53,edge:0x80968c,accent:0x81b3b0,mist:0x9bb4ac,
+});
+// Native chapter 4 layer 3 moves at 2 units/s. Scale presentation to the
+// approved chapter 1 terrain speed, retaining the native simulation map.
+const CANAL_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/2;
+const canalCloudLayer=(firstId,id,name,profile,tint,opacityScale)=>{
+  const layer=FIRST_STAGE_LAYERS.find(row=>row.id===firstId);
+  return {...layer,id,name,nativeLayer:undefined,cloudMotion:profile,tint,opacity:layer.opacity*opacityScale};
+};
+const FOURTH_STAGE_LAYERS=Object.freeze([
+  {id:'canal-ground',role:'background',name:'地面·排水渠与检修设施',source:'ground',kind:0,
+    fullSceneBase:true,coastalWater:true,quietWater:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
+    nativeLayer:3,motionGroup:'terrain',scrollScale:CANAL_TERRAIN_SCROLL_SCALE,depth:-1000,speed:20,opacity:1},
+  // Chapter 1 cloud textures, geometry, softness and motion become thinner
+  // green-gray water vapor here. There is no opaque tunnel or fog screen.
+  canalCloudLayer('coast-defense-distant-clouds','canal-distant-vapor','远层·淡青水汽',COAST_CLOUD_MOTION.far,0x88a7a1,.7),
+  canalCloudLayer('coast-defense-large-clouds','canal-middle-vapor','中层·柔边薄雾',COAST_CLOUD_MOTION.far,0xd6e3db,.48),
+  canalCloudLayer('coast-defense-near-clouds','canal-near-vapor','近层·掠过水汽',COAST_CLOUD_MOTION.near,0xc4d8d0,.52),
+].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
+  ...layer,id:'canal-works-'+layer.id,sceneId:FOURTH_STAGE_SCENE.id})));
+
+// Chapter 5 keeps its vacuum/orbital identity at chapter 1's aerial scale.
+// Structures, footings and shadows belong to their host asteroid; the quiet
+// starfield keeps independent depth motion without atmospheric cloud planes.
+export const FIFTH_STAGE_SCENE = Object.freeze({
+  ...PERIPHERAL_SCENES[4],id:'orbital-outposts-restored-balanced',smoothBackground:true,
+  artUrl:`${base}art/stage5-anime-orbit-v1/maintenance-outposts.png`,
+  depthUrl:`${base}art/stage5-anime-orbit-v1/starfield.png`,
+  ground:0x0b152c,edge:0x56677e,accent:0x71789c,mist:0x5b6999,
+});
+const ORBIT_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/4.5;
+const FIFTH_STAGE_LAYERS=Object.freeze([
+  {id:'orbit-starfield',role:'background',name:'远景·手绘星空',source:'depth',kind:0,
+    fullSceneBase:true,cycleTiles:2,nativeLayer:5,scrollScale:.3,depth:-1000,speed:7,opacity:1},
+  {id:'orbit-asteroids',role:'midground',name:'中景·陨石与轨道设施',source:'ground',kind:2,
+    fullAlpha:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
+    nativeLayer:3,motionGroup:'terrain',scrollScale:ORBIT_TERRAIN_SCROLL_SCALE,depth:-450,speed:20,opacity:1},
+].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
+  ...layer,id:'orbital-outposts-'+layer.id,sceneId:FIFTH_STAGE_SCENE.id})));
+
+// Chapter 6 follows chapter 1's aerial painted scale: low snow banks and
+// a clear floe river share one terrain clock. Mist is a separate soft layer.
+export const SIXTH_STAGE_SCENE = Object.freeze({
+  ...PERIPHERAL_SCENES.find(scene=>scene.id==='frozen-rift'),id:'floe-river-restored',smoothBackground:true,
+  artUrl:`${base}art/stage6-anime-floe-v1/field-station.png`,
+  ground:0x13465d,edge:0x789aac,accent:0xb5d1dc,mist:0xa5bfce,
+});
+// Native chapter 6 terrain is layer 0, at 2.5 units/s. Match the approved
+// chapter 1 presentation speed without changing map geometry or gameplay.
+const FLOE_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/2.5;
+const SIXTH_STAGE_LAYERS=Object.freeze([
+  {id:'river-ground',role:'background',name:'地面·雪岸与浮冰河',source:'ground',kind:0,
+    fullSceneBase:true,coastalWater:true,quietWater:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
+    nativeLayer:0,motionGroup:'terrain',scrollScale:FLOE_TERRAIN_SCROLL_SCALE,depth:-1000,speed:20,opacity:1},
+  canalCloudLayer('coast-defense-distant-clouds','river-distant-mist','远层·冷色薄雾',COAST_CLOUD_MOTION.far,0xa9c4d3,.55),
+  canalCloudLayer('coast-defense-large-clouds','river-middle-mist','中层·柔边寒雾',COAST_CLOUD_MOTION.far,0xddebf2,.34),
+  canalCloudLayer('coast-defense-near-clouds','river-near-mist','近层·掠过寒雾',COAST_CLOUD_MOTION.near,0xc9dfed,.38),
+].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
+  ...layer,id:'floe-river-'+layer.id,sceneId:SIXTH_STAGE_SCENE.id})));
+
 const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
   [SHARED_COAST_SCENE.id, Object.freeze({ layers: BALANCED_COAST_LAYERS, urls: Object.freeze({
     ...COAST_EXTRA_URLS, islands: `${base}art/project-coast-polished-v2/island-landmarks.png`,
@@ -245,7 +314,7 @@ const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
       ...(style.id === 'storm-front' && layer.role === 'foreground' ? {
         authoredMotion: true, nativeLayer: null, scrollScale: 1,
       } : {}),
-    }))),
+    })).filter(layer=>!VACUUM_SCENE_IDS.has(style.id)||layer.role!=='cloud')),
     urls: Object.freeze({ islands: `${base}art/peripheral-v1/${style.id === 'red-nest' ? 'verdant-valley-mid-v2' : `${style.id}-${expandedDepth[style.id] ? 'mid-v1' : style.id === 'space' ? 'midground-v1' : 'crossings-v2'}`}.png`, cloud: COAST_EXTRA_URLS.cloud }),
   })]),
 ]));
@@ -272,9 +341,28 @@ const balancedByTheme = Object.freeze(Object.fromEntries([...new Set(BALANCED_CH
     depthUrl: `${base}art/project-chapters-balanced-v1/${theme}/depth.png`,
   }),
 ])));
-export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map((theme, index) => index === 0 ? FIRST_STAGE_SCENE : index === 1 ? SECOND_STAGE_SCENE : index === 2 ? THIRD_STAGE_SCENE : balancedByTheme[theme]));
+export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map((theme, index) => index === 0 ? FIRST_STAGE_SCENE : index === 1 ? SECOND_STAGE_SCENE : index === 2 ? THIRD_STAGE_SCENE : index === 3 ? FOURTH_STAGE_SCENE : index === 5 ? SIXTH_STAGE_SCENE : balancedByTheme[theme]));
 export const FIVE_LAYER_SCENES = Object.freeze({
   ...ORIGINAL_FIVE_LAYER_SCENES,
+  [SIXTH_STAGE_SCENE.id]:Object.freeze({layers:SIXTH_STAGE_LAYERS,urls:Object.freeze({
+    groundAlt:`${base}art/stage6-anime-floe-v1/broken-floes.png`,
+    groundThird:`${base}art/stage6-anime-floe-v1/radio-shelf.png`,
+    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
+    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
+    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
+  })}),
+  [FIFTH_STAGE_SCENE.id]:Object.freeze({layers:FIFTH_STAGE_LAYERS,urls:Object.freeze({
+    groundAlt:`${base}art/stage5-anime-orbit-v1/survey-ring.png`,
+    groundThird:`${base}art/stage5-anime-orbit-v1/dock-remnants.png`,
+  })}),
+  [FOURTH_STAGE_SCENE.id]:Object.freeze({layers:FOURTH_STAGE_LAYERS,urls:Object.freeze({
+    groundAlt:`${base}art/stage4-anime-canal-v1/filter-basin.png`,
+    groundThird:`${base}art/stage4-anime-canal-v1/sluice-works.png`,
+    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
+    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
+    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
+  })}),
+
   [THIRD_STAGE_SCENE.id]:Object.freeze({layers:THIRD_STAGE_LAYERS,urls:Object.freeze({
     groundAlt:`${base}art/stage3-anime-volcano-v1/fractured-caldera.png`,
     groundThird:`${base}art/stage3-anime-volcano-v1/extraction-works.png`,

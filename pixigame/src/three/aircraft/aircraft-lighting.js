@@ -19,6 +19,18 @@ export function createAircraftLighting(scene) {
   return { hemisphere, lights };
 }
 
+// Only combat opts into this rig. Equipment and other views retain the exact
+// approved studio settings; day restores those settings after a night run.
+export function updateAircraftNightLighting(rig,enabled) {
+  const night=Boolean(enabled);if(rig.night===night)return;rig.night=night;
+  rig.hemisphere.color.set(night?'#b6d1ff':'#e7f6ff');
+  rig.hemisphere.groundColor.set(night?'#253b60':'#566a88');
+  rig.hemisphere.intensity=night?.68:1.05;
+  const colors=night?['#c8dcff','#9dd3ff','#728bb8']:['#ffffff','#96d8ff','#b5c9dd'];
+  const powers=night?[1.25,2.1,.75]:[2.7,1.15,1.9];
+  rig.lights.forEach((light,i)=>{light.color.set(colors[i]);light.intensity=powers[i];});
+}
+
 // Battle terrain and HUD share renderers with aircraft. Restore their settings
 // after the aircraft pass rather than changing the whole scene's appearance.
 export function renderWithAircraftStyle(renderer, draw) {

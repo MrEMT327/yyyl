@@ -91,29 +91,59 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     return image(sharedResourceTexture(type),x+(size-width)/2,y,width,size);
   }
 
-  function text(value, x, y, { size = 20, color = '#edf6fb', weight = 600, align = 'left', maxWidth = 560, tracking = 0 } = {}) {
+  function text(value, x, y, { size = 20, color = '#edf6fb', weight = 600, align = 'left', maxWidth = 560, tracking = 0,
+    wrap = false, maxLines = 0, minSize = size, lineHeight = 0 } = {}) {
     const canvas = documentRef?.createElement('canvas') || globalThis.wx?.createCanvas?.();
-    const ctx = canvas.getContext('2d');
-    const font = `${weight} ${size}px ${COMBAT_TYPE.family}`;
-    ctx.font = font;
-    const metrics = ctx.measureText(String(value));
-    const naturalWidth = metrics.width + Math.max(0, String(value).length - 1) * tracking;
-    const width = Math.ceil(Math.min(maxWidth, naturalWidth) + 4), height = Math.ceil(size * 1.65);
-    // Small CJK strokes need more source samples when the combat UI shrinks.
-    // Keep the quad's logical size; only the cached text bitmap is denser.
-    const resolution = Math.max(textResolution, size <= 24 ? 3 : 2);
+    const ctx = canvas.getContext('2d'), source = String(value);
+    let fontSize = size;
+    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${COMBAT_TYPE.family}`; };
+    const measure = value => ctx.measureText(value).width + Math.max(0, value.length - 1) * tracking;
+    const breakLines = () => {
+      const lines = [];
+      for (const paragraph of source.split('\n')) {
+        let line = '';
+        for (const character of paragraph) {
+          if (line && measure(line + character) > maxWidth) { lines.push(line); line = ''; }
+          line += character;
+        }
+        lines.push(line);
+      }
+      return lines;
+    };
+    setFont();
+    let lines = wrap ? breakLines() : [source];
+    while (wrap && maxLines > 0 && lines.length > maxLines && fontSize > minSize) {
+      fontSize = Math.max(minSize, fontSize - 1); setFont(); lines = breakLines();
+    }
+    if (wrap && maxLines > 0 && lines.length > maxLines) {
+      let last = lines.slice(maxLines - 1).join('');
+      while (last && measure(last + '…') > maxWidth) last = Array.from(last).slice(0, -1).join('');
+      lines = [...lines.slice(0, maxLines - 1), last + '…'];
+    }
+    const naturalWidth = Math.max(0, ...lines.map(measure));
+    const step = lineHeight || fontSize * 1.2;
+    const firstLineHeight = Math.ceil(fontSize * 1.65);
+    const width = Math.ceil(Math.min(maxWidth, naturalWidth) + 4);
+    const height = Math.ceil(firstLineHeight + (lines.length - 1) * step);
+    // Rasterize small CJK text densely without stretching its glyphs.
+    const resolution = Math.max(textResolution, fontSize <= 24 ? 3 : 2);
     canvas.width = width * resolution; canvas.height = height * resolution;
-    ctx.scale(resolution, resolution); ctx.font = font; ctx.fillStyle = color; ctx.textBaseline = 'alphabetic';
-    // Center the visible glyphs, including CJK, rather than the font's em box.
-    const baseline = (height + (metrics.actualBoundingBoxAscent ?? size * .8) - (metrics.actualBoundingBoxDescent ?? size * .2)) / 2;
-    if (tracking && naturalWidth <= maxWidth) {
-      let cursor = 2;
-      for (const char of String(value)) { ctx.fillText(char, cursor, baseline); cursor += ctx.measureText(char).width + tracking; }
-    } else ctx.fillText(String(value), 2, baseline, maxWidth);
+    ctx.scale(resolution, resolution); setFont(); ctx.fillStyle = color; ctx.textBaseline = 'alphabetic';
+    const metrics = ctx.measureText(lines[0]);
+    const baseline = (firstLineHeight + (metrics.actualBoundingBoxAscent ?? fontSize * .8) - (metrics.actualBoundingBoxDescent ?? fontSize * .2)) / 2;
+    lines.forEach((line, index) => {
+      const lineWidth = measure(line);
+      let cursor = 2 + (wrap && align === 'center' ? (naturalWidth - lineWidth) / 2 : wrap && align === 'right' ? naturalWidth - lineWidth : 0);
+      if (tracking && lineWidth <= maxWidth) {
+        for (const char of line) { ctx.fillText(char, cursor, baseline + index * step); cursor += ctx.measureText(char).width + tracking; }
+      } else if (wrap) ctx.fillText(line, cursor, baseline + index * step);
+      else ctx.fillText(line, 2, baseline, maxWidth);
+    });
     const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
     texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; textures.add(texture);
     const mesh=quad(x - (align === 'center' ? width / 2 : align === 'right' ? width : 0), y - height / 2, width, height, '#ffffff', 1, texture);
-    mesh.userData.uiText=String(value);
+    mesh.userData.uiText=source;
+    if (wrap) { mesh.userData.uiTextLines=lines; mesh.userData.uiFontSize=fontSize; }
     return mesh;
   }
   function button(id, label, x, y, w, h, onPress, { disabled = false, ...style } = {}) {

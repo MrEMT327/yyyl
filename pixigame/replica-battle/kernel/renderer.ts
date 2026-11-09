@@ -1,6 +1,7 @@
 import {damageTextPresentation,sampleEnemyHitMotion,sampleCombatResults} from './combat-hit-presentation.mjs';
 import {preloadDamageNumberArt,updateDamageTextView,type DamageTextView} from './damage-number-art';
 import {sampleHealingReceipt} from './healing-receipt.mjs';
+import {sampleSpecialWeaponFeedback} from './special-weapon-feedback.mjs';
 import {sampleCoinPickupReceipt} from './coin-pickup-feedback.mjs';
 import {drawPlayerDamageVignette,PLAYER_DAMAGE_VIGNETTE_DEPTH} from './player-damage-vignette.mjs';
 import {playerHealthBarColor,playerHealthFrame} from '../../src/replica/player-health-display.js';
@@ -495,8 +496,9 @@ export class BattleView extends Phaser.Scene {
       this.tint(player, s.phase === 'playing' && s.player.hitFlash > .14);
     }
     this.appearance?.update?.({ time: s.time, coastBackgroundTime: this.coastBackgroundTime, clock: s.clock, camera: this.cameraPosition, phantomActive, runId: s.runId,
+      lightingEffects: s.effects, projectPoint: (x,z) => this.screen(x,z),
       playerHitFlash: s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > .14,
-      renderDelta: s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .05) : 0,
+      renderDelta: s.phase === 'playing' ? Math.max(delta / 1000, 0) : 0,
       flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed,
         radius: playerEntity.stats.shape[0] * s.playerScale, active: s.phase === 'playing' && s.player.hp > 0 },
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
@@ -675,6 +677,7 @@ export class BattleView extends Phaser.Scene {
     }
     for(const fx of s.effects)this.drawEffect(fx,live);
     for(const receipt of sampleCombatResults(s))this.drawEffect(receipt,live);
+    for(const receipt of sampleSpecialWeaponFeedback(s))this.drawEffect(receipt,live);
     const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
     const coinReceiptVisual=sampleCoinPickupReceipt(s);if(coinReceiptVisual)this.drawEffect(coinReceiptVisual,live);
     this.pathogenic.endFrame();

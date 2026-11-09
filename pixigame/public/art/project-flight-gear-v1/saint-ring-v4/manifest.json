@@ -1,0 +1,167 @@
+{
+  "version": 4,
+  "series": "圣环",
+  "generator": "built-in image_gen",
+  "outputSize": [
+    512,
+    512
+  ],
+  "normalization": "Technical alpha-preserving packaging only: fit original generated artwork in a 448px box, 32px transparent margin; lossless WebP. No recoloring, background removal or painted edits.",
+  "assets": [
+    {
+      "family": 4110100,
+      "part": "飞行头盔",
+      "name": "圣环飞行头盔",
+      "file": "4110100.webp",
+      "sha256": "29a94ab82c975aeba96be92c1074693fb97748ede7bda5a3451681e14b2ae350",
+      "bytes": 192506,
+      "sourceSha256": "447b07d4dc5e9a45a1e29c10f744ca8dc9fb89e01a623e71c13e1c7f56d079c5",
+      "sourceGeneratedBasename": "exec-20e9fcb2-7387-49e5-9326-9c0e919fd8d4.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        116,
+        67,
+        1184,
+        1166
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        38,
+        32,
+        472,
+        479
+      ],
+      "legacySha256": "5374e2c6eac1299f180b52c80e7c2729563ad9effd44ab0da7b111edb887e26d"
+    },
+    {
+      "family": 4210100,
+      "part": "战术护手",
+      "name": "圣环战术护手",
+      "file": "4210100.webp",
+      "sha256": "a2cfeec9cd3dc74c71621dfbf30f567e9808efb372603f95c1f5eaba72e0d6ac",
+      "bytes": 169314,
+      "sourceSha256": "ca3b3a8862b706493fb2d80c722db62c7f77040c9aa7835e10a485fa490bf10a",
+      "sourceGeneratedBasename": "exec-deeccfd5-73fe-4816-ab02-dbb262791797.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        112,
+        89,
+        1191,
+        1198
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        39,
+        33,
+        474,
+        479
+      ],
+      "legacySha256": "2f9feb3c94f71322341c9049eb3b056a065dde9217e224263138dc7719b68c69"
+    },
+    {
+      "family": 4310100,
+      "part": "轻型胸甲",
+      "name": "圣环轻型胸甲",
+      "file": "4310100.webp",
+      "sha256": "a418ed2bbbfb476cf9d585099efa97dc404260f0c5de8e05836e3f13f0dbd015",
+      "bytes": 169034,
+      "sourceSha256": "88ffef2eab9d2efd7fdbc135676f0989ae63ebdb6aa446897feec35849c49c53",
+      "sourceGeneratedBasename": "exec-0c0d07cc-ee56-4647-b8ba-f77dc36e4d69.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        85,
+        57,
+        1167,
+        1198
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        44,
+        32,
+        468,
+        479
+      ],
+      "legacySha256": "b6be1024847c20a6d03ae8ba6f80d6304678246c938ee3541aa0cf08dc9fddcd"
+    },
+    {
+      "family": 4410100,
+      "part": "战术铭牌",
+      "name": "圣环战术铭牌",
+      "file": "4410100.webp",
+      "sha256": "98cfcb80825f812dbf7b608bdd38968881f3c63d0703eec058d56a1e584861c8",
+      "bytes": 134480,
+      "sourceSha256": "bf3a4b4c46404f8be01ac209715ac3c9cd8ee6878e4614da627116d82ac49aae",
+      "sourceGeneratedBasename": "exec-657fde33-f693-4559-8c41-5a2d90fd592b.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        237,
+        69,
+        1050,
+        1184
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        92,
+        33,
+        418,
+        479
+      ],
+      "legacySha256": "d91f5c250c87ae9b8b0514431544cf31e3884bc0f5174983f95bf3f26133d319"
+    },
+    {
+      "family": 4510100,
+      "part": "助力战靴",
+      "name": "圣环助力战靴",
+      "file": "4510100.webp",
+      "sha256": "afb22699f8a5feaa244ff5971aacb022954708ff583b44369f881c42ad5de814",
+      "bytes": 149228,
+      "sourceSha256": "46e32d578ff54e3758e06378bb2e80d2ceb926d960886ce86bc19378b616d59d",
+      "sourceGeneratedBasename": "exec-099d974f-104e-4bdb-bc28-ecadfc2936b5.png",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        160,
+        71,
+        1119,
+        1170
+      ],
+      "outputSize": [
+        512,
+        512
+      ],
+      "alphaBounds": [
+        60,
+        33,
+        450,
+        479
+      ],
+      "legacySha256": "f7fced4fa0f8ed369017df7a0abd685bdd15c47c1e3f4058488ea3cd8d8f76ff"
+    }
+  ]
+}

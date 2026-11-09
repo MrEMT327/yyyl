@@ -5,7 +5,7 @@ import {build} from 'esbuild';
 import {parseHTML} from 'linkedom';
 const stubs={
  'three':`export class WebGLRenderer{constructor(){this.info={render:{calls:1,triangles:1}};}setPixelRatio(){}setClearColor(){}dispose(){}forceContextLoss(){}} export const SRGBColorSpace='srgb',ACESFilmicToneMapping=1;`,
- '../three/aircraft/fighter-packages.js':'export const loadFighterPackages=async()=>{};',
+ '../three/aircraft/fighter-packages.js':'export const loadFighterPackages=async()=>{};export const isFighterPackageReady=()=>false;',
  '../three/aircraft/aircraft-lighting.js':'export const AIRCRAFT_RENDER_STYLE={exposure:1};',
  './sortie-hangar-scene.js':'export const createSortieHangarScene=(...args)=>globalThis.__scene(...args);',
 };

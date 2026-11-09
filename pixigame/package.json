@@ -36,7 +36,7 @@
     "balance:import": "node tools/balance/import-balance.mjs",
     "balance:simulate": "node tools/balance/simulate-balance.mjs",
     "test:wechat-ui": "node --test tests/wechat-platform.test.js tests/wechat-webassembly.test.js tests/wechat-queue-microtask.test.js tests/wechat-url-search-params.test.js tests/wechat-audio.test.js tests/wechat-canvas-ui.test.js tests/wechat-rewarded-ad.test.js tests/wechat-touch-router.test.js",
-    "check:player-state": "node tools/check-player-state.mjs && node tools/check-recurring-rewards.mjs && node tools/check-account-experience.mjs && node tools/check-battle-gold-rewards.mjs && node tools/check-battle-material-rewards.mjs",
+    "check:player-state": "node tools/check-player-state.mjs && node tools/check-recurring-rewards.mjs && node tools/check-account-experience.mjs && node tools/check-battle-gold-rewards.mjs && node tools/check-battle-material-rewards.mjs && node tools/check-native-achievements.mjs",
     "check:replica-types": "tsc --noEmit -p replica-battle/tsconfig.json",
     "check:replica-snapshot": "node tools/audit-replica-snapshot.mjs",
     "check:replica-economy": "node tools/generate-native-economy.mjs --check",

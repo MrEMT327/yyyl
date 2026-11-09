@@ -7,6 +7,7 @@ import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide} from 
 import { backpackUseRule, planBackpackUse } from '../replica/native-backpack-use.js';
 import { nativeStarRewardSnapshot, planNativeStarClaim } from '../replica/native-star-rewards.js';
 import { nativeAchievementSnapshot } from '../replica/native-achievements.js';
+import {captureNativeAchievementEvidence,planNativeAchievementProgress} from '../replica/native-achievement-progress.js';
 import { BATTLE_MATERIAL_POLICY, battleMaterialSnapshot, prepareBattleMaterialRewards } from '../replica/battle-material-rewards.js';
 import { planNativeSettlement } from '../replica/native-settlement.js';
 import {prepareBattleGoldSettlement} from '../replica/battle-gold-rewards.js';
@@ -145,6 +146,7 @@ export function createPeripheralSystem({
   const saveGuard = createPeripheralSaveGuard(storage, PERIPHERAL_STORAGE_KEY);
   let state;
   try { state = JSON.parse(saveGuard.initialRaw || 'null'); } catch { state = null; }
+  let achievementEvidence=captureNativeAchievementEvidence(state);
   const staleSaveMessage = '存档已在其他页面更新，请刷新当前页面后继续';
   function storageCurrent() {
     let allowed=false;
@@ -168,7 +170,15 @@ export function createPeripheralSystem({
   function writePeripheralState(next) {
     if (!storageCurrent()) return false;
     try {
-      if (saveGuard.write(serializeState(next))) return true;
+      // Lifetime achievement counters and the actual wallet/box/sortie
+      // change share one durable write. Failed saves never advance evidence.
+      const progress=planNativeAchievementProgress(achievementEvidence,next,currentTime());
+      const saved=progress?{...next,replicaAchievementProgress:progress}:next;
+      if (saveGuard.write(serializeState(saved))) {
+        if(progress)next.replicaAchievementProgress=progress;
+        achievementEvidence=captureNativeAchievementEvidence(saved);
+        return true;
+      }
       storageWarning = saveGuard.conflicted ? staleSaveMessage : '设备暂不可保存，请恢复存储后重试';
     } catch { storageWarning = '设备暂不可保存，当前改动仅保留在本次会话'; }
     return false;
@@ -591,7 +601,7 @@ export function createPeripheralSystem({
     onChange();return pass(message,{rewards});
   }
   function currentAchievements() {
-    return state.replicaLoadout?nativeAchievementSnapshot(state.achievements,state.replicaLoadout,state.replicaCampaign,state.pilotSupply)
+    return state.replicaLoadout?nativeAchievementSnapshot(state.achievements,state.replicaLoadout,state.replicaCampaign,state.pilotSupply,{progress:state.replicaAchievementProgress,equipment:state.equipment})
       :achievementSnapshot(state.achievements,currentAchievementMetrics());
   }
   function currentAchievementMetrics() {
@@ -599,6 +609,9 @@ export function createPeripheralSystem({
       ownedAircraft:PERIPHERAL_AIRCRAFT.filter(a=>ownAircraft(a.id)).map(a=>a.id),pilotPulls:state.pilotRecruit.totalPulls});
   }
   recoverDailyReward();
+  // Initialize only after older reward receipts have had a chance to settle.
+  if(state.replicaAchievementProgress===undefined&&!state.dailyRewardReceipt&&!state.replicaPendingSettlement
+    &&!state.shop?.pending&&!state.starRewards?.pending)persist();
 
   function ownPilot(id) {
     return temporaryPilots().includes(id)||(!state.fleet.pending.pilot.includes(id)&&(state.fleet.ownedPilots.includes(id)||pilots().owned.includes(id)));
@@ -1189,7 +1202,7 @@ export function createPeripheralSystem({
       if(!item)return fail('成就不存在');
       if(item.claimed)return fail('成就奖励已领取');
       if(!item.claimable)return fail('成就尚未达成');
-      const next=copy(state);next.achievements||={claimed:[]};next.achievements.claimed.push(item.id);
+      const next=copy(state);next.achievements={...(next.achievements||{}),claimed:[...(next.achievements?.claimed||[]),item.id]};
       return deliverDaily(next,item.reward,{source:{type:'achievement',id:item.id},...(item.rewardItems?{rewards:item.rewardItems}:{}),message:'成就奖励已领取'});
     }
     if (type === 'selectStage') {
