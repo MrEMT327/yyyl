@@ -9,7 +9,7 @@ export const WEAPON_SKIN_VFX_LIMITS=Object.freeze({projectiles:80,effects:28,ver
 const TAU=Math.PI*2,clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const fract=v=>v-Math.floor(v),hash=v=>fract(Math.sin(v*127.1+311.7)*43758.5453);
 const WHITE=[1.26,1.2,1.12],GOLD=[1.15,.67,.13],PINK=[1.12,.23,.61],CYAN=[.18,.91,1.16],PURPLE=[.64,.32,1.18],MINT=[.26,1.06,.69];
-const THEMES={20102:GOLD,20202:PINK,20302:PURPLE,20402:MINT,20502:CYAN,20602:PURPLE,20702:PINK,20802:PURPLE,20902:CYAN,21002:PINK,21102:PURPLE};
+const THEMES={20102:CYAN,20202:PINK,20302:PURPLE,20402:MINT,20502:CYAN,20602:PURPLE,20702:PINK,20802:PURPLE,20902:CYAN,21002:PINK,21102:PURPLE};
 const COLORS=[PINK,CYAN,GOLD,PURPLE,MINT];
 class Brush{
   constructor(){this.solid=new VfxMeshBuffer('solid',ROOT+'solid',1);this.light=new VfxMeshBuffer('light',ROOT+'light',2);}
@@ -129,7 +129,7 @@ export class WeaponSkinVfx{
     const dx=(q.x-p.x)/len,dy=(q.y-p.y)/len;
     const base=b.angle??0,ox=(b.offsetX??0)*Math.cos(base)+(b.offsetZ??0)*Math.sin(base),oz=-(b.offsetX??0)*Math.sin(base)+(b.offsetZ??0)*Math.cos(base),origin=screen(b.x+ox,b.z+oz);
     const point=(x,y)=>[origin.x-dy*x+dx*y,origin.y+dx*x+dy*y];
-    const rx=clamp(b.radiusX*px,2.5,22),rz=clamp(b.radiusZ*px,5,30),a=clamp(b.age/.055)*clamp((b.lifetime-b.age)/.08),id=this.skinId;
+    const rx=clamp(b.radiusX*px,2.5,22),rz=clamp(b.radiusZ*px,5,30),a=clamp(b.age/(this.skinId===20102?.012:.055))*clamp((b.lifetime-b.age)/.08),id=this.skinId;
     if(![350001,350002,350003,350004,400025].includes(b.weaponId)&&id!==21102)
       this.rememberTrail(b,b.x+ox,b.z+oz,id===20102?5:id===20202?9:id===20402?20:id===20502?11:id===20902?10:8,THEMES[id],id===20102?.12:.26,id===20102?24:id===20202?45:id===20402?28:id===20902?34:40);
     this.projectiles++;
@@ -145,11 +145,18 @@ export class WeaponSkinVfx{
     else this.starBlade(b,point,rx,rz,a);
     return true;
   }
-  cannon(b,p,rx,rz,a){const g=this.brush,w=clamp(rx,.0,5.5),h=clamp(rz,8,19);
-    g.quad([p(-w,-h*.6),p(w,-h*.6),p(w,h),p(-w,h)],GOLD,a,6,'solid');
-    g.line(p(0,-h*.42),p(0,h*.72),2.8,[1.42,1.16,.68],a*.82);
-    g.line(p(0,-h*.65),p(0,-h-20),7,GOLD,[a*.6,0]);
-    const q=p(0,h*.45);g.sprite(q[0],q[1],w*1.8,h*.45,GOLD,a*.27,1);
+  cannon(b,p,rx,rz,a){
+    // Original Gatling model mapping: ordinary / penetrate / super. Cosmetic
+    // profiles only; collision extents, speed and damage remain host-owned.
+    const g=this.brush,penetrating=b.modelId===1000049,superShot=b.modelId===1000050;
+    const pulse=.97+.03*Math.sin(b.age*24+b.uid*2.4);
+    const w=superShot?clamp(Math.max(rx,rz)*1.45,11,22):clamp(rx*1.65,6,13);
+    const h=superShot?w:clamp(rz*(penetrating?2.05:1.5),penetrating?19:12,penetrating?33:24);
+    // Core, cyan sheath and soft blue-violet halo share one additive quad.
+    // No emitter/texture allocation per shot; even a dense burst stays batched.
+    g.quad([p(-w,-h),p(w,-h),p(w,h),p(-w,h)],CYAN,a*pulse,superShot?8:penetrating?7:6);
+    const tail=superShot?12:penetrating?22:16;
+    g.line(p(0,-h*.35),p(0,-h-tail),superShot?5:3.5,CYAN,[a*.30,0]);
   }
   firework(b,p,rx,rz,a){const g=this.brush,w=clamp(rx,4.5,8),h=clamp(rz,12,22);
     for(const s of [-1,1])g.poly([p(s*w*.72,-h*.40),p(s*w*1.42,-h*.78),p(s*w*.88,-h*.92),p(s*w*.5,-h*.62)],[[.70,.42,.09],[1,.77,.34],[.28,.16,.04],[.85,.55,.13]],a,'solid');
@@ -272,7 +279,7 @@ export class WeaponSkinVfx{
     for(let i=0;i<count;i++){const angle=i/count*TAU+hash(f.uid)*TAU,d=r*(.15+u),x=p.x+Math.cos(angle)*d,y=p.y+Math.sin(angle)*d;
       if(id===20502){g.line([x-Math.cos(angle)*6,y-Math.sin(angle)*6],[x,y+u*u*5],2.8,i%2?CYAN:PURPLE,[0,fade*.72]);g.sprite(x,y,3.2,3.2,CYAN,fade*.5,1);}
       else if(id===20902)g.sprite(x,y,2.4,5.2,CYAN,fade*.85,3,'solid',angle);
-      else{g.line([x-Math.cos(angle)*7,y-Math.sin(angle)*7],[x,y],2.4,i%2?color:GOLD,[0,fade*.8]);if(i%2===0)g.star(x,y,(id===20702?5.7:4)*(1-u*.4),i%2?color:GOLD,fade*.75,angle+t);}
+      else{const spark=id===20102?CYAN:(i%2?color:GOLD);g.line([x-Math.cos(angle)*7,y-Math.sin(angle)*7],[x,y],2.4,spark,[0,fade*.8]);if(i%2===0)g.star(x,y,(id===20702?5.7:4)*(1-u*.4),spark,fade*.75,angle+t);}
     }
     g.star(p.x,p.y,r*.6,WHITE,clamp(1-t/.12)*.8,t);return true;
   }

@@ -214,7 +214,7 @@ export class PathogenicBattleEffects {
       return;
     }
     if(this.iaido.projectile(b,screen))return;
-    if(b.owner==='enemy')this.motionAccents.projectile(b,screen,element);
+    if(b.owner==='enemy'&&isCorrectedEnemyProjectile(b))this.motionAccents.projectile(b,screen,element);
     if(isConstructWeapon(b)||isCorrectedEnemyProjectile(b)){
       const category=isConstructWeapon(b)?'construct':'enemy-projectile';
       const meshes=isConstructWeapon(b)?constructWeaponScreenMeshes(b,screen):correctedEnemyProjectileMeshes(b,screen);
@@ -284,7 +284,7 @@ export class PathogenicBattleEffects {
       pose.awaitHostExit=true;
       pose.hostProjectileLifetime=true;
       this.observeHits(b);const drawn=this.emit(key,path,age,b.uid,{...pose,...presentation.pose,presentationDepth,projectilePalette:palette},duration,presentation.retireImmediately);
-      if(b.owner==='player'){const sprite=drawn?.sprites?.find((s:Row)=>s.nodePath==='Visual/Circle');if(sprite)this.motionAccents.projectile(b,screen,element,sprite);}
+      if(b.owner==='enemy'||b.owner==='player'){const sprite=drawn?.sprites?.find((s:Row)=>s.nodePath==='Visual/Circle');if(sprite)this.motionAccents.projectile(b,screen,element,sprite);}
       if(playerRocket){this.smokeScreen=screen;this.missileSmoke.projectile(b,screen,drawn?.sprites?.find((s:Row)=>s.nodePath==='Visual/EngineFlame'));}
     }
   }

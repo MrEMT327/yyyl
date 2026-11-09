@@ -38,10 +38,24 @@ void fragment(){
     float halo=exp(-pow((r-radius)*15.0,2.0))*0.18;
     float flow=0.72+0.28*sin(angle*3.0+TIME*4.0);
     COLOR=vec4(tint.rgb*(0.8+band*0.3),tint.a*(band+halo)*flow);
-  }else{
+  }else if(mode<5.5){
     float mist=exp(-q.y*q.y*4.0);
     float ends=smoothstep(0.0,0.07,uv.x)*(1.0-smoothstep(0.94,1.0,uv.x));
     COLOR=vec4(tint.rgb*0.82,tint.a*mist*ends*0.70);
+  }else{
+    // 6/7: blue Gatling capsules; 8: its round super projectile. The broad
+    // halo is cosmetic and is not used as a damage-radius indicator.
+    float orb=step(7.5,mode);
+    float segment=mix(mode<6.5?0.35:0.49,0.0,orb);
+    vec2 capsule=vec2(q.x,max(abs(q.y)-segment,0.0)*mix(1.45,1.0,orb));
+    float d=length(capsule),r=length(q);
+    float core=1.0-smoothstep(mix(0.095,0.15,orb),mix(0.17,0.24,orb),d);
+    float sheath=exp(-d*d*mix(22.0,13.0,orb));
+    float halo=exp(-dot(q,q)*3.5)*roundedMask(r);
+    float fringe=exp(-dot(q-vec2(0.0,-0.24),q-vec2(0.0,-0.24))*5.0)*roundedMask(r);
+    vec3 color=vec3(0.84,1.18,1.28)*core+tint.rgb*sheath*0.88
+      +vec3(0.11,0.22,0.92)*halo*0.46+vec3(0.30,0.12,0.74)*fringe*0.19;
+    COLOR=vec4(color,tint.a*roundedMask(r));
   }
 }`;
 const solid=`shader_type canvas_item;
