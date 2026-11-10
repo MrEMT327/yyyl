@@ -10,7 +10,7 @@ const COST_ICONS = { coins: resourceIcon('coin'), weaponParts: resourceIcon('par
 const finiteValue = value => value !== null && value !== undefined && value !== '' && Number.isFinite(Number(value))
   ? Number(value) : null;
 const textValue = value => typeof value === 'string' ? value.trim() : '';
-const statNumber = value => value.toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+const statNumber = value => value.toLocaleString('zh-CN', {useGrouping:false, maximumFractionDigits: 2 });
 
 export function equipmentWeaponDialog({title,content,quality=0}, {escape:e}) {
   const rank=Math.max(0,Math.min(5,Math.floor(Number(quality)||0)));

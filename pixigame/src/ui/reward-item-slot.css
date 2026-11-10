@@ -1,16 +1,26 @@
 /* Canonical project item square: original PSD six-tier plate, uniform slices,
    intact art and a quantity anchored inside the lower-right corner. */
-#gui-casual-lobby .reward-item-slot {
-  --item-slot-corner:clamp(5px,1.8cqw,9px);
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot {
+  container-type:inline-size;
   position:relative;isolation:isolate;display:block;box-sizing:border-box;width:100%;aspect-ratio:1;min-width:0;
   padding:0;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;text-shadow:none;
 }
-#gui-casual-lobby .reward-item-slot::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;border-image:var(--quality-plate) 18 fill / var(--item-slot-corner) stretch;filter:none}
-#gui-casual-lobby .reward-item-slot>.reward-item-art {position:absolute;inset:8% 10% 21%;display:grid;place-items:center;min-width:0;min-height:0;pointer-events:none}
-#gui-casual-lobby .reward-item-slot>.reward-item-art>:is(img,svg,.pl-icon,.pl-model-thumb,.supply-weapon-art) {position:static!important;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;margin:0!important;padding:0!important;transform:none!important;filter:none}
-#gui-casual-lobby .reward-item-slot>.reward-item-quantity {position:absolute;right:7%;bottom:5%;z-index:2;display:block;max-width:90%;margin:0;padding:0;border:0;background:none;color:#fff;font:700 clamp(9px,2.8cqw,15px)/1.1 'PingFang SC','Microsoft YaHei',sans-serif;text-align:right;white-space:nowrap;-webkit-text-stroke:0;text-shadow:0 1px 2px #102234,1px 0 2px #102234;pointer-events:none}
-#gui-casual-lobby .reward-item-slot>.reward-item-overlay {position:absolute;inset:4%;z-index:3;display:grid;place-items:center;pointer-events:none}
-#gui-casual-lobby .reward-item-slot>.reward-item-overlay>img {position:static!important;display:block;width:90%!important;height:90%!important;max-width:none!important;max-height:none!important;transform:none!important;object-fit:contain!important;opacity:1!important;filter:none!important}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot[data-quality-known='false'] {--quality-plate:url('/art/psd-equipment-v1/frame-empty.png')}
+/* Scale the 18px slice by the displayed side of the 128px plate. */
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;border-image:var(--quality-plate) 18 fill / 14.0625cqw stretch;filter:none}
+/* Badge presence and digit count never change the artwork's centre or size. */
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-art {position:absolute;inset:14.5% 10%;display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;min-width:0;min-height:0;pointer-events:none}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-art>:is(img,svg,.pl-icon,.pl-model-thumb,.supply-weapon-art) {position:static!important;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important;margin:0!important;padding:0!important;transform:none!important;filter:none}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-quantity {
+  position:absolute;right:9%;bottom:6%;z-index:2;display:block;max-width:84%;
+  margin:0;padding:0;border:0;background:none;
+  color:#fff3cd;font:400 clamp(9px,22cqw,16px)/1 PsdPopup,"Microsoft YaHei",sans-serif;
+  text-align:right;white-space:nowrap;-webkit-text-stroke:.1em #102234;paint-order:stroke fill;
+  pointer-events:none;
+}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-new {position:absolute;top:7%;left:8%;z-index:2;margin:0;padding:0;color:#fff0a8;font:800 clamp(11px,22cqw,15px)/1 'PingFang SC','Microsoft YaHei',sans-serif;text-shadow:0 1px 2px #102234,1px 0 2px #102234;pointer-events:none}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-overlay {position:absolute;inset:4%;z-index:3;display:grid;place-items:center;pointer-events:none}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-overlay>img {position:static!important;display:block;width:90%!important;height:90%!important;max-width:none!important;max-height:none!important;transform:none!important;object-fit:contain!important;opacity:1!important;filter:none!important}
 
 /* Scene containers set size only; they cannot recolor or repad the slot. */
 #gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art.reward-item-slot,
@@ -19,4 +29,4 @@
 
 /* Aircraft card exports have transparent framing. Enlarge inside the art
    window so the complete silhouette has the same visual weight as other items. */
-#gui-casual-lobby .reward-item-slot>.reward-item-art>img[src*="/aircraft-ui-v1/"] {width:145%!important;height:145%!important;max-width:145%!important;max-height:145%!important}
+:is(#gui-casual-lobby,.game-item-description-layer) .reward-item-slot>.reward-item-art>img[src*="/aircraft-ui-v1/"] {width:145%!important;height:145%!important;max-width:145%!important;max-height:145%!important}

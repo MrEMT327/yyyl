@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import {battleChoiceElement} from '../src/replica/battle-weapon-element.js';
 const read=file=>fs.readFileSync(file,'utf8');
 const sources=['public/replica-battle/data/combat.json','public/replica-battle/data/loadout-catalog.json','public/replica-battle/data/skill-selection.json'];
 const raw=sources.map(read),[combat,catalog,selection]=raw.map(JSON.parse);
@@ -12,6 +13,7 @@ const card=id=>{
 };
 const families=Object.fromEntries(Object.values(combat.families).map(family=>[family.id,{
   id:family.id,name:family.name,description:family.description,
+  elementId:battleChoiceElement({group:family.id},combat)?.id??null,
   stages:family.stages.map(stage=>{
     const row=selection.skills[stage.skillId];
     if(!row)throw new Error('Missing native selection stage '+stage.skillId);

@@ -30,7 +30,7 @@ export function referenceEquipmentPage(ctx) {
         const innate = i < 2, id = innate ? a?.weaponId : valueId(s.loadout[slot]), w = s.weapons.find(w => w.id === id);
         return `<button type="button" class="ref-mount ref-mount-${slot.toLowerCase()} ${innate ? 'is-innate' : ''} ${w ? 'is-filled' : ''}" data-action="${innate ? 'innateInfo' : 'slot'}" data-slot="${slot}" data-id="${e(id)}" aria-label="${slotLabel(slot)} ${innate ? '本机专武' : '通用挂点'} ${e(w?.name || '空闲')}"><small>${slotLabel(slot)}</small>${w ? thumbnail(id) : icon('weapon')}<span>${innate ? '本机' : w ? `Lv.${w.level}` : '+'}</span></button>`;
       }).join('')}
-      <div class="ref-equipment-stats"><span title="出战基础攻击">${icon('weapon')} ${n(s.combatStats?.attack ?? a?.attack)}</span><span title="出战最大耐久">${icon('heart')} ${n(s.combatStats?.maxHp ?? a?.hp)}</span></div>
+      <div class="ref-equipment-stats"><span aria-description="出战基础攻击">${icon('weapon')} ${n(s.combatStats?.attack ?? a?.attack)}</span><span aria-description="出战最大耐久">${icon('heart')} ${n(s.combatStats?.maxHp ?? a?.hp)}</span></div>
       <div class="ref-entry-row">${[['weapon','weapon','武器'],['aircraft','plane','战机'],['pilot','pilot','驾驶员']].map(([kind, symbol, label]) => `<button type="button" data-action="catalog" data-kind="${kind}" aria-label="${label}"><i>${icon(symbol)}</i><strong>${label}</strong></button>`).join('')}</div>
     </div>
     <div class="ref-divider"><button type="button" class="ref-yellow" data-action="sortEquipment">按品质${sortDescending ? '降序' : '升序'}</button><span class="ref-divider-caption">装备</span>${button('openWorkshop', '改装间', 'ref-yellow')}</div>

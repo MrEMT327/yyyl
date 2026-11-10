@@ -17,7 +17,7 @@
 #gui-casual-lobby .fr-chapters{max-height:none;overflow:visible;color:#172c40}
 #gui-casual-lobby .fr-chapters>p{color:#304b65}
 #gui-casual-lobby .fr-chapters .fr-card{background:#d0dce7;border-color:#738ca5;color:#172c40}
-#gui-casual-lobby .fr-chapters .fr-card h3{color:#172c40;font-size:15px;margin:0 0 8px}
+#gui-casual-lobby .fr-chapters .fr-card h3{color:#172c40;font-size:var(--psd-small-title-size);margin:0 0 8px;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .fr-rewards{display:flex;flex-wrap:wrap;gap:10px}
 #gui-casual-lobby .fr-reward{display:flex;align-items:center;gap:6px}
 #gui-casual-lobby .fr-art{width:36px;height:36px;min-height:0;object-fit:contain;flex:none}

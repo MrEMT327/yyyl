@@ -9,5 +9,8 @@ export function researchUnlockMessage(campaign, row) {
 
 export function researchTabs(snapshot,current='talent') {
   const locked=Boolean(researchUnlockMessage(snapshot.replicaCampaign));
-  return `<nav class="research-tabs" aria-label="科技研究分类"><button type="button" class="wc-button research-tab ${current==='talent'?'is-active':''}" data-action="researchSection" data-section="talent" aria-pressed="${current==='talent'}">天赋</button><button type="button" class="wc-button research-tab ${current==='lab'?'is-active':''}${locked?' is-chapter-locked':''}" data-action="researchSection" data-section="lab" aria-pressed="${current==='lab'}"${locked?' aria-disabled="true"':''}>科研</button></nav>`;
+  const selected=!locked&&current==='lab'?'lab':'talent';
+  const tabs=[['talent','天赋'],...locked?[]:[['lab','科研']]];
+  // UIMainCard.OnShow hides tabTechnology until Function 10 is open.
+  return `<nav class="research-tabs" role="tablist" aria-label="科技研究分类">${tabs.map(([id,label])=>`<button type="button" role="tab" class="psd-tab research-tab${selected===id?' is-active':''}" data-action="researchSection" data-section="${id}" aria-selected="${selected===id}" tabindex="${selected===id?0:-1}">${label}</button>`).join('')}</nav>`;
 }

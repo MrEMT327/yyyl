@@ -18,14 +18,15 @@ export function nativeCollectionIdentity(collection,base={}){
 // Shared by catalog cards, detail actions and profile presentation. Availability
 // includes the base appearance; owned remains native activation for growth.
 export function nativeCollectionAccess(group,snapshot,row){
-  if(row.baseOnly)return {isBase:true,basicOnly:true,available:true,using:Boolean(row.equipped),selectionId:0};
+  const activated=Boolean(row.owned);
+  if(row.baseOnly)return {isBase:true,basicOnly:true,available:true,using:Boolean(row.equipped),selectionId:0,activated,collectionUsing:Boolean(row.equipped)};
   const base=baseKinds[group],appearance=base&&(snapshot[base.identity]||'pilot-01');
   const isBase=Boolean(base&&base.appearances[row.id]===appearance);
   const baseSelected=group==='skins'?snapshot.replicaCollection.skinId===0
     :group==='pilots'&&!snapshot.replicaCollection.pilots.some(pilot=>pilot.equipped);
-  return {isBase,basicOnly:isBase&&!row.owned,available:Boolean(row.owned||isBase),
-    using:Boolean(row.equipped||(isBase&&!row.owned&&baseSelected)),
-    selectionId:isBase&&!row.owned?0:Number(row.id)};
+  const using=Boolean(row.equipped||(isBase&&baseSelected&&(group==='skins'||!activated)));
+  return {isBase,basicOnly:isBase&&!activated,available:Boolean(activated||isBase),using,
+    selectionId:isBase&&!activated?0:Number(row.id),activated,collectionUsing:activated&&using};
 }
 
 // Old accounts can retain a base aircraft absent from the native unlock list.

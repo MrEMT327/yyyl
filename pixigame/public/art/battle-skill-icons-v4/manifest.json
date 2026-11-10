@@ -1,0 +1,266 @@
+{
+  "version": 4,
+  "source": "art/battle-skill-icons-v4",
+  "assets": [
+    {
+      "key": "10000101",
+      "name": "速射机炮",
+      "category": "attack",
+      "file": "10000101.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 44058,
+      "sha256": "5f33e9252b933ba78aa493863db82b490181c832c0d1da75c8d18b66490d3df1"
+    },
+    {
+      "key": "10000201",
+      "name": "酸液枪",
+      "category": "attack",
+      "file": "10000201.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 39916,
+      "sha256": "f81b9487b383aa9472792c49887383b385768843a9036f459084dd902bc60d50"
+    },
+    {
+      "key": "10000301",
+      "name": "分叉闪电炮",
+      "category": "attack",
+      "file": "10000301.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 36500,
+      "sha256": "035eaa81398af34de9ae61612a1ba1ff8a8f2e9be712d54108714be0357ed0f6"
+    },
+    {
+      "key": "10000401",
+      "name": "电磁散射器",
+      "category": "attack",
+      "file": "10000401.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 51204,
+      "sha256": "3f66896ec3511cdc4149759dc19fc75e66338c485dbb4549e10622475aa89ae5"
+    },
+    {
+      "key": "10000601",
+      "name": "冰刃弹",
+      "category": "attack",
+      "file": "10000601.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 52396,
+      "sha256": "1ae6139cca1f8901d7d1ae783d47aba4cf851bb40059240b6966af19282f561b"
+    },
+    {
+      "key": "10000701",
+      "name": "集束火箭舱",
+      "category": "attack",
+      "file": "10000701.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 46512,
+      "sha256": "1d281840d4251369732dc2bd9b1d0889684031ef26634e65967b6d9087ea57a3"
+    },
+    {
+      "key": "10000901",
+      "name": "酸性黑洞",
+      "category": "attack",
+      "file": "10000901.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 69930,
+      "sha256": "8994a35039eb8908c6f76bc1f87e12c97d65992740edd9fb5559b9d93c5c3565"
+    },
+    {
+      "key": "10001101",
+      "name": "能量光剑",
+      "category": "attack",
+      "file": "10001101.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 49532,
+      "sha256": "230f78a5cf2079b90fb0a4ccc561839aa64aa5b455add7c6e0e3acd47f70eec3"
+    },
+    {
+      "key": "10001501",
+      "name": "脉冲激光炮",
+      "category": "attack",
+      "file": "10001501.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 32988,
+      "sha256": "d5bf3e3da39089d6859687e5683568639ee8cded1b0ec88edb014767b576220b"
+    },
+    {
+      "key": "10001601",
+      "name": "冰冻锯盘",
+      "category": "attack",
+      "file": "10001601.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 75762,
+      "sha256": "50c9d715b674002f2d2410de6b452736adcb0a841cb439c0056a950dbf460849"
+    },
+    {
+      "key": "10001701",
+      "name": "灼热射线",
+      "category": "attack",
+      "file": "10001701.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 42256,
+      "sha256": "73326c84301279160900f0391cfa5304900663b4cab8d392d4e0981c63cee405"
+    },
+    {
+      "key": "11000101",
+      "name": "生命模块",
+      "category": "passive",
+      "file": "11000101.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 42698,
+      "sha256": "8b84600f1e0a65625b07a0080fb561d32d64ded2efe6fec931746aa210636e14"
+    },
+    {
+      "key": "11000201",
+      "name": "攻击模块",
+      "category": "passive",
+      "file": "11000201.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 44392,
+      "sha256": "b8ee643c1f61bb1c0bd635d5d1c5e7dcf7e8a7bf5f72f3c33fda677b6d96fed1"
+    },
+    {
+      "key": "11000301",
+      "name": "增幅模块",
+      "category": "passive",
+      "file": "11000301.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 41428,
+      "sha256": "39fcee361db356aa4e0de0507a6be0421179daff1e3b2743de3d90bf87f73b13"
+    },
+    {
+      "key": "11000601",
+      "name": "冷却模块",
+      "category": "passive",
+      "file": "11000601.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 55000,
+      "sha256": "6569b4064b0e04b04bac991cfbf7ec3bb75fcca0227b3d0a677912bae665cca8"
+    },
+    {
+      "key": "11000307",
+      "name": "暴击模块",
+      "category": "passive",
+      "file": "11000307.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 63922,
+      "sha256": "0ef0465e3219c144055460194cde9715fb66fb9bd9fb669a6a7257400423b202"
+    },
+    {
+      "key": "11000801",
+      "name": "能量护盾",
+      "category": "passive",
+      "file": "11000801.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 52038,
+      "sha256": "7dcef1f68f21cfe2ae0ec31a064c1a6af8940ca0b8fefc7d1f43e797c46c6146"
+    },
+    {
+      "key": "11001101",
+      "name": "缩小！",
+      "category": "passive",
+      "file": "11001101.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 39664,
+      "sha256": "7c56ba0d11121dcfc7486d26e8d1a936c08378ab5825d70a1c26c0317d633cdc"
+    },
+    {
+      "key": "11001401",
+      "name": "维修强化",
+      "category": "passive",
+      "file": "11001401.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 38466,
+      "sha256": "3278e55779cece955f65a3be48915f8e866ce5772c7e883e123d2070fdd49b89"
+    },
+    {
+      "key": "11001601",
+      "name": "狂暴空投",
+      "category": "passive",
+      "file": "11001601.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 44072,
+      "sha256": "e60ddfe303d11f7b7518a2c584cf4fe2183b15b30ba285abf1c85b4f574e1625"
+    },
+    {
+      "key": "11001701",
+      "name": "导弹空投",
+      "category": "passive",
+      "file": "11001701.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 47074,
+      "sha256": "6281e86db7f7f17b2e8a962b62bf8ca24baf5f8092cb54cf069de6b8f90296b7"
+    },
+    {
+      "key": "11002001",
+      "name": "震荡波空投",
+      "category": "passive",
+      "file": "11002001.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 47338,
+      "sha256": "d112183bef896ae198fcc9bf8882c357994f8e65bd99c518c361877f3546412c"
+    },
+    {
+      "key": "11002201",
+      "name": "维修空投",
+      "category": "passive",
+      "file": "11002201.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 42620,
+      "sha256": "136c591c9ef9559e972d94dc84c8fc5a6a096bbabcc4d3d309fc6f0605a58ef1"
+    },
+    {
+      "key": "11002501",
+      "name": "复活芯片",
+      "category": "passive",
+      "file": "11002501.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 59498,
+      "sha256": "9cbde662c3ea0595b340e1b087f9d5e04578ea8426f850d0ce0485ddb825d752"
+    },
+    {
+      "key": "10000001",
+      "name": "即时回血",
+      "category": "instant",
+      "file": "10000001.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 62184,
+      "sha256": "bfe087f77680ad754dad160f9e71119ad8ce1b5d8ebb0bf12e7fc409ad752f1d"
+    },
+    {
+      "key": "10000002",
+      "name": "金币奖励",
+      "category": "instant",
+      "file": "10000002.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 64076,
+      "sha256": "8dec18886b43033427310be41d06e933b44ae83a09d2805af040162864e84447"
+    }
+  ]
+}

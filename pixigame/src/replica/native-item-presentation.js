@@ -18,7 +18,8 @@ const base=cloudAssetBase;
 const units=new Map([...catalog.guns,...catalog.skins,...catalog.pilots].map(row=>[row.id,row]));
 const items=new Map(acquisition.items.map(row=>[row.id,row]));
 export function nativeItemArt(id) {
-  const group=({10010007:'equipment-blueprints',10010008:'research-blueprints'})[id];
+  if(Number(id)===10010007)return base+'art/project-equipment-blueprints-v2/equipment-blueprints.svg';
+  const group=({10010008:'research-blueprints'})[id];
   if(group)return base+'art/project-material-groups-v1/'+group+'.svg';
   const signin=({111:'quantum-key',3132505:'epic-glove-chip'})[id];
   if(signin)return `${base}art/project-signin-icons-v1/${signin}.png`;
@@ -54,7 +55,7 @@ export function nativeItemPresentation(id) {
     :part?`用于强化${part.name}，与金币一同消耗。`
     :id===10010007?'随机获得五种装备部位图纸中的一种。'
     :id===10010008?'随机获得十一种科研图纸中的一种。'
-    :researchBlueprint?'用于对应科研升级，与金币一同消耗。可通过巡逻、快速巡逻、章节奖励与每日商店获得。'
+    :researchBlueprint?'用于科研升级。'
     :id===112?'开启高级装备箱时消耗。'
     :id===113?'开启普通装备箱时消耗。'
     :id===903?'在每日成长补给领取；开启时自选一种装备图纸。'

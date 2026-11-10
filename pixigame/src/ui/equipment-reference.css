@@ -91,15 +91,15 @@
 #gui-casual-lobby.equipment-reference .eq-mount-art {width:100%;height:100%;min-height:0;margin:0 0 12px;border:0;clip-path:none;background:none;box-shadow:none}
 #gui-casual-lobby.equipment-reference .eq-mount-art>.wc-art {width:100%;height:100%}
 #gui-casual-lobby.equipment-reference .eq-mount-inner>b {color:#e5f7fb;font-size:10px;text-shadow:none}
-#gui-casual-lobby.equipment-reference .eq-catalog-row>button {background:none;border:0;border-radius:0;box-shadow:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+#gui-casual-lobby.equipment-reference .eq-catalog-row>button {background:none;border:0;border-radius:0;box-shadow:none;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch}
 #gui-casual-lobby.equipment-reference .eq-workshop-button {position:relative;isolation:isolate;background:none!important;border:0!important;border-radius:0;box-shadow:none!important;clip-path:none;color:#edf6fa;padding:0 7px}
-#gui-casual-lobby.equipment-reference .eq-workshop-button::before {content:"";position:absolute;inset:0;z-index:-1;background:none;border:0;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch;filter:none}
+#gui-casual-lobby.equipment-reference .eq-workshop-button::before {content:"";position:absolute;inset:0;z-index:-1;background:none;border:0;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 14px stretch;filter:none}
 #gui-casual-lobby.equipment-reference .eq-workshop-button::after {content:none}
 #gui-casual-lobby.equipment-reference .eq-workshop-button strong {color:#edf6fa;-webkit-text-stroke:0;text-shadow:none;font:400 clamp(14px,4cqw,18px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif}
 #gui-casual-lobby.equipment-reference .eq-select {position:relative;isolation:isolate}
-#gui-casual-lobby.equipment-reference .eq-select::before {content:"";position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+#gui-casual-lobby.equipment-reference .eq-select::before {content:"";position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch}
 #gui-casual-lobby.equipment-reference .eq-select select {background:transparent;border:0;border-radius:0;box-shadow:none;color:#edf6fa;font-size:clamp(11px,3.2cqw,14px)}
-#gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button) {min-height:44px;background:none!important;border:0!important;border-radius:0!important;box-shadow:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch!important;text-decoration:none;color:#edf6fa;padding:8px 14px;font-family:PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button) {min-height:44px;background:none!important;border:0!important;border-radius:0!important;box-shadow:none;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 14px stretch!important;text-decoration:none;color:#edf6fa;padding:8px 14px;font-family:PsdPopup,"Microsoft YaHei",sans-serif}
 #gui-casual-lobby.equipment-reference .eq-pick-hint button {min-width:60px;margin-left:8px}
 #gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button)::before,
 #gui-casual-lobby.equipment-reference :is(.eq-empty button,.eq-pick-hint button)::after {content:none!important}

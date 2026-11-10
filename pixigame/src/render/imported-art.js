@@ -7,7 +7,9 @@ const textures = new Map();
 export const artFailures = new Map();
 
 export async function loadImportedArt(documentRef) {
-  const urls = [...new Set(Object.values(registry).map(spec => spec.url))];
+  const urls = [...new Set(Object.values(registry)
+    .filter(spec => spec.status !== 'retired' && spec.status !== 'planned' && spec.url)
+    .map(spec => spec.url))];
   await Promise.all(urls.map(url => new Promise(resolve => {
     const image = documentRef.createElement('img');
     const finish = () => { clearTimeout(timer); image.onload = image.onerror = null; resolve(); };

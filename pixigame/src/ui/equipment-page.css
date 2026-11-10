@@ -100,7 +100,7 @@
 .reference-layout.equipment-comic .pl-slot-picker>.pl-button{font-size:11px;padding-inline:5px;background:#19364f;color:#e6f2fb}
 .reference-layout.equipment-comic .pl-slot-picker>.pl-button.is-active{background:#ffdc32;color:#0a1722}
 .eq-rules{font-size:12px;line-height:1.75;color:#d4e3ee}
-.eq-rules h3{font-size:14px;color:#ffe57b;margin:12px 0 4px}
+.eq-rules h3{font-size:var(--psd-small-title-size);color:#ffe57b;margin:12px 0 4px;line-height:var(--psd-small-title-leading,1.5)}
 .reference-layout.equipment-comic button:focus-visible,.reference-layout.equipment-comic select:focus-visible{outline:2px solid #fff;outline-offset:-4px}
 .eq-mount:focus-visible,.eq-card:focus-visible{filter:brightness(1.35)}
 .eq-card:active,.eq-mount:active{filter:brightness(.88)}

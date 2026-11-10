@@ -26,7 +26,7 @@
 .workshop-scene-girl{position:absolute;z-index:3;right:-1%;top:43px;bottom:119px;width:39%;pointer-events:none;overflow:hidden}
 .workshop-scene-portrait{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 4%;filter:drop-shadow(3px 3px 1px #06152355)}
 .workshop-readout{position:absolute;inset:auto 7px 7px;z-index:6;min-height:106px;max-height:117px;overflow-y:auto;padding:8px 11px;background:#0c2235f5;border:2px solid #071522;box-shadow:inset 0 0 0 1px #52768e;color:#c3d7e3;font-size:12px;line-height:1.6}
-.workshop-readout h2{margin:0 0 3px;font-size:15px;line-height:21px;color:#ffdb81}
+.workshop-readout h2{margin:0 0 3px;font-size:var(--psd-small-title-size);line-height:max(1.5em,21px);color:#ffdb81}
 .workshop-readout>span,.workshop-readout>small{display:block}.workshop-readout>small{font-size:11px;color:#9fb9ca}
 .peripheral-lobby.reference-layout .ref-workshop .ref-divider{min-height:52px;padding:4px 8px;gap:8px;background:#142d40;border-top:1px solid #7491a3;border-bottom:3px solid #07131e}
 .peripheral-lobby.reference-layout .ref-workshop .ref-divider>button{min-height:40px!important;height:40px;padding:0 12px!important;min-width:88px;font-size:13px!important;line-height:20px;flex:none;clip-path:none;border-radius:4px!important}

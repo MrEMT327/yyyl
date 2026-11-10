@@ -1,3 +1,4 @@
+import '../ui/scroll-surfaces.css';
 import './page.css';
 import { Container, Texture, WebGLRenderer } from '../three/display.js';
 import { createWorldEnvironment } from '../three/world.js';

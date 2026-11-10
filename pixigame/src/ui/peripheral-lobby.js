@@ -1,3 +1,8 @@
+import { createItemDescriptionLayer } from './item-description-layer.js';
+import './scroll-surfaces.css';
+import { aircraftActivationDialog } from './aircraft-activation.js';
+import {committedFeedbackRecords,collectionFeedbackRecords,progressionFeedbackRecords} from './process-feedback-model.js';
+import {processFeedbackDialog,boxOpeningDialog,boxResultActions,createProcessFeedbackMotion} from './process-feedback.js';
 import {attachRecruitStripDrag} from './recruit-strip-drag.js';
 import { isResourceShortage, shortageToast } from './resource-availability.js';
 import './interface-clarity.css';
@@ -11,13 +16,15 @@ import {rewardItemSlot} from './reward-item-slot.js';
 import { developerToolsDialog } from './developer-tools-panel.js';
 import './developer-tools.css';
 import {commonRewardsDialog,isCommonReward} from './common-rewards.js';
-import {isRewardReceiptModal,modalIdentity,mountRewardLayers,labelRewardLayer,captureModalScroll,restoreModalScroll} from './reward-modal-stack.js';
+import {isRetainedModalLayer,modalIdentity,mountRewardLayers,labelRewardLayer,captureModalScroll,restoreModalScroll} from './reward-modal-stack.js';
+import {updateWeaponShowcase} from './weapon-showcase-update.js';
 import './reward-modal-stack.css';
 import {shopBoxRewards} from './shop-box-result-cards.js';
 import {playerName} from '../player-identity.js';
 import { emptySlotMark } from './psd-empty-slot.js';
 import { lobbyNavigation } from './lobby-navigation.js';
 import { chapterPresentationForStage, chapterPreviewBackground } from '../replica/chapter-presentation.js';
+import {chapterDetails} from './chapter-details.js';
 import { weaponIconUrl } from './weapon-icon-source.js';
 import './peripheral-lobby.css';
 import { AIRCRAFTS } from '../pilots.js';
@@ -57,7 +64,6 @@ import { hasLobbyGrowthFeedback, showLobbyGrowthFeedback } from './lobby-growth-
 import { createActionFeedback } from './action-feedback.js';
 import { actionRewards, rewardReturnModal } from './reward-feedback-policy.js';
 import { createLobbyStateFeedback } from './lobby-state-feedback.js';
-import { exitModal } from './surface-motion.js';
 import { createUiMotion } from './ui-motion.js';
 import './shop-page.css';
 import { equipmentPage, equipmentHeader } from './equipment-page.js';
@@ -94,7 +100,7 @@ import './lobby-chrome.css';
 import './lobby-secondary-controls.css';
 import './gui-casual-pages.css';
 import './gui-casual.css';
-import { ITEM_USE_BATCH_LIMIT, isItemUseBatchCount } from '../replica/item-use-batches.js';
+import { isItemUseBatchCount } from '../replica/item-use-batches.js';
 import { backpackUseRule } from '../replica/native-backpack-use.js';
 import { backpackDialog, backpackItems, BACKPACK_TABS } from './backpack-panel.js';
 import './backpack-panel.css';
@@ -108,6 +114,8 @@ import { popupLevel } from './psd-popup.js';
 import './psd-popup.css';
 import './equipment-reference.css';
 import { dailyCenter, dailyActivities, formationPanel, DAILY_TABS } from './daily-center.js';
+import {taskChestModel} from './task-chest-model.js';
+import {taskChestPreview,taskChestPreviewDialog,positionTaskChestPreview} from './task-chest-preview.js';
 import './original-environments.css';
 import {gearModal} from './airframe-equipment-page.js';
 import {emptyGearMerge,gearMergeDraft,pickGearMergeItem,removeGearMergeMaterial} from './gear-merge-selection.js';
@@ -118,14 +126,19 @@ import './psd-surface-fixes.css';
 import './ui-polish.css';
 import './flat-sections.css';
 import {dockGearActions} from './modal-action-layout.js';
-import {playerInfoPanel, PLAYER_INFO_TABS} from './player-info.js';
+import {playerInfoPanel,playerInfoReferenceItems,playerInfoReferenceSkills,playerInfoSkillModal, PLAYER_INFO_TABS, PLAYER_INFO_PAGES} from './player-info.js';
 import './player-info.css';
+import './aircraft-catalog-refresh.css';
+import './psd-titles.css';
+import './control-roles.css';
+import './psd-page-chrome.css';
+import './psd-card-selection.css';
 import './small-text.css';
 
 const TABS = [{ id: 'shop', title: '商城', icon: 'shop' }, { id: 'assembly', title: '装备', icon: 'weapon' }, { id: 'battle', title: '战役', icon: 'plane' }, { id: 'research', title: '科技研究', icon: 'research' }, { id: 'supply', title: '招募', icon: 'crate' }];
 const QUALITIES = ['#9baebd', '#66c58d', '#62bdf5', '#b584ed', '#ffc864', '#f4769c'];
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const number = value => value == null ? '—' : Number(value).toLocaleString('zh-CN', { maximumFractionDigits: 1 });
+const number = value => value == null ? '—' : Number(value).toLocaleString('zh-CN', {useGrouping:false, maximumFractionDigits: 1 });
 const short = value => Number(value) >= 100000 ? `${(Number(value) / 10000).toFixed(1)}万` : number(value);
 const clearNativeTooltips = root => root.querySelectorAll('[title]').forEach(node => node.removeAttribute('title'));
 // Custom-property URLs are consumed by CSS under assets/ in production. Resolve them against the page first.
@@ -174,6 +187,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   let shopSection = 'boxes';
   let equipmentFilter = 'owned', equipmentSort = 'quality', equipmentPickingSlot = false, equipmentScroll = 0;
   let gearSort='quality',gearFilter='all',workshopKind='gear',gearWorkshop=null,gearWorkshopOrigin=null;
+  let gearSelectInput='keyboard';
   let equipmentPickContext = null, equipmentReturnFocus = null, pendingEquipmentScroll = null;
   let researchSection = 'talent';
   const researchScrollPositions={talent:0,lab:0};
@@ -181,12 +195,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   let recruitSelection = {pilot:null,weapon:null};
   let modalOpener = null, renderedModalKey = '', renderedModalContent = '', recruitScroll = 0;
   let pendingModalBackgroundRefresh = false;
+  let processSequence=0,pendingProcessRecords=[];
   const polishedTab = () => ['shop','assembly','battle','research','supply'].includes(tab);
   let nativeAppearanceOnly = false;
   let weaponSkillSlot=-1;
   let subpage = '', catalogSkillTab = false, catalogFilter = 'all', equipmentSortDescending = true, workshopId = null, workshopFilter = 'all', workshopMode = 'level';
   const catalogScrollPositions = new Map();
-  const fleetUi={aircraft:{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false},pilot:{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false}};
+  const fleetUi={aircraft:{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null},pilot:{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null}};
   let fleetSupplyReturn=null;
   const fleetItem=(kind,id)=>(kind==='aircraft'?snapshot.aircraft:snapshot.pilots).find(item=>item.id===id);
   const workshopScrollPositions = new Map();
@@ -214,6 +229,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     for (const item of [...aircraft, ...weapons]) item.maxLevel ??= raw.growth?.maxLevel;
     return { ...raw, playerName:playerName(raw.playerName || bridge.profileState?.playerName || bridge.game?.callsign), pools, signIn, pilotId, aircraftId, pilots, aircraft, weapons, stages, wallet, loadout: raw.loadout || {}, selectedStageIndex: raw.selectedStageIndex ?? bridge.selectedStageIndex ?? 0, power: raw.replicaCollection ? raw.power : raw.power ?? bridge.profilePower?.() };
   }
+  const itemDescriptions=createItemDescriptionLayer({container:parent,getSnapshot:read});
+  bridge.showItemDescription=itemDescriptions.open;
   const currentPilot = () => snapshot.pilots.find(p => p.id === snapshot.pilotId) || snapshot.pilots[0];
   const currentAircraft = () => snapshot.aircraft.find(p => p.id === snapshot.aircraftId) || snapshot.aircraft[0];
   const weaponFor = id => snapshot.weapons.find(w => w.id === (typeof id === 'object' ? id?.itemId || id?.id : id));
@@ -252,7 +269,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(result?.ok&&result.recruitToken)await handler.call(system||bridge,'fleetRecruitSeen',{token:result.recruitToken});
       if (result?.message && !(result.ok && growthBefore)) toast(action==='replicaCollection'&&['skins','pilots'].includes(payload.kind)&&['unlock','star'].includes(payload.action)&&isResourceShortage(result.message)?'道具不足':action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message);
       if (result?.ok === false && !result.message) toast('暂时无法进行此操作');
-      const rewards = actionRewards(result,snapshot,result?.ok?read():snapshot);
+      const committedSnapshot=result?.ok?read():snapshot;
+      const feedbackRecords=committedFeedbackRecords({before:motionBefore,after:committedSnapshot,action,payload,result});
+      if(result?.ok)result.uiFeedbackRecords=feedbackRecords;
+      const rewards = actionRewards(result,motionBefore,committedSnapshot);
       if (result?.ok && action==='claimActivity' && modal?.type==='tasks') delete modal.milestoneId;
       const completedShopOrder=result?.ok&&action==='shopBuy'&&modal?.type==='shopConfirm';
       const rewardParent=rewardReturnModal(modal);
@@ -261,6 +281,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(rewards.length&&rewardOrigin)rewardOrigin.rewardReturnScrollState=captureModalScroll(modalHost);
       if (rewards.length) modal = { type: 'rewards', title: result.title || (action === 'recruit'||result.recruitPool ? '招募结果' : '获得奖励'), rewards:rewards.map(r=>({...r,isNew:r.isNew ?? ((r.type||r.kind)==='weapon' && !snapshot.weapons.some(w=>w.id===(r.id||r.itemId)&&w.owned))})), recruit: result.recruitPool==='pilot'||action === 'recruit' && (payload.poolId || pool) === 'pilot', recruitPool: result.recruitPool||(action === 'recruit' ? payload.poolId || pool : null), recruitGrid:result.directRecruit===true||action==='recruit'&&(payload.poolId||pool)==='pilot', ...(resourceReturn?{returnTo:resourceReturn}:patrolReturn ? {returnTo:patrolReturn,patrol:true} : rewardReturn?{returnTo:rewardReturn}:{}) };
       else if(completedShopOrder)modal=resourceReturn||null;
+      if(rewards.length&&feedbackRecords.length)modal.feedbackRecords=feedbackRecords;
       if (result?.ok && result.researchResult) {
         modal = { type: 'researchResult', result,...(rewardReturn?{returnTo:rewardReturn}:{}) };
         pendingResearchFocus = result.cardId || null;
@@ -268,11 +289,16 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(result?.ok&&snapshot.replicaCollection&&['replicaCollection','selectReplicaLoadout','gearEquip','gearUnequip','gearUpgrade','gearUpgradeAll','gearDowngrade','gearMerge','gearBatch'].includes(action)) {
         try {await bridge.getReplicaLoadoutDetails?.();} catch { /* Show pending; never restore archived estimates. */ }
       }
-      render(true);
+      if(feedbackRecords.length&&['replicaCollection','gearMerge','gearBatch','fleetActivate','fleetStarUp'].includes(action)){
+        // Freeze the existing page through the result. The committed state is
+        // used by the overlay; source controls refresh only after it closes.
+        snapshot=committedSnapshot;signature=patrolRenderSignature(snapshot);pendingModalBackgroundRefresh=true;
+      }else render(true);
       if (result?.ok) {
         const credited = actionFeedback.wallet(walletBefore, snapshot.wallet);
         // A receipt already says what arrived; don't stack a second success toast.
-        if (credited || rewards.length || result.researchResult || result.gearResult?.operation==='supply') { clearTimeout(toastTimer); root.querySelector('.pl-toast').classList.remove('is-visible'); }
+        const powerChanged=Number.isFinite(motionBefore.power)&&Number.isFinite(snapshot.power)&&Math.round(motionBefore.power)!==Math.round(snapshot.power);
+        if (credited || rewards.length || powerChanged || result.researchResult || result.gearResult?.operation==='supply') { clearTimeout(toastTimer); root.querySelector('.pl-toast').classList.remove('is-visible'); }
       }
       if (result?.ok && subpage === 'workshop' && !modal && !root.contains(document.activeElement)) {
         (body.querySelector('.ws-grid .eq-card.is-selected') || body.querySelector('.ws-slot:not(.is-result)'))?.focus({preventScroll:true});
@@ -294,16 +320,42 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
   }
   async function openShopBox(review, freeOnly = false) {
-    const source=modal?.type==='shopBoxConfirm'?modal.returnTo||null:modal;
+    const source=['shopBoxConfirm','shopBoxResult'].includes(modal?.type)?modal.returnTo||null:modal;
     const returnTo=source?{...source,childOpener:captureFocus(modalHost),rewardReturnScroll:modalHost.querySelector('.pl-modal-content')?.scrollTop||0,rewardReturnScrollState:captureModalScroll(modalHost)}:null;
     const result=await act('gearSupply',{pool:review.pool,count:review.count,expectedRevision:review.revision,
       expectedInventoryRevision:review.inventoryRevision,...(freeOnly?{freeOnly:true}:{})});
     if(!result)return;
-    if(result.ok)modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(i=>i.uid),receipt:result.gearResult.receipt,
-      pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards,aircraft:result.gearResult.aircraftRewards,...(returnTo?{returnTo}:{})};
+    if(result.ok){presentBoxReceipt(result,review.pool,review.count,returnTo);return;}
     else if(!freeOnly)modal={...review,error:result.message};
     else return;
     renderModal();
+  }
+  function showProcessRecords(records,returnTo=null){
+    if(!records?.length)return false;
+    modal={type:'processFeedback',id:`process-${++processSequence}`,records,index:0,view:'0',opener:captureFocus(root),...(returnTo?{returnTo}:{})};
+    clearTimeout(toastTimer);root.querySelector('.pl-toast').classList.remove('is-visible');
+    renderModal();return true;
+  }
+  function presentBoxReceipt(result,pool,count,returnTo=null){
+    const gear=result.gearResult;
+    const resultModal={type:'shopBoxResult',id:`box-${++processSequence}`,pool,count:Number(count)||gear.receipt?.count||1,drawn:gear.drawn.map(row=>row.uid),receipt:gear.receipt,
+      pilots:gear.pilotRewards||[],weapons:gear.weaponRewards||[],aircraft:gear.aircraftRewards||[],...(returnTo?{returnTo}:{}),feedbackRecords:result.uiFeedbackRecords||[]};
+    modal={type:'boxOpening',id:resultModal.id,pool,resultModal,...(returnTo?{returnTo}:{})};renderModal();
+  }
+  function finishBoxPresentation(){
+    if(modal?.type!=='boxOpening')return;
+    const result=modal.resultModal,records=result.feedbackRecords;delete result.feedbackRecords;
+    if(!showProcessRecords(records,result)){modal=result;renderModal();}
+  }
+  function advanceProcessFeedback(){
+    if(modal?.type==='boxOpening'){finishBoxPresentation();return true;}
+    if(modal?.type==='processFeedback'){
+      if(modal.index+1<modal.records.length){modal.index++;modal.view=String(modal.index);renderModal();}
+      else if(!returnToParentModal()){modal=null;renderModal();}
+      return true;
+    }
+    if(modal?.feedbackRecords?.length){const records=modal.feedbackRecords;delete modal.feedbackRecords;showProcessRecords(records,modal.returnTo);return true;}
+    return false;
   }
   function renderHeader() {
     if (tab === 'assembly' && !subpage) { setUiMarkup(header,equipmentHeader(referenceContext())); return; }
@@ -345,7 +397,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     const a = snapshot.aircraft.find(a => a.id === browseAircraft) || currentAircraft();
     return `<section class="pl-assembly-page">${heading('AIRCRAFT HANGAR', '机库与武器', `<span class="pl-count">${snapshot.aircraft.filter(a => a.owned).length} 架战机</span>`)}<div class="pl-hangar" style="background-image:url('${asset('hangar')}')"><div class="pl-hangar-meta"><span>Lv.${a?.level || 1}</span><b>${escape(a?.aircraftName || a?.aircraft || a?.name)}</b></div><div class="pl-live-model" data-model-aircraft="${escape(a?.id)}"></div><div class="pl-hangar-platform"></div>${a?.id !== snapshot.aircraftId ? button('selectAircraft', a?.owned ? '驾驶此战机' : '招募获得', 'pl-primary pl-aircraft-equip', `data-id="${escape(a?.id)}"`) : '<span class="pl-hangar-active">✓ 当前出战</span>'}</div>${aircraftStrip()}<div class="pl-section-label"><h2>武器挂载</h2><span>${escape(currentAircraft()?.weaponName || currentAircraft()?.signatureWeaponName || '本机专武')} · 槽1 / 槽2</span></div>${slots()}<div class="pl-section-label"><h2>武器仓库</h2><span>通用${slotLabel(selectedSlot)}</span></div><div class="pl-weapon-grid">${snapshot.weapons.map(w => weaponCard(w, selectedWeapon === w.id)).join('') || '<div class="pl-empty">暂无武器</div>'}</div></section>`;
   }
-  function costHtml(cost) { if (!cost) return ''; const names = { coins: '金币', diamonds: '钻石', aircraftShards: '飞机碎片', weaponParts: '武器零件' }; const icons = { coins: 'coin', diamonds: 'diamond', aircraftShards: 'shard', weaponParts: 'parts' }; return Object.entries(cost).filter(([key, value]) => names[key] && value > 0).map(([key, value]) => `<span class="${Number(snapshot.wallet[key]) < value ? 'is-insufficient' : ''}">${icon(icons[key])} ${number(value)}</span>`).join(''); }
+  function costHtml(cost) { if (!cost) return ''; const names = { coins: '金币', diamonds: '钻石', aircraftShards: '飞机碎片', weaponParts: '武器零件' }; const icons = { coins: 'coin', diamonds: 'diamond', aircraftShards: 'shard', weaponParts: 'parts' }; return Object.entries(cost).filter(([key, value]) => names[key] && value > 0).map(([key, value]) => `<span class="${Number(snapshot.wallet[key]) < value ? 'is-insufficient' : ''}">${resourceIcon(icons[key],'pl-icon',{inspect:false})} ${number(value)}</span>`).join(''); }
   function upgradePage() {
     const a = currentAircraft(), w = weaponFor(selectedWeapon) || snapshot.weapons.find(w => w.owned), item = growthKind === 'aircraft' ? a : w;
     const growth = item?.growth || {}, cost = growth.cost || item?.cost || item?.upgradeCost || snapshot.growth?.[growthKind]?.cost;
@@ -368,7 +420,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       const name=native.name || resourceName || r.name || known?.aircraftName || known?.name || '补给';
       const interactive=projectAssets&&r.gearUid;
       const tag=interactive?'button':'div',action=interactive?`type="button" data-action="gearDetail" data-id="${escape(r.gearUid)}" aria-label="${escape([name,qualityDisplayLabel(quality.qualityName,quality.qualityKnown),'查看当前装备'].filter(Boolean).join('，'))}"`:'';
-      const slot=rewardItemSlot({name,amount:r.amount??r.count??1,artwork,...quality,itemId:rewardNativeItemId(r)??id},{escape});
+      const slot=rewardItemSlot({name,amount:r.amount??r.count??1,artwork,...quality,itemId:rewardNativeItemId(r)??id,isNew:r.isNew===true},{escape});
       return `<${tag} class="pl-reward-item" data-reward-resource="${escape(type)}" data-reward-rank="${rank}" ${action}>${slot}<b>${escape(name)}</b>${r.receiptStatus?`<small>${escape(r.receiptStatus)}</small>`:''}</${tag}>`;
     }
   }
@@ -432,15 +484,15 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(['gearDetail','gearSources','gearMergeList'].includes(parent.type))parent.revision=snapshot.equipment.revision;
     modal=parent;renderModal();if(scroll!=null){const content=modalHost.querySelector('.pl-modal-content');if(content)content.scrollTop=scroll;}
     restoreModalScroll(modalHost,positions);
-    if(!restoreFocus(modalHost,opener))(modalHost.querySelector('.dc-tab[aria-pressed="true"]')||modalHost.querySelector('.pl-close,.bag-close'))?.focus({preventScroll:true});return true;
+    if(!restoreFocus(modalHost,opener))(modalHost.querySelector('.dc-tab[aria-selected="true"]')||modalHost.querySelector('.pl-close,.bag-close,.chapter-reward-back'))?.focus({preventScroll:true});return true;
   }
   function renderModal() {
-    if(rewardLayer&&!isRewardReceiptModal(modal)){
+    if(rewardLayer&&!isRetainedModalLayer(modal)){
       stateFeedback.clearResult();
       const previous=rewardLayer;rewardLayer=null;previous.layers.restore();modalHost=modalRoot;
       renderedModalKey=previous.key;renderedModalContent=previous.content;
     }
-    if(isRewardReceiptModal(modal)&&!rewardLayer){
+    if(isRetainedModalLayer(modal)&&!rewardLayer){
       const receipt=modal,parent=receipt.returnTo;
       // Refresh the source in place after its transaction, before making it
       // inert. It remains visible throughout the reward presentation.
@@ -462,8 +514,11 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     // Keep the last portrait image behind a modal without rendering both UI layers.
     portraitPlayer.setVisible(visible&&!modal);
-    const modalKey = modalIdentity(modal);
-    const stableType = modal && (isRecruitResult(modal) || modal.type==='recruitRewards' || COMMAND_PANELS.has(modal.type) || ['chapterRewards','chapterCoreRewards','nativeStarRewards','nativeMaterials','nativeStats','nativeEquipmentBoxes','pilotSupplyTasks','pilotSupplyBoxes','nativeRecruitInfo','playerInfo','formation','chapterChest','patrol','quickPatrol','nativeLab','nativeCollectionDetail','nativeSkillPreview','nativeWeaponPreview','growthSupplyChoice','weapon','weaponSkill','weaponSkillGroup','aircraftInfo','pilotInfo','fleetSkill','fleetOperation','workshopBatch','workshopFilter'].includes(modal.type) || modal.type.startsWith('research') || modal.type.startsWith('gear'));
+    const previewWeapon=modal?.type==='nativeCollectionDetail'&&modal.kind==='guns'
+      ?snapshot.replicaCollection?.guns.find(row=>row.id===Number(modal.id)):null;
+    const modalKey = modalIdentity(previewWeapon?{...modal,id:previewWeapon.baseGunId||previewWeapon.id}:modal);
+    if(['processFeedback','boxOpening','shopBoxResult'].includes(modal?.type)&&renderedModalKey===modalKey){processMotion.play(modalHost,modal);return;}
+    const stableType = modal && (isCommonReward(modal) || isRecruitResult(modal) || modal.type==='recruitRewards' || COMMAND_PANELS.has(modal.type) || ['chapterDetails','taskChestPreview','chapterRewards','chapterCoreRewards','nativeStarRewards','nativeMaterials','nativeStats','nativeEquipmentBoxes','pilotSupplyTasks','pilotSupplyBoxes','nativeRecruitInfo','playerInfo','formation','chapterChest','patrol','quickPatrol','nativeLab','nativeCollectionDetail','nativeSkillPreview','nativeWeaponPreview','growthSupplyChoice','weapon','weaponSkill','weaponSkillGroup','aircraftInfo','pilotInfo','fleetSkill','fleetOperation','workshopBatch','workshopFilter'].includes(modal.type) || modal.type.startsWith('research') || modal.type.startsWith('gear'));
     if (!stableType || renderedModalKey !== modalKey) stateFeedback.clearResult();
     const focused = captureFocus(modalHost);
     const modalScrollSelector = modal?.type==='weapon' ? '.equipment-weapon-detail__scroll' : ['nativeCollectionDetail','nativeSkillPreview'].includes(modal?.type) ? '.cd-scroll,.pl-modal-content:not(:has(.cd-scroll))' : modal?.type?.startsWith('gear') ? '.ag-modal-scroll,.pl-modal-content:not(:has(.ag-modal-scroll))' : '.pl-modal-content';
@@ -471,8 +526,12 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     modalHost.querySelectorAll('[data-daily-scroll]').forEach(node=>dailyScrollPositions.set(node.dataset.dailyScroll,node.scrollTop));
     modalHost.querySelectorAll('[data-patrol-scroll]').forEach(node=>patrolScrollPositions.set(node.dataset.patrolScroll,node.scrollTop));
     if (!modal) {
+      const returnFocus=modalOpener;
+      processMotion.clear();
+      if(visible&&pendingProcessRecords.length){const records=pendingProcessRecords;pendingProcessRecords=[];showProcessRecords(records);return;}
       uiMotion.modal('');
-      exitModal(modalHost, root);
+      // Remove the dialog in its host: reparenting an exit clone loses the
+      // host-scoped frame/animation styles and leaves a full-size ghost.
       modalHost.innerHTML = '';
       [header,body,nav].forEach(el => { el.inert = false; });
       if (polishedTab()) restoreFocus(root, modalOpener);
@@ -480,6 +539,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if (pendingModalBackgroundRefresh) {
         pendingModalBackgroundRefresh = false;
         render(true);
+        restoreFocus(root,returnFocus);
       }
       if (pendingResearchFocus) {
         const id = pendingResearchFocus; pendingResearchFocus = null;
@@ -487,7 +547,6 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       }
       return;
     }
-    root.querySelectorAll('.surface-exit-copy').forEach(node => node.remove());
     if (polishedTab() && !renderedModalKey && !rewardLayer) modalOpener = modal.opener || captureFocus(root);
     if (modal.type === 'backpack') {
       // Preserve the grid and its focus while a live wallet snapshot updates.
@@ -519,17 +578,31 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     const commandPanel = modal.type==='tasks' ? dailyCenter(snapshot,modal,referenceContext().helpers)
       : modal.type==='activities' ? dailyActivities(snapshot,referenceContext().helpers)
       : lobbyCommandPanel(modal.type, snapshot, referenceContext().helpers, modal.period || 'daily');
-    const battleSupplement = commandPanel || (tab === 'battle' ? battleSupplementalModal(modal.type,snapshot,battleChapter) : null);
-    if (battleSupplement) {
+    const battleSupplement = commandPanel || (tab === 'battle'
+      ? modal.type==='chapterChest'&&snapshot.nativeAcquisition
+        ? chapterRewardsDialog(snapshot)
+        : battleSupplementalModal(modal.type,snapshot,battleChapter)
+      : null);
+    if(modal.type==='processFeedback'){
+      content=processFeedbackDialog(modal,snapshot,referenceContext().helpers);
+    }else if(modal.type==='boxOpening'){
+      content=boxOpeningDialog(modal,referenceContext().helpers);
+    }else if (modal.type==='taskChestPreview') {
+      ({title,content}=taskChestPreview(snapshot,modal,referenceContext().helpers));
+    } else if (battleSupplement) {
       ({title,content} = battleSupplement);
+    } else if (modal.type === 'chapterDetails') {
+      ({title,content}=chapterDetails(snapshot,modal.stageIndex,referenceContext().helpers));
     } else if (modal.type === 'playerInfo') {
       ({title,content}=playerInfoPanel(snapshot,modal,referenceContext().helpers,snapshot.playerName));
-    } else if (modal.type === 'recruitHistory' || modal.type === 'recruitRewards') {
+    } else if (modal.type === 'playerInfoSkill') {
+      ({title,content}=playerInfoSkillModal(snapshot,modal,referenceContext().helpers));
+    } else if (modal.type === 'recruitRewards') {
       ({title,content}=recruitModal(modal.type,cloudNativeRecruitSnapshot(snapshot),referenceContext().helpers,modal.view));
     } else if (modal.type === 'shopBoxResult') {
       const result=shopBoxRewards(modal,snapshot);
       title=modal.history?'上次开箱结果':'获得奖励';
-      content=rewardsHtml(result.rewards,true)+(result.detailsMissing?'<p class="sn-hint">部分旧记录未保存完整装备关联，已保留可还原的开箱内容。</p>':'');
+      content=rewardsHtml(result.rewards,true)+boxResultActions(modal,snapshot,referenceContext().helpers);
     } else if (modal.type.startsWith('shop')) {
       ({ title, content } = shopModal(modal, snapshot, referenceContext().helpers));
     } else if (modal.type.startsWith('research')) {
@@ -556,12 +629,16 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       ({title,content}=cloudNativeWeaponPreview(modal.id,modal.mode,snapshot,referenceContext().helpers));
     } else if (modal.type === 'nativeCollectionOperation') {
       ({title,content}=cloudNativeCollectionOperation(modal,snapshot,referenceContext().helpers));
+    } else if (modal.type === 'aircraftActivation') {
+      title='激活成功';
+      const row=snapshot.replicaCollection.skins.find(row=>row.id===modal.id);
+      content=aircraftActivationDialog(row,modal.receipt,snapshot,referenceContext().helpers);
     } else if (modal.type === 'nativeCollectionDetail') {
       ({title,content}=cloudNativeCollectionDetail(modal.kind,modal.id,snapshot,referenceContext().helpers));
     } else if (modal.type==='nativeStarRewards') {
       ({title,content}=nativeStarRewardsDialog(snapshot));
     } else if (['chapterRewards','chapterCoreRewards'].includes(modal.type)) {
-      ({title,content}=chapterRewardsDialog(snapshot,modal.chapter));
+      ({title,content}=chapterRewardsDialog(snapshot));
     } else if (modal.type==='growthSupplyChoice') {
       ({title,content}=growthSupplyDialog(snapshot,modal,referenceContext().helpers));
     } else if (['nativeRecruitInfo','pilotSupplyBoxes','pilotSupplyTasks'].includes(modal.type)) {
@@ -617,10 +694,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(snapshot.rewardPending||snapshot.rewardBusy) {
       const template=document.createElement('template');template.innerHTML=content;
       const actions=new Set(['claimSignIn','claimTask','claimActivity','claimAchievement','claimStarReward',
-        'flightReward','pilotSupply','growthSupplyOpen','growthSupplyClaim','nativeChapterReward','nativeChapterCoreReward','nativeComposePilotBox','shopOffer','shopConfirm','shopBoxOpen','shopRefreshPreview','shopRefreshConfirm','shopRefreshAdConfirm',
+        'flightReward','pilotSupply','growthSupplyOpen','growthSupplyClaim','nativeChapterReward','nativeChapterCoreReward','nativeComposePilotBox','shopOffer','shopConfirm','shopBoxOpen','shopRefreshPreview',
         'shopClaimBoxReward','claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample']);
       for(const node of template.content.querySelectorAll('[data-action]'))if(actions.has(node.dataset.action)) {
-        node.disabled=true;node.title=snapshot.rewardPending?'已有奖励待保存，请先重试保存':'奖励正在处理，请稍候';
+        node.disabled=true;node.setAttribute('aria-description',snapshot.rewardPending?'已有奖励待保存，请先重试保存':'奖励正在处理，请稍候');
       }
       if(!template.content.querySelector('[data-action="recoverDailyRewards"]')) {
         const notice=document.createElement('div');notice.className='dc-pending';notice.setAttribute('role','status');
@@ -632,13 +709,19 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if(snapshot.pilotSupply&&modal.type==='activities')content=`<div class="pilot-supply-shortcuts"><button class="wc-button" data-action="pilotSupplyBoxes">积分兑换</button></div>`+content;
     content=optimizeUiAssetUrls(flattenDisclosureMarkup(content));
+    const chapterRewardPage = ['chapterRewards','chapterCoreRewards'].includes(modal.type)
+      || (modal.type==='chapterChest'&&Boolean(snapshot.nativeAcquisition));
+    const chapterRewardResources = chapterRewardPage ? lobbyResources(referenceContext()) : '';
     const existingStableModal = stableType
       && renderedModalKey === modalKey && modalHost.querySelector(modal.type==='weapon'?'.pl-modal[data-detail-layout="equipment-reference-psd"]':'.pl-modal');
     if (existingStableModal) {
       const heading=existingStableModal.querySelector('#lobby-modal-title');
       if(heading)heading.textContent=title;
+      const resources=existingStableModal.querySelector('.chapter-reward-page-resources');
+      if(resources)setUiMarkup(resources,chapterRewardResources);
       // Do not replay entry animations, reset focus or reload art on polling.
       if (renderedModalContent === content) {
+        if(modal.type==='taskChestPreview')positionTaskChestPreview(modalHost,modalRoot,modal);
         if (modal.type === 'patrol') models.showAircraft(snapshot.aircraftId, snapshot);
         return;
       }
@@ -660,11 +743,23 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         for (const child of [...scroll.children]) if (child !== patrolScene) child.remove();
         scroll.append(...next.content.querySelector('.pt-scroll').children);
         existingStableModal.querySelector('.pt-footer').replaceWith(next.content.querySelector('.pt-footer'));
-      } else existingStableModal.querySelector('.pl-modal-content').innerHTML = content;
+      } else {
+        const host=existingStableModal.querySelector('.pl-modal-content');
+        if(!previewWeapon||!updateWeaponShowcase(host,content))host.innerHTML=content;
+      }
+    } else if (chapterRewardPage) {
+      modalHost.innerHTML=`<section class="pl-modal chapter-reward-page" data-modal-type="${escape(modal.type)}" role="region" aria-labelledby="lobby-modal-title" tabindex="-1"><header class="chapter-reward-page-header"><h2 id="lobby-modal-title">${escape(title)}</h2><div class="chapter-reward-page-resources">${chapterRewardResources}</div></header><div class="pl-modal-content">${content}</div><footer class="chapter-reward-page-bottom"><button type="button" class="subpage-back chapter-reward-back" data-action="close" aria-label="返回"></button></footer></section>`;
+    } else if (['processFeedback','boxOpening'].includes(modal.type)) {
+      modalHost.innerHTML=content;
+    } else if (modal.type==='aircraftActivation') {
+      modalHost.innerHTML=content;
+    } else if (modal.type==='taskChestPreview') {
+      modalHost.innerHTML=taskChestPreviewDialog(content);
     } else if (isRecruitResult(modal)) {
       modalHost.innerHTML = recruitResultsDialog({title,content,count:modal.rewards.length,pilot:modal.recruitGrid===true},referenceContext().helpers);
     } else if (isCommonReward(modal)) {
       modalHost.innerHTML = commonRewardsDialog({title,content},referenceContext().helpers);
+      if(modal.type==='shopBoxResult'&&!modal.history){modalHost.querySelector('.common-reward-dialog')?.classList.add('pf-box-result');}
     } else if (modal.type==='recruitRewards') {
       modalHost.innerHTML = recruitRewardsDialog({title,content},referenceContext().helpers);
     } else if (modal.type==='weapon') {
@@ -674,11 +769,16 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modalHost.innerHTML = `<div class="pl-modal-backdrop ${paper ? 'lobby-paper-backdrop' : ''}" data-action="dismiss"><section class="pl-modal ${paper ? 'lobby-paper-modal' : ''} ${COMMAND_PANELS.has(modal.type) ? 'lc-modal' : ''} ${modal.type === 'weapon' ? 'weapon-detail-modal' : (modal.type === 'weaponSkill' || modal.type === 'weaponSkillGroup' || modal.type === 'nativeWeaponPreview') ? 'weapon-skill-modal' : ''}" data-psd-popup="${popupLevel(modal.type==='nativeCollectionDetail'?(modal.kind==='skins'?'aircraftInfo':'pilotInfo'):modal.type==='nativeWeaponPreview'?'weaponSkillGroup':modal.type)}" data-modal-type="${escape(modal.type)}" data-modal-kind="${escape(modal.type)}" role="dialog" aria-modal="true" aria-labelledby="lobby-modal-title" tabindex="-1"><div class="pl-modal-heading"><h2 id="lobby-modal-title">${escape(title)}</h2><button type="button" class="pl-close" data-action="close" aria-label="关闭">${icon('close')}</button></div><div class="pl-modal-content">${content}</div></section></div>`;
     }
     dockGearActions(modalHost);
+    if(modal.type==='taskChestPreview')positionTaskChestPreview(modalHost,modalRoot,modal);
     if(rewardLayer)labelRewardLayer(modalHost);
     const patrolAircraftHost = modalHost.querySelector('[data-model-view="patrol"]');
     if (patrolAircraftHost) { models.attach(patrolAircraftHost); models.showAircraft(patrolAircraftHost.dataset.modelAircraft, snapshot); }
     renderedModalContent = content;
     if(modal.type==='recruitRewards' && renderedModalKey!==modalKey) modalHost.querySelector('.pl-modal-content').scrollTop=modal.scroll||0;
+    if(modal.type==='nativeStarRewards' && renderedModalKey!==modalKey){
+      const scroller=modalHost.querySelector('.pl-modal-content'),next=modalHost.querySelector('[data-star-next]');
+      if(scroller&&next)scroller.scrollTop=Math.max(0,next.getBoundingClientRect().top-scroller.getBoundingClientRect().top-60);
+    }
     const closeButton = modalHost.querySelector('.pl-close');
     if (closeButton) closeButton.disabled = modal.type === 'quickPatrol' && Boolean(snapshot.patrol?.adBusy);
     modalHost.querySelectorAll('[data-daily-scroll]').forEach(node=>{node.scrollTop=dailyScrollPositions.get(node.dataset.dailyScroll)||0;});
@@ -686,9 +786,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (polishedTab()) {
       [header,body,nav].forEach(el => { el.inert = true; });
       if (renderedModalKey === modalKey) {const scroller=modalHost.querySelector(modalScrollSelector);if(scroller)scroller.scrollTop=previousScroll;}
-      if (renderedModalKey !== modalKey || !restoreFocus(modalHost, focused)) modalHost.querySelector('.pl-close,.common-reward-dismiss')?.focus({preventScroll:true});
+      if (renderedModalKey !== modalKey || !restoreFocus(modalHost, focused)) modalHost.querySelector('.pl-close,.chapter-reward-back,.common-reward-dismiss,.task-chest-popover,.pf-dismiss,.pf-submit button,.pf-skip')?.focus({preventScroll:true});
     }
     renderedModalKey = modalKey;
+    processMotion.play(modalHost,modal);
     clearNativeTooltips(root);
     stateFeedback.ready();
     stateFeedback.progressionFeedback(snapshot);
@@ -696,6 +797,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     uiMotion.modal(modalKey);
   }
   const stateFeedback = createLobbyStateFeedback(root,key=>bridge.playUiFeedback?.(key));
+  const processMotion=createProcessFeedbackMotion(root,{sound:key=>bridge.playUiFeedback?.(key),finishBox:finishBoxPresentation});
   let pendingResearchFocus = null;
   let pendingScrollRender = false;
   function render(force = false) {
@@ -706,9 +808,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (root.querySelector('.drag-scroll-active')) { pendingScrollRender ||= force; return; }
     force ||= pendingScrollRender; pendingScrollRender = false;
     if (destroyed) return; const next = read(), nextSignature = patrolRenderSignature(next);
+    if(!busy&&snapshot)pendingProcessRecords.push(...collectionFeedbackRecords(snapshot,next,{stars:false}),...progressionFeedbackRecords(snapshot,next));
     refreshPatrolClocks(root,next);
-    if (!force && nextSignature === signature) { snapshot=next;return; }
-    if(isRewardReceiptModal(modal)&&rewardLayer){
+    if (!force && nextSignature === signature) { snapshot=next;if(visible&&!modal&&pendingProcessRecords.length){const records=pendingProcessRecords;pendingProcessRecords=[];showProcessRecords(records);}return; }
+    if(isRetainedModalLayer(modal)&&rewardLayer){
       pendingModalBackgroundRefresh=true;signature=nextSignature;snapshot=next;
       renderModal();return;
     }
@@ -749,6 +852,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     root.classList.toggle('equipment-reference', tab === 'assembly' && !subpage);
     root.classList.toggle('battle-psd-main', tab === 'battle' && !subpage);
     renderHeader(); renderNav(); root.dataset.tab = tab; root.dataset.subpage = subpage;
+    if(tab==='research'&&researchSection==='lab'&&researchUnlockMessage(snapshot.replicaCampaign))researchSection='talent';
     const ctx = referenceContext();
     setUiMarkup(resourceHost,subpage ? lobbyResources(ctx, tab === 'assembly' ? 'equipmentShop' : tab === 'research' ? 'researchShop' : 'shopSection') : '');
     const bodyChanged=setUiMarkup(body, ['weapon','aircraft','pilot'].includes(subpage)
@@ -855,7 +959,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   function closeFleetOperation() {
     if(modal?.type!=='fleetOperation'||modal.returnTo)return false;
     modal=null;render(true);
-    (body.querySelector('.fc-hero-actions button:not(:disabled)')||body.querySelector('.fc-info'))?.focus({preventScroll:true});
+    (body.querySelector('.fc-hero-actions button:not(:disabled)')||body.querySelector('.fc-item[aria-pressed="true"]')||body.querySelector('.wc-back'))?.focus({preventScroll:true});
     return true;
   }
   function openGearWorkshop(id=null,opener=document.activeElement){
@@ -872,7 +976,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (equipmentPickingSlot) { restoreEquipmentContext(equipmentPickContext); equipmentPickingSlot=false; equipmentPickContext=null; }
     nativeAppearanceOnly = false;
     tab = 'assembly'; subpage = kind; modal = null; catalogSkillTab = false; catalogFilter = 'all';
-    if(fleetUi[kind])Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false});
+    if(fleetUi[kind])Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});
     if (kind === 'aircraft') browseAircraft = snapshot.aircraftId;
     if (kind === 'pilot') browsePilot = snapshot.pilotId;
     if (kind === 'weapon') selectedWeapon ||= weaponFor(snapshot.loadout[selectedSlot])?.id || snapshot.weapons.find(w=>w.owned)?.id;
@@ -896,13 +1000,21 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     modalHost.querySelectorAll('[data-action="bagQuantity"]').forEach(node=>{
       node.disabled=blocked||max<1||valid&&(node.dataset.max?count===max:Number(node.dataset.step)<0?count<=1:count>=max);
     });
-    modalHost.querySelector('[data-bag-quantity-hint]').textContent=valid?`本次使用数量 ${count}，每批最多 ${ITEM_USE_BATCH_LIMIT}`:`请输入 1～${max} 的整数`;
+    modalHost.querySelector('[data-bag-quantity-hint]').textContent=valid?'':`请输入 1～${max} 的整数`;
   }
   root.addEventListener('input', event => {
     if(modal?.type==='backpack'&&event.target.matches('[data-bag-quantity]')&&!busy){
       modal.bagCount=event.target.value;updateBagQuantity();return;
     }
     if (modal?.type==='playerInfo' && event.target.matches('[data-player-name]')) modal.nameDraft=event.target.value;
+  });
+  root.addEventListener('pointerdown', event => {
+    const select=event.target.closest?.('[data-gear-select]');
+    if(select){gearSelectInput='pointer';select.dataset.gearInput=gearSelectInput;}
+  });
+  root.addEventListener('focusin', event => {
+    const select=event.target.closest?.('[data-gear-select]');
+    if(select)select.dataset.gearInput=gearSelectInput;
   });
   root.addEventListener('change', event => {
 
@@ -971,15 +1083,16 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       }
       return;
     }
-    if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
-    if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{}),opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(['nativeCollectionDetail','nativeSkillPreview'].includes(modal?.type)?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
     if(action==='nativeWeaponSkillBrowse'){
+      const previousSlot=weaponSkillSlot;
       selectedWeapon=id;weaponSkillSlot=-1;
-      render(true);return;
+      render(true);if(previousSlot>=0)body.querySelector(`.wg-skill-slot[data-slot="${previousSlot}"]`)?.focus({preventScroll:true});return;
     }
     if(action==='nativeWeaponSkillSlot'){
       const slot=Number(target.dataset.slot);
-      if(subpage==='weapon'&&catalogSkillTab&&[0,1].includes(slot)){weaponSkillSlot=slot;selectedWeapon=id;render(true);}
+      if(subpage==='weapon'&&[0,1].includes(slot)&&snapshot.replicaCollection?.guns.some(row=>row.id===Number(id))){weaponSkillSlot=catalogSkillTab&&weaponSkillSlot===slot&&String(selectedWeapon)===String(id)?-1:slot;catalogSkillTab=true;selectedWeapon=id;render(true);}
       return;
     }
     if(action==='nativeWeaponSkillEquip'){
@@ -987,6 +1100,11 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(subpage!=='weapon'||!catalogSkillTab||![0,1].includes(slot))return;
       if(Number(id)&&!snapshot.replicaCollection?.guns.find(row=>row.id===Number(id))?.owned){toast('技能未激活');return;}
       await act('replicaCollection',{kind:'guns',action:'slot',id:Number(id),slot,weaponType:Number(target.dataset.weaponType),expectedRevision:Number(target.dataset.revision)});return;
+    }
+    if(action==='fleetSkillChoose'){
+      const group={pilot:'pilots',aircraft:'skins'}[subpage],state=fleetUi[subpage];
+      const row=group&&snapshot.replicaCollection?.[group]?.find(row=>row.id===Number(id));
+      if(state&&row?.owned&&row.stage.skills.length){state.selectedSkillId=String(row.id);render(true);body.querySelector(`.pcs-choice[data-id="${row.id}"]`)?.focus({preventScroll:true});}return;
     }
     if(action==='nativeSlotPick'){const state=fleetUi[subpage];if(state){state.selectedSkillSlot=Number(target.dataset.slot);catalogSkillTab=true;render(true);}return;}
     if(action==='nativeEquipmentBoxes'){modal={type:'nativeEquipmentBoxes',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
@@ -1031,13 +1149,15 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (action === 'nativeAppearance') { modal=null; nativeAppearanceOnly = target.dataset.mode === 'appearance'; render(true); return; }
     if (action === 'nativeOperation') {
       const operation=target.dataset.operation,slot=target.dataset.slot===undefined?undefined:Number(target.dataset.slot);
+      const origin=modal?{...modal}:null;
       const preview=modal?.type==='nativeCollectionOperation'?{...modal}:null;
-      const previousStars=snapshot.replicaCollection[target.dataset.kind]?.find(row=>row.id===Number(id))?.star;
+      const kind=target.dataset.kind,before=snapshot.replicaCollection[kind]?.find(row=>row.id===Number(id)),previousPower=snapshot.power;
+      const previousStars=before?.star,opener=preview?.opener||captureFocus(root,target);
       const result=await act('replicaCollection', { action: operation, kind: target.dataset.kind,
         id: Number(id), slot, expectedRevision: Number(target.dataset.revision) });
-      if(preview){modal={...preview,result:result?.ok?{previousStars}:undefined,error:result?.ok?'':result?.message||'操作未完成'};renderModal();}
+      if(!showProcessRecords(result?.uiFeedbackRecords,preview?.returnTo||origin)&&preview){modal={...preview,result:result?.ok?{previousStars}:undefined,error:result?.ok?'':result?.message||'操作未完成'};renderModal();}
       if(result?.ok&&operation==='slot'&&fleetUi[subpage]){
-        Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null});
+        Object.assign(fleetUi[subpage],{selectedSkillSlot:slot,pendingSkillId:null,selectedSkillId:Number(id)?String(id):null});
         render(true);
         body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});
       }
@@ -1062,7 +1182,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       if(action==='workshopGearCompose'){
         if(!draft.ready)return;
         const result=await act('gearMerge',{id:gearWorkshop.targetId,materialIds:[...draft.materialIds],tokens:draft.tokens,expectedRevision:gearWorkshop.revision});
-        if(result?.ok){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);render(true);}return;
+        if(result?.ok){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);if(!showProcessRecords(result.uiFeedbackRecords))render(true);}return;
       }
       return;
     }
@@ -1102,16 +1222,28 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         materialIds:current?.materialIds||[],tokens:current?.tokens||0,count:Number(target.dataset.count)||1});
       if(!result?.ok){if(modal){modal.error=result?.message;renderModal();}return;}
       if(operation==='gearEquip'||operation==='gearUnequip'){if(!returnToParentModal()){modal=null;render(true);}return;}
-      if(operation==='gearBatch'&&subpage==='workshop'&&workshopKind==='gear'){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);modal=null;render(true);return;}
+      if(operation==='gearBatch'&&subpage==='workshop'&&workshopKind==='gear'){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);modal=null;if(!showProcessRecords(result.uiFeedbackRecords))render(true);return;}
+      if(['gearMerge','gearBatch'].includes(operation)&&result.uiFeedbackRecords?.length){showProcessRecords(result.uiFeedbackRecords,current?.returnTo);return;}
       if(operation==='gearSupply')modal={...current,type:'gearSources',drawn:result.gearResult.drawn.map(item=>item.uid),revision:snapshot.equipment.revision};
       else if(operation==='gearBatch')modal={type:'gearMergeList',steps:result.gearResult.steps.length,revision:snapshot.equipment.revision};
-      else modal={type:'gearDetail',id:itemId,detailOrigin:current?.detailOrigin||'warehouse',revision:snapshot.equipment.revision,result:result.message,
+      else modal={type:'gearDetail',id:itemId,detailOrigin:current?.detailOrigin||'warehouse',revision:snapshot.equipment.revision,
         ...(current?.type==='gearDetail'&&current.returnTo?{returnTo:current.returnTo}:current?.returnTo?.type==='gearMergeList'?{returnTo:current.returnTo}:{})};
       renderModal();return;
     }
     if (action === 'portraitFeedback') { portraitPlayer.feedback(target.dataset.characterPortrait); return; }
-    if (action === 'dismiss') { if (event.target === target && !closeBackpackDetail() && !returnToParentModal() && !closeFleetOperation()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
-    if (action === 'close') { if(closeFleetOperation())return; if (!closeBackpackDetail() && !returnToParentModal()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
+    if(action==='processSkipBox'){finishBoxPresentation();return;}
+    if(action==='processFeatureGo'){
+      const returnTo=modal?.returnTo;
+      advanceProcessFeedback();
+      modal={type:'patrol',...(returnTo?{returnTo}:{})};renderModal();return;
+    }
+    if(action==='processBoxAgain'){
+      const pool=target.dataset.pool,count=Number(target.dataset.count),box=snapshot.nativeAcquisition?.equipmentBoxes?.find(row=>row.id===(pool==='advanced'?3:4));
+      const quote=box?.quotes.find(row=>row.count===count);if(!quote?.canDraw)return;
+      await openShopBox({pool,count,revision:snapshot.equipment.revision,inventoryRevision:snapshot.nativeAcquisition.revision},quote.payment==='free');return;
+    }
+    if (action === 'dismiss') { if (event.target === target && !advanceProcessFeedback() && !closeBackpackDetail() && !returnToParentModal() && !closeFleetOperation()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
+    if (action === 'close') { if(advanceProcessFeedback()||closeFleetOperation())return; if (!closeBackpackDetail() && !returnToParentModal()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
     if (modal?.type === 'backpack') {
       if(action==='recoverDailyRewards'){await act(action);return;}
       if(action==='bagQuantity'){
@@ -1132,7 +1264,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         const result=await act('backpackUse',{id:item.nativeId,count,targetId,...(target.dataset.useOperation?{action:target.dataset.useOperation}:{}),
           expectedRevision:Number(target.dataset.revision),expectedGearRevision:Number(target.dataset.gearRevision)});
         if(result?.ok&&rule?.kind==='equipmentKey') {
-          modal={type:'shopBoxResult',drawn:result.gearResult.drawn.map(row=>row.uid),receipt:result.gearResult.receipt,pilots:result.gearResult.pilotRewards||[],weapons:result.gearResult.weaponRewards||[],aircraft:result.gearResult.aircraftRewards||[],returnTo:origin};renderModal();
+          presentBoxReceipt(result,rule.pool,count,origin);
         }
         return;
       }
@@ -1208,7 +1340,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if (action === 'equipmentWeapons') { openCatalog('weapon');return; }
     if (action === 'recruitRoster') {modal={type:'recruitRewards',view:'roster'};renderModal();return;}
-    if (action === 'recruitHistory' || action === 'recruitRewards') {modal={type:action};renderModal();return;}
+    if (action === 'recruitRewards') {modal={type:action};renderModal();return;}
     if(action==='recruitRewardDetail' && modal?.type==='recruitRewards') {
       const parent={...modal,scroll:modalHost.querySelector('.pl-modal-content').scrollTop,childOpener:captureFocus(modalHost,target)};
       if(target.dataset.kind==='weapon') {
@@ -1216,7 +1348,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
         openWeaponDetails(id,target,true);modal.returnTo=parent;
       }else {
         const pilot=cloudNativeRecruitSnapshot(snapshot).pilots.find(p=>p.id===id);
-        modal=pilot?.nativeId?{type:'nativeCollectionDetail',kind:'pilots',id:pilot.nativeId,returnTo:parent}:{type:'pilotInfo',id,returnTo:parent};
+        modal=pilot?.nativeId?{type:'nativeSkillPreview',kind:'pilots',id:pilot.nativeId,returnTo:parent}:{type:'pilotInfo',id,returnTo:parent};
         renderModal();
       }
       return;
@@ -1276,6 +1408,18 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       }
       return;
     }
+    if(action==='taskChest') {
+      if(modal?.type!=='tasks')return;
+      const period=modal.period||'daily',item=taskChestModel(snapshot,period,id);
+      if(target.dataset.period!==period||!item)return;
+      if(item.canClaim){
+        const payload={...item.claim.payload};
+        if(target.dataset.revision!=null)payload.expectedRevision=Number(target.dataset.revision);
+        await act(item.claim.action,payload);return;
+      }
+      modal={type:'taskChestPreview',period,id,returnTo:{...modal,childOpener:captureFocus(modalHost,target),rewardReturnScrollState:captureModalScroll(modalHost)}};
+      renderModal();return;
+    }
     if (action === 'dailyMilestone') {
       if(modal?.type!=='tasks' || snapshot.rewardPending)return;
       const period=modal.period||'daily',item=snapshot.activity?.[period]?.items.find(row=>row.id===id);
@@ -1290,6 +1434,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (action === 'dailyGo') {
       const destination=target.dataset.destination;
       if(destination==='signin'){modal.period='signin';renderModal();return;}
+      if(destination==='shopBoxes'){shopSection='boxes';switchTab('shop');return;}
+      if(destination==='patrol'){modal={type:'patrol',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
       if(destination==='chapters'){modal={type:'chapters',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
       if(destination==='equipment'){switchTab('assembly');return;}
       if(['shop','boxes'].includes(destination)){switchTab('shop');return;}
@@ -1308,7 +1454,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if(action==='shopBoxConfirm'||action==='shopBoxRates'){
       const review={type:action,pool:target.dataset.pool==='advanced'?'advanced':'basic',count:Number(target.dataset.count)===10?10:1,revision:snapshot.equipment.revision,inventoryRevision:snapshot.nativeAcquisition?.revision};
-      if(action==='shopBoxConfirm'&&review.count===1&&target.dataset.payment==='free'&&snapshot.equipment?.native){await openShopBox(review,true);return;}
+      if(action==='shopBoxConfirm'&&snapshot.equipment?.native){
+        const box=snapshot.nativeAcquisition?.equipmentBoxes.find(box=>box.id===(review.pool==='advanced'?3:4));
+        const quote=box?.quotes.find(quote=>quote.count===review.count);
+        if(quote?.canDraw&&(quote.payment==='free'||quote.payment==='key')){
+          await openShopBox(review,quote.payment==='free');return;
+        }
+      }
       modal=review;renderModal();return;
     }
     if(action==='shopBoxOpen'){
@@ -1316,11 +1468,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if(action==='shopClaimBoxReward'){await act('gearClaimBasicReward',{expectedRevision:snapshot.equipment.revision,expectedInventoryRevision:snapshot.nativeAcquisition.revision});return;}
     if(action==='shopRefreshPreview'){
-      if(snapshot.shop.refresh.cost){modal={type:'shopRefreshConfirm',token:snapshot.shop.token};renderModal();}
-      else await act('shopRefresh',{token:snapshot.shop.token});return;
+      await act('shopRefresh',{token:snapshot.shop.token,...(snapshot.shop.refresh.freeRemaining>0?{}:{refreshWithAd:true})});return;
     }
-    if(action==='shopRefreshConfirm'){const token=modal?.token;if(token){modal=null;await act('shopRefresh',{token});}return;}
-    if(action==='shopRefreshAdConfirm'){const token=modal?.token;if(token){modal=null;await act('shopRefresh',{token,refreshWithAd:true});}return;}
     if(action==='shopQuantity'){
       const offer=snapshot.shop.items.find(item=>item.id===modal?.id);if(!offer)return;
       const max=shopPurchaseMax(offer,snapshot.wallet),next=target.dataset.step==='max'?max:(modal.quantity||1)+Number(target.dataset.step);
@@ -1342,7 +1491,23 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       return;
     }
     if (action === 'shopConfirm') {const review=modal,token=review?.type==='shopConfirm'?review.token:null;if(token){const result=await act('shopBuy',{id,token,quantity:review.quantity||1});if(!result?.ok&&modal?.type==='shopConfirm')renderModal();}return;}
-    if (action === 'playerInfo') {modal={type:'playerInfo',profileTab:'equipment'};renderModal();return;}
+    if (action === 'playerInfo') {modal={type:'playerInfo',profilePage:'card',profileTab:'pilot'};renderModal();return;}
+    if(action==='playerInfoPage'&&modal?.type==='playerInfo'){
+      if(!PLAYER_INFO_PAGES.some(item=>item.id===target.dataset.page))return;
+      modal.profilePage=target.dataset.page;modal.appearanceError='';renderModal();
+      modalHost.querySelector(`.pi-pages [data-page="${modal.profilePage}"]`)?.focus({preventScroll:true});return;
+    }
+    if(action==='playerAppearanceSelect'&&modal?.type==='playerInfo'){
+      const kind=target.dataset.kind;if(!['avatar','frame'].includes(kind))return;
+      modal.appearanceSelection={...modal.appearanceSelection,[kind]:target.dataset.id};modal.appearanceError='';renderModal();
+      modalHost.querySelector(`.pi-appearance-item[data-id="${target.dataset.id}"]`)?.focus({preventScroll:true});return;
+    }
+    if(action==='playerAppearanceSave'&&modal?.type==='playerInfo'){
+      const result=await act('playerAppearance',{kind:target.dataset.kind,id:target.dataset.id,expectedRevision:Number(target.dataset.revision)});
+      if(result?.ok){modal.appearanceError='';pendingModalBackgroundRefresh=true;}
+      else modal.appearanceError=result?.message||'外观未保存，请重试';
+      renderModal();modalHost.querySelector(`.pi-appearance-item[data-id="${target.dataset.id}"]`)?.focus({preventScroll:true});return;
+    }
     if (action === 'playerRename' && modal?.type === 'playerInfo') {
       modal.editingName=true;modal.nameDraft=snapshot.playerName;modal.nameError='';renderModal();
       const input=modalHost.querySelector('[data-player-name]');input?.focus();input?.select();return;
@@ -1362,6 +1527,18 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modal.profileTab=target.dataset.tab;renderModal();
       modalHost.querySelector('.pl-modal-content')?.scrollTo(0,0);
       modalHost.querySelector(`.pi-tabs [data-tab="${modal.profileTab}"]`)?.focus({preventScroll:true});return;
+    }
+    if(action==='playerInfoPreview'&&modal?.type==='playerInfo'){
+      const kind=target.dataset.kind;
+      if(!playerInfoReferenceItems(snapshot,kind).some(row=>String(row.id)===id))return;
+      modal.profilePreview={...modal.profilePreview,[kind]:id};renderModal();
+      modalHost.querySelector(`.pi-reference-card[data-id="${id}"]`)?.focus({preventScroll:true});return;
+    }
+    if(action==='playerInfoSkill'&&modal?.type==='playerInfo'){
+      const kind=target.dataset.kind;
+      const skill=playerInfoReferenceSkills(snapshot,kind,modal.profilePreview?.[kind])[Number(target.dataset.index)];
+      if(!skill)return;
+      modal={type:'playerInfoSkill',skill,returnTo:{...modal,childOpener:captureFocus(modalHost,target)},opener:captureFocus(modalHost,target)};renderModal();return;
     }
     if(action==='playerInfoManage'&&modal?.type==='playerInfo'){
       const kind=target.dataset.kind;
@@ -1383,25 +1560,22 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modal={type:'weaponSkill',id,skillKey:target.dataset.skill,opener:captureFocus(root,target)}; renderModal(); return;
     }
     if (action === 'catalogSelect') { if (subpage === 'weapon') selectedWeapon = id; else if (subpage === 'aircraft') browseAircraft = id; else browsePilot = id; render(true); return; }
-    if (action === 'catalogMode') { weaponSkillSlot=-1;catalogSkillTab = target.dataset.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,filterOpen:false});render(true); return; }
-    if(action==='catalogFilter'&&fleetUi[subpage]){fleetUi[subpage].filterOpen=!fleetUi[subpage].filterOpen;render(true);if(fleetUi[subpage].filterOpen)body.querySelector('.fc-filter-options [aria-checked="true"]')?.focus({preventScroll:true});return;}
-    if(action==='fleetFilterClose'){if(fleetUi[subpage])fleetUi[subpage].filterOpen=false;render(true);body.querySelector('.fc-filter')?.focus({preventScroll:true});return;}
-    if(action==='fleetFilterSet') {catalogFilter=target.dataset.filter;fleetUi[subpage].filterOpen=false;const scroll=body.querySelector('[data-catalog-scroll]');if(scroll)scroll.scrollTop=0;catalogScrollPositions.set(`${subpage}:list`,0);render(true);body.querySelector('.fc-filter')?.focus({preventScroll:true});return;}
-    if(action==='fleetSkillCancel'){const slot=fleetUi[subpage]?.selectedSkillSlot;if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot??0}"]`)?.focus({preventScroll:true});return;}
+    if (action === 'catalogMode') { weaponSkillSlot=-1;catalogSkillTab = target.dataset.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true); return; }
+    if(action==='fleetSkillCancel'){const slot=fleetUi[subpage]?.selectedSkillSlot;if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot??0}"]`)?.focus({preventScroll:true});return;}
     if(action==='fleetSkillSlot') {
       const kind=target.dataset.kind,slot=Number(target.dataset.slot),ui=fleetUi[kind];if(!ui)return;
       if(ui.pendingSkillId){const result=await act('fleetSkillEquip',{kind,id:ui.pendingSkillId,slot,expectedRevision:snapshot.fleet?.revision});if(result?.ok)Object.assign(ui,{pendingSkillId:null,selectedSkillSlot:null});}
       else ui.selectedSkillSlot=catalogSkillTab&&ui.selectedSkillSlot===slot?null:slot;
-      catalogSkillTab=true;ui.filterOpen=false;render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});return;
+      catalogSkillTab=true;render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});return;
     }
     if(action==='fleetSkillEquip') {
       const kind=target.dataset.kind,ui=fleetUi[kind],slots=snapshot.fleet?.[kind]?.slots||[];if(!ui)return;
       const slot=ui.selectedSkillSlot??slots.indexOf(null);
       if(slot<0){ui.pendingSkillId=id;render(true);body.querySelector('.fc-skill-group button')?.focus({preventScroll:true});return;}
       const result=await act('fleetSkillEquip',{kind,id,slot,expectedRevision:Number(target.dataset.revision)});
-      if(result?.ok){Object.assign(ui,{selectedSkillSlot:null,pendingSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;
+      if(result?.ok){Object.assign(ui,{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;
     }
-    if(action==='fleetSkillRemove') {const kind=target.dataset.kind,slot=Number(target.dataset.slot),result=await act('fleetSkillRemove',{kind,id,slot,expectedRevision:Number(target.dataset.revision)});if(result?.ok){Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;}
+    if(action==='fleetSkillRemove') {const kind=target.dataset.kind,slot=Number(target.dataset.slot),result=await act('fleetSkillRemove',{kind,id,slot,expectedRevision:Number(target.dataset.revision)});if(result?.ok){Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;}
     if(action==='fleetSkillPreview') {modal={type:'fleetSkill',kind:target.dataset.kind,id,opener:captureFocus(root,target)};renderModal();return;}
     if(action==='fleetUnlock'||action==='fleetStar') {
       const parent=modal?{...modal,childOpener:captureFocus(modalHost,target)}:null;
@@ -1410,6 +1584,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if(action==='fleetConfirm') {
       if(modal?.type!=='fleetOperation')return;
       const operation={...modal},result=await act(modal.operation==='activate'?'fleetActivate':'fleetStarUp',{kind:modal.kind,id:modal.id,expectedRevision:Number(target.dataset.revision)});
+      if(showProcessRecords(result?.uiFeedbackRecords,operation.returnTo))return;
       modal={...operation,result:result?.ok?result:undefined,error:result?.ok?'':result?.message||'操作未完成'};renderModal();return;
     }
     if(action==='fleetAcquire') {
@@ -1429,7 +1604,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (action === 'openWorkshop') { if(!id){openGearWorkshop(null,target);return;}workshopKind='weapon';workshopMode=target.dataset.mode==='quality'?'quality':'level';catalogWorkshopReturn=subpage==='weapon'?{skillTab:catalogSkillTab,weaponId:selectedWeapon,opener:captureFocus(root,target)}:null;if(tab==='assembly'&&!subpage)equipmentReturnFocus=captureFocus(root,target);if(equipmentPickingSlot){restoreEquipmentContext(equipmentPickContext);equipmentPickingSlot=false;equipmentPickContext=null;}tab = 'assembly'; subpage = 'workshop'; workshopId = id || null; workshopRevealSelection=Boolean(id); workshopFilter = 'all'; modal = null; render(true); return; }
     if (action === 'workshopSelect') { workshopId = id; render(true); return; }
     if (action === 'workshopMode') { workshopMode = target.dataset.mode === 'quality' ? 'quality' : 'level'; workshopFilter = 'all'; render(true); body.querySelector(`.ws-modes [data-mode="${workshopMode}"]`)?.focus({preventScroll:true}); return; }
-    if (action === 'workshopChoose') { body.querySelector('.ref-warehouse')?.scrollTo({top:0,behavior:'smooth'}); body.querySelector('.ref-warehouse .eq-card')?.focus({preventScroll:true}); return; }
+    if (action === 'workshopChoose') { body.querySelector('.ref-warehouse')?.scrollTo({top:0,behavior:'smooth'}); body.querySelector('.ref-warehouse :is(.eq-card,.ag-card)')?.focus({preventScroll:true}); return; }
     if (action === 'workshopFilter') { modal={type:'workshopFilter',opener:captureFocus(root,target)};renderModal();return; }
     if (action === 'workshopFilterSelect') { if(!(workshopKind==='gear'?['all','1','2','3','4','5']:WORKSHOP_FILTERS).includes(target.dataset.filter))return;workshopFilter=target.dataset.filter;modal=null;render(true);return; }
     if (action === 'workshopSynthesize') { await act('synthesizeWeapon', {id,expectedQualityRank:Number(target.dataset.rank)}); return; }
@@ -1437,6 +1612,9 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     if (action === 'workshopConfirmBatch') { const token = modal?.plan?.token; if (token) { modal = null; await act('synthesizeAll',{token}); } return; }
     if (action === 'patrolQuick' && modal?.type === 'patrol') {modal={type:'quickPatrol',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
     if (action === 'patrol') {const lock=patrolUnlockMessage();if(lock){toast(lock);return;}patrolScrollPositions.clear();modal={type:'patrol',...(['activities','nativeLab'].includes(modal?.type)?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();return;}
+    if (action==='stamina'&&['chapterChest','chapterRewards','chapterCoreRewards'].includes(modal?.type)) {
+      modal={type:'stamina',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;
+    }
     if (['stages', 'chapters', 'formation', 'stamina', 'backpack'].includes(action)) { modal = { type: action }; renderModal(); return; }
     if (action === 'browsePilot') { browsePilot = id; render(true); return; }
     if (action === 'browseAircraft') { browseAircraft = id; render(true); return; }
@@ -1468,6 +1646,14 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     }
     if (action === 'equipWeapon') { const w = weaponFor(id); if (!w?.owned) { switchTab('shop'); return; } const slot = modal?.requireSlotSelection?modal.targetSlot:modal?.targetSlot || selectedSlot;if(!slot){toast('选择要替换的位置');return;} const result = await act('equipWeapon', { id, weaponId: id, slot, slotId: slot,expectedToken:modal?.loadoutToken??snapshot.loadoutToken }); if(result?.ok){closeWeaponDetails(slot);actionFeedback.equip(slot);}return; }
     if (action === 'unequipWeapon') { const slot=target.dataset.slot;const result=await act('equipWeapon', { id:null,weaponId:null,slot,slotId:slot,expectedToken:modal?.loadoutToken??snapshot.loadoutToken });if(result?.ok)closeWeaponDetails(slot);return; }
+    if (action === 'chapterDetails') {modal={type:'chapterDetails',stageIndex:battleChapterIndex(snapshot,battleChapter)};render(true);return;}
+    if (action === 'chapterDetailsStart') {
+      const index=modal?.type==='chapterDetails'?modal.stageIndex:null;
+      if(index===null||snapshot.stages[index]?.unlocked===false)return;
+      const result=await act('start',{index,stageIndex:index});
+      if(result?.ok){modal=null;render(true);if(!result.started)bridge.startGame?.();}
+      return;
+    }
     if (action === 'stage') { const index=Number(target.dataset.index); await act('selectStage', { index, stageIndex: index }); battleChapter=index; modal = null; render(true); return; }
     if (action === 'upgrade' && snapshot.replicaCollection) {
       modal=null;subpage=target.dataset.kind==='aircraft'?'aircraft':'weapon';catalogSkillTab=false;nativeAppearanceOnly=false;render(true);return;
@@ -1485,6 +1671,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
   });
   function keydown(event) {
     if (!visible) return;
+    gearSelectInput='keyboard';
+    if(event.target.matches?.('[data-gear-select]'))event.target.dataset.gearInput=gearSelectInput;
     if(modal?.type==='playerInfo'&&modal.editingName&&event.target.matches?.('[data-player-name]')&&!event.isComposing&&event.key==='Enter'){
       event.preventDefault();modalHost.querySelector('[data-action="playerRenameSave"]')?.click();return;
     }
@@ -1495,6 +1683,11 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       event.preventDefault();const current=PLAYER_INFO_TABS.findIndex(item=>item.id===(modal.profileTab||'equipment'));
       const index=event.key==='Home'?0:event.key==='End'?PLAYER_INFO_TABS.length-1:(current+(event.key==='ArrowLeft'?-1:1)+PLAYER_INFO_TABS.length)%PLAYER_INFO_TABS.length;
       modalHost.querySelector(`.pi-tabs [data-tab="${PLAYER_INFO_TABS[index].id}"]`)?.click();return;
+    }
+    if(modal?.type==='playerInfo'&&event.target.closest?.('.pi-pages')&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
+      event.preventDefault();const current=PLAYER_INFO_PAGES.findIndex(item=>item.id===(modal.profilePage||'card'));
+      const index=event.key==='Home'?0:event.key==='End'?PLAYER_INFO_PAGES.length-1:(current+(event.key==='ArrowLeft'?-1:1)+PLAYER_INFO_PAGES.length)%PLAYER_INFO_PAGES.length;
+      modalHost.querySelector(`.pi-pages [data-page="${PLAYER_INFO_PAGES[index].id}"]`)?.click();return;
     }
     if (event.target.closest?.('[data-action="portraitFeedback"]') && ['Enter',' '].includes(event.key)) {
       event.preventDefault();event.target.closest('[data-action="portraitFeedback"]').click();return;
@@ -1512,15 +1705,17 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
       modalHost.querySelector(`.bag-tab[data-tab="${BACKPACK_TABS[index].id}"]`)?.click();
       return;
     }
-    const fleetState=fleetUi[subpage];
-    if(fleetState?.filterOpen&&['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
-      const options=[...body.querySelectorAll('.fc-filter-options button')],current=options.indexOf(document.activeElement);
-      if(options.length){event.preventDefault();const step=event.key==='ArrowDown'?2:event.key==='ArrowUp'?-2:event.key==='ArrowLeft'?-1:1;const next=event.key==='Home'?0:event.key==='End'?options.length-1:(current+step+options.length)%options.length;options[next]?.focus();}return;
+    if(!modal&&tab==='research'&&!subpage&&event.target.closest?.('.research-tabs')&&['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){
+      event.preventDefault();const tabs=[...body.querySelectorAll('.research-tabs>[role="tab"]')],current=tabs.findIndex(node=>node.getAttribute('aria-selected')==='true');
+      const index=event.key==='Home'?0:event.key==='End'?tabs.length-1:(current+(event.key==='ArrowLeft'?-1:1)+tabs.length)%tabs.length;
+      tabs[index]?.click();return;
     }
+    const fleetState=fleetUi[subpage];
     if (event.key !== 'Escape') return;
-    if(!modal&&fleetState?.filterOpen){fleetState.filterOpen=false;render(true);body.querySelector('.fc-filter')?.focus({preventScroll:true});return;}
-    if(!modal&&fleetState&&(fleetState.selectedSkillSlot!=null||fleetState.pendingSkillId)){const slot=fleetState.selectedSkillSlot;Object.assign(fleetState,{selectedSkillSlot:null,pendingSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot??0}"]`)?.focus({preventScroll:true});return;}
+    if(!modal&&subpage==='weapon'&&catalogSkillTab&&weaponSkillSlot>=0){const slot=weaponSkillSlot;weaponSkillSlot=-1;render(true);body.querySelector(`.wg-skill-slot[data-slot="${slot}"]`)?.focus({preventScroll:true});return;}
+    if(!modal&&fleetState&&(fleetState.selectedSkillSlot!=null||fleetState.pendingSkillId)){const slot=fleetState.selectedSkillSlot;Object.assign(fleetState,{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot??0}"]`)?.focus({preventScroll:true});return;}
     if (busy && polishedTab()) return;
+    if(advanceProcessFeedback())return;
     if (closeBackpackDetail()) return;
     if(modal?.type==='tasks' && modal.milestoneId){delete modal.milestoneId;renderModal();return;}
     if(returnToParentModal())return;
@@ -1531,17 +1726,19 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system } 
     else if (equipmentPickingSlot) cancelEquipmentPicking();
   }
   window.addEventListener('keydown', keydown);
+  const chestPreviewResize=new ResizeObserver(()=>{if(modal?.type==='taskChestPreview')positionTaskChestPreview(modalHost,modalRoot,modal);});
+  chestPreviewResize.observe(root);
   render(true);
   return {
     root,
     get tab() { return tab; }, get snapshot() { return snapshot; },
     get state() { return { tab, subpage, catalogSkillTab, catalogFilter, visible, modal: modal?.type || null, selectedSlot, selectedWeapon, pool, growthKind, workshopId }; },
     switchTab, render() { render(true); }, refresh() { render(true); },
-    setVisible(value) { visible = Boolean(value); root.hidden = !visible; root.setAttribute('aria-hidden', String(!visible)); portraitPlayer.setVisible(visible&&!modal); models.update(0, visible); if (!visible) { onboarding.hide(); actionFeedback.clear(); stateFeedback.clear(); uiMotion.clear(); } if (visible) render(); },
+    setVisible(value) { visible = Boolean(value); root.hidden = !visible; root.setAttribute('aria-hidden', String(!visible)); portraitPlayer.setVisible(visible&&!modal); models.update(0, visible); if (!visible) { onboarding.hide(); actionFeedback.clear(); stateFeedback.clear(); processMotion.clear(); uiMotion.clear(); } if (visible) render(); },
     update(ticker) { if (destroyed || !visible || document.hidden) return; performanceMonitor.frame('lobby'); return performanceMonitor.measure('ui',()=>{const dt = typeof ticker === 'number' ? ticker : (ticker?.deltaMS || 16.67) / 1000; elapsed += dt; onboarding.tick(dt);
       // Retain the last aircraft frame while its whole hangar is being scrolled.
       if (!visible || !root.querySelector('.drag-scroll-active .pl-model-canvas')) models.update(dt, visible && (!modal || Boolean(modalHost.querySelector('[data-model-aircraft],.pl-model-canvas'))));
       if (elapsed >= 1) { elapsed %= 1; render(); } }); },
-    destroy() { destroyed = true; onboarding.destroy(); actionFeedback.destroy(); stateFeedback.clear(); uiMotion.destroy(); clearTimeout(toastTimer); clearTimeout(debugClearTimer); window.removeEventListener('keydown', keydown); releaseHoloCards(); releaseEquipmentChoices(); portraitPlayer.destroy(); models.destroy(); root.remove(); },
+    destroy() { itemDescriptions.destroy(); if(bridge.showItemDescription===itemDescriptions.open)delete bridge.showItemDescription; destroyed = true; chestPreviewResize.disconnect(); onboarding.destroy(); actionFeedback.destroy(); stateFeedback.clear(); processMotion.destroy(); uiMotion.destroy(); clearTimeout(toastTimer); clearTimeout(debugClearTimer); window.removeEventListener('keydown', keydown); releaseHoloCards(); releaseEquipmentChoices(); portraitPlayer.destroy(); models.destroy(); root.remove(); },
   };
 }

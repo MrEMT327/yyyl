@@ -33,7 +33,8 @@ export function pilotRecruitResults(rewards,pilots,{number,renderReward,grid=fal
       return `<div class="rr-result-slot is-material" style="--reveal-delay:${Math.min(index,9)*65}ms">${materialFace(reward)}</div>`;
     }
     const note=reward.nativeRecruit?(reward.creditsAdded?`积分 +${reward.creditsAdded}`:reward.isNew?'':`同名卡 ×${reward.copiesAdded??reward.amount??1}`):reward.copiesAdded?`同名卡 ×${reward.copiesAdded??reward.amount??1}`:reward.isNew?'':reward.type==='pilot'?`${reward.beforeStars} → ${reward.stars} 星`:`碎片 ×${number(reward.amount)}`;
-    const character=pilotHoloCard({...pilot,stars:reward.stars??pilot.stars},{interactive:true,compact:rewards.length>1,reveal:true,status:reward.creditsAdded?'满星转换':reward.requiresActivation?'待激活':reward.copiesAdded?'同名卡':reward.manualCards?'同名卡已足':reward.isNew?'NEW':''});
+    // Receipts retain their real copy/credit rewards; only first acquisition gets a badge.
+    const character=pilotHoloCard({...pilot,stars:reward.stars??pilot.stars},{interactive:true,compact:rewards.length>1,reveal:true,status:reward.isNew?'NEW':''});
     return `<div class="pl-card-result rr-result-slot" style="--reveal-delay:${Math.min(index,9)*65}ms">${idleCard(character)}${note?`<p class="rr-result-note">${note}</p>`:''}</div>`;
   }).join('')}</div>`;
 }
@@ -45,7 +46,7 @@ export function isRecruitResult(modal) {
 // Result receipts are already committed; this surface only presents and closes them.
 function fullscreenDialog({title,content,type,kind,variant,confirmLabel,count,minimal=false}, {escape:e,button}) {
   const label=minimal?`aria-label="${e(title)}"`:'aria-labelledby="lobby-modal-title"';
-  const heading=minimal?'':`<header class="pl-modal-heading recruit-result-heading"><h2 id="lobby-modal-title">${e(title)}</h2><button type="button" class="pl-close" data-action="close" aria-label="关闭${e(title)}">×</button></header>`;
+  const heading=minimal?'':`<header class="pl-modal-heading recruit-result-heading"><h2 id="lobby-modal-title">${e(title)}</h2><button type="button" class="pl-close" data-action="close" aria-label="关闭${e(title)}"></button></header>`;
   return `<div class="pl-modal-backdrop recruit-result-backdrop" data-action="dismiss"><section class="pl-modal recruit-result-dialog ${variant}" data-modal-type="${type}" data-modal-kind="${kind}" ${count?`data-draw-count="${count}"`: ''} role="dialog" aria-modal="true" ${label} tabindex="-1">${heading}<div class="pl-modal-content recruit-result-scroll">${content}</div><footer class="recruit-result-actions">${button('close',confirmLabel,'recruit-result-confirm')}</footer></section></div>`;
 }
 

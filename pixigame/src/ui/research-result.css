@@ -22,4 +22,4 @@
 #gui-casual-lobby [data-modal-type='researchResult'] .research-result-stat :is(span,strong) {min-width:0;overflow-wrap:anywhere}
 #gui-casual-lobby [data-modal-type='researchResult'] .research-result-core {display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;font-size:14px}
 #gui-casual-lobby [data-modal-type='researchResult'] .research-result-core img {width:26px;height:26px;object-fit:contain}
-#gui-casual-lobby [data-modal-type='researchResult'] .research-awakening-result .research-close {width:100%;margin:5cqw 0 0;--wc-button-height:48px;flex:none}
+#gui-casual-lobby [data-modal-type='researchResult'] .research-awakening-result .research-close {display:block;width:min(100%,var(--ui-primary-width));margin:5cqw auto 0;--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);flex:none}

@@ -2,10 +2,13 @@ import { TextureLoader, SRGBColorSpace, LinearFilter } from 'three';
 import { cloudAssetBase } from './cloud-asset-base.js';
 
 // Separate category artwork; never inferred from an equipped weapon or upgrade.
-const names = Object.freeze({ weapons: 'pause-weapons', upgrades: 'pause-upgrades' });
+const paths = Object.freeze({
+  weapons: 'project-battle-passives-v2/pause-weapons.webp',
+  upgrades: 'pause-category-v3/enhancement-flat.png',
+});
 const textures = new Map();
 export function pauseCategoryIconUrl(kind) {
-  return names[kind] ? `${cloudAssetBase}art/project-battle-passives-v2/${names[kind]}.webp` : null;
+  return paths[kind] ? `${cloudAssetBase}art/${paths[kind]}` : null;
 }
 export function paintPauseCategoryIcon(surface, kind, x, y, size) {
   const url = pauseCategoryIconUrl(kind);

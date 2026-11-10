@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "sourceHashes": {
+    "src/three/aircraft/aircraft-lighting.js": "67c0366a6ba21b5d7be46a9e5a5a1e2c282f72a538ca5ab5e599ae6e8937e32f",
+    "src/ui/sortie-hangar-centers.json": "aeaef46d0e0bdb8965618141e9bd23dac39a654dbeb54c09d102ac29930918e1",
+    "src/ui/sortie-hangar-pivot.js": "49c96cc6da940f337b3f97ceb70a5e40ddadd13ec51ddae579feec2a49b65246",
+    "src/ui/sortie-hangar-scene.js": "e52e44703eb204f03799067f073a63ec276a8017b6ac722dc2483b92c2535a1d"
+  },
+  "reference": {
+    "width": 430,
+    "height": 480,
+    "pixelRatio": 2,
+    "deckHeight": 123.26666666666667,
+    "gap": 3.8699999999999997,
+    "yaw": 0,
+    "camera": [
+      0,
+      4.7,
+      -24
+    ],
+    "lookAt": [
+      0,
+      4.7,
+      0
+    ]
+  },
+  "entries": {
+    "pilot-01": {
+      "slug": "kestrel",
+      "manifestHash": "52d39abca230eaf5f6e0383bbc9050c29623503681ff2680fb5b23a791384f2a",
+      "geometryKey": "fbe7e8473cfbb6acac3b7e900634a71dcafd7e524fb337bdf03df432862f5a27:1a9b7c5e64937ac83bdc96435b25177428be638d153a4fc761e1421688879560",
+      "file": "pilot-01.webp",
+      "sha256": "6590c7505412afcde3662cf83d840f37f6a66c8c7adc83f05bb73654708b65b9",
+      "referenceBox": [
+        131,
+        694,
+        729,
+        816
+      ],
+      "widthRatio": 0.6229166666666667,
+      "heightRatio": 0.12708333333333333,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 22538
+    },
+    "pilot-03": {
+      "slug": "crimson",
+      "manifestHash": "530350da806d4af7c050af5573ea11cf39794951b501386cc055a04bbdebf700",
+      "geometryKey": "7628cd764e3062b4dda4e58547f6e7a3092beeece63d717a394c035706a5443b:610ca517d5853411db95b37bc3fb527b5a020c941569093b56378909a6c39a3c",
+      "file": "pilot-03.webp",
+      "sha256": "635ce84ea30b04821e1b6e74057c8278b215410eb5134dbfeb301827b781e51c",
+      "referenceBox": [
+        209,
+        691,
+        651,
+        816
+      ],
+      "widthRatio": 0.46041666666666664,
+      "heightRatio": 0.13020833333333334,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 28828
+    },
+    "pilot-04": {
+      "slug": "azure",
+      "manifestHash": "e08b86846a1debe666a362d4d123e404728d79dabeb5ca19d1cd71b9a3898b4d",
+      "geometryKey": "5c1d215e4b4087715882f4dc0b575ce3152e62eee87aff073846f45757c7e79b:ee284af5b56872044de6d6f965116b7a490a2bd97abf19778ee151d273c6c985",
+      "file": "pilot-04.webp",
+      "sha256": "af31937b5eaf697cfdf376fcf6ad54812122d3db1dfbc5c95e2d1713425871ce",
+      "referenceBox": [
+        130,
+        703,
+        730,
+        816
+      ],
+      "widthRatio": 0.625,
+      "heightRatio": 0.11770833333333333,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 20454
+    },
+    "pilot-05": {
+      "slug": "wraith",
+      "manifestHash": "ab2f66c82058a2996fca608a51a1cacd2b31d859cff846ee61c0e89df8465f56",
+      "geometryKey": "3c6b54acfebb0fa0ad55da3f3053ce94d7a761daf2dd47c14397370781580cc3:79cebf9698cd8c96caa4748fc370faa958a95de191888cad5d97449479d6ba5f",
+      "file": "pilot-05.webp",
+      "sha256": "bdad78f7a66894093b82fa77373b99aefe5205c7ad62553c1071634f94d50a37",
+      "referenceBox": [
+        183,
+        708,
+        677,
+        816
+      ],
+      "widthRatio": 0.5145833333333333,
+      "heightRatio": 0.1125,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 22540
+    },
+    "pilot-07": {
+      "slug": "verdure",
+      "manifestHash": "66c91c112e8a1e74ea7cc68e1bb2450d0cb77a68e3ef63e7cdaf4ef2090bd210",
+      "geometryKey": "777ded9838c84dabae5cbf2e7c6fbd6d0cdba8ec9fdc863cbed0bccda11d9bb8:f1ca5612f641d66bb37827721c89bb8de97379cb5183177d8cffcdc9da757e98",
+      "file": "pilot-07.webp",
+      "sha256": "60ea60e0fb73b0723830f978a4eaf819173349fbee066b7dcbc3ff797aa6130a",
+      "referenceBox": [
+        164,
+        681,
+        696,
+        816
+      ],
+      "widthRatio": 0.5541666666666667,
+      "heightRatio": 0.140625,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 38246
+    },
+    "pilot-08": {
+      "slug": "prism",
+      "manifestHash": "f657813541148968c7430f2009acd19aee88dde0cb22d48788acbb706f26cfa4",
+      "geometryKey": "f01a2818fbf1a70783b7756ab4ea62dc6a27f833fb59832da90933763d305cf5:6b87d39d9afd634d3149a51c7bb8659feb87bf9e2838a129967508aefef3e248",
+      "file": "pilot-08.webp",
+      "sha256": "21e3357d99f048c20ffbf437ae085f26ccd51eb66470291d281276bce6489942",
+      "referenceBox": [
+        130,
+        712,
+        730,
+        816
+      ],
+      "widthRatio": 0.625,
+      "heightRatio": 0.10833333333333334,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 21060
+    },
+    "pilot-09": {
+      "slug": "bastion",
+      "manifestHash": "5cad2d5e2a8d52d9f681cc85d50e57330f74ff8d537853b04fff407f6096097d",
+      "geometryKey": "38c3a67006dc88d170e80e26de2d6ec2709cc428c55ef74ed6a2bdf55a2db7c8:815aacdae83bf4a812fad4aa262e761728d94ea9d4a35bffc8d796ecb2c5076b",
+      "file": "pilot-09.webp",
+      "sha256": "e3b9be5150f162aee53c652e6a6ec4ac22ee9debc6ba142a373e55b232710faa",
+      "referenceBox": [
+        130,
+        705,
+        730,
+        816
+      ],
+      "widthRatio": 0.625,
+      "heightRatio": 0.115625,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 32240
+    },
+    "pilot-10": {
+      "slug": "auric",
+      "manifestHash": "5f4839b0916346027d7bb61f0429142a01c5713e9cabc73641d94eef3c6f3022",
+      "geometryKey": "87ec7806757e46e95b2be27727ab96c6e573e8a549c07aee256f18978d8e2cb5:b24f0e513f7b132e2e0d5c0d853b7b526f43c700f17aef7ebc06ff9099e60e59",
+      "file": "pilot-10.webp",
+      "sha256": "df2fa9eb0c8eb9e3061357ad0729900e6f4004d02c9fd6b0cfa41c05089109c3",
+      "referenceBox": [
+        149,
+        699,
+        711,
+        816
+      ],
+      "widthRatio": 0.5854166666666667,
+      "heightRatio": 0.121875,
+      "offsetXRatio": 0.0,
+      "bottomRatio": -0.0005895833333333258,
+      "bytes": 22944
+    }
+  }
+}

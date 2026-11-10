@@ -15,21 +15,3 @@ export function enterSurface(node) {
   return animations;
 }
 
-export function exitModal(host, root) {
-  const old = host.firstElementChild;
-  if (!old || quiet()) return;
-  // The real dialog closes immediately. Its inert visual copy cannot retain
-  // focus, intercept a pointer, or delay restoring background controls.
-  root.querySelectorAll('.surface-exit-copy').forEach(n => n.remove());
-  const copy = old.cloneNode(true);
-  copy.classList.add('surface-exit-copy');
-  copy.inert = true; copy.setAttribute('aria-hidden','true');
-  copy.querySelectorAll('[id],[data-action],[role]').forEach(n=>{
-    n.removeAttribute('id'); n.removeAttribute('data-action'); n.removeAttribute('role');
-  });
-  copy.removeAttribute('data-action');
-  root.appendChild(copy);
-  const animation = copy.animate([{opacity:1},{opacity:0}],{duration:140,fill:'forwards'});
-  const timer = setTimeout(()=>copy.remove(),200);
-  animation.finished.then(()=>{clearTimeout(timer);copy.remove();},()=>{clearTimeout(timer);copy.remove();});
-}

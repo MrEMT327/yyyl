@@ -42,7 +42,7 @@ export function showUpgradeDetails(skill,model) {
   const title=document.createElement('h3');title.textContent=model.name;
   title.id='combat-detail-title';
   const kind=document.createElement('span');kind.className='combat-detail-kind';kind.textContent=model.label;
-  header.append(eyebrow,title,kind);
+  header.append(title,eyebrow,kind);
   const body=document.createElement('div');body.className='combat-detail-body';
   const owner=document.createElement('p');owner.className='combat-detail-owner';owner.textContent=model.owner;
   const level=document.createElement('div');level.className='combat-detail-level';

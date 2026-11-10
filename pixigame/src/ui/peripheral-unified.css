@@ -90,7 +90,7 @@
 .reference-layout .ref-missions article.is-claimed { background:#2d303b; }
 .ref-task-icon { width:36px;height:39px;display:grid;place-items:center;border:2px solid #192337;border-radius:4px;background:#245782;flex:none; }
 .ref-task-icon>.pl-icon { width:27px;height:30px; }
-.reference-layout .ref-missions article h3 { font-size:12px; }
+.reference-layout .ref-missions article h3 { font-size:var(--psd-small-title-size);;line-height:var(--psd-small-title-leading,1.5)}
 .reference-layout .ref-missions article p { color:#c5d0e4;font-size:10px;line-height:1.5; }
 .ref-task-progress { display:flex;align-items:center;gap:6px;margin-top:5px; }
 .reference-layout .ref-task-progress progress { min-width:0;flex:1;height:7px;border:1px solid #131c30;border-radius:3px;background:#141d31;overflow:hidden;appearance:none; }

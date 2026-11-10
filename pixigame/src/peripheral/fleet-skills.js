@@ -2,11 +2,6 @@ import { AIRCRAFTS } from '../pilots.js';
 import { pilotPassive } from './pilot-growth.js';
 
 export const FLEET_SKILL_SLOT_COUNT = 3;
-export const FLEET_FILTERS = Object.freeze([
-  {id:'all',label:'全部'}, {id:'ballistic',label:'机炮'},
-  {id:'explosive',label:'爆破'}, {id:'electromagnetic',label:'电磁'},
-  {id:'energy',label:'能量'}, {id:'drone',label:'无人机'},
-]);
 const categories=['ballistic','drone','ballistic','ballistic','explosive','electromagnetic','electromagnetic','energy','explosive','energy'];
 const icons=['skill-gravity','skill-shield','skill-ballistic','skill-ballistic','skill-explosive','skill-rail','skill-lightning','skill-laser','skill-explosive','skill-shield'];
 const byId=new Map(AIRCRAFTS.map((p,index)=>[p.id,{...p,category:categories[index],skillIcon:icons[index]}]));

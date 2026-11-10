@@ -3,7 +3,7 @@
 
 #ui .pause-control:not(.pause-resume) {
   border: 12px solid transparent;
-  border-image: url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch;
+  border-image: url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch;
   background: none;
 }
 #ui .pause-control:not(.pause-resume) > img {
@@ -15,7 +15,7 @@
 }
 #ui .pause-resume, #ui .punchboard-confirm {
   border: 12px solid transparent;
-  border-image: url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch;
+  border-image: url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch;
   background-image: none !important;
 }
 #ui .pause-resume > img { visibility: hidden; }

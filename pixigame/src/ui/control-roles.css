@@ -1,0 +1,233 @@
+/* Navigation is not an action face. Reuse existing PSD surfaces and project
+   pictograms; do not add a second frame, bevel or generated shape around them. */
+#gui-casual-lobby {
+  --control-nav-ink:#d4e5ef;
+  --control-nav-selected:#b9f2ff;
+}
+#gui-casual-lobby [data-psd-popup] {
+  --control-nav-ink:#45627a;
+  --control-nav-selected:#153c58;
+}
+#gui-casual-lobby :is(.psd-tab,.dc-tab,.research-tab,.wc-mode,.ws-modes .wc-button,.ws-filter-options .wc-button) {
+  border:0!important;border-image:none!important;border-radius:0!important;
+  background:none!important;box-shadow:none!important;clip-path:none!important;
+  color:var(--control-nav-ink)!important;text-shadow:none!important;
+  filter:none!important;transform:none!important;
+  font-family:PsdPopup,'Microsoft YaHei',sans-serif;
+  text-decoration:none;
+}
+#gui-casual-lobby :is(.psd-tab,.dc-tab,.research-tab,.wc-mode,.ws-modes .wc-button,.ws-filter-options .wc-button)::before,
+#gui-casual-lobby :is(.psd-tab,.dc-tab,.research-tab,.wc-mode,.ws-modes .wc-button,.ws-filter-options .wc-button)::after {
+  content:none!important;border-image:none!important;background:none!important;box-shadow:none!important;
+}
+/* A typographic current-page marker, rather than an action-button surround. */
+#gui-casual-lobby :is(.psd-tab,.dc-tab,.research-tab,.wc-mode,.ws-modes .wc-button,.ws-filter-options .wc-button):is([aria-pressed='true'],[aria-selected='true'],.is-selected,.is-active) {
+  color:var(--control-nav-selected)!important;
+  text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:.5em;
+}
+#gui-casual-lobby :is(.psd-tab,.dc-tab,.research-tab,.wc-mode) :is(span,b) {color:inherit!important;text-shadow:none!important}
+#gui-casual-lobby .wc-mode>.wc-tab-icon {filter:none!important;opacity:.65}
+#gui-casual-lobby .wc-mode:is([aria-pressed='true'],.is-active)>.wc-tab-icon {opacity:1}
+#gui-casual-lobby .wc-mode {gap:1cqw;padding:1cqw 0 2.5cqw}
+#gui-casual-lobby .wc-mode>span {text-underline-offset:.3em}
+
+/* Page tabs keep their hit area independent of the visible navigation art. */
+#gui-casual-lobby :is(.shop-native-v2 .store-category, .research-tabs>.research-tab, .wc-footer>.wc-mode) {
+  position: relative;
+  isolation: isolate;
+  touch-action: manipulation;
+}
+#gui-casual-lobby :is(.shop-native-v2 .store-category, .research-tabs>.research-tab)::before {
+  content: '' !important;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  height: var(--page-tab-face-height);
+  margin-block: auto;
+  border-image: var(--page-plate-idle) var(--page-plate-slice) fill / var(--page-plate-corner) stretch !important;
+}
+#gui-casual-lobby :is(.shop-native-v2 .store-category, .research-tabs>.research-tab, .wc-footer>.wc-mode).is-active {
+  text-decoration: none;
+  color: #fff !important;
+  text-shadow: 0 1px 3px #173a53 !important;
+}
+#gui-casual-lobby :is(.shop-native-v2 .store-category, .research-tabs>.research-tab).is-active::before {
+  box-sizing: border-box;
+  border: 3px solid transparent !important;
+  border-image: var(--page-plate) var(--page-plate-slice) fill / var(--page-plate-corner) stretch !important;
+  /* Let the real navigation rail show through the PSD face; the home sky
+     backdrop includes clouds and does not belong inside a tab. */
+  background: var(--page-chapter-fill) !important;
+  background-clip: padding-box !important;
+}
+#gui-casual-lobby .wc-footer>.wc-mode>span {
+  color: #c0d5df !important;
+  text-shadow: 0 1px 2px #07131f !important;
+}
+#gui-casual-lobby .wc-footer>.wc-mode.is-active>span {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+#gui-casual-lobby .wc-footer>.wc-mode>.wc-tab-icon {
+  opacity: .8;
+  filter: drop-shadow(0 0 2.5px rgba(46, 191, 219, .55)) !important;
+}
+#gui-casual-lobby .wc-footer>.wc-mode.is-active>.wc-tab-icon {
+  opacity: 1;
+  filter: drop-shadow(0 0 1.5px #2ebfdb) drop-shadow(0 0 3.2px rgba(46, 191, 219, .72)) !important;
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode::after {
+  content: '' !important;
+  position: absolute;
+  inset: 0 auto auto 0 !important;
+  width: max(1px, .4cqw) !important;
+  height: var(--catalog-bottom) !important;
+  transform: none !important;
+  background: url('/art/psd-main-v1/navigation/divider.png') center / 100% 100% no-repeat !important;
+  pointer-events: none;
+}
+#gui-casual-lobby .shop-native-v2 .store-category:active::before {
+  filter: brightness(.82);
+}
+#gui-casual-lobby .wc-footer>.wc-mode:not(.is-active):active>.wc-tab-icon {
+  opacity: .9;
+}
+#gui-casual-lobby :is(.shop-native-v2 .store-category, .wc-footer>.wc-mode):focus-visible {
+  outline: 2px solid #8cdeef;
+  outline-offset: -3px;
+}
+
+/* Approved task classifications use their own generated art, not action faces.
+   Slice 36 / 9px keeps the amber index and clipped corners at phone size. */
+#gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab {
+  --task-tab-art:url('/art/project-tabs-v1/tab-inactive.png');
+  display:flex;align-items:center;justify-content:center;
+  min-width:0;min-height:48px;height:48px;max-height:none;padding:0 5px;
+  border:0!important;border-image:none!important;
+  background:none!important;box-shadow:none!important;
+  color:#d1dce8!important;text-decoration:none!important;text-shadow:none!important;
+  font-family:PsdPopup,'Microsoft YaHei',sans-serif;font-weight:400;line-height:1.2;
+  touch-action:manipulation;cursor:pointer;
+}
+#gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab-face {
+  /* Center in layout so fractional transforms cannot expose nine-slice seams. */
+  position:absolute;inset:0;margin-block:auto;height:clamp(32px,9.3cqw,40px);
+  display:flex;align-items:center;justify-content:center;
+  border:0;border-image:var(--task-tab-art) 36 fill / 9px stretch;
+  pointer-events:none;
+}
+#gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab[aria-selected='true'] {
+  --task-tab-art:url('/art/project-tabs-v1/tab-active.png');color:#163650!important;
+}
+#gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab:active {filter:brightness(.93)!important}
+#gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab:focus-visible {outline:2px solid #72dafa;outline-offset:-3px}
+
+/* Profile rollout explicitly approved on 2026-11-09; same v4 faces as tasks. */
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab{
+  --profile-tab-art:url('/art/project-tabs-v1/tab-inactive.png');
+  position:relative;isolation:isolate;min-height:48px;height:48px;padding:0;
+  border:0!important;border-image:none!important;background:none!important;
+  box-shadow:none!important;color:#d1e0ea!important;text-shadow:none!important;text-decoration:none!important;
+}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab::before,
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab::after{display:none!important}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .pi-page-face{
+  position:absolute;inset:6px 0;z-index:-1;pointer-events:none;
+  border:0;border-image:var(--profile-tab-art) 36 fill / 9px stretch;
+}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab[aria-selected='true']{
+  --profile-tab-art:url('/art/project-tabs-v1/tab-active.png');color:#163650!important;
+}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab:active{filter:brightness(.93)!important}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab:focus-visible{outline:2px solid #72dafa;outline-offset:-3px}
+
+/* Equipment destinations keep their approved small pictograms, not the
+   blue/gold cost-button treatment used by awaken/recruit/upgrade actions. */
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button {
+  border:0!important;border-image:none!important;background:none!important;
+  box-shadow:none!important;color:#edf7fc!important;filter:none!important;
+}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button::before,
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button::after {
+  content:''!important;position:absolute;inset:0;pointer-events:none;
+  background:none!important;
+}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button::before {
+  z-index:-2;
+  border-image:url('/art/psd-equipment-v1/frame-empty.png') 18 fill / 6px stretch!important;
+}
+#gui-casual-lobby.equipment-reference .ag-catalog .ag-button::after {
+  z-index:-1;
+  border-image:url('/art/psd-page-chrome-v1/chapter-face.png') 18 fill / 6px stretch!important;
+}
+
+/* Navigation return uses its own project-styled face, separate from actions. */
+#gui-casual-lobby :is(.wc-back,.ws-footer>[data-action='catalogBack'],.subpage-back) {
+  position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;width:48px;min-width:44px;min-height:44px;padding:0;
+  border:0!important;border-image:none!important;background:none!important;
+  box-shadow:none!important;color:#eaf6ff!important;text-shadow:0 1px 2px #07131f!important;
+}
+#gui-casual-lobby :is(.wc-back,.ws-footer>[data-action='catalogBack'],.subpage-back)::before {
+  content:''!important;position:static!important;flex:none;inset:auto!important;
+  width:26px;height:26px;z-index:auto;pointer-events:none;
+  border:0!important;border-image:none!important;box-shadow:none!important;
+  background:url('/art/project-ui-icons-v1/chevron-right.png') center/contain no-repeat!important;
+  transform:rotate(180deg)!important;filter:none!important;
+}
+#gui-casual-lobby :is(.wc-back,.ws-footer>[data-action='catalogBack'],.subpage-back)::after {
+  content:''!important;position:absolute;inset:0;margin:auto;width:100%;
+  height:clamp(38px,9.3cqw,42px);box-sizing:border-box;z-index:-1;pointer-events:none;transform:none!important;
+  border:0 solid transparent!important;
+  border-image:url('/art/project-return-button-v1/face.png') 18 fill / 8px stretch!important;
+}
+#gui-casual-lobby :is(.wc-back,.ws-footer>[data-action='catalogBack'],.subpage-back):active::after {filter:brightness(.88)}
+
+/* Menu options remain rows inside the existing menu plate. */
+#gui-casual-lobby .psd-option {background:none!important;border-image:none!important}
+#gui-casual-lobby .psd-option::before {content:none!important}
+#gui-casual-lobby .psd-option[aria-selected='true']::before,
+#gui-casual-lobby .psd-option[aria-checked='true']::before {
+  content:''!important;border-image:url('/art/equipment-controls-v1/option-selected.png') 12 fill / 6px stretch!important;
+}
+
+/* Read-only destinations use project pictograms and text, never the glossed
+   action face used for recruitment, awakening or resource consumption. */
+#gui-casual-lobby .ui-info-link {
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  min-width:44px;min-height:44px;height:auto;padding:4px;
+  border:0!important;border-image:none!important;border-radius:0!important;
+  background:none!important;box-shadow:none!important;clip-path:none!important;
+  color:var(--control-nav-selected)!important;text-shadow:none!important;
+  font:600 13px/1.4 'Microsoft YaHei','PingFang SC',sans-serif;
+  cursor:pointer;
+}
+#gui-casual-lobby .ui-info-link::before,
+#gui-casual-lobby .ui-info-link::after {content:none!important;border-image:none!important;background:none!important}
+#gui-casual-lobby .ui-info-link>img {width:17px;height:18px;object-fit:contain;flex:none}
+#gui-casual-lobby .recruit-reference .ui-info-link {color:var(--recruit-ink,#173b51)!important}
+#gui-casual-lobby .recruit-reference .recruit-toolbar .ui-info-link {width:auto;min-width:54px;min-height:44px;height:44px}
+#gui-casual-lobby .recruit-reference .recruit-feature-title-row {display:flex;align-items:center;gap:8px;max-width:100%;min-width:0}
+#gui-casual-lobby .recruit-reference .recruit-detail.ui-info-link {flex:none;justify-content:flex-start;width:max-content;max-width:100%;min-height:44px;height:auto;margin:0;padding:4px 0}
+#gui-casual-lobby .recruit-reference .recruit-detail.ui-info-link>.rc-icon {width:8px;height:12px}
+
+/* Action roles use the project PSD faces at the shared touch dimensions. */
+#gui-casual-lobby .dc-hub .dc-button[data-action='dailyGo'],
+#gui-casual-lobby .sn-dialog-actions [data-action='shopConfirm'],
+#gui-casual-lobby .sn-dialog-actions [data-action='shopBoxOpen'],
+#gui-casual-lobby .pl-modal [data-action='shopWeaponBuy'],
+#gui-casual-lobby .sn-refresh [data-action='shopRefreshPreview'],
+#gui-casual-lobby .sn-vitality-offer [data-action='shopOffer'],
+#gui-casual-lobby .ag-modal :is([data-action='gearEquip'],[data-action='gearUpgrade'],[data-action='gearUpgradeAll'],[data-action='gearConfirmBatch'],[data-action='gearConfirmMerge']),
+#gui-casual-lobby .ag-modal [data-action='gearSupply'][data-count='10'],
+#gui-casual-lobby .fc-operation:is([data-action='fleetUnlock'],[data-action='fleetStar']),
+#gui-casual-lobby .fc-detail :is([data-action='fleetUnlock'],[data-action='fleetStar'],[data-action='upgrade']),
+#gui-casual-lobby .fc-operation-preview [data-action='fleetConfirm'],
+#gui-casual-lobby .pcs-action-dock>.pcs-submit,
+#gui-casual-lobby .pl-modal [data-action='workshopConfirmBatch'] {
+  --psd-control-art:url('/art/psd-equipment-v1/button-gold.png');
+}
+#gui-casual-lobby .dc-hub .dc-button:is([data-action='claimTask'],[data-action='claimAchievement'],[data-action='pilotSupply'][data-operation='task']),
+#gui-casual-lobby .pl-modal :is([data-action='claimStarReward'],[data-action='nativeChapterReward'],[data-action='nativeChapterCoreReward']) {
+  --psd-control-art:url('/art/project-action-buttons-v1/task-claim.png');
+}

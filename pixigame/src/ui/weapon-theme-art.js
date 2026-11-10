@@ -4,8 +4,9 @@ import { cloudAssetBase } from './cloud-asset-base.js';
 // are distinct. Second-series weapons must not alias first-series artwork.
 export const WEAPON_THEME_IDS = Object.freeze(Array.from({length:11},(_,i)=>[20101+i*100,20102+i*100]).flat());
 const ids=new Set(WEAPON_THEME_IDS);
+export const WEAPON_ART_DIRECTORY='art/project-weapon-clean-v2/';
 export const weaponThemeArt=id=>ids.has(Number(id))?
-  cloudAssetBase+'art/project-weapon-themes-v1/'+Number(id)+'.webp':null;
+  cloudAssetBase+WEAPON_ART_DIRECTORY+Number(id)+'.webp':null;
 const families=Object.freeze({'10000101':20101,'10000701':20201,'10001501':20301,
   '10000201':20401,'10000601':20501,'10000401':20601,'10001701':20701,
   '10001101':20801,'10001601':20901,'10000301':21001,'10000901':21101});

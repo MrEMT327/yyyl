@@ -1,0 +1,38 @@
+{
+  "generated": "2026-11-06",
+  "method": "Built-in imagegen",
+  "asset": "public/art/project-workshop-background-v2/maintenance-soft-psd.png",
+  "size": [
+    1536,
+    1024
+  ],
+  "sha256": "e7012b3db69e1b7e4ef226a9f5f1af99ea33188d7abf1e9a19ce70ba008e7cf1",
+  "texture": {
+    "asset": "public/art/project-workshop-background-v2/psd-scanlines.png",
+    "source": "psd/装备.psd (layer 3), also present in psd/主界面.psd (layer 2)",
+    "export": "art/psd-main-v1/layers/scanlines.png",
+    "sha256": "82f0aab29a8d7a35158dbd9467335244998f9c01da15e21b2d8141a574933144",
+    "source_bounds": [-6, -27, 759, 2115],
+    "canvas_width": 750,
+    "opacity_already_in_alpha": 0.2,
+    "blend_mode": "overlay"
+  },
+  "references": [
+    {
+      "role": "original workshop background",
+      "path": "public/art/project-original-environments-v1/maintenance-bay-v1.webp",
+      "sha256": "9c7bc6ce881617b6498ccd8348f461051fc59b17c39cf08e3b080abf2ddab4df"
+    },
+    {
+      "role": "equipment PSD background",
+      "path": "public/art/psd-equipment-v1/hangar-scenery.webp",
+      "sha256": "36b26069eadf4b85aa80d5c704e379460664463e487526a90f62bafa1502583e"
+    },
+    {
+      "role": "main-screen PSD background",
+      "path": "public/art/psd-main-v1/main-background.png",
+      "sha256": "51bda8d472d22ea35e7cbd4ac1c5e71d83155511dd7184d5ade75ff1dc3d776f"
+    }
+  ],
+  "prompt": "Use case: style-transfer. Asset: background-only illustration for the workshop in our portrait sci-fi mobile game. Image 1 is the current workshop backdrop to redesign. Images 2 and 3 are background layers exported from OUR equipment and main-screen PSDs and are the decisive style, color, contrast and depth references. Repaint the workshop as an original, calm, softly defocused blue-gray maintenance hangar in the same lightly illustrated, atmospheric style as the PSDs. Keep only a few broad architectural silhouettes, gentle large planes and subdued cyan ambient light. Reduce tiny machinery, cabinets, crates, rails and hard floor-grid lines dramatically. The central and right areas must be quiet, low-detail mid-tone space so the separately rendered equipment slots, text and small robot remain clear. Camera at a natural human eye level, slight depth, subdued soft-focus layers, matte cool slate-blue and pale steel, sparse muted cyan highlights, no dramatic bloom. Use a wide 3:2 composition with the central 80% safe for a square-ish crop. Produce the clean environment ONLY: no person, robot, aircraft, vehicle, foreground prop, interface, icon, slot, border, label, text, logo or watermark. Do not replicate the aircraft visible in the PSD reference. Maintain the PSD's gentle blue-gray atmosphere instead of crisp photoreal industrial detail."
+}

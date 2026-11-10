@@ -4,7 +4,7 @@
   "FileReferences": {
     "Moc": "heitaizi_2.moc3",
     "Textures": [
-      "textures/texture_00.png"
+      "../target-atlas.png"
     ],
     "DisplayInfo": null,
     "Physics": "heitaizi_2.physics3.json",

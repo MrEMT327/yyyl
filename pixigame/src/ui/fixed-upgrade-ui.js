@@ -66,7 +66,7 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     paintPsdChoiceArt(surface,frame.art,0,0,width,height);
     const texture = art?.get(model.itemId);
     if (texture) {
-      const source=choiceIconCrops[model.itemId];
+      const source=texture.userData.inventoryIcon?null:choiceIconCrops[model.itemId];
       const crop=source&&{x:source.crop[0],y:source.crop[1],width:source.crop[2],height:source.crop[3]};
       const icon=crop?{...fitUpgradeIcon(...source.size,crop,{x:15,y:80,width:148,height:158}),crop}
         :upgradeIconLayout(texture,{x:15,y:80,width:148,height:158});
@@ -79,7 +79,9 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     if(model.element)drawBattleElementBadge(surface,model.element,
       (width-BATTLE_ELEMENT_BADGE_SIZE.width)/2,height-42);
     attachSurface(card,surface);
-    const name = text(card,model.name,width/2,26,23,COMBAT_UI.text,{anchorX:.5,weight:'900'});
+    // Keep the name above the PSD header rule and the description below its
+    // body divider, with room for wrapped text before the level footer.
+    const name = text(card,model.name,width/2,16,23,COMBAT_UI.text,{anchorX:.5,weight:'900'});
     if(name.width>width-20)name.scale.set((width-20)/name.width);
 
     const label = text(card,bridge.presentation?'':model.change?.label || model.stat.label,width/2,268,19,COMBAT_UI.text,{anchorX:.5,weight:'800'});
@@ -89,9 +91,11 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     if(valueNode.width>width-16)valueNode.scale.set((width-16)/valueNode.width);
     if(bridge.presentation && effect) {
       const runs = [{text:effect,strong:true}];
+      const effectTop = 294;
+      const effectInset = 20;
       let size = 16;
-      while(size>12 && addEffectText(null,runs,0,0,width-28,size,COMBAT_UI.text,makeText,place)>height-276-122)size--;
-      addEffectText(card,runs,14,276,width-28,size,COMBAT_UI.text,makeText,place);
+      while(size>12 && addEffectText(null,runs,0,0,width-effectInset*2,size,COMBAT_UI.text,makeText,place)>height-effectTop-122)size--;
+      addEffectText(card,runs,effectInset,effectTop,width-effectInset*2,size,COMBAT_UI.text,makeText,place);
     } else if(model.evolving && summary) {
       const shortEffect=summary.length>19?`${summary.slice(0,18)}…`:summary;
       addEffectText(card,[{text:shortEffect,strong:true}],13,334,width-26,13,COMBAT_UI.text,makeText,place);

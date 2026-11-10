@@ -1,4 +1,6 @@
 #replicaResearchToggle{margin:0 0 6px;min-height:32px;padding:5px 10px;font:12px/1.4 system-ui;color:#deebef;background:#1c3542;border:1px solid #7196a5;border-radius:5px;cursor:pointer}
+#replicaResearchLaunchStatus{display:block;margin:0 0 6px;font:12px/1.5 system-ui;color:#ffdb7b}
+#replicaResearchLaunchStatus[hidden]{display:none}
 .replica-research-dialog{box-sizing:border-box;width:min(98vw,900px);height:98dvh;max-height:98dvh;max-width:98vw;margin:auto;padding:10px;border:1px solid #7196a5;border-radius:7px;background:#0e1c27;color:#deebef;font:13px/1.4 system-ui;overflow:hidden}
 .replica-research-dialog[open]{display:flex;flex-direction:column;gap:6px}
 .replica-research-dialog::backdrop{background:#03090fe8}

@@ -1,3 +1,4 @@
+import { itemInspectAttributes } from './item-description-model.js';
 import { nativePilotAppearance } from '../replica/native-pilot-presentation.js';
 import { nativeItemPresentation, nativeItemArt } from '../replica/native-item-presentation.js';
 import { pilotSupplyPanel } from './pilot-supply-panel.js';
@@ -5,7 +6,7 @@ const button=(action,label,attrs='',disabled=false)=>`<button type="button" clas
 export function nativeMaterialsDetail(s,h) {
   const e=h.escape,a=s.nativeAcquisition;
   const itemIcon=id=>h.img(nativeItemArt(id),'','fc-skill-icon');
-  return {title:'材料库存',content:`<article class="wc-skill-detail clarity-page">${button('chapterRewards','查看／领取章节奖励')}<h3>材料库存</h3>${a.materials.length?a.materials.map(row=>`<p>${itemIcon(row.id)}${e(nativeItemPresentation(row.id).name||row.name)} ×${row.count}</p>`).join(''):'<p>暂无材料</p>'}</article>`};
+  return {title:'材料库存',content:`<article class="wc-skill-detail clarity-page">${button('chapterRewards','查看／领取章节奖励')}<h3>材料库存</h3>${a.materials.length?a.materials.map(row=>`<p ${itemInspectAttributes(row.id,e)}>${itemIcon(row.id)}${e(nativeItemPresentation(row.id).name||row.name)} ×${row.count}</p>`).join(''):'<p>暂无材料</p>'}</article>`};
 }
 export function nativeRecruitPage({snapshot:s,helpers:h}) {
   if(s.pilotSupply)return `<section class="ref-catalog wc-page"><div class="ref-catalog-scroll">${pilotSupplyPanel('boxes',s,h).content}</div></section>`;

@@ -22,7 +22,7 @@
   box-shadow:inset 0 2px #d8c7ff80;
 }
 #gui-casual-lobby .lobby-paper-modal .pl-modal-heading h2 {
-  width:100%;margin:0;text-align:center;color:#fff;font-size:22px;
+  width:100%;margin:0;text-align:left;color:#fff;font-size:22px;
   font-weight:900;line-height:1.3;letter-spacing:0;overflow-wrap:anywhere;
   paint-order:stroke fill;-webkit-text-stroke:2px #241c35;text-shadow:0 2px #241c35;
 }
@@ -86,7 +86,7 @@
 #gui-casual-lobby .paper-patrol-rate>span {display:flex;align-items:center;gap:3px}
 #gui-casual-lobby .paper-patrol-rate .pl-icon {width:18px;height:18px}
 #gui-casual-lobby .paper-section-heading {display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0 0;font-size:15px;font-weight:800}
-#gui-casual-lobby .paper-section-heading h3 {margin:0;font-size:15px}
+#gui-casual-lobby .paper-section-heading h3 {margin:0;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .paper-section-heading>span {color:var(--paper-muted);font-size:12px;font-weight:600}
 #gui-casual-lobby .paper-patrol-quick {margin-top:17px;padding-top:12px;border-top:2px solid #c2baa8}
 #gui-casual-lobby .paper-patrol-quick .paper-section-heading {margin:0}
@@ -121,7 +121,7 @@
 #gui-casual-lobby .lobby-paper-modal .pl-card-lore :is(small,span) {color:#70538f;font-size:13px}
 #gui-casual-lobby .lobby-paper-modal .pl-card-lore p {color:var(--paper-ink);font-size:14px;line-height:1.7}
 #gui-casual-lobby .lobby-paper-modal .research-detail>p {font-size:13px;color:var(--paper-muted)}
-#gui-casual-lobby .lobby-paper-modal .research-copy :is(h3,h4) {font-size:14px;color:#65547d;margin:14px 0 6px}
+#gui-casual-lobby .lobby-paper-modal .research-copy :is(h3,h4) {font-size:var(--psd-small-title-size);color:#65547d;margin:14px 0 6px;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .lobby-paper-modal .research-copy>:first-child {margin-top:0}
 #gui-casual-lobby .lobby-paper-modal .research-effect {padding:8px 10px;border:0;border-radius:4px;background:#dcebd3;color:#2a6435}
 #gui-casual-lobby .lobby-paper-modal .research-result>p {color:var(--paper-muted)}

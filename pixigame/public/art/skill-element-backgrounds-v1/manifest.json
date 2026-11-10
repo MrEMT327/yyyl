@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "source": "art/skill-element-backgrounds-v1",
+  "normalization": "Proportional resize only; original icon foreground is never repainted or composited into these textures.",
+  "assets": [
+    {
+      "key": "fire",
+      "file": "fire.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 13260,
+      "sha256": "3682ce2924580645926f1832017be01cb54a9668a174fb3b60d44732f907fef1",
+      "original": "G:\\小飞机\\pixigame\\art\\skill-element-backgrounds-v1\\originals\\fire.png",
+      "originalSha256": "8febf8e764750882fc7c7529635e46d27368f0f8f4dc5a8f14288ec5c22a9a73"
+    },
+    {
+      "key": "ice",
+      "file": "ice.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 18534,
+      "sha256": "e31a729e333ab3890ddf0e3f5ec0aa75ca196efbf74a2ec941ac9a48a3330eb5",
+      "original": "G:\\小飞机\\pixigame\\art\\skill-element-backgrounds-v1\\originals\\ice.png",
+      "originalSha256": "aa2918838a15143f89a3c1e7dc497ed213c460caee575eccb46fe3175c73233f"
+    },
+    {
+      "key": "acid",
+      "file": "acid.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 14784,
+      "sha256": "e72a482d75a0c493008eeea4ea7c8d1f450178ede8834131402a05b5be974b45",
+      "original": "G:\\小飞机\\pixigame\\art\\skill-element-backgrounds-v1\\originals\\acid.png",
+      "originalSha256": "1946621a08647e027fce5445e8f72611a33a2f4e012ce218f09c501b3f8f160c"
+    },
+    {
+      "key": "energy",
+      "file": "energy.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 14448,
+      "sha256": "2695245e6c7ad896b6cf9dbc12fdf3a937018980c34f4038037ee74617bd6aa8",
+      "original": "G:\\小飞机\\pixigame\\art\\skill-element-backgrounds-v1\\originals\\energy.png",
+      "originalSha256": "5014dd3114bbfbc155f08acd68ef4338ba40a6bb707abf3a29975d613e384639"
+    },
+    {
+      "key": "electromagnetic",
+      "file": "electromagnetic.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 14100,
+      "sha256": "ea436d6371e27b7222441db90139fddee1d416bda4424c96385903dd8b57727c",
+      "original": "G:\\小飞机\\pixigame\\art\\skill-element-backgrounds-v1\\originals\\electromagnetic.png",
+      "originalSha256": "19351de444e44c5e9ca8c834db361ff650765dbb65f9e457860df7bc8b8fc7ca"
+    },
+    {
+      "key": "physical",
+      "file": "physical.webp",
+      "width": 320,
+      "height": 320,
+      "bytes": 10910,
+      "sha256": "6aa2d6b708e63dd9433583fd1f05dfb93eac248f4f0c03ee6854f14c91c223ae",
+      "original": "G:\\小飞机\\pixigame\\art\\skill-element-backgrounds-v1\\originals\\physical.png",
+      "originalSha256": "1bf14497355b85300670fc330f26a782636da831f94d4e3a28d81859ec96ef36"
+    }
+  ]
+}

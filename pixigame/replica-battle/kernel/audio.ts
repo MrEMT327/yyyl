@@ -1,4 +1,5 @@
 import {FEEDBACK_SOUNDS,feedbackAudioManifest} from '../../src/ui/feedback-sounds.js';
+import {AUDIO_PREFERENCES_KEY,readAudioPreferences,saveAudioPreferences} from '../../src/audio-preferences.js';
 // Browser audio is unlocked exclusively by a player gesture. No remote resources.
 export class GameAudio {
   private context?: AudioContext;
@@ -19,10 +20,16 @@ export class GameAudio {
   private sources = new Set<AudioBufferSourceNode>();
   private feedbackVoice?: {source:AudioBufferSourceNode;gain:GainNode};
   private feedbackTimes=new Map<string,number>();
-  enabled = true;
+  preferences = {music:true,effects:true};
+  private active = true;
+  get enabled() {return this.active&&(this.preferences.music||this.preferences.effects);}
+  set enabled(value:boolean) {this.active=value;}
   constructor(private manifest: Record<string, any>) {
     this.manifest={...manifest,...feedbackAudioManifest};
-    try { this.enabled = localStorage.getItem('danke-audio') !== 'off'; } catch { /* private storage */ }
+    try {
+      if(localStorage.getItem(AUDIO_PREFERENCES_KEY)!==null)this.preferences=readAudioPreferences(localStorage);
+      else {const enabled=localStorage.getItem('danke-audio')!=='off';this.preferences={music:enabled,effects:enabled};}
+    } catch { /* private storage */ }
   }
   async unlock() {
     if (this.disposed) return;
@@ -32,7 +39,7 @@ export class GameAudio {
     if (!this.context) {
       this.context = new AudioContext();
       this.master = this.context.createGain();
-      this.master.gain.value = this.enabled ? 0.55 : 0;
+      this.master.gain.value = this.enabled&&this.preferences.effects ? 0.55 : 0;
       this.compressor=this.context.createDynamicsCompressor();
       this.compressor.threshold.value=-10;this.compressor.knee.value=12;this.compressor.ratio.value=6;
       this.compressor.attack.value=.003;this.compressor.release.value=.12;
@@ -60,7 +67,7 @@ export class GameAudio {
     await this.loading;
   }
   private playMusic() {
-    if (this.disposed || this.paused || !this.enabled || !this.music || !this.music.paused) return;
+    if (this.disposed || this.paused || !this.enabled || !this.preferences.music || !this.music || !this.music.paused) return;
     // A rejected play remains retryable on the next gesture/explicit resume.
     // Reuse the same element and position; never poll or create duplicate BGM.
     this.music.play().catch(() => {});
@@ -76,7 +83,7 @@ export class GameAudio {
     this.playMusic();
   }
   effect(key: string, volume = 0.3, interval = 0.08) {
-    if (this.disposed || !this.enabled || !this.context || !this.master) return;
+    if (this.disposed || !this.enabled || !this.preferences.effects || !this.context || !this.master) return;
     if(this.loops.has(key))return; // The live electric/laser voice already covers this sample.
     const voiceKey = key;
     const now = this.context.currentTime;
@@ -110,7 +117,7 @@ export class GameAudio {
   }
   feedback(key: keyof typeof FEEDBACK_SOUNDS) {
     const ctx=this.context,cue=FEEDBACK_SOUNDS[key],buffer=this.buffers.get(`feedback:${key}`);
-    if(!cue||!this.enabled||this.disposed||document.hidden)return true;
+    if(!cue||!this.enabled||!this.preferences.effects||this.disposed||document.hidden)return true;
     if(!buffer||!ctx||!this.master||ctx.state!=='running')return false;
     if(ctx.currentTime-(this.feedbackTimes.get(key)??-Infinity)<cue.interval)return true;
     this.feedbackTimes.set(key,ctx.currentTime);this.stopFeedback();
@@ -121,7 +128,7 @@ export class GameAudio {
   }
   // Finite charge clips are cancellable, never looped. A token is one native warning phase.
   syncCharges(cues: {key:string;token:string;volume:number}[]) {
-    const active=this.enabled&&!this.paused&&!this.disposed?cues:[];
+    const active=this.enabled&&this.preferences.effects&&!this.paused&&!this.disposed?cues:[];
     const desired=new Map(active.map(c=>[c.token,c]));
     for(const [key,voice] of this.charges)if(!desired.has(voice.token)){
       this.charges.delete(key);const now=this.context!.currentTime;
@@ -143,7 +150,7 @@ export class GameAudio {
     }
   }
   syncContinuous(cues: {key:string;volume:number;pulse?:boolean}[]) {
-    const desired=new Map((this.enabled&&!this.paused&&!this.disposed?cues:[]).map(c=>[c.key,c]));
+    const desired=new Map((this.enabled&&this.preferences.effects&&!this.paused&&!this.disposed?cues:[]).map(c=>[c.key,c]));
     for(const[key,voice]of this.loops)if(!desired.has(key)){
       this.loops.delete(key); const now=this.context!.currentTime;
       voice.gain.gain.cancelScheduledValues(now);voice.gain.gain.setValueAtTime(voice.gain.gain.value,now);voice.gain.gain.linearRampToValueAtTime(0,now+.035);
@@ -170,10 +177,22 @@ export class GameAudio {
   dispose() { this.disposed=true;this.pause();this.buffers.clear();this.compressor?.disconnect(); }
   resume() { if (this.disposed) return; this.paused=false; this.playMusic(); }
   restart() { this.pause(); this.chargeTokens.clear(); this.voices.clear();this.feedbackTimes.clear(); if (this.music) this.music.currentTime = 0; this.resume(); }
+  setPreference(key:'music'|'effects',enabled:boolean) {
+    if(this.disposed||!['music','effects'].includes(key))return false;
+    this.preferences[key]=Boolean(enabled);
+    if(this.master)this.master.gain.value=this.enabled&&this.preferences.effects ? .55 : 0;
+    if(key==='music') {if(enabled)this.playMusic();else this.music?.pause();}
+    if(key==='effects'&&!enabled) {
+      this.stopFeedback();this.loops.clear();this.charges.clear();
+      for(const source of this.sources){try{source.stop();}catch{}}
+      this.sources.clear();this.effectVoices.clear();
+    }
+    try {saveAudioPreferences(localStorage,this.preferences);}catch{ /* private storage */ }
+    return true;
+  }
   toggle() {
-    this.enabled = !this.enabled;
-    if (this.master) this.master.gain.value = this.enabled ? 0.55 : 0;
-    if (this.enabled) this.resume(); else this.pause();
+    const enabled=!this.enabled;
+    this.setPreference('music',enabled);this.setPreference('effects',enabled);
     try { localStorage.setItem('danke-audio', this.enabled ? 'on' : 'off'); } catch {}
     return this.enabled;
   }

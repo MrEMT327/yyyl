@@ -1,4 +1,8 @@
 export const isRewardReceiptModal=modal=>['rewards','shopBoxResult','researchResult'].includes(modal?.type);
+export const isRewardLayerModal=modal=>isRewardReceiptModal(modal)||['taskChestPreview','aircraftActivation','processFeedback','boxOpening'].includes(modal?.type);
+// Skill inspection retains its source WeaponInfo just like a receipt retains
+// its source page. It is still a read-only preview, never a reward receipt.
+export const isRetainedModalLayer=modal=>isRewardLayerModal(modal)||(modal?.type==='nativeSkillPreview'&&modal.kind==='guns'&&modal.returnTo?.type==='nativeCollectionDetail');
 export const modalIdentity=modal=>modal?`${modal.type}:${modal.id||''}:${modal.view||''}`:'';
 export const activeModalHost=root=>root.querySelector('[data-reward-layer="overlay"]')||root.querySelector('.pl-modal-host');
 
@@ -23,7 +27,11 @@ export function mountRewardLayers(host) {
   underlay.append(...host.childNodes);
   underlay.inert=true;underlay.setAttribute('aria-hidden','true');
   const dialogs=[...underlay.querySelectorAll('[role="dialog"]')].map(node=>[node,node.getAttribute('aria-modal')]);
-  for(const [node]of dialogs)node.setAttribute('aria-modal','false');
+  for(const [node]of dialogs){
+    // Rapid claims must not leave the source half transparent underneath.
+    node.getAnimations?.().filter(motion=>motion.id==='ui-dialog').forEach(motion=>motion.finish());
+    node.setAttribute('aria-modal','false');
+  }
   const overlay=document.createElement('div');
   overlay.className='reward-modal-overlay';overlay.dataset.rewardLayer='overlay';
   host.append(underlay,overlay);

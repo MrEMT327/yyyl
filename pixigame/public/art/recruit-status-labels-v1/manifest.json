@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "created": "2026-11-09",
+  "method": "built-in image_gen",
+  "scope": "Recruit results: only NEW; duplicate rewards keep their existing settlement with no status badge.",
+  "files": [
+    {
+      "file": "new.png",
+      "size": [
+        384,
+        110
+      ],
+      "sha256": "54a7d3175d4de83d7596165fc2bb611b9acc14caa4d7497fee6c67b6a97ec32e",
+      "source": "art/imagegen-sessions/01a143ff-f683-7840-9dc0-38a5210e8c44/exec-f399637c-dd94-41f8-ad45-5db294507b91.png",
+      "alphaCrop": [
+        105,
+        118,
+        1956,
+        649
+      ],
+      "normalization": "Trim transparent margin; proportionally downsample with alpha preserved. No art redrawn."
+    }
+  ],
+  "references": [
+    "public/art/psd-choice-v1/card-blue.png",
+    "public/art/project-tabs-v1/tab-active.png"
+  ],
+  "prompt": "Use case: ui-mockup. Make ONE companion production transparent PNG UI badge to match the first reference badge exactly in silhouette and thin border weight, material and facet language. The first image is the approved same-name badge in this project; second image is the project's game UI tab for palette reference. NEW badge: exact text “NEW”, large bold uppercase sans-serif, deep navy lettering on pale warm amber / champagne gold face. Low depth 2D anime sci-fi mobile-game UI, fine pale-gold edging and minimal angular highlights, no heavy metal, no bolts, no thick bevel, no sparkle haze. Wide short label about 3.4:1, straight orthographic view, text centered and occupies most face height; readable at 46 by 15 pixels. Transparent surroundings. Only this single badge and exact text, no scene, no sheet, no checkerboard and no extra copy.",
+  "unusedDuplicateDraft": {
+    "source": "art/imagegen-sessions/01a143ff-f683-7840-9dc0-38a5210e8c44/exec-011e9d2b-b779-4767-b344-2c6d1d62b4f8.png",
+    "prompt": "Use case: ui-mockup. Create ONE production-ready transparent PNG game UI badge, NOT a mockup or sheet. Style references: attached first image is this project's PSD sci-fi reward card; second is its approved thin anime-game tab. Match their restrained blue-gray material, crisp fine edging, delicate faceted highlights. Asset: a very small horizontal status label with exact Chinese text “同名卡”, bold clean sans-serif, ice-white lettering on dark navy blue face. Flat 2D anime sci-fi UI, thin cyan-gray rim, subtle cut corners, tiny restrained facet highlight; NO heavy metal, bolts, wings, thick bevel, glow haze or extra icons. Wide short silhouette approx 2.7:1; label itself fills most of canvas width, modest transparent margin outside. Text large and simple, occupies most face height, readable when scaled to 42 by 16 pixels. Orthographic straight-on. Only the badge and exact text, genuinely transparent outside; no checkerboard, no background scene, no other writing. Generate at high resolution with clean alpha.",
+    "runtime": false
+  }
+}

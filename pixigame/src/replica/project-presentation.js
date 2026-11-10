@@ -13,7 +13,7 @@ import { WEAPON_SKINS, validateWeaponSkins, createWeaponForm, weaponSkinLoadout,
 import { createPhantomTrailState, samplePhantomTrail } from './project-phantom-visual.js';
 import { createFlightVisualState, sampleFlightVisual, updateFlightFighter, flightPoseNeedsRefresh, rigidAircraftSkinPose } from './project-flight-visual.js';
 import {createFlightPositionState,sampleFlightPosition} from './project-flight-position.js';
-import { createCombatAircraftRenderer } from './project-aircraft-render.js';
+import { createCombatAircraftRenderer, warmRenderPrograms } from './project-aircraft-render.js';
 import {createAircraftFxRenderer} from '../three/aircraft/aircraft-fx-renderer.js';
 import {sampleCombatEngineWake,drawCombatEngineWake} from './combat-engine-wake.js';
 import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails,drawWingtipHighlights} from './project-wingtip-trails.js';
@@ -45,6 +45,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
   let lastAircraftClock = -1, lastWorldKey = '', lastRollSerial = 0;
   let launchPresentation=null,launchDirty=false;
   let worldDirect=false, worldContextReady=true, worldSurfaceReady=false, releaseWorldUpload;
+  const invalidateWorldTexture=()=>{lastWorldKey='';};
   const worldLost=()=>{worldContextReady=false;worldSurfaceReady=false;};
   const worldRestored=()=>{const oldLighting=lighting;lighting=makeLighting();aircraftScene.environment=lighting.texture;oldLighting.dispose();worldContextReady=true;worldSurfaceReady=false;lastWorldKey='';};
   surface.addEventListener('webglcontextlost',worldLost);
@@ -200,6 +201,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
     surface.removeEventListener('webglcontextlost',worldLost);
     surface.removeEventListener('webglcontextrestored',worldRestored);
     releaseWorldUpload?.();
+    scene?.game?.canvas?.removeEventListener('webglcontextrestored',invalidateWorldTexture);
     window.removeEventListener('pagehide', dispose);
     window.removeEventListener('shnh-dispose-replica-battle', dispose);
     for (const image of phantomImages) image.destroy(); phantomImages.length = 0; phantomTrail.history.length = 0;
@@ -218,11 +220,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
     onProgress?.(0,total);
     await Promise.all([loadFighterPackages({
       pilotIds: [appearance.aircraft.id],
-      read: async (slug, name) => {
-        const response = await fetch(new URL(`fighters/${slug}/${name}`, assetBase), { cache: 'no-cache' });
-        if (!response.ok) throw new Error(`战机资源加载失败：${slug}/${name}`);
-        return response.arrayBuffer();
-      },
+      assetBase,
     }).then(loaded), ...pendingTextures.map(task=>task.then(loaded))]);
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
     fighter = createFighterView({ pilotId: appearance.aircraft.id, size: 1, nativeSpace: true });
@@ -255,6 +253,13 @@ export async function createProjectPresentation({ content, appearance, onError, 
     aircraftCamera.position.set(sphere.center.x, bounds.max.y + span, sphere.center.z);
     aircraftCamera.lookAt(sphere.center); aircraftCamera.updateProjectionMatrix();
     icons = createWeaponIcons(renderer, aircraftScene, content);
+    const hdr=fighter.runtime.asset.solid.userData.cleanAircraftSurface;
+    const isActive=()=>!disposed;
+    await Promise.all([
+      renderWithAircraftStyle(renderer,()=>aircraftRenderer.warmup(aircraftScene,aircraftCamera,fighter,hdr,isActive)),
+      ...(replaceTerrain?[warmRenderPrograms(renderer,worldScene,coastCamera||camera,isActive)]:[]),
+    ]);
+    if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
     renderAircraftTexture(0, { bank: 0, pitch: 0, roll: 0, thrust: 0 });
   } catch (error) { dispose(); throw error; }
 
@@ -285,7 +290,8 @@ export async function createProjectPresentation({ content, appearance, onError, 
       },
     },
     setLaunchPresentation(value){
-      launchPresentation=value;launchDirty=true;
+      if((launchPresentation===null)!==(value===null))launchDirty=true;
+      launchPresentation=value;
       if(!value)flightVisual.clock=null;
     },
     preload(phaser) { weather?.preload(phaser); phaser.load.on('loaderror', file => onError(new Error(`关卡资源加载失败：${file.key}`))); },
@@ -298,6 +304,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
         worldDirect=Boolean(scene.game.renderer.gl);
         worldTexture=worldDirect?scene.textures.addImage('project-world-3d',surface):scene.textures.addCanvas('project-world-3d',worldCanvas);
         if(worldDirect)releaseWorldUpload=guardWorldTextureUpload(worldTexture.source[0].glTexture,()=>worldContextReady&&worldSurfaceReady&&!renderer.getContext().isContextLost(),worldCanvas);
+        if(worldDirect)scene.game.canvas.addEventListener('webglcontextrestored',invalidateWorldTexture);
         const worldImage=scene.add.image(0, 0, 'project-world-3d').setOrigin(0, 0).setDepth(-1000);
         weather?.create(scene,worldImage);
       }
@@ -347,14 +354,17 @@ export async function createProjectPresentation({ content, appearance, onError, 
       // The interpolated visual clock is available for every chapter.
       const backgroundTime = frame.coastBackgroundTime ?? frame.time;
       const worldKey = `${backgroundTime}/${frame.camera.x}/${frame.camera.z}/${weather?.profile?.id??'clear'}`;
-      if (lastWorldKey === worldKey && !aircraftDue) {
+      const worldDue = lastWorldKey !== worldKey;
+      if (!worldDue && !aircraftDue) {
         updateWingtipTrails(flightPose); return;
       }
-      const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
-      camera.position.copy(cameraHome).add(new THREE.Vector3(shiftX, 0, shiftZ));
-      camera.lookAt(targetHome.x + shiftX, 0, targetHome.z + shiftZ);
-      environment.update(backgroundTime, stageIndex, { motionRevision: worldKey });
-      weather?.setNightLandmarks(night?environment.nightLights?.(coastCamera||camera,WIDTH,HEIGHT)??[]:[]);
+      if (worldDue) {
+        const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
+        camera.position.copy(cameraHome).add(new THREE.Vector3(shiftX, 0, shiftZ));
+        camera.lookAt(targetHome.x + shiftX, 0, targetHome.z + shiftZ);
+        environment.update(backgroundTime, stageIndex, { motionRevision: worldKey });
+        weather?.setNightLandmarks(night?environment.nightLights?.(coastCamera||camera,WIDTH,HEIGHT)??[]:[]);
+      }
       // Render the native 3D model into a texture used at Phaser's original
       // player depth. Enemy bullets and pickups retain their original sorting.
       // The world is drawn last into this same Three surface, before paint.
@@ -365,11 +375,15 @@ export async function createProjectPresentation({ content, appearance, onError, 
           Object.assign(fighter.runtime.config, { firing: false, cruise: false, trails: 0, particles: 0 });
         }
         const visualPose=launchPresentation?{...flightPose,bank:0,pitch:-.045*launchPresentation.thrust,thrust:launchPresentation.thrust}:flightPose;
+        // Rendering the aircraft overwrites part of the shared source canvas.
+        // Phaser already holds the previous complete background texture.
+        worldSurfaceReady=false;
         renderAircraftTexture(visualClock, visualPose, Math.max(pose.width, pose.height));
         lastAircraftClock = frame.clock; lastAircraftVisualClock = visualClock; weaponsDirty = false;launchDirty=false;
       }
       updateWingtipTrails(flightPose);
       if (!replaceTerrain) { lastWorldKey = worldKey; return; }
+      if (!worldDue) return;
       renderer.setScissorTest(false); renderer.setViewport(0, 0, WIDTH, HEIGHT);
       renderer.setClearColor(selectedScene.ground, 1); renderer.clear(); renderer.render(worldScene, coastCamera || camera);
       // The complete frame is a Phaser background texture, so original ADD /

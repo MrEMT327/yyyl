@@ -64,7 +64,7 @@ function play(weapon){const name=weapon==='twin'?'assault':'sniper';if(!sound||!
 let pointer=null;
 function aim(e){const r=canvas.getBoundingClientRect();sim.aim(Math.max(0,Math.min(4000,(e.clientX-r.left)/r.width*4000)),Math.max(0,Math.min(4600,(e.clientY-r.top)/r.height*4600)));}
 canvas.addEventListener('pointerdown',e=>{pointer=e.pointerId;canvas.setPointerCapture(pointer);aim(e);});
-canvas.addEventListener('pointermove',e=>{if(e.pointerId===pointer||e.pointerType==='mouse')aim(e);});
+canvas.addEventListener('pointermove',e=>{if(pointer!==null&&e.pointerId===pointer)aim(e);});
 for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>pointer=null);
 canvas.addEventListener('keydown',e=>{const delta={ArrowLeft:[-200,0],ArrowRight:[200,0],ArrowUp:[0,-200],ArrowDown:[0,200]}[e.key];if(delta){e.preventDefault();sim.aim(sim.state.aim.x+delta[0],sim.state.aim.y+delta[1]);}});
 function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);canvas.width=Math.round(r.width*dpr);canvas.height=Math.round(r.height*dpr);}

@@ -1,12 +1,13 @@
+import { itemInspectAttributes } from './item-description-model.js';
 import { projectIconUrl } from './project-ui-art.js';
-const resources=(rows,h)=>(rows||[]).map(reward=>`<span class="ps-resource">${h.img(reward.image,'','ps-item-art')}${h.escape(reward.name)} ×${reward.count}</span>`).join('、');
+const resources=(rows,h)=>(rows||[]).map(reward=>`<span ${itemInspectAttributes(reward.id,h.escape)} class="ps-resource">${h.img(reward.image,'','ps-item-art')}${h.escape(reward.name)} ×${reward.count}</span>`).join('、');
 const button=(action,label,attrs='',disabled=false)=>`<button type="button" class="wc-button" data-action="${action}" ${attrs} ${disabled?'disabled':''}>${label}</button>`;
 const supplyRewards=view=>(view.supplemental?view.extraRewards:[view.box,view.material,...(view.extraRewards||[])]).filter(Boolean);
 export function growthSupplyEntry(period,s,h,{compact=false}={}) {
   const view=s.pilotSupply?.growth?.[period];if(!view||view.available===false)return '';
   const e=h.escape,blocked=s.rewardPending||s.rewardBusy;
   if(compact){
-    const tile=r=>`<span class="su-reward" title="${e(r.name)} ×${h.number(r.count)}" aria-label="${e(r.name)} ×${h.number(r.count)}">${h.img(r.image||(r.id===135?projectIconUrl('technology-core'):null),'','su-item-art')}<b>×${h.number(r.count)}</b>${r.id===135?'<small>星核</small>':''}</span>`;
+    const tile=r=>`<span ${itemInspectAttributes(r.id,e)} class="su-reward" aria-description="${e(r.name)} ×${h.number(r.count)}" aria-label="${e(r.name)} ×${h.number(r.count)}">${h.img(r.image||(r.id===135?projectIconUrl('technology-core'):null),'','su-item-art')}<b>×${h.number(r.count)}</b>${r.id===135?'<small>星核</small>':''}</span>`;
     const status=view.supplemental?'可补领':view.claimed?'已领取':view.canClaim?'可领取':'未达成';
     return `<section class="su-card su-supply-entry"><header class="su-card-heading"><h3>${e(view.name)}</h3><span>${status}</span></header>
       <p class="su-condition">${period==='week'?`通关第${view.chapter}章 · 活跃${view.days}天`:'每日100活跃'}</p>

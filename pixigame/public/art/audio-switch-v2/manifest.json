@@ -1,0 +1,42 @@
+{
+  "source": "approved v1 artwork, alpha sanitation and 2x delivery export",
+  "trackDesignSize": [
+    174,
+    76
+  ],
+  "thumbDesignSize": [
+    60,
+    60
+  ],
+  "render": "fixed-aspect sprite",
+  "sampling": "trilinear mipmaps; linear magnification",
+  "assets": {
+    "track-on.png": {
+      "size": [
+        348,
+        152
+      ],
+      "source": "public\\art\\audio-switch-v1\\track-on.png",
+      "sha256": "9d8438d280860ef3e5f67888a089f35778e840da0b122335b6aaea8429d78259",
+      "bytes": 56689
+    },
+    "track-off.png": {
+      "size": [
+        348,
+        152
+      ],
+      "source": "public\\art\\audio-switch-v1\\track-off.png",
+      "sha256": "4896dcf4eb3ea7d125cdac1e58febcb50f2e0918608cd8ea63ccc93697daa6de",
+      "bytes": 56809
+    },
+    "thumb.png": {
+      "size": [
+        120,
+        120
+      ],
+      "source": "public\\art\\audio-switch-v1\\thumb.png",
+      "sha256": "6dc09248a5bdd39723f6491e46ee216f0c63f7b8a8e5e99a0a5bc07fcf24d2f0",
+      "bytes": 15068
+    }
+  }
+}

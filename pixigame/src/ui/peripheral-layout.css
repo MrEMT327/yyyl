@@ -87,7 +87,7 @@
   .peripheral-lobby.reference-layout .research-awaken small{font-size:8px}
   .peripheral-lobby.reference-layout .research-awaken>span img,.peripheral-lobby.reference-layout .research-awaken .research-icon{width:4cqw;height:4cqw;margin-right:1px}
   .peripheral-lobby.reference-layout .rc-preview-heading{flex-wrap:wrap;min-height:0;padding:3px}
-  .peripheral-lobby.reference-layout .rc-preview-heading h2{flex:1 0 100%;font-size:12px}
+  .peripheral-lobby.reference-layout .rc-preview-heading h2{flex:1 0 100%;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
   .peripheral-lobby.reference-layout .rc-preview-heading>button{flex:1;min-width:0;font-size:clamp(8px,3cqw,11px);padding-inline:3px}
   .peripheral-lobby.reference-layout .ref-divider{min-width:0;padding-inline:6px;gap:4px}
   .peripheral-lobby.reference-layout .ref-divider strong{font-size:clamp(12px,4.3cqw,19px)}

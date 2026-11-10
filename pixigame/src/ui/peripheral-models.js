@@ -13,6 +13,9 @@ import {createPreviewBatcher} from './preview-batcher.js';
 import {aircraftShowcasePose} from './aircraft-showcase-motion.js';
 import {createCombatAircraftRenderer} from '../replica/project-aircraft-render.js';
 import {createAircraftFxRenderer} from '../three/aircraft/aircraft-fx-renderer.js';
+import {AIRCRAFT_PREVIEW_PIXEL_RATIO,AIRCRAFT_PREVIEW_SAMPLES} from '../three/aircraft/aircraft-preview-quality.js';
+import {stabilizeAircraftPanelDepth} from './aircraft-panel-depth.js';
+import {preloadSortieAircraftImage} from './sortie-aircraft-image.js';
 
 // One context for the lobby. Aircraft packages and weapon meshes are shared with
 // combat; the lobby never substitutes a generated painting for a game model.
@@ -33,7 +36,7 @@ export function createPeripheralModels({ onReady = () => {}, captureThumbnail } 
   return {
     images, get available() { return model?.available ?? true; },
     attach(nextHost) { host = nextHost; if(!host)cancel(); if (model) model.attach(nextHost); else if (host) schedule(); },
-    showAircraft(id, state = snapshot) { aircraftId = id || 'pilot-01'; snapshot = state || {}; model?.showAircraft(aircraftId, snapshot); },
+    showAircraft(id, state = snapshot) { aircraftId = id || 'pilot-01'; void preloadSortieAircraftImage(aircraftId); snapshot = state || {}; model?.showAircraft(aircraftId, snapshot); },
     // Compatibility for older callers. Lists use the baked UI manifest and
     // cannot create a WebGL context, a fighter, or a GPU readback.
     requestThumbnail() {},
@@ -45,17 +48,19 @@ export function createPeripheralModels({ onReady = () => {}, captureThumbnail } 
 
 function createModelRenderer({ onReady, images, captureThumbnail }) {
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true }); }
+  // This canvas is presented at 30 Hz and moved between live UI hosts. Retain
+  // its last pixels through skipped draws and DOM refreshes, just as on pause.
+  try { renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, preserveDrawingBuffer: true }); }
   catch (error) { console.warn('[peripheral models]', error); return { attach() {}, showAircraft() {}, update() {}, destroy() {}, images: new Map(), available: false }; }
   // Supersample low-DPI previews without exceeding the existing 2x GPU budget.
-  const previewPixelRatio = Math.min(2, Math.max(1.5, window.devicePixelRatio || 1));
+  const previewPixelRatio = AIRCRAFT_PREVIEW_PIXEL_RATIO;
   renderer.setPixelRatio(previewPixelRatio);
   renderer.setSize(600, 390, false);
   renderer.setClearColor(0, 0); renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   const canvas = renderer.domElement; canvas.className = 'pl-model-canvas';
   const exhaustRenderer = createCombatAircraftRenderer(renderer, 1, 1);
-  const fxRenderer = createAircraftFxRenderer(renderer,{samples:2});
+  const fxRenderer = createAircraftFxRenderer(renderer,{samples:AIRCRAFT_PREVIEW_SAMPLES,stableCoverage:true,temporalCoverage:!captureThumbnail});
   const drawingSize = new THREE.Vector2();
   const exhaustFighter = {runtime:null};
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -69,6 +74,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
   // A's hull occupies about half the screen width; leave gutters at the PSD slots.
   const equipmentCamera = new THREE.OrthographicCamera(-13, 13, 8.45, -8.45, .1, 160);
   const camera = equipmentCamera;
+  const coverageContext={camera,object:mount,depth:null,allowHistory:false,pose:0};
   camera.position.set(7, 20, -25); camera.lookAt(0, 0, -.5);
   // A transparent receiver grounds the actual hull and equipped parts in the PSD hangar.
   const shadowImage=document.createElement('canvas');shadowImage.width=shadowImage.height=64;
@@ -88,7 +94,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
   let currentId, currentFitKey, requestedId = 'pilot-01', requestedSnapshot = {}, runtime, equipment, fixedParts,
     elapsed = 0, showcaseElapsed = 0, visible = true, disposed = false, lastFrame = -1;
   let pendingReady = false, jetRestScales=[];
-  let equipmentStyle;
+  let equipmentStyle,panelDepth;
   const releaseMetrics=performanceMonitor.registerRenderer('preview',()=>({active:visible&&canvas.isConnected&&!document.hidden,...renderer.info.render,...renderer.info.memory,batching:batcher.stats}));
   const orbit = createModelOrbitInteraction(canvas, {
     onChange: () => { lastFrame = -1; },
@@ -111,12 +117,15 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
       ? Math.min(limit,Math.max(128,Math.ceil(Math.min(bounds.width,bounds.height*ratio)))) : limit;
     const height=thumbnail?390:Math.round(width/ratio);
     const size=renderer.getSize(new THREE.Vector2());
-    if(size.x===width&&size.y===height)return;
+    if(size.x===width&&size.y===height)return false;
+    canvas.dataset.modelReady='false';
     renderer.setSize(width,height,false);
     camera.top=13*height/width;camera.bottom=-camera.top;camera.updateProjectionMatrix();
-    lastFrame=-1;
+    lastFrame=-1;return true;
   }
-  const viewportObserver=new ResizeObserver(()=>{if(!disposed&&visible&&canvas.isConnected)fitViewport();});
+  const viewportObserver=new ResizeObserver(()=>{
+    if(!disposed&&visible&&canvas.isConnected&&fitViewport()&&runtime)renderModel();
+  });
   function applyViewLighting() {
     scene.environmentIntensity = AIRCRAFT_RENDER_STYLE.environmentIntensity;
     scene.fog = null;
@@ -127,6 +136,7 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
     equipmentStyle?.setEnabled(true);
   }
   function setCameraView(profile,thumbnail=false) {
+    fxRenderer.resetHistory();
     viewProfile = profile;
     applyViewLighting();
     fitViewport(thumbnail);
@@ -203,7 +213,12 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
         canvas.dataset.fxJets=JSON.stringify(runtime.jets.map(({object})=>({visible:object.visible,mask:object.layers.mask,camera:camera.layers.mask,gain:object.material.uniforms.uGain.value,scale:object.scale.toArray()})));
         if(cleanSurface){
           renderer.getDrawingBufferSize(drawingSize);exhaustRenderer.resize(drawingSize.x,drawingSize.y);exhaustFighter.runtime=runtime;
-          fxRenderer.render(()=>exhaustRenderer.render(scene,camera,exhaustFighter,canvas.clientWidth||drawingSize.x),drawingSize.x,drawingSize.y);
+          coverageContext.allowHistory=!runtime.deployment.moving&&!orbit.dragging;
+          coverageContext.pose=runtime.deployment.progress;
+          fxRenderer.render(()=>{
+            exhaustRenderer.render(scene,camera,exhaustFighter,canvas.clientWidth||drawingSize.x);
+            coverageContext.depth=runtime.depthInfo?.texture;
+          },drawingSize.x,drawingSize.y,isShowcase()?coverageContext:undefined);
         }
         else renderer.render(scene,camera);
       }finally{batcher.restore();for(const [node,wasVisible]of hiddenFx)node.visible=wasVisible;}
@@ -216,10 +231,14 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
     if (!isFighterPackageReady(id) || disposed || runtime && id === currentId && fitKey === currentFitKey) return;
     const setupAt=performanceMonitor.enabled?performance.now():0;
     currentId = id; currentFitKey = fitKey;
+    fxRenderer.resetHistory();
     canvas.dataset.modelReady = 'false';
-    batcher.clear();equipmentStyle?.dispose(); equipmentStyle = null;
+    batcher.clear();equipmentStyle?.dispose(); equipmentStyle = null;panelDepth?.dispose();panelDepth=null;
     fixedParts?.dispose(); fixedParts = null; equipment?.dispose(); equipment = null; runtime?.dispose(); runtime = null; attitude.clear();
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
+    // Run before ConfigFighter's rigid batching so the overlapping bay walls
+    // retain their depth precedence through merging and the deployment joints.
+    panelDepth=stabilizeAircraftPanelDepth(asset.solid);
     scene.environment = environment.texture;
     renderer.setPixelRatio(previewPixelRatio);
     applyViewLighting();
@@ -272,14 +291,20 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
     attach(host) {
       if (!host) { canvas.remove(); viewportObserver.disconnect(); observedHost=null; orbit.cancel(); return; }
       const entering = observedHost === null;
-      if (canvas.parentNode !== host) { host.append(canvas); orbit.reattach(); }
+      const moved=canvas.parentNode!==host;
+      if (moved) { host.append(canvas); orbit.reattach(); }
       if(observedHost!==host){viewportObserver.disconnect();observedHost=host;viewportObserver.observe(host);}
       const profile = ['equipment','catalog','patrol'].includes(host.dataset.modelView) ? host.dataset.modelView : host.classList.contains('bc-aircraft') ? 'battle' : 'default';
       canvas.tabIndex = profile === 'patrol' ? -1 : 0;
       canvas.inert = profile === 'patrol';
       orbit.setYawOnly(profile === 'battle');
       if (profile !== viewProfile || entering) { setCameraView(profile); restartShowcase(); applyViewPose(); if (runtime) { sampleModel(0); renderModel(); } }
-      else fitViewport();
+      else {
+        const resized=fitViewport();
+        // A rebuilt catalog can reattach during a skipped 30 Hz update. Present
+        // the current pose immediately; do not restart the deployment clock.
+        if(runtime&&(moved||resized))renderModel();
+      }
       if(runtime&&currentId===host.dataset.modelAircraft)notifyReady();
     },
     showAircraft,
@@ -308,6 +333,6 @@ function createModelRenderer({ onReady, images, captureThumbnail }) {
       applyViewPose();
       sampleModel(sampleTime); renderModel();
     },
-    destroy() { if (disposed) return; disposed = true; releaseMetrics();batcher.destroy(); viewportObserver.disconnect(); orbit.destroy(); equipmentStyle?.dispose(); fixedParts?.dispose(); equipment?.dispose(); runtime?.dispose(); exhaustRenderer.dispose(); fxRenderer.dispose(); shadowFloor.geometry.dispose(); shadowFloor.material.dispose();shadowTexture.dispose(); keyLight.shadow.dispose(); environment.dispose(); renderer.dispose(); canvas.remove(); images.clear(); scene.clear(); },
+    destroy() { if (disposed) return; disposed = true; releaseMetrics();batcher.destroy(); viewportObserver.disconnect(); orbit.destroy(); equipmentStyle?.dispose(); panelDepth?.dispose(); fixedParts?.dispose(); equipment?.dispose(); runtime?.dispose(); exhaustRenderer.dispose(); fxRenderer.dispose(); shadowFloor.geometry.dispose(); shadowFloor.material.dispose();shadowTexture.dispose(); keyLight.shadow.dispose(); environment.dispose(); renderer.dispose(); canvas.remove(); images.clear(); scene.clear(); },
   };
 }

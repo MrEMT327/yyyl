@@ -1,0 +1,25 @@
+{
+  "method": "Built-in imagegen using the project PSD close control as color/material reference. Alpha crop and resize only.",
+  "styleReference": "art/psd-popup-v1/close.png",
+  "prompt": "A small simple round coral-red notification dot, thin dark-red outline, restrained upper-left highlight, low relief matching the project PSD. Transparent background; no letter, number, X, frame, metal rim, glow or cast shadow.",
+  "assets": [
+    {
+      "file": "red-dot.png",
+      "width": 64,
+      "height": 64,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "source": "art/project-notification-dot-v1/source-red-dot.png",
+      "sourceBounds": [
+        199,
+        199,
+        1039,
+        1050
+      ],
+      "sourceSha256": "1863101b5a383bb1098f012bf62403db1c9bde294f59fd8bcb878ad2e09b07e2",
+      "sha256": "91472a261bc00e850c1f69833ea61d1045762acf489763eacdbdcb982483550c"
+    }
+  ]
+}

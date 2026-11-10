@@ -1,0 +1,29 @@
+{
+  "method": "Built-in imagegen with project PSD navigation material reference; alpha crop and resize only.",
+  "reference": "art/psd-main-v1/navigation/background-clean.png",
+  "prompt": "A thin flat dark navy-charcoal horizontal status caption backing, subtle diagonal texture and restrained blue-gray edge, tiny clipped corners. No text, figure, icon, metal hardware, button bevel, glow or shadow. Transparent outer background.",
+  "nineSlice": {
+    "source": 10,
+    "target": 2
+  },
+  "assets": [
+    {
+      "file": "status-plate.png",
+      "width": 512,
+      "height": 52,
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "source": "art/equipment-equipped-v2/source-status-plate.png",
+      "sourceBounds": [
+        129,
+        264,
+        2043,
+        459
+      ],
+      "sourceSha256": "aac8a7e8dbf5a2d303b4b3088bd9702768d54cf78f05b40a70f766291666ac53",
+      "sha256": "173934a4e92bc90d8b44f733a54381a5c08151c6e91bf0ffad54af2665ead3e9"
+    }
+  ]
+}

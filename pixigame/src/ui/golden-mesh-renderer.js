@@ -43,6 +43,7 @@ uniform int rgbRepairEnabled;
 uniform vec4 repairUVRect;
 uniform vec4 rgbRepairUVRect;
 uniform int openingCount;
+uniform int openingKeepInside;
 uniform vec2 openingPoints[48];
 uniform vec2 openingArtworkSize;
 uniform vec2 openingEdge;
@@ -109,6 +110,7 @@ vec4 sampleFixedMaterial(vec2 point){
       if((a.y>p.y)!=(b.y>p.y))if(p.x<(b.x-a.x)*(p.y-a.y)/(b.y-a.y)+a.x)inside=!inside;
     }
     float signedDistance=inside?-distanceToEdge:distanceToEdge;
+    if(openingKeepInside!=0)signedDistance=-signedDistance;
     float edgeWidth=max(openingEdge.x,.65*fwidth(signedDistance));
     float coverage=smoothstep(-edgeWidth,edgeWidth,signedDistance);
     float ink=openingEdge.y>0.0?1.0-smoothstep(openingEdge.y*.65,openingEdge.y+edgeWidth*.55,signedDistance):0.0;
@@ -122,8 +124,7 @@ void main(){
   if(operation==3){colour=vec4(vec3(c.a),c.a);return;}
   float factor=opacity;
   if(hemOverlayEnabled!=0){
-    // The authored seated pose already has a curved thigh opening. Render
-    // only the portion above that boundary in front of the thigh.
+    // Only the near shorts opening belongs in front of the near thigh.
     vec2 p=uv*hemOverlayCrop.zw+hemOverlayCrop.xy;
     float edge;
     if(p.x<650.0)edge=mix(735.0,711.0,clamp((p.x-600.0)/50.0,0.0,1.0));
@@ -158,7 +159,7 @@ export function createGoldenMeshRenderer(canvas, manifest, textures) {
   const vs=compile(gl.VERTEX_SHADER,VERTEX),fs=compile(gl.FRAGMENT_SHADER,FRAGMENT);
   program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS)){const reason=gl.getProgramInfoLog(program);gl.deleteProgram(program);throw new Error(reason||'角色着色器连接失败');}
-  const uniforms=Object.fromEntries(['openingCount','openingPoints[0]','openingArtworkSize','openingEdge','sceneSize','cameraScale','cameraOffset','containFit','rgbaTexture','clipTexture','repairRgbaTexture','repairWeightTexture','rgbRepairTexture','rgbRepairWeightTexture','repairEnabled','rgbRepairEnabled','repairUVRect','rgbRepairUVRect','seamUnderlayTexture','seamUnderlayEnabled','seamBodyCrop','seamUnderlayCrop','seamFadeY','fixedSkinPatchEnabled','fixedSkinPatchSize','fixedSkinPatchRect','fixedSkinPatchSample','fixedHairTexture','fixedHairEnabled','fixedHairCrop','hemOverlayEnabled','hemOverlayCrop','opacity','operation','masked','invertedMask'].map(name=>[name,gl.getUniformLocation(program,name)]));
+  const uniforms=Object.fromEntries(['openingCount','openingKeepInside','openingPoints[0]','openingArtworkSize','openingEdge','sceneSize','cameraScale','cameraOffset','containFit','rgbaTexture','clipTexture','repairRgbaTexture','repairWeightTexture','rgbRepairTexture','rgbRepairWeightTexture','repairEnabled','rgbRepairEnabled','repairUVRect','rgbRepairUVRect','seamUnderlayTexture','seamUnderlayEnabled','seamBodyCrop','seamUnderlayCrop','seamFadeY','fixedSkinPatchEnabled','fixedSkinPatchSize','fixedSkinPatchRect','fixedSkinPatchSample','fixedHairTexture','fixedHairEnabled','fixedHairCrop','hemOverlayEnabled','hemOverlayCrop','opacity','operation','masked','invertedMask'].map(name=>[name,gl.getUniformLocation(program,name)]));
   const positionAt=gl.getAttribLocation(program,'position'),uvAt=gl.getAttribLocation(program,'texcoord');
   gl.useProgram(program);gl.uniform2f(uniforms.sceneSize,manifest.width,manifest.height);gl.uniform1f(uniforms.cameraScale,manifest.camera.scale);gl.uniform2fv(uniforms.cameraOffset,manifest.camera.offset);gl.uniform1i(uniforms.rgbaTexture,0);gl.uniform1i(uniforms.clipTexture,1);
   gl.uniform1i(uniforms.repairRgbaTexture,2);gl.uniform1i(uniforms.repairWeightTexture,3);gl.uniform1i(uniforms.rgbRepairTexture,4);gl.uniform1i(uniforms.rgbRepairWeightTexture,5);
@@ -234,6 +235,7 @@ export function createGoldenMeshRenderer(canvas, manifest, textures) {
     if(seam){gl.uniform4fv(uniforms.seamBodyCrop,seam.bodyCrop);gl.uniform4fv(uniforms.seamUnderlayCrop,seam.underlayCrop);gl.uniform2fv(uniforms.seamFadeY,seam.fadeY);gl.activeTexture(gl.TEXTURE6);gl.bindTexture(gl.TEXTURE_2D,textureRecords.get(seam.texture)||defaultTexture);}
     const opening=record.definition.alphaOpening;
     gl.uniform1i(uniforms.openingCount,opening?.polygon.length||0);
+    gl.uniform1i(uniforms.openingKeepInside,opening?.keepInside?1:0);
     if(opening){
       const points=new Float32Array(96);points.set(opening.polygon.flat());
       gl.uniform2fv(uniforms['openingPoints[0]'],points);
@@ -272,12 +274,13 @@ export function createGoldenMeshRenderer(canvas, manifest, textures) {
       else gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
       gl.uniform1i(uniforms.operation,operation);gl.uniform1f(uniforms.opacity,opacity);gl.uniform1i(uniforms.masked,record.mask?1:0);gl.uniform1i(uniforms.invertedMask,definition.invertedMask?1:0);
       gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,record.mask?.texture||defaultTexture);drawRecord(record);
-      if(definition.frontHemOverlay){
-        const shorts=byId.get(definition.frontHemOverlay.source);
+      const hemOverlay=definition.frontHemOverlay;
+      if(hemOverlay){
+        const shorts=byId.get(hemOverlay.source);
         if(shorts&&visibilities[shorts.index]&&opacities[shorts.index]>0){
           gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
           gl.uniform1i(uniforms.operation,0);gl.uniform1f(uniforms.opacity,opacities[shorts.index]);gl.uniform1i(uniforms.masked,0);gl.uniform1i(uniforms.invertedMask,0);
-          gl.uniform4fv(uniforms.hemOverlayCrop,definition.frontHemOverlay.crop);gl.uniform1i(uniforms.hemOverlayEnabled,1);drawRecord(shorts);gl.uniform1i(uniforms.hemOverlayEnabled,0);
+          gl.uniform4fv(uniforms.hemOverlayCrop,hemOverlay.crop);gl.uniform1i(uniforms.hemOverlayEnabled,1);drawRecord(shorts);gl.uniform1i(uniforms.hemOverlayEnabled,0);
         }
       }
     }

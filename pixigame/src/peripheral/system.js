@@ -1,7 +1,9 @@
+import {playerAppearanceSnapshot,planPlayerAppearance} from '../player-appearance.js';
 import { createPeripheralSaveGuard } from './save-guard.js';
 import {localFailureCount,recordLocalFailureProtection,LOCAL_FAILURE_PROTECTION_VERSION} from '../replica/local-failure-protection.js';
 import {planNativeStarterItems,NATIVE_INITIAL_STAMINA} from '../replica/native-starter-items.js';
 import {planNativeStarterCore} from '../replica/native-starter-core.js';
+import {planNativeStarterAircraft} from '../replica/native-starter-aircraft.js';
 import {planRetiredPilotFragments} from '../replica/retired-pilot-fragments.js';
 import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide} from './onboarding.js';
 import { backpackUseRule, planBackpackUse } from '../replica/native-backpack-use.js';
@@ -25,11 +27,13 @@ import { replicaChapter, replicaChapterForStage, replicaCampaignProgress, replic
 import { createReplicaConfiguration, replicaConfigurationKey, validateReplicaConfiguration } from '../replica/loadout-contract.js';
 import { AIRCRAFTS, getPilotState, selectPilot, grantPilotCopies } from '../pilots.js';
 import {nativePlayerIdentity,nativePlayerRenameQuote,planNativePlayerRename} from '../replica/native-player-rename.js';
+import {planBattleRevivePurchase} from '../replica/battle-revive-purchase.js';
+import nativeBattleRules from '../replica/native-battle-rules.json' with {type:'json'};
 import { UNLIMITED_RESOURCES, DEVELOPMENT_BALANCE } from '../development-resources.js';
 import { planDeveloperCurrency } from '../developer-tools.js';
 import { prepareDevelopmentInventory } from '../replica/development-inventory.js';
 import { prepareDevelopmentUnlocks } from '../replica/development-unlocks.js';
-import { pilotSupplySnapshot, planPilotSupply, recordPilotSupplyBattle, recordPilotSupplyUpgrade, recordPilotSupplyEvent, addPilotSupplyCredits } from '../replica/pilot-supply.js';
+import { pilotSupplySnapshot, planPilotSupply, recordPilotSupplyBattle, recordPilotSupplyUpgrade, recordPilotSupplyWeeklyEvent, recordPilotSupplyEvent, addPilotSupplyCredits } from '../replica/pilot-supply.js';
 import { initializeSamplePatrol, samplePatrolSnapshot, planSamplePatrol } from '../replica/sample-patrol.js';
 import { COMMON_WEAPONS, commonWeaponStats } from '../fixed-parts/common-weapons.js';
 import { weaponLevelCap, weaponLevelLimitMessage } from '../fixed-parts/weapon-progression-config.js';
@@ -353,6 +357,17 @@ export function createPeripheralSystem({
     }catch(error){storageWarning=error.message;}
   }
   syncStarterGrants();
+  let starterAircraftAttempted=false;
+  function syncStarterAircraft(){
+    if(!storageCurrent()||starterAircraftAttempted||state.nativeStarterAircraft||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    starterAircraftAttempted=true;
+    try{
+      const next=planNativeStarterAircraft(state,currentTime());if(!next)return;
+      const previous=state;state=next;
+      if(!persist()){state=previous;storageWarning='初始战机状态尚未保存，请恢复存储后重新进入游戏';}
+    }catch(error){storageWarning=error.message;}
+  }
+  syncStarterAircraft();
   const nativeCampaign = replicaCampaignProgress(state.replicaResults || [], state.replicaCampaign);
   if (JSON.stringify(nativeCampaign) !== JSON.stringify(state.replicaCampaign)) {
     state.replicaCampaign = nativeCampaign; persist();
@@ -772,7 +787,7 @@ export function createPeripheralSystem({
     if (!storageCurrent()) return fail(storageWarning);
     // One save commits native items, timer/fractions, daily uses and stamina.
     let supply;
-    try{supply=recordPilotSupplyEvent(state.pilotSupply,currentTime(),{patrolClaims:1,staminaSpent:plan.staminaCost});}
+    try{supply=recordPilotSupplyEvent(state.pilotSupply,currentTime(),{patrolClaims:plan.weeklyTaskEligible===false?0:1,staminaSpent:plan.staminaCost});}
     catch(error){return fail(error.message);}
     const before=[state.samplePatrol,state.replicaInventory,state.stamina,state.pilotSupply];
     state.samplePatrol=plan.ledger;state.replicaInventory=plan.inventory;state.stamina-=plan.staminaCost;state.pilotSupply=supply;
@@ -850,6 +865,17 @@ export function createPeripheralSystem({
   }
   function action(type, payload = {}) {
     if (!storageCurrent()) return fail(storageWarning);
+    if (type === 'battleRevivePurchase') {
+      if (!activeSortie || activeSortie.snapshot.id !== payload.runId || activeSortie.snapshot.engine !== 'danke-replica-v1') return fail('战斗已结束');
+      if (activeSortie.trial) return fail('试玩战斗不消耗钻石');
+      if (!nativeBattleRules.chapters[activeSortie.snapshot.chapterId]?.manualRevives) return fail('本章不提供手动复活');
+      if (state.processedRuns.includes(payload.runId)) return fail('战斗已结算');
+      try {
+        const plan = planBattleRevivePurchase(state.replicaInventory, state.replicaReviveReceipts, payload.runId);
+        if (!plan.duplicate && !saveDailyState({...state, replicaInventory:plan.inventory, replicaReviveReceipts:plan.receipts})) return fail('保存失败，未扣除钻石');
+        onChange(); return pass('', {duplicate:plan.duplicate});
+      } catch (error) { return fail(error.message); }
+    }
     if(type==='onboardingComplete') {
       const group=Number(payload.group);
       if(group!==14||activeSortie)return fail('无效引导步骤');
@@ -906,6 +932,18 @@ export function createPeripheralSystem({
     if(!recoverReplicaSettlement())return fail(storageWarning || '上一局奖励待保存');
     if(['renamePlayer','backpackUse','nativeAcquisition','replicaCollection','selectReplicaLoadout','flightReward','claimSignIn','claimAchievement','researchDraw','pilotSupply','claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample','claimStarReward'].includes(type)) {
       if(shop.busy||!recoverDailyReward()||!starRewards.recover()||!shop.recover())return fail('资源存档待恢复，请先重试');
+    }
+    if(type==='playerAppearance'){
+      if(activeSortie)return fail('请先结束当前战斗');
+      try{
+        const nativeCollection=replicaCollectionSnapshot(state.replicaLoadout,state.replicaInventory,state.replicaCampaign);
+        const identity=nativeCollectionIdentity(nativeCollection,state);
+        const access=playerAppearanceSnapshot(state.playerAppearance,{roster:AIRCRAFTS,...identity,nativeCollection,ownedPilots:pilots().owned});
+        const plan=planPlayerAppearance(state.playerAppearance,access,payload);
+        if(!plan.changed)return pass('当前外观已在使用');
+        if(!saveDailyState({...state,playerAppearance:plan.state}))return fail('外观未保存，请重试');
+        onChange();return pass('外观已切换');
+      }catch(error){return fail(error.message);}
     }
     if (type === 'renamePlayer') {
       if(activeSortie)return fail('请先结束当前战斗');
@@ -1074,6 +1112,10 @@ export function createPeripheralSystem({
       if(plan.progression)next.replicaLoadout=plan.progression;
       if(plan.receipt)next.replicaEquipmentBoxReceipt=copy(plan.receipt);
       if(plan.pilotCreditDelta)next.pilotSupply=addPilotSupplyCredits(state.pilotSupply,currentTime(),plan.pilotCreditDelta);
+      if(operation==='supply'){
+        try{next.pilotSupply=recordPilotSupplyWeeklyEvent(next.pilotSupply,currentTime(),'boxOpens',plan.receipt.count);}
+        catch(error){return fail(error.message);}
+      }
       if(operation==='upgrade'||operation==='upgradeAll'){
         const levels=plan.toLevel-plan.fromLevel;
         if(levels>0){
@@ -1274,7 +1316,7 @@ export function createPeripheralSystem({
   }
   function prepareSortie({ trial = false, engine = 'legacy', chapterId, replicaConfiguration: requestedConfiguration } = {}) {
     if (!storageCurrent()) return fail(storageWarning);
-    if(flightAdBusy||pendingFlightAd)return fail('请先完成当前模拟广告奖励');
+    if(flightAdBusy||pendingFlightAd)return fail('请先完成当前奖励领取');
     if (flightAdBusy) return fail('广告正在播放，请稍候');
     if (pendingFlightAd) return fail('广告奖励待保存，请到每日特惠重试领取');
     if (!recoverReplicaSettlement() || !recoverInterruptedSortie()) return fail(storageWarning || '上一局奖励待恢复，请先重试保存');
@@ -1524,7 +1566,7 @@ export function createPeripheralSystem({
   function snapshot() {
     if (storageCurrent()) {
       syncDay(); if(!state.dailyRewardReceipt && !unsavedPatrolReward)syncPilotUnlocks(); syncSamplePatrol();
-      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();syncAccountExperience();
+      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();syncStarterAircraft();syncAccountExperience();
       if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !unsavedPatrolReward && !state.firstClearWeaponClaimed) claimStageOneWeapon();
     }
     const flightRewards = state.flightRewards ?? flightLedger(null,loadDailyLoginState(storage));
@@ -1570,6 +1612,7 @@ export function createPeripheralSystem({
       version: 1, playerName:nativePlayerIdentity(state.replicaPlayerIdentity,profile.playerName).name,
       accountExperience:accountExperienceSnapshot(state.replicaLoadout,state.replicaAccountExperience),
       playerRename:nativePlayerRenameQuote(state.replicaPlayerIdentity,state.replicaInventory,profile.playerName), ...identity,
+      playerAppearance:playerAppearanceSnapshot(state.playerAppearance,{roster:AIRCRAFTS,...identity,nativeCollection,ownedPilots:pilots().owned}),
       fleet:{revision:state.fleet.revision,mode:state.fleet.mode,...currentFleetBanks(),recruitPresentation:copy(state.fleet.recruitPresentation||null)},
       wallet: { ...replicaResourceWallet(state.replicaInventory), stamina: UNLIMITED_RESOURCES ? DEVELOPMENT_BALANCE : state.stamina,
         maxStamina: MAX_STAMINA, aircraftShards: state.aircraftShards, weaponParts: collection.weaponProgress.universalFragments, cores: state.replicaInventory.items[135] || 0 },

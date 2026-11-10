@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 import { aircraftFxBudget } from '../three/aircraft/aircraft-fx-budget.js';
 
+export async function warmRenderPrograms(renderer,scene,camera,isActive) {
+  const materials=renderer.compile(scene,camera);
+  // Snapshot each compiled program before another pass changes the material's
+  // current variant. Stop polling as soon as this battle closes or loses GL.
+  const programs=[...new Set([...materials].map(material=>renderer.properties.get(material).currentProgram))];
+  while(isActive()&&!renderer.getContext().isContextLost()&&programs.some(program=>program&&!program.isReady())){
+    await new Promise(resolve=>setTimeout(resolve,10));
+  }
+}
+
 /** The package's volumetric exhaust needs the hull/weapon depth buffer. The
  * combat camera is orthographic, unlike the package's perspective showcase. */
 const exhaustScratch=new WeakMap();
@@ -37,6 +47,17 @@ export function createCombatAircraftRenderer(renderer, width, height = width) {
   const resolution = new THREE.Vector2(width, height);
   const states=[];let depth=0;
   return {
+    warmup(scene, camera, fighter, hdr, isActive) {
+      prepareCombatExhaust(fighter,camera,width);
+      const previous=renderer.getRenderTarget();
+      let offscreen;
+      try {
+        // Depth and HDR color use the same linear, offscreen program variant.
+        renderer.setRenderTarget(target);
+        offscreen=warmRenderPrograms(renderer,scene,camera,isActive);
+      }finally{renderer.setRenderTarget(previous);}
+      return hdr ? offscreen : Promise.all([offscreen,warmRenderPrograms(renderer,scene,camera,isActive)]);
+    },
     resize(nextWidth, nextHeight = nextWidth) {
       nextWidth=Math.max(1,Math.round(nextWidth));nextHeight=Math.max(1,Math.round(nextHeight));
       if(nextWidth===width&&nextHeight===height)return;

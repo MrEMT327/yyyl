@@ -15,4 +15,4 @@ export const STAGE1_FLOATING_PROPS = Object.freeze([
   ['cargo',-4.1,-43,1.7,.3],['buoy',3.9,-58,1.05,0],['skiff',-3.8,-80,1.7,.2],
   ['buoy',4.1,-103,1,0],['cargo',2.8,-112,1.6,-.23],
   ['cargo',-4.3,-135,1.85,.14],['skiff',3.2,-158,1.6,-.12],
-].map(Object.freeze));
+].map(([source,x,z,width,yaw])=>Object.freeze([source,x*.42,z,width,yaw])));

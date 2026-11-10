@@ -1,0 +1,10 @@
+{
+  "method": "Built-in imagegen",
+  "date": "2026-11-03",
+  "prompt": "Edit this project-owned transparent game chest icon. Preserve the EXACT chest silhouette, three-quarter perspective, position within the square canvas, proportions, latch, seam geometry, lid state and alpha background. Change COLOR MATERIALS ONLY. It is used at 45 pixels wide, so broad readable two-tone color blocking matters. Upper lid armor ONLY: restrained dusty lavender/periwinkle enamel, desaturated soft medium lavender (#82779f in mids, #b8acc9 highlights), no electric violet, no magenta, no purple glow. Entire LOWER body armor plates (currently purple) must become pale cool ivory/silver-gray (#d0d5db), light enough to read clearly at tiny UI size. Structural ribs/frame stay dark desaturated navy-gray (#25394c). Existing narrow paired gold stripes become subtle satin pale champagne, not bright yellow. Cyan lock remains a small restrained cyan inset, less glowing. Edges use clean soft highlights, remove neon edge lights, maintain crisp illustrated 3D game icon style, no new microdetails, no text, no added shapes. No floor, no cast shadow outside object, transparent background. This is a recolor of our own art, not a new chest design. Preserve original framing and empty margins exactly.",
+  "states": {
+    "closed": "Keep closed lid pose.",
+    "open": "Keep raised lid angle and dark empty interior."
+  },
+  "sourceArt": "Project-owned weekly-chest-closed.png and weekly-chest-open.png from first generation. Competitor used for observation only."
+}

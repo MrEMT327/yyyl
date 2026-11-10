@@ -1,8 +1,7 @@
 import {createOrangeSurfaceConstraints} from './orange-surface-constraints.js';
 import {createOrangeMaterialRetarget} from './orange-material-retarget.js';
-import {orangeTargetLayerOrder} from './orange-jetboard-layering.js';
-import {createOrangeElbowJoin} from './orange-elbow-join.js';
-import {evaluateOrangeHeldCard,evaluateOrangeHandTurn,turnOrangeHandPoint} from './orange-held-card.js';
+import {createOrangeElbowJoin,ORANGE_FOREARM_MATERIAL} from './orange-elbow-join.js';
+import {evaluateOrangeHeldCard,evaluateOrangeHandTurn,turnOrangeHandPoint,ORANGE_CARD_HAND_MATERIAL,ORANGE_CARD_THUMB_MATERIAL,splitOrangeCardGripLayers} from './orange-held-card.js';
 import {createCubismPortraitPlayer} from './cubism-portrait-player.js';
 import {createGoldenMeshRenderer} from './golden-mesh-renderer.js';
 
@@ -20,7 +19,7 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
  let positions=null,opacities=null,orders=null,visibility=null,layers=null,offsets=null,parameterIndices=null;
  const canPlay=()=>!destroyed&&state==='ready'&&host?.isConnected&&visible&&!paused&&!document.hidden&&(!reduced?.matches||explicit);
  const stop=()=>{if(raf!==null)cancelAnimationFrame(raf);raf=null;previous=null;};
- function updateHost(){if(!host)return;Object.assign(host.dataset,{portraitState:state,portraitRevision:manifest?.materialRevision||'',motion:source?.motionName||'idle',time:(source?.currentTime||0).toFixed(4),playing:String(Boolean(canPlay())),representation:'reference-driven-target-mesh'});host.classList.toggle('is-ready',state==='ready');}
+ function updateHost(){if(!host)return;Object.assign(host.dataset,{portraitState:state,portraitRevision:manifest?.hipRepairRevision||manifest?.materialRevision||'',motion:source?.motionName||'idle',time:(source?.currentTime||0).toFixed(4),playing:String(Boolean(canPlay())),representation:'reference-driven-target-mesh'});host.classList.toggle('is-ready',state==='ready');}
  function clearHost(){if(!host)return;host.classList.remove('is-ready');for(const key of ['portraitState','portraitRevision','motion','time','playing','representation'])delete host.dataset[key];}
  function dispose(){renderer?.destroy();renderer=null;source?.destroy();source=null;canvas?.remove();canvas=null;sourceHost?.remove();sourceHost=null;for(const img of images)img.src='';images.clear();}
  function fail(reason){if(destroyed)return;error=reason;state='error';stop();controller.abort();dispose();updateHost();console.warn('橙红发立绘载入失败，保留静态立绘。',reason);}
@@ -124,10 +123,11 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
    if(layer.handPose!==undefined)opacity=activeHand===layer.handPose?1:0;
    if(layer.handPoseFallback&&[19,114,126].includes(activeHand))opacity=0;
    if(layer.nativeOpacityIndex!==undefined)opacity*=Math.max(0,Math.min(1,model.getDrawableOpacity(layer.nativeOpacityIndex)));
-   opacities[j]=opacity;orders[j]=orangeTargetLayerOrder(layer,manifest.materialRevision);visibility[j]=!debugLayers||debugLayers.has(layer.id)?1:0;
-   // The sleeve owns the elbow cuff. Its overlap must cover the duplicate
-   // cuff painted at the far end of the forearm during a bent-arm pose.
-   if(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='front-forearm')orders[j]=419.5;
+   opacities[j]=opacity;orders[j]=layer.order;visibility[j]=!debugLayers||debugLayers.has(layer.id)?1:0;
+   // The repaired seated shorts cover the far-leg root at authored order 310;
+   // the far leg stays at 300 and the near leg crosses in front at 330.
+   // The bent forearm passes in front of the sleeve. Its duplicate cuff is
+   // clipped in material space instead of hiding the whole arm.
    if(layer.nativeOrder!==undefined)orders[j]=raw.drawables.renderOrders[layer.nativeOrder];
    if(manifest.surfaceVersion&&layer.gripOpacitySource!==undefined){const active=[19,114,126,132,443].filter(i=>model.getDrawableOpacity(i)>.15);if(active.length)orders[j]=Math.max(...active.map(i=>raw.drawables.renderOrders[i]));}
    if(layer.orderSources&&!layer.id.startsWith('front-')){
@@ -136,10 +136,11 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
    }
    if(card&&layer.handPose!==undefined)orders[j]+=card.handOrderBias;
    if(card&&layer.handPoseFallback)orders[j]=card.order+.5;
+   if(card&&layer.cardGripDepth)orders[j]=card.order+(layer.cardGripDepth==='front'?.5:-.5);
   }
   // The target sleeves and glove remain a connected foreground chain.
   if(!manifest.surfaceVersion)for(let j=0;j<layers.length;j++){const id=layers[j].id;if(id.startsWith('front-')&&!['front-leg','front-hair'].includes(id))orders[j]=id.includes('hand')?424:id.includes('forearm')?423:id.includes('skin')?392:id.includes('underlap')?393:395;}
-  if(retarget)retargetStats=retarget.apply(positions,{sampleSurface,activeHand,time:source.currentTime,jointPositions});
+  if(retarget)retargetStats=retarget.apply(positions,{sampleSurface,activeHand,time:source.currentTime,motionName:source.motionName,jointPositions});
   if(elbowJoin)elbowJoin(positions);
   if(constrain)geometryStats=constrain(positions);
   renderer.draw(positions,opacities,orders,visibility);frames++;updateHost();
@@ -165,7 +166,16 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   state='loading';updateHost();
   const response=await fetch(runtimeUrl,{signal:controller.signal});if(!response.ok)throw Error(`角色清单 HTTP ${response.status}`);manifest=await response.json();if(destroyed)return false;
   if(manifest.schema!=='orange-reference-driven-target-mesh-v1')throw Error('不支持的角色清单');
-  layers=manifest.layers;retarget=manifest.materialGroups?createOrangeMaterialRetarget(manifest):null;elbowJoin=manifest.materialRevision==='jetboard-v5-clean-r5'&&retarget?createOrangeElbowJoin(retarget.restManifest):null;constrain=manifest.surfaceVersion?createOrangeSurfaceConstraints(retarget?.restManifest||manifest):null;offsets=[];let count=0;
+  if(manifest.materialRevision==='jetboard-v5-clean-r5'){
+   // Only two local clothing regions use the generated repair. The original
+   // face, hair, torso, near leg and board retain their authored textures.
+   for(const layer of manifest.layers)if(['rear-leg','shorts-underlap'].includes(layer.id))layer.texture=`layers/hip-repair-v3/${layer.id}.png`;
+   manifest.hipRepairRevision='jetboard-v5-original-style-hip-v3';
+   manifest.seatedHipRigRevision='seated-pelvis-v1';
+  }
+  splitOrangeCardGripLayers(manifest);
+  layers=manifest.layers;retarget=manifest.materialGroups?createOrangeMaterialRetarget(manifest):null;elbowJoin=manifest.materialRevision==='jetboard-v5-clean-r5'&&retarget?createOrangeElbowJoin(retarget.restManifest):null;constrain=manifest.surfaceVersion?createOrangeSurfaceConstraints(retarget?.restManifest||manifest):null;
+  offsets=[];let count=0;
   for(const layer of layers){offsets.push(count);count+=layer.vertices.length;}
   positions=new Float32Array(count);opacities=new Float32Array(layers.length);orders=new Float32Array(layers.length);visibility=new Uint8Array(layers.length).fill(1);
   sourceHost=document.createElement('div');sourceHost.setAttribute('aria-hidden','true');
@@ -179,7 +189,7 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   source.seek(0);parameterIndices=new Map(Array.from(source.model.getModel().parameters.ids,(id,i)=>[id,i]));
   canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');Object.assign(canvas.style,{position:'absolute',inset:'0',width:'100%',height:'100%'});
   const shorts=layers.find(layer=>layer.id==='shorts-underlap'),backHair=layers.find(layer=>layer.id==='hair-back-right');
-  const meshManifest={width:manifest.view?.width||manifest.width,height:manifest.view?.height||manifest.height,camera:{scale:1,offset:manifest.view?.offset||[0,0]},meshes:layers.map((layer,i)=>({id:layer.id,texture:layer.texture,vertices:layer.vertices,uvs:layer.uvs,indices:layer.indices,stateOffset:offsets[i],masks:layer.masks||[],blend:layer.blend||'normal',invertedMask:Boolean(layer.invertedMask),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='body'&&shorts?{seamUnderlay:{texture:shorts.texture,bodyCrop:layer.crop,underlayCrop:shorts.crop,fadeY:[638,645]},...(backHair?{fixedHairPatch:{texture:backHair.texture,crop:backHair.crop}}:{})}:{}),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='rear-leg'?{fixedSkinPatch:{size:[325,771],rect:[258,113,311,142],sample:[265,100]}}:{})}))};
+  const meshManifest={width:manifest.view?.width||manifest.width,height:manifest.view?.height||manifest.height,camera:{scale:1,offset:manifest.view?.offset||[0,0]},meshes:layers.map((layer,i)=>({id:layer.id,texture:layer.texture,vertices:layer.vertices,uvs:layer.uvs,indices:layer.indices,stateOffset:offsets[i],masks:layer.masks||[],blend:layer.blend||'normal',invertedMask:Boolean(layer.invertedMask),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='body'&&shorts?{seamUnderlay:{texture:shorts.texture,bodyCrop:layer.crop,underlayCrop:shorts.crop,fadeY:[638,645]},...(backHair?{fixedHairPatch:{texture:backHair.texture,crop:backHair.crop}}:{})}:{}),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='front-forearm'?ORANGE_FOREARM_MATERIAL:{}),...(layer.cardGripDepth==='back'?ORANGE_CARD_HAND_MATERIAL:layer.cardGripDepth==='front'?ORANGE_CARD_THUMB_MATERIAL:{})}))};
   renderer=createGoldenMeshRenderer(canvas,meshManifest,textures);images.clear();
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();fail(Error('角色画布连接已中断'));},{signal:controller.signal});
   host?.appendChild(canvas);state='ready';fit();sync();return true;

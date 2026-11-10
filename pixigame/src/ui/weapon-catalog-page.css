@@ -7,7 +7,10 @@
 #gui-casual-lobby:is([data-subpage='weapon'],[data-subpage='aircraft'],[data-subpage='pilot']) .pl-body {grid-row:2!important;height:100%;padding:0!important;overflow:hidden!important}
 #gui-casual-lobby .ref-catalog.wc-page {
   --catalog-bottom:max(44px,14.2cqw);
-  display:grid;grid-template-rows:83.43cqw 10.06cqw minmax(0,1fr) calc(var(--catalog-bottom) + var(--lobby-safe-bottom,0px));
+  --catalog-heading-height:10.648148cqw;
+  --catalog-hero-height:83.43cqw;
+  --weapon-hero-art-inset:25% 34.5% 33% 29.5%;
+  display:grid;grid-template-rows:var(--catalog-hero-height) var(--catalog-heading-height) minmax(0,1fr) calc(var(--catalog-bottom) + var(--lobby-safe-bottom,0px));
   container-type:inline-size;
   width:100%;height:100%;min-height:0;overflow:hidden;
   background:#24222b;color:#fff;font-family:"Microsoft YaHei","PingFang SC",sans-serif;
@@ -15,7 +18,8 @@
 #gui-casual-lobby .wc-page :is(h1,h2,p) {margin:0;text-shadow:none}
 #gui-casual-lobby .wc-hero {
   position:relative;min-height:0;overflow:hidden;isolation:isolate;
-  background:#172d3f var(--project-armory-image) center 55%/cover no-repeat;
+  background:var(--project-scene-texture),#172d3f var(--project-armory-image) center 55%/cover no-repeat;
+  background-blend-mode:overlay,normal;
 }
 #gui-casual-lobby .wc-hero>img {position:absolute;pointer-events:none}
 #gui-casual-lobby .wc-page-title {
@@ -23,14 +27,11 @@
   color:#fff;font:400 clamp(16px,5cqw,24px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;
   background:var(--project-heading-background);text-shadow:0 1px 2px #07131f!important;
 }
-#gui-casual-lobby .wc-hero-identity {position:absolute;top:17%;left:4%;right:4%;z-index:2;display:flex;align-items:center;justify-content:center;gap:2cqw;pointer-events:none}
-#gui-casual-lobby .wc-hero-identity h2 {font-size:clamp(14px,4.5cqw,21px);line-height:1.3;color:#fff;text-shadow:0 1px 2px #07131f}
-#gui-casual-lobby .wc-hero-state {padding:.5cqw 1.5cqw;font-size:clamp(10px,3cqw,14px);line-height:1.2;border:1px solid currentColor;background:#0b1b29cc}
-#gui-casual-lobby :is(.wc-hero-state,.wc-state-badge).is-using {color:#b7f5d2;background:#153e38ee}
-#gui-casual-lobby :is(.wc-hero-state,.wc-state-badge).is-preview {color:#ffe0a3;background:#44351dee}
+#gui-casual-lobby .wc-state-badge.is-using {color:#b7f5d2;background:#153e38ee}
+#gui-casual-lobby .wc-state-badge.is-preview {color:#ffe0a3;background:#44351dee}
 #gui-casual-lobby .wc-state-badge {position:absolute;top:5%;left:5%;z-index:3;display:flex;align-items:center;justify-content:center;gap:.6cqw;max-width:90%;padding:.6cqw 1cqw;font-size:clamp(9px,2.7cqw,12px);font-weight:700;line-height:1.25;white-space:nowrap;border:1px solid currentColor;pointer-events:none}
 #gui-casual-lobby .wc-state-badge>img {display:block;width:2.8cqw;height:2.5cqw;object-fit:contain}
-#gui-casual-lobby .wc-hero-art {position:absolute;inset:25% 34.5% 33% 29.5%;display:grid;place-items:center;margin:0;padding:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .wc-hero-art {position:absolute;inset:var(--weapon-hero-art-inset);display:grid;place-items:center;margin:0;padding:0;border:0;background:none;cursor:pointer}
 #gui-casual-lobby .wc-art {display:grid;place-items:center;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;container-type:size}
 #gui-casual-lobby .wc-art>span {position:relative;display:block;width:min(100cqw,calc(100cqh * var(--crop-aspect,1)));height:min(100cqh,calc(100cqw / var(--crop-aspect,1)));overflow:hidden}
 #gui-casual-lobby .wc-art .pl-model-thumb {
@@ -45,9 +46,11 @@
   display:flex;align-items:center;justify-content:center;min-width:0;padding:0;
   background:var(--project-heading-background);border:0;
 }
-#gui-casual-lobby .wc-heading h2 {font:400 clamp(14px,4.7cqw,21px)/1.3 PsdPopup,"Microsoft YaHei",sans-serif;color:#fff;text-shadow:0 2px #111}
+#gui-casual-lobby .wc-heading h2 {font:400 clamp(16px,4.7cqw,21px)/1.5 PsdPopup,"Microsoft YaHei",sans-serif;color:#fff;text-shadow:0 2px #111}
 #gui-casual-lobby .wc-page .wc-scroll {padding:3cqw 2.2cqw 3cqw;min-height:0;overflow:auto;background:var(--project-list-background);scrollbar-width:thin}
 #gui-casual-lobby .wc-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.3cqw 1.6cqw;align-content:start;background:none}
+/* The reference uses four 242-wide cells with a 23-wide gutter on a 1080 canvas. */
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-grid {gap:1.111111cqw 2.12963cqw}
 #gui-casual-lobby .wc-item-wrap {position:relative;min-width:0;padding-bottom:3.3cqw}
 #gui-casual-lobby .wc-item-wrap.is-selected {z-index:3}
 #gui-casual-lobby .wc-item {
@@ -85,13 +88,19 @@
 #gui-casual-lobby .wc-lock {position:absolute;top:5%;right:7%;width:3.7cqw;height:4cqw;object-fit:contain}
 #gui-casual-lobby .wc-item-name {position:absolute;bottom:0;left:0;right:0;display:block;height:3.3cqw;padding:0;color:#fff;font-size:clamp(9px,2.8cqw,12px);font-weight:600;line-height:3.3cqw;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #gui-casual-lobby .wc-item-action {--wc-button-height:7cqw!important;position:absolute!important;top:calc(100% - 1.9cqw);left:0;z-index:3;width:100%;margin:0!important;padding:0!important;font-size:clamp(11px,3.5cqw,15px)!important}
+/* Keep the action outside the shared quality card. */
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-grid .wc-item-wrap {display:grid;grid-template-rows:auto minmax(22px,auto);gap:2px;align-content:start;align-self:start;isolation:isolate;padding-bottom:0}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-grid .wc-item-action {position:relative!important;inset:auto;display:flex;align-items:center;justify-content:center;align-self:start;justify-self:center;width:calc(100% - 6px);--wc-button-height:var(--ui-action-height)!important;height:var(--wc-button-height);min-height:var(--wc-button-height);margin:-22px 0 0!important;padding:22px 2px 0!important}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-grid .wc-item-action::before {inset:22px 0 0;border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / 6px stretch}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-grid .wc-item-name {position:static;display:block;height:auto;min-height:22px;padding:2px 0 0;font-size:clamp(12px,3.1cqw,14px);line-height:1.2;white-space:normal;overflow:visible;overflow-wrap:anywhere}
+#gui-casual-lobby .wc-item .wc-selected {z-index:3;width:clamp(20px,5.6cqw,24px);height:clamp(20px,5.6cqw,24px);pointer-events:none}
 #gui-casual-lobby .wc-footer {
   display:grid;grid-template-columns:17cqw minmax(0,1fr) 16.2cqw 16.2cqw;align-items:center;gap:1cqw;
   padding:1cqw 1.5cqw calc(1cqw + var(--lobby-safe-bottom,0px));background:#29282c;border-top:2px solid #111;
 }
 #gui-casual-lobby .wc-button {
-  --wc-button-height:max(40px,12.2cqw);position:relative;isolation:isolate;min-height:var(--wc-button-height);height:var(--wc-button-height);
-  --psd-button-corner:clamp(10px,3.6cqw,16px);
+  --wc-button-height:var(--ui-action-height);position:relative;isolation:isolate;min-height:var(--wc-button-height);height:var(--wc-button-height);
+  --psd-button-corner:var(--psd-control-corner,var(--ui-action-corner));
   margin:0;padding:2px 5px;border:0!important;border-radius:0!important;clip-path:none!important;
   background:transparent!important;box-shadow:none!important;color:#edf4f7!important;
   font:400 clamp(12px,3.8cqw,18px)/1.1 PsdPopup,"Microsoft YaHei",sans-serif;text-shadow:0 1px 2px #07131f;cursor:pointer;
@@ -100,7 +109,7 @@
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   /* A percentage height turns into width-relative left/right slices here.
      One length for all four corners keeps the PSD bevel square at any aspect. */
-  border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch;
+  border-image:var(--psd-control-art,url('/art/psd-buttons-v1/button-blue.png')) var(--psd-control-slice,18) fill / var(--psd-button-corner) stretch;
 }
 #gui-casual-lobby .wc-button::after {content:none}
 #gui-casual-lobby .wc-mode {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:1px 4px}
@@ -132,7 +141,7 @@
 #gui-casual-lobby .wc-growth-section {margin-top:15px}
 #gui-casual-lobby .wc-growth-section>h4 {font-size:16px;line-height:1.5;border-bottom:1px solid #728ba077;padding-bottom:4px}
 #gui-casual-lobby .wc-growth-rule {padding:9px 0;border-bottom:1px solid #728ba033}
-#gui-casual-lobby .wc-growth-rule>h5 {font-size:14px;line-height:1.5;font-weight:700}
+#gui-casual-lobby .wc-growth-rule>h5 {font-size:var(--psd-small-title-size);line-height:1.5;font-weight:700}
 #gui-casual-lobby .wc-growth-rule>small {display:block;margin-top:4px;font-size:12px;color:#4d657b}
 @media(max-height:700px) {
   #gui-casual-lobby .wc-skill-detail {font-size:12px}

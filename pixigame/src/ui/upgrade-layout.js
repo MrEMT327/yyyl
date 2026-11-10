@@ -38,7 +38,7 @@ export function renderUpgradeLayout({ surface, bridge, art, fighter, state, acti
   symbol('link',468,144,24,'#c4d4df');text('全员', 576, 156, { size: 18, color: '#c4d4df', align: 'right' });
 
   symbol('power',27,202,30,'#ffe0a1');
-  text(Math.round(bridge.profilePower()).toLocaleString('en-US'), 24, 261, { size: 46, color: '#ffe0a1', weight: 900, maxWidth: 201 });
+  text(Math.round(bridge.profilePower()).toLocaleString('en-US', {useGrouping:false}), 24, 261, { size: 46, color: '#ffe0a1', weight: 900, maxWidth: 201 });
   image(fighter.texture, 102, 163, 480, 336).material.toneMapped = true;
   action('fighter-orbit', '拖动旋转战机', 120, 183, 456, 239, () => {});
   for (let i = 0; i < 20; i++) quad(0, 403 + i * 5, 600, 5, '#112137', i / 19 * .83);
@@ -74,7 +74,7 @@ export function renderUpgradeLayout({ surface, bridge, art, fighter, state, acti
       symbol('check',164,y+134,29,'#8a754e');
     } else {
       coin(175, y + 159, 23);
-      text(card.cost.toLocaleString('en-US'), 195, y + 160,
+      text(card.cost.toLocaleString('en-US', {useGrouping:false}), 195, y + 160,
         { size: 24, color: card.affordable ? '#4e5e69' : '#a9614e', weight: 800, maxWidth: 181 });
     }
     plate(409, y + 126, 147, 57, card.affordable ? '#a9793c' : '#7d939f', undefined, 8);

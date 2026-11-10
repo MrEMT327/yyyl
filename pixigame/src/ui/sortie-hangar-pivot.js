@@ -1,34 +1,48 @@
 import * as THREE from 'three';
+import centers from './sortie-hangar-centers.json' with {type:'json'};
 
-// The nose and antenna tips skew an extent midpoint. Use the opaque airframe's
-// horizontal surface area so the visible body and wings balance around the axis.
-export function hangarPivot(root, bounds) {
-  root.updateWorldMatrix(true,true);
+export function hangarCenterKey(manifest){
+  return [manifest?.hashes?.[manifest.files?.structure],manifest?.hashes?.[manifest.files?.buffers]].join(':');
+}
+
+// A surface-area centroid shifts toward layered wings/engines. The lift needs
+// the whole visible silhouette centered, including the long, narrow nose.
+// Calibrate ONCE at load. This pivot never depends on the rotation angle.
+export function hangarPivot(root, bounds, asset) {
   const center=bounds.getCenter(new THREE.Vector3());
-  const vertices=[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()];
-  const matrix=new THREE.Matrix4(),instance=new THREE.Matrix4();
-  let weight=0,x=0,z=0;
+  const cached=centers.entries[asset?.entry.slug];
+  if(cached&&cached.key===hangarCenterKey(asset.manifest)){
+    center.x=cached.center[0];center.z=cached.center[1];
+    return center;
+  }
+  root.updateWorldMatrix(true,true);
+  const vertex=new THREE.Vector3(),matrix=new THREE.Matrix4(),instance=new THREE.Matrix4();
+  let minX=Infinity,maxX=-Infinity,minZ=Infinity,maxZ=-Infinity;
   root.traverseVisible(node=>{
     if(!node.isMesh)return;
     const geometry=node.geometry,position=geometry.attributes.position,index=geometry.index;
     if(!position)return;
     const count=index?.count??position.count;
+    const start=Math.max(0,geometry.drawRange.start),end=Math.min(count,start+geometry.drawRange.count);
+    const visited=index?new Uint8Array(position.count):null;
     for(let copy=0;copy<(node.isInstancedMesh?node.count:1);copy++){
       matrix.copy(node.matrixWorld);
       if(node.isInstancedMesh){node.getMatrixAt(copy,instance);matrix.multiply(instance);}
-      for(let i=0;i+2<count;i+=3){
+      visited?.fill(0);
+      for(let i=start;i<end;i++){
         const material=Array.isArray(node.material)
           ?node.material[geometry.groups.find(group=>i>=group.start&&i<group.start+group.count)?.materialIndex??0]
           :node.material;
-        if(!material||!material.visible||material.transparent||material.transmission>0)continue;
-        for(let j=0;j<3;j++)vertices[j].fromBufferAttribute(position,index?index.getX(i+j):i+j).applyMatrix4(matrix);
-        const [a,b,c]=vertices;
-        const area=Math.abs((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z));
-        weight+=area;x+=area*(a.x+b.x+c.x)/3;z+=area*(a.z+b.z+c.z)/3;
+        if(!material||!material.visible||material.opacity===0||material.isShaderMaterial)continue;
+        const vertexIndex=index?index.getX(i):i;
+        if(visited?.[vertexIndex])continue;
+        if(visited)visited[vertexIndex]=1;
+        vertex.fromBufferAttribute(position,vertexIndex).applyMatrix4(matrix);
+        minX=Math.min(minX,vertex.x);maxX=Math.max(maxX,vertex.x);
+        minZ=Math.min(minZ,vertex.z);maxZ=Math.max(maxZ,vertex.z);
       }
     }
   });
-  if(weight>1e-8){center.x=x/weight;center.z=z/weight;}
-  // Keep the previous vertical fit and clearance above the lift.
+  if(Number.isFinite(minX)){center.x=(minX+maxX)*.5;center.z=(minZ+maxZ)*.5;}
   return center;
 }

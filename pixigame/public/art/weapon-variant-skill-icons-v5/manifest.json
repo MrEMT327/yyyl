@@ -1,0 +1,116 @@
+{
+  "version": 5,
+  "assets": [
+    {
+      "key": "20102",
+      "file": "weapon-20102.webp",
+      "name": "狂热射击",
+      "element": "physical",
+      "width": 320,
+      "height": 320,
+      "sha256": "842d1e77087a34f52b60a1328eb9259737527fb6f892df65be88ae809f9d9e6e",
+      "bytes": 88768
+    },
+    {
+      "key": "20202",
+      "file": "weapon-20202.webp",
+      "name": "导弹增载",
+      "element": "fire",
+      "width": 320,
+      "height": 320,
+      "sha256": "76d78f79ef3cbc206002646cd50d1d94736fc1edf9f9562c44a9eba60ae25002",
+      "bytes": 65028
+    },
+    {
+      "key": "20302",
+      "file": "weapon-20302.webp",
+      "name": "激光齐射",
+      "element": "energy",
+      "width": 320,
+      "height": 320,
+      "sha256": "e38bfb0d90c1a5d14f4abd1c53848a759a7baf7f45f9a83b5376bbc06168e822",
+      "bytes": 60424
+    },
+    {
+      "key": "20402",
+      "file": "weapon-20402.webp",
+      "name": "泡泡散射",
+      "element": "acid",
+      "width": 320,
+      "height": 320,
+      "sha256": "de9f654e5b38e515ca6d7f1b8c0e3b7a7fd0acee581af2dca3a3de10991bbde7",
+      "bytes": 79816
+    },
+    {
+      "key": "20502",
+      "file": "weapon-20502.webp",
+      "name": "冰刺迸裂",
+      "element": "ice",
+      "width": 320,
+      "height": 320,
+      "sha256": "5f62a702c47b7dfcc17d86a615f6290a09c05c26f79db82b876196f31f50244a",
+      "bytes": 63596
+    },
+    {
+      "key": "20602",
+      "file": "weapon-20602.webp",
+      "name": "雷霆乐章",
+      "element": "electromagnetic",
+      "width": 320,
+      "height": 320,
+      "sha256": "25ed59308a396277a781ea3490be5fcf932e02ae1d0319c153f12589fc45d061",
+      "bytes": 76124
+    },
+    {
+      "key": "20702",
+      "file": "weapon-20702.webp",
+      "name": "路径灼烧",
+      "element": "fire",
+      "width": 320,
+      "height": 320,
+      "sha256": "54d608df07620fffceda8716db90f7e710c2cbc5cb5b509e39c72425f9c728b9",
+      "bytes": 66570
+    },
+    {
+      "key": "20802",
+      "file": "weapon-20802.webp",
+      "name": "环形剑气",
+      "element": "energy",
+      "width": 320,
+      "height": 320,
+      "sha256": "4987ca3a7ce0a9b94ff390918e30cc3739631177399797320fd9ed78d43aade3",
+      "bytes": 58240
+    },
+    {
+      "key": "20902",
+      "file": "weapon-20902.webp",
+      "name": "冰棘环射",
+      "element": "ice",
+      "width": 320,
+      "height": 320,
+      "sha256": "e3b53f893ee10dae24e18df4d3065539a6a4e79800a9c31cc2bc5138e505f7d3",
+      "bytes": 64702
+    },
+    {
+      "key": "21002",
+      "file": "weapon-21002.webp",
+      "name": "节拍雷鸣",
+      "element": "electromagnetic",
+      "width": 320,
+      "height": 320,
+      "sha256": "c55a99bc70ffef604eec7c825adafd0613fde4efe9650c9aecf6c7f67b0c281f",
+      "bytes": 66804
+    },
+    {
+      "key": "21102",
+      "file": "weapon-21102.webp",
+      "name": "吞噬脉冲",
+      "element": "acid",
+      "width": 320,
+      "height": 320,
+      "sha256": "8d1dc107d0a0f34932eac0556dfc02edccfbc60cb4483d5b2b6e7a37854adb35",
+      "bytes": 76986
+    }
+  ],
+  "source": "art/weapon-variant-skill-icons-v5"
+}

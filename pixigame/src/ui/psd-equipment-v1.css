@@ -3,6 +3,9 @@
 #gui-casual-lobby.equipment-reference[data-subpage=''] .pl-shell {
   /* A query container cannot query its own width: cqw here falls back to the
      viewport on desktop. Let the child header resolve cqw against this shell. */
+  --lobby-nav-gap: 0px;
+  --lobby-nav-height: calc(var(--lobby-frame-width) * .2013333333 + var(--lobby-safe-bottom));
+  --lobby-nav-reserve: var(--lobby-nav-height);
   grid-template-rows: auto minmax(0, 1fr) var(--lobby-nav-reserve) !important;
   padding-top: 0;
   background: #293b51;
@@ -11,8 +14,9 @@
   content: '' !important;
   position: absolute;
   inset: 0 0 auto;
-  height: 89.5cqw;
-  background: url('/art/psd-equipment-v1/hangar-scenery.webp') center / 100% 100% no-repeat;
+  height: 120cqw;
+  /* The first 900 source pixels include the original left-cut divider. */
+  background: url('/art/psd-equipment-v1/equipment-background.webp') center top / 100% auto no-repeat;
   filter: none;
   opacity: 1;
   pointer-events: none;
@@ -20,7 +24,8 @@
 #gui-casual-lobby.equipment-reference[data-subpage=''] .pl-header {
   height: 12.5cqw;
   min-height: 0;
-  background: transparent !important;
+  /* Keep the PSD header fixed when the hangar layout changes. */
+  background: url('/art/psd-equipment-v1/equipment-background.webp') center top / 100% auto no-repeat !important;
   border: 0;
   box-shadow: none;
 }
@@ -29,7 +34,7 @@
   background: transparent !important;
 }
 #gui-casual-lobby.equipment-reference .ag-hangar.eq-hangar {
-  height: 77cqw;
+  height: 107.5cqw;
   min-height: 0;
   max-height: none;
   overflow: visible;
@@ -37,23 +42,13 @@
   border: 0;
 }
 #gui-casual-lobby.equipment-reference .ag-hangar::before,
-#gui-casual-lobby.equipment-reference .ag-hangar::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  width: 50%;
-  height: 8cqw;
-  background: url('/art/psd-equipment-v1/hangar-divider.png') left bottom / 200% 100% no-repeat;
-  pointer-events: none;
-}
-#gui-casual-lobby.equipment-reference .ag-hangar::before { left: 0; }
-#gui-casual-lobby.equipment-reference .ag-hangar::after { right: 0; transform: scaleX(-1); }
+#gui-casual-lobby.equipment-reference .ag-hangar::after { content: none; }
 #gui-casual-lobby.equipment-reference .ag-hangar .eq-aircraft-stage {
   display: block;
   /* Match A: a separate crew card above the enlarged, visually centered hull. */
-  inset: 16cqw auto auto 5%;
+  inset: 25cqw auto auto 5%;
   width: 92cqw;
-  height: 59.8cqw;
+  height: 64cqw;
   z-index: 1;
 }
 #gui-casual-lobby.equipment-reference .eq-aircraft-stage::before {
@@ -117,7 +112,6 @@
 #gui-casual-lobby.equipment-reference .ag-pilot-stats>span { display:flex;flex-direction:row;align-items:center;gap:1cqw;min-width:0;white-space:nowrap; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats small { font-size:max(11px,2.2cqw);line-height:1.1;color:#d0e5f4; }
 #gui-casual-lobby.equipment-reference .ag-pilot-stats b { font-size:max(12px,2.6cqw);line-height:1.1;font-variant-numeric:tabular-nums; }
-#gui-casual-lobby.equipment-reference .ag-pilot-card:hover { background-color: #214661; }
 #gui-casual-lobby.equipment-reference .ag-pilot-avatar {
   position: relative;
   flex: 0 0 22cqw;
@@ -141,9 +135,11 @@
 /* Restore the original compact icon entries inside the hangar. */
 #gui-casual-lobby.equipment-reference .ag-catalog {
   position: absolute;
-  left: 26%;
-  right: 26%;
-  bottom: 1.5cqw;
+  left: 50%;
+  right: auto;
+  width: max(48%, calc(132px + 3cqw));
+  transform: translateX(-50%);
+  bottom: 5.5cqw;
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
   align-items: stretch;
@@ -194,12 +190,12 @@
   height: 15.1cqw !important;
   aspect-ratio: 1;
 }
-#gui-casual-lobby.equipment-reference .ag-weapon { left: 4.2cqw; top: 12.4cqw; }
-#gui-casual-lobby.equipment-reference .ag-position-1 { right: 4cqw; top: 12.4cqw; }
-#gui-casual-lobby.equipment-reference .ag-position-2 { left: 4.2cqw; top: 31.2cqw; }
-#gui-casual-lobby.equipment-reference .ag-position-3 { right: 4cqw; top: 31.2cqw; }
-#gui-casual-lobby.equipment-reference .ag-position-4 { left: 4.2cqw; top: 49.8cqw; }
-#gui-casual-lobby.equipment-reference .ag-position-5 { right: 4cqw; top: 49.8cqw; }
+#gui-casual-lobby.equipment-reference .ag-weapon { left: 4.2cqw; top: 18cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-1 { right: 4cqw; top: 18cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-2 { left: 4.2cqw; top: 40.8cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-3 { right: 4cqw; top: 40.8cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-4 { left: 4.2cqw; top: 63.7cqw; }
+#gui-casual-lobby.equipment-reference .ag-position-5 { right: 4cqw; top: 63.7cqw; }
 #gui-casual-lobby.equipment-reference .ag-page .ag-card {
   display: block;
   width: 100%;
@@ -226,13 +222,15 @@
   background: none !important;
   border-image: url('/art/psd-equipment-v1/frame-empty.png') 18 fill / 2.4cqw stretch !important;
 }
-#gui-casual-lobby.equipment-reference .ag-page .ag-card > img {
+#gui-casual-lobby.equipment-reference .ag-page .ag-card > img:not(.ag-selected) {
   position: absolute;
-  left: 8%;
-  top: 6%;
+  left: 50%;
+  top: 50%;
   width: 84%;
   height: 72%;
   object-fit: contain;
+  object-position: center;
+  transform: translate(-50%,-50%);
   padding: 0;
   filter: none;
 }
@@ -250,25 +248,26 @@
   text-shadow: 0 1px 1px #102538;
 }
 #gui-casual-lobby.equipment-reference .ag-page .ag-card small { font-size: inherit; }
-#gui-casual-lobby.equipment-reference .ag-page .ag-card :is(.ag-tag,.ag-ready,.ag-lock) {
+#gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-lock {
   font: 600 clamp(10px,2.4cqw,13px)/1.1 'Microsoft YaHei','PingFang SC',sans-serif;
   padding: 1px 1px;
   text-shadow: none;
 }
-#gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-tag {
-  display: block;
-  top: 5%;
-  left: 5%;
-  font-size: clamp(10px,2.4cqw,13px);
-  line-height: 1.1;
-  padding: 1px 1px;
-  color: #effff9;
-  background: #164649;
-}
 #gui-casual-lobby.equipment-reference .ag-page .ag-card .ag-lock { right: 8%; top: 8%; }
 #gui-casual-lobby.equipment-reference .ag-page .ag-card.is-selected { outline: 2px solid #fff4a9; outline-offset: -2px; }
 #gui-casual-lobby.equipment-reference .ag-page .ag-weapon > span { display: grid; place-items: center; width: 100%; height: 100%; }
-#gui-casual-lobby.equipment-reference .ag-page .ag-weapon.is-filled > span {position:absolute;left:8%;top:6%;width:84%;height:72%}
+/* The outer frame follows the PSD plate: clipped top-left/bottom-right,
+   square opposite corners. Keep the original inner plate and weapon layout. */
+#gui-casual-lobby.equipment-reference .ag-page .ag-weapon.is-filled::after {
+  content: '';
+  position: absolute;
+  inset: -23%;
+  z-index: -1;
+  pointer-events: auto;
+  background: url('/art/weapon-slot-contour-v4/frame-192.webp') center / 100% 100% no-repeat;
+  background-image: image-set(url('/art/weapon-slot-contour-v4/frame-96.webp') 1x, url('/art/weapon-slot-contour-v4/frame-192.webp') 2x, url('/art/weapon-slot-contour-v4/frame-288.webp') 3x);
+}
+#gui-casual-lobby.equipment-reference .ag-page .ag-weapon.is-filled > span {position:absolute;left:50%;top:50%;width:84%;height:72%;transform:translate(-50%,-50%)}
 #gui-casual-lobby.equipment-reference .ag-page .ag-weapon.is-filled > b {display:block;position:absolute;left:6%;right:6%;bottom:5%;padding:0;text-align:center;font-size:max(11px,2.5cqw);line-height:1;text-shadow:0 1px 0 #102538}
 #gui-casual-lobby.equipment-reference .ag-page .ag-card .psd-empty-mark {
   position: absolute;
@@ -288,11 +287,12 @@
   align-items: center;
   justify-content: space-between;
   flex: none;
-  height: 10.7cqw;
-  padding: 0 5.4cqw;
-  background: #38577555;
+  height: max(44px,14.266667cqw);
+  padding: 0 3.2cqw 0 2.666667cqw;
+  /* Strip cut from the equipment PSD's inventory background (y=901..1008). */
+  background: url('/art/psd-equipment-v1/inventory-toolbar.png') center / 100% 100% no-repeat;
   border: 0;
-  box-shadow: inset 0 -1px #94c6ed88;
+  box-shadow: none;
 }
 #gui-casual-lobby.equipment-reference .ag-toolbar-title {
   position: absolute;
@@ -300,37 +300,49 @@
   top: 50%;
   transform: translate(-50%,-50%);
   color: #f7fbff;
-  font: 800 4.4cqw/1 'Microsoft YaHei',sans-serif;
+  font: 400 5.333333cqw/1 PsdPopup,'Microsoft YaHei',sans-serif;
   text-shadow: 0 1px 0 #22374b;
   pointer-events: none;
 }
 #gui-casual-lobby.equipment-reference .ag-toolbar > :is(.ag-select,.ag-button) {
+  position: relative;
+  isolation: isolate;
   display: block;
-  width: 24cqw;
-  height: 8cqw;
-  min-height: 0;
+  width: 26.4cqw;
+  height: max(44px,8.933333cqw);
+  min-height: 44px;
   padding: 0;
   background: none;
-  border: 2.4cqw solid transparent !important;
-  border-image: url('/art/psd-equipment-v1/button-gold.png') 18 fill / 2.4cqw stretch !important;
+  border: 0 solid transparent !important;
+  border-image: none !important;
   box-shadow: none;
   border-radius: 0;
   filter: none;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar > :is(.ag-select,.ag-button)::before {
+  content: '' !important;
+  position: absolute;
+  inset: auto 0;
+  top: 50%;
+  z-index: -1;
+  height: 8.933333cqw;
+  transform: translateY(-50%);
+  pointer-events: none;
+  border-image: url('/art/psd-equipment-v1/button-gold-native.png') 18 fill / 2.4cqw stretch !important;
 }
 #gui-casual-lobby.equipment-reference .ag-toolbar > .ag-button {
   display: grid;
   place-items: center;
   color: #fff;
-  font: 800 3.2cqw/1 'Microsoft YaHei',sans-serif;
-  text-shadow: 0 1px 0 #995514;
+  font: 400 max(12px,4cqw)/1 PsdPopup,'Microsoft YaHei',sans-serif;
+  text-shadow: 0 1px 0 #071725;
 }
-#gui-casual-lobby.equipment-reference .ag-toolbar > .ag-button::before,
 #gui-casual-lobby.equipment-reference .ag-toolbar > .ag-button::after { content: none !important; }
 #gui-casual-lobby.equipment-reference .ag-toolbar .ag-select select {
   position: absolute;
-  inset: -2.4cqw;
-  width: calc(100% + 4.8cqw);
-  height: calc(100% + 4.8cqw);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   padding: 0 4px;
   text-align: center;
   text-align-last: center;
@@ -338,9 +350,17 @@
   color: #fff;
   background: transparent;
   border: 0;
-  font: 800 3.2cqw/1 'Microsoft YaHei',sans-serif;
-  text-shadow: 0 1px 0 #995514;
+  font: 400 max(12px,4cqw)/1 PsdPopup,'Microsoft YaHei',sans-serif;
+  text-shadow: 0 1px 0 #071725;
   cursor: pointer;
+}
+/* Pointer selection must not leave a focus box around the PSD button. */
+#gui-casual-lobby.equipment-reference .ag-toolbar .ag-select select:focus-visible {
+  outline: 2px solid #b9f4ff;
+  outline-offset: -4px;
+}
+#gui-casual-lobby.equipment-reference .ag-toolbar .ag-select select[data-gear-input='pointer']:focus {
+  outline: none;
 }
 #gui-casual-lobby.equipment-reference .ag-toolbar .ag-select::after { content: none; }
 

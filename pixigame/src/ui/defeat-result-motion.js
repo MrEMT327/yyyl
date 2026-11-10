@@ -1,4 +1,13 @@
-const clamp = n => Math.max(0, Math.min(1, n));
+const clamp=value=>Math.max(0,Math.min(1,value));
+export function defeatMotion(elapsed,reduced=false) {
+  const t=reduced?10:Math.max(0,elapsed);
+  const drop=clamp(t/.6),land=1-(1-drop)**3;
+  return {heroY:-70*(1-land)+Math.sin(t*1.5)*2,heroRotation:-.12*land,
+    bannerScale:1+.12*Math.exp(-Math.max(0,t-.2)*8)*Math.sin(Math.max(0,t-.2)*18),
+    ready:reduced||t>=1.45,
+    reveal:delay=>reduced?1:clamp((t-delay)/.28),smokeTime:reduced?0:t};
+}
+
 const progress = (time, start, duration) => clamp((time - start) / duration);
 const out = t => 1 - (1 - t) ** 3;
 

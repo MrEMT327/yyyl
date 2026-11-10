@@ -23,4 +23,6 @@ export function equipmentArtPath(value) {
   return `art/project-flight-gear-v1/${version}/${family}.webp`;
 }
 
-export const equipmentBlueprintArtPath = partId => `art/project-flight-blueprints-v1/${partId}.webp`;
+// Legacy slot IDs stay stable; blueprint subjects follow the wearable equipment.
+const BLUEPRINT_FILES=Object.freeze({'cockpit':'helmet','fire-control':'glove','fuselage':'chest','amplifier':'tag','engine-armor':'boot'});
+export const equipmentBlueprintArtPath = partId => `art/project-equipment-blueprints-v2/${BLUEPRINT_FILES[partId]||partId}.webp`;

@@ -47,7 +47,7 @@
 .reference-layout[data-tab="shop"] .shop-panel{overflow:hidden;border:2px solid var(--shop-line);border-radius:3px;background-color:var(--shop-panel);box-shadow:inset 0 0 0 2px #07121e,0 2px 0 #050b10}
 .reference-layout[data-tab="shop"] .shop-daily{min-height:180px;background-image:url('/art/shop-comic-v1/daily-supply.webp');background-position:center;background-size:cover}
 .reference-layout[data-tab="shop"] .shop-panel-heading{display:flex;align-items:center;gap:8px;min-height:35px;width:max-content;max-width:90%;padding:5px 16px 5px 10px;background:#091723ed;border-bottom:1px solid #7590a2;clip-path:polygon(0 0,100% 0,94% 100%,0 100%)}
-.reference-layout[data-tab="shop"] .shop-panel-heading h2{font-size:21px;font-weight:900;line-height:1.2;letter-spacing:.5px}
+.reference-layout[data-tab="shop"] .shop-panel-heading h2{font-size:21px;font-weight:900;line-height:var(--psd-small-title-leading,1.5);letter-spacing:.5px}
 .reference-layout[data-tab="shop"] .shop-panel-heading .shop-icon{width:24px;height:24px}
 .reference-layout[data-tab="shop"] .shop-daily-copy{display:grid;gap:4px;width:46%;padding:5px 0 8px;margin-left:9px}
 .reference-layout[data-tab="shop"] .shop-availability{font-size:17px;color:var(--shop-yellow);text-shadow:0 1px 2px #07111b}
@@ -73,7 +73,7 @@
 .reference-layout[data-tab="shop"] .shop-feature-card.is-diamond{background-image:url('/art/shop-comic-v1/diamond-supply.webp');border-color:#b99bce}
 .reference-layout[data-tab="shop"] .shop-feature-card.is-weapon{background-image:url('/art/shop-comic-v1/weapon-supply.webp');border-color:#7aabc8}
 .reference-layout[data-tab="shop"] .shop-feature-heading{display:flex;align-items:center;gap:6px;padding:6px 7px 4px;background:linear-gradient(90deg,#101422f2,#10142240)}
-.reference-layout[data-tab="shop"] .shop-feature-heading h2{font-size:21px;line-height:1.2;font-weight:900;white-space:nowrap}
+.reference-layout[data-tab="shop"] .shop-feature-heading h2{font-size:21px;line-height:var(--psd-small-title-leading,1.5);font-weight:900;white-space:nowrap}
 .reference-layout[data-tab="shop"] .is-diamond .shop-feature-heading{color:#e9b8ff}
 .reference-layout[data-tab="shop"] .shop-feature-description{font-size:11px;font-weight:700;line-height:1.5;padding:1px 7px;background:#081421ab}
 .reference-layout[data-tab="shop"] .shop-feature-bottom{position:absolute;left:7px;right:7px;bottom:7px;display:grid;gap:3px}
@@ -93,7 +93,7 @@
 .reference-layout[data-tab="shop"] .shop-resource-card>.shop-resource-art{width:clamp(36px,12cqw,54px);height:62px;object-fit:contain;flex:none}
 .reference-layout[data-tab="shop"] .shop-resource-card>.shop-resource-symbol{width:35px;height:43px;margin-inline:5px}
 .reference-layout[data-tab="shop"] .shop-resource-copy{min-width:0;flex:1;display:grid;gap:4px}
-.reference-layout[data-tab="shop"] .shop-resource-copy h3{font-size:11px;line-height:1.35}
+.reference-layout[data-tab="shop"] .shop-resource-copy h3{font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 .reference-layout[data-tab="shop"] .shop-resource-copy h3 b{color:var(--shop-yellow);white-space:nowrap}
 .reference-layout[data-tab="shop"] .shop-resource-copy>small{font-size:9px;color:#a5b9c8;text-align:center}
 .reference-layout[data-tab="shop"] .shop-button.is-compact{font-size:11px;gap:4px;padding-inline:3px}
@@ -122,7 +122,7 @@
 .reference-layout[data-tab="shop"] .shop-confirm>small{color:#a9c0d1}
 .reference-layout[data-tab="shop"] .shop-cancel{min-height:44px;border-radius:3px;background:#263b4d;color:#dce7ef;box-shadow:none;text-shadow:none}
 .reference-layout[data-tab="shop"] .shop-rules,.reference-layout[data-tab="shop"] .shop-pool-copy{font-size:12px;line-height:1.7;color:#d5e2ec}
-.reference-layout[data-tab="shop"] .shop-rules h3,.reference-layout[data-tab="shop"] .shop-pool-copy h3{font-size:14px;color:var(--shop-yellow);margin:12px 0 4px}
+.reference-layout[data-tab="shop"] .shop-rules h3,.reference-layout[data-tab="shop"] .shop-pool-copy h3{font-size:var(--psd-small-title-size);color:var(--shop-yellow);margin:12px 0 4px;line-height:var(--psd-small-title-leading,1.5)}
 .reference-layout[data-tab="shop"] .shop-pool-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:10px 0}
 .reference-layout[data-tab="shop"] .shop-pool-grid>div{display:flex;flex-direction:column;align-items:center;padding:5px 2px;background:#0a1723;border:1px solid #4c687d}
 .reference-layout[data-tab="shop"] .shop-pool-grid img{width:100%;height:46px;object-fit:contain}
@@ -157,7 +157,7 @@
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-daily-art{width:44px;height:48px;object-fit:contain}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-daily-art>.resource-icon{width:100%;height:100%}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-row-copy{min-width:0;text-align:left}
-.peripheral-lobby.reference-layout.lobby-theme .shop-simple :is(.shop-row-copy h2,.shop-row-copy h3,.shop-feature-card h2){margin:0;font-size:14px;font-weight:800;line-height:1.4;color:var(--ui-text);text-shadow:none}
+.peripheral-lobby.reference-layout.lobby-theme .shop-simple :is(.shop-row-copy h2,.shop-row-copy h3,.shop-feature-card h2){margin:0;font-size:var(--psd-small-title-size);font-weight:400;line-height:var(--psd-small-title-leading);color:var(--ui-text);text-shadow:none}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-row-copy p{margin:4px 0 0;font-size:12px;line-height:1.4;color:var(--ui-muted)}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-row-copy b{color:var(--ui-yellow);white-space:nowrap;font-variant-numeric:tabular-nums}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-row-action{display:grid;gap:3px;min-width:0;text-align:center}
@@ -175,7 +175,7 @@
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-product-reward{font-size:13px;line-height:18px;font-weight:700;color:var(--ui-text);text-shadow:none}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-resources{padding:0;background:none;border:0;box-shadow:none}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-resources-heading{min-height:30px;padding:0 3px}
-.peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-resources-heading h2{font-size:13px;text-shadow:none;color:var(--ui-muted)}
+.peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-resources-heading h2{font-size:var(--psd-small-title-size);text-shadow:none;color:var(--ui-muted);line-height:var(--psd-small-title-leading,1.5)}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-resource-rows{padding-inline:3px}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-offer-row{display:grid;grid-template-columns:38px minmax(0,1fr) 120px;gap:10px;align-items:center;min-height:76px;padding:8px 0;border-top:1px solid #38516580}
 .peripheral-lobby.reference-layout.lobby-theme .shop-simple .shop-offer-row>:is(.shop-resource-art,.shop-resource-symbol){width:36px;height:40px;object-fit:contain}
@@ -205,7 +205,7 @@
 }
 .peripheral-lobby.reference-layout[data-tab="shop"] .shop-hero-caption strong { font-size: 12px; line-height: 1.3; }
 .peripheral-lobby.reference-layout[data-tab="shop"] :is(.shop-panel-heading,.shop-feature-heading,.shop-resources-heading) h2 {
-  font-size: clamp(15px,3.8cqw,19px); line-height: 1.25; letter-spacing: 0;
+  font-size: max(var(--psd-small-title-size,16px),clamp(15px,3.8cqw,19px)); line-height: var(--psd-small-title-leading,1.5); letter-spacing: 0;
 }
 .peripheral-lobby.reference-layout[data-tab="shop"] .shop-daily-copy { display: flex; flex-direction: column; align-items: stretch; gap: 7px; }
 .peripheral-lobby.reference-layout[data-tab="shop"] .shop-daily-limit { color: #b6cbd9; font-size: 11px; line-height: 1.3; }

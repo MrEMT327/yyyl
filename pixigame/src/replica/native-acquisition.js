@@ -41,19 +41,25 @@ function milestoneState(value={}) {
   const fixedRewardCursor=value.fixedRewardCursor??lastClaimedId;
   if(!Number.isSafeInteger(fixedRewardCursor)||fixedRewardCursor<lastClaimedId||fixedRewardCursor>source.missionRewards.at(-1).id)
     throw Error('章节固定奖励处理记录无效');
+  // Older saves only have a contiguous cursor. New claims may skip earlier rows.
+  const processedRewardIds=value.processedRewardIds??[];
+  if(!Array.isArray(processedRewardIds)||new Set(processedRewardIds).size!==processedRewardIds.length
+    ||processedRewardIds.some(id=>!missions.has(id)||id<=fixedRewardCursor))
+    throw Error('章节独立领取记录无效');
+  const processed=id=>id<=fixedRewardCursor||processedRewardIds.includes(id);
   const deferred=value.deferredRandomRewards??[];
   if(!Array.isArray(deferred)||new Set(deferred.map(row=>row?.rewardId)).size!==deferred.length)
     throw Error('待核实图纸记录无效，未覆盖旧记录');
   const resolved=value.resolvedRandomRewardIds??[];
-  if(!Array.isArray(resolved)||new Set(resolved).size!==resolved.length||resolved.some(id=>!missions.has(id)||id<=lastClaimedId||id>fixedRewardCursor||!unresolvedPairs(missions.get(id)).length||deferred.some(entry=>entry.rewardId===id)))
+  if(!Array.isArray(resolved)||new Set(resolved).size!==resolved.length||resolved.some(id=>!missions.has(id)||id<=lastClaimedId||!processed(id)||!unresolvedPairs(missions.get(id)).length||deferred.some(entry=>entry.rewardId===id)))
     throw Error('兼容随机奖励记录无效，未覆盖旧记录');
-  const expected=source.missionRewards.filter(row=>row.id>lastClaimedId&&row.id<=fixedRewardCursor&&unresolvedPairs(row).length&&!resolved.includes(row.id));
+  const expected=source.missionRewards.filter(row=>row.id>lastClaimedId&&processed(row.id)&&unresolvedPairs(row).length&&!resolved.includes(row.id));
   if(deferred.length!==expected.length||expected.some(row=>{
     const saved=deferred.find(entry=>entry?.rewardId===row.id);
     return !saved||JSON.stringify(saved.rewards)!==JSON.stringify(unresolvedPairs(row));
   })||deferred.some(row=>!missions.has(row?.rewardId)))
     throw Error('待核实图纸与原表不一致，未发放或覆盖记录');
-  return {...structuredClone(value),version:3,lastClaimedId,fixedRewardCursor,resolvedRandomRewardIds:resolved.slice(),
+  return {...structuredClone(value),version:4,lastClaimedId,fixedRewardCursor,processedRewardIds:processedRewardIds.slice(),resolvedRandomRewardIds:resolved.slice(),
     deferredRandomRewards:structuredClone(deferred),coreChapters:coreChapters.slice()};
 }
 function eligible(row,campaign) {
@@ -68,14 +74,14 @@ export function nativeAcquisitionSnapshot(rawInventory,campaign={},rawClaims={},
   const rewards=source.missionRewards.filter(row=>replicaChapter(row.missionId)).map(row=>{
     const reward=rewardPairs(row);
     const fixed=reward.every(([id])=>direct(id));
-    const supported=reward.every(([id])=>direct(id)||localRandomGroup(id)),processed=row.id<=claims.fixedRewardCursor;
+    const supported=reward.every(([id])=>direct(id)||localRandomGroup(id)),processed=row.id<=claims.fixedRewardCursor||claims.processedRewardIds.includes(row.id);
     const deferred=claims.deferredRandomRewards.find(entry=>entry.rewardId===row.id);
     const deferredRewards=unresolvedPairs(row).map(rewardView);
     const reached=eligible(row,campaign),claimed=processed&&!deferred;
     return {...row,reward,localCompatibility:supported&&!fixed,verification:fixed?'固定奖励数量沿原表，暂停资源兼容兑换':supported?`${LOCAL_ECONOMY_POLICY.label}：随机图纸按原候选逐张分配`:claimed?'已领取记录保留':'随机奖励规则未接通',
       rewards:reward.map(rewardView),fixedRewards:reward.filter(([id])=>direct(id)).map(rewardView),
       deferredRewards,reached,claimed,processed,unresolved:Boolean(deferred),supported,
-      canClaim:supported&&(Boolean(deferred)||!processed&&row.id===claims.fixedRewardCursor+1&&reached)};
+      canClaim:supported&&(Boolean(deferred)||!processed&&reached)};
   });
   const chapterCoreRewards=Object.entries(CHAPTER_CORE_REWARDS).map(([key,count])=>{
     const id=Number(key),claimed=claims.coreChapters.includes(id),reached=(campaign.clearedChapterIds||[]).includes(id);
@@ -98,12 +104,14 @@ export function planNativeAcquisition(rawInventory,campaign,rawClaims,operation,
   let rewards,deferredRewards=[],deferredRewardId=null;
   if(operation.action==='chapterReward'){
     const row=nativeAcquisitionSnapshot(inventory,campaign,claims).rewards.find(row=>row.id===operation.id);
-    if(!row?.canClaim)throw new Error(row?.processed?'该档固定奖励已处理，不会重复发放':'请先达到条件并依次处理章节奖励');
+    if(!row?.canClaim)throw new Error(row?.processed?'该档奖励已领取':'尚未达到该档奖励条件');
     const existing=claims.deferredRandomRewards.find(entry=>entry.rewardId===row.id);
     const pairs=localRewardPairs(existing?existing.rewards:rewardPairs(row),rng);
     rewards=pairs.map(([id,count])=>({id,count,name:itemName(id)}));
     if(existing)claims.deferredRandomRewards=claims.deferredRandomRewards.filter(entry=>entry.rewardId!==row.id);
-    else claims.fixedRewardCursor=row.id;
+    else claims.processedRewardIds.push(row.id);
+    while(claims.processedRewardIds.includes(claims.fixedRewardCursor+1))claims.fixedRewardCursor++;
+    claims.processedRewardIds=claims.processedRewardIds.filter(id=>id>claims.fixedRewardCursor);
     if(unresolvedPairs(row).length)claims.resolvedRandomRewardIds.push(row.id);
     // Never step the original claimed cursor over unissued random rewards.
     const pendingIds=new Set(claims.deferredRandomRewards.map(entry=>entry.rewardId));

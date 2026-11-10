@@ -2,15 +2,31 @@
    All runtime frame/plate textures are authored project PSD assets. */
 #gui-casual-lobby .pl-modal-host:has(.common-reward-dialog){z-index:100!important}
 #gui-casual-lobby .pl-modal-backdrop.common-reward-backdrop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:5cqw!important;background:#030c16bd}
-#gui-casual-lobby .pl-modal.common-reward-dialog[data-psd-popup]{--popup-width:94cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:72%;flex:none}
+#gui-casual-lobby .pl-modal.common-reward-dialog[data-psd-popup]{--popup-width:94cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:76%;flex:none}
+#gui-casual-lobby .common-reward-dialog[data-psd-popup]::before{content:none!important}
+#gui-casual-lobby .common-reward-frame{position:absolute;inset:0;z-index:-2;pointer-events:none;display:grid;grid-template-columns:calc(255 * var(--popup-unit)) minmax(0,1fr) calc(44 * var(--popup-unit));grid-template-rows:calc(110 * var(--popup-unit)) minmax(0,1fr) calc(55 * var(--popup-unit))}
+#gui-casual-lobby .common-reward-frame>svg{display:block;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+#gui-casual-lobby .common-reward-dialog[data-psd-popup]::after{content:''!important;display:block!important;position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;border:0;border-image:url('/art/psd-popup-v1/task-face.svg') var(--popup-slice) fill / var(--popup-border) stretch}
 #gui-casual-lobby .common-reward-dialog[data-psd-popup]>.pl-modal-heading{padding-right:7cqw!important}
-#gui-casual-lobby .common-reward-dialog[data-psd-popup]>.pl-modal-content{flex:0 1 auto;padding:2cqw 0 3cqw!important;max-height:54dvh;overflow:auto}
-#gui-casual-lobby .common-reward-dialog .pl-rewards-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:16px 5px;width:100%;margin:0;padding:0}
-#gui-casual-lobby .common-reward-dialog .pl-reward-item{position:relative;isolation:isolate;flex:0 0 calc((100% - 20px)/5);min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:none;text-shadow:none}
+#gui-casual-lobby .common-reward-dialog[data-psd-popup]>.pl-modal-content{flex:0 1 auto;min-height:0;margin:0 6cqw 7cqw!important;padding:3cqw 0 0!important;max-height:none;overflow:auto}
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid{--reward-columns:5;--reward-gap:2cqw;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:4cqw var(--reward-gap);width:100%;margin:0;padding:0}
+#gui-casual-lobby .common-reward-dialog .pl-reward-item{position:relative;isolation:isolate;flex:0 0 calc((100% - (var(--reward-columns) - 1)*var(--reward-gap))/var(--reward-columns));min-width:0;display:flex;flex-direction:column;align-items:center;gap:1.5cqw;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;background:none;text-shadow:none}
 #gui-casual-lobby .common-reward-dialog .pl-reward-item::before{content:none}
-#gui-casual-lobby .common-reward-dialog .pl-reward-item>b{display:block;width:100%;min-height:2.8em;margin:0;padding:0;color:#203c52;font:600 clamp(10px,2.5cqw,13px)/1.4 'PingFang SC',sans-serif;text-align:center;white-space:normal;overflow-wrap:break-word;text-wrap:balance;-webkit-text-stroke:0;text-shadow:none}
+#gui-casual-lobby .common-reward-dialog .pl-reward-item>b{display:block;width:100%;min-height:2.6em;margin:0;padding:0;color:#203c52;font:600 clamp(12px,3.2cqw,15px)/1.3 'Microsoft YaHei','PingFang SC',sans-serif;text-align:center;white-space:normal;overflow-wrap:break-word;text-wrap:balance;-webkit-text-stroke:0;text-shadow:none}
 #gui-casual-lobby .common-reward-dialog .pl-reward-item>small{color:#203c52;font:500 11px/1.3 'PingFang SC',sans-serif;text-align:center;overflow-wrap:anywhere}
 #gui-casual-lobby .common-reward-dismiss{display:block;position:relative;flex:none;min-height:44px;padding:8px 20px;border:0;background:none;box-shadow:none;color:#d8e7ef;font:500 14px/1.4 'PingFang SC',sans-serif;text-shadow:0 1px 2px #07121c;cursor:pointer}
 #gui-casual-lobby .common-reward-dismiss:focus-visible{outline:2px solid #b7eaff;outline-offset:2px}
 
 #gui-casual-lobby .common-reward-dialog>.common-reward-dismiss{position:absolute;top:calc(100% + 12px);left:0;right:0;width:100%;}
+
+/* A short receipt uses readable squares rather than a narrow five-column card. */
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(-n+3)) {gap:3cqw}
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(-n+3))>.pl-reward-item {flex-basis:clamp(64px,25cqw,112px)}
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(-n+3))>.pl-reward-item>.reward-item-slot {width:clamp(64px,22cqw,96px);max-width:100%}
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(-n+3))>.pl-reward-item>b {font-size:clamp(15px,3.8cqw,17px)}
+/* A single reward has room for its full name; the icon keeps its shared size. */
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(1))>.pl-reward-item {flex-basis:min(100%,52cqw)}
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(4)),
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(7)),
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(8)){--reward-columns:4;max-width:calc((100% - 4*var(--reward-gap))*4/5 + 3*var(--reward-gap));margin-inline:auto}
+#gui-casual-lobby .common-reward-dialog .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(6)){--reward-columns:3;max-width:calc((100% - 4*var(--reward-gap))*3/5 + 2*var(--reward-gap));margin-inline:auto}

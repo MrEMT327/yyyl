@@ -1,0 +1,126 @@
+{
+  "assets": [
+    {
+      "element": "physical",
+      "weaponId": 20101,
+      "file": "10000101.webp"
+    },
+    {
+      "element": "physical",
+      "weaponId": 20102,
+      "file": "weapon-20102.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "fire",
+      "weaponId": 20201,
+      "file": "10000701.webp"
+    },
+    {
+      "element": "fire",
+      "weaponId": 20202,
+      "file": "weapon-20202.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "energy",
+      "weaponId": 20301,
+      "file": "10001501.webp"
+    },
+    {
+      "element": "energy",
+      "weaponId": 20302,
+      "file": "weapon-20302.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "acid",
+      "weaponId": 20401,
+      "file": "10000201.webp"
+    },
+    {
+      "element": "acid",
+      "weaponId": 20402,
+      "file": "weapon-20402.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "ice",
+      "weaponId": 20501,
+      "file": "10000601.webp"
+    },
+    {
+      "element": "ice",
+      "weaponId": 20502,
+      "file": "weapon-20502.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "electromagnetic",
+      "weaponId": 20601,
+      "file": "10000401.webp"
+    },
+    {
+      "element": "electromagnetic",
+      "weaponId": 20602,
+      "file": "weapon-20602.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "fire",
+      "weaponId": 20701,
+      "file": "10001701.webp"
+    },
+    {
+      "element": "fire",
+      "weaponId": 20702,
+      "file": "weapon-20702.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "energy",
+      "weaponId": 20801,
+      "file": "10001101.webp"
+    },
+    {
+      "element": "energy",
+      "weaponId": 20802,
+      "file": "weapon-20802.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "ice",
+      "weaponId": 20901,
+      "file": "10001601.webp"
+    },
+    {
+      "element": "ice",
+      "weaponId": 20902,
+      "file": "weapon-20902.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "electromagnetic",
+      "weaponId": 21001,
+      "file": "10000301.webp"
+    },
+    {
+      "element": "electromagnetic",
+      "weaponId": 21002,
+      "file": "weapon-21002.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "element": "acid",
+      "weaponId": 21101,
+      "file": "10000901.webp"
+    },
+    {
+      "element": "acid",
+      "weaponId": 21102,
+      "file": "weapon-21102.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    }
+  ],
+  "pack": "battle-skill-icons-v4"
+}

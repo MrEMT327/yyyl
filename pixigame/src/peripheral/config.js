@@ -1,4 +1,5 @@
 import { AIRCRAFTS } from '../pilots.js';
+import {PILOT_FIGHTERS} from '../three/aircraft/aircraft-roster.js';
 import { COMMON_WEAPONS } from '../fixed-parts/common-weapons.js';
 import { commonWeaponUpgradeCost } from '../fixed-parts/weapon-progression-config.js';
 import { AIRCRAFT_MAX_LEVEL } from '../growth-tuning.js';
@@ -23,7 +24,7 @@ export const PERIPHERAL_AIRCRAFT = Object.freeze(AIRCRAFTS.map((pilot, index) =>
   id: pilot.id, name: pilot.aircraft, rarity: pilot.legacyRecruitGroup, color: pilot.color,
   image: `${import.meta.env?.BASE_URL??'/'}art/aircraft-ui-v1/${pilot.id}.webp`, callsign: pilot.callsign, baseHp: hulls[index], baseAttack: 100,
   weaponId: innateIds[index], weaponName: COMMON_WEAPONS[innateIds[index]].name,
-})));
+})).filter(plane=>Object.hasOwn(PILOT_FIGHTERS,plane.id)));
 export const PERIPHERAL_AIRCRAFT_MAP = new Map(PERIPHERAL_AIRCRAFT.map(a => [a.id, a]));
 
 // Character identity remains independent of weapon firing geometry. These fixed

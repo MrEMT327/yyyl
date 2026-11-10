@@ -19,6 +19,7 @@ export function localBoxSnapshot(gear, time=Date.now()) {
     const row=state.boxes[id];
     return [id,{...row,ruleSource:'local-equipment-box-v1',nativePityKnown:false,nativeFreeScheduleKnown:false,clockBlocked,freeAvailable:!clockBlocked&&time>=row.nextFreeAt,
       freeHours:LOCAL_ECONOMY_POLICY.boxFreeHours[id],
+      freeRemainingMs:Math.max(0,row.nextFreeAt-time),
       qualityRemaining:Math.max(1,LOCAL_ECONOMY_POLICY.boxQualityPity[id]-row.qualityMisses),
       sRemaining:id===3?Math.max(1,LOCAL_ECONOMY_POLICY.advancedSPity-row.sMisses):null,
       label:LOCAL_ECONOMY_POLICY.label}];

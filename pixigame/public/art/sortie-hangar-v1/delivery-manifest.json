@@ -1,0 +1,30 @@
+{
+  "generator": "tools/build-sortie-loading-art.py",
+  "quality": 90,
+  "entries": {
+    "shaft-section": {
+      "sourceBytes": 1630662,
+      "bytes": 108184,
+      "size": [
+        941,
+        1672
+      ],
+      "sourceSha256": "dc3ca02936e82ab407543ff98ca4b27b085d45334ef4854b57c9959f4920a6df",
+      "sha256": "d737afacde101885ec13f7548db2deed3d32b3932edb834e0fbe917a578b5dd7",
+      "alphaExact": true,
+      "meanPixelError": 1.1917
+    },
+    "lift-front": {
+      "sourceBytes": 525770,
+      "bytes": 59376,
+      "size": [
+        2172,
+        724
+      ],
+      "sourceSha256": "e751d348c007bb500e1bba26fb31e2544075e7566e6219d2ed90fced92c17050",
+      "sha256": "07c973ee10cba2a4b5986e8b092221a32d2c9696fc2db531469e1e7dd83ac515",
+      "alphaExact": true,
+      "meanPixelError": 0.3282
+    }
+  }
+}

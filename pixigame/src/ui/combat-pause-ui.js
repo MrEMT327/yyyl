@@ -3,14 +3,16 @@ import { combatPauseModel } from './combat-pause-model.js';
 import { combatWeaponDetail, combatDetailLines } from './combat-weapon-detail-model.js';
 import { paintCombatArt } from './combat-art.js';
 import { paintPsdPopup } from './psd-popup-art.js';
+import { paintPsdPopupTitle } from './psd-popup-title.js';
 import { drawUiSymbol } from './ui-symbols.js';
 import { paintPauseCategoryIcon } from './pause-category-art.js';
 import { upgradeIconLayout, fitUpgradeIcon } from './upgrade-icon-layout.js';
 import iconCrops from './psd-choice-icon-crops.json' with {type:'json'};
+import {beginAudioSwitch,audioSwitchPosition} from './audio-switch-motion.js';
 
 function weaponImage(surface,texture,id,box) {
   if(!texture)return;
-  const source=iconCrops[id],crop=source&&{x:source.crop[0],y:source.crop[1],width:source.crop[2],height:source.crop[3]};
+  const source=texture.userData.inventoryIcon?null:iconCrops[id],crop=source&&{x:source.crop[0],y:source.crop[1],width:source.crop[2],height:source.crop[3]};
   const fit=crop?{...fitUpgradeIcon(...source.size,crop,box),crop}:upgradeIconLayout(texture,box);
   surface.image(texture,fit.x,fit.y,fit.width,fit.height,fit.crop).material.toneMapped=!texture.userData.inventoryIcon;
 }
@@ -19,12 +21,12 @@ function weaponImage(surface,texture,id,box) {
 export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   const model=combatPauseModel(bridge),game=bridge.game;
   backdrop(root,0x030b13,.64);
-  const panel=new Container();panel.label='combat-pause';root.addChild(panel);
+  let panel=new Container();panel.label='combat-pause';root.addChild(panel);
   panel.pauseSnapshot=model;
   const label=(value,x,y,size=24,color='#f2f7ff',align='left')=>surface(panel,s=>s.text(value,x,y,{size,color,align,weight:800}));
   const control=(id,x,y,w,h,title,action,primary=false,art=primary?'primary':'secondary')=>{
     const node=button({x,y,width:w,height:h,text:title,fontSize:29,variant:primary?'primary':'secondary',
-      art,onPress:action});
+      art,artCorner:art==='utility'?14:['audioOn','audioOff'].includes(art)?h/2:undefined,onPress:action});
     // Preserve the reference's small utility artwork while keeping mobile hit areas usable.
     if(!id.startsWith('weapons-')&&!id.startsWith('upgrades-')) {
       const hitWidth=Math.max(112,w),hitHeight=Math.max(112,h);
@@ -35,41 +37,41 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   const navigate=mode=>{game.pauseMode=mode;bridge.pixiCombatUi?.render();};
   const refresh=()=>bridge.pixiCombatUi?.render();
   const mode=game.pauseMode||'pause';
+  function renderSecondary() {
   if(mode==='detail'&&game.pauseDetail?.kind==='weapons') {
     const item=game.pauseDetail,detail=combatWeaponDetail(item);
-    // Keep complete CJK strokes readable after the combat viewport scales down.
-    // Wrap first, instead of letting Canvas squeeze longer lines horizontally.
     const lines=combatDetailLines(detail.description,14),lineHeight=34;
     const extra=lines.length?8+Math.max(0,lines.length-1)*lineHeight:0;
-    const x=73,width=454,height=539+extra,y=Math.round((1300-height)/2);
+    const qualitySpace=detail.qualityName?0:30;
+    const x=73,width=454,height=539+extra-qualitySpace,y=(1300-height)/2,bodyY=y-qualitySpace;
     surface(panel,s=>{
       paintPsdPopup(s,'primary',x,y,width,height);
-      s.text('武器详情',x+37,y+41,{size:27,color:'#fff',weight:800});
+      paintPsdPopupTitle(s,'primary','武器详情',x,y,width,height);
       if(detail.qualityName){
         s.quad(268,y+82,64,23,'#dce7ef');
-        s.text(detail.qualityName,300,y+94,{size:18,color:'#3b5368',weight:600,align:'center'});
+        s.text(detail.qualityName,300,y+94,{size:15,color:'#4a6175',align:'center'});
       }
-      s.text(detail.name,300,y+134,{size:32,color:'#203b50',weight:800,align:'center',maxWidth:360});
-      s.text(detail.levelLabel,300,y+168,{size:22,color:'#29465c',weight:800,align:'center'});
-      weaponImage(s,art?.get(item.itemId),item.itemId,{x:192,y:y+199,width:216,height:171});
+      s.text(detail.name,300,bodyY+134,{size:32,color:'#203b50',weight:800,align:'center',maxWidth:360});
+      s.text(detail.levelLabel,300,bodyY+168,{size:22,color:'#29465c',weight:800,align:'center'});
+      weaponImage(s,art?.get(item.itemId),item.itemId,{x:192,y:bodyY+199,width:216,height:171});
       if(lines.length) {
-        s.quad(106,y+395,388,44+extra,'#d8e5ef');
-        s.quad(106,y+395,4,44+extra,'#527f9b');
-        lines.forEach((line,i)=>s.text(line,300,y+421+i*lineHeight,{size:24,color:'#173449',weight:600,align:'center',maxWidth:360}));
+        s.quad(106,bodyY+395,388,44+extra,'#d8e5ef');
+        s.quad(106,bodyY+395,4,44+extra,'#527f9b');
+        lines.forEach((line,i)=>s.text(line,300,bodyY+421+i*lineHeight,{size:24,weight:600,color:'#203d52',align:'center',maxWidth:360}));
       }
     },{textResolution:3});
     if(item.canFocus) {
-      control('focus',91,y+465+extra,190,51,item.selected?'已优先强化':'优先强化',()=>{
+      control('focus',91,bodyY+465+extra,190,51,item.selected?'已优先强化':'优先强化',()=>{
         if(bridge.focusFixedWeapon?.(item.id)!==false){bridge.saveFixedGrowthCheckpoint?.();game.pauseDetail={...item,selected:true};}
         refresh();
       },true);
-      control('back',319,y+465+extra,190,51,'返回',()=>navigate('pause'));
-    } else control('back',201,y+465+extra,198,51,'返回',()=>navigate('pause'));
+      control('back',319,bodyY+465+extra,190,51,'返回',()=>navigate('pause'));
+    } else control('back',201,bodyY+465+extra,198,51,'返回',()=>navigate('pause'));
     return;
   }
   if(mode==='settings'||mode==='stats'||mode==='detail') {
     surface(panel,s=>paintPsdPopup(s,'primary',42,325,516,630));
-    label(mode==='settings'?'设置':mode==='stats'?(Array.isArray(model.damage)?'伤害统计':'本局统计'):game.pauseDetail?.name||'强化详情',86,390,32,'#f5faff');
+    surface(panel,s=>paintPsdPopupTitle(s,'primary',mode==='settings'?'设置':mode==='stats'?(Array.isArray(model.damage)?'伤害统计':'本局统计'):game.pauseDetail?.name||'强化详情',42,325,516,630));
     if(mode==='stats'&&Array.isArray(model.damage)) {
       const total=model.damage.reduce((sum,w)=>sum+w.damage,0);
       const pages=Math.max(1,Math.ceil(model.damage.length/6)),page=Math.min(pages-1,Math.max(0,game.pauseDamagePage||0));
@@ -92,9 +94,20 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
       const settings=bridge.getCombatAudioSettings?.()||{};
       [['sound','声音'],['music','音乐'],['effects','音效']].filter(([key])=>typeof settings[key]==='boolean'&&typeof bridge.setCombatAudioSetting==='function').forEach(([key,name],i)=>{
         label(name,90,510+i*120,28,'#173449');
-        control(key,330,475+i*120,174,76,settings[key]?'开启':'关闭',()=>{
-          bridge.setCombatAudioSetting?.(key,!settings[key]);refresh();
-        },settings[key]);
+        const enabled=settings[key];
+        const reduced=globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        const toggle=control(key,330,475+i*120,174,76,'',()=>{
+          bridge.setCombatAudioSetting?.(key,!settings[key]);
+          if(!reduced)beginAudioSwitch(bridge,key,enabled,!enabled);
+          refresh();
+        },false,enabled?'audioOn':'audioOff');
+        toggle.__combatLabel=`${name}${enabled?'开启':'关闭'}`;
+        toggle.__combatRole='switch';toggle.__combatChecked=enabled;
+        surface(toggle,s=>{
+          s.text(enabled?'开':'关',enabled?52:121,38,{size:25,color:'#f2f7ff',align:'center',weight:800});
+          const thumb=paintCombatArt(s,'audioThumb',enabled?108:6,8,60,60,{corner:16});
+          thumb.onBeforeRender=()=>{thumb.position.x=36+102*(reduced?(enabled?1:0):audioSwitchPosition(bridge,key,enabled));thumb.updateMatrixWorld();};
+        });
       });
     }
     if(mode==='detail') {
@@ -117,6 +130,7 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
     }
     control('back',170,839,260,80,'返回',()=>navigate('pause'));
     return;
+  }
   }
   label('暂停',300,155,42,'#fff','center');
   function section(kind,title,items,y,tint) {
@@ -157,7 +171,8 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
   section('weapons','武器',model.weapons,280,'#ffe291');
   section('upgrades','强化',model.upgrades,610,'#7ed8ec');
   const utility=(id,x,y,symbol,caption,action,tint='#d0f2ff')=>{
-    const node=control(id,x,y,86,86,'',action);
+    const node=control(id,x,y,86,86,'',action,false,'utility');
+    node.__combatLabel=caption;
     surface(node,s=>{
       drawUiSymbol(s,symbol,24,8,38,tint);
       s.text(caption,43,64,{size:18,color:'#e8f4fb',align:'center',weight:800});
@@ -168,4 +183,14 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
     utility('settings',32,1120,'settings','设置',()=>navigate('settings'));
   control('resume',170,1110,260,100,'继续',()=>bridge.resumeGame(),true);
   utility('home',482,1120,'home','退出',()=>bridge.showExitConfirm(),'#ffc5cc');
+  if(['detail','settings','stats'].includes(mode)) {
+    // Keep the parent page visible and preserve its pagination while only the
+    // top dialog receives pointer input (including the canvas touch router).
+    panel.eventMode='none';
+    panel=new Container();panel.label='combat-pause-modal';
+    panel.eventMode='static';panel.hitArea=new Rectangle(-600,0,1800,1300);
+    root.addChild(panel);
+    backdrop(panel,0x030b13,.36);
+    renderSecondary();
+  }
 }

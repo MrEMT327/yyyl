@@ -1,3 +1,4 @@
+import { itemInspectAttributes } from './item-description-model.js';
 import { availabilityMessage, isResourceShortage } from './resource-availability.js';
 import './resource-availability.css';
 import { STAMINA_RECOVERY_DESCRIPTION } from '../peripheral/config.js';
@@ -13,9 +14,15 @@ import { supplyPool } from './supply-pools.js';
 import {GEAR_PARTS} from '../peripheral/equipment-system.js';
 import './shop-native-v2.css';
 import { nativeItemArt, nativeItemPresentation } from '../replica/native-item-presentation.js';
+import { rewardItemSlot } from './reward-item-slot.js';
+import { boxShowcase, boxGuarantees, boxDetails } from './shop-box-presentation.js';
 import { nativeItemDisplayName } from '../replica/native-item-names.js';
+const base=import.meta.env?.BASE_URL??'/';
+const shopItemId=type=>/^researchBlueprint\d+$/.test(type)?Number(type.slice(17)):/^blueprint[1-5]$/.test(type)?GEAR_PARTS[Number(type.slice(9))-1]?.blueprintId:({basicKeys:113,advancedKeys:112,randomBlueprints:10010007,coins:1,diamonds:2,stamina:4,weaponParts:129})[type]||type;
 const resourceNames = {coins:'金币',diamonds:'钻石',stamina:'体力',weaponParts:'武器零件',aircraftShards:'机体碎片'};
 const resourceIcons = {coins:'coins',diamonds:'gem',stamina:'bolt',weaponParts:'gear',aircraftShards:'jet-fighter'};
+// Cost pictograms belong to their purchase control, not the item inspector.
+const costIcon=(name,cls='sn-cost-icon')=>resourceIcon(name,cls,{inspect:false});
 const glyph = (name, cls='') => resourceIcon(name, "shop-icon " + cls) || projectIcon({play:'ad-play',box:'chest-closed',gear:'weapon-parts','jet-fighter':'aircraft-shard'}[name]||name,`shop-icon ${cls}`);
 const resourceArt = type => resourceIcon(type,'shop-resource-art') || glyph(resourceIcons[type]||'box',`shop-resource-symbol is-${type}`);
 
@@ -25,9 +32,13 @@ export function shopNavigation() { return lobbyNavigation('shop'); }
 
 // Older resource-header links used the recruitment section for diamonds.
 const shopButton=(action,label,data='',disabled=false)=>`<button type="button" class="wc-button sn-button" data-action="${action}" ${data} ${disabled?'disabled':''}>${label}</button>`;
-const shopArt=type=>type.startsWith('researchBlueprint')?`<img src="${nativeItemArt(Number(type.slice(17)))}" alt="" draggable="false">`:type==='basicKeys'||type==='advancedKeys'?`<img src="${nativeItemArt(type==='basicKeys'?113:112)}" alt="" draggable="false">`:type.startsWith('blueprint')?`<img src="${nativeItemArt(GEAR_PARTS[Number(type.slice(9))-1].blueprintId)}" alt="" draggable="false">`:type==='randomBlueprints'?`<img src="${nativeItemArt(10010007)}" alt="" draggable="false">`:type==='coins'?projectIcon('credits-stack','sn-item-art'):resourceArt(type);
+// Shop products communicate their quantity tier; small cost icons keep the HUD coin.
+const coinArt=amount=>amount>=10000?`<img src="${base}art/shop-coin-tiers-v2/${amount>=50000?'coins-safe':'coins-canister'}.png" class="sn-item-art" alt="" draggable="false">`:projectIcon('credits-stack','sn-item-art sn-coin-small');
+const shopArt=(type,amount=0)=>type.startsWith('researchBlueprint')?`<img src="${nativeItemArt(Number(type.slice(17)))}" alt="" draggable="false">`:type==='basicKeys'||type==='advancedKeys'?`<img src="${nativeItemArt(type==='basicKeys'?113:112)}" alt="" draggable="false">`:type.startsWith('blueprint')?`<img src="${nativeItemArt(GEAR_PARTS[Number(type.slice(9))-1].blueprintId)}" alt="" draggable="false">`:type==='randomBlueprints'?`<img src="${nativeItemArt(10010007)}" alt="" draggable="false">`:type==='coins'?coinArt(amount):resourceArt(type);
 const shopName=type=>type.startsWith('researchBlueprint')?nativeItemPresentation(Number(type.slice(17))).name:type==='randomBlueprints'?nativeItemPresentation(10010007).name:type==='basicKeys'?nativeItemDisplayName(113):type==='advancedKeys'?nativeItemDisplayName(112):type.startsWith('blueprint')?`${GEAR_PARTS[Number(type.slice(9))-1].name}图纸`:resourceNames[type]||type;
 const shopOfferName=offer=>{const type=Object.keys(offer.reward||{})[0]||'';return /^(?:researchBlueprint\d+|blueprint\d+|basicKeys|advancedKeys|randomBlueprints)$/.test(type)?shopName(type):offer.name||shopName(type);};
+const cardNames={researchBlueprint801:'机炮图纸',researchBlueprint802:'火箭图纸',researchBlueprint803:'激光图纸',researchBlueprint804:'酸液图纸',researchBlueprint805:'冰刃图纸',researchBlueprint806:'散射图纸',researchBlueprint807:'射线图纸',researchBlueprint808:'光剑图纸',researchBlueprint809:'锯盘图纸',researchBlueprint810:'闪电图纸',researchBlueprint811:'黑洞图纸',blueprint1:'头盔图纸',blueprint2:'护手图纸',blueprint3:'胸甲图纸',blueprint4:'铭牌图纸',blueprint5:'战靴图纸',basicKeys:'普通箱券',advancedKeys:'高级箱券',randomBlueprints:'随机图纸'};
+const shopCardName=offer=>cardNames[Object.keys(offer.reward||{})[0]]||shopOfferName(offer);
 export function shopPurchaseMax(offer,wallet={}){
   const limit=Math.max(0,Math.floor(Number(offer?.maxQuantity)||0)),price=Number(offer?.cost?.amount)||0;
   if(!price||wallet.unlimited)return limit;
@@ -53,37 +64,81 @@ export function reconcileShopReview(review,snapshot){
 export function shopSectionId(id='boxes'){return({supply:'daily',resources:'coins',exchange:'coins',daily:'daily',boxes:'boxes',coins:'coins',stamina:'stamina'})[id]||'boxes';}
 export function shopPage({snapshot:s,helpers:h},selectedSection='boxes'){
  const {escape:e,number:n}=h;selectedSection=shopSectionId(selectedSection);const shop=s.shop,items=shop?.items||[],gear=s.equipment,blocked=s.rewardPending||s.rewardBusy;
- const action=(o,extra='')=>{
-   const reason=s.rewardPending?'奖励待保存':s.rewardBusy?'奖励处理中':!o.available?availabilityMessage(o.reason):'';
+ const action=o=>{
+   const shortage=!blocked&&isResourceShortage(o.reason);
+   const reason=s.rewardPending?'奖励待保存':s.rewardBusy?'奖励处理中':!o.available&&!shortage?availabilityMessage(o.reason):'';
    const soldOut=!o.unlimited&&o.remaining===0||o.reason==='今日已领取';
-   const label=soldOut&&!blocked?'已售罄':o.cost.amount?`<span class="sn-price ${isResourceShortage(o.reason)?'is-short':''}">${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(o.cost.amount)}</span></span>${reason?`<small>${e(reason)}</small>`:''}`:reason?e(reason):o.cost.type==='ad'?`${glyph('play')}广告领取`:'免费领取';
-   return shopButton('shopOffer',label,`data-id="${e(o.id)}" ${!blocked&&isResourceShortage(o.reason)?`data-resource-short="${e(resourceNames[o.cost.type]||'资源')}"`:''} aria-label="${e(shopOfferName(o))}，${o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取'}${o.reason?'，'+e(availabilityMessage(o.reason)):''}" ${extra}`,blocked||!o.available);
+   let label;
+   if(soldOut&&!blocked)label='已售罄';
+   else if(o.cost.amount) {
+     label=`<span class="sn-price ${shortage?'is-short':''}">${costIcon(o.cost.type)}<span>${n(o.cost.amount)}</span></span>${reason?`<small>${e(reason)}</small>`:''}`;
+   } else label=reason?e(reason):o.cost.type==='ad'?`${glyph('play')}广告领取`:'免费领取';
+   const payment=o.cost.amount?`消耗${o.cost.amount}${resourceNames[o.cost.type]||''}`:o.cost.type==='ad'?'广告领取':'免费领取';
+   const description=`${shopOfferName(o)}，${payment}${o.reason?'，'+o.reason:''}`;
+   return `<button type="button" class="sn-card-trigger" data-action="shopOffer" data-id="${e(o.id)}"
+     ${shortage?`data-resource-short="${e(resourceNames[o.cost.type]||'资源')}"`:''}
+     ${o.cost.amount&&!shortage?'aria-haspopup="dialog"':''} aria-label="${e(description)}"
+     ${blocked||!o.available?'disabled':''}></button><div class="sn-card-price">${label}</div>`;
  };
- const tile=o=>{const[type,amount]=Object.entries(o.reward)[0];return `<article class="sn-tile" data-offer="${e(o.id)}"><h3>${e(shopOfferName(o))}</h3><div class="sn-art">${shopArt(type)}</div><strong>×${n(amount)}</strong>${o.discount?`<span class="sn-discount">${o.discount}折</span>`:''}${action(o)}</article>`;};
- const currency=(id,label)=>{const o=items.find(x=>x.id===id);if(!o)return'';const free=id==='exchange-coins'?items.find(x=>x.id==='coin-free'):null,primary=free||o;return `<article class="sn-currency" data-offer="${e(id)}"><div class="sn-art">${shopArt('coins')}</div><div class="sn-currency-copy"><h3>${e(label)}</h3><strong>×${n(o.reward.coins)}</strong></div>${action(primary)}</article>`;};
+ const tile=o=>{
+   const [type,amount]=Object.entries(o.reward)[0];
+   const unavailable=!o.available&&!isResourceShortage(o.reason);
+   return `<article class="sn-tile ${unavailable?'is-unavailable':''}" data-offer="${e(o.id)}">
+     ${action(o)}<h3>${e(shopCardName(o))}</h3>
+     <div class="sn-art" ${itemInspectAttributes(shopItemId(type),e)}>${shopArt(type,amount)}</div>
+     <strong>×${n(amount)}</strong>
+     ${o.discount?`<span class="sn-discount"><span>${e(o.discount)}折</span></span>`:''}
+   </article>`;
+ };
+ const currency=(id,label)=>{
+   const offer=items.find(item=>item.id===id);
+   if(!offer)return'';
+   const free=id==='exchange-coins'?items.find(item=>item.id==='coin-free'):null;
+   const primary=free&&(free.unlimited||free.remaining==null||free.remaining>0)?free:offer;
+   const unavailable=!primary.available&&!isResourceShortage(primary.reason);
+   return `<article class="sn-currency ${unavailable?'is-unavailable':''}" data-offer="${e(id)}">
+     ${action(primary)}<h3>${e(label)}</h3>
+     <div class="sn-art" ${itemInspectAttributes(1,e)}>${shopArt('coins',offer.reward.coins)}</div>
+     <strong>×${n(offer.reward.coins)}</strong>
+   </article>`;
+ };
  const progress=gear?.basicRewardAvailable?20:(gear?.draws||0)%20;
  const box=pool=>{
   const advanced=pool==='advanced',prices=nativeEquipmentBoxPrices(pool),price=prices.single,keys=gear?.keys?.[pool]||0;
-  const ranks=advanced?[1,2,3]:[0,1];
-  const quotes=s.nativeAcquisition?.equipmentBoxes?.find(row=>row.id===(advanced?3:4))?.quotes;
+  const ticketName=advanced?'高级箱券':'普通箱券';
+  const preview=s.nativeAcquisition?.equipmentBoxes?.find(row=>row.id===(advanced?3:4));
+  const quotes=preview?.quotes;
   const quote=count=>quotes?.find(row=>row.count===count);
   const amount=count=>quote(count)?.amount??(keys>=count?count:count===10?prices.ten:price);
   const payment=count=>quote(count)?.payment||(keys>=count?'key':'diamond');
-  const cost=count=>payment(count)==='free'?'<span>免费开启</span>':`<span class="${payment(count)==='diamond'&&!s.wallet.unlimited&&s.wallet.diamonds<amount(count)||payment(count)==='key'&&keys<amount(count)?'is-short':''}">${payment(count)==='key'?h.img(nativeItemArt(prices.keyId),'','sn-cost-icon'):resourceIcon('diamonds','sn-cost-icon')} ${amount(count)==null?'—':n(amount(count))}</span>`;
-  return `<article class="sn-box ${advanced?'is-advanced':''}" data-box="${pool}">
-   <h3>${advanced?'高级装备箱':'普通装备箱'}</h3>
-   <button type="button" class="sn-info" data-action="shopBoxRates" data-pool="${pool}" aria-label="${advanced?'高级':'基础'}装备宝箱概率">${projectIcon('info')}</button>
-   <div class="sn-box-art">${projectIcon('chest-closed')}</div>
-   <div class="sn-box-copy"><div class="sn-quality-range" aria-label="${advanced?'优秀、精良、史诗装备':'普通、优秀装备'}">${ranks.map(rank=>`<i data-psd-quality="${rank}" aria-hidden="true"></i>`).join('')}</div>${advanced&&!gear?.native?'<p>含 S 级装备</p>':''}${keys?`<small>补给券 ×${n(keys)}</small>`:''}</div>
-   ${advanced?'':`<button type="button" class="sn-progress" data-action="shopClaimBoxReward" ${gear?.basicRewardAvailable&&!s.rewardPending&&!s.rewardBusy?'':'disabled'} aria-label="${gear?.basicRewardAvailable?'领取高级装备箱券':'开启20次可领高级装备箱券'}" title="每开启20次，领取高级装备箱券 ×1"><span data-psd-quality="3">${h.img(nativeItemArt(112),'','sn-item-art')}</span><b>${s.rewardPending?'待保存':s.rewardBusy?'处理中':gear?.basicRewardAvailable?'领取':`${progress}/20`}</b></button>`}
-   <div class="sn-box-actions">${shopButton('shopBoxConfirm',`<span>开启1次</span>${cost(1)}`,`data-pool="${pool}" data-count="1" data-payment="${payment(1)}" aria-label="开启1次，${quote(1)?.payment==='free'?'免费':`消耗${payment(1)==='key'?'补给券':'钻石'}${amount(1)??'待同步'}`}"`,blocked||(quote(1)?!quote(1).canDraw:keys<1&&!s.wallet.unlimited&&s.wallet.diamonds<price))}${shopButton('shopBoxConfirm',`<span>开启10次</span>${cost(10)}`,`data-pool="${pool}" data-count="10" aria-label="开启10次，消耗${payment(10)==='key'?'补给券':'钻石'}${amount(10)??'待同步'}"`,blocked||(quote(10)?!quote(10).canDraw:keys<10&&!s.wallet.unlimited&&s.wallet.diamonds<prices.ten))}</div>
-  </article>`;
+  const cost=count=>payment(count)==='free'?'<span class="sn-free-cost">免费开启</span>':`<span class="${payment(count)==='diamond'&&!s.wallet.unlimited&&s.wallet.diamonds<amount(count)||payment(count)==='key'&&keys<amount(count)?'is-short':''}">${payment(count)==='key'?h.img(nativeItemArt(prices.keyId),'','sn-cost-icon'):costIcon('diamonds')} ${amount(count)==null?'—':payment(count)==='key'?`${n(keys)}/${n(amount(count))}`:n(amount(count))}</span>`;
+  const openButton=count=>shopButton('shopBoxConfirm',`<span>开启${count}次</span>${cost(count)}${count===1&&['free','key'].includes(payment(count))&&!blocked?'<i class="sn-box-ready" aria-hidden="true"></i>':''}`,`data-pool="${pool}" data-count="${count}" data-payment="${payment(count)}" aria-label="开启${count}次，${payment(count)==='free'?'免费':`消耗${payment(count)==='key'?ticketName:'钻石'}${amount(count)??'待同步'}`}"`,blocked||(quote(count)?!quote(count).canDraw:keys<count&&!s.wallet.unlimited&&s.wallet.diamonds<(count===10?prices.ten:price)));
+  const claimable=gear?.basicRewardAvailable>0;
+  const freeSeconds=Math.ceil((preview?.compatibility?.freeRemainingMs||0)/1000);
+  const freeTime=[Math.floor(freeSeconds/3600),Math.floor(freeSeconds/60)%60,freeSeconds%60].map(value=>String(value).padStart(2,'0')).join(':');
+  const chest=`${base}art/${advanced?'project-equipment-boxes-v1/advanced.png':'shop-comic-v1/weapon-crate-v2.webp'}`;
+  return `<article class="sn-box ${advanced?'is-advanced':''}" data-box="${pool}"><div class="sn-box-shell">
+   <div class="sn-box-copy"><h3>${advanced?'高级装备箱':'普通装备箱'}</h3>${boxGuarantees(preview,h)}</div>
+   <button type="button" class="sn-info" data-action="shopBoxRates" data-pool="${pool}" aria-label="${advanced?'高级':'普通'}装备宝箱详情">${projectIcon('info')}</button>
+   <div class="sn-box-art">${h.img(chest,advanced?'金边白色高级装备箱':'蓝灰色普通装备箱','sn-chest-image')}</div>
+   ${boxShowcase(preview,h)}
+   ${freeSeconds>0&&!preview?.compatibility?.clockBlocked?`<p class="sn-box-free-time" data-ui-live-text="box-${pool}">${freeTime}后免费</p>`:''}
+   <div class="sn-box-actions">${openButton(1)}${openButton(10)}</div>
+   ${advanced?'':`<button type="button" class="sn-box-milestone ${claimable?'is-claimable':''}" data-action="shopClaimBoxReward" aria-label="${claimable?'领取高级装备箱券':'开启20次可领高级装备箱券'}，当前${progress}/20" ${!claimable||blocked?'disabled':''}>
+    ${rewardItemSlot({name:'高级装备箱券',amount:1,artwork:h.img(nativeItemArt(112),'','sn-item-art'),qualityRank:3,itemId:112},h)}
+    <span class="sn-milestone-value">${s.rewardPending?'待保存':s.rewardBusy?'处理中':claimable?'领取':`${progress}/20`}</span>
+    ${claimable?'<i class="sn-milestone-dot" aria-hidden="true"></i>':''}
+   </button>`}
+  </div></article>`;
  };
  const hours=Math.floor((shop?.remainingMinutes||0)/60),minutes=(shop?.remainingMinutes||0)%60;
+ const freeRefreshes=shop?.refresh?.freeRemaining||0;
+ const refreshLabel=freeRefreshes?`免费刷新×${n(freeRefreshes)}`:`${glyph('play')}<span>刷新</span>`;
+ const refreshAria=freeRefreshes?`免费刷新，剩余${freeRefreshes}次`:'观看广告刷新商店';
  const current=selectedSection==='stamina'?'coins':selectedSection;
  const sections={
   boxes:()=>`<h2>装备宝箱</h2>${box('advanced')}${box('basic')}`,
-  daily:()=>`<h2>每日商店</h2><div class="sn-daily-grid">${items.filter(o=>o.section==='daily').map(tile).join('')}</div><div class="sn-refresh"><div><strong>${hours}:${String(minutes).padStart(2,'0')} 后刷新</strong><small>今日免费刷新：${shop?.refresh?.freeRemaining||0} / ${shop?.refresh?.freeLimit??3}</small></div>${shopButton('shopRefreshPreview',shop?.refresh?.cost?'刷新商品':'免费刷新','',blocked||!(shop?.refresh?.available||shop?.refresh?.adAvailable))}</div>`,
+  daily:()=>`<h2>每日商店</h2><div class="sn-refresh"><div><strong data-ui-live-text="shop-refresh">${hours}:${String(minutes).padStart(2,'0')} 后刷新</strong></div>${shopButton('shopRefreshPreview',refreshLabel,`aria-label="${e(refreshAria)}"`,blocked||!(freeRefreshes?shop?.refresh?.available:shop?.refresh?.adAvailable))}</div><div class="sn-daily-grid">${items.filter(o=>o.section==='daily').map(tile).join('')}</div>`,
   coins:()=>`<h2>金币</h2><div class="sn-currency-grid">${currency('exchange-coins','少量金币')}${currency('exchange-coins-medium','一袋金币')}${currency('exchange-coins-large','一箱金币')}</div>`,
  };
  return `<section class="shop-page store-reference shop-native-v2" data-shop-active="${current}" aria-label="商城">
@@ -101,18 +156,15 @@ export function shopModal(modal,s,h) {
   const orderStale=modal.token!==undefined&&modal.token!==s.shop.token;
   if(modal.type==='shopStamina'){
     const offers=s.shop.items.filter(o=>o.section==='stamina');
-    return {title:'体力补给',content:`<div class="sn-dialog sn-vitality"><h3>${resourceArt('stamina')}${n(s.wallet.stamina)} / ${n(s.wallet.maxStamina??s.wallet.staminaMax)}</h3><p>${e(STAMINA_RECOVERY_DESCRIPTION)}</p>${offers.map(o=>`<div class="sn-vitality-offer"><div><strong>体力 ×${o.reward.stamina}</strong><small>${o.unlimited?'不限次数':`剩余 ${o.remaining}/${o.limit}`}</small></div>${shopButton('shopOffer',o.cost.type==='ad'?`${glyph('play')}广告领取`:`${resourceIcon('diamonds','sn-cost-icon')}${o.cost.amount}`,`data-id="${e(o.id)}"`,blocked||!o.available)}</div>${!o.available?`<p class="sn-hint">${e(availabilityMessage(o.reason))}</p>`:''}`).join('')}</div>`};
-  }
-  if(modal.type==='shopRefreshConfirm'){
-    const refresh=s.shop.refresh,adMode=refresh.freeRemaining===0;
-    return {title:'刷新每日商店',content:`<div class="sn-dialog"><p>${adMode?'免费次数已用完，看广告可刷新一次。':`今日免费刷新：${n(refresh.freeRemaining)} / ${n(refresh.freeLimit)}`}</p><p>同一商品当日限购不重置。</p>${orderStale?'<p class="sn-error">商品状态已更新，请返回重新确认。</p>':''}${adMode&&!refresh.adAvailable&&refresh.adReason?`<p class="sn-hint">${e(refresh.adReason)}</p>`:''}<div class="sn-dialog-actions">${adMode?shopButton('shopRefreshConfirm',`金币 ×${n(refresh.cost)}<br>刷新`,'',blocked||orderStale||!refresh.available):shopButton('close','取消')}${shopButton(adMode?'shopRefreshAdConfirm':'shopRefreshConfirm',adMode?`${glyph('play')}看广告刷新`:'免费刷新','',blocked||orderStale||!(adMode?refresh.adAvailable:refresh.available))}</div></div>`};
+    return {title:'体力补给',content:`<div class="sn-dialog sn-vitality"><h3>${resourceArt('stamina')}${n(s.wallet.stamina)} / ${n(s.wallet.maxStamina??s.wallet.staminaMax)}</h3><p>${e(STAMINA_RECOVERY_DESCRIPTION)}</p>${offers.map(o=>`<div class="sn-vitality-offer"><div><strong>体力 ×${o.reward.stamina}</strong><small>${o.unlimited?'不限次数':`剩余 ${o.remaining}/${o.limit}`}</small></div>${shopButton('shopOffer',o.cost.type==='ad'?`${glyph('play')}广告领取`:`${costIcon('diamonds')}${o.cost.amount}`,`data-id="${e(o.id)}"`,blocked||!o.available)}</div>${!o.available?`<p class="sn-hint">${e(availabilityMessage(o.reason))}</p>`:''}`).join('')}</div>`};
   }
   if(s.equipment?.native && ['shopBoxRates','shopBoxConfirm'].includes(modal.type)){
     const box=s.nativeAcquisition.equipmentBoxes.find(box=>box.id===(modal.pool==='advanced'?3:4));
     const quote=box.quotes.find(quote=>quote.count===(modal.count===10?10:1));
-    if(modal.type==='shopBoxRates')return {title:'宝箱概率',content:`<div class="sn-dialog"><h3>${e(box.name)}</h3>${box.rates.map(r=>`<p class="sn-rate"><span>${e(r.name)}</span><b>${r.weight/1000}%</b></p>`).join('')}</div>`};
+    if(modal.type==='shopBoxRates')return {title:'概率详情',content:boxDetails(box,h)};
     const stale=modal.revision!==s.equipment.revision||modal.inventoryRevision!==s.nativeAcquisition.revision;
-    return {title:'开启装备宝箱',content:`<div class="sn-dialog"><h3>${e(box.name)} ×${quote.count}</h3><p>${quote.payment==='free'?'免费开启':`消耗${quote.payment==='key'?'箱券':'钻石'} ×${quote.amount??'—'}`}</p>${!box.canDraw?`<p>${e(box.unavailableReason)}</p>`:''}${modal.error||stale?`<p class="sn-error">${e(stale?'库存已更新，请关闭后重新确认':modal.error)}</p>`:''}<div class="sn-dialog-actions">${shopButton('close','取消')}${shopButton('shopBoxOpen','确认开启','',blocked||stale||!quote.canDraw)}</div></div>`};
+    const cost=quote.payment==='key'?h.img(nativeItemArt(quote.itemId),'','sn-cost-icon'):costIcon('diamonds');
+    return {title:`开启${box.name}`,content:`<div class="sn-dialog"><p class="sn-box-confirm-question">${quote.payment==='free'?'免费开启':`是否消耗 <span class="sn-price">${cost}<span>${quote.amount==null?'—':n(quote.amount)}</span></span> 开启${quote.count}次？`}</p>${!box.canDraw?`<p>${e(box.unavailableReason)}</p>`:''}${modal.error||stale?`<p class="sn-error">${e(stale?'库存已更新，请关闭后重新确认':modal.error)}</p>`:''}<div class="sn-dialog-actions">${shopButton('close','取消')}${shopButton('shopBoxOpen','确认开启','',blocked||stale||!quote.canDraw)}</div></div>`};
   }
   if(modal.type==='shopBoxRates'){
     const rates=modal.pool==='advanced'?s.equipment.advancedSupply.probabilities.map(r=>({name:({311:'武器模组',312:'S级史诗装备',313:'史诗装备',314:'精良装备',315:'优秀装备'})[r.id],chance:r.weight/s.equipment.advancedSupply.weightTotal*100})):[{name:'普通装备',chance:70},{name:'优秀装备',chance:30}];
@@ -120,7 +172,8 @@ export function shopModal(modal,s,h) {
   }
   if(modal.type==='shopBoxConfirm'){
     const pool=modal.pool==='advanced'?'advanced':'basic',count=modal.count===10?10:1,keys=s.equipment.keys[pool]||0,useKey=keys>=count,cost=(pool==='advanced'?300:60)*count;
-    return {title:'开启装备宝箱',content:`<div class="sn-dialog"><h3>${pool==='advanced'?'高级':'基础'}装备宝箱 ×${count}</h3><p>消耗${useKey?'补给券':'钻石'} ×${useKey?count:cost}</p>${modal.error?`<p class="sn-error">${e(modal.error)}</p>`:''}<div class="sn-dialog-actions">${shopButton('close','取消')}${shopButton('shopBoxOpen','确认开启','',!useKey&&!s.wallet.unlimited&&s.wallet.diamonds<cost)}</div></div>`};
+    const icon=useKey?h.img(nativeItemArt(pool==='advanced'?112:113),'','sn-cost-icon'):costIcon('diamonds');
+    return {title:`开启${pool==='advanced'?'高级':'普通'}装备箱`,content:`<div class="sn-dialog"><p class="sn-box-confirm-question">是否消耗 <span class="sn-price">${icon}<span>${n(useKey?count:cost)}</span></span> 开启${count}次？</p>${modal.error?`<p class="sn-error">${e(modal.error)}</p>`:''}<div class="sn-dialog-actions">${shopButton('close','取消')}${shopButton('shopBoxOpen','确认开启','',!useKey&&!s.wallet.unlimited&&s.wallet.diamonds<cost)}</div></div>`};
   }
   if (modal.type==='shopWeaponPreview') {
     const pool=supplyPool(s,'weapon'), tiers={white:'普通',green:'优秀',blue:'精良',purple:'史诗',gold:'传说'};
@@ -133,7 +186,7 @@ export function shopModal(modal,s,h) {
   }
   if (modal.type==='shopWeaponConfirm') {
     const cost=supplyPool(s,'weapon').singleCost??20, affordable=s.wallet.diamonds>=cost;
-    return {title:'确认武器补给',content:`<div class="shop-confirm shop-paper-confirm"><div class="shop-confirm-head"><span class="shop-confirm-item-art">${projectIcon('chest-closed')}</span><div><h3>通用武器 <b>×1</b></h3><p>随机获得 1 件武器</p><small>重复转为通用强化零件</small></div></div><div class="shop-confirm-price"><p class="shop-confirm-cost"><span>消耗</span><strong>${glyph('gem')}<b>${n(cost)}</b><span>钻石</span></strong></p><p class="shop-confirm-balance">当前拥有 <b>${n(s.wallet.diamonds)}</b> 钻石</p></div><div class="dialog-actions" role="group" aria-label="兑换操作">${button('close','暂不兑换','shop-cancel')}${button('shopWeaponBuy','确认兑换','shop-button is-yellow','',!affordable)}</div></div>`};
+    return {title:'确认武器补给',content:`<div class="shop-confirm shop-paper-confirm"><div class="shop-confirm-head"><span class="shop-confirm-item-art">${projectIcon('chest-closed')}</span><div><h3>通用武器 <b>×1</b></h3><p>随机获得 1 件武器</p><small>重复转为通用强化零件</small></div></div><div class="shop-confirm-price"><p class="shop-confirm-cost"><span>消耗</span><strong>${costIcon('diamonds','shop-icon')}<b>${n(cost)}</b><span>钻石</span></strong></p><p class="shop-confirm-balance">当前拥有 <b>${n(s.wallet.diamonds)}</b> 钻石</p></div><div class="dialog-actions" role="group" aria-label="兑换操作">${button('close','暂不兑换','shop-cancel')}${button('shopWeaponBuy','确认兑换','shop-button is-yellow','',!affordable)}</div></div>`};
   }
   const o=s.shop.items.find(o=>o.id===modal.id);
   if (!o) return {title:'商品已更新',content:'请关闭后重新选择。'};
@@ -142,11 +195,11 @@ export function shopModal(modal,s,h) {
   const disabled=blocked||orderStale||!o.available||quantity>max;
   return {title:'确认兑换',content:`<div class="sn-dialog sn-exchange-dialog">
     <div class="sn-exchange-product">
-      <span class="sn-exchange-item">${shopArt(rewardType)}</span>
+      <span class="sn-exchange-item" ${itemInspectAttributes(shopItemId(rewardType),e)}>${shopArt(rewardType,o.reward[rewardType])}</span>
       <div class="sn-exchange-copy"><h3>${e(shopOfferName(o))}</h3><p>×${n(o.reward[rewardType]*quantity)}</p></div>
       ${o.maxQuantity>1?`<div class="sn-quantity" aria-label="购买数量">${shopButton('shopQuantity','−','data-step="-1" aria-label="减少数量"',quantity<=1)}<output aria-label="购买数量">${quantity}</output>${shopButton('shopQuantity','＋','data-step="1" aria-label="增加数量"',quantity>=max)}${shopButton('shopQuantity','MAX','data-step="max" aria-label="最大数量"',quantity>=max)}</div>`:''}
     </div>
-    <div class="sn-dialog-actions sn-exchange-actions">${shopButton('shopConfirm',`${resourceIcon(o.cost.type,'sn-cost-icon')}<span>${n(price)}</span>`,`data-id="${e(o.id)}" aria-label="确认兑换，消耗${n(price)}${e(currency)}"`,disabled)}</div>
+    <div class="sn-dialog-actions sn-exchange-actions">${shopButton('shopConfirm',`${costIcon(o.cost.type)}<span>${n(price)}</span>`,`data-id="${e(o.id)}" aria-label="确认兑换，消耗${n(price)}${e(currency)}"`,disabled)}</div>
   </div>`};
 }
 
@@ -157,3 +210,5 @@ export function tasksModal(s,h,period='daily') {
 }
 
 import './shop-layout.css';
+
+import './shop-box-presentation.css';

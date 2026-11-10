@@ -3,7 +3,8 @@
 #gui-casual-lobby .draw-stage {
   --draw-accent:#8bdbef;position:absolute;inset:0;z-index:5;isolation:isolate;
   display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden;color:#eefaff;pointer-events:auto;
-  background:linear-gradient(#08101e33,#08101e55),url('/art/project-draw-stage-v1/receiver.png') center/cover no-repeat,#07131e;
+  background:var(--project-scene-texture),linear-gradient(#08101e33,#08101e55),url('/art/project-scene-backgrounds-v3/draw-receiver.png') center/cover no-repeat #07131e;
+  background-blend-mode:overlay,normal,normal;
 }
 #gui-casual-lobby .draw-stage[data-rank='3']{--draw-accent:#d5adff}
 #gui-casual-lobby .draw-stage[data-rank='4']{--draw-accent:#ffda8a}
@@ -12,13 +13,13 @@
 #gui-casual-lobby .draw-control{position:relative;flex:none;min-height:44px;margin:0;padding:8px 14px;border:1px solid #839ba266;border-radius:0;background:#132936aa;color:#dceef8;font:500 14px/1.2 'PingFang SC',sans-serif;cursor:pointer;box-shadow:none}
 #gui-casual-lobby .draw-control:focus-visible{outline:2px solid #c2edff;outline-offset:-3px}
 #gui-casual-lobby :is(.draw-skip,.draw-review-all){isolation:isolate;border:0;background:transparent}
-#gui-casual-lobby :is(.draw-skip,.draw-review-all)::before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch}
+#gui-casual-lobby :is(.draw-skip,.draw-review-all)::before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 10px stretch}
 #gui-casual-lobby .draw-stage-count{font:500 12px/1.4 sans-serif;color:#b4cbd6;white-space:nowrap}
 #gui-casual-lobby .draw-stage-body{position:relative;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:16px;padding:16px 24px}
 #gui-casual-lobby .draw-stage-body::before{content:'';position:absolute;inset:5%;z-index:-1;background:radial-gradient(ellipse,color-mix(in srgb,var(--draw-accent) 16%,transparent),transparent 65%);pointer-events:none}
 #gui-casual-lobby .draw-stage-footer{padding:18px 30px calc(24px + var(--lobby-safe-bottom,0px));display:flex;justify-content:center;background:linear-gradient(transparent,#07121ccc)}
 #gui-casual-lobby .draw-primary{isolation:isolate;width:100%;max-width:340px;min-height:52px;border:0;background:none;font:400 20px/1.2 PsdPopup,sans-serif;color:#fff}
-#gui-casual-lobby .draw-primary::before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 18px stretch}
+#gui-casual-lobby .draw-primary::before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 18px stretch}
 #gui-casual-lobby .draw-spotlight{position:relative;flex:none;width:min(68cqw,310px);margin:0;animation:draw-appear .42s ease-out both}
 #gui-casual-lobby .draw-spotlight>.pilot-holo-card{width:100%;max-width:none;margin:0}
 #gui-casual-lobby .draw-spotlight .rr-result-note{color:#d5e8f4;font-size:14px;line-height:1.6;text-align:center;margin:14px 0 0;min-height:24px}

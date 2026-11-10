@@ -1,10 +1,10 @@
 {
-  "version": 2,
+  "version": 4,
   "assets": [
     {
       "weaponId": 20102,
       "name": "狂热射击",
-      "file": "frenzied-fire-upright.webp",
+      "file": "weapon-20102.webp",
       "skillIds": [
         10601021,
         10601022,
@@ -16,7 +16,7 @@
     {
       "weaponId": 20202,
       "name": "导弹增载",
-      "file": "missile-overload.webp",
+      "file": "weapon-20202.webp",
       "skillIds": [
         10607021,
         10607022,
@@ -28,7 +28,7 @@
     {
       "weaponId": 20302,
       "name": "激光齐射",
-      "file": "laser-salvo.webp",
+      "file": "weapon-20302.webp",
       "skillIds": [
         10615021,
         10615022,
@@ -40,7 +40,7 @@
     {
       "weaponId": 20402,
       "name": "泡泡散射",
-      "file": "bubble-scatter.webp",
+      "file": "weapon-20402.webp",
       "skillIds": [
         10602021,
         10602022,
@@ -52,7 +52,7 @@
     {
       "weaponId": 20502,
       "name": "冰刺迸裂",
-      "file": "ice-spike-burst.webp",
+      "file": "weapon-20502.webp",
       "skillIds": [
         10606021,
         10606022,
@@ -64,7 +64,7 @@
     {
       "weaponId": 20602,
       "name": "雷霆乐章",
-      "file": "thunder-symphony.webp",
+      "file": "weapon-20602.webp",
       "skillIds": [
         10604021,
         10604022,
@@ -76,7 +76,7 @@
     {
       "weaponId": 20702,
       "name": "路径灼烧",
-      "file": "scorch-path.webp",
+      "file": "weapon-20702.webp",
       "skillIds": [
         10617021,
         10617022,
@@ -88,7 +88,7 @@
     {
       "weaponId": 20802,
       "name": "环形剑气",
-      "file": "ring-slash.webp",
+      "file": "weapon-20802.webp",
       "skillIds": [
         10611021,
         10611022,
@@ -100,7 +100,7 @@
     {
       "weaponId": 20902,
       "name": "冰棘环射",
-      "file": "ice-thorn-volley.webp",
+      "file": "weapon-20902.webp",
       "skillIds": [
         10616021,
         10616022,
@@ -112,7 +112,7 @@
     {
       "weaponId": 21002,
       "name": "节拍雷鸣",
-      "file": "beat-thunder.webp",
+      "file": "weapon-21002.webp",
       "skillIds": [
         10603021,
         10603022,
@@ -124,7 +124,7 @@
     {
       "weaponId": 21102,
       "name": "吞噬脉冲",
-      "file": "devouring-pulse.webp",
+      "file": "weapon-21102.webp",
       "skillIds": [
         10609021,
         10609022,
@@ -133,5 +133,6 @@
         10609025
       ]
     }
-  ]
+  ],
+  "pack": "weapon-variant-skill-icons-v5"
 }

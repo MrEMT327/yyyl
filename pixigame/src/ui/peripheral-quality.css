@@ -89,7 +89,7 @@
 .peripheral-quality[data-tab="shop"] .shop-footnote{font-size:11px;line-height:1.5}
 .peripheral-quality[data-tab="shop"] .shop-feature-reward{flex-wrap:wrap}
 @media(max-width:360px){
-  .peripheral-quality .rc-preview-heading h2{font-size:14px}
+  .peripheral-quality .rc-preview-heading h2{font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
   .peripheral-quality .rc-preview-heading>button{font-size:11px;padding-inline:4px;gap:3px}
   .peripheral-quality .rc-preview-heading .rc-icon{width:12px}
   .peripheral-quality .rc-pool-label>button{font-size:11px}

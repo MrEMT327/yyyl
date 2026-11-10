@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "key": "3010201",
+      "file": "3010201.webp",
+      "name": "辐射脉冲",
+      "element": "acid",
+      "width": 320,
+      "height": 320,
+      "sha256": "3874bae35d7140c4ae42297ca2e029f741f1f1ceb64712a0a1f875be66834996",
+      "bytes": 94272
+    },
+    {
+      "key": "3010101",
+      "file": "3010101.webp",
+      "name": "光芒",
+      "element": "fire",
+      "width": 320,
+      "height": 320,
+      "sha256": "1937052be96610599530f6b691f10602e4b0501a099a2db50084f321d7ffe874",
+      "bytes": 73348
+    },
+    {
+      "key": "3010301",
+      "file": "3010301.webp",
+      "name": "飞鹰轰炸",
+      "element": "fire",
+      "width": 320,
+      "height": 320,
+      "sha256": "a25be74d54bdd27e14be8deb7e2eee75adc4a10b54a19496ab89eb528176391a",
+      "bytes": 81664
+    },
+    {
+      "key": "3020101",
+      "file": "3020101.webp",
+      "name": "致命毒刺",
+      "element": "acid",
+      "width": 320,
+      "height": 320,
+      "sha256": "deab74e78012396fcae7c869c0917c644eff1f6b0a44e758f4996d55d5cfa4d1",
+      "bytes": 83398
+    },
+    {
+      "key": "3020201",
+      "file": "3020201.webp",
+      "name": "居合斩",
+      "element": "energy",
+      "width": 320,
+      "height": 320,
+      "sha256": "bf8ad797bf4c0c32ee4cca08417541ff7b714afde83a3e7306445621d99f08b4",
+      "bytes": 46416
+    },
+    {
+      "key": "3020301",
+      "file": "3020301.webp",
+      "name": "幻影",
+      "element": "energy",
+      "width": 320,
+      "height": 320,
+      "sha256": "825f72a8e2033857dcaf33a5ceb7a83dfdce026347e499f2f7934bb2eb945dbd",
+      "bytes": 75622
+    },
+    {
+      "key": "10807011",
+      "file": "10807011.webp",
+      "name": "蜂巢齐射",
+      "element": "fire",
+      "width": 320,
+      "height": 320,
+      "sha256": "caa7ed3a8d86c2dd5723a85af04aa59b09cfcb7c811f07df455edda8c486946e",
+      "bytes": 67420
+    },
+    {
+      "key": "10815011",
+      "file": "10815011.webp",
+      "name": "棱镜激光",
+      "element": "energy",
+      "width": 320,
+      "height": 320,
+      "sha256": "942997c047657beaf3ea4224189feaf00fe2e6a630daa90a78dcd91873841f82",
+      "bytes": 56006
+    },
+    {
+      "key": "10802011",
+      "file": "10802011.webp",
+      "name": "酸雨强袭",
+      "element": "acid",
+      "width": 320,
+      "height": 320,
+      "sha256": "b408b9326823f71589c18174d2b4ab6b99a02db8493fceb7585ea7bff2f6affd",
+      "bytes": 84574
+    },
+    {
+      "key": "10806011",
+      "file": "10806011.webp",
+      "name": "冰刃风暴",
+      "element": "ice",
+      "width": 320,
+      "height": 320,
+      "sha256": "38115a9ed12b6b22a96595227915ee8efe75006022f61ebe10395c8dbd7d54f6",
+      "bytes": 68070
+    },
+    {
+      "key": "10804011",
+      "file": "10804011.webp",
+      "name": "聚能霰射",
+      "element": "electromagnetic",
+      "width": 320,
+      "height": 320,
+      "sha256": "6d986e864c15a5c37ca2344aea89eb067126d95c4e72702d651f646e833ec975",
+      "bytes": 77456
+    },
+    {
+      "key": "10817011",
+      "file": "10817011.webp",
+      "name": "炽光折射",
+      "element": "fire",
+      "width": 320,
+      "height": 320,
+      "sha256": "daae9aaa0006053ba36c1e148f629e31c2ea30c41dada5f90932fe24ce20fa8e",
+      "bytes": 55416
+    },
+    {
+      "key": "10811011",
+      "file": "10811011.webp",
+      "name": "次元剑阵",
+      "element": "energy",
+      "width": 320,
+      "height": 320,
+      "sha256": "2065736a87d332791df7338dacaa49b841effd42d6aa48c861c300de9c1b02c9",
+      "bytes": 77528
+    },
+    {
+      "key": "10816011",
+      "file": "10816011.webp",
+      "name": "飞锯突袭",
+      "element": "ice",
+      "width": 320,
+      "height": 320,
+      "sha256": "ec363a50fec75d68a71c308956485df88b00aed9efe2bf94ffdba6925091c0b7",
+      "bytes": 69368
+    }
+  ],
+  "source": "art/fleet-skill-icons-v1"
+}

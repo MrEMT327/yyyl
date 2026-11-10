@@ -76,7 +76,7 @@ export function createCanvasSurface(canvas, assets) {
   }
   function button(id, label, x, y, w, h, onPress, disabled = false, primary = false) {
     ctx.save(); if (disabled) ctx.globalAlpha = .55;
-    nine(primary ? 'art/psd-equipment-v1/button-gold.png' : 'art/psd-buttons-v1/button-gray.png', x, y, w, h);
+    nine(primary ? 'art/psd-equipment-v1/button-gold.png' : 'art/psd-buttons-v1/button-blue.png', x, y, w, h, 18);
     ctx.restore(); text(label, x + w / 2, y + h / 2, 25, disabled ? '#a9bbc7' : '#fff', 'center', w - 16);
     hit(id, x, y, w, h, onPress, disabled);
   }

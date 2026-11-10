@@ -15,16 +15,16 @@ export function resultRewards(completion = {}, doubled = false) {
       const breakdown = completion.coinBreakdown;
       if (type === 'coins' && breakdown && amountOf(breakdown.base) + amountOf(breakdown.firstClear) === amount) {
         for (const [key, label] of [['base', '通关金币'], ['firstClear', '首通额外金币']]) {
-          if (amountOf(breakdown[key])) rows.push({ label, amount: `+${amountOf(breakdown[key]) * (doubled ? 2 : 1)}` });
+          if (amountOf(breakdown[key])) rows.push({ type, label, amount: `+${amountOf(breakdown[key]) * (doubled ? 2 : 1)}` });
         }
         continue;
       }
-      rows.push({ label: names[type], amount: `+${amount * (doubled ? 2 : 1)}` });
+      rows.push({ type, label: names[type], amount: `+${amount * (doubled ? 2 : 1)}` });
     }
   }
   for (const reward of completion.peripheralRewards || []) {
     const amount = amountOf(reward.amount);
-    if (amount) rows.push({ label: `${reward.source === 'first-clear' ? '首通补给 · ' : ''}${names[reward.type] || reward.name || reward.type}`, amount: `+${amount}` });
+    if (amount) rows.push({ ...reward, label: `${reward.source === 'first-clear' ? '首通补给 · ' : ''}${names[reward.type] || reward.name || reward.type}`, amount: `+${amount}` });
   }
   for (const item of completion.unlockedModules || []) {
     rows.push({ label: item.shortName || item.name || '新装备', amount: '已解锁' });

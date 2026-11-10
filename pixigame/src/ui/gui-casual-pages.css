@@ -100,12 +100,12 @@
 #gui-casual-lobby .shop-feature-card{display:grid;grid-template-rows:20px minmax(80px,1fr) 20px 44px 16px;align-items:center;height:clamp(238px,62cqw,272px);padding:12px 10px 14px;gap:8px}
 #gui-casual-lobby .shop-feature-card .shop-product-art{height:100%;min-height:0;align-self:stretch}
 #gui-casual-lobby .shop-feature-card .shop-product-art>img{max-height:100%;object-fit:contain}
-#gui-casual-lobby .shop-feature-card h2{font-size:15px;font-weight:700}
+#gui-casual-lobby .shop-feature-card h2{font-size:var(--psd-small-title-size);font-weight:700;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .shop-product-reward{font-size:14px;text-shadow:none}
 #gui-casual-lobby .shop-feature-card .shop-button{min-height:43px;width:100%}
 #gui-casual-lobby .shop-offer-row{padding:12px 3px;border-bottom:1px solid #2c4568}
 #gui-casual-lobby .shop-resources-heading{padding:7px 3px;color:#d2e1f6}
-#gui-casual-lobby .shop-resources-heading h2{font-size:14px;font-weight:700}
+#gui-casual-lobby .shop-resources-heading h2{font-size:var(--psd-small-title-size);font-weight:700;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .shop-resources-heading small{font-size:10px;color:#a3bbd6}
 #gui-casual-lobby .shop-row-copy :is(h2,h3){font-weight:700;text-shadow:none}
 #gui-casual-lobby :is(.shop-product-note,.shop-row-action>small){color:#a9c2df;font-size:11px}
@@ -149,7 +149,7 @@
    over the title. Reserve a full touch target in the pilot-list grid row. */
 #gui-casual-lobby .ref-catalog-pilot[data-catalog-mode="list"]{grid-template-rows:minmax(230px,50%) 56px minmax(0,1fr) calc(var(--subpage-footer-height) + var(--ref-catalog-bottom-space))}
 #gui-casual-lobby .ref-catalog-pilot[data-catalog-mode="list"]>.ref-catalog-list-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;min-height:56px;padding:6px 10px;border:0;border-bottom:1px solid #3c5b80;background:#142a48;background-image:none;box-shadow:none}
-#gui-casual-lobby .ref-catalog-pilot .ref-catalog-list-heading>h2{grid-column:1;grid-row:1;min-width:0;margin:0;text-align:left;font-size:16px;font-weight:700;line-height:22px;letter-spacing:0;text-shadow:none}
+#gui-casual-lobby .ref-catalog-pilot .ref-catalog-list-heading>h2{grid-column:1;grid-row:1;min-width:0;margin:0;text-align:left;font-size:16px;font-weight:700;line-height:max(1.5em,22px);letter-spacing:0;text-shadow:none}
 #gui-casual-lobby .ref-catalog-pilot .ref-catalog-list-heading>.ref-catalog-filter{position:relative;inset:auto;grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;gap:5px;width:auto;min-width:84px;min-height:44px;height:44px;margin:0;padding:4px 10px 7px;font-size:12px;line-height:18px;white-space:nowrap;transform:none}
 #gui-casual-lobby .ref-catalog-pilot .ref-catalog-filter>.pl-icon{width:19px;height:19px;filter:none}
 @container(max-width:340px){

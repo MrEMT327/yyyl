@@ -7,6 +7,7 @@ import './ui-motion.css';
 export function createUiMotion(root) {
   const doc=root.ownerDocument,view=doc.defaultView,media=view.matchMedia('(prefers-reduced-motion: reduce)');
   const motions=new Set(),effects=new Set(),frames=new Set();
+  const enteredDialogs=new WeakSet();
   let route=null,modalKey='',menuOpen=false,press=null,epoch=0,disposed=false;
   const layer=doc.createElement('div');layer.className='ui-fx-layer';layer.setAttribute('aria-hidden','true');root.append(layer);
   root.classList.add('ui-motion-active');
@@ -85,7 +86,12 @@ export function createUiMotion(root) {
     modal(key) {
       if(key===modalKey)return;modalKey=key;if(!key||quiet())return;
       const host=root.querySelector('.pl-modal-host'),dialog=[...host.querySelectorAll('[role="dialog"]')].at(-1);
-      if(!dialog||host.querySelector('.draw-stage'))return;
+      // A receipt is an already-committed final view. Keep its PSD frame solid
+      // instead of fading it through the retained source dialog underneath.
+      if(!dialog||dialog.classList.contains('common-reward-dialog')||host.querySelector('.draw-stage'))return;
+      // Retained parents are resumed, not opened again after every receipt.
+      if(enteredDialogs.has(dialog))return;
+      enteredDialogs.add(dialog);
       // All dialogs enter on their final pixel grid. Text, frames and hit areas
       // share one fade instead of competing scale/translation/detail animations.
       animate(dialog,[{opacity:0},{opacity:1}],{},'dialog');

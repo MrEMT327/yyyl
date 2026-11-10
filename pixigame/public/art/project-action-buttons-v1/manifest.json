@@ -1,0 +1,11 @@
+{
+  "task-claim": {
+    "file": "task-claim.png",
+    "size": [219, 85],
+    "slice_trbl": [18, 18, 18, 18],
+    "sha256": "37539b3ca061f0c51892b46a208bc698e152e739071d7eac3cfdcd77d3425e82",
+    "source": "design/button-style-review/assets/button-teal.png",
+    "styleReference": "public/art/psd-buttons-v1/button-blue.png",
+    "usage": "Task reward claim action"
+  }
+}

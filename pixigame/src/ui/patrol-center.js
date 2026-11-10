@@ -1,3 +1,4 @@
+import { itemInspectAttributes } from './item-description-model.js';
 import './patrol-center.css';
 import { projectIcon } from './project-ui-art.js';
 import { nativeItemArt } from '../replica/native-item-presentation.js';
@@ -12,26 +13,26 @@ const resources = [
 const button = (action, label, disabled = false, attrs = '') => `<button type="button" class="wc-button pt-button" data-action="${action}" ${attrs}${disabled ? ' disabled' : ''}>${label}</button>`;
 const minutes = p => Math.max(0, Number(p.storedMinutes) || 0);
 const rateNames={105:'装备图纸',801:'科研图纸',113:'普通箱券',112:'高级箱券'};
-const amount = value => Number(value || 0).toLocaleString('zh-CN', {maximumFractionDigits:2});
+const amount = value => Number(value || 0).toLocaleString('zh-CN', {useGrouping:false,maximumFractionDigits:2});
 // Four same-direction copies leave overlap on both sides throughout the scrolling cycle.
 const sceneryTiles = '<span></span>'.repeat(4);
 const scenery = `<div class="pt-sky" aria-hidden="true"><div class="pt-scenery-track">${sceneryTiles}</div></div>`;
 const rewardClass=value=>`pt-reward${String(value).length>5?' is-wide':''}`;
 function rewards(values, {icon, number:n}) {
-  return `<div class="pt-rewards">${resources.filter(r => values?.[r.key] > 0).map(r => `<div class="${rewardClass(n(values[r.key]))}" aria-label="${r.name} ${n(values[r.key])}">${icon(r.icon)}<b>×${n(values[r.key])}</b></div>`).join('')}</div>`;
+  return `<div class="pt-rewards">${resources.filter(r => values?.[r.key] > 0).map(r => `<div ${itemInspectAttributes(r.key)} class="${rewardClass(n(values[r.key]))}" aria-label="${r.name} ${n(values[r.key])}">${icon(r.icon)}<b>×${n(values[r.key])}</b></div>`).join('')}</div>`;
 }
 function nativeArt(item, h) {
   const url = nativeItemArt(item.artId||item.id);
-  return url ? `<img class="pl-icon" src="${h.escape(url)}" alt="" draggable="false">` : '';
+  return url ? `<img ${itemInspectAttributes(item.id,h.escape)} class="pl-icon" src="${h.escape(url)}" alt="" draggable="false">` : '';
 }
 function nativeRewards(items, h) {
-  return `<div class="pt-rewards">${items.map(item=>`<div class="${rewardClass(h.number(item.amount))}" title="${h.escape(item.name)}" aria-label="${h.escape(item.name)} ${h.number(item.amount)}">${nativeArt(item,h)}<b>×${h.number(item.amount)}</b></div>`).join('')}</div>`;
+  return `<div class="pt-rewards">${items.map(item=>`<div class="${rewardClass(h.number(item.amount))}" aria-description="${h.escape(item.name)}" aria-label="${h.escape(item.name)} ${h.number(item.amount)}">${nativeArt(item,h)}<b>×${h.number(item.amount)}</b></div>`).join('')}</div>`;
 }
 const revision = p => `data-revision="${Number(p.revision)}"`;
 function nativePreview(items, h) {
   return `<div class="pt-rewards">${items.map(item => {
     const label = `${item.name}${item.random ? ' · 随机种类' : ` · 已有 ${h.number(item.owned)}`}`;
-    return `<div class="pt-reward" title="${h.escape(label)}" aria-label="${h.escape(label)}">${nativeArt(item,h)}<span>${h.escape(item.name)}</span></div>`;
+    return `<div class="pt-reward" aria-description="${h.escape(label)}" aria-label="${h.escape(label)}">${nativeArt(item,h)}<span>${h.escape(item.name)}</span></div>`;
   }).join('')}</div>`;
 }
 function recovery(snapshot) {
@@ -59,7 +60,7 @@ export function patrolPanel(snapshot, h) {
       ${scene}
       ${p.nativeSettlementPending?'':`<div class="pt-timing" role="group" aria-label="巡逻时间"><span data-patrol-clock="label">${clock.label}</span><strong data-patrol-clock="time">${clock.time}</strong></div>`}
       <p class="pt-note">收益速率${bonusPercent ? ` · 科技加成 +${amount(bonusPercent)}%` : ''}</p>
-      <div class="pt-rates" aria-label="巡逻收益速率" style="--pt-rate-columns:${Math.max(1,Math.min(5,p.native?(p.rateItems||[]).length:resources.length))}">${p.native ? (p.rateItems||[]).map(r => `<div title="${e(r.name)}" aria-label="${e(r.name)}，${amount(r.displayAmount??r.perHour)}每${r.displayPeriodHours||1}小时"><span>${nativeArt(r,h)}${e(rateNames[r.id]||r.name)}</span><b>${amount(r.displayAmount??r.perHour)}<small>/${r.displayPeriodHours?`${r.displayPeriodHours}小时`:'小时'}</small></b></div>`).join('') : resources.map(r => `<div><span>${icon(r.icon)}${r.name}</span><b>${amount(p.perHour?.[r.key])}</b></div>`).join('')}</div>
+      <div class="pt-rates" aria-label="巡逻收益速率" style="--pt-rate-columns:${Math.max(1,Math.min(5,p.native?(p.rateItems||[]).length:resources.length))}">${p.native ? (p.rateItems||[]).map(r => `<div aria-description="${e(r.name)}" aria-label="${e(r.name)}，${amount(r.displayAmount??r.perHour)}每${r.displayPeriodHours||1}小时"><span>${nativeArt(r,h)}${e(rateNames[r.id]||r.name)}</span><b>${amount(r.displayAmount??r.perHour)}<small>/${r.displayPeriodHours?`${r.displayPeriodHours}小时`:'小时'}</small></b></div>`).join('') : resources.map(r => `<div><span>${icon(r.icon)}${r.name}</span><b>${amount(p.perHour?.[r.key])}</b></div>`).join('')}</div>
 
       <h3 class="pt-section-title">累计奖励</h3>
       ${p.nativeSettlementPending ? '<p class="pt-empty">奖励暂不可领取</p>' : available ? (p.sampleBased?nativeRewards(p.rewardRows,h):rewards(p.rewards, h)) : `<p class="pt-empty">${p.clockRollback?'设备日期异常，请恢复后领取':'奖励积累中'}</p>`}

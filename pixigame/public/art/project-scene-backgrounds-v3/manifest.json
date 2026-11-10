@@ -1,0 +1,122 @@
+{
+  "generated": "2026-11-06",
+  "method": "Built-in imagegen",
+  "scope": "Non-frozen out-of-combat UI backgrounds only. Frozen PSD scenes and combat scenes are not modified.",
+  "texture": {
+    "asset": "public/art/project-workshop-background-v2/psd-scanlines.png",
+    "source": "psd/装备.psd and psd/主界面.psd, 图层 3 拷贝 23",
+    "opacity_already_in_alpha": 0.2,
+    "blend_mode": "overlay",
+    "sha256": "82f0aab29a8d7a35158dbd9467335244998f9c01da15e21b2d8141a574933144"
+  },
+  "scenes": [
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/aircraft-hangar.png",
+      "sha256": "78872d0903fac71d92d74f4eeb98ef60d1df82a1ebfb58142c99b8cb31165f45",
+      "bytes": 1952261,
+      "original_scene": "public/art/project-original-environments-v1/launch-hangar-v1.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/aircraft-hangar.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Create an original BACKGROUND PLATE for our portrait sci-fi mobile game. Image 1 shows this specific scene's existing purpose and broad spatial composition. Image 2 is the recently revised workshop, the practical material, architectural scale and detail-density reference for our project. Image 3 is a scene from our own PSD and supplies the project palette and soft depth treatment. Make a believable space with a distinct floor, rear wall and large structural frames; preserve mid-sized forms and gentle reflections so it feels like a place, while simplifying tiny mechanical details, dense racks and distracting floor grids. Match cool silver/slate-blue steel, natural sky light, subtle cyan accents, and occasional warm practical lights; soften distant detail without making a uniformly blurred blank wall. The main character or object, its platform, controls and labels are rendered separately; the middle must remain calm and readable with no background object that clashes. Do not include any person, pilot, robot, aircraft, weapons, vehicle, UI, text, numbers, logo, watermark, border or icon. Do not paint diagonal scanlines; our original PSD texture is overlaid separately in the game. Scene: aircraft display and launch hangar. Keep an open view of the sky at the left edge, a large hangar structural arch, and a recognizable broad floor extending behind an independently rendered 3D aircraft and its existing separate pedestal. Include only a few large wall recesses, avoid crates and a second pedestal. Square composition with important structures visible inside a centered 0.9:1 crop. The center behind the aircraft should be a dark-to-mid steel-blue value, so a white aircraft reads clearly."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/weapon-armory.png",
+      "sha256": "97693ea2913f7043f6bc5334f1bc510cfb49c45eeb73893b367969c9e8192653",
+      "bytes": 1877706,
+      "original_scene": "public/art/project-original-environments-v1/armory-bay-v1.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/weapon-armory.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Create an original BACKGROUND PLATE for our portrait sci-fi mobile game. Image 1 shows this specific scene's existing purpose and broad spatial composition. Image 2 is the recently revised workshop, the practical material, architectural scale and detail-density reference for our project. Image 3 is a scene from our own PSD and supplies the project palette and soft depth treatment. Make a believable space with a distinct floor, rear wall and large structural frames; preserve mid-sized forms and gentle reflections so it feels like a place, while simplifying tiny mechanical details, dense racks and distracting floor grids. Match cool silver/slate-blue steel, natural sky light, subtle cyan accents, and occasional warm practical lights; soften distant detail without making a uniformly blurred blank wall. The main character or object, its platform, controls and labels are rendered separately; the middle must remain calm and readable with no background object that clashes. Do not include any person, pilot, robot, aircraft, weapons, vehicle, UI, text, numbers, logo, watermark, border or icon. Do not paint diagonal scanlines; our original PSD texture is overlaid separately in the game. Scene: weapon inspection armory. Distinct from the launch hangar: a broad inset inspection wall, two structural support beams and one simplified work shelf near an edge provide a functional armory identity. Ground the back wall with a restrained floor plane and practical lighting; no weapons, silhouettes, racks of items, pedestals, clutter, or tiny seams. The central area is a mid-dark low-detail wall behind a separately rendered weapon. Square composition, safe for both a 1.2:1 crop and a taller popup crop."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/pilot-ready-room.png",
+      "sha256": "7786de0fb07dd06dcdac8aa95fa735839e8238f0be8ad79a27b93629b2fe1fd9",
+      "bytes": 1855758,
+      "original_scene": "public/art/project-original-environments-v1/pilot-ready-room-v1.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/pilot-ready-room.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Create an original BACKGROUND PLATE for our portrait sci-fi mobile game. Image 1 shows this specific scene's existing purpose and broad spatial composition. Image 2 is the recently revised workshop, the practical material, architectural scale and detail-density reference for our project. Image 3 is a scene from our own PSD and supplies the project palette and soft depth treatment. Make a believable space with a distinct floor, rear wall and large structural frames; preserve mid-sized forms and gentle reflections so it feels like a place, while simplifying tiny mechanical details, dense racks and distracting floor grids. Match cool silver/slate-blue steel, natural sky light, subtle cyan accents, and occasional warm practical lights; soften distant detail without making a uniformly blurred blank wall. The main character or object, its platform, controls and labels are rendered separately; the middle must remain calm and readable with no background object that clashes. Do not include any person, pilot, robot, aircraft, weapons, vehicle, UI, text, numbers, logo, watermark, border or icon. Do not paint diagonal scanlines; our original PSD texture is overlaid separately in the game. Scene: pilot ready room on the carrier. Distinct from the armory and hangar: one broad side window with soft sky at upper right and a simplified recessed bench or locker silhouette along the far edge. Keep a clearly defined wall-floor junction, a couple of warm ceiling fixtures and cyan architectural lights. Leave a muted midtone space behind a separately rendered full-height pilot, and do not bake in a pedestal. Square or slightly portrait composition; keep distinctive structural features inside the central 90% width."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/research-lab.png",
+      "sha256": "7d699fab30da42a8c8ab5195239dc5133d704be6c93aa313efc853cc8a4235a2",
+      "bytes": 1679426,
+      "original_scene": "public/art/project-original-environments-v1/research-lab-v1.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/research-lab.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Produce only an original background plate for our portrait sci-fi mobile game. Image 1 defines this scene's actual purpose and broad composition. Image 2 is the project's revised workshop reference for cool steel-blue palette, lighting, believable architectural structure and moderate detail density. Image 3 is an actual project PSD scene reference for atmosphere, soft depth and materials. Keep recognizable large spatial forms, lighting and floor-plane continuity; simplify small machinery, repetitive seams and busy edges. Avoid both photorealistic hard microdetail and an empty foggy flat wall. All text, characters, objects, product chests and UI will be rendered independently on top. No people, robot, airplane, vehicle, chest, product, weapon, icons, numbers, text, logo, watermark or decorative frames. Do not paint diagonal scanlines; the original PSD texture is applied separately in runtime. Scene: science research lab inside the carrier, recognizably different from hangars. A restrained translucent equipment capsule near one edge, broad lab wall supports, a simple recessed console and a few dim cyan lights, with a clear floor-wall junction. The middle stays a low-detail dark blue-grey so a grid of cards remains legible. Portrait 4:5, important shapes kept inside the central width."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/logistics-bay.png",
+      "sha256": "f87fba88453634faf1deef85c235ea014320cc1a713aa56cd177655ff70aa61a",
+      "bytes": 1874010,
+      "original_scene": "public/art/project-original-environments-v1/logistics-bay-v1.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/logistics-bay.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Produce only an original background plate for our portrait sci-fi mobile game. Image 1 defines this scene's actual purpose and broad composition. Image 2 is the project's revised workshop reference for cool steel-blue palette, lighting, believable architectural structure and moderate detail density. Image 3 is an actual project PSD scene reference for atmosphere, soft depth and materials. Keep recognizable large spatial forms, lighting and floor-plane continuity; simplify small machinery, repetitive seams and busy edges. Avoid both photorealistic hard microdetail and an empty foggy flat wall. All text, characters, objects, product chests and UI will be rendered independently on top. No people, robot, airplane, vehicle, chest, product, weapon, icons, numbers, text, logo, watermark or decorative frames. Do not paint diagonal scanlines; the original PSD texture is applied separately in runtime. Scene: carrier logistics bay. Keep a broad structural opening with distant daylight and simple cargo storage silhouettes only at the far edges, with a few broad floor seams conveying spatial depth. The center and right remain quiet for result items and shop UI; no small repeating crates, forklifts, objects or shelves in the center. Square composition."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/shop-supply.png",
+      "sha256": "8083dc9630d8160ce73a590e07466eb453b2b85185fec66739b9d8f380190f56",
+      "bytes": 1822956,
+      "original_scene": "public/art/project-supply-v1/supply-bay.png",
+      "previous_version": "public/art/project-scene-backgrounds-v2/shop-supply.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Produce only an original background plate for our portrait sci-fi mobile game. Image 1 defines this scene's actual purpose and broad composition. Image 2 is the project's revised workshop reference for cool steel-blue palette, lighting, believable architectural structure and moderate detail density. Image 3 is an actual project PSD scene reference for atmosphere, soft depth and materials. Keep recognizable large spatial forms, lighting and floor-plane continuity; simplify small machinery, repetitive seams and busy edges. Avoid both photorealistic hard microdetail and an empty foggy flat wall. All text, characters, objects, product chests and UI will be rendered independently on top. No people, robot, airplane, vehicle, chest, product, weapon, icons, numbers, text, logo, watermark or decorative frames. Do not paint diagonal scanlines; the original PSD texture is applied separately in runtime. Scene: a small supply presentation alcove. Preserve the broad visual idea of a display plinth and an open sky at the far left, but simplify the thick rings and machinery. Place a modest soft-lit oval display platform in the LEFT HALF, centered around x=30% and y=65%, with floor grounding visible around it: the separately rendered chest will appear there. Keep the right side subdued for text/buttons. Wide 3:2 composition; important platform fully visible inside the left 65% of the image."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/recruit-result.png",
+      "sha256": "52e09ee2f371fdbc2a4cf5877570e3efda4c19b8200bfec1926d107a10adb50f",
+      "bytes": 1739501,
+      "original_scene": "public/art/project-recruit-result-v1/hangar.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/recruit-result.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Produce one original background-only illustration for our sci-fi mobile game. Image 1 shows the scene's purpose and general framing, image 2 is the revised workshop reference for broad structural forms, density and project materials, and image 3 is an actual PSD scene reference for blue-gray palette, soft atmospheric depth and lighting. Preserve believable floor, structural silhouettes and large light-dark variation. Simplify tiny details and crowded mechanics without producing a smooth blurry blank background. This is behind separately rendered game content: do not include people, characters, robots, aircraft, vehicles, props, weapons, interface, cards, text, numbers, logo, watermark, border or icon. Do not paint diagonal scanlines: the authentic project PSD texture is composited separately. Scene: portrait recruitment result bay, shown behind a five-by-two grid of separately rendered reward cards. Keep a wide hangar opening to the sky, two large architectural pillars, a few softened ceiling lights and a simple grounded floor; no pedestal under the card grid. Use moderately subdued blue steel so the actual cards and their labels remain clear. 9:16 portrait composition."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/draw-receiver.png",
+      "sha256": "b390b5c1bd97f0dcc1049fa2d08974e0bad891f9ab19b02bbf413ce90b48e036",
+      "bytes": 1627137,
+      "original_scene": "public/art/project-draw-stage-v1/receiver.png",
+      "previous_version": "public/art/project-scene-backgrounds-v2/draw-receiver.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-equipment-v1/hangar-scenery.webp"
+      ],
+      "prompt": "Use case: game-scene-background. Produce one original background-only illustration for our sci-fi mobile game. Image 1 shows the scene's purpose and general framing, image 2 is the revised workshop reference for broad structural forms, density and project materials, and image 3 is an actual PSD scene reference for blue-gray palette, soft atmospheric depth and lighting. Preserve believable floor, structural silhouettes and large light-dark variation. Simplify tiny details and crowded mechanics without producing a smooth blurry blank background. This is behind separately rendered game content: do not include people, characters, robots, aircraft, vehicles, props, weapons, interface, cards, text, numbers, logo, watermark, border or icon. Do not paint diagonal scanlines: the authentic project PSD texture is composited separately. Scene: portrait supply reveal chamber behind a separately animated opening gate and reward. Preserve a tall, distinctive reception space with two broad structural columns, a restrained overhead light ring and one modest grounded display platform low in frame. Keep the central presentation zone dark enough for bright reward art, with cool cyan lights and a few warm accents. Retain cinematic depth but avoid tiny railings, sharp industrial clutter and an empty featureless wall. 2:3 portrait."
+    },
+    {
+      "asset": "public/art/project-scene-backgrounds-v3/patrol-event.png",
+      "sha256": "7e953db0c661819ca69b825c11d8973404e3f26af629dd94865ea627ee974201",
+      "bytes": 1760492,
+      "original_scene": "public/art/project-original-environments-v1/patrol-airway-v1.webp",
+      "previous_version": "public/art/project-scene-backgrounds-v2/patrol-event.png",
+      "style_references": [
+        "public/art/project-workshop-background-v3/maintenance-structured.png",
+        "public/art/psd-main-v1/main-background.png"
+      ],
+      "prompt": "Use case: game-scene-background. Produce one original background-only illustration for our sci-fi mobile game. Image 1 shows the scene's purpose and general framing, image 2 is the revised workshop reference for broad structural forms, density and project materials, and image 3 is an actual PSD scene reference for blue-gray palette, soft atmospheric depth and lighting. Preserve believable floor, structural silhouettes and large light-dark variation. Simplify tiny details and crowded mechanics without producing a smooth blurry blank background. This is behind separately rendered game content: do not include people, characters, robots, aircraft, vehicles, props, weapons, interface, cards, text, numbers, logo, watermark, border or icon. Do not paint diagonal scanlines: the authentic project PSD texture is composited separately. Scene: patrol activity banner rather than a combat map. A quiet airy sky with layered clouds and distant silhouettes; a restrained carrier-deck edge and one navigational light at the lower edge give the viewpoint a physical anchor. Blue daylight and soft natural light echo the PSD. Keep middle area clear for overlaid UI. No foreground aircraft or ship. 16:9 landscape."
+    }
+  ]
+}

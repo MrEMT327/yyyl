@@ -60,7 +60,7 @@ export function pilotHoloCard(pilot, {
       <header class="phc-header"><strong class="phc-heading-name">${escape(pilot.name)}</strong>${rankLabel?`<span class="phc-rarity">${rankLabel}</span>`:''}</header>
       <div class="phc-caption"><small class="phc-role">驾驶员</small><strong class="phc-title">${escape(pilot.title || '驾驶员')}</strong><strong class="phc-name">${escape(pilot.name)}</strong></div>
       <span class="phc-metadata">${Number.isFinite(pilot.stars) ? `<span aria-label="${pilot.stars} 星">${pilot.stars} 星</span>` : ''}${pilot.skillName ? ' · '+escape(pilot.skillName) : ''}</span>
-      ${status ? `<span class="phc-status">${escape(status)}</span>` : ''}
+      ${status === 'NEW' ? `<span class="phc-status phc-status-art" aria-label="新获得"><img src="${BASE_URL}art/recruit-status-labels-v1/new.png" alt="NEW" draggable="false" /></span>` : status ? `<span class="phc-status">${escape(status)}</span>` : ''}
     </div>
   </article>`;
 }
@@ -139,13 +139,12 @@ export function bindPilotHoloCards(root) {
     }, 1400);
   }
   const move = event => {
+    // Reflections follow a held touch/press only; moving a mouse over a card
+    // must not activate a second, desktop-only interaction state.
+    if (pointerId === null || event.pointerId !== pointerId) return;
+    if (event.pointerType === 'mouse' && event.buttons === 0) { reset(); return; }
     if (active?.closest?.('.drag-scroll-active') || event.target?.closest?.('.drag-scroll-active')) { reset(); return; }
-    if (event.pointerType === 'touch' && event.pointerId !== pointerId) return;
-    const card = pointerId === event.pointerId && active ? active : cardFor(event.target);
-    if (card) {
-      point(card, event);
-      if (pointerId === null && event.pointerType !== 'touch') resumeIdleAfterInteraction(card);
-    }
+    if (active) point(active, event);
   };
   const down = event => {
     if (event.isPrimary === false || (event.button !== undefined && event.button !== 0) || motion?.matches) return;
@@ -162,7 +161,6 @@ export function bindPilotHoloCards(root) {
     }
   };
   const up = event => { if (pointerId === event.pointerId) reset(); };
-  const out = event => { if (pointerId === null && active && !active.contains(event.relatedTarget)) reset(); };
   const focus = event => { const card = cardFor(event.target); if (card) { update(card, .67, .32); resumeIdleAfterInteraction(card); } };
   const blur = event => { if (active && !active.contains(event.relatedTarget)) reset(); };
   const key = event => {
@@ -175,7 +173,7 @@ export function bindPilotHoloCards(root) {
     update(card, ...directions[event.key]);
     resumeIdleAfterInteraction(card);
   };
-  const listeners = { pointermove: move, pointerdown: down, pointerup: up, pointercancel: up, pointerout: out, focusin: focus, focusout: blur, keydown: key };
+  const listeners = { pointermove: move, pointerdown: down, pointerup: up, pointercancel: up, lostpointercapture: up, focusin: focus, focusout: blur, keydown: key };
   for (const [name, listener] of Object.entries(listeners)) root.addEventListener(name, listener);
   // A release outside the root (or a touch scroll cancellation) must not leave
   // the card lit indefinitely. No permanent animation loop is created.

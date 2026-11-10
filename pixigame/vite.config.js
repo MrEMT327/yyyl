@@ -1,14 +1,28 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'node:url';
 import { optimizeUiAssetUrls } from './src/ui/ui-image-source.js';
+import { copyShippingPublic } from './tools/copy-shipping-public.mjs';
 
 export default defineConfig(({ mode }) => ({
+  root: fileURLToPath(new URL('./', import.meta.url)),
   base: './',
+  server: {
+    host: '127.0.0.1', port: 5211, strictPort: true,
+    // Source art is not served at runtime and can be locked while being saved.
+    // Keep watching public/art and application code for preview updates.
+    watch: { followSymlinks:false, ignored: [
+      ...['art', 'design'].map(dir => fileURLToPath(new URL(`./${dir}/**`, import.meta.url)).replaceAll('\\', '/')),
+      // QA junctions contain builds and recordings that may be locked mid-write.
+      /[\\/]public[\\/]__[^\\/]+(?:[\\/]|$)/,
+    ] },
+  },
+  preview: { host: '127.0.0.1', port: 5211, strictPort: true },
   build: {
     // The local preview serves dist while rebuilding. Keep its existing public
     // files and hashed chunks available until new output is written; open tabs
     // can still request a chunk from the preceding build.
     emptyOutDir: false,
+    copyPublicDir: false,
     rollupOptions: { input: {
       index: fileURLToPath(new URL('./index.html', import.meta.url)),
       replicaBattle: fileURLToPath(new URL('./replica-battle/index.html', import.meta.url)),
@@ -17,6 +31,7 @@ export default defineConfig(({ mode }) => ({
     } },
   },
   plugins: [
+    copyShippingPublic(),
     {
       name:'thunder-ui-delivery-images',enforce:'pre',
       transform(source,id){

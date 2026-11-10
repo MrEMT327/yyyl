@@ -13,6 +13,8 @@ export function combatWeaponDetail(item={}) {
   const quality=Number(item.quality);
   return {name,description,
     levelLabel:`Lv.${Number.isSafeInteger(item.level)&&item.level>0?item.level:1}`,
+    // Missing battle skill quality has no player-facing badge. Never infer it
+    // from the weapon's level or replace it with ordinary quality.
     qualityName:Number.isInteger(quality)&&quality>=1&&quality<=6?qualityNames[quality]:'',
   };
 }

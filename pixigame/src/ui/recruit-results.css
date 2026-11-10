@@ -9,7 +9,8 @@
   width:100%!important;height:100%!important;min-width:0;min-height:0!important;
   max-width:none!important;max-height:none!important;margin:0;padding:0!important;
   border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 32%,#10273bb8,#0b192bea 85%),var(--project-logistics-image) center/cover no-repeat!important;
+  background:var(--project-scene-texture),radial-gradient(ellipse at 50% 32%,#10273bb8,#0b192bea 85%),var(--project-logistics-image) center/cover no-repeat!important;
+  background-blend-mode:overlay,normal,normal;
   color:var(--rr-ink);transform:none;animation:none;
 }
 #gui-casual-lobby .recruit-result-dialog::before,
@@ -30,10 +31,6 @@
 }
 #gui-casual-lobby .recruit-result-dialog .pl-close::before,
 #gui-casual-lobby .recruit-result-dialog .pl-close::after {content:none}
-#gui-casual-lobby .recruit-result-heading .reward-reveal-skip {
-  position:static;flex:none;min-height:44px;margin:0;padding:0 8px;
-  border:0;background:transparent;color:var(--rr-muted);font-size:13px;
-}
 #gui-casual-lobby .recruit-result-dialog>.recruit-result-scroll {
   container-type:size;min-height:0;min-width:0;margin:0;padding:22px 18px 26px;
   overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;background:transparent;box-shadow:none;
@@ -112,15 +109,15 @@
   border-top:1px solid #718da34d;background:#0c1c2ee6;
 }
 #gui-casual-lobby .recruit-result-dialog .recruit-result-confirm {
-  position:relative;isolation:isolate;display:grid;place-items:center;width:min(100%,340px);min-height:52px;
-  margin:0;padding:10px 16px;border:0!important;border-radius:0!important;background:none!important;
+  position:relative;isolation:isolate;display:grid;place-items:center;width:min(100%,var(--ui-primary-width));min-height:var(--ui-primary-height);
+  margin:0;padding:6px 12px;border:0!important;border-radius:0!important;background:none!important;
   box-shadow:none!important;clip-path:none!important;color:#f4fbff!important;
   font:400 clamp(18px,4.8cqw,25px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif!important;
   letter-spacing:1px;text-shadow:0 2px #153650;transform:none;cursor:pointer;
 }
 #gui-casual-lobby .recruit-result-dialog .recruit-result-confirm::before {
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;
-  border-image:url('/art/psd-choice-v1/reroll.png') 17 fill / 10px stretch;
+  border-image:url('/art/psd-choice-v1/reroll.png') 17 fill / var(--ui-primary-corner) stretch;
 }
 #gui-casual-lobby .recruit-result-dialog .recruit-result-confirm::after {content:none}
 #gui-casual-lobby .recruit-result-dialog button:focus-visible {outline:2px solid #a4ecff;outline-offset:-3px}
@@ -136,7 +133,7 @@
 /* Pilot results use the existing project cards in the approved 5 × 2 layout. */
 #gui-casual-lobby .pl-modal.recruit-result-dialog.is-pilot-grid {
   grid-template-rows:minmax(0,1fr) auto;
-  background:linear-gradient(180deg,#0b1c2c33,#0b1c2c66),url('/art/project-recruit-result-v1/hangar.webp') center/cover no-repeat #102232!important;
+  background:var(--project-scene-texture),linear-gradient(180deg,#0b1c2c33,#0b1c2c66),url('/art/project-scene-backgrounds-v3/recruit-result.png') center/cover no-repeat #102232!important;
 }
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid>.recruit-result-scroll {
   display:flex;align-items:center;justify-content:center;overflow:auto;
@@ -194,6 +191,11 @@
 }
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid.is-single .phc-status {top:12%}
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid.is-multiple[data-draw-count='10'] .phc-status {display:block}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .phc-status.phc-status-art {
+  top:calc(5% + 18cqw + 4px);right:7%;width:min(80%,52px);max-width:none;
+  height:auto;aspect-ratio:384/110;padding:0;border:0;background:none;
+}
+#gui-casual-lobby .recruit-result-dialog.is-pilot-grid.is-single .phc-status.phc-status-art {top:12%;width:min(80%,96px)}
 
 /* Keep the existing foil sweep and rarity lights active in the result grid. */
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid .pilot-holo-card .phc-lightpass::after,
@@ -292,4 +294,3 @@
 #gui-casual-lobby .recruit-result-dialog.is-pilot-grid>.recruit-result-actions {
   padding:8px 16px calc(clamp(28px,8vh,68px) + var(--lobby-safe-bottom,0px));border:0;background:none;
 }
-#gui-casual-lobby .recruit-result-dialog.is-pilot-grid .recruit-result-confirm {width:min(51%,220px);min-height:48px}

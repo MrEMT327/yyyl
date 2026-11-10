@@ -1,0 +1,41 @@
+{
+  "name": "weapon-slot-contour-v4",
+  "generator": "built-in imagegen",
+  "purpose": "Only the outer frame changes: top-left and bottom-right clipped; opposite corners square. Inner PSD quality tile and weapon layout stay unchanged.",
+  "references": [
+    "weapon-slot-approved-v3/frame-288.webp",
+    "psd-equipment-v1/frame-gold.png"
+  ],
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "processing": "Uniform Lanczos downscales, lossless WebP export; preserve generated RGBA.",
+  "prompt": "Edit the outer border only to match the immutable PSD tile: clipped top-left/bottom-right, square top-right/bottom-left. Keep original metal line weight, gold crest and cyan ornaments. Transparent aperture and exterior. No quality fill or weapon.",
+  "outputs": [
+    {
+      "file": "frame-96.webp",
+      "size": [
+        96,
+        96
+      ],
+      "sha256": "aebd2181a181a54f542f72cb315a2c03ce756f67bcb796035903e262094524d4"
+    },
+    {
+      "file": "frame-192.webp",
+      "size": [
+        192,
+        192
+      ],
+      "sha256": "b45281638108aa800d3ad96926119731c595fd33c9824807e3ca24c53854ec5c"
+    },
+    {
+      "file": "frame-288.webp",
+      "size": [
+        288,
+        288
+      ],
+      "sha256": "2333c30892eac081a020f61eb97dd47d7671ea9d7c29002fe4b714c16f620245"
+    }
+  ]
+}

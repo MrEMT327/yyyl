@@ -36,7 +36,7 @@
 #gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-portrait {position:absolute;right:-1cqw;top:-5cqw;bottom:0;width:44cqw;overflow:visible;pointer-events:none}
 #gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-art {position:absolute!important;left:50%;top:0;transform:translateX(-50%)!important;display:block;width:230%!important;height:auto!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center top!important}
 #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot.is-claimed .dc-signin-pilot-hero {opacity:.7}
-#gui-casual-lobby .pl-modal .dc-project-task>.dc-tabs {order:20;margin-top:auto;padding-top:1.5cqw}
+#gui-casual-lobby .pl-modal .dc-project-task>.dc-tabs {order:0;margin:0;padding:0}
 @container(max-width:360px) {
   #gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-copy {gap:.6cqw;padding-top:3cqw}
 }
@@ -74,3 +74,18 @@
 #gui-casual-lobby .pl-modal .dc-hub .dc-signin-pilot-items {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1cqw;width:100%;margin-top:2cqw}
 #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .reward-item-art {opacity:.45;filter:saturate(.45)}
 #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-claimed .reward-item-slot::before {opacity:.75}
+
+/* SignItemCtrl.rewardText uses a separate orange claim hint. Keep a footer
+   on every day, so its appearance never moves the centered reward artwork. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day {min-height:31cqw;padding-bottom:5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.is-final {padding-bottom:5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot .dc-signin-pilot-hero {min-height:34cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-signin-claim-label {
+  position:absolute;inset-inline:1cqw;bottom:.8cqw;z-index:4;
+  color:#ad580b;font-size:clamp(10px,2.9cqw,14px);font-weight:700;line-height:1.2;
+  text-align:center;white-space:nowrap;pointer-events:none;
+}
+@container(max-width:360px) {
+  #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot {min-height:43cqw}
+  #gui-casual-lobby .pl-modal .dc-hub .dc-signin-day.has-pilot .dc-signin-pilot-hero {min-height:30cqw}
+}

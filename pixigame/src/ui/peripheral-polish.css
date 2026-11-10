@@ -46,7 +46,6 @@
 .pl-supply-page .pl-recruit-actions>.pl-button>strong{font-size:17px;letter-spacing:2px}
 .pl-pilot-collection{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px 9px;padding:2px 2px 9px}
 .pl-collection-card{border:0;padding:0;background:none;min-width:0;text-align:left;perspective:700px}
-.pl-collection-card:hover{filter:brightness(1.08)}
 .pl-pilot-card-detail{width:min(100%,242px);margin:4px auto 20px;perspective:1000px}
 .pl-card-lore{border-top:1px solid #beaf8655;padding:12px 2px;color:#bfcbdf}
 .pl-card-lore small{color:#e4d4ab;letter-spacing:1px;font-size:11px}

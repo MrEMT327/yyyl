@@ -1,0 +1,9 @@
+:root {
+  --ui-action-height: 44px;
+  --ui-action-width: 80px;
+  --ui-primary-height: 48px;
+  --ui-primary-width: 160px;
+  --ui-action-gap: 8px;
+  --ui-action-corner: 9px;
+  --ui-primary-corner: 10px;
+}

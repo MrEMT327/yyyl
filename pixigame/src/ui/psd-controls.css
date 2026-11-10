@@ -1,16 +1,17 @@
-/* Shared control contract. Geometry belongs to each screen; material and
-   interaction states belong here. Keep HUD icons and portrait hit areas out. */
+@import './control-sizes.css';
+
+/* Shared action sizes, PSD materials and interaction states. */
 #gui-casual-lobby {
-  --psd-control-art:url('/art/psd-buttons-v1/button-gray.png');
-  --psd-control-slice:32;
-  --psd-control-corner:clamp(10px,3.6cqw,16px);
+  --psd-control-art:url('/art/psd-buttons-v1/button-blue.png');
+  --psd-control-slice:18;
+  --psd-control-corner:var(--ui-action-corner);
   --psd-selected-ink:#d2f8ff;
 }
 #gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option),
 #gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):not(.recruit-result-confirm) {
   --psd-button-corner:var(--psd-control-corner);
   position:relative;isolation:isolate;box-sizing:border-box;
-  min-width:0;min-height:44px;padding:8px 12px;
+  min-width:0;min-height:var(--ui-action-height);padding:8px 12px;
   border:0!important;border-radius:0!important;clip-path:none!important;
   background:none!important;box-shadow:none!important;
   color:#edf4f7!important;text-shadow:0 1px 2px #07131f!important;
@@ -25,13 +26,16 @@
 }
 #gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option)::after,
 #gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):not(.recruit-result-confirm)::after {content:none}
-/* Disabled is a state of the same PSD face. Never fade prices or labels. */
+/* Disabled uses a muted PSD face and readable label, not a prohibition cursor. */
+#gui-casual-lobby button:disabled,
+#gui-casual-lobby button:disabled * {cursor:default!important}
 #gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):disabled,
 #gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):disabled {
   opacity:1!important;filter:none!important;color:#bac8d2!important;
-  cursor:not-allowed;transform:none;
+  cursor:default;transform:none;
 }
 #gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):disabled::before,
+#gui-casual-lobby[data-tab] :is(.wc-button,.psd-button,.psd-tab,.psd-option):disabled::before,
 #gui-casual-lobby .pl-modal :is(.pl-button,.lc-claim):disabled::before {filter:grayscale(1) brightness(.65)!important}
 #gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):not(:disabled):active::before {filter:brightness(1.2)}
 #gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option):is([aria-pressed='true'],[aria-selected='true'],[aria-checked='true'],.is-active):not(:disabled) {
@@ -45,6 +49,16 @@
 }
 #gui-casual-lobby :is(.psd-button,.psd-tab,.psd-option,.wc-button):focus-visible {outline:2px solid #c1f3ff;outline-offset:-3px}
 #gui-casual-lobby .psd-option {--psd-button-corner:8px;font-family:'Microsoft YaHei',sans-serif;font-size:13px}
+/* Primary/secondary is an action role. The graphite home face is reserved
+   for the baked Patrol and Backpack controls, including disabled panels. */
+#gui-casual-lobby .pl-modal :is(.pl-primary,.lc-claim:not(:disabled)) {
+  --psd-control-art:url('/art/psd-equipment-v1/button-gold.png');
+  --psd-control-slice:18;
+}
+#gui-casual-lobby .pl-modal .pl-button.pl-primary {
+  min-height:var(--ui-primary-height);
+  --psd-button-corner:var(--ui-primary-corner);
+}
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__upgrade {
   --psd-control-art:url('/art/psd-equipment-v1/button-gold.png');
   --psd-control-slice:18;--psd-button-corner:9px;
@@ -52,22 +66,19 @@
 #gui-casual-lobby .eq-choice-trigger.psd-button {display:flex;align-items:center;justify-content:space-between;width:100%;height:44px;padding:0 12px}
 #gui-casual-lobby .eq-choice-option.psd-option {padding:0 12px}
 #gui-casual-lobby .eq-choice-trigger[aria-expanded='true']::before {filter:brightness(1.35)}
-#gui-casual-lobby .eq-choice-menu::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch!important}
-#gui-casual-lobby .recruit-reference :is(.recruit-history,.rc-arrow).psd-button {padding:7px;--psd-button-corner:10px}
+#gui-casual-lobby .eq-choice-menu::before {border-image:url('/art/equipment-controls-v1/menu-panel.png') 24 fill / 10px stretch!important}
+#gui-casual-lobby .recruit-reference .rc-arrow.psd-button {padding:7px;--psd-button-corner:10px}
 #gui-casual-lobby .recruit-reference .rc-arrow.psd-button {position:relative;inset:auto}
 #gui-casual-lobby .recruit-reference .rc-pool-tab.psd-tab {padding:5px 4px;font-size:clamp(12px,3.5cqw,17px)}
 #gui-casual-lobby .shop-native-v2 .store-category.psd-tab {min-height:0;padding:2px;font-size:calc(38 * var(--su));--psd-button-corner:9px}
 #gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab.psd-tab {padding:0 4px;--psd-button-corner:10px}
-/* Inset menus use the current metal plate; options retain the same 44px target. */
-#gui-casual-lobby .fc-filter-options {border:0;background:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 10px stretch}
-#gui-casual-lobby .fc-filter-options>.psd-option {padding:4px 2px;font-size:clamp(10px,3cqw,14px)}
-#gui-casual-lobby .recruit-info-dialog .recruit-result-confirm::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-control-corner) stretch}
-#gui-casual-lobby .recruit-info-dialog .recruit-result-confirm:active::before {border-image-source:url('/art/psd-buttons-v1/button-gray.png');filter:brightness(1.2)}
+#gui-casual-lobby .recruit-info-dialog .recruit-result-confirm::before {border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / var(--psd-control-corner) stretch}
+#gui-casual-lobby .recruit-info-dialog .recruit-result-confirm:active::before {border-image-source:url('/art/psd-buttons-v1/button-blue.png');filter:brightness(1.2)}
 #gui-casual-lobby .recruit-result-dialog .pl-close {
   border:0;border-radius:0;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat;
   box-shadow:none;font-size:0;color:transparent;width:44px;height:44px;
 }
-#gui-casual-lobby .recruit-info-dialog .recruit-rate-section dl::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+#gui-casual-lobby .recruit-info-dialog .recruit-rate-section dl::before {border-image:url('/art/equipment-controls-v1/menu-panel.png') 24 fill / 12px stretch}
 @media(prefers-reduced-motion:reduce) {
   #gui-casual-lobby :is(.wc-button,.psd-button,.psd-tab,.psd-option) {transition:none}
 }

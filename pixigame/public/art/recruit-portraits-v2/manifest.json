@@ -1,0 +1,160 @@
+{
+  "schema": 2,
+  "date": "2026-11-09",
+  "method": "Built-in image_gen; regenerated anime illustrations, not runtime captures. Original pose, identity, outfit and authored props used as invariants. Generated PNG alpha and dimensions preserved without image postprocessing.",
+  "scope": "Recruitment showcase only; existing avatars and animated character resources remain independent.",
+  "entries": [
+    {
+      "id": "pilot-01",
+      "file": "pilot-01.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-01.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-01-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-01-prompt.txt",
+      "sha256": "4a3581137b231604c22063da27a7638fb3a4853ca51bb1e375957b5849943f32",
+      "bytes": 843455
+    },
+    {
+      "id": "pilot-02",
+      "file": "pilot-02.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-02.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-02-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-02-prompt.txt",
+      "sha256": "9a40dcc451b9b8172c78ff8d608426bcf8d269c9de9d119c16d16eac0591a1d2",
+      "bytes": 600466
+    },
+    {
+      "id": "pilot-03",
+      "file": "pilot-03.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-03.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-03-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-03-prompt.txt",
+      "sha256": "f83937535a95a9c8b80317f0018a9b3703ba7cf946f83feb73a0ec3283c23e8f",
+      "bytes": 693267
+    },
+    {
+      "id": "pilot-04",
+      "file": "pilot-04.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-04.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-04-candidate-v2.png",
+      "prompt": "art/recruit-portraits-v2/pilot-04-prompt.txt",
+      "sha256": "134c49ba24b5f2335f336630dc21ea01afcb86f43c5654c22eac9bcb2cc72255",
+      "bytes": 1016123
+    },
+    {
+      "id": "pilot-05",
+      "file": "pilot-05.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-05.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-05-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-05-prompt.txt",
+      "sha256": "d17e33b27a57610d050095ce22f219086d7bdfbd141744d62a63f321360659bd",
+      "bytes": 511340
+    },
+    {
+      "id": "pilot-06",
+      "file": "pilot-06.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-06.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-06-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-06-prompt.txt",
+      "sha256": "8bf7bd497f5d5cbd787e2493941830186c19ea6b3bf7cced452c66fa9278798f",
+      "bytes": 466686
+    },
+    {
+      "id": "pilot-07",
+      "file": "pilot-07.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-07.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-07-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-07-prompt.txt",
+      "sha256": "7e09a5039b90e855df65ce9a1ca9f55e4391124571fa88880cdf38a230e39b02",
+      "bytes": 546562
+    },
+    {
+      "id": "pilot-08",
+      "file": "pilot-08.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-08.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-08-yoga-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-08-yoga-prompt.txt",
+      "sha256": "8d265dc2a2d527aec5c55e89c47d0d0b534384d116d11c90052237652ce9f330",
+      "bytes": 1267226,
+      "revision": "yoga-v1",
+      "costumeCorrection": "Black matte stretch yoga leggings, preserving seated crossed-leg pose"
+    },
+    {
+      "id": "pilot-09",
+      "file": "pilot-09.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-09.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-09-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-09-prompt.txt",
+      "sha256": "70b7bb7dfa40f16c5c32432232eb253e542618315bab93df2d793946142c912d",
+      "bytes": 470924
+    },
+    {
+      "id": "pilot-10",
+      "file": "pilot-10.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "alpha": true,
+      "method": "imagegen pose-preserving redraw",
+      "poseReference": "public/art/recruit-portraits-v1/pilot-10.png",
+      "rawCandidate": "art/recruit-portraits-v2/pilot-10-candidate-v1.png",
+      "prompt": "art/recruit-portraits-v2/pilot-10-prompt.txt",
+      "sha256": "1e3a2845a806a920ce1a44b930e01f58842362282f75f4a5444c829c536020eb",
+      "bytes": 1374875
+    }
+  ]
+}

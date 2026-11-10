@@ -33,7 +33,7 @@
 #gui-casual-lobby :is(.pl-button,.shop-button,.eq-workshop-button,.rc-draw,.research-awaken,.ref-catalog-button,.ref-yellow,.ref-small,.ref-back,.ref-combine,.lc-claim,.rc-pool-tab,.rc-history):disabled {
   --gui-face:var(--gui-button-disabled)!important;
   --gui-button-ink:#e5e8ef;--gui-button-shadow:none;
-  opacity:1;filter:none!important;color:var(--gui-button-ink)!important;cursor:not-allowed;
+  opacity:1;filter:none!important;color:var(--gui-button-ink)!important;cursor:default;
 }
 #gui-casual-lobby :is(.pl-button,.shop-button,.rc-draw,.research-awaken,.eq-workshop-button,.ref-catalog-primary,.ref-yellow,.ref-combine,.lc-claim)>:is(strong,span,small,b),
 #gui-casual-lobby :is(.shop-button,.rc-draw,.research-awaken)>span>:is(b,i) {

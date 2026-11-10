@@ -16,7 +16,7 @@ type Item = RecordData;
 const itemLevelLimit=(kind: Tab,row: Item)=>kind==='equipment'?NATIVE_EQUIPMENT_LEVEL_MAX:Number(row.maxLevel||1);
 const escape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const plain = (value: unknown) => String(value ?? '').replace(/<br\s*\/?\s*>/gi, '\n').replace(/<[^>]*>/g, '').replace(/\\n/g, '\n');
-const num = (value: unknown) => Number(value || 0).toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+const num = (value: unknown) => Number(value || 0).toLocaleString('zh-CN', {useGrouping:false, maximumFractionDigits: 2 });
 const qualityColors: Record<number, string> = { 10: '#c9cbd1', 20: '#60d58a', 30: '#5daee8', 40: '#bb7ff1', 50: '#ffc74e', 60: '#f07177' };
 const slots: Record<number, string> = { 1: '头盔', 2: '手套', 3: '护甲', 4: '项链', 5: '战靴' };
 const tabNames: Record<Tab, string> = { equipment: '装备', planes: '战机', guns: '机炮', pilots: '人物', skills: '技能', labs: '实验室' };

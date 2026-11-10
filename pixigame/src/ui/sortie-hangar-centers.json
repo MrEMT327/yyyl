@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "kestrel": {
+      "key": "fbe7e8473cfbb6acac3b7e900634a71dcafd7e524fb337bdf03df432862f5a27:1a9b7c5e64937ac83bdc96435b25177428be638d153a4fc761e1421688879560",
+      "center": [
+        0,
+        -1.2624998094327746
+      ]
+    },
+    "crimson": {
+      "key": "7628cd764e3062b4dda4e58547f6e7a3092beeece63d717a394c035706a5443b:610ca517d5853411db95b37bc3fb527b5a020c941569093b56378909a6c39a3c",
+      "center": [
+        0,
+        -0.917500047851354
+      ]
+    },
+    "azure": {
+      "key": "5c1d215e4b4087715882f4dc0b575ce3152e62eee87aff073846f45757c7e79b:ee284af5b56872044de6d6f965116b7a490a2bd97abf19778ee151d273c6c985",
+      "center": [
+        0,
+        -1.4875000001676382
+      ]
+    },
+    "wraith": {
+      "key": "3c6b54acfebb0fa0ad55da3f3053ce94d7a761daf2dd47c14397370781580cc3:79cebf9698cd8c96caa4748fc370faa958a95de191888cad5d97449479d6ba5f",
+      "center": [
+        0,
+        -1.1215980052947998
+      ]
+    },
+    "verdure": {
+      "key": "777ded9838c84dabae5cbf2e7c6fbd6d0cdba8ec9fdc863cbed0bccda11d9bb8:f1ca5612f641d66bb37827721c89bb8de97379cb5183177d8cffcdc9da757e98",
+      "center": [
+        0,
+        -0.26749994294717894
+      ]
+    },
+    "prism": {
+      "key": "f01a2818fbf1a70783b7756ab4ea62dc6a27f833fb59832da90933763d305cf5:6b87d39d9afd634d3149a51c7bb8659feb87bf9e2838a129967508aefef3e248",
+      "center": [
+        0,
+        -1.387499788105488
+      ]
+    },
+    "bastion": {
+      "key": "38c3a67006dc88d170e80e26de2d6ec2709cc428c55ef74ed6a2bdf55a2db7c8:815aacdae83bf4a812fad4aa262e761728d94ea9d4a35bffc8d796ecb2c5076b",
+      "center": [
+        0,
+        -0.0824999999739231
+      ]
+    },
+    "auric": {
+      "key": "87ec7806757e46e95b2be27727ab96c6e573e8a549c07aee256f18978d8e2cb5:b24f0e513f7b132e2e0d5c0d853b7b526f43c700f17aef7ebc06ff9099e60e59",
+      "center": [
+        0,
+        -1.065000057220459
+      ]
+    }
+  }
+}

@@ -18,7 +18,7 @@
   box-shadow:inset 0 2px #d8c7ff80;
 }
 #gui-casual-lobby .bag-heading h2 {
-  margin:0;text-align:center;color:#fff;font-size:26px;font-weight:900;line-height:1.2;
+  margin:0;text-align:left;color:#fff;font-size:26px;font-weight:900;line-height:1.2;
   letter-spacing:1px;paint-order:stroke fill;-webkit-text-stroke:3px #1e182b;
   text-shadow:0 2px #1e182b;
 }
@@ -89,13 +89,13 @@
 #gui-casual-lobby .bag-detail-header .bag-close {top:-1px;right:0;transform:scale(.82);transform-origin:top right}
 #gui-casual-lobby .bag-detail-info {min-width:0;padding-right:3px}
 #gui-casual-lobby .bag-detail-info h3 {
-  margin:0 16px 5px 0;color:#fff;font-size:19px;font-weight:900;line-height:1.35;
+  margin:0 16px 5px 0;color:#fff;font-size:19px;font-weight:900;line-height:var(--psd-small-title-leading,1.5);
   overflow-wrap:anywhere;paint-order:stroke fill;-webkit-text-stroke:2px #153651;text-shadow:0 1px #153651;
 }
 #gui-casual-lobby .bag-detail-info p {margin:0;color:#fff;font-size:14px;font-weight:700;line-height:1.5;overflow-wrap:anywhere;text-shadow:0 1px #194d78}
 #gui-casual-lobby .bag-detail-info strong {font-variant-numeric:tabular-nums}
 #gui-casual-lobby .bag-detail-body {min-height:118px;margin:5px;padding:0 8px 18px;background:#e1ddcf;border-radius:3px}
-#gui-casual-lobby .bag-detail-body h4 {margin:0 0 7px;padding:5px 0;color:#8c887a;font-size:14px;font-weight:800;text-align:center}
+#gui-casual-lobby .bag-detail-body h4 {margin:0 0 7px;padding:5px 0;color:#8c887a;font-size:var(--psd-small-title-size);font-weight:800;text-align:center;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .bag-detail-body p {margin:0;color:#41413d;font-size:15px;line-height:1.7;font-weight:700;text-align:left}
 #gui-casual-lobby :is(.bag-item,.bag-tab):focus-visible {outline:3px solid #ffe144;outline-offset:1px}
 #gui-casual-lobby .bag-tab:focus-visible {outline-color:#224d81;outline-offset:-4px}

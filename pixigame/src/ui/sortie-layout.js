@@ -6,7 +6,7 @@ import { renderAircraftBackdrop } from './aircraft-backdrop.js';
 
 const GOLD = '#ffcb70', WHITE = '#f7f7f3', INK = '#25313e';
 const CAMPAIGN = tuneMainlineCampaign(SOURCE_CAMPAIGN);
-const fmt = value => Math.max(0,Math.round(Number(value)||0)).toLocaleString('en-US');
+const fmt = value => Math.max(0,Math.round(Number(value)||0)).toLocaleString('en-US', {useGrouping:false});
 
 // Mobile game composition: a full-screen hangar, floating utility entries,
 // compact chapter controls and a single dominant launch action.

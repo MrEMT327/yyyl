@@ -1,0 +1,31 @@
+{
+  "source": "psd/战机UI.psd",
+  "sourceSha256": "06fbe5ca5da99df8a5686365297558b2f63d93f012a3164076a642ca7f36840c",
+  "group": 30,
+  "visibleLayers": [
+    33,
+    35,
+    37,
+    49
+  ],
+  "hiddenLayers": [
+    36,
+    39,
+    40,
+    43
+  ],
+  "bounds": [
+    460,
+    36,
+    733,
+    147
+  ],
+  "size": [
+    273,
+    111
+  ],
+  "file": "stats-coins.png",
+  "sha256": "fd6d0fffa1f4c38d7abc5ca9cc42649a9f584afdba1d675b863ee35825375db9",
+  "coinsIcon": "project-resource-icons-v2/coins.png",
+  "export": "Original PSD housing, time label and kill symbol; dynamic values and shared coin icon render separately. No recoloring or painted replacement."
+}

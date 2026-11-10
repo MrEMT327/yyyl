@@ -1,0 +1,59 @@
+/* Competitor structure, original project art and PSD frames. */
+#gui-casual-lobby .sn-box {--box-light:#82dfff}
+#gui-casual-lobby .sn-box.is-advanced {--box-light:#ffe5a1}
+#gui-casual-lobby .shop-native-v2 .sn-box.is-advanced .sn-box-shell::before {background:var(--project-scene-texture),linear-gradient(110deg,#342f4099,#4b35464d),var(--project-supply-image) var(--box-scene-placement)}
+#gui-casual-lobby .shop-native-v2 .sn-box-copy {position:absolute;left:calc(28 * var(--su));top:calc(29 * var(--su));z-index:3;display:grid;gap:5px;width:max-content;max-width:58%;padding:0 5px 3px 0;background:none;pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-box-copy h3 {position:static;display:block;width:auto;height:auto;padding:0;margin:0 0 1px;font-size:clamp(18px,4.65cqw,22px);line-height:1.25;text-shadow:0 1px 1px #112b40}
+#gui-casual-lobby .shop-native-v2 .sn-box .sn-box-copy .sn-box-guarantee {position:static;display:block;width:auto;height:auto;margin:0;padding:0;color:#eff7fc;font:500 clamp(11px,3.05cqw,14px)/1.35 'Microsoft YaHei','PingFang SC',sans-serif;letter-spacing:0;-webkit-text-stroke:0;text-shadow:0 1px 1px #102538;white-space:nowrap}
+#gui-casual-lobby .sn-quality-text[data-rarity='3'] {color:#d6a1ff}
+#gui-casual-lobby .sn-quality-text[data-rarity='1'] {color:#80f0ac}
+#gui-casual-lobby .sn-box-effects {position:absolute;inset:0;pointer-events:none;overflow:hidden}
+#gui-casual-lobby .sn-box-spark {position:absolute;left:calc((210 + var(--spark) * 114) * var(--su));top:calc((230 + var(--spark-row) * 38) * var(--su));width:calc(8 * var(--su));height:calc(8 * var(--su));background:var(--box-light);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0;animation:sn-spark-rise 4.8s ease-out infinite;animation-delay:calc(var(--spark) * -.8s)}
+#gui-casual-lobby .shop-native-v2 .sn-box-art {z-index:1}
+#gui-casual-lobby .shop-native-v2 .sn-box-art {left:calc(320 * var(--su))}
+#gui-casual-lobby .shop-native-v2 .sn-box-art img {animation:none}
+#gui-casual-lobby .sn-floating-gear {position:absolute;z-index:2;display:grid;place-items:center;width:calc(138 * var(--su));height:calc(138 * var(--su));min-width:40px;min-height:40px;padding:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .sn-floating-0 {left:calc(95 * var(--su));top:calc(220 * var(--su));--float-delay:-1.2s}
+#gui-casual-lobby .sn-floating-1 {left:calc(686 * var(--su));top:calc(105 * var(--su));--float-delay:-2.6s}
+#gui-casual-lobby .sn-floating-2 {left:calc(748 * var(--su));top:calc(272 * var(--su));width:calc(116 * var(--su));height:calc(116 * var(--su));min-width:0;min-height:0;--float-delay:-.3s;--float-rise:calc(-2 * var(--su))}
+#gui-casual-lobby .sn-box:not(.is-advanced) .sn-floating-1 {left:calc(642 * var(--su));top:calc(102 * var(--su))}
+#gui-casual-lobby .sn-floating-orb {position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;border:1px solid #c5edff5c;background:radial-gradient(ellipse at 38% 28%,#d6edff29,#628ca51a 66%,#aee0f02b);animation:sn-equipment-hover 4.4s ease-in-out infinite;animation-delay:var(--float-delay)}
+#gui-casual-lobby .is-advanced .sn-floating-orb {border-color:#ffe4aa73;background:radial-gradient(ellipse at 38% 28%,#ffe9a630,#dcac5b12 66%,#eed1a12b)}
+#gui-casual-lobby .sn-floating-orb>img {width:92%;height:92%;object-fit:contain;filter:drop-shadow(0 2px 2px #07162699)}
+#gui-casual-lobby .sn-floating-rank {position:absolute;right:0;bottom:-1px;color:#ffe69a;font:900 italic max(13px,calc(39 * var(--su)))/1 'Microsoft YaHei',sans-serif;text-shadow:-1px -1px #5b3914,1px 1px #5b3914}
+#gui-casual-lobby .sn-floating-gear:focus-visible {outline:2px solid #c6f2ff;outline-offset:2px;border-radius:50%}
+#gui-casual-lobby .sn-floating-gear:active .sn-floating-orb {scale:.94}
+#gui-casual-lobby .shop-native-v2 .sn-box-actions {z-index:3}
+/* Frost only the background behind the native translucent face. The hangar's
+   rails otherwise show through as straight bars. Clip to the PSD silhouette. */
+#gui-casual-lobby .shop-native-v2 .sn-box-actions>.sn-button+ .sn-button::before {
+  border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / var(--psd-button-corner) stretch;
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  clip-path:polygon(var(--psd-button-corner) 0,100% 0,100% calc(100% - var(--psd-button-corner)),calc(100% - var(--psd-button-corner)) 100%,0 100%,0 var(--psd-button-corner));
+}
+#gui-casual-lobby .sn-box-actions .sn-button>span+span {min-width:66%;padding:1px 5px;background:none;font-size:.9em}
+#gui-casual-lobby .sn-box-ready {position:absolute;right:1px;top:0;width:7px;height:7px;border-radius:50%;background:#ff586c;box-shadow:0 0 0 1px #381f2d}
+/* UICommonLootBoxRateInfo: a scrolling sequence of category headers and five-column grids. */
+#gui-casual-lobby .pl-modal[data-modal-type='shopBoxRates'] {width:92cqw;max-width:460px;max-height:90%;height:min(86cqh,760px)}
+#gui-casual-lobby .pl-modal[data-modal-type='shopBoxRates'] .pl-modal-content {padding:0 3cqw 3cqw;overflow-y:auto;scrollbar-width:none}
+#gui-casual-lobby .sn-box-gallery {color:#203c52;text-align:left;background:#b6c8d9}
+#gui-casual-lobby .sn-reward-group {margin-bottom:10px;background:#d6e3ec}
+#gui-casual-lobby .sn-reward-group-heading {display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;margin:0;padding:9px 7px;border-left:3px solid #65b3d3;background:#203d56;color:#f1f6fc}
+#gui-casual-lobby .sn-box-gallery .sn-reward-group-heading>h4 {margin:0;color:inherit;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .sn-reward-group-heading>b {color:#d9f1ff;font-size:clamp(12px,3.3cqw,15px);font-variant-numeric:tabular-nums;white-space:nowrap}
+#gui-casual-lobby .sn-reward-group-heading>b>span {font-size:.85em;font-weight:500}
+#gui-casual-lobby .sn-box-rules {padding:10px 0 4px;border-top:1px solid #7797b25c;color:#25465e;font-size:12px}
+#gui-casual-lobby .sn-box-rules>h4 {margin:0;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .sn-reward-grid {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px 6px;padding:10px 5px 8px}
+#gui-casual-lobby .sn-reward-preview {min-width:0;margin:0;padding:0;text-align:center}
+#gui-casual-lobby .sn-reward-preview>.reward-item-slot {width:100%;height:auto;aspect-ratio:1}
+#gui-casual-lobby .sn-reward-preview figcaption {padding-top:3px;color:#16364d;font-size:clamp(11px,3.3cqw,15px);font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+#gui-casual-lobby .sn-box-gallery .sn-pity-rule {padding:0;border:0;font-size:12px;line-height:1.6;margin:5px 0 0}
+@keyframes sn-equipment-hover {0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(var(--float-rise,calc(-8 * var(--su)))) rotate(3deg)}}
+@keyframes sn-spark-rise {0%,12%{opacity:0;transform:translateY(9px) scale(.5)}30%{opacity:.8}80%,100%{opacity:0;transform:translateY(-29px) scale(1)}}
+#gui-casual-lobby:has([role='dialog']) :is(.sn-floating-orb,.sn-box-spark,.sn-chest-image) {animation-play-state:paused}
+@media(prefers-reduced-motion:reduce) {#gui-casual-lobby :is(.sn-floating-orb,.sn-box-spark,.sn-chest-image) {animation:none!important}#gui-casual-lobby .sn-box-spark{opacity:0}}
+@container(max-width:350px) {
+ #gui-casual-lobby .shop-native-v2 .sn-box-art {left:calc(360 * var(--su))}
+ #gui-casual-lobby .sn-reward-grid {gap:8px 4px}
+}

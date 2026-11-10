@@ -16,7 +16,7 @@ import { loadFighterPackages } from '../three/aircraft/fighter-packages.js';
 const W = 750, H = 1624;
 const NAV = [['shop','商城'],['assembly','装备'],['battle','战役'],['research','天赋'],['supply','招募']];
 const quality = ['gray','green','blue','purple','gold','red'];
-const count = value => Number(value || 0).toLocaleString('zh-CN');
+const count = value => Number(value || 0).toLocaleString('zh-CN', {useGrouping:false});
 const resourceNames = {coins:'金币',diamonds:'钻石',stamina:'体力',aircraftShards:'飞机碎片',weaponParts:'武器零件',cores:'星核'};
 
 // Mini-game UI: cached 2D canvas -> one GPU quad, with a separate inspection
@@ -71,6 +71,17 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
     p.text(count(amount), x + size + 6, y, 24);
   }
   function button(id, label, x, y, w, action, disabled = false, primary = false, height = 64) {
+    if(id==='recruit-rules') {
+      p.image('art/project-ui-icons-v1/info.png',x+18,y+(height-28)/2,28,28);
+      p.text(label,x+w/2+10,y+height/2,25,'#d4e5ef','center',w-64);
+      p.hit(id,x,y,w,height,action,disabled||pending);return;
+    }
+    if(id==='catalog-back'||id==='close') {
+      p.ctx.save();p.ctx.translate(x+24,y+height/2);p.ctx.rotate(Math.PI);
+      p.image('art/project-ui-icons-v1/chevron-right.png',-9,-12,18,24);p.ctx.restore();
+      p.text(label,x+w/2+8,y+height/2,25,'#d4e5ef','center',w-40);
+      p.hit(id,x,y,w,height,action,disabled||pending);return;
+    }
     p.button(id, label, x, y, w, height, action, disabled || pending, primary);
   }
   function card(item, x, y, width, height, art, select, label = item.name) {
@@ -157,7 +168,12 @@ export function mountCanvasLobby({ bridge, system, createCanvas = () => globalTh
       if(item) card(item,x,y,140,152,equipmentArtPath(item.art),()=>open('gear',{id:item.uid}),'Lv.'+item.level);
       else {p.nine('art/psd-equipment-v1/frame-empty.png',x,y,140,152,24,.7);p.image(EMPTY_SLOT_ART,x+52,y+50,36,36);p.hit('slot:'+type,x,y,140,152,()=>open('gearList',{part:type}));}
     });
-    [['aircraft','战机'],['pilot','驾驶员'],['weapon','武器'],['workshop','改装间']].forEach(([id,label],i)=>button('catalog:'+id,label,22+i*181,980,164,()=>visit(id)));
+    [['aircraft','战机','battle'],['pilot','驾驶员','supply'],['weapon','武器','assembly'],['workshop','改装间','research']].forEach(([id,label,icon],i)=>{
+      const x=22+i*181;
+      p.image(`art/psd-main-v1/navigation/${icon}.png`,x+57,966,50,50);
+      p.text(label,x+82,1034,24,'#edf7fc','center',164);
+      p.hit('catalog:'+id,x,960,164,100,()=>visit(id),pending);
+    });
     p.text('驾驶员装备',28,1120,29); list(s.equipment.items,(item,i,x,y,w)=>card(item,x,y,w,190,equipmentArtPath(item.art),()=>open('gear',{id:item.uid})),4,200,1160,1455);
   }
   function catalog(s, kind) {

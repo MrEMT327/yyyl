@@ -1,5 +1,7 @@
 import './entry-screens.css';
 import { createSortieHangar } from './sortie-hangar.js';
+import {sortieAircraftImageUrl} from './sortie-aircraft-image.js';
+import {currentAircraftId} from '../three/aircraft/aircraft-roster.js';
 
 export const nextLoadingFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
 
@@ -18,7 +20,7 @@ export function showSortieLoading(options={}) {
     <div class="sortie-loading__shade" aria-hidden="true"></div>
     <header class="sortie-loading__heading"><h2></h2></header>
     <div class="sortie-hangar" aria-hidden="true">
-      <img class="sortie-hangar__elevator" src="${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/lift-front.png" alt="" />
+      <img class="sortie-hangar__elevator" src="${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/lift-front.webp" alt="" />
       <div class="sortie-hangar__model"><img class="sortie-hangar__fallback" alt="" /></div>
     </div>
     <div class="sortie-loading__state" hidden>
@@ -31,13 +33,14 @@ export function showSortieLoading(options={}) {
     </div>
   </section>`;
   overlay.querySelector('h2').textContent=options.stageName||'作战区域';
-  const aircraft=/^pilot-\d{2}$/.test(options.aircraftId)?options.aircraftId:'pilot-01';
+  const aircraft=currentAircraftId(options.aircraftId);
   for(const backdrop of overlay.querySelectorAll('.sortie-loading__backdrop')){
-    backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/shaft-section.png`;
+    backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/shaft-section.webp`;
     backdrop.onerror=()=>{backdrop.onerror=null;backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/psd-main-v1/main-background.png`;};
   }
   const flight=overlay.querySelector('.sortie-hangar__fallback');
-  flight.src=`${import.meta.env?.BASE_URL||'/'}art/aircraft-ui-v1/${aircraft}-preview.webp`;
+  flight.decoding='sync';flight.fetchPriority='high';
+  flight.src=sortieAircraftImageUrl(aircraft);
   flight.onerror=()=>{flight.onerror=null;flight.hidden=true;};
   const status = overlay.querySelector('.sortie-loading__status');
   const progress=overlay.querySelector('progress');progress.max=resourceCount+2;
@@ -66,11 +69,12 @@ export function showSortieLoading(options={}) {
   const heading=overlay.querySelector('.sortie-loading__heading');
   const titleTimer=window.setTimeout(()=>heading.classList.add('is-muted'),1600);
   overlay.focus({preventScroll:true});
-  const close = ({restoreFocus=true}={}) => {
+  const close = ({restoreFocus=true,keepMotion=false}={}) => {
     if(closing)return closing;
     closed=true;
     window.clearTimeout(titleTimer);
-    presentation.freeze();
+    if(keepMotion) presentation.finish();
+    else presentation.freeze();
     closing=(async()=>{
       overlay.classList.add('is-leaving');
       if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -93,7 +97,6 @@ export function showSortieLoading(options={}) {
   };
   back.onclick=async()=>{await close();options.onDismiss?.();};
   return {
-    readyForLaunch(){return presentation.ready;},
     update(value,message) {
       if(closed||failed||!Number.isFinite(value))return;
       progress.value=Math.max(progress.value,Math.min(1,Math.max(0,value))*progress.max);
@@ -105,16 +108,16 @@ export function showSortieLoading(options={}) {
       progress.value=Math.max(progress.value,resourceCount+Math.max(0,index));
       status.textContent=['作战资源已就绪','正在准备战场…','出击中…'][index]||'正在准备出击…';
     },
-    fail({onRetry}={}) {
+    fail({onRetry,message}={}) {
       if(closed)return;
       failed=true;
       window.clearTimeout(titleTimer);heading.classList.remove('is-muted');
       presentation.freeze();
       overlay.classList.add('is-failed');
       overlay.querySelector('.sortie-loading__state').hidden=false;progress.hidden=true;
-      status.textContent='准备失败';
+      status.textContent=message||'准备失败';
       actions.hidden=false;retry.hidden=!onRetry;
-      if(!onRetry)status.textContent='准备未完成，请返回';
+      if(!onRetry&&!message)status.textContent='准备未完成，请返回';
       retry.onclick=async()=>{retry.disabled=true;back.disabled=true;await close();onRetry?.();};
       (onRetry?retry:back).focus();
     },

@@ -1,5 +1,5 @@
-import atlas from './skill-icon-atlas.json' with {type:'json'};
 import './weapon-skill-art.css';
+import './skill-element-backgrounds.css';
 import { currentWeaponSkillIconUrl, nativeWeaponSkillArt } from '../replica/native-weapon-skill-art.js';
 
 // Bind existing gameplay IDs by attack motif, never by the order of the sheet.
@@ -15,7 +15,6 @@ export const WEAPON_SKILL_ICONS = Object.freeze({
   aux_pyro:'molten-core',aux_shield:'frost-sawblade',
   aux_tail:'rear-counterfire',aux_drone:'replicating-drones',
 });
-const source = `${import.meta.env?.BASE_URL??'/'}art/skill-icons-anime-v1/approved-sheet.png`;
 
 const nativeFamilies=Object.freeze({10000101:20101,10000701:20201,10001501:20301,
   10000201:20401,10000601:20501,10000401:20601,10001701:20701,
@@ -29,11 +28,6 @@ export function weaponSkillArtwork(weapon) {
   const current=nativeWeaponSkillArt(weapon)||currentWeaponSkillIconUrl(id);
   if(current)return `<img class="weapon-skill-icon native-weapon-skill-icon" data-skill-icon="${id||weapon?.id}" src="${current}" alt="" aria-hidden="true" draggable="false">`;
   if(!id)return '';
-  const rect=atlas.rects[id];
-  if(!rect) {
-    const image = `${import.meta.env?.BASE_URL??'/'}art/skill-icons-anime-v2/${id}.webp`;
-    return `<span class="weapon-skill-icon" data-skill-icon="${id}" aria-hidden="true" style="background-image:url('${image}');background-size:cover;background-position:center"></span>`;
-  }
-  const [x,y,w,h]=rect,[width,height]=atlas.sourceSize;
-  return `<span class="weapon-skill-icon" data-skill-icon="${id}" aria-hidden="true" style="background-image:url('${source}');background-size:${width/w*100}% ${height/h*100}%;background-position:${x/(width-w)*100}% ${y/(height-h)*100}%"></span>`;
+  const image = `${import.meta.env?.BASE_URL??'/'}art/skill-icons-anime-v2/${id}.webp`;
+  return `<img class="weapon-skill-icon" data-skill-icon="${id}" src="${image}" alt="" aria-hidden="true" draggable="false">`;
 }

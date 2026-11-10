@@ -1,0 +1,85 @@
+/* Dedicated next-reward page. All visible surfaces are project raster assets. */
+#gui-casual-lobby .pl-modal.chapter-reward-page {
+  position:absolute!important;inset:0!important;display:flex;flex-direction:column;
+  width:100%!important;max-width:none!important;height:100%!important;max-height:none!important;
+  min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  /* Enlarge the existing scene from its top anchor so the platform follows
+     the lower node without exposing a second, visibly spliced background. */
+  background:url('/art/chapter-reward-scene-v2/background.png') center top / auto max(130%,281.7cqw) no-repeat!important;
+  color:#edf7ff;pointer-events:auto;
+}
+#gui-casual-lobby .chapter-reward-page::before,
+#gui-casual-lobby .chapter-reward-page::after {content:none!important}
+#gui-casual-lobby .chapter-reward-page-header {
+  position:relative;flex:0 0 29cqw;display:flex;flex-direction:column;align-items:center;
+  padding:1.5cqw 0 0;box-sizing:border-box;
+}
+#gui-casual-lobby .chapter-reward-page-resources {order:0;align-self:flex-end;width:70cqw;min-height:36px;margin-right:3cqw}
+#gui-casual-lobby .chapter-reward-page-resources .lobby-resources {position:static!important;width:100%!important;max-width:none!important}
+/* This full-bleed page deliberately centers its title, unlike PSD modal headings. */
+#gui-casual-lobby .chapter-reward-page-header h2 {
+  order:1;display:grid;place-items:center;flex:1;position:relative;top:9cqw;width:100%;
+  margin:0!important;color:#fff!important;font:400 clamp(21px,5.7cqw,26px)/1.2 var(--psd-title-family)!important;
+  text-align:center;text-shadow:0 1px 2px #102232!important;white-space:nowrap;
+  background:url('/art/psd-choice-v1/banner.png') center/100% auto no-repeat;
+  animation:chapter-reward-title-in .35s ease-out both;
+}
+#gui-casual-lobby .chapter-reward-page>.pl-modal-content {
+  display:flex;flex:1;flex-direction:column;min-height:0;margin:0!important;padding:0!important;
+  border:0!important;background:none!important;box-shadow:none!important;overflow:auto!important;
+}
+#gui-casual-lobby .chapter-reward-page-bottom {
+  flex:0 0 clamp(58px,15cqw,70px);display:flex;align-items:center;
+  padding:0 3cqw max(3px,var(--lobby-safe-bottom,0px));
+}
+#gui-casual-lobby .chapter-reward-back {width:48px;min-height:44px}
+#gui-casual-lobby .chapter-reward-view {
+  position:relative;display:grid;flex:1;grid-auto-rows:auto;align-content:safe center;justify-items:center;
+  /* Grow the node upward into the header gap. Reduce top padding by the same
+     amount so the reward tray and footer keep their lower, confirmed position. */
+  row-gap:3cqw;min-height:0;width:100%;padding:2.5cqw 0 2cqw;box-sizing:border-box;color:#edf7ff;
+}
+#gui-casual-lobby .chapter-reward-stage {
+  position:relative;display:grid;place-items:center;height:87.1cqw;width:100%;
+}
+#gui-casual-lobby .chapter-reward-step {
+  position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;
+  width:74cqw;height:87.1cqw;margin:0;padding:0;color:#fff;
+  animation:chapter-reward-node-in .45s cubic-bezier(.18,.8,.3,1) both;
+}
+#gui-casual-lobby .chapter-reward-step::before {
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:url('/art/chapter-reward-node-v1/node.png') center/contain no-repeat;
+}
+#gui-casual-lobby .chapter-reward-step-main {position:absolute;top:41%;transform:translateY(-50%);font:400 clamp(28px,8.4cqw,38px)/1.2 var(--psd-title-family);white-space:nowrap;text-shadow:0 2px 3px #0b182a}
+#gui-casual-lobby .chapter-reward-step-sub {position:absolute;top:67%;transform:translateY(-50%);font:400 clamp(15px,4.1cqw,19px)/1.2 var(--psd-title-family);white-space:nowrap}
+#gui-casual-lobby .chapter-reward-preview {
+  position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;
+  flex:none;width:89%;min-height:34cqw;margin:0;padding:2cqw 3cqw 2.5cqw;box-sizing:border-box;
+  color:#f2f9ff;animation:chapter-reward-tray-in .35s .12s ease-out both;
+}
+#gui-casual-lobby .chapter-reward-preview::before {
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-image:url('/art/chapter-details-tray-v1/tray.png') 64 fill / 9px stretch;
+}
+#gui-casual-lobby .chapter-reward-preview h3 {flex:none;margin:0;text-align:center;color:#f2f9ff;font:400 clamp(17px,4.5cqw,21px)/1.4 var(--psd-title-family)}
+#gui-casual-lobby .chapter-reward-items {flex:1;display:flex;justify-content:center;align-content:center;align-items:center;gap:2.4cqw;flex-wrap:wrap;width:100%;padding:2cqw 0 0}
+#gui-casual-lobby .chapter-reward-items>.reward-item-slot {flex:none;width:22cqw;animation:chapter-reward-item-in .3s .2s ease-out both}
+#gui-casual-lobby .chapter-reward-items>.reward-item-slot:nth-child(2) {animation-delay:.25s}
+#gui-casual-lobby .chapter-reward-items>.reward-item-slot:nth-child(n+3) {animation-delay:.3s}
+#gui-casual-lobby .chapter-reward-items:has(>:nth-child(4))>.reward-item-slot {width:16cqw}
+#gui-casual-lobby .chapter-reward-unknown {font:600 10px/1.2 'Microsoft YaHei',sans-serif;text-align:center;color:#edf7ff;overflow-wrap:anywhere}
+#gui-casual-lobby .chapter-reward-note {margin:2cqw 0 0;text-align:center;color:#d6e8f3;font-size:11px;line-height:1.4}
+#gui-casual-lobby .chapter-reward-footer {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5cqw;width:100%;min-height:24cqw;padding:0;box-sizing:border-box}
+#gui-casual-lobby .pl-modal.chapter-reward-page .chapter-reward-footer .chapter-reward-claim {width:48cqw;min-height:48px;font:400 clamp(18px,5cqw,23px)/1.25 var(--psd-title-family)!important}
+#gui-casual-lobby .chapter-reward-condition {display:grid;place-items:center;min-height:48px;margin:0 4cqw;text-align:center;color:#edf7ff;font-size:clamp(14px,3.8cqw,17px);line-height:1.4;text-shadow:0 1px 2px #102232}
+#gui-casual-lobby .chapter-reward-footer .chapter-reward-stars {min-height:44px;color:#edf7ff!important}
+@container(max-width:350px) {
+  #gui-casual-lobby .chapter-reward-page-header h2 {top:6cqw}
+}
+@keyframes chapter-reward-title-in {from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes chapter-reward-node-in {from{opacity:0;transform:translateY(12px) scale(.88)}to{opacity:1;transform:none}}
+@keyframes chapter-reward-tray-in {from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes chapter-reward-item-in {from{opacity:0;transform:translateY(6px) scale(.85)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby .chapter-reward-page *{animation:none!important}}

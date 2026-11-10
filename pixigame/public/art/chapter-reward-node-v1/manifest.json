@@ -1,0 +1,12 @@
+{
+  "name": "Chapter reward milestone badge",
+  "source": "Built-in imagegen; original file stored on the non-C target of the generated_images junction.",
+  "path": "node.png",
+  "references": [
+    "public/art/psd-buttons-v1/button-blue.png",
+    "public/art/psd-choice-v1/card-blue.png",
+    "Competitor prefab silhouette, used as a layout reference only"
+  ],
+  "prompt": "Create one original mobile game UI milestone badge as a transparent PNG sprite. Input image 1 and image 2 are the project's actual PSD-exported style references: match their restrained thin silver-blue edging, dark blue steel, precise lightly brushed/grid surface and flat sci-fi interface rendering. Input image 3 is ONLY a layout reference for a compact upright point-top six-sided badge and interior text hierarchy; do not copy its colors, artwork or thick cartoon border. Draw a symmetrical, vertical hexagonal progress badge, front view, with an understated narrow pale blue-grey metal frame and dark navy inner face; keep the middle clear for one large white line of live UI text, and a small unobtrusive blue-grey inset area immediately underneath for a short chapter label. The entire badge should fill most of the canvas with a little transparent margin and a crisp continuous outer silhouette. No letters, numbers, icons, ticks, logos, watermarks, drop shadows, wings, badges, button gloss, bright gold, thick 3-D bevels, or surrounding background. One badge only, actual transparency outside it.",
+  "alpha": true
+}

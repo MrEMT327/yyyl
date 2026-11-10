@@ -11,10 +11,10 @@
       "file": "801.svg",
       "width": 512,
       "height": 512,
-      "sha256": "f291eae50713bdadfa7246ab045c46ffc751e32117c708ce97de9aedb2c54b0e",
+      "sha256": "e4a1297ba736549dc78efed6c783494267a6a38d8c9df7e1143f03fe55133dbe",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20101.webp",
-        "sha256": "54604cba891f217a24124add309081a6fb944ccd31ae92c78de341876801f434"
+        "path": "art/project-weapon-clean-v2/20101.webp",
+        "sha256": "613fa5b092c1acca0017f7f47d55122631140989d2ba7a416bacc4fc417594dd"
       }
     },
     {
@@ -25,10 +25,10 @@
       "file": "802.svg",
       "width": 512,
       "height": 512,
-      "sha256": "9142deb4c3521734bb744d7d94ef3044e3409f329a244f4dd1dffaaa28e56331",
+      "sha256": "335d2a95125eb2cd3446c32b44f1959ac71952fd70f09ffd77708b57c51f17d6",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20201.webp",
-        "sha256": "a869effe1647f6a09f074f1c54f2fe90e89eb1dc20c5fee9ffa30f881e7e4791"
+        "path": "art/project-weapon-clean-v2/20201.webp",
+        "sha256": "1eade0321fea5b7a7a1e2b56fb1cad34e780a2e25f9ceb0e0c2ef124fb70b965"
       }
     },
     {
@@ -39,10 +39,10 @@
       "file": "803.svg",
       "width": 512,
       "height": 512,
-      "sha256": "27c346d59450024887fc63becc47ca92365217a7b71ad8d4a8be93d3b182f005",
+      "sha256": "549202c9655aecb12e706b9b2c00068f605415a35c27745b2198f0203cd43e35",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20301.webp",
-        "sha256": "fdb654418e93902b6de1ef55ddf8cf7282690186ea0016b2b5bb4b5af493521b"
+        "path": "art/project-weapon-clean-v2/20301.webp",
+        "sha256": "5da32ad721c34644ae004a340d7d4fe52977a4b0e8fccac9a2d8236b21a2a99e"
       }
     },
     {
@@ -53,10 +53,10 @@
       "file": "804.svg",
       "width": 512,
       "height": 512,
-      "sha256": "5f5a066f0ac7ee3eddd65d96542ed0700c330dc66be28af5565c9f335d27e8bb",
+      "sha256": "d25f4696577da37cacfb96aebaafd06b07a2fc68d81153d533a13aa29a5c196d",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20401.webp",
-        "sha256": "3630dfafa3e14f8bcf6dfde2e7f9146e63c23c747b6aaa2982a6692863c023d9"
+        "path": "art/project-weapon-clean-v2/20401.webp",
+        "sha256": "ebd336050784f0e0e4e60fc40441df2b8d0f9fa5a65b4da6edc990de03f33e66"
       }
     },
     {
@@ -67,10 +67,10 @@
       "file": "805.svg",
       "width": 512,
       "height": 512,
-      "sha256": "8ff9500e8b9cb092967f0cf00677121e57d2a6013b124fb774865749ff826d84",
+      "sha256": "5d1fd0da891a527ec62bd2d23e71c7c1221352b04df5dce8726cc54b50a57b3b",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20501.webp",
-        "sha256": "240f7cfff2dcd734c2704251332ab0ade3f091bb3b29afeb6f1ea17f9aafa26b"
+        "path": "art/project-weapon-clean-v2/20501.webp",
+        "sha256": "451f0092a76d9f1759393323880bfd6b1f9b531d19c2b3d8e6b0001b9f8111f5"
       }
     },
     {
@@ -81,10 +81,10 @@
       "file": "806.svg",
       "width": 512,
       "height": 512,
-      "sha256": "0cc9cd617c2b447348e1ef0187df54f585c94a24627e575ff3df8919a197ee3d",
+      "sha256": "ad156d6410067259075c8110289de6165fa2b6947ca0f988ae1f0ec2edd24016",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20601.webp",
-        "sha256": "3537219ed764ad05af6715ba694535043a2307fdbfd703621774e3de861bf24f"
+        "path": "art/project-weapon-clean-v2/20601.webp",
+        "sha256": "8e8a7b043d765d3abca89a34f2293c8f57c8433ea2962f38ff2c04dcdbf7f861"
       }
     },
     {
@@ -95,10 +95,10 @@
       "file": "807.svg",
       "width": 512,
       "height": 512,
-      "sha256": "b5222ec5a1dbbe37fdd23439adf980026ac4f2c6798e8ac08a21a341db7e940a",
+      "sha256": "22ca1bd902aa96cc97f289479326bd07aae56cedb566705ae463e28cd208eb8a",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20701.webp",
-        "sha256": "7e813b92d35460371619e6bc418b175df2268e7d1ec823c331730ce3db6f10af"
+        "path": "art/project-weapon-clean-v2/20701.webp",
+        "sha256": "2d67c33fcdc5f330f977c4e824a3103bd26382cada5926e28c12df46632acad5"
       }
     },
     {
@@ -109,10 +109,10 @@
       "file": "808.svg",
       "width": 512,
       "height": 512,
-      "sha256": "d3b7714b1f1669a8b273dc7a277782d148fb3a1e3fb1c9cb446693f25f2353a8",
+      "sha256": "b50749f4f2c663b3dd494e6a6b5076b074f6b70c14fc0d05150904247aea56b4",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20801.webp",
-        "sha256": "adc902e9d2918fbd86d9c81fe142f5b4cf9640e4ef1e9dc529954c5896d3460b"
+        "path": "art/project-weapon-clean-v2/20801.webp",
+        "sha256": "d7e65bd87cfe6fb3854989961bc6968f42dd75a8e016aeb99795e391a444ea1b"
       }
     },
     {
@@ -123,10 +123,10 @@
       "file": "809.svg",
       "width": 512,
       "height": 512,
-      "sha256": "469111fb1d2e160317e817c215272d3a013fcd5f5b7b352984a0b4e2358f88cd",
+      "sha256": "3960034a7f66a02455ed1f100c80b97897708b81c27573eaffc20a25cb0b0290",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/20901.webp",
-        "sha256": "f84a7631b091f485fa3311185ef8f582ed30436a0b20498f174d2700d8644dee"
+        "path": "art/project-weapon-clean-v2/20901.webp",
+        "sha256": "4a3bcb4640548857dedd9f6beae9d8f08d3bfddeeb0d8eb6180b2476b8ff0ea7"
       }
     },
     {
@@ -137,10 +137,10 @@
       "file": "810.svg",
       "width": 512,
       "height": 512,
-      "sha256": "0511d26a621fd4f61d532d6f5147ce4140308611cb5ce03b6a77ca4d34e5aabe",
+      "sha256": "7e6398662074737c20e3eb62aef6cb18bb83bdb2ce5abe89a90657e1d4170584",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/21001.webp",
-        "sha256": "6ca0c591e33e7817c51d2f79e318c90b28be3fb98e1b50da2e6c3471e0906e16"
+        "path": "art/project-weapon-clean-v2/21001.webp",
+        "sha256": "3f42166efe643e2fb5a6e9d6751ad56d2657198e33374ab315079e33afbab385"
       }
     },
     {
@@ -151,10 +151,10 @@
       "file": "811.svg",
       "width": 512,
       "height": 512,
-      "sha256": "a1e6528f063971ff1347c2eca89ede2683b8c84edbe658500388cd0782c1c250",
+      "sha256": "0823478b071b344ac67feef6486573aff8ffda5d6cedfabdc954112628758904",
       "weaponSource": {
-        "path": "art/project-weapon-themes-v1/21101.webp",
-        "sha256": "b9082b833a5736ed140816f0b6c81c19b322dc6cf43beeef864562a122c1f18b"
+        "path": "art/project-weapon-clean-v2/21101.webp",
+        "sha256": "35a157041c0ae2f8cc934bec223157071a1d1055e4e3ea8f81c2430d99e5fb9d"
       }
     }
   ]

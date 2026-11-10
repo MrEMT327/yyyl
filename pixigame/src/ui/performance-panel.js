@@ -37,7 +37,7 @@ export function mountPerformancePanel({bridge,documentRef=document}={}) {
   const rendererFrames=new Map();
   const push=(list,value)=>{list.push(value);if(list.length>180)list.shift();};
   const names={battle:'战役',assembly:'装备',shop:'商城',research:'天赋',supply:'招募',aircraft:'战机',pilot:'驾驶员',weapon:'武器',workshop:'改装间'};
-  const ms=value=>Number.isFinite(value)?`${value.toFixed(1)} ms`:'—',count=value=>Number.isFinite(value)?value.toLocaleString('zh-CN',{maximumFractionDigits:1}):'—';
+  const ms=value=>Number.isFinite(value)?`${value.toFixed(1)} ms`:'—',count=value=>Number.isFinite(value)?value.toLocaleString('zh-CN',{useGrouping:false,maximumFractionDigits:1}):'—';
   function collect(){
     const state=bridge?.pixiLobby?.state,game=bridge?.game?.state;
     return {battle:battleSource.snapshot(),identity:BUILD_IDENTITY,route:state?.visible?`${names[state.tab]||state.tab}${state.subpage?' / '+(names[state.subpage]||state.subpage):''}${state.modal?' / 弹窗':''}`:game||'加载',...monitor.snapshot(),longTasks:longTasks.slice(),interactions:interactions.slice(),domNodes:doc.querySelectorAll('*').length,canvases:doc.querySelectorAll('canvas').length,resources:view.performance.getEntriesByType('resource').length,heapBytes:view.performance.memory?.usedJSHeapSize??null};

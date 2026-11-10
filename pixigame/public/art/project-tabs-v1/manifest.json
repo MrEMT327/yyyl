@@ -1,0 +1,90 @@
+{
+  "revision": 4,
+  "artDirection": "Mature anime aviation navigation: grouped slate tabs, ice-white selected face, dark navy selected ink, small amber index marker, low-relief painted facets.",
+  "generatedWith": "built-in imagegen",
+  "styleReferences": [
+    "public/art/psd-buttons-v1/button-blue.png",
+    "design/tab-system-v1/成熟二次元-页签效果-v4.png"
+  ],
+  "research": "design/tab-system-v1/竞品参考与改版-v4.md",
+  "competitorArtworkInRuntime": false,
+  "export": "Outside-canvas trim and uniform contain resize only; preserve generated pixels and alpha; no recoloring or drawn geometry.",
+  "sourceCanvas": {
+    "inactive": [
+      2172,
+      724
+    ],
+    "active": [
+      2172,
+      724
+    ]
+  },
+  "trim": {
+    "inactive": [
+      131,
+      110,
+      2045,
+      610
+    ],
+    "active": [
+      135,
+      115,
+      2037,
+      609
+    ]
+  },
+  "size": [
+    320,
+    84
+  ],
+  "slice_trbl": [
+    36,
+    36,
+    36,
+    36
+  ],
+  "targetCornerPx": 9,
+  "assets": {
+    "inactive": {
+      "file": "tab-inactive.png",
+      "size": [
+        320,
+        84
+      ],
+      "source": "design/tab-system-v1/assets/tab-inactive-v4-source.png",
+      "sourceSha256": "c6f153ccb2ae2c6cc4e1f5bee7efb3ac50bba33ac863c6d8626b31296eaa82af",
+      "sha256": "56e26b9e0abb04344507e8b3c355d44c3d4f09c4f009e67142e01e6dcaae79ab"
+    },
+    "active": {
+      "file": "tab-active.png",
+      "size": [
+        320,
+        84
+      ],
+      "source": "design/tab-system-v1/assets/tab-active-v4-source.png",
+      "sourceSha256": "eda65abdaff3767965f6a1ab95d031706fb8161bf1d8e1336b8156f756120715",
+      "sha256": "c64d17d3edf2ac5ed4421df8528b0e16a2045fd28216c2c4df90ead9ef522e2f"
+    }
+  },
+  "states": {
+    "normal": "tab-inactive.png",
+    "selected": "tab-active.png",
+    "pressed": {
+      "image": "tab-active.png",
+      "filter": "brightness(.93)"
+    },
+    "locked": {
+      "image": "tab-inactive.png",
+      "filter": "grayscale(.7) brightness(.8)"
+    }
+  },
+  "status": "Task-center classifications approved and implemented on 2026-11-05. Other panel tab rollouts remain pending; directory footers use the separate translucent home-PSD direction.",
+  "taskCenter": {
+    "renderer": "src/ui/daily-center.js",
+    "styles": "src/ui/control-roles.css",
+    "position": "Below the fixed left-aligned PSD title; above task content",
+    "touchHeightPx": 48,
+    "visibleFaceHeightPx": [32, 40],
+    "scrolling": "Content only; preserve each classification scroll position"
+  }
+}

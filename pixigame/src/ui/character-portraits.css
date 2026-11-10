@@ -10,11 +10,13 @@
 .character-portrait:focus-visible{outline:2px solid #bffaff;outline-offset:-4px}
 .reference-layout .ref-catalog-pilot .ref-catalog-portrait.character-portrait{position:absolute;inset:8% -12% 9%;width:124%;height:83%;transform:none;filter:none}
 .reference-layout .rc-feature-art.is-pilot>.character-portrait{position:absolute;inset:0;width:100%;height:100%}
+/* Height queries must use the actual pilot stage, not the browser viewport. */
+#gui-casual-lobby .ref-catalog.wc-page.fc-pilot{container-type:size}
 /* Frame the visible subject, rather than its transparent texture canvas.
    A square reference also keeps static fallbacks and all four renderers aligned. */
 #gui-casual-lobby .fc-pilot-portrait.character-portrait[data-portrait-framed]{
   --portrait-frame:calc(min(calc(var(--portrait-catalog-height) * 1cqw / var(--portrait-visible-height)),calc(74cqw / var(--portrait-visible-width)),calc((50cqh - 28.6cqw) / var(--portrait-ground-rise))) * var(--portrait-display-scale,1));
-  position:absolute;inset:auto;left:calc(50% - var(--portrait-ground-x) * var(--portrait-frame));top:calc(50% - 22.6cqw - var(--portrait-ground-y) * var(--portrait-frame));
+  position:absolute;inset:auto;left:calc(50% - var(--portrait-ground-x) * var(--portrait-frame));top:calc(var(--catalog-controls-top) - 9.1556cqw + var(--pilot-stage-offset,0px) - var(--portrait-ground-y) * var(--portrait-frame));
   width:var(--portrait-frame);height:var(--portrait-frame);aspect-ratio:1;transform:none;filter:none;
 }
 /* Fill the usable home stage while keeping each character's feet or prop

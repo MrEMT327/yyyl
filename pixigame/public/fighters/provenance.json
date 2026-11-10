@@ -35,14 +35,6 @@
       "sourceArchive": "IceSwordSkyfall_V46_V39_LineCleanup.zip"
     },
     {
-      "id": "halo",
-      "slug": "verdant",
-      "name": "碧环战机",
-      "version": "1.0.1",
-      "manifestHash": "eb20814486964b48bd23bb1375540586a3653be8f6ea304b9860d6e4ae3478cc",
-      "sourceArchive": "IceSwordSkyfall_V34_CyberpunkSignatureNodes_All10_LAN.zip"
-    },
-    {
       "id": "crimson",
       "slug": "crimson",
       "name": "赤刃战机",
@@ -65,14 +57,6 @@
       "version": "46.0.0",
       "manifestHash": "f657813541148968c7430f2009acd19aee88dde0cb22d48788acbb706f26cfa4",
       "sourceArchive": "IceSwordSkyfall_V46_V39_LineCleanup.zip"
-    },
-    {
-      "id": "scarlet",
-      "slug": "scarlet",
-      "name": "赤曜战机",
-      "version": "2.0.1",
-      "manifestHash": "a587967b3d834dadecae74b53a2bfe85e18ac3d0bd060b62b274fa6501463bfd",
-      "sourceArchive": "IceSwordSkyfall_V34_CyberpunkSignatureNodes_All10_LAN.zip"
     },
     {
       "id": "verdure",

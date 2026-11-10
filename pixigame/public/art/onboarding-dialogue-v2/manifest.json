@@ -1,0 +1,18 @@
+{
+  "source": "art/onboarding-dialogue-v2/panel-source.png",
+  "role": "Original robot companion speech body; not a modal frame",
+  "reference": "Project robot master and PSD secondary palette only",
+  "imagegen": "built-in",
+  "size": [
+    768,
+    256
+  ],
+  "slice_trbl": [
+    64,
+    64,
+    64,
+    64
+  ],
+  "target_border_px": 18,
+  "sha256": "71e92858ca6c7840a065509d29315fe8a59ca2ebb88c3e290477e65304c2ad5a"
+}

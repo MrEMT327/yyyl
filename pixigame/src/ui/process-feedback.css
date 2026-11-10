@@ -1,0 +1,144 @@
+/* Approved 2026-11-10 process mockups. Visible plates are PSD slices or
+   generated transparent art; CSS only positions and animates their layers. */
+#gui-casual-lobby .pl-modal-backdrop.pf-backdrop{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;container-type:size;padding:0!important;background:none!important;backdrop-filter:brightness(.3);overflow:hidden}
+#gui-casual-lobby .pl-modal.pf-shell{--popup-unit:.16cqw;position:relative;isolation:isolate;display:block;flex:none;width:90cqw!important;height:124cqw!important;max-height:86cqh!important;max-width:none!important;min-height:0!important;overflow:visible!important;margin:0;padding:0!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;color:#edf5f8;font-family:var(--psd-title-family,'Microsoft YaHei',sans-serif);text-align:center;animation:pf-panel-in .38s both}
+#gui-casual-lobby .pf-shell::before,#gui-casual-lobby .pf-shell::after{content:none!important}
+#gui-casual-lobby .pf-shell .common-reward-frame{--popup-unit:.16cqw;position:absolute;inset:0;z-index:-2;pointer-events:none;display:grid;grid-template-columns:22cqw minmax(0,1fr) 5cqw;grid-template-rows:9cqw minmax(0,1fr) 5cqw}
+#gui-casual-lobby .pf-shell .common-reward-frame>svg{display:block;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+#gui-casual-lobby .pf-outer-art{display:grid;grid-template-rows:9cqw minmax(0,1fr) 5cqw;position:absolute;inset:0;z-index:-2;pointer-events:none}
+#gui-casual-lobby .pf-frame-row{display:grid;grid-template-columns:22cqw minmax(0,1fr) 5cqw;min-height:0}
+#gui-casual-lobby .pf-frame-row-1{grid-template-columns:2.4cqw minmax(0,1fr) 5cqw}
+#gui-casual-lobby .pf-frame-row>svg{display:block;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+#gui-casual-lobby .pf-collection .pf-outer-art{filter:none}
+#gui-casual-lobby .pf-collection .common-reward-frame>svg{filter:brightness(.67) saturate(.85)}
+#gui-casual-lobby .pf-banner{position:absolute;top:5.5%;left:5%;width:90%;height:8%;display:grid;place-items:center;isolation:isolate;animation:pf-banner-in .55s .12s both}
+#gui-casual-lobby .pf-banner>img{position:absolute;left:-3%;top:50%;width:106%;height:auto;transform:translateY(-50%);z-index:-1;pointer-events:none}
+#gui-casual-lobby .pf-banner h2{font:700 6cqw/1.15 var(--psd-title-family,'Microsoft YaHei',sans-serif);letter-spacing:.18em;margin:0;text-indent:.18em;color:#fff3c9;text-shadow:0 1px 3px #402912}
+#gui-casual-lobby .pf-stage{position:absolute;left:6%;right:6%;top:17%;height:36%;pointer-events:none;animation:pf-light-in .8s .18s both}
+#gui-casual-lobby .pf-stage-light{position:absolute;width:100%;height:100%;object-fit:contain;left:0;bottom:0}
+#gui-casual-lobby .pf-stage-pulse{position:absolute;width:100%;height:100%;object-fit:contain;left:0;bottom:0;opacity:.4;animation:pf-energy-pulse 2.8s 1s infinite}
+#gui-casual-lobby .pf-kind-guns .pf-stage{left:8%;right:8%;top:6%;height:48%}
+#gui-casual-lobby .pf-hero-wrap{position:absolute;top:17%;left:18%;right:18%;height:32%;display:flex;align-items:center;justify-content:center;animation:pf-hero-in .7s .18s both}
+#gui-casual-lobby .pf-hero{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 1cqw 1cqw #0b1e3690)}
+#gui-casual-lobby .pf-kind-skins .pf-hero-wrap{height:37%;top:15%;left:14%;right:14%}
+#gui-casual-lobby .pf-kind-skins .pf-stage-light{width:90%;height:auto;left:5%;bottom:0}
+#gui-casual-lobby .pf-gear-level{position:absolute;left:0;bottom:2%;width:100%;text-align:center;font:400 3.5cqw/1.2 var(--psd-title-family,'Microsoft YaHei',sans-serif);color:#eef6fb;text-shadow:0 1px 2px #243b4f}
+#gui-casual-lobby .pf-name{position:absolute;isolation:isolate;top:53%;left:11%;right:11%;height:7%;display:grid;place-items:center;margin:0;background:none;color:#f3f7fa;font:700 4.8cqw/1.25 var(--psd-title-family,'Microsoft YaHei',sans-serif);white-space:nowrap;text-shadow:0 1px 2px #102438;animation:pf-details-in .4s .55s both}
+#gui-casual-lobby .pf-star-change{position:absolute;top:61%;left:10%;right:10%;height:5%;display:flex;align-items:center;justify-content:center;gap:3cqw;animation:pf-star-pop .5s .8s both}
+#gui-casual-lobby .pf-stars{display:inline-flex;align-items:center;justify-content:center;gap:.8cqw}
+#gui-casual-lobby .pf-stars>img{width:4.7cqw;height:4.7cqw;object-fit:contain}
+#gui-casual-lobby .pf-star-before,#gui-casual-lobby .pf-star-after{display:flex;align-items:center;gap:1.5cqw}
+#gui-casual-lobby .pf-star-change small{font-size:3.6cqw;white-space:nowrap}
+#gui-casual-lobby .pf-arrow{display:inline-block;width:4cqw;height:4cqw;object-fit:contain;flex:none;vertical-align:middle}
+#gui-casual-lobby .pf-inset{position:absolute;isolation:isolate;left:7%;right:7%;padding:2.4cqw 4cqw;border:0;box-sizing:border-box;animation:pf-details-in .45s .75s both}
+#gui-casual-lobby .pf-inset-art{display:grid;position:absolute;inset:0;z-index:-1;pointer-events:none;grid-template-columns:2cqw minmax(0,1fr) 2cqw;grid-template-rows:2cqw minmax(0,1fr) 2cqw}
+#gui-casual-lobby .pf-inset-art>svg{display:block;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+#gui-casual-lobby .pf-attributes{top:67%;height:11%;display:flex;flex-direction:column;justify-content:center;gap:1.2cqw}
+#gui-casual-lobby .pf-attribute{display:flex;align-items:center;justify-content:center;gap:2cqw;font-size:3.3cqw;line-height:1.3;white-space:nowrap}
+#gui-casual-lobby .pf-attribute>span:first-child{margin-right:auto}
+#gui-casual-lobby .pf-attribute b{color:#82edbc;font-size:4cqw;min-width:6ch;text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .pf-attribute .pf-old{color:#e6f0f5;min-width:5ch;text-align:right}
+#gui-casual-lobby .pf-attribute .pf-arrow{width:3.5cqw;height:3.5cqw}
+#gui-casual-lobby .pf-skills{top:81%;height:14%;padding:2.7cqw 3.4cqw;display:flex;flex-direction:column;justify-content:center}
+#gui-casual-lobby .pf-skill-row{display:flex;align-items:center;gap:3cqw;min-height:0;text-align:left}
+#gui-casual-lobby .pf-skill-icon{display:block;width:11cqw;height:11cqw;flex:none;object-fit:contain}
+#gui-casual-lobby .pf-skill-row strong{display:block;font-size:3.8cqw;color:#fff2cb;line-height:1.3}
+#gui-casual-lobby .pf-skill-row p{margin:1cqw 0 0;font:400 2.9cqw/1.4 'Microsoft YaHei',sans-serif;max-height:5.6em;overflow:auto;color:#e1edf5}
+#gui-casual-lobby .pf-skill-row+.pf-skill-row{margin-top:1cqw}
+#gui-casual-lobby .pf-skill-heading{position:absolute;left:3cqw;top:-1.5cqw;font-size:3cqw;line-height:1.2;color:#fff}
+#gui-casual-lobby .pf-dismiss{display:block;position:absolute;top:calc(100% + 1.8cqw);left:0;width:100%;min-height:44px;padding:8px 0;border:0!important;box-shadow:none!important;background:none!important;color:#d8eef7!important;font:400 3.4cqw/1.3 'Microsoft YaHei',sans-serif;cursor:pointer;text-shadow:0 1px 2px #08192b}
+#gui-casual-lobby .pf-dismiss:focus-visible,#gui-casual-lobby .pf-skip:focus-visible{outline:2px solid #a1e7ff;outline-offset:2px}
+#gui-casual-lobby .pf-particles{position:absolute;inset:15% 8% 45%;pointer-events:none;overflow:hidden}
+#gui-casual-lobby .pf-particle{position:absolute;left:calc(9% + var(--i)*11%);bottom:calc(4% + var(--i)*3%);width:2cqw;height:2cqw;opacity:0;animation:pf-particle-rise 2.7s calc(var(--i)*-.34s) infinite}
+/* Pilot success uses the full hangar silhouette, matching image03/06. */
+#gui-casual-lobby .pf-shell.pf-kind-pilots{width:96cqw!important;height:144cqw!important;max-height:89cqh!important}
+#gui-casual-lobby .pf-kind-pilots .common-reward-frame,#gui-casual-lobby .pf-kind-pilots .pf-outer-art{display:none}
+#gui-casual-lobby .pf-kind-pilots .pf-banner{top:1%;height:7%;left:4%;width:92%}
+#gui-casual-lobby .pf-kind-pilots .pf-hero-wrap{top:8%;height:48%;left:18%;right:18%}
+#gui-casual-lobby .pf-kind-pilots .pf-stage{top:34%;height:25%;left:17%;right:17%;opacity:.8}
+#gui-casual-lobby .pf-kind-pilots .pf-stage-light{width:100%;height:auto;left:0;bottom:0}
+#gui-casual-lobby .pf-kind-pilots .pf-name{top:57%;height:6%;left:14%;right:14%}
+#gui-casual-lobby .pf-kind-pilots .pf-star-change{top:64%;height:4%}
+#gui-casual-lobby .pf-kind-pilots .pf-attributes{top:70%;height:9%}
+#gui-casual-lobby .pf-kind-pilots .pf-skills{top:82%;height:13%;left:5%;right:5%}
+#gui-casual-lobby .pf-kind-pilots .pf-dismiss{top:97%}
+#gui-casual-lobby .pf-kind-pilots .pf-stars>img{width:3.3cqw;height:3.3cqw}
+#gui-casual-lobby .pf-kind-pilots .pf-star-change small{font-size:3cqw}
+/* Merge and progression dialogs use the PSD's left title, not success banner. */
+#gui-casual-lobby .pf-shell.pf-merge{display:flex;flex-direction:column;gap:5cqw;height:auto!important;max-height:86cqh!important;padding:14cqw 7cqw 5cqw!important}
+#gui-casual-lobby .pf-heading{position:absolute;top:2.5cqw;left:6cqw;right:6cqw;height:7cqw;text-align:left}
+#gui-casual-lobby .pf-heading h2{margin:0;color:white;font:700 5.2cqw/1.2 var(--psd-title-family,'Microsoft YaHei',sans-serif);text-shadow:0 1px 2px #73889e}
+#gui-casual-lobby .pf-merge-body{min-height:0;overflow:auto;overscroll-behavior:contain}
+#gui-casual-lobby .pf-merge-stage{position:relative;display:grid;place-items:center;height:36cqw;isolation:isolate}
+/* Explicit wrapper dimensions keep the shared, size-contained reward slot
+   independent of intrinsic image sizing and flex shrink. */
+#gui-casual-lobby .pf-merge-result{width:28cqw;height:28cqw;flex:none;animation:pf-merge-reveal .38s .38s both}
+#gui-casual-lobby .pf-merge-result>.reward-item-slot{width:100%;height:100%;max-width:none}
+#gui-casual-lobby .pf-merge-name{position:static;margin:1cqw 0 4cqw;color:#17364e;font-size:4.7cqw;line-height:1.3;animation:pf-details-in .28s .5s both}
+#gui-casual-lobby .pf-merge .pf-inset{position:relative;inset:auto;width:100%;animation-delay:.6s}
+#gui-casual-lobby .pf-merge-attributes{display:flex;align-items:center;min-height:10cqw}
+#gui-casual-lobby .pf-merge .pf-attribute{width:100%}
+#gui-casual-lobby .pf-merge .pf-attribute b{color:var(--ui-success)}
+#gui-casual-lobby .pf-merge-arrow{display:block;flex:none;width:4cqw;height:4cqw;object-fit:contain;transform:rotate(90deg)}
+#gui-casual-lobby .pf-new-features{margin-top:2cqw;min-height:9cqw;padding-block:2cqw}
+#gui-casual-lobby .pf-new-features p{display:flex;align-items:center;gap:2cqw;text-align:left;margin:0;font-size:3.5cqw;color:#fff0c5}
+#gui-casual-lobby .pf-new-features img{width:4cqw;height:4cqw;object-fit:contain}
+#gui-casual-lobby .pf-submit{position:absolute;bottom:5%;left:18%;right:18%;display:flex;justify-content:center}
+#gui-casual-lobby .pf-submit .wc-button{width:36cqw!important;height:10cqw!important;min-height:44px;font-size:4.5cqw!important}
+#gui-casual-lobby .pf-merge .pf-submit,#gui-casual-lobby .pf-merge-batch .pf-submit{position:static;flex:none}
+#gui-casual-lobby .pf-merge .pf-submit .wc-button,#gui-casual-lobby .pf-merge-batch .pf-submit .wc-button{height:48px!important;min-height:48px}
+#gui-casual-lobby .pf-merge-materials{position:absolute;inset:0;pointer-events:none;z-index:-1}
+#gui-casual-lobby .pf-merge-materials>span{position:absolute;left:calc(50% - 7cqw);top:calc(50% - 7cqw);width:14cqw;height:14cqw;opacity:0;animation:pf-material-fuse .42s calc(.06s + var(--index)*.045s) both}
+#gui-casual-lobby .pf-merge-materials .reward-item-slot{width:100%;height:100%;max-width:none}
+#gui-casual-lobby .pf-shell.pf-merge-batch{display:flex;flex-direction:column;gap:5cqw;height:auto!important;max-height:86cqh!important;padding:15cqw 7cqw 5cqw!important}
+#gui-casual-lobby .pf-merge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4cqw 3cqw;min-height:0;max-height:57cqh;overflow:auto;overscroll-behavior:contain}
+#gui-casual-lobby .pf-result-tile{margin:0;display:flex;flex-direction:column;gap:1.5cqw;align-items:center;min-width:0}
+#gui-casual-lobby .pf-result-tile .reward-item-slot{width:100%;max-width:none}
+#gui-casual-lobby .pf-result-tile figcaption{color:#17364e;font-size:clamp(12px,3.4cqw,16px);font-weight:700;line-height:1.4;min-height:2.8em;text-align:center}
+#gui-casual-lobby .pf-shell.pf-progression{height:85cqw!important;max-height:76cqh!important}
+#gui-casual-lobby .pf-progression-icon{position:absolute;top:16%;left:28%;width:44%;height:43%;display:grid;place-items:center;isolation:isolate;animation:pf-star-pop .7s .2s both}
+#gui-casual-lobby .pf-progression-icon>img:first-child{width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pf-progression-glow{position:absolute;left:-30%;top:-25%;width:160%;height:150%;object-fit:contain;z-index:-1;animation:pf-energy-pulse 2.8s infinite}
+#gui-casual-lobby .pf-level-change{position:absolute;top:62%;left:12%;right:12%;display:flex;align-items:center;justify-content:center;gap:4cqw;font-size:6cqw;color:#517896}
+#gui-casual-lobby .pf-level-change strong{font-size:8cqw;color:#fff1c4;text-shadow:0 1px 3px #a77432}
+#gui-casual-lobby .pf-feature-name{position:absolute;left:10%;right:10%;top:58%;margin:0;font-size:6cqw;color:#fff3cf;text-shadow:0 1px 2px #61768a}
+#gui-casual-lobby .pf-feature-description{position:absolute;left:10%;right:10%;top:69%;margin:0;font-size:3.8cqw;color:#234461}
+#gui-casual-lobby .pf-progression .pf-submit{bottom:6%}
+/* Real paid receipt -> open -> reveal -> summary. Skipping only skips visuals. */
+#gui-casual-lobby .pl-modal.pf-opening{position:relative;display:block;width:100cqw!important;height:100cqh!important;max-height:none!important;margin:0;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;overflow:hidden!important;isolation:isolate}
+#gui-casual-lobby .pf-opening::before,#gui-casual-lobby .pf-opening::after{content:none!important}
+#gui-casual-lobby .pf-opening h2{position:absolute;top:13%;left:22%;right:22%;height:8%;display:grid;place-items:center;background:url('/art/psd-page-chrome-v1/chapter-face.png') center/100% 100% no-repeat;color:#fff2cf;font-size:6cqw;margin:0}
+#gui-casual-lobby .pf-skip{position:absolute;right:6%;top:5%;height:44px;color:#e8f5fc!important;font-size:3.8cqw;display:flex;align-items:center;gap:1cqw;background:none!important;border:0!important}
+#gui-casual-lobby .pf-opening-stage{position:absolute;left:3%;right:3%;top:15%;height:62%;opacity:.6;animation:pf-light-in 1s both}
+#gui-casual-lobby .pf-opening-stage img{width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pf-chest-closed,#gui-casual-lobby .pf-chest-open{position:absolute;left:12%;width:76%;top:35%;height:36%;display:grid;place-items:center;pointer-events:none}
+#gui-casual-lobby .pf-chest-closed img,#gui-casual-lobby .pf-chest-open img{width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pf-chest-closed{animation:pf-chest-charge .8s both}
+#gui-casual-lobby .pf-chest-open{animation:pf-chest-open .65s .65s both;transform-origin:50% 83%}
+#gui-casual-lobby .pf-chest-light{position:absolute;left:8%;right:8%;top:14%;height:55%;mix-blend-mode:screen;pointer-events:none;animation:pf-chest-flare .9s .65s both}
+#gui-casual-lobby .pf-chest-light img{width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .common-reward-dialog.pf-box-result{--popup-width:94cqw;--popup-max-height:82%;min-height:58cqw!important}
+#gui-casual-lobby .pf-box-result .pl-modal-content{min-height:28cqw!important;display:flex;flex-direction:column;justify-content:center;gap:6cqw}
+#gui-casual-lobby .pf-box-result .pl-rewards-grid{padding:2cqw 0!important}
+#gui-casual-lobby .pf-box-result .pl-reward-item>small{display:none}
+#gui-casual-lobby .pf-box-result .pl-reward-item>b{font-size:3cqw!important;min-height:1.3em!important}
+#gui-casual-lobby .pf-box-result .pl-reward-item{gap:1.2cqw!important}
+#gui-casual-lobby .pf-box-actions{display:flex;justify-content:center;gap:4cqw;padding:1cqw 0 0}
+#gui-casual-lobby .pf-box-actions>.wc-button{flex:1;width:auto!important;min-width:0;min-height:48px;height:12cqw!important;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5cqw!important;gap:.5cqw;line-height:1.2;font-size:4.4cqw!important}
+#gui-casual-lobby .pf-box-actions small{display:flex;align-items:center;justify-content:center;gap:1cqw;font-size:3.3cqw;color:inherit}
+#gui-casual-lobby .pf-box-actions .sn-cost-icon{width:3.4cqw;height:3.4cqw;object-fit:contain}
+#gui-casual-lobby .pf-box-result .pl-rewards-grid:has(>.pl-reward-item:last-child:nth-child(10)){--reward-columns:5;gap:5cqw 2cqw;max-width:none}
+@keyframes pf-panel-in{from{opacity:0;transform:translateY(2cqw) scale(.96)}to{opacity:1;transform:none}}
+@keyframes pf-banner-in{from{opacity:0;transform:scaleX(.7)}70%{opacity:1;transform:scaleX(1.03)}to{transform:none}}
+@keyframes pf-light-in{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:none}}
+@keyframes pf-hero-in{from{opacity:0;transform:translateY(4cqw) scale(.84)}65%{opacity:1;transform:translateY(-.5cqw) scale(1.025)}to{transform:none}}
+@keyframes pf-details-in{from{opacity:0;transform:translateY(2cqw)}to{opacity:1;transform:none}}
+@keyframes pf-star-pop{from{opacity:0;transform:scale(.7)}65%{opacity:1;transform:scale(1.08)}to{transform:none}}
+@keyframes pf-energy-pulse{0%,100%{opacity:.35;transform:scale(.98)}50%{opacity:.7;transform:scale(1.025)}}
+@keyframes pf-particle-rise{0%{opacity:0;transform:translateY(2cqw)}20%{opacity:.8}80%{opacity:.3}100%{opacity:0;transform:translateY(-24cqw)}}
+@keyframes pf-material-fuse{0%{opacity:0;transform:translate(var(--origin),6cqw) scale(.9)}18%{opacity:.9}70%{opacity:.8}100%{opacity:0;transform:translate(0,0) scale(.65)}}
+@keyframes pf-merge-reveal{from{opacity:0;transform:scale(.92)}65%{opacity:1;transform:scale(1.035)}to{opacity:1;transform:none}}
+@keyframes pf-chest-charge{0%{opacity:1;transform:scale(.94)}30%{transform:translateX(-1cqw) rotate(-1deg)}45%{transform:translateX(1cqw) rotate(1deg)}60%{opacity:1;transform:scale(1.02)}100%{opacity:0;transform:scale(1.06)}}
+@keyframes pf-chest-open{0%{opacity:0;transform:scaleY(.5) translateY(4cqw)}45%{opacity:1;transform:scaleY(1.03) translateY(-1cqw)}100%{opacity:1;transform:none}}
+@keyframes pf-chest-flare{0%{opacity:0;transform:scale(.4)}45%{opacity:1;transform:scale(1.15)}100%{opacity:.55;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){#gui-casual-lobby .pf-backdrop *,#gui-casual-lobby .pf-box-result *{animation:none!important;transition:none!important}#gui-casual-lobby .pf-chest-closed,#gui-casual-lobby .pf-merge-materials{display:none}#gui-casual-lobby .pf-chest-open{opacity:1}#gui-casual-lobby .pf-particles{display:none}}

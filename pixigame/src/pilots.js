@@ -25,7 +25,7 @@ const PILOT_DEFINITIONS = [
     icon: '◒',
     color: '#9a7cff',
     accent: '#d7c8ff',
-    image: './art/orange-jetboard-v5/portrait.png',
+    image: './art/orange-jetboard-v5/portrait-hip-v3.png',
     avatar: pilotAvatarIcon('pilot-01'),
     portraitFocus: { x: 65, y: 12, zoom: 4.2 },
     aircraft: '幽幕式隐形截击机',
@@ -73,7 +73,7 @@ const PILOT_DEFINITIONS = [
       shieldStacks: false,
     },
     airframe: {
-      image: './art/aircraft-ui-v1/pilot-02.webp',
+      image: './art/aircraft-ui-v1/pilot-01.webp',
       nozzles: 2,
       marking: 'repair',
       profile: '翠绿光环',
@@ -207,7 +207,7 @@ const PILOT_DEFINITIONS = [
       globalChanceCap: 0.75,
     },
     airframe: {
-      image: './art/aircraft-ui-v1/pilot-06.webp',
+      image: './art/aircraft-ui-v1/pilot-01.webp',
       nozzles: 1,
       marking: 'scope',
       profile: '赤红磁轨',

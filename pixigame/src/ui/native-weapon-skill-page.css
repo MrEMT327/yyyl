@@ -1,17 +1,30 @@
-#gui-casual-lobby .wc-page.wg-skill-page {grid-template-rows:102cqw 10.06cqw minmax(0,1fr) calc(var(--catalog-bottom) + var(--lobby-safe-bottom,0px))}
-#gui-casual-lobby .wg-weapon-art {position:absolute;top:15%;left:22%;width:56%;height:48%;padding:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .wg-weapon-art {position:absolute;inset:var(--weapon-hero-art-inset);padding:0;border:0;background:none;cursor:pointer}
 #gui-casual-lobby .wg-weapon-art>img {width:100%;height:100%;object-fit:contain}
-#gui-casual-lobby .wg-slots {position:absolute;bottom:10cqw;left:0;right:0;display:flex;justify-content:center;gap:7cqw}
+#gui-casual-lobby .wg-slots {position:absolute;bottom:var(--catalog-skill-divider-gap);left:0;right:0;display:flex;justify-content:center;gap:5cqw}
 #gui-casual-lobby .wg-slot-wrap {position:relative}
-#gui-casual-lobby .wg-skill-slot {position:relative;isolation:isolate;display:grid;place-items:center;width:20cqw;height:20cqw;padding:1cqw;border:0;background:#17374ce6;cursor:pointer}
+#gui-casual-lobby .wg-skill-slot {position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);place-items:center;width:var(--catalog-skill-slot-size);height:var(--catalog-skill-slot-size);min-width:44px;min-height:44px;padding:1cqw;border:0;background:#17374ce6;cursor:pointer}
+#gui-casual-lobby .wg-skill-slot>.weapon-skill-icon {position:static;display:block;width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;object-fit:contain}
 #gui-casual-lobby .wg-skill-slot::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 6px stretch}
-#gui-casual-lobby .wg-skill-slot>b,#gui-casual-lobby .wg-equipped {position:absolute;left:-1cqw;top:-2cqw;z-index:8;display:grid;place-items:center;width:6cqw;height:6cqw;min-width:20px;min-height:20px;border:1px solid #a5d5e3;border-radius:50%;background:#152d3c;color:white;font:700 clamp(12px,3.7cqw,18px)/1 Arial,sans-serif}
-#gui-casual-lobby .wg-note {position:absolute;bottom:2cqw;left:0;right:0;text-align:center;color:#e9f7ff;font:600 clamp(11px,3.3cqw,16px)/1.3 'Microsoft YaHei',sans-serif;text-shadow:0 1px 3px #000!important}
-#gui-casual-lobby .wg-remove {position:absolute;right:-2cqw;top:-2cqw;z-index:5;width:7cqw;height:7cqw;min-width:24px;min-height:24px;border:1px solid #d3e4ed;border-radius:50%;background:#243d50;color:white;font-size:18px;cursor:pointer}
+/* Match fleet-catalog's fc-slot-index: small numerals inside the upper-left. */
+#gui-casual-lobby .wg-skill-slot>b,#gui-casual-lobby .wg-equipped {position:absolute;left:1.1cqw;top:.8cqw;z-index:8;color:#fff;font:700 clamp(8px,2.5cqw,12px)/1 Arial,sans-serif;text-shadow:0 1px #102132;pointer-events:none}
 #gui-casual-lobby .wg-skill-page .wc-skill-art {position:relative;display:block;width:100%;aspect-ratio:1}
-#gui-casual-lobby .wg-skill-page .wg-equipped {left:1cqw;top:1cqw;width:5cqw;height:5cqw;min-width:16px;min-height:16px}
+#gui-casual-lobby .wg-skill-page .wg-skill-scroll {padding:3cqw 2.2cqw;overflow-x:hidden;scroll-padding-block:3cqw;overscroll-behavior:contain}
+#gui-casual-lobby .wg-skill-page .wc-skill {display:grid;grid-template-rows:auto auto;align-content:start;gap:.4cqw}
+/* The square artwork fills one PSD frame; no inset rectangle inside it. */
+#gui-casual-lobby .wg-skill-page .wc-skill-art>.native-weapon-skill-icon {position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .wg-skill-page .wc-skill-art::before {border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 10px 6px stretch}
 #gui-casual-lobby .wg-skill-page .wc-skill.is-locked .weapon-skill-icon {filter:brightness(.55) saturate(.5)}
-#gui-casual-lobby .wg-skill-page .wc-skill-name {font-size:clamp(10px,3cqw,14px);line-height:1.3;min-height:2.6em;white-space:normal}
+#gui-casual-lobby .wg-skill-page .wc-skill-name {height:auto;min-height:1.2em;font-size:clamp(12px,3.1cqw,14px);line-height:1.2;white-space:normal;overflow-wrap:anywhere}
 
-#gui-casual-lobby .wg-skill-page .wc-heading {position:relative}
-#gui-casual-lobby .wg-browse-back {position:absolute;right:2cqw;top:1cqw;--wc-button-height:max(28px,8cqw);width:24cqw;font-size:clamp(10px,3cqw,14px)}
+#gui-casual-lobby .wg-empty-state {min-height:100%;display:grid;place-items:center;padding:8cqw 5cqw;text-align:center;color:#afc6d5;font:400 clamp(12px,3.5cqw,16px)/1.5 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .wg-empty-state>p {width:100%;margin:0}
+#gui-casual-lobby .wg-source-list {display:grid;gap:2.5cqw}
+#gui-casual-lobby .wg-source-row {position:relative;isolation:isolate;display:grid;grid-template-columns:17cqw minmax(0,1fr) 19cqw;gap:2.5cqw;align-items:center;padding:3cqw;min-width:0}
+#gui-casual-lobby .wg-source-row::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch}
+#gui-casual-lobby .wg-source-art {position:relative;display:block;width:17cqw;height:17cqw;padding:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .wg-source-art>img {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .wg-source-art::before {content:'';position:absolute;inset:0;z-index:2;pointer-events:none;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 5px 5px 8px 5px stretch}
+#gui-casual-lobby .wg-source-copy {min-width:0;color:#d9e7ef}
+#gui-casual-lobby .wg-source-copy h3 {margin:0 0 1.5cqw;font:400 var(--psd-small-title-size)/var(--psd-small-title-leading) var(--psd-title-family);overflow-wrap:anywhere}
+#gui-casual-lobby .wg-source-copy p {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0;font:400 clamp(11px,3cqw,14px)/1.5 'Microsoft YaHei',sans-serif;overflow-wrap:anywhere}
+#gui-casual-lobby .wg-source-action.wc-button {--wc-button-height:max(44px,10cqw);width:100%;min-width:0;padding:0!important;font-size:clamp(12px,3.6cqw,16px)}

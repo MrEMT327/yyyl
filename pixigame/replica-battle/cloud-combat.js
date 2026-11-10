@@ -13,10 +13,13 @@ import { assessReplicaBattle } from '../src/replica/native-battle-rating.js';
 import { battleSkillPresentation } from '../src/replica/native-quality.js';
 import { battleChoiceElement } from '../src/replica/battle-weapon-element.js';
 import { nativeResultRows, nativeResultRecommendations } from './result-presentation.js';
+import { aircraftUiImage } from '../src/aircraft-ui-images.js';
+import { cloudAssetBase } from '../src/ui/cloud-asset-base.js';
+import { BATTLE_REVIVE_DIAMONDS } from '../src/replica/battle-revive-purchase.js';
 
 // The cloud UI is a read-only view of the original simulation. The hidden
 // original Interface remains the sole owner of choose/punchboard event timing.
-export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveAd,onGraphicsContext}) {
+export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveAd,requestDiamondRevive,aircraftId,onGraphicsContext}) {
   const canvas=document.createElement('canvas');canvas.className='cloud-combat-canvas';
   canvas.setAttribute('aria-label','战斗界面');
   const context=canvas.getContext('webgl2',{alpha:true,antialias:true});
@@ -29,8 +32,8 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const scene=new Container(),textures=new Map(),loader=new TextureLoader();
   const selectionLayer=createUpgradeSelectionLayer(scene);
   const keyFor=card=>{
-    const url=battleCardIconUrl(card),key=url||`native:${card.icon}`;
-    if(url&&!textures.has(key)){const texture=loader.load(url);texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;textures.set(key,texture);}
+    const url=battleCardIconUrl(card),key=url;
+    if(url&&!textures.has(key)){const texture=loader.load(url);texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;texture.userData.skillIconUrl=url;textures.set(key,texture);}
     return key;
   };
   const description=card=>nativeWeaponDisplayText(card.description||String(card.descriptionSource||'').replace(/\{(\d+)\}/g,(match,index)=>card.descriptionArgsSource?.[Number(index)]??match)||effectDescription(card.effects||[]));
@@ -50,7 +53,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     return [...latest.values()].map(card=>({id:String(card.group),itemId:keyFor(card),
       name:nativeWeaponDisplayText(card.name),icon:card.icon,level:card.star,owner:'被动强化',description:description(card)}));
   };
-  const presentation={art:textures,fullStageResultBackdrop:true,fullStagePauseBackdrop:true,fullStageUpgradeBackdrop:true,fullStageSupplyBackdrop:true,exitCopy:'结束战斗，返回航母',grade:'—',score:'—',reroll:false,choices:[],weapons:[],upgrades:[]};
+  const presentation={art:textures,fullStageResultBackdrop:true,fullStagePauseBackdrop:true,fullStageUpgradeBackdrop:true,fullStageSupplyBackdrop:true,exitCopy:'结束战斗，返回航母',grade:'—',hudCoins:0,reroll:false,choices:[],weapons:[],upgrades:[]};
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,skills:{},activeWeapons:[],fixedPartsMode:true,
     fixedGrowth:{state:{nodes:{},pendingLevels:1,rerolls:0}},fixedLoadout:{weapons:[]},pauseMode:'pause'};
   const clickNative=action=>ui.overlay.querySelector(`button[data-action="${action}"]`)?.click();
@@ -62,14 +65,13 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     },
     showExitConfirm(){if(sim.phase==='playing'){ui.togglePause();game.pauseMode='pause';}else game.pauseMode='exit';},
     resumeGame(){game.pauseMode='pause';if(sim.phase==='paused')ui.togglePause();},
-    getCombatAudioSettings(){return {sound:audio.enabled};},
+    getCombatAudioSettings(){return {...audio.preferences};},
     setCombatAudioSetting(key,enabled){
-      if(key!=='sound')return false;
-      if(audio.enabled!==enabled)audio.toggle();
-      if(sim.phase==='paused')audio.pause();
-      return true;
+      if(!['music','effects'].includes(key))return false;
+      return audio.setPreference(key,enabled);
     },
     requestAdRevive(){requestReviveAd?.();},
+    requestDiamondRevive(){requestDiamondRevive?.();},
     declineRevive(){sim.declineRevive();ui.update();},
     confirmExitRun(){clickNative('home');},finishBattleResult(){clickNative('home');},
     chooseSkill(skill){
@@ -88,11 +90,26 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     stage.classList.toggle('cloud-pause-visible',sim.phase==='paused');
     stage.classList.toggle('cloud-upgrade-visible',sim.phase==='upgrade');
     stage.classList.toggle('cloud-supply-visible',sim.phase==='treasure');
-    if(lastPhase!==sim.phase){if(sim.phase==='paused')game.pauseMode='pause';lastPhase=sim.phase;}
-    Object.assign(game,{elapsed:sim.clock,stageElapsed:sim.clock,kills:sim.kills,hp:sim.player.hp,level:sim.level,waveIndex:sim.wave,
+    stage.classList.toggle('cloud-revive-visible',sim.phase==='revive');
+    stage.classList.toggle('cloud-defeat-visible',sim.phase==='lost');
+    stage.classList.toggle('cloud-victory-visible',sim.phase==='won');
+    if(lastPhase!==sim.phase){
+      if(sim.phase==='paused')game.pauseMode='pause';
+      if(sim.phase==='revive'||sim.phase==='lost')audio.pause();
+      if(sim.phase==='lost')audio.effect('project:defeat',.32,1);
+      lastPhase=sim.phase;
+    }
+    // Presentation timestamp survives HUD rebuilds and freezes with sim.clock.
+    if(game.runId!==sim.runId||game.waveIndex!==sim.wave)game.waveStartedAt=sim.clock;
+    Object.assign(game,{runId:sim.runId,elapsed:sim.clock,stageElapsed:sim.clock,kills:sim.kills,hp:sim.player.hp,level:sim.level,waveIndex:sim.wave,
       waveStatus:{total:sim.content.chapter.chapter.waveCount,completed:Math.max(0,sim.wave-1)},victory:sim.phase==='won'});
     bridge.runStats.maxHp=sim.player.maxHp;
-    game.reviveAdPending=sim.reviveAdPending;game.reviveCountdown=sim.reviveCountdown;
+    presentation.hudCoins=sim.gold;
+    game.reviveAdPending=sim.revivePending;game.reviveCountdown=sim.reviveCountdown;game.revivesUsed=sim.revivesUsed;
+    presentation.fullStageReviveBackdrop=true;
+    presentation.reviveDiamondCost=BATTLE_REVIVE_DIAMONDS;
+    presentation.canDiamondRevive=sim.canDiamondRevive;
+    presentation.canAdRevive=sim.canAdRevive;
     presentation.reviveCopy='恢复全部生命 · 广告复活仅限 1 次';
     const assessment=assessReplicaBattle({chapterId:sim.content.chapter.chapter.id,won:sim.phase==='won',
       hp:sim.player.hp,maxHp:sim.player.maxHp,revivesUsed:sim.revivesUsed});
@@ -102,7 +119,8 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     presentation.progress=sim.expProgress;
     bridge.boss=syncBossHud(bridge.boss,sim.boss);
     presentation.bossWarning=ui.upgradeAnimation.warningPresentation;
-    game.battleNotice=sim.noticeUntil>sim.clock?{text:sim.notice,at:sim.clock,duration:1}:null;
+    // Victory is presented by the result panel; suppress the extra field notice.
+    game.battleNotice=sim.notice!=='战斗胜利'&&sim.noticeUntil>sim.clock?{text:sim.notice,at:sim.clock,duration:1}:null;
     presentation.weapons=currentWeapons();game.fixedLoadout.weapons=presentation.weapons;
     presentation.upgrades=currentPassives();
     presentation.damage=presentation.weapons.map(weapon=>({...weapon,damage:sim.damageByWeapon.get(Number(weapon.id))||0})).sort((a,b)=>b.damage-a.damage);
@@ -118,6 +136,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
     }}));
     game.fixedGrowth.state.offer={runId:sim.runId,offerId:`${sim.choices.map(c=>c.id).join(',')}:reroll:${sim.rerollsRemaining}`,buildVersion:sim.learned.length};
     presentation.result={runId:sim.runId,chapterId:sim.content.chapter.chapter.id,wave:sim.wave,kills:sim.kills,pending:!settlement,trial:Boolean(settlement?.trial),
+      aircraftImage:aircraftUiImage(aircraftId || 'pilot-01','default')?.replace(/^.*?art\//,`${cloudAssetBase}art/`),
       recommendations:nativeResultRecommendations(sim.content.chapter.chapter,sim.content.combat),
       stageName:sim.content.chapter.chapter.name,grade:`${assessment?.stars??0}星`,stars:assessment?.stars??0,
       stats:[['用时',`${String(Math.floor(sim.clock/60)).padStart(2,'0')}:${String(Math.floor(sim.clock%60)).padStart(2,'0')}`],['击破',String(sim.kills)],['等级',String(sim.level)],['造成伤害',String(Math.round(sim.damageDealt))]],
@@ -145,7 +164,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const frame=createBattleUiFrame(()=>{sync();cloud.update();renderer.render({container:scene});});
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
-  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible','cloud-supply-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
+  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();stage.classList.remove('cloud-result-visible','cloud-pause-visible','cloud-upgrade-visible','cloud-supply-visible','cloud-revive-visible','cloud-defeat-visible','cloud-victory-visible');window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();renderer.destroy(true);renderer.three.forceContextLoss();};
   window.addEventListener('pagehide',destroy,{once:true});update();
   return {update,destroy,frame:frame.run,setSettlement(receipt){settlement=receipt;update();}};
 }

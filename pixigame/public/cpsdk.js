@@ -2,7 +2,7 @@
  * 通用 SDK 开发版（cpsdk.js）
  *
  * 游戏本地开发/无平台环境使用的 CpSDK 实现：全部能力本地 Mock 降级
- * （广告用模拟遮罩、排行榜/存档用 localStorage、无登录）。
+ * （未接入平台广告直接免费领取、排行榜/存档用 localStorage、无登录）。
  * 发布到平台时由平台适配器替换（cpsdk_poki.js / cpsdk_4399.js 等，接口完全一致）。
  *
  * 使用方式（与平台适配器相同）：
@@ -52,78 +52,6 @@ function _mockToast(text, type) {
   el.textContent = text;
   el.style.opacity = '1';
   _toastTimer = setTimeout(() => { el.style.opacity = '0'; }, 2500);
-}
-
-let _mockAdCleanup = null;
-
-function _removeMockOverlay() {
-  const cleanup = _mockAdCleanup;
-  _mockAdCleanup = null;
-  cleanup?.();
-  document.getElementById('__mock_ad_overlay')?.remove();
-}
-
-function _createMockAdOverlay(type, onComplete = null) {
-  _removeMockOverlay();
-  const isReward = type === 'reward';
-  const totalSec = isReward ? 10 : 5;
-  const title = isReward
-    ? _mockCopy('模拟广告占位', 'Simulated rewarded ad placeholder')
-    : _mockCopy('模拟插屏广告展示中…', 'Simulated interstitial ad…');
-
-  const overlay = document.createElement('div');
-  let settled = false, timer = null;
-  const finish = completed => {
-    if (settled) return;
-    settled = true;
-    if (timer !== null) clearInterval(timer);
-    if (_mockAdCleanup === cancel) _mockAdCleanup = null;
-    overlay.remove();
-    onComplete?.(completed);
-  };
-  const cancel = () => finish(false);
-  _mockAdCleanup = cancel;
-  overlay.id = '__mock_ad_overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999990;display:flex;align-items:center;justify-content:center;';
-
-  const box = document.createElement('div');
-  box.style.cssText = 'position:relative;width:800px;max-width:90vw;height:600px;max-height:80vh;background:#fff;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(0,0,0,0.3);';
-
-  const closeBtn = document.createElement('button');
-  closeBtn.textContent = '✕';
-  closeBtn.style.cssText = 'position:absolute;top:10px;right:14px;background:none;border:none;font-size:24px;cursor:pointer;color:#666;padding:4px 10px;z-index:1;';
-  closeBtn.setAttribute('aria-label', _mockCopy('关闭模拟广告', 'Close simulated ad'));
-  closeBtn.onclick = cancel;
-  box.appendChild(closeBtn);
-
-  const countdown = document.createElement('div');
-  countdown.style.cssText = 'font-size:64px;font-weight:bold;color:#333;font-variant-numeric:tabular-nums;';
-  box.appendChild(countdown);
-  const desc = document.createElement('div');
-  desc.textContent = title;
-  desc.style.cssText = 'margin-top:12px;font-size:16px;color:#888;';
-  box.appendChild(desc);
-
-  if (isReward) {
-    const forceBtn = document.createElement('button');
-    forceBtn.textContent = _mockCopy('模拟播放完成', 'Complete simulation');
-    forceBtn.style.cssText = 'margin-top:30px;padding:10px 30px;font-size:16px;font-weight:bold;background:#f44336;color:#fff;border:none;border-radius:8px;cursor:pointer;box-shadow:0 4px 15px rgba(244,67,54,0.4);';
-    forceBtn.onclick = () => finish(true);
-    box.appendChild(forceBtn);
-  }
-
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-
-  let sec = totalSec;
-  countdown.textContent = String(sec).padStart(2, '0');
-  timer = setInterval(() => {
-    sec--;
-    countdown.textContent = String(sec).padStart(2, '0');
-    if (sec <= 0) {
-      finish(true);
-    }
-  }, 1000);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -230,21 +158,12 @@ class CpSDK {
     },
   };
 
-  // ─── 广告（模拟遮罩） ───
+  // Unintegrated development SDK: grant immediately, with no ad overlay.
+  static localDevelopment = true;
   ads = {
-    rewarded: () => {
-      this._log('ads.rewarded（开发版模拟）');
-      return new Promise((resolve) => {
-        _createMockAdOverlay('reward', ok => resolve({ status: ok ? AD_STATUS.COMPLETED : AD_STATUS.CLOSED }));
-      });
-    },
-    interstitial: () => {
-      this._log('ads.interstitial（开发版模拟）');
-      _createMockAdOverlay('interstitial');
-      return Promise.resolve({ status: AD_STATUS.COMPLETED });
-    },
+    rewarded: () => Promise.resolve({ status: AD_STATUS.COMPLETED, completed: true, free: true }),
+    interstitial: () => Promise.resolve({ status: AD_STATUS.COMPLETED, free: true }),
   };
-
   // ─── 存档（localStorage） ───
   storage = {
     save: (key, data) => {

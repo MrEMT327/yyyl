@@ -1,12 +1,10 @@
 /* Keep the shared PSD buttons, frame slices and four-column mobile viewport. */
-#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs {display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(64px,22cqw);align-items:center;gap:1.5cqw;padding:0 2cqw}
-#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {right:auto;left:auto;top:auto;align-self:center;width:100%;--wc-button-height:max(36px,8cqw);height:var(--wc-button-height);min-height:36px;padding:2px 4px;font-size:clamp(10px,2.7cqw,14px)}
-#gui-casual-lobby .research-tabs {display:contents}
-#gui-casual-lobby .research-tabs .research-tab {--wc-button-height:max(44px,9cqw);width:100%;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:clamp(14px,4cqw,21px);color:var(--paper-ink)}
+#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs {display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding:0 2cqw}
+#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {right:auto;left:auto;top:auto;align-self:center;width:100%;--wc-button-height:44px;height:var(--wc-button-height);min-height:44px;padding:2px 4px;font-size:clamp(10px,2.7cqw,14px)}
+#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {flex:0 0 22cqw;min-width:64px}
+#gui-casual-lobby .research-tabs {display:flex;flex:1;min-width:0;gap:1cqw}
+#gui-casual-lobby .research-tabs .research-tab {--page-tab-face-height:clamp(32px,9cqw,40px);position:relative;isolation:isolate;flex:0 1 28cqw;box-sizing:border-box;width:28cqw;min-width:44px;min-height:44px;height:44px;margin:0;padding:0 8px;display:flex;align-items:center;justify-content:center;font:400 clamp(14px,4cqw,19px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;cursor:pointer;touch-action:manipulation}
 #gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs .research-summary::before {content:none!important}
-#gui-casual-lobby .research-tab.is-active::before {filter:brightness(1.35)}
-#gui-casual-lobby .research-tab:not(.is-active) {opacity:.72}
-#gui-casual-lobby .research-tab.is-chapter-locked {filter:grayscale(1);opacity:.45}
 #gui-casual-lobby .research-tab:focus-visible {outline:2px solid #b9f4ff;outline-offset:-3px}
 #gui-casual-lobby[data-tab='research'] .native-lab-card {aspect-ratio:216/296}
 #gui-casual-lobby .native-lab-face {position:absolute;inset:5% 5% 35%;width:90%;height:60%;object-fit:contain;pointer-events:none}
@@ -25,7 +23,7 @@
 #gui-casual-lobby .native-lab-notice {position:absolute;top:6%;right:5%;z-index:1;padding:2px 4px;background:#a52d37;color:#fff;border:1px solid #ffd89c;border-radius:3px;font-size:clamp(9px,2.6cqw,13px);line-height:1.3}
 .native-lab-detail .native-lab-operation {padding:10px 0;border-block:1px solid #57717e;margin-block:10px}
 .native-lab-detail .native-lab-operation .wc-button,.native-lab-detail .native-lab-developer .wc-button {width:100%;--wc-button-height:48px;margin-block:8px}
-.native-lab-detail .wc-button:disabled {opacity:.5;cursor:not-allowed}
+.native-lab-detail .wc-button:disabled {opacity:.5;cursor:default}
 .native-lab-detail .native-lab-shortage {color:#f6a4a4}
 .native-lab-detail .native-lab-developer {margin-block:14px}
 .native-lab-detail details>summary {min-height:40px;align-content:center;cursor:pointer}

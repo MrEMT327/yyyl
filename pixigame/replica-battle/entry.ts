@@ -1,3 +1,4 @@
+import '../src/ui/scroll-surfaces.css';
 import {createBattlePerformanceReporter} from '../src/replica/battle-performance.js';
 import {createBattleLaunch} from './battle-launch.js';
 import './battle-launch.css';
@@ -28,6 +29,7 @@ import { nativeLogicRate, nativeLogicDelta } from './kernel/native-time';
 import { smoothCoastTime } from '../src/replica/coast-background-time.mjs';
 import { loadLoadoutCatalog, loadStudyLoadoutState, createDefaultStudyLoadoutState, applyStudyLoadout } from './kernel/loadout-state';
 import { createAppearance } from './appearance';
+import { loadFighterPackages } from '../src/three/aircraft/fighter-packages.js';
 import { prepareReplicaLoadout } from './prepare-loadout';
 import type { Choice } from './kernel/model';
 import { readWeaponAppearances, previewWeaponAppearance } from './weapon-appearance';
@@ -67,6 +69,14 @@ function fail(error: unknown) {
 
 function localAssetUrls(node: unknown): void {
   if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) {
+    for (let index=0;index<node.length;index++) {
+      const value=node[index];
+      if (typeof value==='string' && /^\/?assets\//.test(value)) node[index]=new URL(value.replace(/^\//,''),location.href).href;
+      else if(value && typeof value==='object') localAssetUrls(value);
+    }
+    return;
+  }
   for (const [key, value] of Object.entries(node)) {
     if (typeof value === 'string' && /^\/?assets\//.test(value)) {
       (node as Record<string, unknown>)[key] = new URL(value.replace(/^\//, ''), location.href).href;
@@ -77,7 +87,13 @@ function localAssetUrls(node: unknown): void {
 async function initialize(appearance: any) {
   memoryCheckpoint('battle-load-start');
   reportLoading('data',0);
-  const [content, catalog] = await Promise.all([loadContent((completed,total)=>reportLoading('data',completed/total)), loadLoadoutCatalog(), document.fonts.load('16px DankeUI')]);
+  // Start the selected aircraft alongside chapter data. createAppearance
+  // consumes this same parsed template instead of starting another load.
+  const [content, catalog] = await Promise.all([
+    loadContent((completed,total)=>reportLoading('data',completed/total)),
+    loadLoadoutCatalog(), document.fonts.load('16px DankeUI'),
+    loadFighterPackages({pilotIds:[appearance.aircraft.id],assetBase:new URL(appearance.assetBase,location.href)}),
+  ]);
   if (lifetime.disposed) return;
   if (!requestedChapter || Number(content.chapter.chapter.id) !== requestedChapter.id) throw new Error('关卡与出击请求不一致');
   // This host uses project map artwork. Adapt only the display name so the
@@ -96,6 +112,7 @@ async function initialize(appearance: any) {
   // Default state only prepares the renderer. A validated native configuration
   // must replace it before the first tick of every actual sortie.
   let prepared: ReturnType<typeof prepareReplicaLoadout> | undefined;
+  let firstFrame: {runId:string; configurationKey:string} | undefined;
   let activeEntry: ReturnType<typeof prepareReplicaLoadout>['entry'] | undefined;
   const entryLoadout = createDefaultStudyLoadoutState();
   let studyLoadout: ReturnType<typeof import('./kernel/loadout').mountStudyLoadout> | undefined;
@@ -107,10 +124,10 @@ async function initialize(appearance: any) {
   acknowledgeGuide=message=>{if(message.runId===currentRunId)pendingGuides.delete(message.group);};
   const flushGuides=()=>{if(performance.now()<guideRetryAt||!currentRunId||reported)return;guideRetryAt=performance.now()+800;for(const group of pendingGuides)send('onboarding',{runId:currentRunId,group});};
   sim.rewardedReviveEnabled = !researchMode;
-  let reviveRequestSerial = 0, pendingReviveRequest = 0;
+  let reviveRequestSerial = 0, pendingReviveRequest = 0, pendingReviveKind = 'ad';
   applyStudyLoadout(content, sim, catalog, entryLoadout);
   const music = pathogenicBattleMusic(content.chapter.chapter.id, content.assets.audio, content.chapter.musicKey, content.assets.soundKeys?.[100006]);
-  const audio = new GameAudio({ ...content.assets.audio, ...pathogenicAudioManifest, ...music, 'project:flight-roll': { url: new URL('../assets/audio/sfx/dodge.wav', import.meta.url).href } });
+  const audio = new GameAudio({ ...content.assets.audio, ...pathogenicAudioManifest, ...music, 'project:flight-roll': { url: new URL('../assets/audio/sfx/dodge.wav', import.meta.url).href }, 'project:defeat': {url:new URL('../audio/mixkit/defeat-2042.wav',document.baseURI).href} });
   lifetime.add(() => disposeNativeAudio(audio));
   let controls: Controls, ui: Interface, accumulated = 0, lastPhase = '';
   let activity: ReturnType<typeof createBattleActivity> | undefined;
@@ -162,13 +179,22 @@ async function initialize(appearance: any) {
       if (!currentRunId || reported || !sim.beginReviveAd()) return;
       controls?.clear(); audio.pause();
       pendingReviveRequest = ++reviveRequestSerial;
+      pendingReviveKind = 'ad';
       send('revive-ad', {runId:currentRunId, requestId:pendingReviveRequest});
+      ui.update();
+    };
+    const requestDiamondRevive = () => {
+      if (!currentRunId || reported || !sim.beginDiamondRevive()) return;
+      controls?.clear(); audio.pause();
+      pendingReviveRequest = ++reviveRequestSerial; pendingReviveKind = 'diamond';
+      send('revive-diamond', {runId:currentRunId, requestId:pendingReviveRequest});
       ui.update();
     };
     receiveReviveAd = message => {
       if (message.runId !== currentRunId || message.requestId !== pendingReviveRequest || !pendingReviveRequest || reported) return;
+      if (message.type !== `revive-${pendingReviveKind}-result`) return;
       pendingReviveRequest = 0;
-      const revived = sim.completeReviveAd(message.completed === true);
+      const revived = pendingReviveKind === 'diamond' ? sim.completeDiamondRevive(message.completed === true) : sim.completeReviveAd(message.completed === true);
       if (revived) { accumulated = 0; controls?.clear(); audio.resume(); }
       else if (message.message) {
         const notice = document.getElementById('battle-notice')!;
@@ -178,7 +204,7 @@ async function initialize(appearance: any) {
       ui.update(); reportPhase();
     };
     reportLoading('interface',0);
-    const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,onGraphicsContext:watchGraphics});
+    const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,requestDiamondRevive,aircraftId:appearance.aircraft?.id,onGraphicsContext:watchGraphics});
     cloudFrame=cloud.frame;
     applySettlement=receipt=>cloud.setSettlement(receipt);
     lifetime.add(() => {applySettlement=undefined;receiveReviveAd=undefined;cloud.destroy();});
@@ -240,7 +266,7 @@ async function initialize(appearance: any) {
     audio.startMusic(content.chapter.musicKey); audio.restart(); ui.update();
     stage.removeAttribute('data-awaiting-start');
     document.getElementById('battle-notice')!.hidden = true;
-    send('started', { runId, configurationKey });
+    firstFrame = { runId, configurationKey };
   };
   const sounds: Record<number, string> = { 260002: 'deng~', 260003: 'battle_restore', 300002: 'FireShoot', 230003: 'Bullet_Laser', 330001: 'Hitted_Plane', 330004: 'Hitted_Plane', 330003: 'Hitted_Plane', 330006: 'Death_Plane_Short', 330007: 'Death_jingying', 330008: 'Death_jingying', 210001: 'Death_plane_long', 410001: 'Out_LevelUp_Show' };
   function battleResult(quit=false) {
@@ -271,7 +297,9 @@ async function initialize(appearance: any) {
     if (lifetime.disposed) return;
     if (backgroundRunId !== sim.runId) { backgroundRunId = sim.runId; scene.coastBackgroundTime = 0; }
     if (!activity!.enforce()) { accumulated = 0; return; }
-    delta = activity!.frameDelta(delta);
+    // The visual-only takeoff keeps its authored wall-clock duration even
+    // when Phaser smooths a 30 Hz browser frame down toward 16.7 ms.
+    delta = activity!.frameDelta(launch.active ? scene.game.loop.rawDelta : delta);
     if(launch.active){
       accumulated=0;controls.clear();movementGuide.show(false);
       launch.update(delta/1000);ui.update();return;
@@ -324,6 +352,13 @@ async function initialize(appearance: any) {
     preload();
   };
   const game = makeGame(scene);
+  // Phaser's create callback means textures exist, not that the configured
+  // sortie has rendered. Acknowledge after drawing under the loading cover.
+  game.events.on('postrender', (renderer: unknown) => {
+    if(!firstFrame || !renderer || lifetime.disposed || document.hidden || graphics.blocked())return;
+    const rendered=firstFrame;firstFrame=undefined;
+    send('started',rendered);
+  });
   battlePerformance.attach(game);
   lifetime.add(() => { scene.onFrame = undefined; disposeNativeGame(game); });
 }
@@ -336,7 +371,7 @@ window.addEventListener('message', event => {
   try {
     if (message.type === 'launch-visible' && message.runId === currentRunId) revealLaunch?.();
     if (message.type === 'settled' && message.runId === currentRunId) applySettlement?.(message);
-    if (message.type === 'revive-ad-result') receiveReviveAd?.(message);
+    if (message.type === 'revive-ad-result' || message.type === 'revive-diamond-result') receiveReviveAd?.(message);
     if (message.type === 'onboarding-saved') acknowledgeGuide?.(message);
     if (message.type === 'configure' && Number.isSafeInteger(message.requestId)) {
       if (!configureRun) throw new Error('战斗资源尚未准备完成');

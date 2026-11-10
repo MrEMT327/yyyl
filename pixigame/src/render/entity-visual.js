@@ -46,6 +46,6 @@ export function createVisualSwitch(parent, legacyChildren, replacement) {
 }
 export async function resolveAsset(id, cache) {
   const spec = registry[id];
-  if (!spec || spec.status === 'planned' || !spec.url) return null;
+  if (!spec || spec.status === 'planned' || spec.status === 'retired' || !spec.url) return null;
   return cache.get(spec.url);
 }

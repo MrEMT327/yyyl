@@ -4,6 +4,7 @@ import {SUPPLY_RING, supplyMotion} from './battle-supply-motion.js';
 import {upgradeIconLayout} from './upgrade-icon-layout.js';
 import {upgradeFeedbackProfile} from './upgrade-feedback-profile.js';
 import {paintPsdPopup} from './psd-popup-art.js';
+import {paintPsdPopupTitle} from './psd-popup-title.js';
 import {paintCombatArt} from './combat-art.js';
 
 const lightTextures=new Map();
@@ -82,7 +83,7 @@ export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,
   };
   const plate=(parent,kind,x,y,w,h)=>surface(parent,s=>paintCombatArt(s,kind,x,y,w,h));
   surface(root,s=>paintPsdPopup(s,'primary',28,190,544,676));
-  place(root,text('战斗补给',{size:34,fill:0xf3f5f7,weight:'900'}),82,216);
+  surface(root,s=>paintPsdPopupTitle(s,'primary','战斗补给',28,190,544,676));
   label(root,supply.subtitle || (supply.evolutionExhausted?'形态已满 · 获得武装强化':'精英击破 · 必得形态强化'),300,289,18,0x23415a);
   const icon=(parent,card,x,y,size)=>{
     const weapon=bridge.game.fixedLoadout.weapons.find(w=>w.id===card.ownerId);

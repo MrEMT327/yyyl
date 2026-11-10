@@ -2,7 +2,7 @@
 .developer-battle-skills[hidden], .developer-battle-skills [hidden] {display:none!important}
 .developer-battle-skills button,.developer-battle-skills input {font:inherit;touch-action:manipulation}
 .dev-skill-button {position:relative;isolation:isolate;background:transparent;border:0;color:#edf4f7;min-height:40px;padding:7px 12px;cursor:pointer}
-.dev-skill-button::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 12px stretch}
+.dev-skill-button::before {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch}
 .dev-skill-button[aria-pressed="true"]::before {filter:brightness(1.45)}
 .dev-skill-launch {pointer-events:auto;position:absolute;right:10px;top:18%;font-size:13px!important;min-height:36px}
 .dev-skill-modal {pointer-events:auto;position:absolute;inset:0;background:#020d18b8;display:flex;align-items:center;padding:8px}

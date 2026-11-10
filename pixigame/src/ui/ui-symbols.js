@@ -8,6 +8,8 @@ export function drawUiSymbol(ui, key, x, y, size = 24, color = '#d3e5ef') {
   const poly = points => ui.polygon(p(points),color);
   const ring = (cx=.5,cy=.5,r=.34) => line(Array.from({length:25},(_,i)=>[cx+Math.cos(i/24*Math.PI*2)*r,cy+Math.sin(i/24*Math.PI*2)*r]));
   switch(key) {
+    case 'music': line([[.35,.72],[.35,.22],[.8,.12],[.8,.62]]);line([[.35,.35],[.8,.25]]);ring(.23,.76,.12);ring(.68,.66,.12);break;
+    case 'sound': poly([[.08,.38],[.3,.38],[.53,.17],[.53,.83],[.3,.62],[.08,.62]]);line([[.67,.3],[.78,.4],[.78,.6],[.67,.7]]);line([[.79,.15],[.94,.35],[.94,.65],[.79,.85]]);break;
     case 'stats': poly([[.13,.9],[.13,.5],[.29,.5],[.29,.9]]);poly([[.42,.9],[.42,.12],[.58,.12],[.58,.9]]);poly([[.71,.9],[.71,.33],[.87,.33],[.87,.9]]);break;
     case 'home': line([[.08,.45],[.5,.09],[.92,.45]]);line([[.2,.39],[.2,.88],[.4,.88],[.4,.62],[.6,.62],[.6,.88],[.8,.88],[.8,.39]]);break;
     case 'settings': line(Array.from({length:33},(_,i)=>{const a=i/32*Math.PI*2,r=i%4<2?.43:.33;return [.5+Math.cos(a)*r,.5+Math.sin(a)*r];}));ring(.5,.5,.14);break;

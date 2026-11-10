@@ -2,16 +2,18 @@ import { playerInfoModel } from './player-info-model.js';
 import { nativeCollectionArt } from '../replica/native-collection-art.js';
 import { catalogWeaponArtwork } from './weapon-catalog-page.js';
 import { emptySlotMark } from './psd-empty-slot.js';
-import { equipmentBlueprintArtPath } from '../replica/equipment-art.js';
+import { nativeItemArt } from '../replica/native-item-presentation.js';
 import { researchBlueprintArt } from '../replica/research-blueprint-art.js';
 import './daily-center.css';
 import { pilotSupplyTaskCenter } from './task-center-supply.js';
+import {taskChestArt} from './task-chest-model.js';
 import './task-center-restore.css';
 import './daily-signin.css';
 import {taskStatusMark,TASK_CLAIMED_IMAGE} from './task-center-icons.js';
 import './task-center-layout.css';
 import {rewardItemSlot} from './reward-item-slot.js';
 import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
+import {taskDisplayOrder} from './task-display-order.js';
 
 export const DAILY_TABS=Object.freeze([
   {id:'signin',label:'签到'}, {id:'daily',label:'每日'},
@@ -50,16 +52,14 @@ export function dailyMilestoneAction(row,pending=false) {
 function activityHeader(snapshot,modal,h) {
   const {escape:e,number:n}=h,period=modal.period||'daily';
   const activity=snapshot.activity?.[period]||{points:0,max:100,items:[]};
-  const selected=activity.items.find(row=>row.id===modal.milestoneId && dailyMilestoneAction(row,snapshot.rewardPending)==='dailyMilestone');
   return `<section class="dc-activity" aria-label="${period==='weekly'?'每周':'每日'}活跃奖励">
     <div class="dc-activity-meter"><span class="dc-activity-value">${sprite(`${period}-activity`)}<b>${n(activity.points)}</b></span><progress value="${activity.points}" max="${activity.max}" aria-label="活跃度 ${n(activity.points)} / ${n(activity.max)}"></progress></div>
-    <div class="dc-chests">${activity.items.map(row=>`<button type="button" class="dc-chest${row.claimed?' is-claimed':row.claimable?' is-ready':''}" data-action="${dailyMilestoneAction(row,snapshot.rewardPending)||'dailyMilestone'}" data-id="${e(row.id)}" data-period="${period}" ${dailyMilestoneAction(row,snapshot.rewardPending)?'':'disabled'} aria-label="${n(row.points)}活跃奖励，${row.pending?'待恢复':row.claimed?'已领取':activity.points>=row.points?(snapshot.rewardPending?'待恢复':row.claimable?'可领取':'暂未开放'):'未达成'}" aria-pressed="${selected?.id===row.id}">${sprite(row.claimed?'chest-open':'chest-idle')}<b>${n(row.points)}</b>${row.claimed?`<span>${row.pending?'待恢复':'已领'}</span>`:row.claimable?'<i aria-hidden="true"></i>':''}</button>`).join('')}</div>
-    ${selected?`<div class="dc-box-preview" role="region" aria-label="${n(selected.points)}活跃奖励预览"><div><strong>奖励预览</strong>${rewards(selected.reward,h)}</div><button type="button" class="dc-preview-close" data-action="dailyMilestoneClose" aria-label="关闭奖励预览">×</button></div>`:''}
+    <div class="dc-chests">${activity.items.map(row=>`<button type="button" class="dc-chest${row.claimed?' is-claimed':row.claimable?' is-ready':''}" data-action="taskChest" data-id="${e(row.id)}" data-period="${period}" aria-haspopup="dialog" aria-label="${n(row.points)}活跃奖励，${row.pending?'待恢复':row.claimed?'已领取':activity.points>=row.points?(snapshot.rewardPending?'待恢复':row.claimable?'可领取':'暂未开放'):'未达成'}"><img src="${taskChestArt(period,row.claimed)}" alt="" draggable="false"><b>${n(row.points)}</b>${row.claimed?`<span>${row.pending?'待恢复':'已领'}</span>`:row.claimable?'<i aria-hidden="true"></i>':''}</button>`).join('')}</div>
   </section>`;
 }
 function taskRows(snapshot,period,h) {
   const {escape:e,number:n,icon}=h;
-  const tasks=(snapshot.tasks||[]).filter(t=>t.type===period);
+  const tasks=taskDisplayOrder((snapshot.tasks||[]).filter(t=>t.type===period));
   return `<div class="dc-scroll dc-task-list" data-daily-scroll="${period}">${tasks.map(task=>`<article class="dc-task${task.claimed?' is-claimed':task.claimable?' is-ready':''}" data-task-id="${e(task.id)}" tabindex="-1">
     <div class="dc-task-badge">${sprite(`${period}-activity`)}<b>+${n(task.activityPoints)}</b></div>
     <div class="dc-task-body"><h3>${e(task.name)}</h3>${rewards(task.reward,h)}<div class="dc-progress"><progress max="${task.target}" value="${task.progress}" aria-label="${e(task.name)}进度"></progress><span>${n(task.progress)} / ${n(task.target)}</span></div></div>
@@ -67,7 +67,7 @@ function taskRows(snapshot,period,h) {
   </article>`).join('')}</div>`;
 }
 function prizeArt(day,snapshot,h) {
-  if(day.id===10010007)return h.img(base+equipmentBlueprintArtPath('fire-control'),day.name,'dc-signin-art');
+  if(day.id===10010007)return h.img(nativeItemArt(10010007),day.name,'dc-signin-art');
   if(day.id===10010008)return h.img(researchBlueprintArt(801),day.name,'dc-signin-art');
   const blueprint=researchBlueprintArt(rewardNativeItemId(day));
   if(blueprint)return h.img(blueprint,day.name,'dc-signin-art');
@@ -91,32 +91,38 @@ function signInContent(snapshot,h) {
   const rewardHtml=(item,claimed=false)=>`<span class="dc-signin-reward"${item.id?` data-reward-id="${e(item.id)}"`:''}>${rewardItemSlot({name:item.name||names[item.type]||item.title||'奖励',amount:item.count??item.amount??1,artwork:prizeArt(item,snapshot,h),...rewardDisplayQuality(item),itemId:rewardNativeItemId(item),overlay:claimed?claimedMark:''},h)}</span>`;
   return `<div class="dc-scroll dc-signin" data-daily-scroll="signin">${signin.gate?.reached===false?`<p class="dc-reset">${e(signin.gate.reason)}</p>`:''}
     <div class="dc-signin-grid">${days.map(day=>{
-      const today=day.active&&signin.canClaim&&!pending;
-      const items=Array.isArray(day.rewards)&&day.rewards.length?day.rewards:[day];
+      const today=day.active&&!day.claimed&&signin.canClaim&&!pending;
+      const recordedItems=Array.isArray(day.rewards)&&day.rewards.length?day.rewards:[day];
+      // The retired first-day coin bonus stays in the receipt, not on the
+      // current sign-in card. Never rewrite earned inventory or claim history.
+      const items=day.legacyReward&&day.claimed&&day.calendarDay===1&&recordedItems.length>1
+        ?recordedItems.filter(item=>item.type!=='coins'):recordedItems;
       const pilot=items.find(row=>row.type==='pilot');
-      const title=day.title||items.map(item=>item.title||item.name).join('、');
+      const title=items.map(item=>item.title||item.name).filter(Boolean).join('、')||day.title;
       const content=pilot?`<span class="dc-signin-pilot-hero" data-pilot-id="${e(pilot.id)}"><span class="dc-signin-pilot-copy"><b>${e(pilot.name)}</b><span class="dc-signin-pilot-items">${items.map(item=>rewardHtml(item,day.claimed)).join('')}</span></span><span class="dc-signin-pilot-portrait"><span class="dc-signin-pilot-crop">${h.img(nativeCollectionArt(pilot.nativeRow,'preview'),pilot.name,'dc-signin-pilot-art')}</span></span></span>`:`<span class="dc-signin-rewards${items.length===1?' is-single':''}" style="--signin-reward-count:${items.length}">${items.map(item=>rewardHtml(item,day.claimed)).join('')}</span>`;
-      return `<button type="button" class="dc-signin-day${day.day===7?' is-final':''}${pilot?' has-pilot':''}${day.claimed?' is-claimed':''}${today?' is-today':''}" data-action="claimSignIn" ${!today||busy?'disabled':''} aria-label="第${day.calendarDay||day.day}天，${e(title)}，${day.claimed?'已领取':today?(busy?'领取中':'今日可领取'):'未领取'}"><strong>第 ${day.calendarDay||day.day} 天</strong>${content}${today&&busy?'<span class="dc-signin-busy" role="status" aria-label="领取中"></span>':''}</button>`;
+      return `<button type="button" class="dc-signin-day${day.day===7?' is-final':''}${pilot?' has-pilot':''}${day.claimed?' is-claimed':''}${today?' is-today':''}" data-action="claimSignIn" ${!today||busy?'disabled':''} aria-label="第${day.calendarDay||day.day}天，${e(title)}，${day.claimed?'已领取':today?(busy?'领取中':'今日可领取'):'未领取'}"><strong>第 ${day.calendarDay||day.day} 天</strong>${content}${today&&!busy?'<span class="dc-signin-claim-label" aria-hidden="true">可领取</span>':''}${today&&busy?'<span class="dc-signin-busy" role="status" aria-label="领取中"></span>':''}</button>`;
     }).join('')}</div>
   </div>`;
 }
 function achievementContent(snapshot,h) {
-  const {escape:e,number:n}=h,items=snapshot.achievements?.items||[];
+  const {escape:e,number:n}=h,items=taskDisplayOrder(snapshot.achievements?.items||[]);
   return `<div class="dc-scroll dc-achievements" data-daily-scroll="achievements">${items.map(item=>{
       const reached=item.progress>=item.target,action=reached?'claimAchievement':'dailyGo';
       const label=item.pending||snapshot.rewardPending?'待恢复':reached?(item.claimable?'领取':'未达成'):'前往';
       const rewardRows=Array.isArray(item.rewardItems)?item.rewardItems:Object.entries(item.reward||{}).filter(([,value])=>value>0).map(([type,count])=>({type,count,name:names[type]||type}));
       const rewardSlots=rewardRows.map(row=>rewardItemSlot({name:row.name,amount:row.count??row.amount,artwork:rewardArt(row)?h.img(rewardArt(row),row.name,'dc-native-reward-icon'):h.icon(icons[row.type]||'gift'),...rewardDisplayQuality(row),itemId:rewardNativeItemId(row)},h)).join('');
-      return `<article class="dc-achievement${item.claimed?' is-claimed':item.claimable?' is-ready':''}" data-achievement-id="${e(item.id)}" tabindex="-1"><h3>${e(item.name)}</h3><div class="dc-progress"><progress max="${item.target}" value="${Math.min(item.progress,item.target)}" aria-label="${e(item.name)}进度"></progress><span>${n(item.progress)} / ${n(item.target)}</span></div><div class="dc-achievement-rewards">${rewardSlots}</div><div class="dc-achievement-action">${item.claimed?taskStatusMark():button(action,label,`aria-label="${label}，${e(item.name)}" title="${label}" data-destination="${e(item.destination)}" data-id="${e(item.id)}"`,Boolean(item.pending||snapshot.rewardPending||snapshot.rewardBusy||reached&&!item.claimable))}</div></article>`;
+      return `<article class="dc-achievement${item.claimed?' is-claimed':item.claimable?' is-ready':''}" data-achievement-id="${e(item.id)}" tabindex="-1"><h3>${e(item.name)}</h3><div class="dc-progress"><progress max="${item.target}" value="${Math.min(item.progress,item.target)}" aria-label="${e(item.name)}进度"></progress><span>${n(item.progress)} / ${n(item.target)}</span></div><div class="dc-achievement-rewards">${rewardSlots}</div><div class="dc-achievement-action">${item.claimed?taskStatusMark():button(action,label,`aria-label="${label}，${e(item.name)}" aria-description="${label}" data-destination="${e(item.destination)}" data-id="${e(item.id)}"`,Boolean(item.pending||snapshot.rewardPending||snapshot.rewardBusy||reached&&!item.claimable))}</div></article>`;
     }).join('')}</div>`;
 }
 
 export function dailyCenter(snapshot,modal,h) {
   const period=DAILY_TABS.some(t=>t.id===modal.period)?modal.period:'daily';
   const page={...modal,period};
-  return {title:'任务',content:`<section class="dc-hub${snapshot.signIn?.referenceLayout?' dc-project-task':''}" data-daily-page="${period}"><nav class="dc-tabs" aria-label="任务分类">${DAILY_TABS.map(t=>`<button type="button" class="wc-button dc-tab" data-action="taskPeriod" data-period="${t.id}" aria-pressed="${period===t.id}">${t.label}${hasReady(snapshot,t.id)?'<i aria-label="有奖励可领取"></i>':''}</button>`).join('')}</nav>
+  return {title:'任务',content:`<section class="dc-hub${snapshot.signIn?.referenceLayout?' dc-project-task':''}" data-daily-page="${period}"><nav class="dc-tabs" role="tablist" aria-label="任务分类">${DAILY_TABS.map(t=>`<button type="button" class="dc-tab" role="tab" id="dc-task-tab-${t.id}" data-action="taskPeriod" data-period="${t.id}" aria-controls="dc-task-panel" aria-selected="${period===t.id}" tabindex="${period===t.id?0:-1}"><span class="dc-tab-face">${t.label}</span>${hasReady(snapshot,t.id)?'<i aria-label="有奖励可领取"></i>':''}</button>`).join('')}</nav>
+    <div class="dc-page" role="tabpanel" id="dc-task-panel" aria-labelledby="dc-task-tab-${period}" tabindex="0">
     ${snapshot.rewardPending?`<div class="dc-pending" role="status"><span>领取记录待恢复</span>${button('recoverDailyRewards','重试')}</div>`:''}
     ${snapshot.pilotSupply&&['daily','weekly'].includes(period)?pilotSupplyTaskCenter(period,snapshot,h):period==='signin'?signInContent(snapshot,h):period==='achievements'?achievementContent(snapshot,h):`${activityHeader(snapshot,page,h)}<p class="dc-reset">${period==='weekly'?'每周一':'每日'} 00:00 刷新</p>${taskRows(snapshot,period,h)}`}
+    </div>
   </section>`};
 }
 

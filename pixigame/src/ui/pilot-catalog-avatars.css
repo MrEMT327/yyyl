@@ -12,32 +12,6 @@
   height:auto;
   aspect-ratio:276 / 316;
 }
-#gui-casual-lobby .fc-pilot .wc-item.fc-item {
-  background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,
-    url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;
-}
-/* Color the existing roster frame by quality without replacing its artwork. */
-#gui-casual-lobby .fc-pilot .fc-item {--pilot-quality-color:#4ba2d0;--pilot-frame-filter:none}
-#gui-casual-lobby .fc-pilot .fc-item[data-rarity='SR'] {--pilot-quality-color:#a05bc4;--pilot-frame-filter:hue-rotate(75deg) saturate(1.3)}
-#gui-casual-lobby .fc-pilot .fc-item[data-rarity='SSR'] {--pilot-quality-color:#cc9f36;--pilot-frame-filter:hue-rotate(200deg) saturate(1.4)}
-#gui-casual-lobby .fc-pilot .fc-item[data-rarity='UR'] {--pilot-quality-color:#c95c69;--pilot-frame-filter:hue-rotate(145deg) saturate(1.4)}
-#gui-casual-lobby .fc-pilot .fc-item[data-psd-quality='0'] {--pilot-quality-color:#8b9daa;--pilot-frame-filter:grayscale(1)}
-#gui-casual-lobby .fc-pilot .fc-item[data-psd-quality='1'] {--pilot-quality-color:#55a572;--pilot-frame-filter:hue-rotate(280deg) saturate(1.2)}
-#gui-casual-lobby .fc-pilot .fc-item[data-psd-quality='2'] {--pilot-quality-color:#4ba2d0;--pilot-frame-filter:none}
-#gui-casual-lobby .fc-pilot .fc-item[data-psd-quality='3'] {--pilot-quality-color:#a05bc4;--pilot-frame-filter:hue-rotate(75deg) saturate(1.3)}
-#gui-casual-lobby .fc-pilot .fc-item[data-psd-quality='4'] {--pilot-quality-color:#cc9f36;--pilot-frame-filter:hue-rotate(200deg) saturate(1.4)}
-#gui-casual-lobby .fc-pilot .fc-item[data-psd-quality='5'] {--pilot-quality-color:#c95c69;--pilot-frame-filter:hue-rotate(145deg) saturate(1.4)}
-/* The original PSD corners keep their proportions when cards change size. */
-#gui-casual-lobby .fc-pilot .wc-item.fc-item::before {
-  z-index:2;
-  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 10px 6px stretch;
-  filter:var(--pilot-frame-filter)!important;
-}
-#gui-casual-lobby .fc-pilot .wc-item.fc-item::after {
-  content:'';position:absolute;inset:auto 4% 3%;height:25%;z-index:0;pointer-events:none;
-  background:linear-gradient(transparent,color-mix(in srgb,var(--pilot-quality-color) 70%,transparent));
-}
-#gui-casual-lobby .fc-pilot .wc-item.fc-item.is-locked {filter:none}
 #gui-casual-lobby .fc-pilot .fc-item.is-locked .fc-card-art {filter:grayscale(.32) brightness(.8)}
 /* Normalize head scale and placement for the different source compositions. */
 #gui-casual-lobby .fc-pilot .fc-avatar>img[src*='orange-jetboard-v5/avatar'] {

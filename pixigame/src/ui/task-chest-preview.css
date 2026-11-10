@@ -1,0 +1,9 @@
+/* Box-local preview: no second scrim, title bar, duplicate chest or action. */
+#gui-casual-lobby .tc-preview-backdrop{position:absolute;inset:0;pointer-events:auto;background:transparent}
+#gui-casual-lobby .pl-modal.task-chest-popover{position:absolute;display:block;box-sizing:border-box;width:max-content;max-width:76cqw;min-width:24cqw;height:auto;min-height:0;margin:0;padding:3.5cqw 4cqw;overflow:visible;border:0;border-radius:0;background:none;box-shadow:0 3px 8px #0005;clip-path:none;transform:none;animation:none;color:#203b50;isolation:isolate;outline:none}
+#gui-casual-lobby .task-chest-popover::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;border:0;border-image:url('/art/psd-popup-v1/secondary.png') 48 38 38 220 fill / 1.92cqw 1.52cqw 1.52cqw 8.8cqw stretch}
+#gui-casual-lobby .task-chest-popover::after{content:none}
+#gui-casual-lobby .task-chest-popover>.pl-modal-content{margin:0;padding:0;overflow:visible;background:none;border:0}
+#gui-casual-lobby .tc-preview-rewards{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2.5cqw}
+#gui-casual-lobby .tc-preview-rewards>.reward-item-slot{width:16cqw;height:16cqw;flex:none}
+#gui-casual-lobby .tc-preview-arrow{position:absolute;left:var(--tip-arrow-x,50%);top:calc(100% - 1px);transform:translateX(-50%);width:0;height:0;border-left:1.5cqw solid transparent;border-right:1.5cqw solid transparent;border-top:2cqw solid #a9bacb;filter:drop-shadow(0 2px 1px #0004);pointer-events:none}

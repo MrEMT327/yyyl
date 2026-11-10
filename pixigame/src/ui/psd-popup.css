@@ -1,6 +1,6 @@
 /* Shared popup shell from psd/弹窗.psd. Nine-slice keeps corners and title tab
    intact as content grows; only the inner content scrolls. */
-@font-face{font-family:PsdPopup;src:url('/art/psd-combat-v1/FZY4JW.ttf') format('truetype');font-display:swap}
+@import './psd-titles.css';
 #gui-casual-lobby .pl-modal-backdrop {
   padding:5%;background:rgba(0,0,0,.55);backdrop-filter:none;
 }
@@ -36,12 +36,6 @@
 }
 #gui-casual-lobby [data-psd-popup]>.pl-modal-heading::before,
 #gui-casual-lobby [data-psd-popup]>.pl-modal-heading::after {content:none!important}
-#gui-casual-lobby [data-psd-popup]>.pl-modal-heading h2 {
-  width:100%;margin:0!important;color:#fff!important;font:400 calc(40 * var(--popup-unit))/1.15 PsdPopup,"Microsoft YaHei",sans-serif!important;
-  text-align:left!important;letter-spacing:0!important;transform:none!important;
-  -webkit-text-stroke:0!important;text-shadow:0 2px 0 #57677a!important;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
 #gui-casual-lobby [data-psd-popup]>.pl-modal-content {
   flex:1;min-height:0;margin:0 calc(28 * var(--popup-unit)) calc(40 * var(--popup-unit))!important;
   padding:0 calc(12 * var(--popup-unit)) calc(12 * var(--popup-unit))!important;
@@ -50,8 +44,8 @@
 }
 #gui-casual-lobby [data-psd-popup] :is(.pl-close,.bag-close) {
   position:absolute!important;inset:calc(6 * var(--popup-unit)) calc(-16 * var(--popup-unit)) auto auto!important;
-  width:calc(94 * var(--popup-unit))!important;height:calc(95 * var(--popup-unit))!important;
-  min-width:44px!important;min-height:44px!important;padding:0!important;z-index:3;
+  width:var(--ui-action-height)!important;height:var(--ui-action-height)!important;
+  min-width:var(--ui-action-height)!important;min-height:var(--ui-action-height)!important;padding:0!important;z-index:3;
   border:0!important;border-radius:0!important;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat!important;
   box-shadow:none!important;filter:none!important;transform:none!important;clip-path:none!important;
 }
@@ -68,9 +62,6 @@
   padding-right:calc(116 * var(--popup-unit))!important;
 }
 #gui-casual-lobby [data-psd-popup='secondary'] :is(.pl-close,.bag-close) {top:calc(-21 * var(--popup-unit))!important}
-#gui-casual-lobby [data-psd-popup='secondary']>.pl-modal-heading h2 {
-  font-size:calc(32 * var(--popup-unit))!important;color:#1c334c!important;text-shadow:0 1px #e3edf5!important;
-}
 /* Entry pages need the game canvas, rather than the compact detail dimensions. */
 #gui-casual-lobby .pl-modal[data-psd-popup]:is([data-modal-type='chapters'],[data-modal-type='stages'],[data-modal-type='activities']) {
   --popup-width:94cqw;--popup-height:90%;--popup-max-height:90%;
@@ -94,15 +85,17 @@
 #gui-casual-lobby [data-psd-popup] .bag-tab {background:#8fa6bf;color:#172c40;border-color:#6b8198;box-shadow:none;font-size:14px}
 #gui-casual-lobby [data-psd-popup] .bag-tab.is-selected {background:#d1efff;color:#174764}
 #gui-casual-lobby .bag-detail-backdrop {padding:0;background:#0006}
-#gui-casual-lobby .bag-detail[data-psd-popup] {padding:calc(35 * var(--popup-unit))!important}
+#gui-casual-lobby .bag-detail[data-psd-popup] {display:flex;flex-direction:column;padding:calc(112 * var(--popup-unit)) calc(38 * var(--popup-unit)) calc(35 * var(--popup-unit))!important}
 #gui-casual-lobby [data-psd-popup] .bag-detail-header {
-  position:static;background:transparent;border:0;padding:15px 0 12px;min-height:0;gap:10px;
+  position:static;flex:none;background:transparent;border:0;padding:0 0 12px;min-height:0;gap:10px;
   grid-template-columns:55px minmax(0,1fr);
 }
 #gui-casual-lobby [data-psd-popup] .bag-detail-info {padding-right:22px}
 #gui-casual-lobby [data-psd-popup] .bag-detail-info :is(h3,p) {color:#172c40;-webkit-text-stroke:0;text-shadow:none;font-size:14px}
-#gui-casual-lobby [data-psd-popup] .bag-detail-body {margin:0;padding:10px 0;background:transparent;min-height:0;overflow:auto}
+#gui-casual-lobby [data-psd-popup] .bag-detail-body {flex:1;margin:0;padding:10px 0;background:transparent;min-height:0;overflow:auto}
 #gui-casual-lobby [data-psd-popup] .bag-detail-body :is(h4,p) {color:#263e58;font-size:14px}
+#gui-casual-lobby [data-psd-popup] .bag-detail-info h3,
+#gui-casual-lobby [data-psd-popup] .bag-detail-body h4 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading)}
 #gui-casual-lobby [data-psd-popup] .lc-task {flex-wrap:wrap;gap:8px;padding:10px}
 #gui-casual-lobby [data-psd-popup] .lc-task-body {min-width:120px}
 #gui-casual-lobby [data-psd-popup] .lc-claim {margin-left:auto}
@@ -126,7 +119,7 @@
 .combat-detail-dialog[data-psd-popup] {
   --detail-ink:#17314a;--detail-text:#1b3048;--detail-muted:#30465c;--detail-gold:#215978;
   width:min(64.933333vw,30vh,487px);min-width:min(280px,calc(100vw - 32px));
-  min-height:201px;max-height:calc(100dvh - 64px);padding:28px 20px 18px;
+  min-height:201px;max-height:calc(100dvh - 64px);padding:calc(112 * var(--popup-unit)) 20px 18px;
   filter:none;
 }
 .combat-detail-dialog[data-psd-popup] .combat-detail-heading {padding-right:28px}

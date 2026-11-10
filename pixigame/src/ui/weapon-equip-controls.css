@@ -5,8 +5,8 @@
 }
 .peripheral-lobby.reference-layout.lobby-theme .weapon-equip-controls h3 {
   margin: 0 0 10px;
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: var(--psd-small-title-size);
+  line-height: var(--psd-small-title-leading,1.5);
 }
 .peripheral-lobby.reference-layout.lobby-theme .weapon-equip-slots {
   display: grid;

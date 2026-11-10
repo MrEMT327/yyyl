@@ -1,0 +1,74 @@
+{
+  "method": "Built-in imagegen; export only trims transparent margins and resizes, preserving generated alpha.",
+  "styleReferences": [
+    "art/project-resource-icons-v2/credits-stack.png",
+    "art/project-resource-icons-v2/coins.png"
+  ],
+  "prompts": "art/shop-coin-tiers-v2/prompts.json",
+  "tiers": [
+    {
+      "minimum": 0,
+      "art": "project-resource-icons-v2/credits-stack.png"
+    },
+    {
+      "minimum": 10000,
+      "art": "shop-coin-tiers-v2/coins-canister.png"
+    },
+    {
+      "minimum": 50000,
+      "art": "shop-coin-tiers-v2/coins-safe.png"
+    }
+  ],
+  "assets": [
+    {
+      "name": "coins-canister",
+      "file": "coins-canister.png",
+      "source": "art/shop-coin-tiers-v2/source-coins-canister.png",
+      "sourceSize": [
+        1312,
+        1199
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": [
+        121,
+        75,
+        1167,
+        1120
+      ],
+      "exportSize": [
+        512,
+        512
+      ],
+      "sourceSha256": "b80fb1c9da9b6aad0701a23e2e3ae9096a4512ffa5e425d75ff5b83a048cd671",
+      "sha256": "34ea5a8debbedda86a6cfd2f0f65f2b9be76ea9f9f21c823a2819ceefe90c6eb"
+    },
+    {
+      "name": "coins-safe",
+      "file": "coins-safe.png",
+      "source": "art/shop-coin-tiers-v2/source-coins-safe.png",
+      "sourceSize": [
+        1312,
+        1199
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaCrop": [
+        37,
+        13,
+        1277,
+        1151
+      ],
+      "exportSize": [
+        512,
+        473
+      ],
+      "sourceSha256": "3453d4e2306e0772fd1193e85fd8f56a4a7ae8e9c0f0fcb3003ee97edc758f7c",
+      "sha256": "9a5351e1b511d7436d156b2e53ddb8acccc0a90072292b22ee0872e021a910e8"
+    }
+  ]
+}

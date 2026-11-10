@@ -1,0 +1,429 @@
+/* Page surfaces from the home PSD. Control roles remain in control-roles.css. */
+#gui-casual-lobby {
+  --page-plate: url('/art/psd-page-chrome-v1/chapter-face.png');
+  --page-plate-idle: url('/art/psd-page-chrome-v1/chapter-idle.png');
+  /* The PSD plate is translucent. Back it with its own sampled blue so
+     unrelated scene imagery does not appear inside title plates. */
+  --page-chapter-backdrop: #2e5c79;
+  --page-chapter-fill: var(--page-plate) center / 150% 200% no-repeat;
+  /* Keep the main-navigation texture at its native width scale. Its top edge
+     is cropped inside the rail so it does not form a second divider. */
+  --page-navigation: url('/art/project-navigation-v2/background.png') center bottom / 100% max(20.133333cqw, calc(100% + 2px)) no-repeat;
+  --page-plate-slice: 18;
+  --page-plate-corner: 8px;
+  /* Match the reference prefab proportions at the current game width. */
+  --page-ref-unit: calc(100cqw / 1080);
+  --scene-title-width: calc(412 * var(--page-ref-unit));
+  --scene-title-height: max(28px, calc(80 * var(--page-ref-unit)));
+  --scene-title-inset: calc(18 * var(--page-ref-unit));
+  --scene-title-top: max(4px, calc(12.4 * var(--page-ref-unit)));
+  --catalog-title-height: max(30px, calc(88.6 * var(--page-ref-unit)));
+  --catalog-title-top: 2.3cqw;
+  --catalog-title-inset: 3cqw;
+  --workshop-dock-height: clamp(56px, 14.9cqw, 64px);
+}
+
+/* Keep page titles and resources over each page's continuous scene. */
+#gui-casual-lobby[data-tab='shop'][data-subpage=''] {--landing-header-scene:var(--project-logistics-image)}
+#gui-casual-lobby[data-tab='research'][data-subpage=''] {--landing-header-scene:var(--project-lab-image)}
+#gui-casual-lobby[data-tab='supply'][data-subpage=''] {--landing-header-scene:url('/art/recruit-dossier-v1/ivory-hangar-clean-v2.png')}
+#gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='research']) .pl-shell {
+  /* The shell is the query container, so its own cqw would use the desktop
+     viewport. Keep the PSD texture and reserved rows tied to the game width. */
+  --project-scene-texture:url('/art/project-workshop-background-v2/psd-scanlines.png') calc(var(--lobby-frame-width) * -.008) calc(var(--lobby-frame-width) * -.036)/calc(var(--lobby-frame-width) * 1.02) auto no-repeat;
+  --lobby-nav-gap:0px;
+  --lobby-nav-height:calc(var(--lobby-frame-width) * .201333333333 + var(--lobby-safe-bottom,0px));
+  --lobby-nav-reserve:var(--lobby-nav-height);
+  grid-template-rows:auto minmax(0,1fr) var(--lobby-nav-reserve)!important;
+  background:var(--project-scene-texture),var(--landing-header-scene) center top/cover no-repeat!important;
+  background-blend-mode:overlay,normal;
+}
+#gui-casual-lobby[data-tab='shop'][data-subpage=''] .pl-shell {
+  background:var(--project-scene-texture),var(--project-logistics-image) right top/cover no-repeat!important;
+}
+/* Desktop chrome can shrink the game below its viewport-derived frame width.
+   Let the actual PSD navigation occupy the final row instead of reserving a
+   separately calculated height for an absolutely positioned navigation. */
+#gui-casual-lobby.peripheral-lobby:is([data-tab='shop'],[data-tab='supply'])[data-subpage=''] .pl-shell {
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+}
+#gui-casual-lobby.peripheral-lobby:is([data-tab='shop'],[data-tab='supply'])[data-subpage=''] .pl-nav.lobby-nav {
+  position: relative !important;
+  inset: auto !important;
+  grid-row: 3;
+}
+/* Crop the ceiling lamps above the transparent tabs, using the game width. */
+#gui-casual-lobby[data-tab='research'][data-subpage=''] .pl-shell {
+  background:var(--project-scene-texture),var(--project-lab-image) center calc(var(--lobby-frame-width) * -.36)/auto 125% no-repeat!important;
+}
+/* Approved recruitment composition: one image spans the header and showcase. */
+#gui-casual-lobby[data-tab='supply'][data-subpage=''] .pl-shell {
+  /* Preserve the approved crop; extend the same image on taller screens. */
+  background:var(--landing-header-scene) center top/100% max(calc(var(--lobby-frame-width) * 1.5),calc(100% - var(--lobby-nav-reserve) - var(--lobby-frame-width) * .25 - 60px)) no-repeat!important;
+}
+#gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='research'],[data-tab='supply']) .pl-header:has(>.lobby-resources) {
+  height:12.5cqw;
+  min-height:0;
+  border:0;
+  box-shadow:none;
+  background:none!important;
+}
+#gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='research']) .pl-header:has(>.lobby-resources) {
+  /* Resource artwork starts at 6.133333cqw; preserve its full 44px hit area. */
+  height:calc(6.133333cqw + 44px);
+}
+/* All four landing titles share the equipment PSD's top band. Header reserve
+   heights remain page-owned; a taller resource rail must not lower its title. */
+#gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='assembly'],[data-tab='research'],[data-tab='supply']) .pl-header:has(>.lobby-resources) {
+  --landing-title-top:max(4px,calc((12.5cqw - 44px) / 2));
+}
+#gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='assembly'],[data-tab='research'],[data-tab='supply']) .pl-header>.lobby-page-heading {
+  position:absolute;
+  left:2cqw;
+  top:var(--landing-title-top);
+  width:calc(100% - var(--hud-wallet-width,61cqw) - 6cqw);
+  height:44px;
+  min-height:44px;
+  margin:0;
+  padding:0;
+  align-items:center;
+  line-height:1.2;
+}
+#gui-casual-lobby:is([data-tab='shop'],[data-tab='supply'])[data-subpage=''] .pl-shell::before {content:none!important;display:none!important}
+#gui-casual-lobby[data-tab='research'][data-subpage=''] :is(.pl-body,.research-page,.research-banner,.research-scroll,.research-footer),
+#gui-casual-lobby[data-tab='shop'][data-subpage=''] :is(.pl-body,.shop-native-v2,.store-scroll),
+#gui-casual-lobby[data-tab='supply'][data-subpage=''] .pl-body {background:none!important;box-shadow:none!important}
+#gui-casual-lobby[data-tab='supply'][data-subpage=''] .lobby-page-heading {color:#f2f8ff!important;text-shadow:none!important}
+#gui-casual-lobby[data-tab='supply'][data-subpage=''] .lobby-heading-icon :is(img,svg) {filter:none!important}
+@container (max-width:350px) {
+  #gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='assembly'],[data-tab='research'],[data-tab='supply']) .lobby-page-heading {
+    gap:4px;
+    font-size:16px;
+  }
+  #gui-casual-lobby[data-subpage='']:is([data-tab='shop'],[data-tab='assembly'],[data-tab='research'],[data-tab='supply']) .lobby-heading-icon {
+    width:20px;
+    height:22px;
+  }
+}
+
+/* The three shop sections share the 119-unit touch row and 99.53-unit face. */
+#gui-casual-lobby[data-tab='shop'] .shop-native-v2 {
+  --shop-tab-height: max(44px, calc(119 * var(--page-ref-unit)));
+  grid-template-rows: minmax(0, 1fr) var(--shop-tab-height);
+}
+#gui-casual-lobby[data-tab='shop'] .shop-native-v2 .store-categories {
+  align-items: stretch;
+  gap: calc(8 * var(--page-ref-unit));
+  padding: 0 calc(10 * var(--page-ref-unit));
+  border: 0;
+  box-shadow: none;
+  /* Crop the PSD rail's built-in top/bottom rules out of this short row. */
+  background: url('/art/project-navigation-v2/background.png') center / 100% max(20.133333cqw, calc(100% + 16px)) no-repeat;
+}
+#gui-casual-lobby .shop-native-v2 .store-category.psd-tab {
+  --page-tab-face-height: calc(99.53 * var(--page-ref-unit));
+  align-self: center;
+  min-width: 0;
+  height: var(--shop-tab-height);
+  min-height: 44px;
+  padding-block: calc(var(--shop-tab-height) - var(--page-tab-face-height)) 0;
+  font-size: clamp(13px, calc(38 * var(--page-ref-unit)), 19px);
+}
+/* Keep the visible face flush with the main navigation, without moving its
+   independent touch target or adding another separator. */
+#gui-casual-lobby .shop-native-v2 .store-category::before {
+  inset: auto 0 0 !important;
+  margin-block: 0 !important;
+}
+/* Scene titles and the workshop's contextual readout use the same PSD cut. */
+#gui-casual-lobby :is(.wc-page-title, .fc-identity>h1, .ws-header h1) {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--scene-title-height);
+  padding: 2px clamp(8px, 2cqw, 14px);
+  color: #f4fbff;
+  background: none;
+  font: 400 clamp(16px, calc(53 * var(--page-ref-unit)), 28px)/1.2 var(--psd-title-family);
+  text-shadow: 0 1px 2px #07131f;
+}
+#gui-casual-lobby :is(.wc-page-title, .fc-identity>h1, .ws-header h1, .gm-page .ws-message)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  background: var(--page-chapter-fill), var(--page-chapter-backdrop);
+  background-clip: padding-box;
+  border-image: var(--page-plate) var(--page-plate-slice) fill / var(--page-plate-corner) stretch;
+}
+#gui-casual-lobby .wc-hero>.wc-page-title {
+  position: absolute;
+  left: var(--catalog-title-inset);
+  top: var(--catalog-title-top);
+  width: fit-content;
+  min-width: max(76px, 26cqw);
+}
+#gui-casual-lobby .fc-page:is(.fc-aircraft,.fc-pilot) .fc-identity {
+  left: var(--catalog-title-inset);
+  right: var(--catalog-title-inset);
+  top: var(--catalog-title-top);
+}
+#gui-casual-lobby :is(.wc-hero>.wc-page-title,.fc-page .fc-identity>h1,.ws-page .ws-header h1) {
+  box-sizing: border-box;
+  height: var(--catalog-title-height);
+  min-height: var(--catalog-title-height);
+  padding-inline: 12px;
+  font-size: clamp(17px, calc(60 * var(--page-ref-unit)), 30px);
+  line-height: 1.2;
+  min-width: max(76px, 26cqw);
+}
+#gui-casual-lobby :is(.wc-hero>.wc-page-title,.fc-page .fc-identity>h1,.ws-page .ws-header h1)::before {
+  /* Composite the same PSD center and frame, retaining their transparency.
+     No solid fill: ceiling lamps must not wash out the white title. */
+  background: var(--page-chapter-fill);
+}
+#gui-casual-lobby .fc-page .fc-identity>h1 {pointer-events: auto}
+#gui-casual-lobby .fc-identity .fc-title {
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#gui-casual-lobby .fc-identity>.fc-header-stars,
+#gui-casual-lobby .fc-page .fc-identity>.fc-header-stats {
+  margin-inline-start: 12px;
+}
+#gui-casual-lobby[data-subpage='workshop'] .ws-page .ws-header {
+  top: var(--catalog-title-top);
+  left: var(--catalog-title-inset);
+  right: var(--catalog-title-inset);
+  height: var(--catalog-title-height);
+}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page .ws-assistant {
+  top: 22%;
+}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page .ws-message {
+  min-height: min(44px, 100%);
+}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page .ws-message-body {
+  gap: 4px;
+  padding: 10px 13px;
+}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page[data-has-target='false'] .ws-message {
+  margin-inline-end: 0;
+  width: max-content;
+  max-width: 63%;
+}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page :is(.ws-header h1,.ws-message)::before {
+  border-image: var(--page-plate) var(--page-plate-slice) fill / var(--page-plate-corner) stretch;
+}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page .ws-message-body>p {
+  font-size: clamp(13px, 3.55cqw, 16px);
+  line-height: 1.4;
+}
+
+/* The workshop heading retains its existing chapter face. */
+#gui-casual-lobby .gm-page .ws-warehouse-heading {
+  background: var(--page-chapter-fill), var(--page-chapter-backdrop);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+  border-image: var(--page-plate-idle) var(--page-plate-slice) fill / var(--page-plate-corner) stretch;
+}
+/* Catalog lists reuse the equipment PSD as a single connected surface:
+   divider above the title, the original title strip, then its inventory grid. */
+#gui-casual-lobby .ref-catalog.wc-page[data-catalog-kind] {
+  /* All three catalogs use the fleet page's existing hero boundary. */
+  --catalog-hero-height: calc(50% + 3.148148cqw);
+  --catalog-heading-height: max(44px, 14.266667cqw);
+  --catalog-skill-slot-size: max(44px, 15cqw);
+  --catalog-skill-divider-gap: 6cqw;
+  --catalog-skill-top: calc(var(--catalog-hero-height) - var(--catalog-skill-divider-gap) - var(--catalog-skill-slot-size));
+  --catalog-controls-height: max(44px, 13.7cqw);
+  --catalog-controls-top: calc(var(--catalog-skill-top) + (var(--catalog-skill-slot-size) - var(--catalog-controls-height)) / 2);
+}
+#gui-casual-lobby .wc-page[data-catalog-kind]>.wc-heading {
+  z-index: 5;
+  background: url('/art/psd-equipment-v1/inventory-toolbar.png') center / 100% 100% no-repeat;
+  background-clip: border-box;
+  border: 0;
+  border-image: none;
+}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon']>.wc-heading {
+  position: relative;
+}
+#gui-casual-lobby .fc-page[data-catalog-kind]>.fc-hero,
+#gui-casual-lobby .fc-page[data-catalog-kind]>.fc-skill-cancel-area {
+  height: var(--catalog-hero-height);
+}
+#gui-casual-lobby .fc-page[data-catalog-kind]>.fc-heading {
+  top: var(--catalog-hero-height);
+  height: var(--catalog-heading-height);
+}
+#gui-casual-lobby .fc-page[data-catalog-kind]>.fc-scroll {
+  top: calc(var(--catalog-hero-height) + var(--catalog-heading-height));
+}
+#gui-casual-lobby .wc-page[data-catalog-kind]>.wc-heading::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 100%;
+  width: 100%;
+  height: 8cqw;
+  background: url('/art/psd-equipment-v1/hangar-divider.png') center bottom / 100% 100% no-repeat;
+  pointer-events: none;
+}
+#gui-casual-lobby .wc-page[data-catalog-kind]>.wc-scroll {
+  background: url('/art/psd-equipment-v1/inventory-grid.webp') center top / 100% 100% no-repeat !important;
+}
+#gui-casual-lobby .wc-page[data-catalog-kind]>.wc-heading h2 {
+  font: 400 clamp(16px, 5.333333cqw, 23px)/1 PsdPopup, 'Microsoft YaHei', sans-serif;
+  color: #f7fbff;
+  text-shadow: 0 1px 0 #22374b;
+}
+#gui-casual-lobby .wc-heading h2 {
+  font-size: clamp(16px, calc(52 * var(--page-ref-unit)), 26px);
+}
+#gui-casual-lobby .gm-page .ws-warehouse-heading h2 {
+  font-size: clamp(16px, calc(57 * var(--page-ref-unit)), 26px);
+}
+#gui-casual-lobby[data-tab='shop'] .shop-native-v2 .sn-section>h2 {
+  --shop-section-face-height: max(38px, calc(109 * var(--page-ref-unit)));
+  position: relative;
+  isolation: isolate;
+  justify-self: center;
+  width: clamp(140px, 40cqw, 185px);
+  max-width: 100%;
+  height: var(--shop-section-face-height);
+  margin-block: 8px 10px;
+  margin-inline: 0;
+  padding-inline: clamp(12px, 3.5cqw, 18px);
+  box-sizing: border-box;
+  min-height: var(--shop-section-face-height);
+  background: none;
+  font-size: clamp(16px, calc(50 * var(--page-ref-unit)), 24px);
+  text-shadow: 0 1px 2px #18344b;
+}
+#gui-casual-lobby .shop-native-v2 .sn-section>h2::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: var(--shop-section-face-height);
+  margin: auto;
+  z-index: -1;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  background: var(--page-chapter-fill);
+  background-clip: padding-box;
+  border-image: var(--page-plate-idle) var(--page-plate-slice) fill / var(--page-plate-corner) stretch;
+}
+
+/* An independent return and a right-aligned pair of category tabs. */
+#gui-casual-lobby .ref-catalog.wc-page {
+  --catalog-bottom: max(54px, calc(182 * var(--page-ref-unit)));
+  --catalog-tab-width: max(44px, calc(166 * var(--page-ref-unit)));
+}
+
+#gui-casual-lobby :is(.wc-footer,.gm-page .ws-footer) {
+  box-sizing: border-box;
+  background: var(--page-navigation);
+  border: 0;
+}
+#gui-casual-lobby .wc-page .wc-footer {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) repeat(2, var(--catalog-tab-width));
+  align-items: center;
+  gap: calc(6 * var(--page-ref-unit));
+  padding: 0 calc(10 * var(--page-ref-unit)) var(--lobby-safe-bottom, 0px);
+}
+#gui-casual-lobby .fc-page .fc-footer {
+  bottom: 0;
+  height: calc(var(--catalog-bottom) + var(--lobby-safe-bottom, 0px));
+}
+#gui-casual-lobby .fc-page .fc-scroll {
+  bottom: calc(var(--catalog-bottom) + var(--lobby-safe-bottom, 0px));
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-button {
+  position: relative;
+  inset: auto;
+  width: auto;
+  height: var(--catalog-bottom);
+  min-height: 44px;
+  box-sizing: border-box;
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode {
+  padding: 0;
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode>.wc-tab-icon {
+  position: absolute;
+  left: 50%;
+  bottom: calc(3px + clamp(13px, 3.5cqw, 16px) * 1.2);
+  width: clamp(27px, 8.4cqw, 37px);
+  height: clamp(27px, 8.4cqw, 37px);
+  transform: translateX(-50%);
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode.is-active>.wc-tab-icon {
+  width: clamp(31px, 9.7cqw, 43px);
+  height: clamp(31px, 9.7cqw, 43px);
+}
+/* The original battle and pilot PNGs include more transparent space than the
+   skill icon. Size their canvases separately so the visible marks match. */
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode>.wc-tab-icon[data-project-icon='nav-battle'] {
+  width: clamp(41px, 12.3cqw, 54px);
+  height: clamp(36px, 10.7cqw, 47px);
+  bottom: calc(3px + clamp(13px, 3.5cqw, 16px) * 1.2 - 4px);
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode.is-active>.wc-tab-icon[data-project-icon='nav-battle'] {
+  width: clamp(46px, 14.2cqw, 62px);
+  height: clamp(40px, 12.3cqw, 54px);
+  bottom: calc(3px + clamp(13px, 3.5cqw, 16px) * 1.2 - 5px);
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode>.wc-tab-icon[data-project-icon='nav-recruit'] {
+  width: clamp(31px, 9.3cqw, 41px);
+  height: clamp(35px, 10.5cqw, 46px);
+  bottom: calc(3px + clamp(13px, 3.5cqw, 16px) * 1.2 - 4px);
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode.is-active>.wc-tab-icon[data-project-icon='nav-recruit'] {
+  width: clamp(35px, 10.6cqw, 47px);
+  height: clamp(39px, 12cqw, 52px);
+  bottom: calc(3px + clamp(13px, 3.5cqw, 16px) * 1.2 - 5px);
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-mode>span {
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font: 400 clamp(13px, 3.5cqw, 16px)/1.2 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+#gui-casual-lobby :is(.wc-footer>.wc-back,.gm-page .ws-footer>[data-action='catalogBack']) {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  white-space: nowrap;
+  font: 400 clamp(13px, 3.6cqw, 16px)/1.15 var(--psd-title-family);
+}
+#gui-casual-lobby .wc-page .wc-footer>.wc-back {width:clamp(48px,12cqw,52px)}
+#gui-casual-lobby[data-subpage='workshop'] .gm-page {
+  grid-template-rows: 80cqw max(calc(var(--ui-action-height) + 6px), calc(117.9 * var(--page-ref-unit))) minmax(0, 1fr) calc(var(--workshop-dock-height) + var(--lobby-safe-bottom, 0px));
+}
+#gui-casual-lobby .gm-page .ws-footer {
+  grid-template-columns: minmax(62px, 1fr) minmax(0, 2.5fr) minmax(62px, 1fr);
+  gap: 6px;
+  padding: 0 10px var(--lobby-safe-bottom, 0px);
+}
+#gui-casual-lobby .gm-page .ws-footer>[data-action='workshopGearCompose'] {
+  --wc-button-height: var(--ui-primary-height);
+  --psd-button-corner: var(--ui-primary-corner);
+  --psd-control-art: url('/art/psd-equipment-v1/button-gold.png');
+  max-width: var(--ui-primary-width);
+}

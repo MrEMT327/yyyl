@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "style": "Approved process-flow mockups 2026-11-10; project PSD thin silver outlines, slate blue fine grid, diagonal texture, cyan and warm-gold reveal light",
+  "generator": "image_gen.imagegen",
+  "referenceDirectory": "G:/小飞机/design/process-flow-mockups-2026-11-10",
+  "assets": [
+    {"file":"success-banner.png","size":[2172,724],"visibleBounds":[40,260,2132,454],"role":"Empty success banner; real UI title is separate text","prompt":"success-banner-prompt.txt"},
+    {"file":"hologram-reveal.png","size":[1254,1254],"visibleBounds":[38,200,1216,1130],"role":"Transparent cyan hologram and gold shafts; pulse and particle movement use actual image layers","prompt":"hologram-reveal-prompt.txt"},
+    {"file":"inset-panel.png","size":[2172,724],"visibleBounds":[13,181,2159,540],"slice":45,"role":"Attribute and skill inset; nine image regions sample visible bounds","prompt":"inset-panel-prompt.txt"},
+    {"file":"collection-panel.png","size":[1117,1408],"role":"PSD-derived blue result frame variant; normalized to PSD 567x714 before nine-slice sampling","prompt":"collection-panel-prompt.txt"},
+    {"file":"merge-panel.png","size":[1117,1408],"role":"PSD-derived medium blue-gray merge result frame variant","prompt":"merge-panel-prompt.txt"},
+    {"file":"basic-open.png","size":[1482,1061],"role":"Open state of the project's blue-gray basic equipment box","prompt":"basic-open-prompt.txt"}
+  ],
+  "reused": ["psd-popup-v1/primary.png","psd-buttons-v1/button-blue.png","psd-equipment-v1/button-gold.png","psd-equipment-v1/frame-{gray,green,blue,purple,gold,red}.png","aircraft-activation-v1/activation-stage.png","project-equipment-boxes-v1/advanced.png","project-equipment-boxes-v1/advanced-open.png"],
+  "rules": ["No competitor bitmap assets", "No text baked into blank plates", "Preserve source DOM behind overlays", "All reward items use rewardItemSlot", "Result and animation never grant items or charge currency"]
+}

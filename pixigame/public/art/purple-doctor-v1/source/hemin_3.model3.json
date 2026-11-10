@@ -4,7 +4,7 @@
   "FileReferences": {
     "Moc": "hemin_3.moc3",
     "Textures": [
-      "textures/texture_00.png"
+      "../target-atlas-head-v12.png"
     ],
     "DisplayInfo": null,
     "Physics": "hemin_3.physics3.json",

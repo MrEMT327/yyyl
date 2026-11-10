@@ -86,7 +86,14 @@ function ledger(raw,time) {
     l.daily.activityOffset=(claimed.includes('battle1')?20:0)+(claimed.includes('battle3')?20:0);
   }
   if(l.daily){l.daily.victories??=0;l.daily.upgrades??=0;l.daily.recruits??=0;}
-  if(l.week){l.week.battles??=0;l.week.victories??=0;l.week.upgrades??=0;}
+  if(l.week){
+    l.week.battles??=0;l.week.victories??=0;l.week.upgrades??=0;
+    l.week.recruits??=0;l.week.boxOpens??=0;l.week.patrolClaims??=0;
+    l.week.boxesOpened??=l.week.boxOpens;
+    // Old full-activity dates and the last recorded daily visit are evidence
+    // of a login. Never infer missing intervening days.
+    l.week.loginDays??=[...new Set([...(l.week.activeDays||[]),l.daily?.day].filter(d=>date(d)&&weekStart(d)===l.week.start))].sort();
+  }
   for(const [record,legacy] of [[l.daily,l.daily?.activityClaimed],[l.week,l.week?.claimed]]) {
     if(!record)continue;
     record.activityClaims??=legacy?[...activitySteps]:[];
@@ -116,7 +123,8 @@ function ledger(raw,time) {
     !Array.isArray(l.daily.claimed)||new Set(l.daily.claimed).size!==l.daily.claimed.length||l.daily.claimed.some(id=>!tasks.some(t=>t.id===id)&&!legacyTaskIds.includes(id))||
     typeof l.daily.activityClaimed!=='boolean'||!date(l.week?.start)||!Array.isArray(l.week.activeDays)||
     l.week.activeDays.length>7||new Set(l.week.activeDays).size!==l.week.activeDays.length||l.week.activeDays.some(d=>!date(d)||weekStart(d)!==l.week.start)||
-    ![l.week.battles,l.week.victories,l.week.upgrades].every(safe)||
+    ![l.week.battles,l.week.victories,l.week.upgrades,l.week.recruits,l.week.boxOpens,l.week.patrolClaims].every(safe)||
+    !Array.isArray(l.week.loginDays)||l.week.loginDays.length>7||new Set(l.week.loginDays).size!==l.week.loginDays.length||l.week.loginDays.some(d=>!date(d)||weekStart(d)!==l.week.start||d>today)||
     typeof l.week.claimed!=='boolean')throw Error('驾驶员补给存档无效，旧记录已保留');
   // New independent claim slots preserve all previous supply claims and pity.
   for(const [period,kind] of [['daily','guns'],['week','skins']]){
@@ -130,7 +138,7 @@ function ledger(raw,time) {
   l.history=history(l.history);l.boxHistory=history(l.boxHistory,true);
   if(today<l.daily.day||week<l.week.start)throw Error('日期异常，请恢复设备日期');
   if(today>l.daily.day)l.daily={day:today,battles:0,victories:0,upgrades:0,recruits:0,taskVersion:3,activityOffset:0,claimed:[],activityClaimed:false,activityClaims:[],ads:0,collectionChoice:null};
-  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,activityClaims:[],battles:0,victories:0,upgrades:0,collectionChoice:null,taskVersion:3,activityOffset:0,taskClaims:[],loginDays:[]};
+  if(week>l.week.start)l.week={start:week,activeDays:[],claimed:false,activityClaims:[],battles:0,victories:0,upgrades:0,recruits:0,boxOpens:0,patrolClaims:0,collectionChoice:null,taskVersion:3,activityOffset:0,taskClaims:[],loginDays:[]};
   l.week.loginDays??=[...l.week.activeDays];
   if(!Array.isArray(l.week.loginDays)||new Set(l.week.loginDays).size!==l.week.loginDays.length
     ||l.week.loginDays.some(day=>!date(day)||weekStart(day)!==l.week.start))throw Error('每周登录记录无效');
@@ -153,14 +161,14 @@ function taskCount(task,l,external={},weekly=false) {
   if(task.counter==='loginDays')return l.week.loginDays.length;
   const period=weekly?l.week:l.daily;
   const legacyKey=task.counter==='battles'?'sorties':task.counter;
-  const history=task.counter==='recruits'&&!weekly
-    ? l.history.filter(row=>flightDay(row.at)===l.daily.day).reduce((sum,row)=>sum+row.count,0):0;
+  const history=task.counter==='recruits'
+    ? l.history.filter(row=>weekly?weekStart(flightDay(row.at))===l.week.start:flightDay(row.at)===l.daily.day).reduce((sum,row)=>sum+row.count,0):0;
   return Math.max(counter(period[task.counter]),counter(external[legacyKey]),history);
 }
 function weeklyTaskView(l,external={}) {
   const rows=weekTasks.map(task=>({...task,progress:Math.min(task.target,taskCount(task,l,external,true)),
-    claimed:l.week.taskClaims.includes(task.id),canClaim:!l.week.taskClaims.includes(task.id)&&(UNLOCK_ALL_CONTENT||taskCount(task,l,external,true)>=task.target)}));
-  return {rows,points:Math.min(100,l.week.activityOffset+rows.filter(task=>task.claimed).reduce((sum,task)=>sum+task.points,0))};
+    claimed:l.week.taskClaims.includes(task.id),canClaim:false}));
+  return {rows,points:Math.min(100,Math.max(l.week.activityOffset,rows.filter(task=>task.claimed||task.progress>=task.target).reduce((sum,task)=>sum+task.points,0)))};
 }
 export function recordPilotSupplyEvent(raw,time,updates={}) {
   const l=ledger(raw,time);
@@ -189,6 +197,16 @@ export function recordPilotSupplyUpgrade(raw,time,amount=1,{taskCounters={}}={})
   l.daily.upgrades=Math.max(l.daily.upgrades,counter(daily.upgrades))+amount;
   l.week.upgrades=Math.max(l.week.upgrades,counter(weekly.upgrades))+amount;
   if(![l.daily.upgrades,l.week.upgrades].every(safe))throw Error('强化次数超限');
+  return l;
+}
+export function recordPilotSupplyWeeklyEvent(raw,time,event,amount=1) {
+  const l=ledger(raw,time);
+  if(event==='login'){
+    if(!l.week.loginDays.includes(l.daily.day))l.week.loginDays.push(l.daily.day);
+  }else{
+    if(!['boxOpens','patrolClaims'].includes(event)||!safe(amount)||amount<1)throw Error('每周任务计数无效');
+    l.week[event]+=amount;if(!safe(l.week[event]))throw Error('每周任务计数超限');
+  }
   return l;
 }
 function points(l){return Math.min(100,l.daily.activityOffset+tasks.filter(t=>l.daily.claimed.includes(t.id)).reduce((sum,t)=>sum+t.points,0));}
@@ -313,7 +331,10 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
       }
       pity.total++;
     }
-    l.total+=count;l.daily.recruits+=count;title='驾驶员招募结果';
+    l.total+=count;l.daily.recruits+=count;
+    l.week.recruits=taskCount({counter:'recruits'},l,taskCounters.weekly,true)+count;
+    if(!safe(l.week.recruits))throw Error('每周招募次数超限');
+    title='驾驶员招募结果';
     l.history.push({at:time,count,cost,results:structuredClone(rewards)});l.history=l.history.slice(-50);
   }else if(operation.action==='compose') {
     const count=operation.count??1;

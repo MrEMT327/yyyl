@@ -1,13 +1,14 @@
 import { createPsdCombatHud } from './psd-combat-hud.js';
 import { renderCombatPause } from './combat-pause-ui.js';
-import {qualityDisplayLabel} from './quality-display-label.js';
-import { renderDefeatResult } from './defeat-result-ui.js';
 import { updateReviveCountdown } from './defeat-result-motion.js';
+import {qualityDisplayLabel} from './quality-display-label.js';
+import { renderDefeatResult, updateDefeatResult, preloadDefeatArt } from './defeat-result-ui.js';
+import {REVIVE_ART,preloadReviveArt} from './revive-panel-art.js';
+import {renderRevivePanel,updateReviveTouchTargets,clearRevivePanel} from './revive-panel.js';
 import { addChildren } from './pixi-display.js';
 import { resumeDodgeTutorialPointer } from '../dodge-tutorial.js';
 import { edgeThreats } from './threat-feedback.js';
 import { revealChoiceCards } from './status-feedback.js';
-import { revealResult } from './result-feedback.js';
 import {renderBattleSupply, updateBattleSupply} from './battle-supply-ui.js';
 import { fixedPartName } from '../fixed-parts/parts.js';
 import {
@@ -44,11 +45,11 @@ import { createSupplyPage } from './supply-page.js';
 import { createPilotSkillCutIn } from './pilot-skill-cutin.js';
 import { renderFixedUpgradeUi } from './fixed-upgrade-ui.js';
 import { COMBAT_UI, COMBAT_HUD, COMBAT_TYPE, combatButtonStyle } from './combat-theme.js';
-import { resultRewards } from './result-rewards.js';
-import { resultRewardStatus } from './result-reward-status.js';
 import { victoryAdReward } from '../sortie-rewards.js';
 import { paintCombatArt, setCombatArt } from './combat-art.js';
 import { paintPsdPopup } from './psd-popup-art.js';
+import { paintPsdPopupTitle } from './psd-popup-title.js';
+import './psd-titles.css';
 import { acquireFixedPartThumbnails } from './fixed-part-thumbnails.js';
 import { upgradeIconLayout } from './upgrade-icon-layout.js';
 import { createThreeSurface } from './three-surface.js';
@@ -4043,7 +4044,8 @@ function makeCombatButton(options) {
     const background = button.children[0];
     let artwork;
     const skin = addVisualSurface(button,s=>{
-      artwork = paintCombatArt(s,options.disabled?'disabled':buttonArt,0,0,options.width,options.height);
+      artwork = paintCombatArt(s,options.disabled&&!options.preserveArtOnDisable?'disabled':buttonArt,0,0,options.width,options.height,{corner:options.artCorner});
+      if(options.disabled&&options.preserveArtOnDisable)setCombatArt(artwork,'disabled');
     });
     button.setChildIndex(skin,1);
     if (!options.disabled) {
@@ -4052,8 +4054,9 @@ function makeCombatButton(options) {
       button.onUpOut.connect(()=>setCombatArt(artwork,buttonArt));
     }
     // Keep a readable fallback until the asynchronously loaded skin is ready.
-    artwork.onBeforeRender = () => { background.visible = !artwork.material.map?.image?.width; };
-    background.visible = !artwork.material.map?.image?.width;
+    const transparentFrame=options.hideFallback||['utility','statsControl','audioOn','audioOff'].includes(buttonArt);
+    artwork.onBeforeRender = () => { background.visible = !transparentFrame&&!artwork.material.map?.image?.width; };
+    background.visible = !transparentFrame&&!artwork.material.map?.image?.width;
   }
   return button;
 }
@@ -4082,9 +4085,7 @@ function addDodgeTutorialUi(root, bridge, refs) {
   addCombatBackdrop(root, 0x030817, 0.82);
 
   addVisualSurface(root,s=>paintPsdPopup(s,'primary',42,300,516,640));
-  place(root, makeSingleLineRawText('滑动闪避', {
-    size: 46, fill: COLORS.white, weight: '900', letterSpacing: 5, anchorX: 0.5,
-  }, 444), 300, 334);
+  addVisualSurface(root,s=>paintPsdPopupTitle(s,'primary','滑动闪避',42,300,516,640));
   addSymbol(root,'shield',272,441,56,'#23415a');
 
   addVisualSurface(root,s=>paintCombatArt(s,'card',78,535,444,300));
@@ -4210,7 +4211,7 @@ export function addCenteredCombatCard(root, {
     const top = (DESIGN_HEIGHT - height) / 2;
     addCombatBackdrop(root, COMBAT_UI.ink, .78);
     addVisualSurface(root, s => paintPsdPopup(s, 'secondary', 54, top, 492, height));
-    place(root, makeCombatText(title, 'number', {size:30,fill:0x1b3048,anchorX:.5}), 300, top+28);
+    addVisualSurface(root,s=>paintPsdPopupTitle(s,'secondary',title,54,top,492,height));
     place(root, makeCombatText(copy, 'label', {size:20,fill:0x30465c,anchorX:.5}), 300, top+91);
     root.addChild(makeCombatButton({
       x:78,y:top+158,width:216,height:80,text:secondaryText,
@@ -4229,9 +4230,7 @@ export function addCenteredCombatCard(root, {
   addCombatBackdrop(root, COMBAT_UI.ink, .84);
   addVisualSurface(root,s=>paintPsdPopup(s,'primary',38,top,524,height));
   // Use the authored PSD title tab instead of a separate yellow banner.
-  place(root, makeRawText(eyebrow || title, {
-    size: 34, fill: COLORS.white, weight: '900',
-  }), 92, top+36);
+  addVisualSurface(root,s=>paintPsdPopupTitle(s,'primary',eyebrow||title,38,top,524,height));
   addSymbol(root,'pause',486,top+40,26,'#d5e8ef');
   if(danger)root.addChild(new Graphics().roundRect(72,top+140,456,60,3)
     .fill({color:0x4a2533,alpha:.8}).rect(72,top+140,4,60).fill({color:COMBAT_UI.danger}));
@@ -4405,44 +4404,9 @@ function addLevelUpCombatUi(root, bridge, fixedPartArt) {
 }
 
 function addReviveCombatUi(root, bridge, refs) {
-  addCombatBackdrop(root, COMBAT_UI.ink, 0.86);
-  addCombatPanel(root,72,386,456,428);
-  root.addChild(new Graphics()
-    .circle(293, 520, 65)
-    .fill({ color: COMBAT_UI.panel })
-    .stroke({ color: COMBAT_UI.gold, alpha: 0.7, width: 2 }));
-  addSymbol(root,'heart',278,414,30,'#a9e8bc');
-  refs.revive = place(root, makeRawText(String(Math.max(0, Math.ceil(bridge.game.reviveCountdown || 0))), {
-    size: 48, fill: COLORS.white, weight: '900', anchorX: 0.5, anchorY: 0.5,
-  }), 293, 514);
-  place(root, makeRawText('是否复活？', {
-    size: 33, fill: COLORS.white, weight: '900', anchorX: 0.5,
-  }), 293, 591);
-  const wave = bridge.game.bossSpawned
-    ? '旗舰战'
-    : `第 ${Math.max(1, bridge.game.waveIndex || 1)} 波`;
-  place(root, makeRawText(`${wave} · 倒计时结束后结算`, {
-    size: 16, fill: 0x30465c, weight: '700', anchorX: 0.5,
-  }), 293, 641);
-  place(root, makeRawText(bridge.presentation?.reviveCopy || '恢复全部生命 · 广告复活仅限1次', {
-    size: 16, fill: 0x30465c, weight: '700', anchorX: 0.5,
-  }), 293, 668);
-  root.addChild(makeCombatButton({
-    x: 96, y: 698, width: 145, height: 90, text: '放弃', variant: 'secondary',
-    stroke: 0xffffff, strokeAlpha: 0.18, textColor: 0xaeb5bc,
-    fontSize: 18, disabled: bridge.game.reviveAdPending, onPress: () => bridge.declineRevive(),
-  }));
-  root.addChild(makeCombatButton({
-    x: 251, y: 698, width: 239, height: 90, variant: 'primary',
-    text: bridge.game.reviveAdPending ? '广告播放中…' : '看广告复活',
-    fill: 0x91eee7, textColor: 0x062128,
-    fontSize: 18,
-    adBadge: true,
-    disabled: bridge.game.reviveAdPending,
-    onPress: () => bridge.requestAdRevive(),
-  }));
+  renderRevivePanel(root,bridge,refs,{surface:addVisualSurface,button:makeCombatButton,
+    text:makeRawText,place,backdrop:addCombatBackdrop});
 }
-
 function evolutionCinematicCopy(evolution) {
   const stage = Math.max(1, Number(evolution.stage) || 1);
   if (stage >= 2) {
@@ -4705,12 +4669,7 @@ function addVictoryRewardDoubleDialog(root, bridge) {
   root.addChild(blocker);
 
   addCombatPanel(root,48,404,504,384,'secondary');
-  place(root, makeRawText('奖励已到账', {
-    size: 15, fill: 0x78f1e5, weight: '900', letterSpacing: 4, anchorX: 0.5,
-  }), 300, 446);
-  place(root, makeRawText('额外货币已领取', {
-    size: 34, fill: COLORS.white, weight: '900', anchorX: 0.5,
-  }), 300, 490);
+  addVisualSurface(root,s=>paintPsdPopupTitle(s,'secondary','额外货币已领取',48,404,504,384));
   place(root, makeSingleLineRawText(
     bridge.game.debugRun ? '调试预览 · 不写入正常进度' : '通关、首通货币翻倍 · 材料不翻倍',
     { size: 16, fill: 0x30465c, weight: '700', anchorX: 0.5 },
@@ -4742,108 +4701,20 @@ function addVictoryRewardDoubleDialog(root, bridge) {
   }));
 }
 
-function addResultCombatUi(root, bridge, art, refs) {
-  const game = bridge.game;
-  // The embedded battle owns a stage-wide backdrop; painting another one in
-  // this fitted UI canvas would darken only the middle for a second time.
-  const resultBackdrop = (target) => {
-    if (!bridge.presentation?.fullStageResultBackdrop) addCombatBackdrop(target, 0x12161c, .68);
-  };
-  const defeated = game.state === 'defeat_result' || game.state === 'fixed_result';
-  if (defeated) return refs.defeatMotion = renderDefeatResult(root, bridge, {
-    surface:addVisualSurface, button:makeCombatButton, backdrop:resultBackdrop, stars:makeStarRating,
+function addResultCombatUi(root, bridge) {
+  const victory = bridge.game.state === 'victory_result';
+  const panel = renderDefeatResult(root, bridge, {
+    surface: addVisualSurface, button: makeCombatButton, victory,
+    backdrop(target) {
+      if (!bridge.presentation?.fullStageResultBackdrop) addCombatBackdrop(target, 0x12161c, .68);
+    },
   });
-  const completion = game.completionSummary || {};
-  const accent = defeated ? 0x8d2937 : 0x243d59;
-  const stage = CAMPAIGN[game.stageIndex] || CAMPAIGN[0];
-  const doubled = Boolean(game.victoryRewardDoubled);
-  const pending = Boolean(game.victoryRewardDoublePending || bridge.rewardedAdPending);
-  const nativeResult=bridge.presentation?.result;
-  const rewardStatus=resultRewardStatus(nativeResult,completion.debugRun);
-  const receipt = nativeResult?{rows:nativeResult.rows,canDouble:false}:resultRewards(completion, doubled);
-  const rows = nativeResult ? nativeResult.rows : defeated
-    ? Object.entries(game.defeatReward || {}).filter(([key, n]) => ['aircraftShards', 'weaponParts'].includes(key) && n > 0)
-      .map(([key, n]) => ({ label: key === 'weaponParts' ? '通用零件' : '飞机碎片', amount: '+' + n }))
-    : receipt.rows;
-  if (!defeated && completion.unlockedSkillPath) rows.push({
-    label: ROUTE_MAP.get(completion.unlockedSkillPath)?.name || completion.unlockedSkillPath, amount: '已解锁',
-  });
-  const showAd = !defeated && receipt.canDouble && !doubled;
-  const rewardY = 334;
-  const rowHeight = 36;
-  const rewardHeight = 88 + Math.max(1, rows.length) * rowHeight;
-  const buttonY = rewardY + rewardHeight + 22;
-  const height = buttonY + (showAd ? 154 : 78) + 24;
-  resultBackdrop(root);
-  const panel = new Container();
-  panel.label = 'battle-result-panel';
-  panel.position.set(46, Math.max(70, (DESIGN_HEIGHT - height) / 2));
-  root.addChild(panel);
-  addCombatPanel(panel, 0, 0, 508, height);
-  const text = (value, x, y, size = 20, fill = 0x1b3048, extra = {}) =>
-    place(panel, makeCombatText(value, 'label', { size, fill, ...extra }), x, y);
-  text(defeated ? '作战结束' : '任务完成', 26, 28, 32, accent);
-  text(nativeResult?.stageName || stage.name, 26, 76, 23);
-  const grade = nativeResult?{id:nativeResult.grade}:flightGradeMeta(game.flightQuality);
-  text('战斗评级', 434, 40, 16, 0x30465c, { anchorX: .5 });
-  text(grade.id, 434, 63, 48, gradeColor(grade.id), { anchorX: .5 });
-  panel.addChild(new Graphics().rect(26, 122, 456, 1).fill({ color: COMBAT_UI.edge, alpha: .5 }));
-  let resultStars;
-  if(nativeResult){
-    text(nativeResult.progress,26,140,20,0x30465c);
-    if(!defeated){
-      const stars=makeStarRating(nativeResult.stars,true,{radius:15,gap:44});
-      stars.position.set(412,152);panel.addChild(stars);resultStars=stars;
-    }
-  }
-  else if (defeated) {
-    text(game.bossSpawned ? '抵达旗舰战' : '抵达第 ' + Math.max(1, game.waveIndex || 1) + ' 波', 26, 140, 20, 0x30465c);
-  } else {
-    text('通关星级', 26, 140, 20, 0x30465c);
-    const stars = makeStarRating(Math.max(0, Math.min(3, Number(completion.stars) || 0)), true, { radius: 15, gap: 44 });
-    stars.position.set(412, 152);
-    panel.addChild(stars);
-    resultStars = stars;
-  }
-  const stats = nativeResult?.stats || [
-    ['用时', formatRunTime(game.elapsed)], ['击破', String(game.kills || 0)],
-    ['等级', String(game.level || 1)], ['得分', String(Math.floor(game.score || 0))],
-  ];
-  stats.forEach(([label, value], index) => {
-    const x = 26 + index % 2 * 234, y = 190 + Math.floor(index / 2) * 64;
-    text(label, x, y, 18, 0x30465c);
-    text(value, x + 214, y - 2, 24, 0x1b3048, { anchorX: 1 });
-    panel.addChild(new Graphics().rect(x, y + 39, 214, 1).fill({ color: COMBAT_UI.edge, alpha: .25 }));
-  });
-  const rewardStart = panel.children.length;
-  panel.addChild(new Graphics().rect(26,rewardY,456,1).fill({color:COMBAT_UI.edge,alpha:.5}));
-  text(rewardStatus.heading, 36, rewardY + 16, 20, 0x1b3048);
-  if (rows.length) rows.forEach((row, i) => {
-    place(panel, makeSingleLineRawText(row.label, { size: 20, fill: 0x1b3048, weight: '800' }, 330), 36, rewardY + 52 + i * rowHeight);
-    text(row.amount, 472, rewardY + 52 + i * rowHeight, 21, 0x1b3048, { anchorX: 1 });
-  });
-  else text(rewardStatus.empty, 36, rewardY + 52, 21, 0x30465c);
-  const note = nativeResult?.note || (completion.debugRun ? '预览数据 · 不保存'
-    : defeated ? '本局战斗数据已记录'
-    : rows.length ? (doubled ? '已到账 · 货币奖励已翻倍' : '奖励已自动到账')
-    : '累计星级奖励请返回关卡页领取');
-  text(note, 36, rewardY + rewardHeight - 27, 17, 0x30465c);
-  const rewardNodes = panel.children.slice(rewardStart);
-  if (showAd) panel.addChild(makeCombatButton({
-    x: 26, y: buttonY, width: 456, height: 66, text: pending ? '广告播放中…' : '看广告 · 货币奖励翻倍',
-    variant: 'secondary', art: 'secondary', fontSize: 21,
-    disabled: pending, onPress: () => bridge.requestAdVictoryDouble?.(),
-  }));
-  panel.addChild(makeCombatButton({
-    x: 26, y: buttonY + (showAd ? 80 : 0), width: 456, height: 74,
-    text: rewardStatus.returnLabel, variant: 'primary', art: 'primary', fontSize: 24,
-    disabled: pending, onPress: () => bridge.finishBattleResult(),
-  }));
-  if (!defeated && game.victoryRewardDoubleNotice) addVictoryRewardDoubleDialog(root, bridge);
-  revealResult(panel, defeated ? game.defeatReward : game.completionSummary, resultStars, rewardNodes);
+  if (victory && bridge.game.victoryRewardDoubleNotice) addVictoryRewardDoubleDialog(root, bridge);
+  return panel;
 }
-
 export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
+  preloadReviveArt();
+  preloadDefeatArt();
   const fixedPartArt = bridge.presentation?.art ? {textures:bridge.presentation.art,release(){}} : acquireFixedPartThumbnails(bridge.app.renderer);
   const root = new Container();
   root.label = 'shared-pixi-combat-ui';
@@ -4865,6 +4736,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
   let menuMotionKey = '';
   let menuRevealAt = 0;
   const collectButtons = (node) => {
+    if (!node.visible || node.eventMode === 'none') return;
     if (node.__pixiUiAction) buttons.push(node);
     for (const child of node.children || []) collectButtons(child);
   };
@@ -4873,6 +4745,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     root.externalStageBackdrop = Boolean(
       bridge.presentation?.fullStagePauseBackdrop && bridge.game.state === 'paused' ||
       bridge.presentation?.fullStageUpgradeBackdrop && bridge.game.state === 'levelup' ||
+      bridge.presentation?.fullStageReviveBackdrop && bridge.game.state === 'revive-prompt' ||
       bridge.presentation?.fullStageSupplyBackdrop && bridge.game.state === 'battle-supply');
     root.removeChildren().forEach((child) => { if (child !== skillCutInMount) child.destroy({ children: true }); });
     buttons = [];
@@ -4913,22 +4786,27 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     else if (state === 'battle-supply') renderBattleSupply({root,bridge,refs,art:fixedPartArt.textures,
       place,text:makeRawText,button:makeCombatButton,backdrop:addCombatBackdrop,surface:addVisualSurface,symbol:addSymbol});
     else if (['evolving', 'victory_cinematic'].includes(state)) addCinematicCombatUi(root, bridge, refs);
-    else if (['victory_result','fixed_result','defeat_result'].includes(state)) addResultCombatUi(root, bridge, fixedPartArt.textures, refs);
+    else if (['victory_result','fixed_result','defeat_result'].includes(state)) refs.defeatPanel=addResultCombatUi(root, bridge, fixedPartArt.textures);
     if (state === 'paused') {
       const key = `${state}:${bridge.game.pauseMode}`;
-      if (key !== menuMotionKey) menuRevealAt = performance.now();
+      const secondary = ['detail','settings','stats'].includes(bridge.game.pauseMode);
+      const returning = menuMotionKey && key !== menuMotionKey && bridge.game.pauseMode === 'pause';
+      if (key !== menuMotionKey) menuRevealAt = performance.now() - (returning ? 260 : 0);
       menuMotionKey = key;
       // Keep the full-screen backdrop fixed; move the authored PSD surface and
       // controls together so hit testing follows their actual visual position.
-      const foreground = root.children.slice(menuStart + 1);
+      const foreground = root.children.slice(menuStart + 1)
+        .filter(child => !secondary || child.label !== 'combat-pause');
       const mount = new Container();
       mount.label = 'combat-menu-motion';
-      mount.alpha = 0;
+      mount.alpha = returning ? 1 : 0;
       for (const child of foreground) mount.addChild(child);
       root.addChild(mount);
       refs.menuMotion = mount;
     } else menuMotionKey = '';
-    collectButtons(root);
+    const pauseModal = state === 'paused'
+      ? refs.menuMotion?.children.find(child => child.label === 'combat-pause-modal') : null;
+    collectButtons(pauseModal || root);
     if(state==='levelup'){
       const offer=bridge.game.fixedGrowth?.state.offer;
       const key=offer?`${offer.runId}:${offer.offerId}:${offer.buildVersion}`:'';
@@ -4956,6 +4834,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     bridge.game.victoryRewardDoubled ? 'victory-double' : '',
     bridge.game.victoryRewardDoubleNotice ? 'victory-double-notice' : '',
     bridge.game.reviveAdPending ? 'ad' : '',
+    bridge.game.reviveDiamondPending ? 'diamond' : '',
     ['victory_result','fixed_result','defeat_result'].includes(bridge.game.state) && bridge.presentation?.result
       ? JSON.stringify(bridge.presentation.result) : '',
     bridge.game.upgradeAdAction || '',
@@ -4972,6 +4851,13 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
       refs.menuMotion.position.y = 10 * (1 - ease);
     }
     updateBattleSupply(refs,game.battleSupply,now,bridge.battleSupplyTick);
+    updateDefeatResult(refs.defeatPanel,now,bridge);
+    if(refs.reviveMotion){
+      updateReviveTouchTargets(refs,bridge.app?.renderer?.canvas?.getBoundingClientRect?.().width||600);
+      const {panel,start}=refs.reviveMotion;
+      const t=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(now-start)/260);
+      const ease=1-(1-t)**3;panel.alpha=ease;panel.position.y=18*(1-ease);
+    }
     if(!refs.edgeThreatLight){refs.edgeThreatLight=new Graphics();refs.edgeThreatLight.eventMode='none';refs.edgeThreatLight.label='edge-threat-feedback';root.addChild(refs.edgeThreatLight);}
     refs.edgeThreatLight.clear();
     for(const p of edgeThreats(bridge.incomingThreats||[])){
@@ -4989,9 +4875,14 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     }
     if (game.state === 'evolving') updateUltimateEvolutionCinematic(refs, game);
     refs.psdHud?.update(now);
-    const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
-    if (refs.revive) updateReviveCountdown(refs.revive, game.reviveCountdown, now, reducedMotion);
-    refs.defeatMotion?.(now, reducedMotion);
+    if(refs.revive)updateReviveCountdown(refs.revive,game.reviveCountdown,now,globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+    if(refs.reviveRing){
+      const ring=refs.reviveRing;ring.clear();
+      const remaining=Math.max(0,Math.min(1,(game.reviveCountdown||0)/5));
+      const {countdownX:x,countdownY:y,countdownRadius:r}=REVIVE_ART;
+      if(remaining>0)ring.arc(x,y,r,-Math.PI/2,-Math.PI/2+Math.PI*2*remaining).stroke({color:remaining<=.4?0xffbf60:0x80edff,alpha:.8,width:2});
+      refs.revive.tint=remaining<=.4?0xffd399:0xffffff;
+    }
   };
   const isActionButtonAt = (button, global) => {
     if (!button?.visible || button.destroyed || !button.parent || button.eventMode==='none' || performance.now()<(button.__choiceReadyAt||0) || !button.enabled || !button.__pixiUiAction || !button.hitArea) {
@@ -5040,9 +4931,10 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
   root.on('pointerupoutside', resetPress);
   const update = () => {
     root.visible = COMBAT_VISIBLE_STATES.has(bridge.game.state);
+    if(bridge.game.state!=='revive-prompt')clearRevivePanel(refs);
     skillCutIn.update();
     if(!root.visible&&bridge.ui.toast?.style)bridge.ui.toast.style.display='';
-    if (!root.visible) return;
+    if (!root.visible) {structureKey='';return;}
     const nextKey = stateKey();
     if (nextKey !== structureKey) {
       structureKey = nextKey;
@@ -5084,6 +4976,10 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     return state !== 'playing';
   };
   update();
+  // Canvas text is rasterized once. Rebuild a first-open menu after the PSD font
+  // arrives so its title cannot remain in the fallback family for that session.
+  if(globalThis.document?.fonts&&!document.fonts.check('20px PsdPopup'))
+    document.fonts.load('20px PsdPopup').then(()=>{if(!root.destroyed)render();}).catch(()=>{});
   return {
     root, render, update, dispatchPress, handlePointer,
     flySupplyReward(target) {

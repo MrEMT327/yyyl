@@ -40,6 +40,21 @@
     "source": "psd/三选一.psd",
     "sha256": "424036aafef5324f86ab8812a62a932ada126c3dbf3c458a64fb3c79176f6be4",
     "button": "组 5/组 4（换一批底框，蓝色）",
-    "usage": "Not used for the default gray style requested in image 2."
+    "usage": "Blue layer 193 is now the general panel button. The gray face is reserved for home Patrol and Backpack."
+  },
+  "usage": {
+    "allowed": [
+      "home/patrol",
+      "home/backpack"
+    ],
+    "forbidden": [
+      "general panels",
+      "tabs",
+      "options",
+      "disabled states",
+      "information backplates"
+    ],
+    "generalPanelFace": "button-blue.png",
+    "generalPanelManifest": "button-blue.json"
   }
 }

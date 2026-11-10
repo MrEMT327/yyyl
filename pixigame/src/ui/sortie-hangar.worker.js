@@ -9,16 +9,14 @@ import {HANGAR_RISE_SECONDS} from './sortie-hangar-motion.js';
 class BitmapObjectLoader extends THREE.ObjectLoader{
   async parseAsync(json){this.textureRows=json.textures||[];return super.parseAsync(json);}
   async parseImagesAsync(rows=[]){
-    const images={};
-    for(const row of rows){
+    return Object.fromEntries(await Promise.all(rows.map(async row=>{
       const texture=this.textureRows.find(texture=>texture.image===row.uuid);
       const response=await fetch(row.url);if(!response.ok)throw Error('Aircraft nameplate decode failed');
       const bitmap=await createImageBitmap(await response.blob(),{
         imageOrientation:texture?.flipY===false?'none':'flipY',premultiplyAlpha:'none',colorSpaceConversion:'none',
       });
-      images[row.uuid]=new THREE.Source(bitmap);
-    }
-    return images;
+      return [row.uuid,new THREE.Source(bitmap)];
+    })));
   }
 }
 let renderer,model,frame=0,epoch=null,elapsed=0,paused=true,reduced=false,complete=false,disposed=false;
@@ -39,12 +37,19 @@ self.onmessage=async({data})=>{
       // dropped the version key and could reuse an older cached manifest.
       await loadFighterPackages({pilotIds:[data.aircraftId],objectLoader:new BitmapObjectLoader(),assetBase:data.assetBase});
       if(disposed)return;
-      renderer=new THREE.WebGLRenderer({canvas:data.canvas,alpha:true,antialias:true,powerPreference:'low-power'});
+      // Keep the submitted aircraft while the GPU is busy preparing battle.
+      // The compositor must never receive a discarded transparent buffer.
+      renderer=new THREE.WebGLRenderer({canvas:data.canvas,alpha:true,antialias:true,preserveDrawingBuffer:true,powerPreference:'low-power'});
       renderer.setPixelRatio(data.pixelRatio);renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
       renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=AIRCRAFT_RENDER_STYLE.exposure;
       data.canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();postMessage({type:'error',message:'context lost'});});
       model=createSortieHangarScene(renderer,data.aircraftId);model.resize(data.width,data.height,data.deckHeight);
-      await model.warmup();if(disposed)return;draw();postMessage({type:'ready'});
+      // The dedicated worker can compile while rendering its first frame.
+      // Avoid a separate parallel-compile polling gate before any frame has
+      // been submitted; keep the already-visible matching image until commit.
+      if(disposed)return;draw();renderer.getContext().flush();
+      await new Promise(requestAnimationFrame);
+      if(!disposed)postMessage({type:'ready'});
     }else if(data.type==='start'){
       epoch=data.epoch;elapsed=0;paused=false;stop();draw();if(!reduced)frame=requestAnimationFrame(tick);
     }else if(data.type==='pause'){

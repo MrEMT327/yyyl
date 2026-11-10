@@ -1,8 +1,9 @@
+import { itemInspectAttributes } from './item-description-model.js';
 // Reuse the equipment picker's keyboard, focus, dismissal and change/value contract.
 // The menu stays inside the modal flow so a long roster cannot escape its frame.
 export function supplyChoice({id,label,attribute,rows,selected,disabled=false,status,image,count},h) {
   const e=h.escape,base=import.meta.env?.BASE_URL||'/';
-  const art=row=>h.img(image?image(row):row.image,'','cs-choice-art');
+  const art=row=>`<span ${itemInspectAttributes(row.fragmentId||row.nativeId||row.id,e)} class="cs-choice-item">${h.img(image?image(row):row.image,'','cs-choice-art')}</span>`;
   const copy=row=>`<span class="cs-choice-copy"><strong>${e(row.name)}</strong><small>${e(status(row))}</small></span>`;
   return `<div class="eq-choice cs-choice" data-choice-inline>
     <button type="button" class="eq-choice-trigger psd-button" ${attribute} value="${selected?.id??''}" aria-label="${e(label)}：${e(selected?.name||'暂无可选内容')}" aria-haspopup="listbox" aria-expanded="false" aria-controls="${e(id)}" ${disabled?'disabled':''}>

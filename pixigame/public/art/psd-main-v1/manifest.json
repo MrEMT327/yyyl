@@ -3,9 +3,14 @@
   "live_profile": {
     "frame": "profile-live-frame.png",
     "source_group_index": 16,
-    "source_bounds": [22, 27, 221, 105],
+    "source_bounds": [
+      22,
+      27,
+      221,
+      105
+    ],
     "export_script": "tools/export-live-profile-frame.py",
-    "description": "Original PSD profile group with placeholder text layers hidden; the corresponding rectangle is clipped from the foreground. Player name and calculated power are live HTML, and the existing selected-pilot avatar remains on top."
+    "description": "Original PSD nameplate with placeholder text, portrait and white avatar frame hidden; the corresponding rectangle is clipped from the foreground. Player name and calculated power are live HTML. The shared square playerAvatar independently renders the saved cosmetic portrait and frame."
   },
   "source_size": [
     750,
@@ -249,5 +254,17 @@
     "foreground": "main-foreground-current-live-wallet.png",
     "foreground_note": "Latest PSD foreground controls with the static wallet groups, chapter strings, and star total cleared for live rendering."
   },
-  "canonical_source": "psd/主界面.psd"
+  "canonical_source": "psd/主界面.psd",
+  "clean_start_button": {
+    "export_script": "tools/export-clean-psd-buttons.py",
+    "source_layer_id": 127,
+    "bounds": [
+      224,
+      1341,
+      525,
+      1458
+    ],
+    "note": "User-restored textured scheme: original PSD RGB and gloss, feathered interior alpha 205/255. Layer 31 underlay and original labels preserved; no face reconstruction.",
+    "underlay_layer_id": 31
+  }
 }

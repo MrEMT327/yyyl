@@ -14,7 +14,7 @@ export function planDeveloperCurrency(rawInventory, { currency, expectedRevision
   if (!Number.isSafeInteger(balance) || inventory.revision >= Number.MAX_SAFE_INTEGER) throw new Error('资源数量或存档版本已达上限');
   inventory.items[grant.id] = balance;
   inventory.revision++;
-  return { inventory, message: `${grant.name} +${grant.amount.toLocaleString('zh-CN')}` };
+  return { inventory, message: `${grant.name} +${grant.amount.toLocaleString('zh-CN', {useGrouping:false})}` };
 }
 
 function gameSaveEntries(storage) {

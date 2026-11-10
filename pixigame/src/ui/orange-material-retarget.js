@@ -2,6 +2,14 @@ const transform=(m,p)=>[m[0]*p[0]+m[1]*p[1]+m[2],m[3]*p[0]+m[4]*p[1]+m[5]];
 const vector=(m,p)=>[m[0]*p[0]+m[1]*p[1],m[3]*p[0]+m[4]*p[1]];
 const smooth=t=>t*t*(3-2*t);
 
+// Reduce the first head-touch leg lift without altering idle or the return.
+export function orangeSeatedPelvisAngle(angle,motionName,time){
+ if(motionName!=='touch_head'||angle<=0)return angle;
+ const ramp=x=>smooth(Math.max(0,Math.min(1,x)));
+ const envelope=ramp((time-.45)/.4)*(1-ramp((time-2.15)/.55));
+ return angle*(1-.2*envelope);
+}
+
 export function orangeRaisedThighTorsoWeight(x,y){
  const a=Math.max(0,Math.min(1,(x-680)/100)),b=Math.max(0,Math.min(1,(820-y)/100));
  return .8*smooth(a)*smooth(b);
@@ -15,7 +23,7 @@ export function createOrangeMaterialRetarget(manifest){
  const byId=new Map(layers.map((l,i)=>[l.id,i]));
  const read=(positions,spec)=>{const o=offsets[byId.get(spec.layer)],out=[0,0];spec.vertices.forEach((v,i)=>{out[0]+=positions[o+v*2]*spec.weights[i];out[1]+=positions[o+v*2+1]*spec.weights[i];});return out;};
  const restManifest={...manifest,layers:layers.map(l=>({...l,vertices:l.vertices.flatMap((v,i)=>i%2?[]:transform(groups[l.materialGroup].matrix,[v,l.vertices[i+1]]))}))};
- function apply(positions,{sampleSurface,activeHand,time,jointPositions}){
+ function apply(positions,{sampleSurface,activeHand,time,motionName,jointPositions}){
   const deltas=new Map();
   const delta=name=>{
    if(deltas.has(name))return deltas.get(name);
@@ -25,30 +33,40 @@ export function createOrangeMaterialRetarget(manifest){
   };
   const map=(group,p)=>{const q=transform(groups[group].matrix,p),d=delta(group);return[q[0]+d[0],q[1]+d[1]];};
   for(let j=0;j<layers.length;j++){const l=layers[j],o=offsets[j];for(let v=0;v<l.vertices.length;v+=2){const p=map(l.materialGroup,[positions[o+v],positions[o+v+1]]);positions[o+v]=p[0];positions[o+v+1]=p[1];}}
-  let torsoPoint=null;
+  let torsoPoint=null,pelvisPoint=null,pelvis=null;
+  const seated=Boolean(manifest.seatedHipRigRevision&&manifest.materialUpperBody);
   if(manifest.materialUpperBody){
    const a=transform(groups.body.matrix,manifest.joints.hip.targetRest),b=transform(groups.body.matrix,manifest.joints.neck.targetRest),p=map('body',jointPositions.hip),q=map('body',jointPositions.neck),dx=b[0]-a[0],dy=b[1]-a[1],u=q[0]-p[0],v=q[1]-p[1],angle=Math.atan2(v*dx-u*dy,u*dx+v*dy),scale=Math.max(.98,Math.min(1.02,Math.hypot(u,v)/Math.hypot(dx,dy))),c=Math.cos(angle)*scale,s=Math.sin(angle)*scale;
    torsoPoint=r=>[p[0]+(r[0]-a[0])*c-(r[1]-a[1])*s,p[1]+(r[0]-a[0])*s+(r[1]-a[1])*c];
+   const lowerAngle=seated?orangeSeatedPelvisAngle(angle,motionName,time):angle,pc=Math.cos(lowerAngle)*scale,ps=Math.sin(lowerAngle)*scale;
+   pelvisPoint=r=>[p[0]+(r[0]-a[0])*pc-(r[1]-a[1])*ps,p[1]+(r[0]-a[0])*ps+(r[1]-a[1])*pc];
+   pelvis={angle:lowerAngle,scale,sourceAngle:angle};
    for(let j=0;j<layers.length;j++){const l=layers[j],o=offsets[j],rest=restManifest.layers[j].vertices;if(l.id==='body'){const spec=manifest.materialUpperBody,neck=map('head',sampleSurface(spec.neckBinding)),own=torsoPoint(spec.neck);for(let v=0;v<rest.length;v+=2){const rx=rest[v],ry=rest[v+1];
     // Soften the exposed right waist tip only on the current jetboard artwork.
     // The smooth falloff leaves the upper torso and opposite side untouched.
     const u=Math.max(0,Math.min(1,(rx-790)/35)),t=Math.max(0,Math.min(1,(ry-606)/35)),inset=manifest.materialRevision==='jetboard-v5-clean-r5'?16*u*u*(3-2*u)*t*t*(3-2*t):0;
-    const p=torsoPoint([rx-inset,ry]),w=Math.max(0,Math.min(1,(390-ry)/80))*Math.max(0,Math.min(1,(rx-680)/25))*Math.max(0,Math.min(1,(835-rx)/20));positions[o+v]=p[0]+(neck[0]-own[0])*w;positions[o+v+1]=p[1]+(neck[1]-own[1])*w;}}
-    // The shorts' upper edge overlaps the rigid torso by only 26 painted
-    // pixels. Follow the same torso motion across that overlap, then blend
-    // back to the original hip surface before reaching the leg openings.
-    if(l.id==='shorts-underlap'){for(let v=0;v<rest.length;v+=2){const t=Math.max(0,Math.min(1,(rest[v+1]-650)/80)),w=1-t*t*(3-2*t),p=torsoPoint([rest[v],rest[v+1]]);positions[o+v]+=(p[0]-positions[o+v])*w;positions[o+v+1]+=(p[1]-positions[o+v+1])*w;}}
+    // Blend the lower abdomen into the same pelvis frame as the waistband.
+    // A shared transform at the seam keeps the accepted contour closed.
+    const upper=torsoPoint([rx-inset,ry]),lower=pelvisPoint([rx-inset,ry]),waist=seated?smooth(Math.max(0,Math.min(1,(ry-530)/80))):0,p=[upper[0]+(lower[0]-upper[0])*waist,upper[1]+(lower[1]-upper[1])*waist],w=Math.max(0,Math.min(1,(390-ry)/80))*Math.max(0,Math.min(1,(rx-680)/25))*Math.max(0,Math.min(1,(835-rx)/20));positions[o+v]=p[0]+(neck[0]-own[0])*w;positions[o+v+1]=p[1]+(neck[1]-own[1])*w;}}
+    // Keep the seated pelvis and upper thighs in one painted rest pose. The
+    // belt and leg openings then retain their contours instead of stretching
+    // the left shorts panel between independent torso and thigh motions.
+    // Older materials still blend the waist back into the source hip surface.
+    if(l.id==='shorts-underlap'){for(let v=0;v<rest.length;v+=2){const t=Math.max(0,Math.min(1,(rest[v+1]-650)/80)),w=seated?1:1-t*t*(3-2*t),p=(seated?pelvisPoint:torsoPoint)([rest[v],rest[v+1]]);positions[o+v]+=(p[0]-positions[o+v])*w;positions[o+v+1]+=(p[1]-positions[o+v+1])*w;}}
     if(l.sleeveElbow){const a=[625,345],b=[423,293],p=torsoPoint(a),q=map('frontArm',sampleSurface(l.sleeveElbow)),dx=b[0]-a[0],dy=b[1]-a[1],u=q[0]-p[0],v=q[1]-p[1],den=dx*dx+dy*dy,c=(u*dx+v*dy)/den,s=(v*dx-u*dy)/den;for(let k=0;k<rest.length;k+=2){const x=rest[k]-a[0],y=rest[k+1]-a[1];const arm=[p[0]+x*c-y*s,p[1]+x*s+y*c],root=torsoPoint([rest[k],rest[k+1]]),distance=(65*(rest[k]-650)+51*(rest[k+1]-334))/Math.hypot(65,51),t=Math.max(0,Math.min(1,(distance+85)/85)),w=t*t*(3-2*t);positions[o+k]=arm[0]+(root[0]-arm[0])*w;positions[o+k+1]=arm[1]+(root[1]-arm[1])*w;}}
    }
   }
-  // Retarget leg rotations in painted target space. Mapping an already-rotated
-  // source leg through an anisotropic registration stretches the shin as it
-  // swings horizontally. Forward kinematics keeps authored segment lengths.
+  // Rotate in painted space to avoid stretching through anisotropic material
+  // registration. Seated upper thighs share the pelvis transform; knee/ankle
+  // motion stays relative to the source thigh, with each child starting at
+  // its parent's endpoint. No clothing vertices are pulled across the cuff.
   const legs={};
   for(const chain of manifest.materialLegChains||[]){
-   const j=byId.get(chain.layer),l=layers[j],rest=restManifest.layers[j].vertices,o=offsets[j],bones={};let end=null;
+   const j=byId.get(chain.layer),l=layers[j],rest=restManifest.layers[j].vertices,o=offsets[j],bones={};let end=null,thighAngle=0;
    for(const id of chain.bones){
-    const [first,last]=manifest.bones[id],a=manifest.joints[first].targetRest,b=manifest.joints[last].targetRest,p=jointPositions[first],q=jointPositions[last],dx=b[0]-a[0],dy=b[1]-a[1],u=q[0]-p[0],v=q[1]-p[1],angle=Math.atan2(v*dx-u*dy,u*dx+v*dy),c=Math.cos(angle),s=Math.sin(angle),ra=transform(groups[l.materialGroup].matrix,a),rb=transform(groups[l.materialGroup].matrix,b),start=end||map(l.materialGroup,p),tx=rb[0]-ra[0],ty=rb[1]-ra[1];
+    const [first,last]=manifest.bones[id],a=manifest.joints[first].targetRest,b=manifest.joints[last].targetRest,p=jointPositions[first],q=jointPositions[last],dx=b[0]-a[0],dy=b[1]-a[1],u=q[0]-p[0],v=q[1]-p[1],sourceAngle=Math.atan2(v*dx-u*dy,u*dx+v*dy);
+    if(end===null)thighAngle=sourceAngle;
+    const angle=seated&&pelvis?pelvis.angle+sourceAngle-thighAngle:sourceAngle,scale=seated&&pelvis?pelvis.scale:1,c=Math.cos(angle)*scale,s=Math.sin(angle)*scale,ra=transform(groups[l.materialGroup].matrix,a),rb=transform(groups[l.materialGroup].matrix,b),start=end||(seated&&pelvisPoint?pelvisPoint(ra):map(l.materialGroup,p)),tx=rb[0]-ra[0],ty=rb[1]-ra[1];
     end=[start[0]+tx*c-ty*s,start[1]+tx*s+ty*c];bones[id]={a:ra,p:start,c,s};
     const rawA=map(l.materialGroup,p),rawB=map(l.materialGroup,q),length=Math.hypot(tx,ty);
     legs[id]={length,currentLength:Math.hypot(end[0]-start[0],end[1]-start[1]),sourceMappedRatio:Math.hypot(rawB[0]-rawA[0],rawB[1]-rawA[1])/length};
@@ -58,7 +76,8 @@ export function createOrangeMaterialRetarget(manifest){
   // The raised thigh reaches into the shorts, so its top edge must follow the
   // torso there. Applying the thigh rotation all the way to the waist exposes
   // the skin between the two garments during idle and body reactions.
-  if(torsoPoint&&manifest.materialRevision==='jetboard-v5-clean-r5'){
+  // The seated rig already shares the pelvis transform at the thigh roots.
+  if(torsoPoint&&manifest.materialRevision==='jetboard-v5-clean-r5'&&!seated){
    const j=byId.get('front-leg'),o=offsets[j],rest=restManifest.layers[j].vertices;
    for(let v=0;v<rest.length;v+=2){
     const x=rest[v],y=rest[v+1],w=orangeRaisedThighTorsoWeight(x,y),p=torsoPoint([x,y]);
@@ -90,7 +109,7 @@ export function createOrangeMaterialRetarget(manifest){
   }
   const bob=2*Math.sin(time*2.4);for(let i=1;i<positions.length;i+=2)positions[i]+=bob;
   if(wrist){wrist.forearm[1]+=bob;wrist.hand[1]+=bob;}
-  return{contactError,groups:deltas.size,wrist,legs};
+  return{contactError,groups:deltas.size,wrist,legs,seatedPelvis:seated?pelvis:null};
  }
  return{apply,restManifest};
 }

@@ -1,8 +1,8 @@
 /* Compact item cards share one visual grammar in inventory, slots and dialogs.
    Full names/quality live in the detail heading and the accessible card label. */
 #gui-casual-lobby .ag-card:not(.ag-weapon)>strong {display:none}
-#gui-casual-lobby .ag-card:not(.ag-weapon)>img,
-#gui-casual-lobby.equipment-reference .ag-page .ag-card:not(.ag-weapon)>img {left:8%;top:9%;width:84%;height:69%}
+#gui-casual-lobby .ag-card:not(.ag-weapon)>img:not(.ag-selected),
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:not(.ag-weapon)>img:not(.ag-selected) {left:50%;top:50%;width:84%;height:69%;object-position:center;transform:translate(-50%,-50%)}
 #gui-casual-lobby .ag-card .ag-tier {
   position:absolute;right:7%;bottom:6%;z-index:2;padding:1px 2px;
   font:bold clamp(9px,2.35cqw,12px)/1 'Microsoft YaHei',sans-serif;
@@ -10,17 +10,15 @@
 }
 #gui-casual-lobby .ag-card:has(.ag-tier)>b,
 #gui-casual-lobby.equipment-reference .ag-page .ag-card:has(.ag-tier)>b {right:24%}
-#gui-casual-lobby .ag-card :is(.ag-tag,.ag-lock,.ag-ready) {
+#gui-casual-lobby .ag-card .ag-lock {
   position:absolute;top:5%;z-index:2;padding:2px 3px;
   font:600 clamp(8px,2.1cqw,11px)/1 'Microsoft YaHei',sans-serif;
   text-shadow:0 1px #142d3f;pointer-events:none;
 }
-#gui-casual-lobby .ag-card .ag-tag {left:5%;color:#d9fff2;background:#205355}
 #gui-casual-lobby .ag-card .ag-lock {right:5%;color:#f1e4c3;background:#344350}
-#gui-casual-lobby .ag-card .ag-ready {right:5%;color:#d9ffcc;background:#294d37}
 #gui-casual-lobby .ag-card .ag-selected {
   right:5%;top:5%;bottom:auto;display:grid;place-items:center;width:19px;height:19px;
-  font:bold 15px/1 sans-serif;color:#183e35;background:#d9ffd8;
+  object-fit:contain;padding:0;background:none;
 }
 #gui-casual-lobby .ag-card.is-selected {outline:2px solid #d9ffd8;outline-offset:-2px}
 #gui-casual-lobby .ag-modal .ag-grid {gap:8px}
@@ -34,6 +32,10 @@
 #gui-casual-lobby .ag-modal-footer .ag-cost {margin:0 0 6px;gap:6px}
 #gui-casual-lobby .ag-modal-footer .ag-cost>span {padding:5px 6px}
 #gui-casual-lobby .ag-modal-footer .ag-cost small {margin-top:2px}
+#gui-casual-lobby [data-modal-type='gearBatch'] .ag-batch-confirm .ag-modal-footer {border:0;background:none;padding:8px 0 0}
+#gui-casual-lobby .pl-modal[data-modal-type='gearBatch'][data-psd-popup] {--popup-width:86cqw;--popup-height:auto}
+#gui-casual-lobby [data-modal-type='gearBatch'] .ag-batch-count {margin:10px 0 18px;font-size:17px;text-align:center}
+#gui-casual-lobby [data-modal-type='gearBatch'] .ag-batch-count strong {font-size:22px;color:#206d8a}
 
 
 /* Mobile readability repairs, keeping the existing PSD artwork and slices. */
@@ -44,7 +46,7 @@
 #gui-casual-lobby.equipment-reference .ag-page .ag-card:has(.ag-tier)>b {left:6%;right:6%}
 #gui-casual-lobby .pl-modal .dc-signin-scroll-hint {display:block;margin-top:2px;color:#3f6077;font-size:12px;line-height:1.25}
 #gui-casual-lobby .dc-prize-art.is-equipment>.dc-signin-art {transform:scale(1.9)!important}
-#gui-casual-lobby .cd-actions .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch}
+#gui-casual-lobby .cd-actions .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / var(--psd-button-corner) stretch}
 #gui-casual-lobby.psd-nav-global .lobby-resource-bar>b {left:7cqw!important;top:1.2cqw!important;width:10.8cqw!important;height:3.8cqw!important;font-size:clamp(10px,3.2cqw,14px)!important}
 #gui-casual-lobby.psd-nav-global .lobby-resource-bar>b.is-long {font-size:clamp(9px,2.75cqw,12px)!important}
 #gui-casual-lobby .shop-native-v2 .sn-box-copy :is(p,small) {font-size:clamp(10px,2.8cqw,13px)}
@@ -62,7 +64,7 @@ body:has(#gui-casual-lobby:not([hidden])) #buildIdentity {top:3px!important;bott
 #gui-casual-lobby .gm-page .ag-card:has(.ag-tier)>b {left:6%;right:6%}
 #gui-casual-lobby .gm-page .ag-card.is-selected .ag-tier {right:auto;left:5%}
 #gui-casual-lobby .fc-hero-actions .wc-button[data-shortage='true']::before,
-#gui-casual-lobby .fc-detail .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / var(--psd-button-corner) stretch}
+#gui-casual-lobby .fc-detail .wc-button[data-shortage='true']::before {border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / var(--psd-button-corner) stretch}
 #gui-casual-lobby .pi-roster-list>.pi-note {grid-column:1/-1}
 #gui-casual-lobby .pi-scroll-hint,#gui-casual-lobby .dc-scroll-hint {flex:none;margin:0!important;color:#365571;font-size:12px;line-height:1.3;text-align:right}
 #gui-casual-lobby .pi-profile .pi-content {padding-bottom:12px}

@@ -1,4 +1,5 @@
 import { createRewardReveal } from './reward-reveal.js';
+import {compactCombatStat} from './compact-combat-stat.js';
 import { resourceIcon } from './resource-icons.js';
 const quiet = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const accent = [{filter:'brightness(1)'},{filter:'brightness(1.45)',offset:.35},{filter:'brightness(1)'}];
@@ -109,7 +110,8 @@ export function createLobbyStateFeedback(root, sound = () => {}) {
         if(!node.isConnected)return;
         const t=Math.min(1,(now-started)/360);
         const label=node.closest('.eq-stat-row')?(key==='attack'?'攻击 ':'耐久 '):prefix;
-        node.textContent=label+Math.round(from+(to-from)*(1-(1-t)**3)).toLocaleString('zh-CN');
+        const value=from+(to-from)*(1-(1-t)**3);
+        node.textContent=label+(node.closest('.ag-pilot-stats')?compactCombatStat(value):Math.round(value).toLocaleString('zh-CN', {useGrouping:false}));
         if(t<1)requestAnimationFrame(frame);
       };
       requestAnimationFrame(frame);

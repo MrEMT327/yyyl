@@ -77,6 +77,8 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     const mesh = new THREE.Mesh(new THREE.ShapeGeometry(shape),material(color,opacity)); group.add(mesh); return mesh;
   }
   function image(texture, x,y,w,h, crop = null) {
+    // Combat uses the foreground only; elemental backgrounds belong to the
+    // DOM collection/catalog styling, never an implicit extra texture here.
     const mesh = quad(x,y,w,h,'#ffffff',1,texture);
     if(crop) {
       const uv=mesh.geometry.attributes.uv;
@@ -91,12 +93,12 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     return image(sharedResourceTexture(type),x+(size-width)/2,y,width,size);
   }
 
-  function text(value, x, y, { size = 20, color = '#edf6fb', weight = 600, align = 'left', maxWidth = 560, tracking = 0,
-    wrap = false, maxLines = 0, minSize = size, lineHeight = 0 } = {}) {
+  function text(value, x, y, { size = 20, color = '#edf6fb', weight = 500, align = 'left', maxWidth = 560, tracking = 0,
+    wrap = false, maxLines = 0, minSize = size, lineHeight = 0, family = COMBAT_TYPE.family, outline } = {}) {
     const canvas = documentRef?.createElement('canvas') || globalThis.wx?.createCanvas?.();
     const ctx = canvas.getContext('2d'), source = String(value);
     let fontSize = size;
-    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${COMBAT_TYPE.family}`; };
+    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${family}`; };
     const measure = value => ctx.measureText(value).width + Math.max(0, value.length - 1) * tracking;
     const breakLines = () => {
       const lines = [];
@@ -131,13 +133,15 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     ctx.scale(resolution, resolution); setFont(); ctx.fillStyle = color; ctx.textBaseline = 'alphabetic';
     const metrics = ctx.measureText(lines[0]);
     const baseline = (firstLineHeight + (metrics.actualBoundingBoxAscent ?? fontSize * .8) - (metrics.actualBoundingBoxDescent ?? fontSize * .2)) / 2;
+    if (outline) {ctx.strokeStyle=outline;ctx.lineWidth=fontSize*.1;ctx.lineJoin='round';}
+    const paint=(value,x,y,limit)=>{if(outline)ctx.strokeText(value,x,y,limit);ctx.fillText(value,x,y,limit);};
     lines.forEach((line, index) => {
       const lineWidth = measure(line);
       let cursor = 2 + (wrap && align === 'center' ? (naturalWidth - lineWidth) / 2 : wrap && align === 'right' ? naturalWidth - lineWidth : 0);
       if (tracking && lineWidth <= maxWidth) {
-        for (const char of line) { ctx.fillText(char, cursor, baseline + index * step); cursor += ctx.measureText(char).width + tracking; }
-      } else if (wrap) ctx.fillText(line, cursor, baseline + index * step);
-      else ctx.fillText(line, 2, baseline, maxWidth);
+        for (const char of line) { paint(char, cursor, baseline + index * step); cursor += ctx.measureText(char).width + tracking; }
+      } else if (wrap) paint(line, cursor, baseline + index * step);
+      else paint(line, 2, baseline, maxWidth);
     });
     const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
     texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; textures.add(texture);

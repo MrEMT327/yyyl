@@ -6,6 +6,8 @@ import { Container, Rectangle, Sprite, Texture } from '../three/display.js';
 import { battleProgress } from './battle-progress.js';
 import { COMBAT_TYPE } from './combat-theme.js';
 import { PLAYER_LOW_HEALTH_RATIO,PLAYER_LOW_HEALTH_COLOR,playerHealthFrame } from '../replica/player-health-display.js';
+import { waveNoticeAlpha } from './wave-notice.js';
+import { RESOURCE_ICONS } from './resource-icons.js';
 
 // PSD coordinates are authoritative. Only the presentation is scaled to the
 // existing 600 × 1300 combat scene; the world and flight input stay untouched.
@@ -18,6 +20,7 @@ const lowHealthArt = new WeakMap();
 const bossHealthStates = new WeakMap();
 const definitions = {
   pause:[4,16,132,132], stats:[460,36,273,111], grade:[133,50,163,63],
+  'stats-coins':[460,36,273,111], coins:[469,99,35,40],
   wave:[182,193,387,47], combo:[266,250,218,68],
   'progress-track':[472,152,248,14], 'progress-fill':[472,152,206,14],
   'health-track':[29,1550,688,39], 'health-fill':[31,1550,557,39],
@@ -33,7 +36,7 @@ function loadAssets() {
     if (assets.has(name)) continue;
     const image = globalThis.wx?.createImage?.() || new Image();
     image.onload = () => loaded.add(name);
-    image.src = extraAssets[name] || `${cloudAssetBase}art/psd-combat-v1/${name}.png`;
+    image.src = name==='coins'?RESOURCE_ICONS.coins.url:extraAssets[name] || `${(cloudAssetBase)}art/psd-combat-v1/${name}.png`;
     assets.set(name, image);
   }
 }
@@ -119,7 +122,8 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const ready=loaded.size;
     const seconds=Math.max(0,Math.floor(game.elapsed||0));
     const time=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
-    const score=bridge.presentation?.score ?? String(Math.round(game.score||0)).padStart(6,'0');
+    const coins=bridge.presentation?.hudCoins;
+    const score=Number.isFinite(coins)?String(Math.max(0,Math.floor(coins))):bridge.presentation?.score ?? String(Math.round(game.score||0)).padStart(6,'0');
     const kills=String(Math.round(game.kills||0)).padStart(3,'0');
     const grade=bridge.presentation?.grade ?? gradeFor(game.flightQuality).id;
     const combo=game.flightChainTimer>0 && game.flightQuality>0;
@@ -128,9 +132,11 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const bossRatio=bossDisplay.ratio;
     const notice=game.battleNotice;
     const showNotice=game.state==='playing'&&notice&&game.elapsed-notice.at>=0&&game.elapsed-notice.at<notice.duration;
-    const values=[ready,time,score,kills,grade,combo,game.flightQuality,game.flightChain,game.flightLastPoints,game.waveIndex,game.waveStatus?.total,progress,bossActive,bossRatio,Math.round(bossDisplay.bar*BOSS_BAR.width),Math.round(bossDisplay.trail*BOSS_BAR.width),boss?.visualSpec?.name,showNotice?notice.text:''];
+    const waveAlpha=waveNoticeAlpha(game);
+    const values=[ready,time,score,kills,grade,combo,game.flightQuality,game.flightChain,game.flightLastPoints,game.waveIndex,game.waveStatus?.total,waveAlpha,progress,bossActive,bossRatio,Math.round(bossDisplay.bar*BOSS_BAR.width),Math.round(bossDisplay.trail*BOSS_BAR.width),boss?.visualSpec?.name,showNotice?notice.text:''];
     repaint(top,JSON.stringify(values),ctx=>{
-      for(const name of ['pause','stats','grade','wave'])artwork(ctx,name);
+      for(const name of ['pause',Number.isFinite(coins)?'stats-coins':'stats','grade'])artwork(ctx,name);
+      if(Number.isFinite(coins))artwork(ctx,'coins');
       if(!bossActive){
         artwork(ctx,'progress-track');
         ctx.save();ctx.beginPath();ctx.rect(472,152,248*progress,14);ctx.clip();artwork(ctx,'progress-fill',0,248/206);ctx.restore();
@@ -138,7 +144,12 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
       text(ctx,time,713,49,36,{align:'right',glow:'#00cfff'});
       text(ctx,score,510,106,24);text(ctx,kills,713,106,24,{align:'right'});
       text(ctx,grade,255,59,48,{align:'center',glow:'#00cfff'});
-      text(ctx,`波次 ${Math.max(1,game.waveIndex||1)}/${game.waveStatus?.total||1}`,375,201,24,{align:'center'});
+      if(waveAlpha>0){
+        ctx.save();ctx.globalAlpha=waveAlpha;
+        artwork(ctx,'wave');
+        text(ctx,`波次 ${game.waveIndex}/${game.waveStatus?.total||1}`,375,201,24,{align:'center'});
+        ctx.restore();
+      }
       if(combo){
         artwork(ctx,'combo');
         text(ctx,Math.round(game.flightQuality),395,251,50,{align:'right',color:'#fff100',glow:'#fbff00'});

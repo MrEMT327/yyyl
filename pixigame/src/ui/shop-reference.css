@@ -29,7 +29,7 @@
 #gui-casual-lobby .store-reference .store-free-dot {flex:none;width:6px;height:6px;background:#ff6570;border-radius:50%;box-shadow:0 0 0 1px #092032}
 #gui-casual-lobby .store-reference .store-scroll {
   position:relative;min-height:0;height:auto;padding:0;overflow-x:hidden;overflow-y:auto;
-  background:var(--project-store-background);
+  background:var(--project-store-background);background-blend-mode:overlay,normal,normal;
   overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#5c7f9a transparent;
 }
 #gui-casual-lobby .store-reference .store-content {display:grid;gap:22px;padding:10px 12px 24px}
@@ -79,7 +79,7 @@
   filter:drop-shadow(0 3px 3px #07121c80);
 }
 #gui-casual-lobby .store-reference .store-offer-copy {min-width:0;display:grid;gap:3px;align-content:center}
-#gui-casual-lobby .store-reference .store-offer-copy h3 {color:#e0edf6;font-size:13px;font-weight:600;line-height:1.35;overflow-wrap:anywhere}
+#gui-casual-lobby .store-reference .store-offer-copy h3 {color:#e0edf6;font-size:var(--psd-small-title-size);font-weight:600;line-height:var(--psd-small-title-leading,1.5);overflow-wrap:anywhere}
 #gui-casual-lobby .store-reference .store-quantity {display:block;color:#fff3cd;font-size:23px;line-height:1.15;letter-spacing:0;font-variant-numeric:tabular-nums}
 #gui-casual-lobby .store-reference .store-allowance {color:#a6bece;font-size:10px;line-height:1.4;font-variant-numeric:tabular-nums}
 #gui-casual-lobby .store-reference .store-action {
@@ -92,7 +92,7 @@
 #gui-casual-lobby .store-reference .store-action.has-cost {flex-direction:column;gap:1px}
 #gui-casual-lobby .store-reference .store-action::before {
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none!important;
-  border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch!important;
+  border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 14px stretch!important;
 }
 #gui-casual-lobby .store-reference .store-action.is-primary::before {border-image:url('/art/psd-choice-v1/reroll.png') 17 fill / 8px stretch!important}
 #gui-casual-lobby .store-reference .store-action::after {content:none!important}

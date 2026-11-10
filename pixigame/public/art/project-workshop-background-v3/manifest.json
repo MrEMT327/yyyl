@@ -1,0 +1,37 @@
+{
+  "generated": "2026-11-06",
+  "method": "Built-in imagegen",
+  "asset": "public/art/project-workshop-background-v3/maintenance-structured.png",
+  "sha256": "c415802bbd5b960f9b93c96770b602ca2b8f9d29c1edc38d747a018aa4374b4c",
+  "size": [
+    1536,
+    1024
+  ],
+  "use": "Workshop scene background; subject, slots, labels, and controls remain separate.",
+  "previous_asset": "public/art/project-workshop-background-v2/maintenance-soft-psd.png",
+  "references": [
+    {
+      "role": "original workshop layout",
+      "path": "public/art/project-original-environments-v1/maintenance-bay-v1.webp",
+      "sha256": "9c7bc6ce881617b6498ccd8348f461051fc59b17c39cf08e3b080abf2ddab4df"
+    },
+    {
+      "role": "equipment PSD scene art",
+      "path": "public/art/psd-equipment-v1/hangar-scenery.webp",
+      "sha256": "36b26069eadf4b85aa80d5c704e379460664463e487526a90f62bafa1502583e"
+    },
+    {
+      "role": "main PSD scene art",
+      "path": "public/art/psd-main-v1/main-background.png",
+      "sha256": "51bda8d472d22ea35e7cbd4ac1c5e71d83155511dd7184d5ade75ff1dc3d776f"
+    }
+  ],
+  "texture": {
+    "asset": "public/art/project-workshop-background-v2/psd-scanlines.png",
+    "source": "psd/装备.psd and psd/主界面.psd, 图层 3 拷贝 23",
+    "opacity_already_in_alpha": 0.2,
+    "blend_mode": "overlay",
+    "sha256": "82f0aab29a8d7a35158dbd9467335244998f9c01da15e21b2d8141a574933144"
+  },
+  "prompt": "Use case: game-scene-background. Create ONLY a new original background plate for the maintenance/workshop area of our portrait sci-fi mobile game. Input image 1 is our original workshop: retain its identity as a working carrier maintenance bay, the broad wall, edge window, and believable floor perspective, but remove distracting tiny details and repeated hard floor grids. Input images 2 and 3 are scene layers exported from OUR PSDs: they are the authority for art direction: bright cool steel-blue and pale silver lighting, structural silhouette, convincing spatial depth, dark edge framing, atmospheric distance, subtle cyan light, and a softly rendered 2D game illustration. Retain readable medium-sized shapes and deliberate light-dark contrast; do not replace a detailed environment with an empty blurry blue wall. No generic overblurring. Frame an actual workplace with a few large, softened maintenance structures and a believable floor/wall junction. Keep the center and lower right quiet enough for separately rendered slots, text, and a small assistant; concentrate recognizable structures at the edges. Landscape 3:2 composition, with important shapes safe in the centered 1.42:1 crop. Eye-level view, no extreme perspective. Not photoreal, not cinematic dark, no thick fog. Do not bake in a character, robot, aircraft, weapons, UI, button, icon, text, numerals, watermark, border, sticker or logo. Do not draw a diagonal scanline pattern: the authentic PSD texture will be composited separately at runtime. Direction A: preserve the workshop's asymmetry. A single broad overhead maintenance gantry enters from the upper left; one simplified workbench/cabinet silhouette rests along the far-left wall. A broad structural wall frame defines the background and a large high window on the right admits a soft sky glow. Show the floor plane and only two or three broad perspective seams and muted reflections, not a lattice. Include subtle cyan status lights and one small warm accent. The right-middle area behind the assistant remains midtone, not blown-out white."
+}

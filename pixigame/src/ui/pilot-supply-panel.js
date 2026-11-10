@@ -1,3 +1,4 @@
+import { itemInspectAttributes } from './item-description-model.js';
 import { growthSupplyEntry } from './growth-supply-panel.js';
 import { nativeItemArt, nativeItemPresentation } from '../replica/native-item-presentation.js';
 import './pilot-supply.css';
@@ -6,7 +7,7 @@ const button=(label,operation,s,extra='',disabled=false)=>`<button type="button"
 const link=(label,action)=>`<button type="button" class="wc-button" data-action="${action}">${label}</button>`;
 export function pilotSupplyPanel(kind,s,h,{period='daily',showTabs=true}={}) {
   const p=s.pilotSupply,b=p.box,e=h.escape,n=h.number;
-  const reward=(id,count,label)=>`<span class="su-reward" title="${e(label||nativeItemPresentation(id).name)} ×${n(count)}" aria-label="${e(label||nativeItemPresentation(id).name)} ×${n(count)}">${h.img(nativeItemArt(id),'','su-item-art')}<b>×${n(count)}</b>${label?`<small>${e(label)}</small>`:''}</span>`;
+  const reward=(id,count,label)=>`<span ${itemInspectAttributes(id,e)} class="su-reward" aria-description="${e(label||nativeItemPresentation(id).name)} ×${n(count)}" aria-label="${e(label||nativeItemPresentation(id).name)} ×${n(count)}">${h.img(nativeItemArt(id),'','su-item-art')}<b>×${n(count)}</b>${label?`<small>${e(label)}</small>`:''}</span>`;
   const compact={compact:true};
   if(kind==='tasks'||kind==='weekly'){
     const week=kind==='weekly'||period==='week',f=s.flightRewards;

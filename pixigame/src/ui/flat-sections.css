@@ -1,6 +1,6 @@
 /* Static section headings replace disclosure arrows and retain the content. */
 #gui-casual-lobby [data-flat-section] {min-width:0}
-#gui-casual-lobby [data-flat-heading] {display:flex;align-items:center;gap:8px;margin:0;padding:8px 0;font-size:15px;font-weight:700;line-height:1.35;cursor:default}
+#gui-casual-lobby [data-flat-heading] {display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:0;padding:8px 0;font-size:var(--psd-small-title-size);font-weight:400;line-height:var(--psd-small-title-leading);cursor:default}
 #gui-casual-lobby [data-flat-heading]::before,#gui-casual-lobby [data-flat-heading]::after {content:none!important}
 #gui-casual-lobby .ag-equipment-manage>[data-flat-heading] {padding:8px 4px;font-size:16px}
 #gui-casual-lobby .pl-modal .clarity-page [data-flat-section] {border-top:1px solid #8ca3b5;margin-top:10px}
@@ -11,7 +11,7 @@
 #gui-casual-lobby .pl-modal .cd-stage-details>.cd-stage-label[data-flat-heading] {cursor:default}
 #gui-casual-lobby .pl-modal .bc-reward-group>[data-flat-heading] {padding:8px 10px;color:#1a3f58;background:#dce9f2a8}
 #gui-casual-lobby .pl-modal .bc-star-rewards.clarity-page [data-flat-section] {margin-top:4px}
-#gui-casual-lobby .pl-modal .bc-star-rewards.clarity-page [data-flat-heading] {padding:5px 6px;font-size:14px;line-height:1.3}
+#gui-casual-lobby .pl-modal .bc-star-rewards.clarity-page [data-flat-heading] {padding:5px 6px;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading)}
 #gui-casual-lobby .pl-modal .bc-star-rewards.clarity-page .bc-star-reward {
   grid-template-columns:minmax(0,1fr) 78px;gap:3px 6px;margin:4px 0;padding:6px 8px;
 }

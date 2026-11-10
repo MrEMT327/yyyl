@@ -29,10 +29,10 @@
 .combat-detail-level { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px; border: 1px solid #547e9e; background: #06121e99; font-size: 13px; color: var(--detail-muted); }
 .combat-detail-level strong { font-size: 16px; color: var(--detail-gold); text-align: right; }
 .combat-detail-effects { margin-top: 16px; }
-.combat-detail-effects h4 { margin: 0 0 8px; padding-left: 8px; border-left: 3px solid var(--detail-gold); font-size: 14px; }
+.combat-detail-effects h4 { margin: 0 0 8px; padding-left: 8px; border-left: 3px solid var(--detail-gold); font-size: var(--psd-small-title-size);;line-height:var(--psd-small-title-leading,1.5)}
 .combat-detail-effects p { color: var(--detail-text); }
 .combat-detail-dialog .combat-detail-note { margin-top: 14px; padding-top: 10px; border-top: 1px solid #547e9e80; font-size: 12px; }
-.combat-detail-dialog button { flex: none; display: block; box-sizing: border-box; width: 100%; min-height: 54px; margin: 0; padding: 12px 18px 16px; border: 0; border-radius: 0; background:transparent;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch; color: var(--detail-text); font: 900 16px/24px "Microsoft YaHei",sans-serif; text-shadow: 0 1px 2px var(--detail-ink); cursor: pointer; }
+.combat-detail-dialog button { flex: none; display: block; box-sizing: border-box; width: 100%; min-height: 54px; margin: 0; padding: 12px 18px 16px; border: 0; border-radius: 0; background:transparent;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 14px stretch; color: var(--detail-text); font: 900 16px/24px "Microsoft YaHei",sans-serif; text-shadow: 0 1px 2px var(--detail-ink); cursor: pointer; }
 .combat-detail-dialog button:focus-visible { outline: 2px solid #ffdc2d; outline-offset: 2px; }
 .combat-detail-dialog button.psd-popup-close {border-image:none}
 .combat-detail-dialog button:active { filter: brightness(1.12); }
@@ -70,7 +70,7 @@
 .game-shell :is(.pause-actions,.revive-actions) button,
 .game-shell .result-card button {
   min-height:44px;border:0!important;border-radius:0!important;clip-path:none!important;
-  background:none!important;border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch;
+  background:none!important;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 14px stretch;
   color:#eef8ff!important;box-shadow:none!important;text-shadow:0 1px #102632;
 }
 .game-shell :is(.pause-actions,.revive-actions) button:last-child,
@@ -79,4 +79,4 @@
 }
 .game-shell :is(.pause-actions,.revive-actions,.result-card) button:active,
 .combat-detail-dialog button:active {filter:brightness(1.15)}
-.game-shell :is(.pause-actions,.revive-actions,.result-card) button:disabled {border-image:url('/art/psd-buttons-v1/button-gray.png') 32 fill / 14px stretch;color:#a9bbc6!important}
+.game-shell :is(.pause-actions,.revive-actions,.result-card) button:disabled {border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 14px stretch;color:#a9bbc6!important}

@@ -3,10 +3,9 @@
   --popup-width:92cqw;--popup-height:84%;--popup-max-height:88%;
 }
 #gui-casual-lobby .pl-modal-backdrop:has(>.pl-modal:is([data-modal-type='nativeEquipmentBoxes'],[data-modal-type='pilotSupplyTasks'],[data-modal-type='pilotSupplyBoxes'],[data-modal-type='nativeRecruitInfo'],[data-modal-type='growthSupplyChoice'],[data-modal-type='collectionSupplyChoice'])) {padding:0!important}
-#gui-casual-lobby .pl-modal[data-psd-popup]:has(.supply-ui)>.pl-modal-heading h2 {font-size:clamp(20px,5.6cqw,25px)!important}
 #gui-casual-lobby .pl-modal .supply-ui {--su-ink:#203b51;--su-muted:#486278;--su-line:#8ba0b4;--su-panel:#dce6edb8;display:grid;align-content:start;gap:14px;padding:2px 6px 12px;color:var(--su-ink);font:400 16px/1.5 'Microsoft YaHei',sans-serif}
 #gui-casual-lobby .pl-modal .supply-ui :is(p,h3,h4) {margin:0;color:inherit;text-shadow:none}
-#gui-casual-lobby .pl-modal .supply-ui h3 {font-size:18px;line-height:1.35;font-weight:700}
+#gui-casual-lobby .pl-modal .supply-ui h3 {font-size:18px;line-height:var(--psd-small-title-leading,1.5);font-weight:700}
 #gui-casual-lobby .pl-modal .supply-ui h4 {font-size:16px;margin-top:14px}
 #gui-casual-lobby .pl-modal .supply-ui :is(.su-card,.su-box-card) {padding:14px;background:var(--su-panel);border:1px solid var(--su-line);color:var(--su-ink)}
 #gui-casual-lobby .pl-modal .supply-ui .su-card-heading {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}

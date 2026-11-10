@@ -1,0 +1,10 @@
+{
+  "source": "image_gen",
+  "styleReference": "psd/弹窗.psd (primary panel)",
+  "asset": "tray.png",
+  "size": [1254, 1254],
+  "alpha": true,
+  "nineSlice": [64, 64, 64, 64],
+  "targetBorderPx": 9,
+  "usage": "Chapter details enemy and reward inset trays; no text or controls baked in."
+}

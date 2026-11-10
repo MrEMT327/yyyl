@@ -9,13 +9,13 @@
 #gui-casual-lobby .sn-daily-grid,#gui-casual-lobby .sn-currency-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 #gui-casual-lobby .sn-tile,#gui-casual-lobby .sn-currency{position:relative;isolation:isolate;min-width:0;aspect-ratio:310/451;min-height:169px;display:flex;flex-direction:column;align-items:center;padding:9px 5px 7px;gap:4px;color:#e5f0f7}
 #gui-casual-lobby :is(.sn-tile,.sn-currency,.sn-box)::before{content:'';position:absolute;inset:0;z-index:-1;background:#20394b url('/art/weapon-catalog-psd-v1/triangles-blue.png') right bottom/130px auto no-repeat;border:0;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch;pointer-events:none}
-#gui-casual-lobby :is(.sn-tile,.sn-currency) h3{color:#e4eff6;font-size:clamp(10px,2.8cqw,13px);line-height:1.35;min-height:2.7em;text-align:center;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 1px}
+#gui-casual-lobby :is(.sn-tile,.sn-currency) h3{color:#e4eff6;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5);min-height:2.7em;text-align:center;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 1px}
 #gui-casual-lobby .sn-art{display:grid;place-items:center;flex:1;min-height:42px;height:17cqw;width:100%;max-height:80px}
 #gui-casual-lobby .sn-art img{width:100%;height:100%;max-height:80px;max-width:90px;object-fit:contain}
 #gui-casual-lobby :is(.sn-tile,.sn-currency)>strong{font-size:clamp(16px,4.4cqw,22px);font-weight:600;line-height:1.15;color:#fff0bd}
 #gui-casual-lobby :is(.sn-tile,.sn-currency)>small{font-size:10px;line-height:1.2;color:#b3cdda}
 #gui-casual-lobby :is(.sn-tile,.sn-currency)>.sn-button{width:100%;flex:none;font-size:clamp(10px,2.9cqw,14px);padding:5px 4px}
-#gui-casual-lobby .sn-discount{position:absolute;left:3px;top:32px;background:#765226;color:#ffdf88;font-size:10px;padding:1px 4px}
+#gui-casual-lobby .sn-discount{position:absolute;left:3px;top:32px;background:none;color:#ffdf88;font-size:10px;padding:1px 4px}
 #gui-casual-lobby .sn-currency{min-height:210px}
 #gui-casual-lobby .sn-stamina-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 #gui-casual-lobby .sn-stamina-grid .sn-tile{aspect-ratio:1;min-height:195px}
@@ -25,7 +25,7 @@
 #gui-casual-lobby .sn-refresh small{font-size:11px;color:#afcbd9}
 #gui-casual-lobby .sn-refresh .sn-button{width:29%;min-height:48px}
 #gui-casual-lobby .sn-box{position:relative;isolation:isolate;min-height:202px;height:53.5cqw;max-height:270px;padding:9px 12px;display:grid;grid-template-columns:41% minmax(0,1fr);grid-template-rows:28px minmax(0,1fr) 50px;gap:5px 8px}
-#gui-casual-lobby .sn-box::before{background:#193c50 url('/art/project-supply-v1/supply-bay.png') center/cover no-repeat}
+#gui-casual-lobby .sn-box::before{background:var(--project-scene-texture),#193c50 var(--project-supply-image) center/cover no-repeat;background-blend-mode:overlay,normal}
 #gui-casual-lobby .sn-box.is-advanced::before{background-color:#35354f}
 #gui-casual-lobby .sn-box h3{grid-column:1/-1;color:#edf7fc;font:400 clamp(16px,4.4cqw,21px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;align-self:center;padding-right:24px}
 #gui-casual-lobby .sn-info{position:absolute;right:1px;top:0;width:44px;height:44px;background:none;border:0;padding:12px;z-index:1}
@@ -47,7 +47,8 @@
 #gui-casual-lobby .sn-dialog{padding:6px 8px 12px;font:14px/1.5 'Microsoft YaHei',sans-serif;color:#243f54}
 #gui-casual-lobby .sn-dialog p{font-size:13px;margin:9px 0;line-height:1.5;color:inherit}
 #gui-casual-lobby .sn-dialog h3{font-size:17px;color:#203c50;margin:4px 0 14px}
-#gui-casual-lobby .sn-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+#gui-casual-lobby .sn-dialog-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ui-action-gap);margin-top:16px}
+#gui-casual-lobby .sn-dialog-actions>.sn-button{--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner)}
 #gui-casual-lobby .sn-dialog .sn-error{padding:6px 8px;color:#8d303c;background:#e0c6c7}
 #gui-casual-lobby .sn-quantity{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0}
 #gui-casual-lobby .sn-quantity .sn-button{width:44px;height:44px;font-size:24px;padding:0}
@@ -63,14 +64,14 @@
 #gui-casual-lobby .sn-exchange-item::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border:0 solid transparent;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 fill / clamp(8px,calc(var(--popup-width) * .035),16px) stretch}
 #gui-casual-lobby .sn-exchange-item>:is(img,svg){width:100%;height:100%;object-fit:contain}
 #gui-casual-lobby .sn-exchange-copy{grid-area:copy;min-width:0}
-#gui-casual-lobby .sn-exchange-copy h3{margin:0;color:#203c50;font-size:clamp(17px,4.1cqw,22px);line-height:1.25;overflow-wrap:anywhere}
+#gui-casual-lobby .sn-exchange-copy h3{margin:0;color:#203c50;font-size:clamp(17px,4.1cqw,22px);line-height:var(--psd-small-title-leading,1.5);overflow-wrap:anywhere}
 #gui-casual-lobby .sn-exchange-copy p{margin:4px 0 0;color:#294b66;font-size:clamp(14px,3.5cqw,18px);font-weight:700;line-height:1.25}
-#gui-casual-lobby .sn-exchange-dialog .sn-quantity{--quantity-size:clamp(44px,calc(var(--popup-width) * .101),56px);grid-area:quantity;justify-self:end;width:76%;gap:clamp(2px,.8cqw,6px);margin:0}
+#gui-casual-lobby .sn-exchange-dialog .sn-quantity{--quantity-size:var(--ui-action-height);grid-area:quantity;justify-self:end;width:76%;gap:clamp(2px,.8cqw,6px);margin:0}
 #gui-casual-lobby .sn-exchange-dialog .sn-quantity .sn-button{flex:none;width:var(--quantity-size);height:var(--quantity-size);min-height:var(--quantity-size)}
 #gui-casual-lobby .sn-exchange-dialog .sn-quantity output{display:grid;flex:1;place-items:center;min-width:24px;height:var(--quantity-size);background:#b8c8d6;color:#203c50;font-size:clamp(15px,3.7cqw,19px);font-variant-numeric:tabular-nums}
-#gui-casual-lobby .sn-exchange-dialog .sn-quantity [data-step='max']{width:clamp(48px,calc(var(--popup-width) * .13),72px);font-size:clamp(12px,3cqw,15px)}
+#gui-casual-lobby .sn-exchange-dialog .sn-quantity [data-step='max']{width:48px;font-size:clamp(12px,3cqw,15px)}
 #gui-casual-lobby .sn-exchange-dialog .sn-exchange-actions{display:flex;justify-content:center;margin:0}
-#gui-casual-lobby .sn-exchange-dialog .sn-exchange-actions .sn-button{--wc-button-height:max(44px,calc(var(--popup-width) * .146));display:flex;align-items:center;justify-content:center;gap:8px;width:clamp(120px,calc(var(--popup-width) * .405),210px);font-size:clamp(16px,3.8cqw,20px)}
+#gui-casual-lobby .sn-exchange-dialog .sn-exchange-actions .sn-button{--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);display:flex;align-items:center;justify-content:center;gap:var(--ui-action-gap);width:min(100%,var(--ui-primary-width));font-size:clamp(16px,3.8cqw,20px)}
 #gui-casual-lobby .sn-exchange-dialog .sn-exchange-actions .sn-cost-icon{width:clamp(19px,4cqw,25px);height:clamp(24px,5cqw,31px)}
 @container(max-width:340px){
   #gui-casual-lobby .sn-exchange-dialog .sn-quantity{width:100%;gap:2px}
@@ -109,3 +110,5 @@
 #gui-casual-lobby .shop-native-v2 .sn-box{min-height:171px;max-height:none}
 #gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>.sn-button{height:44px;min-height:44px}
 #gui-casual-lobby .shop-native-v2 .sn-box-actions>.sn-button{height:100%}
+/* The small coin pile stays visually lighter than the filled canister and safe. */
+#gui-casual-lobby .shop-native-v2 :is(.sn-currency,.sn-tile) .sn-art>.sn-coin-small{inset:10%;width:80%;height:80%}

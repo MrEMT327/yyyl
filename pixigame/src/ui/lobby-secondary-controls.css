@@ -100,7 +100,7 @@
   filter: none !important;
   opacity: 1;
   text-shadow: none;
-  cursor: not-allowed;
+  cursor:default;
 }
 
 .peripheral-lobby.reference-layout.lobby-theme[data-tab="research"][data-subpage=""] .research-page .research-awaken.is-ace:disabled,

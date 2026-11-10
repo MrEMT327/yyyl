@@ -3,7 +3,12 @@
 .cloud-ui-mode>#ui,.cloud-ui-mode>#ui *{visibility:hidden!important;pointer-events:none!important}
 .cloud-ui-mode[data-awaiting-start]>.cloud-combat-canvas{visibility:hidden}
 /* Results use the whole battle viewport, independently of the narrower UI canvas. */
-.cloud-ui-mode.cloud-result-visible::after,.cloud-ui-mode.cloud-pause-visible::after,.cloud-ui-mode.cloud-upgrade-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(18,22,28,.68);pointer-events:none}
+.cloud-ui-mode.cloud-revive-visible::after,.cloud-ui-mode.cloud-result-visible::after,.cloud-ui-mode.cloud-pause-visible::after,.cloud-ui-mode.cloud-upgrade-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(18,22,28,.68);pointer-events:none}
+.cloud-ui-mode.cloud-defeat-visible::after{background:radial-gradient(ellipse at 50% 29%,rgba(40,48,86,.62),rgba(7,14,29,.84));animation:defeat-veil .6s ease-out both}
+.cloud-ui-mode.cloud-victory-visible::after{background:radial-gradient(ellipse at 50% 24%,rgba(88,73,39,.32),rgba(11,27,49,.76) 65%);animation:defeat-veil .55s ease-out both}
+@keyframes defeat-veil{from{opacity:.35}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.cloud-ui-mode.cloud-defeat-visible::after{animation:none}}
+@media(prefers-reduced-motion:reduce){.cloud-ui-mode.cloud-victory-visible::after{animation:none}}
 /* UI_Punchboard's packaged default is a full-stretch black Image, alpha 192/255.
    Dimming belongs to the battle viewport, not the narrower card canvas. */
 .cloud-ui-mode.cloud-supply-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(0,0,0,.7529411765);pointer-events:none}

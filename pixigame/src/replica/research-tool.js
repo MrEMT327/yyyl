@@ -11,6 +11,9 @@ export function mountReplicaResearchTool({bridge}) {
   button.textContent='研究配装 · F9';button.setAttribute('aria-haspopup','dialog');
   const tools=document.querySelector('.performance-tools');
   (tools||document.body).prepend(button);
+  const launchStatus=document.createElement('span');launchStatus.id='replicaResearchLaunchStatus';launchStatus.hidden=true;launchStatus.setAttribute('role','status');
+  button.after(launchStatus);
+  button.setAttribute('aria-describedby',launchStatus.id);
   let dialog=null,frame=null,session='',timer=null,receive=null;
   const close=()=>{
     if(!dialog)return;
@@ -22,7 +25,8 @@ export function mountReplicaResearchTool({bridge}) {
   function open() {
     if(dialog){frame?.focus();return;}
     const accepted=bridge.openReplicaResearch();
-    if(!accepted?.ok){button.title=accepted?.message||'请先结束当前战斗';return;}
+    if(!accepted?.ok){launchStatus.textContent=accepted?.message||'请先结束当前战斗';launchStatus.hidden=false;return;}
+    launchStatus.hidden=true;launchStatus.textContent='';
     try {
       const snapshot=bridge.getPeripheralSnapshot();
       dialog=document.createElement('dialog');dialog.className='replica-research-dialog';dialog.setAttribute('aria-label','研究配装');
@@ -35,7 +39,7 @@ export function mountReplicaResearchTool({bridge}) {
       toolbar.append(title,label,back);
       const note=document.createElement('p');note.textContent='独立研究存档 · 可手动配置 · 不消耗正式资源，不结算奖励或通关进度';
       const status=document.createElement('p');status.className='replica-research-status';status.setAttribute('role','status');
-      frame=document.createElement('iframe');frame.title='独立研究配装与试打';frame.allow='autoplay; fullscreen';
+      frame=document.createElement('iframe');frame.setAttribute('aria-label','独立研究配装与试打');frame.allow='autoplay; fullscreen';
       const load=()=>{
         frame.contentWindow?.dispatchEvent(new Event('shnh-dispose-replica-battle'));
         clearTimeout(timer);
@@ -70,5 +74,5 @@ export function mountReplicaResearchTool({bridge}) {
   button.addEventListener('click',open);
   const keydown=event=>{if(event.key==='F9'&&!event.repeat){event.preventDefault();if(dialog)close();else open();}};
   window.addEventListener('keydown',keydown);
-  return {open,close,destroy(){close();window.removeEventListener('keydown',keydown);button.remove();}};
+  return {open,close,destroy(){close();window.removeEventListener('keydown',keydown);button.remove();launchStatus.remove();}};
 }

@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "generator": "built-in image_gen",
+  "styleReferences": [
+    "project-tabs-v1/tab-active.png",
+    "psd-buttons-v1/button-blue.png"
+  ],
+  "export": "Uniform RGBA resize only; preserve alpha and generated decoration. Runtime 256px, archived source 1024px.",
+  "portraitInsetPercent": 14,
+  "assets": [
+    {
+      "id": "blue",
+      "name": "航翼徽章",
+      "path": "exec-62c99955-973c-4cd5-a538-5d612729e9f6.png",
+      "file": "blue.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-62c99955-973c-4cd5-a538-5d612729e9f6.png",
+      "sha256": "546968b1bf36042ff6f43fdd075f7c3fad5f0e70adb65e580c3828b4b9afacec",
+      "centerAlpha": 0,
+      "sourceSha256": "0b432183c066f2474300e99da265f4388ef2a20dfaeb93a28f902cbcf752dad2",
+      "archiveSha256": "e154839d8e37dfe5f47a45841517d404d4922f20889e3dddf0329434fd7a60ee"
+    },
+    {
+      "id": "gray",
+      "name": "银隼机翼",
+      "path": "exec-ec058c7a-c3bc-4e00-a432-97ee1a5d618b.png",
+      "file": "gray.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-ec058c7a-c3bc-4e00-a432-97ee1a5d618b.png",
+      "sha256": "631f60e86ed13c9d1d457c8ec29d332af5cdccc1625d645f24474201b21e67ad",
+      "centerAlpha": 0,
+      "sourceSha256": "037fb3f0faa3699e91f1e3dc2a65440a72254182923fbe36b36a50381477c44a",
+      "archiveSha256": "6c4d7a10e9f8a91a2a1c8a4ededb8e09214834bdea5ad251aefb779677902518"
+    },
+    {
+      "id": "green",
+      "name": "雷达航标",
+      "path": "exec-b0dbf811-bff7-49c5-af5b-23aee6a0f285.png",
+      "file": "green.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-b0dbf811-bff7-49c5-af5b-23aee6a0f285.png",
+      "sha256": "cd81b1adadc19d2b531dccb9d4b9838c4a6263315026f399a3248e30192bcd74",
+      "centerAlpha": 0,
+      "sourceSha256": "0a0817c3d761eb6c13e3f7e02b60be929465e6ac04e7f9d0ceaa3d709b530095",
+      "archiveSha256": "4659aded79dc942b207ddc51e56ac57c3042cba5b88d90551c2f089c6a07779a"
+    },
+    {
+      "id": "purple",
+      "name": "星轨观测",
+      "path": "exec-6f545464-e78d-47cf-a074-ecc3796dfb83.png",
+      "file": "purple.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-6f545464-e78d-47cf-a074-ecc3796dfb83.png",
+      "sha256": "3ed2d75b2e583659cd925cae566191f5d02ba5118bffd9243bb77312814da8dc",
+      "centerAlpha": 0,
+      "sourceSha256": "45a3cf1300daaae894b5a296d521e47b70d72a03ebfa53f6605f07e0d127e669",
+      "archiveSha256": "a2c9e245334c6d6a7c23c9e7c09882c0ea4f1367194cbd538d35966d3e038c9c"
+    },
+    {
+      "id": "gold",
+      "name": "星冠勋章",
+      "path": "exec-e6ba792f-1cb6-4954-acf0-474bc4d2ff65.png",
+      "file": "gold.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-e6ba792f-1cb6-4954-acf0-474bc4d2ff65.png",
+      "sha256": "09707b23b76dc8d9abbc0fef7be363e8d5d253edc6d52a6a315888359ef15f9e",
+      "centerAlpha": 0,
+      "sourceSha256": "84aca715ab30652f7a10068910766064f26031eeb34f188df91b8fa7cf33e007",
+      "archiveSha256": "7cc486bad1849d1a10eaaab7d53b865e56b5aa48549ede6c89640529c8cfcc41"
+    },
+    {
+      "id": "red",
+      "name": "赤曜突击",
+      "path": "exec-7e819fcd-cf47-4a38-87fb-6558d244a30e.png",
+      "file": "red.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-7e819fcd-cf47-4a38-87fb-6558d244a30e.png",
+      "sha256": "0d9c5213871a0d7f032766c9b8445d801b8685a81c216fcc804891a51eb755aa",
+      "centerAlpha": 0,
+      "sourceSha256": "10c96e3ed2248c203bf96511ed035282ebd232f8969a1fe2fe26919bb037532f",
+      "archiveSha256": "10bcbf97fc1cb60997fd86d329ebdbfcf78f2e34b53f558889109254ca33efb4"
+    },
+    {
+      "id": "ice",
+      "name": "极光航线",
+      "path": "exec-eccfc12f-eff8-43b9-9d61-cc73a110cce0.png",
+      "file": "ice.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-eccfc12f-eff8-43b9-9d61-cc73a110cce0.png",
+      "sha256": "aa7cb7956566769b37722da70d481bf282a897a71dee334aa00df097fb28e11d",
+      "centerAlpha": 0,
+      "sourceSha256": "dd7218a24099d6ac16680ba3d58ec140684fadbeabc23debb000d8dfab535f70",
+      "archiveSha256": "02621b9a7c258c09ef821d1d45e4bb7836698613e08c63a15ca286ab861887e8"
+    },
+    {
+      "id": "navy",
+      "name": "深空领航",
+      "path": "exec-a7a44d1c-2ada-4035-8b26-b8d3e9abdcbd.png",
+      "file": "navy.png",
+      "size": [
+        256,
+        256
+      ],
+      "source": "E:\\Projects\\从C盘迁移\\Users\\Administrator\\.codex\\generated_images\\01a19b5e-9c8e-7810-98fb-63e037ea1272\\exec-a7a44d1c-2ada-4035-8b26-b8d3e9abdcbd.png",
+      "sha256": "a2f8069f5fd9948040823348e3175b3a3ae80fdf887d5f615657d90d9356f2d4",
+      "centerAlpha": 0,
+      "sourceSha256": "eabb29e446ecf1a688c9bfafa50adc4fea551ca7c8e293112576965d4a0e59d4",
+      "archiveSha256": "23546e3b738426fa5558ffad3315089d22cb93e764e69e98576270670ea34317"
+    }
+  ]
+}

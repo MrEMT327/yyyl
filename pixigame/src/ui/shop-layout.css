@@ -6,70 +6,107 @@
 #gui-casual-lobby .shop-native-v2 .store-scroll {grid-row:1;scrollbar-width:none}
 #gui-casual-lobby .shop-native-v2 .sn-content {display:block;padding:0 0 calc(30 * var(--su))}
 #gui-casual-lobby .shop-native-v2 .sn-section {position:relative;display:block;padding:0;scroll-margin:0;min-width:0}
-#gui-casual-lobby .shop-native-v2 .sn-section>h2 {display:flex;align-items:center;justify-content:center;width:calc(1030 * var(--su));height:calc(150 * var(--su));min-height:0;padding:0;margin:0 auto;border:0;font-size:calc(48 * var(--su));background:linear-gradient(90deg,transparent,#51778e66,transparent)}
-#gui-casual-lobby .shop-native-v2 [data-shop-section='boxes'] {height:calc(1307.1 * var(--su))}
-#gui-casual-lobby .shop-native-v2 .sn-box {position:absolute;left:calc(60 * var(--su));top:calc(728 * var(--su));width:calc(960 * var(--su));height:calc(567.7 * var(--su));min-height:0;max-height:none;display:block;margin:0;padding:0}
-#gui-casual-lobby .shop-native-v2 .sn-box.is-advanced {top:calc(157 * var(--su));height:calc(578 * var(--su))}
-#gui-casual-lobby .shop-native-v2 .sn-box::before {inset:calc(7.5 * var(--su)) calc(-12.5 * var(--su)) auto;height:calc(539 * var(--su));background:linear-gradient(90deg,#102c40b0,transparent 65%),url('/art/project-supply-v1/supply-bay.png') center/cover;border-image-width:calc(16 * var(--su))}
-#gui-casual-lobby .shop-native-v2 .sn-box h3 {position:absolute;left:calc(26 * var(--su));top:calc(31 * var(--su));height:calc(78 * var(--su));display:flex;align-items:center;padding:0;font-size:calc(44 * var(--su))}
-#gui-casual-lobby .shop-native-v2 .sn-info {top:calc(8.4 * var(--su));right:calc(-11.7 * var(--su));width:calc(100 * var(--su));height:calc(100 * var(--su));padding:calc(27 * var(--su))}
-/* The original bay's platform centre is at 29% x / 65% y. Align the
-   visible chest footprint to it; the 256px icon has bounds (12,86)-(244,244). */
-#gui-casual-lobby .shop-native-v2 .sn-box-art {position:absolute;left:calc(105 * var(--su));top:calc(130 * var(--su));width:calc(350 * var(--su));height:calc(238.36 * var(--su));overflow:hidden;pointer-events:none;isolation:isolate}
-#gui-casual-lobby .shop-native-v2 .sn-box-art::before {content:'';position:absolute;left:10%;right:10%;bottom:0;height:9%;background:radial-gradient(ellipse,#061423b3,transparent 70%);z-index:-1}
-#gui-casual-lobby .shop-native-v2 .sn-box-art img {position:absolute;left:-5.172414%;top:-54.43038%;width:110.344828%;height:162.025316%;max-width:none;max-height:none;object-fit:fill}
-#gui-casual-lobby .shop-native-v2 .sn-box-copy {position:absolute;left:calc(550 * var(--su));top:calc(150 * var(--su));width:calc(230 * var(--su));height:calc(190 * var(--su));justify-content:flex-start;gap:calc(15 * var(--su));padding:0}
-#gui-casual-lobby .shop-native-v2 .sn-box-copy p,#gui-casual-lobby .shop-native-v2 .sn-box-copy small {font-size:calc(29 * var(--su));line-height:1.4}
-#gui-casual-lobby .sn-quality-range {display:flex;gap:calc(10 * var(--su))}
-#gui-casual-lobby .sn-quality-range i {display:block;width:calc(56 * var(--su));height:calc(56 * var(--su));border-image:var(--quality-plate) 18 fill / calc(9 * var(--su)) stretch}
-#gui-casual-lobby .shop-native-v2 .sn-box-actions {position:absolute;inset:0;display:block;pointer-events:none}
-#gui-casual-lobby .shop-native-v2 .sn-box-actions>.sn-button {position:absolute;left:calc(141.4 * var(--su));bottom:calc(55.4 * var(--su));width:calc(322.8 * var(--su));height:calc(126.4 * var(--su));min-height:0;padding:calc(8 * var(--su));font-size:calc(34 * var(--su));gap:calc(4 * var(--su));flex-direction:column;pointer-events:auto}
-#gui-casual-lobby .shop-native-v2 .sn-box-actions>.sn-button+ .sn-button {left:calc(501.695 * var(--su));width:calc(320.01 * var(--su))}
-#gui-casual-lobby .sn-box-actions .sn-button span {display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--su));line-height:1.15}
-#gui-casual-lobby .sn-box-actions .sn-button img {width:calc(34 * var(--su));height:calc(34 * var(--su));object-fit:contain}
-#gui-casual-lobby .shop-native-v2 .sn-progress {position:absolute;left:calc(802.475 * var(--su));top:calc(97.13 * var(--su));width:calc(152.81 * var(--su));height:calc(170.72 * var(--su));display:flex;flex-direction:column;align-items:center;gap:calc(6 * var(--su));padding:0;border:0;background:none;color:#eef9ff;opacity:1;box-shadow:none}
-#gui-casual-lobby .sn-progress>span {display:grid;place-items:center;width:calc(125 * var(--su));height:calc(124 * var(--su));border-image:var(--quality-plate) 18 fill / calc(15 * var(--su)) stretch}
-#gui-casual-lobby .sn-progress img {width:80%;height:80%;object-fit:contain}
-#gui-casual-lobby .sn-progress b {font-size:calc(30 * var(--su));line-height:1.15;background:#102c40bb;padding:0 calc(10 * var(--su))}
-#gui-casual-lobby .sn-progress:not(:disabled) {cursor:pointer;filter:drop-shadow(0 0 5px #e8bf72)}
-/* Keep the reward preview faithful to its inventory art before it is claimable. */
-#gui-casual-lobby .shop-native-v2 .sn-progress:disabled {filter:none;opacity:1}
-/* Four daily offers share two rows. Each category owns its page, so the
+#gui-casual-lobby .shop-native-v2 .sn-section>h2 {display:flex;align-items:center;justify-content:center;width:calc(1030 * var(--su));height:calc(150 * var(--su));min-height:0;padding:0;margin:0 auto;border:0;font-size:max(var(--psd-small-title-size,16px),calc(48 * var(--su)));background:linear-gradient(90deg,transparent,#51778e66,transparent);line-height:var(--psd-small-title-leading,1.5)}
+/* UIMainShop 1.1.6: 1080-unit canvas, original RectTransform anchors/pivots.
+   Artwork stays original; card contents share the source 960 x 578 child. */
+/* On narrow screens only the action row grows, so it clears the free timer. */
+#gui-casual-lobby .shop-native-v2 [data-shop-section='boxes'] {
+  --box-action-extra:max(0px,calc(var(--ui-primary-height) - 126.4 * var(--su)));
+  height:calc(1307.1 * var(--su) + 2 * var(--box-action-extra));padding:0
+}
+#gui-casual-lobby .shop-native-v2 .sn-box {position:absolute;left:calc(60 * var(--su));top:calc(728 * var(--su) + var(--box-action-extra));width:calc(960 * var(--su));height:calc(567.7 * var(--su) + var(--box-action-extra));min-height:0;max-height:none;display:block;margin:0;padding:0}
+#gui-casual-lobby .shop-native-v2 .sn-box.is-advanced {top:calc(157 * var(--su));height:calc(578 * var(--su) + var(--box-action-extra))}
+#gui-casual-lobby .shop-native-v2 .sn-box::before {content:none}
+/* shop-supply.png is 1536x1024. Register its platform centre beneath the
+   chest's 480 / 350 design-unit centre/contact point. Keep the scene scale
+   independent of the extra height reserved for narrow-screen action rows. */
+#gui-casual-lobby .shop-native-v2 .sn-box-shell {--box-scene-placement:calc(-46 * var(--su)) calc(-334 * var(--su)) / calc(1642 * var(--su)) calc(1094.666667 * var(--su)) no-repeat;position:absolute;left:0;top:calc(-5.15 * var(--su));width:100%;height:calc(578 * var(--su) + var(--box-action-extra));isolation:isolate}
+#gui-casual-lobby .shop-native-v2 .is-advanced .sn-box-shell {top:0}
+#gui-casual-lobby .shop-native-v2 .sn-box-shell::before,
+#gui-casual-lobby .shop-native-v2 .sn-box-shell::after {content:'';position:absolute;left:calc(-12.5 * var(--su));top:calc(7.5 * var(--su));width:calc(985 * var(--su));height:calc(539 * var(--su) + var(--box-action-extra));pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-box-shell::before {
+  z-index:-2;
+  background:var(--project-scene-texture),linear-gradient(90deg,#10293cbd,#10283b70),var(--project-supply-image) var(--box-scene-placement);
+  background-blend-mode:overlay,normal,normal;
+  /* Use the PSD plate's alpha as a nine-sliced mask, not a frame painted over a rectangle. */
+  -webkit-mask-box-image:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch;
+  mask-border:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch;
+}
+#gui-casual-lobby .shop-native-v2 .sn-box-shell::after {
+  z-index:-1;
+  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 6px 6px 10px 6px stretch;
+}
+#gui-casual-lobby .shop-native-v2 .sn-box.is-advanced .sn-box-shell::before {background:var(--project-scene-texture),linear-gradient(100deg,#252b3dbd,#29243b88),var(--project-supply-image) var(--box-scene-placement)}
+#gui-casual-lobby .shop-native-v2 .sn-box h3 {position:absolute;left:calc(26 * var(--su));top:calc(31 * var(--su));width:calc(760 * var(--su));height:calc(78 * var(--su));display:flex;align-items:center;margin:0;padding:0;color:#e6f4ff;font-size:max(var(--psd-small-title-size,16px),calc(44 * var(--su)));line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .shop-native-v2 .sn-box.is-advanced h3 {color:#ffe6aa}
+#gui-casual-lobby .shop-native-v2 .sn-info {top:calc(58.4 * var(--su) - var(--ui-action-height) / 2);right:calc(38.3 * var(--su) - var(--ui-action-height) / 2);width:var(--ui-action-height);height:var(--ui-action-height);padding:calc((var(--ui-action-height) - 46 * var(--su)) / 2)}
+/* Source art has its chest in the middle of the banner, below the title. */
+#gui-casual-lobby .shop-native-v2 .sn-box-art {position:absolute;left:calc(280 * var(--su));top:calc(95 * var(--su));width:calc(400 * var(--su));height:calc(260 * var(--su));min-height:0;display:grid;place-items:center;pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-box-art img {position:static;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 4px 3px #0006)}
+#gui-casual-lobby .shop-native-v2 .sn-box-guarantee {position:absolute;left:calc(28 * var(--su));top:calc(106.7 * var(--su));width:calc(300 * var(--su));height:calc(76.6 * var(--su));margin:0;display:flex;align-items:center;color:#e8f1fa;font:500 calc(26 * var(--su))/1.15 'Microsoft YaHei',sans-serif;white-space:nowrap;text-shadow:0 1px 2px #071727}
+#gui-casual-lobby .shop-native-v2 .sn-box-guarantee b {color:#ffe3a4;font-weight:700}
+#gui-casual-lobby .shop-native-v2 .is-advanced .sn-box-guarantee {left:calc(30.0076 * var(--su));top:calc(111.25 * var(--su));width:calc(261.9847 * var(--su));height:calc(28.3969 * var(--su))}
+#gui-casual-lobby .shop-native-v2 .is-advanced .sn-box-guarantee.is-series {left:calc(28 * var(--su));top:calc(148.75 * var(--su));width:calc(295 * var(--su));height:calc(26.5649 * var(--su))}
+#gui-casual-lobby .shop-native-v2 .sn-box-actions {position:absolute;inset:auto calc(141.4 * var(--su)) calc(55.4 * var(--su));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--ui-action-gap);pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-box-actions>.sn-button {--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);position:relative;inset:auto;width:100%;height:var(--wc-button-height);min-height:var(--wc-button-height);padding:3px 5px;font-size:clamp(13px,3.8cqw,16px);gap:2px;flex-direction:column;pointer-events:auto}
+#gui-casual-lobby .sn-box-actions .sn-button span {display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--su));line-height:1.1}
+#gui-casual-lobby .sn-box-actions .sn-button img {width:calc(40 * var(--su));height:calc(40 * var(--su));object-fit:contain}
+#gui-casual-lobby .sn-box-actions .sn-free-cost {color:#a7eecc;font-size:.85em}
+#gui-casual-lobby .sn-box-free-time {position:absolute;left:calc(141.4 * var(--su));top:calc(345.875 * var(--su));width:calc(322.8 * var(--su));height:calc(50.25 * var(--su));display:grid;place-items:center;margin:0;color:#e0f2ff;font:500 calc(27 * var(--su))/1.1 'Microsoft YaHei',sans-serif;text-shadow:0 1px 2px #071727}
+#gui-casual-lobby .sn-box-milestone {position:absolute;left:calc(802.475 * var(--su));top:calc(97.13 * var(--su));width:calc(152.81 * var(--su));height:calc(170.72 * var(--su));margin:0;padding:0;border:0;background:none;color:white;opacity:1;filter:none;cursor:pointer}
+#gui-casual-lobby .sn-box-milestone:disabled {opacity:1;filter:none;cursor:default}
+#gui-casual-lobby .sn-box-milestone>.reward-item-slot {position:absolute;left:calc(22.505 * var(--su));top:calc(6.06 * var(--su));width:calc(125 * var(--su));height:calc(125 * var(--su));aspect-ratio:1}
+#gui-casual-lobby .sn-milestone-value {position:absolute;left:calc(26.4 * var(--su));top:calc(132.36 * var(--su));width:calc(116.35 * var(--su));height:calc(34.82 * var(--su));display:grid;place-items:center;background:#0c233ac2;color:#effaff;font:700 calc(28 * var(--su))/1 'Microsoft YaHei',sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
+#gui-casual-lobby .sn-box-milestone.is-claimable .sn-milestone-value {color:#ffe8a4}
+#gui-casual-lobby .sn-milestone-dot {position:absolute;top:0;right:0;width:calc(20 * var(--su));height:calc(20 * var(--su));border-radius:50%;background:#ff506b;box-shadow:0 0 0 1px #561d33}
+#gui-casual-lobby .sn-box-details .sn-owned-ticket {display:flex;align-items:center;justify-content:center;gap:6px;color:#29465c;font-size:13px}
+#gui-casual-lobby .sn-box-details .sn-ticket-icon {width:27px;height:24px;object-fit:contain}
+#gui-casual-lobby .sn-box-pity {display:grid;gap:5px;padding-top:2cqw;border-top:1px solid #aac5da33}
+#gui-casual-lobby .sn-box-pity p {display:flex;align-items:baseline;justify-content:space-between;gap:4px;margin:0;font:500 clamp(10px,2.8cqw,13px)/1.4 'Microsoft YaHei',sans-serif;color:#e2edf4;white-space:nowrap}
+#gui-casual-lobby .sn-box-pity p b {color:#ffe2a2;font-size:clamp(15px,4cqw,19px);font-variant-numeric:tabular-nums;white-space:nowrap}
+#gui-casual-lobby .sn-box-pity p b small {font-weight:500;color:inherit;font-size:clamp(10px,2.6cqw,12px)}
+#gui-casual-lobby .sn-box-details .sn-box-pity {margin-top:12px;padding:10px 0;border-block:1px solid #8299ac66}
+#gui-casual-lobby .sn-box-details .sn-box-pity :is(p,small) {color:#203c52}
+#gui-casual-lobby .sn-box-details .sn-box-pity p b {color:#176082}
+#gui-casual-lobby .sn-box-details .sn-pity-rule {font-size:12px;line-height:1.6;text-align:left;color:#36566b;margin:10px 0}
+#gui-casual-lobby .sn-box-details h4 {margin:16px 0 6px;font-size:var(--psd-small-title-size);color:#203c52;text-align:left;line-height:var(--psd-small-title-leading,1.5)}
+/* Six daily offers share two rows. Each category owns its page, so the
    refresh controls and currency offers cannot leak into another category. */
 #gui-casual-lobby .shop-native-v2 .sn-section:not([data-shop-section='boxes']) {padding:2cqw 4cqw 3cqw}
 #gui-casual-lobby .shop-native-v2 .sn-section:not([data-shop-section='boxes'])>h2 {width:100%;height:max(32px,9cqw);margin:0 0 2cqw;font-size:clamp(17px,4.5cqw,21px)}
-#gui-casual-lobby .shop-native-v2 .sn-daily-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2cqw;width:100%;margin:0}
-#gui-casual-lobby .shop-native-v2 .sn-currency-grid {display:grid;grid-template-columns:minmax(0,1fr);gap:2cqw;width:100%;margin:0}
-#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency) {height:auto;min-height:0;aspect-ratio:auto;display:grid;padding:2cqw 2.5cqw;gap:1cqw}
-#gui-casual-lobby .shop-native-v2 .sn-tile {grid-template-columns:56% minmax(0,1fr);grid-template-rows:28px clamp(44px,14.5cqw,68px) auto max(36px,9cqw);grid-template-areas:'name name' 'art quantity' 'limit limit' 'action action'}
-#gui-casual-lobby .shop-native-v2 .sn-tile>h3 {grid-area:name;display:flex;align-items:center;justify-content:flex-start;height:auto;min-height:0;padding:0;text-align:left;font-size:clamp(12px,3.5cqw,15px);line-height:1.2}
-#gui-casual-lobby .shop-native-v2 .sn-tile:has(.sn-discount)>h3 {padding-right:calc(clamp(36px,10cqw,48px) + 4px)}
-#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>.sn-art {grid-area:art;position:relative;width:100%;height:100%;min-width:0;min-height:0;max-height:none;flex:none;padding:0}
+#gui-casual-lobby .shop-native-v2 :is(.sn-daily-grid,.sn-currency-grid) {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2cqw;width:100%;margin:0}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency) {width:100%;height:auto;min-height:150px;aspect-ratio:310/451;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(24px,auto) minmax(44px,1fr) auto 26px;grid-template-areas:'name' 'art' 'quantity' 'price';padding:5px;gap:2px}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>h3 {grid-area:name;display:flex;align-items:flex-start;justify-content:flex-start;height:auto;min-height:0;margin:0;padding:0;text-align:left;font-size:clamp(12px,3.2cqw,14px);line-height:1.25;overflow-wrap:anywhere;pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-tile:has(.sn-discount)>h3 {padding-right:28px}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>.sn-art {grid-area:art;position:relative;z-index:2;width:100%;height:100%;min-width:44px;min-height:44px;max-height:none;flex:none;padding:0}
 #gui-casual-lobby .shop-native-v2 .sn-art img {position:absolute;inset:0;max-width:100%;max-height:100%;height:100%;width:100%;object-fit:contain}
-#gui-casual-lobby .shop-native-v2 .sn-tile>strong {grid-area:quantity;position:static;align-self:end;justify-self:end;padding-bottom:3px;font-size:clamp(17px,4.8cqw,23px)}
-#gui-casual-lobby .shop-native-v2 .sn-tile>small {grid-area:limit;position:static;text-align:left;font-size:clamp(10px,2.8cqw,12px);line-height:1.3}
-#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>.sn-button {grid-area:action;position:relative;inset:auto;width:100%;height:100%;min-height:36px;flex-direction:column;flex-wrap:nowrap;gap:0;padding:4px 6px;font-size:clamp(12px,3.5cqw,16px)}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency)>strong {grid-area:quantity;position:static;align-self:end;justify-self:end;font-size:clamp(14px,4cqw,18px);line-height:1;pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-card-trigger {position:absolute;inset:0;z-index:1;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;border:0;background:transparent;cursor:pointer}
+#gui-casual-lobby .shop-native-v2 .sn-card-trigger:disabled {cursor:default}
+#gui-casual-lobby .shop-native-v2 .sn-card-trigger:focus-visible {outline:2px solid #b9f2ff;outline-offset:-3px}
+#gui-casual-lobby .shop-native-v2 .sn-card-trigger:not(:disabled):active~:is(.sn-art,.sn-card-price) {filter:brightness(1.15)}
+#gui-casual-lobby .shop-native-v2 .sn-card-price {grid-area:price;align-self:stretch;position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:3px;min-width:0;padding:2px 5px;border:0 solid transparent;border-image:url('/art/psd-main-v1/resources/diamonds-background.png') 18 fill / 6px stretch;color:#edf7fc;font:700 clamp(11px,3.2cqw,14px)/1.1 'Microsoft YaHei',sans-serif;white-space:nowrap;pointer-events:none}
+#gui-casual-lobby .shop-native-v2 .sn-card-price>small,.shop-native-v2 .sn-card-price .sn-price>small {font-size:10px}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency).is-unavailable::before {filter:grayscale(.8) brightness(.7)}
+#gui-casual-lobby .shop-native-v2 :is(.sn-tile,.sn-currency).is-unavailable>.sn-art img {filter:grayscale(.8) brightness(.72)}
 #gui-casual-lobby .shop-native-v2 .sn-price {display:inline-flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;line-height:1.2;font-variant-numeric:tabular-nums}
 #gui-casual-lobby .shop-native-v2 .sn-button>small {width:auto;font-size:10px;line-height:1.1}
-#gui-casual-lobby .shop-native-v2 .sn-discount {left:auto;right:1.5cqw;top:1.5cqw;z-index:2;display:grid;place-items:center;box-sizing:border-box;width:clamp(36px,10cqw,48px);height:clamp(28px,7.5cqw,36px);padding:2px 3px;background:none;border:0;border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / 7px stretch;color:#fff8d5;font-size:clamp(16px,4.5cqw,22px);font-weight:800;line-height:1;text-shadow:0 1px 2px #704111}
-#gui-casual-lobby .shop-native-v2 .sn-refresh {display:grid;grid-template-columns:minmax(0,1fr) 40%;width:100%;margin:2cqw 0 0;padding:2cqw 0;gap:8px;border:0}
-#gui-casual-lobby .shop-native-v2 .sn-refresh .sn-button {width:100%;height:max(40px,10cqw);min-height:40px;font-size:clamp(12px,3.5cqw,16px)}
+#gui-casual-lobby .sn-box-confirm-question .sn-price {display:inline-flex;align-items:center;gap:3px;vertical-align:middle;white-space:nowrap}
+#gui-casual-lobby .shop-native-v2 .sn-discount {position:absolute;isolation:isolate;left:auto;right:2px;top:2px;z-index:3;display:grid;place-items:center;width:30px;height:21px;padding:0;border:0;background:none;color:#ffd778;font-size:11px;font-weight:700;line-height:1;pointer-events:none;user-select:none}
+#gui-casual-lobby .shop-native-v2 .sn-discount::before {content:'';position:absolute;inset:0;z-index:-1;background:url('/art/psd-equipment-v1/button-gold-native.png') center/150% 200% no-repeat;filter:brightness(.5) saturate(.7);-webkit-mask-box-image:url('/art/psd-main-v1/resources/diamonds-background.png') 18 fill / 6px stretch;mask-border:url('/art/psd-main-v1/resources/diamonds-background.png') 18 fill / 6px stretch}
+#gui-casual-lobby .shop-native-v2 .sn-discount::after {content:'';position:absolute;inset:0;z-index:-1;border:0 solid transparent;border-image:url('/art/psd-main-v1/resources/diamonds-background.png') 18 / 6px stretch}
+#gui-casual-lobby .shop-native-v2 .sn-discount>span {position:static;transform:none}
+#gui-casual-lobby .shop-native-v2 .sn-refresh {display:grid;grid-template-columns:minmax(0,1fr) calc(88cqw / 3);align-items:center;width:100%;margin:0 0 4px;padding:0;gap:2cqw;border:0}
+#gui-casual-lobby .shop-native-v2 .sn-refresh .sn-button {--psd-button-corner:9px;justify-self:stretch;width:100%;height:44px;min-height:44px;padding:4px 6px;gap:4px;white-space:nowrap;font-size:14px}
+/* Match one offer column; the 36px PSD face retains a 44px touch target. */
+#gui-casual-lobby .shop-native-v2 .sn-refresh .sn-button::before {inset:4px 0!important}
+#gui-casual-lobby .sn-refresh .shop-icon {width:20px;height:20px;flex:none;object-fit:contain}
+#gui-casual-lobby .sn-dialog-actions [data-project-icon='ad-play'] {width:28px;height:24px;flex:none;object-fit:contain}
+#gui-casual-lobby [data-project-icon='ad-play'] {filter:none!important}
 #gui-casual-lobby .shop-native-v2 .sn-refresh strong {font-size:clamp(11px,3cqw,14px)}
-#gui-casual-lobby .shop-native-v2 .sn-refresh small {font-size:clamp(10px,2.8cqw,12px)}
-/* Currency rows keep the amount and stock beside the art, with a dedicated
-   price column wide enough for both the cost and an unavailable state. */
-#gui-casual-lobby .shop-native-v2 .sn-currency {grid-template-columns:clamp(48px,16cqw,76px) minmax(0,1fr) 30%;grid-template-areas:'art copy action';align-items:center;min-height:max(88px,25cqw);gap:2cqw}
-#gui-casual-lobby .shop-native-v2 .sn-currency>.sn-art {height:clamp(50px,16cqw,76px)}
-#gui-casual-lobby .shop-native-v2 .sn-currency-copy {grid-area:copy;display:grid;gap:3px;min-width:0}
-#gui-casual-lobby .shop-native-v2 .sn-currency-copy>h3 {min-height:0;padding:0;justify-content:flex-start;font-size:clamp(12px,3.5cqw,15px);line-height:1.2}
-#gui-casual-lobby .shop-native-v2 .sn-currency-copy>strong {color:#fff0bd;font-size:clamp(17px,5cqw,24px);line-height:1.15;font-variant-numeric:tabular-nums}
-#gui-casual-lobby .shop-native-v2 .sn-currency-copy>small {color:#b3cdda;font-size:clamp(10px,2.8cqw,12px);line-height:1.3;white-space:nowrap}
-#gui-casual-lobby .shop-native-v2 .sn-currency>.sn-button {height:max(42px,11cqw);min-height:42px}
 @container(max-width:300px) {
  #gui-casual-lobby .shop-native-v2 .sn-content {padding-bottom:0}
  #gui-casual-lobby .shop-native-v2 .sn-section:not([data-shop-section='boxes']) {padding-bottom:1cqw}
- #gui-casual-lobby .shop-native-v2 .sn-tile {grid-template-rows:28px 40px auto 36px;gap:2px}
- #gui-casual-lobby .shop-native-v2 .sn-tile>h3 {line-height:1.15}
  #gui-casual-lobby .shop-native-v2 .sn-refresh {padding:1cqw 0}
 }
 #gui-casual-lobby .sn-result[data-psd-quality] {border:0;background:none;color:#edf7fc;border-image:var(--quality-plate) 18 fill / var(--quality-corner) stretch}

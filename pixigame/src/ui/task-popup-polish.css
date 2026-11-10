@@ -34,7 +34,7 @@
 }
 #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-body {flex:1;min-width:0}
 #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-title h3 {
-  margin:0;color:#302f2b;font-size:14px;font-weight:800;line-height:1.4;text-shadow:none;
+  margin:0;color:#302f2b;font-size:var(--psd-small-title-size);font-weight:800;line-height:var(--psd-small-title-leading,1.5);text-shadow:none;
 }
 #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards {
   display:flex;flex-wrap:wrap;gap:4px 12px;margin:7px 0 8px;
@@ -76,5 +76,5 @@
   #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task {gap:8px;padding:10px 8px}
   #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-claim {flex-basis:66px;width:66px;font-size:13px}
   #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-rewards {gap:4px 7px}
-  #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-title h3 {font-size:13px}
+  #gui-casual-lobby .lobby-paper-modal[data-modal-kind='tasks'] .lc-task-title h3 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 }

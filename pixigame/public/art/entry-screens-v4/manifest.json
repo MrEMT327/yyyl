@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "created": "2026-11-04",
+  "purpose": "项目启动页：用户确认方案，头发和外套约5%扁平化修整",
+  "generation": "built-in image_gen",
+  "file": "startup.png",
+  "sha256": "7e678c9dfced357e735e2c621692be5479b41629a4cc9b284790b0b84c21fed0",
+  "size": [
+    852,
+    1846
+  ],
+  "references": [
+    "doc/ui-reference-remake/loading-redesign-v1/loading-concept-v3.png",
+    "psd/主界面.psd (background direction)"
+  ],
+  "uiNotBaked": [
+    "loading status",
+    "progress bar",
+    "start/retry button"
+  ],
+  "runtimeProgressArt": [
+    "art/psd-combat-v1/health-track.png",
+    "art/psd-combat-v1/health-fill.png"
+  ],
+  "sourceImage": "doc/ui-reference-remake/loading-redesign-v1/loading-art-v4.png"
+}

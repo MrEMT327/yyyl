@@ -94,7 +94,7 @@ export function planSamplePatrol(raw,rawInventory,campaign,time,operation,stamin
     if(!UNLIMITED_RESOURCES&&(!Number.isSafeInteger(stamina)||stamina<STAMINA_COST))throw Error('体力不足');
     staminaCost=UNLIMITED_RESOURCES?0:STAMINA_COST;ledger.quickUsed++;
   }else if(operation.mode==='ad'){
-    if(ledger.adUsed>=AD_COUNT)throw Error('今日模拟广告快速次数已用完');
+    if(ledger.adUsed>=AD_COUNT)throw Error('今日免费快速巡逻次数已用完');
     ledger.adUsed++;
   }else if(operation.mode==='devSample'&&UNLOCK_ALL_CONTENT){pairs=PATROL_SAMPLE.map(row=>[row.id,row.count]);}
   else throw Error('巡逻操作无效');
@@ -102,6 +102,6 @@ export function planSamplePatrol(raw,rawInventory,campaign,time,operation,stamin
   for(const [id,count] of pairs){const total=(inventory.items[id]||0)+count;if(!Number.isSafeInteger(total))throw Error('库存数量超限');inventory.items[id]=total;}
   ledger.lastSeen=time;
   inventory.revision++;
-  return {samplePatrol:true,ledger,inventory:validateReplicaInventory(inventory),staminaCost,
+  return {samplePatrol:true,ledger,inventory:validateReplicaInventory(inventory),staminaCost,weeklyTaskEligible:operation.mode!=='devSample',
     rewards:presentation(pairs),title:operation.mode==='devSample'?'开发样例发放':'巡逻收益 · 离线兼容v1'};
 }

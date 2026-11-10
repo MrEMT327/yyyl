@@ -21,7 +21,19 @@ export const SHOP_OFFERS=Object.freeze([
 ].map(o=>Object.freeze(o.id==='ad-stamina'?{...o,reward:{stamina:15},unlimited:true,limit:null,perLimit:1}:o.id==='coin-ad'?{...o,limit:1,perLimit:1}:o)));
 function hash(text){let n=2166136261;for(const c of String(text)){n^=c.charCodeAt(0);n=Math.imul(n,16777619);}return n>>>0;}
 function roll(seed){let n=seed>>>0;return()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
-function catalog(day,seed,refreshes){const rng=roll(hash(`${day}:${seed}:${refreshes}`));return [1,2,3,4].map(group=>{const pool=dailyGroups.filter(r=>r.GroupId===group),total=pool.reduce((s,r)=>s+r.WeightInGroup,0);let hit=rng()*total;return(pool.find(r=>(hit-=r.WeightInGroup)<0)||pool.at(-1)).GoodsId;});}
+function legacyCatalog(day,seed,refreshes){const rng=roll(hash(`${day}:${seed}:${refreshes}`));return [1,2,3,4].map(group=>{const pool=dailyGroups.filter(r=>r.GroupId===group),total=pool.reduce((s,r)=>s+r.WeightInGroup,0);let hit=rng()*total;return(pool.find(r=>(hit-=r.WeightInGroup)<0)||pool.at(-1)).GoodsId;});}
+function catalog(day,seed,refreshes,includeFreeCoin){
+ const rng=roll(hash(`${day}:${seed}:${refreshes}:six-slots`)),selected=includeFreeCoin?[LOCAL_SHOP_POLICY.dailyFreeCoinGoodsId]:[];
+ const rewards=new Set(selected.map(id=>goods.get(id).reward[0][0]));
+ for(let index=selected.length;index<LOCAL_SHOP_POLICY.dailyCatalogSlots;index++){
+  // Reuse native prices/weights, with distinct reward items across all six slots.
+  const group=2+(index%3),pool=dailyGroups.filter(row=>row.GroupId===group&&goods.get(row.GoodsId)?.price.length&&!rewards.has(goods.get(row.GoodsId).reward[0][0]));
+  const total=pool.reduce((sum,row)=>sum+row.WeightInGroup,0);let hit=rng()*total;
+  const chosen=pool.find(row=>(hit-=row.WeightInGroup)<0)||pool.at(-1);
+  selected.push(chosen.GoodsId);rewards.add(goods.get(chosen.GoodsId).reward[0][0]);
+ }
+ return selected;
+}
 function normalizeDailyGoodsCounts(value,day,seed,refreshes,reset){
  if(reset)return {};
  // Old builds kept only this page's slot counters. Recover all known purchases
@@ -29,7 +41,7 @@ function normalizeDailyGoodsCounts(value,day,seed,refreshes,reset){
  if(value?.dailyGoodsCounts&&typeof value.dailyGoodsCounts==='object'&&!Array.isArray(value.dailyGoodsCounts))
   return Object.fromEntries(Object.entries(value.dailyGoodsCounts).filter(([id])=>/^[1-9]\d*$/.test(id)).map(([id,n])=>[id,integer(n)]));
  const counts={};
- catalog(day,seed,refreshes).forEach((id,index)=>{const n=integer(value?.dailyCounts?.[`daily-${index}`]);if(n)counts[id]=(counts[id]||0)+n;});
+ legacyCatalog(day,seed,refreshes).forEach((id,index)=>{const n=integer(value?.dailyCounts?.[`daily-${index}`]);if(n)counts[id]=(counts[id]||0)+n;});
  return counts;
 }
 export function normalizeShop(value,time,seed=0){
@@ -39,6 +51,7 @@ export function normalizeShop(value,time,seed=0){
   return {version:2,day,seed:savedSeed,revision:integer(value.revision),refreshes,
    dailyGoodsCounts:normalizeDailyGoodsCounts(value,day,savedSeed,refreshes,reset),
    counts:reset?{}:{...value.counts},dailyCounts:reset?{}:{...value.dailyCounts},dailyFreeClaimed:reset?false:!!value.dailyFreeClaimed,
+   dailyFreeClaimRefresh:reset?null:value.dailyFreeClaimed?integer(value.dailyFreeClaimRefresh??refreshes):null,
    ...(value.pending?{pending:copy(value.pending)}:{}),...(value.legacy?{legacy:copy(value.legacy)}:{})};
  }
  const old=reset?{}:value?.counts||{};
@@ -47,7 +60,8 @@ export function normalizeShop(value,time,seed=0){
 const rewardView=reward=>Object.entries(reward).map(([type,amount])=>type.startsWith('researchBlueprint')?{type:'nativeItem',id:Number(type.slice(17)),nativeItemId:Number(type.slice(17)),amount,...nativeItemPresentation(Number(type.slice(17)))}:type.startsWith('blueprint')?{type:'gearBlueprint',gearType:Number(type.slice(9)),amount,name:SHOP_RESOURCE_NAMES[type],image:equipmentBlueprintArtPath(GEAR_PARTS[Number(type.slice(9))-1].id)}:type.endsWith('Keys')?{type:'gearKey',pool:type==='basicKeys'?'basic':'advanced',amount,name:SHOP_RESOURCE_NAMES[type],image:nativeItemPresentation(type==='basicKeys'?113:112).image}:{type,amount,name:SHOP_RESOURCE_NAMES[type]||type});
 export function shopSnapshot(value,wallet,time=Date.now()){
  const state=normalizeShop(value,time,wallet.shopSeed),clockBlocked=dayKey(time)<state.day;
- const daily=catalog(state.day,state.seed,state.refreshes).map((nativeId,index)=>{const row=goods.get(nativeId);return{...fixed(`daily-${index}`,nativeId,'daily'),discount:row.price.length?Math.floor(nativeId/100)%10:0,slot:index};});
+ const includeFreeCoin=!state.dailyFreeClaimed||state.refreshes===state.dailyFreeClaimRefresh;
+ const daily=catalog(state.day,state.seed,state.refreshes,includeFreeCoin).map((nativeId,index)=>{const row=goods.get(nativeId);return{...fixed(`daily-${index}`,nativeId,'daily'),discount:row.price.length?Math.floor(nativeId/100)%10:0,slot:index};});
  const fixedOffers=SHOP_OFFERS.map(o=>({...o,cost:{...o.cost},reward:{...o.reward}}));
  fixedOffers.find(o=>o.id==='exchange-stamina').cost.amount=reference.staminaPrices[Math.min(4,state.counts['exchange-stamina']||0)];
  const items=[...daily,...fixedOffers].map(o=>{
@@ -59,7 +73,7 @@ export function shopSnapshot(value,wallet,time=Date.now()){
  const refreshRemaining=null; // Server-owned total allowance is unknown.
  const refreshReason=state.pending?'存档待恢复':clockBlocked?'日期异常':!wallet.unlimited&&wallet.coins<refreshCost?'金币不足':'';
  const refreshAdReason=state.pending?'存档待恢复':clockBlocked?'日期异常':state.refreshes<reference.refreshFree?'请先使用免费刷新':'';
- return{day:state.day,token:`shop3:${state.day}:${state.revision}:${state.refreshes}:${wallet.highestCleared??-1}:${state.seed}`,items,clockBlocked,pending:!!state.pending,hasFree:items.some(o=>o.section==='daily'&&o.cost.type==='free'&&o.available),refresh:{count:state.refreshes,remaining:refreshRemaining,limit:LOCAL_SHOP_POLICY.dailyRefreshLimit,freeLimit:reference.refreshFree,freeRemaining:Math.max(0,reference.refreshFree-state.refreshes),totalLimitKnown:false,cost:refreshCost,adAvailable:!refreshAdReason,adReason:refreshAdReason,available:!refreshReason,reason:refreshReason,compatibility:true,ruleNote:LOCAL_SHOP_POLICY.note},remainingMinutes:Math.ceil(Math.max(0,new Date(`${state.day}T00:00:00`).getTime()+86400000-time)/60000),resetAt:new Date(`${state.day}T00:00:00`).getTime()+86400000};
+ return{day:state.day,token:`shop4:${state.day}:${state.revision}:${state.refreshes}:${wallet.highestCleared??-1}:${state.seed}`,items,clockBlocked,pending:!!state.pending,hasFree:items.some(o=>o.section==='daily'&&o.cost.type==='free'&&o.available),refresh:{count:state.refreshes,remaining:refreshRemaining,limit:LOCAL_SHOP_POLICY.dailyRefreshLimit,freeLimit:reference.refreshFree,freeRemaining:Math.max(0,reference.refreshFree-state.refreshes),totalLimitKnown:false,cost:refreshCost,adAvailable:!refreshAdReason,adReason:refreshAdReason,available:!refreshReason,reason:refreshReason,compatibility:true,ruleNote:LOCAL_SHOP_POLICY.note},remainingMinutes:Math.ceil(Math.max(0,new Date(`${state.day}T00:00:00`).getTime()+86400000-time)/60000),resetAt:new Date(`${state.day}T00:00:00`).getTime()+86400000};
 }
 export function planShopOrder(value,wallet,{id,token,time=Date.now(),adCompleted=false,quantity=1,rng=Math.random,refresh=false,refreshWithAd=false}={}){
  const snap=shopSnapshot(value,wallet,time);if(token!==snap.token)return fail('商品状态已更新，请重新选择');
@@ -80,7 +94,7 @@ export function planShopOrder(value,wallet,{id,token,time=Date.now(),adCompleted
   }
   if(item.reward.stamina&&wallet.stamina>=wallet.maxStamina)return fail('体力已满');
   if(price&&!wallet.unlimited)delta[item.cost.type]=(delta[item.cost.type]||0)-price;
-  if(item.section==='daily'){state.dailyCounts[id]=integer(state.dailyCounts[id])+quantity;state.dailyGoodsCounts[item.nativeId]=integer(state.dailyGoodsCounts[item.nativeId])+quantity;if(item.cost.type==='free')state.dailyFreeClaimed=true;}
+  if(item.section==='daily'){state.dailyCounts[id]=integer(state.dailyCounts[id])+quantity;state.dailyGoodsCounts[item.nativeId]=integer(state.dailyGoodsCounts[item.nativeId])+quantity;if(item.cost.type==='free'){state.dailyFreeClaimed=true;state.dailyFreeClaimRefresh=state.refreshes;}}
   else {state.counts[id]=integer(state.counts[id])+quantity;if(id==='coin-ad')state.counts['exchange-coins']=integer(state.counts['exchange-coins'])+quantity;}
  }
  const before={},after={};for(const[k,n]of Object.entries(delta)){if(!Number.isFinite(wallet[k])||wallet[k]<0||wallet[k]+n<0)return fail('资源数据异常，请重新进入');before[k]=wallet[k];after[k]=wallet[k]+n;}

@@ -15,15 +15,15 @@
 }
 #gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button)::before {
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:none;
-  border:0;border-image:url('/art/equipment-controls-v1/button-normal.png') 24 fill / 11px stretch;
+  border:0;border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 11px stretch;
 }
 #gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button)::after {content:none}
 #gui-casual-lobby.equipment-reference .eq-choice-trigger>span {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #gui-casual-lobby.equipment-reference .eq-choice-chevron {width:16px;height:16px;flex:none;margin-left:5px;transition:rotate .12s}
-#gui-casual-lobby.equipment-reference .eq-choice-trigger[aria-expanded='true']::before {border-image-source:url('/art/equipment-controls-v1/button-selected.png')}
+#gui-casual-lobby.equipment-reference .eq-choice-trigger[aria-expanded='true']::before {filter:brightness(1.18)}
 #gui-casual-lobby.equipment-reference .eq-choice-trigger[aria-expanded='true']>.eq-choice-chevron {rotate:180deg}
-#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):active::before {border-image-source:url('/art/equipment-controls-v1/button-pressed.png')}
-#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):disabled::before {border-image-source:url('/art/equipment-controls-v1/button-disabled.png')}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):active::before {filter:brightness(1.18)}
+#gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):disabled::before {filter:grayscale(1) brightness(.65)}
 #gui-casual-lobby.equipment-reference .eq-toolbar-authored :is(.eq-choice-trigger,.eq-workshop-button):disabled {color:#7891a2!important;cursor:default}
 #gui-casual-lobby.equipment-reference .eq-toolbar-authored .eq-workshop-button {justify-content:center}
 #gui-casual-lobby.equipment-reference .eq-toolbar-authored .eq-workshop-button strong {color:inherit;font:400 clamp(15px,4.1cqw,20px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;-webkit-text-stroke:0;text-shadow:0 1px #071725}

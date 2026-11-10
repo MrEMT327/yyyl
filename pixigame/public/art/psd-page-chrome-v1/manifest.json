@@ -1,0 +1,62 @@
+{
+  "source": "psd/主界面.psd",
+  "sourceSha256": "41f4f4ddd838eb4ec386db81c39a8722a83c15ad3150ff744153e8fffb9b82c7",
+  "export": "Isolated PSD RGBA layers. Idle changes only the chapter layer opacity.",
+  "assets": {
+    "chapter-face": {
+      "file": "chapter-face.png",
+      "size": [
+        534,
+        94
+      ],
+      "layerId": 243,
+      "layerPath": "组 8/图层 25 拷贝",
+      "bounds": [
+        116,
+        132,
+        650,
+        226
+      ],
+      "layerOpacity": 255,
+      "sha256": "04979a48c5be83b2ac610b2e88f48e1ba51a3002f530dbf31fc0d43314f4422e",
+      "slice": 18,
+      "cornerCssPx": 8
+    },
+    "chapter-idle": {
+      "file": "chapter-idle.png",
+      "size": [
+        534,
+        94
+      ],
+      "layerId": 243,
+      "layerPath": "组 8/图层 25 拷贝",
+      "bounds": [
+        116,
+        132,
+        650,
+        226
+      ],
+      "layerOpacity": 110,
+      "sha256": "41a9a72cbfc3909ce67248f7ee95c9cfbf0a5c0560163e2d9758f343b8e7246a",
+      "slice": 18,
+      "cornerCssPx": 8
+    },
+    "navigation-matte": {
+      "file": "navigation-matte.png",
+      "size": [
+        750,
+        144
+      ],
+      "layerId": 34,
+      "layerPath": "组 2/图层 4",
+      "bounds": [
+        0,
+        1480,
+        750,
+        1624
+      ],
+      "layerOpacity": 128,
+      "sha256": "5fc5f88d332d33d5457fcac7f826f989aad110b5696b1dfc7a1016b592e96906"
+    }
+  }
+}

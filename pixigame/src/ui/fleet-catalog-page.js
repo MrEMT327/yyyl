@@ -2,12 +2,15 @@ import { compactPilotAvatar } from '../pilot-avatar-icons.js';
 import { characterPortrait } from './character-portraits.js';
 import { projectIcon, projectIconUrl } from './project-ui-art.js';
 import { lobbyCost } from './lobby-cost.js';
-import { FLEET_FILTERS, fleetSkillDefinition, fleetSkillSnapshot } from '../peripheral/fleet-skills.js';
+import { fleetSkillDefinition, fleetSkillSnapshot } from '../peripheral/fleet-skills.js';
 import { emptySlotMark } from './psd-empty-slot.js';
+import { fleetSkillSelection } from './pilot-skill-selection.js';
 import './fleet-catalog-page.css';
 import './pilot-catalog-avatars.css';
+import './fleet-catalog-card.css';
+import './pilot-skill-selection.css';
 
-const names={aircraft:'战机',pilot:'驾驶员'};
+const names={aircraft:'战机',pilot:'驾驶员',weapon:'武器'};
 const titleOf=(item,kind)=>kind==='aircraft'?item.aircraftName||item.aircraft||item.name:item.name;
 const rank=item=>Math.min(5,Math.max(0,Math.floor(Number(item?.stars)||0)));
 const attrs=(item,kind,e)=>`data-id="${e(item.id)}" data-kind="${kind}"`;
@@ -28,7 +31,7 @@ function skillIcon(skill,cls='') {
   return skill?.image?`<img class="fc-skill-icon ${cls}" src="${String(skill.image).replaceAll('&','&amp;').replaceAll('"','&quot;')}" alt="">`:skill?projectIcon(skill.icon,`fc-skill-icon ${cls}`):emptySlotMark(`fc-skill-icon ${cls}`);
 }
 
-export function fleetCatalogPage({kind='aircraft',snapshot:s={},selectedId,skillTab=false,filter='all',filterOpen=false,selectedSkillSlot=null,pendingSkillId=null,helpers:h}) {
+export function fleetCatalogPage({kind='aircraft',snapshot:s={},selectedId,skillTab=false,selectedSkillSlot=null,selectedSkillId=null,pendingSkillId=null,helpers:h}) {
   const {escape:e,number:n}=h,items=(kind==='aircraft'?s.aircraft:s.pilots)||[];
   const activeId=kind==='aircraft'?s.aircraftId:s.pilotId;
   const selected=items.find(i=>i.id===selectedId)||items.find(i=>i.id===activeId)||items[0];
@@ -37,7 +40,7 @@ export function fleetCatalogPage({kind='aircraft',snapshot:s={},selectedId,skill
   const displayed=skillTab?(items.find(i=>i.id===activeId)||selected):selected;
   const bank=bankFor(kind,s),revision=s.fleet?.revision??0,skill=bank.skills.find(x=>x.id===selected.id)||fleetSkillDefinition(kind,selected);
   const extra=attrs(selected,kind,e),isUsing=selected.id===activeId;
-  const primary=!selected.owned
+  const primary=!selected.owned&&!selected.baseOnly
     ? button('fleetUnlock',`<strong>激活</strong><small>${portrait(selected,kind,h)}${n(copies(selected))}/1</small>`,extra,'fc-operation')
     : button(kind==='aircraft'?'selectAircraft':'selectPilot',selected.temporaryUnlocked?isUsing?'试玩中':'试玩':isUsing?'使用中':'使用',extra,`fc-operation${isUsing?' is-using':''}`,isUsing);
   const starButton=selected.temporaryUnlocked?button('fleetUnlock',`<strong>激活</strong><small>${portrait(selected,kind,h)}${n(copies(selected))}/1</small>`,extra,'fc-operation')
@@ -47,35 +50,32 @@ export function fleetCatalogPage({kind='aircraft',snapshot:s={},selectedId,skill
   const skillPreview=skill&&!skillTab?`<button type="button" class="fc-unlock-skill" data-action="fleetSkillPreview" ${extra} aria-label="查看${e(skill.name)}技能预览"><span class="fc-unlock-skill-art">${skillIcon(skill)}</span><span>${e(skill.name)}</span></button>`:'';
   const slot=(id,index,compact=false)=>{
     const equipped=bank.skills.find(x=>x.id===id),chosen=selectedSkillSlot===index;
-    return `<button type="button" class="fc-skill-slot${chosen?' is-selected':''}${pendingSkillId?' is-replace-target':''}${compact?' is-compact':''}" data-action="fleetSkillSlot" data-kind="${kind}" data-slot="${index}" aria-pressed="${chosen}" aria-label="技能位置${index+1}，${equipped?e(equipped.name):'空闲'}"><span class="fc-slot-index">${index+1}</span>${skillIcon(equipped)}${!compact&&equipped?`<span class="fc-slot-name">${e(equipped.name)}</span>`:''}</button>`;
+    return `<button type="button" class="fc-skill-slot${chosen?' is-selected':''}${pendingSkillId?' is-replace-target':''}${compact?' is-compact':''}" data-action="fleetSkillSlot" data-kind="${kind}" data-slot="${index}" aria-pressed="${chosen}" aria-label="技能位置${index+1}，${equipped?e(equipped.name):'空闲'}"><span class="fc-slot-index">${index+1}</span>${skillIcon(equipped)}${!compact&&equipped&&!nativeFleetSkills?`<span class="fc-slot-name">${e(equipped.name)}</span>`:''}</button>`;
   };
-  const selecting=skillTab&&selectedSkillSlot!=null, nativePilotSkills=kind==='pilot'&&s.catalogPresentation?.native;
-  const slots=skillTab?`${selecting&&!nativePilotSkills?'<button type="button" class="fc-skill-cancel-area" data-action="fleetSkillCancel" aria-label="取消技能选择"></button>':''}<div class="fc-skill-group" aria-label="已装备技能">${bank.slots.map((id,index)=>slot(id,index)).join('')}</div>`
+  const selecting=skillTab&&selectedSkillSlot!=null, nativeFleetSkills=['pilot','aircraft'].includes(kind)&&s.catalogPresentation?.native;
+  const fleetSelection=skillTab&&nativeFleetSkills?fleetSkillSelection({kind,bank,selectedSkillSlot,selectedSkillId,revision,helpers:h,skillIcon,button}):null;
+  const slots=skillTab?`${selecting&&!nativeFleetSkills?'<button type="button" class="fc-skill-cancel-area" data-action="fleetSkillCancel" aria-label="取消技能选择"></button>':''}<div class="fc-skill-group" aria-label="已装备技能">${bank.slots.map((id,index)=>slot(id,index)).join('')}</div>`
     :'';
-  const filters=s.catalogPresentation?.filters||FLEET_FILTERS;
-  const activeFilter=filters.some(option=>option.id===filter)?filter:'all';
-  const filtered=items.filter(item=>activeFilter==='owned'?(item.activated??item.owned):activeFilter==='locked'?!(item.activated??item.owned):activeFilter==='all'||(s.catalogPresentation?.skillFor(item)||fleetSkillDefinition(kind,item))?.category===activeFilter);
-  const cards=filtered.map(item=>{
+  const cards=items.map(item=>{
     const chosen=item.id===selected.id,using=item.id===activeId,def=s.catalogPresentation?.skillFor(item)||fleetSkillDefinition(kind,item);
     const label=`${titleOf(item,kind)}，${rank(item)}星${item.temporaryUnlocked?'，试玩':item.owned?'':'，未激活'}${using?item.temporaryUnlocked?'中':'，使用中':''}`;
-    return `<div class="fc-item-wrap${chosen?' is-selected':''}"><button type="button" class="wc-item fc-item${item.owned?'':' is-locked'}" data-action="catalogSelect" ${attrs(item,kind,e)} data-rarity="${e(item.rarity||'R')}" aria-label="${e(label)}" aria-pressed="${chosen}"><span class="fc-card-art${kind==='pilot'?' fc-avatar':''}">${portrait(item,kind,h)}</span><span class="fc-card-type" aria-hidden="true">${skillIcon(def)}</span>${stars(item)}${using?projectIcon('check','fc-worn-check'):''}${!item.owned?projectIcon('lock','wc-lock'):''}${chosen?'<i class="fc-browse-corners" aria-hidden="true"></i>':''}</button></div>`;
+    return `<div class="fc-item-wrap${chosen?' is-selected':''}"><button type="button" class="wc-item fc-item${item.owned?'':' is-locked'}" data-action="catalogSelect" ${attrs(item,kind,e)} data-rarity="${e(item.rarity||'R')}" aria-label="${e(label)}" aria-pressed="${chosen}"><span class="fc-card-surface" aria-hidden="true"></span><span class="fc-card-art${kind==='pilot'?' fc-avatar':''}">${portrait(item,kind,h)}</span><span class="fc-card-type" aria-hidden="true">${skillIcon(def)}</span>${stars(item)}${using?projectIcon('check','fc-worn-check'):''}${!item.owned?projectIcon('lock','wc-lock'):''}</button></div>`;
   }).join('');
   // Show available choices while selecting a slot, otherwise show equipped skills.
   const visibleSkills=selecting?bank.skills.filter(x=>x.owned):bank.slots.map((id,index)=>({...(bank.skills.find(x=>x.id===id)||{}),slot:index}));
   const rows=visibleSkills.map(row=>{
     const equipped=Boolean(row.id)&&row.slot>=0,extra2=`data-kind="${kind}" data-id="${e(row.id||'')}" data-revision="${revision}"`;
     const rowAction=selecting?button(equipped?'fleetSkillRemove':'fleetSkillEquip',equipped?'卸下':'装备',`${extra2}${equipped?` data-slot="${row.slot}"`:''}`,'fc-row-action'):'';
-    return `<article class="fc-skill-row${equipped?' is-equipped':''}${selecting?' is-wearable':' is-effect'}" data-skill-id="${e(row.id||'')}" data-skill-slot="${row.slot}"><button type="button" class="fc-row-preview" data-action="${row.id?'fleetSkillPreview':'fleetSkillSlot'}" ${extra2} data-slot="${row.slot}" aria-label="${row.id?`查看${e(row.name)}技能预览`:`选择位置${row.slot+1}的技能`}">${skillIcon(row.id?row:null)}${equipped?`<b>${row.slot+1}</b>`:''}</button>${nativePilotSkills?`<div class="fc-row-copy"><h3>${e(row.name||'')}</h3><p>${e(row.description||'')}</p></div>`:`<p>${e(row.description||'未装备')}</p>`}${rowAction}</article>`;
+    return `<article class="fc-skill-row${equipped?' is-equipped':''}${selecting?' is-wearable':' is-effect'}" data-skill-id="${e(row.id||'')}" data-skill-slot="${row.slot}"><button type="button" class="fc-row-preview" data-action="${row.id?'fleetSkillPreview':'fleetSkillSlot'}" ${extra2} data-slot="${row.slot}" aria-label="${row.id?`查看${e(row.name)}技能预览`:`选择位置${row.slot+1}的技能`}">${skillIcon(row.id?row:null)}${equipped?`<b>${row.slot+1}</b>`:''}</button>${nativeFleetSkills?`<div class="fc-row-copy"><h3>${e(row.name||'')}</h3><p>${e(row.description||'')}</p></div>`:`<p>${e(row.description||'未装备')}</p>`}${rowAction}</article>`;
   }).join('');
-  const filterLabel=filters.find(x=>x.id===activeFilter)?.label||'全部';
-  const options=filterOpen&&!skillTab&&kind==='pilot'?`<button class="fc-filter-dismiss" data-action="fleetFilterClose" aria-label="关闭筛选"></button><div class="fc-filter-options" role="menu" aria-label="驾驶员类型">${filters.map(x=>`<button type="button" class="psd-option" role="menuitemradio" aria-checked="${activeFilter===x.id}" data-action="fleetFilterSet" data-filter="${x.id}">${x.label}</button>`).join('')}</div>`:'';
-  return `<section class="ref-catalog wc-page fc-page fc-${kind}" data-catalog-kind="${kind}" data-catalog-mode="${skillTab?'skills':'list'}" data-catalog-selected="${e(selected.id)}" data-display-id="${e(displayed.id)}" aria-label="${names[kind]}目录">
+  return `<section class="ref-catalog wc-page fc-page fc-${kind}${fleetSelection?' pcs-page':''}${fleetSelection?.action?' pcs-has-action':''}" data-catalog-kind="${kind}" data-catalog-mode="${skillTab?'skills':'list'}" data-catalog-selected="${e(selected.id)}" data-display-id="${e(displayed.id)}" aria-label="${names[kind]}目录">
     <div class="fc-hero" aria-hidden="true"></div><img class="fc-platform" src="${import.meta.env?.BASE_URL??'/'}art/project-fleet-stage-v2/platform.png" alt="" aria-hidden="true" draggable="false">
-    <div class="fc-identity"><h1>${kind==='aircraft'?`<span class="fc-title">${e(titleOf(displayed,kind))}</span>`:`<button type="button" class="fc-info" data-action="pilotInfo" ${attrs(displayed,kind,e)} aria-label="查看${e(titleOf(displayed,kind))}详情">${e(titleOf(displayed,kind))}${projectIcon('info','fc-info-icon')}</button>`}</h1>${stars(displayed,'fc-header-stars')}${kind==='aircraft'?`<p class="fc-header-stats"><span>攻击力 <b>${n(displayed.attack||0)}</b></span><span>耐久 <b>${n(displayed.hp||0)}</b></span></p>`:''}</div>
+    <div class="fc-identity"><h1><span class="fc-title">${e(titleOf(displayed,kind))}</span></h1>${stars(displayed,'fc-header-stars')}${kind==='aircraft'?`<p class="fc-header-stats"><span>攻击力 <b>${n(displayed.attack||0)}</b></span><span>耐久 <b>${n(displayed.hp||0)}</b></span></p>`:''}</div>
     ${heroArt}${skillPreview}${slots}${!skillTab?`<div class="fc-hero-actions">${primary}${starButton}</div>`:''}
-    <header class="wc-heading fc-heading">${kind==='pilot'&&!skillTab?button('catalogFilter','筛选',`aria-label="筛选驾驶员，当前${filterLabel}" aria-expanded="${filterOpen}" aria-haspopup="menu"`,'fc-filter'):''}<h2>${skillTab?nativePilotSkills?'技能列表':selecting?'选择技能':'技能效果':`${names[kind]}列表`}</h2></header>
-    <div class="ref-catalog-scroll wc-scroll fc-scroll${skillTab?' fc-skill-list':''}" data-catalog-scroll="${kind}:${skillTab?selecting?'skills-select':'skills':'list'}">${skillTab?rows||'<p class="fc-empty">暂无可携带的技能</p>':`<div class="wc-grid fc-grid">${cards}</div>${filtered.length?'':'<p class="fc-empty">暂无符合条件的驾驶员</p>'}`}</div>
-    <nav class="wc-footer fc-footer" aria-label="${names[kind]}子页面">${button('catalogBack','返回','aria-label="返回装备"','wc-back')}<span aria-hidden="true"></span>${button('catalogMode',`${projectIcon(kind==='aircraft'?'nav-battle':'nav-recruit','wc-tab-icon')}<span>${names[kind]}</span>`,`data-mode="list" aria-pressed="${!skillTab}"`,`wc-mode${skillTab?'':' is-active'}`)}${button('catalogMode',`${projectIcon('skill-tab','wc-tab-icon')}<span>技能</span>`,`data-mode="skills" aria-pressed="${skillTab}"`,`wc-mode${skillTab?' is-active':''}`)}</nav>${options}
+    <header class="wc-heading fc-heading"><h2>${skillTab?nativeFleetSkills?'技能列表':selecting?'选择技能':'技能效果':`${names[kind]}列表`}</h2></header>
+    <div class="ref-catalog-scroll wc-scroll fc-scroll${skillTab?' fc-skill-list':''}" data-catalog-scroll="${kind}:${skillTab?fleetSelection?'skills':selecting?'skills-select':'skills':'list'}">${skillTab?(fleetSelection?fleetSelection.rows:rows)||'<p class="fc-empty">暂无可携带的技能</p>':`<div class="wc-grid fc-grid">${cards}</div>${items.length?'':`<p class="fc-empty">暂无${names[kind]}</p>`}`}</div>
+    ${fleetSelection?.action?`<div class="pcs-action-dock" aria-label="技能装配操作">${fleetSelection.action}</div>`:''}
+    <nav class="wc-footer fc-footer" aria-label="${names[kind]}子页面">${button('catalogBack','','aria-label="返回装备"','wc-back')}<span aria-hidden="true"></span>${button('catalogMode',`${projectIcon(kind==='aircraft'?'nav-battle':'nav-recruit','wc-tab-icon')}<span>${names[kind]}</span>`,`data-mode="list" aria-pressed="${!skillTab}"`,`wc-mode${skillTab?'':' is-active'}`)}${button('catalogMode',`${projectIcon('nav-skill','wc-tab-icon')}<span>技能</span>`,`data-mode="skills" aria-pressed="${skillTab}"`,`wc-mode${skillTab?' is-active':''}`)}</nav>
   </section>`;
 }
 
@@ -85,11 +85,11 @@ export function fleetCatalogSkills({kind,item,snapshot,helpers:h,showGrowthRule=
   return `<article class="fc-skill-rule"><div class="fc-skill-rule-art">${skillIcon(skill)}</div><div><h3>${e(skill.name)}</h3><p>${e(skill.description)}</p></div></article>`;
 }
 
-export function fleetSkillPreview({kind,item,helpers:h,skillFor=fleetSkillDefinition,levels=[1,2,3,4,5]}) {
+export function fleetSkillPreview({kind,item,helpers:h,skillFor=fleetSkillDefinition,levels=[1,2,3,4,5],formatDescription}) {
   const {escape:e}=h,skill=skillFor(kind,item);if(!skill)return null;
-  if(['aircraft','pilot'].includes(kind))return {title:skill.ownerName||`${names[kind]}技能`,content:`<article class="fc-skill-preview fc-star-skill-preview"><header><div class="fc-skill-emblem">${skillIcon(skill)}</div><h3>${e(skill.name)}</h3></header><div class="fc-star-skill-list">${levels.map(level=>{
+  if(['aircraft','pilot','weapon'].includes(kind))return {title:'技能预览',content:`<article class="fc-skill-preview fc-star-skill-preview"><header><div class="fc-skill-emblem">${skillIcon(skill)}</div><h3>${e(skill.name)}</h3></header><div class="fc-star-skill-list">${levels.map(level=>{
     const unlocked=item.owned&&rank(item)>=level,effect=skillFor(kind,{...item,stars:level});
-    return `<section class="${unlocked?'is-unlocked':'is-locked'}" aria-label="${level}星${unlocked?'已解锁':'未解锁'}"><span class="fc-skill-star-line" aria-hidden="true">${Array.from({length:level},()=>projectIcon('star',unlocked?'':'is-icon-muted')).join('')}</span><p>${e(effect?.description||'')}</p></section>`;
+    return `<section class="${unlocked?'is-unlocked':'is-locked'}" aria-label="${level}星${unlocked?'已解锁':'未解锁'}"><span class="fc-skill-star-line" aria-hidden="true">${Array.from({length:level},()=>projectIcon('star',unlocked?'':'is-icon-muted')).join('')}</span><p>${formatDescription?formatDescription(effect?.description||'',e):e(effect?.description||'')}</p></section>`;
   }).join('')}</div></article>`};
   return {title:skill.name,content:`<article class="fc-skill-preview"><header>${skillIcon(skill)}<div><h3>${e(skill.ownerName)}</h3><p>${rank(item)} / 5 星</p></div></header><p class="fc-current-effect">${e(skill.description)}</p><div class="fc-skill-levels">${levels.map(level=>`<section class="${item.owned&&rank(item)>=level?'is-unlocked':'is-locked'}"><details><summary>${level} 星${item.owned&&rank(item)===level?' · 当前':''}</summary><p>${e(skillFor(kind,{...item,stars:level}).description)}</p></details></section>`).join('')}</div></article>`};
 }

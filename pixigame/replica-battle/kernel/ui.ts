@@ -200,7 +200,7 @@ export class Interface {
           this.audio.effect(cue,expectedPhase==='won'?.24:.19,1);
       },delay));
     }
-    this.overlay.innerHTML = `<div class="result-panel"><span class="result-kicker">${this.researchMode ? '研究试打' : '普通'} · 第 ${s.content.chapter.chapter.id} 章</span><h2>${s.phase === 'won' ? '战斗胜利' : '战斗结束'}</h2><div class="result-rule"></div><dl><div><dt>抵达波次</dt><dd>${s.wave}<small> / ${s.content.chapter.chapter.waveCount}</small></dd></div><div><dt>击败敌人</dt><dd>${s.kills}</dd></div><div><dt>战斗时间</dt><dd>${clock(s.clock)}</dd></div><div><dt>造成伤害</dt><dd>${Math.round(s.damageDealt).toLocaleString()}</dd></div></dl><button class="primary" data-action="restart">再次挑战</button><button class="secondary" data-action="home">${this.researchMode ? '返回配装' : '返回关卡'}</button></div>`;
+    this.overlay.innerHTML = `<div class="result-panel"><span class="result-kicker">${this.researchMode ? '研究试打' : '普通'} · 第 ${s.content.chapter.chapter.id} 章</span><h2>${s.phase === 'won' ? '战斗胜利' : '战斗结束'}</h2><div class="result-rule"></div><dl><div><dt>抵达波次</dt><dd>${s.wave}<small> / ${s.content.chapter.chapter.waveCount}</small></dd></div><div><dt>击败敌人</dt><dd>${s.kills}</dd></div><div><dt>战斗时间</dt><dd>${clock(s.clock)}</dd></div><div><dt>造成伤害</dt><dd>${Math.round(s.damageDealt).toLocaleString('zh-CN', {useGrouping:false})}</dd></div></dl><button class="primary" data-action="restart">再次挑战</button><button class="secondary" data-action="home">${this.researchMode ? '返回配装' : '返回关卡'}</button></div>`;
   }
   private equippedWeapons() {
     const s = this.sim;
@@ -242,7 +242,7 @@ export class Interface {
         const item = items[i];
         if (!item) return '<li class="pause-slot empty" aria-label="空槽位"></li>';
         const stars = this.inventoryStars(item.star, kind === 'active', item.raw?.MaxStar || 2);
-        return `<li class="pause-slot" aria-label="${escape(item.name)}，${item.star}星" title="${escape(item.name)} · ${item.star}星">${this.image(`stg_pause_${kind}Bg`, 'pause-slot-bg')}${this.image(item.icon, 'pause-slot-icon')}<span class="pause-stars">${stars}</span></li>`;
+        return `<li class="pause-slot" aria-label="${escape(item.name)}，${item.star}星" aria-description="${escape(item.name)} · ${item.star}星">${this.image(`stg_pause_${kind}Bg`, 'pause-slot-bg')}${this.image(item.icon, 'pause-slot-icon')}<span class="pause-stars">${stars}</span></li>`;
       }).join('');
       return `<section class="pause-inventory pause-${kind}" aria-label="${title}"><div class="pause-panel-bg"></div><h3>${this.image(`stg_pause_${kind}SkillIcon`)}<span>${title}</span></h3><ul>${slots}</ul></section>`;
     };

@@ -27,17 +27,6 @@
       "previewBytes": 25402,
       "hangarBytes": 70776
     },
-    "pilot-02": {
-      "slug": "verdant",
-      "modelVersion": "1.0.1",
-      "manifestHash": "eb20814486964b48bd23bb1375540586a3653be8f6ea304b9860d6e4ae3478cc",
-      "card": "pilot-02.webp",
-      "preview": "pilot-02-preview.webp",
-      "hangar": "pilot-02-hangar.webp",
-      "cardBytes": 8080,
-      "previewBytes": 24940,
-      "hangarBytes": 86206
-    },
     "pilot-03": {
       "slug": "crimson",
       "modelVersion": "46.0.0",
@@ -70,17 +59,6 @@
       "cardBytes": 12564,
       "previewBytes": 38594,
       "hangarBytes": 70472
-    },
-    "pilot-06": {
-      "slug": "scarlet",
-      "modelVersion": "2.0.1",
-      "manifestHash": "a587967b3d834dadecae74b53a2bfe85e18ac3d0bd060b62b274fa6501463bfd",
-      "card": "pilot-06.webp",
-      "preview": "pilot-06-preview.webp",
-      "hangar": "pilot-06-hangar.webp",
-      "cardBytes": 10776,
-      "previewBytes": 32084,
-      "hangarBytes": 81558
     },
     "pilot-07": {
       "slug": "verdure",

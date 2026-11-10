@@ -1,4 +1,5 @@
-const KEY='thunder-audio-preferences-v1';
+export const AUDIO_PREFERENCES_KEY='thunder-audio-preferences-v1';
+const KEY=AUDIO_PREFERENCES_KEY;
 export function readAudioPreferences(storage) {
   try {const value=JSON.parse(storage?.getItem(KEY)||'{}');return {music:value?.music!==false,effects:value?.effects!==false};}
   catch {return {music:true,effects:true};}

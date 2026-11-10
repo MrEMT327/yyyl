@@ -6,7 +6,7 @@ export const PORTRAIT_FRAMING=Object.freeze({
   'pilot-07':profile([.290,.030,.760,.980],.049,.624,.956),
   'pilot-09':profile([.365,.020,.755,.980],.037,.590,.963),
   // Seated subject scale aligned with the other pilots; retain the measured motion bounds.
-  'pilot-01':profile([.225,.105,.892,.914],.131,.560,.895,80,.96),
+  'pilot-01':profile([.225,.105,.892,.914],.131,.560,.895,80,.82),
   'pilot-02':profile([.300,.005,.665,.990],.011,.524,.984),
   'pilot-03':profile([.160,.005,.840,.955],.013,.538,.945),
   // Bare-foot contact in the current export; the train extends below it.
@@ -16,7 +16,6 @@ export const PORTRAIT_FRAMING=Object.freeze({
   'pilot-08':profile([.040,.020,.870,.890],.105,.455,.848,76),
   // Align the motorcycle's wheel contact, leaving the rider's heel in front.
   'pilot-10':profile([.150,.070,.860,.990],.083,.500,.900,76),
-  'commander-silver':profile([.040,.060,.950,.930],.078,.522,.914),
 });
 
 export function portraitFramingVariables(id){

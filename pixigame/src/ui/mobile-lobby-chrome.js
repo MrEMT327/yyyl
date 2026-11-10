@@ -2,7 +2,7 @@ import iconRegions from './sortie-icons-v2.json' with { type: 'json' };
 import { drawUiSymbol, drawRank } from './ui-symbols.js';
 const NAV = [['loadout','战姬'],['assembly','武器'],['battle','出击'],['upgrade','升级'],['supply','招募']];
 const INK='#25313e';
-const fmt=value=>Math.max(0,Math.round(Number(value)||0)).toLocaleString('en-US');
+const fmt=value=>Math.max(0,Math.round(Number(value)||0)).toLocaleString('en-US', {useGrouping:false});
 
 export function createMobileUI(surface,bridge,art,actions) {
   const {text,quad,panel,polygon,image,button}=surface;

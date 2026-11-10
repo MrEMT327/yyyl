@@ -18,10 +18,10 @@ export function shopBoxRewards(modal,s) {
       receiptStatus:status?[modal.history&&recorded?`开出时：${item.qualityName}`:'',status].filter(Boolean).join(' · '):''};
   });
   const pilots=(modal.receipt?.pilotRewards??modal.pilots??[]).map(p=>({type:'pilot',id:p.id,name:nativeCollectionDisplayName(p.id)||p.name,
-    amount:p.amount||1,receiptStatus:p.creditsAdded?`已满星 · 兑换积分 +${p.creditsAdded}`:p.isNew?'驾驶员已解锁':`同名升星材料 ×${p.amount}`}));
+    amount:p.amount||1,isNew:p.isNew===true,receiptStatus:p.creditsAdded?`已满星 · 兑换积分 +${p.creditsAdded}`:p.isNew?'':`同名升星材料 ×${p.amount}`}));
   const weapons=(view?.weapons??modal.weapons??[]).map(w=>({type:'weapon',id:w.id,name:nativeCollectionDisplayName(w.id)||w.name,
-    amount:w.amount||1,receiptStatus:w.isNew?(w.isVariant?'武器变体已解锁':'武器已解锁'):w.fragmentsAdded!==undefined?`本武器碎片 ×${w.fragmentsAdded}`:w.isNew===false?`同名武器 ×${w.copiesAdded??w.amount}`:`武器 ×${w.amount}`}));
+    amount:w.amount||1,isNew:w.isNew===true,receiptStatus:w.isNew?'':w.fragmentsAdded!==undefined?`本武器碎片 ×${w.fragmentsAdded}`:w.isNew===false?`同名武器 ×${w.copiesAdded??w.amount}`:`武器 ×${w.amount}`}));
   const aircraft=(view?.aircraft??modal.aircraft??[]).map(a=>({type:'aircraft',id:a.id,name:nativeCollectionDisplayName(a.id)||a.name,
-    amount:a.amount||1,receiptStatus:a.isNew?'飞机已解锁':a.isNew===false?`同名飞机卡 ×${a.copiesAdded??a.amount}`:`飞机 ×${a.amount}`}));
+    amount:a.amount||1,isNew:a.isNew===true,receiptStatus:a.isNew?'':a.isNew===false?`同名飞机卡 ×${a.copiesAdded??a.amount}`:`飞机 ×${a.amount}`}));
   return {rewards:[...equipment,...pilots,...weapons,...aircraft],detailsMissing:Boolean(view?.detailsMissing)};
 }

@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { type GameContent, type RecordData, type Spawn } from './model';
 import { planWaveGold, waveExperiencePerWeight, healthDropMultiplierRaw } from './drop-rewards';
 import { nativeIsBoss } from './monster-abilities';
@@ -9,11 +10,11 @@ import { installNativeAirdropContent } from './native-airdrop-content';
 const parse = (text: unknown) => { if (typeof text !== 'string') return text || {}; try { return JSON.parse(text); } catch { try { return JSON.parse(text.replace(/}}$/, '}')); } catch { return {}; } } };
 
 export async function loadContent(onProgress?: (completed: number, total: number) => void): Promise<GameContent> {
-  // Catalog, sixteen chapter tables, two shared packs, and sword effects.
+  // Catalog, current chapter resources and shared combat tables.
   let completed = 0;
   const loaded = <T>(value: T): T => {
     completed++;
-    try { onProgress?.(completed, 20); } catch { /* Progress cannot interrupt resource loading. */ }
+    try { onProgress?.(completed, 18); } catch { /* Progress cannot interrupt resource loading. */ }
     return value;
   };
   const read = async (name: string) => {
@@ -26,11 +27,30 @@ export async function loadContent(onProgress?: (completed: number, total: number
   const requested = Number(new URLSearchParams(location.search).get('chapter') || catalog.defaultChapterId);
   const entry = catalog.chapters.find((row: RecordData) => row.id === requested);
   if (!entry) throw new Error('请选择关卡列表中已接入的关卡');
+  const loadChapterResources = async () => {
+    const response = typeof window === 'undefined' ? null : await fetch(`data/sorties-v1/chapter-${requested}.json`);
+    // Direct Vite/source consumers can run without generated output. Official
+    // builds generate these files and surface a missing bundle as an error.
+    if (!response || (import.meta.env?.PROD !== true &&
+      (response.status === 404 || response.headers?.get('content-type')?.includes('text/html')))) {
+      const [legacyAssets, legacyMaps, bossAnimations] = await Promise.all(['assets-chapters', 'map-layers', 'boss-animation-chapters'].map(name =>
+        fetch(`data/${name}.json`).then(r => {
+          if (!r.ok) throw new Error(`关卡资源缺失：${name}`);
+          return r.json();
+        })));
+      return {extra:legacyAssets.chapters?.[requested], nativeLayers:legacyMaps.chapters?.[requested], bossAnimations};
+    }
+    if (!response.ok) throw new Error(`缺少第 ${requested} 关资源包`);
+    const bundle = await response.json();
+    if (bundle.chapterId !== requested || !bundle.extra || !bundle.nativeLayers || !bundle.bossAnimations)
+      throw new Error(`第 ${requested} 关资源包不匹配`);
+    return bundle;
+  };
   const [chapter, assets, combat, geometry, originalEffects, bossAnimation, enemyHealthBars, beamEffects,
-    chapterAssets, chapterHealth, chapterBossAnimation, npcChapters, chapterAudio, chapterEffects, mapLayers, enemyLocalAnimation, loadoutRuntime, playerAppearances] = await Promise.all([
+    chapterHealth, npcChapters, chapterAudio, chapterEffects, enemyLocalAnimation, swordEffects, loadoutRuntime, playerAppearances, chapterResources] = await Promise.all([
     entry.chapterFile, 'assets', 'combat', entry.geometryFile, 'effects-original', 'boss-animation', 'enemy-health-bars', 'beam-effects',
-    'assets-chapters', 'enemy-health-bars-chapters', 'boss-animation-chapters', 'npc-chapters', 'audio-chapters', 'effects-original-chapters', 'map-layers', 'enemy-local-animation-chapters',
-  ].map(read).concat(loadLoadoutRuntime().then(loaded), loadPlayerAppearances().then(loaded)));
+    'enemy-health-bars-chapters', 'npc-chapters', 'audio-chapters', 'effects-original-chapters', 'enemy-local-animation-chapters', 'sword-original-effects',
+  ].map(read).concat(loadLoadoutRuntime().then(loaded), loadPlayerAppearances().then(loaded), loadChapterResources().then(loaded)));
   assets.playerAppearances = playerAppearances;
   // Keep previously repaired weapon rows; add the missing original loadout
   // dependency graph before constructing Simulation and its status runtimes.
@@ -52,11 +72,11 @@ export async function loadContent(onProgress?: (completed: number, total: number
     if (Number.isFinite(preset?.attack) && preset.attack > 0) chapter.player.attack = Math.min(1e9, preset.attack);
     if (Number.isFinite(preset?.hp) && preset.hp > 0) chapter.player.hp = Math.min(1e9, preset.hp);
   } catch { /* Storage is optional. */ }
-  const extra = chapterAssets.chapters?.[requested];
+  const {extra, nativeLayers} = chapterResources;
   if (!extra) throw new Error(`缺少第 ${requested} 关资源清单`);
   for (const key of ['sprites', 'prefabs', 'audio', 'effects']) assets[key] = { ...assets[key], ...extra[key] };
   if (extra.map) assets.map = extra.map;
-  assets.map.nativeLayers = mapLayers.chapters[requested];
+  assets.map.nativeLayers = nativeLayers;
   assets.audio = { ...assets.audio, ...chapterAudio.audio };
   assets.soundKeys = chapterAudio.soundKeys;
   for (const key of Object.values(chapterAudio.music) as string[]) if (assets.audio[key]) assets.audio[key].music = true;
@@ -66,7 +86,6 @@ export async function loadContent(onProgress?: (completed: number, total: number
   for (const key of ['effects', 'textures', 'materials', 'meshes']) originalEffects[key] = { ...originalEffects[key], ...chapterEffects[key] };
   if (extra.originalEffects) for (const key of ['effects', 'textures', 'materials', 'meshes']) originalEffects[key] = { ...originalEffects[key], ...extra.originalEffects[key] };
   if (extra.beamEffects) for (const key of ['effects', 'textures', 'materials', 'meshes']) beamEffects[key] = { ...beamEffects[key], ...extra.beamEffects[key] };
-  const swordEffects = await read('sword-original-effects');
   for (const key of ['effects', 'textures', 'materials', 'meshes'])
     originalEffects[key] = { ...originalEffects[key], ...swordEffects[key] };
   assets.originalEffects = originalEffects;
@@ -76,13 +95,17 @@ export async function loadContent(onProgress?: (completed: number, total: number
     for (const anchor of ['start', 'end']) originalEffects.effects[`beam:${id}:${anchor}`] = { layers: effect.layers.filter((layer: RecordData) => layer.anchor === anchor), sequences: [] };
   }
   assets.bossAnimation = bossAnimation;
-  assets.bossAnimations = chapterBossAnimation;
+  assets.bossAnimations = chapterResources.bossAnimations;
   assets.enemyLocalAnimation = enemyLocalAnimation;
   assets.enemyHealthBars = enemyHealthBars;
   // Extracted textures retain stable names. Pair the new manifest with this
   // revision's images instead of reusing a previous extraction cached for an hour.
   const reviseAssetUrls = (node: unknown): void => {
     if (!node || typeof node !== 'object') return;
+    if (Array.isArray(node)) {
+      for (const value of node) if (value && typeof value === 'object') reviseAssetUrls(value);
+      return;
+    }
     for (const [key, value] of Object.entries(node)) {
       if (key === 'url' && typeof value === 'string' && /^\/?assets\//.test(value)) {
         (node as RecordData)[key] = `${value}${value.includes('?') ? '&' : '?'}rev=chapters12-15-native`;

@@ -356,6 +356,8 @@ export class Simulation {
   rewardedReviveEnabled = false;
   revivesUsed = 0;
   adRevivesUsed = 0;
+  diamondRevivesUsed = 0;
+  reviveDiamondPending = false;
   reviveCountdown = 0;
   reviveAdPending = false;
   private manualReviveLimit = 0;
@@ -412,7 +414,7 @@ export class Simulation {
     this.resultDelay = 0; this.victoryDeparture = undefined; this.deathDelay = 0; this.experienceWave = 0; this.deferredWaveClear = false;
     this.revivesUsed = this.adRevivesUsed = this.reviveCountdown = this.reviveResumeDelay = 0;
     this.equipmentRevivesUsed = 0; this.pendingEquipmentRevive = [];
-    this.reviveAdPending = false; this.manualReviveLimit = 0;
+    this.reviveAdPending = false; this.reviveDiamondPending = false; this.diamondRevivesUsed = 0; this.manualReviveLimit = 0;
     this.waveExperience.reset(0, false, []);
     this.waveGold.reset(0, [], this.content.assets.monsterDrops, false, () => this.random());
     this.damageByWeapon.clear();
@@ -513,7 +515,8 @@ export class Simulation {
     const chapter = (nativeBattleRules.chapters as Record<string, { manualRevives: number }>)[this.content.chapter.chapter.id];
     // InitReliveCount@697ff1c: chapter allowance + DiamondResurrection; ad quota is independent.
     this.manualReviveLimit = chapter ? chapter.manualRevives + Math.trunc(this.playerCombatAttributes().DiamondResurrection || 0) : 0;
-    this.phase = 'playing'; this.announce(`第 1 / ${this.content.chapter.chapter.waveCount} 波`, 2.2);
+    // The HUD owns the wave-entry readout; reserve notices for other events.
+    this.phase = 'playing';
     // BaseInitState.ShowSkillSelect: consumes opening choices before play,
     // without awarding experience or increasing the hero level.
     const researchAttrs = this.playerCombatAttributes();
@@ -523,13 +526,28 @@ export class Simulation {
   get canAdRevive() {
     return this.rewardedReviveEnabled && this.revivesUsed < this.manualReviveLimit && this.adRevivesUsed < nativeBattleRules.adRevives;
   }
+  get canDiamondRevive() {
+    return this.rewardedReviveEnabled && this.revivesUsed < this.manualReviveLimit && this.diamondRevivesUsed < 1;
+  }
+  get revivePending() { return this.reviveAdPending || this.reviveDiamondPending; }
+  beginDiamondRevive() {
+    if (this.phase !== 'revive' || this.revivePending || !this.canDiamondRevive) return false;
+    this.reviveDiamondPending = true; return true;
+  }
+  completeDiamondRevive(completed: boolean) {
+    if (this.phase !== 'revive' || !this.reviveDiamondPending) return false;
+    this.reviveDiamondPending = false;
+    if (!completed || !this.canDiamondRevive) return false;
+    this.diamondRevivesUsed++;
+    return this.completeManualRevive();
+  }
   advanceRevivePrompt(seconds: number) {
-    if (this.phase !== 'revive' || this.reviveAdPending) return;
+    if (this.phase !== 'revive' || this.revivePending) return;
     this.reviveCountdown = Math.max(0, this.reviveCountdown - Math.max(0, seconds));
     if (!this.reviveCountdown) this.declineRevive();
   }
   beginReviveAd() {
-    if (this.phase !== 'revive' || this.reviveAdPending || !this.canAdRevive) return false;
+    if (this.phase !== 'revive' || this.revivePending || !this.canAdRevive) return false;
     this.reviveAdPending = true; return true;
   }
   completeReviveAd(completed: boolean) {
@@ -537,7 +555,11 @@ export class Simulation {
     this.reviveAdPending = false;
     if (!completed || !this.canAdRevive) return false;
     // PlayerReliveByAd -> AddAdReliveCount -> PlayerRelive(3) -> ReBorn(3).
-    this.adRevivesUsed++; this.revivesUsed++; this.reviveCountdown = 0;
+    this.adRevivesUsed++;
+    return this.completeManualRevive();
+  }
+  private completeManualRevive() {
+    this.revivesUsed++; this.reviveCountdown = 0;
     this.sounds.push(270001);
     this.healPlayer(this.player.maxHp * nativeBattleRules.recoverFraction, 11);
     const buff = nativeBattleRules.invincibleBuff;
@@ -553,7 +575,7 @@ export class Simulation {
     return true;
   }
   declineRevive() {
-    if (this.phase !== 'revive' || this.reviveAdPending) return;
+    if (this.phase !== 'revive' || this.revivePending) return;
     this.reviveCountdown = 0; this.phase = 'lost';
   }
   pause() { if (this.phase === 'playing') this.phase = 'paused'; }
@@ -576,7 +598,7 @@ export class Simulation {
       this.deathDelay = Math.max(0, this.deathDelay - dt);
       if (!this.deathDelay) {
         if (this.pendingEquipmentRevive.length) { this.completeEquipmentRevive(); return; }
-        this.phase = this.canAdRevive ? 'revive' : 'lost';
+        this.phase = this.canAdRevive || this.canDiamondRevive ? 'revive' : 'lost';
         this.reviveCountdown = this.phase === 'revive' ? nativeBattleRules.promptSeconds : 0;
       }
       return;

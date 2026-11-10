@@ -1,12 +1,12 @@
 /* Original six-colour plates from 装备.psd. Slice 18px corners at a fixed
    display scale; the centre fills independently for square and tall cards. */
-#gui-casual-lobby [data-psd-quality] {--quality-plate:url('/art/psd-equipment-v1/frame-gray.png')}
-#gui-casual-lobby [data-psd-quality='1'] {--quality-plate:url('/art/psd-equipment-v1/frame-green.png')}
-#gui-casual-lobby [data-psd-quality='2'] {--quality-plate:url('/art/psd-equipment-v1/frame-blue.png')}
-#gui-casual-lobby [data-psd-quality='3'] {--quality-plate:url('/art/psd-equipment-v1/frame-purple.png')}
-#gui-casual-lobby [data-psd-quality='4'] {--quality-plate:url('/art/psd-equipment-v1/frame-gold.png')}
-#gui-casual-lobby [data-psd-quality='5'] {--quality-plate:url('/art/psd-equipment-v1/frame-red.png')}
-#gui-casual-lobby [data-psd-quality] {--quality-corner:clamp(9px,2.8cqw,13px)}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality] {--quality-plate:url('/art/psd-equipment-v1/frame-gray.png')}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality='1'] {--quality-plate:url('/art/psd-equipment-v1/frame-green.png')}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality='2'] {--quality-plate:url('/art/psd-equipment-v1/frame-blue.png')}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality='3'] {--quality-plate:url('/art/psd-equipment-v1/frame-purple.png')}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality='4'] {--quality-plate:url('/art/psd-equipment-v1/frame-gold.png')}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality='5'] {--quality-plate:url('/art/psd-equipment-v1/frame-red.png')}
+:is(#gui-casual-lobby,.game-item-description-layer) [data-psd-quality] {--quality-corner:clamp(9px,2.8cqw,13px)}
 #gui-casual-lobby[data-tab='research'] .research-card-shell,
 #gui-casual-lobby .research-result-emblem[data-psd-quality],
 #gui-casual-lobby .weapon-detail-modal .equipment-weapon-detail__preview[data-psd-quality] {

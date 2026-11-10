@@ -1,15 +1,18 @@
 import * as THREE from 'three';
-import {loadFighterPackages,isFighterPackageReady} from '../three/aircraft/fighter-packages.js';
+import {loadFighterPackages} from '../three/aircraft/fighter-packages.js';
 import {AIRCRAFT_RENDER_STYLE} from '../three/aircraft/aircraft-lighting.js';
 import {HANGAR_RISE_SECONDS,HANGAR_VISUAL_TIMEOUT_MS} from './sortie-hangar-motion.js';
 import {createSortieHangarScene} from './sortie-hangar-scene.js';
 import {createHangarLift} from './sortie-hangar-lift.js';
+import {AIRCRAFT_PREVIEW_PIXEL_RATIO} from '../three/aircraft/aircraft-preview-quality.js';
+import {positionSortieAircraftImage} from './sortie-aircraft-image.js';
 
 export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   const elevator=host.parentElement.querySelector('.sortie-hangar__elevator');
+  const firstFrame=host.querySelector('.sortie-hangar__fallback');
   const lift=createHangarLift(host,elevator),reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   host.dataset.aircraftId=aircraftId;
-  let renderer,model,worker,canvas,frame=0,epoch=0,elapsed=0,paused=false,disposed=false,finished=false,started=false,mainStarted=false;
+  let renderer,model,worker,canvas,workerSizeKey,frame=0,epoch=0,elapsed=0,paused=false,disposed=false,finished=false,started=false,mainStarted=false;
   let resolveReady;const ready=new Promise(resolve=>{resolveReady=resolve;});
   const settle=()=>{if(finished)return;finished=true;clearTimeout(deadline);resolveReady();};
   const deadline=setTimeout(()=>{if(!started)fallback();else settle();},HANGAR_VISUAL_TIMEOUT_MS);
@@ -17,6 +20,7 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   function stop(){if(frame)cancelAnimationFrame(frame);frame=0;}
   function release(){
     stop();
+    workerSizeKey=undefined;
     if(worker){
       const retiring=worker;worker=null;retiring.onmessage=null;retiring.onerror=null;
       retiring.postMessage({type:'dispose'});setTimeout(()=>retiring.terminate(),250);
@@ -30,6 +34,7 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
     const deckWidth=elevator.getBoundingClientRect().width;
     return{width,height,deckHeight:deckWidth*(elevator.naturalHeight/elevator.naturalWidth||1/3)};
   }
+  const sizeKey=size=>[size.width,size.height,size.deckHeight].map(n=>Math.round(n*1000)).join(':');
   function draw(){
     if(disposed||!model)return;
     model.draw(elapsed,reduced.matches);lift.update(elapsed);
@@ -40,7 +45,7 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
     elapsed=(time-epoch)/1000;draw();if(!reduced.matches)frame=requestAnimationFrame(tick);
   }
   function begin(){
-    if(disposed||finished)return;
+    if(disposed||finished||started)return;
     started=true;host.classList.add('has-model');host.dataset.aircraftStyle='equipment';phase(reduced.matches?'ready':'elevator');
     resize();lift.start(reduced.matches);epoch=performance.now();elapsed=0;
     if(worker)worker.postMessage({type:'start',epoch:performance.timeOrigin+epoch});
@@ -50,8 +55,12 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   }
   function resize(){
     if(disposed)return;const size=dimensions();if(size.width<=0||size.height<=0)return;
+    positionSortieAircraftImage(firstFrame,aircraftId,size);
     lift.resize(size.height);
-    if(worker)worker.postMessage({type:'resize',...size});
+    if(worker){
+      const key=sizeKey(size);
+      if(key!==workerSizeKey){workerSizeKey=key;worker.postMessage({type:'resize',...size});}
+    }
     else if(model){model.resize(size.width,size.height,size.deckHeight);if(started)draw();}
   }
   function visibility(){
@@ -71,8 +80,8 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
     if(disposed||finished||mainStarted)return;mainStarted=true;release();host.dataset.renderer='main';
     try{
       await loadFighterPackages({pilotIds:[aircraftId]});if(disposed||finished)return;
-      canvas=newCanvas();renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'low-power'});
-      renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
+      canvas=newCanvas();renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,preserveDrawingBuffer:true,powerPreference:'low-power'});
+      renderer.setPixelRatio(AIRCRAFT_PREVIEW_PIXEL_RATIO);renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
       renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=AIRCRAFT_RENDER_STYLE.exposure;
       canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(!disposed)fallback();},{once:true});
       model=createSortieHangarScene(renderer,aircraftId);resize();await model.warmup();if(!disposed&&!finished)begin();
@@ -82,9 +91,8 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   elevator.addEventListener('load',resize);document.addEventListener('visibilitychange',visibility);reduced.addEventListener('change',reduceChanged);
   resize();
   if(reduced.matches){phase('fallback');settle();}
-  // The lobby normally owns this exact package already. Reuse its parsed
-  // geometry/textures rather than fetching and parsing it again in a worker.
-  else if(isFighterPackageReady(aircraftId))void mainThread();
+  // Even a cached model still needs environment lighting, batching and shader
+  // compilation for this canvas. Keep that work off the loading UI thread.
   else if(typeof Worker!=='undefined'&&HTMLCanvasElement.prototype.transferControlToOffscreen){
     try{
       canvas=newCanvas();const offscreen=canvas.transferControlToOffscreen();
@@ -96,12 +104,14 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
         else if(data.type==='error'){console.warn('[sortie worker]',data.message);if(started)fallback();else void mainThread();}
       };
       worker.onerror=()=>{if(disposed)return;if(started)fallback();else void mainThread();};
+      const size=dimensions();workerSizeKey=sizeKey(size);
       worker.postMessage({type:'init',canvas:offscreen,aircraftId,assetBase:new URL(import.meta.env?.BASE_URL||'/',document.baseURI).href,
-        ...dimensions(),pixelRatio:Math.min(2,window.devicePixelRatio||1),reduced:reduced.matches},[offscreen]);
+        ...size,pixelRatio:AIRCRAFT_PREVIEW_PIXEL_RATIO,reduced:reduced.matches},[offscreen]);
     }catch{void mainThread();}
   }else void mainThread();
   return {
     ready,
+    finish(){settle();},
     freeze(){paused=true;visibility();settle();},
     dispose(){if(disposed)return;disposed=true;settle();observer.disconnect();document.removeEventListener('visibilitychange',visibility);reduced.removeEventListener('change',reduceChanged);elevator.removeEventListener('load',resize);release();lift.dispose();},
   };

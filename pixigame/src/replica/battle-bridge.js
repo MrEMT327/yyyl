@@ -103,24 +103,36 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       send(session,'revive-ad-result',{runId,requestId,completed,message:failure});
   }
 
+  function reviveDiamond(session, message) {
+    if (active !== session || !session.run || session.settled || session.phase !== 'revive'
+      || message.runId !== session.run.snapshot.id || !Number.isSafeInteger(message.requestId)
+      || message.requestId <= (session.lastDiamondRequest || 0) || session.reviveAdPending) return;
+    session.lastDiamondRequest = message.requestId;
+    const receipt = peripheral().action('battleRevivePurchase', {runId:message.runId});
+    send(session, 'revive-diamond-result', {runId:message.runId, requestId:message.requestId,
+      completed:Boolean(receipt.ok), message:receipt.message || ''});
+  }
+
   function requestConfiguration(session) {
-    if (active !== session || session.preparationFailed || session.pendingConfiguration || (session.run && !session.settled)) return;
+    if (active !== session || session.preparationFailed || session.pendingConfiguration || (session.run && !session.settled && !session.retrying)) return;
     session.startAcknowledged = false;
     session.armPreparation();
-    const configuration = peripheral().replicaConfiguration();
+    const configuration = session.retrying && session.run
+      ? session.run.snapshot.replicaConfiguration : peripheral().replicaConfiguration();
     const requestId = ++session.configurationSerial;
     session.pendingConfiguration = { requestId, configuration, key: replicaConfigurationKey(configuration) };
     send(session, 'configure', { requestId, configuration, configurationKey: session.pendingConfiguration.key });
   }
 
   function launch(session, candidate) {
-    if (active !== session || (session.run && !session.settled)) return;
+    if (active !== session || (session.run && !session.settled && !session.retrying)) return;
     if (document.hidden) { session.pendingLaunch = candidate; return true; }
-    const prepared = peripheral().prepareSortie({ trial: session.trial, engine: ENGINE,
+    // Retrying preparation must not charge stamina or create a second run.
+    const prepared = session.retrying && session.run ? session.run : peripheral().prepareSortie({ trial: session.trial, engine: ENGINE,
       chapterId: session.chapter.id, replicaConfiguration: candidate.configuration });
     if (!prepared.ok) { onError(prepared.message); send(session, 'notice', { message: prepared.message }); return false; }
     session.pendingLaunch = null;
-    session.run = prepared; session.settled = false; session.lastResult = null; session.startAcknowledged = false;
+    session.run = prepared; session.settled = false; session.lastResult = null; session.startAcknowledged = false; session.retrying = false;
     session.reviveAdUsed = 0; session.reviveAdPending = false; session.phase = 'ready';
     session.entry = candidate.entry;
     // Hand focus to the embedded game before it starts its simulation.
@@ -155,13 +167,13 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     const id = Array.from(crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16).padStart(8, '0')).join('-');
     const url = new URL(`${import.meta.env.BASE_URL}replica-battle/index.html`, document.baseURI);
     url.searchParams.set('chapter', String(chapter.id)); url.searchParams.set('session', id);
-    frame.src = url.href; frame.title = '彼方之遥 · ' + chapterLabel;
+    frame.src = url.href; frame.setAttribute('aria-label', '彼方之遥 · ' + chapterLabel);
     frame.allow = 'autoplay; fullscreen'; frame.className = 'replica-battle-frame';
     host.append(frame);
     const session = { id, host, frame, loading:null, trial, chapter, run: null, settled: false,
       focus: document.activeElement, receive: null, abandon: null, timer: null,
       configurationSerial: 0, pendingConfiguration: null, entry: null, leavePage:null, resumePage:null,
-      preparationFailed:false, startAcknowledged:false, armPreparation:null };
+      preparationFailed:false, startAcknowledged:false, retrying:false, armPreparation:null };
     active = session;
     session.abandon = () => {
       if (session.run && !session.settled) {
@@ -179,17 +191,27 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       try { session.abandon(); close(session); }
       catch (error) { onError(error.message); failLoading(); }
     };
-    const failLoading = () => {
-      session.loading ||= showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
-      session.loading.fail();
+    const retryPreparation = () => {
+      if(active!==session || !session.preparationFailed || session.startAcknowledged || session.settled)return;
+      session.preparationFailed=false;session.retrying=Boolean(session.run);
+      session.pendingConfiguration=null;session.pendingLaunch=null;
+      // A fresh message identity rejects late events from the disposed iframe.
+      session.id=crypto.randomUUID();
+      const retryUrl=new URL(url);retryUrl.searchParams.set('session',session.id);
+      session.loading=showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
+      session.armPreparation();frame.src=retryUrl.href;
     };
-    const failPreparation = () => {
+    const failLoading = message => {
+      session.loading ||= showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
+      session.loading.fail({message,onRetry:!session.startAcknowledged&&!session.settled?retryPreparation:undefined});
+    };
+    const failPreparation = message => {
       session.preparationFailed = true; session.pendingConfiguration = null; session.pendingLaunch = null;
       clearTimeout(session.timer); session.timer = null;
       // Stop a partially started or reloaded child. Returning uses the host's
       // durable result/abandon path; a late acknowledgement cannot resurrect it.
       session.frame.contentWindow?.dispatchEvent(new Event('shnh-dispose-replica-battle'));
-      failLoading();
+      failLoading(message);
       session.resolve?.(false);
     };
     let preparationRemaining = 60000, preparationStartedAt = 0;
@@ -205,7 +227,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
         if (active !== session) return;
         if (document.hidden) { pausePreparation(); return; }
         console.error('[replica-battle] 出击准备超时', { awaiting: session.run && !session.settled ? 'started' : session.pendingConfiguration ? 'configured' : 'ready' });
-        failPreparation();
+        failPreparation('关卡准备超时，请重试');
       }, preparationRemaining);
     };
     session.armPreparation = () => {
@@ -226,7 +248,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       try {
         if (session.pendingLaunch && !session.preparationFailed && !launch(session, session.pendingLaunch)) { close(session); return; }
         resumePreparation();
-      } catch (error) { onError(error.message); failPreparation(); }
+      } catch (error) { onError(error.message); failPreparation(error.message); }
     };
     document.addEventListener('visibilitychange', session.visibility);
     // beforeunload can be cancelled. Only commit an interrupted sortie once
@@ -250,22 +272,22 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       session.receive = event => {
         if (active !== session || event.origin !== location.origin || event.source !== frame.contentWindow) return;
         const message = event.data;
-        if (message?.channel !== CHANNEL || message.session !== id) return;
+        if (message?.channel !== CHANNEL || message.session !== session.id) return;
         if (session.preparationFailed && ['boot','loading-progress','ready','configured','started','retry','phase','revive-ad'].includes(message.type)) return;
         try {
           switch (message.type) {
             case 'boot':
-              if (session.run) throw new Error('战斗页面已重新载入，请返回后重新出击');
+              if (session.run && !session.retrying) throw new Error('战斗页面已重新载入，请重试');
               session.loading?.update(.03,'正在读取关卡…');
               send(session, 'initialize', { appearance }); break;
             case 'loading-progress': {
-              if(session.startAcknowledged||session.run||!Object.hasOwn(LOADING_PHASES,message.phase)||!Number.isFinite(message.progress))break;
+              if(session.startAcknowledged||(session.run&&!session.retrying)||!Object.hasOwn(LOADING_PHASES,message.phase)||!Number.isFinite(message.progress))break;
               const [from,to,label]=LOADING_PHASES[message.phase];
               session.loading?.update(from+(to-from)*Math.min(1,Math.max(0,message.progress)),label);
               break;
             }
             case 'ready':
-              if (session.run) throw new Error('战斗页面已重新载入，请返回后重新出击');
+              if (session.run && !session.retrying) throw new Error('战斗页面已重新载入，请重试');
               session.loading?.update(.96,'正在准备战场…'); requestConfiguration(session); break;
             case 'configured': {
               const candidate = session.pendingConfiguration;
@@ -273,13 +295,9 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
               if (message.configurationKey !== candidate.key) throw new Error('大厅与战斗配置版本不一致，请刷新页面后重新出击');
               session.pendingConfiguration = null;
               session.loading?.update(.98,'正在准备出击…');
-              const entry=message.entry;
-              void Promise.resolve(session.loading?.readyForLaunch()).then(()=>{
-                if(active!==session||session.preparationFailed||candidate.requestId!==session.configurationSerial)return;
-                try {
-                  if(!launch(session,{...candidate,entry})){close(session);resolve(false);}
-                } catch(error) { onError(error.message);failPreparation(); }
-              });
+              // The lift is decorative and stays live until the battle has
+              // rendered. The existing preparation timeout covers this gap.
+              if(!launch(session,{...candidate,entry:message.entry})){close(session);resolve(false);}
               break;
             }
             case 'started':
@@ -290,7 +308,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
               session.loading?.update(1,'准备完成');
               document.documentElement.classList.add('replica-launch-active');
               const covering=session.loading;session.loading=null;
-              void Promise.resolve(covering?.close({restoreFocus:false})).then(()=>{
+              void Promise.resolve(covering?.close({restoreFocus:false,keepMotion:true})).then(()=>{
                 if(active===session&&!session.preparationFailed)send(session,'launch-visible',{runId:session.run.snapshot.id});
               });
               onState('playing'); resolve(true); break;
@@ -306,6 +324,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
             }
             case 'phase': session.phase=message.phase; onState(message.phase); break;
             case 'revive-ad': void reviveAd(session,message); break;
+            case 'revive-diamond': reviveDiamond(session,message); break;
             case 'result': settle(session, message.result); break;
             case 'retry':
               if (!session.settled && session.lastResult) settle(session, session.lastResult);
@@ -322,8 +341,8 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
           clearTimeout(session.timer);
           console.error('[replica-battle] 出击准备失败', error);
           onError(error.message);
-          if (!session.startAcknowledged || ['boot','ready','error'].includes(message.type)) failPreparation();
-          else failLoading();
+          if (!session.startAcknowledged || ['boot','ready','error'].includes(message.type)) failPreparation(error.message);
+          else failLoading(error.message);
           resolve(false);
         }
       };

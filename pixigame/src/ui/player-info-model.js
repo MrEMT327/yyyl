@@ -2,7 +2,7 @@ import {GEAR_PARTS} from '../peripheral/equipment-system.js';
 import { NATIVE_AIRCRAFT_SKINS } from '../replica/native-aircraft-skins.js';
 import { NATIVE_PILOT_SKINS } from '../replica/native-pilot-roster.js';
 import {DEFAULT_PLAYER_NAME} from '../player-identity.js';
-import {nativeCollectionIdentity} from '../replica/native-collection-access.js';
+import {nativeCollectionAccess,nativeCollectionIdentity} from '../replica/native-collection-access.js';
 const itemId=value=>typeof value==='object'?value?.itemId||value?.id:value;
 
 // Only equipped slots and completed campaign results are profile evidence.
@@ -45,7 +45,7 @@ export function playerInfoModel(snapshot={},callsign='') {
   const identity=nativeCollectionIdentity(collection,{aircraftId:snapshot.baseAircraftId||snapshot.aircraftId,pilotId:snapshot.basePilotId||snapshot.pilotId});
   const baseAircraft=snapshot.aircraft?.find(item=>item.id===identity.baseAircraftId);
   const basePilot=snapshot.pilots?.find(item=>item.id===identity.basePilotId);
-  const currentSkin=collection.skins.find(row=>row.id===collection.skinId&&row.owned);
+  const currentSkin=collection.skins.find(row=>row.owned&&nativeCollectionAccess('skins',snapshot,row).using);
   const currentPilot=collection.pilots.find(row=>row.equipped);
   const currentGun=collection.guns.find(row=>row.equipped);
   return {...model,native:true,accountLevel:collection.playerLevel??1,

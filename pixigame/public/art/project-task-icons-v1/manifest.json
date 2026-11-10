@@ -81,5 +81,52 @@
       ],
       "sha256": "5a774f455e8bd83cd43a2c3e1b96edcd10bcfd2562f6a7b09faa2e6c74de328e"
     }
-  ]
+  ],
+  "weeklyChests": {
+    "method": "Reuse historical original gold equipment chest; built-in imagegen supplies matching open state",
+    "created": "2026-11-03",
+    "states": {
+      "locked": "../project-equipment-boxes-v1/advanced.png",
+      "ready": "../project-equipment-boxes-v1/advanced.png",
+      "claimed": "../project-equipment-boxes-v1/advanced-open.png"
+    },
+    "assets": [
+      {
+        "file": "../project-equipment-boxes-v1/advanced.png",
+        "sha256": "9b40fb81fcfe81d9743a59b4fc3f070406fcb5e2405a363d618f7b50d3d826d8"
+      },
+      {
+        "file": "../project-equipment-boxes-v1/advanced-open.png",
+        "sha256": "42be16969362718e84b602e375f68f31ed3d31cacd71206c6966ff3d0cd09915"
+      }
+    ],
+    "previousAssets": [
+      {
+        "file": "weekly-chest-closed.png",
+        "sha256": "1cad32946e6cb945030cf8b4b097d4e1947b97a164414a64ce63f28ba783fb81"
+      },
+      {
+        "file": "weekly-chest-open.png",
+        "sha256": "b3ffc4441431e18eeb1b3083ad41245ebf24d19788659d8a6a4c8c6f21e37bd8"
+      }
+    ],
+    "prompt": "../project-equipment-boxes-v1/weekly-open-prompt.json",
+    "revision": 3,
+    "previousVariants": [
+      {
+        "revision": 2,
+        "assets": [
+          {
+            "file": "weekly-chest-closed.png",
+            "sha256": "4cf15748af29901c97f80df8a264e24962954e8832b150fe3bec5662d351647e"
+          },
+          {
+            "file": "weekly-chest-open.png",
+            "sha256": "48beb8c7e5b8f47d26167f362ddbe08a3551ca6289ed49d717e0b64d96e15bc5"
+          }
+        ],
+        "method": "Built-in imagegen recolor of project-owned art; lavender lid and silver lower body; original alpha retained"
+      }
+    ]
+  }
 }

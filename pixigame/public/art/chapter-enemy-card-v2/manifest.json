@@ -1,0 +1,10 @@
+{
+  "source": "image_gen",
+  "styleReference": "psd/弹窗.psd / primary panel",
+  "asset": "card.png",
+  "size": [1086, 1448],
+  "alpha": true,
+  "nineSliceTRBL": [48, 48, 336, 48],
+  "targetBorderTRBL": ["1cqw", "1cqw", "7cqw", "1cqw"],
+  "usage": "Enemy field guide portrait card with a quiet image bay and separate caption footer. Live names and project enemy artwork are separate."
+}

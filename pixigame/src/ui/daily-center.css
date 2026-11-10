@@ -2,16 +2,16 @@
 #gui-casual-lobby [data-modal-type='tasks']>.pl-modal-content {overflow:hidden!important;display:flex;flex-direction:column}
 #gui-casual-lobby .dc-hub {display:flex;flex-direction:column;min-height:0;height:100%;gap:2cqw;color:var(--paper-ink);font-family:'Microsoft YaHei','PingFang SC',sans-serif}
 #gui-casual-lobby .dc-hub :is(h3,p) {margin:0;text-shadow:none;-webkit-text-stroke:0;letter-spacing:0}
-#gui-casual-lobby .dc-tabs {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1cqw;flex:none;padding-top:1cqw}
+#gui-casual-lobby .dc-tabs {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;flex:none;padding:0}
+#gui-casual-lobby .dc-page {display:flex;flex-direction:column;flex:1;min-height:0;gap:inherit;overflow:hidden}
 #gui-casual-lobby .pl-modal .dc-hub>.dc-tabs .dc-tab {
-  --wc-button-height:max(36px,9cqw);position:relative;box-sizing:border-box;width:100%;min-width:0;
-  height:var(--wc-button-height);min-height:var(--wc-button-height);max-height:var(--wc-button-height);
+  position:relative;box-sizing:border-box;width:100%;min-width:0;
+  height:48px;min-height:48px;max-height:none;
   font-size:clamp(13px,3.7cqw,15px);padding:0;
 }
-#gui-casual-lobby .dc-tab[aria-pressed='true'] {filter:brightness(1.35);color:#bceeff}
 #gui-casual-lobby .dc-tab>i,#gui-casual-lobby .dc-chest>i {position:absolute;top:7%;right:8%;width:8px;height:8px;border:1px solid #641f27;border-radius:50%;background:#ee5767}
 #gui-casual-lobby .dc-scroll {flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#536e87 transparent;padding:0 .6cqw 1cqw}
-#gui-casual-lobby .dc-button {--wc-button-height:max(42px,10cqw);font-size:clamp(12px,3.5cqw,17px);min-width:0;padding:0 2cqw;white-space:nowrap}
+#gui-casual-lobby .dc-button {font-size:clamp(12px,3.5cqw,17px);min-width:0;padding:0 2cqw;white-space:nowrap}
 #gui-casual-lobby .dc-button:disabled {filter:grayscale(.65);opacity:.65}
 #gui-casual-lobby .dc-rewards {display:flex;flex-wrap:wrap;align-items:center;gap:1.5cqw;font:500 clamp(10px,2.8cqw,14px)/1.25 'Microsoft YaHei',sans-serif;color:#263d53}
 #gui-casual-lobby .dc-rewards>span {display:inline-flex;align-items:center;gap:.5cqw;white-space:nowrap}
@@ -37,8 +37,8 @@
 #gui-casual-lobby .dc-task-badge {display:grid;place-items:center;gap:.5cqw;color:#2f5872;font-size:clamp(10px,3cqw,15px);line-height:1}
 #gui-casual-lobby .dc-task-badge img {display:block;width:8cqw;height:8cqw;object-fit:contain}
 #gui-casual-lobby .dc-task-body {display:grid;gap:.8cqw;min-width:0}
-#gui-casual-lobby .dc-hub h3 {color:#1b354d;font:700 clamp(12px,3.4cqw,17px)/1.35 'Microsoft YaHei',sans-serif}
-#gui-casual-lobby .dc-hub .dc-task h3 {font-size:clamp(12px,3.2cqw,16px);line-height:1.25}
+#gui-casual-lobby .dc-hub h3 {color:#1b354d;font:400 clamp(16px,3.4cqw,17px)/var(--psd-small-title-leading) var(--psd-title-family)}
+#gui-casual-lobby .dc-hub .dc-task h3 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .dc-task .dc-rewards :is(.pl-icon,.resource-icon) {width:3.6cqw!important;height:3.6cqw!important}
 #gui-casual-lobby .dc-task .dc-progress {height:3cqw}
 #gui-casual-lobby .dc-progress {position:relative;display:grid;place-items:center;height:4cqw;min-height:13px}
@@ -74,10 +74,10 @@
 #gui-casual-lobby [data-modal-type='formation'] .fm-units .fm-aircraft>img {width:100%!important;height:100%!important;max-height:100%!important;max-width:100%!important;min-height:0!important;min-width:0!important;aspect-ratio:auto!important;object-fit:contain!important;margin:0!important}
 #gui-casual-lobby .fm-portrait>img {height:100%;width:auto;max-width:100%;object-fit:contain}
 #gui-casual-lobby .fm-aircraft>img {position:static!important;width:100%!important;height:100%!important;margin:0!important;transform:none!important;object-fit:contain!important;max-height:none!important}
-#gui-casual-lobby .fm-units h3 {font-size:clamp(12px,3.5cqw,18px);margin:1cqw 0 0;color:#203b53}
+#gui-casual-lobby .fm-units h3 {font-size:max(var(--psd-small-title-size,16px),clamp(12px,3.5cqw,18px));margin:1cqw 0 0;color:#203b53;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .fm-units small {font-size:clamp(10px,2.9cqw,14px);color:#465f74}
 #gui-casual-lobby .fm-passive {padding:2.5cqw;background:#c3d5e2;border-block:1px solid #809bb0}
-#gui-casual-lobby .fm-passive h3 {font-size:clamp(12px,3.4cqw,17px);margin:0 0 1cqw;color:#203b53}
+#gui-casual-lobby .fm-passive h3 {font-size:max(var(--psd-small-title-size,16px),clamp(12px,3.4cqw,17px));margin:0 0 1cqw;color:#203b53;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .fm-passive p {font-size:clamp(11px,3.1cqw,16px);line-height:1.5;margin:0;color:#304d64}
 #gui-casual-lobby .fm-weapons {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.5cqw}
 #gui-casual-lobby .fm-weapon {display:grid;grid-template-rows:auto 13cqw auto auto;gap:1cqw;place-items:center;position:relative;min-width:0;padding:1.5cqw 1cqw 2cqw;background:url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100%;color:#e5f3fb}
@@ -99,7 +99,7 @@
 #gui-casual-lobby .dc-event-art {display:grid;place-items:center;width:13cqw;height:13cqw}
 #gui-casual-lobby .dc-event-art>:is(img,.pl-icon) {width:100%!important;height:100%!important;max-width:none;max-height:none;object-fit:contain}
 #gui-casual-lobby .dc-event-copy {min-width:0;display:grid;gap:1.5cqw}
-#gui-casual-lobby .dc-event-copy h3 {margin:0;font-size:clamp(13px,3.9cqw,19px);color:#243f56;text-shadow:none}
+#gui-casual-lobby .dc-event-copy h3 {margin:0;font-size:max(var(--psd-small-title-size,16px),clamp(13px,3.9cqw,19px));color:#243f56;text-shadow:none;line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .dc-event-copy p {margin:0;font-size:clamp(10px,2.8cqw,14px);color:#3d5b72;line-height:1.4}
 #gui-casual-lobby .dc-event-copy small {font-size:clamp(10px,2.9cqw,14px);color:#526b7f}
 #gui-casual-lobby .dc-event-copy small.is-ready {color:#25634a;font-weight:700}

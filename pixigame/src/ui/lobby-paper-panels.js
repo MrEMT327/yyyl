@@ -4,7 +4,7 @@ export const PAPER_MODAL_TYPES = new Set([
   'tasks', 'patrol', 'signin', 'shopConfirm', 'shopWeaponConfirm',
   'shopWeaponPreview', 'shopRules', 'researchCard', 'researchSummary',
   'researchResult', 'rewards', 'weapon', 'pilotInfo', 'aircraftInfo',
-  'fleetOperation', 'fleetSkill', 'innateInfo', 'stamina', 'recruitRewards', 'recruitHistory',
+  'fleetOperation', 'fleetSkill', 'innateInfo', 'stamina', 'recruitRewards',
 ]);
 
 export function signInPanel(snapshot, { escape: e, number: n, icon, thumbnail, button }) {

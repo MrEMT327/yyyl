@@ -60,7 +60,7 @@
 .peripheral-lobby.reference-layout .ref-catalog-rule{min-height:76px;align-items:center;gap:10px;padding:12px;margin-bottom:10px;background:#183148;border:1px solid #45657d;border-radius:4px;box-shadow:none;color:#e8f1fa}
 .peripheral-lobby.reference-layout .ref-catalog-rule>span{width:42px;height:42px;background:#102738;border:1px solid #557b97;border-radius:4px;opacity:1;box-shadow:none}
 .peripheral-lobby.reference-layout .ref-catalog-rule>span>img{width:100%;height:100%;object-fit:contain}
-.peripheral-lobby.reference-layout .ref-catalog-rule h3{font-size:14px;line-height:20px;color:#ffe576;margin:0 0 4px}
+.peripheral-lobby.reference-layout .ref-catalog-rule h3{font-size:var(--psd-small-title-size);line-height:max(1.5em,20px);color:#ffe576;margin:0 0 4px}
 .peripheral-lobby.reference-layout .ref-catalog-rule p{font-size:12px;line-height:1.6;color:#ccdbe8}
 .peripheral-lobby.reference-layout .ref-catalog-rule .catalog-next-star{margin-top:7px;color:#90acc2;font-size:11px}
 .catalog-skill-details{font-size:11px;line-height:1.65;color:#99b1c5;padding:4px 2px}

@@ -1,0 +1,34 @@
+{
+  "revision": 2,
+  "generatedWith": "built-in imagegen",
+  "role": "advertising action pictogram",
+  "style": "matte ice-white camera, pale-cyan accent and navy thin edge, matching project PSD",
+  "references": [
+    "project-advertising-v1/ad-video.png",
+    "navigation-icons-v2/skill.png"
+  ],
+  "source": "art/project-advertising-v2/ad-video-source.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceSha256": "848cbd84ee4cecc801a96deda707f49b7e86d86a7dde69d2db3234029544a730",
+  "trim": [
+    401,
+    305,
+    1132,
+    723
+  ],
+  "visibleAlphaThreshold": 8,
+  "export": "Outer trim around visible alpha (ignoring sub-8 alpha noise), uniform contain resize and transparent padding only; generated alpha preserved, no recoloring or artistic edits",
+  "size": [
+    128,
+    128
+  ],
+  "contentSize": [
+    120,
+    69
+  ],
+  "file": "ad-video.png",
+  "sha256": "165e9dd0629dd3232b962fbd2e76b0a207c47e3f9a53cda2494b16231cb2ae40"
+}

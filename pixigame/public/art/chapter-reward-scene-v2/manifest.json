@@ -1,0 +1,9 @@
+{
+  "asset": "background.png",
+  "source": "Built-in imagegen, 2026-11-09; generated_images is a junction to E:/Projects/从C盘迁移/Users/Administrator/.codex/generated_images.",
+  "sha256": "cba8b67703dbdeb8b532915c8ba3fec50677b0dc302d447ed19bd3ef9b2b6c5f",
+  "references": ["project-scene-backgrounds-v3/logistics-bay.png", "psd-choice-v1/card-blue.png", "psd-choice-v1/banner.png"],
+  "purpose": "Original portrait carrier reward background with quiet text zones and a central cyan light stage. No competitor artwork.",
+  "rendering": "Full-bleed cover. Title uses the existing PSD choice banner, milestone uses chapter-reward-node-v1; rewards retain shared item slots.",
+  "motion": "One-time title, milestone and staggered reward entry; reduced-motion disables animations. Polling preserves mounted content."
+}

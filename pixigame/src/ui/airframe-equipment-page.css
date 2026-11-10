@@ -13,10 +13,13 @@
 #gui-casual-lobby .ag-card>strong{font-size:clamp(9px,2.35cqw,11px);font-weight:600;white-space:nowrap;color:#edf7fc;align-self:start;text-shadow:0 1px #04131a}
 #gui-casual-lobby .ag-card>b{font-size:clamp(10px,2.8cqw,13px);align-self:center;font-weight:600;color:#edf7fc;white-space:nowrap}
 #gui-casual-lobby .ag-card small{font-size:10px}
-#gui-casual-lobby .ag-card .ag-tag{position:absolute;top:3px;left:3px;background:#1f5758;color:#c9f8e8;font-style:normal;font-size:9px;padding:1px 2px}
+#gui-casual-lobby.peripheral-lobby .ag-card:not(.ag-mount)>.ag-tag{position:absolute;top:54%;left:50%;right:auto;bottom:auto;z-index:3;display:flex;align-items:center;justify-content:center;width:82%;height:clamp(12px,3.2cqw,16px);aspect-ratio:auto;margin:0;padding:0;border:0;border-image:url('/art/equipment-equipped-v2/status-plate.png') 10 fill / 2px stretch;background:none;color:#f3fcff;font:700 10px/1 'Microsoft YaHei','PingFang SC',sans-serif;text-shadow:0 1px 1px #07131b;transform:translate(-50%,-50%);pointer-events:none}
+#gui-casual-lobby .ag-card .ag-tag::before{content:none;background:none;transform:none}
+#gui-casual-lobby .ag-card .ag-tag>span{position:static;inset:auto;display:block;margin:0;padding:0;white-space:nowrap;transform:none}
 #gui-casual-lobby .ag-card .ag-lock{position:absolute;top:3px;right:4px;background:#172837;color:#dfeaf2;font-style:normal;font-size:9px;padding:1px 2px}
 #gui-casual-lobby .ag-card.is-selected{outline:2px solid #f9de8a;outline-offset:-3px}
 #gui-casual-lobby .ag-selected{position:absolute;right:3px;bottom:3px;color:#ffe598;font-size:20px}
+#gui-casual-lobby .ag-card>img.ag-selected{position:absolute;right:3px;bottom:3px;width:20px;height:20px;padding:0}
 #gui-casual-lobby .ag-position{position:absolute;width:20.5%;height:24%;}
 #gui-casual-lobby .ag-position .ag-card{height:100%;aspect-ratio:auto}
 #gui-casual-lobby .ag-position-1{right:3%;top:4%}
@@ -88,10 +91,9 @@
 /* Labels overlay the sliced frame so the artwork keeps most of the card area. */
 #gui-casual-lobby .ag-card:not(.ag-weapon){display:block;padding:0}
 #gui-casual-lobby .ag-card:not(.ag-weapon)>strong{position:absolute;top:5px;left:4px;right:4px;z-index:1;font-size:clamp(8px,2.25cqw,11px)}
-#gui-casual-lobby .ag-card:not(.ag-weapon)>img{position:absolute;left:6%;top:14%;width:88%;height:72%;object-fit:contain}
+#gui-casual-lobby .ag-card:not(.ag-weapon)>img:not(.ag-selected){position:absolute;left:50%;top:50%;width:88%;height:72%;object-fit:contain;object-position:center;transform:translate(-50%,-50%)}
 #gui-casual-lobby .ag-card:not(.ag-weapon)>b{position:absolute;left:4px;right:4px;bottom:5px;z-index:1}
 #gui-casual-lobby .ag-card.is-empty .psd-empty-mark{position:absolute;top:45%;left:calc(50% - 9px)}
-#gui-casual-lobby .ag-card .ag-tag{top:16px;left:4px;z-index:2;font-size:8px}
 #gui-casual-lobby .ag-hangar :is(.ag-position,.ag-weapon,.ag-stats,.ag-catalog){z-index:3}
 #gui-casual-lobby .ag-hangar .eq-aircraft-stage{z-index:0}
 #gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type^='gear']{--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px}
@@ -114,7 +116,7 @@
 #gui-casual-lobby .ag-equipment-stat{display:flex;gap:10px;align-items:center;margin:12px 0;padding:10px 12px;background:#dce8ef;border:1px solid #9aafbf;font-size:clamp(14px,4cqw,18px)}
 #gui-casual-lobby .ag-equipment-stat em{color:#23734a;font-weight:700;font-style:normal}
 #gui-casual-lobby .ag-equipment-skills{background:#d4e0e9;border:1px solid #8da5b7;min-height:49cqw}
-#gui-casual-lobby .ag-equipment-skills h3{margin:0;padding:6px 10px;background:#a8bdce;border-bottom:1px solid #8da5b7;font-size:15px}
+#gui-casual-lobby .ag-equipment-skills h3{margin:0;padding:6px 10px;background:#a8bdce;border-bottom:1px solid #8da5b7;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .ag-equipment-skills ul{list-style:none;padding:3px 0 10px;margin:0}
 #gui-casual-lobby .ag-equipment-skills li{--skill-color:#26766b;--skill-lock-art:url('/art/equipment-skill-lock-v1/20.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/20.webp');display:flex;gap:9px;align-items:flex-start;padding:7px 10px;font-size:clamp(12px,3.55cqw,16px);font-weight:700;line-height:1.4;color:#2a475d;overflow-wrap:anywhere}
 #gui-casual-lobby .ag-equipment-skills li[data-quality='30']{--skill-color:#2872a6;--skill-lock-art:url('/art/equipment-skill-lock-v1/30.webp');--skill-unlocked-art:url('/art/equipment-skill-unlocked-v1/30.webp')}
@@ -132,36 +134,51 @@
 #gui-casual-lobby .ag-equipment-primary .ag-button::before{border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / var(--psd-button-corner) stretch}
 
 /* Equipment detail: compact information hierarchy, no overlapping footer. */
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-detail {padding:0 2px 6px;font-size:12px;line-height:1.4}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-hero {grid-template-columns:62px minmax(0,1fr);gap:4px 10px;padding:8px;background:#bdcfdb;border-bottom:1px solid #8aa2b3}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-art {grid-row:1 / span 2;width:62px;height:62px}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading h3 {font:700 16px/1.25 'Microsoft YaHei',sans-serif;margin:0 0 4px}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-quality {font-size:11px;line-height:1.3;padding:1px 8px}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading p {font-size:11px;line-height:1.3;margin:4px 0 0}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-level {grid-column:2;font-size:11px;font-weight:400;line-height:1.3}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-stat {margin:8px 0;padding:8px 10px;font-size:14px;line-height:1.3;gap:6px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-detail {padding:0 2px 6px;font-size:14px;line-height:1.45}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-hero {grid-template-columns:72px minmax(0,1fr);gap:0 12px;padding:10px;background:#bdcfdb;border-bottom:1px solid #8aa2b3}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-art {grid-row:1 / span 2;width:72px;height:72px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading h3 {font:400 clamp(17px,4.6cqw,20px)/1.5 var(--psd-title-family);margin:0 0 5px;color:#17374e}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-quality {font-size:12px;line-height:1.35;padding:1px 8px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading p {font-size:13px;line-height:1.4;margin:5px 0 0;color:#344f63}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-level {grid-column:2;font-size:13px;font-weight:400;line-height:1.4;color:#344f63}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-stat {margin:8px 0;padding:7px 10px;font-size:16px;line-height:1.35;gap:8px;flex-wrap:wrap}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills {min-height:0}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills h3 {font-size:13px;padding:6px 8px;line-height:1.3}
+/* The PSD rounded face needs a full 16px em here to keep its dense strokes clear. */
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills h3 {font-size:16px;padding:5px 10px;line-height:24px;color:#243f53}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills ul {padding:3px 0;margin:0}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills li {font-size:12px;font-weight:500;line-height:1.45;padding:6px 8px;gap:7px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills li {font-size:clamp(13px,3.6cqw,15px);font-weight:500;line-height:1.35;padding:4px 8px;gap:6px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills li.is-locked {color:#4c6172}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-skills li.is-unlocked {color:#173f54;font-weight:700}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-hint {font-size:11px;line-height:1.4;margin:4px 0}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-cost {padding:6px;gap:6px;margin:4px 0}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-cost>span {font-size:11px}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-cost b {font-size:14px}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] :is(.ag-modal-footer,.ag-equipment-primary) {position:static!important;inset:auto;margin-top:8px;padding:6px 0;background:none}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-primary .ag-button {width:60%;min-height:40px;--wc-button-height:40px;font-size:16px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-primary .ag-button {width:min(100%,var(--ui-primary-width));min-height:var(--ui-primary-height);--wc-button-height:var(--ui-primary-height);font-size:16px}
 
-/* Slot details expose upgrades; warehouse previews expose replacement only. */
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-footer{margin-top:14px}
+/* Equipped-item details expose upgrades from every entry point. */
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='gearDetail'] {--popup-width:94cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:80%}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail']>.pl-modal-heading {height:calc(100 * var(--popup-unit));padding-top:calc(20 * var(--popup-unit))!important;padding-bottom:calc(10 * var(--popup-unit))!important}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-icon {position:relative;width:72px;height:72px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-meta {display:flex;align-items:center;gap:8px;color:#344f63;font-size:12px;line-height:1.35}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading .ag-equipment-level {margin:5px 0 0;font-size:13px}
+/* Reuse each part's original project silhouette on a small, flat type badge. */
+#gui-casual-lobby .ag-equipment-type {position:absolute;left:-5px;top:-5px;z-index:3;display:grid;place-items:center;width:23px;height:23px;background:#47687f;border:1px solid #b5d4e4;outline:1px solid #294457;border-radius:1px;transform:rotate(45deg)}
+#gui-casual-lobby .ag-equipment-type>i {display:block;width:23px;height:23px;background:var(--equipment-type-art) center/contain no-repeat;filter:grayscale(1) brightness(1.5);transform:rotate(-45deg)}
+#gui-casual-lobby .ag-card .ag-card-type{left:5%;top:5%;width:24%;height:24%;pointer-events:none}
+#gui-casual-lobby .ag-card .ag-card-type>i{width:100%;height:100%}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-modal-scroll {padding-bottom:0}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-detail .ag-modal-footer {padding:0}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-footer{margin-top:0}
 #gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-slot-cost{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 18px;margin:6px 0 10px;font-size:14px}
 #gui-casual-lobby .ag-slot-cost>span{display:flex;align-items:center;gap:3px;white-space:nowrap}
 #gui-casual-lobby .ag-slot-cost img{width:24px;height:26px;object-fit:contain;margin-right:2px}
 #gui-casual-lobby .ag-slot-cost b{color:#247349}
 #gui-casual-lobby .ag-slot-cost .is-short b{color:#ad3b3b}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-slot-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0}
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-slot-actions .ag-button{width:100%;min-width:0;min-height:44px;--wc-button-height:44px;--psd-button-corner:10px;font-size:clamp(12px,3.5cqw,16px);padding:6px 2px;white-space:nowrap}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-slot-actions{grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--ui-action-gap);margin:0}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-slot-actions .ag-button{width:100%;min-width:0;min-height:var(--ui-primary-height);--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);font-size:clamp(12px,3.5cqw,16px);padding:6px 2px;white-space:nowrap}
 
-#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading .ag-button{width:auto;min-height:28px;--wc-button-height:28px;font-size:11px;padding:3px 10px;margin-top:4px}
+#gui-casual-lobby .pl-modal[data-modal-type='gearDetail'] .ag-equipment-heading .ag-button{width:var(--ui-action-width);font-size:12px;padding:3px 6px;margin-top:4px}
 
 /* Attribute detail keeps names and values aligned, without borrowing skill artwork. */
 #gui-casual-lobby .pl-modal[data-modal-type='gearAttributes'][data-psd-popup] {--popup-width:86cqw;--popup-height:auto;--popup-min-height:0px;--popup-max-height:85%}
@@ -177,12 +194,13 @@
 
 #gui-casual-lobby .ag-combat-attribute .ag-stat-icon {width:7cqw;height:7cqw;object-fit:contain;flex:none}
 
-/* Compact green badges keep upgrade and replacement hints readable over every equipment quality. */
-#gui-casual-lobby .ag-card .ag-gear-notice{position:absolute;right:-1px;top:-2px;z-index:4;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:clamp(16px,4.6cqw,20px);height:auto;aspect-ratio:1;padding:2px;border:1px solid #285a28;border-radius:3px;background:linear-gradient(180deg,#b9f77e,#77d944);box-shadow:inset 0 1px 0 #e0ffb1,inset 0 -1px 0 #52ac2c,0 1px 2px #04151bc4;line-height:0;pointer-events:none}
-#gui-casual-lobby .ag-card .ag-gear-notice>img{display:block;width:100%;height:100%;object-fit:contain;filter:brightness(.27) saturate(.7)}
+/* Status art is an independent overlay and must never create a grid cell. */
+#gui-casual-lobby .ag-card .ag-gear-notice{position:absolute;right:2px;top:3px;z-index:4;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:clamp(14px,4cqw,18px);height:clamp(14px,4cqw,18px);margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;line-height:0;pointer-events:none}
+#gui-casual-lobby .ag-card .ag-gear-notice>img{display:block;position:static;width:100%;height:100%;min-width:0;max-width:100%;max-height:100%;object-fit:contain;transform:none;filter:none}
+#gui-casual-lobby .ag-toolbar .ag-workshop-dot{position:absolute;right:3px;top:3px;width:clamp(9px,2.6cqw,12px);height:clamp(9px,2.6cqw,12px);margin:0;padding:0;object-fit:contain;pointer-events:none}
 #gui-casual-lobby .ag-card .ag-upgrade{animation:ag-upgrade-hop 1.4s ease-in-out infinite}
-#gui-casual-lobby .ag-card .ag-better{padding:1px}
+#gui-casual-lobby .ag-card .ag-better{padding:0}
 #gui-casual-lobby .ag-card .ag-replace-glyph{display:block;flex:none;width:100%;height:100%;overflow:visible;fill:#205923}
-#gui-casual-lobby.equipment-reference .ag-page .ag-card:is(.has-better,.has-upgrade) .ag-lock{top:36%;right:6%}
+#gui-casual-lobby.equipment-reference .ag-page .ag-card:is(.has-better,.has-upgrade) .ag-lock{top:auto;right:auto;left:5%;bottom:5%}
 @keyframes ag-upgrade-hop{0%,55%,100%{transform:translateY(0)}25%{transform:translateY(-3px)}}
 @media(prefers-reduced-motion:reduce){#gui-casual-lobby .ag-card .ag-upgrade{animation:none}}

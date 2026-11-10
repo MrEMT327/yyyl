@@ -6,11 +6,12 @@ import { catalogWeaponArtwork } from './weapon-catalog-page.js';
 import { lobbyCost } from './lobby-cost.js';
 import { WEAPON_QUALITIES } from '../fixed-parts/common-weapons.js';
 import { emptySlotMark } from './psd-empty-slot.js';
+import { guideMascotMarkup } from './guide-presentation.js';
+import './guide-presentation.css';
 import './workshop-reference-page.css';
 
-const base=import.meta.env?.BASE_URL??'/';
-const image=(name,cls='')=>name==='workshop-plus'?emptySlotMark(`ws-empty-mark ${cls}`):`<img class="${cls}" src="${projectIconUrl('upgrade-arrow')}" alt="" aria-hidden="true" draggable="false">`;
-export const workshopNumber=value=>Number(value||0).toLocaleString('zh-CN',{maximumFractionDigits:3});
+const image=(name,cls='')=>name==='workshop-plus'?emptySlotMark(`ws-empty-mark ${cls}`):`<img class="${cls}" src="${projectIconUrl('equipment-upgrade')}" alt="" aria-hidden="true" draggable="false">`;
+export const workshopNumber=value=>Number(value||0).toLocaleString('zh-CN',{useGrouping:false,maximumFractionDigits:3});
 const button=(action,label,attrs='',cls='',disabled=false)=>`<button type="button" class="wc-button ${cls}" data-action="${action}" ${attrs}${disabled?' disabled':''}>${label}</button>`;
 export const WORKSHOP_FILTERS=['all','ready','equipped',...WEAPON_QUALITIES.map((_,i)=>`q${i}`)];
 const filterLabel=(value,leveling)=>value==='all'?'全部':value==='ready'?(leveling?'可强化':'可升星'):value==='equipped'?'已装备':WEAPON_QUALITIES[Number(value.slice(1))]||'全部';
@@ -20,7 +21,7 @@ export function workshopFilterDialog(value,mode='level',gear) {
 }
 
 export function workshopReferencePage({snapshot:s,helpers:h,workshopId,workshopFilter='all',workshopMode='level',workshopBackLabel='返回装备',workshopKind='weapon',gearWorkshop}) {
-  if(workshopKind==='gear')return gearWorkshopPage({snapshot:s,helpers:h,gearWorkshop,workshopFilter});
+  if(workshopKind==='gear')return gearWorkshopPage({snapshot:s,helpers:h,gearWorkshop,workshopFilter,workshopBackLabel});
   const {escape:e}=h,leveling=workshopMode==='level';
   const all=(s.workshop?.items||[]).map(item=>({...item,growth:s.weapons.find(w=>w.id===item.id)}));
   const items=all.filter(item=>item.owned&&item.growth&&(workshopFilter==='ready'?(leveling?item.growth.canUpgrade:item.canSynthesize):workshopFilter==='equipped'?(item.equipped||item.id===s.innateWeapon):workshopFilter.startsWith('q')?item.qualityRank===Number(workshopFilter.slice(1)):true));
@@ -52,11 +53,13 @@ export function workshopReferencePage({snapshot:s,helpers:h,workshopId,workshopF
   return `<section class="ws-page" data-workshop-mode="${workshopMode}" aria-label="改装间">
     <div class="ws-stage"><header class="ws-header"><h1>改装间</h1><div class="ws-modes" role="group" aria-label="改装类型">${button('workshopMode','强化',`data-mode="level" aria-pressed="${leveling}"`,leveling?'is-active':'')}${button('workshopMode','升星',`data-mode="quality" aria-pressed="${!leveling}"`,leveling?'':'is-active')}</div></header>
       <div class="ws-recipe">${slot(true)}${image('workshop-arrow',`ws-arrow${cannotAdvance?' is-capped':''}`)}${slot(false)}</div>
-      <div class="ws-message"><h2>${item?e(item.name):'选择武器'}</h2>${effect?`<p data-growth-id="${e(item.id)}" data-growth-stat="damage">${e(effect)}</p>`:''}${reason?`<small>${e(reason)}</small>`:''}</div>
-      <img class="ws-technician" src="${base}art/project-workshop-technician-v2/technician-v2.webp" alt="" aria-hidden="true" draggable="false">
+      <div class="ws-assistant">
+        <div class="ws-message"><div class="ws-message-body"${item?' role="region" aria-label="武器改装预览" tabindex="0"':''}><h2>${item?e(item.name):'选择武器'}</h2>${effect?`<p data-growth-id="${e(item.id)}" data-growth-stat="damage">${e(effect)}</p>`:''}${reason?`<small>${e(reason)}</small>`:''}</div></div>
+        <div class="ws-assistant-art">${guideMascotMarkup()}</div>
+      </div>
     </div>
     <header class="ws-warehouse-heading">${button('workshopFilter',workshopFilter==='all'?'筛选':filterLabel(workshopFilter,leveling),`aria-label="筛选武器，当前${filterLabel(workshopFilter,leveling)}"`)}<h2>仓库</h2>${!leveling?button('workshopBatch','一键升星','','ws-batch',!s.workshop?.batch?.steps?.length):'<span></span>'}</header>
     <div class="ref-warehouse ws-inventory" data-workshop-scroll="${workshopMode}:${workshopFilter}"><div class="ref-item-grid ws-grid">${items.map(w=>equipmentWeaponCard(w.growth,{snapshot:s,helpers:h},{action:'workshopSelect',selected:item?.id,innateId:s.innateWeapon})).join('')}</div>${items.length?'':'<p class="ws-empty">暂无符合条件的武器</p>'}</div>
-    <footer class="ws-footer">${button('catalogBack','返回',`aria-label="${e(workshopBackLabel)}"`,'ws-back')}${button(action,`<strong>${label}</strong>${price?`<small class="workshop-cost ws-price">${price}</small>`:''}`,`data-kind="weapon" data-id="${e(item?.id||'')}" data-rank="${item?.qualityRank??''}"${canChange?' data-mode="quality"':''}`,'ws-confirm',!ready&&!canChange)}</footer>
+    <footer class="ws-footer">${button('catalogBack','',`aria-label="${e(workshopBackLabel)}"`,'ws-back')}${button(action,`<strong>${label}</strong>${price?`<small class="workshop-cost ws-price">${price}</small>`:''}`,`data-kind="weapon" data-id="${e(item?.id||'')}" data-rank="${item?.qualityRank??''}"${canChange?' data-mode="quality"':''}`,'ws-confirm',!ready&&!canChange)}</footer>
   </section>`;
 }

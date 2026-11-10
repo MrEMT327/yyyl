@@ -1,0 +1,33 @@
+{
+  "name": "project-return-button-v1",
+  "generator": "built-in imagegen",
+  "source": "art/project-return-button-v1/generated-source.png",
+  "source_sha256": "bf6f9190d2c8edf003ca5b525ee1e8700e2edac93f8f7bca3c382711fd249ead",
+  "reference_assets": [
+    "psd-page-chrome-v1/chapter-face.png",
+    "psd-buttons-v1/button-blue.png"
+  ],
+  "reference_context": "aircraft catalog footer, project PSD materials",
+  "prompt": "One isolated transparent dark steel-blue mobile game return button face; thin silver and pale cyan clipped-corner rim, subtle brushed diagonal texture. Match the project PSD and dark navigation rail. No text, glyphs, icons, gold or extra objects.",
+  "prompt_full": "Use case: ui-mockup / game UI asset. Create ONE isolated transparent PNG button FACE for a small mobile aviation game RETURN navigation control. Image 1 is the project's PSD chapter frame: match its thin ice-blue/silver bevel, clipped corners, and understated blue-grey material. Image 2 is the project's PSD action button: borrow the fine brushed faceted texture and rendering quality, but make the new return button darker, quieter, and distinct from the vivid blue action button. Image 3 shows the actual dark diagonal-textured bottom navigation; the new button must fit naturally in the left side of this rail. Straight-on 2D game UI, flat enough for a UI skin, approximately 2.2:1 wide horizontal frame, clean transparent exterior, no drop shadow outside, no additional objects. The inner face should be dark steel blue with subtle brushed diagonal grain and restrained pale cyan edge highlights, clearly readable when displayed at about 80 by 42 pixels. Keep the face relatively even and corners compact for nine-slice scaling. No words, letters, arrows, icons, emblems, labels, numbers, watermarks, circles, thick mechanical plating, gold, purple, or extra UI. Generate original art, no competitor assets.",
+  "trim_ltrb": [
+    44,
+    160,
+    1815,
+    685
+  ],
+  "output": "face.png",
+  "output_size": [
+    320,
+    95
+  ],
+  "processing": "trim transparent exterior and uniformly downscale; preserve original artwork and alpha",
+  "slice_trbl": [
+    18,
+    18,
+    18,
+    18
+  ],
+  "target_corner_css_px": 8,
+  "sha256": "8432106ee1a5c725236792b004d17b548f60155f1f1b70736080ed7d2b50d5e0"
+}

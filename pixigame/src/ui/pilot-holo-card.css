@@ -45,6 +45,9 @@
 .phc-compact .phc-caption{left:7%;right:7%;bottom:8%;align-items:center;gap:0}
 .phc-compact .phc-name{display:block;color:#f4f8ff;font-size:11cqw;font-weight:700;line-height:1.3;white-space:nowrap}
 .phc-compact .phc-status{top:7%;right:8%;font-size:7cqw;max-width:60%;padding:1px 3px}
+.pilot-holo-card .phc-status.phc-status-art{display:block;width:min(80%,96px);max-width:none;aspect-ratio:384/110;height:auto;padding:0;border:0;background:none;pointer-events:none;text-shadow:none}
+.phc-status-art>img{display:block;width:100%!important;height:100%!important;max-width:none!important;object-fit:contain;filter:none}
+.phc-compact .phc-status.phc-status-art{top:calc(5% + 18cqw + 4px);width:min(80%,52px)}
 /* Shallow bevels register to the existing PSD centre slice. */
 .phc-depth{position:absolute;inset:var(--phc-frame-corner);z-index:1;overflow:hidden;pointer-events:none;mask-image:linear-gradient(transparent 62%,#000 76%,#000)}
 .phc-depth>svg{display:block;width:100%;height:100%;overflow:hidden}

@@ -23,6 +23,6 @@ export function actionRewards(result,before={},after={}) {
     :Object.entries(raw||{}).filter(([,amount])=>typeof amount==='number'&&amount>0).map(([type,amount])=>({type,amount}));
   if(rewards.length)return rewards;
   const fallback=walletGains(before.wallet,after.wallet);
-  if(result.gearResult?.keyReward>0)fallback.push({type:'gearKey',pool:'advanced',amount:result.gearResult.keyReward,name:'高级装备箱券',image:projectItemIcon(112)});
+  if(result.gearResult?.keyReward>0)fallback.push({type:'gearKey',nativeId:112,pool:'advanced',amount:result.gearResult.keyReward,name:'高级装备箱券',image:projectItemIcon(112)});
   return fallback;
 }

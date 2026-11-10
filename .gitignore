@@ -78,6 +78,8 @@ test-results/
 /pixigame/tools/*
 !/pixigame/tools/gm.html
 !/pixigame/tools/check-original-ui-art.mjs
+!/pixigame/tools/copy-shipping-public.mjs
+!/pixigame/tools/retired-runtime-assets.json
 !/pixigame/tools/check-player-state.mjs
 !/pixigame/tools/check-recurring-rewards.mjs
 !/pixigame/tools/check-account-experience.mjs
@@ -88,7 +90,16 @@ test-results/
 !/pixigame/tools/generate-native-economy.mjs
 !/pixigame/tools/generate-native-weapon-preview.mjs
 !/pixigame/tools/generate-native-equipment-effects.mjs
+!/pixigame/tools/generate-chapter-detail.mjs
+!/pixigame/tools/audit-ui-buttons.mjs
+!/pixigame/tools/button-review-template.mjs
+!/pixigame/tools/check-touch-ui.mjs
+!/pixigame/tools/export-panel-button.py
 !/pixigame/tools/generate-combat-sfx.mjs
+!/pixigame/tools/build-orange-hip-materials.ps1
+!/pixigame/tools/build-aircraft-game-lod.mjs
+!/pixigame/tools/build-sortie-data.mjs
+!/pixigame/tools/build-sortie-loading-art.py
 !/pixigame/tools/package-zh-release.mjs
 !/pixigame/tools/package-zh-obfuscated-release.mjs
 !/pixigame/tools/package-4399-release.mjs

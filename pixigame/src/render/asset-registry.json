@@ -1,8 +1,8 @@
 {
   "airframe-pilot-10": {
     "id": "airframe-pilot-10",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-10-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -34,12 +34,13 @@
         629,
         1183
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-10-portrait": {
     "id": "pilot-10-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-10-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -47,12 +48,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-10-avatar": {
     "id": "pilot-10-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-10-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -66,12 +68,13 @@
       0,
       300,
       300
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-09": {
     "id": "airframe-pilot-09",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-09-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -111,12 +114,13 @@
         844,
         985
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-09-portrait": {
     "id": "pilot-09-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-09-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -124,12 +128,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-09-avatar": {
     "id": "pilot-09-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-09-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -143,12 +148,13 @@
       0,
       300,
       300
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-08": {
     "id": "airframe-pilot-08",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-08-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -184,12 +190,13 @@
         701,
         1347
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-08-portrait": {
     "id": "pilot-08-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-08-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -197,12 +204,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-08-avatar": {
     "id": "pilot-08-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-08-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -216,12 +224,13 @@
       0,
       280,
       280
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-07": {
     "id": "airframe-pilot-07",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-07-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -253,12 +262,13 @@
         782,
         1210
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-07-portrait": {
     "id": "pilot-07-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-07-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -266,12 +276,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-07-avatar": {
     "id": "pilot-07-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-07-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -285,12 +296,13 @@
       5,
       310,
       310
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-06": {
     "id": "airframe-pilot-06",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-06-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -318,12 +330,13 @@
         512,
         1380
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-06-portrait": {
     "id": "pilot-06-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-06-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -331,12 +344,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-06-avatar": {
     "id": "pilot-06-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-06-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -350,12 +364,13 @@
       5,
       280,
       280
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-05": {
     "id": "airframe-pilot-05",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-05-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -387,12 +402,13 @@
         594,
         1450
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-05-portrait": {
     "id": "pilot-05-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-05-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -400,12 +416,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-05-avatar": {
     "id": "pilot-05-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-05-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -419,12 +436,13 @@
       15,
       300,
       300
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-04": {
     "id": "airframe-pilot-04",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-04-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -456,12 +474,13 @@
         739,
         1240
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-04-portrait": {
     "id": "pilot-04-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-04-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -469,12 +488,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-04-avatar": {
     "id": "pilot-04-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-04-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -488,12 +508,13 @@
       30,
       290,
       290
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-03": {
     "id": "airframe-pilot-03",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-03-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -529,12 +550,13 @@
         746,
         1120
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-03-portrait": {
     "id": "pilot-03-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-03-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -542,12 +564,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-03-avatar": {
     "id": "pilot-03-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-03-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -561,12 +584,13 @@
       0,
       300,
       300
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-01-portrait": {
     "id": "pilot-01-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-01-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -574,12 +598,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-01-avatar": {
     "id": "pilot-01-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-01-avatar-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -587,12 +612,13 @@
     "anchor": [
       0.5,
       0.5
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "airframe-pilot-01": {
     "id": "airframe-pilot-01",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-01-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -614,12 +640,13 @@
     "muzzle": [
       0,
       -28
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "drone-mech": {
     "id": "drone-mech",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/drone-mech-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       32,
       42
@@ -633,7 +660,8 @@
       245,
       877,
       704
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "enemy-scout": {
     "id": "enemy-scout",
@@ -765,8 +793,8 @@
   },
   "airframe-pilot-02": {
     "id": "airframe-pilot-02",
-    "status": "integrated",
-    "url": "./assets/retro/airframes/airframe-pilot-02-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       112
@@ -798,12 +826,13 @@
         805,
         904
       ]
-    ]
+    ],
+    "replacement": "current-3d-fighter"
   },
   "pilot-02-portrait": {
     "id": "pilot-02-portrait",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-02-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       360,
       540
@@ -811,12 +840,13 @@
     "anchor": [
       0.5,
       1
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   },
   "pilot-02-avatar": {
     "id": "pilot-02-avatar",
-    "status": "integrated",
-    "url": "./assets/retro/pilots/pilot-02-portrait-v01.webp",
+    "status": "retired",
+    "url": null,
     "size": [
       76,
       76
@@ -830,6 +860,7 @@
     "anchor": [
       0.5,
       0.5
-    ]
+    ],
+    "replacement": "current-pilot-portrait"
   }
 }

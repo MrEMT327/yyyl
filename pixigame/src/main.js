@@ -1,6 +1,6 @@
 import {hostSignInSnapshot,claimHostSignIn} from './replica/host-signin.js';
 import { isGameSessionCurrent } from './platform/game-session-runtime.js';
-import { cancelLocalRewardedAd } from './ui/local-rewarded-ad.js';
+import { playFreeRewardedAd } from './platform/local-rewarded-ad-runtime.js';
 import { memoryCheckpoint } from './replica/memory-checkpoints.js';
 import { replicaChapter, replicaChapterForStage, replicaStageAccessible } from './replica/chapter-contract.js';
 import { ColorMatrixFilter, Container, Graphics, Text, Ticker, WebGLRenderer } from './three/display.js';
@@ -43,6 +43,7 @@ import { bossBarragePlan, eliteBarragePlan, regularBarragePlan } from './boss-ba
 import { chapterEnemyProfile, enemyTierMetrics, chapterBossPosition } from './chapter-enemies.js';
 import {loadEnemyLibrary,createLibraryEnemy,enemyLibrarySpec,enemyLibraryColor,releaseUnusedEnemyLibrary,retireLibraryEnemy,stepEnemyRemains,clearEnemyRemains} from './render/enemy-library.js';
 import { loadFighterPackages, fighterForPilot } from './three/aircraft/fighter-packages.js';
+import {preloadSortieAircraftImage} from './ui/sortie-aircraft-image.js';
 import { createEnemyModel, flightRollAngle } from './three/aircraft/aircraft-view.js';
 import { createWorldEnvironment } from './three/world.js';
 import { createPeripheralSystem } from './peripheral/system.js';
@@ -295,17 +296,19 @@ function sdkGameplayStop() {
 
 async function playRewardedAd() {
   sdkGameplayStop();
+  let result;
   if (typeof thunderRuntimeGlobals.playRewardedAd === 'function') {
-    return thunderRuntimeGlobals.playRewardedAd();
+    result = await thunderRuntimeGlobals.playRewardedAd();
+  } else if (IS_4399_RELEASE) {
+    result = await play4399RewardedAd();
+  } else if (typeof sdk?.ads?.rewarded === 'function' && CpSDK.localDevelopment !== true) {
+    if (!sdkReady) throw new Error('平台广告服务暂未就绪，请稍后重试');
+    result = await sdk.ads.rewarded();
+  } else {
+    result = await playFreeRewardedAd();
   }
-  if (sdkReady && typeof sdk?.ads?.rewarded === 'function') {
-    const result = await sdk.ads.rewarded();
-    if (result?.status !== 'completed') {
-      throw new Error('需完整观看广告才能获得奖励');
-    }
-    return result;
-  }
-  return play4399RewardedAd();
+  requireCompletedRewardedAd(result);
+  return result;
 }
 
 function requireCompletedRewardedAd(result) {
@@ -534,6 +537,7 @@ memoryCheckpoint('host-before-renderer');
 await renderer.init(rendererOptions);
 requireGameSession(()=>renderer.destroy());
 memoryCheckpoint('host-renderer-ready');
+void preloadSortieAircraftImage(getActivePilot().id);
 await loadFighterPackages({ pilotIds: usePeripheralLobby ? [getActivePilot().id, 'pilot-01'] : undefined });
 requireGameSession(()=>renderer.destroy());
 memoryCheckpoint('host-aircraft-ready');
@@ -8324,7 +8328,6 @@ async function startGame(options = {}) {
     window.clearTimeout(resourceTimeout);
     loading.stage(0,'作战资源已就绪');
     await nextLoadingFrame();
-    await loading.readyForLaunch();
     started = initializeGame(options);
     if(!started){await loading.close();return false;}
     releaseUnusedEnemyLibrary(chapterEnemyProfile(game.stageIndex).id);
@@ -8340,7 +8343,7 @@ async function startGame(options = {}) {
     }
     loading.stage(2,'准备完成');
     await nextLoadingFrame();await nextLoadingFrame();
-    await loading.close();
+    await loading.close({keepMotion:true});
     return true;
   } catch(error) {
     console.error('出击准备失败',error);
@@ -10603,7 +10606,7 @@ app.stage.on('pointermove', (event) => {
   if (game.state !== 'playing' || game.sortieLoading) return;
   if (event.pointerType === 'touch') return;
   if (pixiCombatUi?.blocksFlightPointer(event.global)) return;
-  if (game.pointerActive || event.pointerType === 'mouse') setPointerTarget(event.global);
+  if (game.pointerActive) setPointerTarget(event.global);
 });
 app.stage.on('pointerup', () => { game.pointerActive = false; });
 app.stage.on('pointerupoutside', () => { game.pointerActive = false; });
@@ -10928,7 +10931,7 @@ const thunderBridge = {
     gameSessionClosed=true;
     try { if(save)replicaBattle?.leavePage(); }
     finally {
-      replicaBattle?.dispose();cancelLocalRewardedAd();
+      replicaBattle?.dispose();
       thunderBridge.replicaResearchTool?.destroy?.();thunderBridge.performancePanel?.destroy?.();
       game.state='session-stopped';game.keys.clear();resetRelativeDrag();
       app.ticker.stop();pixiLobby?.destroy?.();lobbyFeedback.stop();

@@ -1,0 +1,40 @@
+/* Competitor display hierarchy, with the project's own hangar, art and PSD slices. */
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(.wd-showcase){--popup-width:94cqw;--popup-height:140cqw;--popup-max-height:84%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(.wd-showcase)>.pl-modal-content{display:flex;overflow:hidden}
+#gui-casual-lobby .wd-showcase{display:grid;grid-template-rows:minmax(0,1fr) minmax(90px,27cqw);gap:2.5cqw;flex:1;min-height:0;min-width:0;color:#edf9ff;font-family:'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .wd-stage{position:relative;isolation:isolate;min-height:0;overflow:hidden;background:var(--project-scene-texture),linear-gradient(#081d35a6,#12273a18 55%,#0a2033d9),var(--project-armory-image) center/cover no-repeat;background-blend-mode:overlay,normal,normal;border:1px solid #6d95aa}
+#gui-casual-lobby .wd-stat-block{position:absolute;left:3cqw;top:3cqw;z-index:3;text-shadow:0 1px 3px #041523}
+#gui-casual-lobby .wd-stars{display:flex;align-items:center;gap:.3cqw;height:5.4cqw}
+#gui-casual-lobby .wd-stars img{width:5.1cqw;height:100%;object-fit:contain}
+#gui-casual-lobby .wd-stars .is-icon-muted{filter:grayscale(1);opacity:.4}
+#gui-casual-lobby .wd-stat-block dl{margin:1.5cqw 0 0}
+#gui-casual-lobby .wd-stat-block dl>div{display:flex;justify-content:flex-start;gap:1cqw;align-items:baseline;padding:0;border:0;font-size:clamp(12px,3.6cqw,17px);line-height:1.5;font-weight:700}
+#gui-casual-lobby .wd-stat-block dt{color:#edf9ff}
+#gui-casual-lobby .wd-stat-block dd{margin:0;color:#8de4e9;font-weight:700}
+#gui-casual-lobby .wd-stat-block small{font-size:clamp(10px,2.8cqw,13px);color:#b9cbd8}
+#gui-casual-lobby .wd-platform{position:absolute;left:50%;bottom:14%;width:84%;height:29%;transform:translateX(-50%);object-fit:contain;pointer-events:none}
+#gui-casual-lobby .wd-weapon{position:absolute;left:50%;top:50%;width:67%;height:47%;transform:translate(-50%,-50%);padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 10px 8px #03121e88)}
+#gui-casual-lobby .wd-weapon img{display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .wd-skill{position:absolute;right:2.5cqw;top:2.5cqw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:1cqw;width:19cqw;min-width:64px;min-height:44px;padding:0;border:0;background:none;color:#fff;font:600 clamp(12px,3cqw,14px)/1.35 'Microsoft YaHei',sans-serif;text-shadow:0 1px 2px #061520;cursor:pointer}
+#gui-casual-lobby .wd-skill>img{width:14cqw;height:14cqw;min-width:44px;min-height:44px;object-fit:contain}
+#gui-casual-lobby .wd-skill>span{display:grid;place-items:center;box-sizing:border-box;width:100%;min-height:24px;padding:2px 4px;background:url('/art/project-navigation-v2/background.png') center/100% 100% no-repeat;white-space:nowrap}
+#gui-casual-lobby .wd-upgrade{position:absolute;left:8%;right:8%;bottom:2cqw;display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;min-width:0;gap:1cqw;z-index:3}
+/* Equal tracks keep two actions inside the stage; a single action stays centered. */
+#gui-casual-lobby .wd-upgrade-actions{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);justify-items:center;gap:var(--ui-action-gap);width:100%;min-width:0}
+#gui-casual-lobby .wd-upgrade .wc-button{width:100%;max-width:var(--ui-primary-width);min-width:0;--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);font-size:clamp(16px,4.4cqw,20px)}
+#gui-casual-lobby .wd-upgrade .wc-button:last-child::before{border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / var(--psd-button-corner) stretch}
+#gui-casual-lobby .wd-upgrade .wc-button:disabled{filter:saturate(.5);opacity:.78;cursor:default}
+#gui-casual-lobby .wd-costs{display:flex;justify-content:center;flex-wrap:wrap;gap:1cqw 3cqw;max-width:100%;color:#d6e9f2;font-size:clamp(10px,2.7cqw,13px);line-height:1.2;text-shadow:0 1px 3px #03101c}
+#gui-casual-lobby .wd-costs b{color:#b4eced}
+#gui-casual-lobby .wd-costs .is-short b{color:#ffc0ad}
+#gui-casual-lobby .wd-variants{display:flex;align-items:stretch;gap:3cqw;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:none;padding:1cqw 2cqw;background:none}
+#gui-casual-lobby .wd-variants::-webkit-scrollbar{display:none}
+#gui-casual-lobby .wd-variant{position:relative;isolation:isolate;flex:0 0 25cqw;display:block;min-width:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:0;background:none;cursor:pointer}
+#gui-casual-lobby .wd-variant-plate{position:absolute;inset:1px;display:block;isolation:isolate;background:none}
+#gui-casual-lobby .wd-variant-art{position:absolute;left:7%;top:17.5%;width:86%;height:65%;object-fit:contain;z-index:1}
+#gui-casual-lobby .wd-variant .wd-stars{position:absolute;left:7%;right:7%;bottom:6%;height:13%;gap:0;z-index:3}
+#gui-casual-lobby .wd-variant .wd-stars img{flex:1;width:0;min-width:0}
+#gui-casual-lobby .wd-marker{position:absolute;left:6%;top:5%;width:5cqw;height:5cqw;z-index:3}
+#gui-casual-lobby .wd-marker.is-lock{left:auto;right:6%;width:4cqw;height:4cqw}
+#gui-casual-lobby .wd-variant.is-locked .wd-variant-art{filter:brightness(.5) saturate(.65)}
+#gui-casual-lobby .wd-showcase button:focus-visible{outline:2px solid #b6f1f4;outline-offset:-2px}

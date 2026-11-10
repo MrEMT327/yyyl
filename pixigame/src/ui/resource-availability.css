@@ -9,7 +9,7 @@
 
 #gui-casual-lobby button.is-resource-short {cursor:pointer}
 #gui-casual-lobby button.is-resource-short:active {transform:none}
-#gui-casual-lobby .sn-button.is-resource-short {border-image-source:url('/art/psd-buttons-v1/button-gray.png')}
+#gui-casual-lobby .sn-button.is-resource-short {border-image-source:url('/art/psd-buttons-v1/button-blue.png')}
 #gui-casual-lobby.peripheral-lobby .pl-toast {display:block!important;z-index:13000;pointer-events:none}
 
 /* APK UI_Tip/TextTipNodeRun: 1080-unit canvas, 0.8/1.1/1 pop,

@@ -13,8 +13,11 @@ export const RESOURCE_ICONS = Object.freeze({
 });
 const aliases={exp:'experience',xp:'experience',experience:'experience',heroExp:'experience',coin:'coins',coins:'coins',diamond:'diamonds',diamonds:'diamonds',gem:'diamonds',energy:'stamina',stamina:'stamina',bolt:'stamina',parts:'weaponParts',weaponParts:'weaponParts',shard:'aircraftShards',aircraftShards:'aircraftShards',core:'cores',cores:'cores'};
 export function resourceIconType(name){return aliases[name];}
-export function resourceIcon(name,cls=''){
+const inspectionIds={experience:3,coins:1,stamina:4,diamonds:2,weaponParts:129,cores:135,aircraftShards:'aircraftShards'};
+const inspectionNames={experience:'经验',coins:'金币',stamina:'体力',diamonds:'钻石',weaponParts:'武器零件',cores:'星核',aircraftShards:'机体碎片'};
+export function resourceIcon(name,cls='',{inspect=true}={}){
   const type=resourceIconType(name);
-  if(type)return `<img class="resource-icon gui-icon ${cls}" data-resource="${type}" src="${RESOURCE_ICONS[type].url}" alt="" aria-hidden="true" draggable="false">`;
+  const interaction=inspect?`data-item-inspect="" data-item-id="${inspectionIds[type]}" data-item-name="${inspectionNames[type]}" role="button" tabindex="0" aria-haspopup="dialog" aria-label="查看${inspectionNames[type]}详情"`:'aria-hidden="true"';
+  if(type)return `<img class="resource-icon gui-icon ${cls}" data-resource="${type}" ${interaction} src="${RESOURCE_ICONS[type].url}" alt="" draggable="false">`;
   return '';
 }

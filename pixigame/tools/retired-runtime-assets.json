@@ -1,0 +1,1488 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-10",
+  "archiveManifest": "F:\\codextest\\2026-11-04\\小飞机\\旧资源\\cleanup-1605\\manifest.json",
+  "historyPaths": {
+    "performanceUi": "F:\\codextest\\2026-11-04\\小飞机\\旧试玩包\\cleanup-1605\\pixigame\\output\\performance-ui",
+    "uiBefore026": "F:\\codextest\\2026-11-04\\小飞机\\旧资源\\cleanup-1605\\files\\pixigame\\art\\archive\\ui-before-0.1.26"
+  },
+  "assets": [
+    {
+      "path": "combat-stat-icons-v2",
+      "reason": "属性图标已改用 v3 SVG",
+      "replacement": "combat-stat-icons-v3"
+    },
+    {
+      "path": "entry-screens-v1",
+      "reason": "启动图已改用 v4",
+      "replacement": "entry-screens-v4"
+    },
+    {
+      "path": "entry-screens-v2",
+      "reason": "启动图已改用 v4",
+      "replacement": "entry-screens-v4"
+    },
+    {
+      "path": "entry-screens-v3",
+      "reason": "启动图已改用 v4",
+      "replacement": "entry-screens-v4"
+    },
+    {
+      "path": "project-battle-skills-v1",
+      "reason": "当前技能图标使用武器主题和 v2 被动图标",
+      "replacement": "project-weapon-themes-v1 + project-battle-passives-v2"
+    },
+    {
+      "path": "project-fleet-environments-v1",
+      "reason": "机库背景已改用原创环境套图；旧引用仅为生成来源记录",
+      "replacement": "project-original-environments-v1"
+    },
+    {
+      "path": "project-growth-v1",
+      "reason": "技师已改用 v2",
+      "replacement": "project-workshop-technician-v2"
+    },
+    {
+      "path": "project-research-blueprints-v1",
+      "reason": "图纸已改用 v2 SVG",
+      "replacement": "project-research-blueprints-v2"
+    },
+    {
+      "path": "project-skill-icons-v1",
+      "reason": "无人机旧大图无运行入口；当前使用武器主题和无人机部件",
+      "replacement": "project-weapon-themes-v1 + weapon-drones-v1"
+    },
+    {
+      "path": "project-weapon-skill-icons-v1",
+      "reason": "武器技能图标已改用 v2",
+      "replacement": "project-weapon-skill-icons-v2"
+    },
+    {
+      "path": "recruit-controls-v1",
+      "reason": "历史记录按钮已由当前招募界面替代，无运行或制作工具引用",
+      "replacement": "recruit-dossier-v1"
+    },
+    {
+      "path": "project-weekly-chest-v2",
+      "reason": "周任务补给箱已改用 v5",
+      "replacement": "project-weekly-chest-v5"
+    },
+    {
+      "path": "project-weekly-chest-v3",
+      "reason": "周任务补给箱已改用 v5",
+      "replacement": "project-weekly-chest-v5"
+    },
+    {
+      "path": "project-weekly-chest-v4",
+      "reason": "周任务补给箱已改用 v5",
+      "replacement": "project-weekly-chest-v5"
+    },
+    {
+      "path": "project-shop-discount-v1",
+      "reason": "资源 README 明确标注停用",
+      "replacement": "src/ui/shop-layout.css"
+    },
+    {
+      "path": "revive-repair-v1",
+      "reason": "复活插画已改用 v2",
+      "replacement": "revive-repair-v2"
+    },
+    {
+      "path": "stage1-altitude-v1",
+      "reason": "当前第一关引用 regional-v3 和 maritime-v1；原件仍在 art/",
+      "replacement": "stage1-regional-v3 + stage1-maritime-v1"
+    },
+    {
+      "path": "stage1-modular-v1",
+      "reason": "当前模块索引已改用 regional-v3；制作原件仍在 art/",
+      "replacement": "stage1-regional-v3"
+    },
+    {
+      "path": "project-flight-gear-v1/sets-v2",
+      "reason": "装备图已改用 sets-v3",
+      "replacement": "project-flight-gear-v1/sets-v3"
+    },
+    {
+      "path": "assets/retro/airframes",
+      "publicPath": "assets/retro/airframes",
+      "reason": "旧 2D 兼容资源已退役，运行注册表已停止请求",
+      "replacement": "current-3d-fighter"
+    },
+    {
+      "path": "assets/retro/pilots",
+      "publicPath": "assets/retro/pilots",
+      "reason": "旧 2D 兼容资源已退役，运行注册表已停止请求",
+      "replacement": "current-pilot-portrait"
+    },
+    {
+      "path": "chapters-v1/abandoned-dam-lobby.webp",
+      "publicPath": "art/chapters-v1/abandoned-dam-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/abandoned-dam-lobby.png",
+      "publicPath": "art/chapters-v1/abandoned-dam-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/abandoned-raceway-lobby.webp",
+      "publicPath": "art/chapters-v1/abandoned-raceway-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/abandoned-raceway-lobby.png",
+      "publicPath": "art/chapters-v1/abandoned-raceway-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/abandoned-refinery-lobby.webp",
+      "publicPath": "art/chapters-v1/abandoned-refinery-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/abandoned-refinery-lobby.png",
+      "publicPath": "art/chapters-v1/abandoned-refinery-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/amber-dunes-lobby.webp",
+      "publicPath": "art/chapters-v1/amber-dunes-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/amber-dunes-lobby.png",
+      "publicPath": "art/chapters-v1/amber-dunes-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/amethyst-mines-lobby.webp",
+      "publicPath": "art/chapters-v1/amethyst-mines-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/amethyst-mines-lobby.png",
+      "publicPath": "art/chapters-v1/amethyst-mines-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/ancient-stone-circle-lobby-user-v2.webp",
+      "publicPath": "art/chapters-v1/ancient-stone-circle-lobby-user-v2.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/ancient-stone-circle-lobby-user-v2.png",
+      "publicPath": "art/chapters-v1/ancient-stone-circle-lobby-user-v2.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/autumn-fjord-lobby.webp",
+      "publicPath": "art/chapters-v1/autumn-fjord-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/autumn-fjord-lobby.png",
+      "publicPath": "art/chapters-v1/autumn-fjord-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/azure-geothermal-lobby.webp",
+      "publicPath": "art/chapters-v1/azure-geothermal-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/azure-geothermal-lobby.png",
+      "publicPath": "art/chapters-v1/azure-geothermal-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/bamboo-valley-lobby.webp",
+      "publicPath": "art/chapters-v1/bamboo-valley-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/bamboo-valley-lobby.png",
+      "publicPath": "art/chapters-v1/bamboo-valley-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/chalk-spires-lobby.webp",
+      "publicPath": "art/chapters-v1/chalk-spires-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/chalk-spires-lobby.png",
+      "publicPath": "art/chapters-v1/chalk-spires-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/coastal-airfield-lobby.webp",
+      "publicPath": "art/chapters-v1/coastal-airfield-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/coastal-airfield-lobby.png",
+      "publicPath": "art/chapters-v1/coastal-airfield-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/copper-mesa-lobby.webp",
+      "publicPath": "art/chapters-v1/copper-mesa-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/copper-mesa-lobby.png",
+      "publicPath": "art/chapters-v1/copper-mesa-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/coral-lagoon-lobby.webp",
+      "publicPath": "art/chapters-v1/coral-lagoon-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/coral-lagoon-lobby.png",
+      "publicPath": "art/chapters-v1/coral-lagoon-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/deep-space-array-lobby.webp",
+      "publicPath": "art/chapters-v1/deep-space-array-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/deep-space-array-lobby.png",
+      "publicPath": "art/chapters-v1/deep-space-array-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/emerald-rainforest-lobby.webp",
+      "publicPath": "art/chapters-v1/emerald-rainforest-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/emerald-rainforest-lobby.png",
+      "publicPath": "art/chapters-v1/emerald-rainforest-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/floating-isles-lobby.webp",
+      "publicPath": "art/chapters-v1/floating-isles-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/floating-isles-lobby.png",
+      "publicPath": "art/chapters-v1/floating-isles-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/frozen-canal-lobby.webp",
+      "publicPath": "art/chapters-v1/frozen-canal-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/frozen-canal-lobby.png",
+      "publicPath": "art/chapters-v1/frozen-canal-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/frozen-lake-city-lobby.webp",
+      "publicPath": "art/chapters-v1/frozen-lake-city-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/frozen-lake-city-lobby.png",
+      "publicPath": "art/chapters-v1/frozen-lake-city-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/frozen-rift-lobby.webp",
+      "publicPath": "art/chapters-v1/frozen-rift-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/frozen-rift-lobby.png",
+      "publicPath": "art/chapters-v1/frozen-rift-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/giant-lotus-pond-lobby.webp",
+      "publicPath": "art/chapters-v1/giant-lotus-pond-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/giant-lotus-pond-lobby.png",
+      "publicPath": "art/chapters-v1/giant-lotus-pond-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/giantwood-marsh-lobby.webp",
+      "publicPath": "art/chapters-v1/giantwood-marsh-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/giantwood-marsh-lobby.png",
+      "publicPath": "art/chapters-v1/giantwood-marsh-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/glassflower-meadow-lobby.webp",
+      "publicPath": "art/chapters-v1/glassflower-meadow-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/glassflower-meadow-lobby.png",
+      "publicPath": "art/chapters-v1/glassflower-meadow-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/iron-dock-lobby.webp",
+      "publicPath": "art/chapters-v1/iron-dock-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/iron-dock-lobby.png",
+      "publicPath": "art/chapters-v1/iron-dock-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/lunar-outpost-lobby.webp",
+      "publicPath": "art/chapters-v1/lunar-outpost-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/lunar-outpost-lobby.png",
+      "publicPath": "art/chapters-v1/lunar-outpost-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/mars-base-lobby.webp",
+      "publicPath": "art/chapters-v1/mars-base-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/mars-base-lobby.png",
+      "publicPath": "art/chapters-v1/mars-base-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/neon-city-lobby.webp",
+      "publicPath": "art/chapters-v1/neon-city-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/neon-city-lobby.png",
+      "publicPath": "art/chapters-v1/neon-city-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/obsidian-wastes-lobby.webp",
+      "publicPath": "art/chapters-v1/obsidian-wastes-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/obsidian-wastes-lobby.png",
+      "publicPath": "art/chapters-v1/obsidian-wastes-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/offshore-oilfield-lobby.webp",
+      "publicPath": "art/chapters-v1/offshore-oilfield-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/offshore-oilfield-lobby.png",
+      "publicPath": "art/chapters-v1/offshore-oilfield-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/orbital-wreckage-lobby.webp",
+      "publicPath": "art/chapters-v1/orbital-wreckage-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/orbital-wreckage-lobby.png",
+      "publicPath": "art/chapters-v1/orbital-wreckage-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/polar-night-base-lobby.webp",
+      "publicPath": "art/chapters-v1/polar-night-base-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/polar-night-base-lobby.png",
+      "publicPath": "art/chapters-v1/polar-night-base-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/polar-shipyard-lobby.webp",
+      "publicPath": "art/chapters-v1/polar-shipyard-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/polar-shipyard-lobby.png",
+      "publicPath": "art/chapters-v1/polar-shipyard-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/rail-graveyard-lobby.webp",
+      "publicPath": "art/chapters-v1/rail-graveyard-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/rail-graveyard-lobby.png",
+      "publicPath": "art/chapters-v1/rail-graveyard-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/red-nest-lobby.webp",
+      "publicPath": "art/chapters-v1/red-nest-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/red-nest-lobby.png",
+      "publicPath": "art/chapters-v1/red-nest-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/redwood-gorge-lobby.webp",
+      "publicPath": "art/chapters-v1/redwood-gorge-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/redwood-gorge-lobby.png",
+      "publicPath": "art/chapters-v1/redwood-gorge-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/ring-spaceport-lobby.webp",
+      "publicPath": "art/chapters-v1/ring-spaceport-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/ring-spaceport-lobby.png",
+      "publicPath": "art/chapters-v1/ring-spaceport-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sand-ruins-lobby.webp",
+      "publicPath": "art/chapters-v1/sand-ruins-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sand-ruins-lobby.png",
+      "publicPath": "art/chapters-v1/sand-ruins-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sky-core-lobby.webp",
+      "publicPath": "art/chapters-v1/sky-core-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sky-core-lobby.png",
+      "publicPath": "art/chapters-v1/sky-core-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/storm-front-lobby.webp",
+      "publicPath": "art/chapters-v1/storm-front-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/storm-front-lobby.png",
+      "publicPath": "art/chapters-v1/storm-front-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sunken-city-lobby.webp",
+      "publicPath": "art/chapters-v1/sunken-city-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sunken-city-lobby.png",
+      "publicPath": "art/chapters-v1/sunken-city-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sunset-saltworks-lobby.webp",
+      "publicPath": "art/chapters-v1/sunset-saltworks-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/sunset-saltworks-lobby.png",
+      "publicPath": "art/chapters-v1/sunset-saltworks-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/terraced-highlands-lobby.webp",
+      "publicPath": "art/chapters-v1/terraced-highlands-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/terraced-highlands-lobby.png",
+      "publicPath": "art/chapters-v1/terraced-highlands-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/waterfall-peaks-lobby.webp",
+      "publicPath": "art/chapters-v1/waterfall-peaks-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/waterfall-peaks-lobby.png",
+      "publicPath": "art/chapters-v1/waterfall-peaks-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/white-salt-lake-lobby.webp",
+      "publicPath": "art/chapters-v1/white-salt-lake-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/white-salt-lake-lobby.png",
+      "publicPath": "art/chapters-v1/white-salt-lake-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/wind-carved-yardang-lobby.webp",
+      "publicPath": "art/chapters-v1/wind-carved-yardang-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/wind-carved-yardang-lobby.png",
+      "publicPath": "art/chapters-v1/wind-carved-yardang-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/windmill-plains-lobby.webp",
+      "publicPath": "art/chapters-v1/windmill-plains-lobby.webp",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "chapters-v1/windmill-plains-lobby.png",
+      "publicPath": "art/chapters-v1/windmill-plains-lobby.png",
+      "kind": "file",
+      "reason": "lobbyImage 只存在于旧章节元数据，无读取入口；当前章节预览使用实际分层场景",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "project-chapters-balanced-v1/coast/midground.png",
+      "publicPath": "art/project-chapters-balanced-v1/coast/midground.png",
+      "kind": "file",
+      "reason": "未出现在当前 60 章节、所有已命名场景或分层场景索引中",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "project-chapters-balanced-v1/coast/midground.webp",
+      "publicPath": "art/project-chapters-balanced-v1/coast/midground.webp",
+      "kind": "file",
+      "reason": "未出现在当前 60 章节、所有已命名场景或分层场景索引中",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/chapter-coast.webp",
+      "publicPath": "art/peripheral-v1/chapter-coast.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/chapter-coast.png",
+      "publicPath": "art/peripheral-v1/chapter-coast.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/chapter-ruins.webp",
+      "publicPath": "art/peripheral-v1/chapter-ruins.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/chapter-ruins.png",
+      "publicPath": "art/peripheral-v1/chapter-ruins.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/chapter-volcano.webp",
+      "publicPath": "art/peripheral-v1/chapter-volcano.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/chapter-volcano.png",
+      "publicPath": "art/peripheral-v1/chapter-volcano.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-back-v3.png",
+      "publicPath": "art/peripheral-v1/coast-back-v3.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-back-v3.webp",
+      "publicPath": "art/peripheral-v1/coast-back-v3.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-cloud-v3.png",
+      "publicPath": "art/peripheral-v1/coast-cloud-v3.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-cloud-v3.webp",
+      "publicPath": "art/peripheral-v1/coast-cloud-v3.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-cloud-v5.png",
+      "publicPath": "art/peripheral-v1/coast-cloud-v5.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-cloud-v5.webp",
+      "publicPath": "art/peripheral-v1/coast-cloud-v5.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-front-v3.png",
+      "publicPath": "art/peripheral-v1/coast-front-v3.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/coast-front-v3.webp",
+      "publicPath": "art/peripheral-v1/coast-front-v3.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/red-nest-mid-v1.png",
+      "publicPath": "art/peripheral-v1/red-nest-mid-v1.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/red-nest-mid-v1.webp",
+      "publicPath": "art/peripheral-v1/red-nest-mid-v1.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/red-nest-walls-v1.png",
+      "publicPath": "art/peripheral-v1/red-nest-walls-v1.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/red-nest-walls-v1.webp",
+      "publicPath": "art/peripheral-v1/red-nest-walls-v1.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/ruins-midground-v1.png",
+      "publicPath": "art/peripheral-v1/ruins-midground-v1.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/ruins-midground-v1.webp",
+      "publicPath": "art/peripheral-v1/ruins-midground-v1.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/sewer-midground-v1.png",
+      "publicPath": "art/peripheral-v1/sewer-midground-v1.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/sewer-midground-v1.webp",
+      "publicPath": "art/peripheral-v1/sewer-midground-v1.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/sortie-island.webp",
+      "publicPath": "art/peripheral-v1/sortie-island.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/sortie-island.png",
+      "publicPath": "art/peripheral-v1/sortie-island.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/volcano-midground-v1.png",
+      "publicPath": "art/peripheral-v1/volcano-midground-v1.png",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "peripheral-v1/volcano-midground-v1.webp",
+      "publicPath": "art/peripheral-v1/volcano-midground-v1.webp",
+      "kind": "file",
+      "reason": "不在实际场景映射中，源码也没有该资源名引用",
+      "replacement": "current chapter presentation / scene resolver"
+    },
+    {
+      "path": "project-weapon-skill-icons-v2",
+      "reason": "已被完整的元素背景技能图标 v4 替代，禁止回退",
+      "replacement": "project-weapon-skill-elements-v4"
+    },
+    {
+      "path": "project-weapon-skill-icons-v3",
+      "reason": "已被完整的元素背景技能图标 v4 替代，禁止回退",
+      "replacement": "project-weapon-skill-elements-v4"
+    },
+    {
+      "path": "project-weapon-variant-skill-icons-v1",
+      "reason": "已被完整的元素背景技能图标 v4 替代，禁止回退",
+      "replacement": "project-weapon-skill-elements-v4"
+    },
+    {
+      "path": "project-weapon-variant-skill-icons-v2",
+      "reason": "已被完整的元素背景技能图标 v4 替代，禁止回退",
+      "replacement": "project-weapon-skill-elements-v4"
+    },
+    {
+      "path": "weapon-original/aux_cannon.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_cannon.webp",
+      "reason": "该武器已有用户确认的新造型",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_cannon.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_cannon.webp",
+      "reason": "已替换旧武器的缓存副本",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "weapon-original/aux_rocket.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_rocket.webp",
+      "reason": "该武器已有用户确认的新造型",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_rocket.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_rocket.webp",
+      "reason": "已替换旧武器的缓存副本",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "weapon-original/aux_laser.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_laser.webp",
+      "reason": "该武器已有用户确认的新造型",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_laser.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_laser.webp",
+      "reason": "已替换旧武器的缓存副本",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "weapon-original/aux_scatter.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_scatter.webp",
+      "reason": "该武器已有用户确认的新造型",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_scatter.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_scatter.webp",
+      "reason": "已替换旧武器的缓存副本",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "weapon-original/aux_lightning.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_lightning.webp",
+      "reason": "该武器已有用户确认的新造型",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_lightning.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_lightning.webp",
+      "reason": "已替换旧武器的缓存副本",
+      "replacement": "project-weapon-themes-v1"
+    },
+    {
+      "path": "project-battle-passives-v2/11000101.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11000101.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11000201.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11000201.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11000301.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11000301.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11000601.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11000601.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11000307.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11000307.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11000801.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11000801.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11001101.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11001101.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11001401.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11001401.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11001601.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11001601.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11001701.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11001701.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11002001.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11002001.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11002201.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11002201.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/11002501.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/11002501.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "project-battle-passives-v3"
+    },
+    {
+      "path": "project-battle-passives-v2/pause-upgrades.webp",
+      "kind": "file",
+      "publicPath": "art/project-battle-passives-v2/pause-upgrades.webp",
+      "reason": "强化图标已有 v3，暂停强化已用独立素材",
+      "replacement": "pause-category-v3"
+    },
+    {
+      "publicPath": "fighters/verdant",
+      "kind": "directory",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "fighters/scarlet",
+      "kind": "directory",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/aircraft-ui-v1/pilot-02.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/aircraft-ui-v1/pilot-02-preview.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/aircraft-ui-v1/pilot-02-hangar.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/aircraft-ui-v1/pilot-06.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/aircraft-ui-v1/pilot-06-preview.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/aircraft-ui-v1/pilot-06-hangar.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/sortie-aircraft-front-v1/pilot-02.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "publicPath": "art/sortie-aircraft-front-v1/pilot-06.webp",
+      "kind": "file",
+      "reason": "移除两架旧版飞机，仅保留八架 V46 机型"
+    },
+    {
+      "path": "project-battle-passives-v3",
+      "replacement": "battle-skill-icons-v4",
+      "reason": "新版技能插画完整替换，禁止增量构建恢复旧资源"
+    },
+    {
+      "path": "project-weapon-skill-elements-v4",
+      "replacement": "battle-skill-icons-v4",
+      "reason": "新版技能插画完整替换，禁止增量构建恢复旧资源"
+    },
+    {
+      "reason": "旧图集的11类技能已全部替换为新版；其余9类独立原型技能继续保留自己的素材",
+      "path": "skill-icons-anime-v1",
+      "replacement": "battle-skill-icons-v4"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20102.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20102.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20202.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20202.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20302.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20302.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20402.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20402.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20502.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20502.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20602.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20602.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20702.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20702.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20802.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20802.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-20902.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-20902.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-21002.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-21002.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "battle-skill-icons-v4/weapon-21102.webp",
+      "kind": "file",
+      "replacement": "weapon-variant-skill-icons-v5/weapon-21102.webp",
+      "reason": "用户要求换肤技能重新设计为独立轮廓，旧相似构图退役"
+    },
+    {
+      "path": "project-weapon-themes-v1",
+      "kind": "directory",
+      "publicPath": "art/project-weapon-themes-v1",
+      "replacement": "project-weapon-clean-v2",
+      "reason": "2026-11-10 全套武器重制；皮肤版保留更华丽的主题装饰，旧图已核验归档"
+    },
+    {
+      "path": "weapon-original/aux_rail.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_rail.webp",
+      "replacement": "project-weapon-clean-v2/aux_rail.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_rail.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_rail.webp",
+      "replacement": "project-weapon-clean-v2/aux_rail.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_sidegun.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_sidegun.webp",
+      "replacement": "project-weapon-clean-v2/aux_sidegun.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_sidegun.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_sidegun.webp",
+      "replacement": "project-weapon-clean-v2/aux_sidegun.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_grenade.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_grenade.webp",
+      "replacement": "project-weapon-clean-v2/aux_grenade.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_grenade.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_grenade.webp",
+      "replacement": "project-weapon-clean-v2/aux_grenade.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_mine.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_mine.webp",
+      "replacement": "project-weapon-clean-v2/aux_mine.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_mine.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_mine.webp",
+      "replacement": "project-weapon-clean-v2/aux_mine.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_beam.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_beam.webp",
+      "replacement": "project-weapon-clean-v2/aux_beam.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_beam.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_beam.webp",
+      "replacement": "project-weapon-clean-v2/aux_beam.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_freeze.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_freeze.webp",
+      "replacement": "project-weapon-clean-v2/aux_freeze.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_freeze.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_freeze.webp",
+      "replacement": "project-weapon-clean-v2/aux_freeze.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_orb.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_orb.webp",
+      "replacement": "project-weapon-clean-v2/aux_orb.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_orb.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_orb.webp",
+      "replacement": "project-weapon-clean-v2/aux_orb.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_toxin.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_toxin.webp",
+      "replacement": "project-weapon-clean-v2/aux_toxin.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_toxin.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_toxin.webp",
+      "replacement": "project-weapon-clean-v2/aux_toxin.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_blades.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_blades.webp",
+      "replacement": "project-weapon-clean-v2/aux_blades.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_blades.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_blades.webp",
+      "replacement": "project-weapon-clean-v2/aux_blades.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_gravity.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_gravity.webp",
+      "replacement": "project-weapon-clean-v2/aux_gravity.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_gravity.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_gravity.webp",
+      "replacement": "project-weapon-clean-v2/aux_gravity.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_lightmine.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_lightmine.webp",
+      "replacement": "project-weapon-clean-v2/aux_lightmine.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_lightmine.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_lightmine.webp",
+      "replacement": "project-weapon-clean-v2/aux_lightmine.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_pyro.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_pyro.webp",
+      "replacement": "project-weapon-clean-v2/aux_pyro.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_pyro.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_pyro.webp",
+      "replacement": "project-weapon-clean-v2/aux_pyro.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_shield.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_shield.webp",
+      "replacement": "project-weapon-clean-v2/aux_shield.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_shield.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_shield.webp",
+      "replacement": "project-weapon-clean-v2/aux_shield.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_tail.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_tail.webp",
+      "replacement": "project-weapon-clean-v2/aux_tail.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_tail.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_tail.webp",
+      "replacement": "project-weapon-clean-v2/aux_tail.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    },
+    {
+      "path": "weapon-original/aux_drone.webp",
+      "kind": "file",
+      "publicPath": "art/weapon-original/aux_drone.webp",
+      "replacement": "project-weapon-clean-v2/aux_drone.webp",
+      "reason": "2026-11-10 当前武器已有同型新版替代，旧图核验归档"
+    },
+    {
+      "path": "ui-images-v1/weapon-original/aux_drone.webp",
+      "kind": "file",
+      "publicPath": "art/ui-images-v1/weapon-original/aux_drone.webp",
+      "replacement": "project-weapon-clean-v2/aux_drone.webp",
+      "reason": "2026-11-10 同源旧武器缩略图随新版替换并核验归档"
+    }
+  ],
+  "additionalArchiveManifests": [
+    "F:\\codextest\\2026-11-04\\小飞机\\旧资源\\aircraft-scenes\\manifest.json",
+    "F:\\codextest\\2026-11-09\\小飞机\\旧资源\\retired-aircraft-eight-roster\\manifest.json",
+    "F:\\codextest\\2026-11-09\\小飞机\\旧资源\\skill-icons-v4-integration\\manifest.json",
+    "F:\\codextest\\2026-11-10\\小飞机\\旧资源\\variant-skill-v4\\manifest.json",
+    "F:\\codextest\\2026-11-10\\小飞机\\旧资源\\weapon-clean-v2-113629\\manifest.json"
+  ],
+  "weaponIconArchiveManifest": "F:\\codextest\\2026-11-09\\小飞机\\旧资源\\weapon-icon-retirement-20261109\\manifest.json"
+}

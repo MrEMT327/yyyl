@@ -61,7 +61,7 @@
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.eq-rules,.shop-rules,.shop-pool-copy,.research-copy) :is(h3,h4) {
   margin: 18px 0 6px;
   color: var(--ui-text);
-  font-size: 14px;
+  font-size: var(--psd-small-title-size);
   line-height: 1.5;
   font-weight: 800;
 }
@@ -158,7 +158,7 @@
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-summary-stat { font-size: 24px; font-style: normal; text-shadow: none; }
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task { padding: 12px 10px; gap: 10px; }
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task-title { flex-wrap: wrap; gap: 4px 8px; }
-.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task-title h3 { font-size: 13px; }
+.peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-task-title h3 { font-size: var(--psd-small-title-size);;line-height:var(--psd-small-title-leading,1.5)}
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal :is(.lc-refresh,.lc-task-title>span) { font-size: 11px; }
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-claim { flex-basis: 66px; width: 66px; padding-inline: 4px; font-size: 13px; }
 .peripheral-lobby.reference-layout.lobby-theme .pl-modal .lc-rewards { gap: 5px 10px; }

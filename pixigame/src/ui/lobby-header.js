@@ -1,4 +1,5 @@
 import './lobby-header.css';
+import {playerAvatar} from './player-avatar.js';
 import { lobbyResources } from './lobby-resources.js';
 import { guiIcon, LOBBY_GUI_ICONS } from './gui-casual.js';
 
@@ -14,8 +15,8 @@ export function lobbyPageHeading({ helpers: h, title, icon = '', action = '', la
 }
 
 export function lobbyHeader({ snapshot: s, helpers: h }, playerName, pageTitle = '') {
-  const { escape: e, number: n, img } = h;
+  const { escape: e, number: n } = h;
   const pilot = s.pilots.find(p => p.id === s.pilotId);
-  const identity = pageTitle ? lobbyPageHeading({ helpers: h, title: pageTitle }) : `<div class="lobby-profile"><div class="lobby-avatar">${img(pilot?.avatar || pilot?.image, pilot?.name, '')}</div><div class="lobby-profile-copy"><strong>${e(playerName || pilot?.name || '指挥官')}</strong><span class="lobby-power"><small>战力</small><b>${Number.isFinite(s.power)?n(s.power):'—'}</b></span></div></div>`;
+  const identity = pageTitle ? lobbyPageHeading({ helpers: h, title: pageTitle }) : `<div class="lobby-profile"><div class="lobby-avatar">${playerAvatar(s,h)}</div><div class="lobby-profile-copy"><strong>${e(playerName || pilot?.name || '指挥官')}</strong><span class="lobby-power"><small>战力</small><b>${Number.isFinite(s.power)?n(s.power):'—'}</b></span></div></div>`;
   return `${identity}${lobbyResources({snapshot:s,helpers:h})}`;
 }

@@ -1,0 +1,27 @@
+/* Reference: fixed skill identity above a scrolling stage/effect list. */
+#gui-casual-lobby .pl-modal.weapon-skill-modal[data-psd-popup]:has(.wg-preview){--popup-width:90cqw;--popup-height:min(158cqw,80dvh);--popup-max-height:84%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal[data-psd-popup]>.pl-modal-content:has(>.wg-preview){display:flex;overflow:hidden!important;scrollbar-gutter:auto}
+#gui-casual-lobby .pl-modal .wg-preview{--wg-ink:#213e55;--wg-value:#087395;--wg-line:#8ca7b9;display:flex;flex-direction:column;min-height:0;min-width:0;width:100%;padding:0;color:var(--wg-ink)}
+#gui-casual-lobby .pl-modal .wg-preview .wg-weapon{display:flex;flex:none;align-items:center;gap:12px;padding:2px 0 12px;border-bottom:1px solid var(--wg-line)}
+#gui-casual-lobby .pl-modal .wg-preview .wg-preview-art{position:relative;inset:auto;display:grid;place-items:center;flex:none;width:62px;height:62px;padding:6px;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 6px 6px 9px 6px stretch;box-sizing:border-box}
+#gui-casual-lobby .pl-modal .wg-preview .wg-preview-art img{width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
+#gui-casual-lobby .pl-modal .wg-preview .wg-weapon h3{font-size:clamp(16px,4.6cqw,20px);line-height:var(--psd-small-title-leading,1.5);margin:0 0 4px}
+#gui-casual-lobby .pl-modal .wg-preview .wg-weapon p{font-size:12px;line-height:1.4;color:#526b7d;margin:0}
+#gui-casual-lobby .pl-modal .wg-preview .wg-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:none;padding:12px 0 2px}
+#gui-casual-lobby .pl-modal .wg-preview .wg-scroll::-webkit-scrollbar{display:none;width:0;height:0}
+#gui-casual-lobby .pl-modal .wg-preview .wg-scroll:focus-visible{outline:2px solid #3282a5;outline-offset:-2px}
+#gui-casual-lobby .pl-modal .wg-preview .wg-stage{margin:0 0 14px;padding:0;border:0;background:none}
+#gui-casual-lobby .pl-modal .wg-preview .wg-stage-heading{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;margin:0;padding:8px 10px;color:#f3f9fd;background:#38566d;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading);border-bottom:2px solid #70bad4}
+#gui-casual-lobby .pl-modal .wg-preview .is-breakthrough .wg-stage-heading{border-bottom-color:#d9b65f}
+#gui-casual-lobby .pl-modal .wg-preview .wg-stage-heading b{font-weight:400}
+#gui-casual-lobby .pl-modal .wg-preview .wg-star{display:flex;align-items:center;gap:4px;color:#ffe29a;font-size:15px}
+#gui-casual-lobby .pl-modal .wg-preview .wg-star img{display:block;width:18px;height:18px;object-fit:contain}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effects{list-style:none;padding:0;margin:0;background:#dce8ef}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effect{position:relative;padding:10px 12px;margin:0;border-bottom:1px solid #a9bfce}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effect:last-child{border-bottom:0}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effect h5{font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5);color:#173b52;margin:0 0 3px}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effect p{font-size:14px;line-height:1.5;color:#355267;white-space:pre-line;margin:0;overflow-wrap:anywhere}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effect strong{color:var(--wg-value);font-weight:800}
+#gui-casual-lobby .pl-modal .wg-preview .wg-effect small{display:block;font-size:12px;line-height:1.4;margin-top:4px;color:#526b7d}
+#gui-casual-lobby .pl-modal .wg-preview .wg-footnote{flex:none;text-align:center;font-size:12px;line-height:1.4;color:#526b7d;padding:10px 0 2px;margin:0;border-top:1px solid var(--wg-line)}
+@media(max-width:350px){#gui-casual-lobby .pl-modal .wg-preview .wg-preview-art{width:52px;height:52px}#gui-casual-lobby .pl-modal .wg-preview .wg-effect{padding:8px 10px}}

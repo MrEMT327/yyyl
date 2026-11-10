@@ -1,4 +1,5 @@
 import { chapterRewardsDialog } from './chapter-rewards-panel.js';
+import {playerAvatar} from './player-avatar.js';
 import { patrolClockState } from './patrol-clock.js';
 import { lobbyHeader } from './lobby-header.js';
 import { lobbyNavigation } from './lobby-navigation.js';
@@ -54,7 +55,7 @@ export function battlePage(ctx,requestedChapter) {
   const hitTargets = [
     hotspot('profile','查看个人信息','playerInfo',[0,27,221,100]),
     hotspot('chapter-prev','上一章','chapterPrev',[136,159,36,39]),
-    hotspot('chapter-title','选择章节','chapters',[172,143,413,70]),
+    hotspot('chapter-title','查看当前关卡详情','chapterDetails',[172,143,413,70]),
     hotspot('chapter-next','下一章','chapterNext',[585,159,36,39]),
     hotspot('tasks','查看航线任务','tasks',[6,232,101,102]),
     hotspot('star-rewards',s.nativeAcquisition?'查看章节奖励':'查看星级奖励','chapterChest',[240,239,289,45]),
@@ -67,8 +68,8 @@ export function battlePage(ctx,requestedChapter) {
     <img class="psd-main-composite" src="${art}psd-main-v1/main-background.png" alt="" aria-hidden="true" draggable="false">
     ${portrait}
     <img class="psd-main-composite psd-main-foreground" src="${art}psd-main-v1/main-foreground-live-patrol.png" alt="" aria-hidden="true" draggable="false">
-    <img class="psd-main-profile-frame" src="${art}psd-main-v1/profile-live-frame.png" alt="" aria-hidden="true" draggable="false">
-    <div class="psd-main-avatar" aria-hidden="true"><img src="${pilot.avatar || pilot.image || ''}" alt="" draggable="false"></div>
+    <img class="psd-main-profile-frame" src="${art}psd-main-v1/profile-live-frame.png?v=cosmetic-avatar-v2" alt="" aria-hidden="true" draggable="false">
+    <div class="psd-main-avatar" aria-hidden="true">${playerAvatar(s,ctx.helpers)}</div>
     <div class="psd-main-identity"><strong>${ctx.helpers.escape(s.playerName)}</strong><span><small>战力</small><b>${Number.isFinite(s.power)?ctx.helpers.number(s.power):'—'}</b></span></div>
     <div class="psd-main-chapter-copy" aria-hidden="true"><strong>${chapterTitle}</strong><span>${waveCount}波·${chapterState}</span></div>
     <span class="psd-main-star-total" aria-hidden="true">累计${starTotal}/${starMaximum}</span>
@@ -83,7 +84,7 @@ export function battleSupplementalModal(type, snapshot, requestedChapter) {
   const route = snapshot.stages.slice(chapter, chapter + 1);
   const stars = route.reduce((sum,item) => sum + (item.stars || 0), 0);
   if(type==='chapterChest'&&snapshot.nativeAcquisition) {
-    return chapterRewardsDialog(snapshot,route[0]?.replicaChapterId,{currentOnly:true});
+    return chapterRewardsDialog(snapshot);
   }
   if (type === 'chapterChest') {
     const rewardMode = 'easy';

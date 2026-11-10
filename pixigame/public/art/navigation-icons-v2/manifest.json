@@ -1,0 +1,36 @@
+{
+  "revision": 1,
+  "generatedWith": "built-in imagegen",
+  "role": "skills navigation/category pictogram",
+  "runtimeKey": "nav-skill",
+  "style": "PSD flat white-cyan open linework, fine dark navy edge, no physical casing or metallic bevel",
+  "references": [
+    "public/art/psd-main-v1/navigation/assembly.png",
+    "doc/ui-spec/assets/home-navigation.png"
+  ],
+  "source": "art/navigation-icons-v2/skill-line-source.png",
+  "prompt": "art/navigation-icons-v2/skill-line-prompt.txt",
+  "sourceSize": [
+    1254,
+    1254
+  ],
+  "sourceSha256": "0ad3955b844918bdb1a0d05c639f60ce86d8ab4921548f4e3c6787c246ed98e5",
+  "trim": [
+    191,
+    149,
+    1052,
+    1010
+  ],
+  "export": "Outer trim, uniform contain resize and transparent padding only; no creative pixel editing",
+  "assets": [
+    {
+      "key": "nav-skill",
+      "file": "skill.png",
+      "size": [
+        128,
+        128
+      ],
+      "sha256": "961c83fd39c3b4698d69320da213fba4b9bebf363837497994b6bab9cc1c8eeb"
+    }
+  ]
+}

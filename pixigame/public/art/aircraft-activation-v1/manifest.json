@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "tool": "built-in image_gen",
+  "referenceAssets": [
+    "project-fleet-stage-v2/platform.png",
+    "project-original-environments-v1/launch-hangar-v1.webp"
+  ],
+  "files": [
+    {
+      "file": "activation-stage.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "sha256": "cb1c8643f094161340e7197ec5078156a6e8da39f1b6134321721309a3335cb5"
+    },
+    {
+      "file": "activation-header.png",
+      "size": [
+        2172,
+        724
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "sha256": "50b82bea7cd1c3ce4ca959227434e19382dc7a98bdcb53fec134e9742cc35aaa"
+    }
+  ],
+  "promptFile": "prompts.md",
+  "purpose": "Original transparent aircraft activation art. Existing project aircraft images overlaid at runtime. No competitor artwork."
+}

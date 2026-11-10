@@ -1,3 +1,4 @@
+import { itemInspectAttributes } from './item-description-model.js';
 import { nativeItemArt } from '../replica/native-item-presentation.js';
 import { equipmentBoxRules } from './equipment-box-rules.js';
 import './supply-dialogs.css';
@@ -14,7 +15,7 @@ export function nativeEquipmentBoxDetail(snapshot,h) {
       <div class="su-pity"><span>${box.id===3?'史诗':'优秀'}保底 <b>${n(c.qualityRemaining)}</b>件</span>${c.sRemaining?`<span>圣环保底 <b>${n(c.sRemaining)}</b>件</span>`:''}</div>
       <p class="su-subtitle">${box.quotes.map(q=>`${q.count===1?'单次':'十次'} ${price(q)}`).join(' · ')}</p>${!box.canDraw?`<p>${e(box.unavailableReason)}</p>`:''}
       <details class="su-details su-box-probabilities"><summary>概率与规则</summary>
-        <div class="su-rate-groups">${box.rates.map(group=>`<details><summary><span>${e(group.name)}</span><b>${rate(group.weight)}</b></summary>${group.items.map(item=>`<p class="su-item-rate">${h.img(nativeItemArt(item.id),'','su-item-art')}<span>${e(item.name)} ×${item.count}</span><b>${rate(item.weight)}</b></p>`).join('')}</details>`).join('')}</div>
+        <div class="su-rate-groups">${box.rates.map(group=>`<details><summary><span>${e(group.name)}</span><b>${rate(group.weight)}</b></summary>${group.items.map(item=>`<p ${itemInspectAttributes(item.id,e)} class="su-item-rate">${h.img(nativeItemArt(item.id),'','su-item-art')}<span>${e(item.name)} ×${item.count}</span><b>${rate(item.weight)}</b></p>`).join('')}</details>`).join('')}</div>
         <h4>开启规则</h4>${equipmentBoxRules(box,h)}<p>免费优先；十连箱券不足时，整单使用钻石。</p>
         ${box.id===4?`<p>累计 ${n(snapshot.equipment.draws)} 次 · 高级券可领 ${n(snapshot.equipment.basicRewardAvailable)} 次</p>`:''}
       </details>

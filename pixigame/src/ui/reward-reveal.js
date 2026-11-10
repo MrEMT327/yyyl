@@ -6,10 +6,18 @@ export function createRewardReveal(root,sound = () => {}) {
   const draw = createDrawPresentation(root,sound);
   let cleanup = () => {};
   function show(receipt, snapshot) {
+    const host = activeModalHost(root);
+    // Ordinary receipts are final views, not showcases. Do not enter the draw
+    // controller or add transient header controls while refreshing rewards.
+    if (host?.querySelector('[data-modal-kind="commonRewards"]')) {
+      draw.clear();
+      cleanup();
+      cleanup = () => {};
+      return;
+    }
     if (draw.show(receipt, snapshot)) return;
     draw.clear();
     cleanup();
-    const host = activeModalHost(root);
     if (!host || !receipt) return;
     const cards = [...host.querySelectorAll('.pl-reward-item,.pl-card-result,.research-detail-card,.research-core-reward')];
     // One animation owner; a thumbnail refresh must not replay CSS reveals.
@@ -50,23 +58,9 @@ export function createRewardReveal(root,sound = () => {}) {
       { opacity:1 },
     ], { duration:240, delay:250+i*45, fill:'backwards' }));
     if (!motions.length) return;
-    const skip = document.createElement('button');
-    skip.type = 'button'; skip.className = 'reward-reveal-skip';
-    skip.textContent = '跳过'; skip.setAttribute('aria-label','跳过奖励揭晓动效');
-    const heading = host.querySelector('.pl-modal-heading');
-    heading?.insertBefore(skip, heading.querySelector('.pl-close'));
-    const removeSkip = () => {
-      // Keep keyboard focus in the dialog when its skip button disappears.
-      if (document.activeElement === skip) host.querySelector('[data-action="close"]')?.focus({preventScroll:true});
-      skip.remove();
-    };
-    const finish = () => {
-      motions.forEach(motion => { if (motion.playState !== 'idle') motion.finish(); });
-      removeSkip();
-    };
-    skip.addEventListener('click', finish);
-    cleanup = () => { motions.forEach(m => m.cancel()); skip.remove(); };
-    Promise.all(motions.map(m => m.finished.catch(() => {}))).then(removeSkip);
+    // These brief reveals finish on their own; keep the result header quiet.
+    cleanup = () => { motions.forEach(m => m.cancel()); };
+    Promise.all(motions.map(m => m.finished.catch(() => {})));
   }
   return { show, clear:() => {draw.clear();cleanup();} };
 }

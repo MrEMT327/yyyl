@@ -9,7 +9,6 @@ body.weapon-preview { margin: 0; background: #09141d; color: #e3eff5; font: 14px
 .wp-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .wp-shell button, .wp-shell select, .wp-shell input, .wp-shell a { font: inherit; }
 .wp-shell button, .wp-shell a { background: #172a37; border: 1px solid #355063; color: #d6e8f1; border-radius: 7px; padding: 8px 12px; cursor: pointer; text-decoration: none; text-align: center; }
-.wp-shell button:hover, .wp-shell a:hover { background: #224253; border-color: #78bdce; }
 .wp-shell button:disabled { opacity: .45; cursor: default; }
 .wp-shell :focus-visible { outline: 2px solid #8ae5ee; outline-offset: 3px; }
 .wp-layout { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 30px; align-items: start; }

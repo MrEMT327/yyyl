@@ -1,0 +1,13 @@
+/* Shared by the lobby, standalone dialogs and the separate battle document.
+   Hide only browser chrome: preserve overflow, touch, wheel and keyboard input. */
+html, body, body * {
+  scrollbar-width: none !important;
+  scrollbar-gutter: auto !important;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+body *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}

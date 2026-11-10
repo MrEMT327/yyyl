@@ -1,3 +1,39 @@
+// The idle glove crop still contains a fragment of the original painted card.
+// Cut that fragment in texture space without changing the source PNG.
+// The thumb is drawn separately in front of the independent card.
+export const ORANGE_CARD_HAND_MATERIAL = {
+ alphaOpening: {
+  artworkSize: [183, 103], feather: .4, outline: 0,
+  polygon: [[-4,-4],[82,-4],[82,2],[69,3],[54,3],[43,1],
+   [40,3],[41,8],[44,14],[49,19],[55,22],[54,29],
+   [53,35],[50,39],[47,41],[-4,28]],
+ },
+};
+
+// Only the upper thumb pad belongs in front of the card. The curled finger
+// underneath it is on the far side of the card, despite sharing one PNG.
+export const ORANGE_CARD_THUMB_MATERIAL = {
+ alphaOpening: {
+  artworkSize: [183, 103], feather: .7, outline: 0, keepInside: true,
+  // Follow the glove side of the painted border. The pale/gold pixels above
+  // it and the curled-finger fragments below it belong behind the card.
+  polygon: [[41.8,6],[45,6.9],[49,7.7],[54,8.2],[59,8.5],
+   [64,8.5],[69,8.1],[74,8.4],[80,11],[87,15],[94,18],
+   [88,21],[82,22],[76,22.5],[69,22.3],[62,21.7],
+   [56,20.3],[51,18.3],[47,15.7],[44,12],[42.5,8.8]],
+ },
+};
+
+export function splitOrangeCardGripLayers(manifest) {
+ if(manifest.materialRevision!=='jetboard-v5-clean-r5')return;
+ for(const id of ['front-card-hand','front-card-hand-fallback']){
+  const layer=manifest.layers.find(l=>l.id===id);
+  if(!layer||manifest.layers.some(l=>l.id===id+'-thumb'))continue;
+  layer.cardGripDepth='back';
+  manifest.layers.push({...layer,id:id+'-thumb',cardGripDepth:'front'});
+ }
+}
+
 // A card keeps its own visibility and rigid shape while its attachment follows
 // the active original hand surface. Hand opacity is only a pose selector.
 export function evaluateOrangeHeldCard(spec,activeHand,sampleSurface,renderOrders){

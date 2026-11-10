@@ -1,0 +1,147 @@
+{
+  "version": 2,
+  "generator": "OpenAI built-in image_gen; five separately generated transparent sheets",
+  "prompts": "art/project-equipment-blueprints-v2/prompts.json",
+  "normalization": "Alpha-bound crop, fit within 448px, center on transparent 512px canvas; lossless WebP.",
+  "scope": "Presentation only. Legacy slot IDs, native item IDs, inventory and costs are unchanged.",
+  "assets": [
+    {
+      "part": "cockpit",
+      "subject": "helmet",
+      "nativeItemId": 105,
+      "file": "helmet.webp",
+      "source": "art/project-equipment-blueprints-v2/source-helmet.png",
+      "equipmentReference": "art/project-flight-gear-v1/sets-v3/4100100.webp",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        88,
+        93,
+        1153,
+        1197
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "width": 512,
+      "height": 512,
+      "sourceSha256": "f2a1a5906101796bc9b07cb51976b6b54842f2af6a7ff2d65416924cb1289403",
+      "sha256": "cdefaec9d95d1bf62c21adf24a3f4ce886331a86a0b38ca4b1e636df1bf41139"
+    },
+    {
+      "part": "fire-control",
+      "subject": "glove",
+      "nativeItemId": 106,
+      "file": "glove.webp",
+      "source": "art/project-equipment-blueprints-v2/source-glove.png",
+      "equipmentReference": "art/project-flight-gear-v1/sets-v3/4200100.webp",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        82,
+        89,
+        1165,
+        1195
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "width": 512,
+      "height": 512,
+      "sourceSha256": "5b2d0b58bd174b775925c378db2af0fb14e950fdaa07131b7a30a13e0661120f",
+      "sha256": "f114126fc67c826a6bead89037770eee2da3a85f0747ef0e616e1d3fb299c706"
+    },
+    {
+      "part": "fuselage",
+      "subject": "chest",
+      "nativeItemId": 107,
+      "file": "chest.webp",
+      "source": "art/project-equipment-blueprints-v2/source-chest.png",
+      "equipmentReference": "art/project-flight-gear-v1/sets-v3/4300100.webp",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        77,
+        81,
+        1144,
+        1195
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "width": 512,
+      "height": 512,
+      "sourceSha256": "3f5291625e7de41d417c59743fe422e798d2a65cfa2cdeb28e91478a259372b2",
+      "sha256": "1d012120ed1d7fd4ed00a1b9621726fa0b1b5ff011b4fa0fa0b6aca07044627f"
+    },
+    {
+      "part": "amplifier",
+      "subject": "tag",
+      "nativeItemId": 109,
+      "file": "tag.webp",
+      "source": "art/project-equipment-blueprints-v2/source-tag.png",
+      "equipmentReference": "art/project-flight-gear-v1/sets-v3/4400100.webp",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        84,
+        92,
+        1166,
+        1190
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "width": 512,
+      "height": 512,
+      "sourceSha256": "7501700c816e9e756dc773700b380395ba3912e6fc51fed9f51a04c2cf239446",
+      "sha256": "00fe40c6b1ee6b12a555792a86921a0b9a827086bcc8fc12957a9387e354a31a"
+    },
+    {
+      "part": "engine-armor",
+      "subject": "boot",
+      "nativeItemId": 108,
+      "file": "boot.webp",
+      "source": "art/project-equipment-blueprints-v2/source-boot.png",
+      "equipmentReference": "art/project-flight-gear-v1/sets-v3/4500100.webp",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceBounds": [
+        71,
+        73,
+        1167,
+        1213
+      ],
+      "alphaRange": [
+        0,
+        255
+      ],
+      "width": 512,
+      "height": 512,
+      "sourceSha256": "672a7ca44845c511ae5241e336479a12db4ba3573a1e0236a93605eccd91e177",
+      "sha256": "bd12a802301894647c5f8f67ec2559022956c1d6fc7267122afbef0d04845bd3"
+    },
+    {
+      "file": "equipment-blueprints.svg",
+      "nativeItemId": 10010007,
+      "width": 256,
+      "height": 256,
+      "method": "Layout of three generated raster sheets, no geometric backdrop.",
+      "sha256": "c7bbdc3151055d8cc82be93ef0d85595b1f451042941577d723e0ce664c086a3"
+    }
+  ]
+}

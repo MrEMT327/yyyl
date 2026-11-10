@@ -1,7 +1,7 @@
 import * as T from 'three';
 import {STAGE1_FLOAT_SPRITES} from './stage1-floating-props.js';
 
-const wakeFragment=`varying vec2 waterUv;uniform float time;uniform float phase;
+const wakeFragment=`varying vec2 waterUv;uniform float time;uniform float phase;uniform float opacity;
 void main(){
   vec2 p=(waterUv-.5)*2.;float radius=length(p);
   float ringRadius=.68+.09*sin(time*1.15+phase);
@@ -9,7 +9,7 @@ void main(){
   float broken=.35+.65*smoothstep(-.5,.6,sin(atan(p.y,p.x)*3.+phase));
   float ring=line*broken*.25;
   float contact=(1.-smoothstep(.3,.64,radius))*.09;
-  gl_FragColor=vec4(mix(vec3(.01,.08,.12),vec3(.38,.68,.72),step(.002,ring)),max(contact,ring));
+  gl_FragColor=vec4(mix(vec3(.01,.08,.12),vec3(.38,.68,.72),step(.002,ring)),max(contact,ring)*opacity);
   #include <colorspace_fragment>
 }`;
 
@@ -18,12 +18,12 @@ export function createFloatingPropLayer(definition,renderOrder){
   const geometry=new T.PlaneGeometry(1,1).rotateX(-Math.PI/2),materials=new Map();
   const modules=definition.modules.map(([source,x,z,width,angle=0],index)=>{
     if(!materials.has(source))materials.set(source,new T.MeshBasicMaterial({
-      transparent:true,opacity:1,depthWrite:false,toneMapped:false,alphaTest:.04,color:0xd4e2e7,
+      transparent:true,opacity:definition.opacity??1,depthWrite:false,toneMapped:false,alphaTest:.01,color:definition.tint??0xd4e2e7,
     }));
     const sprite=new T.Mesh(geometry,materials.get(source));sprite.renderOrder=renderOrder+1;
     sprite.position.y=definition.depth;
     const wakeMaterial=new T.ShaderMaterial({transparent:true,depthWrite:false,toneMapped:false,
-      uniforms:{time:{value:0},phase:{value:index*2.399}},
+      uniforms:{time:{value:0},phase:{value:index*2.399},opacity:{value:definition.wakeOpacity??1}},
       vertexShader:'varying vec2 waterUv;void main(){waterUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
       fragmentShader:wakeFragment,
     });
@@ -44,7 +44,7 @@ export function syncFloatingPropLayer(record,textures,sceneId,elapsed,motion={})
   for(const m of modules){
     const texture=textures.get(`${sceneId}/${m.source}`)??null;
     if(m.sprite.material.map!==texture){m.sprite.material.map=texture;m.sprite.material.needsUpdate=true;}
-    const asset=STAGE1_FLOAT_SPRITES[m.source],w=m.width*units*1.3,h=w*asset.height/asset.width;
+    const asset=STAGE1_FLOAT_SPRITES[m.source],w=m.width*units*1.3*(definition.propScale??1),h=w*asset.height/asset.width;
     const centerZ=650+(((-m.z*units+travel+period/2)%period+period)%period)-period/2;
     const x=m.x*units+Math.sin(elapsed*.22+m.phase)*3;
     const z=centerZ+Math.sin(elapsed*1.1+m.phase)*1.4;

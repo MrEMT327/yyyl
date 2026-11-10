@@ -1,0 +1,27 @@
+{
+  "source": "psd/三选一.psd",
+  "sourceSha256": "424036aafef5324f86ab8812a62a932ada126c3dbf3c458a64fb3c79176f6be4",
+  "layerId": 193,
+  "layerPath": "组 5/组 4",
+  "excludedLabelLayerId": 194,
+  "bounds_ltrb": [
+    262,
+    1205,
+    481,
+    1290
+  ],
+  "file": "button-blue.png",
+  "size": [
+    219,
+    85
+  ],
+  "sha256": "ad9cc9560807591295b8ff6cd446e5d57b188b700aa3f32cb1ffc284eeec4382",
+  "slice_trbl": [
+    18,
+    18,
+    18,
+    18
+  ],
+  "export": "native RGBA; no recoloring, backing, masking or opacity adjustment",
+  "usage": "General panel secondary actions only. Tabs, icon destinations, directional return and menu rows do not use action-button faces. Disabled action states filter their original face."
+}

@@ -1,46 +1,62 @@
 import { nativeItemArt } from '../replica/native-item-presentation.js';
+import { rewardDisplayQuality } from '../replica/item-display-quality.js';
+import { rewardItemSlot } from './reward-item-slot.js';
+import { projectIcon } from './project-ui-art.js';
+import './chapter-rewards-panel.css';
+
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const reward=(item,processed=false,historicalClaim=false,showIcon=true)=>{
-  const art=showIcon?nativeItemArt(item.id):null,icon=art?`<img class="pl-icon" src="${escape(art)}" alt="" draggable="false">`:'';
-  return item.unverified?(historicalClaim?`${icon}${escape(item.name)}<small>（已领取）</small>`:
-    `${icon}${escape(item.name)} ×${item.count}`):
-    `${icon}${escape(item.name||'星核')} ×${item.count}${processed?' · 已领取':''}`;
-};
-const compactReward=item=>{
-  const image=nativeItemArt(item.id),name=escape(item.name||'星核');
-  return `<span class="bc-reward-item" title="${name}" aria-label="${name} ×${item.count}">${image?`<img src="${escape(image)}" alt="" draggable="false">`:`<span>${name}</span>`}<strong>×${item.count}</strong></span>`;
-};
-/** Keep the current chapter view compact while retaining the complete ledger. */
-export function chapterRewardsDialog(snapshot,preferredChapter,{currentOnly=false}={}) {
-  const a=snapshot.nativeAcquisition;
-  if(!a)return {title:'章节奖励',content:'<p>章节奖励暂未就绪。</p>'};
-  const stars=snapshot.starRewards?.native?snapshot.starRewards.modes[0]:null;
-  const originalStars=stars?'<button type="button" class="wc-button" data-action="nativeStarRewards">星级奖励</button>':'';
-  const blocked=Boolean(snapshot.rewardPending||snapshot.rewardBusy);
-  const waves=a.rewards,cores=a.chapterCoreRewards||[],ledger=a.chapterRewardLedger;
-  const chapters=[...new Set([...waves.map(r=>r.missionId),...cores.map(r=>r.id)])].sort((x,y)=>x-y);
-  const next=waves.find(row=>!row.processed),readyCore=cores.find(row=>row.canClaim);
-  const opened=new Set([preferredChapter,next?.missionId,readyCore?.id]);
-  const button=(row,core=false)=>{
-    const label=row.claimed?'已领取':row.unresolved?'补领':row.canClaim?'领取':!core&&row.reached?'先领前一项':'未达成';
-    const style=currentOnly?`pl-button ${row.canClaim?'pl-primary':'pl-secondary'}`:'wc-button';
-    return `<button type="button" class="${style}" data-action="${core?'nativeChapterCoreReward':'nativeChapterReward'}" data-id="${row.id}" data-revision="${a.revision}" ${blocked||!row.canClaim?'disabled':''}>${label}</button>`;
-  };
-  const waveRow=row=>`<section class="bc-star-reward ${row.claimed?'is-claimed':''}"><b>${row.wave?`第 ${row.wave} 波`:row.room?`${row.room} 个房间`:`${row.time} 秒`}${row.unresolved?'<small> · 待补图纸</small>':''}</b><span class="${currentOnly?'bc-reward-items':''}">${row.rewards.map(item=>currentOnly&&!item.unverified?compactReward(item):reward(item,row.processed&&!item.unverified,row.claimed)).join(currentOnly?'':'<br>')}${!currentOnly?row.rewards.filter(r=>r.preview?.length).map(r=>`<details><summary>奖励预览</summary>${r.preview.map(item=>reward(item)).join('<br>')}</details>`).join(''):''}</span>${button(row)}</section>`;
-  const coreRow=core=>`<section class="bc-star-reward ${core.claimed?'is-claimed':''}"><b>通关奖励</b><span class="${currentOnly?'bc-reward-items':''}">${core.rewards.map(item=>currentOnly?compactReward(item):reward(item)).join(currentOnly?'':'<br>')}</span>${button(core,true)}</section>`;
-  const notice=blocked?`<p role="status">${snapshot.rewardPending?'奖励待保存':'奖励处理中'}</p>`:'';
-  if(currentOnly){
-    const id=preferredChapter??snapshot.stages?.[snapshot.selectedStageIndex||0]?.replicaChapterId??chapters[0];
-    const rows=waves.filter(row=>row.missionId===id),core=cores.find(row=>row.id===id);
-    return {title:'章节奖励',content:`<section class="bc-star-rewards bc-current-chapter" aria-label="章节奖励">${notice}<div class="bc-star-reward-list">${rows.map(waveRow).join('')}${core?coreRow(core):''}</div><div class="bc-chapter-actions"><button type="button" class="wc-button" data-action="chapterRewards">全部章节</button>${originalStars}</div></section>`};
-  }
-  const pending=ledger?.deferred||[];
-  const deferred=pending.length?`<p>待补图纸 ${pending.length} 档</p>`:'';
-  return {title:'章节奖励',content:`<section class="bc-star-rewards clarity-page" aria-label="章节奖励">${notice}${originalStars}${deferred}${Array.from({length:Math.ceil(chapters.length/10)},(_,group)=>{const ids=chapters.slice(group*10,group*10+10),open=ids.some(id=>opened.has(id));return `<details class="bc-reward-group"${open?' open':''}><summary>第 ${ids[0]}–${ids.at(-1)} 章${ids.some(id=>waves.some(row=>row.missionId===id&&row.canClaim)||cores.some(row=>row.id===id&&row.canClaim))?' · 可领取':''}</summary>${ids.map(id=>{
-    const rows=waves.filter(r=>r.missionId===id),core=cores.find(r=>r.id===id);
-    const stage=snapshot.stages?.find(s=>s.replicaChapterId===id),title=stage?.chapterName||`第 ${id} 章`;
-    const done=rows.filter(r=>r.claimed).length+Number(Boolean(core?.claimed)),waiting=rows.filter(r=>r.unresolved).length;
-    const ready=rows.some(r=>r.canClaim)||core?.canClaim;
-    return `<details${opened.has(id)?' open':''}><summary>${escape(title)} · ${done}/${rows.length+Number(Boolean(core))}${waiting?` · 待补图纸${waiting}档`:''}${ready?' · 可领取':''}</summary><div class="bc-star-reward-list">${rows.map(waveRow).join('')}${core?coreRow(core):''}</div></details>`;
-  }).join('')}</details>`;}).join('')}</section>`};
+const helpers={escape};
+
+// Wave rewards and the project's independent chapter-core grants keep their
+// own identities, revision checks and claim rules in one chronological queue.
+export function chapterRewardEntries(acquisition) {
+  const waves=acquisition?.rewards||[],cores=acquisition?.chapterCoreRewards||[];
+  const chapters=[...new Set([...waves.map(row=>row.missionId),...cores.map(row=>row.id)])].sort((a,b)=>a-b);
+  return chapters.flatMap(chapter=>[
+    ...waves.filter(row=>row.missionId===chapter).map(row=>({key:`wave:${row.id}`,chapter,row,core:false})),
+    ...cores.filter(row=>row.id===chapter).map(row=>({key:`core:${row.id}`,chapter,row,core:true})),
+  ]);
+}
+
+const milestone=entry=>entry.core?'通关奖励':entry.row.wave?`第 ${entry.row.wave} 波`:entry.row.room?`${entry.row.room} 个房间`:`${entry.row.time} 秒`;
+
+// The original view focuses its current unclaimed ID and advances after a claim.
+// Preserve independent core grants in chapter order, without skipping an unmet row.
+export function selectedChapterReward(entries) {
+  return entries.find(entry=>!entry.row.claimed)||null;
+}
+
+function rewardSlot(item) {
+  const image=nativeItemArt(item.id),name=String(item.name||'道具');
+  const artwork=image?`<img src="${escape(image)}" alt="" draggable="false">`:`<span class="chapter-reward-unknown">${escape(name)}</span>`;
+  return rewardItemSlot({name,amount:item.count,itemId:item.id,artwork,...rewardDisplayQuality({nativeItemId:item.id})},helpers);
+}
+
+function condition(entry) {
+  if(entry.row.claimed)return '已领取';
+  if(entry.row.reached&&!entry.row.canClaim)return '奖励暂不可领取';
+  if(entry.core)return `通关第${entry.chapter}章领取`;
+  // Language_languagetable / MissionRewardViewModule_Text and Text1.
+  if(entry.row.wave||entry.row.room)return `通过${entry.chapter}-${entry.row.wave||entry.row.room}领取`;
+  return `第${entry.chapter}章生存${Math.floor(entry.row.time/60)}分钟领取`;
+}
+
+/** Show the next unclaimed milestone only; browsing a chapter never changes it. */
+export function chapterRewardsDialog(snapshot) {
+  const acquisition=snapshot.nativeAcquisition;
+  if(!acquisition)return {title:'通关奖励',content:'<p>章节奖励暂未就绪。</p>'};
+  const entries=chapterRewardEntries(acquisition),selected=selectedChapterReward(entries);
+  if(!entries.length)return {title:'通关奖励',content:'<p>暂无章节奖励。</p>'};
+  const blocked=Boolean(snapshot.rewardPending||snapshot.rewardBusy),row=selected?.row;
+  const stars=snapshot.starRewards?.native&&snapshot.starRewards.modes?.length
+    ? `<button type="button" class="ui-info-link chapter-reward-stars" data-action="nativeStarRewards">${projectIcon('star')}<span>星级奖励</span></button>` : '';
+  const action=row?.canClaim?`<button type="button" class="pl-button pl-primary chapter-reward-claim" data-action="${selected.core?'nativeChapterCoreReward':'nativeChapterReward'}" data-id="${row.id}" data-revision="${acquisition.revision}" ${blocked?'disabled':''}>获取奖励</button>`
+    : `<p class="chapter-reward-condition" role="status">${selected?escape(condition(selected)):'全部奖励已领取'}</p>`;
+  const warning=row?.rewards?.some(item=>item.unverified)?'<p class="chapter-reward-note">随机奖励以实际获得为准</p>':'';
+  const label=selected?`下一档奖励：第 ${selected.chapter} 章，${milestone(selected)}`:'章节奖励已领完';
+  return {title:'通关奖励',content:`<section class="chapter-reward-view${selected?'':' is-complete'}" aria-label="章节奖励" ${selected?`data-current-reward="${escape(selected.key)}"`:''}>
+    <div class="chapter-reward-stage" aria-label="${escape(label)}"><div class="chapter-reward-step"><span class="chapter-reward-step-main">${selected?escape(milestone(selected)):'已领完'}</span><span class="chapter-reward-step-sub">${selected?`第 ${selected.chapter} 章`:'章节奖励'}</span></div></div>
+    ${selected?`<section class="chapter-reward-preview" aria-label="当前奖励"><h3>奖励</h3><div class="chapter-reward-items">${(row.rewards||[]).map(rewardSlot).join('')}</div>${warning}</section>`:''}
+    <footer class="chapter-reward-footer">${action}${stars}</footer>
+  </section>`};
 }

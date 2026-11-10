@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "kind": "sprite-animation",
+  "master": "art/onboarding-assistant-v1/master.png",
+  "generation": "built-in image_gen; one four-frame strip",
+  "size": [
+    256,
+    256
+  ],
+  "frameCount": 4,
+  "atlas": {
+    "file": "expressions.png",
+    "size": [
+      1024,
+      256
+    ],
+    "columns": 4,
+    "sha256": "1b9ad2dfd51bff5693a82ec47ed36a1824cbe2e0469b69cbc91064b8091f7371"
+  },
+  "states": [
+    "neutral",
+    "half-blink",
+    "blink",
+    "talk"
+  ],
+  "frames": [
+    {
+      "frame": 0,
+      "file": "01.png",
+      "size": [
+        256,
+        256
+      ],
+      "alphaBounds": [
+        28,
+        8,
+        228,
+        248
+      ],
+      "sha256": "14b13a339fb3ba5c12b189c93cc588c79292fee3211dfe11d83c623e1a4e85e5"
+    },
+    {
+      "frame": 1,
+      "file": "02.png",
+      "size": [
+        256,
+        256
+      ],
+      "alphaBounds": [
+        28,
+        8,
+        228,
+        248
+      ],
+      "sha256": "24974f236d72d86b3e2081846df2fcf19c08d3d255ab490cfe9138365e263932"
+    },
+    {
+      "frame": 2,
+      "file": "03.png",
+      "size": [
+        256,
+        256
+      ],
+      "alphaBounds": [
+        28,
+        8,
+        228,
+        248
+      ],
+      "sha256": "a53e08d0521673e2be7745ccde8abbc624c45118a42b6c99898f64d21ac5ee07"
+    },
+    {
+      "frame": 3,
+      "file": "04.png",
+      "size": [
+        256,
+        256
+      ],
+      "alphaBounds": [
+        28,
+        8,
+        228,
+        248
+      ],
+      "sha256": "1e689aeccd33ce53585a6d19292790807634a99f5ba6e1ce4ddce329940ef0ec"
+    }
+  ],
+  "runtimeCycleMs": 4800,
+  "facing": "same as supplied master; not mirrored",
+  "normalization": "shared scale, bottom-center, 8px transparent padding; plugin normalize_sprite_strip.py",
+  "referenceApprovedByUser": true
+}

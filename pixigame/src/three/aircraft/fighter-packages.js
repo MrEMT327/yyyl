@@ -5,19 +5,9 @@ import { softenArmorSeams } from './armor-seams.js';
 import catalog from './v34/catalog.json' with { type: 'json' };
 import gameLod from './game-lod-catalog.json' with { type: 'json' };
 import { loadPackage, applyMaterialPatches } from './v34/aircraft/PackageLoader.js';
+import {PILOT_FIGHTERS} from './aircraft-roster.js';
+export {PILOT_FIGHTERS} from './aircraft-roster.js';
 
-export const PILOT_FIGHTERS = Object.freeze({
-  'pilot-01': 'kestrel',
-  'pilot-02': 'verdant',
-  'pilot-03': 'crimson',
-  'pilot-04': 'azure',
-  'pilot-05': 'wraith',
-  'pilot-06': 'scarlet',
-  'pilot-07': 'verdure',
-  'pilot-08': 'prism',
-  'pilot-09': 'bastion',
-  'pilot-10': 'auric',
-});
 export const FIGHTER_CATALOG = Object.freeze(catalog);
 export function fighterForPilot(pilotId) {
   const slug = PILOT_FIGHTERS[pilotId] || PILOT_FIGHTERS['pilot-01'];
@@ -29,7 +19,7 @@ const pending = new Map();
 export function isFighterPackageReady(pilotId) {
   return templates.has(fighterForPilot(pilotId).slug);
 }
-// Old galleries can still request the complete catalog. The game requests only
+// The game requests only
 // the aircraft it is about to display; concurrent requests share one load.
 export function loadFighterPackages({ read, skipTextures = false, pilotIds, objectLoader, assetBase } = {}) {
   const entries = pilotIds ? [...new Set(pilotIds.map(id => fighterForPilot(id)))] : catalog;
