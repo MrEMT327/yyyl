@@ -1,0 +1,32 @@
+{
+  "harbor": {
+    "width": 768,
+    "height": 1216,
+    "visibleFraction": 0.5872395833333334
+  },
+  "airfield": {
+    "width": 768,
+    "height": 1216,
+    "visibleFraction": 0.6692708333333334
+  },
+  "airfield-west": {
+    "width": 768,
+    "height": 1216,
+    "visibleFraction": 0.6575520833333334
+  },
+  "headland": {
+    "width": 768,
+    "height": 1600,
+    "visibleFraction": 0.6627604166666666
+  },
+  "ocean": {
+    "width": 1024,
+    "height": 1536,
+    "visibleFraction": 1.0
+  },
+  "seabed": {
+    "width": 768,
+    "height": 768,
+    "visibleFraction": 0.765625
+  }
+}

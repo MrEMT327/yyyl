@@ -1,0 +1,58 @@
+/* Typography from psd/弹窗.psd and doc/ui-spec. Geometry remains with each PSD.
+   Popup titles have one owner; page/section headings keep their authored slots. */
+@font-face{font-family:PsdPopup;src:url('/art/psd-combat-v1/FZY4JW.ttf') format('truetype');font-display:swap}
+#gui-casual-lobby,.game-shell,.combat-detail-dialog {--psd-title-family:PsdPopup,"Microsoft YaHei",sans-serif;--psd-small-title-size:16px;--psd-small-title-leading:1.5}
+#gui-casual-lobby :is(h1,h2,h3,h4,h5,h6,[data-flat-heading],.pi-section-title),
+#gui-casual-lobby :is(.lobby-page-heading,.ref-header-title,.fc-title,.ag-toolbar-title),
+#gui-casual-lobby .psd-main-chapter-copy>strong {
+  font-family:var(--psd-title-family)!important;font-weight:400!important;letter-spacing:0!important;
+}
+/* Dense PSD glyphs need room at phone size; do not add synthetic bold or outlines. */
+#gui-casual-lobby :is(h3,h4,h5,h6,[data-flat-heading],.pi-section-title) {
+  -webkit-text-stroke:0;text-shadow:none;
+}
+#gui-casual-lobby :is(h3,h4,h5,h6,[data-flat-heading]) :is(b,strong) {font-weight:inherit}
+#gui-casual-lobby [data-psd-popup] {
+  --popup-title-size:calc(40 * var(--popup-unit));--popup-title-color:#fff;
+  --popup-title-shadow:0 2px 0 #57677a;
+}
+#gui-casual-lobby [data-psd-popup='secondary'],
+#gui-casual-lobby .weapon-detail-modal {
+  --popup-title-size:clamp(16px,calc(32 * var(--popup-unit)),22px);
+  --popup-title-color:#1c334c;--popup-title-shadow:0 1px #e3edf5;
+}
+#gui-casual-lobby .pl-modal:is([data-psd-popup],.weapon-detail-modal)>.pl-modal-heading h2 {
+  width:100%;min-width:0;margin:0!important;padding:0;color:var(--popup-title-color)!important;
+  font:400 var(--popup-title-size)/1.15 var(--psd-title-family)!important;
+  text-align:left!important;letter-spacing:0!important;transform:none!important;
+  -webkit-text-stroke:0!important;text-shadow:var(--popup-title-shadow)!important;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.combat-detail-dialog[data-psd-popup] .combat-detail-heading h3,
+.combat-detail-effects h4,
+.game-shell :is(.pause-card,.revive-card,.result-card)>h3 {
+  font-family:PsdPopup,"Microsoft YaHei",sans-serif;font-weight:400;letter-spacing:0;text-align:left;
+}
+.combat-detail-dialog[data-psd-popup] .combat-detail-heading h3 {
+  position:absolute;left:calc(38 * var(--popup-unit));right:calc(116 * var(--popup-unit));
+  top:calc(39 * var(--popup-unit));margin:0;
+  font-size:clamp(16px,calc(32 * var(--popup-unit)),22px);line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.game-shell :is(.pause-card,.revive-card,.result-card) {padding-top:max(64px,calc(112 * var(--popup-unit)))!important}
+.game-shell :is(.pause-card,.revive-card,.result-card)>h3 {
+  position:absolute;left:calc(38 * var(--popup-unit));right:calc(116 * var(--popup-unit));
+  top:calc(39 * var(--popup-unit));margin:0;color:#1c334c;
+  font-size:clamp(16px,calc(32 * var(--popup-unit)),22px);line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.game-shell .result-card>h3 {
+  left:calc(58 * var(--popup-unit));font-size:calc(40 * var(--popup-unit));
+  color:#fff;text-shadow:0 2px #57677a;
+}
+#gui-casual-lobby .bag-detail[data-psd-popup]>.bag-detail-title {
+  position:absolute;left:calc(38 * var(--popup-unit));right:calc(116 * var(--popup-unit));
+  top:calc(39 * var(--popup-unit));margin:0;color:var(--popup-title-color);
+  font:400 var(--popup-title-size)/1.15 var(--psd-title-family);text-align:left;
+  text-shadow:var(--popup-title-shadow);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}

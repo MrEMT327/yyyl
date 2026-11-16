@@ -1,0 +1,15 @@
+/* Inset markers stay inside cut-corner clipping and do not cover quality edges. */
+.peripheral-lobby.reference-layout .card-selection{position:absolute;inset:0;z-index:6;pointer-events:none;color:#f1ead8}
+.peripheral-lobby.reference-layout .card-selection>i{position:absolute;width:12px;height:12px;border:0 solid currentColor;filter:drop-shadow(0 1px 1px #06101b);box-sizing:border-box}
+.card-selection>i:nth-child(1){top:5px;left:5px;border-top-width:2px!important;border-left-width:2px!important}
+.card-selection>i:nth-child(2){top:5px;right:5px;border-top-width:2px!important;border-right-width:2px!important}
+.card-selection>i:nth-child(3){bottom:5px;left:5px;border-bottom-width:2px!important;border-left-width:2px!important}
+.card-selection>i:nth-child(4){bottom:5px;right:5px;border-bottom-width:2px!important;border-right-width:2px!important}
+.peripheral-lobby.reference-layout .card-selection>em{position:absolute;right:9px;top:9px;font:700 10px/15px "Microsoft YaHei","PingFang SC",sans-serif;letter-spacing:0;padding:0 3px;background:#102535;color:#f1ead8;border:1px solid #d0cab9;border-radius:2px;text-shadow:none;-webkit-text-stroke:0;white-space:nowrap}
+.peripheral-lobby.reference-layout .ref-catalog-card[aria-pressed="true"]{outline:none!important;box-shadow:none!important}
+/* Keep ownership and selection in distinct corners/rows. */
+.peripheral-lobby.reference-layout .ref-catalog-pilot .ref-catalog-equipped{top:auto;right:auto;left:9px;bottom:22px}
+.peripheral-lobby.reference-layout .ref-catalog-card.is-selected .ref-catalog-card-lock{top:auto;right:9px;bottom:22px}
+.peripheral-lobby.reference-layout .eq-card.is-selected>.eq-card-lock{top:auto;bottom:21px;right:9px}
+.peripheral-lobby.reference-layout :is(.eq-card,.ref-catalog-card):focus-visible{outline:none;filter:none}
+.peripheral-lobby.reference-layout :is(.eq-card,.ref-catalog-card):focus-visible::after{content:"";position:absolute;inset:8px;border:1px dashed #f1ead8;z-index:7;pointer-events:none}

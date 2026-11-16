@@ -1,0 +1,42 @@
+/* Profile hierarchy follows the reference; every visible surface is project art. */
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo']:has(.pi-profile.pi-card-layout){--popup-width:94cqw;--popup-height:auto!important;--popup-max-height:92%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo']:has(.pi-profile.pi-card-layout)>.pl-modal-content{flex:0 1 auto}
+#gui-casual-lobby .pi-profile.pi-card-layout{min-height:0;gap:8px}
+#gui-casual-lobby .pi-card-layout .pi-identity{grid-template-columns:25% minmax(0,1fr);gap:12px;align-items:center;padding:10px;border:0;border-image:url('/art/psd-page-chrome-v1/chapter-idle.png') 18 fill / 8px stretch;color:#eff7ff}
+#gui-casual-lobby .pi-card-layout .pi-avatar{width:100%;aspect-ratio:1;padding:3px}
+#gui-casual-lobby .pi-card-layout .pi-identity-copy{display:flex!important;flex-direction:column;gap:4px;min-width:0}
+#gui-casual-lobby .pi-card-layout .pi-identity-copy>small{color:#d1e4f1;font-size:11px;line-height:1.2}
+#gui-casual-lobby .pi-card-layout .pi-name-row{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0}
+#gui-casual-lobby .pi-card-layout .pi-name-row>h3{min-width:0;font-size:clamp(16px,4.6cqw,21px);line-height:1.3;overflow-wrap:anywhere}
+#gui-casual-lobby .pi-card-layout .pi-rename-button{flex:none;min-width:48px;min-height:44px;--wc-button-height:44px;margin:0;padding:2px 6px}
+#gui-casual-lobby .pi-card-layout .pi-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:stretch}
+#gui-casual-lobby .pi-card-layout .pi-power,#gui-casual-lobby .pi-card-layout .pi-progress{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;margin:0;padding:4px 0;text-align:left;min-width:0}
+#gui-casual-lobby .pi-card-layout .pi-power span,#gui-casual-lobby .pi-card-layout .pi-progress small{color:#c4dce9;font-size:10px;line-height:1.2}
+#gui-casual-lobby .pi-card-layout .pi-power b{color:#ffe5a1;font-size:23px;line-height:1.1}
+#gui-casual-lobby .pi-card-layout .pi-progress strong{color:#f1f9ff;font-size:13px;line-height:1.3}
+#gui-casual-lobby .pi-card-layout .pi-identity:has(.pi-rename){grid-template-columns:22% minmax(0,1fr)}
+#gui-casual-lobby .pi-card-layout .pi-name-row:has(.pi-rename){display:block}
+#gui-casual-lobby .pi-card-layout .pi-rename{width:100%;color:#f1f9ff}
+#gui-casual-lobby .pi-card-layout .pi-rename>small{color:#d1e4f1}
+
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo']:has(.pi-profile.pi-strict-layout){--popup-height:max(154cqw,82cqh)!important;--popup-width:94cqw;--popup-max-height:92%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo']:has(.pi-profile.pi-strict-layout)>.pl-modal-content{display:flex;flex:1;min-height:0;overflow:hidden}
+#gui-casual-lobby .pi-profile.pi-card-layout.pi-strict-layout{width:100%;height:100%;min-height:0;gap:4px}
+#gui-casual-lobby .pi-strict-layout .pi-identity{flex:none;grid-template-columns:25% minmax(0,1fr);gap:8px;padding:6px}
+#gui-casual-lobby .pi-strict-layout .pi-avatar{width:100%;padding:0;border:0;border-image:none;aspect-ratio:1}
+#gui-casual-lobby .pi-strict-layout .pi-avatar .player-avatar{height:auto}
+#gui-casual-lobby .pi-profile.pi-strict-layout>.pi-content{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;padding:0;gap:0}
+#gui-casual-lobby .pi-showcase{position:relative;flex:1;height:100%;min-height:0;isolation:isolate;overflow:hidden;background:var(--project-hangar-image) center / cover no-repeat}
+#gui-casual-lobby .pi-showcase-platform{position:absolute;z-index:0;left:6%;bottom:19%;width:88%;height:39%;object-fit:contain;pointer-events:none}
+#gui-casual-lobby .pi-showcase-plane{position:absolute;z-index:1;left:-13%;top:14%;width:130%;height:65%;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#gui-casual-lobby .pi-showcase-plane .pi-plane{width:100%;height:100%;max-width:none;object-fit:contain;filter:none}
+#gui-casual-lobby .pi-showcase-name{position:absolute;top:14px;right:10px;max-width:62%;color:#eef7ff;font-size:12px;line-height:1.4;text-align:right;text-shadow:0 1px 2px #102536}
+#gui-casual-lobby .pi-showcase-weapon{position:absolute;left:3%;top:3%;z-index:3;width:20%}
+#gui-casual-lobby .pi-showcase .pi-slot{width:100%;aspect-ratio:1;box-sizing:border-box;padding:3px}
+#gui-casual-lobby .pi-gear-rail{position:absolute;z-index:3;left:3%;right:3%;bottom:10px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+#gui-casual-lobby .pi-showcase .pi-slot-level{font-size:clamp(8px,2.6cqw,11px);line-height:1.2}
+#gui-casual-lobby .pi-showcase .pi-slot img{height:0;flex:1;min-height:0;object-fit:contain}
+#gui-casual-lobby .pi-showcase .pi-slot>.supply-weapon-art{height:0;flex:1;min-height:0}
+#gui-casual-lobby .pi-showcase .pi-slot .supply-weapon-art img{transform:none}
+#gui-casual-lobby .pi-showcase .pi-slot>.pi-equipment-type{left:-3px;top:-3px;width:17px;height:17px;border:0;outline:0;border-radius:0;background:none;border-image:url('/art/psd-equipment-v1/frame-empty.png') 18 fill / 4px stretch}
+#gui-casual-lobby .pi-showcase .pi-slot>.pi-equipment-type>i{width:15px;height:15px}

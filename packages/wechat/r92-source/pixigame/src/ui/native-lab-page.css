@@ -1,0 +1,34 @@
+/* Keep the shared PSD buttons, frame slices and four-column mobile viewport. */
+#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs {display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding:0 2cqw}
+#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {right:auto;left:auto;top:auto;align-self:center;width:100%;--wc-button-height:44px;height:var(--wc-button-height);min-height:44px;padding:2px 4px;font-size:clamp(10px,2.7cqw,14px)}
+#gui-casual-lobby[data-tab='research'] .has-research-tabs .research-summary {flex:0 0 22cqw;min-width:64px}
+#gui-casual-lobby .research-tabs {display:flex;flex:1;min-width:0;gap:1cqw}
+#gui-casual-lobby .research-tabs .research-tab {--page-tab-face-height:clamp(32px,9cqw,40px);position:relative;isolation:isolate;flex:0 1 28cqw;box-sizing:border-box;width:28cqw;min-width:44px;min-height:44px;height:44px;margin:0;padding:0 8px;display:flex;align-items:center;justify-content:center;font:400 clamp(14px,4cqw,19px)/1.2 PsdPopup,'Microsoft YaHei',sans-serif;cursor:pointer;touch-action:manipulation}
+#gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs .research-summary::before {content:none!important}
+#gui-casual-lobby .research-tab:focus-visible {outline:2px solid #b9f4ff;outline-offset:-3px}
+#gui-casual-lobby[data-tab='research'] .native-lab-card {aspect-ratio:216/296}
+#gui-casual-lobby .native-lab-face {position:absolute;top:5%;left:50%;width:auto;height:55%;aspect-ratio:1;transform:translateX(-50%);object-fit:contain;pointer-events:none}
+#gui-casual-lobby .native-lab-name {position:absolute;left:4%;right:4%;bottom:24%;display:block;color:#f0f7ff;font:600 clamp(9px,2.6cqw,12px)/1.3 "Microsoft YaHei",sans-serif;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #102030;pointer-events:none}
+#gui-casual-lobby .native-lab-card.is-locked .native-lab-face {filter:brightness(.5) saturate(.65)}
+#gui-casual-lobby .native-lab-card.is-chapter-locked .native-lab-face {filter:grayscale(1) brightness(.5)}
+#gui-casual-lobby .native-lab-progress {position:absolute;left:25%;right:6%;bottom:6%;height:14%;overflow:hidden;background:#424747;border:1px solid #17222b;border-radius:3px;color:#fff;text-shadow:0 1px 2px #000}
+#gui-casual-lobby .native-lab-progress i {position:absolute;inset:0 auto 0 0;background:#7bba37}
+#gui-casual-lobby .native-lab-progress b {position:absolute;inset:0;display:grid;place-items:center;font:700 clamp(9px,2.6cqw,14px)/1 sans-serif;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .native-lab-level {position:absolute;left:3%;bottom:3%;width:30%;aspect-ratio:1;display:grid;place-items:center;background:url('/art/project-supplement-icons-v1/grade.png') center/contain no-repeat;color:#fff;font:800 clamp(11px,3.8cqw,20px)/1 sans-serif;text-shadow:1px 1px 1px #40123f,-1px -1px 1px #40123f}
+#gui-casual-lobby .native-lab-lock {position:absolute;top:10%;right:10%;width:24%;aspect-ratio:1}
+#gui-casual-lobby .native-lab-lock .pl-icon {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .native-lab-locked-text {position:absolute;left:4%;right:4%;bottom:5%;text-align:center;color:#fff;text-shadow:0 1px 2px #17222b;font:700 clamp(9px,2.7cqw,14px)/1.2 sans-serif}
+#gui-casual-lobby .native-lab-page .research-footer {padding:2cqw;color:#e1ebf2;font-size:clamp(10px,2.8cqw,14px);line-height:1.5}
+
+#gui-casual-lobby .native-lab-card .pl-notice-dot {
+  top: 6%;
+  right: 6%;
+  z-index: 1;
+  pointer-events: none;
+}
+.native-lab-detail .native-lab-operation {padding:10px 0;border-block:1px solid #57717e;margin-block:10px}
+.native-lab-detail .native-lab-operation .wc-button,.native-lab-detail .native-lab-developer .wc-button {width:100%;--wc-button-height:48px;margin-block:8px}
+.native-lab-detail .wc-button:disabled {opacity:.5;cursor:default}
+.native-lab-detail .native-lab-shortage {color:#f6a4a4}
+.native-lab-detail .native-lab-developer {margin-block:14px}
+.native-lab-detail details>summary {min-height:40px;align-content:center;cursor:pointer}

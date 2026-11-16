@@ -1,0 +1,63 @@
+import { DataTexture, Vector2 } from 'three';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+// Combat composites renderTargetsHorizontal[0] directly with its own screen
+// blend. The standard pass also copies that light back into readBuffer, which
+// combat never displays. A fifth blur with zero weight is equally unused.
+export class CombatBloomPass extends UnrealBloomPass {
+  constructor(resolution = new Vector2(1, 1), strength = 1.25, radius = 0, threshold = .16) {
+    super(resolution, strength, radius, threshold);
+    this.activeMips = 4;
+    this.zeroMip = new DataTexture(new Uint8Array(4), 1, 1);
+    this.zeroMip.needsUpdate = true;
+    // The high pass, blur and compose shaders overwrite all pixels in these
+    // targets. Only the separate additive output pass blends with its background.
+    for (const target of [this.renderTargetBright, ...this.renderTargetsHorizontal, ...this.renderTargetsVertical]) {
+      target.depthBuffer = false;
+    }
+    for (const material of [this.materialHighPassFilter, ...this.separableBlurMaterials, this.compositeMaterial]) {
+      material.depthTest = false;
+      material.depthWrite = false;
+    }
+  }
+
+  render(renderer, writeBuffer, readBuffer, delta, maskActive) {
+    const u = this.compositeMaterial.uniforms;
+    // Preserve standard behavior if a diagnostic changes the bloom profile.
+    const mips = Math.max(1, Math.min(4, Math.round(this.activeMips)));
+    if (maskActive || this.renderToScreen || this.radius !== 0 || u.bloomFactors.value.slice(mips).some(value => value !== 0)) {
+      for (let i = 0; i < 5; i++) u[`blurTexture${i + 1}`].value = this.renderTargetsVertical[i].texture;
+      return super.render(renderer, writeBuffer, readBuffer, delta, maskActive);
+    }
+    for (let i = 0; i < 5; i++) u[`blurTexture${i + 1}`].value = i < mips ? this.renderTargetsVertical[i].texture : this.zeroMip;
+    renderer.getClearColor(this._oldClearColor);
+    const alpha = renderer.getClearAlpha(), autoClear = renderer.autoClear;
+    try {
+      renderer.autoClear = false; renderer.setClearColor(this.clearColor, 0);
+      // Clearing color on each new target lets tile-based GPUs discard its
+      // previous contents. These full-target passes have no depth attachment.
+      this.highPassUniforms.tDiffuse.value = readBuffer.texture;
+      this.highPassUniforms.luminosityThreshold.value = this.threshold;
+      this._fsQuad.material = this.materialHighPassFilter;
+      renderer.setRenderTarget(this.renderTargetBright); renderer.clear(true, false, false); this._fsQuad.render(renderer);
+      let input = this.renderTargetBright;
+      for (let i = 0; i < mips; i++) {
+        const material = this.separableBlurMaterials[i]; this._fsQuad.material = material;
+        material.uniforms.colorTexture.value = input.texture;
+        material.uniforms.direction.value = UnrealBloomPass.BlurDirectionX;
+        renderer.setRenderTarget(this.renderTargetsHorizontal[i]); renderer.clear(true, false, false); this._fsQuad.render(renderer);
+        material.uniforms.colorTexture.value = this.renderTargetsHorizontal[i].texture;
+        material.uniforms.direction.value = UnrealBloomPass.BlurDirectionY;
+        renderer.setRenderTarget(this.renderTargetsVertical[i]); renderer.clear(true, false, false); this._fsQuad.render(renderer);
+        input = this.renderTargetsVertical[i];
+      }
+      this._fsQuad.material = this.compositeMaterial;
+      u.bloomStrength.value = this.strength; u.bloomRadius.value = this.radius; u.bloomTintColors.value = this.bloomTintColors;
+      renderer.setRenderTarget(this.renderTargetsHorizontal[0]); renderer.clear(true, false, false); this._fsQuad.render(renderer);
+    } finally {
+      renderer.setClearColor(this._oldClearColor, alpha); renderer.autoClear = autoClear;
+    }
+  }
+
+  dispose() { super.dispose(); this.zeroMip.dispose(); }
+}

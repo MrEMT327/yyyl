@@ -1,0 +1,42 @@
+{
+  "deviceOrientation": "portrait",
+  "showStatusBar": false,
+  "subpackages": [
+    {
+      "name": "lobby-code",
+      "root": "lobby-code/"
+    },
+    {
+      "name": "battle-code",
+      "root": "battle-code/"
+    },
+    {
+      "name": "battle-engine",
+      "root": "battle-engine/"
+    },
+    {
+      "name": "native-core",
+      "root": "native-core/"
+    },
+    {
+      "name": "shared-data",
+      "root": "shared-data/"
+    },
+    {
+      "name": "opening-art",
+      "root": "opening-art/"
+    },
+    {
+      "name": "battle-data",
+      "root": "battle-data/"
+    },
+    {
+      "name": "portrait-data",
+      "root": "portrait-data/"
+    },
+    {
+      "name": "lobby-backgrounds",
+      "root": "lobby-backgrounds/"
+    }
+  ]
+}

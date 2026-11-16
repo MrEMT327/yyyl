@@ -1,0 +1,47 @@
+/* One preview/selection contour for clipped PSD cards. The quality surface,
+   equipped check, slot number and lock remain independent of this overlay. */
+#gui-casual-lobby {
+  --card-selection-art:url('/art/psd-equipment-v1/frame-empty.png');
+  --card-selection-corner:8px;
+  --card-selection-inset:-2px;
+}
+#gui-casual-lobby :is(.card-selection,.fc-browse-corners),
+#gui-casual-lobby :is(
+  .wc-page .wc-item[aria-pressed='true'],
+  .wd-variant[aria-pressed='true']>.wd-variant-plate,
+  .ag-card.is-selected,
+  .eq-card.is-selected,
+  .fc-skill-slot.is-selected,
+  .fc-skill-slot.is-replace-target,
+  .wg-skill-slot.is-selected,
+  .wc-skill.is-selected>.wc-skill-art,
+  .rc-preview-card.is-selected,
+  .pi-reference-card[aria-pressed='true'],
+  .pi-appearance-item.is-selected>.player-avatar
+):not(:has(>.card-selection)):not(:has(>.fc-browse-corners))::after {
+  content:''!important;position:absolute;inset:var(--card-selection-inset)!important;z-index:6;
+  width:auto;height:auto;pointer-events:none;background:none;
+  border:0;border-radius:0;box-shadow:none;clip-path:none;
+  border-image:var(--card-selection-art) 18 / var(--card-selection-corner) stretch!important;
+  filter:drop-shadow(0 0 1px #6eddf2)!important;
+}
+/* Retire the old code-drawn corners and extra 'selected' label. */
+#gui-casual-lobby .card-selection>* {display:none!important}
+#gui-casual-lobby :is(.ag-card.is-selected,.eq-card.is-selected,
+  .wc-item[aria-pressed='true'],.fc-skill-slot.is-selected,
+  .fc-skill-slot.is-replace-target,.wg-skill-slot.is-selected,
+  .rc-preview-card.is-selected,.pi-reference-card[aria-pressed='true']) {
+  outline:none!important;box-shadow:none;transform:none;overflow:visible;
+}
+#gui-casual-lobby :is(.fc-skill-slot.is-selected,.fc-skill-slot.is-replace-target,
+  .wc-skill.is-selected>.wc-skill-art)::before {filter:none!important}
+#gui-casual-lobby .wc-page .wc-item[aria-pressed='true']::before {
+  filter:var(--roster-frame-filter,none)!important;
+}
+#gui-casual-lobby .wc-skill-art {overflow:visible;clip-path:none}
+#gui-casual-lobby .pi-appearance-item.is-selected>.player-avatar {outline:none!important}
+/* Keep a complete card contour visible above the profile's category tabs. */
+#gui-casual-lobby .pi-reference-stage {flex-shrink:1}
+#gui-casual-lobby .pi-reference-roster {flex:1 0 30cqw;min-height:30cqw}
+/* The contour stays outside the art rather than shifting it for a marker. */
+#gui-casual-lobby :is(.card-selection,.fc-browse-corners) {box-sizing:border-box}

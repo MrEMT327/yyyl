@@ -1,0 +1,19 @@
+/* Competitor information hierarchy, using the project's PSD shell and plates. */
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(.chapter-details){--popup-width:94cqw;--popup-height:130cqw;--popup-max-height:88%;--popup-min-height:0px}
+#gui-casual-lobby .pl-modal:has(.chapter-details) .pl-modal-content{padding:0;overflow-y:auto;scrollbar-width:none}
+#gui-casual-lobby .chapter-details{display:flex;flex-direction:column;gap:3cqw;min-height:100%;padding-top:2cqw;color:#19394c}
+#gui-casual-lobby .chapter-details h3{margin:0;text-align:center;font-size:4.4cqw;line-height:1.5;font-weight:800}
+#gui-casual-lobby :is(.chapter-enemy-tray,.chapter-drops){position:relative;isolation:isolate;background:none}
+#gui-casual-lobby .chapter-drops:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/chapter-details-tray-v1/tray.png') 64 fill / 9px stretch}
+#gui-casual-lobby .chapter-enemies{display:flex;gap:2cqw;padding:1cqw 1.5cqw 2cqw;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;scrollbar-width:none;touch-action:pan-x;overscroll-behavior-x:contain;background:none}
+#gui-casual-lobby .chapter-enemy{position:relative;flex:0 0 23cqw;min-width:0;margin:0;display:grid;grid-template-rows:24.5cqw 7cqw;isolation:isolate;scroll-snap-align:start;padding:1cqw .8cqw .4cqw}
+#gui-casual-lobby .chapter-enemy:before{content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/chapter-enemy-card-v2/card.png') 48 48 336 48 fill / 1cqw 1cqw 7cqw 1cqw stretch;pointer-events:none}
+#gui-casual-lobby .chapter-enemy-art{min-height:0;display:grid;place-items:center;padding:.3cqw}
+#gui-casual-lobby .chapter-enemy-art>img,#gui-casual-lobby .chapter-enemy-art>svg{display:block;width:100%;height:100%;object-fit:contain;filter:none}
+#gui-casual-lobby .chapter-enemy figcaption{display:grid;place-items:center;color:#243e52;text-align:center;font-size:3.05cqw;font-weight:700;line-height:1.3;padding:0 .3cqw;white-space:nowrap}
+#gui-casual-lobby .chapter-drops{display:flex;flex-wrap:wrap;gap:2.5cqw;padding:4cqw 3cqw;min-height:25cqw;align-content:flex-start}
+#gui-casual-lobby .chapter-drops .reward-item-slot{width:13.6cqw;flex:0 0 13.6cqw}
+#gui-casual-lobby .chapter-drop{display:flex;flex-direction:column;align-items:center;gap:1.2cqw;font-size:2.8cqw;line-height:1.3;color:#edf7ff}
+#gui-casual-lobby .chapter-details footer{display:flex;justify-content:center;padding:3cqw 0 0;margin-top:auto}
+#gui-casual-lobby .chapter-details .chapter-start{width:min(100%,var(--ui-primary-width));--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);font-size:clamp(18px,5.4cqw,22px);color:white;font-weight:800}
+#gui-casual-lobby .chapter-details .chapter-start:before{border-image:url('/art/psd-equipment-v1/button-gold.png') 18 fill / var(--psd-button-corner) stretch}

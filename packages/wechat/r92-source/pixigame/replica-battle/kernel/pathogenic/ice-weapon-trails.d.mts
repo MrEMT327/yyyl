@@ -1,0 +1,1 @@
+export class IceWeaponTrails { constructor(scene:any,sourcePixelScale?:number); beginFrame(clock:number,camera:number[]):void; projectile(b:Record<string,any>,screen:(x:number,z:number)=>{x:number;y:number}):void; endFrame():void; reset():void; destroy():void; }

@@ -1,0 +1,647 @@
+{
+  "mode": "Static JSON/source comparison only; no tests or game execution",
+  "chapter": 51,
+  "rawMismatches": [],
+  "reusedRows": [
+    "entities:8",
+    "entities:100001",
+    "entities:200031",
+    "entities:200061",
+    "entities:200151",
+    "entities:200171",
+    "entities:310012",
+    "entities:320007",
+    "entities:320018",
+    "entities:320029",
+    "entities:320037",
+    "entities:320056",
+    "entities:330005",
+    "entities:330006",
+    "entities:330007",
+    "entities:330008",
+    "entities:330022",
+    "entities:340014",
+    "weapons:50015",
+    "weapons:50064",
+    "weapons:50065",
+    "weapons:50069",
+    "weapons:50070",
+    "weapons:70001",
+    "weapons:70007",
+    "weapons:70009",
+    "weapons:70010",
+    "weapons:70016",
+    "weapons:70025",
+    "weapons:70038",
+    "weapons:71005",
+    "weapons:100003",
+    "weapons:200031",
+    "weapons:200034",
+    "weapons:200038",
+    "weapons:200061",
+    "weapons:200062",
+    "weapons:200064",
+    "weapons:200065",
+    "weapons:200067",
+    "weapons:200068",
+    "weapons:200151",
+    "weapons:200154",
+    "weapons:200156",
+    "weapons:200171",
+    "weapons:200172",
+    "weapons:200173",
+    "weapons:200176",
+    "weapons:200177",
+    "weapons:200178",
+    "weapons:999999",
+    "bullets:7001",
+    "bullets:7006",
+    "bullets:7007",
+    "bullets:7010",
+    "bullets:7012",
+    "bullets:7016",
+    "bullets:7025",
+    "bullets:10000",
+    "bullets:50014",
+    "bullets:50015",
+    "bullets:50065",
+    "bullets:50069",
+    "bullets:50070",
+    "bullets:70038",
+    "bullets:200030",
+    "bullets:200031",
+    "bullets:200034",
+    "bullets:200038",
+    "bullets:200061",
+    "bullets:200062",
+    "bullets:200063",
+    "bullets:200065",
+    "bullets:200067",
+    "bullets:200068",
+    "bullets:200151",
+    "bullets:200152",
+    "bullets:200153",
+    "bullets:200154",
+    "bullets:200156",
+    "bullets:200171",
+    "bullets:200172",
+    "bullets:200174",
+    "bullets:200176",
+    "bullets:200177",
+    "bullets:200178",
+    "skills:1",
+    "skills:10000101",
+    "skills:10000102",
+    "skills:10000103",
+    "skills:10000104",
+    "skills:10000105",
+    "skills:10000106",
+    "skills:10000107",
+    "skills:10000108",
+    "skills:10000109",
+    "skills:10000201",
+    "skills:10000202",
+    "skills:10000203",
+    "skills:10000204",
+    "skills:10000205",
+    "skills:10000206",
+    "skills:10000207",
+    "skills:10000208",
+    "skills:10000209",
+    "skills:10000601",
+    "skills:10000602",
+    "skills:10000603",
+    "skills:10000604",
+    "skills:10000605",
+    "skills:10000606",
+    "skills:10000607",
+    "skills:10000608",
+    "skills:10000609",
+    "skills:10001701",
+    "skills:10001702",
+    "skills:10001703",
+    "skills:10001704",
+    "skills:10001705",
+    "skills:10001706",
+    "skills:10001707",
+    "skills:10001708",
+    "skills:10001709",
+    "skills:10100101",
+    "skills:10100102",
+    "skills:10100103",
+    "skills:10100104",
+    "skills:10100105",
+    "skills:10100106",
+    "skills:10100107",
+    "skills:10100108",
+    "skills:10100109",
+    "skills:10100110",
+    "skills:10100113",
+    "skills:10100115",
+    "skills:10100201",
+    "skills:10100202",
+    "skills:10100204",
+    "skills:10100205",
+    "skills:10100207",
+    "skills:10100213",
+    "skills:10100217",
+    "skills:10100219",
+    "skills:10100220",
+    "skills:10100601",
+    "skills:10100602",
+    "skills:10100603",
+    "skills:10100605",
+    "skills:10100607",
+    "skills:10100609",
+    "skills:10100617",
+    "skills:10100618",
+    "skills:10100625",
+    "skills:10101701",
+    "skills:10101703",
+    "skills:10101704",
+    "skills:10101706",
+    "skills:10101707",
+    "skills:10101709",
+    "skills:10101710",
+    "skills:10101712",
+    "skills:10101713",
+    "skills:10101715",
+    "skills:10200101",
+    "skills:10200102",
+    "skills:10200201",
+    "skills:10200202",
+    "skills:10200601",
+    "skills:10200602",
+    "skills:10201701",
+    "skills:10201702",
+    "skills:10201708",
+    "skills:10400101",
+    "skills:10400102",
+    "skills:10400105",
+    "skills:10400111",
+    "skills:10400112",
+    "skills:10400201",
+    "skills:10400203",
+    "skills:10400204",
+    "skills:10400211",
+    "skills:10400212",
+    "skills:10400601",
+    "skills:10400602",
+    "skills:10400603",
+    "skills:10400611",
+    "skills:10400612",
+    "skills:10401702",
+    "skills:10401703",
+    "skills:10401704",
+    "skills:10401711",
+    "skills:10401712",
+    "skills:10500101",
+    "skills:10500102",
+    "skills:10500201",
+    "skills:10500202",
+    "skills:10500601",
+    "skills:10500602",
+    "skills:10501701",
+    "skills:10501702",
+    "skills:11000701",
+    "skills:11000702",
+    "skills:11000703",
+    "skills:11001101",
+    "skills:11001102",
+    "skills:11001103",
+    "triggers:1",
+    "triggers:10000101",
+    "triggers:10000201",
+    "triggers:10000601",
+    "triggers:10001701",
+    "triggers:10100201",
+    "triggers:10100204",
+    "triggers:10100205",
+    "triggers:10100213",
+    "triggers:10100217",
+    "triggers:10100219",
+    "triggers:10100607",
+    "triggers:10100617",
+    "triggers:10101703",
+    "triggers:10101704",
+    "triggers:10101709",
+    "triggers:10101710",
+    "triggers:10101713",
+    "triggers:10101715",
+    "triggers:101017151"
+  ],
+  "assetMissing": [],
+  "entityMissing": [],
+  "urls": [
+    {
+      "url": "assets/sprites/Airplane_jet_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Airplane_jet_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Bullet_03.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Airplane_jet_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Airplane_jet_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/composites/Airplane_0_setup.png",
+      "exists": true
+    },
+    {
+      "url": "assets/owned-enemies/bionic-bird-v1/monster1_0001.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Bullet_superweapon_crescent_moon_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Bullet_corrosion_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Bullet_wind_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Bullet_Enemy_Ball_Red_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Bullet_Boss_Square_Red_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/arrow_Monster_green_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/arrow_Monster_slender_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/arrow_Monster_rotundity_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/Standing_Circle_yellow_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_6.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_gx3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/Standing_Circle_green_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/Standing_Circle_green.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_gx1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/Standing_Circle_yellow.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/Standing_Circle_green_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/stg_tjbx_gx2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/Bullet_Boss_Ball_Red_1_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/stg_boss_4_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/chapters/sprites/monster3_0000.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster2_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster2_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster2_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster2_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_4b.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_7.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_1b.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane48_6.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/stg_boss_4_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/stg_boss_4_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/stg_boss_4_6.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/stg_boss_4_5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/stg_boss_4_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/original-projectiles/crescent-red-v1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_7.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_8.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_6.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster11_1_5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster18_3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster18_1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster18_5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster18_4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/monster18_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite6.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite13m.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite3.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite7b.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite14.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite14am.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite4.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite10m.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite11m.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite11.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite8.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite8bm.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite15c.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite5.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite7bm.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite15a.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite15bm.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite15b.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite7.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite12m.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite14m.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite10.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite14a.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite12.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite1.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite9.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite1m.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite6a.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite13.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/Plane47_elite8b.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane34_2.png",
+      "exists": true
+    },
+    {
+      "url": "assets/sprites/plane34_1.png",
+      "exists": true
+    }
+  ],
+  "newRuntimeHandlers": [],
+  "notes": [
+    "Chapter51 FirstReward is empty in the APK. Existing optional Girl Flight rewards are not extrapolated beyond chapter50.",
+    "No new enemy AI/weapon models: source rows are already used in earlier chapters. Map group is s_map0023_1, also used by chapters26/35/41.",
+    "Cloud display name/theme follows the existing representative map resolver; no UI layout or CSS is edited."
+  ],
+  "nativeMapArtwork": "Same metadata-only policy as chapter26; terrain=cloud and s_map0023_1 maps to the existing owned terraced-highlands scene.",
+  "healthMissing": [],
+  "counts": {
+    "waves": 15,
+    "events": 182,
+    "enemies": 11,
+    "enemyModels": 10,
+    "spawnPoints": 620,
+    "npcEvents": 3,
+    "prefabs": 29,
+    "sprites": 98
+  }
+}

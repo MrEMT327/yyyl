@@ -1,0 +1,24 @@
+{
+  "reason": "Effect_effect and Model_model numeric ID collision in merged loadout beam export",
+  "sourceTable": "APK 1.1.6 Effect_effect",
+  "corrections": [
+    {
+      "id": 220006,
+      "prefab": "FX_ZiDan_002_Release",
+      "previousModel": "Laser"
+    },
+    {
+      "id": 220010,
+      "prefab": "FX_ZiDan_001_Release",
+      "previousModel": "LaserGreen"
+    }
+  ],
+  "noGameplayChanges": true,
+  "noTestsRun": true,
+  "textureHashes": {
+    "public/replica-battle/assets/enemy-fire-effects-original/tex_Ring_101_2368179952240233497.png": "1b3240a3006890eb4f1010dd5d0cc76b2a8381d266b9d10f82c1f4b4c9fe69b4",
+    "public/replica-battle/assets/enemy-fire-effects-original/tex_Glow_011_-5188970607057516284.png": "400c29552846a3b5649d6e334f86e68ca8772255c2a342ef0b477ba3d3c76e1c",
+    "public/replica-battle/assets/enemy-fire-effects-original/tex_Ring_005_8019362599057663810.png": "acacf1a62ca12bdd55932cc148ee54ca027f65bea1ad09ef8f54592d737bfd1b",
+    "public/replica-battle/assets/enemy-fire-effects-original/tex_Bullet_015_7410154082496219955.png": "eca008e2026727584d19695f921d1b91568cd68dc8fd2bf1ac8725af99a590b4"
+  }
+}

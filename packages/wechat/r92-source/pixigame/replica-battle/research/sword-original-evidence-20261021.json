@@ -1,0 +1,34 @@
+{
+  "source": "Original APK IL2CPP offline ARM64 and serialized Unity prefabs, not runtime capture",
+  "effects": {
+    "1000018": {"prefab":"stg_curve_sword","enabledParticleLayers":5,"purpose":"waiting sword body"},
+    "220005": {"prefab":"FX_slash_06_wrapper","enabledParticleLayers":11,"purpose":"ordinary swing","aliveTime":0.5},
+    "220017": {"prefab":"FX_DaoGuang_001_Circle","enabledParticleLayers":12,"purpose":"circular slash","aliveTime":1,"bundleSelection":"Prefab/Bullet/Hero, not same-name HeroOrigin"}
+  },
+  "native": {
+    "onStarted":"0x6d98a78",
+    "createEffect":"0x6d9a2a8",
+    "tryReverse":"0x6d9bc94",
+    "renderCallback":"0x747d790",
+    "setTargetSpeed":"0x6839c2c",
+    "constantsInitialization":"0x688b338..0x688b388",
+    "hideSwordBody":"onStarted calls DispatchScaleEvent(0,true) at 0x6d995ac..0x6d995b8",
+    "position":"totalAngle>=360: cached circleCenter; otherwise midpoint(startPos,mirrorPos)",
+    "direction":"normalized cached targetLine, Unity Quaternion.LookRotation",
+    "scale":"radius * (0xb5c2 / 65536), uniform xyz on CurveSwordEffect.target",
+    "mirror":"clockwise=true: target.localRotation identity; clockwise=false: target.localRotation Euler(0,0,PI), flips local X in XZ projection",
+    "particleSpeed":"FP(0.71) * actualAngularSpeed / (770 * (1 + local CurveSwordAngularSpeed%))",
+    "speedConstants":{"baseSimulationSpeed":"0.71f","baseAngularSpeed":"770f","baseAngularSpeedPercent":"0f"},
+    "constantStringSlots":{"0x952fa70":"0.71f","0x952fc88":"770f","0x952fb10":"0f"},
+    "reverse":"tryReverse calls createEffect again with updated radius and opposite clockwise flag",
+    "lifetime":"OnExec applies EffectTools.FixEffectTime to event aliveTime; no division by particle speed"
+  },
+  "export": {
+    "file":"effects-sword-original.json",
+    "textureCount":14,
+    "meshCount":5,
+    "missingTextureOrMeshDependencies":0,
+    "normalization":"CurveSwordEffect.target serialized localRotation is reset to identity as original render callback does; runtime applies the opposite-direction Z=PI rotation. Other authored transforms and particle curves remain unchanged.",
+    "limitations":["H5 XZ projection is not bit-identical to Unity 3D camera","Unity random stream, custom shader programs and exact particle damping remain existing renderer limits"]
+  }
+}

@@ -1,0 +1,1358 @@
+{
+  "source": "Local APK 1.1.6 tables and static ARM64 inspection, no game execution",
+  "tableSha256": {
+    "Skill_Main": "dadfcd014d036bf3f0e0613a6d6240f3a0dd8669732c461ab2be6e6c2b6fa8be",
+    "SkillGroup_SurvivorGroup": "c1fc4553cf21f60efec193c27986f84e77cc58f411125c523e664607766c8dd9",
+    "SkillGroup_InitSurvivorGroup": "b5799a3141533801060fa77092aa4c20e3a54bc38f4de8c0a53fd10cc02d422e",
+    "Chapter_MainChapter": "f28c4840284c587c0f2859c38ab4a5a0c5a5f7d12495f24067277c3151c4e5d9",
+    "Consts_Const": "d00c3f132b2b129e1ef18ecccea545b771cf85302c64be99b3ea3c72b2ee9468"
+  },
+  "skillRowCount": 1360,
+  "nonzeroUnlockStages": [],
+  "basicWeapons": [
+    {
+      "id": 10000101,
+      "name": "速射机炮",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 300,
+      "inInitialPool": true,
+      "initialChapter1Weight": 300
+    },
+    {
+      "id": 10000201,
+      "name": "酸液枪",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    },
+    {
+      "id": 10000301,
+      "name": "电弧枪",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    },
+    {
+      "id": 10000401,
+      "name": "磁暴枪",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    },
+    {
+      "id": 10000601,
+      "name": "冰刃弹",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 300,
+      "inInitialPool": true,
+      "initialChapter1Weight": 300
+    },
+    {
+      "id": 10000701,
+      "name": "爆燃导弹",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    },
+    {
+      "id": 10000901,
+      "name": "酸性黑洞",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": false,
+      "initialChapter1Weight": 0
+    },
+    {
+      "id": 10001101,
+      "name": "能量光剑",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    },
+    {
+      "id": 10001501,
+      "name": "高能激光",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    },
+    {
+      "id": 10001601,
+      "name": "冰冻锯盘",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 50,
+      "inInitialPool": true,
+      "initialChapter1Weight": 50
+    },
+    {
+      "id": 10001701,
+      "name": "灼热射线",
+      "ordinaryWeight": 100,
+      "chapter1Weight": 100,
+      "inInitialPool": true,
+      "initialChapter1Weight": 100
+    }
+  ],
+  "chapters": [
+    {
+      "id": 1,
+      "SkillGroupWeight": 1,
+      "SkillGroupWeight_B": 1,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 2,
+      "SkillGroupWeight": 2,
+      "SkillGroupWeight_B": 2,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 3,
+      "SkillGroupWeight": 3,
+      "SkillGroupWeight_B": 3,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 4,
+      "SkillGroupWeight": 4,
+      "SkillGroupWeight_B": 4,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 5,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 6,
+      "SkillGroupWeight": 5,
+      "SkillGroupWeight_B": 5,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 7,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 8,
+      "SkillGroupWeight": 6,
+      "SkillGroupWeight_B": 6,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 9,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 10,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": [
+        3
+      ]
+    },
+    {
+      "id": 11,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 12,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 13,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 14,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 15,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 16,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 17,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 18,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 19,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 20,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 21,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 22,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 23,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 24,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 25,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 26,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 27,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 28,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 29,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 30,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 31,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 32,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 33,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 34,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 35,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 36,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 37,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 38,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 39,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 40,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 41,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 42,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 43,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 44,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 45,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 46,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 47,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 48,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 49,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 50,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 51,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 52,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 53,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 54,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 55,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 56,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 57,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 58,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 59,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 60,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 61,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 62,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 63,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 64,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 65,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 66,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 67,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 68,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 69,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 70,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 71,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 72,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 73,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 74,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 75,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 76,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 77,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 78,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 79,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 80,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 81,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 82,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 83,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 84,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 85,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 86,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 87,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 88,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 89,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 90,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 91,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 92,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 93,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 94,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 95,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 96,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 97,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 98,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 99,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 100,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 101,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 102,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 103,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 104,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 105,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 106,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 107,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 108,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 109,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 110,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 111,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 112,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 113,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 114,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 115,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 116,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 117,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 118,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 119,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 120,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 121,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 122,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 123,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 124,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 125,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 126,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 127,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 128,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 129,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 130,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 131,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 132,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 133,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 134,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 135,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 136,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 137,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 138,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 139,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 140,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 141,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 142,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 143,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 144,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 145,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 146,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 147,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 148,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 149,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 150,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 151,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 152,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 153,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 154,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 155,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 156,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 157,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 158,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 159,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 160,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 161,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 162,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 163,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 164,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 165,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 166,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 167,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 168,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 169,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 170,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 171,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 172,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 173,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 174,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 175,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 176,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 177,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 178,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 179,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 180,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 181,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 182,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 183,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 184,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 185,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 186,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 187,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 188,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 189,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 190,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 191,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 192,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 193,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 194,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 195,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 196,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 197,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 198,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 199,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 200,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    },
+    {
+      "id": 9999,
+      "SkillGroupWeight": 0,
+      "SkillGroupWeight_B": 0,
+      "NewPlayerProtect": []
+    }
+  ],
+  "sourceConstants": [
+    {
+      "id": "69",
+      "note": "使用初始技能库的次数",
+      "keyName": "UseInitSkillGroupCout",
+      "valueType": "int",
+      "value": "1"
+    },
+    {
+      "id": "129",
+      "note": "引导选择技能时,固定出现的技能ID",
+      "keyName": "GuideSelectSkillId",
+      "valueType": "int[]",
+      "value": "{10400101,10001701,10000601}"
+    },
+    {
+      "id": "167",
+      "note": "前期定制-技能检测-当没有该技能时",
+      "keyName": "NewPlayerProtect_SkillDefault",
+      "valueType": "int",
+      "value": "10000101"
+    },
+    {
+      "id": "168",
+      "note": "前期定制-技能列表-如果没有机炮，初始武器中列表中技能概率提升(百分比)",
+      "keyName": "NewPlayerProtect_SkillDefault_SkillUp",
+      "valueType": "string[]",
+      "value": "{\"10000101|10\",\"10000601|10\",\"10001701|10\"}"
+    }
+  ]
+}

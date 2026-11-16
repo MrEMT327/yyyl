@@ -1,0 +1,308 @@
+/* The PSD footer is the single navigation surface for every lobby route. */
+.game-shell:has(.peripheral-lobby.psd-nav-global:not([hidden])) {
+  width: min(750px, 46.182266dvh, 100vw) !important;
+  height: min(100dvh, 216.5333333333vw, 1624px) !important;
+  max-width: 750px !important;
+  max-height: 100dvh !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  aspect-ratio: 750 / 1624 !important;
+  border-radius: 0;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .pl-shell {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 750px !important;
+  max-height: 100% !important;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global {
+  --lobby-frame-width: min(750px, 46.182266dvh, 100vw);
+  --lobby-safe-bottom: var(--ui-safe-bottom, env(safe-area-inset-bottom, 0px));
+  --psd-nav-art-height: calc(var(--lobby-frame-width) * .2013333333);
+  --lobby-nav-gap: 0px;
+  --lobby-nav-height: calc(var(--psd-nav-art-height) + var(--lobby-safe-bottom));
+  --lobby-nav-reserve: var(--lobby-nav-height);
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global[data-subpage]:not([data-subpage=""]) .pl-shell {
+  grid-template-rows: calc(6.133333cqw + 44px) minmax(0, 1fr) var(--lobby-nav-reserve) !important;
+}
+.peripheral-lobby.reference-layout.psd-nav-global[data-subpage]:not([data-subpage=""]) .pl-body {
+  grid-row: 2 !important;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global[data-subpage]:not([data-subpage=""]) .pl-nav.lobby-nav,
+.peripheral-lobby.reference-layout.psd-nav-global[data-subpage=""] .pl-nav.lobby-nav {
+  position: absolute !important;
+  inset: auto 0 0 !important;
+  width: 100% !important;
+  height: calc(20.133333cqw + var(--lobby-safe-bottom, 0px)) !important;
+  min-height: 0;
+  max-height: none !important;
+  display: flex !important;
+  align-items: stretch;
+  gap: 0 !important;
+  padding: 0 0 var(--lobby-safe-bottom) !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: url('/art/psd-main-v1/navigation/horizontal-frame.png') top center / 100% 19.733333cqw no-repeat, url('/art/project-navigation-v2/background.png') top center / 100% 20.133333cqw no-repeat !important;
+  box-shadow: none !important;
+  z-index: 50 !important;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .pl-nav.lobby-nav::before,
+.peripheral-lobby.reference-layout.psd-nav-global .pl-nav.lobby-nav::after,
+.peripheral-lobby.reference-layout.psd-nav-global .pl-nav.lobby-nav > .lobby-nav-tab::before,
+.peripheral-lobby.reference-layout.psd-nav-global .pl-nav.lobby-nav > .lobby-nav-tab::after {
+  content: none !important;
+  display: none !important;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .pl-nav.lobby-nav > .lobby-nav-tab {
+  position: relative;
+  display: block !important;
+  flex: 140.5 1 0 !important;
+  width: 0 !important;
+  height: 20.133333cqw !important;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  clip-path: none;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: filter .12s ease;
+}
+
+#gui-casual-lobby.psd-nav-global .pl-nav > .lobby-nav-tab.is-active {
+  flex: 188 1 0 !important;
+}
+#gui-casual-lobby.psd-nav-global .psd-nav-divider {
+  position: absolute;
+  top: 0;
+  right: -.2cqw;
+  width: .4cqw;
+  height: 19.733333cqw;
+  background: url('/art/psd-main-v1/navigation/divider.png') center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .psd-nav-icon {
+  position: absolute;
+  display: block;
+  max-width: none;
+  margin: 0;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4.6px rgba(46, 191, 219, .71));
+  transform-origin: center;
+  transition: filter .12s ease;
+  pointer-events: none;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .psd-nav-icon-shop {
+  top: 4.533333cqw; width: 11.2cqw; height: 11.2cqw;
+}
+.peripheral-lobby.reference-layout.psd-nav-global .psd-nav-icon-assembly {
+  top: 4.933333cqw; width: 9.2cqw; height: 11.466667cqw;
+}
+.peripheral-lobby.reference-layout.psd-nav-global .psd-nav-icon-battle {
+  top: 4.533333cqw; width: 15.2cqw; height: 13.2cqw;
+}
+.peripheral-lobby.reference-layout.psd-nav-global .psd-nav-icon-research {
+  top: 4.533333cqw; width: 12.266667cqw; height: 12.8cqw;
+}
+.peripheral-lobby.reference-layout.psd-nav-global .psd-nav-icon-supply {
+  top: 5.2cqw; width: 10.666667cqw; height: 12.133333cqw;
+}
+.peripheral-lobby.reference-layout.psd-nav-global :is(.psd-nav-icon-assembly, .psd-nav-icon-battle, .psd-nav-icon-research, .psd-nav-icon-supply) {
+  filter: drop-shadow(0 0 1.7px #2ebfdb) drop-shadow(0 0 4.6px rgba(46, 191, 219, .93));
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .lobby-nav-tab.is-active .psd-nav-icon {
+  top: 1.333333cqw;
+  width: 15.2cqw;
+  height: 13.2cqw;
+}
+
+/* Icons and labels share the tab center. Correct only the artwork's opaque
+   body, since faint glow pixels do not define its visible center. */
+#gui-casual-lobby.psd-nav-global .psd-nav-icon {
+  left: calc(50% + var(--psd-icon-center, 0px)) !important;
+  transform: translateX(-50%) !important;
+}
+#gui-casual-lobby.psd-nav-global .psd-nav-icon-shop { --psd-icon-center: .066667cqw; --psd-icon-active-center: .073016cqw; }
+#gui-casual-lobby.psd-nav-global .psd-nav-icon-assembly { --psd-icon-center: 0px; --psd-icon-active-center: 0px; }
+#gui-casual-lobby.psd-nav-global .psd-nav-icon-battle { --psd-icon-center: .266667cqw; --psd-icon-active-center: .266667cqw; }
+#gui-casual-lobby.psd-nav-global .psd-nav-icon-research { --psd-icon-center: -.266667cqw; --psd-icon-active-center: -.275cqw; }
+#gui-casual-lobby.psd-nav-global .psd-nav-icon-supply { --psd-icon-center: .4cqw; --psd-icon-active-center: .435165cqw; }
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab.is-active .psd-nav-icon {
+  left: calc(50% + var(--psd-icon-active-center, 0px)) !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab.is-active :is(.psd-nav-icon-shop, .psd-nav-icon-assembly) {
+  top: 1.066667cqw;
+  height: 12.266667cqw;
+}
+
+.peripheral-lobby.reference-layout.psd-nav-global .lobby-nav-tab:active { filter: brightness(1.2); }
+.peripheral-lobby.reference-layout.psd-nav-global .lobby-nav-tab:focus-visible { outline: 2px solid #fff; outline-offset: -3px; }
+
+/* Tooltips and tutorial copy do not belong on the touch-first game surface. */
+.peripheral-lobby.reference-layout.psd-nav-global .pl-toast { display: none !important; }
+.game-shell .toast,
+.game-shell #toast,
+.assembly-showroom .fitting-status { display: none !important; }
+
+/* The legacy HUD uses ID selectors. Keep the PSD measurements authoritative
+   on every route, including catalog and workshop subpages. */
+#gui-casual-lobby.psd-nav-global .pl-resource-host {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 40 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+#gui-casual-lobby.psd-nav-global .pl-header:has(> .lobby-resources) {
+  position: static !important;
+  overflow: visible !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resources {
+  position: absolute !important;
+  z-index: 40 !important;
+  top: 6.133333cqw !important;
+  left: 31.2cqw !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, 21.733333cqw) !important;
+  column-gap: .933333cqw !important;
+  align-items: start !important;
+  width: 67.066667cqw !important;
+  height: 6.133333cqw !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource {
+  position: relative !important;
+  display: block !important;
+  width: 21.733333cqw !important;
+  height: 44px !important;
+  min-width: 0 !important;
+  min-height: 44px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: auto !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource-bar {
+  position: absolute !important;
+  inset: 0 auto auto 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 6.133333cqw !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource-background {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  object-fit: fill !important;
+  pointer-events: none !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource-icon,
+#gui-casual-lobby.psd-nav-global .lobby-resource-plus {
+  position: absolute !important;
+  display: block !important;
+  max-width: none !important;
+  margin: 0 !important;
+  object-fit: fill !important;
+  filter: none !important;
+  transform: none !important;
+  pointer-events: none !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource.is-stamina .lobby-resource-icon {
+  left: 2.533333cqw !important; top: .133333cqw !important; width: 4cqw !important; height: 5.866667cqw !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource.is-coins .lobby-resource-icon {
+  left: 2.4cqw !important; top: .266667cqw !important; width: 4.533333cqw !important; height: 5.6cqw !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource.is-diamonds .lobby-resource-icon {
+  left: 3.6cqw !important; top: .533333cqw !important; width: 2.666667cqw !important; height: 5.2cqw !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource-bar > b {
+  position: absolute !important;
+  left: 8.533333cqw !important;
+  top: 2cqw !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 7.066667cqw !important;
+  height: 2.266667cqw !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #fff !important;
+  font-family: Arial, Helvetica, sans-serif !important;
+  font-size: 3.2cqw !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+  font-variant-numeric: tabular-nums !important;
+  text-align: center !important;
+  text-shadow: 0 1px 1px #101317 !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource-bar > b.is-long { font-size: 2.55cqw !important; }
+#gui-casual-lobby.psd-nav-global .lobby-resource-amount {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  text-overflow: clip !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-resource-plus {
+  left: 18.4cqw !important; top: 2.4cqw !important; width: 1.733333cqw !important; height: 1.6cqw !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab > span {
+  position: absolute !important;
+  inset: 14.266667cqw auto auto 50% !important;
+  display: none !important;
+  width: max-content !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  clip-path: none !important;
+  color: #fff !important;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif !important;
+  font-size: 3.733333cqw !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-shadow: 0 2px 2px #000 !important;
+  transform: translateX(-50%) !important;
+  white-space: nowrap !important;
+}
+#gui-casual-lobby.psd-nav-global .lobby-nav-tab.is-active > span { display: block !important; }

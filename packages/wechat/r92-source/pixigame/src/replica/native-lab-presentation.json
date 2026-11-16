@@ -1,0 +1,46 @@
+{
+  "1": {
+    "sort": 11,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_08.png"
+  },
+  "3": {
+    "sort": 10,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_07.png"
+  },
+  "4": {
+    "sort": 9,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_03.png"
+  },
+  "5": {
+    "sort": 8,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_02.png"
+  },
+  "6": {
+    "sort": 7,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_09.png"
+  },
+  "7": {
+    "sort": 6,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_04.png"
+  },
+  "2": {
+    "sort": 5,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_01.png"
+  },
+  "8": {
+    "sort": 4,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_11.png"
+  },
+  "9": {
+    "sort": 3,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_05.png"
+  },
+  "10": {
+    "sort": 2,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_06.png"
+  },
+  "11": {
+    "sort": 1,
+    "card": "/assets/loadout-ui/stg_skillLab_iconX_10.png"
+  }
+}

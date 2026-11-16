@@ -1,0 +1,26 @@
+/* Native StarCollect reward dialog: fixed total, threshold / item slots /
+   action in one horizontal row. Artwork remains the project's PSD system. */
+#gui-casual-lobby .native-star-rewards{color:#203b51;padding:0 3px 8px;font:14px/1.4 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .native-star-rewards .nsr-summary{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:49px;margin:0 0 8px;padding:0 8px;border-bottom:1px solid #7992a9;background:#b4c5d7}
+#gui-casual-lobby .native-star-rewards .nsr-summary>span{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700}
+#gui-casual-lobby .native-star-rewards .nsr-summary>strong{font-size:23px;color:#18394f;white-space:nowrap}
+#gui-casual-lobby .native-star-rewards .nsr-summary small{font-size:13px;font-weight:400;color:#405b73}
+#gui-casual-lobby .native-star-rewards .nsr-star{display:block;position:static;width:20px;height:20px;object-fit:contain;flex:none}
+#gui-casual-lobby .native-star-rewards .nsr-notice{margin:5px 0 9px;color:#8a432e;font-size:12px}
+#gui-casual-lobby .native-star-rewards .nsr-list{display:grid;gap:6px}
+#gui-casual-lobby .native-star-rewards .nsr-row{display:grid;grid-template-columns:42px minmax(0,1fr) 76px;grid-template-rows:auto;align-items:center;gap:8px;margin:0;padding:10px 8px;min-height:78px;border:1px solid #8299ae;box-sizing:border-box}
+#gui-casual-lobby .native-star-rewards .nsr-row.is-ready{border-color:#ba9851!important;background:#e4e2cdbd!important}
+#gui-casual-lobby .native-star-rewards .nsr-row.is-claimed{opacity:.65}
+#gui-casual-lobby .native-star-rewards .nsr-threshold{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0}
+#gui-casual-lobby .native-star-rewards .nsr-threshold .nsr-star{width:14px;height:14px}
+#gui-casual-lobby .native-star-rewards .nsr-threshold strong{font-size:16px;color:#203b51}
+#gui-casual-lobby .native-star-rewards .nsr-items{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:0}
+#gui-casual-lobby .native-star-rewards .nsr-items>.reward-item-slot{flex:none;width:clamp(40px,12.4cqw,54px)}
+#gui-casual-lobby .native-star-rewards .nsr-claim.wc-button{grid-column:3;grid-row:1;width:100%;min-width:0;min-height:40px;--wc-button-height:40px;--psd-button-corner:10px;margin:0;padding:5px 3px;font-size:13px;white-space:nowrap}
+@container(max-width:350px){
+ #gui-casual-lobby .native-star-rewards .nsr-row{grid-template-columns:36px minmax(0,1fr) 60px;gap:4px;padding:8px 4px;min-height:68px}
+ #gui-casual-lobby .native-star-rewards .nsr-items{gap:5px}
+ #gui-casual-lobby .native-star-rewards .nsr-items>.reward-item-slot{width:clamp(36px,12.4cqw,48px)}
+ #gui-casual-lobby .native-star-rewards .nsr-threshold{gap:2px}
+ #gui-casual-lobby .native-star-rewards .nsr-threshold strong{font-size:14px}
+}

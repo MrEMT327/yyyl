@@ -1,0 +1,32 @@
+@import './ui/scroll-surfaces.css';
+
+:root {
+  font-family: Inter, ui-sans-serif, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #f4f1ff;
+  background: #041017;
+  font-synthesis: none;
+  --cyan: #b7a3ff;
+  --red: #ff9a83;
+  --blue: #76d7ff;
+  --amber: #e7ff78;
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --mobile-ui-top-gap: 0px;
+}
+/* Leave breathing room below the system cutout, not a hardcoded iPhone notch. */
+@media (pointer:coarse) and (orientation:portrait) {
+  :root { --mobile-ui-top-gap: 12px; }
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; overscroll-behavior: none; }
+body {
+  min-height: 100dvh;
+  background: #030b10;
+  user-select: none;
+}
+button { font: inherit; }
+
+
+.arcade{position:relative;width:100vw;height:100dvh;overflow:hidden;background:#030b10}
+.game-shell{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#061a22;isolation:isolate}

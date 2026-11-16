@@ -1,0 +1,26 @@
+{
+  "path": "kernel/simulation.ts",
+  "reason": "Build registration 2026-10-22 for the independently completed native pilot-skill repairs in research/pilot-skill-audit-20261022.md: dispatch per-weapon time event2 with skipPlayer; set MainWeapon0x2000 only on normal cannon/follower shot groups. Exact three pre-existing edits, no additional gameplay changes.",
+  "patches": [
+    {
+      "before": "    const actors = [{ uid: 0, x: p.x, z: p.z, attack: p.attack, dead: p.hp <= 0, side: 'player' as const },\n",
+      "after": "    for (const familyId of this.weaponPrograms.keys()) this.dispatchWeaponEvent(2, familyId, { skipPlayer: true });\n    const actors = [{ uid: 0, x: p.x, z: p.z, attack: p.attack, dead: p.hp <= 0, side: 'player' as const },\n"
+    },
+    {
+      "before": "      weapon.waitingForBeams = (weapon.nativeWeaponIds || entity.weaponIds).some((weaponId: number) => originalIsLaserTrajectory(this.content.chapter.weapons[weaponId].trajectory));\n",
+      "after": "      for (const shot of this.shots.slice(firstShot)) shot.flags = (shot.flags || 0) | 0x2000;\n      weapon.waitingForBeams = (weapon.nativeWeaponIds || entity.weaponIds).some((weaponId: number) => originalIsLaserTrajectory(this.content.chapter.weapons[weaponId].trajectory));\n"
+    },
+    {
+      "before": "    return this.queueWeapon(this.content.chapter.player.weaponId, 'player', p, 0, p.attack, 0, this.cannon.bulletId, this.cannon.damageBonus);\n",
+      "after": "    const firstShot = this.shots.length;\n    const hold = this.queueWeapon(this.content.chapter.player.weaponId, 'player', p, 0, p.attack, 0, this.cannon.bulletId, this.cannon.damageBonus);\n    for (const shot of this.shots.slice(firstShot)) shot.flags = (shot.flags || 0) | 0x2000;\n    return hold;\n"
+    }
+  ],
+  "review": {
+    "originalSha256": "f5b34381716f775128beda3efc91ac33319b56c820012b8365b64dd528595860",
+    "priorRegisteredSha256": "03a9a8f15050bfada373997417a3fdec1128b3800d6f2e7fea40d250056f2655",
+    "currentSha256": "7a57fc0c6f6bdb2142a150d40e375b62af3a42fe8f2f051f6da1218d6ddd1761",
+    "evidenceSha256": "b81ad3dc3127dfe39f377dfc68551c34cecc58b85071d67940ad9be7b5da6d7a",
+    "fullReversalVerified": true,
+    "gameplaySourceModifiedByThisTask": false
+  }
+}

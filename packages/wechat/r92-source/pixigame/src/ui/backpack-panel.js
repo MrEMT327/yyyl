@@ -1,0 +1,82 @@
+import { itemDescriptionModel } from './item-description-model.js';
+import { backpackUseControls } from './backpack-use-controls.js';
+import { nativeItemPresentation } from '../replica/native-item-presentation.js';
+import { supplyWeaponArt } from './supply-visuals.js';
+import { RESOURCE_ICONS } from './resource-icons.js';
+import {rewardDisplayQuality} from '../replica/item-display-quality.js';
+import {rewardItemSlot} from './reward-item-slot.js';
+import './backpack-assets.css';
+import './backpack-reference.css';
+import {nativePilotFragment} from '../replica/native-pilot-fragments.js';
+
+export const BACKPACK_TABS = Object.freeze([
+  { id: 'all', label: '道具' },
+]);
+
+const quantity = value => Number.isFinite(Number(value)) ? Math.max(0, Math.floor(Number(value))) : 0;
+const exactCount = value => quantity(value).toLocaleString('zh-CN', {useGrouping:false});
+const itemQuality = item => Number.isInteger(item.qualityRank) && item.qualityRank >= 0 && item.qualityRank <= 5 ? item.qualityRank : 0;
+const resourceQuality = id => rewardDisplayQuality({type:id}).qualityRank;
+// A read-only projection of canonical balances: no placeholder items or grants.
+export function backpackItems(snapshot) {
+  const wallet = snapshot.wallet || {};
+  if(snapshot.nativeAcquisition) {
+    const rows=snapshot.nativeAcquisition.materials.filter(row=>![1,2,4].includes(Number(row.id))&&!nativePilotFragment(row.id)).map(row=>{
+      const presentation=nativeItemPresentation(row.id);
+      return {
+        id:'native:'+row.id,nativeId:row.id,name:presentation.name||row.name,count:row.count,
+        category:'materials',image:presentation.image,pilotFragment:presentation.pilotFragment,
+        qualityRank:presentation.qualityRank??row.qualityRank??0,
+        qualityName:presentation.qualityName,qualityKnown:presentation.qualityKnown,
+        description:itemDescriptionModel({nativeItemId:row.id},snapshot).description,
+      };
+    });
+    return rows;
+  }
+  const materials = [
+    { id: 'aircraftShards', name: '通用飞机碎片', symbol: 'shard', description: '在装备界面强化战机，提升攻击与耐久。' },
+    { id: 'weaponParts', name: '武器零件', symbol: 'parts', description: '在改装间强化武器，或补足升星所缺的专属碎片。' },
+    { id: 'cores', name: '科技星核', symbol: 'core', description: '在天赋界面进行王牌觉醒。' },
+  ].map(item => ({ ...item, category: 'materials', count: quantity(wallet[item.id]),qualityRank:resourceQuality(item.id) }));
+  const fragments = (snapshot.workshop?.items || []).map(item => ({
+    id: `fragment:${item.id}`, name: `${item.name}碎片`, category: 'materials',
+    count: quantity(item.fragments), weaponId: item.id,qualityRank:itemQuality(item),
+    qualityKnown:Number.isInteger(item.qualityRank)&&item.qualityRank>=0&&item.qualityRank<=5,
+    description: `用于【${item.name}】升星，优先于通用零件消耗。`,
+  }));
+  return [...materials, ...fragments].filter(item => item.count > 0);
+}
+
+const itemArt = (item, helpers) => {
+  if(item.nativeId||item.image)return item.image
+    ? `<img class="bag-owned-art" src="${helpers.escape(item.image)}" alt="" aria-hidden="true" draggable="false">${item.pilotFragment?'<span class="bag-fragment-badge">碎片</span>':''}`
+    : `<span class="bag-owned-art">${helpers.escape(item.name)}</span>`;
+  if(item.weaponId)return supplyWeaponArt({id:item.weaponId},helpers.thumbnail);
+  return `<img class="bag-owned-art" src="${RESOURCE_ICONS[item.id].url}" alt="" aria-hidden="true" draggable="false">`;
+};
+
+export function backpackDialog(snapshot, state, helpers) {
+  const { escape: e } = helpers;
+  const tab = BACKPACK_TABS.find(item => item.id === state.bagTab) || BACKPACK_TABS[0];
+  const all = backpackItems(snapshot);
+  const items = all.filter(item => tab.id === 'all' || item.category === tab.id);
+  const detail = all.find(item => item.id === state.bagItem);
+  const close = (action, label) => `<button type="button" class="bag-close" data-action="${action}" aria-label="${label}"></button>`;
+  const slot=(item,className,showQuantity=true)=>rewardItemSlot({inspectable:false,name:item.name,amount:item.count,showQuantity,artwork:itemArt(item,helpers),qualityRank:itemQuality(item),qualityName:item.qualityName,qualityKnown:item.qualityKnown??true,itemId:item.nativeId??item.id,className},helpers);
+  const cards = items.map(item => `<button type="button" class="bag-item" data-action="bagItem" data-id="${e(item.id)}" aria-haspopup="dialog" aria-label="${e(item.name)}，数量 ${exactCount(item.count)}">${slot(item,'bag-item-art')}<span class="bag-item-name">${e(item.id==='aircraftShards'?'飞机碎片':item.name)}</span></button>`).join('');
+  const multipleTabs=BACKPACK_TABS.length>1;
+  return `<div class="pl-modal-backdrop bag-backdrop" data-action="dismiss">
+    <section class="pl-modal bag-modal" data-psd-popup="primary" data-modal-type="backpack" role="dialog" aria-modal="${!detail}" aria-labelledby="lobby-modal-title" tabindex="-1" ${detail ? 'inert aria-hidden="true"' : ''}>
+      <header class="pl-modal-heading bag-heading"><h2 id="lobby-modal-title">背包</h2>${close('close', '关闭背包')}</header>
+      <div class="pl-modal-content bag-content">
+        <div class="bag-grid" id="backpack-items" ${multipleTabs?`role="tabpanel" aria-labelledby="bag-tab-${tab.id}"`:'role="region" aria-label="道具"'} tabindex="0">${cards || `<p class="bag-empty">${tab.id === 'all' ? '背包里还没有道具' : `暂无${tab.label}`}</p>`}</div>
+        ${multipleTabs?`<nav class="bag-tabs" role="tablist" aria-label="背包分类">${BACKPACK_TABS.map(item => `<button type="button" class="bag-tab psd-tab ${item.id === tab.id ? 'is-selected' : ''}" id="bag-tab-${item.id}" role="tab" aria-selected="${item.id === tab.id}" aria-controls="backpack-items" tabindex="${item.id === tab.id ? 0 : -1}" data-action="bagTab" data-tab="${item.id}">${item.label}</button>`).join('')}</nav>`:''}
+      </div>
+    </section>
+    ${detail ? `<div class="bag-detail-backdrop" data-action="bagDetailDismiss"><section class="bag-detail" data-psd-popup="secondary" role="dialog" aria-modal="true" aria-labelledby="bag-detail-title" aria-describedby="bag-detail-description" tabindex="-1">
+      <h3 id="bag-detail-title" class="bag-detail-title">${e(detail.name)}</h3>
+      <header class="bag-detail-header">${slot(detail,'bag-detail-icon',false)}<div class="bag-detail-info"><p>数量：<strong>${exactCount(detail.count)}</strong></p></div>${close('bagDetailClose', '关闭道具详情')}</header>
+      <div class="bag-detail-body"><p id="bag-detail-description">${e(detail.description)}</p>${snapshot.nativeAcquisition?backpackUseControls(detail,snapshot,state,helpers):''}</div>
+    </section></div>` : ''}
+  </div>`;
+}

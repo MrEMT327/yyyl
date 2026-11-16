@@ -1,0 +1,21 @@
+<section class="demo-hero" aria-label="飞行器外观预览">
+        <div id="demo-viewport"></div>
+        <div class="demo-hero-title"><span class="demo-eyebrow" id="demo-aircraft-code">固定件装配</span><h1><span id="demo-aircraft-name">战机</span><small>槽位试装</small></h1><label class="demo-aircraft-picker">机型<select id="demo-aircraft-select" aria-label="试装机型"></select></label></div>
+        <div class="demo-readout"><strong id="mounted-count">00 <span>/ 09</span></strong><span>挂点占用</span></div>
+        <div id="demo-slot-markers" aria-label="三维挂点"></div>
+        <div class="demo-camera-tools" aria-label="观察视角">
+          <button type="button" data-view="in" aria-label="放大飞行器">+</button><button type="button" data-view="out" aria-label="缩小飞行器">−</button>
+          <button type="button" data-view="top">俯视</button><button type="button" data-view="home">复位</button>
+        </div>
+        <div class="demo-hero-bottom"><span class="demo-gesture">拖动旋转 · 滚轮 / 双指缩放</span><div><button id="toggle-sockets" type="button" aria-pressed="true">显示槽位</button><button id="compare-airframe" type="button" aria-pressed="false">对比裸机</button></div></div>
+        <div id="demo-loading" role="status"><span class="demo-loader"></span><strong>准备战机装配台</strong><span>正在载入机体与模块…</span></div>
+      </section>
+      <section class="demo-equipment" aria-label="槽位与背包">
+        <div class="demo-presets"><span>快速试装</span><div id="demo-presets"></div><button id="clear-loadout" type="button">全部卸下</button></div>
+        <div class="demo-slotbar" id="demo-slotbar" aria-label="选择装配槽位"></div>
+        <div class="demo-inventory-heading"><div class="demo-filters" aria-label="背包分类"><button data-filter="all" aria-pressed="true">全部 <span>15</span></button><button data-filter="weapon" aria-pressed="false">武器 <span>10</span></button><button data-filter="connector" aria-pressed="false">连接器 <span>5</span></button></div><label class="demo-mirror"><input id="mirror-fitting" type="checkbox" checked><span>左右联装</span></label></div>
+        <div id="demo-inventory" class="demo-inventory" aria-label="模块背包"></div>
+        <div class="demo-detail"><div><span id="detail-kicker"></span><strong id="detail-title"></strong><p id="detail-description"></p></div><button id="remove-item" type="button">卸下模块</button></div>
+        <div class="demo-footnote"><span id="inventory-summary">10 款武器 · 5 款连接器</span><span>仅外观试装 · 不参与战斗</span></div>
+      </section>
+      <div id="demo-toast" role="status" aria-live="polite"></div>

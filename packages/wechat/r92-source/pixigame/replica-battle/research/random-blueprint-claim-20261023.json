@@ -1,0 +1,1419 @@
+{
+  "date": "2026-10-23",
+  "scope": "Chapter random blueprint source path and local reward unblock; no fabricated random allocation",
+  "originalConfirmed": {
+    "clientOrder": "Single claimedRewardId cursor, next is claimed+1; server acceptance of arbitrary ID unknown",
+    "chapterCallback": "0x7b22890 displays CommonData.reward+0x28; callback does not locally sample Drop.Rand1",
+    "inventoryCallback": "PropDataModule.HandleCommonData0x770cde4 reads CommonData.items+0x40; RewardDto-to-PropData copies configId/count",
+    "group10010007": "105-109 candidate previews only",
+    "group10010008": "801-811 candidate previews only",
+    "notInventoryItems": "Neither group is an Item_Item / Item_drop / Item_dropLv entry; do not grant group IDs as consumables",
+    "nativeNegativeSearchBoundary": "All executable PT_LOAD direct B/BL calls to GetDrop_drop:3, all UI; indirect calls and future server/hotfix are not excluded"
+  },
+  "unresolved": [
+    "Meaning of remaining Rand1 columns in server sampler",
+    "Sampling algorithm, probabilities, replacement and roll count",
+    "Meaning of outer reward count in final random expansion",
+    "Server receipt for current local account; original game not connected"
+  ],
+  "localCompatibility": {
+    "name": "Fixed rewards first, unissued random groups retained",
+    "notOriginalSplitSettlement": true,
+    "behavior": [
+      "Process original chapter rows in order with the actual stage gate",
+      "Deposit only exact original fixed IDs/counts",
+      "Store exact unresolved group ID and parameter under its reward ID in deferredRandomRewards",
+      "Keep historical lastClaimedId before first unissued group; advance only the explicitly LOCAL fixedRewardCursor",
+      "Show fixed paid and random unissued separately; no claim-complete badge on partial rows",
+      "One durable save for inventory and both ledger fields; expectedRevision and no-duplicate guards",
+      "No invented sampler, replacement item, extra source, or automatic backfill of old claims"
+    ],
+    "stateVersion": 2,
+    "migration": "Version1 lastClaimedId history and coreChapters preserved; absent local cursor defaults to old cursor, absent queue defaults empty; no inventory clawback or replay",
+    "futureResolution": "No public force-claim or arbitrary receipt-injection action. A verified future resolver must handle original queued operands and avoid repaying fixed parts."
+  },
+  "current60ChapterArithmetic": {
+    "rows": 180,
+    "fixedOnlyRows": 155,
+    "mixedRows": 25,
+    "equipmentGroupRows": 21,
+    "researchGroupRows": 4,
+    "configuredFixedGoldTotal": 180000,
+    "note": "One-time amounts, only after original progress gates and local sequential processing. Queue records are NOT known owed blueprint counts or daily rates."
+  },
+  "firstBlockedRow": {
+    "id": 8,
+    "missionId": 3,
+    "wave": 10,
+    "reward": [
+      [
+        10010007,
+        20
+      ],
+      [
+        1,
+        1000
+      ]
+    ],
+    "time": 0,
+    "room": 0
+  },
+  "unknownRows": [
+    {
+      "id": 8,
+      "missionId": 3,
+      "wave": 10,
+      "reward": [
+        [
+          10010007,
+          20
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 11,
+      "missionId": 4,
+      "wave": 10,
+      "reward": [
+        [
+          10010007,
+          30
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 14,
+      "missionId": 5,
+      "wave": 6,
+      "reward": [
+        [
+          10010007,
+          40
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 17,
+      "missionId": 6,
+      "wave": 10,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 20,
+      "missionId": 7,
+      "wave": 10,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 22,
+      "missionId": 8,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 23,
+      "missionId": 8,
+      "wave": 10,
+      "reward": [
+        [
+          10010008,
+          20
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 25,
+      "missionId": 9,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 26,
+      "missionId": 9,
+      "wave": 10,
+      "reward": [
+        [
+          10010008,
+          20
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 28,
+      "missionId": 10,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 29,
+      "missionId": 10,
+      "wave": 10,
+      "reward": [
+        [
+          10010008,
+          20
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 31,
+      "missionId": 11,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 32,
+      "missionId": 11,
+      "wave": 10,
+      "reward": [
+        [
+          10010008,
+          20
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 34,
+      "missionId": 12,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 37,
+      "missionId": 13,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 40,
+      "missionId": 14,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 43,
+      "missionId": 15,
+      "wave": 3,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 46,
+      "missionId": 16,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 49,
+      "missionId": 17,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 52,
+      "missionId": 18,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 55,
+      "missionId": 19,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 58,
+      "missionId": 20,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 61,
+      "missionId": 21,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 64,
+      "missionId": 22,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    },
+    {
+      "id": 67,
+      "missionId": 23,
+      "wave": 5,
+      "reward": [
+        [
+          10010007,
+          50
+        ],
+        [
+          1,
+          1000
+        ]
+      ],
+      "time": 0,
+      "room": 0
+    }
+  ],
+  "rawSourceHashes": {
+    "ChapterReward_MissionReward": "a4271f1eaee18f8a905606d29143dd67ff4d2596f3e17dc6c8f747757dbc6be1",
+    "Item_Item": "d3554cbf7bfa318ad5513da42722b73cf23946ad5dfbaa5a3ae7f82695990ac7",
+    "Drop_drop": "67614cc4aa594b1113c2d05aae39517e848650d0b139ff7698e19122d6db1bdb",
+    "DrawBox_DrawBox": "b8cd46ce17a12910e574cca8cf1e9fc66d973f6da12f3892b3dcfb6bf9b0d502",
+    "DrawBox_DrawBoxConst": "dc91ee4d73d16d2cbc252d547a15faaeded3b1940c68009405abaec0df0d89ec",
+    "DrawBox_DrawBoxRateInfo": "00f6e0113c315e21ffa63b00e771e39914ddd188c26583fb75a578e3577a8e45",
+    "SkillLab_Lab": "b08e98c733178248c3c94b4a686d41827ec14d0cc0554be0616f1ffa4134741a",
+    "Function_Function": "315f07c04e604b10edd9c44bb8b3aa564cd9b5adf700c7f206decdc87a92d5b8"
+  },
+  "evidence": {
+    "random": {
+      "sha256": "cc7353c3f2390ad420ffad1252499950bb47746066482c7a5fccc7e6ac6e7d86",
+      "findings": {
+        "date": "2026-10-23",
+        "scope": "Original random blueprint award semantics for chapter10010007/10010008; read-only static analysis",
+        "evidenceKind": "Analyst Capstone static ARM64 disassembly, not REA instruction output. Parent bound original ELF with REA and confirmed provider_missing. No game/browser/tests/simulation/network executed.",
+        "sourceIdentity": {
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\libil2cpp.so": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\dump.cs": "a516a577e84a8e5e024e20f5af0b48d7b4d97e6363daa3f21ff5921afa7706dd",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\script.json": "8c9df8bca6435d1b9ffb69b841601e4ea5941346a23d4761549770c0c7ceaded",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\source_tables\\Drop_drop.json": "67614cc4aa594b1113c2d05aae39517e848650d0b139ff7698e19122d6db1bdb",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\source_tables\\Item_drop.json": "be4ce8daa85c64df8feb6deb825348ff82ff81a523c0d45727d425263ea84f31",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\source_tables\\Item_dropLv.json": "65683dc4021677a4f94cca691b20a04ed6880eb95493cbe483ddcddd2de11e63",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\source_tables\\Item_Item.json": "d3554cbf7bfa318ad5513da42722b73cf23946ad5dfbaa5a3ae7f82695990ac7",
+          "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\source_tables\\ChapterReward_MissionReward.json": "a4271f1eaee18f8a905606d29143dd67ff4d2596f3e17dc6c8f747757dbc6be1"
+        },
+        "configuredGroups": [
+          {
+            "drop_id": 10010007,
+            "atlasId": 1,
+            "icon": "stg_icon_equip_scroll_random",
+            "quality": 30,
+            "nameID": "DropName_10010007",
+            "describeID": "DropDesc_10010007",
+            "Rand1": [
+              [
+                105,
+                1,
+                1,
+                1
+              ],
+              [
+                106,
+                1,
+                1,
+                1
+              ],
+              [
+                107,
+                1,
+                1,
+                1
+              ],
+              [
+                108,
+                1,
+                1,
+                1
+              ],
+              [
+                109,
+                1,
+                1,
+                1
+              ]
+            ]
+          },
+          {
+            "drop_id": 10010008,
+            "atlasId": 1,
+            "icon": "stg_skillLab_icon_random",
+            "quality": 30,
+            "nameID": "DropName_10010008",
+            "describeID": "DropDesc_10010008",
+            "Rand1": [
+              [
+                801,
+                1,
+                1,
+                1
+              ],
+              [
+                802,
+                1,
+                1,
+                1
+              ],
+              [
+                803,
+                1,
+                1,
+                1
+              ],
+              [
+                804,
+                1,
+                1,
+                1
+              ],
+              [
+                805,
+                1,
+                1,
+                1
+              ],
+              [
+                806,
+                1,
+                1,
+                1
+              ],
+              [
+                807,
+                1,
+                1,
+                1
+              ],
+              [
+                808,
+                1,
+                1,
+                1
+              ],
+              [
+                809,
+                1,
+                1,
+                1
+              ],
+              [
+                810,
+                1,
+                1,
+                1
+              ],
+              [
+                811,
+                1,
+                1,
+                1
+              ]
+            ]
+          }
+        ],
+        "confirmed": [
+          {
+            "claim": "Drop10010007 candidates are equipment blueprints105..109;10010008 candidates are research blueprints801..811. All candidate records are[id,1,1,1].",
+            "evidence": "Exact Drop_drop.json rows; candidate previews, not proof of award sampling."
+          },
+          {
+            "claim": "Neither10010007 nor10010008 is an Item_Item inventory item or an Item_drop/Item_dropLv row. The unrelated legacy Item_drop pool cannot establish their award algorithm.",
+            "evidence": {
+              "Item_ItemMatches": [],
+              "Item_dropMatches": [],
+              "Item_dropLvMatches": []
+            }
+          },
+          {
+            "claim": "Complete executable PT_LOAD aligned A64 direct B/BL scan finds only3calls to GetDrop_drop, all in preview/name/icon UI consumers; no directcalls to get_Rand1, GetDrop_dropModelInstance or GetDrop_dropElements in this scan.",
+            "evidence": {
+              "targetSHA256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+              "xrefs": [
+                {
+                  "at": "0x7c87860",
+                  "target": "0x6868af0",
+                  "targetName": "GetDrop_drop",
+                  "start": "0x7c86f68",
+                  "name": "HotFix.UI_BoxInfoViewModule$$SetDataList",
+                  "offset": "0x8f8"
+                },
+                {
+                  "at": "0x7d08090",
+                  "target": "0x6868af0",
+                  "targetName": "GetDrop_drop",
+                  "start": "0x7d07a0c",
+                  "name": "HotFix.UIExchangeItem$$SetData",
+                  "offset": "0x684"
+                },
+                {
+                  "at": "0x7df7398",
+                  "target": "0x6868af0",
+                  "targetName": "GetDrop_drop",
+                  "start": "0x7df6f04",
+                  "name": "HotFix.DxxTools.UI$$GetItemInfoForInfoView",
+                  "offset": "0x494"
+                }
+              ]
+            },
+            "limits": "Does not cover indirect calls, reflection, hotfix, stripped/inlined alternative lookup paths or original backend. Negative search bounded to direct B/BL refs of4known accessors."
+          },
+          {
+            "claim": "UI_BoxInfoViewModule.SetDataList reads Rand1+0x48 and adds all candidate rows to preview, with allowProbability=false. No RNG or inventory mutation in this branch.",
+            "evidence": [
+              "0x7c87860 GetDrop_drop",
+              "0x7c878a0 ldrx22,[x22,#0x48]",
+              "0x7c878e4..0x7c87958 enumerates all rows",
+              "0x7c87940 movw5,wzr;0x7c87948 AddItemToList@0x7c88440"
+            ]
+          },
+          {
+            "claim": "AddItemToList copies first2columns as itemId/count; when allowProbability=false, probability=0. It does not determine random drop counts or allocate awards.",
+            "evidence": [
+              "0x7c884f8..0x7c88508 checks rowlen and allowProbability",
+              "0x7c885fc movw6,wzr",
+              "0x7c8860c ldpw2,w3,[x21,#0x20]",
+              "0x7c88638 branches to preview row builder0x7c88c4c"
+            ]
+          },
+          {
+            "claim": "DoGetMissionReward sends ClaimMissionRewardRequest to NetworkManager.Send; its callback only forwards typedresponse/CommonData. No local Rand1 draw.",
+            "evidence": [
+              "DoGetMissionReward0x75e1814",
+              "Requestctor0x75e18f8",
+              "NetworkManager.Send0x75e1aa4",
+              "forwardingcallback0x75e2fd8"
+            ]
+          },
+          {
+            "claim": "Successful chapter callback displays actual CommonData.reward_+0x28 rather than re-rolling configured drop groups.",
+            "evidence": [
+              "MissionRewardViewModule.<OnGetReward>b__22_0@0x7b22890",
+              "0x7b22c30 readsCommonData+0x28",
+              "0x7b22fa8 readsCommonData+0x28",
+              "0x7b23014 OpenRewardCommon"
+            ],
+            "metadata": "dump.cs CommonData.reward_ isRepeatedField<RewardDto>+0x28;ClaimMissionRewardResponse is an empty ack; rewards live in CommonData."
+          },
+          {
+            "claim": "General response flow updates canonical inventory from CommonData.items_+0x40, separate from reward display; no Drop/Rand1 expansion in the inspected updater.",
+            "evidence": [
+              "NetworkUtils.HandleResponse_UpdateProps0x75b7dd0->PropDataModule.HandleCommonData0x770cde4",
+              "0x770cf58 readsCommonData.items_+0x40",
+              "0x770cf84 tailcallsUpdateItemData0x770cf8c",
+              "0x770d238 overwrites existingItemDtoCount+0x20;0x770d298 clones newItemDto"
+            ]
+          },
+          {
+            "claim": "RewardDto→PropData converter directly copies returned itemId andcount, no random expansion.",
+            "evidence": [
+              "PropDataExpand.ToPropData(RewardDto)0x7707908",
+              "0x77079a4 readsRewardDto.itemId+0x1c;0x77079d0 writesPropData.id+0x18",
+              "0x7707a08 readsRewardDto.count+0x20;0x7707a1c writesPropData.count+0x1c"
+            ]
+          }
+        ],
+        "unresolved": [
+          "Rand1 columns3/4 actual server interpretation; equal1 values do not establish independent uniform-with-replacement draws.",
+          "Configured reward[10010007,20] count20 could mean numberofrolls,budget,or expansionquantity underbackend; no local consumer proves this.",
+          "Whether random research candidates are filtered by account chapter/unlockedlab; preview listsall11 only, no proof sampler uses same eligibility.",
+          "Whether group quantity splits across types or awards wholequantity to one type; no distribution, floor, rounding, pity or guarantee recovered.",
+          "No captured authoritative reward receipt for the exact random chapter groups. Missing backend/hotfix data cannot be fabricated."
+        ],
+        "implementationBoundary": [
+          "Safe to grant exact known direct ID/count components, retaining unknown group entitlement separately and visibly pending if using an explicit local deferred workflow.",
+          "Such partial/deferred processing is a local offline workflow, not recovered original all-or-nothing server settlement.",
+          "Never mint10010007/10010008 as spendable inventory, silently substituteblueprints, evenly split, or normalize all1columns into server probabilities.",
+          "Preserve pastclaim/inventoryhistory; later confirmed authoritative resolution must only settle pendingcomponents once, not regrant already-deliveredfixed gold."
+        ],
+        "asmFiles": [
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x75b7dd0.asm",
+            "sha256": "a9eb07204791e97ded3f92fb6eaffbfa8027714a2a64f30437d392d03f833f85"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x75e1814.asm",
+            "sha256": "43eb67a6aedb470b7b2b988786d54ca50364fa257692b12a1eddee6ad62ca95f"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x75e2fd8.asm",
+            "sha256": "791dc2716354e593e89509fb638b12754a1669debc6cb0ca15f04c9ab74b354e"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7707788.asm",
+            "sha256": "b1de18e2d021f2e01654c567349f92321c24205a3f998663b0ffe1319091fe20"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7707908.asm",
+            "sha256": "bd7a9ec7166a3ff0ca5b70ab0fad59124f3acb849532822f78f6e2782ff29237"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x770cde4.asm",
+            "sha256": "f5c10ea86c3aa6425ea72f54630b5588e4f25509d95eeec7fcf2697d42cac114"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x770cf8c.asm",
+            "sha256": "0959c62b8d8920a3525dd8a9d3736b03820303c4c5af2333f8895042967fc49a"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x770d6e4.asm",
+            "sha256": "03a022cfb74648becdc25cf577238b89eec3eba2568e91e7994b5deb56476313"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7b22890.asm",
+            "sha256": "8414cc9c8371d42893d61bec5fd2fb5e0eb6732d5c1911107e83facb959be34e"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7c86f68.asm",
+            "sha256": "9c15d2e5ae832be9f91a23a662466189b94a02e1ae6d882f87e7e27664188e23"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7c88440.asm",
+            "sha256": "3e22507e25d1d9ec981dc1d027c2aeb6acda3c9a9c630e91944f7a0d50cdcba1"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7d07a0c.asm",
+            "sha256": "ab799c923cc6e91595248088b8cd81833014de3fcb2cfa25f51df84ac1a0a889"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\.scratch\\native-random-blueprints-20261023\\random\\0x7df6f04.asm",
+            "sha256": "8f2616935413ca87c7d6a99d1cae3199e6e6510030a8870edf9f6621b2b4c05a"
+          }
+        ],
+        "gameExecuted": false,
+        "browserExecuted": false,
+        "testsExecuted": false,
+        "simulationExecuted": false,
+        "networkAccessed": false
+      }
+    },
+    "claimOrder": {
+      "sha256": "c83d6f2207a9378ee96593bd32539637a4da60f426b86e34d08d50a0f6ce4917",
+      "findings": {
+        "date": "2026-10-23",
+        "task": "原版章节波次奖励领取顺序；原始随机图纸回包边界",
+        "evidenceKind": "Extracted C# IL2CPP metadata and analyst Capstone disassembly of original ARM64 bytes. Not REA instruction-provider output; target not executed.",
+        "execution": {
+          "game": false,
+          "browser": false,
+          "tests": false,
+          "simulation": false,
+          "network": false,
+          "projectSourceEdited": false
+        },
+        "sourceIdentity": [
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\libil2cpp.so",
+            "sha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\dump.cs",
+            "sha256": "a516a577e84a8e5e024e20f5af0b48d7b4d97e6363daa3f21ff5921afa7706dd"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\script.json",
+            "sha256": "8c9df8bca6435d1b9ffb69b841601e4ea5941346a23d4761549770c0c7ceaded"
+          },
+          {
+            "path": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\source_tables\\ChapterReward_MissionReward.json",
+            "sha256": "a4271f1eaee18f8a905606d29143dd67ff4d2596f3e17dc6c8f747757dbc6be1"
+          }
+        ],
+        "conclusion": {
+          "clientClaimOrder": "单一claimedRewardId游标；界面始终请求claimed+1（受_maxRewardId截断）。不是独立已领取ID集合。",
+          "serverSkipAcceptance": "未知；未调用原版服务，不声称服务端一定拒绝手工跨ID请求。即使可发送任意RewardId，打包客户端成功处理只把本地claimed加1，不能据此还原跨项领取。",
+          "randomGrantPath": "此领取成功回调未本地随机展开；读取服务器CommonData.reward并展示实际RewardDto。",
+          "notProven": "以上不证明全部游戏掉落都由服务器计算；只限定这个原生章节领取路径。"
+        },
+        "protocol": {
+          "request": {
+            "name": "Proto.Mission.ClaimMissionRewardRequest",
+            "opcode": 10407,
+            "rewardId_": "int +0x18, field1",
+            "mode_": "MissionMode +0x1c, field2",
+            "dumpLines": "72622-72645"
+          },
+          "response": {
+            "name": "Proto.Mission.ClaimMissionRewardResponse",
+            "opcode": 10408,
+            "fields": "除UnknownFieldSet外无奖励字段；CommonData是独立回调参数",
+            "dumpLines": "72763-72778"
+          },
+          "state": {
+            "name": "Proto.Mission.UserMission",
+            "claimedRewardId_": "int +0x20, field2",
+            "claimedStarReward_": "RepeatedField<int> +0x28, field5；仅星级奖励，与波次游标不同",
+            "dumpLines": "74853-74900"
+          },
+          "commonData": {
+            "reward_": "RepeatedField<RewardDto> +0x28, field3",
+            "items_": "RepeatedField<ItemDto> +0x40, field6",
+            "dumpLines": "91750-91769"
+          },
+          "rewardDto": {
+            "type_": "int +0x18",
+            "configId_": "int +0x1c",
+            "count_": "int +0x20",
+            "transId_": "int +0x24",
+            "dumpLines": "90731-90766"
+          }
+        },
+        "nativeProof": [
+          {
+            "method": "HotFix.LoginDataModule.UpdateMissionReward",
+            "address": "0x76b4c54",
+            "proof": [
+              "0x76b4ce0 gets UserMission from this+0x48",
+              "0x76b4d50 ldr w0,[UserMission,+0x20]",
+              "0x76b4d6c add w21,w0,#1",
+              "0x76b4d9c str w21,[UserMission,+0x20]",
+              "0x76b4e10 DispatchNow(CC_MissionRewardUpdate=67)",
+              "0x76b4eb8 SaveClaimedRewardId(current claimed)"
+            ],
+            "scope": "无ID参数，成功后加一而非设置请求目标ID"
+          },
+          {
+            "method": "HotFix.LoginLocalCache.SaveClaimedRewardId",
+            "address": "0x76b4ec0",
+            "proof": [
+              "0x76b4f34 stores incoming claimed ID to cache+0x18",
+              "0x76b4f38 MakeSaveString",
+              "0x76b4f6c PlayerPrefs.SetUserString"
+            ]
+          },
+          {
+            "method": "HotFix.MissionRewardViewModule.MoveNext",
+            "address": "0x7b20bd8",
+            "proof": [
+              "0x7b20d50 gets UserMission.claimedRewardId(+0x20)",
+              "0x7b20d84 adds1",
+              "0x7b20d90 Math.Min(claimed+1,maxRewardId)",
+              "0x7b20d98 stores curUnGetRewardId(this+0x7c)",
+              "0x7b20dd0 Refresh"
+            ]
+          },
+          {
+            "method": "HotFix.MissionRewardViewModule.CanGetReward",
+            "address": "0x7b216d0",
+            "proof": [
+              "0x7b21854 gets UserMission.claimedRewardId",
+              "0x7b21868 reads curUnGetRewardId +0x7c",
+              "0x7b2186c compare;0x7b21870 b.ge false",
+              "0x7b218a0 loads ChapterReward_MissionReward(curUnGetRewardId)",
+              "0x7b21984 compares current missionId with row.missionId; current higher returns true at0x7b2198c",
+              "0x7b21a54 equal mission test; then configured wave, room, time tests",
+              "0x7b21da8/0x7b21dac actual>=required"
+            ]
+          },
+          {
+            "method": "HotFix.MissionRewardViewModule.OnGetReward",
+            "address": "0x7b226e8",
+            "proof": [
+              "0x7b2274c reads curUnGetRewardId(this+0x7c)",
+              "0x7b22770 passes rewardId",
+              "0x7b22778 passes mode0",
+              "0x7b22788 DoGetMissionReward"
+            ]
+          },
+          {
+            "method": "HotFix.NetworkUtils.Mission.DoGetMissionReward",
+            "address": "0x75e1814",
+            "proof": [
+              "0x75e1934 stores rewardId into request+0x18",
+              "0x75e19a0 stores mode into request+0x1c",
+              "0x75e19d8 BuildCommonRequest",
+              "0x75e1aa4 NetWorkManager.Send"
+            ]
+          },
+          {
+            "method": "HotFix.MissionRewardViewModule.<OnGetReward>b__22_0",
+            "address": "0x7b22890",
+            "proof": [
+              "0x7b228ac stores commonData callback arg x4 on stack+0x28",
+              "0x7b229f8 branches out on failure",
+              "0x7b22a70 UpdateMissionReward after success",
+              "0x7b22c2c-0x7b22c30 reads commonData.reward_+0x28",
+              "0x7b22c54 enumerates returned RewardDto",
+              "0x7b22da8 reads returned configId(+0x1c)",
+              "0x7b22e10 reads returned count(+0x20)",
+              "0x7b22fa4-0x7b22fa8 rereads commonData.reward_",
+              "0x7b23014 OpenRewardCommon(returned rewards,MoveNext callback)"
+            ],
+            "scope": "回调同一字段路径上的实际奖品来自CommonData；没有把配置预览组当本地随机发奖"
+          }
+        ],
+        "rawCurrentRandomBlueprintMilestones": [
+          {
+            "id": 8,
+            "missionId": 3,
+            "wave": 10,
+            "reward": [
+              [
+                10010007,
+                20
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 11,
+            "missionId": 4,
+            "wave": 10,
+            "reward": [
+              [
+                10010007,
+                30
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 14,
+            "missionId": 5,
+            "wave": 6,
+            "reward": [
+              [
+                10010007,
+                40
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 17,
+            "missionId": 6,
+            "wave": 10,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 20,
+            "missionId": 7,
+            "wave": 10,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 22,
+            "missionId": 8,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 23,
+            "missionId": 8,
+            "wave": 10,
+            "reward": [
+              [
+                10010008,
+                20
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 25,
+            "missionId": 9,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 26,
+            "missionId": 9,
+            "wave": 10,
+            "reward": [
+              [
+                10010008,
+                20
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 28,
+            "missionId": 10,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 29,
+            "missionId": 10,
+            "wave": 10,
+            "reward": [
+              [
+                10010008,
+                20
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 31,
+            "missionId": 11,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 32,
+            "missionId": 11,
+            "wave": 10,
+            "reward": [
+              [
+                10010008,
+                20
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 34,
+            "missionId": 12,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 37,
+            "missionId": 13,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 40,
+            "missionId": 14,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 43,
+            "missionId": 15,
+            "wave": 3,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 46,
+            "missionId": 16,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 49,
+            "missionId": 17,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 52,
+            "missionId": 18,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 55,
+            "missionId": 19,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 58,
+            "missionId": 20,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 61,
+            "missionId": 21,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 64,
+            "missionId": 22,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 67,
+            "missionId": 23,
+            "wave": 5,
+            "reward": [
+              [
+                10010007,
+                50
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          }
+        ],
+        "projectImplication": {
+          "currentPlusOneGate": "src/replica/native-acquisition.js中的lastClaimedId+1与原版打包UI顺序一致，不能称它是误写的多余限制。",
+          "blockedCause": "本地没有原版CommonData.reward随机展开回包，把未知奖励整档停止，使后续固定奖励无法越过。",
+          "strictNativeResolution": "补充可靠的原版奖励解析或服务器历史实际RewardDto，再按原本顺序提交；不能自造均分或等概率。",
+          "possibleOfflineCompatibility": "若按用户先解决卡住的目标先开放已知固定奖励，必须将其标为本地待核实分账适配：未知随机奖励保留未发/未领取权益，固定已发ID独立记账；绝不伪造原版游标已成功跨过未知项。这是实现建议，不是已证实原版行为。"
+        },
+        "artifactHashes": {
+          "0x75e1814.asm": "43eb67a6aedb470b7b2b988786d54ca50364fa257692b12a1eddee6ad62ca95f",
+          "0x75e2fd8.asm": "791dc2716354e593e89509fb638b12754a1669debc6cb0ca15f04c9ab74b354e",
+          "0x76b4c54.asm": "660dac5deeecf27962cd82ec00e593214a94fe61807a519b30203b7d48ac7189",
+          "0x76b4ec0.asm": "9843d876eb84a8d074d6f6226c39db5048b130c74b5fcfafb68ec2963281eb69",
+          "0x7b20994.asm": "2d7499ef75904f701a10c7d6c47ae750e90ed3d90c3878a30ec87c7045c5b8d8",
+          "0x7b20bd8.asm": "87961342b517aa311599278bfacb6750bb54ce29e63a7ea944a0a35692dd70c9",
+          "0x7b216d0.asm": "3286ed05c26e8351957b379c6ddb49b03f3418155bc142064fe6f4ad0e39eba9",
+          "0x7b226e8.asm": "754a52ff43f65f7708362a69fb6771f357fbd306ebd6ee3bc147095c0137d7e7",
+          "0x7b22890.asm": "8414cc9c8371d42893d61bec5fd2fb5e0eb6732d5c1911107e83facb959be34e"
+        },
+        "readBoundary": "Native functions:UpdateMissionReward,SaveClaimedRewardId,Refresh,MoveNext,CanGetReward,OnGetReward,success callback,network wrapper/callback. Protocol field declarations. No live server and no patching of game source."
+      }
+    }
+  },
+  "development": "All-open flags and development inventory unchanged",
+  "execution": {
+    "game": false,
+    "browser": false,
+    "tests": false,
+    "simulation": false,
+    "originalServerLogin": false
+  }
+}

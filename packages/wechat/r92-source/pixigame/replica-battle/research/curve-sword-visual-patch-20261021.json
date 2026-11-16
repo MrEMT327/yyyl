@@ -1,0 +1,19 @@
+{
+  "path": "kernel/renderer.ts",
+  "kind": "presentation-repair",
+  "reason": "Visible project-owned energy sword artwork for model1000018: source prefab has empty renderers and absent originalEffects; preserve simulation positions, hit shape and damage.",
+  "patches": [
+    {
+      "before": "import Phaser from 'phaser';",
+      "after": "import Phaser from 'phaser';\nimport { curveSwordModelId, createCurveSwordArt, updateCurveSwordArt } from '../curve-sword-art';"
+    },
+    {
+      "before": "  private model(modelId: number, fallbackSize = 1): Phaser.GameObjects.Container {",
+      "after": "  private model(modelId: number, fallbackSize = 1): Phaser.GameObjects.Container {\n    if (modelId === curveSwordModelId) return createCurveSwordArt(this);"
+    },
+    {
+      "before": "      const pos = this.screen(bullet.x, bullet.z);",
+      "after": "      const pos = this.screen(bullet.x, bullet.z);\n      if (bullet.modelId === curveSwordModelId) updateCurveSwordArt(view, bullet, this.px);"
+    }
+  ]
+}

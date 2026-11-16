@@ -1,0 +1,319 @@
+{
+  "source": "s_map0017_2 / layer 0 / renderer world bounds",
+  "projectionScale": 1.21875,
+  "alphaThreshold": 128,
+  "assets": {
+    "crescent": {
+      "reference": "land2_2_combine_1",
+      "nativeWidth": 32.62,
+      "opaqueBounds": [
+        64,
+        71,
+        471,
+        471
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.74816176
+    },
+    "cape": {
+      "reference": "land1_3_combine_1",
+      "nativeWidth": 21.22,
+      "opaqueBounds": [
+        42,
+        89,
+        478,
+        460
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.80147059
+    },
+    "plateau": {
+      "reference": "land1_1_combine1",
+      "nativeWidth": 23.29,
+      "opaqueBounds": [
+        31,
+        85,
+        485,
+        466
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.83455882
+    },
+    "diamond": {
+      "reference": "map17_land_3",
+      "nativeWidth": 22.8,
+      "opaqueBounds": [
+        63,
+        69,
+        514,
+        480
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.82904412
+    },
+    "hook": {
+      "reference": "land1_2_combine1",
+      "nativeWidth": 22.95,
+      "opaqueBounds": [
+        57,
+        65,
+        494,
+        485
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.80330882
+    },
+    "headland": {
+      "reference": "land2_1_combine1",
+      "nativeWidth": 21.49,
+      "opaqueBounds": [
+        47,
+        52,
+        497,
+        468
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.82720588
+    },
+    "triangle": {
+      "reference": "land1_2_combine3",
+      "nativeWidth": 3.79,
+      "opaqueBounds": [
+        36,
+        143,
+        497,
+        422
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.8474264705882353
+    },
+    "atoll": {
+      "reference": "land2_2_combine_2",
+      "nativeWidth": 6.69,
+      "opaqueBounds": [
+        55,
+        119,
+        488,
+        441
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.7959558823529411
+    },
+    "ridge": {
+      "reference": "land1_3_combine_2",
+      "nativeWidth": 8.5,
+      "opaqueBounds": [
+        38,
+        149,
+        507,
+        399
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.8621323529411765
+    },
+    "bay": {
+      "reference": "land1_2_combine2",
+      "nativeWidth": 7.32,
+      "opaqueBounds": [
+        45,
+        96,
+        499,
+        441
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.8345588235294118
+    },
+    "saddle": {
+      "reference": "land1_1_combine2",
+      "nativeWidth": 6.12,
+      "opaqueBounds": [
+        43,
+        90,
+        493,
+        438
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.8272058823529411
+    },
+    "shoal": {
+      "reference": "land2_1_combine2",
+      "nativeWidth": 5.72,
+      "opaqueBounds": [
+        34,
+        109,
+        510,
+        432
+      ],
+      "imageWidth": 544,
+      "visibleFraction": 0.875
+    },
+    "radar": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 1.22,
+      "opaqueBounds": [
+        76,
+        99,
+        303,
+        352
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.60857909
+    },
+    "hangar": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 2.45,
+      "opaqueBounds": [
+        40,
+        84,
+        335,
+        369
+      ],
+      "imageWidth": 374,
+      "visibleFraction": 0.78877005
+    },
+    "fuel": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 1.54,
+      "opaqueBounds": [
+        70,
+        114,
+        305,
+        356
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.63002681
+    },
+    "turret": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 0.87,
+      "opaqueBounds": [
+        77,
+        63,
+        312,
+        353
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.63002681
+    },
+    "crane": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 1.54,
+      "opaqueBounds": [
+        53,
+        76,
+        321,
+        369
+      ],
+      "imageWidth": 374,
+      "visibleFraction": 0.71657754
+    },
+    "containers": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 1.2,
+      "opaqueBounds": [
+        59,
+        106,
+        300,
+        334
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.6461126
+    },
+    "helipad": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 3.44,
+      "opaqueBounds": [
+        70,
+        81,
+        324,
+        334
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.68096515
+    },
+    "comms": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 1.24,
+      "opaqueBounds": [
+        84,
+        50,
+        286,
+        328
+      ],
+      "imageWidth": 374,
+      "visibleFraction": 0.54010695
+    },
+    "generator": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 1.76,
+      "opaqueBounds": [
+        38,
+        106,
+        307,
+        310
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.72117962
+    },
+    "lighthouse": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 0.77,
+      "opaqueBounds": [
+        107,
+        47,
+        285,
+        329
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.4772118
+    },
+    "pier": {
+      "reference": "original shore-connected service pontoon",
+      "nativeWidth": 2.0,
+      "opaqueBounds": [
+        157,
+        102,
+        359,
+        402
+      ],
+      "imageWidth": 512,
+      "visibleFraction": 0.39453125
+    },
+    "bridge": {
+      "reference": "main-layer-decoration-width",
+      "nativeWidth": 3.44,
+      "opaqueBounds": [
+        23,
+        130,
+        315,
+        270
+      ],
+      "imageWidth": 373,
+      "visibleFraction": 0.78284182
+    },
+    "buoy": {
+      "reference": "main-layer-decoration-width-class (original maritime adaptation)",
+      "nativeWidth": 0.48,
+      "opaqueBounds": [
+        42,
+        51,
+        149,
+        194
+      ],
+      "imageWidth": 192,
+      "visibleFraction": 0.55729167
+    },
+    "cutter": {
+      "reference": "original background harbor service craft",
+      "nativeWidth": 1.0,
+      "opaqueBounds": [
+        162,
+        180,
+        377,
+        342
+      ],
+      "imageWidth": 512,
+      "visibleFraction": 0.419921875
+    }
+  }
+}
