@@ -1,0 +1,339 @@
+{
+  "sourceRoot": "C:/Users/lvan/Documents/ChatGPT/模板/apk-values-20261014/source_tables",
+  "hashes": {
+    "Skill_Main": "dadfcd014d036bf3f0e0613a6d6240f3a0dd8669732c461ab2be6e6c2b6fa8be",
+    "SkillGroup_SurvivorGroup": "c1fc4553cf21f60efec193c27986f84e77cc58f411125c523e664607766c8dd9",
+    "SkillGroup_InitSurvivorGroup": "b5799a3141533801060fa77092aa4c20e3a54bc38f4de8c0a53fd10cc02d422e",
+    "SkillGroup_BranchSurvivorGroup": "ec55ae3bae42dfea54043138d4ef7219be4ed515faffac820b8b342c94c133f4",
+    "SkillGroup_UpgradeSurvivorGroup": "65a92b911ab527ae9d3a8ebf7a1f29ffbfc8d5b80176028859a49ce43b16de57",
+    "SkillGroup_UpgradeSkillGroup": "8c78082f7fda5eed1e9bdc3f5ccbbeb6d65bf496c86f1f06c70f441eccb233ab",
+    "Skill_Trigger": "67d581bfb14e6e14b62626f5b9b279ae9baaa30cb57370809a485e5f0d9a3be4"
+  },
+  "mode": "A",
+  "rawSkills": 357,
+  "selectionSkills": 819,
+  "triggers": 90,
+  "weapons": [
+    {
+      "id": 10000101,
+      "name": "速射机炮",
+      "stages": 9,
+      "branchCards": 13,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10000201,
+      "name": "酸液枪",
+      "stages": 9,
+      "branchCards": 11,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10000301,
+      "name": "电弧枪",
+      "stages": 9,
+      "branchCards": 12,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10000401,
+      "name": "磁暴枪",
+      "stages": 9,
+      "branchCards": 12,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10000601,
+      "name": "冰刃弹",
+      "stages": 9,
+      "branchCards": 12,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10000701,
+      "name": "爆燃导弹",
+      "stages": 9,
+      "branchCards": 12,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10000901,
+      "name": "酸性黑洞",
+      "stages": 9,
+      "branchCards": 13,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10001101,
+      "name": "能量光剑",
+      "stages": 9,
+      "branchCards": 15,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10001501,
+      "name": "高能激光",
+      "stages": 9,
+      "branchCards": 13,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10001601,
+      "name": "冰冻锯盘",
+      "stages": 9,
+      "branchCards": 12,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "id": 10001701,
+      "name": "灼热射线",
+      "stages": 9,
+      "branchCards": 12,
+      "blocked": [],
+      "modeA": [
+        0,
+        2,
+        1,
+        2,
+        2,
+        1,
+        2,
+        2,
+        1
+      ],
+      "modeB": [
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  ],
+  "differences": [],
+  "boundary": "Static captured-table comparison; not live AB/hotfix or visual equivalence."
+}

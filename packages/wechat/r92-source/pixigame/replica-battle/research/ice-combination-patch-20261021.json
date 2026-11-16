@@ -1,0 +1,11 @@
+{
+  "path": "kernel/simulation.ts",
+  "kind": "gameplay-repair",
+  "reason": "Ice blade action169 original OnHit/CalcAngle audit 2026-10-21; restore owner fission modifiers and native child flags. See research/ice-combination-audit-20261021.md.",
+  "patches": [
+    {
+      "before": "      case 169: {\n        if (this.random() >= Number(args.Prob)) return;\n        const origin = event.point || target || bullet || this.player;\n        for (let i = 0; i < Number(args.Count); i++) {\n          const child = fire(args.WeaponID, origin, (bullet?.angle || 0) + (i - (Number(args.Count) - 1) / 2) * Number(args.PerAngle) * Math.PI / 180);\n          this.addProjectileTraits(child, Number(args.BulletTrait || 0));\n        }\n        return;\n      }",
+      "after": "      case 169: {\n        // TriggerActionBulletFission.OnExecute requires both the hit bullet and\n        // target. OnHit@6b1e100..2f8 applies owner probability/count bonuses.\n        if (!bullet || !target) return;\n        const attrs = this.weaponAttributes(familyId);\n        const probability = Math.floor(Number(args.Prob) * (1 + (attrs['ImproveBulletFission%'] || 0)) * 65536) / 65536;\n        if (Math.floor(this.random() * 65536) / 65536 > probability) return;\n        const trait = Number(args.BulletTrait || 0);\n        const count = Number(args.Count) + Math.floor(attrs.ImproveBulletFissionCount || 0)\n          + (trait & 16 ? Math.floor(attrs.BulletTraitSplitCount || 0) : 0);\n        const origin = event.point || target;\n        for (let i = 0; i < count; i++) {\n          // CalcAngle uses configured Count, NOT the count after bonuses.\n          // CreateWeaponAndFire@6b1e49c supplies 0x6c8 for these children.\n          const child = fire(args.WeaponID, origin, bullet.angle + (i - (Number(args.Count) - 1) / 2) * Number(args.PerAngle) * Math.PI / 180, undefined, 0x6c8);\n          this.addProjectileTraits(child, trait);\n        }\n        return;\n      }"
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+[
+  {
+    "path": "kernel/renderer.ts",
+    "kind": "presentation-repair",
+    "reason": "Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json.",
+    "patches": [
+      {
+        "before": "import { curveSwordModelId, createCurveSwordArt, updateCurveSwordArt } from '../curve-sword-art';",
+        "after": "// Sword body and swings use the exported original particle assets."
+      },
+      {
+        "before": "    if (modelId === curveSwordModelId) return createCurveSwordArt(this);",
+        "after": "    // Particle-only models are rendered through originalEffect below."
+      },
+      {
+        "before": "      if (bullet.modelId === curveSwordModelId) updateCurveSwordArt(view, bullet, this.px);",
+        "after": "      // No hand-drawn sword geometry: retain the native projectile pose."
+      },
+      {
+        "before": "      if (!bullet.modelId || !(bullet.scale > 0)) continue;",
+        "after": "      if (!bullet.modelId || !(bullet.scale > 0) || bullet.visualHidden) continue;"
+      },
+      {
+        "before": "  private originalEffect(prefix: string, modelId: number | string, age: number, seed: number, x: number, z: number, live: Set<string>, scale = 1, angle = 0, motion = {}) {",
+        "after": "  private originalEffect(prefix: string, modelId: number | string, age: number, seed: number, x: number, z: number, live: Set<string>, scale = 1, angle = 0, motion: { simulationSpeed?: number; mirrorX?: boolean; [key: string]: any } = {}) {"
+      },
+      {
+        "before": "    const sprites = sampleOriginalEffect(this.content.assets.originalEffects, modelId, age, seed, motion);",
+        "after": "    const sprites = sampleOriginalEffect(this.content.assets.originalEffects, modelId, age, seed, motion);\n    // Native clockwise=false rotates the effect target by PI about Z: flip local X in the XZ plane.\n    if (motion.mirrorX) for (const particle of sprites) {\n      particle.x = -particle.x;\n      particle.rotation = -particle.rotation;\n      if (particle.mesh) {\n        for (const vertex of particle.mesh.vertices) vertex.x = -vertex.x;\n        for (let i = 0; i < particle.mesh.indices.length; i += 3)\n          [particle.mesh.indices[i + 1], particle.mesh.indices[i + 2]] = [particle.mesh.indices[i + 2], particle.mesh.indices[i + 1]];\n      }\n    }"
+      },
+      {
+        "before": "      view.setTexture(particle.key).setCrop().setPosition(pos.x, pos.y).setOrigin(particle.originX, particle.originY)",
+        "after": "      view.setTexture(particle.key).setCrop().setPosition(pos.x, pos.y).setOrigin(particle.originX, particle.originY).setFlipX(Boolean(motion.mirrorX))"
+      },
+      {
+        "before": "      this.originalEffect(`fx:${fx.uid}`, fx.modelId, fx.age, fx.uid, fx.x, fx.z, live, fx.originalScale ?? 1, fx.angle ?? 0);",
+        "after": "      this.originalEffect(`fx:${fx.uid}`, fx.modelId, fx.age, fx.uid, fx.x, fx.z, live, fx.originalScale ?? 1, fx.angle ?? 0, { simulationSpeed: fx.originalSpeed, mirrorX: fx.originalMirrorX });"
+      },
+      {
+        "before": "      if (particle.mesh) {\n        for (const vertex of particle.mesh.vertices) vertex.x = -vertex.x;",
+        "after": "      if (particle.mesh) {\n        particle.mesh.indices = [...particle.mesh.indices];\n        for (const vertex of particle.mesh.vertices) vertex.x = -vertex.x;"
+      }
+    ]
+  },
+  {
+    "path": "kernel/content.ts",
+    "kind": "presentation-repair",
+    "reason": "Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json.",
+    "patches": [
+      {
+        "before": "  assets.originalEffects = originalEffects;",
+        "after": "  const swordEffects = await read('sword-original-effects');\n  for (const key of ['effects', 'textures', 'materials', 'meshes'])\n    originalEffects[key] = { ...originalEffects[key], ...swordEffects[key] };\n  assets.originalEffects = originalEffects;"
+      }
+    ]
+  },
+  {
+    "path": "kernel/native-curve-sword.ts",
+    "kind": "presentation-repair",
+    "reason": "Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json.",
+    "patches": [
+      {
+        "before": "  bossEliteReverseRate: number;",
+        "after": "  bossEliteReverseRate: number;\n  localAngularSpeedPercent?: number;"
+      },
+      {
+        "before": "  onConsume?(uid: number, targetUid: number): void;",
+        "after": "  onConsume?(uid: number, targetUid: number): void;\n  /** Original PlayCurveSwordEffect presentation message; no damage or RNG. */\n  onSwing?(swing: { uid: number; position: NativeWeaponPoint; direction: NativeWeaponPoint; clockwise: boolean; radius: number; simulationSpeed: number; circular: boolean }): void;"
+      },
+      {
+        "before": "  reverses: number; reversed: boolean; wait: number | null;",
+        "after": "  reverses: number; reversed: boolean; wait: number | null; circular: boolean;"
+      },
+      {
+        "before": "    reverseLengthPercent: attribute('CurveSwordReverseLength%'),",
+        "after": "    reverseLengthPercent: attribute('CurveSwordReverseLength%'),\n    localAngularSpeedPercent: attribute('CurveSwordAngularSpeed%'),"
+      },
+      {
+        "before": "        this.host.active(sword.uid, true);",
+        "after": "        this.host.active(sword.uid, true);\n        this.presentSwing(sword);"
+      },
+      {
+        "before": "      halfSent: false, reverses: reverse ? 1 : 0, reversed: false, wait: null,",
+        "after": "      halfSent: false, reverses: reverse ? 1 : 0, reversed: false, wait: null, circular: Boolean(circular),"
+      },
+      {
+        "before": "    this.host.onConsume?.(uid, target.uid);",
+        "after": "    this.host.onConsume?.(uid, target.uid);\n    this.presentSwing(sword);"
+      },
+      {
+        "before": "  private configureShape(sword: MovingSword): void {",
+        "after": "  private presentSwing(sword: MovingSword): void {\n    // SemiCircleMov2.onStarted/tryReverse: midpoint for an arc, center for a circle.\n    const position = add(sword.center, sword.targetLine,\n      sword.totalAngle >= 360 ? 0 : sword.radius * Math.cos(sword.totalAngle / 2 * DEG));\n    const denominator = 770 * (1 + (this.host.settings().localAngularSpeedPercent || 0));\n    this.host.onSwing?.({ uid: sword.uid, position, direction: sword.targetLine,\n      clockwise: sword.clockwise, radius: sword.radius, circular: sword.circular,\n      simulationSpeed: denominator > 0 ? (0xb5c2 / 65536) * sword.speed / denominator : 0 });\n  }\n\n  private configureShape(sword: MovingSword): void {"
+      }
+    ]
+  },
+  {
+    "path": "kernel/model.ts",
+    "kind": "presentation-repair",
+    "reason": "Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json.",
+    "patches": [
+      {
+        "before": "  visualAngle?: number;",
+        "after": "  visualAngle?: number;\n  visualHidden?: boolean;"
+      },
+      {
+        "before": "export interface Effect extends Point { uid: number; kind: 'hit' | 'explosion' | 'muzzle' | 'text' | 'level' | 'heal'; age: number; duration: number; size: number; value?: string; modelId?: number; critical?: boolean; originalScale?: number; angle?: number; ownerUid?: number; followPlayer?: boolean; followOffset?: Point }",
+        "after": "export interface Effect extends Point { uid: number; kind: 'hit' | 'explosion' | 'muzzle' | 'text' | 'level' | 'heal'; age: number; duration: number; size: number; value?: string; modelId?: number; critical?: boolean; originalScale?: number; originalSpeed?: number; originalMirrorX?: boolean; angle?: number; ownerUid?: number; followPlayer?: boolean; followOffset?: Point }"
+      }
+    ]
+  },
+  {
+    "path": "kernel/simulation.ts",
+    "kind": "presentation-repair",
+    "reason": "Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json.",
+    "patches": [
+      {
+        "before": "      stampCircularSlash: (uid, stamp) => { const b = this.projectiles.find(b => b.uid === uid); if (b) this.applyBulletAttributes(b, { ...stamp.attributes }); },",
+        "after": "      stampCircularSlash: (uid, stamp) => { const b = this.projectiles.find(b => b.uid === uid); if (b) this.applyBulletAttributes(b, { ...stamp.attributes }); },\n      onSwing: swing => {\n        const bullet = this.projectiles.find(b => b.uid === swing.uid);\n        if (bullet) bullet.visualHidden = true; // Native DispatchScaleEvent(0,true), collision remains unchanged.\n        const duration = swing.circular ? 1 : .5;\n        const fx = this.effect('muzzle', swing.position.x, swing.position.z, duration, 1, undefined, swing.circular ? 220017 : 220005);\n        fx.duration = duration;\n        fx.originalScale = swing.radius * (0xb5c2 / 65536);\n        fx.originalSpeed = swing.simulationSpeed;\n        fx.originalMirrorX = !swing.clockwise;\n        fx.angle = Math.atan2(swing.direction.x, swing.direction.z);\n      },"
+      }
+    ]
+  },
+  {
+    "path": "kernel/original-effects.ts",
+    "kind": "presentation-repair",
+    "reason": "Original sword body and slash particle replay from APK 1000018/220005/220017, native onStarted/createEffect/tryReverse and CurveSwordEffect constants; remove hand-drawn substitute. See research/sword-original-evidence-20261021.json.",
+    "patches": [
+      {
+        "before": "  velocityX?: number; velocityZ?: number; projection?: 'xz' | 'xy';",
+        "after": "  velocityX?: number; velocityZ?: number; projection?: 'xz' | 'xy';\n  simulationSpeed?: number;"
+      },
+      {
+        "before": "    const time=age*(l.simulationSpeed||1)-scalar(l.delay),duration=Math.max(.00001,l.duration);if(time<0)continue;",
+        "after": "    const time=age*(motion.simulationSpeed ?? l.simulationSpeed ?? 1)-scalar(l.delay),duration=Math.max(.00001,l.duration);if(time<0)continue;"
+      }
+    ]
+  }
+]

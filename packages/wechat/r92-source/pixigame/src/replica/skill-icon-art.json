@@ -1,0 +1,249 @@
+{
+  "version": 4,
+  "assets": [
+    {
+      "key": "10000101",
+      "name": "速射机炮",
+      "category": "attack",
+      "file": "10000101.webp"
+    },
+    {
+      "key": "10000201",
+      "name": "酸液枪",
+      "category": "attack",
+      "file": "10000201.webp"
+    },
+    {
+      "key": "10000301",
+      "name": "分叉闪电炮",
+      "category": "attack",
+      "file": "10000301.webp"
+    },
+    {
+      "key": "10000401",
+      "name": "电磁散射器",
+      "category": "attack",
+      "file": "10000401.webp"
+    },
+    {
+      "key": "10000601",
+      "name": "冰刃弹",
+      "category": "attack",
+      "file": "10000601.webp"
+    },
+    {
+      "key": "10000701",
+      "name": "集束火箭舱",
+      "category": "attack",
+      "file": "10000701.webp"
+    },
+    {
+      "key": "10000901",
+      "name": "酸性黑洞",
+      "category": "attack",
+      "file": "10000901.webp"
+    },
+    {
+      "key": "10001101",
+      "name": "能量光剑",
+      "category": "attack",
+      "file": "10001101.webp"
+    },
+    {
+      "key": "10001501",
+      "name": "脉冲激光炮",
+      "category": "attack",
+      "file": "10001501.webp"
+    },
+    {
+      "key": "10001601",
+      "name": "冰冻锯盘",
+      "category": "attack",
+      "file": "10001601.webp"
+    },
+    {
+      "key": "10001701",
+      "name": "灼热射线",
+      "category": "attack",
+      "file": "10001701.webp"
+    },
+    {
+      "key": "11000101",
+      "name": "生命模块",
+      "category": "passive",
+      "file": "11000101.webp"
+    },
+    {
+      "key": "11000201",
+      "name": "攻击模块",
+      "category": "passive",
+      "file": "11000201.webp"
+    },
+    {
+      "key": "11000301",
+      "name": "增幅模块",
+      "category": "passive",
+      "file": "11000301.webp"
+    },
+    {
+      "key": "11000601",
+      "name": "冷却模块",
+      "category": "passive",
+      "file": "11000601.webp"
+    },
+    {
+      "key": "11000307",
+      "name": "暴击模块",
+      "category": "passive",
+      "file": "11000307.webp"
+    },
+    {
+      "key": "11000801",
+      "name": "能量护盾",
+      "category": "passive",
+      "file": "11000801.webp"
+    },
+    {
+      "key": "11001101",
+      "name": "缩小！",
+      "category": "passive",
+      "file": "11001101.webp"
+    },
+    {
+      "key": "11001401",
+      "name": "维修强化",
+      "category": "passive",
+      "file": "11001401.webp"
+    },
+    {
+      "key": "11001601",
+      "name": "狂暴空投",
+      "category": "passive",
+      "file": "11001601.webp"
+    },
+    {
+      "key": "11001701",
+      "name": "导弹空投",
+      "category": "passive",
+      "file": "11001701.webp"
+    },
+    {
+      "key": "11002001",
+      "name": "震荡波空投",
+      "category": "passive",
+      "file": "11002001.webp"
+    },
+    {
+      "key": "11002201",
+      "name": "维修空投",
+      "category": "passive",
+      "file": "11002201.webp"
+    },
+    {
+      "key": "11002501",
+      "name": "复活芯片",
+      "category": "passive",
+      "file": "11002501.webp"
+    },
+    {
+      "key": "10000001",
+      "name": "即时回血",
+      "category": "instant",
+      "file": "10000001.webp"
+    },
+    {
+      "key": "10000002",
+      "name": "金币奖励",
+      "category": "instant",
+      "file": "10000002.webp"
+    },
+    {
+      "key": "weapon-20102",
+      "name": "狂热射击",
+      "category": "variant",
+      "weaponId": 20102,
+      "file": "weapon-20102.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20202",
+      "name": "导弹增载",
+      "category": "variant",
+      "weaponId": 20202,
+      "file": "weapon-20202.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20302",
+      "name": "激光齐射",
+      "category": "variant",
+      "weaponId": 20302,
+      "file": "weapon-20302.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20402",
+      "name": "泡泡散射",
+      "category": "variant",
+      "weaponId": 20402,
+      "file": "weapon-20402.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20502",
+      "name": "冰刺迸裂",
+      "category": "variant",
+      "weaponId": 20502,
+      "file": "weapon-20502.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20602",
+      "name": "雷霆乐章",
+      "category": "variant",
+      "weaponId": 20602,
+      "file": "weapon-20602.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20702",
+      "name": "路径灼烧",
+      "category": "variant",
+      "weaponId": 20702,
+      "file": "weapon-20702.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20802",
+      "name": "环形剑气",
+      "category": "variant",
+      "weaponId": 20802,
+      "file": "weapon-20802.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-20902",
+      "name": "冰棘环射",
+      "category": "variant",
+      "weaponId": 20902,
+      "file": "weapon-20902.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-21002",
+      "name": "节拍雷鸣",
+      "category": "variant",
+      "weaponId": 21002,
+      "file": "weapon-21002.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    },
+    {
+      "key": "weapon-21102",
+      "name": "吞噬脉冲",
+      "category": "variant",
+      "weaponId": 21102,
+      "file": "weapon-21102.webp",
+      "pack": "weapon-variant-skill-icons-v5"
+    }
+  ]
+}

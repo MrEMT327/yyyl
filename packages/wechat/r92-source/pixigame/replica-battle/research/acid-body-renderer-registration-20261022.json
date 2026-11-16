@@ -1,0 +1,31 @@
+{
+  "path": "kernel/renderer.ts",
+  "reason": "Reviewed registration 2026-10-22: existing basic player acid-body texture adaptation. Four exact renderer edits pass acidBody presentation state and replace only base corrosion sprite samples; retain native particles, projectile pose, lifetime and gameplay. See research/acid-body-renderer-registration-20261022.json.",
+  "review": {
+    "capturedOriginalSha256": "cd7b2b255b776abc2418c4252dcee540da6f7384632ac13bfd3adcf897c2ce92",
+    "registeredRendererSha256": "aadd05cacb329fbc978d3856e6c63eb6a9eab5bd4440621bfb3ea16a1e460b77",
+    "currentRendererSha256": "00ff27dc88b0a2acbb0b0c98002b1fa9e9a9662ccc8bb947287ffa0cbd1da324",
+    "helperSha256": "2b8d5f35d38bf2acecc1ed220e9bae41da7c5aee37a1fdc3a1f829165d72ed8c",
+    "sourceModified": false,
+    "patchCount": 4,
+    "fullReverseProof": true
+  },
+  "patches": [
+    {
+      "before": "import { preloadAcidWeaponVisual, drawAcidBodyVisual, drawAcidHitVisual } from '../acid-weapon-visual.js';\n",
+      "after": "import { preloadAcidWeaponVisual, drawAcidBodyVisual, drawAcidHitVisual, isBasicAcidBody, replaceAcidBodySamples, ACID_BODY_TEXTURE } from '../acid-weapon-visual.js';\n"
+    },
+    {
+      "before": "      if (!view) { view = (isCrescentBody(bullet) && this.textures.exists(CRESCENT_TEXTURE)) || (isBasicMissileBody(bullet) && this.textures.exists(MISSILE_BODY_TEXTURE)) ? this.add.container(0, 0) : this.model(bullet.modelId, Math.max(bullet.radiusX, bullet.radiusZ) * 2 / Math.max(.01, bullet.scale)); view.setDepth(bullet.owner === 'player' ? 29 : 31); this.objects.set(key, view); }\n",
+      "after": "      if (!view) { view = (isCrescentBody(bullet) && this.textures.exists(CRESCENT_TEXTURE)) || (isBasicMissileBody(bullet) && this.textures.exists(MISSILE_BODY_TEXTURE)) || (isBasicAcidBody(bullet) && this.textures.exists(ACID_BODY_TEXTURE)) ? this.add.container(0, 0) : this.model(bullet.modelId, Math.max(bullet.radiusX, bullet.radiusZ) * 2 / Math.max(.01, bullet.scale)); view.setDepth(bullet.owner === 'player' ? 29 : 31); this.objects.set(key, view); }\n"
+    },
+    {
+      "before": "        this.originalEffect(key, bullet.modelId, bullet.age, bullet.uid, bullet.x, bullet.z, live, bullet.scale, bullet.angle, { crescentBody: isCrescentBody(bullet), missileBody: isBasicMissileBody(bullet), velocityX: (bullet.vx * co - bullet.vz * si) / bullet.scale, velocityZ: (bullet.vx * si + bullet.vz * co) / bullet.scale });\n",
+      "after": "        this.originalEffect(key, bullet.modelId, bullet.age, bullet.uid, bullet.x, bullet.z, live, bullet.scale, bullet.angle, { crescentBody: isCrescentBody(bullet), missileBody: isBasicMissileBody(bullet), acidBody: isBasicAcidBody(bullet), velocityX: (bullet.vx * co - bullet.vz * si) / bullet.scale, velocityZ: (bullet.vx * si + bullet.vz * co) / bullet.scale });\n"
+    },
+    {
+      "before": "    const sprites = replaceMissileBodySamples(replaceCrescentBodySamples(sampleOriginalEffect(this.content.assets.originalEffects, modelId, age, seed, motion), age, Boolean(motion.crescentBody), this.textures.exists(CRESCENT_TEXTURE)), age, Boolean(motion.missileBody), this.textures.exists(MISSILE_BODY_TEXTURE));\n",
+      "after": "    const bodySamples = replaceMissileBodySamples(replaceCrescentBodySamples(sampleOriginalEffect(this.content.assets.originalEffects, modelId, age, seed, motion), age, Boolean(motion.crescentBody), this.textures.exists(CRESCENT_TEXTURE)), age, Boolean(motion.missileBody), this.textures.exists(MISSILE_BODY_TEXTURE));\n    const sprites = replaceAcidBodySamples(bodySamples, age, Boolean(motion.acidBody), this.textures.exists(ACID_BODY_TEXTURE));\n"
+    }
+  ]
+}

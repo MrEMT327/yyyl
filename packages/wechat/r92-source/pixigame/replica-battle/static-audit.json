@@ -1,0 +1,192 @@
+{
+  "kind": "static-file-and-correspondence-comparison",
+  "engine": "danke-replica-v1",
+  "sourceRevision": "b23e8c8a43c00b585ea4cae385feeaf84d917dfe3831b4fc947d2044090bce9a",
+  "sourceCapturedAt": "2026-10-19T08:35:19.956Z",
+  "sourceFiles": 103,
+  "byteIdenticalSourceFiles": 96,
+  "presentationOverrides": [
+    "kernel/loadout.ts",
+    "kernel/renderer.ts",
+    "kernel/spine-player.ts",
+    "kernel/ui.ts"
+  ],
+  "gameplayRepairs": [
+    {
+      "path": "kernel/simulation.ts",
+      "reason": "Source-backed gameplay repair: AICommonBoss self rotation, native addresses 0x690af48..0x690b0b0. Not a presentation override. Native death-call 320068/320069 and AIMoveForward. Allow source-confirmed AI320013 entities 320063/320075 FireCD=4 through existing native cease-fire scheduling; retain all WeaponAttr and other nonzero cooldown guards."
+    },
+    {
+      "path": "kernel/content-capabilities.ts",
+      "reason": "Match source-confirmed 320063/320075 FireCD=4 admission to existing native cease-fire scheduling; other cooldown variants remain blocked. Admit narrow death-call branch; numeric SpecialTrait remains blocked."
+    },
+    {
+      "path": "kernel/native-map-out-walls.ts",
+      "reason": "Admit chapters28/30 only after confirming identical S_1_1 waterfall physics profile to chapter9; no wall geometry or collision algorithm changes."
+    }
+  ],
+  "reversibleIntegrationPatches": 7,
+  "publicFiles": 4423,
+  "mirroredTables": 15,
+  "weaponSkins": {
+    "families": 11,
+    "originalStages": 99,
+    "minorBranches": 35,
+    "breakthroughBranches": 102,
+    "cloudBaseModels": 5,
+    "replicaBaseFallbacks": 6,
+    "composedForms": 0,
+    "branchArtwork": "original replica sprites; no dedicated cloud branch assets",
+    "originalIconFiles": 11
+  },
+  "dependencies": {
+    "phaser": "3.90.0",
+    "typescript": "5.9.3",
+    "vite": "^7.0.0"
+  },
+  "loadoutEquipment": {
+    "mappedIds": 275,
+    "cloudRecords": 275,
+    "calculationSource": "unchanged kernel/loadout-state.ts"
+  },
+  "nativeProgression": {
+    "planes": 9,
+    "pilots": 12,
+    "guns": 22,
+    "labs": 11
+  },
+  "connectedChapters": [
+    {
+      "id": 1,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 2,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 3,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 4,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 5,
+      "waves": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 6,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 7,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 8,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 9,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 10,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 11,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 12,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 13,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 14,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 15,
+      "waves": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 16,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 17,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 18,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 19,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 20,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 21,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 23,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 24,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 25,
+      "waves": 10,
+      "terrain": "cloud"
+    },
+    {
+      "id": 26,
+      "waves": 15,
+      "terrain": "cloud"
+    },
+    {
+      "id": 27,
+      "waves": 15,
+      "terrain": "cloud"
+    }
+  ],
+  "violations": [],
+  "ok": true
+}

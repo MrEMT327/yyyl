@@ -1,0 +1,441 @@
+{
+  "date": "2026-10-20",
+  "method": "Static source/data correspondence and declaration inventory only; no tests or application execution.",
+  "numericTables": {
+    "rows": 275,
+    "comparedFields": [
+      "NextID",
+      "equipType",
+      "rank",
+      "seq",
+      "school",
+      "quality",
+      "baseAttribute",
+      "AttributeOnLevelUp",
+      "FeatureJson"
+    ],
+    "originalTable": "apk-values-20261014/source_tables/Equipment_Equip.json",
+    "mismatches": 0,
+    "cloudProjectionNote": "The lobby reference omits school; the battle catalog retains the original school field. All fields actually carried in the lobby projection were also compared."
+  },
+  "series": [
+    {
+      "source": "远袭",
+      "cloud": "航卫"
+    },
+    {
+      "source": "先锋",
+      "cloud": "猎隼"
+    },
+    {
+      "source": "超载",
+      "cloud": "雷霆"
+    },
+    {
+      "source": "极速",
+      "cloud": "星盾"
+    },
+    {
+      "source": "王牌",
+      "cloud": "圣环",
+      "rank": 1
+    }
+  ],
+  "defaults": {
+    "attack": "100 + 20 + 20 = 140",
+    "hp": "600 + 120 + 120 + 120 = 960",
+    "note": "Five common Lv.1 parts with base main weapon; totals, not single-weapon damage."
+  },
+  "completed": [
+    "All 275 equipment IDs use original base/growth/quality feature data.",
+    "Existing cloud gear-details traits now include native Skill features as well as Attr features, following the actual NextID quality chain.",
+    "Lobby attribute calculator initializes the same declared handlers as the actual battle Simulation, avoiding false unsupported reports before any battle exists.",
+    "A prebuild generated-data check rejects drift in equipment descriptions and runtime capability declarations."
+  ],
+  "equipmentSkillCoverage": {
+    "total": 80,
+    "declaredSupported": 64,
+    "blocked": 16,
+    "meaning": "Declared handler/dependency coverage only; not runtime or numerical-fidelity verification."
+  },
+  "pending": [
+    {
+      "id": 210212,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "attribute",
+          "value": "TimeShieldExtraDuration",
+          "reference": "skill:210212"
+        }
+      ],
+      "description": "所有限时护盾持续时间延长2秒。",
+      "items": [
+        "先锋作战头盔"
+      ]
+    },
+    {
+      "id": 210311,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "39",
+          "reference": "trigger:2103111"
+        },
+        {
+          "kind": "action",
+          "value": "40",
+          "reference": "trigger:2103112"
+        },
+        {
+          "kind": "mod",
+          "value": "ExplosionUponDeathMod",
+          "reference": "weapon:400043"
+        }
+      ],
+      "description": "每隔40秒，获得一个导弹空投",
+      "items": [
+        "超载动力头盔"
+      ]
+    },
+    {
+      "id": 210312,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "39",
+          "reference": "trigger:210312"
+        },
+        {
+          "kind": "action",
+          "value": "40",
+          "reference": "trigger:2103112"
+        },
+        {
+          "kind": "mod",
+          "value": "ExplosionUponDeathMod",
+          "reference": "weapon:400044"
+        }
+      ],
+      "description": "导弹的爆炸可以清除屏幕内的子弹",
+      "items": [
+        "超载动力头盔"
+      ]
+    },
+    {
+      "id": 211111,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "attribute",
+          "value": "ScalePercent%",
+          "reference": "buff:214018"
+        }
+      ],
+      "description": "每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒",
+      "items": [
+        "王牌飞行头盔"
+      ]
+    },
+    {
+      "id": 211112,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "attribute",
+          "value": "ScalePercent%",
+          "reference": "buff:214018"
+        }
+      ],
+      "description": "每次受伤空投冷却时间缩短10秒",
+      "items": [
+        "王牌飞行头盔"
+      ]
+    },
+    {
+      "id": 211113,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "attribute",
+          "value": "ScalePercent%",
+          "reference": "buff:214020"
+        },
+        {
+          "kind": "event",
+          "value": "68",
+          "reference": "trigger:211113"
+        }
+      ],
+      "description": "每隔30秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续8秒。结束释放全屏震荡波",
+      "items": [
+        "王牌飞行头盔"
+      ]
+    },
+    {
+      "id": 220411,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "197",
+          "reference": "trigger:220411"
+        }
+      ],
+      "description": "武器有15%的概率重置冷却",
+      "items": [
+        "极速充能手套"
+      ]
+    },
+    {
+      "id": 220412,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "197",
+          "reference": "trigger:220412"
+        }
+      ],
+      "description": "武器有25%的概率重置冷却",
+      "items": [
+        "极速充能手套"
+      ]
+    },
+    {
+      "id": 220421,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "mod",
+          "value": "WeaponCDReset2ExAttackMod",
+          "reference": "skill:220421"
+        }
+      ],
+      "description": "重置冷却后，本轮攻击伤害+50%",
+      "items": [
+        "极速充能手套"
+      ]
+    },
+    {
+      "id": 230221,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "196",
+          "reference": "trigger:230221"
+        }
+      ],
+      "description": "生命低于50%时，来自近处敌人的伤害降低25%",
+      "items": [
+        "先锋作战服"
+      ]
+    },
+    {
+      "id": 240411,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "199",
+          "reference": "trigger:240411"
+        },
+        {
+          "kind": "event",
+          "value": "58",
+          "reference": "trigger:240411"
+        }
+      ],
+      "description": "等级最高的武器，冷却时间降低20%",
+      "items": [
+        "极速充能项链"
+      ]
+    },
+    {
+      "id": 240412,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "199",
+          "reference": "trigger:240412"
+        },
+        {
+          "kind": "event",
+          "value": "58",
+          "reference": "trigger:240412"
+        }
+      ],
+      "description": "等级最高的武器，冷却时间降低30%",
+      "items": [
+        "极速充能项链"
+      ]
+    },
+    {
+      "id": 250311,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "209",
+          "reference": "trigger:250311"
+        }
+      ],
+      "description": "每击杀50个怪物，生命上限+5%，上限25%",
+      "items": [
+        "超载动力靴"
+      ]
+    },
+    {
+      "id": 250312,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "209",
+          "reference": "trigger:250312"
+        }
+      ],
+      "description": "每击杀35个怪物，生命上限+5%，上限40%",
+      "items": [
+        "超载动力靴"
+      ]
+    },
+    {
+      "id": 251111,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "191",
+          "reference": "trigger:251111"
+        }
+      ],
+      "description": "首次致死伤害时，立刻恢复20%生命，并获得2秒无敌",
+      "items": [
+        "王牌飞行靴"
+      ]
+    },
+    {
+      "id": 251112,
+      "name": "",
+      "categories": [
+        "equipment"
+      ],
+      "dynamic": true,
+      "admitted": false,
+      "issues": [
+        {
+          "kind": "action",
+          "value": "191",
+          "reference": "trigger:251112"
+        }
+      ],
+      "description": "首次致死伤害时，立刻恢复40%生命，释放清除子弹的震荡波，并获得4秒无敌",
+      "items": [
+        "王牌飞行靴"
+      ]
+    }
+  ],
+  "nativeEvidence": {
+    "binarySha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+    "file": "integration-stage/equipment-native-evidence.txt",
+    "limitation": "REA native function analysis unavailable for ARM64 ELF on the configured Windows providers; offline Capstone disassembly was collected instead. Exact callback/timer/lifecycle contracts remain incomplete for the 16 blocked effects; no handler was admitted by label alone."
+  },
+  "remote": {
+    "previous": "4527faacc5bf3f0e2f3f527c50ae4969a0de2dfe",
+    "latest": "1628f6ed5d9fc659d99e68ffb2ffe479732d0a56",
+    "fetched": true,
+    "merged": false,
+    "commits": [
+      {
+        "id": "5a8e436f",
+        "date": "2026-10-20 11:01:27 +0800",
+        "subject": "feat: 更新游戏内立绘资源"
+      },
+      {
+        "id": "1628f6ed",
+        "date": "2026-10-20 11:03:03 +0800",
+        "subject": "chore: 清理立绘制作与预览说明"
+      }
+    ]
+  }
+}

@@ -1,0 +1,499 @@
+{
+  "schema": 1,
+  "generator": "tools/optimize-ui-images.py",
+  "entries": {
+    "equipment-comic-v1/hangar.png": {
+      "file": "equipment-comic-v1/hangar.webp",
+      "sourceBytes": 1744295,
+      "bytes": 173164,
+      "sourceSize": [
+        1377,
+        1142
+      ],
+      "size": [
+        1377,
+        1142
+      ],
+      "lossless": false,
+      "sourceSha256": "608e4457ea8a18492aa857e98ff91b35de81858a1808397578efc3d158e5f754",
+      "sha256": "c092995974d10a5efdf40dbf1fd7dbdc3d07eac670d3c8a215d061a63fec82e6"
+    },
+    "pilot-06-v09c/portrait.png": {
+      "file": "pilot-06-v09c/portrait.webp",
+      "sourceBytes": 749122,
+      "bytes": 118078,
+      "sourceSize": [
+        1024,
+        1024
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "7d70a6a1be55ee3d6a77dac70bed8e0cf1dc2aef368ff6ded12801035d3c1743",
+      "sha256": "7a9c6d8edcd3f942a9c557fb446d32a6849f217a7c5ca7bb092b4f05ea46ccb9"
+    },
+    "project-draw-stage-v1/receiver.png": {
+      "file": "project-draw-stage-v1/receiver.webp",
+      "sourceBytes": 1071321,
+      "bytes": 100278,
+      "sourceSize": [
+        768,
+        1152
+      ],
+      "size": [
+        768,
+        1152
+      ],
+      "lossless": false,
+      "sourceSha256": "7c9609866eeff063c86ef28e2c8d1cf0bfba802ccfd08eab04fc2ec683fca933",
+      "sha256": "df30c5f94f0b0f3f8331f7f04206f7907014beca662f3a3cf4f637e42f574fc0"
+    },
+    "project-fleet-stage-v2/platform.png": {
+      "file": "project-fleet-stage-v2/platform.webp",
+      "sourceBytes": 690668,
+      "bytes": 72320,
+      "sourceSize": [
+        1024,
+        420
+      ],
+      "size": [
+        1024,
+        420
+      ],
+      "lossless": false,
+      "sourceSha256": "803db3993bd2f58f190a86c5b56510c441878566689f262333f6d63edf307f0e",
+      "sha256": "941b79849e077a77353aa184c5ada24747be43180ad6aedf712331f516b00675"
+    },
+    "project-patrol-v5/airway-soft.png": {
+      "file": "project-patrol-v5/airway-soft.webp",
+      "sourceBytes": 508746,
+      "bytes": 19480,
+      "sourceSize": [
+        1200,
+        411
+      ],
+      "size": [
+        1200,
+        411
+      ],
+      "lossless": false,
+      "sourceSha256": "6b29a81e10ac8c5c466193c6ab559b26c8fa2d74bda2f8560854281538dca3ba",
+      "sha256": "b63efb5ec8a6893d4c072d5d6fec430eac10f204f64ae154becc4d66737de60c"
+    },
+    "project-resource-icons-v2/coins.png": {
+      "file": "project-resource-icons-v2/coins.webp",
+      "sourceBytes": 309849,
+      "bytes": 43490,
+      "sourceSize": [
+        463,
+        512
+      ],
+      "size": [
+        463,
+        512
+      ],
+      "lossless": false,
+      "sourceSha256": "e3b97ef6c7b7fd1c3c39a16f4e984f042d669da3a469bbcee154f209e1a3405b",
+      "sha256": "a9eb9efa2e347c47ef37d9d8011d1465b06a29b347ec22ccfde77b65952a5548"
+    },
+    "project-resource-icons-v2/credits-stack.png": {
+      "file": "project-resource-icons-v2/credits-stack.webp",
+      "sourceBytes": 282673,
+      "bytes": 43674,
+      "sourceSize": [
+        512,
+        410
+      ],
+      "size": [
+        512,
+        410
+      ],
+      "lossless": false,
+      "sourceSha256": "43b51847456256df32c1b63bb5364f300dade73e50e282a45f0ce56cde0f055e",
+      "sha256": "c580f59b5b1298a7e47e520fa2ad44e77204ffd94034c5f7b9b949279e5be17a"
+    },
+    "project-supply-v1/supply-bay.png": {
+      "file": "project-supply-v1/supply-bay.webp",
+      "sourceBytes": 1997365,
+      "bytes": 173766,
+      "sourceSize": [
+        1706,
+        922
+      ],
+      "size": [
+        1536,
+        830
+      ],
+      "lossless": false,
+      "sourceSha256": "f6df61ab5e8f06c01bdf64cc0cceb188eb74b154bdae72ed0fd631c8ab7b2221",
+      "sha256": "8e89edc1fbcf10ec4a4effb94afa42419c22f27b63c2b0192000fe0e0456f87d"
+    },
+    "psd-equipment-v1/pilot-06-crew-portrait.png": {
+      "file": "psd-equipment-v1/pilot-06-crew-portrait.webp",
+      "sourceBytes": 2020541,
+      "bytes": 1057658,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "lossless": true,
+      "sourceSha256": "82e8fe52c3764bac0a8948c2b0accfb3169347b75508435c8006ec96b721d889",
+      "sha256": "2a2421539df871d8e2417f3ea553b5e4f2093f3cb974c55ed91793a33a14b113"
+    },
+    "psd-main-v1/main-background.png": {
+      "file": "psd-main-v1/main-background.webp",
+      "sourceBytes": 1676938,
+      "bytes": 926762,
+      "sourceSize": [
+        750,
+        1624
+      ],
+      "size": [
+        750,
+        1624
+      ],
+      "lossless": true,
+      "sourceSha256": "51bda8d472d22ea35e7cbd4ac1c5e71d83155511dd7184d5ade75ff1dc3d776f",
+      "sha256": "f73dc1cc733cccaada56db1907367f16e8785469cec6bc7c760d89ff90d2e9ea"
+    },
+    "psd-main-v1/main-foreground-current-live-wallet.png": {
+      "file": "psd-main-v1/main-foreground-current-live-wallet.webp",
+      "sourceBytes": 374717,
+      "bytes": 231924,
+      "sourceSize": [
+        750,
+        1624
+      ],
+      "size": [
+        750,
+        1624
+      ],
+      "lossless": true,
+      "sourceSha256": "160c956aca731eb4ea58b5d261a4724018063cf7a95b691bb7c79b7cbdf221d0",
+      "sha256": "62766134f3710a99b569322671a8ad6b05c901b56317e58fa9f0a892972dc02c"
+    },
+    "psd-popup-v1/primary.png": {
+      "file": "psd-popup-v1/primary.webp",
+      "sourceBytes": 161112,
+      "bytes": 126242,
+      "sourceSize": [
+        567,
+        714
+      ],
+      "size": [
+        567,
+        714
+      ],
+      "lossless": true,
+      "sourceSha256": "8d860ccd1e1b67dc9c34ba257a6c08cc68624bf23cec058756a4bbe8a8fa73f5",
+      "sha256": "de4005dd3a3588b9d9e702617e1a503bb63d6435ee88af59774b532cde2a77a3"
+    },
+    "recruit-comic-v1/hangar.png": {
+      "file": "recruit-comic-v1/hangar.webp",
+      "sourceBytes": 1894917,
+      "bytes": 208582,
+      "sourceSize": [
+        1083,
+        1453
+      ],
+      "size": [
+        1083,
+        1453
+      ],
+      "lossless": false,
+      "sourceSha256": "429c9d648aab144364beb921ca8a9bf6ec253357deb9b684d5d860a433485ef2",
+      "sha256": "f86700ecf089655482b29f62b80eeeda8ec198d54067036779bef8cd796a9742"
+    },
+    "research-comic-v1/card-frame.png": {
+      "file": "research-comic-v1/card-frame.webp",
+      "sourceBytes": 920193,
+      "bytes": 23962,
+      "sourceSize": [
+        1136,
+        1385
+      ],
+      "size": [
+        1136,
+        1385
+      ],
+      "lossless": false,
+      "sourceSha256": "3d71b822fe2586078c66664c7a2b33d44148065dc1b3a2f6250f3e680c7d4778",
+      "sha256": "20f00693933ced10b0622293121bc215755d15cad94276d0ba09cb44c3be3a08"
+    },
+    "weapon-drones-v1/drone-parts-v1.png": {
+      "file": "weapon-drones-v1/drone-parts-v1.webp",
+      "sourceBytes": 782879,
+      "bytes": 130122,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "edb1ec40598e169a1bc8158b5b23621f49dd1c78f7097080ad33f989d8ed3475",
+      "sha256": "b2088826d09e02eeeeff936f574f67e51c0c9892cce64f3c315d8f464ef70cbe"
+    },
+    "weapon-drones-v1/mother-parts-v1.png": {
+      "file": "weapon-drones-v1/mother-parts-v1.webp",
+      "sourceBytes": 1251494,
+      "bytes": 189436,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "45cb02314d63a900ac539d6a279efb51b9420fadbcf1bec5b8dc4760a807c081",
+      "sha256": "6888a192a1eb05dbd8c3b42b3f6e762c62be7424dfa960618db5a71ffb504081"
+    },
+    "white-gold-knight-v11/master.png": {
+      "file": "white-gold-knight-v11/master.webp",
+      "sourceBytes": 1588394,
+      "bytes": 314956,
+      "sourceSize": [
+        1118,
+        1407
+      ],
+      "size": [
+        1118,
+        1407
+      ],
+      "lossless": false,
+      "sourceSha256": "bcf32b7193a057b5ab8ce131d0ac3ee84c66c0e6aa0cfb92d5ce64296f456ade",
+      "sha256": "c418813d825a29ba9df9f05f3c9b435c37e10178364ee8b54e98c90cf0238aa3"
+    },
+    "peripheral-v1/foreground-coast.webp": {
+      "file": "peripheral-v1/foreground-coast.webp",
+      "sourceBytes": 947076,
+      "bytes": 196572,
+      "sourceSize": [
+        1024,
+        1536
+      ],
+      "size": [
+        1024,
+        1536
+      ],
+      "lossless": false,
+      "sourceSha256": "e3b283333c8e5fc04da3afebe9462c590c43d8fda75399e387d0c7df971d5f7a",
+      "sha256": "1372127ec6aa0097bf8dd269010f4e62819ba616671776c8d096ae936fca1778",
+      "originalPngSha256": "b6714078e1c7ecae30ea88d7130770368b1adb4b0f374c1224e0829fb9b197a5"
+    },
+    "project-original-environments-v1/armory-bay-v1.webp": {
+      "file": "project-original-environments-v1/armory-bay-v1.webp",
+      "sourceBytes": 1397838,
+      "bytes": 147486,
+      "sourceSize": [
+        1214,
+        1295
+      ],
+      "size": [
+        1214,
+        1295
+      ],
+      "lossless": false,
+      "sourceSha256": "6f7c352395cd527e62234b24401eb52687334c4fb75af717f8259b2b4ff97310",
+      "sha256": "8ff50a3b021bf1e3daff9c35ddcfc40388a092752952adaf20572bf9ca0ccf03",
+      "originalPngSha256": "c5102480af6505cbec31bfb490ada21f7d080fa6d589d436c5aa5cc19beac24f"
+    },
+    "project-original-environments-v1/launch-hangar-v1.webp": {
+      "file": "project-original-environments-v1/launch-hangar-v1.webp",
+      "sourceBytes": 1538934,
+      "bytes": 209610,
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "cdb07ac6c843bf80ea76e30254ae571daa653cdd776f4d07cf365a4f17ffc3d6",
+      "sha256": "eb7baa22c5f698e263dade175e8590800407d5493f84fba950225fee656a5413",
+      "originalPngSha256": "6d6f7ad8958f87af3812675a857df96f598d2c6553f4bb0e57375321dedc8493"
+    },
+    "project-original-environments-v1/logistics-bay-v1.webp": {
+      "file": "project-original-environments-v1/logistics-bay-v1.webp",
+      "sourceBytes": 1464038,
+      "bytes": 203434,
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "63a1d86d4d20591fd131b74ffaba8206a33e7f7fc2d17b88abf5a20d6afd9869",
+      "sha256": "cae247085d58051c980489432bc2d8999b9b7e716939eae4c09c0acb6194e908",
+      "originalPngSha256": "90454a14104d9bfd4a395ecb2fd41b34b79efc8a3043a6d52c09da4eb30b9991"
+    },
+    "project-original-environments-v1/maintenance-bay-v1.webp": {
+      "file": "project-original-environments-v1/maintenance-bay-v1.webp",
+      "sourceBytes": 1514056,
+      "bytes": 218796,
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "size": [
+        1536,
+        1024
+      ],
+      "lossless": false,
+      "sourceSha256": "9c7bc6ce881617b6498ccd8348f461051fc59b17c39cf08e3b080abf2ddab4df",
+      "sha256": "77a1f8fc8b11e224afb0c5703f37b7e809a0ce60b847756f1fd6690125706222",
+      "originalPngSha256": "31fc848858afc08f691e6f6d82e950a2a7fcee8e8b9e6a59a4054707645f7645"
+    },
+    "project-original-environments-v1/patrol-airway-v1.webp": {
+      "file": "project-original-environments-v1/patrol-airway-v1.webp",
+      "sourceBytes": 1402436,
+      "bytes": 124092,
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "size": [
+        1536,
+        864
+      ],
+      "lossless": false,
+      "sourceSha256": "da921ddd00b1e38d981d25c8c72f53b6d37186193dd03ddbd154b81069e3d0ba",
+      "sha256": "b2acac1c01adb2935621ac9490caa613a41517ff9a883c58209df6b1824a8be0",
+      "originalPngSha256": "5471b58b08d148671a3266d42d0cc95b2db79b8ba98c8fafb0d433e310b5b08b"
+    },
+    "project-original-environments-v1/pilot-ready-room-v1.webp": {
+      "file": "project-original-environments-v1/pilot-ready-room-v1.webp",
+      "sourceBytes": 1418770,
+      "bytes": 142674,
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "size": [
+        1086,
+        1448
+      ],
+      "lossless": false,
+      "sourceSha256": "34e3abb9faaeaf37e05067963a9aff36e187d5a007bf3fd6166f732cf2d690a9",
+      "sha256": "7772cb8211408e72c2098ce390e1d1f29f7d948c803f4f09cc01e8ebb902fd8d",
+      "originalPngSha256": "bee8be4821c16280fabef2d9486b37e8726797a6231906e14d068b6f0976f2b7"
+    },
+    "project-original-environments-v1/research-lab-v1.webp": {
+      "file": "project-original-environments-v1/research-lab-v1.webp",
+      "sourceBytes": 1306702,
+      "bytes": 109156,
+      "sourceSize": [
+        1086,
+        1448
+      ],
+      "size": [
+        1086,
+        1448
+      ],
+      "lossless": false,
+      "sourceSha256": "5cf250d934e82b18ccdf9107a256cb9339fef9906c8fd50864dac71550a73730",
+      "sha256": "a188d5e18ee470818483cd96be7ec98ce9842f771bf3fa46ddbf3a3081e4aba8",
+      "originalPngSha256": "85a5a269646fd43a357a20353bbbce4a9578fe1a1b353e2b5a1e94f5db92295f"
+    },
+    "shop-comic-v1/daily-supply.webp": {
+      "file": "shop-comic-v1/daily-supply.webp",
+      "sourceBytes": 1413680,
+      "bytes": 150066,
+      "sourceSize": [
+        2048,
+        768
+      ],
+      "size": [
+        1536,
+        576
+      ],
+      "lossless": false,
+      "sourceSha256": "0e1f6b693bb983fb885452c31c1e34be56fc3eecba6ad5cdba4fb16a3d812e14",
+      "sha256": "1b65090704c4b0f5e0bb2338ea4a4c448dd0670e6a4474dea3b22ef1fb0d7894",
+      "originalPngSha256": "bede93c67ddec8c697074ee2ee7c5aff2c7a6067f9255b47ad6ed272c0d89d61"
+    },
+    "shop-comic-v1/diamond-supply.webp": {
+      "file": "shop-comic-v1/diamond-supply.webp",
+      "sourceBytes": 1704050,
+      "bytes": 282462,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "04c36f9dda36b780d84d7701fe7ca7e1a74d8cd4f7ccdfdbed1814e4928f6141",
+      "sha256": "c9b03538b11e139aa3f0e6b8a7d3954477ba94cd37674134b148bcefeb39576b",
+      "originalPngSha256": "389b3521fb8033ef00557c84d6cfb4491e1f6d3bb0b808081c606c5667bd58b7"
+    },
+    "shop-comic-v1/hero-header-v2.webp": {
+      "file": "shop-comic-v1/hero-header-v2.webp",
+      "sourceBytes": 1999190,
+      "bytes": 336844,
+      "sourceSize": [
+        1701,
+        924
+      ],
+      "size": [
+        1536,
+        834
+      ],
+      "lossless": false,
+      "sourceSha256": "8e61e42f0613512bd7e66043c1c03d27e344c1f6ab7a431ead0787625cf4a28f",
+      "sha256": "9d0ac107fcb7a39110bb0ca5a22a24b3f514a044ad885cd58ee3ae93bf3ac6c9",
+      "originalPngSha256": "7fcb76b3e3db487efec21886570fbbcef0f884c1445ce506c9b24b40d0251100"
+    },
+    "shop-comic-v1/hero-header-v3-clean.webp": {
+      "file": "shop-comic-v1/hero-header-v3-clean.webp",
+      "sourceBytes": 1710298,
+      "bytes": 274328,
+      "sourceSize": [
+        1702,
+        924
+      ],
+      "size": [
+        1536,
+        834
+      ],
+      "lossless": false,
+      "sourceSha256": "96dde8aef47b59f052d32fdc033533dc5165bd5a151f81ba1e955885989e2312",
+      "sha256": "5f0773fa217832f77806b5f6eeaaf24844dc95ca4a64a94c183b30cb12a99331",
+      "originalPngSha256": "1b4a5619a79bd9a0a1244dbd6952edf9b956b65b70797a206c5119fafc89a829"
+    },
+    "shop-comic-v1/weapon-supply.webp": {
+      "file": "shop-comic-v1/weapon-supply.webp",
+      "sourceBytes": 1594226,
+      "bytes": 259942,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1254,
+        1254
+      ],
+      "lossless": false,
+      "sourceSha256": "a3c6349fe01462cef29667fc81984b76ddaaf4d281acaeaac9b9d57b4b818cc7",
+      "sha256": "d7db98e3f4e1e8f1b5ee22ecf732b5f8ac9da2c2c440269ddaa55ca77becd471",
+      "originalPngSha256": "14d62b8336b462eb40baef42097d24ab3b0299d9fa4242238f0071545e58d069"
+    }
+  }
+}

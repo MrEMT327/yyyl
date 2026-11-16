@@ -1,0 +1,65 @@
+{
+  "version": "0.1.0",
+  "status": "specification-not-runtime",
+  "coordinateSpace": {
+    "width": 600,
+    "height": 1300,
+    "fit": "contain",
+    "preserveGameplayCoordinates": true
+  },
+  "palette": {
+    "navy": "#152C39",
+    "cream": "#F5E7C9",
+    "teal": "#235965",
+    "sea": "#204C59",
+    "vermilion": "#C74736",
+    "brass": "#C8A56A",
+    "friendly": "#BCF5FF",
+    "hostile": "#FF765B",
+    "heal": "#83C5A0",
+    "muted": "#B5C3C7"
+  },
+  "hud": {
+    "topBand": [
+      0,
+      0,
+      600,
+      120
+    ],
+    "bottomBand": [
+      0,
+      1180,
+      600,
+      120
+    ],
+    "note": "Display guide only; does not redefine movement bounds or collision areas."
+  },
+  "typography": {
+    "bodyLogicalPx": 28,
+    "labelLogicalPx": 24,
+    "titleLogicalPx": 40,
+    "minimumCriticalCssPx": 14
+  },
+  "touch": {
+    "minimumCssPx": 44
+  },
+  "layers": [
+    "background",
+    "landmarks",
+    "shadows",
+    "aircraft",
+    "friendly-projectiles",
+    "effects-low",
+    "hostile-projectiles",
+    "telegraphs",
+    "hit-marker",
+    "hud",
+    "modal"
+  ],
+  "budgets": {
+    "maxAtlasEdge": 2048,
+    "maxLiveRgbaTextureMiB": 64,
+    "initialCompressedArtMiB": 5,
+    "note": "Initial targets; measure on actual hardware in phase 14."
+  }
+}

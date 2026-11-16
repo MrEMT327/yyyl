@@ -1,0 +1,16 @@
+{
+  "clips": {
+    "Born": {
+      "duration": 1.5
+    },
+    "Death": {
+      "duration": 1.8333333730697632
+    },
+    "Enter": {
+      "duration": 1
+    },
+    "Idle": {
+      "duration": 1
+    }
+  }
+}

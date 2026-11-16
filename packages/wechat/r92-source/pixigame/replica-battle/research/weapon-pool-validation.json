@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-20",
+  "method": "Static inspection and TypeScript compilation only; no gameplay or tests executed.",
+  "types": "passed",
+  "uiArtCheck": "passed",
+  "economySourceCheck": "passed",
+  "weaponPreviewSourceCheck": "passed",
+  "equipmentSourceCheck": "passed",
+  "prebuild": "passed after concurrent source-manifest update",
+  "snapshotViolations": [],
+  "build": "passed; 74 generated files copied to local dist with previous files backed up",
+  "buildOutput": "C:/Users/lvan/Documents/ChatGPT/模板/integration-stage/settlement-build-1792490883252",
+  "previewUpdated": true,
+  "scope": [
+    "kernel/skill-choice.ts",
+    "kernel/simulation.ts",
+    "source-manifest.json"
+  ],
+  "note": "The first snapshot check encountered concurrent renderer/simulation edits. Their manifest subsequently updated; the full prebuild then passed. Other edits were preserved. The build checked source hashes again before copying output.",
+  "fileHashes": {
+    "kernel/skill-choice.ts": "63bb1fd1180b2ceee3363d296f525609e85280f5b203ad458396844f5f8154c7",
+    "kernel/simulation.ts": "678ae3b9bf271a104d7442f378539a7ac8b60bcaeef4bc9be539665c9ab1b615",
+    "source-manifest.json": "1196f346406939bd9f18dc47c72444e33fca03dcb17a1ff0dc81441e70868fc9"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "path": "kernel/weapon-skill-runtime.ts",
+  "kind": "gameplay-repair",
+  "reason": "All-weapon upgrade audit 2026-10-21: accept the exact shipped Skill_Main 10400602 redundant closing brace without changing numeric fields; see research/all-weapon-upgrade-audit-20261021.md. Route local hero-targeted sword upgrades per getSkillMasters 0x6e759fc..6e75a0c; inherited attributes retain original scope.",
+  "patches": [
+    {
+      "before": "  const text = String(raw).trim();\n  try { return JSON.parse(text); }",
+      "after": "  const text = String(raw).trim();\n  // APK Skill_Main 10400602 (ice blade pierce) contains one extra closing\n  // brace. Match only this captured payload; retain its explicit zero damage\n  // reduction and reject unrelated malformed parameters instead of hiding them.\n  if (text === '{\"ThroughCount\":2,\"AttackPercent\":-0,\"ThroughProbability\":1}}')\n    return JSON.parse(text.slice(0, -1));\n  try { return JSON.parse(text); }"
+    },
+    {
+      "before": "    if (row.SkillType !== 2 && !(external.has(id) && nativeSkillTargetsPlayer(row))) continue;",
+      "after": "    // getSkillMasters@6e759fc..6e75a0c targets the hero for an empty target\n    // list. Local type-3 upgrades 10101101/10101102 use this route too;\n    // they are not restricted to prebattle/external skills.\n    if (row.SkillType !== 2 && !((external.has(id) || row.SkillType === 3) && nativeSkillTargetsPlayer(row))) continue;"
+    },
+    {
+      "before": "    return row?.SkillType === 2 || external.has(id) && nativeSkillTargetsPlayer(row);",
+      "after": "    return row?.SkillType === 2 || !!row && (external.has(id) || row.SkillType === 3) && nativeSkillTargetsPlayer(row);"
+    }
+  ]
+}

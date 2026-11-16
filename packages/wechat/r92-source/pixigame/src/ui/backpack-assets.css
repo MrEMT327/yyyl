@@ -1,0 +1,29 @@
+/* Project-owned item and tab art. Geometry is defined by backpack-reference.css. */
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item {
+  display:grid;grid-template-rows:auto 30px;align-content:start;gap:5px;aspect-ratio:auto;
+  padding:0;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-art,
+#gui-casual-lobby .bag-detail[data-psd-popup] .bag-detail-icon {
+  position:relative;isolation:isolate;display:grid;place-items:center;aspect-ratio:1;
+  width:100%;height:auto;padding:7px;border:0;border-radius:0;
+  background:none;box-shadow:none;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-item-name {
+  display:block;min-width:0;max-height:30px;overflow:hidden;color:#203c55;
+  font:600 12px/15px "PingFang SC","Microsoft YaHei",sans-serif;text-shadow:none;text-align:center;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tabs {gap:6px;height:44px;padding:0;border:0;background:none}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab {
+  position:relative;isolation:isolate;min-height:44px;padding:0 4px;border:0;background:none;box-shadow:none;
+  color:#eff7ff;font:400 15px/1.2 PsdPopup,"Microsoft YaHei",sans-serif;text-shadow:0 1px #183146;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab::before {
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  border-image:url('/art/psd-buttons-v1/button-blue.png') 18 fill / 10px stretch;
+}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab.is-selected {color:#f1fdff;background:none}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab.is-selected::before {filter:brightness(1.18)}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-tab:active::before {filter:brightness(1.18)}
+#gui-casual-lobby .bag-modal[data-psd-popup] .bag-empty {padding:38px 0;min-height:120px;color:#3e5d74;font-size:14px}
+#gui-casual-lobby .bag-modal[data-psd-popup] :is(.bag-item,.bag-tab):focus-visible {outline:2px solid #245c80;outline-offset:2px}

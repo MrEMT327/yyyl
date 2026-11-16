@@ -1,0 +1,1806 @@
+{
+  "cloudCommit": "4527faacc5bf3f0e2f3f527c50ae4969a0de2dfe",
+  "policy": "Cloud rendering components and art; native data/actions. Static comparison only; no tests or gameplay execution.",
+  "files": [
+    {
+      "path": "public/art/psd-choice-v1/banner.png",
+      "cloudSha256": "da36577da67d047c4682c337982e0c56a2c5aa84f548566e27f2c1cfa44d5c4a",
+      "localSha256": "da36577da67d047c4682c337982e0c56a2c5aa84f548566e27f2c1cfa44d5c4a",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-choice-v1/card-blue.png",
+      "cloudSha256": "efa4ff11ac1d1e82a8f03fed8130ceef9c151d9c0ed9cf3d127284af7fe73154",
+      "localSha256": "efa4ff11ac1d1e82a8f03fed8130ceef9c151d9c0ed9cf3d127284af7fe73154",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-choice-v1/card-prismatic.png",
+      "cloudSha256": "9cb47ada1ccff9f4661347a309a29c8eab30c17e425d2f4009b9ecb2fefac443",
+      "localSha256": "9cb47ada1ccff9f4661347a309a29c8eab30c17e425d2f4009b9ecb2fefac443",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-choice-v1/card-red.png",
+      "cloudSha256": "191220912b6258536015b4d4ab29a2f11222c53b32a3f361b52bd4d51ea9f252",
+      "localSha256": "191220912b6258536015b4d4ab29a2f11222c53b32a3f361b52bd4d51ea9f252",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-choice-v1/manifest.json",
+      "cloudSha256": "453895278d1eb7511898350bb4ea018612a701d8881327d43ddcb84d2c833ee4",
+      "localSha256": "166e6474b2d865f3e0b31abfd28cb99f9c2fb5f6bc80bd95eb92df1637b9dc0c",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-choice-v1/reroll.png",
+      "cloudSha256": "2405dd1d65fef3d8bcf503d769d07a071b76eed30073c6be82cbe01dddca4363",
+      "localSha256": "2405dd1d65fef3d8bcf503d769d07a071b76eed30073c6be82cbe01dddca4363",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/FZY4JW.ttf",
+      "cloudSha256": "6bcffd107d85c475e12825698e7c48c6290cb1f80ad2d82e4d48b2d5d65110ab",
+      "localSha256": "6bcffd107d85c475e12825698e7c48c6290cb1f80ad2d82e4d48b2d5d65110ab",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/combo.png",
+      "cloudSha256": "1f9d7d6f4f6346d4791bb9458fa3c832174759e19d374ff5ab611f60aabc3d98",
+      "localSha256": "1f9d7d6f4f6346d4791bb9458fa3c832174759e19d374ff5ab611f60aabc3d98",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/grade.png",
+      "cloudSha256": "d7febce98eda5857a103affd8056fb71b7e58c220d1480358e72f788b7ddaab8",
+      "localSha256": "d7febce98eda5857a103affd8056fb71b7e58c220d1480358e72f788b7ddaab8",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/health-fill.png",
+      "cloudSha256": "0839f0870ba3a979a9447a079809086ad4e7bc0d75f1fa57df8bcdc19e3919e4",
+      "localSha256": "0839f0870ba3a979a9447a079809086ad4e7bc0d75f1fa57df8bcdc19e3919e4",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/health-track.png",
+      "cloudSha256": "107e6c62c98e79cbcb244aec35d54c551ca4ec07927c75cadc78ef74d1b34cb8",
+      "localSha256": "107e6c62c98e79cbcb244aec35d54c551ca4ec07927c75cadc78ef74d1b34cb8",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/heart.png",
+      "cloudSha256": "e923582ed4bcce860a766747deb909325e2de8a69ee9bc82ae0801de197d769b",
+      "localSha256": "e923582ed4bcce860a766747deb909325e2de8a69ee9bc82ae0801de197d769b",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/level-decoration.png",
+      "cloudSha256": "fa350e9c4cf30a9fd714e5bf777a16337a6b74c33814cc7139358e4b857b81bb",
+      "localSha256": "fa350e9c4cf30a9fd714e5bf777a16337a6b74c33814cc7139358e4b857b81bb",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/manifest.json",
+      "cloudSha256": "3bd4a502db22c104f39e2a9658e97069b7c7a208b19f815efd84bc6ce00c1b5f",
+      "localSha256": "6c94d8529bf891e2121d47f02dc239112db4345995ebe181e564884725e72eb2",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/pause.png",
+      "cloudSha256": "544010bc2f7efeb1027490d7051a106fbe51f2aef45a2c9fe1046647c077846e",
+      "localSha256": "544010bc2f7efeb1027490d7051a106fbe51f2aef45a2c9fe1046647c077846e",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/progress-fill.png",
+      "cloudSha256": "4bb4dd835a7caa684bc5df10e9bc8ec3f31d3b21ad991d413841f33bc5c9ca71",
+      "localSha256": "4bb4dd835a7caa684bc5df10e9bc8ec3f31d3b21ad991d413841f33bc5c9ca71",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/progress-track.png",
+      "cloudSha256": "e0268a82fc5424f529d130d8e62fd78725a1c6896c50bec0fa2a5ffb3f96403d",
+      "localSha256": "e0268a82fc5424f529d130d8e62fd78725a1c6896c50bec0fa2a5ffb3f96403d",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/stats.png",
+      "cloudSha256": "9c11c0d1716c53420afbf6b935b5ecfa00875fe03f441f17f4ceb650e3dfe616",
+      "localSha256": "9c11c0d1716c53420afbf6b935b5ecfa00875fe03f441f17f4ceb650e3dfe616",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-combat-v1/wave.png",
+      "cloudSha256": "e1444da29c22b2541eb69d15a6008feb5e901558f9e42b4b063450999d361dcb",
+      "localSha256": "e1444da29c22b2541eb69d15a6008feb5e901558f9e42b4b063450999d361dcb",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/close.png",
+      "cloudSha256": "97e56f208b9f3932038d829143f97a4ea13f9a062fb00c885d6eea30e921138d",
+      "localSha256": "97e56f208b9f3932038d829143f97a4ea13f9a062fb00c885d6eea30e921138d",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/manifest.json",
+      "cloudSha256": "bab0724f802ac76433bf8d06949d796975427c98e841d21375670a553703d61a",
+      "localSha256": "f84faa8daac8d42fa5450d92c668ebce73ea38fecd49505e43227da378b6a009",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-0-0.png",
+      "cloudSha256": "00218e581e3033762f69ddc2d4a3da4cdbe36fda2fccfdb31273b42bdc5f1139",
+      "localSha256": "00218e581e3033762f69ddc2d4a3da4cdbe36fda2fccfdb31273b42bdc5f1139",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-0-1.png",
+      "cloudSha256": "909d04aa371fd49c31206e40c54e5e24408e169d8637208677fce2f661611ef9",
+      "localSha256": "909d04aa371fd49c31206e40c54e5e24408e169d8637208677fce2f661611ef9",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-0-2.png",
+      "cloudSha256": "d327429c0231b901700886a4c1efd8764da4fce3c7135a9d85d9de41b0c637cd",
+      "localSha256": "d327429c0231b901700886a4c1efd8764da4fce3c7135a9d85d9de41b0c637cd",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-1-0.png",
+      "cloudSha256": "84fb1ceb6ae0d19adb32dbd43759aa1d214a77cdf95148111215b6fd9e5d95d0",
+      "localSha256": "84fb1ceb6ae0d19adb32dbd43759aa1d214a77cdf95148111215b6fd9e5d95d0",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-1-1.png",
+      "cloudSha256": "ae4976c3731ae63b063ebf4c83d214709ba2011600f49594ea807f19e855ad93",
+      "localSha256": "ae4976c3731ae63b063ebf4c83d214709ba2011600f49594ea807f19e855ad93",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-1-2.png",
+      "cloudSha256": "04928bd29b72a62bc24dc2cd940ad52fa77ffea6a1201f00bc03f10badd752c2",
+      "localSha256": "04928bd29b72a62bc24dc2cd940ad52fa77ffea6a1201f00bc03f10badd752c2",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-2-0.png",
+      "cloudSha256": "ca4b1c1932522145af2568675233af405773acef80c06a7977f60f7eb9d8f285",
+      "localSha256": "ca4b1c1932522145af2568675233af405773acef80c06a7977f60f7eb9d8f285",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-2-1.png",
+      "cloudSha256": "50d9039602ceef68d624b25acabc19a4177c6df0f25612b95573388f95a951fe",
+      "localSha256": "50d9039602ceef68d624b25acabc19a4177c6df0f25612b95573388f95a951fe",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary-2-2.png",
+      "cloudSha256": "5e13a2423ede9a493dadabc18f50f68ff3e647302d43876201d37e22c4db42b3",
+      "localSha256": "5e13a2423ede9a493dadabc18f50f68ff3e647302d43876201d37e22c4db42b3",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/primary.png",
+      "cloudSha256": "8d860ccd1e1b67dc9c34ba257a6c08cc68624bf23cec058756a4bbe8a8fa73f5",
+      "localSha256": "8d860ccd1e1b67dc9c34ba257a6c08cc68624bf23cec058756a4bbe8a8fa73f5",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-0-0.png",
+      "cloudSha256": "eaff5430a41fa26409663146692e4f7398f227db85655540676a943874cb1c16",
+      "localSha256": "eaff5430a41fa26409663146692e4f7398f227db85655540676a943874cb1c16",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-0-1.png",
+      "cloudSha256": "70acebb608013c4aec588b9846d0ff9f563dc8bda4e9579a3748b1929a4d363e",
+      "localSha256": "70acebb608013c4aec588b9846d0ff9f563dc8bda4e9579a3748b1929a4d363e",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-0-2.png",
+      "cloudSha256": "588fe565285a52b73684c0286a779ea41311a0811a735b625311c6dd16cd2c54",
+      "localSha256": "588fe565285a52b73684c0286a779ea41311a0811a735b625311c6dd16cd2c54",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-1-0.png",
+      "cloudSha256": "7bab0bec994a036e93e6679d2dd35e7cffa951efb74c6be805854f649530f931",
+      "localSha256": "7bab0bec994a036e93e6679d2dd35e7cffa951efb74c6be805854f649530f931",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-1-1.png",
+      "cloudSha256": "575d9750d2565a0051d3a0a2ab5b4a8545e4257032cf794d312c55f112b7560a",
+      "localSha256": "575d9750d2565a0051d3a0a2ab5b4a8545e4257032cf794d312c55f112b7560a",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-1-2.png",
+      "cloudSha256": "668f0f9fee2335637bad73d330fc33f49eafe555af38152b4c8cee213de6a9e3",
+      "localSha256": "668f0f9fee2335637bad73d330fc33f49eafe555af38152b4c8cee213de6a9e3",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-2-0.png",
+      "cloudSha256": "15fc98e1ee793998b456d9240bd61f23122098fdabc040de6f258fd94149f78c",
+      "localSha256": "15fc98e1ee793998b456d9240bd61f23122098fdabc040de6f258fd94149f78c",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-2-1.png",
+      "cloudSha256": "2540216c354a739521919c66724fe2bc5dd3fbaf4546d5afd6302830c861a88b",
+      "localSha256": "2540216c354a739521919c66724fe2bc5dd3fbaf4546d5afd6302830c861a88b",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary-2-2.png",
+      "cloudSha256": "7b11f632229a9ac49417cec8385d83b1bb538eec3b7bd0c8c74162b498319d8a",
+      "localSha256": "7b11f632229a9ac49417cec8385d83b1bb538eec3b7bd0c8c74162b498319d8a",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/psd-popup-v1/secondary.png",
+      "cloudSha256": "3d40295873464d603bcae09a8bd797e61095c6bcb3133b1be5a316a8136adad6",
+      "localSha256": "3d40295873464d603bcae09a8bd797e61095c6bcb3133b1be5a316a8136adad6",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_beam.webp",
+      "cloudSha256": "4303be941a34956ee6b87537947e29570271ddfbe73690920b7e2be2ca2a020c",
+      "localSha256": "4303be941a34956ee6b87537947e29570271ddfbe73690920b7e2be2ca2a020c",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_blades.webp",
+      "cloudSha256": "54fd004792764c505dc5c11a078abcd27648a207f8c644d586deaf346beb998f",
+      "localSha256": "54fd004792764c505dc5c11a078abcd27648a207f8c644d586deaf346beb998f",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_cannon.webp",
+      "cloudSha256": "e605b26648c2c6eea475380569bfcbf521833a1485cd2c98f68d5b776ccbbf5c",
+      "localSha256": "e605b26648c2c6eea475380569bfcbf521833a1485cd2c98f68d5b776ccbbf5c",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_drone.webp",
+      "cloudSha256": "c2f0bae4372932430ea26472b4a76e07235eaaa9324334a5a2ad2b4fda6fee95",
+      "localSha256": "c2f0bae4372932430ea26472b4a76e07235eaaa9324334a5a2ad2b4fda6fee95",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_freeze.webp",
+      "cloudSha256": "0dbf3a2a02c2137ffaab186b4778c99ae8eee575296db17f8cab7cec95182fb3",
+      "localSha256": "0dbf3a2a02c2137ffaab186b4778c99ae8eee575296db17f8cab7cec95182fb3",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_gravity.webp",
+      "cloudSha256": "60f5c668b75b44472f40c69e1d3acf9937ac75a24564557e7fb2e2042a38d589",
+      "localSha256": "60f5c668b75b44472f40c69e1d3acf9937ac75a24564557e7fb2e2042a38d589",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_grenade.webp",
+      "cloudSha256": "010f35e2c16c5a24323c80626c397b4097a598136caf6ce8c55807e86277e868",
+      "localSha256": "010f35e2c16c5a24323c80626c397b4097a598136caf6ce8c55807e86277e868",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_laser.webp",
+      "cloudSha256": "871f5aab48a953039626a3d7aa5cf5e7ecb3a42587b8edcc9ab4021095ae8b5a",
+      "localSha256": "871f5aab48a953039626a3d7aa5cf5e7ecb3a42587b8edcc9ab4021095ae8b5a",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_lightmine.webp",
+      "cloudSha256": "1a596c473247c37008b117d117257d83bb7fbc071fe4dce1149295507048e1ee",
+      "localSha256": "1a596c473247c37008b117d117257d83bb7fbc071fe4dce1149295507048e1ee",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_lightning.webp",
+      "cloudSha256": "7112f94499d12414e52d8338f41aa3722f9fc612bc6b46f0a36c5e4a4892e5ea",
+      "localSha256": "7112f94499d12414e52d8338f41aa3722f9fc612bc6b46f0a36c5e4a4892e5ea",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_mine.webp",
+      "cloudSha256": "7120ce140e5f04e2e7085669e3f780287d0e42bb219fb6e5f5edb22cf2e9ad90",
+      "localSha256": "7120ce140e5f04e2e7085669e3f780287d0e42bb219fb6e5f5edb22cf2e9ad90",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_orb.webp",
+      "cloudSha256": "d6ff35d83e08bc7dc9ed72b0375113d66daed1f645ea9a2cef217a9db0e3ae5d",
+      "localSha256": "d6ff35d83e08bc7dc9ed72b0375113d66daed1f645ea9a2cef217a9db0e3ae5d",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_pyro.webp",
+      "cloudSha256": "df1745be13a8b8b7d74daed5c3cc5173c9114c753a084604e7edc50f13b99e9b",
+      "localSha256": "df1745be13a8b8b7d74daed5c3cc5173c9114c753a084604e7edc50f13b99e9b",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_rail.webp",
+      "cloudSha256": "35fb4ce9d73ba400d56d2ccf5d49ef645e5c88912359a566c47cf835fd80c57a",
+      "localSha256": "35fb4ce9d73ba400d56d2ccf5d49ef645e5c88912359a566c47cf835fd80c57a",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_rocket.webp",
+      "cloudSha256": "0aa1e63fba80d2383cad388190e17042ea998bb4df0f47285816841a6a164e13",
+      "localSha256": "0aa1e63fba80d2383cad388190e17042ea998bb4df0f47285816841a6a164e13",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_scatter.webp",
+      "cloudSha256": "e5a8c1aa59c2367ea1e75502bed6a80b1243fc01b32e8caa7a6b936209854d17",
+      "localSha256": "e5a8c1aa59c2367ea1e75502bed6a80b1243fc01b32e8caa7a6b936209854d17",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_shield.webp",
+      "cloudSha256": "aa94c0cf3cc245ac2c1015a5028308387e2813d15b33e1323b54e554450f6dbc",
+      "localSha256": "aa94c0cf3cc245ac2c1015a5028308387e2813d15b33e1323b54e554450f6dbc",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_sidegun.webp",
+      "cloudSha256": "8926a02a7d744664ae75efac4a424c11997a8b1dd2bb1e57a7580bee17a37061",
+      "localSha256": "8926a02a7d744664ae75efac4a424c11997a8b1dd2bb1e57a7580bee17a37061",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_tail.webp",
+      "cloudSha256": "f3d0cb85997ae2d81b22f51a065e5ee296cdb39bd55866e7c0b9755d8261efa2",
+      "localSha256": "f3d0cb85997ae2d81b22f51a065e5ee296cdb39bd55866e7c0b9755d8261efa2",
+      "matchesCloud": true
+    },
+    {
+      "path": "public/art/weapon-original/aux_toxin.webp",
+      "cloudSha256": "c2c3c2c3575d56fbf595619ce0be64b1ff946ec1c7e550bbbd70d38b8c88cfa1",
+      "localSha256": "c2c3c2c3575d56fbf595619ce0be64b1ff946ec1c7e550bbbd70d38b8c88cfa1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/action-feedback.css",
+      "cloudSha256": "0a8c97429e48853db0724cb111a64f850359bf37975f8f993c9bedb087010e60",
+      "localSha256": "193249a296128a323d1ef3c73e415a8838bedcde831ed451915d82fb3046383a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/action-feedback.js",
+      "cloudSha256": "0122f53feb587def1d33176c02ea9dc00167bf41d8a5b0010377b3f7897fa7e5",
+      "localSha256": "50a52a681813f37fcce440b0184a23b7b2604f78f043cbd8a6260d2fbe2e1829",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/aircraft-backdrop.js",
+      "cloudSha256": "a76e3ce7450a3452e45803aac3e4c01c518843b054c8d041495383fd33bdc304",
+      "localSha256": "3deab698e408a77f8d1514b86fff6ddab688542947fb8babec82356e2499cc08",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/aircraft-preview.css",
+      "cloudSha256": "e571e28fa38f2e5ba40efa4535a32315f25b255dc56d472533844e556f4c3c0d",
+      "localSha256": "a16306751e1b4ed14ed9efba08a9e124cf3e60b87d44925555ed6118ebc41596",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/aircraft-preview.js",
+      "cloudSha256": "7de54089972f5055b9e979dfb2896943078a123c3b26e58f667291463212b6da",
+      "localSha256": "ee4d6391b00771f8d725bbe7983202f7714c14ea1fa8b67ec8b495e440b95404",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/airframe-equipment-page.css",
+      "cloudSha256": "6a2352abd7cd2deed823fa5aafa126d275a4fc22206b0d2d714563b89b677b23",
+      "localSha256": "ff0012a11a8a4bad93a800cc266a6581dc2d047268e9cabc84398f3acef2a813",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/airframe-equipment-page.js",
+      "cloudSha256": "a5686dae3dae54b4444ce0200e87aaadb51d09b0fd86abe75aa0feba69384b38",
+      "localSha256": "417212331c5598741c7e4bb7c1e301df94658e26219a0034774945babcf3bdbc",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/assembly-layout.js",
+      "cloudSha256": "9f0c704b90371f1979ca3e346497646431f48ff42db30164a037c215fbd533cc",
+      "localSha256": "a16e505ce9b76a77b6143faea6f348bccaa4ee5579a057030aa4cb3d4e446ce8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/assembly-page.js",
+      "cloudSha256": "267c1a23915b013a56801a129284be792011dc22f22dc685a04550ea182dadbe",
+      "localSha256": "51264ea9494e76c76497f0c051c862023ea96602b62b3df1330549353448655e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/assembly-scene.js",
+      "cloudSha256": "83bcae0775f3745c8feccd98a6175a18ac77b2246454200f299207c595156aef",
+      "localSha256": "1ffc4efd0e5f78b80a988e90ddf612050fcf8b94c2033609e911049388e063f6",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/assembly-showroom.css",
+      "cloudSha256": "2eaf56359cefb7eda09824b5c061b41e97e7b3caea4c67145177dbb817e8e6bb",
+      "localSha256": "4c2326fa054eeeda849dac814d4d60c14411103c1f46d2aefc52d49a5d73749e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/assembly-showroom.js",
+      "cloudSha256": "49d928d5c54a142ea38f9afe9394393d96221e92c7858d10504fc190e7f21091",
+      "localSha256": "8599e0435b9a0865b16308430df0219f5ce6c1676a822c372d7bfeabf8120741",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/backpack-assets.css",
+      "cloudSha256": "aba24c5b8400f9feb5ab64b21b45a0d42667070832f687d313cf6a75bd9e647b",
+      "localSha256": "fc04ca0df5ca74d2bd9bb82ff4a17906de1b929f43867dc328d114e394e09871",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/backpack-panel.css",
+      "cloudSha256": "00ca3510348ead7d3276466d652ceb6203feb1e6183c25b9086fc128c857c15f",
+      "localSha256": "1ed1af76d2b62907cdfffb12ef7ea97f2ed470c8e4b432e9ae72b3ca271be73d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/backpack-panel.js",
+      "cloudSha256": "0314173e00536f994454bcf42e026c3594382fe4b420f15c1d28f3dedddc5abd",
+      "localSha256": "d470bd2affab56629c5340c29a9a44742d1cc08e2f7dc478ce8073157e97bacd",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/backpack-reference.css",
+      "cloudSha256": "270bb14b6b2ec0fb3156fded46a64c43690ad20693d331bba7787d71362c7b77",
+      "localSha256": "567075ff2aacdcf0f291cf283256f1953424ae14995d25fd12206bdde6948979",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/battle-feedback.js",
+      "cloudSha256": "2c380cdf5c334ea5e881b106f483ac669ff344957c6f4d7b53c111ba53ff1e9a",
+      "localSha256": "2c380cdf5c334ea5e881b106f483ac669ff344957c6f4d7b53c111ba53ff1e9a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/battle-page.js",
+      "cloudSha256": "93b168cd58a05beddc820cc595abef9c5b80826afcf31bd480a550b1a9a30b34",
+      "localSha256": "881e0dd5391c28694cca71e1c46092a0c2e3e7cf8017b955f432260497d470bd",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/battle-progress.js",
+      "cloudSha256": "18cc25e5a468202675b269dc4d345e70990aac0bd2d92d78697d0ede0b82682e",
+      "localSha256": "18cc25e5a468202675b269dc4d345e70990aac0bd2d92d78697d0ede0b82682e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/battle-supplemental.css",
+      "cloudSha256": "20dd40ab8aab438f9534205beac80b606fc033f854a14d815747fca532e30a9d",
+      "localSha256": "8363828733ffc76c59830b039bd2c684847db4c1d7f3f2d04813d6a17e16e1c9",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/battle-supply-motion.js",
+      "cloudSha256": "a9a7c1d6b8e5a9e2109a6ff0ee264127f044623f069aec3df770466b956ea356",
+      "localSha256": "a9a7c1d6b8e5a9e2109a6ff0ee264127f044623f069aec3df770466b956ea356",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/battle-supply-ui.js",
+      "cloudSha256": "d71d59292ca2e0bd891adbf1789ffaa1c8097946b424c35ee7fb96f0b036c2a8",
+      "localSha256": "c4e51be744b8a8cd5d4102cfd98c1d410157540b45698fd943a6e3e212022327",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/boss-health.js",
+      "cloudSha256": "ccf6433a60880480a2d3fc96bf48c5977cbb1cd25196a51de61fa7281c646a15",
+      "localSha256": "ccf6433a60880480a2d3fc96bf48c5977cbb1cd25196a51de61fa7281c646a15",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/canvas-lobby.js",
+      "cloudSha256": "bda13228cb77480346519e144c0aa81231608bbb718e1acd3509745d2bde3583",
+      "localSha256": "79d80462dd836bda35b560eccb77af13bc49402b103070ab8ecd2dcf88e6649f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/canvas-surface.js",
+      "cloudSha256": "ed3709f933285acc16daa2c5030d69caf89afda25f8679e855dc1b4f1ef5ba9d",
+      "localSha256": "9a452b355a5f0c6b523f0d66eea59c91714ad4834b3111086ae89809fcff274a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/card-selection.css",
+      "cloudSha256": "b4eaac77a562a6ef0a851aaa41b949b8ed43c6026d194e471be4f767252990ff",
+      "localSha256": "b4eaac77a562a6ef0a851aaa41b949b8ed43c6026d194e471be4f767252990ff",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/card-selection.js",
+      "cloudSha256": "bff526fb13f54397618778e0a8bb6481df20840f8182cc402a604e56dcdfb98f",
+      "localSha256": "bff526fb13f54397618778e0a8bb6481df20840f8182cc402a604e56dcdfb98f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/catalog-alignment-polish.css",
+      "cloudSha256": "4b674b883a8f4e9cc73fcc4a1252ea9bf74ec1737b273aab9a49a9f830d698b5",
+      "localSha256": "4b674b883a8f4e9cc73fcc4a1252ea9bf74ec1737b273aab9a49a9f830d698b5",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/character-portrait-controller.js",
+      "cloudSha256": "76b2633ef65b7e02eb87cbb2dfa8b92796ad083077f711e4db322ae8684ca857",
+      "localSha256": "7a20c8380ccf2b2e869a7ea0b720234ef5187ef475ee5bc675c1be79dd1f9c08",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/character-portraits.css",
+      "cloudSha256": "0a274c77e92e008a4d149794c4f8232cb6ed4a18191aba2eee52458c158f0853",
+      "localSha256": "465b05b88ca149cbb33c8eb9e30e8a9f7295068d5e95b84f1b7a236aac8daa60",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/character-portraits.js",
+      "cloudSha256": "8d2d2545d1df151f939f374489ff7ce78327f36bc5bf58d3d7ae90605b7d57ce",
+      "localSha256": "840b69b55306d482f8ea54cf9a704619bf5811927898417b97bdcc25fdcffbae",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/combat-art.js",
+      "cloudSha256": "31f7e0220db02b70b749f6723a37ece69b4d93fed3b4a23a169f7b43732be99e",
+      "localSha256": "f3034026df134c6d84eb2fd091de450ecef0b00dc44de096a3dfc13dd4985e46",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/combat-theme.js",
+      "cloudSha256": "92cbeda38b3d09a086f3d2d679bd15171083b6b207e3bf9f196a4ffbfd5738ae",
+      "localSha256": "07dc34907ad9a63b14e3e433902d3c333b97e17223a7d2eb91a8c8b68e742a6c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/combat-ui.css",
+      "cloudSha256": "c6a3b1cef60c4e04f9dd0fd8e3dd57b65bfdfba27303a488190a383fad53d5e5",
+      "localSha256": "55374c4569c344f47202eac0fe53c23a69a682e0efc8414ba8ca47486a1c9e6f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/common-rewards.css",
+      "cloudSha256": "0e5b2b03a7dd52b5a38aadc66276ee69b906e9f963efa87049a674c079c60fce",
+      "localSha256": "9f6f2b341512afcf2955cd6ccd61b37a8d4e300377ca49a1939c7d7faf463b0e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/common-rewards.js",
+      "cloudSha256": "808d93bd5bf0a0c1b41303dbb00a50a7f620c187492615f3188f716a55de2bc7",
+      "localSha256": "5007e403f15c4799469c51080a35100e50f69e69b90cd9769dd301b8caacf904",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/common-weapon-thumbnails.js",
+      "cloudSha256": "a1f97548f9576d52224a67ae12789597d5505c46eb1f0c7278e61d300a37bf5d",
+      "localSha256": "f5eccd09cd2c8bd915233a01fdefc29e24330dd38aba2eaf25e378f1df4050b7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/cubism-batcher.js",
+      "cloudSha256": "65890c8f8009deec8c57e899b062b104479020a6f6b21cb43f058397e335e937",
+      "localSha256": "09088068b0f364fbe9529542f74631150dcb21ef6ef70eae78292b97f027afe7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/cubism-portrait-player.js",
+      "cloudSha256": "0810c1c58146cb5a4db56c55aa65d42b09a9b2e3f55fa531b0ca5910a67d2f77",
+      "localSha256": "9da7626807b450e496a82986cbb724b36cb2489f243bc5aaa694d04f0ccaccca",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/daily-center.css",
+      "cloudSha256": "ebb3277318bcbf90b1f696b245d261af52353f6dc3a822d0f15380af5d127b6e",
+      "localSha256": "6a40cb7789acbdcc0077829a372087b7886edb856389ef21e9fa8faa5044046c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/daily-center.js",
+      "cloudSha256": "30e15026466b65bfcdd73a2f5b3892f39d5c43b3d623e961fe6ffc82a5d84c50",
+      "localSha256": "2a9a8faef8efc6d0b5385784d4fc6b90d353d050d5044e664c4303927597da94",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/draw-gate.js",
+      "cloudSha256": "54b6fd679331a2a822605c16b299db5184a2766621ff49c2dac6581cc6718772",
+      "localSha256": "30cfa86881e5a00f8b0fc568012ab1845808f5dae437600c7cf66d709b61e252",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/draw-presentation-plan.js",
+      "cloudSha256": "16aac0b0fd0c7ce8cfa1d1650f1d3f25a333660f9e6332051ffda4c007b6b54d",
+      "localSha256": "1fa4cab7e87008837b163f17fe0f21c226933ccff48729165fc24977a4c18fd6",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/draw-presentation.css",
+      "cloudSha256": "116c1f45fbe4ce8032991064f2938c730a66d5e50c351e0ac6c6c9f57dd37295",
+      "localSha256": "b14277f8ca929bfb341557183ab419b9ee03891c58f7af2f9d702efb4b8e61f6",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/draw-presentation.js",
+      "cloudSha256": "497d5b7bb6ce5f6b3fe7707b83a31554e798ba6f4a8b6b6ca75632213e18eb57",
+      "localSha256": "c5c59f4cf5e8ca64f45115737bf3b4996098a4ca81b80e9f801464d50e14e58d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-aircraft-style.js",
+      "cloudSha256": "a4f05532d6e536313a8829c176042b110f531f36ac67b6bdd589b933cca56f1f",
+      "localSha256": "ce540483566efbb0071be051533ed3e13eeffa2b2cec8f4970002015664b7000",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-labels.js",
+      "cloudSha256": "e365ef83c718e713c3e55cfb55d95ed2bc2bb82938bf1572f010838bff79511e",
+      "localSha256": "9307476a1748ef0c574dea8f1c5abf549f2f637def2850a00896a863d9fca194",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-page.css",
+      "cloudSha256": "bffb74061b070c1ba2fffc59d782d5ddde3671494fe566354fe5be95d9a04e74",
+      "localSha256": "989dea87cf988fb8875dc2d5387dbe5e4fffc0348fee7dc220244de52079963c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-page.js",
+      "cloudSha256": "4e1c58dbdeede6749f78808bb75bcbdc39c44141df14c1f8d2432d44ce250f2b",
+      "localSha256": "8b45407575d2e72f329b8b284d04e9ddbbc2657b674108baf3a1ecab03217ec9",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-reference.css",
+      "cloudSha256": "ebf0194745e9d968dbc7b7eef08a509e1561cebf45e071d3ab32fffc2d3da8f4",
+      "localSha256": "fd669065bb921aa0758103b8309f19fd125b127ebaf572e61b8e3867f0a5154c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-toolbar.css",
+      "cloudSha256": "99da4eadf048004cf57f11d4906600a780fb7c3e51a7e5c152ef20f10e0e6773",
+      "localSha256": "64785207c5319aec58e95ac54cac29c43b95420f8d4b2383378d5f2e01ed141b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-toolbar.js",
+      "cloudSha256": "ee8d2e211392037c398462424200a29175c6b77bc52e2aa5e96fc87462ffd43e",
+      "localSha256": "9c8aedae62bbd8b140bc6e3121f7cae577523a80c454dd61414c9dd05d09cc2f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-weapon-detail.css",
+      "cloudSha256": "5d8fde9c9a34f3332fdd2e4ad8266c0c5a92b1054d26c575519db9342f63eec4",
+      "localSha256": "5e18558314fb08369d7428f752f2bbf61088ed84bff20b1691c904dd717ca43d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/equipment-weapon-detail.js",
+      "cloudSha256": "d7f3bf3819b27c58f12de379f5035db9dc3847a20b29516da540e3e85b5cf6ad",
+      "localSha256": "c98ad71b4ec3ded84aaa159752ab46953a591e508bd341cb825c60c52e34ec5e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/fighter-input.js",
+      "cloudSha256": "a5d2e71206fb03670787bbd9c86800fe0375ae76805b191094a60834daa6dd25",
+      "localSha256": "156489150b050032a4deeda2c0e31e488930ef5356571639a74b58ec1085c79c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/fixed-part-thumbnails.js",
+      "cloudSha256": "7d17c62219d56be0559436ef5304f84d8f8b3f7ec7cac69081c034d746ce8e71",
+      "localSha256": "a98b0b4995b3049757c2b02de0edf7d06d534ef0db2c8a877fa4110771f6eed8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/fixed-upgrade-ui.js",
+      "cloudSha256": "b60594cf519d4d826fd4c700f75c22dfefb3311bd57045f0fb0012047ac0a2e7",
+      "localSha256": "d32eea805f6573af3ee5b24c70551e332c46e87e65933cec2bd047430111223c",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/fixed-upgrade-view.js",
+      "cloudSha256": "74fa3aa42db719e609c81fe251f294470f13010b376bd4afe1de80cd47aaada3",
+      "localSha256": "c9ec0de92c5ac4e04f2a8f32c46f7dd2a9ce5794a7c152daf0d79e2f380463b1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/fleet-catalog-page.css",
+      "cloudSha256": "2f510b41eae09c468586d9c08838f5e4d3ba560f4643adffd0ffaab86e09ffef",
+      "localSha256": "bf6fc7bf45ee511d59b4dde3382a04ff183705529117556d21bba9ef71412426",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/fleet-catalog-page.js",
+      "cloudSha256": "5baff6f8890dd9906cab0e0c3de958763919bb12e70d471787ad444d52536967",
+      "localSha256": "7a5b8b0808ec061479a086fbe0886129d0c030ece361a203bc19eee5e03b57d0",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/gear-merge-selection.js",
+      "cloudSha256": "765766dcff98f3404a995d8eeae88004ccb06c8adf6767a128a71b39912ce9fe",
+      "localSha256": "f5694423fa7ff0641da4f354f9c6d2c5174d0108402545c9b572d064fba60869",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/gear-workshop-page.css",
+      "cloudSha256": "43421f31491b3f1e4cbf7041fca2443fc665f8a2dfda7815429a6f1b34e87b7d",
+      "localSha256": "4e2a72b926a57e59dfc64a678c240fa6a6c94b9b429944549836e02eb334f34c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/gear-workshop-page.js",
+      "cloudSha256": "837a83c7db754d7be25d270e3c20503c5a2e60be3f0f245b005cfdf5c774291e",
+      "localSha256": "832be6e116ea96ccaeca0630715bd48b2bafaf2a23c00205ce9687a9211df1ca",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/gui-casual-pages.css",
+      "cloudSha256": "9774c88b4618db7a47bb6b3103b8df98e809f9035024be330d9c1a03f110426d",
+      "localSha256": "9774c88b4618db7a47bb6b3103b8df98e809f9035024be330d9c1a03f110426d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/gui-casual.css",
+      "cloudSha256": "1c315f3029d460a03cfb7e3865f1245bab7bb0cb4c0f5ee30286114bea4f3510",
+      "localSha256": "d33c9d0d042fe027d28571774898559ff3e5cbbb14ab714c98e188cab81ad7f4",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/gui-casual.js",
+      "cloudSha256": "118c9c30bb34e513b4c5cf79d3d2a8c0415b077afef1abafd2ab1beee0881d4e",
+      "localSha256": "7caf2d118b1b2deef1b7bfc1b942452c98ca6363de604e7b95f6370a42e343a6",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/hangar-subpages.css",
+      "cloudSha256": "82b76b9313fcb0431310f0137f5f72cdcb112823e6072e32dc2aa34b58f3de1a",
+      "localSha256": "fffea112931f9eab12cc97a9760b9e04b6c3d4c9f3f197cf451e4d251157bcc0",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/illustrated-icons.js",
+      "cloudSha256": "a2240f90f73796f3bba081e7a660e3676c5ac45474c09b92b3daef64e41c9b8c",
+      "localSha256": "a2240f90f73796f3bba081e7a660e3676c5ac45474c09b92b3daef64e41c9b8c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/loadout-layout.js",
+      "cloudSha256": "dc9b6fbc73218e826cc9c1b77284c77c8e318c46dd8c92f1c898705b16154e76",
+      "localSha256": "6d5642736f0bb7e3e5b67628022e2e815c7ca9723fa4154b6193bd6377f910fb",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/loadout-page.js",
+      "cloudSha256": "de81ff84e3907e93d1f2e863c00a07e1875c90a9aecacba33f6ba16806382665",
+      "localSha256": "9ecfcf18b12f3842c5177f711badd73e200d03fa2cd46d446bd959f3f6453d05",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-chrome.css",
+      "cloudSha256": "e3d09205c5b98cd3cabdc7c73bea6f015fb5bc904add9a15e3115f8c68e8ce3f",
+      "localSha256": "e3d09205c5b98cd3cabdc7c73bea6f015fb5bc904add9a15e3115f8c68e8ce3f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-command-panels.css",
+      "cloudSha256": "771928f4a8985e86cb0bfe6f0a0b4509b629f21924e3a22291093619e35c677c",
+      "localSha256": "771928f4a8985e86cb0bfe6f0a0b4509b629f21924e3a22291093619e35c677c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-command-panels.js",
+      "cloudSha256": "6a5732481c8c8c1f7913c1f257846dc016bc8077d9a2546638d8f82ab18a2b43",
+      "localSha256": "fe525a901c99884bf9c8162e27059afb2e58e4ba3828da4ce87668dd5506f795",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/lobby-command-skin.css",
+      "cloudSha256": "adc6253ed6c94b90cfe2d8913e81687ea224f433dee25ec918233486f7a31c03",
+      "localSha256": "adc6253ed6c94b90cfe2d8913e81687ea224f433dee25ec918233486f7a31c03",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-cost.js",
+      "cloudSha256": "95f964b0a57f382630658535ece7549b65df938f1f2200b2502ce950df99f2eb",
+      "localSha256": "455b60d9abd34d70b8d92a3cf651e520c4724f551030c2a5af7d0e2b2dbe809f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-growth-feedback.css",
+      "cloudSha256": "574abbe3da5067c7072666e87b8d7cb2e2482de2aac7bc254da98b7f9714cbee",
+      "localSha256": "574abbe3da5067c7072666e87b8d7cb2e2482de2aac7bc254da98b7f9714cbee",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-growth-feedback.js",
+      "cloudSha256": "07b71119a5a3eec481c498f2d471b9e4100400166ddb34d8c8f14c831e78627f",
+      "localSha256": "188b41b9df5f51c34c239fba6d664947c809e65aa33a3ea3785c03d4d2a0bd11",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-header.css",
+      "cloudSha256": "487e9bb98872e773a57448a2b78438e0beb3454f501d1b6e90c8e81ff6924868",
+      "localSha256": "846137416ae0fed6e4381a8c0a623adac86804b7a0f924016f101782483996b7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-header.js",
+      "cloudSha256": "a716d0a6713309361c8008f5fd2dac610611baf5964c43781cedce3b2df73540",
+      "localSha256": "f5c5ffe3e7e5514d2752f56038361203554f2e78de1fceea3694841e32c0678a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-navigation.js",
+      "cloudSha256": "951d4eb3f3137092f0b3f421231a5ed2cb6a62c9b6fe2a05525e48c511e8efb9",
+      "localSha256": "951d4eb3f3137092f0b3f421231a5ed2cb6a62c9b6fe2a05525e48c511e8efb9",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-paper-panels.css",
+      "cloudSha256": "1355b22b62b68b0f04db079d6d02e73d00f4e762d973be461cac4b46aeda9b7b",
+      "localSha256": "1355b22b62b68b0f04db079d6d02e73d00f4e762d973be461cac4b46aeda9b7b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-paper-panels.js",
+      "cloudSha256": "5d7ebd75353b43d4440928ecc221103d307cd408945eec2ac9c9b97ea8f66958",
+      "localSha256": "2c5bae47e8d530573cb054e4018fd8cd19193ea7949905375e0678d3e66953d8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-portrait-player.js",
+      "cloudSha256": "895390bdc9084a988d1940668bed9a1bd49e5836c8477edcb59a5da38930bca0",
+      "localSha256": "20b00a9af891720cc6b9030cbbea63f912ae99b90c4bb61eac6e47f3981e593b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-resources.js",
+      "cloudSha256": "fbaa3d137ed868f0cb77852fa3b9520b8d8a97c6774a4b44ea5aa974264cf2c5",
+      "localSha256": "d6801731cc65a2ebae769d5cc1ebb086976341770b8b28b221db258ec79f4348",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-secondary-controls.css",
+      "cloudSha256": "8a8ab015749980679e09f4b3fc7f9d80ff96ddf19cfe372813a358fbc9efc20e",
+      "localSha256": "b901114086aa40efeab28ed779fdd2790f057058186369a8d35765f743e6736b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-state-feedback.js",
+      "cloudSha256": "675883dd5a7e79ffa403e04759e6168fee64cf82e5be71f5dc98116ff97881ae",
+      "localSha256": "8258d43096d832ad76255e0484f0be7fee3af61587526d99ba3d630a810fbb9f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-subpages.css",
+      "cloudSha256": "b3b45fd56bb0569e1a128b63368fce6e022087fa547e5d557f5accedde262d2c",
+      "localSha256": "b3b45fd56bb0569e1a128b63368fce6e022087fa547e5d557f5accedde262d2c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/lobby-theme.css",
+      "cloudSha256": "6154b14ce630764cdd98d8360750ac1c8643b004e9536adaa105658d65feedd7",
+      "localSha256": "13117fe8d4b53d92f66a1992b6511377a42b35e9b510b612fa8b0005345335b2",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/mobile-lobby-chrome.js",
+      "cloudSha256": "4b872ef4471dde7a9f6e9aaa939e8961050cd668738b969f32151a3fb9c0d828",
+      "localSha256": "c9915bce0d8b9555dba5f5e44643f3625645af54ebf7858f7af02648abcd9fbc",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/modal-action-layout.js",
+      "cloudSha256": "596266fee5cb20c28072fb9cca52bb41065b0cb7854df9553df282a24a9eac38",
+      "localSha256": "b0d1c621436d6a1cf5bbb8d58eb49e96fb805dad45356876ec8cb8461c4473fd",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/model-orbit-interaction.js",
+      "cloudSha256": "727da3b8d5e3c092148a7214cd760b0198b4e421d4e0d4ad9f44ba34eea34554",
+      "localSha256": "f117bd5859c04570a224538a6ca0eba55afb96fa38d36c7ab56abc2c76661f9b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/nine-slice-geometry.js",
+      "cloudSha256": "df5675ad09fc18cbaddfcb8cbe88fcfa681d0c835fd42d05b7821655826b9ca4",
+      "localSha256": "34b2b8a09e88d4d4f960ddb94f0877e533e70d59b0fdae45d20a017f98bc11c2",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/original-environments.css",
+      "cloudSha256": "fe0175dc32de84f0ae2abe5dacbc7c6939c7f89f668ae20086e1e5f69dfb5cca",
+      "localSha256": "dd2dedc744e3ce2202e9df33feacc23a58d015c84daefad32f90f4206ff2ded1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/patrol-center.css",
+      "cloudSha256": "9f494a97c3e6794406ea77738be3d776433ff999d83441eeef2bf3629a1699bb",
+      "localSha256": "31e25f4228b802d8b51ae920bdb32027dfa1189456e52b15037753d8f2906554",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/patrol-center.js",
+      "cloudSha256": "9f7ba2338a2114408e321c9f5ff1f065d603832e00ab993f8d6f7efb80e2f9c0",
+      "localSha256": "49e6272ea94b8a2a2c9fd3a6cc6d018cfbe95a1f7590c1bea43ede85637abe86",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/performance-panel.css",
+      "cloudSha256": "a6311d431c3c091a2cfdbe0ef1e19132316e93acd6ed12c46d7f839bb75c51d4",
+      "localSha256": "421fb93d9b57332f650399a7dd75cbe40b73742f11530b58fa2b298a913dbcf0",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/performance-panel.js",
+      "cloudSha256": "3160546771f7420ae2b8ea3c09720d814e2065437f9f687499d35aa6b8dde382",
+      "localSha256": "292629bb7633f3cfda6167669a6b8ba48bca727e28f6885e5dcaffd64f86db77",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-focus.js",
+      "cloudSha256": "94a8cce0a877f514a0c85f1e1f3e43ce8865812c1e1ced6dedf4c2c6a051caef",
+      "localSha256": "94a8cce0a877f514a0c85f1e1f3e43ce8865812c1e1ced6dedf4c2c6a051caef",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-layout.css",
+      "cloudSha256": "68749f4350d70fd095ae51867471fe7e82c6baa780483faf616c356ae393459f",
+      "localSha256": "2a44ee7fa2280bafdba36f7e4569ecf2b0368d99f671696eeef8b2259dab8509",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-lobby.css",
+      "cloudSha256": "a370bf283365ca4ce0303fcca6b0ef41d1f0c02caf6ca0fe04329cb893a79606",
+      "localSha256": "216190eb16cc258c6c699736cdfe91512751de0dba14e2194146ba636971c582",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-lobby.js",
+      "cloudSha256": "cde9ae4c98332fa4cded55754d01e7bc451ca7cd839dcde72b9d1a0dbb884876",
+      "localSha256": "242f743e9a3a2d635a2648e6d4e5852b80152a51c1fcaefd3aa2283ef2f8de32",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/peripheral-model-loadout.js",
+      "cloudSha256": "a7899eafed63612f86ceff3bbca41e4f85cb9802bc0f2c9b924f48ba73921c53",
+      "localSha256": "7838ed33ad138f5506f59228f167d224e067bb4fc36f4d4972e63d8c27d43ea1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-models.js",
+      "cloudSha256": "80eddab6e55e9226caddbe5f8a94d8104366f57d548939e2ac8be5f6b64ff4e6",
+      "localSha256": "5c200c78a32d34399e414f5e77a886c898b4950d25a9c9747bccc0430f78a815",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-polish.css",
+      "cloudSha256": "5baf5d57f5072b8cb6c490ed6ad89e0215b5d2302a005cc0daa14e1a67cd8429",
+      "localSha256": "d0fb0d4510755931334bae2cbd5d047486d8eea1ab56a73185db39313ef23ec6",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-quality.css",
+      "cloudSha256": "6a0b2254ae4e622a2788620a1b1431a5b801c3e1c05628f73477be2a2c1a15b8",
+      "localSha256": "6a0b2254ae4e622a2788620a1b1431a5b801c3e1c05628f73477be2a2c1a15b8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/peripheral-unified.css",
+      "cloudSha256": "8db4ab83a67a334c498e9fb0fe96ae04460916158db1ed69d3b6c74398317284",
+      "localSha256": "b450859789049939746e40384f1daabcde176acf0a1bff17d310131cc1bb6b5e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/pilot-card-quality.js",
+      "cloudSha256": "4d9386a6e658a8ac17410f0860157c98906a34ec1c85b3ec2ecf9d4c1c282aa0",
+      "localSha256": "7608680253b4ada468c6303b165f2644f67bd6325c1472108a11edb009880b66",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/pilot-holo-card.css",
+      "cloudSha256": "8f7ac927257472295e476bdc4e79e953b94d4d762179737903f50fb0d9ef61e3",
+      "localSha256": "5a711225131e9cf429d06b55bee45b2037c0f3e2b1a04cbd934ecdeb6a1c8acb",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/pilot-holo-card.js",
+      "cloudSha256": "9734914e089beaeae7feaca6cab88464c2c12477fc8684b70ba08d7b0f0653a2",
+      "localSha256": "39418c0394b32b85dee23c83b3fedb1ce778c599fc2014eebaf94004d919b4ec",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/pilot-skill-cutin.js",
+      "cloudSha256": "4d70f10822956abe9cfe62127f43f5cdc42017bc036731e89d8a6e28e56ecaa5",
+      "localSha256": "34da6b3c3941e9cb2d73e295590da4608bb704e0c8cd566374188e4af1b5856c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/pixi-display.js",
+      "cloudSha256": "5cb2521a417d14265ee4c086811d4ef0f92ac69540bcf5991ea4ca61c6d279e0",
+      "localSha256": "b2667a92d2f02eac5c4eabf38849b5f494aa24774ddaee9ae41ed5820f4def23",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/pixi-lobby.js",
+      "cloudSha256": "dd814bf09300930f1dc84da6699f8495efa9cfd2f81e36f184a54db020e30e8c",
+      "localSha256": "6bf34bfe0f043c59025608e84017af7d127240c420bb8160f4cef2a070ba93cd",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/player-info-model.js",
+      "cloudSha256": "982dbd7f698683ae247b8b5d2becf37766d8d83bc475e9650333e08b48253e15",
+      "localSha256": "e9c2609264c91d7e029f7416d187b74bfd2c52c515654f067c1afa12d63a7919",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/player-info.css",
+      "cloudSha256": "f660ffb15e588f77feb5b80aed4102f93418fd0fdee07f37a0ac9fd75d530ed6",
+      "localSha256": "94896039e76d0e05d30aca2da0b509d678848832b8fa532aa29a3c148a3f46f9",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/player-info.js",
+      "cloudSha256": "89d9cd238d9cdb3140578e400def7410d8268c8dcffb4a203ff68e74380bd1e2",
+      "localSha256": "44d387104e8d23e80f85477cc615f5ed5eb964f4c874cefcb36f56ffbd0fdbfc",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/portrait-atlas-batch.js",
+      "cloudSha256": "8ac036f628686eb6b61f63e17584e4ee577cfd54e2f8e4ad208bc7d2a76b2fa6",
+      "localSha256": "9c5da7ccca4c04a37e8e3308b5e082cb3b1ba71ebe2e00a5a9218b0a0ec425fe",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/portrait-frame-codec.js",
+      "cloudSha256": "e6a915757acbfb19f6bb886238d4a0e37c26a21e90ba6043924b58c126ba6683",
+      "localSha256": "21be6526c8a982cce810fdeb3204098502d0abcbd8a3a92e7adc2a8de467458e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/power-notice.js",
+      "cloudSha256": "c08fbf91e3e96eded3ad964a0db671556e049361a22e8922933a2906c50336d7",
+      "localSha256": "45ca4d21652324558123d662c397907985aff316875029ef9e6de7de58263e56",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/preview-batcher.js",
+      "cloudSha256": "2faae4861afacc1a420c527f577c8f3f5604e0961cdb4273650d715a9c82bb59",
+      "localSha256": "4fa7500ff0d94e6b3e856fa15507be7fca6b71e96920341b2485061a6da0d1b4",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/preview-fixed-parts.js",
+      "cloudSha256": "5fdfc8e6cd081ed3299e39f6034671d993ba05db0ee14518d8a31026bd97bb54",
+      "localSha256": "bc51694b90a739a4cbdd645c70d68284b51053ffb3ae8095e208b26c11b4f376",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/project-ui-art.js",
+      "cloudSha256": "631822b68e8d80abcce94201b34263f8d1fc7f1be841ce4befdde6fe94f6c13e",
+      "localSha256": "405f509ef5747baec81a97ae349514012c00fdccfc09daa5aebdce2035806354",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/psd-choice-art.js",
+      "cloudSha256": "97de3c80f8378b7ee9f73a9034575c72de5d8ebfa48d91a88fa61f74c99a2868",
+      "localSha256": "312f2ae64e2ad14629d90fa068969648f48bb4d7712482e646744b75e9866c2e",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/psd-choice-icon-crops.json",
+      "cloudSha256": "99372711cb356124f1e899bc70731461f5279d73b3741aa786c682337fbe5379",
+      "localSha256": "8e7a4c5a46eb42a1bbe0d22f70d6888b4e623b00733e7690883f824f0297d6af",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-combat-hud.js",
+      "cloudSha256": "5e915eaf2d3265c19700d4729c6bb9f090982baf7c389ec8e577c79aa26d259f",
+      "localSha256": "a2c44704fafcc3d9711ce30e007e108ce5ce3b56ec66286d8ed969db34cbdeeb",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/psd-controls.css",
+      "cloudSha256": "3543ef92ff5fe81f1c946adfd6990933307ebb0284918248f8075309885cc716",
+      "localSha256": "8e0965fe40433bd2524cba0c1bb794368b5512dfd43175fd75bbdd5f0f50063c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-empty-slot.css",
+      "cloudSha256": "eab0e4fa887d0aaba4dd3b68896ade4e231479f6585d59c81bf13848934a9d4e",
+      "localSha256": "37dbb9c7af23cc4ae8e3fb7d0832efd7ef7957bc5ff578a4c9f094f32ff0f5fe",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-empty-slot.js",
+      "cloudSha256": "6cef8f7e27f6903d762cd419ab7e18036201bff21d693e3080d8645317c93140",
+      "localSha256": "1c7bc1082c399bd2685bb70c8ffa397ddb50becc220a38f4a0a1abb071ee133a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-equipment-v1.css",
+      "cloudSha256": "5b4847f8fad33fc02483a8a3ac30034c35745747171451f2a60c5133a65eb5dd",
+      "localSha256": "9de690c748bfe029ae6f3d6cc29672983d37af0ba7563cc18392e5d820ac24a2",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-global-navigation.css",
+      "cloudSha256": "56055aebb2092c28e8e9e33d46e2a6d80e7f7285b1ef5514663d149ea077ecc9",
+      "localSha256": "daef85deb319f48809c8c7338c0e395b844ebf0fe2bef3530573077d9ffdb7b5",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-main-v1.css",
+      "cloudSha256": "8b863c1966520a6b860d861bb44258177acbebfff78421e999906eaec6116238",
+      "localSha256": "d19e086abc01d6d2ade3970f64c66f227d257f3643cb6f46957b3bd8cb1bb6a3",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-popup-art.js",
+      "cloudSha256": "477ef9c41f72753588a8babb188700bf8cffdc07673f25f581214250788f57e0",
+      "localSha256": "7c467d3762e2565200e8d19961d204dd5388c36d960f78bb799960efc0c508ed",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/psd-popup.css",
+      "cloudSha256": "194f7a2d06084ce1ab72117f1a2a7aacb0cc640953de7874ffce3f1feee70bf4",
+      "localSha256": "e507ec2f525aa51b689b7f9a4957347d0ea2b91f40b92e034cc1549d9a520e1e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-popup.js",
+      "cloudSha256": "6cd051a6b7fdf135cfed6cfcc1ec570bd7e2663ca1d37aa51ba0d3416825d77d",
+      "localSha256": "9199904459e51e9beaec9040ba1ad2fe56d3b2113c57f0daaa06fef2392d7bec",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-quality-frames.css",
+      "cloudSha256": "9104fbfebf5283e7fadf411c3ad372419a5fab713fd2ca43be329680e70adc54",
+      "localSha256": "fe8ffac5dd04fc5f530c96dc7e2ad804ce82b1a6739bdf0384acfb05886a8cf7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/psd-surface-fixes.css",
+      "cloudSha256": "c35e6640eaa38bacd5b992a63424d8342138b5c95e0eb522e78f2af0318412d0",
+      "localSha256": "23bf3172c45d551b4344e16a824d3d30c1c946aae40c9653a7a95cbe0e28435a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-dossier.css",
+      "cloudSha256": "b536feecd647b931760db9405c6803e1620556949588260b6c7fc31388feda65",
+      "localSha256": "20936f36e3acd956d3af315325f160f580530750d84ccaf4bf1af102ab1e1b88",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-page.css",
+      "cloudSha256": "de02f24482fb8f8c7fb2bad120bd114f7eb83e86770d02663052974724f94340",
+      "localSha256": "dc388e80a61ba1a40e97b8204c1bc88c837c121da12e28fbc8f34cb149436e8b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-page.js",
+      "cloudSha256": "b14a1feede82f46fe8b45a995acb21a9f0300a4652a62a2f45f33bc3c6006e42",
+      "localSha256": "b792a854ad612b9b1fd585d33b8fa05f4191baa1e0980d20d3a3eb40c3f1e1e6",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-probabilities.css",
+      "cloudSha256": "aca8f823d0a274ee1d56d0cbe82b686a269507e878ea66ea2a62ca9503bc3681",
+      "localSha256": "155a28ea45dc55f0677275ed4bf4e809ecdbd55e02bc452903e65a53a884f9f4",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-reference.css",
+      "cloudSha256": "deb8a6ccfd8849769a0e741737a864fbd957cdc1cf3d876239991c3403e94505",
+      "localSha256": "b27a0fcd2a1ea0636f158aad28bad439fc4f1da42b44c962b48165070193252c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-results.css",
+      "cloudSha256": "ec8cd077c745f30835ab0f7f60490cbceecea1d69b08585b06fe568883942f7c",
+      "localSha256": "54e4f02e6543efcab66ed31b78b11087502550427224e643d48976b4feaaf0be",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/recruit-results.js",
+      "cloudSha256": "07a6e8f92cc8aaf19def1b7a07ec09b02280b7599cd0337db8a6eaff640f8b84",
+      "localSha256": "4df252683a5d5f91b60d90bdcd267a077ff3e8a73390db3cfde1a920cdb218d8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/reference-catalog-pages.css",
+      "cloudSha256": "daf2098db3484f4a1c1517dec88c8d56e15300b2c59595d4b2a5e43ac68dad17",
+      "localSha256": "db9e4edd91c5b21a0cb5f454bc93041b054ed455687f3359f7e7bd2abb7f2bc7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/reference-catalog-pages.js",
+      "cloudSha256": "b906f907d53dcdb897fdf623af60225af5f411bbaa0d6836ef144c34129991b1",
+      "localSha256": "99a977874b3ed7e8a7abc43442f70b336672d11356fe262dc8cee5b2192546c7",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/reference-shell-pages.css",
+      "cloudSha256": "9438c7294ebecf41ac491e3a2adeea24522141099915560ccbff1f24022ab6f9",
+      "localSha256": "cf7e4ac706bce67f29e6ab88e27eaa316f10455a315c5cf02ba9aa5422812b10",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/reference-shell-pages.js",
+      "cloudSha256": "151ee12c679554c89b2c238f3c49d43c12e2822b4fc3959a755755dd49e083a4",
+      "localSha256": "e8a6f2aff4ced6b73a10c8e80e0c026c8e6f0f10d6d2b6e63d56dc77c89eee32",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/reference-supply-page.js",
+      "cloudSha256": "a12c1c6a2da6227a3d4f3137f434f79c5dcfec9bd763900095bc3682ab36ccc8",
+      "localSha256": "515e64da297ea87da68fd60a2e723ad1767c8670f51f280bdd3178151a8708e5",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/research-draw.css",
+      "cloudSha256": "f26596141a29adf603337336aa1ca9593cfe491870e185d6da2041a5d4b32733",
+      "localSha256": "1cf0fe6f2a878e8b0d98c7374c78becacd4a1f44af5da7a02580b39f0da7db9b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/research-draw.js",
+      "cloudSha256": "72ab47c51eb0c45cd484d5f726f2d384a4ef71fa7c22d0c937320bada96bbbee",
+      "localSha256": "cadc569f2868462edd4df55983ca73667199a0c7ddb23193e79fbda0f78e62a8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/research-page.css",
+      "cloudSha256": "237322660e47c5dbdfd2163b402ceefa928b01ec9ac0f1267f7097bb9b8cae3d",
+      "localSha256": "b1bb378b4e0547e18085be144ecad988dbec4d0f55146d64b9bca3973cd06110",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/research-page.js",
+      "cloudSha256": "f38d1157bd4257e10b7824838b14162399569bcca0da3b38bb3f38e0c7a5cd2f",
+      "localSha256": "f38d1157bd4257e10b7824838b14162399569bcca0da3b38bb3f38e0c7a5cd2f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/research-result.css",
+      "cloudSha256": "18c5b239e918b62d116f5682098ad3b3fa9626740abdda92adc9538c538a7a9c",
+      "localSha256": "da59cc36f537751123db23f0fa2cfee37808c9dee08c39c747bbf7552726471d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/research-result.js",
+      "cloudSha256": "d5df8e5081101c643d14cc58281f0056090e4a75fa22c0ebaf38c8449dccc382",
+      "localSha256": "0c6ea5889733d49456958757157ba98111652040005c17b8847557fa4593c304",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/resource-icons.css",
+      "cloudSha256": "e29b5105c426bc1b810c76a5077bf20e535e640188d6e124f92d18e340de80dd",
+      "localSha256": "72041a7dc696792d85def6431b6c035abeb9949f811d685369f8a4c748d8b85d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/resource-icons.js",
+      "cloudSha256": "073c88651ccaa1404d521a6855de5fd78c21aedb9b13bf9ad9dfdcaebedb5db2",
+      "localSha256": "f2a374447e183c8d4f92ff8a2e2be72f41778d1448110bfc824f41fd511d2475",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/result-feedback.js",
+      "cloudSha256": "fc116b8e5de2e10c6aa8d3bb49d495fa313193f40cb3c736562bc71ab3669586",
+      "localSha256": "fc116b8e5de2e10c6aa8d3bb49d495fa313193f40cb3c736562bc71ab3669586",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/result-rewards.js",
+      "cloudSha256": "46c40b0516a8324bcd52a41adc7a49c7e8bc6c4c0e94953596eb1e19d1a384d0",
+      "localSha256": "46c40b0516a8324bcd52a41adc7a49c7e8bc6c4c0e94953596eb1e19d1a384d0",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/reward-feedback-policy.js",
+      "cloudSha256": "d469de0c920ff3afa726103a75b02dfc23cd220ddcdbb7d03825ab8c4779bcc8",
+      "localSha256": "bc491eba5cea47dbded0843f195b233440d230a9588bf21539feee0ecfda2a61",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/reward-reveal.js",
+      "cloudSha256": "d69675719bd0e511d4006b55e7acb905d7c16c2e76652b6446f476a47a64a08b",
+      "localSha256": "7663c4be359f52f87b1fd21701c2dd0feeb180fdcc9c8d1e95596b272f004281",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/run-growth-feedback.js",
+      "cloudSha256": "d4a2b65c2e294b879ef9e5da32791c7aebe40942816e093fcb3d1dc88791f1af",
+      "localSha256": "33c8137538b6b9c075a1dd237664c60f331f95d2477b7f84f96affd2771a32d2",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/safe-area.js",
+      "cloudSha256": "cf1e1cfc845a29e3bb6de27f85190eb6eed492eac77274fc80b12ce1ce2df7f1",
+      "localSha256": "cf1e1cfc845a29e3bb6de27f85190eb6eed492eac77274fc80b12ce1ce2df7f1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/secondary-surfaces.css",
+      "cloudSha256": "c90f76717dc43b18c16f73929939030054acf8510d307f9f95d72d30038f6166",
+      "localSha256": "c90f76717dc43b18c16f73929939030054acf8510d307f9f95d72d30038f6166",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/shop-layout.css",
+      "cloudSha256": "4ccde7fdb7d74cd7fe2dffc353345110c75628c85d00264c8c7c41c489d8e9ef",
+      "localSha256": "5524f989ddcef48b304d8d0dcf9cf03fb9498f72e098c6a49cc999faab061d18",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/shop-native-v2.css",
+      "cloudSha256": "e1bf66bc9aa15bbda566c46dbc41f1412b7e28ef31d516e87e3b4e6819709f5c",
+      "localSha256": "e19adaf8bc24d356aa61add0de211948421401914a633762d1b444f4b540cc7a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/shop-page.css",
+      "cloudSha256": "278303f8b2d8937d674c82bf6dab5d45c8decd63b8410fe2d3ae447cdb7d8cba",
+      "localSha256": "59819628021cb2b5f51dce8b578214da9b42d3a4dde29f11159bcfe405370737",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/shop-page.js",
+      "cloudSha256": "62ed07bc6e5b13f7da126d0af4d5650e1153a71c66aca332e89c11d4678401d4",
+      "localSha256": "b2f2269b4a2fcb5425f208d4aa898359e64151ab5012f046fd505ddcb9d5ad2f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/shop-popup-polish.css",
+      "cloudSha256": "bb8277937b38c1c34c675bde6e08506609776e5a892077d1d83a55fe67fd77d3",
+      "localSha256": "a92a5c865ae3fc1ccc101d4ee253e0fd22d085de9207eb1af7c2489ac18bd295",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/shop-reference.css",
+      "cloudSha256": "1ebb967b3a6bc5ee3db879bb4366cc334a475b613deab1d32521a6fc3535dbda",
+      "localSha256": "b4082adb3004f9eccf2f198426e08f14d66cfb85c724727d7ae7707f09321b7b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/showroom-camera.js",
+      "cloudSha256": "2f0dcd0e8e538423d8ab5687b688895aea962efdd67980a36bf6362a48dbba0d",
+      "localSha256": "27d8f0791c2b27fd83b6dce4828d42abf3da47cb5ddac21476293272b760b74f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/sortie-fighter.js",
+      "cloudSha256": "f955d6d7ca51d6a17244d084270f6fccce92095660077327bae923b02ec3c121",
+      "localSha256": "bff76b3cd7047c440facd50f16d55e0cff9325a74a97e16e25db5c642e2c1e32",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/sortie-icons-v2.json",
+      "cloudSha256": "2d8540ae6e41ee17a0646b60213ead246879204a5ac5c80d9427206c9646a3f8",
+      "localSha256": "8ee058f3d71bf9d6e77cdfc43a951376d156ee8b198ec23ec2fc0ee522883547",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/sortie-layout.js",
+      "cloudSha256": "4d171aada797808f76df78972b69a3882a87e21724b89b21933fbc67e70eac39",
+      "localSha256": "e1314e4a467232c6f492ecff067282de727917f718a5649f854dd4f34365b4fb",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/sortie-loading.css",
+      "cloudSha256": "952980e6a0b9ea3ff608e7b86c0d182f8e5bdee3b2a50652154ed87b5022d5bd",
+      "localSha256": "952980e6a0b9ea3ff608e7b86c0d182f8e5bdee3b2a50652154ed87b5022d5bd",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/sortie-loading.js",
+      "cloudSha256": "279d8345779dc021411a0860c13579e0bc85f067c0117980232602092270183f",
+      "localSha256": "84b773101414e3bae696cc27d12b639814ebd1a7dac853d07807b0936f9274ba",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/sortie-page.js",
+      "cloudSha256": "a446373bf14dc920e06cfe188fe53a5394a2c43ecc5fb268e95513bf5cbfca08",
+      "localSha256": "8a8d951870b7690324bb46bd89bb9a70c313e32f0248ae89c48b894c6bf26615",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/status-feedback.js",
+      "cloudSha256": "a4e58def2393ede4b2794bcb4361954130b987f74aff3f633e167a9bd5255d95",
+      "localSha256": "a4e58def2393ede4b2794bcb4361954130b987f74aff3f633e167a9bd5255d95",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/subpage-controls.css",
+      "cloudSha256": "895fce08588ea7a6129bef8a49dfcb9b6b2c6bbafb00c33a4c29e6807f9720f9",
+      "localSha256": "895fce08588ea7a6129bef8a49dfcb9b6b2c6bbafb00c33a4c29e6807f9720f9",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/supply-layout.js",
+      "cloudSha256": "40420e1dbfb556445756854620b81cfa17a5f170390ae3f26cc46e953caf87c0",
+      "localSha256": "104af6727209e2284d8a3ef2f12aafe5cd6ab683ca27dd2e72bd0c0b921f0df8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/supply-page.js",
+      "cloudSha256": "f35965128ef423c6dc47b40ae3852f48267f0b215cb042fc2e764976fd8df005",
+      "localSha256": "8ad515dd81b0f9e10da02420151c1da4e40dbfcc0c971d9d6a1a82ce39cb28f0",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/supply-pools.js",
+      "cloudSha256": "69cd8d98712da91143357beec49a527dadf8b97e37b8ce5be65094f667365631",
+      "localSha256": "556c5411a0d3f835172a6bc74ab4f6eef29cfc45d59d9525b5adff21b4c0a61c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/supply-visuals.css",
+      "cloudSha256": "deb59ef691462e9dedb39c8c3a9d470847629fe6d537890f1f992c3d1c04c0b4",
+      "localSha256": "50ca3582e1ca4346f3bfa411112422c408543239ac47e481c6a2e3f385ce3cc5",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/supply-visuals.js",
+      "cloudSha256": "9d520e3c726c0966668f21c1c71ec23750f51d1bda6464720dc7c6c7dd74130d",
+      "localSha256": "2029d9e3892d4c5100f7135309763d850f76460c4e7b6da99af1894906591540",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/surface-motion.js",
+      "cloudSha256": "f8cbd0e595a7931457f01888ea315548e6bb8755e326b8166f440f7cb8f18b15",
+      "localSha256": "614f84b46c7163c574dd51bb6d24ace16aa84b88c306310911134c4203e99b32",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/tap-feedback.css",
+      "cloudSha256": "654844a7401790f29f856e2ffd42440a953fd578b37ca104216920bf34a543c7",
+      "localSha256": "654844a7401790f29f856e2ffd42440a953fd578b37ca104216920bf34a543c7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/tap-feedback.js",
+      "cloudSha256": "084e190e5d6e2e97bdc8dd2bd5a9b1c3ff34d4c2bdc9188e9261181b10e62153",
+      "localSha256": "084e190e5d6e2e97bdc8dd2bd5a9b1c3ff34d4c2bdc9188e9261181b10e62153",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/task-popup-polish.css",
+      "cloudSha256": "eccb96f8a2df4b5829123f9e832413a5afc6c0df8a9139ae300e3c000c6a5f88",
+      "localSha256": "eccb96f8a2df4b5829123f9e832413a5afc6c0df8a9139ae300e3c000c6a5f88",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/threat-feedback.js",
+      "cloudSha256": "b76f041fbfff9fb138a98f3ef74925a8138a69b62c1517e6c175c7dc693189d3",
+      "localSha256": "b76f041fbfff9fb138a98f3ef74925a8138a69b62c1517e6c175c7dc693189d3",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/three-surface.js",
+      "cloudSha256": "aeae896400c0278dd39786431d67b237aceb81c00ec9d4f88b9903a84e54b139",
+      "localSha256": "abb96da40fc7aef8f0f18804cbadfc9ced3b7738dedc992f8121fc973dedcf67",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-image-source.js",
+      "cloudSha256": "b51ece2468a9c234913c46ed439d5f51c39b4bcf95dc3743f4110210a53cf6ff",
+      "localSha256": "e401b82668c210844d1017a54964fd9d13b0279953c016c9eb5c7c0428c506ff",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-markup.js",
+      "cloudSha256": "3b8119ce3d207d2ede7dc70e76de24ff7f464d8422cdb328f8646ea62798169b",
+      "localSha256": "e94b5d664da04b63495667663b49831b7a882730d5bf1fdbfd9fa8068c3025d7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-motion-plan.js",
+      "cloudSha256": "3bed3ad557f2086d126bf7611412253a5afde8aca14850fdc2a20282323180ce",
+      "localSha256": "f7cbd1d636a67ac7a8bdc82f9c2af1a2de0dd5b026848a9679ce2b597390295b",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-motion.css",
+      "cloudSha256": "108341cfb7c380cf5733ecb6e2589953bd27deda79c0d45a76849cb6b5239465",
+      "localSha256": "40ee1078041dc39976754a91aa5dd60f218f89d172bdc94f67e89af30e943236",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-motion.js",
+      "cloudSha256": "4eee704f808b9b5aede718e030d4095b429dbc3ab240a319d31d138c15e4aa72",
+      "localSha256": "649c7e0535e6df700f28c70acbb9dd75267416ee47e70a605c29b18ee8405336",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-polish.css",
+      "cloudSha256": "31837cffc1e6c140e27654b00d69c26e24e2af55473ff7554640fbb81e924871",
+      "localSha256": "71818f137ce8294580d6118ed220d33bd1bb8ec3d1c7b18ee9849e074b2e255f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/ui-symbols.js",
+      "cloudSha256": "c3fddf4c3f43c636b5ce97a1008aa4f1885ce7762e079f30807e68d31d24b25f",
+      "localSha256": "a0690e302156caa6055012f56f2502be1d216cf8893fa524a6d9e6785e700ae8",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-attack-card.js",
+      "cloudSha256": "b68feb66c0ba7c1467c6f484e1cb21234db0aa187da59c8e6955a0ac19135f53",
+      "localSha256": "ac770762168db18ae1470df5fa946f58f236f0574d386d1ccf16aba402d6e66a",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-feedback-profile.js",
+      "cloudSha256": "b919c3aabd81b3ae61579549dd917f80de3298498c20ed032eaef141136d4a40",
+      "localSha256": "b919c3aabd81b3ae61579549dd917f80de3298498c20ed032eaef141136d4a40",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icon-layout.js",
+      "cloudSha256": "d3fc750c8ca0b0b2004c583481bc18178cfdf0cf149b8e7456f56b2c2909cfd1",
+      "localSha256": "d3fc750c8ca0b0b2004c583481bc18178cfdf0cf149b8e7456f56b2c2909cfd1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/beam.svg",
+      "cloudSha256": "527a8f8e65e896963aa20510dfcf0efc3339cab7da4595f476212dc8089f76ab",
+      "localSha256": "1fe48a1eccb8fc03ff3b7bcecc03643600ca17eafff8caf6fb6af57e44a439a5",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/blades.svg",
+      "cloudSha256": "689230b59bc0f490f2e058e38589970943ffa7ef37e9411e44bf97a073790041",
+      "localSha256": "daddca5314d5cd9454ddfd4f57a6e82e9d8de77bfb48c869b03f861a25a80d45",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/cadence.svg",
+      "cloudSha256": "6bfe526213eeeca52224374e4909b87bbb79d3ce27456625ebe17a4141eded94",
+      "localSha256": "319624d0e185639a10e8db5dab9a60f7b047566beeae589b7fc79ddacc3de00d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/cannon.svg",
+      "cloudSha256": "d2a0d9a7492b9aae1dc0b6f275cc431e463227fe28ffff579309dbe532631d75",
+      "localSha256": "35dafc00a8d90032bfff0eb1d55a4687e78d97bffc91392a1186021880fc7273",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/coverage.svg",
+      "cloudSha256": "5facb255eda9fc3d5d8175dd89225ade65236cf9d7cdbe7b220b01b6867c4d49",
+      "localSha256": "b6e78ac0e2912a61292c42e81301896c182cb0902f364232b2077701365e4426",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/drone.svg",
+      "cloudSha256": "2df7540cf40e1cf957a1a81e3cfa3aa0e6a387f7a9d9bf5a2a9bea00e698c9f1",
+      "localSha256": "81dc04cea9fdb046dae467a287b6c7174da14cce7dd9b9453876cc4352f19abd",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/evolve-1.svg",
+      "cloudSha256": "b4132d31ac88744d4c56a8f5d2e67d3af9e373b4becd6b6462b192ff2d120ea7",
+      "localSha256": "a7508612170725009ce3270e146adf4e9678c5ba46f644ff7ef2ba82534dd691",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/evolve-2.svg",
+      "cloudSha256": "91a5a10f93ad67e20b68779e08c1db72029fca27c86f426dc06fc9c6be54f869",
+      "localSha256": "3e6cdbd2e50dc70196db397cbaabfee084087c7907affabf583f2704a7691f79",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/evolve-3.svg",
+      "cloudSha256": "faff7155c0accf328b05d8705c7ea7fc12909057bde62d3770892cb749652cff",
+      "localSha256": "5a65e4c5bf012b830a723e1f15c08144001cf63ca39b8fd70eb5dfffd0b2d016",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/freeze.svg",
+      "cloudSha256": "a84b23295c009cc4919468a3c5228331731b6d8defebe8958a4e1c98e05b91c8",
+      "localSha256": "3b5d753c7abf142d12ba5499c9d939ee86a7fe24e1ce04865e3e91f86de14dad",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/gravity.svg",
+      "cloudSha256": "a00b5ace47839267933d1744a9feb0131a329d46c075b5d6ced936e915d5d1e2",
+      "localSha256": "abe84cf914e07118ed50fbb141bd25ccf2e0358a17e5f9dab8c7344183f83802",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/grenade.svg",
+      "cloudSha256": "dc77d5a3f2a35235632b281b280a9ffe64eaa3e9f6d7e6de7693eb6333b858f8",
+      "localSha256": "d5432e34c88cf4f760ab24521d909a87bd226cf5a455d2c9aa3c92d9d582e155",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/laser.svg",
+      "cloudSha256": "5fa96dcfb20272da84dd6fd90f0039e7647085684ad795d74de1e8d2027ed7a5",
+      "localSha256": "dc3e2fe848fce39c4075cd1e14e5ea5750ffd958a2c18601d7d184cbaed4a990",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/lightmine.svg",
+      "cloudSha256": "586059881775e8638388265319379b0067629486ea556822ba5eb7a1c0e08e6a",
+      "localSha256": "b5cf5b8b5fb2b355010802bb7631d2b34d229781324800664800da6eaf5f3c50",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/lightning.svg",
+      "cloudSha256": "bd02e1760398509b7c96ea88a9f0343656908d6236e3ba2151b49f97cfb6c8f6",
+      "localSha256": "c05a9e1f74b55198e0e742297c3cafb3b6ff65bcd092a438b4750293331e1ae0",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/mine.svg",
+      "cloudSha256": "d2c608edac787375c03b63b40ced241052832aa60388a28c5fbfde8e3fda8925",
+      "localSha256": "f8b6f414d21bdba3a6edb74c8ccbb80cd04028b067f3649f5d098fc5d4368815",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/orb.svg",
+      "cloudSha256": "54df613ac5a746bfa981d208ae44130508fe2588f1f4aa88c341ab97bce16866",
+      "localSha256": "4235e8d7a1597158ee1ba735559c69145c0f5fa5cb5316b33e41fe8b74de6148",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/power.svg",
+      "cloudSha256": "f93299ae619f29193293dadf45322ca47be2acdf02c093c7cb8e1935e7301134",
+      "localSha256": "d695424852947b91e38cc2431bfc491de45a05ea7d303d9ec41700f44b5a33a4",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/pyro.svg",
+      "cloudSha256": "0c2f1ac694c851fe9bd40c08842ff6f1ba3e526377ca4df06fe8f00d01cafe3e",
+      "localSha256": "ba631320b63739d6cd3897da4d6e83f203dfbe8f550af9d98e754f176db8a640",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/rail.svg",
+      "cloudSha256": "aa425f7ea7074a6f293728a11e84f631f24e09c3e7f86c13875c05e25f85de91",
+      "localSha256": "dae523a19443214c99949383c0bbff5871ffbf82521bd5ba7f661c3c66424fd1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/rocket.svg",
+      "cloudSha256": "61785742ecb63d95bd7c81c73abebb7b13562ee4a9e761615792837e3e8bbfef",
+      "localSha256": "72b7b6c888c342629946432e9e75a287387ba1977503c85713f5065b3be9ac9f",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/scatter.svg",
+      "cloudSha256": "d5cf1c12a362c8de5e46d6cbe32d31b325a177641c30e1fa5f3904958efad6db",
+      "localSha256": "e5eb4db314eff9ea17619316dfed46c3a32a34fe2b318f8c2e560459b2c9d40e",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/shield.svg",
+      "cloudSha256": "60e8d3f0e6dd9d8fdd07833ff99ba694aeb850a7ee234d2d7983fe28bff4d031",
+      "localSha256": "10c71d50c0c2b0e955bd56450494d9c37007756b35ccea4e6ede2dca22fca8f3",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/sidegun.svg",
+      "cloudSha256": "423b6488e3743f13d8a77ca3dfae9c7b0e972fd7e0afeb05d2cbd38374ca9dff",
+      "localSha256": "b4c9d504a9e7573916ed70a700e1bc2ce20956b195759a3d848ac3f0e966140c",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/tail.svg",
+      "cloudSha256": "1429de1cf5968a31c76cd1b6a69ce3394f6e2078c5a1f02a6444b8e05e9b0c5d",
+      "localSha256": "95c245240bc10d93b450f89e29f5be6dfded0be5a2a827fe35871c2998f884d3",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-icons/toxin.svg",
+      "cloudSha256": "43922768f22417d50bf69325097e676c435269193714cadaa0dfc5a87bf87ade",
+      "localSha256": "a27b2b05ec9ffd1d691ed42ce7f0abd1bcca11daf5bfc9709621a45930a3dfe9",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-layout.js",
+      "cloudSha256": "14183e6110ccd773d6fb26c16fd8a9877e2d99fbf899264955a649cac3d70ba8",
+      "localSha256": "7855828c19fef67295d6f3774460bd675e3fa864c263bf44c2c15f576f574827",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-page.js",
+      "cloudSha256": "1190a6be8a68b2f817845bf4d0b70d4ce4d4d58dd6c824ea70e2dbf84dc1345b",
+      "localSha256": "56fe9eeb54f23e2a8145447aed3a03e2fa025b70440fb454507f1e6886af115d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-summary.js",
+      "cloudSha256": "e85486910ceae9fe3889fa1ae066cde9775868fe21acd37211f763723ea7677a",
+      "localSha256": "3bbbecee08c0cd790d2d51d1a32399f9cb58e85089667b5f34a49af5281e8508",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/upgrade-weapon-icon.js",
+      "cloudSha256": "aa8a0059d07a9de02cfd24cee9e6a522a9dd1db76e0d2efce3ea2c1854759101",
+      "localSha256": "b541c31e6b882dcc4b6759fd50a3d8ab2385690345cf0cfc2d14d3aee85368e1",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/weapon-catalog-page.css",
+      "cloudSha256": "e38e483374322c6485c4c0d47fe3cdd96ba3fdd7b650b6c6e8c97a61023d3d8e",
+      "localSha256": "e278854a84ef0c7d5c17cd0ef3f35f1cf54c44d641ba9057cc36beec52c06eb7",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/weapon-catalog-page.js",
+      "cloudSha256": "e4065f9d0fde8a6911ef0a06e53609520de8eb5f21adbb48808d229d0b1ee93d",
+      "localSha256": "a31eef23eaa861b7c8751185ba59a112c9b68a7e91b597430802a7043830904e",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/weapon-catalog-skills.js",
+      "cloudSha256": "686005e9c8f399179249174cbb7c62619f1c6ab43e1f432e81528cab5b2b4768",
+      "localSha256": "ef092b17a0d5e87b6604c850c472ba41ddf7529a01cbbe5c2bbafd2f25b61401",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/weapon-diagrams.js",
+      "cloudSha256": "f5552c501fb67441e27945478c923328b67504b571d733600e29e4f5de4f6d8e",
+      "localSha256": "22bb34bb1d7d9ee616e67361478ad063bf77669c0397abc595a31ca15fc2caed",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/weapon-equip-controls.css",
+      "cloudSha256": "9a2622d129e7471b50e43c619d24db4f8ab175e926071f1a0f74556c1bc8b3e4",
+      "localSha256": "9a2622d129e7471b50e43c619d24db4f8ab175e926071f1a0f74556c1bc8b3e4",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/weapon-equip-controls.js",
+      "cloudSha256": "02031391fa3ab22c98be12ec91947a8b0401845a6145ffd2723052fa6342f383",
+      "localSha256": "538eba9d4165a24b387ba477bced9e44873e2bfc199016b0e55afaad828ea35d",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/weapon-icon-source.js",
+      "cloudSha256": "f79c7398d443c14329ef8cea9afe7b5d9cf0d7720931ac1cfc1247d50cdab7b3",
+      "localSha256": "9bfe05fa3a4c380059a978a6bf10489520c55d3482641ffbe9283d9312c15cdd",
+      "matchesCloud": false
+    },
+    {
+      "path": "src/ui/weapon-preview.js",
+      "cloudSha256": "7109a5b90880467eef5eea0b3e9649bdba18044a1d4c23829e74a565578572ac",
+      "localSha256": "57eafe18f4178ca98960fcd5b8e535d3cbd6a1d10c8a4eb3845f457492991d03",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/workshop-reference-page.css",
+      "cloudSha256": "1fe36d05be86702edf86fe6aeb401d6e265a44b01c1af0f76aee5f6f56c3b87f",
+      "localSha256": "53877f64cd66249e3db254c8769f73c1c1a3745a2be8f158e36d65c54d961ac0",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/workshop-reference-page.js",
+      "cloudSha256": "7c4e55520a1b48912ea236e564421375043fea8d56d048837646c955f244c1a4",
+      "localSha256": "b55742a2c33a20e7b2ef8c5ed618024eddca8ed59ae054418d7975d65544cc80",
+      "matchesCloud": true
+    },
+    {
+      "path": "src/ui/workshop-scene.css",
+      "cloudSha256": "145a075d9d6d068a9ff0b0d65d7fff0d6a4cad25876e836c345ad7aa5bbbbb00",
+      "localSha256": "145a075d9d6d068a9ff0b0d65d7fff0d6a4cad25876e836c345ad7aa5bbbbb00",
+      "matchesCloud": true
+    }
+  ]
+}

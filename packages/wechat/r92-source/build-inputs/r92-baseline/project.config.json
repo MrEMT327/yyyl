@@ -1,0 +1,23 @@
+{
+  "appid": "wx0b821a6c8d36aed6",
+  "compileType": "game",
+  "projectname": "少女航线 · CDN 联调测试",
+  "libVersion": "3.8.0",
+  "setting": {
+    "urlCheck": false,
+    "es6": false,
+    "minified": false
+  },
+  "packOptions": {
+    "include": [
+      {
+        "type": "folder",
+        "value": "battle-data/art"
+      },
+      {
+        "type": "folder",
+        "value": "lobby-backgrounds/art"
+      }
+    ]
+  }
+}

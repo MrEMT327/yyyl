@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "source": "弹壳战机 1.1.6 TapTap / AirplaneGun_AirplaneGunConfig",
+  "binarySha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+  "config": [
+    {
+      "ID": 101,
+      "key": "WeaponSlot2PreOpenLevel",
+      "TypeInt": 10
+    },
+    {
+      "ID": 102,
+      "key": "WeaponSlot2UnlockLevel",
+      "TypeInt": 15
+    },
+    {
+      "ID": 103,
+      "key": "WeaponEquipSkillLimit",
+      "TypeInt": 2
+    }
+  ]
+}

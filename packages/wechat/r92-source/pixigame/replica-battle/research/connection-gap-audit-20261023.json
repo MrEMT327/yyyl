@@ -1,0 +1,121 @@
+{
+  "kind": "read-only-player-reachable-connection-audit",
+  "date": "2026-10-23",
+  "scope": {
+    "project": "D:/少女航线/yyyl/pixigame",
+    "directories": ["src/ui", "src/peripheral", "src/replica", "replica-battle/kernel"],
+    "checks": ["提示文本定位", "当前UI入口可达性", "动作路由", "库存/奖励消费者", "正式60章内容能力与初始化", "既有原包表与离线证据交叉核对"],
+    "excluded": ["node_modules", "dist重复关键词", "历史文档作为当前实现的替代证据", "充值和内购", "独立固定件试玩任务池"],
+    "productionLogicModified": false,
+    "productionCopyModified": false,
+    "sourceValuesModified": false,
+    "userSaveModified": false,
+    "notClaimed": ["全原版系统100%复刻", "60章逐关完整通关实测", "97个Jelly实体逐一视觉验收", "服务器私有随机奖励算法已恢复"]
+  },
+  "functionalGapCount": 8,
+  "findings": [
+    {
+      "id": "equipment-box-free-and-pity",
+      "name": "装备箱免费抽与保底",
+      "classification": "真实缺口，原版免费/保底状态契约仍待核实",
+      "observed": "截图中的提示在当前局域网宝箱概率页复现；不是单纯旧文案。付费普通抽取和普通箱每20次领取高级券已经可用。",
+      "implementation": "freeStateKnown固定false；只有箱券/钻石支付与逐次ticket抽取；nativeBoxProgress仅保存普通箱累计开箱与领券次数。未实现免费次数/冷却以及品质保底计数。",
+      "evidence": ["src/ui/shop-page.js:72", "src/ui/shop-page.js:74", "src/ui/native-equipment-box-detail.js:5", "src/ui/airframe-equipment-page.js:61", "src/replica/native-client-rules.js:40", "src/replica/native-equipment-boxes.js:55", "src/replica/native-equipment-boxes.js:65", "src/replica/native-box-progress.js:3"],
+      "originalEvidence": "DrawBox_DrawBox的FreeCD字段、LootBoxDto的FreeCount/FreeTs/Pc/Pcs/AllCount等元数据已存在；不能仅根据字段名编造初始免费状态或保底奖池/重置规则。SmallEquipBoxCharge明确为20次、112号券1张，已经接入。",
+      "preserve": "高级箱驾驶员合计3%的用户自定义奖池及重复转换规则，不改回原版奖池。"
+    },
+    {
+      "id": "patrol-settlement",
+      "name": "普通巡逻、体力快速巡逻、广告快速巡逻结算",
+      "classification": "原版服务器结算证据不足",
+      "observed": "页面可打开，普通领取、体力与广告领取按钮禁用；开发样例按钮不等于正常巡逻结算。独立浏览器已核实。",
+      "implementation": "nativeSettlementPending为true；sampleBased为false；idle/stamina/ad正式模式均拒绝，不扣体力、不消耗广告次数、不发推算奖励。",
+      "evidence": ["src/ui/patrol-center.js:53", "src/ui/patrol-center.js:63", "src/ui/patrol-center.js:68", "src/peripheral/system.js:832", "src/replica/sample-patrol.js:23", "src/replica/sample-patrol.js:30", "src/replica/native-patrol.js:64"],
+      "unknown": ["实际累计物品数量", "随机掉落次数与概率", "完整倍率", "服务器快速巡逻剩余次数"]
+    },
+    {
+      "id": "repeat-battle-materials",
+      "name": "重复战斗图纸与装备箱券掉落",
+      "classification": "原版数量与概率证据不足",
+      "implementation": "结算调用仍在，但材料发放函数只保留历史台账，不新增这些材料。金币、首通与固定章节奖励是独立链，不应说所有战斗结算未接。",
+      "evidence": ["src/ui/backpack-item-sources.js:18", "src/ui/backpack-item-sources.js:35", "src/ui/native-lab-page.js:36", "src/replica/battle-material-rewards.js:13", "src/replica/battle-material-rewards.js:15", "src/replica/native-settlement.js:20"]
+    },
+    {
+      "id": "chapter-random-rewards",
+      "name": "章节波次奖励中的随机图纸部分",
+      "classification": "服务器随机发放规则未核实",
+      "counts": {"chapterRewardRows": 180, "mixedRandomRows": 25},
+      "implementation": "25档均是混合奖励；固定部分可以先领，10010007/10010008随机组原样留档未发放，固定领取不阻塞后续。不能把整条章节奖励列作未接通。",
+      "evidence": ["src/ui/chapter-rewards-panel.js:6", "src/ui/chapter-rewards-panel.js:21", "src/replica/native-acquisition.js:19", "src/replica/native-acquisition.js:99"]
+    },
+    {
+      "id": "star-random-rewards",
+      "name": "3星和21星奖励",
+      "classification": "同样缺随机奖励规则，但整档拦截方式不同",
+      "counts": {"blockedStarThresholds": [3, 21], "otherIndependentTiers": 58},
+      "implementation": "两档各含钻石10及随机装备图纸组参数100，当前整档拒绝领取，固定钻石也一起锁住。参数100不能直接当作已确认应发100张某类图纸。",
+      "evidence": ["src/ui/native-star-rewards-panel.js:8", "src/replica/native-star-rewards.js:32", "src/replica/native-star-rewards.js:48"]
+    },
+    {
+      "id": "research-blueprint-shop",
+      "name": "每日商店科研图纸801至811",
+      "classification": "商品库存适配缺失，服务器上架周期与概率未重建",
+      "implementation": "当前商店没有科研图纸商品，resource映射也没有801至811。原版154个商品条目有留存证据，但不能因此编造每日刷出规则。科研升级/激活和其他日商店商品已运行。",
+      "evidence": ["src/ui/backpack-item-sources.js:37", "src/peripheral/shop.js:8", "src/peripheral/shop-reference-data.json", "replica-battle/research/original-daily-shop-research-20261022.json:2", "replica-battle/research/original-daily-shop-research-20261022.json:7311"]
+    },
+    {
+      "id": "chip-consumers",
+      "name": "芯片抽取与洗炼相关消费者",
+      "classification": "真实系统实现缺口，完整原版规则未在本轮恢复",
+      "implementation": "量子密钥111和芯片洗炼电路129会从正常星奖入包，但当前没有对应抽取/洗炼消费者，背包回退到使用功能暂未开放。物品入库不等于系统可用。",
+      "evidence": ["src/replica/native-resource-channels-source.json:202", "src/replica/native-resource-channels-source.json:217", "src/replica/native-backpack-use.js:15", "src/replica/native-backpack-use.js:30", "src/ui/backpack-use-controls.js:53"]
+    },
+    {
+      "id": "wingman-consumers",
+      "name": "僚机装配与培养",
+      "classification": "系统暂停，只有部分本地材料替代规则",
+      "implementation": "第24章第10波固定奖励30001可领取，但没有对应僚机装配/培养消费者。151和154有已授权的1:1换高级券规则，不能说全部无用途，也不能把兑换说成原版僚机已恢复。",
+      "evidence": ["src/replica/native-acquisition-catalog.json:1182", "src/replica/native-acquisition.js:13", "src/replica/native-material-replacements.js:3", "src/ui/backpack-use-controls.js:53"]
+    }
+  ],
+  "battleFidelityLimitations": [
+    {
+      "id": "equal-distance-wall-corner-order",
+      "severity": "warning",
+      "chapters": [9, 28, 30, 33, 43, 53, 58],
+      "warningCount": 13,
+      "entities": [330019, 330020],
+      "description": "缺少原物理场景的完整枚举顺序，仅在不同墙完全等距的角落命中时可能选不同反射面；不等于普通反弹未实现或整关不可玩。",
+      "evidence": ["replica-battle/kernel/content-capabilities.ts:97", "replica-battle/kernel/native-map-out-walls.ts:45"]
+    },
+    {
+      "id": "independent-jelly-hurt-animation",
+      "severity": "presentation-gap",
+      "description": "独立Jelly受击形变未与受击事件完整挂接，非primary Animator固定defaultState，不能把受击tint当作完整形变。具体追到第20关310016/320013/320051。",
+      "sourceReach": {"chaptersWithJellyId": 60, "uniqueEntitiesWithJellyId": 97, "chapterEntityReferences": 674},
+      "coverageLimit": "97个实体为静态来源覆盖，未逐一录屏或完整通关；当前缺口不等同于伤害或碰撞失效。",
+      "evidence": ["replica-battle/kernel/native-enemy-animation.ts:73", "replica-battle/chapter20-enemy-art.ts:128", "replica-battle/kernel/renderer.ts:561", "replica-battle/research/chapter20-enemy-art.md:20"]
+    }
+  ],
+  "falsePositivesAndBoundaries": [
+    {"text": "驾驶员开箱暂未开放", "status": "旧fallback，正式入口有pilotSupply时已替换", "evidence": ["src/ui/native-material-page.js:11", "src/ui/native-material-page.js:13", "src/peripheral/system.js:1388"]},
+    {"text": "旧每日/每周任务与活跃不可领取", "status": "旧动作封存，新pilotSupplyPanel任务入口可用；本地规则不冒充原版", "evidence": ["src/ui/daily-center.js:103", "src/replica/native-economy-availability.js:5"]},
+    {"text": "researchRefine/researchUpgrade暂未开放", "status": "旧动作；当前天赋researchDraw与实验室replicaCollection已有独立实现", "evidence": ["src/peripheral/system.js:876", "src/peripheral/system.js:889", "src/peripheral/system.js:903"]},
+    {"text": "出击配置包含未接通效果", "status": "按计算结果显示的安全校验，不是每个出击配置都有缺口", "evidence": ["src/ui/native-lab-page.js:55", "src/replica/native-loadout-details.js:18"]},
+    {"text": "奖励待保存/广告未就绪/尚未解锁", "status": "事务、平台服务、正常进度门槛，不一律算未实现"},
+    {"text": "本地改制规则尚未按原版核实", "status": "补给/成长/高级箱用户自定义规则可用但非原版；本轮保留，不改数值"},
+    {"text": "基础角色成长字段尚未支持", "status": "底层id/level/star/starStep仅允许默认值，但无当前正常玩家成长入口，未计入8类可达缺口", "evidence": ["src/replica/native-progression.js:45"]},
+    {"text": "历史研究文档称ChooseSkillOnFirst、220421未接", "status": "历史结论已过时，现行实现已接，不计当前缺口", "evidence": ["replica-battle/research/material-progression-integration.md:34", "replica-battle/research/cooldown-reset197.md:26"]}
+  ],
+  "validation": {
+    "kernel": {"chaptersInitialized": 60, "hardErrors": 0, "warnings": 13, "filteredCurrentCards": 0, "fullPlaythroughPerformed": false},
+    "kernelResult": "C:/Users/lvan/Documents/ChatGPT/模板/kernel-capability-audit-results.json",
+    "kernelScript": "C:/Users/lvan/Documents/ChatGPT/模板/kernel-capability-audit.mjs",
+    "browser": {"isolatedContext": true, "actions": ["查看普通箱概率", "查看巡逻", "查看快速巡逻"], "mutatingGameActions": 0, "pageErrors": 0},
+    "browserResult": "C:/Users/lvan/Documents/ChatGPT/模板/.scratch/connection-ui-audit-20261023.json",
+    "shopTestsWithBrowserBaseFixture": {"tests": 26, "passed": 24, "failed": 2, "knownFailures": ["旧高级箱十连测试对只有1星的40100仍期望9张同名卡，而当前满星重复按本地规则转积分", "旧shop UI测试helpers缺img函数，浏览器真实页面已正常打开"]},
+    "shopTestResult": "C:/Users/lvan/Documents/ChatGPT/模板/.scratch/connection-box-tests-20261023.txt",
+    "claim": "现有普通箱20抽领券、支付与回滚专项通过；没有声称整套测试全绿。"
+  },
+  "nextEvidencePriorities": ["先核装备箱免费状态、保底奖池与重置规则，再决定可直接接入的部分", "统一评估星级奖励固定部分与随机部分分离策略，未经授权不改变领取语义", "继续恢复巡逻/随机材料的服务器结算契约，不根据表内预览列编造概率", "单独界定芯片、僚机系统的完整复刻范围与原包可用证据"]
+}

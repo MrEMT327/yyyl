@@ -1,0 +1,57 @@
+{
+  "source": "Chapter1 s_map0017_2 alpha>=128 footprints; original PNGs are measurement evidence only",
+  "viewWidth": 20.373750686645508,
+  "loopUnits": 200,
+  "projectionScale": 1.21875,
+  "phase": 16.793418222351434,
+  "regions": [
+    {
+      "asset": "supply-west",
+      "source": "land2_2_combine_1",
+      "x": -13.245578622631685,
+      "z": -23.00611907933664,
+      "width": 20.63078953027725,
+      "height": 24.80331209366404
+    },
+    {
+      "asset": "harbor-east",
+      "source": "land1_3_combine_1",
+      "x": 12.360000918712517,
+      "z": 16.793418222351434,
+      "width": 21.222855005264282,
+      "height": 28.512703768754193
+    },
+    {
+      "asset": "headland-east",
+      "source": "map17_land_3",
+      "x": 15.441101104780554,
+      "z": -55.35207557514093,
+      "width": 22.79673734571322,
+      "height": 26.570517243848542
+    },
+    {
+      "asset": "airfield-west",
+      "source": "land1_1_combine1",
+      "x": -12.893456001542518,
+      "z": 49.994599861028334,
+      "width": 21.20836114883423,
+      "height": 28.505865589200788
+    },
+    {
+      "asset": "harbor-west",
+      "source": "land1_2_combine1",
+      "x": -10.21148947790257,
+      "z": -80.30000273302184,
+      "width": 21.222896075248716,
+      "height": 28.520011156134316
+    },
+    {
+      "asset": "radar-east",
+      "source": "land2_1_combine1",
+      "x": 13.35680711278722,
+      "z": 80.19877976430068,
+      "width": 20.621788930892947,
+      "height": 24.822527048237788
+    }
+  ]
+}

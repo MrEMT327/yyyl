@@ -1,0 +1,665 @@
+{
+  "schema": 1,
+  "assets": {
+    "/art/aircraft-ui-v1/pilot-01-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        133,
+        74,
+        451,
+        335
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-03-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        179,
+        59,
+        383,
+        343
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-04-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        180,
+        87,
+        453,
+        319
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-05-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        157,
+        57,
+        395,
+        363
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-07-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        141,
+        58,
+        476,
+        360
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-08-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        119,
+        110,
+        505,
+        290
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-09-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        136,
+        69,
+        455,
+        301
+      ]
+    },
+    "/art/aircraft-ui-v1/pilot-10-preview.webp": {
+      "size": [
+        768,
+        499
+      ],
+      "viewBox": [
+        130,
+        64,
+        445,
+        338
+      ]
+    },
+    "/art/blue-hand-cannon-v28-socket/portrait-outline-v3.png": {
+      "size": [
+        2048,
+        2048
+      ],
+      "viewBox": [
+        663,
+        131,
+        704,
+        1772
+      ]
+    },
+    "/art/blue-ponytail-v15/portrait-reference-style-v1.png": {
+      "size": [
+        2048,
+        2048
+      ],
+      "viewBox": [
+        172,
+        35,
+        1701,
+        1948
+      ]
+    },
+    "/art/commander-live2d-v1/portrait-style-v9.png": {
+      "size": [
+        2048,
+        2048
+      ],
+      "viewBox": [
+        364,
+        24,
+        1317,
+        1926
+      ]
+    },
+    "/art/engineer-ee76/portrait-inner-hem-v5.png": {
+      "size": [
+        1200,
+        1536
+      ],
+      "viewBox": [
+        301,
+        14,
+        544,
+        1503
+      ]
+    },
+    "/art/golden-yoga-v12/portrait-reference-style-v1.png": {
+      "size": [
+        1000,
+        1360
+      ],
+      "viewBox": [
+        200,
+        88,
+        524,
+        1199
+      ]
+    },
+    "/art/luna-maid-v1/portrait.png": {
+      "size": [
+        1200,
+        1600
+      ],
+      "viewBox": [
+        303,
+        77,
+        677,
+        1442
+      ]
+    },
+    "/art/orange-jetboard-v5/portrait-hip-v3.png": {
+      "size": [
+        1536,
+        1536
+      ],
+      "viewBox": [
+        452,
+        197,
+        895,
+        1158
+      ]
+    },
+    "/art/project-weapon-clean-v2/20101.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        34,
+        58,
+        322,
+        267
+      ]
+    },
+    "/art/project-weapon-clean-v2/20102.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        47,
+        70,
+        298,
+        240
+      ]
+    },
+    "/art/project-weapon-clean-v2/20201.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        41,
+        72,
+        302,
+        246
+      ]
+    },
+    "/art/project-weapon-clean-v2/20202.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        47,
+        59,
+        300,
+        258
+      ]
+    },
+    "/art/project-weapon-clean-v2/20301.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        45,
+        72,
+        307,
+        252
+      ]
+    },
+    "/art/project-weapon-clean-v2/20302.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        42,
+        62,
+        306,
+        253
+      ]
+    },
+    "/art/project-weapon-clean-v2/20401.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        45,
+        58,
+        302,
+        260
+      ]
+    },
+    "/art/project-weapon-clean-v2/20402.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        35,
+        67,
+        311,
+        238
+      ]
+    },
+    "/art/project-weapon-clean-v2/20501.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        47,
+        36,
+        291,
+        309
+      ]
+    },
+    "/art/project-weapon-clean-v2/20502.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        41,
+        43,
+        303,
+        289
+      ]
+    },
+    "/art/project-weapon-clean-v2/20601.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        42,
+        72,
+        303,
+        247
+      ]
+    },
+    "/art/project-weapon-clean-v2/20602.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        46,
+        59,
+        299,
+        244
+      ]
+    },
+    "/art/project-weapon-clean-v2/20701.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        42,
+        67,
+        312,
+        249
+      ]
+    },
+    "/art/project-weapon-clean-v2/20702.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        62,
+        66,
+        284,
+        248
+      ]
+    },
+    "/art/project-weapon-clean-v2/20801.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        44,
+        59,
+        302,
+        273
+      ]
+    },
+    "/art/project-weapon-clean-v2/20802.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        47,
+        50,
+        295,
+        262
+      ]
+    },
+    "/art/project-weapon-clean-v2/20901.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        43,
+        48,
+        303,
+        291
+      ]
+    },
+    "/art/project-weapon-clean-v2/20902.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        38,
+        32,
+        311,
+        308
+      ]
+    },
+    "/art/project-weapon-clean-v2/21001.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        37,
+        71,
+        315,
+        238
+      ]
+    },
+    "/art/project-weapon-clean-v2/21002.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        38,
+        76,
+        308,
+        229
+      ]
+    },
+    "/art/project-weapon-clean-v2/21101.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        50,
+        40,
+        302,
+        297
+      ]
+    },
+    "/art/project-weapon-clean-v2/21102.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        49,
+        40,
+        291,
+        294
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_beam.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        34,
+        48,
+        321,
+        268
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_blades.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        35,
+        57,
+        318,
+        241
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_drone.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        48,
+        43,
+        289,
+        306
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_freeze.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        42,
+        45,
+        310,
+        284
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_gravity.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        37,
+        28,
+        318,
+        321
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_grenade.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        66,
+        37,
+        263,
+        304
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_lightmine.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        42,
+        36,
+        303,
+        303
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_mine.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        42,
+        39,
+        304,
+        302
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_orb.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        79,
+        41,
+        236,
+        306
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_pyro.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        34,
+        46,
+        321,
+        299
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_rail.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        54,
+        60,
+        291,
+        254
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_shield.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        33,
+        34,
+        322,
+        319
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_sidegun.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        32,
+        75,
+        320,
+        228
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_tail.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        37,
+        30,
+        318,
+        321
+      ]
+    },
+    "/art/project-weapon-clean-v2/aux_toxin.webp": {
+      "size": [
+        384,
+        384
+      ],
+      "viewBox": [
+        55,
+        44,
+        281,
+        298
+      ]
+    },
+    "/art/purple-doctor-v1/portrait.png": {
+      "size": [
+        1024,
+        1536
+      ],
+      "viewBox": [
+        347,
+        53,
+        490,
+        1433
+      ]
+    },
+    "/art/violet-astra-v31/portrait.png": {
+      "size": [
+        1208,
+        1280
+      ],
+      "viewBox": [
+        34,
+        35,
+        1016,
+        1080
+      ]
+    },
+    "/art/white-gold-luoen-r13/portrait-face-separation-v2.png": {
+      "size": [
+        2700,
+        2700
+      ],
+      "viewBox": [
+        1224,
+        222,
+        952,
+        2438
+      ]
+    }
+  }
+}

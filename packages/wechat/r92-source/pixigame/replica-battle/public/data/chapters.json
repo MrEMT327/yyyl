@@ -1,0 +1,678 @@
+{
+  "version": 1,
+  "defaultChapterId": 1,
+  "chapters": [
+    {
+      "id": 1,
+      "name": "暗影基地",
+      "waveCount": 15,
+      "chapterFile": "chapter1",
+      "geometryFile": "geometry-chapter1",
+      "mapStyleId": 10001,
+      "bossEntityIds": [
+        340002
+      ]
+    },
+    {
+      "id": 2,
+      "name": "远古遗迹",
+      "waveCount": 15,
+      "chapterFile": "chapter2",
+      "geometryFile": "geometry-chapter2",
+      "mapStyleId": 10002,
+      "bossEntityIds": [
+        340021
+      ]
+    },
+    {
+      "id": 3,
+      "name": "天幕之巅",
+      "waveCount": 15,
+      "chapterFile": "chapter3",
+      "geometryFile": "geometry-chapter3",
+      "mapStyleId": 10003,
+      "bossEntityIds": [
+        340001
+      ]
+    },
+    {
+      "id": 4,
+      "name": "腐潮水道",
+      "waveCount": 15,
+      "chapterFile": "chapter4",
+      "geometryFile": "geometry-chapter4",
+      "mapStyleId": 10004,
+      "bossEntityIds": [
+        340002
+      ]
+    },
+    {
+      "id": 5,
+      "name": "岩裂深窟",
+      "waveCount": 10,
+      "chapterFile": "chapter5",
+      "geometryFile": "geometry-chapter5",
+      "mapStyleId": 10005,
+      "bossEntityIds": [
+        340001,
+        340009,
+        340021
+      ]
+    },
+    {
+      "id": 6,
+      "name": "夜幕林境",
+      "waveCount": 15,
+      "chapterFile": "chapter6",
+      "geometryFile": "geometry-chapter6",
+      "mapStyleId": 10006,
+      "bossEntityIds": [
+        340011
+      ]
+    },
+    {
+      "id": 7,
+      "name": "缠生藤域",
+      "waveCount": 15,
+      "chapterFile": "chapter7",
+      "geometryFile": "geometry-chapter7",
+      "mapStyleId": 10007,
+      "bossEntityIds": [
+        340002
+      ]
+    },
+    {
+      "id": 8,
+      "name": "浊渊暗渠",
+      "waveCount": 15,
+      "chapterFile": "chapter8",
+      "geometryFile": "geometry-chapter8",
+      "mapStyleId": 10008,
+      "bossEntityIds": [
+        340004
+      ]
+    },
+    {
+      "id": 9,
+      "name": "深渊海底",
+      "waveCount": 15,
+      "chapterFile": "chapter9",
+      "geometryFile": "geometry-chapter9",
+      "mapStyleId": 10009,
+      "bossEntityIds": [
+        340021
+      ]
+    },
+    {
+      "id": 10,
+      "name": "萤火毒域",
+      "waveCount": 15,
+      "chapterFile": "chapter10",
+      "geometryFile": "geometry-chapter10",
+      "mapStyleId": 10010,
+      "bossEntityIds": [
+        340022
+      ]
+    },
+    {
+      "id": 11,
+      "name": "幽冥矿洞",
+      "waveCount": 15,
+      "chapterFile": "chapter11",
+      "geometryFile": "geometry-chapter11",
+      "mapStyleId": 10011,
+      "bossEntityIds": [
+        340001
+      ]
+    },
+    {
+      "id": 12,
+      "name": "回响古城",
+      "waveCount": 15,
+      "chapterFile": "chapter12",
+      "geometryFile": "geometry-chapter12",
+      "mapStyleId": 10012,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 13,
+      "name": "静寂海洞",
+      "waveCount": 15,
+      "chapterFile": "chapter13",
+      "geometryFile": "geometry-chapter13",
+      "mapStyleId": 10013,
+      "bossEntityIds": [
+        340003
+      ]
+    },
+    {
+      "id": 14,
+      "name": "地核指挥",
+      "waveCount": 15,
+      "chapterFile": "chapter14",
+      "geometryFile": "geometry-chapter14",
+      "mapStyleId": 10014,
+      "bossEntityIds": [
+        340018
+      ]
+    },
+    {
+      "id": 15,
+      "name": "高空云岭",
+      "waveCount": 10,
+      "chapterFile": "chapter15",
+      "geometryFile": "geometry-chapter15",
+      "mapStyleId": 10015,
+      "bossEntityIds": [
+        340004,
+        340005,
+        340009
+      ]
+    },
+    {
+      "id": 16,
+      "name": "浑流深层",
+      "waveCount": 15,
+      "chapterFile": "chapter16",
+      "geometryFile": "geometry-chapter16",
+      "mapStyleId": 10016,
+      "bossEntityIds": [
+        340002
+      ]
+    },
+    {
+      "id": 17,
+      "name": "荒毒丛谷",
+      "waveCount": 15,
+      "chapterFile": "chapter17",
+      "geometryFile": "geometry-chapter17",
+      "mapStyleId": 10017,
+      "bossEntityIds": [
+        340025
+      ]
+    },
+    {
+      "id": 18,
+      "name": "地底世界",
+      "waveCount": 15,
+      "chapterFile": "chapter18",
+      "geometryFile": "geometry-chapter18",
+      "mapStyleId": 10018,
+      "bossEntityIds": [
+        340011
+      ]
+    },
+    {
+      "id": 19,
+      "name": "藤潮秘境",
+      "waveCount": 15,
+      "chapterFile": "chapter19",
+      "geometryFile": "geometry-chapter19",
+      "mapStyleId": 10019,
+      "bossEntityIds": [
+        340014
+      ]
+    },
+    {
+      "id": 20,
+      "name": "裂隙地核",
+      "waveCount": 15,
+      "chapterFile": "chapter20",
+      "geometryFile": "geometry-chapter20",
+      "mapStyleId": 10020,
+      "bossEntityIds": [
+        340028
+      ]
+    },
+    {
+      "id": 21,
+      "name": "星际外环",
+      "waveCount": 15,
+      "chapterFile": "chapter21",
+      "geometryFile": "geometry-chapter21",
+      "mapStyleId": 10021,
+      "bossEntityIds": [
+        340017
+      ]
+    },
+    {
+      "id": 22,
+      "name": "暗域深空",
+      "waveCount": 15,
+      "chapterFile": "chapter22",
+      "geometryFile": "geometry-chapter22",
+      "mapStyleId": 10022,
+      "bossEntityIds": [
+        340009
+      ]
+    },
+    {
+      "id": 23,
+      "name": "星环前哨",
+      "waveCount": 15,
+      "chapterFile": "chapter23",
+      "geometryFile": "geometry-chapter23",
+      "mapStyleId": 10023,
+      "bossEntityIds": [
+        340008
+      ]
+    },
+    {
+      "id": 24,
+      "name": "星核基地",
+      "waveCount": 15,
+      "chapterFile": "chapter24",
+      "geometryFile": "geometry-chapter24",
+      "mapStyleId": 10024,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 25,
+      "name": "炽核深渊",
+      "waveCount": 10,
+      "chapterFile": "chapter25",
+      "geometryFile": "geometry-chapter25",
+      "mapStyleId": 10025,
+      "bossEntityIds": [
+        340009,
+        340015,
+        340018
+      ]
+    },
+    {
+      "id": 26,
+      "name": "菌潮星域",
+      "waveCount": 15,
+      "chapterFile": "chapter26",
+      "geometryFile": "geometry-chapter26",
+      "mapStyleId": 10026,
+      "bossEntityIds": [
+        340035
+      ]
+    },
+    {
+      "id": 27,
+      "name": "地外遗迹",
+      "waveCount": 15,
+      "chapterFile": "chapter27",
+      "geometryFile": "geometry-chapter27",
+      "mapStyleId": 10027,
+      "bossEntityIds": [
+        340018
+      ]
+    },
+    {
+      "id": 28,
+      "name": "星际工港",
+      "waveCount": 15,
+      "chapterFile": "chapter28",
+      "geometryFile": "geometry-chapter28",
+      "mapStyleId": 10028,
+      "bossEntityIds": [
+        340017
+      ]
+    },
+    {
+      "id": 29,
+      "name": "虚空航域",
+      "waveCount": 15,
+      "chapterFile": "chapter29",
+      "geometryFile": "geometry-chapter29",
+      "mapStyleId": 10029,
+      "bossEntityIds": [
+        340015
+      ]
+    },
+    {
+      "id": 30,
+      "name": "烈焰行星",
+      "waveCount": 15,
+      "chapterFile": "chapter30",
+      "geometryFile": "geometry-chapter30",
+      "mapStyleId": 10030,
+      "bossEntityIds": [
+        340020
+      ]
+    },
+    {
+      "id": 31,
+      "name": "环带边境",
+      "waveCount": 15,
+      "chapterFile": "chapter31",
+      "geometryFile": "geometry-chapter31",
+      "mapStyleId": 10031,
+      "bossEntityIds": [
+        340008
+      ]
+    },
+    {
+      "id": 32,
+      "name": "天核设施",
+      "waveCount": 15,
+      "chapterFile": "chapter32",
+      "geometryFile": "geometry-chapter32",
+      "mapStyleId": 10032,
+      "bossEntityIds": [
+        340022
+      ]
+    },
+    {
+      "id": 33,
+      "name": "星心要塞",
+      "waveCount": 15,
+      "chapterFile": "chapter33",
+      "geometryFile": "geometry-chapter33",
+      "mapStyleId": 10033,
+      "bossEntityIds": [
+        340009
+      ]
+    },
+    {
+      "id": 34,
+      "name": "烈核深井",
+      "waveCount": 15,
+      "chapterFile": "chapter34",
+      "geometryFile": "geometry-chapter34",
+      "mapStyleId": 10034,
+      "bossEntityIds": [
+        340017
+      ]
+    },
+    {
+      "id": 35,
+      "name": "孢潮禁区",
+      "waveCount": 10,
+      "chapterFile": "chapter35",
+      "geometryFile": "geometry-chapter35",
+      "mapStyleId": 10035,
+      "bossEntityIds": [
+        340005,
+        340014,
+        340028
+      ]
+    },
+    {
+      "id": 36,
+      "name": "失落遗城",
+      "waveCount": 15,
+      "chapterFile": "chapter36",
+      "geometryFile": "geometry-chapter36",
+      "mapStyleId": 10036,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 37,
+      "name": "轨道工坞",
+      "waveCount": 15,
+      "chapterFile": "chapter37",
+      "geometryFile": "geometry-chapter37",
+      "mapStyleId": 10037,
+      "bossEntityIds": [
+        340018
+      ]
+    },
+    {
+      "id": 38,
+      "name": "深空黑幕",
+      "waveCount": 15,
+      "chapterFile": "chapter38",
+      "geometryFile": "geometry-chapter38",
+      "mapStyleId": 10038,
+      "bossEntityIds": [
+        340022
+      ]
+    },
+    {
+      "id": 39,
+      "name": "熔火星球",
+      "waveCount": 15,
+      "chapterFile": "chapter39",
+      "geometryFile": "geometry-chapter39",
+      "mapStyleId": 10039,
+      "bossEntityIds": [
+        340019
+      ]
+    },
+    {
+      "id": 40,
+      "name": "菌蚀宙域",
+      "waveCount": 15,
+      "chapterFile": "chapter40",
+      "geometryFile": "geometry-chapter40",
+      "mapStyleId": 10040,
+      "bossEntityIds": [
+        340017
+      ]
+    },
+    {
+      "id": 41,
+      "name": "月面前哨",
+      "waveCount": 15,
+      "chapterFile": "chapter41",
+      "geometryFile": "geometry-chapter41",
+      "mapStyleId": 10041,
+      "bossEntityIds": [
+        340008
+      ]
+    },
+    {
+      "id": 42,
+      "name": "环形工站",
+      "waveCount": 15,
+      "chapterFile": "chapter42",
+      "geometryFile": "geometry-chapter42",
+      "mapStyleId": 10042,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 43,
+      "name": "月海荒原",
+      "waveCount": 15,
+      "chapterFile": "chapter43",
+      "geometryFile": "geometry-chapter43",
+      "mapStyleId": 10043,
+      "bossEntityIds": [
+        340002
+      ]
+    },
+    {
+      "id": 44,
+      "name": "银穹营地",
+      "waveCount": 15,
+      "chapterFile": "chapter44",
+      "geometryFile": "geometry-chapter44",
+      "mapStyleId": 10044,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 45,
+      "name": "月核设施",
+      "waveCount": 10,
+      "chapterFile": "chapter45",
+      "geometryFile": "geometry-chapter45",
+      "mapStyleId": 10045,
+      "bossEntityIds": [
+        340009,
+        340020,
+        340022
+      ]
+    },
+    {
+      "id": 46,
+      "name": "静海边境",
+      "waveCount": 15,
+      "chapterFile": "chapter46",
+      "geometryFile": "geometry-chapter46",
+      "mapStyleId": 10046,
+      "bossEntityIds": [
+        340035
+      ]
+    },
+    {
+      "id": 47,
+      "name": "月壤研究站",
+      "waveCount": 15,
+      "chapterFile": "chapter47",
+      "geometryFile": "geometry-chapter47",
+      "mapStyleId": 10047,
+      "bossEntityIds": [
+        340022
+      ]
+    },
+    {
+      "id": 48,
+      "name": "月面主基地",
+      "waveCount": 15,
+      "chapterFile": "chapter48",
+      "geometryFile": "geometry-chapter48",
+      "mapStyleId": 10048,
+      "bossEntityIds": [
+        340025
+      ]
+    },
+    {
+      "id": 49,
+      "name": "陨坑地带",
+      "waveCount": 15,
+      "chapterFile": "chapter49",
+      "geometryFile": "geometry-chapter49",
+      "mapStyleId": 10049,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 50,
+      "name": "深月中枢",
+      "waveCount": 15,
+      "chapterFile": "chapter50",
+      "geometryFile": "geometry-chapter50",
+      "mapStyleId": 10050,
+      "bossEntityIds": [
+        340008
+      ]
+    },
+    {
+      "id": 51,
+      "name": "烈砂边境",
+      "waveCount": 15,
+      "chapterFile": "chapter51",
+      "geometryFile": "geometry-chapter51",
+      "mapStyleId": 10041,
+      "bossEntityIds": [
+        340014
+      ]
+    },
+    {
+      "id": 52,
+      "name": "回响古城",
+      "waveCount": 15,
+      "chapterFile": "chapter52",
+      "geometryFile": "geometry-chapter52",
+      "mapStyleId": 10042,
+      "bossEntityIds": [
+        340028
+      ]
+    },
+    {
+      "id": 53,
+      "name": "静寂海洞",
+      "waveCount": 15,
+      "chapterFile": "chapter53",
+      "geometryFile": "geometry-chapter53",
+      "mapStyleId": 10043,
+      "bossEntityIds": [
+        340017
+      ]
+    },
+    {
+      "id": 54,
+      "name": "地核指挥",
+      "waveCount": 15,
+      "chapterFile": "chapter54",
+      "geometryFile": "geometry-chapter54",
+      "mapStyleId": 10044,
+      "bossEntityIds": [
+        340019
+      ]
+    },
+    {
+      "id": 55,
+      "name": "高空云岭",
+      "waveCount": 10,
+      "chapterFile": "chapter55",
+      "geometryFile": "geometry-chapter55",
+      "mapStyleId": 10045,
+      "bossEntityIds": [
+        340009,
+        340018,
+        340020
+      ]
+    },
+    {
+      "id": 56,
+      "name": "浑流深层",
+      "waveCount": 15,
+      "chapterFile": "chapter56",
+      "geometryFile": "geometry-chapter56",
+      "mapStyleId": 10046,
+      "bossEntityIds": [
+        340018
+      ]
+    },
+    {
+      "id": 57,
+      "name": "荒毒丛谷",
+      "waveCount": 15,
+      "chapterFile": "chapter57",
+      "geometryFile": "geometry-chapter57",
+      "mapStyleId": 10047,
+      "bossEntityIds": [
+        340019
+      ]
+    },
+    {
+      "id": 58,
+      "name": "寒霜雪境",
+      "waveCount": 15,
+      "chapterFile": "chapter58",
+      "geometryFile": "geometry-chapter58",
+      "mapStyleId": 10048,
+      "bossEntityIds": [
+        340005
+      ]
+    },
+    {
+      "id": 59,
+      "name": "藤潮秘境",
+      "waveCount": 15,
+      "chapterFile": "chapter59",
+      "geometryFile": "geometry-chapter59",
+      "mapStyleId": 10049,
+      "bossEntityIds": [
+        340008
+      ]
+    },
+    {
+      "id": 60,
+      "name": "裂隙地核",
+      "waveCount": 15,
+      "chapterFile": "chapter60",
+      "geometryFile": "geometry-chapter60",
+      "mapStyleId": 10050,
+      "bossEntityIds": [
+        340022
+      ]
+    }
+  ]
+}

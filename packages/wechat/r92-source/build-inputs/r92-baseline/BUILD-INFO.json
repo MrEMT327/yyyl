@@ -1,0 +1,427 @@
+{
+  "builtAt": "2026-11-16T00:02:08.771Z",
+  "buildIdentity": {
+    "buildId": "r92-2026-11-16T00:02:04.799Z",
+    "modules": {
+      "lobby": {
+        "sha256": "c6a443859ddfe899402e90bdf30800ff26d75f7367532348ce664ee0d0b1c03c",
+        "path": "lobby-code/lobby-c6a443859ddfe899.js",
+        "legacyPath": "lobby-code/lobby.js"
+      },
+      "battle": {
+        "sha256": "0e9c1088cc625913fbac9feff6e1aded859c2677c02a755bfbde58ef442052dc",
+        "path": "battle-code/battle-0e9c1088cc625913.js",
+        "legacyPath": "battle-code/battle.js"
+      },
+      "engine": {
+        "sha256": "d33a4856f0458e3b0f0311fd909c5adb39622836d6c0b66e747812a497163c2e",
+        "path": "battle-engine/phaser-d33a4856f0458e3b.js",
+        "legacyPath": "battle-engine/phaser.js"
+      }
+    }
+  },
+  "source": "../pixigame",
+  "testOnly": true,
+  "cdn": {
+    "baseURL": "https://i05.shengpin888.com/shaonvhangxian/",
+    "objectCount": 4765,
+    "logicalPaths": 5099,
+    "bytes": 917992307,
+    "manifest": "../build-inputs/cdn-manifest.json"
+  },
+  "fallback": {
+    "enabled": false,
+    "use": "所有资源均使用包内文件或公网 HTTPS CDN，不回退到电脑服务"
+  },
+  "assetOrigin": "https://i05.shengpin888.com",
+  "requirePublicNetwork": true,
+  "resourceCompression": {
+    "profile": "safe",
+    "newCdnFiles": 0,
+    "requiresCdnUpload": false
+  },
+  "performance": {
+    "cacheVersion": "c5e812dd6380ce9739b3df2d78a441bea53d61f7525d7299113303b4e901899c",
+    "binaryMemoryBudget": 8388608,
+    "binaryDiskBudget": 67108864,
+    "firstScreenFonts": "lobby only; combat font warms after lobby is usable",
+    "startupData": {
+      "combinedJsonBytes": 8113908,
+      "lobbyJsonBytes": 2498758,
+      "battleOnlyJsonBytes": 3869454,
+      "portraitOnlyJsonBytes": 1745698,
+      "lobbyEntries": 53,
+      "battleOnlyEntries": 32,
+      "portraitOnlyEntries": 2,
+      "deferredSkillBytes": 2755381
+    }
+  },
+  "skillArtwork": [
+    {
+      "path": "art/battle-skill-icons-v4/10000001.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000001.png",
+      "bytes": 96476,
+      "sha256": "8730c4cbd14d3716df695d5520612afcc238d5a7420cb2b36261e087b0337810"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000002.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000002.png",
+      "bytes": 85616,
+      "sha256": "6e4d9e59c9f8757255bda76c657d24fa10be860400c53d0c940ccf3035090d80"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000101.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000101.png",
+      "bytes": 58623,
+      "sha256": "b634973e5d6ea18800b03930ff37d51f4b864ea488b96863f475c2453246fba7"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000201.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000201.png",
+      "bytes": 51752,
+      "sha256": "f823fac97543f279de2d083be1611437608f23b494bb76fd96e8c7239d02434b"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000301.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000301.png",
+      "bytes": 48881,
+      "sha256": "9c2d524d8728b1543b662785cef0b1584c15961ae69060dd90893849ddb93920"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000401.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000401.png",
+      "bytes": 66609,
+      "sha256": "b79332bfe8fe7748754642cf95b415d0859b2a20a5db46d0e22e6c72adc9eb09"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000601.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000601.png",
+      "bytes": 70873,
+      "sha256": "62ec3e083343b7aeaec9a4a58f47df9086fa5c30797c0ffc6218fe0919fef93a"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000701.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000701.png",
+      "bytes": 65776,
+      "sha256": "714e6d6a5f32567ffc8bfc1a9ff169c721b86725c876c47dd6baf60cda7fec79"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000901.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10000901.png",
+      "bytes": 92146,
+      "sha256": "8721e758ee4a67cb9e5cff3c83b2913e9e9ee0064adfb530fe03a866adb4fe9a"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001101.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10001101.png",
+      "bytes": 68813,
+      "sha256": "62752cd530d0df023d4d4061ea2e8760299efab1c9ddf8580d845ca01ffc1701"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001501.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10001501.png",
+      "bytes": 49722,
+      "sha256": "776eefea00a7e627f04d639784aea30f34c8445cd0ebc4d67033b93e222851d8"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001601.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10001601.png",
+      "bytes": 101027,
+      "sha256": "1b59d444432df84d49f45ba35093d9bf8fa9623739e0bb23971cfb7b7e14de5e"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001701.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/10001701.png",
+      "bytes": 61503,
+      "sha256": "ac9c7b4cc89f98276e291db84cf9b2852e8f689fa87d957f06f033572eef7943"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000101.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11000101.png",
+      "bytes": 61756,
+      "sha256": "dceb690d97bd6cb2a207d1b99d9834e5b54142c9be28b628426f17f7a830b2be"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000201.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11000201.png",
+      "bytes": 59717,
+      "sha256": "bcbe48a0562056ed13159756451f402d5f0dd41759cdaa628aae7d70630684f3"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000301.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11000301.png",
+      "bytes": 60997,
+      "sha256": "1cc1052b4ed58646f31b74fd2eced37b19605a43b84e9be0e3b025677a12b388"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000307.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11000307.png",
+      "bytes": 81972,
+      "sha256": "2647cca13af354049b4f1ebbf396384dff8201ca33c1a71c34385545ed9efb77"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000601.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11000601.png",
+      "bytes": 79814,
+      "sha256": "02df08c3d01e37f898a3b2539f74f193138fcf7b9f081e49d1099d13d03ef4c7"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000801.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11000801.png",
+      "bytes": 73701,
+      "sha256": "7a60ff62e04726046053c0324270d1eeec7312097cf55654e4786c5052e0e178"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001101.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11001101.png",
+      "bytes": 56315,
+      "sha256": "6ac93ee991934ff00d9d4d6f618c79d867b097245981f4acab5d9cad001d800f"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001401.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11001401.png",
+      "bytes": 58288,
+      "sha256": "876b611fb1cab5b08edeb5827c1785ba7d9f40f34f940716b8170eb77d5cfa4d"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001601.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11001601.png",
+      "bytes": 60348,
+      "sha256": "42debcaeb0f5113f1dbacd12c36dac6d8ea06e464904d3af4010baa09465d0e9"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001701.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11001701.png",
+      "bytes": 62198,
+      "sha256": "85ba1a0b99299c0c5186048d4e5836c2c1c97d69b719cd907ee71db7743cd1af"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11002001.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11002001.png",
+      "bytes": 65187,
+      "sha256": "821320396ab7f77174d6b4f721cde2656f97774a315b9ed5515569f1956679af"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11002201.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11002201.png",
+      "bytes": 58268,
+      "sha256": "5a4752353cc0420b2a646354dcb6110cf102e14630b5fdb1340de08c550a8f52"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11002501.webp",
+      "packagedPath": "battle-data/art/battle-skill-icons-v4/11002501.png",
+      "bytes": 83644,
+      "sha256": "643f6efd1c5c28ad35b785f66d35770d0b77196f823e5105053d0113706e07b2"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20102.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20102.png",
+      "bytes": 114299,
+      "sha256": "83553c3acc2a6713b7295ffc211bf96a946e582241ac21080b38de2efc11133b"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20202.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20202.png",
+      "bytes": 85272,
+      "sha256": "c0a6c4606a2195acac4903bd2b041512493a92ae03c7b13edf16d883d7eac4ee"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20302.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20302.png",
+      "bytes": 68860,
+      "sha256": "d913aed9a0ed63e9277ac2b14fa360756fa675e605b455a3485979c3b0b04db8"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20402.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20402.png",
+      "bytes": 103475,
+      "sha256": "76e2bf01e2f9afa92f2e8c9ef71a1cb68a194f4f47825f3245818b15691c0e9c"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20502.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20502.png",
+      "bytes": 80647,
+      "sha256": "c9761cf1430fe91128aa743f627fcd58378db2a13985272271d3f10b531df26f"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20602.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20602.png",
+      "bytes": 96708,
+      "sha256": "257fe60c147e726eca03110a0d919d5eb76e44f0464f4f40a5e0ac97e3d6529c"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20702.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20702.png",
+      "bytes": 79298,
+      "sha256": "2a31452a63af36a415d76b69856b28686d6e5e8a697ad8c10df9dfad547db999"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20802.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20802.png",
+      "bytes": 75130,
+      "sha256": "0daa51d0cb5b4629282af00a9505a96724791930fddea35fc86599f007547fad"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20902.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20902.png",
+      "bytes": 81711,
+      "sha256": "38d481f988c7265f970c2dc0b9fdbd02d140f47d53f9be8ac310b5fe42c93b5e"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-21002.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-21002.png",
+      "bytes": 88781,
+      "sha256": "7e062c8699f3115fa7d34d3a5b68c0a5d43a256c12ec8a32d757a417f3bf1348"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-21102.webp",
+      "packagedPath": "battle-data/art/weapon-variant-skill-icons-v5/weapon-21102.png",
+      "bytes": 101178,
+      "sha256": "8db9f05295f8ac72a5f7dbe96256e109588dd31de7309924e1bb079209aecaef"
+    }
+  ],
+  "skillArtCoverage": {
+    "required": 57,
+    "packaged": 37,
+    "cdn": 20
+  },
+  "packageBytes": {
+    "battle-code": 3270224,
+    "battle-data": 3016462,
+    "battle-engine": 1221252,
+    "main": 991655,
+    "lobby-backgrounds": 441846,
+    "lobby-code": 2392460,
+    "native-core": 279189,
+    "opening-art": 1596007,
+    "portrait-data": 728616,
+    "shared-data": 365704
+  },
+  "totalBytes": 14303415,
+  "sizesExclude": "BUILD-INFO.json",
+  "localFiles": {
+    "art/entry-screens-v4/startup.png": "opening-art/art/entry-screens-v4/startup.png",
+    "art/project-research-blueprints-v2/802.svg": "opening-art/art/project-research-blueprints-v2/802.svg",
+    "art/project-research-blueprints-v2/803.svg": "opening-art/art/project-research-blueprints-v2/803.svg",
+    "art/project-research-blueprints-v2/804.svg": "opening-art/art/project-research-blueprints-v2/804.svg",
+    "art/project-research-blueprints-v2/805.svg": "opening-art/art/project-research-blueprints-v2/805.svg",
+    "art/project-research-blueprints-v2/808.svg": "opening-art/art/project-research-blueprints-v2/808.svg",
+    "art/project-research-blueprints-v2/809.svg": "opening-art/art/project-research-blueprints-v2/809.svg",
+    "art/project-research-blueprints-v2/810.svg": "opening-art/art/project-research-blueprints-v2/810.svg",
+    "art/project-research-blueprints-v2/811.svg": "opening-art/art/project-research-blueprints-v2/811.svg",
+    "art/psd-main-v1/main-background.png": "opening-art/art/psd-main-v1/main-background.png",
+    "art/ui-images-v1/psd-main-v1/main-background.webp": "opening-art/art/psd-main-v1/main-background.png",
+    "art/ui-images-v1/psd-main-v1/main-foreground-current-live-wallet.webp": "opening-art/art/ui-images-v1/psd-main-v1/main-foreground-current-live-wallet.webp",
+    "art/psd-main-v1/main-foreground-current-live-wallet.png": "opening-art/art/ui-images-v1/psd-main-v1/main-foreground-current-live-wallet.webp",
+    "art/psd-main-v1/profile-live-frame.png": "opening-art/art/psd-main-v1/profile-live-frame.png",
+    "art/psd-buttons-v1/button-blue.png": "opening-art/art/psd-buttons-v1/button-blue.png",
+    "art/psd-buttons-v1/button-orange.png": "opening-art/art/psd-buttons-v1/button-orange.png",
+    "art/psd-combat-v1/health-track.png": "opening-art/art/psd-combat-v1/health-track.png",
+    "art/psd-combat-v1/health-fill.png": "opening-art/art/psd-combat-v1/health-fill.png",
+    "art/battle-skill-icons-v4/10000001.webp": "battle-data/art/battle-skill-icons-v4/10000001.png",
+    "art/battle-skill-icons-v4/10000002.webp": "battle-data/art/battle-skill-icons-v4/10000002.png",
+    "art/battle-skill-icons-v4/10000101.webp": "battle-data/art/battle-skill-icons-v4/10000101.png",
+    "art/battle-skill-icons-v4/10000201.webp": "battle-data/art/battle-skill-icons-v4/10000201.png",
+    "art/battle-skill-icons-v4/10000301.webp": "battle-data/art/battle-skill-icons-v4/10000301.png",
+    "art/battle-skill-icons-v4/10000401.webp": "battle-data/art/battle-skill-icons-v4/10000401.png",
+    "art/battle-skill-icons-v4/10000601.webp": "battle-data/art/battle-skill-icons-v4/10000601.png",
+    "art/battle-skill-icons-v4/10000701.webp": "battle-data/art/battle-skill-icons-v4/10000701.png",
+    "art/battle-skill-icons-v4/10000901.webp": "battle-data/art/battle-skill-icons-v4/10000901.png",
+    "art/battle-skill-icons-v4/10001101.webp": "battle-data/art/battle-skill-icons-v4/10001101.png",
+    "art/battle-skill-icons-v4/10001501.webp": "battle-data/art/battle-skill-icons-v4/10001501.png",
+    "art/battle-skill-icons-v4/10001601.webp": "battle-data/art/battle-skill-icons-v4/10001601.png",
+    "art/battle-skill-icons-v4/10001701.webp": "battle-data/art/battle-skill-icons-v4/10001701.png",
+    "art/battle-skill-icons-v4/11000101.webp": "battle-data/art/battle-skill-icons-v4/11000101.png",
+    "art/battle-skill-icons-v4/11000201.webp": "battle-data/art/battle-skill-icons-v4/11000201.png",
+    "art/battle-skill-icons-v4/11000301.webp": "battle-data/art/battle-skill-icons-v4/11000301.png",
+    "art/battle-skill-icons-v4/11000307.webp": "battle-data/art/battle-skill-icons-v4/11000307.png",
+    "art/battle-skill-icons-v4/11000601.webp": "battle-data/art/battle-skill-icons-v4/11000601.png",
+    "art/battle-skill-icons-v4/11000801.webp": "battle-data/art/battle-skill-icons-v4/11000801.png",
+    "art/battle-skill-icons-v4/11001101.webp": "battle-data/art/battle-skill-icons-v4/11001101.png",
+    "art/battle-skill-icons-v4/11001401.webp": "battle-data/art/battle-skill-icons-v4/11001401.png",
+    "art/battle-skill-icons-v4/11001601.webp": "battle-data/art/battle-skill-icons-v4/11001601.png",
+    "art/battle-skill-icons-v4/11001701.webp": "battle-data/art/battle-skill-icons-v4/11001701.png",
+    "art/battle-skill-icons-v4/11002001.webp": "battle-data/art/battle-skill-icons-v4/11002001.png",
+    "art/battle-skill-icons-v4/11002201.webp": "battle-data/art/battle-skill-icons-v4/11002201.png",
+    "art/battle-skill-icons-v4/11002501.webp": "battle-data/art/battle-skill-icons-v4/11002501.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20102.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20102.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20202.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20202.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20302.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20302.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20402.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20402.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20502.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20502.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20602.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20602.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20702.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20702.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20802.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20802.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20902.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-20902.png",
+    "art/weapon-variant-skill-icons-v5/weapon-21002.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-21002.png",
+    "art/weapon-variant-skill-icons-v5/weapon-21102.webp": "battle-data/art/weapon-variant-skill-icons-v5/weapon-21102.png",
+    "art/project-scene-backgrounds-v3/shop-supply.png": "lobby-backgrounds/art/project-scene-backgrounds-v3/shop-supply.jpg",
+    "art/recruit-dossier-v1/ivory-hangar-clean-v2.png": "lobby-backgrounds/art/recruit-dossier-v1/ivory-hangar-clean-v2.jpg"
+  },
+  "syntax": {
+    "target": "es2018",
+    "ecmaVersion": 2018,
+    "files": [
+      {
+        "file": "battle-code/battle-0e9c1088cc625913.js",
+        "bytes": 3270197
+      },
+      {
+        "file": "battle-code/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "battle-data/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "battle-engine/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "battle-engine/phaser-d33a4856f0458e3b.js",
+        "bytes": 1221225
+      },
+      {
+        "file": "game.js",
+        "bytes": 990481
+      },
+      {
+        "file": "lobby-backgrounds/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "lobby-code/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "lobby-code/lobby-c6a443859ddfe899.js",
+        "bytes": 2392433
+      },
+      {
+        "file": "native-core/cubism.js",
+        "bytes": 207426
+      },
+      {
+        "file": "native-core/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "opening-art/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "portrait-data/game.js",
+        "bytes": 27
+      },
+      {
+        "file": "shared-data/game.js",
+        "bytes": 27
+      }
+    ]
+  },
+  "handoff": {
+    "baseBuildId": "r92-2026-11-16T00:02:04.799Z",
+    "chestTimingOnly": true
+  }
+}

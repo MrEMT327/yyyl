@@ -1,0 +1,11 @@
+{
+  "path": "kernel/renderer.ts",
+  "kind": "presentation-repair",
+  "reason": "Use already loaded original sword particle geometry as a read-only footprint reference for the Pathogenic visual bridge. No original artwork is added, and no battle values or collision fields are changed.",
+  "patches": [
+    {
+      "before": "this.pathogenic.configureHost({playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q)});",
+      "after": "this.pathogenic.configureHost({playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});"
+    }
+  ]
+}

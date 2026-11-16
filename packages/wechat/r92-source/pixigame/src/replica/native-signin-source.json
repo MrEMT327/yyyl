@@ -1,0 +1,176 @@
+{
+  "source": "拆解/弹壳战机_1.1.6_TapTap.apk / localmodel / SignIn_SignIn",
+  "binarySha256": "8dae0e50891fb852a6d95bdca5be40199f53d92ca7445f19adff1db9c7923cc9",
+  "rows": [
+    {
+      "id": 1,
+      "rangeStart": 1,
+      "rangeEnd": 7,
+      "days": [
+        [
+          [
+            112,
+            1
+          ]
+        ],
+        [
+          [
+            10101,
+            1
+          ]
+        ],
+        [
+          [
+            934,
+            1
+          ]
+        ],
+        [
+          [
+            2,
+            300
+          ]
+        ],
+        [
+          [
+            111,
+            2
+          ]
+        ],
+        [
+          [
+            135,
+            1
+          ]
+        ],
+        [
+          [
+            3132505,
+            1
+          ],
+          [
+            2,
+            500
+          ],
+          [
+            10010008,
+            50
+          ]
+        ]
+      ],
+      "tail": "7"
+    },
+    {
+      "id": 2,
+      "rangeStart": 8,
+      "rangeEnd": 14,
+      "days": [
+        [
+          [
+            1,
+            10000
+          ]
+        ],
+        [
+          [
+            10010007,
+            100
+          ]
+        ],
+        [
+          [
+            112,
+            1
+          ]
+        ],
+        [
+          [
+            110,
+            3
+          ]
+        ],
+        [
+          [
+            153,
+            3
+          ]
+        ],
+        [
+          [
+            151,
+            1
+          ]
+        ],
+        [
+          [
+            129,
+            3
+          ],
+          [
+            2,
+            200
+          ]
+        ]
+      ],
+      "tail": "7"
+    },
+    {
+      "id": 3,
+      "rangeStart": 15,
+      "rangeEnd": 9999,
+      "days": [
+        [
+          [
+            1,
+            10000
+          ]
+        ],
+        [
+          [
+            10010007,
+            100
+          ]
+        ],
+        [
+          [
+            112,
+            1
+          ]
+        ],
+        [
+          [
+            110,
+            3
+          ]
+        ],
+        [
+          [
+            153,
+            3
+          ]
+        ],
+        [
+          [
+            151,
+            1
+          ]
+        ],
+        [
+          [
+            129,
+            3
+          ],
+          [
+            2,
+            200
+          ]
+        ]
+      ],
+      "tail": "7"
+    }
+  ],
+  "evidence": {
+    "layout": "UI_Task/SignRoot: 296.89x352 grid cells, 7.8x20 spacing, wide seventh card; PageButton anchored at panel bottom; each SignItemCtrl.rewardBtn handles claim.",
+    "timing": "APK static table is verified. UTC+8 one-per-calendar-day and cumulative missed-day behavior are local compatibility rules, not verified server behavior."
+  }
+}

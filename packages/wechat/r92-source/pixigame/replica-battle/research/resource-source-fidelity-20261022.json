@@ -1,0 +1,713 @@
+{
+  "date": "2026-10-22",
+  "scope": "Original-resource fidelity correction; no original server login or target execution",
+  "targetSha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+  "restored": [
+    "Exact fixed FirstReward and MissionReward IDs/counts",
+    "Original quick text without fabricated equivalent duration",
+    "Owned current-level HangUpRewards% display bonus with native integer conversion"
+  ],
+  "retired": [
+    "Seven local chapter income tiers",
+    "120-minute and10-minute payout assumptions",
+    "Uniform eight-hour sample settlement",
+    "Repeat5-wave material and3-win-key rules",
+    "Uniform chapter random-sheet sampler",
+    "New automatic drone-to-gun and chapter material substitutions"
+  ],
+  "remainingUnknown": [
+    "Actual server normal/quick reward amounts and draws",
+    "Server final multipliers and authoritative subscription ownership",
+    "Current quick/ad remaining uses and ad limit",
+    "Random chapter group sampler and probability"
+  ],
+  "previousExplicitLocalAdaptationsRetainedAndLabelled": [
+    "Pilot supply including pity and copy credits",
+    "Daily gun/weekly plane selection",
+    "Growth supplies including weekly core",
+    "Extra chapter cores",
+    "Explicit old-stock material exchange"
+  ],
+  "savePolicy": "No inventory clawback. Old local timer/fractions/counts and once-only records preserved. Screenshot sample grants development-only and labelled non-native settlement.",
+  "patrolEvidence": {
+    "date": "2026-10-22",
+    "target": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-inspect-danke\\libil2cpp.so",
+    "targetSha256": "f7d52c5b0e201d7c507b8eea27a303a6300591d7ff99cc2ee867ef33895a3f32",
+    "evidenceKind": "Reuse existing original Ghidra read-only exports plus new analyst Capstone static disassembly; no REA ARM64 provider available",
+    "confirmed": {
+      "claimThresholdSeconds": 600,
+      "baseCapSeconds": 28800,
+      "capFormula": "HangUpMaxTime + 3600 * GetPrivilegeValueByType(PatrolTimeAdd=13)",
+      "paidQuickStamina": 5,
+      "configuredPaidQuickLimit": 3,
+      "quickOriginalText": "立即获得大量巡逻收益",
+      "quickDurationUnknown": true,
+      "quickFormattedUnusedArg": 10,
+      "chapterTableRows": 200,
+      "projectHangUpTableIdentical": true,
+      "chapterBaseGoldSamples": {
+        "1": 1000,
+        "4": 1009,
+        "10": 1027,
+        "20": 1057,
+        "40": 1117,
+        "60": 1177
+      },
+      "maxMissionRule": "min(MissionModeBase.GetCurrentMaxMissionId(day-open cap), UserMission.MissionId)",
+      "displayBonusAttribute": "HangUpRewards%",
+      "displayBonusFormula": "trunc(HangUp_Main.GoldPerHour * (1 + RefreshRewardsAdd()/100)); same factor for ExpPerHour",
+      "bonusTalentLevels": [
+        {
+          "ID": 5501001,
+          "CardID": 55010,
+          "CardLevel": 1,
+          "Attribute": [
+            "HangUpRewards%=5"
+          ],
+          "FeatureJson": "",
+          "NewPower": [
+            "PowerA%=0"
+          ]
+        },
+        {
+          "ID": 5501002,
+          "CardID": 55010,
+          "CardLevel": 2,
+          "Attribute": [
+            "HangUpRewards%=10"
+          ],
+          "FeatureJson": "",
+          "NewPower": [
+            "PowerA%=0"
+          ]
+        },
+        {
+          "ID": 5501003,
+          "CardID": 55010,
+          "CardLevel": 3,
+          "Attribute": [
+            "HangUpRewards%=15"
+          ],
+          "FeatureJson": "",
+          "NewPower": [
+            "PowerA%=0"
+          ]
+        },
+        {
+          "ID": 5501004,
+          "CardID": 55010,
+          "CardLevel": 4,
+          "Attribute": [
+            "HangUpRewards%=20"
+          ],
+          "FeatureJson": "",
+          "NewPower": [
+            "PowerA%=0"
+          ]
+        },
+        {
+          "ID": 5501005,
+          "CardID": 55010,
+          "CardLevel": 5,
+          "Attribute": [
+            "HangUpRewards%=25"
+          ],
+          "FeatureJson": "",
+          "NewPower": [
+            "PowerA%=0"
+          ]
+        }
+      ],
+      "bonusSubscription": {
+        "subscription": {
+          "id": 122,
+          "notes": "扫荡卡",
+          "FunctionID": 101,
+          "ShopGoodsID": 806,
+          "NameID": "IAP_Subscribe_Title_002",
+          "LastDay": 30,
+          "Reward": [
+            [
+              112,
+              1
+            ],
+            [
+              110,
+              1
+            ]
+          ],
+          "RewardOnce": [
+            [
+              2,
+              500
+            ]
+          ],
+          "Pairs": 1,
+          "RewardPair": [
+            [
+              135,
+              1
+            ],
+            [
+              111,
+              2
+            ]
+          ],
+          "Privilege": [
+            5,
+            10,
+            11,
+            12
+          ],
+          "Rank": 2,
+          "Color": 2,
+          "BtnTipsID": 44012
+        },
+        "privilege": {
+          "id": 10,
+          "notes": "",
+          "type": 10,
+          "paramInt": 20,
+          "refresh": 0,
+          "describeID": "IAP_Privilege_010"
+        }
+      },
+      "extraCapSubscription": {
+        "subscription": {
+          "id": 119,
+          "notes": "广告卡",
+          "FunctionID": 101,
+          "ShopGoodsID": 807,
+          "NameID": "IAP_Subscribe_Title_001",
+          "LastDay": 30,
+          "Reward": [
+            [
+              2,
+              50
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "RewardOnce": [
+            [
+              2,
+              500
+            ]
+          ],
+          "Pairs": 1,
+          "RewardPair": [
+            [
+              135,
+              1
+            ],
+            [
+              111,
+              2
+            ]
+          ],
+          "Privilege": [
+            6,
+            9,
+            14,
+            13,
+            15
+          ],
+          "Rank": 1,
+          "Color": 4,
+          "BtnTipsID": 44012
+        },
+        "privilege": {
+          "id": 13,
+          "notes": "",
+          "type": 13,
+          "paramInt": 4,
+          "refresh": 0,
+          "describeID": "IAP_Privilege_013"
+        }
+      },
+      "configExtraGold": {
+        "key": "HangUpExtraGold",
+        "Desc": "挂机金币奖励倍率（1为1倍），但是快速挂机不变",
+        "TypeInt": 1,
+        "TypeIntArray": [],
+        "TypeString": "",
+        "TypeFloat": 0,
+        "TypeFloatArray": [],
+        "TypeStringArray": []
+      },
+      "maxMissionConfig": {
+        "key": "MaxMissionId",
+        "Desc": "最大章节id（开服天数1，最大章节1,|开服天数2，最大章节2...",
+        "TypeInt": 0,
+        "TypeIntArray": [],
+        "TypeString": "1,20|2,40|3,60|4,80|5,100|6,110",
+        "TypeFloat": 0,
+        "TypeFloatArray": [],
+        "TypeStringArray": []
+      }
+    },
+    "nativeEvidence": [
+      {
+        "method": "HangUpMgr.CanGetReward",
+        "va": "0x76d12e0",
+        "proof": "0x76d13b4 config600, 0x76d1450 current UTC,0x76d1494 BeginTs,0x76d14a8 subtraction,0x76d14ac comparison"
+      },
+      {
+        "method": "HangUpMgr.GetMaxHangUpTime",
+        "va": "0x76d1848",
+        "proof": "0x76d1924 privilege13,0x76d1960 base28800,0x76d19d4 #3600,0x76d19d8 madd"
+      },
+      {
+        "method": "HangUpQuickViewModule.Refresh",
+        "va": "0x7a28dc0",
+        "proof": "0x7a291b4 Interval*FastGet /60 only passed to text whose Chinese lacks {0}; preview FinishReward at0x7a29b60 constructs PropData count0 at0x7a29c40"
+      },
+      {
+        "method": "HangUpViewModule.RefreshRewardsAdd",
+        "va": "0x7a2c314",
+        "proof": "0x7a2c4c8 subscription122;0x7a2c540 privilege10;0x7a2c588 paramInt offset0x34;0x7a2c760 CardID*100+level;0x7a2c83c compare HangUpRewards% GOT0x95e41e0;0x7a2c88c FP>>16 and0x7a2c890 add to percent;0x7a2cc54 return percent"
+      },
+      {
+        "method": "HangUpViewModule.Refresh",
+        "va": "0x7a2ade4",
+        "proof": "0x7a2b01c obtains bonus;0x7a2b054 Decimal percent;0x7a2b084 divide100;0x7a2b09c add1;0x7a2b338 multiply GoldPerHour;0x7a2b340 toint;0x7a2b498 same multiply for ExpPerHour"
+      },
+      {
+        "method": "MissionMgr.get_CurrentMaxMissionId",
+        "va": "0x76d7868",
+        "proof": "0x76d78b8 daycap;0x76d790c UserMission+0x18;0x76d7920 compare,0x76d7968 select min"
+      },
+      {
+        "method": "NetworkUtils.HangUp.DoGetQuickHangUp",
+        "va": "0x75db80c",
+        "proof": "Only request IsAd,Multi; callback0x76d3bf4 reads CommonData.Reward@0x28 then SyncUserInfo"
+      }
+    ],
+    "unknown": [
+      "Actual normal/quick reward quantities and RNG/drop-group draws",
+      "Quick equivalent duration, including whether any fixed duration applies",
+      "Final server rounding, multipliers and caps for accrued rewards",
+      "Authoritative day-open timestamp and current cap beyond first20 chapters in this local account",
+      "Initial/remaining LeftQuickCount and ad quota; no evidence for fixed3 ads/day",
+      "Exact HangUpExtraGold consumer on server; table comment alone not final payout formula"
+    ],
+    "recommendation": "Restore proven preview fields and owned talent bonus; no native item payouts until authoritative settlement is established. Keep screenshot-only sample isolated to explicit developer grant. Do not fabricate active paid subscriptions or day-open data.",
+    "sources": {
+      "priorFindings": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\offline-growth-20261016\\deep-numbers\\resource-economy\\native-income\\income-findings.md",
+      "protocol": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\apk-values-20261014\\offline-growth-20261016\\deep-numbers\\resource-economy\\native-income\\protocol-and-field-evidence.json",
+      "sourceTables": {
+        "HangUp_Main.json": "e33dc82adc6c8a7a7c1f9f3c599acb39f9a5bb6027463f443fc0fe69d8a31c2d",
+        "Card_CardLevel.json": "657085858668dce00d66d382bb9f6d63692cce52b281347dc3a6951b8d81a1c3",
+        "Card_card.json": "51e9af91bd07c8e0694724ca2bedb379251dd6523cf21a02f71c0fe592e793ea",
+        "PrivilegeCard_Privilege.json": "2b1cfbd547d62afeee2da593bb96edb6145e67a7c8f5a58d8542594ea9461f9d",
+        "PrivilegeCard_Subscribe.json": "492853d788e93535a7e8e953721a9e004b62431eac6c22c31af951e340859c6a"
+      },
+      "assembly": {
+        "0x76d5af8.asm": "e518c5ac957d0f7519050b0bd8b348a8044a56b5c3583031d21c406c19d89613",
+        "0x76d6c38.asm": "3dc4b9e2a6e30f01f2af3c89565039f618ea3397383a66f7299dfc7b666be3a5",
+        "0x76d6dac.asm": "c6771f8995364f4254cc86531d1a48df899a5e7d73f8b99b988ea585388691cf",
+        "0x76d7868.asm": "6c41cc2c07a00de8e5ab77204bb44f5e59c77dd297153eb5bc5466d1471a9992",
+        "0x7a2c314.asm": "e6dcc780ae3b48b3648bfa5f337df36c2b56fbb3ffcc5761744d67f4675f06eb"
+      }
+    },
+    "gameExecuted": false,
+    "browserExecuted": false,
+    "testsExecuted": false,
+    "simulationExecuted": false
+  },
+  "battleEvidence": {
+    "date": "2026-10-22",
+    "kind": "Read-only source-table and retained offline native-evidence audit",
+    "gameExecuted": false,
+    "browserExecuted": false,
+    "testsExecuted": false,
+    "simulationExecuted": false,
+    "confirmed": [
+      {
+        "topic": "Native settlement request",
+        "source": "WorldMain.OnBattleEndEvent0x75164ec -> WorldUtils.GetEndCombatRequest0x7517014 -> GetRewards0x7520400 -> DoEndCombat0x75e038c",
+        "finding": "Request uses battle-earned gold, userXP and explicit DropInfo pairs. FinishReward is not rolled by this client path."
+      },
+      {
+        "topic": "Gold persistence/quit",
+        "source": "FillNormalBattleEndEvent0x6e651d4; FillMainBattleEnd0x6e655b0; OnPlayerLeave0x693c588; BaseEndState.OnEnter0x69432a0",
+        "finding": "Explicit quit fails run but retains current earned gold; no victory coin vacuum or reset. Loading abandonment is separate."
+      },
+      {
+        "topic": "Wave gold multiplier",
+        "source": "MainDropManager.get_WaveGold0x6a3ca70; WaterfallBattleManager.AddExpAndGold0x6982f28, specifically0x69831f0..0x6983208",
+        "finding": "BattleGold% multiplies configured waveGold via Q16 and CeilToInt. All201 captured MainChapter rows have waveGold0; do not apply percentage to all pickup coins."
+      },
+      {
+        "topic": "Pickup gold",
+        "source": "DropItemGold.OnAbsorb0x6a29be4",
+        "finding": "No BattleGold% multiplication in this absorb path."
+      },
+      {
+        "topic": "Fixed first-clear rewards",
+        "source": "Chapter_MainChapter.FirstReward",
+        "rows": [
+          {
+            "chapter": 1,
+            "reward": [
+              [
+                4300110,
+                1
+              ]
+            ]
+          },
+          {
+            "chapter": 4,
+            "reward": [
+              [
+                112,
+                1
+              ]
+            ]
+          }
+        ],
+        "finding": "Only chapter1 gear4300110x1 and chapter4 advancedkey112x1. Native FirstPassReward comes from response; explicit fixed table is adequate offline proven config."
+      },
+      {
+        "topic": "Chapter wave milestone rewards",
+        "source": "ChapterReward_MissionReward",
+        "rowCount": 600,
+        "current60RowCount": 180,
+        "catalogExactMatch": true,
+        "firstRows": [
+          {
+            "id": 1,
+            "missionId": 1,
+            "wave": 5,
+            "reward": [
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 2,
+            "missionId": 1,
+            "wave": 10,
+            "reward": [
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 3,
+            "missionId": 1,
+            "wave": 15,
+            "reward": [
+              [
+                105,
+                10
+              ],
+              [
+                107,
+                10
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 4,
+            "missionId": 2,
+            "wave": 5,
+            "reward": [
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 5,
+            "missionId": 2,
+            "wave": 10,
+            "reward": [
+              [
+                108,
+                10
+              ],
+              [
+                109,
+                10
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 6,
+            "missionId": 2,
+            "wave": 15,
+            "reward": [
+              [
+                113,
+                1
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 7,
+            "missionId": 3,
+            "wave": 5,
+            "reward": [
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 8,
+            "missionId": 3,
+            "wave": 10,
+            "reward": [
+              [
+                10010007,
+                20
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          },
+          {
+            "id": 9,
+            "missionId": 3,
+            "wave": 15,
+            "reward": [
+              [
+                113,
+                1
+              ],
+              [
+                1,
+                1000
+              ]
+            ],
+            "time": 0,
+            "room": 0
+          }
+        ],
+        "finding": "Fixed IDs/counts and wave/time/room gates are source data. One-time milestone rewards are not repeat-run bundle drops."
+      }
+    ],
+    "unknown": [
+      {
+        "topic": "Repeat battle equipment/material grants",
+        "finding": "FinishReward is ID-only preview. All201 captured main chapter MonsterDropGroup/Rate/Limit and BossDropGroup/Rate/Limit/Guarantee are empty. CheckSpecialDrop0x6a3cf00 returnsfalse and AddDropItemFromGroup0x6a3cf9c grants nothing in native non-hotfix branches, but both support hotfix. Does not establish live absence or justify invented drop amounts."
+      },
+      {
+        "topic": "Drop Rand1 sampler",
+        "rows": [
+          {
+            "drop_id": 10010007,
+            "atlasId": 1,
+            "icon": "stg_icon_equip_scroll_random",
+            "quality": 30,
+            "nameID": "DropName_10010007",
+            "describeID": "DropDesc_10010007",
+            "Rand1": [
+              [
+                105,
+                1,
+                1,
+                1
+              ],
+              [
+                106,
+                1,
+                1,
+                1
+              ],
+              [
+                107,
+                1,
+                1,
+                1
+              ],
+              [
+                108,
+                1,
+                1,
+                1
+              ],
+              [
+                109,
+                1,
+                1,
+                1
+              ]
+            ]
+          },
+          {
+            "drop_id": 10010008,
+            "atlasId": 1,
+            "icon": "stg_skillLab_icon_random",
+            "quality": 30,
+            "nameID": "DropName_10010008",
+            "describeID": "DropDesc_10010008",
+            "Rand1": [
+              [
+                801,
+                1,
+                1,
+                1
+              ],
+              [
+                802,
+                1,
+                1,
+                1
+              ],
+              [
+                803,
+                1,
+                1,
+                1
+              ],
+              [
+                804,
+                1,
+                1,
+                1
+              ],
+              [
+                805,
+                1,
+                1,
+                1
+              ],
+              [
+                806,
+                1,
+                1,
+                1
+              ],
+              [
+                807,
+                1,
+                1,
+                1
+              ],
+              [
+                808,
+                1,
+                1,
+                1
+              ],
+              [
+                809,
+                1,
+                1,
+                1
+              ],
+              [
+                810,
+                1,
+                1,
+                1
+              ],
+              [
+                811,
+                1,
+                1,
+                1
+              ]
+            ]
+          }
+        ],
+        "finding": "Preview AddItemToList uses first2columns as item/count. Remaining columns, sampling independence, number of draws and server/hotfix choice are not proven. All1 columns do not suffice to infer uniform independent with-replacement rolls."
+      },
+      {
+        "topic": "Authoritative userXP additions",
+        "finding": "UserXP is carried separately from in-run XP; server additions/reward settlement not proven."
+      },
+      {
+        "topic": "Resource availability in screenshot",
+        "finding": "8h screenshot establishes that observed receipt only, without chapter/profile/server/day/account context. It cannot establish all-chapter constant yield or future tier multipliers."
+      }
+    ],
+    "localPoliciesToRetireOrExplicitlyMark": [
+      "Repeat bundle every5passedwaves grants five equipment sheet types and rotating11research types (v1andv2); no source proof",
+      "Every3victories gives ordinarykey113; no source proof",
+      "chapter-material-policy seven income tiers and uniform per-type amounts; invented",
+      "Chapter drop10010007/8 uniform-with-replacement resolver; invented",
+      "Future chapter reward replacements110->113,151/154->112 and chapter reward71 drone30001->gun20301 are deliberate local adaptations, not original",
+      "Chapter5/10/...50 core135x1 rewards are user-approved local additions, not originalChapterReward rows",
+      "Advanced equipment pool replacement of unresolved902 with custom3percentpilot outcomes is a deliberate local source policy, not source odds"
+    ],
+    "recommendations": [
+      "Remove newly invented tiered and fixed repeat materials from new normal-mode runs; preserve historical balances/claim ledgers without retroactive deletion",
+      "Keep earned battle gold and native fixed firstclear; latest1:1instruction supersedes old filter of chapter4key112 (restore futuregrant only, no duplicate existingclaims)",
+      "Keep literal fixed MissionRewardIDs/counts. Unknown random-group settlement should remain markedunconfirmed and should not be silently sampled or substituted",
+      "Do not assign arbitrary Rand1 meaning or promote ID-only FinishReward preview to payout; avoid speculative income math",
+      "Mark remaining explicitly user-requested local pilot/ad/core policies so they cannot be mistaken for original; decide scope separately rather than deleting saves"
+    ],
+    "evidence": [
+      {
+        "path": "apk-values-20261014\\source_tables\\Chapter_MainChapter.json",
+        "sha256": "f28c4840284c587c0f2859c38ab4a5a0c5a5f7d12495f24067277c3151c4e5d9"
+      },
+      {
+        "path": "apk-values-20261014\\source_tables\\ChapterReward_MissionReward.json",
+        "sha256": "a4271f1eaee18f8a905606d29143dd67ff4d2596f3e17dc6c8f747757dbc6be1"
+      },
+      {
+        "path": "apk-values-20261014\\source_tables\\Drop_drop.json",
+        "sha256": "67614cc4aa594b1113c2d05aae39517e848650d0b139ff7698e19122d6db1bdb"
+      },
+      {
+        "path": "D:\\少女航线\\yyyl\\pixigame\\replica-battle\\research\\settlement-integration.md",
+        "sha256": "1dce7e6ae1de5dbf205d79a176212964697582ff9751a56ba7f2a9522adc59c4"
+      },
+      {
+        "path": "D:\\少女航线\\yyyl\\pixigame\\replica-battle\\research\\material-progression-integration.md",
+        "sha256": "e7f6ad33a35539c2714fb6049b813faaf4b9663c9c9dab6ee33c7a5d50467311"
+      },
+      {
+        "path": "D:\\少女航线\\yyyl\\pixigame\\replica-battle\\research\\settlement-branches-annotated.txt",
+        "sha256": "7ce118c7d3410dad0ffd15cc0927b6be448501d283ffc6e7a87951f477e36e29"
+      },
+      {
+        "path": "D:\\少女航线\\yyyl\\pixigame\\replica-battle\\research\\settlement-leave-annotated.txt",
+        "sha256": "b83600997448c42ad14007030d4e98ff873269e3bec5fe92af01bd35dbadf13c"
+      }
+    ],
+    "limits": "No fresh disassembly required; reused retained source-bound ARM64 notes/listings and verified exact raw tables. No claim of live server/hotfix evidence or REA engine coverage."
+  }
+}

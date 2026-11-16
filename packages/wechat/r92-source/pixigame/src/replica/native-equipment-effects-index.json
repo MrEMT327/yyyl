@@ -1,0 +1,7835 @@
+{
+  "source": "replica-battle/data/loadout-catalog.json",
+  "equipment": {
+    "4100110": {
+      "id": 4100110,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": []
+    },
+    "4100120": {
+      "id": 4100120,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4100130": {
+      "id": 4100130,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        }
+      ]
+    },
+    "4100140": {
+      "id": 4100140,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        }
+      ]
+    },
+    "4100141": {
+      "id": 4100141,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        }
+      ]
+    },
+    "4100142": {
+      "id": 4100142,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        }
+      ]
+    },
+    "4100150": {
+      "id": 4100150,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210121,
+          "text": "史诗 · 拾取空投后，5秒内暴击伤害提升100%，并对随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4100151": {
+      "id": 4100151,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210121,
+          "text": "史诗 · 拾取空投后，5秒内暴击伤害提升100%，并对随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4100152": {
+      "id": 4100152,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210121,
+          "text": "史诗 · 拾取空投后，5秒内暴击伤害提升100%，并对随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4100153": {
+      "id": 4100153,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210121,
+          "text": "史诗 · 拾取空投后，5秒内暴击伤害提升100%，并对随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4100160": {
+      "id": 4100160,
+      "nativeName": "远袭战术头盔",
+      "rank": 0,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210111,
+          "text": "杰出 · 每隔60秒，获得一个回血空投（10%回血量）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210121,
+          "text": "史诗 · 拾取空投后，5秒内暴击伤害提升100%，并对随机敌人释放一次落雷"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 210112,
+          "text": "传说 · 每隔40秒，获得一个回血空投（10%回血量）"
+        }
+      ]
+    },
+    "4100210": {
+      "id": 4100210,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": []
+    },
+    "4100220": {
+      "id": 4100220,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4100230": {
+      "id": 4100230,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        }
+      ]
+    },
+    "4100240": {
+      "id": 4100240,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        }
+      ]
+    },
+    "4100241": {
+      "id": 4100241,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        }
+      ]
+    },
+    "4100242": {
+      "id": 4100242,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        }
+      ]
+    },
+    "4100250": {
+      "id": 4100250,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210221,
+          "text": "史诗 · 拾取空投后，对附近敌人伤害提升60%，5秒"
+        }
+      ]
+    },
+    "4100251": {
+      "id": 4100251,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210221,
+          "text": "史诗 · 拾取空投后，对附近敌人伤害提升60%，5秒"
+        }
+      ]
+    },
+    "4100252": {
+      "id": 4100252,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210221,
+          "text": "史诗 · 拾取空投后，对附近敌人伤害提升60%，5秒"
+        }
+      ]
+    },
+    "4100253": {
+      "id": 4100253,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210221,
+          "text": "史诗 · 拾取空投后，对附近敌人伤害提升60%，5秒"
+        }
+      ]
+    },
+    "4100260": {
+      "id": 4100260,
+      "nativeName": "先锋作战头盔",
+      "rank": 0,
+      "series": 2,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210211,
+          "text": "杰出 · 每隔35秒，获得一个限时护盾空投（持续5秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210221,
+          "text": "史诗 · 拾取空投后，对附近敌人伤害提升60%，5秒"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 210212,
+          "text": "传说 · 所有限时护盾持续时间延长2秒。"
+        }
+      ]
+    },
+    "4100310": {
+      "id": 4100310,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": []
+    },
+    "4100320": {
+      "id": 4100320,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4100330": {
+      "id": 4100330,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        }
+      ]
+    },
+    "4100340": {
+      "id": 4100340,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        }
+      ]
+    },
+    "4100341": {
+      "id": 4100341,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        }
+      ]
+    },
+    "4100342": {
+      "id": 4100342,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        }
+      ]
+    },
+    "4100350": {
+      "id": 4100350,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210321,
+          "text": "史诗 · 每次受伤会缩短空投5秒的冷却时间（全体空投）"
+        }
+      ]
+    },
+    "4100351": {
+      "id": 4100351,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210321,
+          "text": "史诗 · 每次受伤会缩短空投5秒的冷却时间（全体空投）"
+        }
+      ]
+    },
+    "4100352": {
+      "id": 4100352,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210321,
+          "text": "史诗 · 每次受伤会缩短空投5秒的冷却时间（全体空投）"
+        }
+      ]
+    },
+    "4100353": {
+      "id": 4100353,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210321,
+          "text": "史诗 · 每次受伤会缩短空投5秒的冷却时间（全体空投）"
+        }
+      ]
+    },
+    "4100360": {
+      "id": 4100360,
+      "nativeName": "超载动力头盔",
+      "rank": 0,
+      "series": 3,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210311,
+          "text": "杰出 · 每隔40秒，获得一个导弹空投"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210321,
+          "text": "史诗 · 每次受伤会缩短空投5秒的冷却时间（全体空投）"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 210312,
+          "text": "传说 · 导弹的爆炸可以清除屏幕内的子弹"
+        }
+      ]
+    },
+    "4100410": {
+      "id": 4100410,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": []
+    },
+    "4100420": {
+      "id": 4100420,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4100430": {
+      "id": 4100430,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        }
+      ]
+    },
+    "4100440": {
+      "id": 4100440,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        }
+      ]
+    },
+    "4100441": {
+      "id": 4100441,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        }
+      ]
+    },
+    "4100442": {
+      "id": 4100442,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        }
+      ]
+    },
+    "4100450": {
+      "id": 4100450,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210421,
+          "text": "史诗 · 拾取空投后，接下来的5次攻击，伤害提升100%"
+        }
+      ]
+    },
+    "4100451": {
+      "id": 4100451,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210421,
+          "text": "史诗 · 拾取空投后，接下来的5次攻击，伤害提升100%"
+        }
+      ]
+    },
+    "4100452": {
+      "id": 4100452,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210421,
+          "text": "史诗 · 拾取空投后，接下来的5次攻击，伤害提升100%"
+        }
+      ]
+    },
+    "4100453": {
+      "id": 4100453,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210421,
+          "text": "史诗 · 拾取空投后，接下来的5次攻击，伤害提升100%"
+        }
+      ]
+    },
+    "4100460": {
+      "id": 4100460,
+      "nativeName": "极速充能头盔",
+      "rank": 0,
+      "series": 4,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱掉落概率 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 210411,
+          "text": "杰出 · 每隔40秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 210421,
+          "text": "史诗 · 拾取空投后，接下来的5次攻击，伤害提升100%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 210412,
+          "text": "传说 · 每隔30秒，获得一个加速空投，缩短冷却时间（冷却缩减25%，持续10秒）"
+        }
+      ]
+    },
+    "4110110": {
+      "id": 4110110,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": []
+    },
+    "4110120": {
+      "id": 4110120,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        }
+      ]
+    },
+    "4110130": {
+      "id": 4110130,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        }
+      ]
+    },
+    "4110140": {
+      "id": 4110140,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        }
+      ]
+    },
+    "4110141": {
+      "id": 4110141,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        }
+      ]
+    },
+    "4110142": {
+      "id": 4110142,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        }
+      ]
+    },
+    "4110150": {
+      "id": 4110150,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 211112,
+          "text": "史诗 · 每次受伤空投冷却时间缩短10秒"
+        }
+      ]
+    },
+    "4110151": {
+      "id": 4110151,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 211112,
+          "text": "史诗 · 每次受伤空投冷却时间缩短10秒"
+        }
+      ]
+    },
+    "4110152": {
+      "id": 4110152,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 211112,
+          "text": "史诗 · 每次受伤空投冷却时间缩短10秒"
+        }
+      ]
+    },
+    "4110153": {
+      "id": 4110153,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 211112,
+          "text": "史诗 · 每次受伤空投冷却时间缩短10秒"
+        }
+      ]
+    },
+    "4110160": {
+      "id": 4110160,
+      "nativeName": "王牌飞行头盔",
+      "rank": 1,
+      "series": 1,
+      "slot": 1,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPPickUpAdd%",
+          "value": 15,
+          "text": "精良 · 维修箱掉落概率 +15%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 211101,
+          "text": "优秀 · 闪避率 + 5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 211111,
+          "text": "杰出 · 每隔40秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续6秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 211112,
+          "text": "史诗 · 每次受伤空投冷却时间缩短10秒"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 211113,
+          "text": "传说 · 每隔30秒，获得一个狂暴空投。拾取后进入【狂暴】状态，持续8秒。结束释放全屏震荡波"
+        }
+      ]
+    },
+    "4200110": {
+      "id": 4200110,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": []
+    },
+    "4200120": {
+      "id": 4200120,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4200130": {
+      "id": 4200130,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4200140": {
+      "id": 4200140,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        }
+      ]
+    },
+    "4200141": {
+      "id": 4200141,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        }
+      ]
+    },
+    "4200142": {
+      "id": 4200142,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        }
+      ]
+    },
+    "4200150": {
+      "id": 4200150,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220121,
+          "text": "史诗 · 每攻击6次，下一次攻击连射+1"
+        }
+      ]
+    },
+    "4200151": {
+      "id": 4200151,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220121,
+          "text": "史诗 · 每攻击6次，下一次攻击连射+1"
+        }
+      ]
+    },
+    "4200152": {
+      "id": 4200152,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220121,
+          "text": "史诗 · 每攻击6次，下一次攻击连射+1"
+        }
+      ]
+    },
+    "4200153": {
+      "id": 4200153,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220121,
+          "text": "史诗 · 每攻击6次，下一次攻击连射+1"
+        }
+      ]
+    },
+    "4200160": {
+      "id": 4200160,
+      "nativeName": "远袭战术手套",
+      "rank": 0,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220111,
+          "text": "杰出 · 距离敌人越远，伤害越高，上限30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220121,
+          "text": "史诗 · 每攻击6次，下一次攻击连射+1"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 220112,
+          "text": "传说 · 距离敌人越远，伤害越高，上限60%"
+        }
+      ]
+    },
+    "4200210": {
+      "id": 4200210,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": []
+    },
+    "4200220": {
+      "id": 4200220,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4200230": {
+      "id": 4200230,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4200240": {
+      "id": 4200240,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        }
+      ]
+    },
+    "4200241": {
+      "id": 4200241,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        }
+      ]
+    },
+    "4200242": {
+      "id": 4200242,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        }
+      ]
+    },
+    "4200250": {
+      "id": 4200250,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220221,
+          "text": "史诗 · 附近敌人数大于5时，冷却提升20%"
+        }
+      ]
+    },
+    "4200251": {
+      "id": 4200251,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220221,
+          "text": "史诗 · 附近敌人数大于5时，冷却提升20%"
+        }
+      ]
+    },
+    "4200252": {
+      "id": 4200252,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220221,
+          "text": "史诗 · 附近敌人数大于5时，冷却提升20%"
+        }
+      ]
+    },
+    "4200253": {
+      "id": 4200253,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220221,
+          "text": "史诗 · 附近敌人数大于5时，冷却提升20%"
+        }
+      ]
+    },
+    "4200260": {
+      "id": 4200260,
+      "nativeName": "先锋战术手套",
+      "rank": 0,
+      "series": 2,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220211,
+          "text": "杰出 · 距离越近，伤害越高，上限35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220221,
+          "text": "史诗 · 附近敌人数大于5时，冷却提升20%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 220212,
+          "text": "传说 · 距离越近，伤害越高，上限70%"
+        }
+      ]
+    },
+    "4200310": {
+      "id": 4200310,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": []
+    },
+    "4200320": {
+      "id": 4200320,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4200330": {
+      "id": 4200330,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4200340": {
+      "id": 4200340,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        }
+      ]
+    },
+    "4200341": {
+      "id": 4200341,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        }
+      ]
+    },
+    "4200342": {
+      "id": 4200342,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        }
+      ]
+    },
+    "4200350": {
+      "id": 4200350,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220321,
+          "text": "史诗 · 范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4200351": {
+      "id": 4200351,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220321,
+          "text": "史诗 · 范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4200352": {
+      "id": 4200352,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220321,
+          "text": "史诗 · 范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4200353": {
+      "id": 4200353,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220321,
+          "text": "史诗 · 范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4200360": {
+      "id": 4200360,
+      "nativeName": "超载动力手套",
+      "rank": 0,
+      "series": 3,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220311,
+          "text": "杰出 · 范围类伤害+25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220321,
+          "text": "史诗 · 范围类伤害的攻击区域+20%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 220312,
+          "text": "传说 · 范围类伤害+50%"
+        }
+      ]
+    },
+    "4200410": {
+      "id": 4200410,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": []
+    },
+    "4200420": {
+      "id": 4200420,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4200430": {
+      "id": 4200430,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4200440": {
+      "id": 4200440,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        }
+      ]
+    },
+    "4200441": {
+      "id": 4200441,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        }
+      ]
+    },
+    "4200442": {
+      "id": 4200442,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        }
+      ]
+    },
+    "4200450": {
+      "id": 4200450,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220421,
+          "text": "史诗 · 重置冷却后，本轮攻击伤害+50%"
+        }
+      ]
+    },
+    "4200451": {
+      "id": 4200451,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220421,
+          "text": "史诗 · 重置冷却后，本轮攻击伤害+50%"
+        }
+      ]
+    },
+    "4200452": {
+      "id": 4200452,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220421,
+          "text": "史诗 · 重置冷却后，本轮攻击伤害+50%"
+        }
+      ]
+    },
+    "4200453": {
+      "id": 4200453,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220421,
+          "text": "史诗 · 重置冷却后，本轮攻击伤害+50%"
+        }
+      ]
+    },
+    "4200460": {
+      "id": 4200460,
+      "nativeName": "极速充能手套",
+      "rank": 0,
+      "series": 4,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 220411,
+          "text": "杰出 · 武器有15%的概率重置冷却"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 220421,
+          "text": "史诗 · 重置冷却后，本轮攻击伤害+50%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 220412,
+          "text": "传说 · 武器有25%的概率重置冷却"
+        }
+      ]
+    },
+    "4210110": {
+      "id": 4210110,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": []
+    },
+    "4210120": {
+      "id": 4210120,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4210130": {
+      "id": 4210130,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        }
+      ]
+    },
+    "4210140": {
+      "id": 4210140,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        }
+      ]
+    },
+    "4210141": {
+      "id": 4210141,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        }
+      ]
+    },
+    "4210142": {
+      "id": 4210142,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        }
+      ]
+    },
+    "4210150": {
+      "id": 4210150,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 221112,
+          "text": "史诗 · 对低血量的敌人攻击提升100%"
+        }
+      ]
+    },
+    "4210151": {
+      "id": 4210151,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 221112,
+          "text": "史诗 · 对低血量的敌人攻击提升100%"
+        }
+      ]
+    },
+    "4210152": {
+      "id": 4210152,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 221112,
+          "text": "史诗 · 对低血量的敌人攻击提升100%"
+        }
+      ]
+    },
+    "4210153": {
+      "id": 4210153,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 221112,
+          "text": "史诗 · 对低血量的敌人攻击提升100%"
+        }
+      ]
+    },
+    "4210160": {
+      "id": 4210160,
+      "nativeName": "王牌飞行手套",
+      "rank": 1,
+      "series": 1,
+      "slot": 2,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 221111,
+          "text": "优秀 · 对低血量的敌人攻击提升30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 221121,
+          "text": "杰出 · 每攻击6次，下一次攻击得到大幅增强"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 221112,
+          "text": "史诗 · 对低血量的敌人攻击提升100%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 221122,
+          "text": "传说 · 每攻击4次，下一次攻击得到巨幅增强"
+        }
+      ]
+    },
+    "4300110": {
+      "id": 4300110,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": []
+    },
+    "4300120": {
+      "id": 4300120,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4300130": {
+      "id": 4300130,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        }
+      ]
+    },
+    "4300140": {
+      "id": 4300140,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        }
+      ]
+    },
+    "4300141": {
+      "id": 4300141,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        }
+      ]
+    },
+    "4300142": {
+      "id": 4300142,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        }
+      ]
+    },
+    "4300150": {
+      "id": 4300150,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230121,
+          "text": "史诗 · 受伤时，对伤害来源(由玩家) 触发1-3次落雷"
+        }
+      ]
+    },
+    "4300151": {
+      "id": 4300151,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230121,
+          "text": "史诗 · 受伤时，对伤害来源(由玩家) 触发1-3次落雷"
+        }
+      ]
+    },
+    "4300152": {
+      "id": 4300152,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230121,
+          "text": "史诗 · 受伤时，对伤害来源(由玩家) 触发1-3次落雷"
+        }
+      ]
+    },
+    "4300153": {
+      "id": 4300153,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230121,
+          "text": "史诗 · 受伤时，对伤害来源(由玩家) 触发1-3次落雷"
+        }
+      ]
+    },
+    "4300160": {
+      "id": 4300160,
+      "nativeName": "远袭战术服",
+      "rank": 0,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230111,
+          "text": "杰出 · 受到伤害后，伤害减免25%，持续7秒"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230121,
+          "text": "史诗 · 受伤时，对伤害来源(由玩家) 触发1-3次落雷"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 230112,
+          "text": "传说 · 受到伤害后，伤害减免35%，持续10秒"
+        }
+      ]
+    },
+    "4300210": {
+      "id": 4300210,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": []
+    },
+    "4300220": {
+      "id": 4300220,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4300230": {
+      "id": 4300230,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        }
+      ]
+    },
+    "4300240": {
+      "id": 4300240,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        }
+      ]
+    },
+    "4300241": {
+      "id": 4300241,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        }
+      ]
+    },
+    "4300242": {
+      "id": 4300242,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        }
+      ]
+    },
+    "4300250": {
+      "id": 4300250,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230221,
+          "text": "史诗 · 生命低于50%时，来自近处敌人的伤害降低25%"
+        }
+      ]
+    },
+    "4300251": {
+      "id": 4300251,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230221,
+          "text": "史诗 · 生命低于50%时，来自近处敌人的伤害降低25%"
+        }
+      ]
+    },
+    "4300252": {
+      "id": 4300252,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230221,
+          "text": "史诗 · 生命低于50%时，来自近处敌人的伤害降低25%"
+        }
+      ]
+    },
+    "4300253": {
+      "id": 4300253,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230221,
+          "text": "史诗 · 生命低于50%时，来自近处敌人的伤害降低25%"
+        }
+      ]
+    },
+    "4300260": {
+      "id": 4300260,
+      "nativeName": "先锋作战服",
+      "rank": 0,
+      "series": 2,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230211,
+          "text": "杰出 · 受伤后，5秒内对近处的敌人伤害+50%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230221,
+          "text": "史诗 · 生命低于50%时，来自近处敌人的伤害降低25%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 230212,
+          "text": "传说 · 受伤后，7秒内对近处的敌人伤害+75%"
+        }
+      ]
+    },
+    "4300310": {
+      "id": 4300310,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": []
+    },
+    "4300320": {
+      "id": 4300320,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4300330": {
+      "id": 4300330,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        }
+      ]
+    },
+    "4300340": {
+      "id": 4300340,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        }
+      ]
+    },
+    "4300341": {
+      "id": 4300341,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        }
+      ]
+    },
+    "4300342": {
+      "id": 4300342,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        }
+      ]
+    },
+    "4300350": {
+      "id": 4300350,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230321,
+          "text": "史诗 · 受伤后，8秒内，范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4300351": {
+      "id": 4300351,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230321,
+          "text": "史诗 · 受伤后，8秒内，范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4300352": {
+      "id": 4300352,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230321,
+          "text": "史诗 · 受伤后，8秒内，范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4300353": {
+      "id": 4300353,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230321,
+          "text": "史诗 · 受伤后，8秒内，范围类伤害的攻击区域+20%"
+        }
+      ]
+    },
+    "4300360": {
+      "id": 4300360,
+      "nativeName": "超载动力服",
+      "rank": 0,
+      "series": 3,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230311,
+          "text": "杰出 · 每击杀50个怪物，伤害减免+5%，上限20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230321,
+          "text": "史诗 · 受伤后，8秒内，范围类伤害的攻击区域+20%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 230312,
+          "text": "传说 · 每击杀35个怪物，伤害减免+5%，上限30%"
+        }
+      ]
+    },
+    "4300410": {
+      "id": 4300410,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": []
+    },
+    "4300420": {
+      "id": 4300420,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4300430": {
+      "id": 4300430,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        }
+      ]
+    },
+    "4300440": {
+      "id": 4300440,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        }
+      ]
+    },
+    "4300441": {
+      "id": 4300441,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        }
+      ]
+    },
+    "4300442": {
+      "id": 4300442,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        }
+      ]
+    },
+    "4300450": {
+      "id": 4300450,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230421,
+          "text": "史诗 · 受伤时，全体武器冷却时间降低5秒"
+        }
+      ]
+    },
+    "4300451": {
+      "id": 4300451,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230421,
+          "text": "史诗 · 受伤时，全体武器冷却时间降低5秒"
+        }
+      ]
+    },
+    "4300452": {
+      "id": 4300452,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230421,
+          "text": "史诗 · 受伤时，全体武器冷却时间降低5秒"
+        }
+      ]
+    },
+    "4300453": {
+      "id": 4300453,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230421,
+          "text": "史诗 · 受伤时，全体武器冷却时间降低5秒"
+        }
+      ]
+    },
+    "4300460": {
+      "id": 4300460,
+      "nativeName": "极速充能服",
+      "rank": 0,
+      "series": 4,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "优秀 · 伤害减免 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 230411,
+          "text": "杰出 · 每隔15秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却（全体武器）"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 230421,
+          "text": "史诗 · 受伤时，全体武器冷却时间降低5秒"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 230412,
+          "text": "传说 · 每隔10秒，发射能一枚盾牌，抵挡子弹时可以减少0.5秒的冷却"
+        }
+      ]
+    },
+    "4310110": {
+      "id": 4310110,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": []
+    },
+    "4310120": {
+      "id": 4310120,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        }
+      ]
+    },
+    "4310130": {
+      "id": 4310130,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        }
+      ]
+    },
+    "4310140": {
+      "id": 4310140,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        }
+      ]
+    },
+    "4310141": {
+      "id": 4310141,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        }
+      ]
+    },
+    "4310142": {
+      "id": 4310142,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        }
+      ]
+    },
+    "4310150": {
+      "id": 4310150,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 231112,
+          "text": "史诗 · 盾牌每抵挡3颗子弹，10秒内攻击提升60%"
+        }
+      ]
+    },
+    "4310151": {
+      "id": 4310151,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 231112,
+          "text": "史诗 · 盾牌每抵挡3颗子弹，10秒内攻击提升60%"
+        }
+      ]
+    },
+    "4310152": {
+      "id": 4310152,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 231112,
+          "text": "史诗 · 盾牌每抵挡3颗子弹，10秒内攻击提升60%"
+        }
+      ]
+    },
+    "4310153": {
+      "id": 4310153,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 231112,
+          "text": "史诗 · 盾牌每抵挡3颗子弹，10秒内攻击提升60%"
+        }
+      ]
+    },
+    "4310160": {
+      "id": 4310160,
+      "nativeName": "王牌飞行服",
+      "rank": 1,
+      "series": 1,
+      "slot": 3,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HurtDecrease%",
+          "value": 5,
+          "text": "精良 · 伤害减免 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 231111,
+          "text": "优秀 · 受伤时，发射一枚抵挡子弹的巨型盾牌"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 231121,
+          "text": "杰出 · 生命高于50%时，伤害减免+20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 231112,
+          "text": "史诗 · 盾牌每抵挡3颗子弹，10秒内攻击提升60%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 231122,
+          "text": "传说 · 生命低于50%时，闪避率+30%"
+        }
+      ]
+    },
+    "4400110": {
+      "id": 4400110,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": []
+    },
+    "4400120": {
+      "id": 4400120,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4400130": {
+      "id": 4400130,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4400140": {
+      "id": 4400140,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        }
+      ]
+    },
+    "4400141": {
+      "id": 4400141,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        }
+      ]
+    },
+    "4400142": {
+      "id": 4400142,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        }
+      ]
+    },
+    "4400150": {
+      "id": 4400150,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240121,
+          "text": "史诗 · 每触发5次暴击，朝随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4400151": {
+      "id": 4400151,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240121,
+          "text": "史诗 · 每触发5次暴击，朝随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4400152": {
+      "id": 4400152,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240121,
+          "text": "史诗 · 每触发5次暴击，朝随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4400153": {
+      "id": 4400153,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240121,
+          "text": "史诗 · 每触发5次暴击，朝随机敌人释放一次落雷"
+        }
+      ]
+    },
+    "4400160": {
+      "id": 4400160,
+      "nativeName": "远袭战术项链",
+      "rank": 0,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240111,
+          "text": "杰出 · 距离越远，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240121,
+          "text": "史诗 · 每触发5次暴击，朝随机敌人释放一次落雷"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 240112,
+          "text": "传说 · 距离越远，暴击率越高，上限30%"
+        }
+      ]
+    },
+    "4400210": {
+      "id": 4400210,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": []
+    },
+    "4400220": {
+      "id": 4400220,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4400230": {
+      "id": 4400230,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4400240": {
+      "id": 4400240,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        }
+      ]
+    },
+    "4400241": {
+      "id": 4400241,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        }
+      ]
+    },
+    "4400242": {
+      "id": 4400242,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        }
+      ]
+    },
+    "4400250": {
+      "id": 4400250,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240221,
+          "text": "史诗 · 距离越近，暴击伤害越高，上限250%"
+        }
+      ]
+    },
+    "4400251": {
+      "id": 4400251,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240221,
+          "text": "史诗 · 距离越近，暴击伤害越高，上限250%"
+        }
+      ]
+    },
+    "4400252": {
+      "id": 4400252,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240221,
+          "text": "史诗 · 距离越近，暴击伤害越高，上限250%"
+        }
+      ]
+    },
+    "4400253": {
+      "id": 4400253,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240221,
+          "text": "史诗 · 距离越近，暴击伤害越高，上限250%"
+        }
+      ]
+    },
+    "4400260": {
+      "id": 4400260,
+      "nativeName": "先锋作战项链",
+      "rank": 0,
+      "series": 2,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240211,
+          "text": "杰出 · 距离越近，暴击率越高，上限15%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240221,
+          "text": "史诗 · 距离越近，暴击伤害越高，上限250%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 240212,
+          "text": "传说 · 距离越近，暴击率越高，上限30%"
+        }
+      ]
+    },
+    "4400310": {
+      "id": 4400310,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": []
+    },
+    "4400320": {
+      "id": 4400320,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4400330": {
+      "id": 4400330,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4400340": {
+      "id": 4400340,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        }
+      ]
+    },
+    "4400341": {
+      "id": 4400341,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        }
+      ]
+    },
+    "4400342": {
+      "id": 4400342,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        }
+      ]
+    },
+    "4400350": {
+      "id": 4400350,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240321,
+          "text": "史诗 · 对中心区域的敌人暴击率提升15%"
+        }
+      ]
+    },
+    "4400351": {
+      "id": 4400351,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240321,
+          "text": "史诗 · 对中心区域的敌人暴击率提升15%"
+        }
+      ]
+    },
+    "4400352": {
+      "id": 4400352,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240321,
+          "text": "史诗 · 对中心区域的敌人暴击率提升15%"
+        }
+      ]
+    },
+    "4400353": {
+      "id": 4400353,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240321,
+          "text": "史诗 · 对中心区域的敌人暴击率提升15%"
+        }
+      ]
+    },
+    "4400360": {
+      "id": 4400360,
+      "nativeName": "超载动力项链",
+      "rank": 0,
+      "series": 3,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240311,
+          "text": "杰出 · 范围伤害对中心区域伤害+30%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240321,
+          "text": "史诗 · 对中心区域的敌人暴击率提升15%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 240312,
+          "text": "传说 · 范围伤害对中心区域伤害+60%"
+        }
+      ]
+    },
+    "4400410": {
+      "id": 4400410,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": []
+    },
+    "4400420": {
+      "id": 4400420,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        }
+      ]
+    },
+    "4400430": {
+      "id": 4400430,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4400440": {
+      "id": 4400440,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        }
+      ]
+    },
+    "4400441": {
+      "id": 4400441,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        }
+      ]
+    },
+    "4400442": {
+      "id": 4400442,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        }
+      ]
+    },
+    "4400450": {
+      "id": 4400450,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240421,
+          "text": "史诗 · 每关前3波，全体武器冷却时间缩短20%"
+        }
+      ]
+    },
+    "4400451": {
+      "id": 4400451,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240421,
+          "text": "史诗 · 每关前3波，全体武器冷却时间缩短20%"
+        }
+      ]
+    },
+    "4400452": {
+      "id": 4400452,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240421,
+          "text": "史诗 · 每关前3波，全体武器冷却时间缩短20%"
+        }
+      ]
+    },
+    "4400453": {
+      "id": 4400453,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240421,
+          "text": "史诗 · 每关前3波，全体武器冷却时间缩短20%"
+        }
+      ]
+    },
+    "4400460": {
+      "id": 4400460,
+      "nativeName": "极速充能项链",
+      "rank": 0,
+      "series": 4,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack",
+          "value": 25,
+          "text": "精良 · 攻击力 +25"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "优秀 · 攻击力 +5%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 240411,
+          "text": "杰出 · 等级最高的武器，冷却时间降低20%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 240421,
+          "text": "史诗 · 每关前3波，全体武器冷却时间缩短20%"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 240412,
+          "text": "传说 · 等级最高的武器，冷却时间降低30%"
+        }
+      ]
+    },
+    "4410110": {
+      "id": 4410110,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": []
+    },
+    "4410120": {
+      "id": 4410120,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        }
+      ]
+    },
+    "4410130": {
+      "id": 4410130,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        }
+      ]
+    },
+    "4410140": {
+      "id": 4410140,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        }
+      ]
+    },
+    "4410141": {
+      "id": 4410141,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        }
+      ]
+    },
+    "4410142": {
+      "id": 4410142,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        }
+      ]
+    },
+    "4410150": {
+      "id": 4410150,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 241111,
+          "text": "史诗 · 每次受伤立刻重置所有武器的冷却"
+        }
+      ]
+    },
+    "4410151": {
+      "id": 4410151,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 241111,
+          "text": "史诗 · 每次受伤立刻重置所有武器的冷却"
+        }
+      ]
+    },
+    "4410152": {
+      "id": 4410152,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 241111,
+          "text": "史诗 · 每次受伤立刻重置所有武器的冷却"
+        }
+      ]
+    },
+    "4410153": {
+      "id": 4410153,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 241111,
+          "text": "史诗 · 每次受伤立刻重置所有武器的冷却"
+        }
+      ]
+    },
+    "4410160": {
+      "id": 4410160,
+      "nativeName": "王牌飞行项链",
+      "rank": 1,
+      "series": 1,
+      "slot": 4,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "Attack%",
+          "value": 5,
+          "text": "精良 · 攻击力 +5%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 241101,
+          "text": "优秀 · 每关前3波，全体武器冷却时间缩短30%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 241121,
+          "text": "杰出 · 生命越低，攻击越高，最高35%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 241111,
+          "text": "史诗 · 每次受伤立刻重置所有武器的冷却"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 241122,
+          "text": "传说 · 生命越低，攻击越高，最高80%"
+        }
+      ]
+    },
+    "4500110": {
+      "id": 4500110,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": []
+    },
+    "4500120": {
+      "id": 4500120,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4500130": {
+      "id": 4500130,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        }
+      ]
+    },
+    "4500140": {
+      "id": 4500140,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        }
+      ]
+    },
+    "4500141": {
+      "id": 4500141,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        }
+      ]
+    },
+    "4500142": {
+      "id": 4500142,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        }
+      ]
+    },
+    "4500150": {
+      "id": 4500150,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250121,
+          "text": "史诗 · 落雷进化为金色落雷"
+        }
+      ]
+    },
+    "4500151": {
+      "id": 4500151,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250121,
+          "text": "史诗 · 落雷进化为金色落雷"
+        }
+      ]
+    },
+    "4500152": {
+      "id": 4500152,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250121,
+          "text": "史诗 · 落雷进化为金色落雷"
+        }
+      ]
+    },
+    "4500153": {
+      "id": 4500153,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250121,
+          "text": "史诗 · 落雷进化为金色落雷"
+        }
+      ]
+    },
+    "4500160": {
+      "id": 4500160,
+      "nativeName": "远袭战术靴",
+      "rank": 0,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250111,
+          "text": "杰出 · 生命低于50%时，所有恢复效果+40%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250121,
+          "text": "史诗 · 落雷进化为金色落雷"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 250112,
+          "text": "传说 · 生命低于50%时，所有恢复效果+50%"
+        }
+      ]
+    },
+    "4500210": {
+      "id": 4500210,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": []
+    },
+    "4500220": {
+      "id": 4500220,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4500230": {
+      "id": 4500230,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        }
+      ]
+    },
+    "4500240": {
+      "id": 4500240,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        }
+      ]
+    },
+    "4500241": {
+      "id": 4500241,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        }
+      ]
+    },
+    "4500242": {
+      "id": 4500242,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        }
+      ]
+    },
+    "4500250": {
+      "id": 4500250,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250221,
+          "text": "史诗 · 拾取维修箱有25%概率获得一个持续3秒的护盾"
+        }
+      ]
+    },
+    "4500251": {
+      "id": 4500251,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250221,
+          "text": "史诗 · 拾取维修箱有25%概率获得一个持续3秒的护盾"
+        }
+      ]
+    },
+    "4500252": {
+      "id": 4500252,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250221,
+          "text": "史诗 · 拾取维修箱有25%概率获得一个持续3秒的护盾"
+        }
+      ]
+    },
+    "4500253": {
+      "id": 4500253,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250221,
+          "text": "史诗 · 拾取维修箱有25%概率获得一个持续3秒的护盾"
+        }
+      ]
+    },
+    "4500260": {
+      "id": 4500260,
+      "nativeName": "先锋战术靴",
+      "rank": 0,
+      "series": 2,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250211,
+          "text": "杰出 · 每波结束，恢复2.5%生命"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250221,
+          "text": "史诗 · 拾取维修箱有25%概率获得一个持续3秒的护盾"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 250212,
+          "text": "传说 · 每波结束，恢复5%生命"
+        }
+      ]
+    },
+    "4500310": {
+      "id": 4500310,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": []
+    },
+    "4500320": {
+      "id": 4500320,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4500330": {
+      "id": 4500330,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        }
+      ]
+    },
+    "4500340": {
+      "id": 4500340,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        }
+      ]
+    },
+    "4500341": {
+      "id": 4500341,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        }
+      ]
+    },
+    "4500342": {
+      "id": 4500342,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        }
+      ]
+    },
+    "4500350": {
+      "id": 4500350,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250321,
+          "text": "史诗 · 拾取维修箱时立刻释放一个爆炸（玩家当前位置）"
+        }
+      ]
+    },
+    "4500351": {
+      "id": 4500351,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250321,
+          "text": "史诗 · 拾取维修箱时立刻释放一个爆炸（玩家当前位置）"
+        }
+      ]
+    },
+    "4500352": {
+      "id": 4500352,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250321,
+          "text": "史诗 · 拾取维修箱时立刻释放一个爆炸（玩家当前位置）"
+        }
+      ]
+    },
+    "4500353": {
+      "id": 4500353,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250321,
+          "text": "史诗 · 拾取维修箱时立刻释放一个爆炸（玩家当前位置）"
+        }
+      ]
+    },
+    "4500360": {
+      "id": 4500360,
+      "nativeName": "超载动力靴",
+      "rank": 0,
+      "series": 3,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250311,
+          "text": "杰出 · 每击杀50个怪物，生命上限+5%，上限25%"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250321,
+          "text": "史诗 · 拾取维修箱时立刻释放一个爆炸（玩家当前位置）"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 250312,
+          "text": "传说 · 每击杀35个怪物，生命上限+5%，上限40%"
+        }
+      ]
+    },
+    "4500410": {
+      "id": 4500410,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": []
+    },
+    "4500420": {
+      "id": 4500420,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        }
+      ]
+    },
+    "4500430": {
+      "id": 4500430,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        }
+      ]
+    },
+    "4500440": {
+      "id": 4500440,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        }
+      ]
+    },
+    "4500441": {
+      "id": 4500441,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        }
+      ]
+    },
+    "4500442": {
+      "id": 4500442,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        }
+      ]
+    },
+    "4500450": {
+      "id": 4500450,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250421,
+          "text": "史诗 · 拾取维修箱时，全体冷却时间降低2秒"
+        }
+      ]
+    },
+    "4500451": {
+      "id": 4500451,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250421,
+          "text": "史诗 · 拾取维修箱时，全体冷却时间降低2秒"
+        }
+      ]
+    },
+    "4500452": {
+      "id": 4500452,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250421,
+          "text": "史诗 · 拾取维修箱时，全体冷却时间降低2秒"
+        }
+      ]
+    },
+    "4500453": {
+      "id": 4500453,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250421,
+          "text": "史诗 · 拾取维修箱时，全体冷却时间降低2秒"
+        }
+      ]
+    },
+    "4500460": {
+      "id": 4500460,
+      "nativeName": "极速充能靴",
+      "rank": 0,
+      "series": 4,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HPMax",
+          "value": 150,
+          "text": "精良 · 最大生命 +150"
+        },
+        {
+          "quality": 30,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "优秀 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 250411,
+          "text": "杰出 · 生命低于20%时，恢复30%的生命，仅限1次"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 250421,
+          "text": "史诗 · 拾取维修箱时，全体冷却时间降低2秒"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 250412,
+          "text": "传说 · 生命低于20%时，恢复30%的生命，仅限2次"
+        }
+      ]
+    },
+    "4510110": {
+      "id": 4510110,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": []
+    },
+    "4510120": {
+      "id": 4510120,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        }
+      ]
+    },
+    "4510130": {
+      "id": 4510130,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        }
+      ]
+    },
+    "4510140": {
+      "id": 4510140,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        }
+      ]
+    },
+    "4510141": {
+      "id": 4510141,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        }
+      ]
+    },
+    "4510142": {
+      "id": 4510142,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        }
+      ]
+    },
+    "4510150": {
+      "id": 4510150,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 251121,
+          "text": "史诗 · 抬取维修箱后，10秒内提升60%攻击力和40%的生命恢复"
+        }
+      ]
+    },
+    "4510151": {
+      "id": 4510151,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 251121,
+          "text": "史诗 · 抬取维修箱后，10秒内提升60%攻击力和40%的生命恢复"
+        }
+      ]
+    },
+    "4510152": {
+      "id": 4510152,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 251121,
+          "text": "史诗 · 抬取维修箱后，10秒内提升60%攻击力和40%的生命恢复"
+        }
+      ]
+    },
+    "4510153": {
+      "id": 4510153,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 251121,
+          "text": "史诗 · 抬取维修箱后，10秒内提升60%攻击力和40%的生命恢复"
+        }
+      ]
+    },
+    "4510160": {
+      "id": 4510160,
+      "nativeName": "王牌飞行靴",
+      "rank": 1,
+      "series": 1,
+      "slot": 5,
+      "features": [
+        {
+          "quality": 20,
+          "type": "attribute",
+          "key": "HeartHpAdd%",
+          "value": 10,
+          "text": "精良 · 维修箱回复生命 +10%"
+        },
+        {
+          "quality": 30,
+          "type": "skill",
+          "skillId": 251101,
+          "text": "优秀 · 子弹暴击时，恢复2点生命"
+        },
+        {
+          "quality": 40,
+          "type": "skill",
+          "skillId": 251111,
+          "text": "杰出 · 首次致死伤害时，立刻恢复20%生命，并获得2秒无敌"
+        },
+        {
+          "quality": 50,
+          "type": "skill",
+          "skillId": 251121,
+          "text": "史诗 · 抬取维修箱后，10秒内提升60%攻击力和40%的生命恢复"
+        },
+        {
+          "quality": 60,
+          "type": "skill",
+          "skillId": 251112,
+          "text": "传说 · 首次致死伤害时，立刻恢复40%生命，释放清除子弹的震荡波，并获得4秒无敌"
+        }
+      ]
+    }
+  }
+}

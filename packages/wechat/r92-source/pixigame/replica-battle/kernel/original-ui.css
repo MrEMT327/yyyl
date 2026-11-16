@@ -1,0 +1,163 @@
+/* Source: UI_World_Main and DankeSelectSkillItem_1, research/ui-layout.txt.
+   Card contents use the original 328 × 804 coordinate space. */
+/* UI_Pause: original sliced panel textures, five slots per row, and original
+   action sprites. Positions follow the supplied normal-battle pause screen. */
+.overlay.paused{background:rgba(0,0,0,.64);backdrop-filter:none}
+.pause-screen{position:absolute;inset:0}
+.pause-title{position:absolute;top:11.2%;left:0;width:100%;margin:0;text-align:center;font-size:6.7cqw;font-weight:normal;line-height:1.3}
+.pause-title,.pause-inventory h3,.pause-resume span{paint-order:stroke fill;-webkit-text-stroke:.65cqw #171717;text-shadow:0 .65cqw #000}
+.pause-inventory{position:absolute;left:5.5%;width:89.4%;height:32.2cqw}
+.pause-active{top:22.1%}.pause-passive{top:45.3%}
+.pause-panel-bg{position:absolute;inset:0;border-style:solid;border-width:9.1cqw 2.5cqw 2.1cqw 9.3cqw;border-image:url('/assets/sprites/stg_pause_activeSkillBg.png') 108 30 25 110 fill stretch}
+.pause-passive .pause-panel-bg{border-image-source:url('/assets/sprites/stg_pause_passiveSkillBg.png')}
+.pause-inventory h3{position:absolute;top:0;left:0;width:100%;height:8.5cqw;margin:0;font-size:4.8cqw;font-weight:normal;line-height:8.5cqw;text-align:center;-webkit-text-stroke:.45cqw #333;text-shadow:0 .35cqw #333}
+.pause-inventory h3>img{position:absolute;left:33.5%;top:1.3cqw;width:5.6cqw;height:5.6cqw;object-fit:contain}
+.pause-inventory h3>span{display:block;margin-left:8.5cqw}
+.pause-inventory ul{position:absolute;left:2.6%;right:2.6%;top:11.5cqw;height:18.2cqw;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2.1cqw;margin:0;padding:0;list-style:none}
+.pause-slot{position:relative;min-width:0;height:100%}
+.pause-slot.empty{background:#2b2a2b;border-radius:.4cqw}
+.pause-slot-bg{position:absolute;inset:0;width:100%;height:100%}
+.pause-slot-icon{position:absolute;left:5%;top:5%;width:90%;height:72%;object-fit:contain}
+.pause-stars{position:absolute;bottom:3.5%;left:8%;width:84%;height:14%;display:flex;justify-content:center;align-items:center;gap:.25cqw}
+.pause-stars img{width:2.35cqw;max-width:20%;height:2.4cqw;object-fit:contain}
+.pause-control{position:absolute;border:0;padding:0;background:none;border-radius:0;box-shadow:none;display:block}
+.pause-control>img{display:block;width:100%;height:100%}
+.pause-stats,.pause-settings,.pause-home{width:15%;height:14.1cqw}
+.pause-stats{left:5.1%;top:72.1%}.pause-settings{left:5.1%;top:82.2%}.pause-home{right:4.5%;top:82.2%}
+.pause-resume{left:28.3%;top:81.1%;width:44%;height:16.5cqw}
+.pause-resume span{position:absolute;inset:0 0 10%;display:grid;place-items:center;font-size:7.2cqw;font-weight:normal}
+.pause-detail-shade{position:absolute;inset:0;display:grid;place-items:center;background:#0009}
+.pause-detail{width:78%;padding:5cqw;background:#383639;border:.6cqw solid #080808;border-radius:2cqw;text-align:center}
+.pause-detail h3{margin:0 0 5cqw;font-size:6cqw}
+.pause-detail dl{margin:0 0 5cqw}.pause-detail dl>div{display:flex;justify-content:space-between;margin:3cqw 0;font-size:4cqw}.pause-detail dd{margin:0;color:#ffe477}
+.pause-sound{display:flex;align-items:center;justify-content:center;gap:4cqw;margin:0 auto 4cqw;background:none;border:0;font-size:4.5cqw}.pause-sound img{width:13cqw;height:13cqw;object-fit:contain}
+/* UI_DamageStatistics: 979.09 x 1289, centered at y=79 in the
+   original 1080-wide canvas. Preserve the source panel's vertical slices. */
+.damage-statistics{position:absolute;left:4.67%;top:calc(50% - 67cqw);width:90.66%;height:119.35cqw}
+.damage-panel-bg{position:absolute;inset:0;border-style:solid;border-width:13.43cqw 0 10.65cqw;border-image:url('/assets/sprites/damage_panel.png') 145 0 115 0 fill stretch;pointer-events:none}
+.damage-statistics h3{position:absolute;top:.6cqw;left:0;width:100%;height:10.5cqw;line-height:10.5cqw;margin:0;text-align:center;font-size:5.65cqw;font-weight:normal;paint-order:stroke fill;-webkit-text-stroke:.6cqw #111;text-shadow:0 .45cqw #000}
+.damage-close{position:absolute;right:1.3cqw;top:2.1cqw;width:7.4cqw;height:7.4cqw;padding:0;border:0;background:none;z-index:1}.damage-close img{display:block;width:100%;height:100%}
+.damage-list{position:absolute;top:13.8cqw;bottom:2.5cqw;left:2.3%;right:2.3%;margin:0;padding:0;list-style:none;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin}
+.damage-row{position:relative;height:17.3cqw;margin:0 0 3.6cqw;text-shadow:0 .2cqw .2cqw #000;flex-shrink:0}
+.damage-row-bg{position:absolute;inset:0;width:100%;height:100%}
+.damage-weapon-icon{position:absolute;left:1.1%;top:6%;width:17.5%;height:88%;object-fit:contain}
+.damage-weapon-name{position:absolute;left:22%;top:5%;right:25%;font-size:3.7cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.damage-value{position:absolute;right:2.2%;top:5%;font-size:4.3cqw;line-height:1.2}
+.damage-bar{position:absolute;left:22%;right:1.3%;top:39%;height:29%;border:.45cqw solid #070707;background:#1b1c1e}
+.damage-bar i{position:absolute;left:0;top:0;height:100%;background:#ffd72c;border-top:.35cqw solid #ffe267}
+.damage-bar>span{position:absolute;right:1cqw;top:50%;transform:translateY(-50%);font-size:4cqw;line-height:1;text-shadow:0 .2cqw .3cqw #000,0 0 .4cqw #000}
+.damage-stars{position:absolute;left:22.5%;bottom:7%;height:21%;display:flex;align-items:center;gap:1cqw}
+.damage-stars img{width:3cqw;height:3.2cqw;object-fit:contain}
+@font-face{font-family:DankeUI;src:url('/assets/fonts/Alibaba-PuHuiTi-Heavy.ttf') format('truetype');font-weight:100 900;font-display:swap}
+#ui{font-family:DankeUI,"Microsoft YaHei",sans-serif}
+/* Keep Phaser and HTML in separate explicit paint layers. */
+#stage{isolation:isolate}
+#canvas{z-index:0}
+#ui{z-index:2}
+#hud{inset:0;height:12%;display:block;font-weight:normal;text-shadow:1px 1px 1px #000}
+.pause-button{position:absolute;left:4.3%;top:3.3cqw;width:9.8cqw;height:11.7cqw;background:none;border:0;border-radius:0;box-shadow:none;padding:0;display:block}
+.pause-button img{width:100%;height:100%;object-fit:contain}
+.wave-readout{position:absolute;left:25.5%;top:2.7cqw;width:47%;padding:0}
+.wave-readout strong{display:block;font-size:3.9cqw;line-height:1.15;font-weight:normal}
+.experience{display:block;margin:0;position:absolute;top:4.2cqw;left:0;width:100%;height:11cqw;font-size:4.1cqw}
+.experience>span{position:absolute;top:0;left:2%;z-index:1}
+.track{position:absolute;left:0;top:4.4cqw;width:100%;height:5.8cqw;border:0;background:none;box-shadow:none;overflow:visible}
+.track-bg{position:absolute;width:100%;height:100%;inset:0}
+.track-fill{position:absolute;left:4.3%;right:4.4%;top:16%;height:48%;overflow:hidden}
+.track-fill i{height:100%;background:none;transition:none;overflow:hidden;display:block}
+.track-fill img{display:block;width:100%;height:100%}
+.experience-marker{position:absolute;top:71%;width:4.5cqw;height:3.7cqw;transform:translateX(-50%);object-fit:contain}
+.counters{position:absolute;left:78%;right:2.5%;top:2.3cqw;display:flex;gap:1.7cqw;font-size:3.7cqw;min-width:0}
+.counters>span{height:6.2cqw;position:relative;display:block;background:none}
+.counter-bg{position:absolute;left:10%;top:12%;height:80%;width:90%}
+.counter-icon{position:absolute;width:6.8cqw;height:6.8cqw;left:0;top:-.3cqw;object-fit:contain}
+.counters b{position:absolute;right:0;top:8%;width:66%;text-align:center;font-weight:normal;line-height:1.3}
+#boss-hud{top:13%;left:18%;right:18%;height:6cqw}
+#boss-hud>div{position:absolute;inset:0;border:0;background:none;margin:0;height:auto}
+.boss-track{position:absolute;inset:0;width:100%;height:100%}
+#boss-hud i{position:absolute;left:5%;top:22%;height:43%;max-width:90%;background:none;overflow:hidden}
+#boss-hud i img{width:100%;height:100%;display:block}
+.boss-icon{position:absolute;left:-8%;top:-1cqw;width:8cqw;height:8cqw;object-fit:contain;z-index:1}
+.overlay.upgrade{background:#0009;backdrop-filter:none}
+.upgrade-title{top:11.4%;left:15%;width:70%;height:12cqw;background:none;border:0;box-shadow:none;display:grid;place-items:center}
+.upgrade-title>img{position:absolute;inset:0;width:100%;height:100%}
+.upgrade-title h2{position:relative;margin:0 0 .7cqw;font-size:5.6cqw;line-height:1;font-weight:normal;text-shadow:1px 2px #000}
+.upgrade-cards{top:30.6%;left:3%;width:94%;gap:3.8%;align-items:flex-start}
+.upgrade-card{display:block;flex:none;width:30%;height:auto;aspect-ratio:328/804;min-height:0;padding:0;background:none;border:0;border-radius:0;box-shadow:none;text-shadow:1px 1px #111;font-weight:normal;container-type:inline-size}
+.count-2{left:9.8%;width:80.4%;justify-content:space-between;gap:0}
+.count-2 .upgrade-card{width:39.3%;min-height:0}
+.count-1 .upgrade-card{width:34%}
+.upgrade-card.breakthrough{border:0;box-shadow:none;filter:none}
+.card-face{position:absolute;inset:0;display:block;pointer-events:none}
+.card-panel{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* Original Idle_C clip: m1/m2/m3/m4 at 0, .133333, .266667, .4 seconds;
+   returns to m1 at .533333, loop duration .55 seconds. */
+.card-aura{position:absolute;left:-15.85%;top:-12.8%;width:131.7%;height:120.9%;pointer-events:none}
+.card-aura img{position:absolute;inset:0;width:100%;height:100%;opacity:0;animation-duration:.55s;animation-iteration-count:infinite;animation-timing-function:step-end}
+.card-aura .aura-1{animation-name:original-aura-1;opacity:1}
+.card-aura .aura-2{animation-name:original-aura-2}
+.card-aura .aura-3{animation-name:original-aura-3}
+.card-aura .aura-4{animation-name:original-aura-4}
+@keyframes original-aura-1{0%,96.97%{opacity:1}24.24%{opacity:0}}
+@keyframes original-aura-2{0%,48.48%{opacity:0}24.24%{opacity:1}}
+@keyframes original-aura-3{0%,72.73%{opacity:0}48.48%{opacity:1}}
+@keyframes original-aura-4{0%,96.97%{opacity:0}72.73%{opacity:1}}
+.card-title{position:absolute;top:3.9%;left:7.5%;width:85%;height:7.1%;background:none;border:0;padding:0;display:flex;align-items:center;justify-content:center;font-size:11cqw;line-height:1;font-weight:normal;white-space:normal;text-shadow:1px 1px #000}
+.card-art{position:absolute;left:12.5%;top:11.1%;width:75%;height:29.7%;display:block}
+.card-art img{width:100%;height:100%;object-fit:contain;filter:none}
+.stars{position:absolute;top:43.3%;left:6%;width:88%;height:6.5%;margin:0;display:flex;align-items:center;justify-content:center;gap:2%;text-shadow:none;letter-spacing:0}
+.stars img{height:82%;width:auto;max-width:13%;object-fit:contain}
+.upgrade-card p{position:absolute;top:51.3%;left:5.2%;width:89%;height:24.5%;margin:0;font-size:9.15cqw;line-height:1.3;font-weight:normal;text-align:left;overflow:auto;scrollbar-width:none;color:#fff}
+.card-cube{position:absolute;left:31.5%;top:74%;width:37%;height:16%;object-fit:contain}
+.original-cube{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.original-warning{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8}
+.card-tag{position:absolute;left:13%;bottom:2.6%;width:74%;height:6.5%;display:flex;align-items:center;justify-content:center;gap:4%;border:0;border-radius:0;background:none;color:#fff;padding:0;font-size:9.15cqw;line-height:1}
+.card-tag img{width:20%;height:100%;object-fit:contain}
+.upgrade-hint{bottom:9.4%;margin:0;font-size:3.7cqw;font-weight:normal;text-shadow:1px 2px #000}
+.upgrade-hint span{color:#ffdf00}
+.dialog{border:0;border-radius:0;background:#162432e8;box-shadow:none}
+.primary,.secondary{border:0;border-radius:0;box-shadow:none;background:transparent url('/assets/sprites/stg_pause_resume.png') center/100% 100% no-repeat;font-weight:normal;color:#222;text-shadow:none}
+.secondary{background-image:url('/assets/sprites/stg_Team_battle_Injury_blue.png');color:#fff}
+@media(prefers-reduced-motion:reduce){.card-aura img{animation:none}.card-aura .aura-1{opacity:1}}
+
+/* UI_World_Main, 1080-wide Canvas reference. Child offsets below are taken
+   from Button_Back, NewWaveRoot, ExpCtrl, scoreCtrl and killCountCtrl.
+   HUD geometry is independent of the upgrade card's container units. */
+#hud{height:100%;inset:0;overflow:visible}
+#hud .pause-button{left:2.287037cqw;top:3.384259cqw;width:11.981481cqw;height:12.675926cqw}
+#hud .pause-button img{position:absolute;left:1.407407cqw;top:1.75463cqw;width:9.166667cqw;height:9.166667cqw}
+#hud .wave-readout,#hud .experience,#hud .counters,#hud .counters>span{display:contents}
+#hud .wave-readout strong{position:absolute;left:37.407407cqw;top:2.962963cqw;width:25.185185cqw;height:5.277778cqw;font-size:3.703704cqw;line-height:5.277778cqw;text-align:center}
+#hud .wave-title-bg{position:absolute;left:37.407407cqw;top:2.962963cqw;width:25.185185cqw;height:5.277778cqw;object-fit:fill}
+#hud #level{position:absolute;left:26.777778cqw;top:5.768519cqw;width:13.87037cqw;height:7.407407cqw;font-size:4.074074cqw;line-height:7.407407cqw;text-align:left}
+#hud .track{position:absolute;left:25.000926cqw;top:9.768519cqw;width:50cqw;height:6.574074cqw}
+#hud .track-fill{left:3.888889%;right:auto;top:30.28169%;width:91.296296%;height:50.704225%}
+#hud .experience-marker{top:67.183099%;width:4.722222cqw;height:3.888889cqw}
+#hud .counters>span .counter-icon{position:absolute;left:77.37037cqw;width:7.407407cqw;height:7.407407cqw}
+#hud .counters>span:first-child .counter-icon{top:2.046296cqw}
+#hud .counters>span:last-child .counter-icon{top:9.685185cqw}
+#hud .counters>span .counter-bg{position:absolute;width:16.666667cqw;height:5.185185cqw}
+#hud .counters>span:first-child .counter-bg{left:81.435185cqw;top:2.953704cqw}
+#hud .counters>span:last-child .counter-bg{left:80.972222cqw;top:11.009259cqw}
+#hud .counters b{position:absolute;width:12.962963cqw;height:5.555556cqw;font-size:3.425926cqw;line-height:5.555556cqw}
+#hud #gold{left:83.888889cqw;top:2.787037cqw;right:auto}
+#hud #kills{left:83.703704cqw;top:10.888889cqw;right:auto}
+
+/* Selection locks all cards until the native breakthrough handoff event. */
+#ui .upgrade.selecting .upgrade-card{pointer-events:none!important}
+#ui .selected-card{z-index:12;pointer-events:none!important;min-height:0}
+.chapter-picker{display:grid;grid-template-columns:repeat(var(--chapter-columns,5),10cqw);justify-content:center;gap:2cqw;margin-top:3cqw;pointer-events:auto}
+.chapter-picker button{width:10cqw;height:10cqw;border:1px solid #90add0;border-radius:1.5cqw;background:#173452;color:#dcecff;font-size:4.5cqw}
+.chapter-picker button.active{background:#ffe476;border-color:#fff4c8;color:#152238}
+.entry-stats{border:1px solid #607a99;border-radius:1.5cqw;margin:2cqw 0 4cqw;padding:2cqw;display:flex;gap:3cqw;pointer-events:auto;text-align:left}
+.entry-stats legend{font-size:2.8cqw;color:#c4d3e2;padding:0 1cqw}
+.entry-stats label{display:flex;align-items:center;gap:1.5cqw;flex:1;font-size:3cqw;min-width:0}
+.entry-stats input{width:100%;min-width:0;background:#10283d;border:1px solid #6e8ba8;border-radius:1cqw;color:#fff;padding:1.5cqw;font:inherit;user-select:text;touch-action:manipulation}
+.upgrade-card p{white-space:pre-line}
+
+.overlay.treasure { background: rgba(0,0,0,.75); backdrop-filter: none; }
+.punchboard-screen { position: absolute; inset: 0; }
+.punchboard-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.punchboard-confirm { position: absolute; left: 50%; transform: translateX(-50%); padding: 0 0 1.5cqw; border: 0; border-radius: 0; background-color: transparent; background-size: 100% 100%; box-shadow: none; font: 6cqw DankeUI; color: white; paint-order: stroke fill; -webkit-text-stroke: .5cqw #171717; text-shadow: 0 .4cqw #171717; }
+.punchboard-confirm[hidden] { display: none; }
+.punchboard-accessible { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
