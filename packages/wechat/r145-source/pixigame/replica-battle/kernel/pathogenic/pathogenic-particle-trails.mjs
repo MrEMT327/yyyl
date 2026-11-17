@@ -27,6 +27,7 @@
  */
 import {resolveTexture,resource,transformPoint} from './source-scene-sampler.mjs';
 const IDENTITY=[1,0,0,1,0,0];
+const layouts=new Map();
 export const TRAIL_LIMITS=Object.freeze([
  'Mesh topology, identity bind poses, weights and vertex/color skinning follow GPUParticles2D; this is not a RibbonTrailMesh or TubeTrailMesh substitution.',
  'History-derived bones inherit CPU particle sampling and fractional-frame differences; supply trail.bones with exact matrix/color states to bypass temporal reconstruction.',
@@ -89,7 +90,13 @@ export function particleTrailGeometry(graph,node,trails,emitterMatrix=node.matri
  // An AtlasTexture determines the logical mesh width but samples the full RID.
  const base=graph.textures[sourceTexture.key];
  const texture=base?{...sourceTexture,width:base.width,height:base.height,crop:[0,0,base.width,base.height]}:sourceTexture;
- const layout=particleTrailLayout(sourceTexture.width,p.trail_sections??8,p.trail_section_subdivisions??4);
+ const sections=p.trail_sections??8, subdivisions=options.compact?Math.min(2,p.trail_section_subdivisions??4):p.trail_section_subdivisions??4;
+ const key=sourceTexture.width+':'+sections+':'+subdivisions;
+ let layout=options.compact?layouts.get(key):undefined;
+ if(!layout){
+  layout=particleTrailLayout(sourceTexture.width,sections,subdivisions);
+  if(options.compact&&layouts.size<48)layouts.set(key,layout);
+ }
  const material=resource(graph,p.process_material),mp=material?.properties??{};
  const canvasColor=node.color??[1,1,1,1];
  for(const trail of trails){

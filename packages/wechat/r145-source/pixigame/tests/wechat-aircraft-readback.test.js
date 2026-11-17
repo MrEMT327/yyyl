@@ -25,8 +25,10 @@ test('a priority aircraft pose replaces an older fenced read without blocking', 
     },
     fenceSync: () => ++serial,
     deleteSync(fence) { cancelled.push(fence); },
-    clientWaitSync(fence) {
+    clientWaitSync(fence, flags, timeout) {
       assert.equal(fence, serial);
+      assert.equal(flags, 0);
+      assert.equal(timeout, 0);
       return ready ? this.ALREADY_SIGNALED : this.TIMEOUT_EXPIRED;
     },
     getBufferSubData(_target, _offset, pixels) { pixels.set([queuedPixel, 0, 0, 255]); },
@@ -55,6 +57,19 @@ test('a priority aircraft pose replaces an older fenced read without blocking', 
     assert.deepEqual(paints, [25]);
     assert.deepEqual(reads, ['aircraftReadSubmit', 'aircraftReadSubmit', 'aircraftReadCopy']);
     assert.equal(binding, previousBuffer);
+
+    // A slow GPU must not turn a previously validated async copy into a
+    // blocking read. Keep displaying the last completed pose until ready.
+    currentPixel = 42;
+    ready = false;
+    assert.equal(write('async'), false);
+    for (let i=0;i<8;i++) assert.equal(capture.poll(), null);
+    assert.equal(capture.canQueue(gl), true);
+    assert.deepEqual(paints, [25]);
+    ready = true;
+    assert.equal(capture.poll(), true);
+    assert.deepEqual(paints, [25, 42]);
+    assert.equal(reads.includes('aircraftRead'), false);
   } finally {
     capture.dispose();
   }

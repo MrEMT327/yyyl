@@ -2,7 +2,7 @@ import {createSourceMeshShaderData,updateSourceMeshShaderData} from './source-me
 import {updateSourceMeshGeometry} from './source-mesh-update.mjs';
 import Phaser from 'phaser';
 import type {DimensionSwordCut} from './dimension-sword-presentation.mjs';
-import {trimEmitterHistory,VisualMeshPool} from '../combat-readability.mjs';
+import {COMBAT_LAYERS,trimEmitterHistory,VisualMeshPool} from '../combat-readability.mjs';
 import {PathogenicHdrComposite,type PathogenicBloomOptions} from './pathogenic-hdr-composite';
 import {sampleSceneForRender,resolveTexture,resource} from './source-scene-sampler.mjs';
 import {ParticlePlayer} from './pathogenic-particles.mjs';
@@ -18,6 +18,7 @@ type SharedTexture={ref:Any;installed:ReturnType<PathogenicMaterials["installTex
 type SharedMaterial={resolved?:ReturnType<PathogenicMaterials["resolve"]>;batchTextures?:boolean;texture?:SharedTexture};
 const PLAIN={path:'pathogenic-source-canvas',code:'shader_type canvas_item; render_mode unshaded; void fragment() {}'};
 const MULTIPLY=[1,0,0,1,0,0];
+const PHONE_PARTICLE_BUDGET=128, PHONE_THREAT_PARTICLES=48;
 function outsideViewport(points:Any[],width:number,height:number) {
   let left=true,right=true,above=true,below=true;
   for(const {position:[x,y]} of points){
@@ -60,6 +61,8 @@ export class PathogenicSceneView {
   private cameraOffset=[0,0];
   private clock=0;
   private renderScale=1;
+  private particlesLeft=Infinity;
+  private threatParticlesLeft=Infinity;
   private materials?:PathogenicMaterials;
   private displaySettings?:Readonly<PathogenicBloomOptions>;
   private snapshot?:PathogenicScreenSnapshot;
@@ -69,12 +72,12 @@ export class PathogenicSceneView {
   private readonly pendingTextures=new Map<string,{promise:Promise<void>;finish:()=>void}>();
   display?:PathogenicHdrComposite;
   diagnostics:any[]=[];
-  constructor(readonly scene:Phaser.Scene,readonly graph:Any){scene.events.once('shutdown',()=>this.destroy());}
+  constructor(readonly scene:Phaser.Scene,readonly graph:Any,readonly compact=false){scene.events.once('shutdown',()=>this.destroy());}
   preload(urlFor:(path:string,texture:Any)=>string,paths:Iterable<string>=Object.keys(this.graph.textures),deferred?:ReadonlySet<string>){
     for(const path of paths){
       const url=urlFor(path,this.graph.textures[path]);
       if(deferred?.has(path))this.deferredTextures.set(path,url);
-      else queueSourceTexture(this.scene,path,url);
+      else queueSourceTexture(this.scene,path,url,undefined,this.compact);
     }
   }
   prepareTextures(paths:Iterable<string>):Promise<void>|undefined {
@@ -107,7 +110,7 @@ export class PathogenicSceneView {
       loader.on('loaderror',failed);
       // An image decode error can reach loader completion without a file error event.
       loader.once('complete',useFallback);
-      try{queueSourceTexture(this.scene,path,url);}
+      try{queueSourceTexture(this.scene,path,url,undefined,this.compact);}
       catch(error){
         console.warn('[replica-battle] 战斗图片排队失败，使用备用绘制',path,error);
         useFallback();
@@ -124,8 +127,17 @@ export class PathogenicSceneView {
     this.display?.configure(settings);this.displaySettings={...settings};
   }
   dimensionCut(cut:DimensionSwordCut){this.display?.addDimensionCut(cut);}
-  beginFrame(time:number){
+  private ensureRenderer(){
     if(!this.materials){this.display=new PathogenicHdrComposite(this.scene);if(this.displaySettings)this.display.configure(this.displaySettings);this.snapshot=new PathogenicScreenSnapshot(this.scene);this.capture=this.snapshot.createCaptureObject(29);this.materials=new PathogenicMaterials(this.scene,this.graph,this.snapshot);}
+  }
+  warmup(materials:Iterable<Any>,gradients:Iterable<string>){
+    this.ensureRenderer();
+    this.materials!.warmup(materials,gradients);
+  }
+  beginFrame(time:number){
+    this.ensureRenderer();
+    this.particlesLeft=this.compact?PHONE_PARTICLE_BUDGET:Infinity;
+    this.threatParticlesLeft=this.compact?PHONE_THREAT_PARTICLES:Infinity;
     if(time<this.clock)this.reset();this.display!.clearDimensionCuts();this.snapshot!.beginFrame();this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();this.diagnostics=[];
   }
   draw(id:string,path:string,ctx:Any={}){
@@ -140,6 +152,9 @@ export class PathogenicSceneView {
     }
     let player=this.players.get(id);
     if(result.particles.length){if(!player){player=new ParticlePlayer();this.players.set(id,player);}this.livePlayers.add(id);}
+    const threatOnly=!result.sprites.length&&!result.lines.length&&(
+      ctx.presentationDepth===COMBAT_LAYERS.playerShot||ctx.presentationDepth===COMBAT_LAYERS.enemyShot||
+      ctx.presentationDepth===COMBAT_LAYERS.area||ctx.presentationDepth===COMBAT_LAYERS.warning);
     for(const node of result.particles){
       // Store world-space particle history before the camera translation. Camera
       // scrolling must move existing particles, never become emitter motion.
@@ -149,9 +164,15 @@ export class PathogenicSceneView {
       if(!history.length||history.at(-1).age!==ctx.time){history.push({age:ctx.time,matrix:worldNode.matrix});stored.revision++;}
       const historyLength=history.length;trimEmitterHistory(history,ctx.time,node.properties);if(history.length!==historyLength)stored.revision++;
       this.histories.set(key,stored);this.liveHistories.add(key);
+      const remaining=threatOnly?this.threatParticlesLeft:this.particlesLeft;
+      if(remaining<1)continue;
+      const authored=node.properties.amount??8;
+      const particleLimit=this.compact?Math.min(node.properties.trail_enabled?8:16,Math.ceil(authored*.6)):undefined;
       const particles=player!.sampleReadOnly(this.graph,worldNode,ctx.time,ctx.seed??1,{history,historyRevision:stored.revision,
-        stopAge:ctx.stopAge,emitting:ctx.emit??node.properties.emitting});
-      const ribbons=particleTrailGeometry(this.graph,worldNode,particles.trails,worldNode.matrix,{strict:true});
+        stopAge:ctx.stopAge,emitting:ctx.emit??node.properties.emitting,particleLimit,maxInstances:remaining});
+      if(threatOnly)this.threatParticlesLeft-=particles.instances.length;
+      else this.particlesLeft-=particles.instances.length;
+      const ribbons=particleTrailGeometry(this.graph,worldNode,particles.trails,worldNode.matrix,{strict:true,compact:this.compact});
       if(ribbons.unsupported.length)throw new SourceCoverageError(ribbons.unsupported);
       for(const ribbon of ribbons.meshes){
         ribbon.matrix=[...ribbon.matrix];ribbon.matrix[4]+=cameraX;ribbon.matrix[5]+=cameraY;
@@ -247,13 +268,19 @@ export class PathogenicSceneView {
     if(view.depth!==depth)view.setDepth(depth);
     if(view.blendMode!==pipeline.blendMode)view.setBlendMode(pipeline.blendMode);
     view.prepareProjection();
-    const gain=updateSourceMeshGeometry(view,geometry,source,line,item.texture?.crop);if(!line)view.spriteShape=geometry;
+    // Plain textures can carry tint in existing packed vertex colors and
+    // share a draw across different particle colors. Keep shader-driven and
+    // out-of-range colors on their original float uniform path.
+    const tint=this.compact&&pipeline.program.batchTextures&&!line&&
+      item.color[0]>=0&&item.color[1]>=0&&item.color[2]>=0?Math.max(item.color[0],item.color[1],item.color[2]):Infinity;
+    const tintGain=tint<=1?1:tint<=2?2:tint<=4?4:0;
+    const gain=updateSourceMeshGeometry(view,geometry,source,line,item.texture?.crop,tintGain);if(!line)view.spriteShape=geometry;
     if(!view.shaderData){
       view.shaderData=createSourceMeshShaderData();
       view.setData('pathogenicShader',view.shaderData);
     }
     updateSourceMeshShaderData(view.shaderData,item,source,time,line,gain,presentation.presentationOpacity??1,projectilePalette,
-      installed,resolved,this.renderScale,pipeline.program.batchTextures);
+      installed,resolved,this.renderScale,pipeline.program.batchTextures,tintGain>0);
     if(view.getPipelineName()!==pipeline.key)view.setPipeline(pipeline.key);
     view.refresh();this.live.add(key);
   }

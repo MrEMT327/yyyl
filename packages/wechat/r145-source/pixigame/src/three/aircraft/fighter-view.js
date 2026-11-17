@@ -86,14 +86,18 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     }
     if (loadout.pilotId !== view.pilotId) throw Error('固定件快照与实战机型不一致');
     // Only geometry/seat identity matters here, not per-run damage or levels.
-    // Keep one build per fighter view; changing equipment releases the old one.
     const key = JSON.stringify([loadout.pilotId, presentation.revision || '', ...[...loadout.weapons, ...loadout.connectors]
       .map(item => [item.itemId, item.slots])]);
+    const keepCombatMounts = batchCombatHull && !presentation.revision;
     if (!cachedFixedParts || key !== fixedPartsKey) {
-      disposeFixedParts();
-      cachedFixedParts = createFixedPartMounts({ view, mount, attitude, runtime, loadout, geometryFactory: presentation.geometryFactory });
+      if (keepCombatMounts && cachedFixedParts && !partsStyle) cachedFixedParts.setLoadout(loadout);
+      else {
+        disposeFixedParts();
+        cachedFixedParts = createFixedPartMounts({ view, mount, attitude, runtime, loadout,
+          geometryFactory: presentation.geometryFactory, styleKit: keepCombatMounts ? style : undefined });
+        if (!keepCombatMounts) partsStyle = style(cachedFixedParts.root);
+      }
       fixedPartsKey = key;
-      partsStyle = style(cachedFixedParts.root);
     }
     view.fixedParts = cachedFixedParts;
     cachedFixedParts.root.visible = true;

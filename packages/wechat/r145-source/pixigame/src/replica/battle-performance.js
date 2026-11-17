@@ -2,7 +2,8 @@ import {createPerformanceMonitor} from '../performance-monitor.js';
 import {trackWebGLRenderer} from '../renderer-metrics.js';
 
 export const BATTLE_PERFORMANCE_CHANNEL='shnh-battle-performance-v1';
-export const BATTLE_WORK_PHASES=['simulation','aircraftDraw','terrainDraw','enemyVisual','projectileVisual','interfaceDraw','screenPresent'];
+export const BATTLE_WORK_PHASES=['simulation','aircraftDraw','aircraftTransfer','terrainDraw','terrainTransfer',
+  'enemyVisual','projectileVisual','effectVisual','battleAudio','weaponMounts','interfaceUpdate','interfaceDraw','screenPresent'];
 const frameCosts=['update','render','frame'];
 const sampledCosts=[...frameCosts,...BATTLE_WORK_PHASES];
 const finite=n=>typeof n==='number'&&Number.isFinite(n)&&n>=0;
@@ -52,7 +53,7 @@ export function createBattlePerformanceSource({documentRef=document,windowRef=wi
 export function createBattlePerformanceReporter({windowRef=window,documentRef=document,session,now=()=>performance.now(),post}={}){
   const monitor=createPerformanceMonitor({now}),surfaces=new Map();
   let game=null,requested=false,epoch=0,started=false,destroyed=false,trackers=[],frameStart=0,updateEnd=0,lastPublish=-Infinity,frameNumber=0;
-  let presentMs=0,lastEnd,peakFrame,enemies=0,projectiles=0,insideStep=false;
+  let presentMs=0,lastEnd,peakFrame,enemies=0,projectiles=0,insideStep=false,reportSlowFrame;
   const work=Object.create(null);
   const recordWork=(name,elapsed)=>{
     monitor.record(name,elapsed);
@@ -88,10 +89,15 @@ export function createBattlePerformanceReporter({windowRef=window,documentRef=do
   const rendered=()=>{
     const time=now(),renderMs=Math.max(0,time-updateEnd-presentMs);
     const gapMs=time-(lastEnd??frameStart);
-    if(gapMs>50&&gapMs>(peakFrame?.gapMs??0))peakFrame={
-      gapMs,waitMs:Math.max(0,frameStart-(lastEnd??frameStart)),updateMs:updateEnd-frameStart,renderMs,presentMs,enemies,projectiles,
-      work:Object.fromEntries(BATTLE_WORK_PHASES.filter(name=>work[name]>0).map(name=>[name,work[name]])),
-    };
+    const isPeak=gapMs>50&&gapMs>(peakFrame?.gapMs??0);
+    if(isPeak||gapMs>100&&reportSlowFrame){
+      const timing={
+        gapMs,waitMs:Math.max(0,frameStart-(lastEnd??frameStart)),updateMs:updateEnd-frameStart,renderMs,presentMs,enemies,projectiles,
+        work:Object.fromEntries(BATTLE_WORK_PHASES.filter(name=>work[name]>0).map(name=>[name,work[name]])),
+      };
+      if(isPeak)peakFrame=timing;
+      if(gapMs>100)reportSlowFrame?.(timing);
+    }
     lastEnd=time;insideStep=false;
     monitor.frame('battle',time);monitor.record('render',renderMs);monitor.record('frame',time-frameStart);
     let calls=0,triangles=0;
@@ -131,7 +137,7 @@ export function createBattlePerformanceReporter({windowRef=window,documentRef=do
     if(requested){start();publish(true);}else stop();
   };
   const visibility=()=>{stop();if(!documentRef.hidden)start();};
-  const detach=()=>{stop();game=null;surfaces.clear();};
+  const detach=()=>{stop();game=null;reportSlowFrame=undefined;surfaces.clear();};
   windowRef.addEventListener('message',receive);documentRef.addEventListener('visibilitychange',visibility);
   return {
     measure(name,run){
@@ -143,7 +149,7 @@ export function createBattlePerformanceReporter({windowRef=window,documentRef=do
         recordWork(name,elapsed);
       }
     },
-    beginMeasure(name,items){
+    beginMeasure(name,items=0){
       if(!started)return;
       if(name==='enemyVisual')enemies=items;
       if(name==='projectileVisual')projectiles=items;
@@ -160,7 +166,7 @@ export function createBattlePerformanceReporter({windowRef=window,documentRef=do
       for(const t of trackers)t.metrics?.beginFrame();
     },
     watch(canvas,gl){if(destroyed||!gl||surfaces.has(canvas))return;const restart=started;if(restart)stop();surfaces.set(canvas,gl);if(restart)start();},
-    attach(next){if(destroyed)return;if(game){game.events.off('destroy',detach);stop();}game=next;if(game.renderer?.gl&&!surfaces.has(game.canvas))surfaces.set(game.canvas,game.renderer.gl);game.events.once('destroy',detach);start();},
-    destroy(){if(destroyed)return;stop();game?.events.off('destroy',detach);destroyed=true;game=null;surfaces.clear();windowRef.removeEventListener('message',receive);documentRef.removeEventListener('visibilitychange',visibility);},
+    attach(next,onSlowFrame){if(destroyed)return;if(game){game.events.off('destroy',detach);stop();}game=next;reportSlowFrame=onSlowFrame;if(game.renderer?.gl&&!surfaces.has(game.canvas))surfaces.set(game.canvas,game.renderer.gl);game.events.once('destroy',detach);start();},
+    destroy(){if(destroyed)return;game?.events.off('destroy',detach);detach();destroyed=true;windowRef.removeEventListener('message',receive);documentRef.removeEventListener('visibilitychange',visibility);},
   };
 }

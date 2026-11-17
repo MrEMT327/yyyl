@@ -15,6 +15,7 @@ import {isAcidVortex,acidVortexPresentation,withAcidVortexResources} from './aci
 import {isAcidDroplet,isAcidGammaRay,acidDropletPresentation,withAcidDropletResources} from './acid-droplet-presentation.mjs';
 import {playerShotMaterialPose,withPlayerShotMaterials} from './player-shot-material.mjs';
 import {withOrdinaryIceMaterials} from './ordinary-ice-materials.mjs';
+import {ICE_TRAIL_ADD} from './ice-weapon-trails.mjs';
 // A travelling shot's body ends with the host projectile. Source impact clips
 // may finish particles, but must not park a solid bullet at its final pose.
 const PLAYER_SHOT_BODIES=new Set([1000000,1000063,1000049,1000050,1000064,1000031,1000023,1000052,1000036]);
@@ -162,6 +163,7 @@ export function withScorchPresentationResources(graph){
     iceAdd(name+'-frames','SpriteFrames',{animations:[{name:'default',speed:1,loop:true,frames:[{texture:frame,duration:1}]}]});
   }
   for(const [name,file] of [['trace','trace_01.png'],['chips','dirt_01.png']])textures['host://ice-particles-v2/'+name]={width:512,height:512,file,url:'assets/ice-weapons-v2/'+file};
+  resources[ICE_TRAIL_ADD]={type:'CanvasItemMaterial',properties:{blend_mode:1,light_mode:1}};
   iceAdd('material','CanvasItemMaterial',{blend_mode:0,light_mode:1});
   // A narrow luminous edge with a faint translucent wake, instead of an
   // opaque recolored fan. The source alpha still owns the animated silhouette.

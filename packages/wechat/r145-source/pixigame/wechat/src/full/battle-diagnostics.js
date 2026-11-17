@@ -208,7 +208,7 @@ export function createBattleDiagnostics(api, { buildId, cdnBase, iosPerformanceM
     record = { startedAtMs: time(), phase: sortie.phase, profile: createDomFramePerformance(now, 120),
       cadence: createCadence(), screenCadence: createCadence(), lastFrame: null, lastTick: null, windowGap: 0,
       windowFrames: 0, windowMs: 0, windowOver50: 0,
-      recent: [], worst: [], spikes: [], resources: resourceSummary(), before: safeCall(readStats) };
+      recent: [], worst: [], spikes: [], engineSpikes: [], resources: resourceSummary(), before: safeCall(readStats) };
     source.setEnabled(true);
     record.timer = host.scope.setInterval(sample, intervalMs);
     syncButton();
@@ -262,7 +262,7 @@ export function createBattleDiagnostics(api, { buildId, cdnBase, iosPerformanceM
     const report = remember(makeReport({
       startedAtMs: finished.startedAtMs, endedAtMs: time(), reason, startPhase: finished.phase,
       playingPresentation: finished.cadence.summary(), playingScreenCallbacks: finished.screenCadence.summary(),
-      frameSpikes: finished.spikes, recentSamples: finished.recent, slowestSamples: finished.worst,
+      frameSpikes: finished.spikes, engineSpikes: finished.engineSpikes, recentSamples: finished.recent, slowestSamples: finished.worst,
       compatibility: finished.profile.snapshot(), canvasTransfers: finished.profile.transfers(),
       resources: finished.resources, before: finished.before, after: safeCall(readStats),
     }));
@@ -396,6 +396,10 @@ export function createBattleDiagnostics(api, { buildId, cdnBase, iosPerformanceM
         }
       }
       record.lastFrame = nowMs;
+    },
+    engineStalled(frame, timing, phase, wave) {
+      if (!record || sortie?.frame !== frame || phase !== 'playing' || host.document.hidden) return;
+      keepHighest(record.engineSpikes, { atMs: time(), wave, ...timing }, 'gapMs', 10);
     },
     screenTick(nowMs) {
       if (!record || sortie?.phase !== 'playing') return;

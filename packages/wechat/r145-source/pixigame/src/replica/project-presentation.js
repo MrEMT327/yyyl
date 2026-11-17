@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createFighterView } from '../three/aircraft/fighter-view.js';
 import { createAircraftLighting, updateAircraftNightLighting, renderWithAircraftStyle } from '../three/aircraft/aircraft-lighting.js';
+import { createAircraftStyle } from '../three/aircraft/aircraft-style.js';
 import { loadFighterPackages } from '../three/aircraft/fighter-packages.js';
 import { createWorldEnvironment } from '../three/world.js';
 import {createScenerySeed} from '../three/campaign-run-layout.js';
@@ -104,7 +105,35 @@ export async function createProjectPresentation({ content, appearance, onError, 
       thrust:flightPose.thrust,rollActive:flightPose.rollActive});
   }
   let mountedWeapons = weaponSkinLoadout(appearance.aircraft.id, []), mountKey = '[]', weaponsDirty = true, icons;
-  const geometryFactory = (_catalogItem, item) => createWeaponForm(item.skin);
+  const weaponGeometry = {compact: compactAircraftEffects};
+  const weaponModels = new Map();
+  let warmWeapon, warmWeaponStyle;
+  function geometryFactory(_catalogItem, {skin}) {
+    const template = weaponModels.get(skin.familyId);
+    if (!template) return createWeaponForm(skin, weaponGeometry);
+    // The launch envelope already built these meshes. Seats share geometry
+    // while each keeps its own material values and authored transform.
+    const kit = template.clone();
+    const materials = new Map();
+    kit.traverse(node => {
+      if (!node.isMesh) return;
+      const source = node.material;
+      let material = materials.get(source);
+      if (!material) {
+        material = source.clone();
+        material.onBeforeCompile = source.onBeforeCompile;
+        material.customProgramCacheKey = source.customProgramCacheKey;
+        materials.set(source, material);
+      }
+      node.material = material;
+    });
+    kit.userData.weaponAppearance = skin;
+    kit.userData.dispose = () => {
+      for (const material of materials.values()) material.dispose();
+      materials.clear(); kit.removeFromParent(); kit.clear();
+    };
+    return kit;
+  }
   function applyWeaponSkins() {
     fighter.setFixedParts(mountedWeapons, { geometryFactory });
   }
@@ -240,39 +269,41 @@ export async function createProjectPresentation({ content, appearance, onError, 
         else draw();
       });
     });
-    const wake=displaySize>0?sampleCombatEngineWake(fighter,aircraftCamera,{
-      clock:visualClock,displaySize,textureSize:aircraftTextureSize,thrust:visualPose.thrust,matricesReady:true,
-    }):[];
-    if(aircraftCapture){
-      const gl=renderer.getContext(), size=aircraftTextureSize;
-      const bounds=combatEngineWakeBounds(wake,size);
-      let uploaded=false;
-      const useQueue=compactAircraftEffects && readbackMode!=='sync' && aircraftCapture.canQueue?.(gl);
-      // A canvas copy can report fast submission and still serialize the
-      // two renderers. Prefer the tested fence path while flying on a phone.
-      if(!useQueue && directAircraft?.ready(surface,gl,size)){
-        uploaded=directAircraft.paint(surface,playerContext,size,()=>{
-          if(bounds){
-            wakeComposite??=createCombatWakeLayer(createCanvas);
-            wakeComposite.paint(playerContext,wake,bounds);
-          }
-          refreshAircraft();
-        });
-      }
-      if(uploaded){
-        if(!directAircraftActive)aircraftCapture.reset();
-        directAircraftActive=true;
+    measureBattle('aircraftTransfer', () => {
+      const wake=displaySize>0?sampleCombatEngineWake(fighter,aircraftCamera,{
+        clock:visualClock,displaySize,textureSize:aircraftTextureSize,thrust:visualPose.thrust,matricesReady:true,
+      }):[];
+      if(aircraftCapture){
+        const gl=renderer.getContext(), size=aircraftTextureSize;
+        const bounds=combatEngineWakeBounds(wake,size);
+        let uploaded=false;
+        const useQueue=compactAircraftEffects && readbackMode!=='sync' && aircraftCapture.canQueue?.(gl);
+        // A canvas copy can report fast submission and still serialize the
+        // two renderers. Prefer the tested fence path while flying on a phone.
+        if(!useQueue && directAircraft?.ready(surface,gl,size)){
+          uploaded=directAircraft.paint(surface,playerContext,size,()=>{
+            if(bounds){
+              wakeComposite??=createCombatWakeLayer(createCanvas);
+              wakeComposite.paint(playerContext,wake,bounds);
+            }
+            refreshAircraft();
+          });
+        }
+        if(uploaded){
+          if(!directAircraftActive)aircraftCapture.reset();
+          directAircraftActive=true;
+        }else{
+          directAircraftActive=false;
+          const written=aircraftCapture.write(gl,playerContext,size,size,bounds,ctx=>drawCombatEngineWake(ctx,wake),readbackMode);
+          if(written)refreshAircraft?.();
+        }
       }else{
-        directAircraftActive=false;
-        const written=aircraftCapture.write(gl,playerContext,size,size,bounds,ctx=>drawCombatEngineWake(ctx,wake),readbackMode);
-        if(written)refreshAircraft?.();
+        playerContext.clearRect(0,0,aircraftTextureSize,aircraftTextureSize);
+        if(wake.length)drawCombatEngineWake(playerContext,wake);
+        playerContext.drawImage(surface,0,terrainHeight-aircraftTextureSize,aircraftTextureSize,aircraftTextureSize,0,0,aircraftTextureSize,aircraftTextureSize);
+        refreshAircraft?.();
       }
-    }else{
-      playerContext.clearRect(0,0,aircraftTextureSize,aircraftTextureSize);
-      if(wake.length)drawCombatEngineWake(playerContext,wake);
-      playerContext.drawImage(surface,0,terrainHeight-aircraftTextureSize,aircraftTextureSize,aircraftTextureSize,0,0,aircraftTextureSize,aircraftTextureSize);
-      refreshAircraft?.();
-    }
+    });
     lastRenderedFlightPose={...visualPose};lastRenderedPassive={...passivePose};
   }
 
@@ -289,6 +320,9 @@ export async function createProjectPresentation({ content, appearance, onError, 
     wingtipGraphics?.destroy(); wingtipHighlights?.destroy(); victoryGraphics?.destroy(); victoryBodyGraphics?.destroy(); wingtipTrail.tracks.forEach(track => { track.length = 0; });
     weather?.dispose();delete stage.dataset.weather;
     icons?.dispose(); environment.dispose(); fighter?._disposeVisuals(); fighter?.object3D.removeFromParent();
+    warmWeaponStyle?.dispose(); warmWeapon?.userData.dispose();
+    for (const mesh of weaponModels.values()) mesh.userData.dispose();
+    weaponModels.clear();
     lighting.dispose(); aircraftRenderer.dispose(); aircraftFxRenderer.dispose(); wakeComposite?.dispose(); renderer.dispose(); renderer.forceContextLoss(); surface.remove();
     refreshAircraft=refreshTerrain=undefined;
     playerCanvas.width = playerCanvas.height = 0;
@@ -326,14 +360,15 @@ export async function createProjectPresentation({ content, appearance, onError, 
     const mounts = fighter.fixedParts;
     mounts.root.updateWorldMatrix(true, true);
     for (const familyId of Object.keys(WEAPON_SKINS).map(Number).filter(id => WEAPON_SKINS[id].kind === 'cloud-model')) {
-      const mesh = createWeaponForm({ familyId, star: 1, breakthroughs: 0, skills: [] });
+      const mesh = createWeaponForm({ familyId, star: 1, breakthroughs: 0, skills: [] }, weaponGeometry);
       const local = new THREE.Box3().setFromObject(mesh);
       for (const slot of mounts.slots.filter(row => row.kind === 'weapon')) {
         const matrix = new THREE.Matrix4().compose(new THREE.Vector3(...slot.position), new THREE.Quaternion(),
           new THREE.Vector3(slot.scale * (slot.position[0] < 0 ? -1 : 1), slot.scale, slot.scale));
         matrix.premultiply(mounts.root.matrixWorld); bounds.union(local.clone().applyMatrix4(matrix));
       }
-      mesh.userData.dispose();
+      if (compactAircraftEffects) weaponModels.set(familyId, mesh);
+      else mesh.userData.dispose();
     }
     const sphere = bounds.getBoundingSphere(new THREE.Sphere());
     const span = sphere.radius * 2;
@@ -345,10 +380,19 @@ export async function createProjectPresentation({ content, appearance, onError, 
     icons = createWeaponIcons(renderer, aircraftScene, content);
     const hdr=fighter.runtime.asset.solid.userData.cleanAircraftSurface;
     const isActive=()=>!disposed;
+    if (weaponModels.size) {
+      // Hold a representative kit's program variants after it leaves the
+      // scene. New seats can reuse them when the player chooses an upgrade.
+      warmWeapon=geometryFactory(null,{skin:{familyId:weaponModels.keys().next().value}});
+      aircraftScene.add(warmWeapon);
+      warmWeaponStyle=createAircraftStyle(warmWeapon);
+      warmWeaponStyle.setEnabled(true);
+    }
     await Promise.all([
       renderWithAircraftStyle(renderer,()=>aircraftRenderer.warmup(aircraftScene,aircraftCamera,fighter,hdr,isActive)),
       ...(replaceTerrain?[warmRenderPrograms(renderer,worldScene,coastCamera||camera,isActive)]:[]),
     ]);
+    warmWeapon?.removeFromParent();
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
     renderAircraftTexture(0, { bank: 0, pitch: 0, roll: 0, thrust: 0 });
   } catch (error) { dispose(); throw error; }
@@ -505,8 +549,11 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const deferred=budget?.deferOverlappingRender(frame.displayInterval,
         aircraftCanWait,replaceTerrain&&terrainPriority==='regular',Boolean(pose&&aircraftDue&&immediate));
       const drawAircraft=aircraftDue&&deferred!=='aircraft';
-      const copied=deferred==='aircraft'||drawAircraft&&immediate?undefined:aircraftCapture?.poll();
-      if(copied===true)refreshAircraft?.();
+      const copied=!pendingAircraft||deferred==='aircraft'||drawAircraft&&immediate?undefined:measureBattle('aircraftTransfer', () => {
+        const result=aircraftCapture.poll();
+        if(result===true)refreshAircraft?.();
+        return result;
+      });
       // Recover the latest pose if the queued read failed, even at a pause.
       const retryAircraft=pendingAircraft&&copied===false&&pose?.visible;
       const renderAircraft=pose&&(drawAircraft&&copied!==null||retryAircraft);
@@ -557,8 +604,10 @@ export async function createProjectPresentation({ content, appearance, onError, 
       // The complete frame is a Phaser background texture, so original ADD /
       // SUBTRACT FX blend against the actual scene instead of a separate DOM canvas.
       worldSurfaceReady=true;
-      if(worldDirect)refreshTerrain();
-      else{worldContext.clearRect(0,0,terrainWidth,terrainHeight);worldContext.drawImage(surface,0,0);worldTexture.refresh();}
+      measureBattle('terrainTransfer', () => {
+        if(worldDirect)refreshTerrain();
+        else{worldContext.clearRect(0,0,terrainWidth,terrainHeight);worldContext.drawImage(surface,0,0);worldTexture.refresh();}
+      });
       budget?.commitTerrain();
       lastWorldKey = worldKey;
     },

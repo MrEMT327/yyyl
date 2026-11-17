@@ -15,6 +15,7 @@ uniform float hit_value = 0.5;
 void fragment() {
   COLOR.rgb = mix(COLOR.rgb, hit_color, hit_value);
 }`};
+export const prepareSourceStatusTint=(game:Phaser.Game)=>registerPathogenicShader(game,SOURCE_STATUS_SHADER);
 
 export interface SourceFreezeTintState {wasActive:boolean;fadeStart:number|null;lastTime:number}
 export function newSourceFreezeTintState():SourceFreezeTintState{return {wasActive:false,fadeStart:null,lastTime:-Infinity};}
@@ -82,7 +83,7 @@ export function applySourceStatusTint(view:Phaser.GameObjects.Image|Phaser.GameO
   if(sample.suppressHitFlash||bossHitValue>0){
     const renderer=view.scene.game.renderer;
     if(!(renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer))throw new PathogenicShaderCoverageError('freeze_effect.gd','WebGL float-uniform mix required; an 8-bit tint is not equivalent');
-    const registered=registerPathogenicShader(view.scene.game,SOURCE_STATUS_SHADER);
+    const registered=prepareSourceStatusTint(view.scene.game);
     for(const image of images){
       if(!imageStates.has(image)){
         const name=image.pipeline?.name;

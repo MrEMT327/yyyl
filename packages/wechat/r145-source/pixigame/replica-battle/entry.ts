@@ -51,6 +51,7 @@ export function mountReplicaBattlePage(platform: {
   canvas: HTMLCanvasElement;
   fetchResource: typeof fetch;
   presentFrame?: () => boolean | void;
+  onSlowFrame?: (timing: unknown, phase: Simulation['phase'], wave: number) => void;
   frozenFrame?: { capture: () => boolean; present: () => void };
   loadCatalog?: typeof loadLoadoutCatalog;
   readSharedLoadoutJSON?: ReadSharedLoadoutJSON;
@@ -190,7 +191,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   const syncWeaponSkins = () => {
     const revision = sim.equipmentRevision;
     if (revision === appliedEquipmentRevision) return;
-    skin.setWeapons?.(readWeaponAppearances(sim));
+    battlePerformance.measure('weaponMounts',()=>skin.setWeapons?.(readWeaponAppearances(sim)));
     appliedEquipmentRevision = revision;
   };
   syncWeaponSkins();
@@ -383,6 +384,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
       scene.coastBackgroundTime = smoothCoastTime(sim.time, accumulated, logicStep, nativeDelta, scene.coastBackgroundTime);
     }
     ui.update();
+    const finishAudioMeasure = battlePerformance.beginMeasure('battleAudio');
     for (const id of sim.sounds) {
       const cue = combatCues[id];
       if (cue) { audio.effect(cue.key, cue.volume, cue.interval); continue; }
@@ -401,6 +403,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     }else{
       audio.syncContinuous();audio.syncCharges();
     }
+    finishAudioMeasure?.();
     syncWeaponSkins(); reportPhase();
   });
   stage.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { passive: true, signal:lifetime.signal });
@@ -418,7 +421,8 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     frameReuse = createBattleFrameReuse({
       getRunId: () => currentRunId,
       canFreeze: () => !lifetime.disposed && !document.hidden && !launch.active &&
-        (sim.phase === 'paused' || sim.phase === 'upgrade') && !skin.hasPendingAircraftFrame && !graphics.blocked(),
+        (sim.phase === 'paused' || sim.phase === 'upgrade' || sim.phase === 'treasure') &&
+        !skin.hasPendingAircraftFrame && !graphics.blocked(),
       capture: frozenFrame.capture,
       updateOverlay(delta) {
         try {
@@ -445,7 +449,16 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     const rendered=firstFrame;firstFrame=undefined;
     send('started',rendered);
   });
-  battlePerformance.attach(game);
+  battlePerformance.attach(game,platform.onSlowFrame ? (timing: object)=>{
+    if(sim.phase!=='playing')return;
+    const models=new Set<string>();
+    for(const shot of sim.projectiles){
+      if(!shot.dead&&!shot.visualHidden)models.add(shot.familyId+'/'+shot.modelId);
+      if(models.size===12)break;
+    }
+    const skills=sim.learned.slice(-16).map(skill=>skill.id);
+    platform.onSlowFrame?.({...timing,models:[...models],skills},sim.phase,sim.wave);
+  } : undefined);
 }
 
 window.addEventListener('message', event => {

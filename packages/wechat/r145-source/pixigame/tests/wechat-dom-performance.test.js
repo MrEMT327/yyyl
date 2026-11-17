@@ -459,6 +459,8 @@ test('a slow battle frame keeps recording in a WeChat host without global Custom
     diagnostics.presented(frame,clock);
     clock=3120;
     diagnostics.presented(frame,clock);
+    const timing={gapMs:2118,waitMs:4,updateMs:2078,renderMs:34,presentMs:2,enemies:5,projectiles:3,work:{aircraftTransfer:2070}};
+    diagnostics.engineStalled(frame,timing,'playing',2);
     const cost = p95 => ({count:1,mean:p95,p95,max:p95});
     f.host.emit(f.host.window,'message',{
       origin:f.host.scope.location.origin,source:battleWindow,
@@ -476,6 +478,7 @@ test('a slow battle frame keeps recording in a WeChat host without global Custom
     assert.equal(saved.recording.playingPresentation.intervals,62);
     assert.deepEqual(saved.recording.playingPresentation.fps56,{seconds:3,passed:1});
     assert.deepEqual(saved.recording.frameSpikes[0],{atMs:3120,gapMs:2120,wave:2});
+    assert.deepEqual(saved.recording.engineSpikes,[{atMs:3120,wave:2,...timing}]);
     assert.equal(saved.recording.recentSamples[0].wave,2);
     assert.deepEqual(saved.recording.recentSamples[0].engine.workP95Ms,{simulation:2,aircraftDraw:8,terrainDraw:4});
     assert.deepEqual(saved.recording.recentSamples[0].engine.drawContexts,[{name:'Phaser',calls:80,triangles:4200},
@@ -498,6 +501,8 @@ test('a slow battle frame keeps recording in a WeChat host without global Custom
     assert.match(copied,/每秒达到 56 FPS 33\.3% · 1\/3 秒/);
     assert.match(copied,/模拟 2 ms · 战机 3D 8 ms · 地形 3D 4 ms/);
     assert.match(copied,/Phaser 80 · 场景3D 70 · 界面3D 0 次\/帧/);
+    assert.match(copied,/最慢引擎帧 录制 \+3120 ms · 第 2 波 · 2118 ms/);
+    assert.match(copied,/战机纹理 2070 ms/);
   } finally {
     if(eventDescriptor)Object.defineProperty(globalThis,'CustomEvent',eventDescriptor);
     diagnostics.destroy();

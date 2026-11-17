@@ -178,7 +178,8 @@ export function sampleParticles(g,node,age,seed=1,options={}){
  const enabled=options.emitting??np.emitting??true,instances=[],trails=[];
  if(!Number.isFinite(age)||age<start||clock<0||!(lifetime>0)||!(speed>0)||!(amount>0)||(!enabled&&!Number.isFinite(options.stopAge)))return {instances,trails,unsupported};
  const local=np.local_coords??false,fps=np.fixed_fps??30,dt=fps>0?1/fps:(options.timeStep??1/60);
- const cache=options.cache,cacheSignature=cache?JSON.stringify([lifetime,amount,dt,local,speed,start,pre,seed]):null;
+ const trailEnabled=Boolean(np.trail_enabled),tail=np.trail_lifetime??.3;
+ const cache=options.cache,cacheSignature=cache?JSON.stringify([lifetime,amount,dt,local,speed,start,pre,seed,trailEnabled,tail]):null;
  if(cache&&(cache.signature!==cacheSignature||cache.material!==p)){
   // Lifecycle overrides are owned copies. Equal process parameters must not
   // replay every living particle from birth merely because identity changed.
@@ -186,28 +187,38 @@ export function sampleParticles(g,node,age,seed=1,options={}){
   if(cache.signature!==cacheSignature||cache.materialSignature!==materialSignature)cache.clear();
   cache.signature=cacheSignature;cache.material=p;cache.materialSignature=materialSignature;
  }
- const liveCacheKeys=new Set();
- const cycleFirst=np.one_shot?0:Math.max(0,Math.floor((clock-lifetime-(np.trail_lifetime??.3))/lifetime));
+ const liveCacheKeys=cache?new Set():null;
+ const longest=lifetime*Math.max(1,1-(p.lifetime_randomness??0));
+ const cycleFirst=np.one_shot?0:Math.max(0,Math.floor((clock-longest)/lifetime));
  const cycleLast=np.one_shot?0:Math.floor(clock/lifetime);
- for(let cycle=cycleFirst;cycle<=cycleLast;cycle++)for(let index=0;index<amount;index++){
+ const selected=Math.min(amount,options.particleLimit??amount);
+ const limit=options.maxInstances??Infinity;
+ const retain=trailEnabled?Math.ceil(tail/dt)+2:0;
+ // Retain evenly spaced original slots, including their seeds and birth times.
+ // A full frame never catches up on decorative births past its draw budget.
+ for(let cycle=cycleFirst;cycle<=cycleLast&&instances.length<limit;cycle++)for(let slot=0;slot<selected&&instances.length<limit;slot++){
+  const index=Math.floor((slot+.5)*amount/selected);
   const number=cycle*amount+index,randomPhase=(godotHash(number) % 65536)/65536;
   const born=(cycle+(index+(np.randomness??0)*randomPhase)/amount*(1-(np.explosiveness??0)))*lifetime;
-  if(born>clock||born>=stopClock)continue;
-  const cacheKey=number;liveCacheKeys.add(cacheKey);let cached=cache?.get(cacheKey);
+  if(born>clock||born>=stopClock||clock-born>=longest)continue;
+  const cacheKey=number;liveCacheKeys?.add(cacheKey);let cached=cache?.get(cacheKey);
   const state=cached?.state??initial(g,p,number,seed),duration=lifetime*state.display.life,particleAge=clock-born;
   if(state.amountRandom>(np.amount_ratio??1)||particleAge>=duration)continue;
   const end=Math.min(particleAge,duration),steps=Math.ceil(end/dt),dy=state.dynamic,phy=state.physics;
   if(cached&&end+1e-10<cached.fullSteps*dt){cache.delete(cacheKey);cached=null;}
   let pos,vel,history,firstStep=1,finalVelocity;
-  if(cached){pos=[...cached.pos];vel=[...cached.vel];history=[...cached.history];firstStep=cached.fullSteps+1;finalVelocity=[...cached.finalVelocity];state.random.state=cached.randomSeed;}
+  if(cached){pos=[...cached.pos];vel=[...cached.vel];if(trailEnabled)history=[...cached.history];firstStep=cached.fullSteps+1;finalVelocity=[...cached.finalVelocity];state.random.state=cached.randomSeed;}
   else{
    pos=initialPosition(p,state.random);
    if(p.turbulence_enabled)pos=add(pos,scale(noiseDirection(p,pos,start+(born-pre)/speed),range(p,'turbulence_initial_displacement',state.random)));
    const birthMatrix=local?I:matrixAt(options.history,start+(born-pre)/speed);
-   pos=transform(birthMatrix,pos);vel=transform(birthMatrix,scale(randomDirection(p,state.random),state.dynamic.speed),false);pos[2]=vel[2]=0;history=[];finalVelocity=vel;
+   pos=transform(birthMatrix,pos);vel=transform(birthMatrix,scale(randomDirection(p,state.random),state.dynamic.speed),false);pos[2]=vel[2]=0;if(trailEnabled)history=[];finalVelocity=vel;
   }
   function frame(t,v){const life=clamp(t/duration),display=displayAt(g,p,state,life,t,v);return {time:start+(born+t-pre)/speed,position:pos.slice(0,2),velocity:v.slice(0,2),...display};}
-  if(!cached){history.push(frame(0,vel));if(cache){cached={state,pos:[...pos],vel:[...vel],history:[...history],finalVelocity:[...vel],fullSteps:0,randomSeed:state.random.state};cache.set(cacheKey,cached);}}
+  if(!cached){
+   if(trailEnabled)history.push(frame(0,vel));
+   if(cache){cached={state,pos:[...pos],vel:[...vel],history:history?.slice(),finalVelocity:[...vel],fullSteps:0,randomSeed:state.random.state};cache.set(cacheKey,cached);}
+  }
   for(let step=firstStep;step<=steps;step++){
    const previous=(step-1)*dt,t=Math.min(step*dt,end),delta=t-previous,life=clamp(t/duration),now=start+(born+t-pre)/speed;
    const emitter=local?I:matrixAt(options.history,now),origin=[emitter[4],emitter[5],0],diff=add(pos,scale(origin,-1)),dist=Math.hypot(...diff),unit=norm(diff);
@@ -220,13 +231,16 @@ export function sampleParticles(g,node,age,seed=1,options={}){
    vel=add(vel,scale(force,delta));vel[2]=0;
    const damping=phy.damping*scalar(g,p,'damping_curve',life);if(damping>0){let magnitude=Math.hypot(...vel);magnitude-=np.particle_flag_damping_as_friction||p.particle_flag_damping_as_friction?magnitude*magnitude*damping*.05*delta:damping*delta;vel=magnitude<0?[0,0,0]:scale(norm(vel),magnitude);}
    if(p.turbulence_enabled){const noise=norm(noiseDirection(p,pos,now)),infl=clamp(dy.turbulence*scalar(g,p,'turbulence_influence_over_life',life));vel=vecmix(vel,scale(noise,Math.hypot(...vel)*(1+(1-infl)*.2)),infl);controlled=vecmix(controlled,scale(noise,Math.hypot(...controlled)*(1+(1-infl)*.2)),infl);}
-   finalVelocity=add(controlled,vel);finalVelocity[2]=0;pos=add(pos,scale(finalVelocity,delta));history.push(frame(t,finalVelocity));
-   const retain=np.trail_enabled?Math.ceil((np.trail_lifetime??.3)/dt)+2:1;if(history.length>retain)history.splice(0,history.length-retain);
-   if(cached&&t===step*dt){cached.pos=[...pos];cached.vel=[...vel];cached.finalVelocity=[...finalVelocity];cached.fullSteps=step;cached.randomSeed=state.random.state;cached.history=[...history];}
+   finalVelocity=add(controlled,vel);finalVelocity[2]=0;pos=add(pos,scale(finalVelocity,delta));
+   if(trailEnabled){history.push(frame(t,finalVelocity));if(history.length>retain)history.splice(0,history.length-retain);}
+   if(cached&&step>=steps-1&&t===step*dt){
+    cached.pos=[...pos];cached.vel=[...vel];cached.finalVelocity=[...finalVelocity];
+    cached.fullSteps=step;cached.randomSeed=state.random.state;cached.history=history?.slice();
+   }
   }
   const id=`${node.path??'particles'}:${number}`,common={id,texture:np.texture,material:np.material,space:local?'local':'world',number,birthTime:start+(born-pre)/speed};
-  if(particleAge<duration)instances.push({...common,...history.at(-1)});
-  if(np.trail_enabled){const tail=np.trail_lifetime??.3;trails.push({...common,points:history,age,speedScale:speed,lifetime:tail,sections:np.trail_sections??8,subdivisions:np.trail_section_subdivisions??4});}
+  instances.push({...common,...(trailEnabled?history.at(-1):frame(end,finalVelocity))});
+  if(trailEnabled)trails.push({...common,points:history,age,speedScale:speed,lifetime:tail,sections:np.trail_sections??8,subdivisions:np.trail_section_subdivisions??4});
  }
  if(cache)for(const k of cache.keys())if(!liveCacheKeys.has(k))cache.delete(k);
  return {instances,trails,unsupported};

@@ -46,8 +46,10 @@ export function createAircraftReadback(gl, byteLength, measureTransfer) {
   }
 
   function poll(pixels) {
-    const status = gl.clientWaitSync(fence, gl.SYNC_FLUSH_COMMANDS_BIT, 0);
-    if (status === gl.TIMEOUT_EXPIRED && ++polls < 3) return false;
+    // Submission already flushed. An established queue can finish late during
+    // a busy frame; keep its texture until the fence signals.
+    const status = gl.clientWaitSync(fence, 0, 0);
+    if (status === gl.TIMEOUT_EXPIRED && (verified || ++polls < 3)) return false;
     if (status !== gl.CONDITION_SATISFIED && status !== gl.ALREADY_SIGNALED) throw new Error('Aircraft pixel fence did not complete');
 
     const copy = () => withBuffer(() => gl.getBufferSubData(target, 0, pixels));

@@ -1,8 +1,10 @@
 const stages = [['data', '关卡数据'], ['appearance', '机体外观'], ['interface', '战斗界面'], ['textures', '战斗贴图']];
 const requestStates = { active: '下载中', queued: '排队中', 'retry-wait': '等待重试' };
 const performanceModes = { normal: '常规', 'high-performance': '高性能', 'high-performance-plus': '高性能+' };
-const battleWorkNames = { simulation: '模拟', aircraftDraw: '战机 3D', terrainDraw: '地形 3D',
-  enemyVisual: '敌机更新', projectileVisual: '弹幕更新', interfaceDraw: '界面 3D', screenPresent: '屏幕合成' };
+const battleWorkNames = { simulation: '模拟', aircraftDraw: '战机 3D', aircraftTransfer: '战机纹理',
+  terrainDraw: '地形 3D', terrainTransfer: '地形纹理', enemyVisual: '敌机更新', projectileVisual: '弹幕更新',
+  effectVisual: '特效更新', battleAudio: '音效', weaponMounts: '武器挂载', interfaceUpdate: '界面更新',
+  interfaceDraw: '界面 3D', screenPresent: '屏幕合成' };
 const transferNames = {
   battleBlit: '战景合成', battleSnapshot: '战景快照', frozenBattleBlit: '冻结画面合成', isolatedFrameCopy: '子画布合成',
   aircraftRead: '战机像素读取', aircraftReadSubmit: '读取提交', aircraftReadCopy: '读取拷贝',
@@ -208,17 +210,18 @@ function frames({ recording }) {
     const work = Object.entries(battleWorkNames).flatMap(([key,label]) =>
       Number.isFinite(engine.workP95Ms?.[key]) ? [label + ' ' + ms(engine.workP95Ms[key])] : []);
     if (work.length) lines.push('有调用的样本 P95', work.join(' · '));
-    const peak=engine.peakFrame;
-    if(peak){
-      lines.push('该阶段最慢引擎帧 ' + ms(peak.gapMs) + ' · 敌机 ' + peak.enemies + ' · 弹幕 ' + peak.projectiles,
-        '帧前等待 ' + ms(peak.waitMs) + ' · 更新 ' + ms(peak.updateMs) + ' · 渲染 ' + ms(peak.renderMs) + ' · 合成 ' + ms(peak.presentMs));
-      const peakWork=Object.entries(peak.work).filter(([key])=>key!=='screenPresent'&&battleWorkNames[key])
-        .sort(([,a],[,b])=>b-a).slice(0,3).map(([key,value])=>battleWorkNames[key]+' '+ms(value));
-      if(peakWork.length)lines.push(peakWork.join(' · '));
-    }
     if (Number.isFinite(engine.drawCalls)) lines.push('每帧绘制调用 ' + engine.drawCalls + ' · 三角面 ' + engine.triangles);
     if (engine.drawContexts?.length) lines.push(engine.drawContexts.map(row => row.name + ' ' + row.calls).join(' · ') + ' 次/帧');
   } else lines.push('本次未收到引擎样本');
+  const peak=recording.engineSpikes?.[0]??engine?.peakFrame;
+  if(peak){
+    const at=Number.isFinite(peak.atMs) ? '录制 +' + ms(peak.atMs-recording.startedAtMs) + ' · 第 ' + peak.wave + ' 波 · ' : '';
+    lines.push('最慢引擎帧 ' + at + ms(peak.gapMs) + ' · 敌机 ' + peak.enemies + ' · 弹幕 ' + peak.projectiles,
+      '帧前等待 ' + ms(peak.waitMs) + ' · 更新 ' + ms(peak.updateMs) + ' · 渲染 ' + ms(peak.renderMs) + ' · 合成 ' + ms(peak.presentMs));
+    const peakWork=Object.entries(peak.work).filter(([key])=>key!=='screenPresent'&&battleWorkNames[key])
+      .sort(([,a],[,b])=>b-a).slice(0,3).map(([key,value])=>battleWorkNames[key]+' '+ms(value));
+    if(peakWork.length)lines.push(peakWork.join(' · '));
+  }
   const ui = recording.compatibility?.phases?.battle;
   if (ui?.frames) {
     lines.push('', '界面 CPU P95（最近 ' + ui.frames + ' 帧）',

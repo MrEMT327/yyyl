@@ -11,12 +11,12 @@ test('draw samples average the submitted frames by context, including frames wit
   const phaser = context(), scene = context(), ui = context();
   const original = phaser.drawArrays;
   const game = {canvas:{},events:new EventEmitter(),renderer:{gl:phaser}};
-  const snapshots = [];
+  const snapshots = [], stalls = [];
   let clock = 0;
   const reporter=createBattlePerformanceReporter({windowRef,documentRef,session:'chapter',now:()=>clock,post:row=>snapshots.push(row)});
   reporter.watch({},scene);
   reporter.watch({classList:{contains:name=>name==='cloud-combat-canvas'}},ui);
-  reporter.attach(game);
+  reporter.attach(game, timing=>stalls.push(timing));
   try {
     windowRef.dispatchEvent(Object.assign(new Event('message'), {
       origin:windowRef.location.origin,source:windowRef.parent,
@@ -70,6 +70,14 @@ test('draw samples average the submitted frames by context, including frames wit
       gapMs:492,waitMs:438,updateMs:45,renderMs:5,presentMs:4,enemies:28,projectiles:96,
       work:{enemyVisual:13,projectileVisual:28,screenPresent:4},
     });
+    const publishes = snapshots.length;
+    clock=1020;game.events.emit('prestep');
+    reporter.measure('terrainTransfer',()=>{clock=1150;});
+    game.events.emit('poststep');
+    game.events.emit('postrender');
+    assert.equal(snapshots.length,publishes);
+    assert.equal(stalls.at(-1).gapMs,146);
+    assert.deepEqual(stalls.at(-1).work,{terrainTransfer:130});
   } finally {
     reporter.destroy();
   }

@@ -25,12 +25,11 @@ export function validateWeaponSkins(content) {
     throw new Error(`缺少复刻强化/突破原图：${branch.skillId}/${branch.icon}`);
 }
 
-/** An unmodified, complete cloud model. No recoloring, resized jackets,
- * duplicated guns, fabricated reinforcements or stat-dependent geometry. */
-export function createWeaponForm(weapon) {
+/** The same assembly and mounts are used at both preview and combat scales. */
+export function createWeaponForm(weapon, options) {
   const skin = WEAPON_SKINS[weapon.familyId];
   if (skin?.kind !== 'cloud-model') throw new Error(`该武器使用复刻原始素材：${weapon.familyId}`);
-  const kit = createModuleGeometry(ITEM_BY_ID.get(skin.itemId));
+  const kit = createModuleGeometry(ITEM_BY_ID.get(skin.itemId), options);
   kit.userData.weaponAppearance = weapon;
   return kit;
 }

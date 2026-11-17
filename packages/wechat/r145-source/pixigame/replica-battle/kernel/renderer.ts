@@ -10,7 +10,7 @@ import {CombatRenderSamples,CombatStatusIndex} from '../../src/replica/combat-re
 import {MissileWingMounts} from '../../src/replica/missile-wing-mounts.mjs';
 import {captureEnemyDeathBody,enemyDeathVisualScale} from '../small-death-visual.js';
 import {sampleNativeUrgencyWarning} from './enemy-warning';
-import {applySourceStatusTint} from './pathogenic/source-status-tint';
+import {applySourceStatusTint,prepareSourceStatusTint} from './pathogenic/source-status-tint';
 import {setupFirstChapterBloom,registerFirstChapterSpriteBloom} from './pathogenic/chapter1-bloom';
 import {PathogenicBattleEffects} from './pathogenic/pathogenic-battle-effects';
 import pathogenicGraph from './pathogenic/scene-graph.json';
@@ -166,9 +166,8 @@ export class BattleView extends Phaser.Scene {
   }
   coastBackgroundTime = 0;
   combatRenderFraction?: number;
-  private warmedChapterOneWave = 1;
   onFrame?: (delta: number) => void;
-  beginMeasure?: (phase: 'enemyVisual' | 'projectileVisual', items: number) => (()=>void)|undefined;
+  beginMeasure?: (phase: 'enemyVisual' | 'projectileVisual' | 'effectVisual', items?: number) => (()=>void)|undefined;
   constructor(private content: GameContent, private sim: Simulation, private ready: () => void, private appearance?: BattleAppearance,
     private loading?: { progress(value: number): void; complete(): void }, private imagePlan?: ReturnType<typeof planBattleImages>,
     private readonly optimizeChapterOne = false, private readonly nativeChapterEnemyArt = false) {
@@ -187,23 +186,17 @@ export class BattleView extends Phaser.Scene {
     preloadDamageNumberArt(this);
     preloadPickupArt(this);
     preloadSupplyChestArt(this);
-    this.pathogenic=new PathogenicBattleEffects(this,pathogenicGraph);
+    this.pathogenic=new PathogenicBattleEffects(this,pathogenicGraph,.25,{compact:this.scale.width<WIDTH});
     this.pathogenic.configureHost({weaponSkinId:()=>this.content.combat.studyLoadout?.selectedGunIds??Number(this.content.combat.studyLoadout?.selectedGunId||0),playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});
     const deferred = this.optimizeChapterOne ? new Set(chapterOneDeferredAtlases) : undefined;
     if (deferred) {
       for (const key of unusedChapterEnemyProjectileArt(Object.values(this.content.chapter.bullets).map(row => row.parameters.ModelId))) deferred.add(key);
       for (const key of this.loadoutArt(this.content.combat.studyLoadout?.battleSkillIds || [])) deferred.delete(key);
+      for (const key of chapterOneBossAtlases) deferred.delete(key);
     }
     this.pathogenic.preload((_p,t)=>t.url,deferred);
-    const models = this.optimizeChapterOne ? new Set<number>()
-      : this.nativeChapterEnemyArt ? this.enemyArtModels() : new Set(this.prefabByModel.keys());
-    if (this.optimizeChapterOne) {
-      // The opening formations reuse a handful of atlases. Load them under
-      // the sortie cover so the loader never uploads them during those waves.
-      this.warmedChapterOneWave = Math.min(4, this.content.chapter.chapter.waveCount);
-      for (let wave=1;wave<=this.warmedChapterOneWave;wave++)
-        for (const model of this.enemyArtModels(wave)) models.add(model);
-    }
+    const models = this.nativeChapterEnemyArt || this.optimizeChapterOne
+      ? this.enemyArtModels() : new Set(this.prefabByModel.keys());
     this.preloadEnemyArt(models);
     this.appearance?.preload(this);
     // Native enemy layers join the normal prefab preload below.
@@ -256,10 +249,10 @@ export class BattleView extends Phaser.Scene {
     const family = this.content.combat.families[choice.group];
     if (family) return this.pathogenic.source.prepareTextures(chapterOneWeaponArt(family.entityId));
   }
-  private enemyArtModels(wave?: number) {
+  private enemyArtModels() {
     const ids = new Set<number>();
     for (const spawn of this.content.spawns) {
-      if (wave === undefined || spawn.wave === wave) ids.add(spawn.entityId);
+      ids.add(spawn.entityId);
     }
     const models = new Set<number>();
     // Walk the same spawn routes used by the simulation, including children.
@@ -275,20 +268,6 @@ export class BattleView extends Phaser.Scene {
       }
     }
     return models;
-  }
-  private warmNextWaveArt() {
-    // Use the current wave as lead time for the next wave's optional atlases.
-    // The regular prefab sprites are already loaded if an atlas is late.
-    const wave = this.sim.wave + 1;
-    if (wave <= this.warmedChapterOneWave) return;
-    this.warmedChapterOneWave = wave;
-    const models = this.enemyArtModels(wave);
-    if (!models.size) return;
-    this.preloadEnemyArt(models);
-    const boss = this.content.spawns.some(spawn => spawn.wave === wave
-      && this.content.chapter.entities[spawn.entityId]?.type === 3);
-    if (boss) void this.pathogenic.source.prepareTextures(chapterOneBossAtlases);
-    if (this.load.list.size && !this.load.isLoading()) this.load.start();
   }
   private preloadEnemyArt(models: ReadonlySet<number>) {
     preloadChapterOrbitArt(this, models);
@@ -350,6 +329,8 @@ export class BattleView extends Phaser.Scene {
       this.mapSubtractBlend = this.renderer.addBlendMode([gl.ONE, gl.ONE, gl.ZERO, gl.ONE], gl.FUNC_REVERSE_SUBTRACT);
     }
     setupFirstChapterBloom(this,this.pathogenic.source,Number(this.content.chapter.chapter.id),this.appearance?.combatBloomLevels)??registerFirstChapterSpriteBloom(this);
+    if(renderScale<1)prepareSourceStatusTint(this.game);
+    this.pathogenic.warmup();
     this.appearance?.create(this);
     if (!this.appearance?.replaceTerrain) this.createTerrain();
     this.chestProgress = this.add.graphics().setDepth(50).setVisible(false);
@@ -508,7 +489,6 @@ export class BattleView extends Phaser.Scene {
   }
   update(_time: number, delta: number) {
     this.onFrame?.(delta);
-    if (this.optimizeChapterOne && this.sim.phase === 'playing' && this.sim.clock > 0) this.warmNextWaveArt();
     // CameraView.Root is the original camera root: its ordinary EntityView
     // interpolation IS the display movement. No second follow/Lerp is applied.
     this.advanceCameraView(delta);
@@ -674,6 +654,7 @@ export class BattleView extends Phaser.Scene {
       this.pathogenic.projectile(visualBullet,this.projectPoint,Number(this.content.chapter.bullets[bullet.bulletId]?.parameters.Element??0));
     }
     endProjectileWork?.();
+    const endEffectWork = this.beginMeasure?.('effectVisual');
     for (const sourcePickup of s.pickups) {
       const pickup=this.renderSamples.pickup(sourcePickup);
       const expiryAlpha=pickupExpiryAlpha(pickup,this.content.assets.battleItems[pickup.itemId]);
@@ -710,6 +691,7 @@ export class BattleView extends Phaser.Scene {
     const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
     const coinReceiptVisual=sampleCoinPickupReceipt(s);if(coinReceiptVisual)this.drawEffect(coinReceiptVisual,live);
     this.pathogenic.endFrame();
+    endEffectWork?.();
     for (const [key, view] of this.objects) if (!live.has(key)) {
       if (s.phase !== 'ready' && view instanceof EnemyHealthBar && view.finishAfterDeath(visualClock)) continue;
       view.destroy(); this.objects.delete(key);

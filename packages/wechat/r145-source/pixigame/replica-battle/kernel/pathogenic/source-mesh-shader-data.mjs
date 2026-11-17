@@ -6,9 +6,9 @@ export function createSourceMeshShaderData(){
   compatibility:{renderer:'compatibility',lightCount:0,directionalLightCount:0}};
  Object.defineProperty(data,'inverseScratch',{value:Array(6).fill(0)});return data;
 }
-export function updateSourceMeshShaderData(data,item,source,time,line,gain,opacity,palette,installed,resolved,renderScale=1,plainSprite=false){
+export function updateSourceMeshShaderData(data,item,source,time,line,gain,opacity,palette,installed,resolved,renderScale=1,plainSprite=false,vertexTint=false){
  data.time=time;data.projectilePalette=palette;
- for(let i=0;i<3;i++)data.color[i]=line?gain:item.color[i];data.color[3]=line?opacity:item.color[3]*opacity;
+ for(let i=0;i<3;i++)data.color[i]=line||vertexTint?gain:item.color[i];data.color[3]=line?opacity:item.color[3]*opacity;
  data.uniforms=resolved.uniforms;data.textures=resolved.textures;
  // The position and atlas UVs are already in the plain sprite's vertices.
  if(plainSprite)return data;

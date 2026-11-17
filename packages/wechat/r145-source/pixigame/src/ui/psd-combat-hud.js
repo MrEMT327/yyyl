@@ -155,30 +155,38 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
   mount.scale.set(600/W,1300/H);root.addChild(mount);
   const nativeTiles=bridge.nativeHudTiles;
   const top=canvasLayer(mount,0,460,W,nativeTiles), bottom=canvasLayer(mount,1500,124,W,nativeTiles);
-  const warningLayer=canvasLayer(mount,BOSS_WARNING_LAYER.y,BOSS_WARNING_LAYER.height);warningLayer.sprite.visible=false;
+  const warningLayer=canvasLayer(mount,BOSS_WARNING_LAYER.y,BOSS_WARNING_LAYER.height,W,nativeTiles);
+  warningLayer.sprite.visible=false;
   const pause = new Container(); pause.label='暂停';pause.position.set(4,16);
   pause.hitArea=new Rectangle(0,0,132,132);pause.enabled=true;pause.eventMode='static';
   pause.__pixiUiAction=()=>bridge.showPauseMenu();mount.addChild(pause);
   const pauseFace=canvasLayer(pause,0,132,132,nativeTiles);
   let tileLayout;
   function showNativeTiles(){
-    if(!nativeTiles||warningLayer.sprite.visible)return false;
+    if(!nativeTiles)return false;
     const {width,height}=bridge.app.renderer.screen;
     if(!(width>0&&height>0))return false;
     const origin=mount.toGlobal({x:0,y:0});
     const press=pause.visualScale;
     const factor=press?.factor??1;
-    if(tileLayout&&tileLayout.width===width&&tileLayout.height===height&&tileLayout.x===origin.x&&tileLayout.y===origin.y&&tileLayout.factor===factor)return true;
-    tileLayout={width,height,x:origin.x,y:origin.y,factor};
+    const warning=warningLayer.sprite;
+    const warningWidth=warning.visible?warningLayer.canvas.width*warning.scale.x:0;
+    const warningX=warning.visible?warning.x:0;
+    if(tileLayout&&tileLayout.width===width&&tileLayout.height===height&&tileLayout.x===origin.x&&tileLayout.y===origin.y&&
+      tileLayout.factor===factor&&tileLayout.warningWidth===warningWidth&&tileLayout.warningX===warningX)return true;
+    tileLayout={width,height,x:origin.x,y:origin.y,factor,warningWidth,warningX};
     const sx=100*mount.scale.x/width,sy=100*mount.scale.y/height;
-    const place=(layer,x,y,scale=1)=>{
+    const place=(layer,x,y,scaleX=1,scaleY=scaleX)=>{
       const tile=layer.canvas;
-      tile.style.cssText=`position:absolute;left:${100*origin.x/width+x*sx}%;top:${100*origin.y/height+y*sy}%;width:${tile.width*sx*scale}%;height:${tile.height*sy*scale}%;pointer-events:none`;
+      const style=`position:absolute;left:${100*origin.x/width+x*sx}%;top:${100*origin.y/height+y*sy}%;width:${tile.width*sx*scaleX}%;height:${tile.height*sy*scaleY}%;pointer-events:none`;
+      if(layer.style!==style){layer.style=style;tile.style.cssText=style;}
       if(tile.parentNode!==nativeTiles)nativeTiles.append(tile);
     };
     place(top,0,0);
     place(bottom,0,bottom.sprite.y);
     place(pauseFace,pause.x+(press?.x??0)*(1-factor),pause.y+(press?.y??0)*(1-factor),factor);
+    if(warning.visible)place(warningLayer,warningX,warning.y,warning.scale.x,1);
+    else warningLayer.canvas.remove();
     return true;
   }
   let lastUpdate=-Infinity,healthDisplay=null,bossDisplay=bossHealthStates.get(bridge)??null;
@@ -197,7 +205,7 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const warning=game.state==='playing'?bossWarningFrame(bridge.presentation?.bossWarning,reducedMotion?.matches??false):null;
     warningLayer.sprite.visible=Boolean(warning);
     if(warning)fitWarningViewport(warningLayer,mount,bridge);
-    repaint(warningLayer,warning?`${loaded.size}:${warning.type}:${Math.floor(warning.elapsed*60)}`:'',ctx=>drawBossWarning(ctx,warning,images,warningLayer.canvas.width));
+    repaint(warningLayer,warning?`${loaded.size}:${warning.type}:${Math.floor(warning.elapsed*(nativeTiles?30:60))}`:'',ctx=>drawBossWarning(ctx,warning,images,warningLayer.canvas.width));
     const bossActive=!!boss&&!boss.dead&&boss.hp>0&&!['ready','victory_result','fixed_result','defeat_result'].includes(game.state);
     const nextBoss=updateBossHealth(bossDisplay,bossActive?boss:null,Number.isFinite(game.elapsed)?game.elapsed*1000:now,reducedMotion?.matches??false);
     const nextMotion=updateBossHitMotion(bossMotion,bossActive?boss:null,Number.isFinite(game.elapsed)?game.elapsed*1000:now,reducedMotion?.matches??false);

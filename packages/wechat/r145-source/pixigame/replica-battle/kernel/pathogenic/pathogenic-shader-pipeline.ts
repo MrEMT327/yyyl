@@ -355,7 +355,10 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Mu
   private batchKey:number[]=[];
   private incomingKey:number[]=[];
   constructor(game: Phaser.Game, readonly program: CompiledCanvasShader) {
-    super({ game, vertShader: program.vertex, fragShader: program.fragment, forceZero: !program.batchTextures });
+    // Each shader owns a vertex buffer. Small effect batches should not
+    // allocate a full Phaser sprite buffer per authored material.
+    super({ game, vertShader: program.vertex, fragShader: program.fragment, forceZero: !program.batchTextures,
+      batchSize:program.batchTextures?1024:256 });
     // Auxiliary samplers can validate/capture state at a precise render point.
     this.canBatchDraws=!program.uniforms.some(uniform=>uniform.type==='sampler2D');
     this.uniformUploads=program.uniforms.map(uniform=>{

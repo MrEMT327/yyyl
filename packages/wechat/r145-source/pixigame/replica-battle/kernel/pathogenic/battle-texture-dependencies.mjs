@@ -23,8 +23,9 @@ export function chapterOneWeaponArt(entityId) {
 // Keep every routed weapon, upgrade, enemy, status and warning, not just the
 // opening loadout. Follow atlas frames, materials and child scenes transitively.
 // Host textures/materials also serve procedural meshes outside scene playback.
-export function battleTexturePaths(graph) {
-  const textures = new Set(), visited = new Set(), externalResources = new Map();
+export function battleSourceDependencies(graph) {
+  const textures = new Set(), gradients = new Set(), materials = new Set();
+  const visited = new Set(), externalResources = new Map();
   for (const resource of Object.values(graph.resources || {})) {
     if (resource.source && resource.source === resource.localId) externalResources.set(resource.source, resource);
   }
@@ -35,7 +36,11 @@ export function battleTexturePaths(graph) {
     if (!texture && !resource) return;
     visited.add(key);
     if (texture) textures.add(key);
-    if (resource) visit(resource);
+    if (resource) {
+      if (resource.type==='ShaderMaterial'||resource.type==='CanvasItemMaterial') materials.add(resource);
+      if (resource.type==='GradientTexture1D'||resource.type==='GradientTexture2D') gradients.add(resource.id??key);
+      visit(resource);
+    }
   }
   function visit(node) {
     if (typeof node === 'string') reference(node);
@@ -44,5 +49,7 @@ export function battleTexturePaths(graph) {
   for (const path of battleScenePaths()) reference(path);
   for (const path of Object.keys(graph.textures || {})) if (!path.startsWith('res://')) reference(path);
   for (const path of Object.keys(graph.resources || {})) if (!path.startsWith('res://')) reference(path);
-  return textures;
+  return {textures,gradients,materials};
 }
+
+export const battleTexturePaths = graph => battleSourceDependencies(graph).textures;

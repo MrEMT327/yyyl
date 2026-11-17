@@ -1,21 +1,45 @@
+import {VfxMeshBuffer,boundsVisible} from './vfx-buffers.mjs';
 // Host-only visual particles. Simulation clock owns emission and expiry;
 // positions exclude camera translation so camera scrolling never emits a trail.
 export const ICE_PARTICLE_TEXTURES={
   trace:{key:'host://ice-particles-v2/trace',file:'trace_01.png'},
   chips:{key:'host://ice-particles-v2/chips',file:'dirt_01.png'},
 };
+export const ICE_TRAIL_ADD='host://ice-particles-v2/add';
 export class IceWeaponTrails {
-  constructor(scene,sourcePixelScale=.25){this.scene=scene;this.sourcePixelScale=sourcePixelScale;this.clock=0;this.camera=[0,0];this.emitters=new Map();this.particles=[];this.pool=[];this.created=0;this.limit=192;scene.events?.once('shutdown',()=>this.reset());}
-  beginFrame(clock,camera){if(clock<this.clock)this.reset();this.clock=clock;this.camera=[...camera];}
+  constructor(scene,sourcePixelScale=.25,view){
+    this.scene=scene;this.sourcePixelScale=sourcePixelScale;this.view=view;this.clock=0;this.camera=[0,0];
+    this.emitters=new Map();this.particles=[];this.pool=[];this.created=0;this.limit=view?72:192;
+    this.batches=new Map();this.corners=Array.from({length:4},()=>({x:0,y:0}));
+    scene.events?.once('shutdown',()=>this.reset());
+  }
+  beginFrame(clock,camera,viewport){
+    if(clock<this.clock)this.reset();this.clock=clock;this.camera=[...camera];this.viewport=viewport;
+    for(const batch of this.batches.values())batch.reset();
+  }
   random(uid,seq){let v=(Math.imul(uid+1,1664525)+Math.imul(seq+7,1013904223))>>>0;v^=v>>>16;v=Math.imul(v,2246822519);return(v>>>0)/4294967296;}
   add(kind,x,y,vx,vy,size,rotation,at,life,alpha=.7){
     if(this.clock-at>=life)return;
-    if(this.particles.length>=this.limit){const old=this.particles.shift();old.image.setVisible(false);this.pool.push(old.image);}
+    if(this.particles.length>=this.limit){
+      const old=this.particles.shift();
+      if(old.image){old.image.setVisible(false);this.pool.push(old.image);}
+    }
     const texture=ICE_PARTICLE_TEXTURES[kind==='chips'||kind==='flake'?'chips':'trace'].key;
-    const image=this.pool.pop()??this.scene.add.image(0,0,texture);
-    if(!image.getData('iceTrail')){image.setData('iceTrail',true);this.created++;}
     const light=kind==='streak'||kind==='spark';
     const tint=kind==='chips'?0xbceef5:kind==='flake'?0xc8f4ff:kind==='spark'?0xdaf7ff:kind==='streak'?0x87deff:kind==='mist'?0x9eddeb:0x91e0ed;
+    if(this.view){
+      const key=light?'add':texture;
+      let batch=this.batches.get(key);
+      if(!batch){
+        batch=new VfxMeshBuffer(key,ICE_TRAIL_ADD,0,288);
+        if(!light)batch.mesh.material=null;
+        batch.mesh.texture={key:texture,width:512,height:512};
+        this.batches.set(key,batch);
+      }
+      this.particles.push({batch,tint,x,y,vx,vy,size,rotation,at,life,alpha,kind});return;
+    }
+    const image=this.pool.pop()??this.scene.add.image(0,0,texture);
+    if(!image.getData('iceTrail')){image.setData('iceTrail',true);this.created++;}
     image.setTexture(texture).setDepth(29.99).setBlendMode(light?1:0).setTint(tint).setVisible(true);
     this.particles.push({image,x,y,vx,vy,size,rotation,at,life,alpha,kind});
   }
@@ -31,14 +55,16 @@ export class IceWeaponTrails {
     let e=this.emitters.get(b.uid);
     if(!e||this.clock-e.at>.2||Math.hypot(x-e.x,y-e.y)>180){e={x,y,at:this.clock,next:this.clock,seq:0,hits:new Map()};this.emitters.set(b.uid,e);}
     const fragment=blade&&b.weaponId===200038;
-    const factor=Math.min(1.8,Math.max(.7,b.scale??1)),interval=saw?.04:fragment?.10:.05;
+    const factor=Math.min(1.8,Math.max(.7,b.scale??1));
+    const interval=this.view?(fragment?.14:.075):(saw?.04:fragment?.10:.05);
     // Match the existing view-only body transform, not the combat radius.
     const bladeHalf=1254*.16*this.sourcePixelScale*1.15*(b.scale??1)/2;
     // Match the displayed 1254px saw sprite, outside its opaque serrated rim.
     const sawRadius=1254*.12*this.sourcePixelScale*.8*(b.scale??1)/2;
-    const visible=p.x>-80&&p.y>-80&&p.x<(this.scene.scale?.width??540)+80&&p.y<(this.scene.scale?.height??960)+80;
+    const visible=p.x>-80&&p.y>-80&&p.x<(this.viewport?.width??this.scene.scale?.width??540)+80&&p.y<(this.viewport?.height??this.scene.scale?.height??960)+80;
     if(visible){
-      for(let count=0;e.next<=this.clock+1e-8&&count<6;count++,e.next+=interval){
+      if(this.view)e.next=Math.max(e.next,this.clock-interval);
+      for(let count=0;e.next<=this.clock+1e-8&&count<(this.view?2:6);count++,e.next+=interval){
         const t=this.clock===e.at?1:Math.max(0,Math.min(1,(e.next-e.at)/(this.clock-e.at))),px=e.x+(x-e.x)*t,py=e.y+(y-e.y)*t;
         const r=this.random(b.uid,e.seq++);
         if(saw){
@@ -85,7 +111,7 @@ export class IceWeaponTrails {
         if(e.hits.get(id)===at)continue;e.hits.set(id,at);
         // Ignore historical contacts first observed long after they happened.
         if(b.age-at>.12)continue;
-        const count=fragment?2:4;
+        const count=this.view||fragment?2:4;
         for(let i=0;i<count;i++){const angle=i*Math.PI*2/count+this.random(b.uid,i),vx=Math.cos(angle)*30,vy=Math.sin(angle)*30;
           this.add('chips',x,y,vx,vy,[11*factor,11*factor],angle,this.clock,.17,fragment?.45:.72);}
       }
@@ -95,12 +121,30 @@ export class IceWeaponTrails {
   endFrame(){
     for(const[id,e]of this.emitters)if(e.at!==this.clock)this.emitters.delete(id);
     let keep=0;
-    for(const p of this.particles){const age=this.clock-p.at;if(age>=p.life){p.image.setVisible(false);this.pool.push(p.image);continue;}
+    for(const p of this.particles){const age=this.clock-p.at;if(age>=p.life){if(p.image){p.image.setVisible(false);this.pool.push(p.image);}continue;}
       const f=Math.max(0,age/p.life),size=p.kind==='mist'?1+f*.8:1-f*.5;
       const fade=(1-f)*(p.kind==='streak'||p.kind==='spark'?1-f*.25:1-f);
-      p.image.setPosition(p.x+p.vx*age+this.camera[0],p.y+p.vy*age+this.camera[1]).setRotation(p.rotation+(p.kind==='chips'?age*2:p.kind==='flake'?age*5:0)).setDisplaySize(p.size[0]*size,p.size[1]*size).setAlpha(p.alpha*fade);this.particles[keep++]=p;
-    }this.particles.length=keep;
+      const x=p.x+p.vx*age+this.camera[0],y=p.y+p.vy*age+this.camera[1];
+      const w=p.size[0]*size,h=p.size[1]*size,a=p.alpha*fade;
+      const angle=p.rotation+(p.kind==='chips'?age*2:p.kind==='flake'?age*5:0);
+      if(p.image)p.image.setPosition(x,y).setRotation(angle).setDisplaySize(w,h).setAlpha(a);
+      else {
+        const extent=Math.hypot(w,h)/2;
+        if(boundsVisible(x-extent,y-extent,x+extent,y+extent,this.viewport)){
+          const cos=Math.cos(angle),sin=Math.sin(angle);
+          for(let i=0;i<4;i++){
+            const u=(i===1||i===2?.5:-.5)*w,v=(i>=2?.5:-.5)*h;
+            this.corners[i].x=x+cos*u-sin*v;this.corners[i].y=y+sin*u+cos*v;
+          }
+          p.batch.quad(this.corners,(p.tint>>16)/255,((p.tint>>8)&255)/255,(p.tint&255)/255,a);
+        }
+      }
+      this.particles[keep++]=p;
+    }
+    this.particles.length=keep;
+    for(const [key,batch] of this.batches)if(batch.mesh.indices.length)
+      this.view.drawMeshes('ice-trail:'+key,[batch.mesh],undefined,{presentationDepth:29.99});
   }
-  reset(){for(const p of this.particles)p.image.destroy();for(const p of this.pool)p.destroy();this.particles=[];this.pool=[];this.emitters.clear();this.created=0;}
+  reset(){for(const p of this.particles)p.image?.destroy();for(const p of this.pool)p.destroy();this.particles=[];this.pool=[];this.batches.clear();this.emitters.clear();this.created=0;}
   destroy(){this.reset();}
 }

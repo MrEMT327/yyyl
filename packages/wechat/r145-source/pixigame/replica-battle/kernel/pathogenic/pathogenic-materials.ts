@@ -189,8 +189,8 @@ export class PathogenicMaterials {
     cache.set(key,resolved.dependencies.length===0?resolved:null);
     return resolved;
   }
-  resolve(materialRef:any,overrides:Any={},options:{compatibilityZeroLights?:boolean;batchTextures?:boolean}={compatibilityZeroLights:true}){
-    const material=getResource(this.graph,materialRef),p=material?.properties??{};
+  private register(material:Any|null, options:{compatibilityZeroLights?:boolean;batchTextures?:boolean}){
+    const p=material?.properties??{};
     let source={path:'pathogenic-source-canvas',code:'shader_type canvas_item; void fragment() {}'};
     if(material?.type==='ShaderMaterial'){
       const path=p.shader?.$external,shader=this.graph.shaders[path];
@@ -203,7 +203,22 @@ export class PathogenicMaterials {
     }else if(material)throw new PathogenicShaderCoverageError(material.id,`unsupported material ${material.type}`);
     if(p.next_pass)throw new PathogenicShaderCoverageError(material?.id,'material next_pass requires ordered passes');
     const batchTextures=Boolean(options.batchTextures&&material?.type!=='ShaderMaterial');
-    const registration=registerPathogenicShader(this.scene.game,source,{...options,meshOpacity:true,batchTextures}),uniforms:Record<string,ShaderUniformValue>={},textures:Record<string,ShaderTextureBinding>={};
+    return {source,registration:registerPathogenicShader(this.scene.game,source,{...options,meshOpacity:true,batchTextures})};
+  }
+  warmup(materials:Iterable<Any>,gradients:Iterable<string>){
+    for(const key of gradients)installGradientTexture(this.scene,this.graph,{key});
+    const variants={compatibilityZeroLights:true,batchTextures:true};
+    this.register(null,variants);
+    this.register(null,{...variants,batchTextures:false});
+    for(const material of materials){
+      this.register(material,variants);
+      if(material.type==='CanvasItemMaterial')this.register(material,{...variants,batchTextures:false});
+    }
+  }
+  resolve(materialRef:any,overrides:Any={},options:{compatibilityZeroLights?:boolean;batchTextures?:boolean}={compatibilityZeroLights:true}){
+    const material=getResource(this.graph,materialRef),p=material?.properties??{};
+    const {source,registration}=this.register(material,options);
+    const uniforms:Record<string,ShaderUniformValue>={},textures:Record<string,ShaderTextureBinding>={};
     const dependencies:Any[]=[];
     for(const uniform of registration.program.uniforms){
       const key=`shader_parameter/${uniform.name}`;

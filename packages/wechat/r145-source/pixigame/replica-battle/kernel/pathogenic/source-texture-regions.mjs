@@ -31,7 +31,7 @@ function addSourceImage(scene,key,image,width,height) {
   }
 }
 
-export function queueSourceTexture(scene,key,url,delivery=mobileTextureSizes[key]) {
+export function queueSourceTexture(scene,key,url,delivery=mobileTextureSizes[key],fitLimit=false) {
   if(scene.textures.exists(key)||imagesFor(scene.textures).has(key))return;
   const gl=scene.game.renderer.gl,limit=gl.getParameter(gl.MAX_TEXTURE_SIZE);
   const file=new Phaser.Loader.FileTypes.ImageFile(scene.load,key,url);
@@ -45,6 +45,19 @@ export function queueSourceTexture(scene,key,url,delivery=mobileTextureSizes[key
       const texture=addSourceImage(scene,key,image,width,height);
       if(scaled&&texture)texture.source[0].pathogenicLogicalSize=[logicalWidth,logicalHeight];
       return;
+    }
+    if(fitLimit){
+      // Resize the strip once while loading. Per-frame cropping/uploads of
+      // oversized source atlases can stall even the first shot of each frame.
+      const ratio=limit/Math.max(width,height);
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.floor(width*ratio));canvas.height=Math.max(1,Math.floor(height*ratio));
+      const context=canvas.getContext('2d');
+      if(context){
+        context.drawImage(image,0,0,canvas.width,canvas.height);
+        const texture=addSourceImage(scene,key,canvas,canvas.width,canvas.height);
+        if(texture){texture.source[0].pathogenicLogicalSize=[logicalWidth,logicalHeight];return;}
+      }
     }
     imagesFor(scene.textures).set(key,{image,width,height,logicalWidth,logicalHeight,limit});
   };

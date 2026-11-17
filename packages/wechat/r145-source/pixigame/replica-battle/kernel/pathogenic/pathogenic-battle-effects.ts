@@ -1,5 +1,5 @@
 import {MagneticDischarges,withMagneticDischargeResources} from './magnetic-discharge-presentation.mjs';
-import {battleTexturePaths} from './battle-texture-dependencies.mjs';
+import {battleSourceDependencies} from './battle-texture-dependencies.mjs';
 import {SwordEscortPresentation,withSwordEscortResources} from './sword-escort-presentation.mjs';
 import {LayeredCombatBursts,withLayeredBurstResources} from './layered-combat-bursts.mjs';
 import {WeaponImpactParticles,withWeaponImpactResources} from './weapon-impact-particles.mjs';
@@ -42,7 +42,7 @@ type Row=Record<string,any>;
 export type ScreenPoint={x:number;y:number};
 export type BeamQuery={origin:ScreenPoint;direction:ScreenPoint;maxDistance:number;sourceId:string;scenePath:string;seed:number;birthTime:number};
 export type BeamResult={endpoint:ScreenPoint;hit?:boolean;normal?:ScreenPoint};
-export type BattleEffectsHost={weaponSkinId?:()=>number|number[];playerBulletCount?:()=>number;raycastBeam?:(query:BeamQuery)=>BeamResult;screenPointVisible?:(point:ScreenPoint)=>boolean;physicsFps?:number;view?:any;nativeSwordEffects?:Row};
+export type BattleEffectsHost={weaponSkinId?:()=>number|number[];playerBulletCount?:()=>number;raycastBeam?:(query:BeamQuery)=>BeamResult;screenPointVisible?:(point:ScreenPoint)=>boolean;physicsFps?:number;view?:any;nativeSwordEffects?:Row;compact?:boolean};
 type Entry={path:string;age:number;bornAt:number;lastSeen:number;seenRevision:number;lastDraw:number;exitAt?:number;pose:Row;poseCamera:[number,number];randomValues:number[];seed:number;duration?:number;retention:number;independent?:boolean;retireImmediately?:boolean;capture?:Row;children:Set<string>;lightningPoints?:number[][];scheduled?:Row;hitEvents:Row[];stopAge?:number;seenHits?:Map<number,number>;sparkCooldown?:number;sparkTime?:number;sparkCount?:number;visualComplete?:boolean};
 const PREFIRE='res://scn/player/projectiles/staurolaser_beam.tscn';
 const finite=(x:any)=>typeof x==='number'&&Number.isFinite(x);
@@ -73,11 +73,43 @@ export class PathogenicBattleEffects {
   readonly iaido:IaidoVfx;
   readonly audit={draws:0,legacyDraws:0,scenes:new Set<string>(),issues:[] as any[],events:[] as any[],eventsDropped:0};
   private readonly sampleLifecycle: ReturnType<typeof createLifecycleSampler>;
-  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSpecialWeaponResources(withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph))));this.graph=withMagneticDischargeResources(this.graph);this.sampleLifecycle=createLifecycleSampler(this.graph);this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
+  private dependencies?:ReturnType<typeof battleSourceDependencies>;
+  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){
+    this.host=host;
+    this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));
+    this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));
+    this.graph=withSpecialWeaponResources(withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph))));
+    this.graph=withMagneticDischargeResources(this.graph);
+    this.sampleLifecycle=createLifecycleSampler(this.graph);
+    this.source=host.view??new PathogenicSceneView(scene,this.graph,host.compact);
+    this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale,host.compact?this.source:undefined);
+    this.swordTrails=new SwordEnergyTrails(this.source);
+    this.iaido=new IaidoVfx(this.source);
+  }
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
-  preload(urlFor:(p:string,t:Row)=>string,deferred?:ReadonlySet<string>){this.source.preload(urlFor,battleTexturePaths(this.graph),deferred);}
-  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=this.scene.scale?.width??NaN;this.viewport.height=this.scene.scale?.height??NaN;this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport);this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.magnetic.beginFrame(clock-this.visualLag,this.viewport);this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);}
+  preload(urlFor:(p:string,t:Row)=>string,deferred?:ReadonlySet<string>){
+    this.dependencies=battleSourceDependencies(this.graph);
+    this.source.preload(urlFor,this.dependencies.textures,deferred);
+  }
+  warmup(){
+    if(this.host.compact&&this.dependencies)this.source.warmup(this.dependencies.materials,this.dependencies.gradients);
+    this.dependencies=undefined;
+  }
+  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){
+    if(run!==this.run||clock<this.clock){this.reset();this.run=run;}
+    this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);
+    const zoom=this.scene.cameras?.main?.zoomX||1;
+    this.viewport.width=(this.scene.scale?.width??NaN)/zoom;this.viewport.height=(this.scene.scale?.height??NaN)/zoom;
+    this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport,this.host.compact);
+    this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport,this.host.compact);
+    this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);
+    this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;
+    this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;
+    this.magnetic.beginFrame(clock-this.visualLag,this.viewport);this.source.beginFrame(clock-this.visualLag);
+    this.iceTrails.beginFrame(clock,this.camera,this.viewport);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);
+    this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);
+  }
   private recordAuditEvent(event:Row){
     const events=this.audit.events;
     if(events.length>=1024){const removed=events.length-512;events.splice(0,removed);this.audit.eventsDropped+=removed;}
@@ -441,7 +473,7 @@ export class PathogenicBattleEffects {
       // lifecycle for the remaining eight-second safety retention window.
       if(entry.visualComplete&&(entry.independent||entry.exitAt!==undefined))this.entries.delete(id);
     }
-    this.magnetic.draw(this.source,COMBAT_LAYERS.playerShot+.02);this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.impacts.draw(this.source,COMBAT_LAYERS.impact);this.bursts.draw(this.source);this.missileImpacts.draw(this.source,COMBAT_LAYERS.impact);if(this.escortScreen)this.escortSwords.draw(this.source,this.escortScreen);if(this.smokeScreen)this.missileSmoke.draw(this.source,this.smokeScreen);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();this.volumeMeshes.endFrame();
+    this.magnetic.draw(this.source,COMBAT_LAYERS.playerShot+.02);this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.impacts.draw(this.source,COMBAT_LAYERS.impact);this.bursts.draw(this.source);this.missileImpacts.draw(this.source,COMBAT_LAYERS.impact);if(this.escortScreen)this.escortSwords.draw(this.source,this.escortScreen);if(this.smokeScreen)this.missileSmoke.draw(this.source,this.smokeScreen);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.iceTrails.endFrame();this.source.endFrame();this.volumeMeshes.endFrame();
   }
   reset(){this.magnetic.reset();this.escortSwords.reset();this.escortScreen=undefined;this.bursts.reset();this.impacts.reset();this.missileImpacts.reset();this.missileSmoke.reset();this.smokeScreen=undefined;this.skinVfx.reset();this.volumeMeshes.reset();this.feedback.reset();this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
   destroy(){this.reset();this.source.destroy();}

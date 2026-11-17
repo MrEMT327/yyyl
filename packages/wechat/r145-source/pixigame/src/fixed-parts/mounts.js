@@ -4,7 +4,7 @@ import { createModuleGeometry } from '../slot-demo/module-geometry.js';
 import { ITEM_BY_ID } from '../slot-demo/catalog.js';
 
 const layouts = new Map();
-export function createFixedPartMounts({ view, mount, attitude, runtime, loadout, geometryFactory = createModuleGeometry }) {
+export function createFixedPartMounts({ view, mount, attitude, runtime, loadout, geometryFactory = createModuleGeometry, styleKit }) {
   if (!layouts.has(view.fighterId)) {
     // Resolve seats in the same neutral, normalized coordinates as the hangar.
     // Clone only object transforms; the shared hull geometry is never disposed.
@@ -25,20 +25,35 @@ export function createFixedPartMounts({ view, mount, attitude, runtime, loadout,
   }
   const slots = layouts.get(view.fighterId), root = new T.Group(), mounted = new Map();
   root.name = 'fixed-parts-combat'; mount.add(root);
-  for (const item of [...loadout.weapons, ...loadout.connectors]) for (const id of item.slots) {
-    const slot = slots.find(s => s.id === id), kit = geometryFactory(ITEM_BY_ID.get(item.itemId), item);
-    kit.position.fromArray(slot.position); kit.scale.setScalar(slot.scale);
-    if (slot.kind === 'weapon' && slot.position[0] < 0) kit.scale.x *= -1;
-    if (slot.mountAnchor) kit.userData.uiArticulation = true;
-    root.add(kit); mounted.set(id, kit);
-  }
+  const items = new Map();
   const point = new T.Vector3();
   const anchorPoint = new T.Vector3(), rootRotation = new T.Quaternion(), anchorRotation = new T.Quaternion();
-  const anchors = slots.filter(slot => slot.mountAnchor && mounted.has(slot.id)).map(slot => ({
-    kit: mounted.get(slot.id), object: runtime.asset.nodes.get(slot.mountAnchor.node),
-    position: new T.Vector3().fromArray(slot.mountAnchor.position),
-    inverseRest: new T.Quaternion().fromArray(slot.mountAnchor.quaternion).invert(),
-  }));
+  let anchors;
+  function setLoadout(next) {
+    const wanted = new Map();
+    for (const item of [...next.weapons, ...next.connectors]) for (const id of item.slots) wanted.set(id, item);
+    for (const [id, entry] of items) {
+      if (wanted.get(id)?.itemId === entry.itemId) continue;
+      entry.style?.dispose(); mounted.get(id).userData.dispose();
+      mounted.delete(id); items.delete(id);
+    }
+    for (const [id, item] of wanted) {
+      if (items.has(id)) continue;
+      const slot = slots.find(s => s.id === id), kit = geometryFactory(ITEM_BY_ID.get(item.itemId), item);
+      kit.position.fromArray(slot.position); kit.scale.setScalar(slot.scale);
+      if (slot.kind === 'weapon' && slot.position[0] < 0) kit.scale.x *= -1;
+      if (slot.mountAnchor) kit.userData.uiArticulation = true;
+      root.add(kit); mounted.set(id, kit);
+      items.set(id, {itemId: item.itemId, style: styleKit?.(kit)});
+    }
+    anchors = slots.filter(slot => slot.mountAnchor && mounted.has(slot.id)).map(slot => ({
+      kit: mounted.get(slot.id), object: runtime.asset.nodes.get(slot.mountAnchor.node),
+      position: new T.Vector3().fromArray(slot.mountAnchor.position),
+      inverseRest: new T.Quaternion().fromArray(slot.mountAnchor.quaternion).invert(),
+    }));
+    loadout = next;
+    update();
+  }
   function update() {
     root.rotation.copy(attitude.rotation);
     root.updateWorldMatrix(true, false);
@@ -51,10 +66,10 @@ export function createFixedPartMounts({ view, mount, attitude, runtime, loadout,
       anchor.kit.quaternion.copy(rootRotation).multiply(anchorRotation).multiply(anchor.inverseRest);
     }
   }
-  update();
+  setLoadout(loadout);
   return {
     root, slots, mounted,
-    update,
+    update, setLoadout,
     muzzle(slotId, barrel, space) {
       const kit = mounted.get(slotId);
       if (!kit) return null;
@@ -72,6 +87,10 @@ export function createFixedPartMounts({ view, mount, attitude, runtime, loadout,
       const position = space ? space.toLocal(point, view) : view.toGlobal(point);
       return { x: position.x, y: position.y, z: point.z };
     },
-    dispose() { for (const kit of mounted.values()) kit.userData.dispose(); mounted.clear(); root.removeFromParent(); },
+    dispose() {
+      for (const entry of items.values()) entry.style?.dispose();
+      for (const kit of mounted.values()) kit.userData.dispose();
+      items.clear(); mounted.clear(); root.removeFromParent();
+    },
   };
 }

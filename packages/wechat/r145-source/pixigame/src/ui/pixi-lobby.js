@@ -451,13 +451,16 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
       bridge.presentation?.fullStageUpgradeBackdrop && bridge.game.state === 'levelup' ||
       bridge.presentation?.fullStageReviveBackdrop && bridge.game.state === 'revive-prompt' ||
       bridge.presentation?.fullStageSupplyBackdrop && bridge.game.state === 'battle-supply');
-    root.removeChildren().forEach(child => child.destroy({ children: true }));
+    // The PSD canvases and the pause hit target persist across modal handoffs.
+    const retainedHud=bridge.nativeHudTiles?refs.psdHud:null;
+    root.removeChildren().forEach(child => {if(child!==retainedHud?.mount)child.destroy({ children: true });});
     buttons = [];
     pendingButtonArt.length = 0;
     Object.keys(refs).forEach((key) => delete refs[key]);
-    refs.psdHud = createPsdCombatHud(root, bridge, flightGradeMeta);
-    if (root.externalStageBackdrop || bridge.presentation?.fullStageResultBackdrop && ['victory_result','fixed_result','defeat_result'].includes(bridge.game.state))
-      for (const child of root.children) child.alpha *= .32;
+    refs.psdHud = retainedHud??createPsdCombatHud(root, bridge, flightGradeMeta);
+    if(retainedHud)root.addChild(retainedHud.mount);
+    refs.psdHud.mount.alpha = root.externalStageBackdrop ||
+      bridge.presentation?.fullStageResultBackdrop && ['victory_result','fixed_result','defeat_result'].includes(state) ? .32 : 1;
     const menuStart = root.children.length;
     if (state === 'paused') {
       if (bridge.game.pauseMode === 'pause') prepareExitArt();

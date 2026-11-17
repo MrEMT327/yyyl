@@ -37,7 +37,7 @@ export function withWeaponImpactResources(graph){
 // one expanding square. All samples read the existing hit's position and age.
 export class WeaponImpactParticles{
  constructor(){this.buffers=new Map();this.points=Array.from({length:4},()=>({x:0,y:0}));this.beginFrame();}
- beginFrame(viewport){this.viewport=viewport;this.count=0;this.counts={};this.seen=new Set();for(const b of this.buffers.values())b.reset();}
+ beginFrame(viewport,compact=false){this.viewport=viewport;this.compact=compact;this.count=0;this.counts={};this.seen=new Set();for(const b of this.buffers.values())b.reset();}
  matches(f){return weaponImpactStyle(f)!==undefined;}
  buffer(name){let b=this.buffers.get(name);if(!b){b=new VfxMeshBuffer(name,ROOT+name,name==='droplet'||name==='crystal'?1:2);this.buffers.set(name,b);}return b;}
  quad(name,x,z,rx,rz,angle,color,alpha,screen){
@@ -65,14 +65,16 @@ export class WeaponImpactParticles{
   if(![o.x,o.y,px].every(Number.isFinite)||px<=0)return true;
   const scale=clamp(f.size/.8*visualScale*(f.originalScale??1),.65,1.65),extent=px*scale*1.6;
   if(!boundsVisible(o.x-extent,o.y-extent,o.x+extent,o.y+extent,this.viewport))return true;
-  if(this.count>=WEAPON_IMPACT_LIMITS.total||(this.counts[style]??0)>=WEAPON_IMPACT_LIMITS.perStyle)return true;
+  const total=this.compact?28:WEAPON_IMPACT_LIMITS.total,perStyle=this.compact?8:WEAPON_IMPACT_LIMITS.perStyle;
+  if(this.count>=total||(this.counts[style]??0)>=perStyle)return true;
   this.count++;this.counts[style]=(this.counts[style]??0)+1;this.seen.add(f.uid);
   const t=age/life,seed=(f.uid??0)*.754877666,dir=f.impactDirection;
   const yaw=dir?Math.atan2(dir.z,dir.x):Math.PI/2;
   const source=impactWeaponSource(f),color=style==='electric'&&source.familyId===200011?[.61,.35,1.55]:style==='energy'&&source.familyId===200101?[.22,.46,1.65]:p.color;
   const fade=(1-t)**(style==='ice'||style==='acid'?.95:.75);
   this.quad('glow',f.x,f.z,.36*scale,.36*scale,0,color.map(v=>v*1.8),Math.exp(-t*7.5)*.88,screen);
-  for(let i=0;i<p.count;i++){
+  const fragments=this.compact?Math.ceil(p.count*.6):p.count;
+  for(let i=0;i<fragments;i++){
    const h=hash(seed+i*2.37),angle=yaw+Math.PI+(h-.5)*4.6;
    const speed=.63+hash(seed+i*7.13)*.55,spread=p.spread*scale;
    const distance=spread*(.06+(1-Math.exp(-t*3.5))*speed);
@@ -93,7 +95,7 @@ export class WeaponImpactParticles{
     this.quad('glow',x,z,(style==='heat'?.085:.075)*scale,.075*scale,0,color.map(v=>v*1.8+.65),fade*.88,screen);
    }
   }
-  if(style==='electric')for(let branch=0;branch<3;branch++){
+  if(style==='electric')for(let branch=0;branch<3;branch+=this.compact?2:1){
    const angle=yaw+Math.PI+(branch-1)*1.08+(hash(seed+branch)-.5)*.4,reach=scale*(.28+.47*(1-Math.exp(-t*6)));
    let prev={x:f.x,z:f.z};
    for(let j=1;j<=4;j++){

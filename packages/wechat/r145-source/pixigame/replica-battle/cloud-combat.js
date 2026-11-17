@@ -216,7 +216,7 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const input=bindCloudPointerInput({surface:stage,canvas,handlePointer:cloud.handlePointer,getScreen:()=>renderer.screen});
   let usingTiles=false, usingCanvas=true, canvasAboveTiles=false;
   const frame=createBattleUiFrame(()=>{
-    sync();cloud.update();
+    measureBattle('interfaceUpdate',()=>{sync();cloud.update();});
     // Keep the ordinary PSD HUD on its native tiles even while a detached
     // choice or reward animates above it. Only that overlay needs WebGL.
     const showTiles=Boolean(nativeHudTiles&&!stage.hasAttribute('data-awaiting-start')&&!stage.hasAttribute('data-launch')&&

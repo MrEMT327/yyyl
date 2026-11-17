@@ -7,7 +7,7 @@ export const DETAILED_WEAPON_IDS = new Set(['aux_cannon','aux_rail','aux_rocket'
 
 // Full replacement assemblies, in the existing socket coordinates (muzzle = -Z).
 // Small parts are merged by finish, keeping a mounted pair at 14 draw calls.
-export function createDetailedWeapon(item) {
+export function createDetailedWeapon(item, { compact = false } = {}) {
   const root = new T.Group(); root.name = `SlotDemo/${item.id}`;
   const surface = (name, color, metalness, roughness) => {
     const m = new T.MeshStandardMaterial({name,color,metalness,roughness,envMapIntensity:1.15});
@@ -27,23 +27,23 @@ export function createDetailedWeapon(item) {
     const o=new T.Mesh(g,mat);o.position.fromArray(p);o.rotation.fromArray(r);o.name=`${name}/${serial++}`;root.add(o);return o;
   }
   function cylinder(radius,length,p,mat=m.steel,endRadius=radius,segments=20) {
-    return mesh(new T.CylinderGeometry(endRadius,radius,length,segments),mat,p,[Math.PI/2,0,0]);
+    return mesh(new T.CylinderGeometry(endRadius,radius,length,compact?Math.min(segments,12):segments),mat,p,[Math.PI/2,0,0]);
   }
   function ring(radius,p,mat=m.gold,thickness=.025) {
-    return mesh(new T.TorusGeometry(radius,thickness,6,32),mat,p);
+    return mesh(new T.TorusGeometry(radius,thickness,compact?4:6,compact?16:32),mat,p);
   }
   function lathe(profile,p,mat=m.steel,segments=28) {
-    return mesh(new T.LatheGeometry(profile.map(v=>new T.Vector2(...v)),segments),mat,p,[Math.PI/2,0,0]);
+    return mesh(new T.LatheGeometry(profile.map(v=>new T.Vector2(...v)),compact?Math.min(segments,14):segments),mat,p,[Math.PI/2,0,0]);
   }
   function sleeve(r,inner,len,p,mat=m.steel) {
     return lathe([[inner,len/2],[inner,-len/2],[r,-len/2],[r,len/2],[inner,len/2]],p,mat);
   }
   function strut(a,b,r=.045,mat=m.steel){
     const start=new T.Vector3(...a),end=new T.Vector3(...b),delta=end.clone().sub(start);
-    const o=mesh(new T.CylinderGeometry(r,r,delta.length(),10),mat,start.add(end).multiplyScalar(.5).toArray());
+    const o=mesh(new T.CylinderGeometry(r,r,delta.length(),compact?6:10),mat,start.add(end).multiplyScalar(.5).toArray());
     o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),delta.normalize());return o;
   }
-  function cable(points,r=.035,mat=m.dark){return mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),18,r,6,false),mat);}
+  function cable(points,r=.035,mat=m.dark){return mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points.map(p=>new T.Vector3(...p))),compact?10:18,r,compact?5:6,false),mat);}
   // Chamfered cross-sections lofted along Z: changing width/height forms a
   // manufactured taper rather than a scaled cube. Sections are [z,width,height,y].
   function hull(sections,mat=m.armor,x=0){

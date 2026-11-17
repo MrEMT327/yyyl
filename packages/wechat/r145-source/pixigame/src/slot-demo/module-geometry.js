@@ -4,8 +4,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // Authored mechanical silhouettes. Each kit owns its geometry/materials and
 // batches rigid detail by material; thumbnails use these exact same meshes.
-export function createModuleGeometry(item) {
-  if (DETAILED_WEAPON_IDS.has(item.id)) return createDetailedWeapon(item);
+export function createModuleGeometry(item, options) {
+  if (DETAILED_WEAPON_IDS.has(item.id)) return createDetailedWeapon(item, options);
   const root = new T.Group(); root.name = `SlotDemo/${item.id}`;
   const armor = new T.MeshStandardMaterial({ color: '#a0b2bd', metalness: .62, roughness: .36 });
   const dark = new T.MeshStandardMaterial({ color: '#233345', metalness: .6, roughness: .38 });

@@ -21,9 +21,11 @@ export class ParticleFrameCache{
   const old=this.frames.get(key);
   if(old&&old.graph===graph&&Object.is(old.age,age)&&Object.is(old.seed,seed)&&old.path===node.path&&old.nodePath===node.nodePath
    &&old.history===options.history&&old.revision===revision&&Object.is(old.stopAge,options.stopAge)&&Object.is(old.emitting,options.emitting)
+   &&old.particleLimit===options.particleLimit&&old.maxInstances===options.maxInstances
    &&Object.is(old.startAge,options.startAge)&&Object.is(old.timeStep,options.timeStep)&&old.strict===options.strict&&equalValue(old.properties,node.properties))return old.result;
   const result=compute();
   this.frames.set(key,{graph,age,seed,path:node.path,nodePath:node.nodePath,history:options.history,revision,stopAge:options.stopAge,
+   particleLimit:options.particleLimit,maxInstances:options.maxInstances,
    emitting:options.emitting,startAge:options.startAge,timeStep:options.timeStep,strict:options.strict,properties:node.properties,result});
   return result;
  }

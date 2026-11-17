@@ -16,8 +16,8 @@ void fragment(){float t=clamp((COLOR.a-.1)/.8,0.0,1.0);vec2 p=UV*2.0-1.0;
 // frames manufacture new particles, and no gameplay RNG/serial is consumed.
 export class MissileSmokeTrails{
  constructor(){this.buffer=new VfxMeshBuffer('missile-smoke',MATERIAL,0);this.puffs=[];this.free=[];this.emitters=new Map();this.points=Array.from({length:4},()=>({x:0,y:0}));this.clock=-Infinity;}
- beginFrame(clock,viewport){
-  if(clock<this.clock)this.reset();this.clock=clock;this.viewport=viewport;this.buffer.reset();
+ beginFrame(clock,viewport,compact=false){
+  if(clock<this.clock)this.reset();this.clock=clock;this.viewport=viewport;this.limit=compact?88:MISSILE_SMOKE_LIMIT;this.buffer.reset();
   let keep=0;for(const puff of this.puffs){if(clock-puff.at<puff.life)this.puffs[keep++]=puff;else this.free.push(puff);}this.puffs.length=keep;
   for(const [id,e]of this.emitters)if(clock-e.seen>.5)this.emitters.delete(id);
  }
@@ -38,7 +38,7 @@ export class MissileSmokeTrails{
   const upgraded=b.modelId===1000012||b.modelId===1000014,life=upgraded?.42:.32;
   const radius=Math.max(.06,Math.min(.48,(upgraded?.16:.125)*(b.scale??1)));
   const steps=Math.min(4,Math.floor((elapsed+1e-8)/.025)),continuous=this.clock-previousTime<=.15&&Math.hypot(x-previousX,z-previousZ)<4;
-  for(let i=0;i<steps&&this.puffs.length<MISSILE_SMOKE_LIMIT;i++){
+  for(let i=0;i<steps&&this.puffs.length<this.limit;i++){
    const at=continuous?emitter.at+.025*(i+1):this.clock;
    const blend=continuous&&this.clock>previousTime?Math.max(0,Math.min(1,(at-previousTime)/(this.clock-previousTime))):1;
    const phase=b.uid*2.399963+at*17,puff=this.free.pop()||{};

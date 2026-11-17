@@ -204,7 +204,9 @@ export function installBattleFrames(parentHost, { Yoga, sheet, markup, loadBattl
           readSharedLoadoutJSON:parentHost.scope.__THUNDER_RUNTIME_GLOBALS__?.readSharedLoadoutJSON,
           warmBattleImages:parentHost.warmBattleImages,
           warmBattleTerrain:parentHost.warmBattleTerrain,
-          loadBattleData,presentFrame,frozenFrame,skinHost:{aircraftCapture:capture,measureTransfer,assetBytes:fighterTextures,
+          loadBattleData,presentFrame,frozenFrame,
+          onSlowFrame:battleDiagnostics && ((timing,phase,wave)=>battleDiagnostics.engineStalled(frame,timing,phase,wave)),
+          skinHost:{aircraftCapture:capture,measureTransfer,assetBytes:fighterTextures,
             viewport:{width,height,pixelRatio:parentHost.pixelRatio}}});
         presenter.tick(performance.now());
         parentHost.emit(frame,'load');
