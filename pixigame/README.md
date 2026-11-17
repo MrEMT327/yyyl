@@ -53,7 +53,7 @@ npm install
 npm run dev
 ```
 
-运行 `npm run test:web` 检查网页版本，`npm run build` 构建。`npm test` 还会运行历史微信测试；当前仓库与旧 ZIP 都没有 `wechat/` 源码，这部分测试无法运行。`balance:check` 需要另外提供原始 Excel；运行时使用的 JSON 数值配置已纳入旧包一致性测试。
+运行 `npm run test:web` 检查网页版本，`npm run build` 构建。微信小游戏在 `packages/wechat/r145-source/` 维护和构建，详见 [微信小游戏开发纪要](../packages/wechat/README.md)。`balance:check` 需要另外提供原始 Excel，运行时使用的 JSON 数值配置已纳入旧包一致性测试。
 
 ## 局域网试玩
 
