@@ -1,0 +1,41 @@
+/* Weapons, aircraft and pilots share the pilot roster's original PSD material.
+   The surface alone follows the PSD cuts; the touch target stays rectangular. */
+#gui-casual-lobby .wc-page[data-catalog-kind] .wc-grid .wc-item {
+  background:none;
+  clip-path:none!important;
+  isolation:isolate;
+  filter:none;
+}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate) {--roster-frame-filter:none}
+#gui-casual-lobby :is(.wc-page,.wd-showcase) .fc-card-surface {
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:url('/art/weapon-catalog-psd-v1/triangles-blue.png') center bottom/100% auto no-repeat,
+    url('/art/weapon-catalog-psd-v1/plate-blue-clean.png') center/100% 100% no-repeat;
+  filter:var(--roster-frame-filter);
+  clip-path:polygon(6px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 6px);
+}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-rarity='SR'] {--roster-frame-filter:hue-rotate(75deg) saturate(1.3)}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-rarity='SSR'] {--roster-frame-filter:hue-rotate(200deg) saturate(1.4)}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-rarity='UR'] {--roster-frame-filter:hue-rotate(145deg) saturate(1.4)}
+/* Native quality overrides rarity labels and never depends on star count. */
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-psd-quality='0'] {--roster-frame-filter:grayscale(1)}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-psd-quality='1'] {--roster-frame-filter:hue-rotate(280deg) saturate(1.2)}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-psd-quality='2'] {--roster-frame-filter:none}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-psd-quality='3'] {--roster-frame-filter:hue-rotate(75deg) saturate(1.3)}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-psd-quality='4'] {--roster-frame-filter:hue-rotate(200deg) saturate(1.4)}
+#gui-casual-lobby :is(.wc-page .wc-item,.wd-variant-plate)[data-psd-quality='5'] {--roster-frame-filter:hue-rotate(145deg) saturate(1.4)}
+#gui-casual-lobby .wc-page[data-catalog-kind] .wc-grid .wc-item::before,
+#gui-casual-lobby .wd-variant-plate::before {
+  content:'';position:absolute;pointer-events:none;
+  inset:0;z-index:2;
+  border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 / 6px 6px 10px 6px stretch;
+  filter:var(--roster-frame-filter)!important;
+}
+#gui-casual-lobby .wc-page[data-catalog-kind] .wc-grid .wc-item::after {content:none}
+/* Preview contours are shared with equipment, skills and recruitment through
+   psd-card-selection.css; rarity and equipped checks stay on their own layers. */
+#gui-casual-lobby .wc-page[data-catalog-kind] .wc-grid .wc-item[aria-pressed='true'] {transform:none}
+
+/* Locked weapons dim only their illustration, keeping quality and state legible. */
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-item.is-locked>.wc-art {filter:brightness(.72)}
+#gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-item.is-locked[aria-pressed='true']>.wc-art {filter:brightness(.9)}

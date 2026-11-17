@@ -1,0 +1,65 @@
+{
+  "appid": "wx0b821a6c8d36aed6",
+  "compileType": "game",
+  "projectname": "少女航线 · CDN 联调测试",
+  "libVersion": "3.8.0",
+  "setting": {
+    "urlCheck": false,
+    "es6": false,
+    "minified": false,
+    "postcss": false,
+    "compileWorklet": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "enhance": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [],
+    "include": [
+      {
+        "type": "folder",
+        "value": "battle-data/art"
+      },
+      {
+        "type": "folder",
+        "value": "lobby-backgrounds/art"
+      },
+      {
+        "type": "folder",
+        "value": "battle-skill-art/art"
+      },
+      {
+        "type": "folder",
+        "value": "combat-art/art"
+      },
+      {
+        "type": "folder",
+        "value": "opening-art/art"
+      },
+      {
+        "type": "folder",
+        "value": "battle-data/replica-battle"
+      },
+      {
+        "type": "folder",
+        "value": "combat-art/fighters"
+      }
+    ]
+  },
+  "isGameTourist": false,
+  "editorSetting": {}
+}

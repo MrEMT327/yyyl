@@ -1,0 +1,11 @@
+.lobby-guide{position:fixed;inset:0;z-index:12000;pointer-events:none;color:#fff;font-family:'Microsoft YaHei','PingFang SC',sans-serif}
+.lobby-guide[hidden]{display:none}
+.guide-ring{position:absolute;box-sizing:border-box;border:0;border-image:url('/art/psd-equipment-v1/frame-gold.png') 18 / 6px stretch;pointer-events:none}
+.is-strong .guide-ring{box-shadow:0 0 0 200vmax #020b1399}
+.guide-hand{position:absolute;display:grid;align-content:center;justify-items:center;gap:0;width:40px;height:32px;line-height:0;transform:translateX(-50%);animation:guide-cue-down 1.2s ease-in-out infinite}
+.guide-hand>.guide-pointer-art{display:block;width:40px;height:16px;object-fit:cover;pointer-events:none}
+.guide-hand.points-up{transform:translateX(-50%) rotate(180deg);animation-name:guide-cue-up}
+.lobby-guide .guide-caption{position:absolute;pointer-events:auto;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+@keyframes guide-cue-down{0%,100%{transform:translate(-50%,0px)}50%{transform:translate(-50%,3px)}}
+@keyframes guide-cue-up{0%,100%{transform:translate(-50%,0px) rotate(180deg)}50%{transform:translate(-50%,-3px) rotate(180deg)}}
+@media(prefers-reduced-motion:reduce){.guide-hand{animation:none!important}}

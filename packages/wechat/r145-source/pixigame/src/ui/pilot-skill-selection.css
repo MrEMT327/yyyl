@@ -1,0 +1,21 @@
+/* Option 2: the equipment PSD grid remains the only list surface. */
+#gui-casual-lobby .ref-catalog.fc-page.pcs-page {--pcs-dock-height:max(68px,17cqw);background:url('/art/psd-equipment-v1/inventory-grid.webp') center / 100% 100% no-repeat}
+#gui-casual-lobby .wc-page.pcs-page[data-catalog-kind]>.fc-scroll {background:none!important}
+#gui-casual-lobby .pcs-page.pcs-has-action>.fc-scroll {bottom:calc(var(--catalog-bottom) + var(--pcs-dock-height) + var(--lobby-safe-bottom,0px))}
+#gui-casual-lobby .pcs-row {position:relative;isolation:isolate;display:grid;grid-template-columns:15cqw minmax(0,1fr);align-items:center;gap:3cqw;margin:2cqw 3cqw;padding:3cqw;color:#e5f0f6}
+#gui-casual-lobby .pcs-row::before {content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;border-image:url('/art/equipment-controls-v1/menu-panel.png') 24 / 8px stretch}
+#gui-casual-lobby .pcs-row.is-selected::before {border-image:url('/art/equipment-controls-v1/option-selected.png') 12 18 12 12 fill / 5px 8px 5px 5px stretch}
+#gui-casual-lobby .pcs-preview {position:relative;display:grid;place-items:center;width:15cqw;height:15cqw;min-width:44px;min-height:44px;padding:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .pcs-preview>.fc-skill-icon {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pcs-choice {display:block;min-width:0;min-height:62px;padding:0;border:0;background:none;color:inherit;text-align:left;cursor:pointer;text-shadow:none}
+#gui-casual-lobby .pcs-row-heading {display:flex;align-items:baseline;flex-wrap:wrap;justify-content:space-between;gap:1cqw 1.5cqw;margin-bottom:1.4cqw}
+#gui-casual-lobby .pcs-name {font:600 clamp(16px,4.35cqw,20px)/1.3 'Microsoft YaHei','PingFang SC',sans-serif;color:#f2f8fc}
+#gui-casual-lobby .pcs-status {flex:none;font:400 clamp(11px,3.1cqw,14px)/1.3 'Microsoft YaHei','PingFang SC',sans-serif;color:#a9c9db}
+#gui-casual-lobby .pcs-description {display:block;font:400 clamp(12px,3.4cqw,15px)/1.55 'Microsoft YaHei','PingFang SC',sans-serif;white-space:pre-line;overflow-wrap:anywhere;color:#c9dfec}
+#gui-casual-lobby .pcs-description strong {font-weight:600;color:#76e2c6}
+#gui-casual-lobby .pcs-row:not(.is-selected) .pcs-name {color:#b6ccda}
+#gui-casual-lobby .pcs-row.is-selected .pcs-name {color:#fff}
+#gui-casual-lobby .pcs-row.is-selected .pcs-status {color:var(--ui-success)}
+#gui-casual-lobby .pcs-page .fc-skill-slot.is-selected {--card-selection-art:url('/art/psd-equipment-v1/frame-gold.png');--card-selection-corner:6px}
+#gui-casual-lobby .pcs-action-dock {position:absolute;inset:auto 0 calc(var(--catalog-bottom) + var(--lobby-safe-bottom,0px));height:var(--pcs-dock-height);display:grid;place-items:center;z-index:4}
+#gui-casual-lobby .pcs-action-dock>.wc-button.pcs-submit {position:relative;inset:auto;width:49cqw;max-width:220px;height:var(--ui-primary-height);min-height:var(--ui-primary-height);margin:0;--wc-button-height:var(--ui-primary-height);--psd-button-corner:var(--ui-primary-corner);font-size:clamp(17px,4.6cqw,21px)}

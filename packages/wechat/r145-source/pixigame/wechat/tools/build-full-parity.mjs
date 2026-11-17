@@ -1,0 +1,12 @@
+import { build } from 'esbuild';
+import { mkdir,readFile,writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { buildSharedRuntimeSet,root } from './runtime-build.mjs';
+const output=resolve(process.argv[2]);
+await mkdir(output,{recursive:true});
+await buildSharedRuntimeSet(resolve(output,'runtime'),{native:false});
+const core=await readFile(resolve(root,'public/art/live2d-runtime/live2dcubismcore.min.js'),'utf8');
+await writeFile(resolve(output,'runtime/cubism.js'),`export default function createCore(globalThis){const window=globalThis.window,document=globalThis.document,module=undefined,exports=undefined;\n${core}\nreturn Live2DCubismCore;}`);
+await build({absWorkingDir:root,entryPoints:['wechat/src/full/full-preview.js'],bundle:true,format:'esm',platform:'browser',target:'es2022',outfile:resolve(output,'preview.js'),external:['./runtime/*','canvas']});
+await writeFile(resolve(output,'index.html'),`<!doctype html><meta charset="utf-8"><title>微信完整适配 · 全流程对照检查</title><style>body{margin:0;background:#18202a;color:white;display:flex;gap:20px}canvas{width:393px;height:852px;touch-action:none}pre{white-space:pre-wrap;font:13px monospace;max-width:1100px}</style><canvas></canvas><pre>正在加载完整运行代码…</pre><script type="module">import{startFullPreview}from'./preview.js';startFullPreview().catch(e=>document.querySelector('pre').textContent=e.stack);</script>`);
+console.log(output);

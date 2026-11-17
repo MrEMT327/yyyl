@@ -1,0 +1,173 @@
+/* 1.1.6 UI_PilotMain / UI_PlaneMain, 1080 × 1920 reference canvas.
+   Midpoint offsets use width-scaled Unity units; fixed sprites never stretch vertically. */
+#gui-casual-lobby .ref-catalog.fc-page {position:relative;display:block;container-type:size;width:100%;height:100%;min-height:0;overflow:hidden;isolation:isolate;background:var(--project-list-background)}
+#gui-casual-lobby .fc-hero {--fc-scene-image:var(--project-hangar-image);position:absolute;inset:0 0 auto;height:calc(50% + 3.148148cqw);overflow:hidden;background:var(--project-scene-texture),#142331 var(--fc-scene-image) center 50%/cover no-repeat;background-blend-mode:overlay,normal;z-index:0}
+#gui-casual-lobby .fc-pilot .fc-hero {--fc-scene-image:var(--project-ready-room-image);background-position:calc(-.8cqw) calc(-3.6cqw),center 62%}
+#gui-casual-lobby .fc-hero::after {content:'';position:absolute;inset:0;background:linear-gradient(#07132377,transparent 35%,#07132322)}
+#gui-casual-lobby .fc-platform {position:absolute;left:26.85%;top:calc(50% - 32.1cqw);width:46.3%;height:19cqw;object-fit:contain;pointer-events:none;z-index:1}
+#gui-casual-lobby .fc-identity {position:absolute;left:5.56%;right:3%;top:2.5cqw;z-index:4;pointer-events:none}
+#gui-casual-lobby .fc-identity h1 {margin:0;font:400 clamp(14px,4.7cqw,24px)/1.4 PsdPopup,"Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-identity>.fc-header-stars {position:static;display:flex;justify-content:flex-start;width:31cqw;height:5.5cqw;gap:0;margin-top:.2cqw}
+#gui-casual-lobby .fc-header-stats {display:grid;gap:.2cqw;margin-top:1.1cqw!important;color:#e9f5ff;font:600 clamp(10px,3.4cqw,17px)/1.3 "Microsoft YaHei",sans-serif;text-shadow:0 1px 2px #000!important}
+#gui-casual-lobby .fc-header-stats b {color:#b7f39a;font-weight:700}
+#gui-casual-lobby .fc-aircraft-model {position:absolute;left:8%;top:calc(50% - 88cqw);width:84%;height:63cqw;z-index:2;touch-action:none}
+#gui-casual-lobby .fc-aircraft-model>canvas {width:100%!important;height:100%!important;object-fit:contain;transform:none}
+#gui-casual-lobby .fc-pilot-portrait,#gui-casual-lobby .fc-pilot-portrait.character-portrait {position:absolute;left:19%;top:calc(50% - 92.7cqw);width:62%;height:69.5cqw;object-fit:contain;object-position:center bottom;z-index:2;filter:none}
+#gui-casual-lobby .fc-unlock-skill {position:absolute;left:0;top:calc(50% - 32.51cqw);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;width:17.8%;height:14.96cqw;min-height:50px;padding:0;border:0;background:none;color:#ecf5ff;font:400 clamp(8px,2.55cqw,13px)/1.25 "Microsoft YaHei",sans-serif;z-index:4;cursor:pointer}
+#gui-casual-lobby .fc-unlock-skill>.fc-skill-icon {width:11.1cqw;height:11.1cqw;object-fit:contain}
+#gui-casual-lobby .fc-unlock-skill>span {white-space:nowrap;text-shadow:0 1px #000}
+#gui-casual-lobby .fc-hero-actions {position:absolute;left:9%;top:var(--catalog-controls-top);width:82%;height:var(--catalog-controls-height);display:flex;justify-content:center;align-items:center;gap:7%;z-index:4}
+/* Lower the pilot and platform together; the controls remain above the stage. */
+#gui-casual-lobby .fc-pilot {--pilot-stage-offset:8cqw}
+#gui-casual-lobby .fc-pilot .fc-platform {top:calc(var(--catalog-controls-top) - 18.6556cqw + var(--pilot-stage-offset))}
+#gui-casual-lobby .fc-pilot .fc-pilot-portrait {top:calc(var(--catalog-controls-top) - 79.2556cqw + var(--pilot-stage-offset))}
+#gui-casual-lobby .fc-operation {flex:none;width:46.5%;min-width:0;min-height:var(--ui-action-height);height:var(--ui-action-height);--wc-button-height:var(--ui-action-height);display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:clamp(13px,4.3cqw,22px)}
+#gui-casual-lobby .fc-operation strong {font-weight:400;line-height:1.15}
+#gui-casual-lobby .fc-operation small {display:flex;align-items:center;gap:.5cqw;font:600 clamp(9px,2.8cqw,14px)/1 Arial,sans-serif}
+#gui-casual-lobby .fc-operation small img {width:5.2cqw;height:5.2cqw;object-fit:contain;margin:0}
+#gui-casual-lobby .fc-operation.is-using {color:#bbf8d4!important;opacity:1!important;cursor:default}
+#gui-casual-lobby .fc-operation.is-using::before {filter:sepia(.35) hue-rotate(55deg) saturate(1.3)}
+#gui-casual-lobby .fc-skill-group {position:absolute;left:0;right:0;top:var(--catalog-skill-top);display:flex;justify-content:center;gap:4.5cqw;width:auto;height:var(--catalog-skill-slot-size);z-index:4;pointer-events:none}
+#gui-casual-lobby .fc-aircraft .fc-platform {top:calc(50% - 36.4cqw)}
+#gui-casual-lobby .fc-skill-slot {position:relative;isolation:isolate;display:grid;place-items:center;align-content:center;gap:.3cqw;flex:none;width:15.45cqw;height:100%;min-height:44px;min-width:44px;margin:0;padding:1.1cqw .8cqw;border:0;background:#1b3344;color:#e9f8ff;cursor:pointer;box-shadow:none}
+#gui-casual-lobby .fc-skill-group .fc-skill-slot {width:var(--catalog-skill-slot-size);height:var(--catalog-skill-slot-size);pointer-events:auto}
+#gui-casual-lobby .fc-skill-slot::before {content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;border-image:url('/art/weapon-catalog-psd-v1/frame-blue.png') 24 24 40 24 fill / 5px 5px calc(5px * 40 / 24) 5px stretch}
+#gui-casual-lobby .fc-skill-slot.is-selected::before,#gui-casual-lobby .fc-skill-slot.is-replace-target::before {filter:brightness(1.7)}
+#gui-casual-lobby .fc-skill-slot.is-selected {outline:2px solid #f3da70;outline-offset:-2px}
+#gui-casual-lobby .fc-skill-slot .fc-skill-icon {width:10cqw;height:10cqw;object-fit:contain}
+#gui-casual-lobby .fc-slot-index {position:absolute;left:1.1cqw;top:.8cqw;color:#fff;font:700 clamp(8px,2.5cqw,12px)/1 Arial,sans-serif;text-shadow:0 1px #102132}
+#gui-casual-lobby .fc-slot-name {display:block;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:500 clamp(8px,2.2cqw,11px)/1.2 "Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-worn-skills {position:absolute;left:83.5%;top:9.9074cqw;width:16.5%;display:grid;justify-items:center;align-content:start;gap:.6cqw;z-index:4}
+#gui-casual-lobby .fc-worn-skills>span {font-size:clamp(8px,2.7cqw,13px);line-height:1.2;color:#c6dce9;text-align:center}
+#gui-casual-lobby .fc-worn-skills .fc-skill-slot {width:13cqw;height:12.1cqw;min-width:40px;min-height:40px;padding:1.5cqw;border-radius:0}
+#gui-casual-lobby .fc-worn-skills .fc-skill-icon {width:9.3cqw;height:9.3cqw}
+#gui-casual-lobby .fc-skill-cancel-area {position:absolute;inset:0 0 auto;width:100%;height:calc(50% + 3.148148cqw);padding:0;border:0;background:transparent;z-index:3;cursor:default}
+#gui-casual-lobby .fc-heading {position:absolute;left:0;right:0;top:calc(50% + 3.148148cqw);height:10.648148cqw;z-index:5}
+#gui-casual-lobby .fc-scroll {position:absolute;left:0;right:0;top:calc(50% + 13.801cqw);bottom:calc(16.5926cqw + 18px + env(safe-area-inset-bottom,0px));margin:0;padding:.5cqw 0 4.63cqw!important;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;z-index:3}
+#gui-casual-lobby .fc-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:97.4074%;grid-auto-rows:27.777778cqw;column-gap:0;row-gap:0;align-content:start}
+#gui-casual-lobby .fc-item-wrap {position:relative;min-width:0;width:109.5057%;height:28.703704cqw;margin:0;padding:0}
+#gui-casual-lobby .fc-item-wrap.is-selected {z-index:4}
+#gui-casual-lobby .wc-item.fc-item {width:100%;height:100%;aspect-ratio:auto;overflow:hidden;filter:none;clip-path:none}
+#gui-casual-lobby .fc-item::before {border-image-width:6px 6px 10px 6px;filter:var(--fleet-frame-filter,none)}
+#gui-casual-lobby .fc-item[data-rarity='UR'] {--fleet-frame-filter:hue-rotate(60deg)}
+#gui-casual-lobby .fc-item[data-rarity='SSR'] {--fleet-frame-filter:hue-rotate(25deg)}
+#gui-casual-lobby .fc-item[data-rarity='SR'] {--fleet-frame-filter:hue-rotate(-75deg)}
+#gui-casual-lobby .fc-card-art {position:absolute;inset:8% 8% 24%;display:grid;place-items:center;overflow:hidden;z-index:1}
+#gui-casual-lobby .fc-card-art>img {position:absolute;inset:0;display:block;width:100%!important;height:100%!important;max-width:none;object-fit:contain}
+#gui-casual-lobby .fc-card-art:not(.fc-avatar)>img {object-view-box:inset(12% 18%)}
+#gui-casual-lobby .fc-card-art.fc-avatar {inset:7% 8% 23%}
+#gui-casual-lobby .fc-avatar>img {object-fit:cover;object-position:center 20%}
+#gui-casual-lobby .fc-avatar>img[src*='pilot-06-v09c/portrait.png'] {object-view-box:inset(7% 34% 75% 47%);object-position:center 20%}
+#gui-casual-lobby .fc-avatar>img[src*='white-gold-knight-v11/master.png'] {object-view-box:inset(0% 35% 77% 35%);object-position:center 20%}
+#gui-casual-lobby .fc-avatar>img[src*='white-gold-luoen-r13/portrait-refined-v1.png'] {object-view-box:inset(5% 38% 74% 42%);object-position:center 20%}
+#gui-casual-lobby .fc-item.is-locked .fc-card-art {filter:grayscale(.7) brightness(.52)}
+#gui-casual-lobby .fc-card-type {position:absolute;top:6%;left:7%;width:5.1cqw;height:5.1cqw;z-index:3}
+#gui-casual-lobby .fc-card-type>img {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-worn-check {position:absolute;right:8%;top:7%;width:4.8cqw;height:4.8cqw;z-index:3;object-fit:contain}
+#gui-casual-lobby .fc-item .wc-lock {top:7%;right:8%;z-index:3}
+#gui-casual-lobby .fc-item>.fc-stars {height:14%;bottom:8%;z-index:3}
+#gui-casual-lobby .fc-skill-list {padding:0 0 4.63cqw!important;color:#f1f7fb}
+#gui-casual-lobby .fc-skill-row {position:relative;isolation:isolate;display:block;width:100%;height:23.138889cqw;min-height:0;margin:0 0 -1.851852cqw;padding:0;color:#e6f3fb}
+#gui-casual-lobby .fc-skill-row::before {content:'';position:absolute;left:4.49%;top:14%;width:91.02%;height:82.43%;z-index:-1;background:#223a4c;border:1px solid #526e82}
+#gui-casual-lobby .fc-skill-row.is-equipped::before {border-color:#91d4e2;background:#274451}
+#gui-casual-lobby .fc-skill-row.is-pending::before {border-color:#e8cf68}
+#gui-casual-lobby .fc-row-preview {position:absolute;left:6.574%;top:23.19%;display:grid;place-items:center;width:14.444%;height:62.425%;min-height:0;padding:0;margin:0;border:0;background:none;cursor:pointer}
+#gui-casual-lobby .fc-row-preview>.fc-skill-icon {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-row-preview>b {position:absolute;top:0;left:0;display:grid;place-items:center;width:5cqw;height:5cqw;background:#173e4c;color:#e7fbff;font:700 3cqw Arial,sans-serif}
+#gui-casual-lobby .fc-skill-row p {position:absolute;left:23.583%;top:25.59%;display:flex;align-items:center;width:50.778%;height:59.46%;margin:0;padding:0 5cqw 0 0!important;font:400 clamp(10px,3.25cqw,16px)/1.4 "Microsoft YaHei",sans-serif;text-shadow:none}
+#gui-casual-lobby .fc-skill-row.is-effect p {width:69.685%;padding-right:0!important}
+#gui-casual-lobby .fc-row-action {position:absolute;left:70.722%;top:29.97%;width:25.269%;height:48.82%;min-height:0;--wc-button-height:100%;font-size:clamp(12px,3.8cqw,19px)}
+#gui-casual-lobby .fc-footer {position:absolute;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:block;height:16.5926cqw;z-index:5;padding:0;gap:0}
+#gui-casual-lobby .fc-footer>.wc-button {position:absolute;min-height:0;--wc-button-height:100%;font-size:clamp(11px,3.4cqw,17px)}
+#gui-casual-lobby .fc-footer>.wc-back {left:1.99%;top:-.1852cqw;width:17.13%;height:15.5556cqw}
+#gui-casual-lobby .fc-footer>.wc-mode {left:64%;top:1cqw;width:16%;height:14cqw;padding:1cqw;gap:.5cqw;box-sizing:border-box}
+#gui-casual-lobby .fc-footer>.wc-mode[data-mode='skills'] {left:82%}
+#gui-casual-lobby .fc-footer>.wc-mode>.wc-tab-icon {flex:none;width:5cqw;height:5cqw}
+#gui-casual-lobby .fc-footer>.wc-mode>span {flex:none;white-space:nowrap;font-size:clamp(9px,2.8cqw,13px);line-height:1.2}
+#gui-casual-lobby .fc-empty {margin:0;padding:9cqw 4cqw!important;text-align:center;font-size:clamp(12px,3.8cqw,18px);color:#a9c1d1}
+#gui-casual-lobby .fc-page button:focus-visible {outline:2px solid #f4e7a9;outline-offset:-2px}
+#gui-casual-lobby .pl-modal[data-psd-popup]:has(:is(.fc-detail,.fc-skill-preview,.fc-operation-preview)) {--popup-width:92cqw;--popup-height:auto;--popup-max-height:88%;--popup-min-height:0px}
+#gui-casual-lobby :is(.fc-detail,.fc-skill-preview,.fc-operation-preview) {color:#20384e;font:400 14px/1.6 "Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-detail-art {position:relative;width:100%;height:120px;overflow:hidden}
+#gui-casual-lobby .fc-detail-art>img {position:absolute;inset:0;width:100%!important;height:120px!important;max-width:none;object-fit:contain;object-view-box:inset(12% 18%)}
+#gui-casual-lobby .fc-detail-stats {margin:12px 0;border-block:1px solid #7890a477}
+#gui-casual-lobby .fc-detail-stats>div {display:flex;align-items:center;gap:10px;padding:6px 0}
+#gui-casual-lobby .fc-detail-stats>div>b {margin-left:auto}
+#gui-casual-lobby .fc-detail-next {color:#287b57}
+#gui-casual-lobby .fc-detail h3 {font-size:16px;margin:12px 0 4px}
+#gui-casual-lobby .fc-detail p {margin:4px 0}
+#gui-casual-lobby .fc-detail-cost {display:flex;gap:12px;margin:14px 0 6px}
+#gui-casual-lobby .fc-detail-button {width:100%;margin-top:8px;--wc-button-height:46px}
+#gui-casual-lobby .fc-skill-rule {display:flex;align-items:center;gap:12px;padding:12px 0}
+#gui-casual-lobby .fc-skill-rule-art {width:58px;height:58px;flex:none}
+#gui-casual-lobby .fc-skill-rule-art>img {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-skill-preview>header {display:flex;align-items:center;gap:14px;margin-bottom:12px}
+#gui-casual-lobby .fc-skill-preview>header>img {width:64px;height:64px;object-fit:contain}
+#gui-casual-lobby .fc-skill-preview h3 {margin:0;font-size:17px}
+#gui-casual-lobby .fc-skill-preview p {margin:0}
+#gui-casual-lobby .fc-current-effect {padding:10px;background:#d8e7ed;border:1px solid #96b0bf}
+#gui-casual-lobby .fc-skill-levels {margin-top:12px}
+#gui-casual-lobby .fc-skill-levels>section {display:grid;grid-template-columns:36px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:1px solid #8aa6b677}
+#gui-casual-lobby .fc-skill-levels>.is-locked {color:#647d8e}
+#gui-casual-lobby .fc-skill-levels>.is-unlocked {color:#17684a}
+#gui-casual-lobby .fc-operation-preview>header {display:flex;align-items:center;gap:12px;margin-bottom:12px}
+#gui-casual-lobby .fc-operation-portrait {position:relative;display:block;width:76px;height:82px;flex:none;overflow:hidden;background:#25465a}
+#gui-casual-lobby .fc-operation-portrait>img {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-operation-preview h3 {margin:0;font-size:17px;line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .fc-operation-preview p {margin:4px 0}
+#gui-casual-lobby .fc-operation-effect {padding:12px;background:#d5e4eb;border:1px solid #94adbd}
+#gui-casual-lobby .fc-operation-effect h4 {margin:0 0 4px;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .fc-operation-stats {border-block:1px solid #8da8b8;margin-bottom:12px;padding:5px 0}
+#gui-casual-lobby .fc-operation-stats>p {display:flex;justify-content:space-between;gap:12px}
+#gui-casual-lobby .fc-operation-stats b {color:#26714e}
+#gui-casual-lobby .fc-card-cost {display:flex;align-items:center;gap:8px;margin:14px 0 8px;padding:7px 10px;border:1px solid #8ea8b9;background:#d1e1e9}
+#gui-casual-lobby .fc-card-cost>img {width:36px;height:36px;object-fit:contain}
+#gui-casual-lobby .fc-card-cost>b {margin-left:auto}
+#gui-casual-lobby .fc-card-cost>.is-short,#gui-casual-lobby .fc-operation-error {color:#9c3e37}
+#gui-casual-lobby .fc-operation-actions {display:flex;gap:8px}
+#gui-casual-lobby .fc-operation-actions>.wc-button {flex:1;min-width:0}
+#gui-casual-lobby .fleet-supply-back {display:flex;align-items:center;gap:4px;min-height:36px;max-width:100%;margin:0;padding:0;border:0;background:none;color:#e9f5ff;font:600 13px/1.2 "Microsoft YaHei",sans-serif;cursor:pointer;white-space:nowrap}
+
+/* Expand touch targets without changing the versioned prefab silhouette. */
+#gui-casual-lobby :is(.fc-operation,.fc-row-action,.fc-row-preview,.fc-footer>.wc-button)::after {content:"";position:absolute;left:0;right:0;top:50%;height:max(100%,44px);transform:translateY(-50%);background:transparent}
+
+#gui-casual-lobby .fc-operation .fc-operation-cost {display:inline-flex;align-items:center;gap:.7cqw;white-space:nowrap}
+#gui-casual-lobby .fc-operation .fc-operation-cost b {font:600 clamp(11px,3.3cqw,16px)/1 Arial,sans-serif}
+#gui-casual-lobby .fc-operation .fc-operation-cost .is-short {color:#ffb2a8}
+
+#gui-casual-lobby .fc-operation-cost-art {display:block;flex:none;width:7cqw;height:5.2cqw;overflow:hidden}
+#gui-casual-lobby .fc-operation small .fc-operation-cost-art img {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-operation-cost-art.is-aircraft img {transform:scale(1.8)}
+
+#gui-casual-lobby .fc-title {display:block;min-height:32px;color:#fff;text-shadow:0 1px 2px #07121e}
+#gui-casual-lobby .fc-page .fc-unlock-skill {left:3%;width:21%;gap:1cqw;height:auto;min-height:0;font:600 clamp(10px,2.9cqw,14px)/1.3 "Microsoft YaHei",sans-serif}
+#gui-casual-lobby .fc-unlock-skill-art {position:relative;isolation:isolate;display:grid;place-items:center;width:12cqw;height:12cqw;padding:1cqw;box-sizing:border-box;background:#18354ddd}
+#gui-casual-lobby .fc-unlock-skill-art::before {content:'';position:absolute;inset:0;z-index:-1;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 5px stretch;pointer-events:none}
+#gui-casual-lobby .fc-unlock-skill-art>.fc-skill-icon {display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .fc-page .fc-unlock-skill>span:last-child {white-space:normal;text-align:center;text-shadow:0 1px 3px #000,0 0 4px #000}
+
+/* UI_PlaneSkinSkillPreview: centered skill identity and compact star-effect rows. */
+#gui-casual-lobby .fc-star-skill-preview .fc-skill-name-highlight {color:#805019;font-weight:700}
+#gui-casual-lobby .fc-star-skill-preview .fc-skill-value-highlight {color:#196343;font-weight:700}
+#gui-casual-lobby .pl-modal .fc-star-skill-preview>header {display:flex;flex-direction:column;align-items:center;gap:1.5cqw;margin:0 0 3cqw}
+#gui-casual-lobby .fc-skill-emblem {position:relative;display:grid;place-items:center;width:18cqw;height:18cqw;max-width:76px;max-height:76px;padding:2cqw;background:#c2d5e3;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 5px stretch}
+#gui-casual-lobby .fc-skill-emblem .fc-skill-icon {width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pl-modal .fc-star-skill-preview>header h3 {margin:0;display:flex;align-items:center;justify-content:center;gap:2cqw;width:100%;font-size:max(var(--psd-small-title-size,16px),clamp(14px,4cqw,18px));line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .fc-star-skill-preview>header h3::before,#gui-casual-lobby .fc-star-skill-preview>header h3::after {content:'';width:17cqw;height:1px;background:#839eaf}
+#gui-casual-lobby .fc-star-skill-list {display:grid;gap:1.5cqw}
+#gui-casual-lobby .fc-star-skill-list>section {display:grid;grid-template-columns:16cqw minmax(0,1fr);align-items:center;column-gap:1.5cqw;row-gap:0;min-height:10cqw;padding:2cqw;box-sizing:border-box;background:#cfdeea;border-image:url('/art/psd-equipment-v1/frame-gray.png') 18 / 3px stretch}
+#gui-casual-lobby .fc-star-skill-list>.is-unlocked {background:#d5eadf}
+#gui-casual-lobby .fc-star-skill-list .fc-detail-stats {grid-column:2;min-width:0;margin:0;border:0;color:#203b50;font-size:clamp(12px,3.5cqw,15px)}
+#gui-casual-lobby .fc-star-skill-list .fc-detail-stats>div {display:flex;justify-content:flex-start;gap:1.5cqw;padding:0}
+#gui-casual-lobby .fc-skill-star-line {display:flex;align-items:center;justify-content:flex-start;gap:0}
+#gui-casual-lobby .fc-skill-star-line>img {display:block;width:3.2cqw;height:3.2cqw;object-fit:contain}
+#gui-casual-lobby .pl-modal .fc-star-skill-preview .fc-star-skill-list p {margin:0;color:#203b50;font:400 clamp(11px,3.2cqw,14px)/1.5 'Microsoft YaHei',sans-serif;white-space:pre-line;overflow-wrap:anywhere}
+
+/* Pilot skill choices use real saved slots and grow with their descriptions. */
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-skill-row {display:grid;grid-template-columns:12cqw minmax(0,1fr) 19cqw;align-items:center;gap:2cqw;width:auto;height:auto;min-height:22cqw;margin:2cqw 3cqw;padding:2cqw;background:#203b4e;border-image:url('/art/psd-equipment-v1/frame-blue.png') 18 / 5px stretch}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-skill-row::before {content:none}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-preview {position:relative;inset:auto;width:12cqw;height:12cqw;min-height:40px;padding:1cqw}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-copy {min-width:0}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-copy h3 {margin:0 0 1cqw;font:400 var(--psd-small-title-size)/var(--psd-small-title-leading) var(--psd-title-family);color:#f1f8fc}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-copy p {position:static;display:block;width:auto;height:auto;padding:0!important;font-size:clamp(11px,3cqw,14px);line-height:1.45;overflow-wrap:anywhere;color:#c5dbe8}
+#gui-casual-lobby .fc-pilot[data-catalog-mode='skills'] .fc-row-action {position:relative;inset:auto;width:100%;height:auto;min-height:36px;--wc-button-height:max(36px,10cqw);font-size:clamp(12px,3.4cqw,16px)}
