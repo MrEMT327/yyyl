@@ -12,10 +12,11 @@ function abortError() {
   return error;
 }
 
-export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBase, assetTransfers = {}, requirePublicNetwork = false, cacheVersion = '', loadPackage }) {
+export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBase, assetTransfers = {}, cdnFiles, requirePublicNetwork = false, cacheVersion = '', loadPackage }) {
   const origin = assetOrigin.replace(/\/+$/, '');
   const assetHost = new URL(origin).origin;
   const remote = cdnBase ? new URL(cdnBase.replace(/\/+$/, '') + '/') : null;
+  const releaseFiles = cdnFiles ? new Set(cdnFiles) : null;
   const compressed = new Map(Object.values(assetTransfers).filter(row => row.encoding === 'gzip').map(row => [row.path, row.bytes]));
   const battleData = new Set(Object.entries(assetTransfers)
     .filter(([key,row]) => /^replica-battle\/data\/.+\.json$/.test(key) && row.encoding === 'gzip' && row.bytes > 0)
@@ -54,12 +55,22 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
       if (key === 'api' || key.startsWith('api/')) return publicURL(url);
       if (Object.hasOwn(localFiles, key)) return localFiles[key];
       if (remote) {
-        const mapped = new URL(assetTransfers[key] ? assetTransfers[key].path.split('/').map(encodeURIComponent).join('/') : encodedKey, remote);
+        const transfer = assetTransfers[key];
+        const file = transfer?.path ?? key;
+        if (releaseFiles && !releaseFiles.has(file)) throw new Error('资源未列入微信发布清单：' + key);
+        const mapped = new URL(transfer ? file.split('/').map(encodeURIComponent).join('/') : encodedKey, remote);
         mapped.search = url.search; mapped.hash = url.hash;
         return publicURL(mapped);
       }
     }
+    if (releaseFiles && /^https?:$/.test(url.protocol)) throw new Error('资源未列入微信发布清单：' + url.pathname);
     return publicURL(url);
+  }
+
+  function canLoad(path, baseURL) {
+    if (!path) return false;
+    try { resolve(path, baseURL); return true; }
+    catch { return false; }
   }
 
   function publicURL(url) {
@@ -113,7 +124,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
     }
   }
 
-  function readBytes(path, { signal, baseURL } = {}) {
+  async function readBytes(path, { signal, baseURL } = {}) {
     if (disposed || signal?.aborted) return Promise.reject(abortError());
     const url = resolve(path, baseURL);
     return new Promise((resolveRequest, rejectRequest) => {
@@ -151,7 +162,11 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
       const localFailure = error => {
         const key = packagedCompressed.get(url);
         if (!key || !remote || settled) return finish(error);
-        try { requestBytes(publicURL(new URL(assetTransfers[key]?.path ?? key, remote))); }
+        try {
+          const file = assetTransfers[key]?.path ?? key;
+          if (releaseFiles && !releaseFiles.has(file)) return finish(error);
+          requestBytes(publicURL(new URL(file, remote)));
+        }
         catch (error) { finish(error); }
       };
       try {
@@ -245,7 +260,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
   }
 
   return {
-    resolve, readBytes, decodeBytes, readyLocalFile, preloadAssetPackage, isVersionedBattleData,
+    resolve, canLoad, releaseAssets: Boolean(releaseFiles), readBytes, decodeBytes, readyLocalFile, preloadAssetPackage, isVersionedBattleData,
     requestAsset: transport.request, cacheStats: transport.stats, flushCache: transport.flush,
     async readJSON(path, options) { return JSON.parse(buf2string(new Uint8Array(await readBytes(path, options)))); },
     createAssetBytesUrl, createVerifiedAssetBytesUrl, revokeAssetBytesUrl, createTextureScope,

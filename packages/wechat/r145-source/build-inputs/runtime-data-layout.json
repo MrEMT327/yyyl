@@ -53,7 +53,6 @@
   "battle-data/runtime-data.json.br": [
     "replica-battle/weapon-skin-correspondence.json",
     "replica-battle/public/data/enemy-warning.json",
-    "replica-battle/enemy-fire-effects-original.json",
     "replica-battle/airdrop-source.json",
     "replica-battle/public/data/monster-abilities.json",
     "replica-battle/public/data/wave-presentation.json",

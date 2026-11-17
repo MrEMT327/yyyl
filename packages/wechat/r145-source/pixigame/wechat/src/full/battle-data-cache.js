@@ -11,11 +11,13 @@ function freezeData(value) {
 // The lobby and sorties only share these immutable versioned inputs.
 export function createSharedLoadoutReader(resources) {
   const names = ['loadout-catalog', 'loadout-runtime', 'player-appearances'];
+  const removedAppearance = resources.releaseAssets ? Object.freeze({ planes: Object.freeze({}), pilots: Object.freeze({}) }) : null;
   const pathFor = name => `/replica-battle/data/${name}.json`;
-  if (!names.every(name => resources.isVersionedBattleData(pathFor(name)))) return null;
+  if (!names.every(name => (removedAppearance && name === 'player-appearances') || resources.isVersionedBattleData(pathFor(name)))) return null;
   const requests = new Map();
   function read(name) {
     if (!names.includes(name)) throw new Error('未知的装备资料文件');
+    if (name === 'player-appearances' && removedAppearance) return Promise.resolve(removedAppearance);
     let request = requests.get(name);
     if (!request) {
       request = resources.readJSON(pathFor(name)).then(data => {

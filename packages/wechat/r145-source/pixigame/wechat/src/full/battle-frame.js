@@ -202,6 +202,7 @@ export function installBattleFrames(parentHost, { Yoga, sheet, markup, loadBattl
           : undefined;
         child.runtime = exports.mountReplicaBattlePage({window:host.window,document:host.document,location:host.scope.location,parent,canvas:battleCanvas,fetchResource,
           readSharedLoadoutJSON:parentHost.scope.__THUNDER_RUNTIME_GLOBALS__?.readSharedLoadoutJSON,
+          canLoadArt:parentHost.resources.releaseAssets ? path => parentHost.resources.canLoad(path, source) : undefined,
           warmBattleImages:parentHost.warmBattleImages,
           warmBattleTerrain:parentHost.warmBattleTerrain,
           loadBattleData,presentFrame,frozenFrame,

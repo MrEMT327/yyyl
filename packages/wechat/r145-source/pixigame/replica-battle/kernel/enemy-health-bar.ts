@@ -4,7 +4,7 @@ import { clamp, lerp, type Enemy, type RecordData } from './model';
 
 /** StateBarMonster: original sliced Images, SetRight fill and HP tweens. */
 export class EnemyHealthBar extends Phaser.GameObjects.Container {
-  private layers: { config: RecordData; image: Phaser.GameObjects.Image | Phaser.GameObjects.NineSlice;
+  private layers: { config: RecordData; image: Phaser.GameObjects.Image | Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle;
     width: number; height: number; lastFill?: number }[] = [];
   private target = 1;
   private hpFrom = 1;
@@ -19,14 +19,22 @@ export class EnemyHealthBar extends Phaser.GameObjects.Container {
     scene.add.existing(this); this.setDepth(50);
     for (const layer of source.bars[entity.bar].layers as RecordData[]) {
       if (!layer.active || layer.role === 'nextHp') continue;
-      const sprite = source.sprites[layer.sprite], border = sprite.border;
-      const image = layer.imageType === 1
-        ? scene.add.nineslice(0, 0, layer.sprite, undefined, layer.width, layer.height, border.x, border.z, border.w, border.y)
-        : scene.add.image(0, 0, layer.sprite);
-      image.setOrigin(0, 0);
-      image.setTint(layer.role === 'hp' ? 0xff2323 : 0xffffff);
-      image.setAlpha(layer.color[3]);
+      const sprite = source.sprites[layer.sprite];
       const width = layer.displayWidth * this.screenScale, height = layer.displayHeight * this.screenScale;
+      const color = layer.role === 'hp' ? 0xff383f : layer.role === 'reduce' ? 0xffb263 : 0x162132;
+      let image: Phaser.GameObjects.Image | Phaser.GameObjects.NineSlice | Phaser.GameObjects.Rectangle;
+      if (!sprite?.url || !scene.textures.exists(layer.sprite)) {
+        if (!['hp', 'reduce', 'background', 'bg'].includes(layer.role)) continue;
+        image = scene.add.rectangle(0, 0, width, height, color);
+      } else {
+        const border = sprite.border;
+        image = layer.imageType === 1
+          ? scene.add.nineslice(0, 0, layer.sprite, undefined, layer.width, layer.height, border.x, border.z, border.w, border.y)
+          : scene.add.image(0, 0, layer.sprite);
+        image.setTint(layer.role === 'hp' ? 0xff2323 : 0xffffff);
+      }
+      image.setOrigin(0, 0);
+      image.setAlpha(layer.color[3]);
       image.setPosition(layer.x * this.screenScale - width * layer.pivot[0], -layer.y * this.screenScale - height * (1 - layer.pivot[1]));
       this.layers.push({ config: layer, image, width, height }); this.add(image);
     }

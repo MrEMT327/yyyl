@@ -66,10 +66,11 @@ export async function withPackageOutput(sourceRoot, outputArgument, build) {
 
 async function buildWechatPackage({ output, entries, compiled }) {
 
-  const [info, gameConfig, cdn, assetNames, dataLayout, runtimePackage] = await Promise.all([
+  const [info, gameConfig, cdn, assetNames, dataLayout, runtimePackage, approvedArt] = await Promise.all([
     json(join(baseline, 'BUILD-INFO.json')), json(join(baseline, 'game.json')),
     json(join(inputs, 'cdn-manifest.json')), json(join(inputs, 'deployed-assets.json')),
     json(join(inputs, 'runtime-data-layout.json')), json(join(inputs, 'runtime-package.json')),
+    json(join(inputs, 'approved-snapshot-art.json')),
   ]);
   const origin = new URL(cdn.cdnBase).origin;
   assert.equal(new URL(cdn.cdnBase).protocol, 'https:');
@@ -77,11 +78,14 @@ async function buildWechatPackage({ output, entries, compiled }) {
 
   const { build } = createRequire(join(project, 'package.json'))('esbuild');
   const [{ buildSharedRuntimeSet }, { NATIVE_JS_TARGET, NATIVE_INJECT, assertNativePackage },
-    { fingerprintNativeRuntime, rewriteNativeRuntimeRequires }, { assertReleaseAssets }] = await Promise.all([
+    { fingerprintNativeRuntime, rewriteNativeRuntimeRequires }, { assertReleaseAssets, releaseAssetIndex },
+    { auditWechatCdn }] = await Promise.all([
     load('wechat/tools/runtime-build.mjs'), load('wechat/tools/native-syntax.mjs'),
     load('wechat/tools/runtime-identity.mjs'), load('tools/check-release-assets.mjs'),
+    import('./audit-wechat-cdn.mjs'),
   ]);
 
+  const cdnFiles = auditWechatCdn(cdn, await releaseAssetIndex(), approvedArt, info.localFiles);
   await cp(baseline, entries, { recursive: true });
 
   function overrides(folder, paths) {
@@ -123,7 +127,7 @@ async function buildWechatPackage({ output, entries, compiled }) {
 
   const bootstrap = join(project, 'wechat/src/full/bootstrap.js');
   const resourceCall = 'createWechatResources(api,{assetOrigin:origin,loadPackage})';
-  const resourceOptions = 'createWechatResources(api,{assetOrigin:origin,loadPackage,localFiles:__WECHAT_LOCAL_FILES__,cdnBase:__WECHAT_CDN_BASE__,assetTransfers:__WECHAT_ASSET_TRANSFERS__,requirePublicNetwork:true,cacheVersion:__WECHAT_CACHE_VERSION__})';
+  const resourceOptions = 'createWechatResources(api,{assetOrigin:origin,loadPackage,localFiles:__WECHAT_LOCAL_FILES__,cdnBase:__WECHAT_CDN_BASE__,assetTransfers:__WECHAT_ASSET_TRANSFERS__,cdnFiles:__WECHAT_CDN_FILES__,requirePublicNetwork:true,cacheVersion:__WECHAT_CACHE_VERSION__})';
   const startup = rewriteNativeRuntimeRequires(await readFile(bootstrap, 'utf8'), modules);
   assert.equal(startup.split(resourceCall).length, 2);
   const define = {
@@ -133,6 +137,7 @@ async function buildWechatPackage({ output, entries, compiled }) {
     __WECHAT_CACHE_VERSION__: cdn.cacheVersion,
     __WECHAT_LOCAL_FILES__: info.localFiles,
     __WECHAT_ASSET_TRANSFERS__: cdn.transfers,
+    __WECHAT_CDN_FILES__: cdnFiles,
     __WECHAT_OPENING_PACKAGES__: ['opening-art'],
     __WECHAT_SPLIT_BATTLE_DATA__: true,
     __WECHAT_SPLIT_PORTRAIT_DATA__: true,
