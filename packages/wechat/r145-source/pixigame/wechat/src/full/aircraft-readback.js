@@ -1,8 +1,12 @@
+export function supportsAircraftReadback(gl) {
+  return Number.isFinite(gl.PIXEL_PACK_BUFFER) && typeof gl.fenceSync === 'function' &&
+    typeof gl.clientWaitSync === 'function' && typeof gl.getBufferSubData === 'function';
+}
+
 // Own one pixel pack buffer. The world renderer can reuse its framebuffer
 // as soon as readPixels has been queued, and the next frame polls the fence.
 export function createAircraftReadback(gl, byteLength, measureTransfer) {
-  if (!Number.isFinite(gl.PIXEL_PACK_BUFFER) || typeof gl.fenceSync !== 'function' ||
-      typeof gl.clientWaitSync !== 'function' || typeof gl.getBufferSubData !== 'function') return null;
+  if (!supportsAircraftReadback(gl)) return null;
 
   const target = gl.PIXEL_PACK_BUFFER;
   let buffer, fence, polls = 0, verified = false;

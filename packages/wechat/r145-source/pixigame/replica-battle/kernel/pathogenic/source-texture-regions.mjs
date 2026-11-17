@@ -10,10 +10,31 @@ function imagesFor(manager) {
   return images;
 }
 
+// These images are owned by the source-shader renderer. Upload the decoded
+// art straight once instead of making a premultiplied texture and replacing
+// it on the first shot. Phaser's wrapper retains the image for context restore.
+function addSourceImage(scene,key,image,width,height) {
+  const renderer=scene.game.renderer,gl=renderer.gl;
+  const pot=width>0&&height>0&&(width&(width-1))===0&&(height&(height-1))===0;
+  const wrap=pot?gl.REPEAT:gl.CLAMP_TO_EDGE;
+  const mag=renderer.config.antialias?gl.LINEAR:gl.NEAREST;
+  const min=mag===gl.LINEAR&&pot?renderer.mipmapFilter||mag:mag;
+  const active=gl.getParameter(gl.ACTIVE_TEXTURE);
+  const pma=gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL),flip=gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL);
+  try{
+    const wrapper=renderer.createTexture2D(0,min,mag,wrap,wrap,gl.RGBA,image,width,height,false,true,false);
+    const texture=scene.textures.addGLTexture(key,wrapper);
+    if(!texture)renderer.deleteTexture(wrapper);
+    return texture;
+  }finally{
+    gl.activeTexture(active);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,pma);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,flip);
+  }
+}
+
 export function queueSourceTexture(scene,key,url,delivery=mobileTextureSizes[key]) {
   if(scene.textures.exists(key)||imagesFor(scene.textures).has(key))return;
   const gl=scene.game.renderer.gl,limit=gl.getParameter(gl.MAX_TEXTURE_SIZE);
-  const file=new Phaser.Loader.FileTypes.ImageFile(scene.load,key,url),add=file.addToCache;
+  const file=new Phaser.Loader.FileTypes.ImageFile(scene.load,key,url);
   file.addToCache=function(){
     const image=this.data,width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;
     // Old CDN/cache images remain valid. Only a verified delivery size receives
@@ -21,9 +42,9 @@ export function queueSourceTexture(scene,key,url,delivery=mobileTextureSizes[key
     const scaled=delivery&&width===delivery.size[0]&&height===delivery.size[1];
     const logicalWidth=scaled?delivery.sourceSize[0]:width,logicalHeight=scaled?delivery.sourceSize[1]:height;
     if(width<=limit&&height<=limit){
-      const result=add.call(this);
-      if(scaled)scene.textures.get(key).source[0].pathogenicLogicalSize=[logicalWidth,logicalHeight];
-      return result;
+      const texture=addSourceImage(scene,key,image,width,height);
+      if(scaled&&texture)texture.source[0].pathogenicLogicalSize=[logicalWidth,logicalHeight];
+      return;
     }
     imagesFor(scene.textures).set(key,{image,width,height,logicalWidth,logicalHeight,limit});
   };
@@ -67,7 +88,7 @@ export function sourceTextureKey(scene,descriptor) {
   if(!scene.textures.exists(regionKey)) {
     const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;
     canvas.getContext('2d').drawImage(image.image,x,y,width,height,0,0,width,height);
-    const texture=scene.textures.addCanvas(regionKey,canvas);
+    const texture=addSourceImage(scene,regionKey,canvas,width,height);
     texture.source[0].pathogenicAtlasOffset=[x/sx,y/sy];
     if(sx!==1||sy!==1)texture.source[0].pathogenicLogicalSize=[width/sx,height/sy];
   }

@@ -67,6 +67,8 @@ export class PathogenicScreenSnapshot {
   private requested=false;
   private format=0;
   private destroyed=false;
+  private checkedSource?:WebGLFramebuffer|null;
+  private checkedTexture?:WebGLTexture|null;
   readonly renderer:Phaser.Renderer.WebGL.WebGLRenderer;
   constructor(readonly scene:Phaser.Scene,readonly premultiplied=true){
     const renderer=scene.game.renderer;
@@ -102,7 +104,6 @@ export class PathogenicScreenSnapshot {
     const r=this.renderer,gl=r.gl;
     if(gl.isContextLost())return;
     r.flush();
-    const entryError=gl.getError();if(gl.isContextLost())return;if(entryError)throw new Error('Snapshot before allocate '+entryError);
     const current=r.currentFramebuffer;
     if(this.target&&(current===this.target.framebuffer||gl.getParameter(gl.FRAMEBUFFER_BINDING)===this.target.framebuffer.webGLFramebuffer))
       throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','feedback: snapshot target is the active write framebuffer');
@@ -111,13 +112,21 @@ export class PathogenicScreenSnapshot {
     if(format!==gl.RGB&&format!==gl.RGBA)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE','snapshot source requires supported RGB/RGBA8 framebuffer');
     const halfFloat=!!(current?.renderTexture as any)?.pathogenicHalfFloat;
     if(!this.target||this.target.width!==width||this.target.height!==height||this.format!==format||this.halfFloat!==halfFloat)this.allocate(width,height,format,halfFloat);
+    const sourceHandle=current?.webGLFramebuffer??null, texture=this.target.texture.webGLTexture;
+    const validate=sourceHandle!==this.checkedSource||texture!==this.checkedTexture;
     const active=gl.getParameter(gl.ACTIVE_TEXTURE);gl.activeTexture(gl.TEXTURE0);
     const oldTexture=gl.getParameter(gl.TEXTURE_BINDING_2D);
-    const priorError=gl.getError();if(gl.isContextLost())return;if(priorError)throw new Error('Snapshot before copy '+priorError+' half='+halfFloat);
     try{
-      gl.bindTexture(gl.TEXTURE_2D,this.target.texture.webGLTexture);
+      // getError can drain a queued frame on mobile. Verify a new attachment
+      // or a restored handle once, like the HDR framebuffer.
+      if(validate){const error=gl.getError();if(error)throw new Error('Snapshot before copy '+error+' half='+halfFloat);}
+      gl.bindTexture(gl.TEXTURE_2D,texture);
       gl.copyTexSubImage2D(gl.TEXTURE_2D,0,0,0,0,0,width,height);
-      const error=gl.getError();if(gl.isContextLost())return;if(error!==gl.NO_ERROR)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE',`background copy failed with WebGL error ${error}`);
+      if(gl.isContextLost())return;
+      if(validate){
+        const error=gl.getError();if(error!==gl.NO_ERROR)throw new PathogenicShaderCoverageError('SCREEN_TEXTURE',`background copy failed with WebGL error ${error}`);
+        this.checkedSource=sourceHandle;this.checkedTexture=texture;
+      }
     }finally{gl.bindTexture(gl.TEXTURE_2D,oldTexture);gl.activeTexture(active);}
     this.capturedFrame=frame;
   }
@@ -147,6 +156,7 @@ export class PathogenicScreenSnapshot {
 /** Resolve original material overrides and bind actual texture dependencies. */
 export class PathogenicMaterials {
   private readonly staticMaterials=new Map<string|null,ReturnType<PathogenicMaterials["resolve"]>|null>();
+  private readonly batchedMaterials=new Map<string|null,ReturnType<PathogenicMaterials["resolve"]>|null>();
   constructor(readonly scene:Phaser.Scene,readonly graph:Any,readonly screen?:PathogenicScreenSnapshot){}
   installTexture(ref:any):{key:string;descriptor:Any|null;binding:ShaderTextureBinding;channels:CanvasTextureChannels}{
     const channels=resolveCanvasTexture(this.graph,ref),d=channels.diffuse;
@@ -166,18 +176,20 @@ export class PathogenicMaterials {
   // Captures and auxiliary samplers must be refreshed at draw time. Only
   // authored materials with no overrides or sampler dependencies can share
   // their resolved values for the lifetime of this battle.
-  resolveForRender(materialRef:any,overrides?:Any){
+  resolveForRender(materialRef:any,overrides?:Any,batchTextures=false){
     const key=materialRef
       ? (typeof materialRef==='string'?materialRef:materialRef.type?undefined:materialRef.$ref)
       : null;
-    if(key===undefined||overrides)return this.resolve(materialRef,overrides);
-    const cached=this.staticMaterials.get(key);
-    if(cached!==undefined)return cached??this.resolve(materialRef);
-    const resolved=this.resolve(materialRef);
-    this.staticMaterials.set(key,resolved.dependencies.length===0?resolved:null);
+    const options={compatibilityZeroLights:true,batchTextures};
+    if(key===undefined||overrides)return this.resolve(materialRef,overrides,options);
+    const cache=batchTextures?this.batchedMaterials:this.staticMaterials;
+    const cached=cache.get(key);
+    if(cached!==undefined)return cached??this.resolve(materialRef,undefined,options);
+    const resolved=this.resolve(materialRef,undefined,options);
+    cache.set(key,resolved.dependencies.length===0?resolved:null);
     return resolved;
   }
-  resolve(materialRef:any,overrides:Any={},options:{compatibilityZeroLights?:boolean}={compatibilityZeroLights:true}){
+  resolve(materialRef:any,overrides:Any={},options:{compatibilityZeroLights?:boolean;batchTextures?:boolean}={compatibilityZeroLights:true}){
     const material=getResource(this.graph,materialRef),p=material?.properties??{};
     let source={path:'pathogenic-source-canvas',code:'shader_type canvas_item; void fragment() {}'};
     if(material?.type==='ShaderMaterial'){
@@ -190,7 +202,8 @@ export class PathogenicMaterials {
       source={path:`pathogenic-canvas-${blend}-${p.light_mode??0}`,code:`shader_type canvas_item; render_mode blend_${blend}${p.light_mode===1?', unshaded':''}; void fragment() {}`};
     }else if(material)throw new PathogenicShaderCoverageError(material.id,`unsupported material ${material.type}`);
     if(p.next_pass)throw new PathogenicShaderCoverageError(material?.id,'material next_pass requires ordered passes');
-    const registration=registerPathogenicShader(this.scene.game,source,options),uniforms:Record<string,ShaderUniformValue>={},textures:Record<string,ShaderTextureBinding>={};
+    const batchTextures=Boolean(options.batchTextures&&material?.type!=='ShaderMaterial');
+    const registration=registerPathogenicShader(this.scene.game,source,{...options,meshOpacity:true,batchTextures}),uniforms:Record<string,ShaderUniformValue>={},textures:Record<string,ShaderTextureBinding>={};
     const dependencies:Any[]=[];
     for(const uniform of registration.program.uniforms){
       const key=`shader_parameter/${uniform.name}`;

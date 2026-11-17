@@ -6,6 +6,7 @@ import { fighterForPilot, instantiateFighterPackage } from './fighter-packages.j
 import { createKestrelEquipment } from './kestrel-equipment.js';
 import { createFixedPartMounts } from '../../fixed-parts/mounts.js';
 import { createAircraftStyle, aircraftFinishConfig } from './aircraft-style.js';
+import { createCombatHullBatches } from './combat-hull-batches.js';
 
 function supportClipping(material) {
   if (!material.isShaderMaterial || material.userData.fighterClipping) return;
@@ -18,7 +19,7 @@ function supportClipping(material) {
     '$&\n#include <clipping_planes_fragment>\n');
 }
 
-export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace = false } = {}) {
+export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace = false, glassTransmission, batchCombatHull = false } = {}) {
   const view = new Container();
   view._bounds = { x:-8*size, y:-8*size, width:16*size, height:16*size };
   const mount = new THREE.Group(), attitude = new THREE.Group();
@@ -40,7 +41,9 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     preparedPassCamera = camera;
     try { return draw(); } finally { preparedPassCamera = previous; }
   };
-  let hullStyle, partsStyle, cachedFixedParts = null, fixedPartsKey = '';
+  let hullStyle, hullBatches, partsStyle, cachedFixedParts = null, fixedPartsKey = '';
+  if (batchCombatHull) view.withCombatHullBatches = draw => hullBatches ? hullBatches.render(draw) : draw();
+  const disposeHullBatches = () => { hullBatches?.dispose(); hullBatches = null; };
   const style = root => { const next = createAircraftStyle(root, { outlineScale: size }); next.setEnabled(true); return next; };
   const disposeFixedParts = () => {
     partsStyle?.dispose(); partsStyle = null; cachedFixedParts?.dispose();
@@ -99,7 +102,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
 
   view.setPilot = id => {
     if (runtime && view.pilotId === id) return;
-    disposeFixedParts();
+    disposeFixedParts(); disposeHullBatches();
     hullStyle?.dispose(); hullStyle = null; equipment?.dispose(); runtime?.dispose(); attitude.clear(); visualMaterials.clear(); animationTime = 0;
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
     equipment = createKestrelEquipment(asset);
@@ -109,6 +112,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     const span = Math.max(asset.view.bounds.max[0]-asset.view.bounds.min[0], asset.view.bounds.max[2]-asset.view.bounds.min[2]);
     attitude.scale.setScalar(15.75509262084961 / span);
     const config = {...entry.defaults, ...aircraftFinishConfig(entry), cruise:false, firing:false, weaponFireEffects:false, altitude:0, scale:1, lightIntensity:asset.solid.userData.cleanAircraftSurface?entry.defaults.lightIntensity:0};
+    if (glassTransmission !== undefined) config.glassTransmission = glassTransmission;
     runtime = new ConfigFighter({ scene:attitude, asset, config, globals:{glow:1,particleCount:1} });
     // Find the package's explicit protection shell, not hull accents that also
     // react to shield state. Keep immutable scales and re-evaluate its bindings
@@ -150,6 +154,9 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     hullStyle = style(runtime.group);
     prepareMaterials();
     view.updateAircraft(time);
+    if (batchCombatHull && nativeSpace && !equipment && asset.solid.userData.cleanAircraftSurface) {
+      hullBatches = createCombatHullBatches(asset.solid);
+    }
   };
   view.updateAircraft = (nextTime, options = {}) => {
     if (options.bank !== undefined) pose.bank = THREE.MathUtils.clamp(options.bank,-0.28,0.28);
@@ -188,7 +195,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     for (const { object, scale } of shieldNodes) object.scale.copy(scale).multiplyScalar(.94 + .06 * shieldStrength);
     view.fixedParts?.update();
   };
-  view._disposeVisuals = () => {disposeFixedParts();hullStyle?.dispose();hullStyle=null;equipment?.dispose();runtime?.dispose();equipment=null;runtime=null;view.runtime=null;shieldNodes=[];shieldMaterials=[];shieldBindings=[];};
+  view._disposeVisuals = () => {disposeFixedParts();disposeHullBatches();hullStyle?.dispose();hullStyle=null;equipment?.dispose();runtime?.dispose();equipment=null;runtime=null;view.runtime=null;shieldNodes=[];shieldMaterials=[];shieldBindings=[];};
   view.setPilot(pilotId);
   return view;
 }

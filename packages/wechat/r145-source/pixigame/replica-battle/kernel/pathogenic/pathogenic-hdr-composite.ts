@@ -61,7 +61,7 @@ export class PathogenicHdrComposite {
   configure(values:PathogenicBloomOptions){
     const {bloomLevels,prefilterBrightPixels,drawBaseIntoWorld,...profile}=values;
     if(drawBaseIntoWorld!==undefined)this.clearObject.setVisible(drawBaseIntoWorld);
-    if(bloomLevels!==undefined){if(!Number.isInteger(bloomLevels)||bloomLevels<2||bloomLevels>4)throw Error('Bloom levels must be 2, 3 or 4');this.bloomLevels=bloomLevels;}
+    if(bloomLevels!==undefined){if(!Number.isInteger(bloomLevels)||bloomLevels<1||bloomLevels>4)throw Error('Bloom levels must be between 1 and 4');this.bloomLevels=bloomLevels;}
     if(prefilterBrightPixels!==undefined&&prefilterBrightPixels!==this.prefilterBrightPixels){
       this.prefilterBrightPixels=prefilterBrightPixels;
       if(this.program||this.buffer){const gl=this.r.gl;if(!gl.isContextLost()){if(this.program)gl.deleteProgram(this.program);if(this.buffer)gl.deleteBuffer(this.buffer);}this.program=undefined;this.buffer=undefined;this.uniforms.clear();}
@@ -143,7 +143,8 @@ void main(){
     gl.uniform1f(this.uniform('uIntensity'),p.glowEnabled?p.intensity:0);
     gl.uniform1f(this.uniform('uDimensionCount'),this.dimensionCuts.length);
     if(this.dimensionCuts.length){
-      gl.uniform2f(this.uniform('uDimensionViewport'),this.scene.scale.width,this.scene.scale.height);
+      const {zoomX,zoomY}=this.scene.cameras.main;
+      gl.uniform2f(this.uniform('uDimensionViewport'),this.scene.scale.width/zoomX,this.scene.scale.height/zoomY);
       for(let i=0;i<this.dimensionCuts.length;i++){const cut=this.dimensionCuts[i];
         gl.uniform4fv(this.uniform(`uDimensionLine[${i}]`),cut.line);
         gl.uniform4fv(this.uniform(`uDimensionShape[${i}]`),cut.shape);
@@ -217,7 +218,8 @@ void main(){
         for(let i=this.up.length-1;i>=0;i--)this.pass(this.up[i],i===this.up.length-1?this.down[this.down.length-1].texture:this.up[i+1].texture,3,this.up[i].width,this.up[i].height);
       }
       this.bindResolve();
-      this.pass(null,this.profile.glowEnabled?this.up[0].texture:this.world!.texture,4,this.world!.width,this.world!.height);
+      const glow=this.up[0]??this.down[0];
+      this.pass(null,this.profile.glowEnabled?glow.texture:this.world!.texture,4,this.world!.width,this.world!.height);
       // Phaser's next multi-texture batch can declare every texture unit even
       // when a sprite only uses one. Do not leave its write target bound as an
       // input after the resolve, including the no-bloom path on unit zero.

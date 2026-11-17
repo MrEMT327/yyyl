@@ -40,20 +40,22 @@ export async function createProjectPresentation({ content, appearance, onError, 
   const createCanvas = host?.createCanvas ?? (() => document.createElement('canvas'));
   const aircraftCapture=host?.aircraftCapture;
   const measureTransfer=host?.measureTransfer;
+  const measureBattle=host?.measureBattle ?? ((_name,run)=>run());
   const budget = host?.viewport && createNativeBattleRenderBudget(host.viewport, content.world.width);
+  const compactAircraftEffects = Boolean(budget?.compactAircraftEffects);
   const aircraftTextureSize = budget?.aircraftTextureSize ?? 256;
   const terrainWidth = budget?.terrainWidth ?? WIDTH;
   const terrainHeight = budget?.terrainHeight ?? HEIGHT;
   const renderer = new THREE.WebGLRenderer({
     canvas: host ? createCanvas('webgl2') : undefined,
-    alpha: true, antialias: true, preserveDrawingBuffer: true,
+    alpha: true, antialias: !compactAircraftEffects, preserveDrawingBuffer: true,
   });
   onGraphicsContext?.(renderer.domElement, renderer.getContext());
   renderer.setPixelRatio(1); renderer.setSize(terrainWidth, terrainHeight, false);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   const aircraftRenderer = createCombatAircraftRenderer(renderer, aircraftTextureSize, aircraftTextureSize, { cullExhaustDepth: Boolean(budget) });
-  const aircraftFxRenderer = createAircraftFxRenderer(renderer);
+  const aircraftFxRenderer = createAircraftFxRenderer(renderer, { compactBloom: compactAircraftEffects });
   const surface = renderer.domElement;
   let disposed = false, fighter, scene, playerImage, playerTexture, worldTexture, pose, wingtipGraphics, wingtipHighlights, victoryGraphics, victoryBodyGraphics;
   let refreshAircraft, refreshTerrain, directAircraft, wakeComposite;
@@ -101,10 +103,10 @@ export async function createProjectPresentation({ content, appearance, onError, 
       width:pose?Math.max(pose.width,pose.height)*Math.abs(pose.scaleX):80,
       thrust:flightPose.thrust,rollActive:flightPose.rollActive});
   }
-  let weapons = [], weaponRevision = '', weaponsDirty = true, icons;
+  let mountedWeapons = weaponSkinLoadout(appearance.aircraft.id, []), mountKey = '[]', weaponsDirty = true, icons;
   const geometryFactory = (_catalogItem, item) => createWeaponForm(item.skin);
   function applyWeaponSkins() {
-    fighter.setFixedParts(weaponSkinLoadout(appearance.aircraft.id, weapons), { revision: weaponRevision, geometryFactory });
+    fighter.setFixedParts(mountedWeapons, { geometryFactory });
   }
   const worldScene = new THREE.Scene(), aircraftScene = new THREE.Scene();
   const camera = createBattleCamera(); camera.aspect = WIDTH / HEIGHT; camera.updateProjectionMatrix();
@@ -214,25 +216,29 @@ export async function createProjectPresentation({ content, appearance, onError, 
 
   // Seed the pixels before Phaser uploads its first player texture. A cold
   // aircraft must not defer shader compilation and its first draw to launch.
-  function renderAircraftTexture(visualClock, visualPose, displaySize = 0, defer = false) {
-    if(passivePose.enabled){
-      fighter.runtime.config.deploymentProgress=passivePose.progress;
-      fighter.runtime.config.deployed=passivePose.target;
-    }
-    updateFlightFighter(fighter, visualClock, visualPose);
-    renderer.setScissorTest(true); renderer.setScissor(0, 0, aircraftTextureSize, aircraftTextureSize);
-    renderer.setViewport(0, 0, aircraftTextureSize, aircraftTextureSize);
-    // The ordinary color pass already auto-clears. HDR disables auto-clear
-    // for its full-tile resolve, so clear that destination here.
-    renderer.setClearColor(0x000000, 0); renderWithAircraftStyle(renderer, () => {
-      const draw=()=>aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
-      if(fighter.runtime.asset.solid.userData.cleanAircraftSurface){
-        renderer.clear();
-        renderer.toneMappingExposure=.92;
-        aircraftFxRenderer.setColor(fighter.runtime.config.engineColor||'#66d7f0');
-        aircraftFxRenderer.render(draw,aircraftTextureSize,aircraftTextureSize);
+  function renderAircraftTexture(visualClock, visualPose, displaySize = 0, readbackMode = 'sync') {
+    measureBattle('aircraftDraw', () => {
+      if(passivePose.enabled){
+        fighter.runtime.config.deploymentProgress=passivePose.progress;
+        fighter.runtime.config.deployed=passivePose.target;
       }
-      else draw();
+      updateFlightFighter(fighter, visualClock, visualPose);
+      renderer.setScissorTest(true); renderer.setScissor(0, 0, aircraftTextureSize, aircraftTextureSize);
+      renderer.setViewport(0, 0, aircraftTextureSize, aircraftTextureSize);
+      // The ordinary color pass already auto-clears. HDR disables auto-clear
+      // for its full-tile resolve, so clear that destination here.
+      renderer.setClearColor(0x000000, 0); renderWithAircraftStyle(renderer, () => {
+        const lightweightWake = compactAircraftEffects && displaySize > 0 && frame.flight?.active &&
+          !launchPresentation && !passivePose.active && !frame.victoryDeparture;
+        const draw=()=>aircraftRenderer.render(aircraftScene, aircraftCamera, fighter, aircraftTextureSize, !lightweightWake);
+        if(fighter.runtime.asset.solid.userData.cleanAircraftSurface){
+          if(!compactAircraftEffects)renderer.clear();
+          renderer.toneMappingExposure=.92;
+          aircraftFxRenderer.setColor(fighter.runtime.config.engineColor||'#66d7f0');
+          aircraftFxRenderer.render(draw,aircraftTextureSize,aircraftTextureSize);
+        }
+        else draw();
+      });
     });
     const wake=displaySize>0?sampleCombatEngineWake(fighter,aircraftCamera,{
       clock:visualClock,displaySize,textureSize:aircraftTextureSize,thrust:visualPose.thrust,matricesReady:true,
@@ -241,7 +247,10 @@ export async function createProjectPresentation({ content, appearance, onError, 
       const gl=renderer.getContext(), size=aircraftTextureSize;
       const bounds=combatEngineWakeBounds(wake,size);
       let uploaded=false;
-      if(directAircraft?.ready(surface,gl,size)){
+      const useQueue=compactAircraftEffects && readbackMode!=='sync' && aircraftCapture.canQueue?.(gl);
+      // A canvas copy can report fast submission and still serialize the
+      // two renderers. Prefer the tested fence path while flying on a phone.
+      if(!useQueue && directAircraft?.ready(surface,gl,size)){
         uploaded=directAircraft.paint(surface,playerContext,size,()=>{
           if(bounds){
             wakeComposite??=createCombatWakeLayer(createCanvas);
@@ -255,7 +264,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
         directAircraftActive=true;
       }else{
         directAircraftActive=false;
-        const written=aircraftCapture.write(gl,playerContext,size,size,bounds,ctx=>drawCombatEngineWake(ctx,wake),defer);
+        const written=aircraftCapture.write(gl,playerContext,size,size,bounds,ctx=>drawCombatEngineWake(ctx,wake),readbackMode);
         if(written)refreshAircraft?.();
       }
     }else{
@@ -301,7 +310,10 @@ export async function createProjectPresentation({ content, appearance, onError, 
       assetBytes: host?.assetBytes,
     })).then(loaded), ...pendingTextures.map(task=>task.then(loaded))]);
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
-    fighter = createFighterView({ pilotId: appearance.aircraft.id, size: 1, nativeSpace: true });
+    // Transmissive glass draws the opaque model into an extra render target.
+    // For a small combat texture the canopy uses the material's reflections.
+    fighter = createFighterView({ pilotId: appearance.aircraft.id, size: 1, nativeSpace: true,
+      glassTransmission: compactAircraftEffects ? 0 : undefined, batchCombatHull: compactAircraftEffects });
     // The replica owns weapon identity and evolution. Saved host weapons
     // must never appear as extra pre-equipped guns.
     applyWeaponSkins();
@@ -345,11 +357,17 @@ export async function createProjectPresentation({ content, appearance, onError, 
     dispose,
     replaceTerrain,
     combatBloomLevels: budget?.combatBloomLevels,
+    get hasPendingAircraftFrame() { return Boolean(aircraftCapture?.hasPending); },
     setWeapons(next) {
-      const revision = JSON.stringify(next);
-      if (weaponRevision === revision || disposed) return;
-      weapons = next.map(weapon => Object.freeze({ ...weapon }));
-      weaponRevision = revision; applyWeaponSkins(); weaponsDirty = true;
+      if (disposed) return;
+      const loadout = weaponSkinLoadout(appearance.aircraft.id, next);
+      const key = JSON.stringify(loadout.weapons.map(({itemId, slots}) => [itemId, slots]));
+      // Skill and stat upgrades retain the same meshes for the same seats.
+      if (key === mountKey) return;
+      mountedWeapons = loadout;
+      mountKey = key;
+      applyWeaponSkins();
+      weaponsDirty = true;
     },
     weaponIcon(weapon) {
       return icons.get(weapon);
@@ -477,16 +495,22 @@ export async function createProjectPresentation({ content, appearance, onError, 
       updatePhantom(flightPose);
       const poseChanged=flightPoseNeedsRefresh(lastRenderedFlightPose,flightPose);
       const aircraftDue=(!aircraftCapture||pose?.visible)&&(aircraftElapsed<0||aircraftFrameDue||weaponsDirty||launchDirty||passiveDirty||poseChanged);
-      // Keep roll endpoints, weapon changes and restored frames immediate.
-      const immediate=weaponsDirty||launchDirty||poseChanged||frame.clock<lastAircraftClock||
+      // Give new poses priority. Texture initialization and scripted transitions
+      // still need their exact pixels within the current Phaser frame.
+      const forceTextureUpload=weaponsDirty||launchDirty||frame.clock<lastAircraftClock||
         passivePose.serial!==lastRenderedPassive?.serial||(!frame.flight?.active&&!launchPresentation);
+      const immediate=forceTextureUpload||poseChanged;
+      const pendingAircraft=aircraftCapture?.hasPending;
+      const aircraftCanWait=!immediate&&!scriptedPose&&(pendingAircraft||Boolean(pose&&aircraftDue));
       const deferred=budget?.deferOverlappingRender(frame.displayInterval,
-        Boolean(pose&&aircraftDue&&!immediate&&!scriptedPose),replaceTerrain&&terrainPriority==='regular');
+        aircraftCanWait,replaceTerrain&&terrainPriority==='regular',Boolean(pose&&aircraftDue&&immediate));
       const drawAircraft=aircraftDue&&deferred!=='aircraft';
-      const copied=drawAircraft&&immediate?false:aircraftCapture?.poll();
+      const copied=deferred==='aircraft'||drawAircraft&&immediate?undefined:aircraftCapture?.poll();
       if(copied===true)refreshAircraft?.();
-      const renderAircraft=pose&&drawAircraft&&copied!==null;
-      if(deferred==='terrain'&&renderAircraft)worldDue=false;
+      // Recover the latest pose if the queued read failed, even at a pause.
+      const retryAircraft=pendingAircraft&&copied===false&&pose?.visible;
+      const renderAircraft=pose&&(drawAircraft&&copied!==null||retryAircraft);
+      if(deferred==='terrain'&&(renderAircraft||copied===true))worldDue=false;
       let landmarks;
       if (worldDue) {
         const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
@@ -513,7 +537,11 @@ export async function createProjectPresentation({ content, appearance, onError, 
         // Rendering the aircraft overwrites part of the shared source canvas.
         // Phaser already holds the previous complete background texture.
         worldSurfaceReady=false;
-        renderAircraftTexture(visualClock, visualPose, Math.max(pose.width, pose.height), !immediate);
+        let readbackMode = 'async';
+        const livePhonePose = compactAircraftEffects && frame.flight?.active && !scriptedPose;
+        if (retryAircraft || (forceTextureUpload && !livePhonePose) || (poseChanged && scriptedPose)) readbackMode = 'sync';
+        else if (immediate) readbackMode = 'async-replace';
+        renderAircraftTexture(visualClock, visualPose, Math.max(pose.width, pose.height), readbackMode);
         lastAircraftClock = frame.clock; lastAircraftVisualClock = visualClock; weaponsDirty = false;launchDirty=false;
       }
       updateWingtipTrails(flightPose);
@@ -524,7 +552,8 @@ export async function createProjectPresentation({ content, appearance, onError, 
       }
       if (!worldDue) return;
       renderer.setScissorTest(false); renderer.setViewport(0, 0, terrainWidth, terrainHeight);
-      renderer.setClearColor(selectedScene.ground, 1); renderer.render(worldScene, coastCamera || camera);
+      renderer.setClearColor(selectedScene.ground, 1);
+      measureBattle('terrainDraw', () => renderer.render(worldScene, coastCamera || camera));
       // The complete frame is a Phaser background texture, so original ADD /
       // SUBTRACT FX blend against the actual scene instead of a separate DOM canvas.
       worldSurfaceReady=true;

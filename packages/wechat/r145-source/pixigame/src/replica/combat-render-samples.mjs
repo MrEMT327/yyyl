@@ -3,10 +3,17 @@ const STEP=2184/65536,clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const MOVING=new Set(['MoveStraight','MoveSnake','MoveDiffusion']);
 export class CombatRenderSamples {
   constructor(){this.run=null;this.clock=null;this.phase=null;this.time=0;this.alpha=1;this.revision=0;this.records=new WeakMap();}
-  beginFrame(clock,run,phase,delta){
+  beginFrame(clock,run,phase,delta,interpolationFraction){
     const reset=this.run!==run||this.clock===null||clock<this.clock||clock-this.clock>.25;
     if(reset){this.records=new WeakMap();this.time=clock;this.alpha=1;}
-    else if(phase==='playing')this.time=Math.min(clock,Math.max(this.time,clock-STEP)+clamp(Number.isFinite(delta)?delta:0,0,.1));
+    else if(phase==='playing'){
+      if(Number.isFinite(interpolationFraction)){
+        // The fixed-step accumulator is the time left after the latest tick.
+        // Use it directly so equally spaced screen frames move equally far.
+        const interpolated=clock-STEP+STEP*clamp(interpolationFraction,0,1);
+        this.time=Math.min(clock,Math.max(this.time,interpolated));
+      }else this.time=Math.min(clock,Math.max(this.time,clock-STEP)+clamp(Number.isFinite(delta)?delta:0,0,.1));
+    }
     if(reset||clock!==this.clock||phase!==this.phase)this.revision++;
     this.run=run;this.clock=clock;this.phase=phase;this.alpha=clamp(1-(clock-this.time)/STEP,0,1);
     return this.time;

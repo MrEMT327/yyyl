@@ -1,5 +1,5 @@
 import { captureBattleCheckpoint } from '../../../src/replica/battle-checkpoint.js';
-import { createBattlePerformanceSource } from '../../../src/replica/battle-performance.js';
+import { BATTLE_WORK_PHASES, createBattlePerformanceSource } from '../../../src/replica/battle-performance.js';
 import { createBattleDiagnosticsView } from './battle-diagnostics-view.js';
 import { createDomFramePerformance } from './dom-frame-performance.js';
 import { getWechatTransport } from './transport.js';
@@ -61,11 +61,22 @@ function createCadence() {
   // One millisecond bins retain whole-run percentiles without storing frames.
   const bins = new Uint32Array(501);
   let count = 0, total = 0, max = 0, over34 = 0, over50 = 0, over100 = 0;
+  let seconds = 0, secondFrames = 0, secondsAtTarget = 0;
   return {
     add(ms) {
       if (ms <= 0 || !Number.isFinite(ms)) return;
       bins[Math.min(500, Math.round(ms))]++;
       count++; total += ms; max = Math.max(max, ms);
+      // Count full seconds of active play, including seconds crossed by a stall.
+      const elapsedSeconds = Math.floor(total / 1000);
+      if (elapsedSeconds === seconds) secondFrames++;
+      else {
+        const endsOnBoundary = total === elapsedSeconds * 1000;
+        if (endsOnBoundary && elapsedSeconds === seconds + 1) secondFrames++;
+        if (secondFrames >= 56) secondsAtTarget++;
+        seconds = elapsedSeconds;
+        secondFrames = endsOnBoundary ? 0 : 1;
+      }
       if (ms > 34) over34++;
       if (ms > 50) over50++;
       if (ms > 100) over100++;
@@ -81,6 +92,7 @@ function createCadence() {
         return 500;
       };
       return { intervals: count, fps: round(count * 1000 / total), meanMs: round(total / count),
+        fps56: { seconds, passed: secondsAtTarget },
         p50Ms: percentile(.5), p95Ms: percentile(.95), p99Ms: percentile(.99), maxMs: round(max), over34, over50, over100 };
     },
   };
@@ -170,7 +182,16 @@ export function createBattleDiagnostics(api, { buildId, cdnBase, iosPerformanceM
       engine: frame?.count ? { fps: frame.active && frame.mean ? round(1000 / frame.mean) : null,
         frameP95Ms: round(frame.p95), frameMaxMs: round(frame.max),
         updateP95Ms: round(engine.costs.update.p95), renderP95Ms: round(engine.costs.render.p95),
+        workP95Ms: Object.fromEntries(BATTLE_WORK_PHASES.filter(name => engine.costs[name]?.count)
+          .map(name => [name, round(engine.costs[name].p95)])),
+        ...(engine.peakFrame ? {peakFrame: {
+          ...engine.peakFrame,
+          ...Object.fromEntries(['gapMs','waitMs','updateMs','renderMs','presentMs'].map(name=>[name,round(engine.peakFrame[name])])),
+          work: Object.fromEntries(Object.entries(engine.peakFrame.work).map(([name,value])=>[name,round(value)])),
+        }} : {}),
         drawCalls: engine.rendering.available ? round(engine.rendering.calls) : null,
+        drawContexts: engine.contexts.filter(context => context.available && Number.isFinite(context.calls))
+          .map(context => ({name:context.name,calls:round(context.calls),triangles:round(context.triangles)})),
         triangles: engine.rendering.available ? round(engine.rendering.triangles) : null } : null,
       ui: compat ? { hostLayoutP95Ms: compat.host.layout?.p95, hostPaintP95Ms: compat.host.paint?.p95,
         battleLayoutP95Ms: compat.battle.layout?.p95, battlePaintP95Ms: compat.battle.paint?.p95,

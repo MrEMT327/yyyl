@@ -8,7 +8,9 @@ import {createDomPainter} from '../wechat/src/full/dom-painter.js';
 import {createDomAnimations} from '../wechat/src/full/dom-animation.js';
 import {createDomFramePerformance} from '../wechat/src/full/dom-frame-performance.js';
 import {attachDomInput} from '../wechat/src/full/dom-input.js';
+import {createBattleDiagnostics} from '../wechat/src/full/battle-diagnostics.js';
 import {compileSharedCss} from '../wechat/tools/compile-shared-css.mjs';
+import {installBattleCheckpoint} from '../src/replica/battle-checkpoint.js';
 import {createStartupScreen} from '../src/ui/startup-screen.js';
 import {notifyOwnedCanvasFrame} from '../src/ui/release-owned-canvas.js';
 
@@ -416,4 +418,89 @@ test('profile separates layout from paint and nested touch, with a bounded frame
   profile.closeFrame('battle');profile.closeFrame('battle');
   assert.equal(profile.snapshot().phases.battle.frames,2);
   assert.equal(profile.snapshot().phases.battle.host.inputActiveP95,null);
+});
+
+test('a slow battle frame keeps recording in a WeChat host without global CustomEvent',t=>{
+  const f=fixture('<iframe id="sortie" class="replica-battle-frame" src="'+url+'battle?chapter=1"></iframe>','');
+  f.host.install();
+  const frame=f.get('sortie');
+  const battleWindow=new f.host.window.EventTarget();
+  battleWindow.CustomEvent=f.host.window.CustomEvent;
+  let sampling;
+  battleWindow.postMessage=data=>{sampling=data;};
+  Object.defineProperty(frame,'contentWindow',{value:battleWindow});
+  installBattleCheckpoint(()=>({wave:2}),battleWindow);
+
+  let clock=0,timer,saved;
+  f.host.scope.setInterval=run=>{timer=run;return 1;};
+  f.host.scope.clearInterval=()=>{timer=undefined;};
+  f.host.api.setStorageSync=(_key,value)=>{saved=JSON.parse(value.slice(value.indexOf('\n')+1));};
+  t.mock.method(console,'info',()=>{});
+  const diagnostics=createBattleDiagnostics(f.host.api,{now:()=>clock,buildId:'test-build'});
+  const eventDescriptor=Object.getOwnPropertyDescriptor(globalThis,'CustomEvent');
+  try {
+    delete globalThis.CustomEvent;
+    diagnostics.attach(f.host,{top:8,left:8});
+    diagnostics.enter(frame);
+    diagnostics.message(frame,{channel:'shnh-replica-battle-v1',type:'control-ready'});
+    const control=f.get('wechat-battle-performance-record');
+    f.host.emit(control,'click');
+    const log=f.get('wechat-battle-performance-log');
+    const start=[...log.querySelectorAll('button')].find(button=>button.textContent==='开始录制');
+    f.host.emit(start,'click');
+    assert.equal(f.get('wechat-battle-performance-log'),null);
+    assert.equal(control.textContent,'停止并查看');
+
+    diagnostics.presented(frame,clock);
+    clock=41;
+    diagnostics.presented(frame,clock);
+    for(clock=57;clock<1000;clock+=16) diagnostics.presented(frame,clock);
+    clock=1000;
+    diagnostics.presented(frame,clock);
+    clock=3120;
+    diagnostics.presented(frame,clock);
+    const cost = p95 => ({count:1,mean:p95,p95,max:p95});
+    f.host.emit(f.host.window,'message',{
+      origin:f.host.scope.location.origin,source:battleWindow,
+      data:{...sampling,type:'sample',metrics:{
+        frames:{battle:{...cost(24),active:true,samples:[24]}},
+        costs:{update:cost(12),render:cost(5),frame:cost(17),simulation:cost(2),aircraftDraw:cost(8),terrainDraw:cost(4)},
+        rendering:{available:true,frame:1,calls:150,triangles:80000},
+        contexts:[{name:'Phaser',available:true,calls:80,triangles:4200},
+          {name:'场景3D',available:true,calls:70,triangles:75800},{name:'界面3D',available:true,calls:0,triangles:0}],
+      }},
+    });
+    timer();
+    f.host.emit(control,'click');
+
+    assert.equal(saved.recording.playingPresentation.intervals,62);
+    assert.deepEqual(saved.recording.playingPresentation.fps56,{seconds:3,passed:1});
+    assert.deepEqual(saved.recording.frameSpikes[0],{atMs:3120,gapMs:2120,wave:2});
+    assert.equal(saved.recording.recentSamples[0].wave,2);
+    assert.deepEqual(saved.recording.recentSamples[0].engine.workP95Ms,{simulation:2,aircraftDraw:8,terrainDraw:4});
+    assert.deepEqual(saved.recording.recentSamples[0].engine.drawContexts,[{name:'Phaser',calls:80,triangles:4200},
+      {name:'场景3D',calls:70,triangles:75800},{name:'界面3D',calls:0,triangles:0}]);
+    assert.equal(timer,undefined);
+
+    let copied;
+    f.host.api.setClipboardData=({data,success,fail})=>{
+      if(data.startsWith('{'))fail({errMsg:'setClipboardData:fail fixture'});
+      else {copied=data;success();}
+    };
+    const report=f.get('wechat-battle-performance-log');
+    const copy=[...report.querySelectorAll('button')].find(button=>button.textContent==='复制日志');
+    f.host.emit(copy,'click');
+    assert.equal(copy.textContent,'复制摘要');
+    assert.match(report.textContent,/setClipboardData:fail fixture/);
+    f.host.emit(copy,'click');
+    assert.equal(copy.textContent,'摘要已复制');
+    assert.match(copied,/test-build/);
+    assert.match(copied,/每秒达到 56 FPS 33\.3% · 1\/3 秒/);
+    assert.match(copied,/模拟 2 ms · 战机 3D 8 ms · 地形 3D 4 ms/);
+    assert.match(copied,/Phaser 80 · 场景3D 70 · 界面3D 0 次\/帧/);
+  } finally {
+    if(eventDescriptor)Object.defineProperty(globalThis,'CustomEvent',eventDescriptor);
+    diagnostics.destroy();
+    f.close();
+  }
 });

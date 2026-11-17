@@ -15,9 +15,17 @@ import {installMissingSourceTexture,queueSourceTexture} from './source-texture-r
 
 type Any = Record<string,any>;
 type SharedTexture={ref:Any;installed:ReturnType<PathogenicMaterials["installTexture"]>;textureKey:string;source:Phaser.Textures.TextureSource};
-type SharedMaterial={resolved?:ReturnType<PathogenicMaterials["resolve"]>;texture?:SharedTexture};
+type SharedMaterial={resolved?:ReturnType<PathogenicMaterials["resolve"]>;batchTextures?:boolean;texture?:SharedTexture};
 const PLAIN={path:'pathogenic-source-canvas',code:'shader_type canvas_item; render_mode unshaded; void fragment() {}'};
 const MULTIPLY=[1,0,0,1,0,0];
+function outsideViewport(points:Any[],width:number,height:number) {
+  let left=true,right=true,above=true,below=true;
+  for(const {position:[x,y]} of points){
+    left&&=x < -1;right&&=x > width+1;above&&=y < -1;below&&=y > height+1;
+    if(!left&&!right&&!above&&!below)return false;
+  }
+  return left||right||above||below;
+}
 type ParticleDraw={item:Any;matrix:number[];local:number[];color:number[];rect:number[]};
 class SourceMesh extends Phaser.GameObjects.Mesh {
   shaderData?:Any;spriteShape?:Any;particleDraw?:ParticleDraw;
@@ -51,6 +59,7 @@ export class PathogenicSceneView {
   private liveHistories=new Set<string>();
   private cameraOffset=[0,0];
   private clock=0;
+  private renderScale=1;
   private materials?:PathogenicMaterials;
   private displaySettings?:Readonly<PathogenicBloomOptions>;
   private snapshot?:PathogenicScreenSnapshot;
@@ -110,6 +119,7 @@ export class PathogenicSceneView {
     return Promise.all(tasks).then(()=>{});
   }
   setCameraOffset(x:number,y:number){this.cameraOffset=[x,y];}
+  setRenderScale(scale:number){this.renderScale=scale;}
   configureDisplay(settings:Readonly<PathogenicBloomOptions>){
     this.display?.configure(settings);this.displaySettings={...settings};
   }
@@ -218,9 +228,16 @@ export class PathogenicSceneView {
       installed=this.materials!.installTexture(item.texture);textureKey=installed.key;source=this.scene.textures.get(textureKey).source[0];
       if(sharedMaterial)sharedMaterial.texture={ref:item.texture,installed,textureKey,source};
     }
-    const resolved=sharedMaterial?.resolved??this.materials!.resolveForRender(item.material,item.materialUniformOverrides);
-    if(sharedMaterial)sharedMaterial.resolved=resolved;
+    const batchTextures=!installed.binding.premultiplied&&!installed.binding.texture.pathogenicManualLinear&&item.textureRepeat!==2;
+    const resolved=sharedMaterial?.batchTextures===batchTextures&&sharedMaterial.resolved
+      ||this.materials!.resolveForRender(item.material,item.materialUniformOverrides,batchTextures);
+    if(sharedMaterial){sharedMaterial.resolved=resolved;sharedMaterial.batchTextures=batchTextures;}
     const pipeline=resolved.registration;
+    if(pipeline.program.batchTextures){
+      if(!m.every(Number.isFinite))throw new SourceCoverageError([{code:'non-finite-sprite-transform',key}]);
+      if(this.renderScale!==1&&outsideViewport(geometry.vertices,this.scene.scale.width/this.renderScale,
+        this.scene.scale.height/this.renderScale))return;
+    }
     let view=this.views.get(key);
     if(!view){view=this.meshPool.acquire(()=>{const mesh=new SourceMesh(this.scene,0,0,textureKey);mesh.hideCCW=false;mesh.ignoreDirtyCache=true;this.scene.add.existing(mesh);return mesh;});this.views.set(key,view!);}
     const depth=(presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001;
@@ -235,7 +252,8 @@ export class PathogenicSceneView {
       view.shaderData=createSourceMeshShaderData();
       view.setData('pathogenicShader',view.shaderData);
     }
-    updateSourceMeshShaderData(view.shaderData,item,source,time,line,gain,presentation.presentationOpacity??1,projectilePalette,installed,resolved);
+    updateSourceMeshShaderData(view.shaderData,item,source,time,line,gain,presentation.presentationOpacity??1,projectilePalette,
+      installed,resolved,this.renderScale,pipeline.program.batchTextures);
     if(view.getPipelineName()!==pipeline.key)view.setPipeline(pipeline.key);
     view.refresh();this.live.add(key);
   }

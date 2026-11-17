@@ -1,6 +1,8 @@
 const stages = [['data', '关卡数据'], ['appearance', '机体外观'], ['interface', '战斗界面'], ['textures', '战斗贴图']];
 const requestStates = { active: '下载中', queued: '排队中', 'retry-wait': '等待重试' };
 const performanceModes = { normal: '常规', 'high-performance': '高性能', 'high-performance-plus': '高性能+' };
+const battleWorkNames = { simulation: '模拟', aircraftDraw: '战机 3D', terrainDraw: '地形 3D',
+  enemyVisual: '敌机更新', projectileVisual: '弹幕更新', interfaceDraw: '界面 3D', screenPresent: '屏幕合成' };
 const transferNames = {
   battleBlit: '战景合成', battleSnapshot: '战景快照', frozenBattleBlit: '冻结画面合成', isolatedFrameCopy: '子画布合成',
   aircraftRead: '战机像素读取', aircraftReadSubmit: '读取提交', aircraftReadCopy: '读取拷贝',
@@ -170,11 +172,18 @@ function frames({ recording }) {
   const lines = [];
   function cadence(label, stats) {
     if (!stats) return;
+    const thresholds = Number.isFinite(stats.over34) ? '34/50/100' : '50/100';
+    const over = [stats.over34, stats.over50, stats.over100].filter(Number.isFinite).join('/');
     lines.push(label + ' ' + fps(stats.fps) + ' · ' + stats.intervals + ' 个帧间隔',
       'P50 ' + ms(stats.p50Ms) + ' · P95 ' + ms(stats.p95Ms) + ' · P99 ' + ms(stats.p99Ms),
-      '峰值 ' + ms(stats.maxMs) + ' · 超 50/100 ms ' + stats.over50 + '/' + stats.over100 + ' 帧', '');
+      '峰值 ' + ms(stats.maxMs) + ' · 超 ' + thresholds + ' ms ' + over + ' 帧', '');
   }
   cadence('实际呈现', recording.playingPresentation);
+  const target = recording.playingPresentation?.fps56;
+  if (target?.seconds) {
+    const percent = Math.round(target.passed * 1000 / target.seconds) / 10;
+    lines.push(`每秒达到 56 FPS ${percent}% · ${target.passed}/${target.seconds} 秒`, '');
+  }
   cadence('屏幕回调', recording.playingScreenCallbacks);
   if (!lines.length) lines.push('尚无可用帧率样本', '');
   if (recording.frameSpikes?.length) {
@@ -190,11 +199,25 @@ function frames({ recording }) {
     lines.push('');
   }
   const sampled = [...(recording.slowestSamples ?? []), ...(recording.recentSamples ?? []).slice().reverse()];
-  const engine = sampled.find(row => row.engine)?.engine;
+  const reference = sampled.find(row => row.engine);
+  const engine = reference?.engine;
   if (engine) {
-    lines.push('引擎近期样本 ' + fps(engine.fps), '引擎帧间隔 P95 ' + ms(engine.frameP95Ms),
-      '逻辑 P95 ' + ms(engine.updateP95Ms) + ' · 渲染 P95 ' + ms(engine.renderP95Ms));
+    const wave = reference.wave ? ' · 第 ' + reference.wave + ' 波时采样' : '';
+    lines.push('引擎样本 ' + fps(engine.fps) + wave, '引擎帧间隔 P95 ' + ms(engine.frameP95Ms),
+      '更新 P95 ' + ms(engine.updateP95Ms) + ' · 渲染 P95 ' + ms(engine.renderP95Ms));
+    const work = Object.entries(battleWorkNames).flatMap(([key,label]) =>
+      Number.isFinite(engine.workP95Ms?.[key]) ? [label + ' ' + ms(engine.workP95Ms[key])] : []);
+    if (work.length) lines.push('有调用的样本 P95', work.join(' · '));
+    const peak=engine.peakFrame;
+    if(peak){
+      lines.push('该阶段最慢引擎帧 ' + ms(peak.gapMs) + ' · 敌机 ' + peak.enemies + ' · 弹幕 ' + peak.projectiles,
+        '帧前等待 ' + ms(peak.waitMs) + ' · 更新 ' + ms(peak.updateMs) + ' · 渲染 ' + ms(peak.renderMs) + ' · 合成 ' + ms(peak.presentMs));
+      const peakWork=Object.entries(peak.work).filter(([key])=>key!=='screenPresent'&&battleWorkNames[key])
+        .sort(([,a],[,b])=>b-a).slice(0,3).map(([key,value])=>battleWorkNames[key]+' '+ms(value));
+      if(peakWork.length)lines.push(peakWork.join(' · '));
+    }
     if (Number.isFinite(engine.drawCalls)) lines.push('每帧绘制调用 ' + engine.drawCalls + ' · 三角面 ' + engine.triangles);
+    if (engine.drawContexts?.length) lines.push(engine.drawContexts.map(row => row.name + ' ' + row.calls).join(' · ') + ' 次/帧');
   } else lines.push('本次未收到引擎样本');
   const ui = recording.compatibility?.phases?.battle;
   if (ui?.frames) {
@@ -256,8 +279,30 @@ export function createBattleDiagnosticsView(host, { top, bottom, refresh, start 
   const actions = element('div', 'display:flex;flex-direction:row;column-gap:8px;flex-shrink:0');
   const refreshButton = button('刷新加载', refresh);
   const startButton = button('开始录制', start);
-  actions.append(refreshButton, startButton);
-  panel.append(header, detail, tabs, scroll, actions);
+  const copyError = element('div', 'display:block;flex-shrink:0;font-size:11px;line-height:14px;color:#ffb9b2;overflow-wrap:anywhere');
+  let copySummary = false;
+  const copyButton = button('复制日志', () => {
+    const copiedReport = report;
+    const summary = copySummary;
+    const isCurrent = () => report === copiedReport && copySummary === summary;
+    const fail = error => {
+      if (!isCurrent()) return;
+      copyError.textContent = String(error?.errMsg || error?.message || '剪贴板写入失败').slice(0, 160);
+      copyError.hidden = false;
+      copySummary = true;
+      copyButton.textContent = summary ? '重试复制摘要' : '复制摘要';
+    };
+    const data = summary ? [detail.textContent, frames(copiedReport)].join('\n\n') : JSON.stringify(copiedReport);
+    try {
+      host.api.setClipboardData({ data, fail, success() {
+        if (!isCurrent()) return;
+        copyError.hidden = true;
+        copyButton.textContent = summary ? '摘要已复制' : '已复制';
+      } });
+    } catch (error) { fail(error); }
+  });
+  actions.append(refreshButton, startButton, copyButton);
+  panel.append(header, detail, tabs, scroll, actions, copyError);
   screen.append(panel);
   let report, page = 0;
 
@@ -272,6 +317,9 @@ export function createBattleDiagnosticsView(host, { top, bottom, refresh, start 
     show(next) {
       report = next;
       const { environment, sortie, recording, buildId } = next;
+      copySummary = false;
+      copyError.hidden = true;
+      copyButton.textContent = '复制日志';
       title.textContent = recording ? '局内性能日志' : '出击加载日志';
       const status = sortie.controlReady ? '可操作' : '加载中';
       detail.textContent = [
@@ -289,7 +337,8 @@ export function createBattleDiagnosticsView(host, { top, bottom, refresh, start 
     setActions({ canRefresh, canRecord }) {
       refreshButton.hidden = !canRefresh || Boolean(report?.recording);
       startButton.hidden = !canRecord;
-      actions.hidden = refreshButton.hidden && startButton.hidden;
+      copyButton.hidden = !report?.recording;
+      actions.hidden = refreshButton.hidden && startButton.hidden && copyButton.hidden;
     },
     close,
   };

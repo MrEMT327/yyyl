@@ -165,9 +165,10 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   lifetime.add(() => graphics.destroy());
   const watchGraphics=(canvas:HTMLCanvasElement,context:WebGLRenderingContext|WebGL2RenderingContext)=>{graphics.watch(canvas,context);battlePerformance.watch(canvas,context);};
   reportLoading('appearance',0);
+  const skinHost = platform.skinHost && { ...platform.skinHost, measureBattle: battlePerformance.measure };
   const appearanceReady = createAppearance(content, appearance, fail, watchGraphics,
     (completed,total)=>reportLoading('appearance',completed/total),
-    ()=>audio.effect('project:flight-roll',.22,.5),platform.skinHost,aircraftReady).then(skin => {
+    ()=>audio.effect('project:flight-roll',.22,.5),skinHost,aircraftReady).then(skin => {
       lifetime.add(() => skin.dispose());
       return skin;
     });
@@ -206,6 +207,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     memoryCheckpoint('battle-textures-ready');
     ui.update(); send('ready');
   }, skin, undefined, imagePlan, optimizeChapterOne, Boolean(platform.warmBattleImages) && !developerMode);
+  scene.beginMeasure = battlePerformance.beginMeasure;
   ui = new BattleHudFlow(stage, sim, audio, () => {
     audio.pause();
     const result=currentRunId&&!reported ? battleResult(sim.phase!=='won'&&sim.phase!=='lost') : undefined;
@@ -243,7 +245,8 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
       ui.update(); reportPhase();
     };
     reportLoading('interface',0);
-    const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,requestDiamondRevive,aircraftId:appearance.aircraft?.id,onGraphicsContext:watchGraphics});
+    const cloud = await mountCloudCombat({stage,ui,sim,audio,signal:lifetime.signal,requestReviveAd,requestDiamondRevive,
+      aircraftId:appearance.aircraft?.id,onGraphicsContext:watchGraphics,measureBattle:battlePerformance.measure});
     cloudFrame=cloud.frame;
     applySettlement=receipt=>cloud.setSettlement(receipt);
     lifetime.add(() => {applySettlement=undefined;receiveReviveAd=undefined;cloud.destroy();});
@@ -322,7 +325,11 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   const checkpoint = installBattleCheckpoint(() => currentRunId ? battleResult(sim.phase !== 'won' && sim.phase !== 'lost') : null,window);
   lifetime.add(() => checkpoint.freeze());
   const reportPhase = () => {
-    if (sim.phase !== lastPhase) { lastPhase = sim.phase; send('phase', { phase: lastPhase }); }
+    if (sim.phase !== lastPhase) {
+      lastPhase = sim.phase;
+      battlePerformance.resetPhase();
+      send('phase', { phase: lastPhase });
+    }
     if (!reported && currentRunId && (sim.phase === 'won' || sim.phase === 'lost')) {
       reported = true;
       send('result', {result:battleResult()});
@@ -332,10 +339,28 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   // by sound/music delivery and the combat interface.
   const logicStep = 1 / nativeLogicRate;
   const nativeDelta = nativeLogicDelta;
-  let backgroundRunId = sim.runId;
+  const advanceSimulation = () => {
+    while (accumulated >= logicStep && sim.phase === 'playing') {
+      const viewCamera = scene.cameraPosition;
+      const movement = controls.read(nativeDelta, content.world.width, content.world.height, sim.playerMovementSpeed,
+        { x: sim.player.x, y: -sim.player.z }, sim.playerMovementBounds, { x: viewCamera.x, y: -viewCamera.z });
+      if(waitingForMovement){
+        if(Math.hypot(movement.x,movement.y)<1e-6){accumulated-=logicStep;continue;}
+        waitingForMovement=false;movementGuide.show(false);
+        sim.step(nativeDelta, {x:movement.x,z:-movement.y,dirX:movement.dirX,dirZ:movement.dirZ,rawX:movement.rawX});
+        pendingGuides.add(1);guideRetryAt=0;flushGuides();
+      } else sim.step(nativeDelta, { x: movement.x, z: -movement.y, dirX: movement.dirX, dirZ: movement.dirZ, rawX: movement.rawX });
+      accumulated -= logicStep;
+    }
+  };
+  let presentationRunId = sim.runId;
   scene.onFrame = delta => cloudFrame(() => {
     if (lifetime.disposed) return;
-    if (backgroundRunId !== sim.runId) { backgroundRunId = sim.runId; scene.coastBackgroundTime = 0; }
+    if (presentationRunId !== sim.runId) {
+      presentationRunId = sim.runId;
+      scene.coastBackgroundTime = 0;
+      scene.combatRenderFraction = undefined;
+    }
     if (!activity!.enforce()) { accumulated = 0; return; }
     // The visual-only takeoff keeps its authored wall-clock duration even
     // when Phaser smooths a 30 Hz browser frame down toward 16.7 ms.
@@ -352,20 +377,11 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
       accumulated = 0; controls.clear(); sim.advanceResultPresentation(Math.min(delta / 1000, .1)); syncWeaponSkins(); ui.update(); reportPhase(); return;
     }
     accumulated += Math.min(delta / 1000, 0.1);
-    while (accumulated >= logicStep && sim.phase === 'playing') {
-      const viewCamera = scene.cameraPosition;
-      const movement = controls.read(nativeDelta, content.world.width, content.world.height, sim.playerMovementSpeed,
-        { x: sim.player.x, y: -sim.player.z }, sim.playerMovementBounds, { x: viewCamera.x, y: -viewCamera.z });
-      if(waitingForMovement){
-        if(Math.hypot(movement.x,movement.y)<1e-6){accumulated-=logicStep;continue;}
-        waitingForMovement=false;movementGuide.show(false);
-        sim.step(nativeDelta, {x:movement.x,z:-movement.y,dirX:movement.dirX,dirZ:movement.dirZ,rawX:movement.rawX});
-        pendingGuides.add(1);guideRetryAt=0;flushGuides();
-      } else sim.step(nativeDelta, { x: movement.x, z: -movement.y, dirX: movement.dirX, dirZ: movement.dirZ, rawX: movement.rawX });
-      accumulated -= logicStep;
-    }
-    if (sim.phase === 'playing' && !waitingForMovement)
+    if (accumulated >= logicStep) battlePerformance.measure('simulation', advanceSimulation);
+    if (sim.phase === 'playing' && !waitingForMovement) {
+      scene.combatRenderFraction = accumulated / logicStep;
       scene.coastBackgroundTime = smoothCoastTime(sim.time, accumulated, logicStep, nativeDelta, scene.coastBackgroundTime);
+    }
     ui.update();
     for (const id of sim.sounds) {
       const cue = combatCues[id];
@@ -402,16 +418,20 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     frameReuse = createBattleFrameReuse({
       getRunId: () => currentRunId,
       canFreeze: () => !lifetime.disposed && !document.hidden && !launch.active &&
-        (sim.phase === 'paused' || sim.phase === 'upgrade') && !graphics.blocked(),
+        (sim.phase === 'paused' || sim.phase === 'upgrade') && !skin.hasPendingAircraftFrame && !graphics.blocked(),
       capture: frozenFrame.capture,
       updateOverlay(delta) {
-        scene.onFrame?.(delta);
-        frozenFrame.present();
+        try {
+          scene.onFrame?.(delta);
+          frozenFrame.present();
+        } finally {
+          battlePerformance.finishOverlayFrame();
+        }
       },
     });
     document.addEventListener('visibilitychange',frameReuse.invalidate,{signal:lifetime.signal});
   }
-  const game = makeGame(scene,platform.canvas,frameReuse?.install);
+  const game = makeGame(scene,platform.canvas,frameReuse?.install,platform.skinHost?.viewport);
   lifetime.add(() => {
     scene.onFrame = undefined;
     disposeNativeGame(game, () => scene.releaseBattleVisuals());
@@ -420,7 +440,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   // sortie has rendered. Acknowledge after drawing under the loading cover.
   game.events.on('postrender', (renderer: unknown) => {
     if(!renderer || lifetime.disposed || document.hidden || graphics.blocked())return;
-    if(platform.presentFrame?.()!==false)frameReuse?.presented();
+    if(battlePerformance.measure('screenPresent',()=>platform.presentFrame?.())!==false)frameReuse?.presented();
     if(!firstFrame)return;
     const rendered=firstFrame;firstFrame=undefined;
     send('started',rendered);

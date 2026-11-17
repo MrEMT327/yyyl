@@ -4,7 +4,11 @@ export function inverseMatrix(m,out=new Array(6)){
  const [a,b,c,d,x,y]=m,det=a*d-b*c;if(!Number.isFinite(det)||Math.abs(det)<1e-12)throw Error('Singular source transform');
  out[0]=d/det;out[1]=-b/det;out[2]=-c/det;out[3]=a/det;out[4]=(c*y-d*x)/det;out[5]=(b*x-a*y)/det;return out;
 }
-export function matrix3(m,out=new Array(9)){const [a,b,c,d,x,y]=m;out[0]=a;out[1]=b;out[2]=0;out[3]=c;out[4]=d;out[5]=0;out[6]=x;out[7]=y;out[8]=1;return out;}
+export function matrix3(m,out=new Array(9),linearScale=1,translationScale=linearScale){
+ const [a,b,c,d,x,y]=m;
+ out[0]=a*linearScale;out[1]=b*linearScale;out[2]=0;out[3]=c*linearScale;out[4]=d*linearScale;out[5]=0;
+ out[6]=x*translationScale;out[7]=y*translationScale;out[8]=1;return out;
+}
 export function matrix4(m,out=new Array(16)){const [a,b,c,d,x,y]=m;out[0]=a;out[1]=b;out[2]=0;out[3]=0;out[4]=c;out[5]=d;out[6]=0;out[7]=0;out[8]=0;out[9]=0;out[10]=1;out[11]=0;out[12]=x;out[13]=y;out[14]=0;out[15]=1;return out;}
 export function spriteGeometry(sprite,out){
  const [x,y,w,h]=sprite.localRect,m=sprite.matrix,t=sprite.texture,crop=t.crop;

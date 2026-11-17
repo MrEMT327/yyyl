@@ -1,4 +1,4 @@
-import { createAircraftReadback } from './aircraft-readback.js';
+import {createAircraftReadback, supportsAircraftReadback} from './aircraft-readback.js';
 
 let straightChannels;
 function alphaLookup() {
@@ -95,11 +95,19 @@ export function createNativeFrameCapture(api,measureTransfer) {
     }
   }
   return {
-    write(gl, target, nextWidth, nextHeight, wake, paintWake, defer = false) {
+    get hasPending() { return pending != null; },
+    canQueue(gl) { return !disposed && (gl!==glContext || readback!==null) && supportsAircraftReadback(gl); },
+    write(gl, target, nextWidth, nextHeight, wake, paintWake, readbackMode = 'sync') {
       if (disposed || gl.isContextLost?.()) return false;
       prepare(gl,nextWidth,nextHeight);
-      if (defer) {
-        if (pending) return false;
+      if (pending) {
+        if (readbackMode === 'async') return false;
+        // Drop the older pose's fence. The new pixel read is queued after it
+        // in the same GL context and the texture will use only the new pose.
+        try { readback.cancel(); } catch { disableReadback(); }
+        pending = null;
+      }
+      if (readbackMode !== 'sync') {
         if (readback === undefined) readback = createAircraftReadback(gl,pixels.byteLength,measureTransfer);
         if (readback) {
           try {
@@ -108,10 +116,6 @@ export function createNativeFrameCapture(api,measureTransfer) {
             return false;
           } catch { disableReadback(); }
         }
-      }
-      if (pending) {
-        try { readback.cancel(); } catch { disableReadback(); }
-        pending = null;
       }
       const read = () => gl.readPixels(0,0,width,height,gl.RGBA,gl.UNSIGNED_BYTE,pixels);
       if (measureTransfer) measureTransfer('aircraftRead',width*height,read);

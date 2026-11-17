@@ -28,16 +28,18 @@ export function trackWebGLRenderer(gl, monitor, name, isActive) {
     }
   };
   try {
+    const triangles=gl.TRIANGLES, strip=gl.TRIANGLE_STRIP, fan=gl.TRIANGLE_FAN;
     for (const method of ['drawElements', 'drawArrays', 'drawElementsInstanced', 'drawArraysInstanced']) {
       if (typeof gl[method] !== 'function') continue;
       const original = gl[method], own = Object.getOwnPropertyDescriptor(gl, method);
+      const indexed=method.startsWith('drawElements'), instanced=method.endsWith('Instanced');
+      const countIndex=indexed?1:2, instanceIndex=indexed?4:3;
       const wrapped = function(...args) {
         if (monitor.enabled) {
-          const mode = args[0], count = args[method.startsWith('drawElements') ? 1 : 2];
-          const instances = method.endsWith('Instanced') ? args[method.startsWith('drawElements') ? 4 : 3] : 1;
+          const mode=args[0], count=args[countIndex], instances=instanced?args[instanceIndex]:1;
           stats.calls++;
-          stats.triangles += (mode === gl.TRIANGLES ? Math.floor(count / 3)
-            : mode === gl.TRIANGLE_STRIP || mode === gl.TRIANGLE_FAN ? Math.max(0, count - 2) : 0) * instances;
+          stats.triangles += (mode === triangles ? Math.floor(count / 3)
+            : mode === strip || mode === fan ? Math.max(0, count - 2) : 0) * instances;
         }
         return original.apply(this, args);
       };

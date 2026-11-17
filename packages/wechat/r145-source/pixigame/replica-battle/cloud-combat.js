@@ -22,7 +22,8 @@ import { releaseOwnedCanvas } from '../src/ui/release-owned-canvas.js';
 
 // The visible combat UI reads presentation state and delegates commands to
 // Interface, which owns choice, wave and supply timing without hidden markup.
-export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveAd,requestDiamondRevive,aircraftId,onGraphicsContext}) {
+export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveAd,requestDiamondRevive,aircraftId,onGraphicsContext,
+  measureBattle=(_name,run)=>run()}) {
   const canvas=document.createElement('canvas');canvas.className='cloud-combat-canvas';
   canvas.setAttribute('aria-label','战斗界面');
   const context=canvas.getContext('webgl2',{alpha:true,antialias:true});
@@ -213,19 +214,34 @@ export async function mountCloudCombat({stage,ui,sim,audio,signal,requestReviveA
   const resize=()=>resizeCloudCombatViewport(stage,canvas,renderer,scene,nativeDisplay?pixelRatio:undefined);
   const observer=new ResizeObserver(resize);observer.observe(stage);resize();
   const input=bindCloudPointerInput({surface:stage,canvas,handlePointer:cloud.handlePointer,getScreen:()=>renderer.screen});
-  let usingTiles=false;
+  let usingTiles=false, usingCanvas=true, canvasAboveTiles=false;
   const frame=createBattleUiFrame(()=>{
     sync();cloud.update();
-    // Modal UI and detached effects still use the full renderer. In ordinary
-    // combat the screen can draw the existing PSD tiles without a GL pass.
+    // Keep the ordinary PSD HUD on its native tiles even while a detached
+    // choice or reward animates above it. Only that overlay needs WebGL.
     const showTiles=Boolean(nativeHudTiles&&!stage.hasAttribute('data-awaiting-start')&&!stage.hasAttribute('data-launch')&&
-      scene.children.length===2&&selectionLayer.mount.children.length===0&&cloud.showNativeHud());
+      cloud.showNativeHud());
+    const showCanvas=!showTiles || selectionLayer.mount.children.length>0 || scene.children.some(child=>
+      child!==cloud.root&&child!==selectionLayer.mount&&child.visible&&child.renderable);
     if(showTiles!==usingTiles){
       usingTiles=showTiles;
       nativeHudTiles.hidden=!showTiles;
-      canvas.style.visibility=showTiles?'hidden':'';
     }
-    if(!showTiles)renderer.render({container:scene});
+    if(showCanvas!==usingCanvas){
+      usingCanvas=showCanvas;
+      canvas.style.visibility=showCanvas?'':'hidden';
+    }
+    const overlayOnly=showTiles&&showCanvas;
+    if(overlayOnly!==canvasAboveTiles){
+      canvasAboveTiles=overlayOnly;
+      canvas.style.zIndex=overlayOnly?'21':'';
+    }
+    if(showCanvas){
+      const visible=cloud.root.visible;
+      if(showTiles)cloud.root.visible=false;
+      try{measureBattle('interfaceDraw',()=>renderer.render({container:scene}));}
+      finally{cloud.root.visible=visible;}
+    }
   });
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};

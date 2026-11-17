@@ -152,7 +152,9 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
       try {
         // Compile both the offscreen color materials and the depth substitutes.
         renderer.setRenderTarget(target);
-        warming.push(warmRenderPrograms(renderer,scene,camera,isActive));
+        const warmColor = () => warmRenderPrograms(renderer,scene,camera,isActive);
+        warming.push(warmColor());
+        if (fighter.withCombatHullBatches) warming.push(fighter.withCombatHullBatches(warmColor));
         if(fighter.object3D)warming.push(withDepthMaterials(fighter,[],()=>warmRenderPrograms(renderer,scene,camera,isActive)));
       }finally{renderer.setRenderTarget(previous);}
       if(!hdr)warming.push(warmRenderPrograms(renderer,scene,camera,isActive));
@@ -163,16 +165,25 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
       if(nextWidth===width&&nextHeight===height)return;
       width=nextWidth;height=nextHeight;target.setSize(width,height);resolution.set(width,height);
     },
-    render(scene, camera, fighter, displayWidth = width) {
+    render(scene, camera, fighter, displayWidth = width, volumetricExhaust = true) {
       const index=depth++,state=states[index]??(states[index]={
         viewport:new THREE.Vector4(),scissor:new THREE.Vector4(),jets:[],swaps:[],
         physicalViewport:new THREE.Vector4(),viewProjection:new THREE.Matrix4(),clipMatrix:new THREE.Matrix4(),bounds:new THREE.Box3(),regions:[],
         info:{texture:target.depthTexture,resolution,near:0,far:0},
       });
+      const renderColor = () => renderer.render(scene, camera);
+      const drawColor = () => fighter.withCombatHullBatches ? fighter.withCombatHullBatches(renderColor) : renderColor();
       const draw=()=>{
-        const previousTarget=renderer.getRenderTarget(),viewport=renderer.getViewport(state.viewport),scissor=renderer.getScissor(state.scissor),scissorTest=renderer.getScissorTest();
         const jets=state.jets;let count=0;
         for(const jet of fighter.runtime.jets){const saved=jets[count]??(jets[count]=[]);saved[0]=jet.object;saved[1]=jet.object.visible;count++;}jets.length=count;
+        if (!volumetricExhaust) {
+          // The phone path draws the wake beneath the completed hull texture.
+          // Restore the emitters so their real sockets still feed that wake.
+          for (const [object] of jets) object.visible = false;
+          try { return drawColor(); }
+          finally { for (const [object, visible] of jets) object.visible = visible; }
+        }
+        const previousTarget=renderer.getRenderTarget(),viewport=renderer.getViewport(state.viewport),scissor=renderer.getScissor(state.scissor),scissorTest=renderer.getScissorTest();
         const previousDepth=fighter.runtime.depthInfo;
         const updateMatrices = scene.matrixWorldAutoUpdate;
         try {
@@ -203,12 +214,12 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
         // The scoped path already prepared the same camera-facing geometry
         // before depth. Legacy callers without that scope retain their hook.
         if(!fighter.withPreparedRender)fighter.runtime.prepareRender?.(camera);
-        renderer.render(scene,camera);
+        drawColor();
       };
       state.info.near=camera.near;state.info.far=camera.far;
       const previousDepth=fighter.runtime.depthInfo;
       try{
-        fighter.runtime.depthInfo=state.info;
+        if (volumetricExhaust) fighter.runtime.depthInfo=state.info;
         return fighter.withPreparedRender ? fighter.withPreparedRender(camera,draw) : draw();
       }catch(error){fighter.runtime.depthInfo=previousDepth;throw error;}
       finally{depth--;}

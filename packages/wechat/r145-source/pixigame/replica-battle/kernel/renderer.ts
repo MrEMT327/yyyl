@@ -19,6 +19,7 @@ import {thunderBeam} from './thunder-presentation';
 import {sweep} from './model';
 import {warningEndPoint} from './warning-line';
 import Phaser from 'phaser';
+import {nativeBattleBufferSize} from '../../src/replica/native-battle-render-budget.js';
 import { preloadPickupArt, createPickupVisual, updatePickupVisual } from './pickup-visual';
 import { preloadSupplyChestArt, createSupplyChestVisual, updateSupplyChestVisual } from './supply-chest-visual';
 
@@ -164,8 +165,10 @@ export class BattleView extends Phaser.Scene {
     return this.playerAppearance;
   }
   coastBackgroundTime = 0;
+  combatRenderFraction?: number;
   private warmedChapterOneWave = 1;
   onFrame?: (delta: number) => void;
+  beginMeasure?: (phase: 'enemyVisual' | 'projectileVisual', items: number) => (()=>void)|undefined;
   constructor(private content: GameContent, private sim: Simulation, private ready: () => void, private appearance?: BattleAppearance,
     private loading?: { progress(value: number): void; complete(): void }, private imagePlan?: ReturnType<typeof planBattleImages>,
     private readonly optimizeChapterOne = false, private readonly nativeChapterEnemyArt = false) {
@@ -192,8 +195,15 @@ export class BattleView extends Phaser.Scene {
       for (const key of this.loadoutArt(this.content.combat.studyLoadout?.battleSkillIds || [])) deferred.delete(key);
     }
     this.pathogenic.preload((_p,t)=>t.url,deferred);
-    const models = this.optimizeChapterOne ? this.enemyArtModels(1)
+    const models = this.optimizeChapterOne ? new Set<number>()
       : this.nativeChapterEnemyArt ? this.enemyArtModels() : new Set(this.prefabByModel.keys());
+    if (this.optimizeChapterOne) {
+      // The opening formations reuse a handful of atlases. Load them under
+      // the sortie cover so the loader never uploads them during those waves.
+      this.warmedChapterOneWave = Math.min(4, this.content.chapter.chapter.waveCount);
+      for (let wave=1;wave<=this.warmedChapterOneWave;wave++)
+        for (const model of this.enemyArtModels(wave)) models.add(model);
+    }
     this.preloadEnemyArt(models);
     this.appearance?.preload(this);
     // Native enemy layers join the normal prefab preload below.
@@ -325,6 +335,12 @@ export class BattleView extends Phaser.Scene {
     this.objects.clear();this.enemyViewPositions.clear();
   }
   create() {
+    const renderScale = this.scale.width / WIDTH;
+    if (renderScale !== 1) {
+      // Leave world projection, input and gameplay in their original units.
+      this.cameras.main.setOrigin(0, 0).setZoom(renderScale);
+      this.pathogenic.source.setRenderScale(renderScale);
+    }
     if (this.renderer instanceof Phaser.Renderer.WebGL.WebGLRenderer && !this.renderer.pipelines.has('OriginalParticle')) {
       this.renderer.pipelines.add('OriginalParticle', new OriginalParticlePipeline(this.game));
     }
@@ -497,7 +513,7 @@ export class BattleView extends Phaser.Scene {
     // interpolation IS the display movement. No second follow/Lerp is applied.
     this.advanceCameraView(delta);
     const s = this.sim, live = this.liveViews; live.clear();
-    const visualClock = this.renderSamples.beginFrame(s.clock,s.runId,s.phase,delta/1000);
+    const visualClock = this.renderSamples.beginFrame(s.clock,s.runId,s.phase,delta/1000,this.combatRenderFraction);
     const statusIndex = this.statusIndex.update(s);
     const sourceCamera=this.screen(0,0);this.pathogenic.setCameraOffset(sourceCamera.x,sourceCamera.y);
     const playerBulletCount = this.shotPresentation.update(s.enemies, s.projectiles, s.clock);
@@ -547,6 +563,7 @@ export class BattleView extends Phaser.Scene {
       drawPlayerDamageVignette(graphics, this.renderSamples.age(.3 - s.player.hitFlash), WIDTH, HEIGHT);
     } else if (this.playerDamage?.visible) this.playerDamage.clear().setVisible(false);
     const enemyIds = this.liveEnemyIds; enemyIds.clear();
+    const endEnemyWork = this.beginMeasure?.('enemyVisual',s.enemies.length);
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
     const recoilTimes = this.shotPresentation.recoilTimes;
     for (const enemy of s.enemies) {
@@ -633,6 +650,7 @@ export class BattleView extends Phaser.Scene {
       }
     }
     for (const uid of this.enemyViewPositions.keys()) if (!enemyIds.has(uid)) this.enemyViewPositions.delete(uid);
+    endEnemyWork?.();
     for (const chest of s.treasures) {
       const key = `treasure:${chest.uid}`; live.add(key);
       let view = this.objects.get(key) as Phaser.GameObjects.Container | undefined;
@@ -645,6 +663,7 @@ export class BattleView extends Phaser.Scene {
     const missileMounts=this.appearance?.missileMounts?.().map(point=>({
       x:s.player.x+(point.x-pp.x)/this.px,z:s.player.z-(point.y-pp.y)/this.px,
     }));
+    const endProjectileWork = this.beginMeasure?.('projectileVisual',s.projectiles.length);
     this.missileWingMounts.beginFrame(s.clock,s.runId,s.projectiles,missileMounts);
     for(const bullet of s.projectiles){
       // Native primary-gun shots use familyId 0. Resolve only their view identity.
@@ -654,6 +673,7 @@ export class BattleView extends Phaser.Scene {
       this.pathogenic.equipmentAccent(visualBullet,s.equipmentProjectileAccent(bullet),this.projectPoint);
       this.pathogenic.projectile(visualBullet,this.projectPoint,Number(this.content.chapter.bullets[bullet.bulletId]?.parameters.Element??0));
     }
+    endProjectileWork?.();
     for (const sourcePickup of s.pickups) {
       const pickup=this.renderSamples.pickup(sourcePickup);
       const expiryAlpha=pickupExpiryAlpha(pickup,this.content.assets.battleItems[pickup.itemId]);
@@ -782,15 +802,17 @@ export class BattleView extends Phaser.Scene {
   }
 }
 
-export function makeGame(scene: BattleView, canvas: HTMLCanvasElement, preBoot?: Phaser.Types.Core.BootCallback) {
+export function makeGame(scene: BattleView, canvas: HTMLCanvasElement, preBoot?: Phaser.Types.Core.BootCallback,
+  nativeViewport?: {width:number;height:number;pixelRatio:number}) {
   if (!canvas) throw new Error('战斗画布必须由微信宿主提供');
+  const {width, height} = nativeBattleBufferSize(nativeViewport, WIDTH, HEIGHT);
   return new Phaser.Game({
     type: Phaser.WEBGL,
     canvas,
     customEnvironment: true,
     input: { keyboard: false },
-    width: WIDTH,
-    height: HEIGHT,
+    width,
+    height,
     // Clear once on the renderer. A camera background draws a second
     // full-sized rectangle under the terrain every frame.
     backgroundColor: '#315257',
@@ -799,7 +821,7 @@ export function makeGame(scene: BattleView, canvas: HTMLCanvasElement, preBoot?:
     plugins: { scene: [{ key: 'SpinePlugin', plugin: spinePlugin, mapping: 'spine' }] },
     // The native host composites this offscreen canvas between engine frames.
     // Its last complete image must survive presentation until the next draw.
-    render: { antialias: true, roundPixels: false, powerPreference: 'high-performance', preserveDrawingBuffer: true },
+    render: { antialias: width === WIDTH, roundPixels: false, powerPreference: 'high-performance', preserveDrawingBuffer: true },
     scale: {
       mode: Phaser.Scale.NONE,
       autoCenter: Phaser.Scale.NO_CENTER,

@@ -4,7 +4,8 @@ import { clamp, lerp, type Enemy, type RecordData } from './model';
 
 /** StateBarMonster: original sliced Images, SetRight fill and HP tweens. */
 export class EnemyHealthBar extends Phaser.GameObjects.Container {
-  private layers: { config: RecordData; image: Phaser.GameObjects.Image | Phaser.GameObjects.NineSlice }[] = [];
+  private layers: { config: RecordData; image: Phaser.GameObjects.Image | Phaser.GameObjects.NineSlice;
+    width: number; height: number; lastFill?: number }[] = [];
   private target = 1;
   private hpFrom = 1;
   private reduceFrom = 1;
@@ -25,7 +26,9 @@ export class EnemyHealthBar extends Phaser.GameObjects.Container {
       image.setOrigin(0, 0);
       image.setTint(layer.role === 'hp' ? 0xff2323 : 0xffffff);
       image.setAlpha(layer.color[3]);
-      this.layers.push({ config: layer, image }); this.add(image);
+      const width = layer.displayWidth * this.screenScale, height = layer.displayHeight * this.screenScale;
+      image.setPosition(layer.x * this.screenScale - width * layer.pivot[0], -layer.y * this.screenScale - height * (1 - layer.pivot[1]));
+      this.layers.push({ config: layer, image, width, height }); this.add(image);
     }
   }
   updateHealth(enemy: Enemy, clock: number) {
@@ -49,15 +52,16 @@ export class EnemyHealthBar extends Phaser.GameObjects.Container {
     const showAlpha = this.entity.initiallyVisible ? 1 : this.shownAt === undefined ? 0 : clamp((clock - this.shownAt) / behavior.showFadeSeconds, 0, 1);
     const deathAlpha = this.diedAt === undefined ? 1 : 1 - clamp((clock - this.diedAt) / behavior.deathFadeSeconds, 0, 1);
     this.setVisible(visible).setAlpha(showAlpha * deathAlpha);
-    for (const { config: layer, image } of this.layers) {
+    if (!visible) return;
+    for (const record of this.layers) {
+      const {config: layer, image, width, height}=record;
       const fill = layer.role === 'hp' ? hp : layer.role === 'reduce' ? reduce : 1;
-      const fullWidth = layer.displayWidth * this.screenScale;
-      const width = fullWidth * fill, height = layer.displayHeight * this.screenScale;
+      if (fill === record.lastFill) continue;
+      record.lastFill=fill;
       // Unity SetRight shortens the sliced Image, keeping both borders. Phaser
       // clamps to border sum; scaling that minimum reproduces Unity compression.
       if (image instanceof Phaser.GameObjects.NineSlice) image.setSize(layer.width * fill, layer.height);
-      image.setDisplaySize(Math.max(.0001, width), height).setVisible(fill > 0);
-      image.setPosition(layer.x * this.screenScale - fullWidth * layer.pivot[0], -layer.y * this.screenScale - height * (1 - layer.pivot[1]));
+      image.setDisplaySize(Math.max(.0001, width * fill), height).setVisible(fill > 0);
     }
   }
   finishAfterDeath(clock: number): boolean {

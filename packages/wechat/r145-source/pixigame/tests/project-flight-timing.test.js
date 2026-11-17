@@ -1,7 +1,143 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {BoxGeometry, Group, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, ShaderLib, Texture} from 'three';
 import {createFlightVisualState,sampleFlightVisual,flightPoseNeedsRefresh}from'../src/replica/project-flight-visual.js';
+import {createCombatAircraftRenderer} from '../src/replica/project-aircraft-render.js';
+import {CombatRenderSamples} from '../src/replica/combat-render-samples.mjs';
+import {createCombatHullBatches} from '../src/three/aircraft/combat-hull-batches.js';
 const frame=(clock,x,dt,active=true)=>({clock,runId:1,renderDelta:dt,flight:{x,z:0,speed:10,active}});
+
+test('projectile presentation follows fixed step remainder at 50 Hz and during slow motion', () => {
+  const logicStep = 1/30, nativeDelta = 2184/65536, interval = 1/50;
+  for (const scale of [1, .25]) {
+    const sampler = new CombatRenderSamples();
+    const bullet = {owner:'enemy',x:0,z:0,oldX:0,oldZ:0};
+    let steps = 0, remainder = 0, previous = 0;
+    sampler.beginFrame(0,1,'playing',0,0);
+    for (let index=0;index<80;index++) {
+      remainder += interval*scale;
+      while (remainder+1e-9>=logicStep) { remainder-=logicStep;steps++; }
+      bullet.oldX=Math.max(0,steps-1)*10;bullet.x=steps*10;
+      sampler.beginFrame(steps*nativeDelta,1,'playing',interval*scale,remainder/logicStep);
+      const x=sampler.projectile(bullet,0).x;
+      assert(x>=bullet.oldX-1e-7 && x<=bullet.x+1e-7);
+      if (steps>=2) assert(Math.abs((x-previous)-10*interval*scale/logicStep)<1e-7);
+      previous=x;
+    }
+    sampler.beginFrame(steps*nativeDelta,1,'upgrade',.2,1);
+    assert.equal(sampler.projectile(bullet,0).x,previous);
+    sampler.beginFrame(steps*nativeDelta,1,'playing',0,0);
+    assert.equal(sampler.projectile(bullet,0).x,previous);
+    sampler.beginFrame(0,2,'playing',0,0);
+    bullet.x=21;bullet.oldX=0;
+    assert.equal(sampler.projectile(bullet,0).x,21);
+  }
+});
+
+test('phone aircraft submits one color pass and restores wake emitters after a failed draw', () => {
+  const left = {visible:true}, right = {visible:false};
+  const depthInfo = {};
+  const fighter = {
+    runtime:{jets:[{object:left},{object:right}],depthInfo},
+    withPreparedRender(_camera, draw) { return draw(); },
+  };
+  let passes = 0, fail = false;
+  const aircraft = createCombatAircraftRenderer({render() {
+    passes++;
+    assert.deepEqual([left.visible,right.visible],[false,false]);
+    assert.equal(fighter.runtime.depthInfo,depthInfo);
+    if (fail) throw new Error('fixture draw failed');
+  }},192);
+  try {
+    aircraft.render({}, {}, fighter, 192, false);
+    assert.equal(passes,1);
+    assert.deepEqual([left.visible,right.visible],[true,false]);
+    fail = true;
+    assert.throws(() => aircraft.render({}, {}, fighter, 192, false),/fixture draw failed/);
+    assert.deepEqual([left.visible,right.visible],[true,false]);
+  } finally { aircraft.dispose(); }
+});
+
+test('combat hull batches preserve the authored tree and yield to moving or edited parts', () => {
+  const solid = new Group(), wing = new Group();
+  const material = new MeshStandardMaterial(), canopy = new MeshStandardMaterial({transparent:true});
+  const geometry = new BoxGeometry(), fuselage = new Mesh(geometry, material), wingPanel = new Mesh(geometry, material);
+  const glass = new Mesh(geometry, canopy);
+  wing.position.x = 3;
+  wing.add(wingPanel);
+  solid.add(wing, fuselage, glass);
+  const batches = createCombatHullBatches(solid);
+  assert(batches);
+  const assertBatched = () => {
+    assert.equal(wingPanel.parent, wing);
+    assert.deepEqual([fuselage.visible, wingPanel.visible, glass.visible], [false, false, true]);
+    const drawn = solid.children.at(-1).children;
+    assert.equal(drawn.length, 1);
+    assert.equal(drawn[0].material, material);
+    drawn[0].geometry.computeBoundingBox();
+    assert.equal(drawn[0].geometry.boundingBox.max.x, 3.5);
+  };
+  const assertOriginal = () => {
+    assert.deepEqual(solid.children, [wing, fuselage, glass]);
+    assert.deepEqual([fuselage.visible, wingPanel.visible, glass.visible], [true, true, true]);
+  };
+  try {
+    assertOriginal();
+    batches.render(assertBatched);
+    wing.rotation.z = .2;
+    batches.render(assertOriginal);
+    wing.rotation.z = 0;
+    assert.throws(() => batches.render(() => {
+      assertBatched();
+      throw new Error('fixture draw failed');
+    }), /fixture draw failed/);
+    assertOriginal();
+    geometry.attributes.position.needsUpdate = true;
+    batches.render(assertOriginal);
+  } finally {
+    batches.dispose(); geometry.dispose(); material.dispose(); canopy.dispose();
+  }
+});
+
+test('combat hull palette preserves per-surface paint and rejects diverging texture state', () => {
+  const solid = new Group(), geometry = new BoxGeometry(), map = new Texture();
+  const shell = new MeshPhysicalMaterial({clearcoat: .25, roughness: .5, normalMap: map});
+  const trim = new MeshPhysicalMaterial({clearcoat: .5, roughness: .25, normalMap: map});
+  shell.color.setRGB(.25, .5, .75);
+  trim.color.setRGB(.5, .25, .125);
+  const body = new Mesh(geometry, shell), accent = new Mesh(geometry, trim);
+  solid.add(body, accent);
+  const batches = createCombatHullBatches(solid);
+  assert(batches);
+  const shader = {...ShaderLib.physical, uniforms: {}};
+  try {
+    batches.render(() => {
+      assert.deepEqual([body.visible, accent.visible], [false, false]);
+      const [proxy] = solid.children.at(-1).children;
+      assert.equal(proxy.material.normalMap, map);
+      assert.notEqual(proxy.material, shell);
+      proxy.material.onBeforeCompile(shader);
+      assert.deepEqual([...shader.uniforms.combatPaint.value], [.25, .5, .75, .5, .5, .25, .125, .25]);
+      assert.equal(shader.uniforms.combatCoat.value[0], .25);
+      assert.equal(shader.uniforms.combatCoat.value[2], .5);
+    });
+    trim.color.r = .75;
+    trim.emissive.setRGB(.5, .25, 0);
+    trim.emissiveIntensity = 2;
+    batches.render(() => {
+      assert.equal(shader.uniforms.combatPaint.value[4], .75);
+      assert.deepEqual([...shader.uniforms.combatEmission.value.slice(4, 7)], [1, .5, 0]);
+    });
+    trim.normalMap = null;
+    batches.render(() => {
+      assert.deepEqual(solid.children, [body, accent]);
+      assert.deepEqual([body.visible, accent.visible], [true, true]);
+    });
+  } finally {
+    batches.dispose(); geometry.dispose(); map.dispose(); shell.dispose(); trim.dispose();
+  }
+});
+
 test('full rolls keep 0.72-second timing at 5–144 display Hz after a normal release',()=>{
  for(const hz of[5,8,10,15,20,30,60,120,144])for(const direction of[-1,1]){
   const state=createFlightVisualState();let clock=0,x=0,start=null,finish=null;

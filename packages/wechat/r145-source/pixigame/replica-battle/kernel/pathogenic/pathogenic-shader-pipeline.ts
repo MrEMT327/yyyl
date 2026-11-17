@@ -14,12 +14,17 @@ export interface CanvasShaderSource { path: string; code: string; sha256?: strin
 export interface CanvasShaderCompileOptions {
   /** Explicit Godot Compatibility specialization, only valid with zero lights. */
   compatibilityZeroLights?: boolean;
+  /** Source meshes can carry their full-precision opacity in each vertex. */
+  meshOpacity?: boolean;
+  /** Plain sprites with ordinary straight-alpha textures can share a batch. */
+  batchTextures?: boolean;
 }
 export interface CanvasUniform { name: string; type: string; hints: string; defaultValue?: ShaderUniformValue }
 export interface CompiledCanvasShader {
   source: CanvasShaderSource; vertex: string; fragment: string;
   uniforms: CanvasUniform[]; blend: 'mix' | 'add' | 'sub' | 'mul' | 'premul_alpha';
   requiresScreen: boolean; unshaded: boolean; compatibilityZeroLights: boolean;
+  meshOpacity: boolean; batchTextures: boolean;
 }
 export interface ShaderTextureBinding {
   texture: PathogenicSampleTexture;
@@ -178,6 +183,13 @@ export function compilePathogenicCanvasShader(source: CanvasShaderSource, option
   const vertexFn = takeFunction(code, 'vertex');
   const fragmentFn = takeFunction(vertexFn.remainder, 'fragment');
   const shared = fragmentFn.remainder;
+  const meshOpacity = options.meshOpacity === true;
+  const batchTextures = options.batchTextures === true && meshOpacity && !uniforms.length &&
+    !vertexFn.body.trim() && !fragmentFn.body.trim() && !shared.trim();
+  const textureVaryings = batchTextures ? 'varying vec2 outTexCoord;\nvarying float outTexId;' : '';
+  // The scene mesh already stores screen positions. Only shaders that refer
+  // to Godot's VERTEX need the local position and its per-object transform.
+  const usesLocalVertex = /\bVERTEX\b/.test(code);
   const samplers = ['TEXTURE', ...uniforms.filter(u => u.type === 'sampler2D').map(u => u.name)];
   const replaceTextures = (input: string) => {
     let result = input;
@@ -187,6 +199,7 @@ export function compilePathogenicCanvasShader(source: CanvasShaderSource, option
   };
   const samplerHelpers = samplers.map(name => {
     const main = name === 'TEXTURE', sampler = main ? 'uMainSampler' : name;
+    if (main && batchTextures) return '';
     return `uniform float pgPremult_${name};
 uniform vec2 pgLinearPixelSize_${name};
 vec4 pgDecode_${name}(vec4 value) {
@@ -227,7 +240,7 @@ vec4 pgSample_${name}(vec2 uv) {
   const common = `precision highp float;
 precision highp sampler2D;
 uniform float uPgTime;
-uniform sampler2D uMainSampler;
+${batchTextures ? '' : 'uniform sampler2D uMainSampler;'}
 uniform vec4 uPgColor;
 uniform vec4 uPgProjectilePalette;
 uniform vec4 uPgCanvasModulate;
@@ -257,27 +270,40 @@ uniform mat4 uProjectionMatrix;
 attribute vec2 inPosition;
 attribute vec2 inTexCoord;
 attribute vec4 inTint;
+${meshOpacity ? 'attribute float inTintEffect;' : ''}
+${batchTextures ? 'attribute float inTexId;' : ''}
+${textureVaryings}
 varying vec2 pgUv;
-varying vec2 pgVertex;
+${usesLocalVertex ? 'varying vec2 pgVertex;' : ''}
 varying vec4 pgColor;
 void main() {
-  VERTEX = (uPgScreenToLocal * vec3(inPosition, 1.0)).xy;
-  UV = (inTexCoord - uPgUvRect.xy) / uPgUvRect.zw;
-  COLOR = vec4(inTint.bgr, inTint.a) * uPgColor;
+  ${usesLocalVertex ? 'VERTEX = (uPgScreenToLocal * vec3(inPosition, 1.0)).xy;' : ''}
+  ${batchTextures ? 'outTexCoord = UV = inTexCoord; outTexId = inTexId;' : 'UV = (inTexCoord - uPgUvRect.xy) / uPgUvRect.zw;'}
+  COLOR = vec4(inTint.bgr, inTint.a) * ${meshOpacity ? 'vec4(uPgColor.rgb, inTintEffect)' : 'uPgColor'};
   SCREEN_UV = vec2(0.0);
   ${replaceTextures(vertexFn.body)}
-  pgUv = UV; pgVertex = VERTEX; pgColor = COLOR;
-  vec2 screenPosition = (uPgLocalToScreen * vec3(VERTEX, 1.0)).xy;
+  pgUv = UV; pgColor = COLOR;
+  ${usesLocalVertex ? 'pgVertex = VERTEX;' : ''}
+  vec2 screenPosition = ${usesLocalVertex ? '(uPgLocalToScreen * vec3(VERTEX, 1.0)).xy' : 'inPosition'};
   gl_Position = uProjectionMatrix * vec4(screenPosition, 1.0, 1.0);
 }`;
   const fragment = `${common}
+${textureVaryings}
+${batchTextures ? `
+uniform sampler2D uMainSampler[%count%];
+vec4 pgSample_TEXTURE(vec2 uv) {
+  vec4 texture;
+  %forloop%
+  return texture;
+}` : ''}
 varying vec2 pgUv;
-varying vec2 pgVertex;
+${usesLocalVertex ? 'varying vec2 pgVertex;' : ''}
 varying vec4 pgColor;
 void main() {
-  UV = pgUv; VERTEX = pgVertex;
+  UV = pgUv; ${usesLocalVertex ? 'VERTEX = pgVertex;' : ''}
   SCREEN_UV = gl_FragCoord.xy / uResolution;
-  COLOR = pgColor * pgSample_TEXTURE(UV);
+  vec4 pgTexel = pgSample_TEXTURE(UV);
+  COLOR = pgColor * pgTexel;
   ${replaceTextures(fragmentFn.body)}
   ${modes.includes('unshaded') ? '' : 'COLOR *= uPgCanvasModulate;'}
   // Recolor the shaded result, not a multiply tint: a green source texture
@@ -290,7 +316,7 @@ void main() {
       // Reserved enemy-red palette. Read highlights before source blink/HDR
       // modulation: tinting the already-red result erased every white core.
       // Preserve texture alpha, geometry and authored light/dark detail.
-      vec3 ink = max(pgSample_TEXTURE(UV).rgb * pgColor.rgb, vec3(0.0));
+      vec3 ink = max(${batchTextures ? 'pgTexel' : 'pgSample_TEXTURE(UV)'}.rgb * pgColor.rgb, vec3(0.0));
       float inkPeak = max(ink.r, max(ink.g, ink.b));
       float neutral = min(ink.r, min(ink.g, ink.b)) / max(inkPeak, 0.00001);
       float body = clamp(inkPeak, 0.0, 1.0);
@@ -306,7 +332,7 @@ void main() {
   }
   gl_FragColor = COLOR;
 }`;
-  return { source, vertex, fragment, uniforms, blend, requiresScreen: uniforms.some(u => /hint_screen_texture/.test(u.hints)), unshaded: modes.includes('unshaded'), compatibilityZeroLights:options.compatibilityZeroLights===true };
+  return { source, vertex, fragment, uniforms, blend, requiresScreen: uniforms.some(u => /hint_screen_texture/.test(u.hints)), unshaded: modes.includes('unshaded'), compatibilityZeroLights:options.compatibilityZeroLights===true, meshOpacity, batchTextures };
 }
 
 /** Matrices are mandatory to avoid accidentally using viewport pixels as source
@@ -316,7 +342,7 @@ const NON_FINITE=(value:number)=>!Number.isFinite(value);
 const ZERO_PALETTE:[number,number,number,number]=[0,0,0,0];
 const WHITE_MODULATE:[number,number,number,number]=[1,1,1,1];
 const FULL_UV:[number,number,number,number]=[0,0,1,1];
-export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.SinglePipeline {
+export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.MultiPipeline {
   // The compiled layout is fixed; values and texture validation remain live.
   private readonly uniformUploads:UniformUpload[];
   // WebGL copies matrix values synchronously. Phaser passes force=true for
@@ -324,19 +350,66 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
   private readonly screenMatrix=new Float32Array(9);
   private readonly localMatrix=new Float32Array(9);
   private readonly modelMatrix=new Float32Array(16);
+  private readonly canBatchDraws:boolean;
+  private batchTexture?:PathogenicSampleTexture;
+  private batchKey:number[]=[];
+  private incomingKey:number[]=[];
   constructor(game: Phaser.Game, readonly program: CompiledCanvasShader) {
-    super({ game, vertShader: program.vertex, fragShader: program.fragment });
+    super({ game, vertShader: program.vertex, fragShader: program.fragment, forceZero: !program.batchTextures });
+    // Auxiliary samplers can validate/capture state at a precise render point.
+    this.canBatchDraws=!program.uniforms.some(uniform=>uniform.type==='sampler2D');
     this.uniformUploads=program.uniforms.map(uniform=>{
       const matrix=uniform.type.startsWith('mat'),dimension=matrix?Number(uniform.type.at(-1)):Number(/vec([234])$/.exec(uniform.type)?.[1]??1);
       return {uniform,matrix,size:matrix?dimension*dimension:dimension,
         method:matrix?`setMatrix${dimension}fv`:`set${dimension}${/^(?:int|bool|ivec|bvec)/.test(uniform.type)?'i':'f'}`,premult:`pgPremult_${uniform.name}`,linearPixelSize:`pgLinearPixelSize_${uniform.name}`};
     });
   }
+  boot() {
+    Phaser.Renderer.WebGL.WebGLPipeline.prototype.boot.call(this);
+    if(this.program.batchTextures)this.set1iv('uMainSampler',this.renderer.textureIndexes);
+    else this.set1i('uMainSampler',0);
+    this.set2f('uResolution',this.renderer.width,this.renderer.height);
+  }
   private setLinearSampling(name:string,texture?:PathogenicSampleTexture) {
     if(texture?.pathogenicManualLinear){
       if(!(texture.width>0&&texture.height>0))throw new PathogenicShaderCoverageError(this.program.source.path,'invalid manual-linear texture size');
       this.set2f(name,1/texture.width,1/texture.height);
     }else this.set2f(name,0,0);
+  }
+  private readBatchKey(data:PathogenicShaderDraw,texture:PathogenicSampleTexture):boolean {
+    const key=this.incomingKey,shader=this.currentShader;
+    key.length=0;
+    const add=(name:string,value:number|number[])=>{
+      if(!shader.hasUniform(name))return;
+      if(typeof value==='number')key.push(value);else key.push(...value);
+    };
+    add('uPgTime',data.time);
+    if(shader.hasUniform('uPgColor')){
+      const [r,g,b,a]=data.color;
+      key.push(r,g,b,this.program.meshOpacity?1:a);
+    }
+    add('uPgProjectilePalette',data.projectilePalette??ZERO_PALETTE);
+    add('uPgCanvasModulate',data.canvasModulate??WHITE_MODULATE);
+    add('uPgUvRect',data.uvRect??FULL_UV);add('uPgTexturePixelSize',data.textureSize);
+    add('uPgScreenToLocal',data.screenToLocal);add('uPgLocalToScreen',data.localToScreen);
+    add('MODEL_MATRIX',data.modelMatrix);add('pgPremult_TEXTURE',data.mainPremultiplied===false?0:1);
+    add('uPgMainRepeat',data.mainRepeat?1:0);
+    if(texture.pathogenicManualLinear){
+      if(!(texture.width>0&&texture.height>0))return false;
+      key.push(1,texture.width,texture.height);
+    }else key.push(0);
+    for(const upload of this.uniformUploads){
+      const {uniform,matrix,size}=upload,value=data.uniforms?.[uniform.name]??uniform.defaultValue;
+      if(Array.isArray(value)){
+        if(value.length!==size||value.some(NON_FINITE))return false;
+        key.push(...value);
+      }else{
+        const scalar=Number(value);
+        if(value===undefined||matrix||size!==1||!Number.isFinite(scalar))return false;
+        key.push(scalar);
+      }
+    }
+    return true;
   }
   onBind(object?: Phaser.GameObjects.GameObject) {
     // PipelineManager.set(pipeline) is also a legal lifecycle bind without a
@@ -348,25 +421,42 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
     if (data.lighting !== 'unlit') fail('a lit canvas needs the Godot light pass');
     if(this.program.compatibilityZeroLights&&(!data.compatibility||data.compatibility.renderer!=='compatibility'||data.compatibility.lightCount!==0||data.compatibility.directionalLightCount!==0))
       fail('Compatibility zero-light specialization requires an explicit zero point/directional light assertion on every draw');
-    if (!Number.isFinite(data.time) || data.textureSize.some(n => !(n > 0))) fail('invalid time/texture size');
-    if (data.screenToLocal.length !== 9 || data.localToScreen.length !== 9 || data.modelMatrix.length !== 16) fail('invalid source transform');
-    if (!data.color.every(Number.isFinite)||!data.screenToLocal.every(Number.isFinite)||!data.localToScreen.every(Number.isFinite)||!data.modelMatrix.every(Number.isFinite)) fail('non-finite source transform/color');
+    if (!Number.isFinite(data.time) || !data.color.every(Number.isFinite)) fail('non-finite source time/color');
+    if (!this.program.batchTextures) {
+      if (data.textureSize.some(n => !(n > 0))) fail('invalid texture size');
+      if (data.screenToLocal.length !== 9 || data.localToScreen.length !== 9 || data.modelMatrix.length !== 16) fail('invalid source transform');
+      if (!data.screenToLocal.every(Number.isFinite)||!data.localToScreen.every(Number.isFinite)||!data.modelMatrix.every(Number.isFinite))
+        fail('non-finite source transform');
+    }
+    const [red,green,blue,alpha]=data.color;
+    if(this.program.meshOpacity){
+      if(!(object instanceof Phaser.GameObjects.Mesh))fail('vertex opacity requires the source mesh renderer');
+      // MeshWebGLRenderer copies tintFill unchanged to its float inTintEffect
+      // slot. This pipeline uses the slot for opacity instead of a tint mode.
+      (object as unknown as {tintFill:number}).tintFill=alpha;
+    }
+    const frameTexture=(object as Phaser.GameObjects.Mesh).frame?.glTexture;
+    const hasKey=this.canBatchDraws&&frameTexture&&this.readBatchKey(data,frameTexture);
+    if(hasKey&&this.vertexCount>0&&(this.program.batchTextures||this.batchTexture===frameTexture)&&this.incomingKey.length===this.batchKey.length&&
+      this.incomingKey.every((value,index)=>Object.is(value,this.batchKey[index])))return;
     this.flush();
+    this.batchTexture=undefined;
     this.set1f('uPgTime', data.time);
-    this.set4f('uPgColor', ...data.color);
+    this.set4f('uPgColor', red, green, blue, this.program.meshOpacity?1:alpha);
     this.set4f('uPgProjectilePalette', ...(data.projectilePalette ?? ZERO_PALETTE) as [number,number,number,number]);
     this.set4f('uPgCanvasModulate', ...(data.canvasModulate || WHITE_MODULATE) as [number, number, number, number]);
-    this.set4f('uPgUvRect', ...(data.uvRect || FULL_UV) as [number, number, number, number]);
-    this.set2f('uPgTexturePixelSize', 1 / data.textureSize[0], 1 / data.textureSize[1]);
-    this.screenMatrix.set(data.screenToLocal);this.localMatrix.set(data.localToScreen);this.modelMatrix.set(data.modelMatrix);
-    this.setMatrix3fv('uPgScreenToLocal', false, this.screenMatrix);
-    this.setMatrix3fv('uPgLocalToScreen', false, this.localMatrix);
-    this.setMatrix4fv('MODEL_MATRIX', false, this.modelMatrix);
-    this.set1f('pgPremult_TEXTURE', data.mainPremultiplied === false ? 0 : 1);
-    this.set1f('uPgMainRepeat',data.mainRepeat?1:0);
-    // Read the actual bound frame each draw, not a cached flag that can become
-    // stale after texture replacement or context restoration.
-    this.setLinearSampling('pgLinearPixelSize_TEXTURE',(object as Phaser.GameObjects.Mesh).frame?.glTexture);
+    if(!this.program.batchTextures){
+      this.set4f('uPgUvRect', ...(data.uvRect || FULL_UV) as [number, number, number, number]);
+      this.set2f('uPgTexturePixelSize', 1 / data.textureSize[0], 1 / data.textureSize[1]);
+      this.screenMatrix.set(data.screenToLocal);this.localMatrix.set(data.localToScreen);this.modelMatrix.set(data.modelMatrix);
+      this.setMatrix3fv('uPgScreenToLocal', false, this.screenMatrix);
+      this.setMatrix3fv('uPgLocalToScreen', false, this.localMatrix);
+      this.setMatrix4fv('MODEL_MATRIX', false, this.modelMatrix);
+      this.set1f('pgPremult_TEXTURE', data.mainPremultiplied === false ? 0 : 1);
+      this.set1f('uPgMainRepeat',data.mainRepeat?1:0);
+      // Inspect the bound frame to handle texture replacement and context restore.
+      this.setLinearSampling('pgLinearPixelSize_TEXTURE',frameTexture);
+    }
     let unit = 1;
     for (const upload of this.uniformUploads) {
       const uniform=upload.uniform;
@@ -397,6 +487,10 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
         (this as any)[upload.method](uniform.name,scalar);
       }
     }
+    if(hasKey){
+      this.batchTexture=frameTexture;
+      const previous=this.batchKey;this.batchKey=this.incomingKey;this.incomingKey=previous;
+    }
   }
 }
 
@@ -413,7 +507,8 @@ export function registerPathogenicShader(game: Phaser.Game, source: CanvasShader
   // Include actual code even when callers reuse stale/absent sha256 fields.
   // Key the full code as a string instead of serializing it again for every
   // mesh. Keep code identity even if a caller reuses a stale sha256.
-  const identity=JSON.stringify([source.path,source.sha256??'',options.compatibilityZeroLights===true]);
+  const identity=JSON.stringify([source.path,source.sha256??'',options.compatibilityZeroLights===true,
+    options.meshOpacity===true,options.batchTextures===true]);
   const versions=cache.sources.get(identity),cached=versions?.get(source.code);if(cached)return cached;
   const program = compilePathogenicCanvasShader(source,options);
   const gl = renderer.gl;
