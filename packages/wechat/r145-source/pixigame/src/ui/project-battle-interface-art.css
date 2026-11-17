@@ -1,0 +1,33 @@
+/* Soften the battle scene while keeping the separate HUD at full clarity. */
+#canvas > canvas { filter: saturate(.88); }
+
+#ui .pause-control:not(.pause-resume) {
+  border: 12px solid transparent;
+  border-image: url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch;
+  background: none;
+}
+#ui .pause-control:not(.pause-resume) > img {
+  position: absolute;
+  inset: 18%;
+  width: 64%;
+  height: 64%;
+  object-fit: contain;
+}
+#ui .pause-resume, #ui .punchboard-confirm {
+  border: 12px solid transparent;
+  border-image: url('/art/psd-buttons-v1/button-blue.png') 18 fill / 12px stretch;
+  background-image: none !important;
+}
+#ui .pause-resume > img { visibility: hidden; }
+#ui .pause-resume > span { position: relative; }
+
+
+#ui .battle-element-badge {background:#10202cee;border:1px solid var(--element-color);border-radius:3px;color:#eff7fc;font-weight:800;gap:6%;height:7%;padding:1px 4px}
+#ui .battle-element-badge svg {width:24%;height:100%;color:var(--element-color);flex:none}
+
+/* Short labels identify pause actions without adding persistent HUD chrome. */
+#ui .pause-control:not(.pause-resume)>img {inset:8% 19% auto;width:62%;height:58%}
+#ui .pause-control:not(.pause-resume)::after {position:absolute;bottom:-14px;left:-12px;right:-12px;z-index:3;text-align:center;color:#fff;font:700 clamp(10px,3cqw,12px)/1.1 "Microsoft YaHei",sans-serif;text-shadow:0 1px 2px #061526;pointer-events:none}
+#ui .pause-stats::after {content:'统计'}
+#ui .pause-settings::after {content:'设置'}
+#ui .pause-home::after {content:'返回'}

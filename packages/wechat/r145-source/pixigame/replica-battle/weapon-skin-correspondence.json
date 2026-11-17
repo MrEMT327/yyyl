@@ -1,0 +1,3658 @@
+{
+  "version": 2,
+  "mode": "A",
+  "snapshotRevision": "b23e8c8a43c00b585ea4cae385feeaf84d917dfe3831b4fc947d2044090bce9a",
+  "policy": "Existing complete cloud assets first; missing stage/branch assets use original replica art. No composition, recolor, resized jackets or invented forms.",
+  "families": {
+    "10000101": {
+      "familyId": 10000101,
+      "entityId": 200151,
+      "name": "速射机炮",
+      "icon": "10000101",
+      "kind": "cloud-model",
+      "itemId": "aux_cannon",
+      "provenance": "Existing complete cloud weapon assembly"
+    },
+    "10000201": {
+      "familyId": 10000201,
+      "entityId": 200061,
+      "name": "酸液枪",
+      "icon": "10000201",
+      "kind": "replica",
+      "itemId": null,
+      "provenance": "No corresponding complete cloud asset; retain original replica art/entity"
+    },
+    "10000301": {
+      "familyId": 10000301,
+      "entityId": 200001,
+      "name": "电弧枪",
+      "icon": "10000301",
+      "kind": "cloud-model",
+      "itemId": "aux_lightning",
+      "provenance": "Existing complete cloud weapon assembly"
+    },
+    "10000401": {
+      "familyId": 10000401,
+      "entityId": 200011,
+      "name": "磁暴枪",
+      "icon": "10000401",
+      "kind": "cloud-model",
+      "itemId": "aux_scatter",
+      "provenance": "Existing complete cloud weapon assembly"
+    },
+    "10000601": {
+      "familyId": 10000601,
+      "entityId": 200031,
+      "name": "冰刃弹",
+      "icon": "10000601",
+      "kind": "replica",
+      "itemId": null,
+      "provenance": "No corresponding complete cloud asset; retain original replica art/entity"
+    },
+    "10000701": {
+      "familyId": 10000701,
+      "entityId": 200041,
+      "name": "爆燃导弹",
+      "icon": "10000701",
+      "kind": "cloud-model",
+      "itemId": "aux_rocket",
+      "provenance": "Existing complete cloud weapon assembly"
+    },
+    "10000901": {
+      "familyId": 10000901,
+      "entityId": 200091,
+      "name": "酸性黑洞",
+      "icon": "10000901",
+      "kind": "replica",
+      "itemId": null,
+      "provenance": "No corresponding complete cloud asset; retain original replica art/entity"
+    },
+    "10001101": {
+      "familyId": 10001101,
+      "entityId": 200101,
+      "name": "能量光剑",
+      "icon": "10001101",
+      "kind": "replica",
+      "itemId": null,
+      "provenance": "No corresponding complete cloud asset; retain original replica art/entity"
+    },
+    "10001501": {
+      "familyId": 10001501,
+      "entityId": 200121,
+      "name": "高能激光",
+      "icon": "10001501",
+      "kind": "cloud-model",
+      "itemId": "aux_laser",
+      "provenance": "Existing complete cloud weapon assembly"
+    },
+    "10001601": {
+      "familyId": 10001601,
+      "entityId": 200141,
+      "name": "冰冻锯盘",
+      "icon": "10001601",
+      "kind": "replica",
+      "itemId": null,
+      "provenance": "No corresponding complete cloud asset; retain original replica art/entity"
+    },
+    "10001701": {
+      "familyId": 10001701,
+      "entityId": 200171,
+      "name": "灼热射线",
+      "icon": "10001701",
+      "kind": "replica",
+      "itemId": null,
+      "provenance": "No corresponding complete cloud asset; retain original replica art/entity"
+    }
+  },
+  "stages": {
+    "10000101": {
+      "skillId": 10000101,
+      "familyId": 10000101,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000101",
+      "artSource": "cloud-model",
+      "dedicatedCloudAsset": "aux_cannon"
+    },
+    "10000102": {
+      "skillId": 10000102,
+      "familyId": 10000101,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400101,
+        10400102,
+        10400105
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000103": {
+      "skillId": 10000103,
+      "familyId": 10000101,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100101,
+        10100102,
+        10100103,
+        10100104,
+        10100105,
+        10100106,
+        10100109,
+        10100107,
+        10100113,
+        10100110
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000104": {
+      "skillId": 10000104,
+      "familyId": 10000101,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400101,
+        10400102,
+        10400105
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000105": {
+      "skillId": 10000105,
+      "familyId": 10000101,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400101,
+        10400102,
+        10400105
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000106": {
+      "skillId": 10000106,
+      "familyId": 10000101,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100101,
+        10100102,
+        10100103,
+        10100104,
+        10100105,
+        10100106,
+        10100109,
+        10100107,
+        10100113,
+        10100110
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000107": {
+      "skillId": 10000107,
+      "familyId": 10000101,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400101,
+        10400102,
+        10400105
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000108": {
+      "skillId": 10000108,
+      "familyId": 10000101,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400101,
+        10400102,
+        10400105
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000109": {
+      "skillId": 10000109,
+      "familyId": 10000101,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100101,
+        10100102,
+        10100103,
+        10100104,
+        10100105,
+        10100106,
+        10100109,
+        10100107,
+        10100113,
+        10100110
+      ],
+      "icon": "10000101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000201": {
+      "skillId": 10000201,
+      "familyId": 10000201,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000202": {
+      "skillId": 10000202,
+      "familyId": 10000201,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400201,
+        10400203,
+        10400204
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000203": {
+      "skillId": 10000203,
+      "familyId": 10000201,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100201,
+        10100202,
+        10100204,
+        10100207,
+        10100217,
+        10100219,
+        10100220,
+        10100213
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000204": {
+      "skillId": 10000204,
+      "familyId": 10000201,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400201,
+        10400203,
+        10400204
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000205": {
+      "skillId": 10000205,
+      "familyId": 10000201,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400201,
+        10400203,
+        10400204
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000206": {
+      "skillId": 10000206,
+      "familyId": 10000201,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100201,
+        10100202,
+        10100204,
+        10100207,
+        10100217,
+        10100219,
+        10100220,
+        10100213
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000207": {
+      "skillId": 10000207,
+      "familyId": 10000201,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400201,
+        10400203,
+        10400204
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000208": {
+      "skillId": 10000208,
+      "familyId": 10000201,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400201,
+        10400203,
+        10400204
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000209": {
+      "skillId": 10000209,
+      "familyId": 10000201,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100201,
+        10100202,
+        10100204,
+        10100207,
+        10100217,
+        10100219,
+        10100220,
+        10100213
+      ],
+      "icon": "10000201",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000301": {
+      "skillId": 10000301,
+      "familyId": 10000301,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000301",
+      "artSource": "cloud-model",
+      "dedicatedCloudAsset": "aux_lightning"
+    },
+    "10000302": {
+      "skillId": 10000302,
+      "familyId": 10000301,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400301,
+        10400302,
+        10400303
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000303": {
+      "skillId": 10000303,
+      "familyId": 10000301,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100301,
+        10100302,
+        10100305,
+        10100307,
+        10100308,
+        10100309,
+        10100321,
+        10100313,
+        10100316
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000304": {
+      "skillId": 10000304,
+      "familyId": 10000301,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400301,
+        10400302,
+        10400303
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000305": {
+      "skillId": 10000305,
+      "familyId": 10000301,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400301,
+        10400302,
+        10400303
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000306": {
+      "skillId": 10000306,
+      "familyId": 10000301,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100301,
+        10100302,
+        10100305,
+        10100307,
+        10100308,
+        10100309,
+        10100321,
+        10100313,
+        10100316
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000307": {
+      "skillId": 10000307,
+      "familyId": 10000301,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400301,
+        10400302,
+        10400303
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000308": {
+      "skillId": 10000308,
+      "familyId": 10000301,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400301,
+        10400302,
+        10400303
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000309": {
+      "skillId": 10000309,
+      "familyId": 10000301,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100301,
+        10100302,
+        10100305,
+        10100307,
+        10100308,
+        10100309,
+        10100321,
+        10100313,
+        10100316
+      ],
+      "icon": "10000301",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000401": {
+      "skillId": 10000401,
+      "familyId": 10000401,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000401",
+      "artSource": "cloud-model",
+      "dedicatedCloudAsset": "aux_scatter"
+    },
+    "10000402": {
+      "skillId": 10000402,
+      "familyId": 10000401,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400401,
+        10400402,
+        10400403
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000403": {
+      "skillId": 10000403,
+      "familyId": 10000401,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100401,
+        10100403,
+        10100405,
+        10100406,
+        10100408,
+        10100409,
+        10100404,
+        10100412,
+        10100411
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000404": {
+      "skillId": 10000404,
+      "familyId": 10000401,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400401,
+        10400402,
+        10400403
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000405": {
+      "skillId": 10000405,
+      "familyId": 10000401,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400401,
+        10400402,
+        10400403
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000406": {
+      "skillId": 10000406,
+      "familyId": 10000401,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100401,
+        10100403,
+        10100405,
+        10100406,
+        10100408,
+        10100409,
+        10100404,
+        10100412,
+        10100411
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000407": {
+      "skillId": 10000407,
+      "familyId": 10000401,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400401,
+        10400402,
+        10400403
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000408": {
+      "skillId": 10000408,
+      "familyId": 10000401,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400401,
+        10400402,
+        10400403
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000409": {
+      "skillId": 10000409,
+      "familyId": 10000401,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100401,
+        10100403,
+        10100405,
+        10100406,
+        10100408,
+        10100409,
+        10100404,
+        10100412,
+        10100411
+      ],
+      "icon": "10000401",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000601": {
+      "skillId": 10000601,
+      "familyId": 10000601,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000602": {
+      "skillId": 10000602,
+      "familyId": 10000601,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400601,
+        10400602,
+        10400603
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000603": {
+      "skillId": 10000603,
+      "familyId": 10000601,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100601,
+        10100602,
+        10100603,
+        10100605,
+        10100607,
+        10100618,
+        10100625,
+        10100609,
+        10100617
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000604": {
+      "skillId": 10000604,
+      "familyId": 10000601,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400601,
+        10400602,
+        10400603
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000605": {
+      "skillId": 10000605,
+      "familyId": 10000601,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400601,
+        10400602,
+        10400603
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000606": {
+      "skillId": 10000606,
+      "familyId": 10000601,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100601,
+        10100602,
+        10100603,
+        10100605,
+        10100607,
+        10100618,
+        10100625,
+        10100609,
+        10100617
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000607": {
+      "skillId": 10000607,
+      "familyId": 10000601,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400601,
+        10400602,
+        10400603
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000608": {
+      "skillId": 10000608,
+      "familyId": 10000601,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400601,
+        10400602,
+        10400603
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000609": {
+      "skillId": 10000609,
+      "familyId": 10000601,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100601,
+        10100602,
+        10100603,
+        10100605,
+        10100607,
+        10100618,
+        10100625,
+        10100609,
+        10100617
+      ],
+      "icon": "10000601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000701": {
+      "skillId": 10000701,
+      "familyId": 10000701,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000701",
+      "artSource": "cloud-model",
+      "dedicatedCloudAsset": "aux_rocket"
+    },
+    "10000702": {
+      "skillId": 10000702,
+      "familyId": 10000701,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400701,
+        10400702,
+        10400703
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000703": {
+      "skillId": 10000703,
+      "familyId": 10000701,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100701,
+        10100702,
+        10100703,
+        10100706,
+        10100708,
+        10100709,
+        10100710,
+        10100711,
+        10100718
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000704": {
+      "skillId": 10000704,
+      "familyId": 10000701,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400701,
+        10400702,
+        10400703
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000705": {
+      "skillId": 10000705,
+      "familyId": 10000701,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400701,
+        10400702,
+        10400703
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000706": {
+      "skillId": 10000706,
+      "familyId": 10000701,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100701,
+        10100702,
+        10100703,
+        10100706,
+        10100708,
+        10100709,
+        10100710,
+        10100711,
+        10100718
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000707": {
+      "skillId": 10000707,
+      "familyId": 10000701,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400701,
+        10400702,
+        10400703
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000708": {
+      "skillId": 10000708,
+      "familyId": 10000701,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400701,
+        10400702,
+        10400703
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000709": {
+      "skillId": 10000709,
+      "familyId": 10000701,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100701,
+        10100702,
+        10100703,
+        10100706,
+        10100708,
+        10100709,
+        10100710,
+        10100711,
+        10100718
+      ],
+      "icon": "10000701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000901": {
+      "skillId": 10000901,
+      "familyId": 10000901,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000902": {
+      "skillId": 10000902,
+      "familyId": 10000901,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10400901,
+        10400902,
+        10400903,
+        10400904
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000903": {
+      "skillId": 10000903,
+      "familyId": 10000901,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10100904,
+        10100905,
+        10100906,
+        10100908,
+        10100910,
+        10100907,
+        10100918,
+        10100909,
+        10100917
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000904": {
+      "skillId": 10000904,
+      "familyId": 10000901,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10400901,
+        10400902,
+        10400903,
+        10400904
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000905": {
+      "skillId": 10000905,
+      "familyId": 10000901,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10400901,
+        10400902,
+        10400903,
+        10400904
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000906": {
+      "skillId": 10000906,
+      "familyId": 10000901,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10100904,
+        10100905,
+        10100906,
+        10100908,
+        10100910,
+        10100907,
+        10100918,
+        10100909,
+        10100917
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000907": {
+      "skillId": 10000907,
+      "familyId": 10000901,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10400901,
+        10400902,
+        10400903,
+        10400904
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000908": {
+      "skillId": 10000908,
+      "familyId": 10000901,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10400901,
+        10400902,
+        10400903,
+        10400904
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10000909": {
+      "skillId": 10000909,
+      "familyId": 10000901,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10100904,
+        10100905,
+        10100906,
+        10100908,
+        10100910,
+        10100907,
+        10100918,
+        10100909,
+        10100917
+      ],
+      "icon": "10000901",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001101": {
+      "skillId": 10001101,
+      "familyId": 10001101,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001102": {
+      "skillId": 10001102,
+      "familyId": 10001101,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10401101,
+        10401102,
+        10401103,
+        10401105
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001103": {
+      "skillId": 10001103,
+      "familyId": 10001101,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10101101,
+        10101102,
+        10101103,
+        10101104,
+        10101105,
+        10101107,
+        10101110,
+        10101117,
+        10101118,
+        10101106,
+        10101111
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001104": {
+      "skillId": 10001104,
+      "familyId": 10001101,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10401101,
+        10401102,
+        10401103,
+        10401105
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001105": {
+      "skillId": 10001105,
+      "familyId": 10001101,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10401101,
+        10401102,
+        10401103,
+        10401105
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001106": {
+      "skillId": 10001106,
+      "familyId": 10001101,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10101101,
+        10101102,
+        10101103,
+        10101104,
+        10101105,
+        10101107,
+        10101110,
+        10101117,
+        10101118,
+        10101106,
+        10101111
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001107": {
+      "skillId": 10001107,
+      "familyId": 10001101,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10401101,
+        10401102,
+        10401103,
+        10401105
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001108": {
+      "skillId": 10001108,
+      "familyId": 10001101,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10401101,
+        10401102,
+        10401103,
+        10401105
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001109": {
+      "skillId": 10001109,
+      "familyId": 10001101,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10101101,
+        10101102,
+        10101103,
+        10101104,
+        10101105,
+        10101107,
+        10101110,
+        10101117,
+        10101118,
+        10101106,
+        10101111
+      ],
+      "icon": "10001101",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001501": {
+      "skillId": 10001501,
+      "familyId": 10001501,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10001501",
+      "artSource": "cloud-model",
+      "dedicatedCloudAsset": "aux_laser"
+    },
+    "10001502": {
+      "skillId": 10001502,
+      "familyId": 10001501,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10401501,
+        10401502,
+        10401504
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001503": {
+      "skillId": 10001503,
+      "familyId": 10001501,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10101502,
+        10101503,
+        10101507,
+        10101511,
+        10101512,
+        10101513,
+        10101519,
+        10101521,
+        10101518,
+        10101520
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001504": {
+      "skillId": 10001504,
+      "familyId": 10001501,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10401501,
+        10401502,
+        10401504
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001505": {
+      "skillId": 10001505,
+      "familyId": 10001501,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10401501,
+        10401502,
+        10401504
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001506": {
+      "skillId": 10001506,
+      "familyId": 10001501,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10101502,
+        10101503,
+        10101507,
+        10101511,
+        10101512,
+        10101513,
+        10101519,
+        10101521,
+        10101518,
+        10101520
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001507": {
+      "skillId": 10001507,
+      "familyId": 10001501,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10401501,
+        10401502,
+        10401504
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001508": {
+      "skillId": 10001508,
+      "familyId": 10001501,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10401501,
+        10401502,
+        10401504
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001509": {
+      "skillId": 10001509,
+      "familyId": 10001501,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10101502,
+        10101503,
+        10101507,
+        10101511,
+        10101512,
+        10101513,
+        10101519,
+        10101521,
+        10101518,
+        10101520
+      ],
+      "icon": "10001501",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001601": {
+      "skillId": 10001601,
+      "familyId": 10001601,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001602": {
+      "skillId": 10001602,
+      "familyId": 10001601,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10401601,
+        10401602,
+        10401603
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001603": {
+      "skillId": 10001603,
+      "familyId": 10001601,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10101601,
+        10101604,
+        10101605,
+        10101607,
+        10101608,
+        10101609,
+        10101610,
+        10101614,
+        10101616
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001604": {
+      "skillId": 10001604,
+      "familyId": 10001601,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10401601,
+        10401602,
+        10401603
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001605": {
+      "skillId": 10001605,
+      "familyId": 10001601,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10401601,
+        10401602,
+        10401603
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001606": {
+      "skillId": 10001606,
+      "familyId": 10001601,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10101601,
+        10101604,
+        10101605,
+        10101607,
+        10101608,
+        10101609,
+        10101610,
+        10101614,
+        10101616
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001607": {
+      "skillId": 10001607,
+      "familyId": 10001601,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10401601,
+        10401602,
+        10401603
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001608": {
+      "skillId": 10001608,
+      "familyId": 10001601,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10401601,
+        10401602,
+        10401603
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001609": {
+      "skillId": 10001609,
+      "familyId": 10001601,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10101601,
+        10101604,
+        10101605,
+        10101607,
+        10101608,
+        10101609,
+        10101610,
+        10101614,
+        10101616
+      ],
+      "icon": "10001601",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001701": {
+      "skillId": 10001701,
+      "familyId": 10001701,
+      "star": 1,
+      "kind": "acquire",
+      "childIds": [],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001702": {
+      "skillId": 10001702,
+      "familyId": 10001701,
+      "star": 2,
+      "kind": "minor",
+      "childIds": [
+        10401702,
+        10401703,
+        10401704
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001703": {
+      "skillId": 10001703,
+      "familyId": 10001701,
+      "star": 3,
+      "kind": "breakthrough",
+      "childIds": [
+        10101701,
+        10101703,
+        10101704,
+        10101707,
+        10101712,
+        10101713,
+        10101715,
+        10101706,
+        10101710
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001704": {
+      "skillId": 10001704,
+      "familyId": 10001701,
+      "star": 4,
+      "kind": "minor",
+      "childIds": [
+        10401702,
+        10401703,
+        10401704
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001705": {
+      "skillId": 10001705,
+      "familyId": 10001701,
+      "star": 5,
+      "kind": "minor",
+      "childIds": [
+        10401702,
+        10401703,
+        10401704
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001706": {
+      "skillId": 10001706,
+      "familyId": 10001701,
+      "star": 6,
+      "kind": "breakthrough",
+      "childIds": [
+        10101701,
+        10101703,
+        10101704,
+        10101707,
+        10101712,
+        10101713,
+        10101715,
+        10101706,
+        10101710
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001707": {
+      "skillId": 10001707,
+      "familyId": 10001701,
+      "star": 7,
+      "kind": "minor",
+      "childIds": [
+        10401702,
+        10401703,
+        10401704
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001708": {
+      "skillId": 10001708,
+      "familyId": 10001701,
+      "star": 8,
+      "kind": "minor",
+      "childIds": [
+        10401702,
+        10401703,
+        10401704
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10001709": {
+      "skillId": 10001709,
+      "familyId": 10001701,
+      "star": 9,
+      "kind": "breakthrough",
+      "childIds": [
+        10101701,
+        10101703,
+        10101704,
+        10101707,
+        10101712,
+        10101713,
+        10101715,
+        10101706,
+        10101710
+      ],
+      "icon": "10001701",
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    }
+  },
+  "branches": {
+    "10100101": {
+      "skillId": 10100101,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "正向弹幕",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100102": {
+      "skillId": 10100102,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "穿透弹",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100103": {
+      "skillId": 10100103,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "斜向弹幕",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100104": {
+      "skillId": 10100104,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "爆裂弹",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100105": {
+      "skillId": 10100105,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "连续射击",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100106": {
+      "skillId": 10100106,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "巨型弹",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100107": {
+      "skillId": 10100107,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "撕裂弹",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100109": {
+      "skillId": 10100109,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "射速强化",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100110": {
+      "skillId": 10100110,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "火力全开",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100113": {
+      "skillId": 10100113,
+      "familyId": 10000101,
+      "kind": "breakthrough",
+      "name": "弹射弹",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000103,
+        10000106,
+        10000109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100201": {
+      "skillId": 10100201,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "酸性雨云",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100202": {
+      "skillId": 10100202,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "酸液连发",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100204": {
+      "skillId": 10100204,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "酸液弹分裂",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100207": {
+      "skillId": 10100207,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "酸液激光",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100213": {
+      "skillId": 10100213,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "强效酸液",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100217": {
+      "skillId": 10100217,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "浓缩酸液弹",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100219": {
+      "skillId": 10100219,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "吞噬酸液",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100220": {
+      "skillId": 10100220,
+      "familyId": 10000201,
+      "kind": "breakthrough",
+      "name": "酸液速射炮",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000203,
+        10000206,
+        10000209
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100301": {
+      "skillId": 10100301,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "高速射击",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100302": {
+      "skillId": 10100302,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "连锁攻击",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100305": {
+      "skillId": 10100305,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "电磁护盾",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100307": {
+      "skillId": 10100307,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "狂暴电流",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100308": {
+      "skillId": 10100308,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "电弧汲能",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100309": {
+      "skillId": 10100309,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "电磁干扰",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100313": {
+      "skillId": 10100313,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "电磁分裂",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100316": {
+      "skillId": 10100316,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "电流火花",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100321": {
+      "skillId": 10100321,
+      "familyId": 10000301,
+      "kind": "breakthrough",
+      "name": "暴击落雷",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000303,
+        10000306,
+        10000309
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100401": {
+      "skillId": 10100401,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "毁灭之心",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100403": {
+      "skillId": 10100403,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "近距离攻击",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100404": {
+      "skillId": 10100404,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "连续射击",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100405": {
+      "skillId": 10100405,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "扩散射击",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100406": {
+      "skillId": 10100406,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "威能喷射",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100408": {
+      "skillId": 10100408,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "集束射流",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100409": {
+      "skillId": 10100409,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "高能雷爆弹",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100411": {
+      "skillId": 10100411,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "庇护射击",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100412": {
+      "skillId": 10100412,
+      "familyId": 10000401,
+      "kind": "breakthrough",
+      "name": "汲能喷射",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000403,
+        10000406,
+        10000409
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100601": {
+      "skillId": 10100601,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "巨大冰刃",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100602": {
+      "skillId": 10100602,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "月影霜华",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100603": {
+      "skillId": 10100603,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "极速冷却",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100605": {
+      "skillId": 10100605,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "双重冰刃",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100607": {
+      "skillId": 10100607,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "分裂冰刃",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100609": {
+      "skillId": 10100609,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "致命追踪",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100617": {
+      "skillId": 10100617,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "冰霜爆裂",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100618": {
+      "skillId": 10100618,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "冰刃乱舞",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100625": {
+      "skillId": 10100625,
+      "familyId": 10000601,
+      "kind": "breakthrough",
+      "name": "破灭之刃",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000603,
+        10000606,
+        10000609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100701": {
+      "skillId": 10100701,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "导弹连射",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100702": {
+      "skillId": 10100702,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "燃烧弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100703": {
+      "skillId": 10100703,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "爆破弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100706": {
+      "skillId": 10100706,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "集束爆弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100708": {
+      "skillId": 10100708,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "核弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100709": {
+      "skillId": 10100709,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "导弹分裂",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100710": {
+      "skillId": 10100710,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "导弹弹射",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100711": {
+      "skillId": 10100711,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "导弹齐射",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100718": {
+      "skillId": 10100718,
+      "familyId": 10000701,
+      "kind": "breakthrough",
+      "name": "眼镜蛇导弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000703,
+        10000706,
+        10000709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100904": {
+      "skillId": 10100904,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "吸收黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100905": {
+      "skillId": 10100905,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "重粒子黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100906": {
+      "skillId": 10100906,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "弹力黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100907": {
+      "skillId": 10100907,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "传送黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100908": {
+      "skillId": 10100908,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "分裂黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100909": {
+      "skillId": 10100909,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "巨大黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100910": {
+      "skillId": 10100910,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "引力腐蚀",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100917": {
+      "skillId": 10100917,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "黑洞粒子",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10100918": {
+      "skillId": 10100918,
+      "familyId": 10000901,
+      "kind": "breakthrough",
+      "name": "高频黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000903,
+        10000906,
+        10000909
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101101": {
+      "skillId": 10101101,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "反向剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101102": {
+      "skillId": 10101102,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "狂暴一击",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101103": {
+      "skillId": 10101103,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "巨剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101104": {
+      "skillId": 10101104,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "剑气",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101105": {
+      "skillId": 10101105,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "逆流剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101106": {
+      "skillId": 10101106,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "剑气连斩",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101107": {
+      "skillId": 10101107,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "迅影剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101110": {
+      "skillId": 10101110,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "虚空斩",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101111": {
+      "skillId": 10101111,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "顺势斩",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101117": {
+      "skillId": 10101117,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "剑气回复",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101118": {
+      "skillId": 10101118,
+      "familyId": 10001101,
+      "kind": "breakthrough",
+      "name": "无敌斩",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001103,
+        10001106,
+        10001109
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101502": {
+      "skillId": 10101502,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "奔流激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101503": {
+      "skillId": 10101503,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "机翼激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101507": {
+      "skillId": 10101507,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "激光追踪",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101511": {
+      "skillId": 10101511,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "光辉脉动",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101512": {
+      "skillId": 10101512,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "蓄能激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101513": {
+      "skillId": 10101513,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "聚焦激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101518": {
+      "skillId": 10101518,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "火力全开",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101519": {
+      "skillId": 10101519,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "高频激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101520": {
+      "skillId": 10101520,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "聚焦增幅",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101521": {
+      "skillId": 10101521,
+      "familyId": 10001501,
+      "kind": "breakthrough",
+      "name": "激光扫射",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001503,
+        10001506,
+        10001509
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101601": {
+      "skillId": 10101601,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "范围扩大",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101604": {
+      "skillId": 10101604,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "高速旋转",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101605": {
+      "skillId": 10101605,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "威力锯盘",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101607": {
+      "skillId": 10101607,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "急冻射线",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101608": {
+      "skillId": 10101608,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "巨型锯盘",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101609": {
+      "skillId": 10101609,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "复仇协议",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101610": {
+      "skillId": 10101610,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "锯盘+2",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101614": {
+      "skillId": 10101614,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "坚硬锯盘",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101616": {
+      "skillId": 10101616,
+      "familyId": 10001601,
+      "kind": "breakthrough",
+      "name": "冰霜爆破",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001603,
+        10001606,
+        10001609
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101701": {
+      "skillId": 10101701,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "火焰折射",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101703": {
+      "skillId": 10101703,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "灼热裂变",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101704": {
+      "skillId": 10101704,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "灼烧翻倍",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101706": {
+      "skillId": 10101706,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "瞬闪射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101707": {
+      "skillId": 10101707,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "爆炸射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101710": {
+      "skillId": 10101710,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "超级射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101712": {
+      "skillId": 10101712,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "超远视距",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101713": {
+      "skillId": 10101713,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "威力强化",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10101715": {
+      "skillId": 10101715,
+      "familyId": 10001701,
+      "kind": "breakthrough",
+      "name": "均衡射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001703,
+        10001706,
+        10001709
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400101": {
+      "skillId": 10400101,
+      "familyId": 10000101,
+      "kind": "minor",
+      "name": "速射机炮",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000102,
+        10000104,
+        10000105,
+        10000107,
+        10000108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400102": {
+      "skillId": 10400102,
+      "familyId": 10000101,
+      "kind": "minor",
+      "name": "速射机炮",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000102,
+        10000104,
+        10000105,
+        10000107,
+        10000108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400105": {
+      "skillId": 10400105,
+      "familyId": 10000101,
+      "kind": "minor",
+      "name": "速射机炮",
+      "icon": "10000101",
+      "parentStageIds": [
+        10000102,
+        10000104,
+        10000105,
+        10000107,
+        10000108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400201": {
+      "skillId": 10400201,
+      "familyId": 10000201,
+      "kind": "minor",
+      "name": "酸液枪",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000202,
+        10000204,
+        10000205,
+        10000207,
+        10000208
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400203": {
+      "skillId": 10400203,
+      "familyId": 10000201,
+      "kind": "minor",
+      "name": "酸液枪",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000202,
+        10000204,
+        10000205,
+        10000207,
+        10000208
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400204": {
+      "skillId": 10400204,
+      "familyId": 10000201,
+      "kind": "minor",
+      "name": "酸液枪",
+      "icon": "10000201",
+      "parentStageIds": [
+        10000202,
+        10000204,
+        10000205,
+        10000207,
+        10000208
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400301": {
+      "skillId": 10400301,
+      "familyId": 10000301,
+      "kind": "minor",
+      "name": "电弧枪",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000302,
+        10000304,
+        10000305,
+        10000307,
+        10000308
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400302": {
+      "skillId": 10400302,
+      "familyId": 10000301,
+      "kind": "minor",
+      "name": "电弧枪",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000302,
+        10000304,
+        10000305,
+        10000307,
+        10000308
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400303": {
+      "skillId": 10400303,
+      "familyId": 10000301,
+      "kind": "minor",
+      "name": "电弧枪",
+      "icon": "10000301",
+      "parentStageIds": [
+        10000302,
+        10000304,
+        10000305,
+        10000307,
+        10000308
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400401": {
+      "skillId": 10400401,
+      "familyId": 10000401,
+      "kind": "minor",
+      "name": "磁暴枪",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000402,
+        10000404,
+        10000405,
+        10000407,
+        10000408
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400402": {
+      "skillId": 10400402,
+      "familyId": 10000401,
+      "kind": "minor",
+      "name": "磁暴枪",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000402,
+        10000404,
+        10000405,
+        10000407,
+        10000408
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400403": {
+      "skillId": 10400403,
+      "familyId": 10000401,
+      "kind": "minor",
+      "name": "磁暴枪",
+      "icon": "10000401",
+      "parentStageIds": [
+        10000402,
+        10000404,
+        10000405,
+        10000407,
+        10000408
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400601": {
+      "skillId": 10400601,
+      "familyId": 10000601,
+      "kind": "minor",
+      "name": "冰刃弹",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000602,
+        10000604,
+        10000605,
+        10000607,
+        10000608
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400602": {
+      "skillId": 10400602,
+      "familyId": 10000601,
+      "kind": "minor",
+      "name": "冰刃弹",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000602,
+        10000604,
+        10000605,
+        10000607,
+        10000608
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400603": {
+      "skillId": 10400603,
+      "familyId": 10000601,
+      "kind": "minor",
+      "name": "冰刃弹",
+      "icon": "10000601",
+      "parentStageIds": [
+        10000602,
+        10000604,
+        10000605,
+        10000607,
+        10000608
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400701": {
+      "skillId": 10400701,
+      "familyId": 10000701,
+      "kind": "minor",
+      "name": "爆燃导弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000702,
+        10000704,
+        10000705,
+        10000707,
+        10000708
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400702": {
+      "skillId": 10400702,
+      "familyId": 10000701,
+      "kind": "minor",
+      "name": "爆燃导弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000702,
+        10000704,
+        10000705,
+        10000707,
+        10000708
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400703": {
+      "skillId": 10400703,
+      "familyId": 10000701,
+      "kind": "minor",
+      "name": "爆燃导弹",
+      "icon": "10000701",
+      "parentStageIds": [
+        10000702,
+        10000704,
+        10000705,
+        10000707,
+        10000708
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400901": {
+      "skillId": 10400901,
+      "familyId": 10000901,
+      "kind": "minor",
+      "name": "酸性黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000902,
+        10000904,
+        10000905,
+        10000907,
+        10000908
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400902": {
+      "skillId": 10400902,
+      "familyId": 10000901,
+      "kind": "minor",
+      "name": "酸性黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000902,
+        10000904,
+        10000905,
+        10000907,
+        10000908
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400903": {
+      "skillId": 10400903,
+      "familyId": 10000901,
+      "kind": "minor",
+      "name": "酸性黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000902,
+        10000904,
+        10000905,
+        10000907,
+        10000908
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10400904": {
+      "skillId": 10400904,
+      "familyId": 10000901,
+      "kind": "minor",
+      "name": "酸性黑洞",
+      "icon": "10000901",
+      "parentStageIds": [
+        10000902,
+        10000904,
+        10000905,
+        10000907,
+        10000908
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401101": {
+      "skillId": 10401101,
+      "familyId": 10001101,
+      "kind": "minor",
+      "name": "能量光剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001102,
+        10001104,
+        10001105,
+        10001107,
+        10001108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401102": {
+      "skillId": 10401102,
+      "familyId": 10001101,
+      "kind": "minor",
+      "name": "能量光剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001102,
+        10001104,
+        10001105,
+        10001107,
+        10001108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401103": {
+      "skillId": 10401103,
+      "familyId": 10001101,
+      "kind": "minor",
+      "name": "能量光剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001102,
+        10001104,
+        10001105,
+        10001107,
+        10001108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401105": {
+      "skillId": 10401105,
+      "familyId": 10001101,
+      "kind": "minor",
+      "name": "能量光剑",
+      "icon": "10001101",
+      "parentStageIds": [
+        10001102,
+        10001104,
+        10001105,
+        10001107,
+        10001108
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401501": {
+      "skillId": 10401501,
+      "familyId": 10001501,
+      "kind": "minor",
+      "name": "高能激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001502,
+        10001504,
+        10001505,
+        10001507,
+        10001508
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401502": {
+      "skillId": 10401502,
+      "familyId": 10001501,
+      "kind": "minor",
+      "name": "高能激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001502,
+        10001504,
+        10001505,
+        10001507,
+        10001508
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401504": {
+      "skillId": 10401504,
+      "familyId": 10001501,
+      "kind": "minor",
+      "name": "高能激光",
+      "icon": "10001501",
+      "parentStageIds": [
+        10001502,
+        10001504,
+        10001505,
+        10001507,
+        10001508
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401601": {
+      "skillId": 10401601,
+      "familyId": 10001601,
+      "kind": "minor",
+      "name": "冰冻锯盘",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001602,
+        10001604,
+        10001605,
+        10001607,
+        10001608
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401602": {
+      "skillId": 10401602,
+      "familyId": 10001601,
+      "kind": "minor",
+      "name": "冰冻锯盘",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001602,
+        10001604,
+        10001605,
+        10001607,
+        10001608
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401603": {
+      "skillId": 10401603,
+      "familyId": 10001601,
+      "kind": "minor",
+      "name": "冰冻锯盘",
+      "icon": "10001601",
+      "parentStageIds": [
+        10001602,
+        10001604,
+        10001605,
+        10001607,
+        10001608
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401702": {
+      "skillId": 10401702,
+      "familyId": 10001701,
+      "kind": "minor",
+      "name": "灼热射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001702,
+        10001704,
+        10001705,
+        10001707,
+        10001708
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401703": {
+      "skillId": 10401703,
+      "familyId": 10001701,
+      "kind": "minor",
+      "name": "灼热射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001702,
+        10001704,
+        10001705,
+        10001707,
+        10001708
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    },
+    "10401704": {
+      "skillId": 10401704,
+      "familyId": 10001701,
+      "kind": "minor",
+      "name": "灼热射线",
+      "icon": "10001701",
+      "parentStageIds": [
+        10001702,
+        10001704,
+        10001705,
+        10001707,
+        10001708
+      ],
+      "artSource": "replica",
+      "dedicatedCloudAsset": null
+    }
+  }
+}

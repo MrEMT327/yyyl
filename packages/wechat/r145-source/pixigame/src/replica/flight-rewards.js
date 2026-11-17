@@ -1,0 +1,155 @@
+// Project sign-in rewards with the existing local transactional grant.
+// The UTC+8 daily clock and random-group sampler are offline compatibility.
+// Collection IDs, star costs and combat skills remain unchanged.
+import { nativeItemDisplayName } from './native-item-names.js';
+import { grantPilotCards, pilotCreditReward } from './pilot-copy-grants.js';
+import catalog from './native-economy-catalog.json' with { type: 'json' };
+import acquisition from './native-acquisition-catalog.json' with { type: 'json' };
+import { nativeCollectionDisplayName } from './native-collection-names.js';
+import { nativeItemArt } from './native-item-presentation.js';
+import { localRandomMaterials } from './local-economy-policy.js';
+import {recurringProgressGate} from './pilot-supply-reward-policy.js';
+import {UNLOCK_ALL_CONTENT} from '../development-resources.js';
+
+import {STARTER_PLANE,LOCAL_SIGNIN_POLICY_ID,PREVIOUS_SIGNIN_POLICY_ID,PREVIOUS_AIRCRAFT_SIGNIN_POLICY_ID,APK_SIGNIN_POLICY_ID,SIGNIN_PILOT,signinRewards,previousSigninRewards,previousAircraftSigninRewards,capturedSigninRewards,SIGNIN_LAST_DAY,SIGNIN_SOURCE,LEGACY_FLIGHT_SIGNIN} from './local-signin-policy.js';
+export {STARTER_PLANE,STARTER_PILOT,FLIGHT_SIGNIN} from './local-signin-policy.js';
+const item = (id,count) => ({kind:'item',id,count});
+const unit = (kind,id) => ({kind,id,count:1});
+// Retired chapter-gift definitions are not a live income source. Historical
+// ledger.chapters stays preserved; nativeAcquisition owns chapter rewards.
+export const FLIGHT_AD_REWARDS = [item(2,50),item(1,1000)];
+export function flightDay(time) {
+  if(!Number.isFinite(time))throw new Error('日期无效');
+  return new Date(time+8*3600000).toISOString().slice(0,10); // Fixed UTC+8 reset.
+}
+export function flightLedger(value,legacy={}) {
+  const result=structuredClone(value||{version:1,chapters:[],signCount:legacy.claimedCount||0,
+    signDay:legacy.lastClaimDay||'',starterPending:(legacy.claimedCount||0)>=2,
+    adDay:'',misses:0,total:0,history:[]});
+  if(result.version!==1||!Array.isArray(result.chapters)||new Set(result.chapters).size!==result.chapters.length||
+    result.chapters.some(x=>!Number.isInteger(x)||x<1||x>50)||
+    !Number.isInteger(result.signCount)||result.signCount<0||result.signCount>SIGNIN_LAST_DAY||
+    !Number.isInteger(result.misses)||result.misses<0||result.misses>=10||
+    !Number.isSafeInteger(result.total)||result.total<0||
+    ![result.signDay,result.adDay].every(x=>x===''||/^\d{4}-\d{2}-\d{2}$/.test(x)))
+    throw new Error('奖励领取记录无效，未覆盖旧记录');
+  if(!result.signinPolicy&&!result.legacySignIn&&result.signCount>0)
+    result.legacySignIn={policy:'girl-flight-signin-v1',count:Math.min(7,result.signCount)};
+  if(result.legacySignIn&&(!Number.isInteger(result.legacySignIn.count)||result.legacySignIn.count<1||result.legacySignIn.count>7))
+    throw Error('旧签到记录无效，未覆盖旧记录');
+  if(!Object.hasOwn(result,'signinHistory')){
+    result.signinHistory=Array.from({length:result.signCount},(_,i)=>{
+      const oldLocal=i<(result.legacySignIn?.count||0);
+      const rewards=oldLocal?LEGACY_FLIGHT_SIGNIN[i]:result.signinPolicy===APK_SIGNIN_POLICY_ID?capturedSigninRewards(i+1):result.signinPolicy===PREVIOUS_SIGNIN_POLICY_ID?previousSigninRewards(i+1):result.signinPolicy===PREVIOUS_AIRCRAFT_SIGNIN_POLICY_ID?previousAircraftSigninRewards(i+1):signinRewards(i+1);
+      return {day:i+1,policy:oldLocal?'girl-flight-signin-v1':result.signinPolicy||LOCAL_SIGNIN_POLICY_ID,rewards:structuredClone(rewards)};
+    });
+  }
+  if(!Array.isArray(result.signinHistory)||result.signinHistory.length!==result.signCount||result.signinHistory.some((row,i)=>row?.day!==i+1||!Array.isArray(row.rewards)||!row.rewards.length||row.rewards.some(r=>!['item','skins','pilots','guns'].includes(r?.kind)||!Number.isSafeInteger(r.id)||r.id<1||!Number.isSafeInteger(r.count)||r.count<1)))
+    throw Error('签到奖励历史无效，未覆盖旧记录');
+  // Repair the rejected APK policy's seventh-day chip reward once. Preserve
+  // earned stock and the cursor; only the missing pilot can be recovered.
+  if(result.signinPolicy===APK_SIGNIN_POLICY_ID&&result.signCount>=7&&!result.driverRecoveryDone&&!result.signinHistory[6].rewards.some(r=>r.kind==='pilots'&&r.id===SIGNIN_PILOT))
+    result.driverPending=true;
+  return result;
+}
+export function flightRewardView(reward) {
+  const row=reward.kind==='item'?null:catalog[reward.kind].find(r=>r.id===reward.id);
+  const name=nativeItemDisplayName(reward.id)||({925:'角色箱',926:'角色箱碎片',113:'普通装备箱券',3132505:'手套·史诗芯片',10010007:'随机装备图纸',10010008:'随机科研图纸'})[reward.id]||nativeCollectionDisplayName(reward.id)||row?.name||catalog.itemNames[reward.id]||acquisition.items.find(r=>r.id===reward.id)?.note||`物品 ${reward.id}`;
+  return {...reward,name,
+    nativeRow:row,type:reward.kind==='skins'?'aircraft':reward.kind==='pilots'?'pilot':reward.kind==='guns'?'weapon':reward.id===2?'diamonds':reward.id===1?'coins':'nativeItem',
+    ...(reward.kind==='item'?{nativeItemId:reward.id,image:nativeItemArt(reward.id)}:{}),
+    amount:reward.count,title:`${name} ×${reward.count}`};
+}
+export function flightRewardsSnapshot(ledger,inventory,campaign,time) {
+  const claims=flightLedger(ledger),today=flightDay(time);
+  const gate=recurringProgressGate(campaign,'signin'),unlocked=UNLOCK_ALL_CONTENT||gate.reached;
+  const canSign=claims.starterPending||claims.driverPending||unlocked&&claims.signCount<SIGNIN_LAST_DAY&&today>claims.signDay;
+  // Keep the just-completed week visible for the rest of its claim day.
+  const displayIndex=claims.starterPending||claims.driverPending?0:today>claims.signDay?claims.signCount:Math.max(0,claims.signCount-1);
+  const weekStart=Math.floor(displayIndex/7)*7;
+  return {
+    revision:inventory.revision,diamonds:inventory.items[2]||0,
+    misses:claims.misses,total:claims.total,history:(claims.history||[]).map(row=>({...row,rewards:row.rewards.map(r=>({...r,name:nativeCollectionDisplayName(r.id)||r.name}))})),
+    chapters:[], // Compatibility only; use nativeAcquisition.rewards.
+    ad:{canClaim:today>claims.adDay,rewards:FLIGHT_AD_REWARDS.map(flightRewardView)},
+    signIn:{ruleSource:LOCAL_SIGNIN_POLICY_ID,nativeRewardScheduleKnown:true,gate:{...gate,reached:unlocked},projectAdapted:true,referenceLayout:true,source:SIGNIN_SOURCE,serverRulesKnown:false,today,lastClaimDay:claims.signDay,claimedCount:claims.signCount,weekStart,
+      completed:claims.signCount===SIGNIN_LAST_DAY&&!claims.starterPending&&!claims.driverPending,canClaim:canSign,starterPending:claims.starterPending,driverPending:Boolean(claims.driverPending),
+      supplements:{},days:Array.from({length:7},(_,i)=>{
+        const calendarDay=weekStart+i+1;
+        const entry=claims.signinHistory[calendarDay-1];
+        const legacyReward=Boolean(entry&&entry.policy!==LOCAL_SIGNIN_POLICY_ID);
+        const recovery=claims.driverPending&&i===6;
+        const recovered=calendarDay===7&&claims.driverRecoveryDone;
+        const earned=entry?entry.rewards:signinRewards(Math.min(calendarDay,SIGNIN_LAST_DAY));
+        const rewards=recovery?[unit('pilots',SIGNIN_PILOT)]:recovered?[...earned.filter(r=>r.kind!=='pilots'||r.id!==SIGNIN_PILOT),unit('pilots',SIGNIN_PILOT)]:claims.starterPending&&i===1?[unit('skins',STARTER_PLANE)]:earned;
+        return {day:i+1,calendarDay,legacyReward,recovery,recovered,...flightRewardView(rewards[0]),
+        rewards:rewards.map(flightRewardView),
+        title:rewards.map(r=>flightRewardView(r).title).join('、'),
+        claimed:weekStart+i<claims.signCount&&!(claims.starterPending&&i===1)&&!recovery,
+        active:claims.driverPending?i===6:claims.starterPending?i===1:weekStart+i===claims.signCount};}),
+    },
+  };
+}
+function grant(inventory,progression,reward) {
+  const view=flightRewardView(reward);
+  if(reward.kind==='item') inventory.items[reward.id]=(inventory.items[reward.id]||0)+reward.count;
+  else {
+    const row=catalog[reward.kind].find(r=>r.id===reward.id);
+    if(!row||row.closed)throw new Error('奖励配置不可用');
+    const hadActivePlane=reward.kind==='skins'&&progression.skins.some(row=>row.active);
+    const old=progression[reward.kind].find(r=>r.id===reward.id);
+    if(reward.kind==='pilots'){
+      const grant=grantPilotCards(inventory,progression,reward.id,reward.count,{activate:true});
+      if(grant.creditsAdded)return pilotCreditReward(grant.creditsAdded,reward.id);
+      Object.assign(view,grant);
+    } else if(old?.active) {
+      // One duplicate is one native copy, usable by the unchanged star cost.
+      inventory.items[reward.id]=(inventory.items[reward.id]||0)+reward.count;
+      view.name+=' · 升星用重复件';view.isNew=false;
+    } else {
+      if(old)Object.assign(old,{active:true,star:row.defaultStar});
+      else progression[reward.kind].push({id:reward.id,star:row.defaultStar,active:true,equipped:false});
+      view.isNew=true;
+      if(reward.kind==='skins') {
+        if(!hadActivePlane&&!progression.role.skinId){progression.role.skinId=reward.id;progression.role.skinStar=row.defaultStar;}
+        const slot=progression.skinSkillSlots.indexOf(0);
+        if(slot>=0&&row.stages.find(s=>s.star===row.defaultStar)?.skills.length&&!progression.skinSkillSlots.includes(reward.id))
+          progression.skinSkillSlots[slot]=reward.id;
+      }
+    }
+  }
+  if(Object.values(inventory.items).some(n=>!Number.isSafeInteger(n)||n<0))throw new Error('库存数量超限');
+  return view;
+}
+export function planFlightReward({ledger,inventory,progression,campaign,time},operation,rng=Math.random) {
+  const next={ledger:flightLedger(ledger),inventory:structuredClone(inventory),progression:structuredClone(progression)};
+  const l=next.ledger,today=flightDay(time),rewards=[];
+  if(operation.revision!==inventory.revision)throw new Error('库存已更新，请重新操作');
+  let pilotCreditDelta=0;
+  const give=r=>{const view=grant(next.inventory,next.progression,r);pilotCreditDelta+=view.creditsAdded||0;rewards.push(view);};
+  if(operation.action==='signin') {
+    if(l.driverPending){give(unit('pilots',SIGNIN_PILOT));l.driverPending=false;l.driverRecoveryDone=true;l.signinPolicy=LOCAL_SIGNIN_POLICY_ID;}
+    else if(l.starterPending){give(unit('skins',STARTER_PLANE));l.starterPending=false;}
+    else {
+      if(!UNLOCK_ALL_CONTENT&&!recurringProgressGate(campaign,'signin').reached)throw Error(recurringProgressGate(campaign,'signin').reason);
+      if(l.signCount>=SIGNIN_LAST_DAY||today<=l.signDay)throw new Error('今日已签到、签到已完成或日期异常');
+      const entitlement=signinRewards(l.signCount+1);
+      entitlement.forEach(reward=>{
+        if([10010007,10010008].includes(reward.id))localRandomMaterials(reward.id,reward.count,rng).forEach(([id,count])=>give(item(id,count)));
+        else give(reward);
+      });l.signCount++;l.signDay=today;l.signinPolicy=LOCAL_SIGNIN_POLICY_ID;
+      l.signinHistory.push({day:l.signCount,policy:LOCAL_SIGNIN_POLICY_ID,rewards:entitlement});
+    }
+  } else if(operation.action==='chapter') {
+    throw new Error('旧章节礼包已停用，请前往章节奖励领取');
+  } else if(operation.action==='ad') {
+    if(!operation.completed||today<=l.adDay)throw new Error('广告未完成、今日已领取或日期异常');
+    FLIGHT_AD_REWARDS.forEach(give);l.adDay=today;
+  } else if(operation.action==='draw') {
+    // Retired custom mixed box: preserve historical receipts, never charge.
+    throw new Error('钻石收藏箱已取消，请使用现有宝箱');
+  } else throw new Error('未知奖励操作');
+  next.inventory.revision++;
+  if(!Number.isSafeInteger(next.inventory.revision)||!Number.isSafeInteger(l.total))throw new Error('奖励版本超限');
+  return {...next,rewards,pilotCreditDelta};
+}

@@ -1,0 +1,45 @@
+/* Restore the dark-to-blue PSD plate used by the pilot roster. */
+#gui-casual-lobby .fc-pilot .fc-grid {
+  width:100%;
+  padding:0 1.2cqw;
+  box-sizing:border-box;
+  column-gap:.8cqw;
+  row-gap:.8cqw;
+  grid-auto-rows:auto;
+}
+#gui-casual-lobby .fc-pilot .fc-item-wrap {
+  width:100%;
+  height:auto;
+  aspect-ratio:276 / 316;
+}
+#gui-casual-lobby .fc-pilot .fc-item.is-locked .fc-card-art {filter:grayscale(.32) brightness(.8)}
+/* Normalize head scale and placement for the different source compositions. */
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='orange-jetboard-v5/avatar'] {
+  object-view-box:inset(3% 6% 11% 6%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='engineer-ee76/avatar'] {
+  object-view-box:inset(5% 8% 13% 8%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='commander-live2d-v1/avatar'] {
+  object-view-box:inset(4% 9% 20% 8%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='blue-ponytail-v15/avatar'] {
+  object-view-box:inset(16% 28% 47% 36%);
+  object-position:center 25%;
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='blue-hand-cannon-v28-socket/avatar'] {
+  object-view-box:inset(4% 8% 12% 8%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='luna-maid-v1/avatar'] {
+  object-view-box:inset(2% 6% 10% 6%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='violet-astra-v31/avatar'] {
+  object-view-box:inset(0% 5% 8% 5%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='purple-doctor-v1/avatar'] {
+  object-view-box:inset(0% 4% 9% 4%);
+}
+#gui-casual-lobby .fc-pilot .fc-avatar>img[src*='white-gold-luoen-r13/portrait-refined'] {
+  object-view-box:inset(7% 40% 77% 41%);
+  object-position:center 20%;
+}

@@ -1,0 +1,39 @@
+.peripheral-lobby.reference-layout[data-tab] .pl-header:has(.lobby-profile) {
+  --lobby-header-yellow: #ffd329;
+  display: grid;
+  grid-template-columns: 40% minmax(0, 1fr);
+  align-items: start;
+  gap: 4cqw;
+  box-sizing: border-box;
+  height: 16cqw;
+  padding: 1.45cqw 1.8cqw 0;
+  border: 0;
+}
+.lobby-profile {
+  display: flex;
+  align-items: center;
+  gap: 1.6cqw;
+  height: 12.8cqw;
+  min-width: 0;
+  padding: .8cqw 3cqw .8cqw .8cqw;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #18394f, #081927 80%);
+  border: 1px solid #58a7ce;
+  box-shadow: inset 0 0 0 2px #07111c, inset 0 -3px #234b64;
+  clip-path: polygon(0 0, 92% 0, 100% 28%, 92% 100%, 0 100%);
+}
+.lobby-avatar { flex: none; width: 10.4cqw; height: 10.4cqw; overflow: hidden; border: 1px solid #a8bbc9; background: #182c40; }
+.lobby-avatar img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.lobby-profile-copy { display: flex; flex: 1; flex-direction: column; justify-content: center; gap: 1.2cqw; min-width: 0; }
+.lobby-profile-copy>strong { font-size: 2.7cqw; line-height: 1.2; color: #f0f7ff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lobby-power { display: flex; align-items: baseline; gap: 1cqw; color: var(--lobby-header-yellow); white-space: nowrap; }
+.lobby-power small { font-size: 2.4cqw; font-weight: 700; }
+.lobby-power b { font-size: 3.5cqw; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.lobby-resources { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1cqw; padding-top: .3cqw; }
+.peripheral-lobby .lobby-resource {
+  position: relative; min-width: 0; min-height: 0; height: 7cqw; padding: 0; margin: 0; border: 0; border-radius: 0; box-shadow: none;
+  background: transparent;
+}
+.lobby-resource>b { position: absolute; inset: 20% 22% 20% 26%; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 2.7cqw; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.lobby-resource small { font-size: 2cqw; }
+.lobby-resource:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }

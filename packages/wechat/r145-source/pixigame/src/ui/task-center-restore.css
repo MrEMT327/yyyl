@@ -1,0 +1,129 @@
+/* The original compact task-center layout, populated by the current ledger. */
+#gui-casual-lobby .pl-modal .dc-hub {gap:1.3cqw}
+#gui-casual-lobby .dc-supply-activity {padding:1.5cqw 2cqw 2cqw;background:#d4e1eb80;border-color:#a1b6c8}
+#gui-casual-lobby .dc-supply-activity .dc-activity-meter {padding:0 0 .3cqw}
+#gui-casual-lobby .dc-supply-milestones {
+  position:relative;height:17cqw;margin:0 1cqw;
+}
+#gui-casual-lobby .dc-supply-milestones progress {position:absolute;top:10cqw;left:0;width:calc(100% - 5cqw);appearance:none;height:1.6cqw;min-height:5px;border:0;border-radius:99px;overflow:hidden;background:#819aab}
+#gui-casual-lobby .dc-supply-milestones progress::-webkit-progress-bar {background:#819aab;border-radius:99px}
+#gui-casual-lobby .dc-supply-milestones progress::-webkit-progress-value {background:#56c6ec;border-radius:99px}
+#gui-casual-lobby .dc-supply-step {
+  display:grid;grid-template-rows:10cqw auto;place-items:center;min-width:0;
+  color:#49657a;font:600 clamp(10px,2.8cqw,14px)/1.2 'Microsoft YaHei',sans-serif;
+}
+#gui-casual-lobby .dc-supply-step img {
+  display:block;width:10.5cqw;height:10cqw;object-fit:contain;filter:grayscale(1);opacity:.32;
+}
+#gui-casual-lobby .dc-supply-step.is-reached img {opacity:.48}
+#gui-casual-lobby .dc-supply-chest {position:absolute;top:0;z-index:1;transform:translateX(-50%);width:10cqw;min-height:0;padding:0;grid-template-rows:9.5cqw 4cqw;row-gap:2cqw}
+#gui-casual-lobby .dc-supply-chest img {width:10cqw;height:9.5cqw;object-fit:contain}
+#gui-casual-lobby .dc-supply-chest.is-claimed img {opacity:.7}
+#gui-casual-lobby .dc-restored-scroll {display:flex;flex-direction:column;gap:1.2cqw}
+#gui-casual-lobby .dc-supply-task-list {flex:none}
+#gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-task-list {padding-bottom:7cqw}
+#gui-casual-lobby .dc-supply-task {grid-template-columns:10cqw minmax(0,1fr) 19cqw;align-items:center;gap:1.4cqw}
+#gui-casual-lobby .dc-supply-task .dc-button {width:100%;min-height:44px;padding:0 1cqw;font-size:clamp(10px,3cqw,14px)}
+#gui-casual-lobby .dc-supply-reward {display:inline-flex;align-items:center;gap:.4cqw;min-width:0}
+#gui-casual-lobby .dc-supply-reward .dc-native-reward-icon {width:4.4cqw;height:4.4cqw;min-width:16px;min-height:16px;object-fit:contain}
+#gui-casual-lobby .dc-supply-reward b {font-size:clamp(10px,2.8cqw,14px)}
+#gui-casual-lobby .dc-supply-reward small {font-size:clamp(10px,2.7cqw,13px)}
+#gui-casual-lobby .dc-task-starter {color:#456276;font-size:clamp(10px,2.7cqw,13px);line-height:1.25}
+#gui-casual-lobby .dc-task-extra {color:#315a72;font-size:clamp(10px,2.7cqw,13px)}
+#gui-casual-lobby .dc-task-extra summary {min-height:30px;display:flex;align-items:center;cursor:pointer;text-decoration:underline}
+#gui-casual-lobby .dc-task-extra .dc-rewards {padding:0 0 1cqw}
+
+/* Daily tasks use compact rows. */
+#gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-step img {filter:none;opacity:1}
+#gui-casual-lobby .dc-hub[data-daily-page='daily'] .dc-supply-chest:disabled {filter:none;opacity:1}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-supply-task {
+  grid-template-columns:9cqw minmax(0,1fr) var(--ui-action-width);gap:1cqw;min-height:15cqw;padding:.8cqw 1.2cqw;
+}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task-body {gap:.3cqw}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task h3 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task .dc-rewards {gap:.5cqw;line-height:1.1}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task .dc-native-reward-icon {width:4cqw;height:4cqw;min-width:14px;min-height:14px}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task .dc-supply-reward {position:relative;gap:.2cqw;line-height:1.1}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task .dc-supply-reward>b {font-size:clamp(10px,2.5cqw,12px)}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-first-rewards {display:inline-flex;align-items:center;gap:.7cqw;white-space:nowrap}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-first-rewards>small {padding:1px 2px;color:#47677c;background:#bbd0dd;font:600 9px/1 'Microsoft YaHei',sans-serif}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-supply-pilot-name {font-size:10px;line-height:1.1}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-weekly-task {
+  grid-template-columns:9cqw minmax(0,1fr) var(--ui-action-width);gap:1cqw;min-height:15cqw;padding:.4cqw 1.2cqw;
+}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-weekly-task .dc-task-body {gap:.3cqw}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-weekly-task h3 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-progress>span {font-size:clamp(9px,2.4cqw,11px)}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task-badge img {width:7cqw;height:7cqw}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='daily'] .dc-task-badge b {font-size:clamp(9px,2.5cqw,12px)}
+
+/* Additional supply entries remain available below the original task rows. */
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui {gap:1.2cqw;padding:0;color:#203b51;font-size:clamp(11px,3cqw,15px)}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-card {padding:2cqw;background:#d7e3ed;border-color:#829caf}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui h3 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-card-heading {margin-bottom:1cqw}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-card-heading>span,
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-condition {font-size:clamp(10px,2.8cqw,14px)}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-rewards {gap:1cqw 2cqw;margin:1cqw 0}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-item-art {width:6cqw;height:6cqw;min-width:20px;min-height:20px}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-reward>b {font-size:clamp(11px,3cqw,15px)}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .wc-button {min-height:44px;padding:4px 8px;font-size:clamp(12px,3.3cqw,16px)}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-supply-entry {
+  display:grid;grid-template-columns:minmax(0,1fr) 19cqw;align-items:center;gap:.6cqw 1.5cqw;
+}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-supply-entry>:not(.wc-button) {grid-column:1;min-width:0;margin:0}
+#gui-casual-lobby .pl-modal .dc-supply-extras.supply-ui .su-supply-entry>.wc-button {
+  grid-column:2;grid-row:1 / span 3;width:100%;margin:0;padding:1px;font-size:clamp(9px,2.7cqw,13px);white-space:nowrap;
+}
+
+/* Weekly milestones keep their real day values and only the final claim
+   action; the current supply entries use compact, old-style task rows. */
+#gui-casual-lobby .dc-hub[data-daily-page='weekly'] .dc-supply-step img {filter:none;opacity:1}
+#gui-casual-lobby .dc-hub[data-daily-page='weekly'] .dc-supply-chest:disabled {filter:none;opacity:1}
+#gui-casual-lobby .dc-hub[data-daily-page='weekly'] .dc-weekly-chest:disabled {filter:none;opacity:1}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry {
+  grid-template-columns:9cqw minmax(0,1fr) 19cqw;gap:.4cqw 1cqw;padding:1.2cqw;
+}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry::before {
+  content:'';grid-column:1;grid-row:1 / span 3;align-self:center;width:8cqw;height:8cqw;
+  background:url('/art/project-task-icons-v1/activity-medal.png') center/contain no-repeat;
+}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry>:not(.wc-button) {grid-column:2}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry>.wc-button {grid-column:3}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry .su-rewards {gap:.5cqw 1cqw;line-height:1.15}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry .su-item-art {width:5cqw;height:5cqw;min-width:16px;min-height:16px}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry .su-reward {display:inline-flex;align-items:center;gap:.4cqw;white-space:nowrap}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry .su-reward small {font-size:clamp(9px,2.5cqw,11px);line-height:1.1}
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry :is(.su-card-heading h3,.su-card-heading>span,.su-condition),
+#gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry>p {line-height:1.1}
+@media (max-width:360px), (max-height:650px) {
+  #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry {grid-template-columns:minmax(0,1fr) 19cqw}
+  #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .su-supply-entry::before {display:none}
+  #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry>:not(.wc-button) {grid-column:1}
+  #gui-casual-lobby .pl-modal .dc-hub[data-daily-page='weekly'] .dc-supply-extras.supply-ui .su-supply-entry>.wc-button {grid-column:2}
+}
+
+/* Content spacing does not change the shared popup or tab geometry. */
+#gui-casual-lobby .pl-modal .dc-hub:is([data-daily-page='weekly'],[data-daily-page='achievements']) {gap:2cqw}
+/* v0.1.43 task-row composition; present-day bonus entries share its density. */
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-task-list {padding-bottom:0}
+#gui-casual-lobby .pl-modal .dc-hub .dc-task .dc-first-rewards {display:contents}
+#gui-casual-lobby .pl-modal .dc-hub .dc-task .is-first::before,
+#gui-casual-lobby .pl-modal .dc-hub .dc-task .is-first::after {content:none}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras {gap:1.2cqw;padding:0}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card {
+ display:grid;grid-template-columns:minmax(0,1fr) var(--ui-action-width);grid-template-rows:auto auto auto;
+ gap:.6cqw 1cqw;padding:1.2cqw 1.6cqw;min-height:15cqw;align-items:center;
+}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card::before {content:none}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card>:not(.wc-button) {grid-column:1}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card>.wc-button {grid-column:2;grid-row:1 / span 3;width:100%;font-size:clamp(10px,2.8cqw,14px);padding:0 .5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-heading {display:flex;gap:1cqw;align-items:center;justify-content:space-between}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-heading h3 {font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.su-card-heading>span,.su-condition,.su-fragment-choice) {font-size:clamp(9px,2.5cqw,12px);line-height:1.2}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-bottom {display:contents}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras .su-card-bottom>.wc-button {grid-column:2;grid-row:1 / span 3;font-size:clamp(10px,2.8cqw,14px);padding:0 .5cqw}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.su-rewards,.dc-supply-reward,.su-reward) {display:flex;align-items:center;gap:.6cqw;flex-wrap:wrap;line-height:1.2}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.dc-native-reward-icon,.su-item-art) {width:4cqw;height:4cqw;min-width:14px;min-height:14px;object-fit:contain}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.dc-supply-reward,.su-reward)>b {font-size:clamp(10px,2.6cqw,13px)}
+#gui-casual-lobby .pl-modal .dc-hub .dc-supply-extras :is(.dc-supply-reward,.su-reward)>small {display:none}

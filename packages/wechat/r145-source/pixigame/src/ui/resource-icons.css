@@ -1,0 +1,7 @@
+/* Resource sprites retain the colors and outlines of the home screen. */
+.resource-icon{display:inline-block;width:20px;height:20px;flex:none;vertical-align:middle;overflow:hidden;filter:none!important}
+.resource-icon>svg{display:block}
+
+/* Keep header pictograms as prominent as the home HUD without recoloring. */
+.peripheral-lobby.reference-layout .pl-header :is(.shop-wallet-bar,.eq-wallet>span,.research-wallet>span)>.resource-icon{width:5.6cqw;height:7.6cqw;margin-left:-.7cqw}
+.peripheral-lobby.reference-layout .pl-header :is(.shop-wallet.is-stamina .shop-wallet-bar,.eq-wallet.is-stamina>span,.research-wallet.is-stamina>span)>.resource-icon{width:5.6cqw;height:8.3cqw}

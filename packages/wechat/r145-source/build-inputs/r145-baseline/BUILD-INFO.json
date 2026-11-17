@@ -1,0 +1,307 @@
+{
+  "builtAt": "2026-11-17T01:20:53.690Z",
+  "buildIdentity": {
+    "buildId": "r145-perf-startup-art-2026-11-17T01:20:53.690Z",
+    "modules": {
+      "lobby": {
+        "sha256": "1d0c2a2451f40fc1083bef782fa7af7aac14d14f736385e289781920c67e8c7a",
+        "path": "lobby-code/lobby-1d0c2a2451f40fc1.js",
+        "legacyPath": "lobby-code/lobby.js"
+      },
+      "battle": {
+        "sha256": "9991f02e16aeb756efe8ff19a541f0f0c3b51f703311e64112747f6d0ee327c0",
+        "path": "battle-code/battle-9991f02e16aeb756.js",
+        "legacyPath": "battle-code/battle.js"
+      },
+      "engine": {
+        "sha256": "d33a4856f0458e3b0f0311fd909c5adb39622836d6c0b66e747812a497163c2e",
+        "path": "battle-engine/phaser-d33a4856f0458e3b.js",
+        "legacyPath": "battle-engine/phaser.js"
+      }
+    }
+  },
+  "testOnly": true,
+  "assetOrigin": "https://i05.shengpin888.com",
+  "requirePublicNetwork": true,
+  "cdn": {
+    "baseURL": "https://i05.shengpin888.com/shaonvhangxian/",
+    "objectCount": 4765,
+    "logicalPaths": 5099,
+    "bytes": 917992307,
+    "manifest": "../cdn-manifest.json"
+  },
+  "localFiles": {
+    "art/entry-screens-v4/startup.png": "opening-art/art/entry-screens-v4/startup-85071ae2134c1eaf.jpg",
+    "art/project-research-blueprints-v2/802.svg": "opening-art/art/project-research-blueprints-v2/802.svg",
+    "art/project-research-blueprints-v2/803.svg": "opening-art/art/project-research-blueprints-v2/803.svg",
+    "art/project-research-blueprints-v2/804.svg": "opening-art/art/project-research-blueprints-v2/804.svg",
+    "art/project-research-blueprints-v2/805.svg": "opening-art/art/project-research-blueprints-v2/805.svg",
+    "art/project-research-blueprints-v2/808.svg": "opening-art/art/project-research-blueprints-v2/808.svg",
+    "art/project-research-blueprints-v2/809.svg": "opening-art/art/project-research-blueprints-v2/809.svg",
+    "art/project-research-blueprints-v2/810.svg": "opening-art/art/project-research-blueprints-v2/810.svg",
+    "art/project-research-blueprints-v2/811.svg": "opening-art/art/project-research-blueprints-v2/811.svg",
+    "art/psd-main-v1/main-background.png": "opening-art/art/psd-main-v1/main-background.png",
+    "art/ui-images-v1/psd-main-v1/main-background.webp": "opening-art/art/psd-main-v1/main-background.png",
+    "art/ui-images-v1/psd-main-v1/main-foreground-current-live-wallet.webp": "opening-art/art/ui-images-v1/psd-main-v1/main-foreground-current-live-wallet.webp",
+    "art/psd-main-v1/main-foreground-current-live-wallet.png": "opening-art/art/ui-images-v1/psd-main-v1/main-foreground-current-live-wallet.webp",
+    "art/psd-main-v1/profile-live-frame.png": "opening-art/art/psd-main-v1/profile-live-frame.png",
+    "art/psd-buttons-v1/button-blue.png": "opening-art/art/psd-buttons-v1/button-blue.png",
+    "art/psd-buttons-v1/button-orange.png": "opening-art/art/psd-buttons-v1/button-orange.png",
+    "art/psd-combat-v1/health-track.png": "opening-art/art/psd-combat-v1/health-track.png",
+    "art/psd-combat-v1/health-fill.png": "opening-art/art/psd-combat-v1/health-fill.png",
+    "art/project-scene-backgrounds-v3/shop-supply.png": "lobby-backgrounds/art/project-scene-backgrounds-v3/shop-supply.jpg",
+    "art/project-scene-backgrounds-v3/logistics-bay.png": "lobby-backgrounds/art/project-scene-backgrounds-v3/logistics-bay-300k-b5a8550e943c6bb7.webp",
+    "art/recruit-dossier-v1/ivory-hangar-clean-v2.png": "lobby-backgrounds/art/recruit-dossier-v1/ivory-hangar-clean-v2.jpg",
+    "art/project-equipment-boxes-v1/advanced.png": "lobby-backgrounds/art/project-equipment-boxes-v1/advanced-300k-eb5d52a30fc20e11.webp",
+    "art/battle-skill-icons-v4/10000001.webp": "battle-skill-art/art/battle-skill-icons-v4/10000001.png",
+    "art/battle-skill-icons-v4/10000002.webp": "battle-skill-art/art/battle-skill-icons-v4/10000002.png",
+    "art/battle-skill-icons-v4/10000101.webp": "combat-art/art/battle-skill-icons-v4/10000101.png",
+    "art/battle-skill-icons-v4/10000201.webp": "battle-skill-art/art/battle-skill-icons-v4/10000201.png",
+    "art/battle-skill-icons-v4/10000301.webp": "battle-skill-art/art/battle-skill-icons-v4/10000301.png",
+    "art/battle-skill-icons-v4/10000401.webp": "battle-skill-art/art/battle-skill-icons-v4/10000401.png",
+    "art/battle-skill-icons-v4/10000601.webp": "battle-skill-art/art/battle-skill-icons-v4/10000601.png",
+    "art/battle-skill-icons-v4/10000701.webp": "battle-skill-art/art/battle-skill-icons-v4/10000701.png",
+    "art/battle-skill-icons-v4/10000901.webp": "battle-skill-art/art/battle-skill-icons-v4/10000901.png",
+    "art/battle-skill-icons-v4/10001101.webp": "battle-skill-art/art/battle-skill-icons-v4/10001101.png",
+    "art/battle-skill-icons-v4/10001501.webp": "battle-skill-art/art/battle-skill-icons-v4/10001501.png",
+    "art/battle-skill-icons-v4/10001601.webp": "battle-skill-art/art/battle-skill-icons-v4/10001601.png",
+    "art/battle-skill-icons-v4/10001701.webp": "battle-skill-art/art/battle-skill-icons-v4/10001701.png",
+    "art/battle-skill-icons-v4/11000101.webp": "battle-skill-art/art/battle-skill-icons-v4/11000101.png",
+    "art/battle-skill-icons-v4/11000201.webp": "battle-skill-art/art/battle-skill-icons-v4/11000201.png",
+    "art/battle-skill-icons-v4/11000301.webp": "battle-skill-art/art/battle-skill-icons-v4/11000301.png",
+    "art/battle-skill-icons-v4/11000307.webp": "battle-skill-art/art/battle-skill-icons-v4/11000307.png",
+    "art/battle-skill-icons-v4/11000601.webp": "battle-skill-art/art/battle-skill-icons-v4/11000601.png",
+    "art/battle-skill-icons-v4/11000801.webp": "battle-skill-art/art/battle-skill-icons-v4/11000801.png",
+    "art/battle-skill-icons-v4/11001101.webp": "battle-skill-art/art/battle-skill-icons-v4/11001101.png",
+    "art/battle-skill-icons-v4/11001401.webp": "battle-skill-art/art/battle-skill-icons-v4/11001401.png",
+    "art/battle-skill-icons-v4/11001601.webp": "battle-skill-art/art/battle-skill-icons-v4/11001601.png",
+    "art/battle-skill-icons-v4/11001701.webp": "battle-skill-art/art/battle-skill-icons-v4/11001701.png",
+    "art/battle-skill-icons-v4/11002001.webp": "battle-skill-art/art/battle-skill-icons-v4/11002001.png",
+    "art/battle-skill-icons-v4/11002201.webp": "battle-skill-art/art/battle-skill-icons-v4/11002201.png",
+    "art/battle-skill-icons-v4/11002501.webp": "battle-skill-art/art/battle-skill-icons-v4/11002501.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20102.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20102.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20202.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20202.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20302.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20302.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20402.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20402.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20502.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20502.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20602.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20602.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20702.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20702.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20802.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20802.png",
+    "art/weapon-variant-skill-icons-v5/weapon-20902.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20902.png",
+    "art/weapon-variant-skill-icons-v5/weapon-21002.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-21002.png",
+    "art/weapon-variant-skill-icons-v5/weapon-21102.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-21102.png",
+    "replica-battle/assets/pathogenic-source/gfx/player/bullets/dash_attack_animation.png": "battle-data/art/wechat-mobile-v1/dash_attack_animation-c4036dc29526d3f6-300k-c5f9d1501adc3746.webp",
+    "art/stage1-anime-v8/ocean.png": "combat-art/art/wechat-mobile-v1/ocean-d157dd6ca3bb4416.png",
+    "replica-battle/assets/airdrop-modules-v1/module-shell.png": "combat-art/art/wechat-mobile-v1/module-shell-7d16a7082c76e20a.png",
+    "replica-battle/assets/ice-weapons-v2/ice-saw-clean-v3.png": "combat-art/art/wechat-mobile-v1/ice-saw-clean-v3-84b6c68af26f92bc-300k-c5bc341be0e7ee7b.webp",
+    "replica-battle/assets/project-medkit-v1/medical-case-front-v1.png": "combat-art/art/wechat-mobile-v1/medical-case-front-v1-591a61810ed08423.png",
+    "replica-battle/assets/project-airdrop-supply/airdrop-crate-front-v1.png": "combat-art/art/wechat-mobile-v1/airdrop-crate-front-v1-442ff1cc5e829882.png",
+    "replica-battle/assets/pathogenic-source/gfx/player/bullets/dual_blades_attack.png": "combat-art/art/wechat-mobile-v1/dual_blades_attack-2993eeb58376aadc-300k-751e0cc1f8e53137.webp",
+    "replica-battle/assets/pathogenic-source/gfx/player/bullets/bullet_flame.png": "combat-art/art/wechat-mobile-v1/bullet_flame-d401395e9fb0ae25.png",
+    "replica-battle/assets/pathogenic-source/gfx/enemies/stomp_wave.png": "combat-art/art/wechat-mobile-v1/stomp_wave-d5a5e42124e40c88-300k-8c0d8e1560b950a0.webp",
+    "art/project-coin-pickup-v1/coin-turn-v1-0.png": "combat-art/art/wechat-mobile-v1/coin-turn-v1-0-354944b7856f3a59.png",
+    "art/project-coin-pickup-v1/coin-turn-v1-1.png": "combat-art/art/wechat-mobile-v1/coin-turn-v1-1-45c711cee7eec04f.png",
+    "art/project-coin-pickup-v1/coin-turn-v1.json": "combat-art/art/wechat-mobile-v1/coin-turn-v1-e32b73b615fc7b11.json",
+    "replica-battle/data/chapters.json": "battle-data/replica-battle/data/chapters.json.br",
+    "replica-battle/data/chapter1.json": "battle-data/replica-battle/data/chapter1.json.br",
+    "replica-battle/data/sorties-v1/chapter-1.json": "battle-data/replica-battle/data/sorties-v1/chapter-1.json.br",
+    "replica-battle/data/combat.json": "battle-data/replica-battle/data/combat.json.br",
+    "replica-battle/data/npc-chapters.json": "battle-data/replica-battle/data/npc-chapters.json.br",
+    "replica-battle/data/audio-chapters.json": "battle-data/replica-battle/data/audio-chapters.json.br",
+    "fighters/kestrel/game-lod-manifest.json": "combat-art/fighters/kestrel/game-lod-manifest.json.br",
+    "fighters/kestrel/game-lod-structure.json": "combat-art/fighters/kestrel/game-lod-structure.json.br",
+    "fighters/kestrel/game-lod-effects.json": "combat-art/fighters/kestrel/game-lod-effects.json.br",
+    "fighters/kestrel/view.json": "combat-art/fighters/kestrel/view.json.br",
+    "fighters/kestrel/defaults.json": "combat-art/fighters/kestrel/defaults.json.br",
+    "fighters/kestrel/game-lod-buffers.bin": "combat-art/fighters/kestrel/game-lod-buffers.bin.br",
+    "fighters/kestrel/design.json": "combat-art/fighters/kestrel/design.json.br",
+    "fighters/kestrel/paint-satin-normal.png": "combat-art/fighters/kestrel/paint-satin-normal.png",
+    "fighters/kestrel/paint-satin-orm.png": "combat-art/fighters/kestrel/paint-satin-orm.png",
+    "art/stage1-anime-v8/cloud-bank.png": "combat-art/art/stage1-anime-v8/cloud-bank.png",
+    "art/project-damage-numbers-v1/digits.xml": "combat-art/art/project-damage-numbers-v1/digits.xml",
+    "art/project-damage-numbers-v1/digits.png": "combat-art/art/project-damage-numbers-v1/digits.png",
+    "art/project-breakthrough-vfx-v1/energy-atlas-v1.png": "battle-data/art/wechat-mobile-v1/energy-atlas-v1-300k-574e4f7c0e1347bf.webp",
+    "replica-battle/assets/escort-light-sword-v2/hilt-v2.png": "battle-data/art/wechat-mobile-v1/hilt-v2-300k-fcd1e0aa6a6ff0a3.webp",
+    "replica-battle/assets/missile-v2/exhaust.png": "battle-data/art/wechat-mobile-v1/exhaust-300k-4ea5774c8d561a41.webp",
+    "replica-battle/assets/original-projectiles/ring-red-v1.png": "battle-data/art/wechat-mobile-v1/ring-red-v1-300k-b9fc0d0b3cbde564.webp",
+    "replica-battle/assets/original-projectiles/square-yellow-v1.png": "battle-data/art/wechat-mobile-v1/square-yellow-v1-300k-319f52c14d3acc8d.webp",
+    "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png": "battle-data/art/wechat-mobile-v1/parts-300k-8e8f2c366accdc33.webp",
+    "replica-battle/assets/owned-enemies/heavy-scatter-v1/parts.png": "battle-data/art/wechat-mobile-v1/parts-300k-08ec37f5b6558199.webp",
+    "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png": "battle-data/art/wechat-mobile-v1/parts-300k-fd796d9c85c34a74.webp"
+  },
+  "packageBytes": {
+    "main": 1042072,
+    "lobby-code": 2674899,
+    "battle-code": 3163637,
+    "battle-engine": 1221252,
+    "native-core": 279189,
+    "shared-data": 355580,
+    "opening-art": 1404660,
+    "battle-data": 2333478,
+    "portrait-data": 728616,
+    "lobby-backgrounds": 642906,
+    "combat-art": 3405614,
+    "battle-skill-art": 2696785
+  },
+  "totalBytes": 19948688,
+  "performance": {
+    "cacheVersion": "c5e812dd6380ce9739b3df2d78a441bea53d61f7525d7299113303b4e901899c",
+    "startupData": {
+      "combinedJsonBytes": 8418139,
+      "lobbyJsonBytes": 2487636,
+      "battleOnlyJsonBytes": 4184807,
+      "portraitOnlyJsonBytes": 1745698,
+      "lobbyEntries": 49,
+      "battleOnlyEntries": 33,
+      "portraitOnlyEntries": 2,
+      "deferredSkillBytes": 2755381
+    }
+  },
+  "battleDiagnostics": {
+    "schema": "shnh-wechat-battle-performance-v1",
+    "baseBuildId": "r134-battle-budget-2026-11-16T10:34:47.887Z",
+    "display": "in-game",
+    "sampling": "manual"
+  },
+  "battleRenderScheduling": {
+    "baseline": "r143-perf-battle-deep-2026-11-16T15:37:25.962Z",
+    "limitRollingTextureOnPhones": true,
+    "staggerUnderPressure": true
+  },
+  "battleDeepOptimization": {
+    "originalBuild": "r142-perf-terrain-preload-2026-11-16T15:22:20.795Z",
+    "packedArtwork": [
+      {
+        "path": "art/project-breakthrough-vfx-v1/energy-atlas-v1.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/energy-atlas-v1-300k-574e4f7c0e1347bf.webp",
+        "aliases": [
+          "art/project-breakthrough-vfx-v1/energy-atlas-v1.png"
+        ],
+        "sha256": "574e4f7c0e1347bfe44353f50422c88b5a68d29ab1a1f4235ab16c88701a43af",
+        "sourceSha256": "14ccd7ecc1441e6eb5110b23992409669b67f43c82b555347448ffdbb5a42c1b",
+        "sourceBytes": 2035087,
+        "bytes": 385322,
+        "size": [
+          1774,
+          887
+        ]
+      },
+      {
+        "path": "replica-battle/assets/escort-light-sword-v2/hilt-v2.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/hilt-v2-300k-fcd1e0aa6a6ff0a3.webp",
+        "aliases": [
+          "replica-battle/assets/escort-light-sword-v2/hilt-v2.png"
+        ],
+        "sha256": "fcd1e0aa6a6ff0a32e64847cee82e35d261b7b9894d935cf0b87404c9db2c488",
+        "sourceSha256": "03004c1b15262687fb986b7c433b9aa76d5b8a1b539183c719587f7ddfdf98ef",
+        "sourceBytes": 955706,
+        "bytes": 95040,
+        "size": [
+          2021,
+          778
+        ]
+      },
+      {
+        "path": "replica-battle/assets/missile-v2/exhaust.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/exhaust-300k-4ea5774c8d561a41.webp",
+        "aliases": [
+          "replica-battle/assets/missile-v2/exhaust.png"
+        ],
+        "sha256": "4ea5774c8d561a41f2ea4461adf529725c843ef9f5bb8a9ed53b4c8c583e1cac",
+        "sourceSha256": "78d64ba8a1853740fc3797069c89f94e2539fff05eb71fcad6985b27406887db",
+        "sourceBytes": 926237,
+        "bytes": 208908,
+        "size": [
+          724,
+          2172
+        ]
+      },
+      {
+        "path": "replica-battle/assets/original-projectiles/ring-red-v1.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/ring-red-v1-300k-b9fc0d0b3cbde564.webp",
+        "aliases": [
+          "replica-battle/assets/original-projectiles/ring-red-v1.png"
+        ],
+        "sha256": "b9fc0d0b3cbde564ee125a95b44e8d5c48521abffa176dabbe87d5cffeb54086",
+        "sourceSha256": "5494b329292a4845357515ba15fe6bd1324e64b7d26ec389e88580f67e385a56",
+        "sourceBytes": 1031749,
+        "bytes": 267952,
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      {
+        "path": "replica-battle/assets/original-projectiles/square-yellow-v1.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/square-yellow-v1-300k-319f52c14d3acc8d.webp",
+        "aliases": [
+          "replica-battle/assets/original-projectiles/square-yellow-v1.png"
+        ],
+        "sha256": "319f52c14d3acc8d8a9a3bf75802a0aebdc0ea44d0eb508ed5914efef001fb98",
+        "sourceSha256": "e9357f101eb46d96ef5387db6cb349f4e979a8429699d484fe9d8c02b0adb332",
+        "sourceBytes": 996843,
+        "bytes": 148690,
+        "size": [
+          1047,
+          1503
+        ]
+      },
+      {
+        "path": "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/parts-300k-8e8f2c366accdc33.webp",
+        "aliases": [
+          "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png"
+        ],
+        "sha256": "8e8f2c366accdc3382b0694ecd3a87954dff70ee1f883a23a03ec8ece06ae951",
+        "sourceSha256": "0173015a26f2f97a67a0fa3ab027e229fe4a8f7f3408dbf2c2573da6858a00ef",
+        "sourceBytes": 1170735,
+        "bytes": 182624,
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      {
+        "path": "replica-battle/assets/owned-enemies/heavy-scatter-v1/parts.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/parts-300k-08ec37f5b6558199.webp",
+        "aliases": [
+          "replica-battle/assets/owned-enemies/heavy-scatter-v1/parts.png"
+        ],
+        "sha256": "08ec37f5b6558199afed2e7955c384e80cd42e1483922cad7261d0d6402e9ad3",
+        "sourceSha256": "b57936b5d74d2ab3094e4f53715e76a86d44a9e0108f6af2eb999467b9cfb793",
+        "sourceBytes": 910961,
+        "bytes": 129494,
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      {
+        "path": "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png",
+        "packagedPath": "battle-data/art/wechat-mobile-v1/parts-300k-fd796d9c85c34a74.webp",
+        "aliases": [
+          "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png"
+        ],
+        "sha256": "fd796d9c85c34a74c76b543924c6b717ef8fdb587bfb930e332ae6cc8d25150a",
+        "sourceSha256": "1e496e68c4c1dada25623ec477032799ef28c32841b0e742bd44ab44c8c45f89",
+        "sourceBytes": 690701,
+        "bytes": 110070,
+        "size": [
+          1254,
+          1254
+        ]
+      }
+    ],
+    "cachedLifecycleDefinitions": true,
+    "reuseMeshState": true
+  },
+  "startupBackdrop": {
+    "path": "opening-art/art/entry-screens-v4/startup-85071ae2134c1eaf.jpg",
+    "width": 852,
+    "height": 1846,
+    "format": "jpeg",
+    "bytes": 324235,
+    "sha256": "85071ae2134c1eaf2e07b8e901662590d26a6e70a9c0084dc91341666e5d1c26",
+    "sourceSha256": "1540c47dd1837774060c55d7cf52bfc3ef7968d32e89a52f802868c638ac3fc6"
+  }
+}
