@@ -6,6 +6,7 @@
 node_modules/
 dist/
 dist-wechat/
+/packages/wechat/out/game/
 pixigame/wechat/config.local.json
 .cache/
 .vite/
