@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import {build} from 'esbuild';
 import {parseHTML} from 'linkedom';
+import {createHangarLift} from '../src/ui/sortie-hangar-lift.js';
+import {hangarPose} from '../src/ui/sortie-hangar-motion.js';
+import {createDomAnimations} from '../wechat/src/full/dom-animation.js';
 const stubs={
  'three':`export class WebGLRenderer{constructor(){this.info={render:{calls:1,triangles:1}};}setPixelRatio(){}setClearColor(){}dispose(){}forceContextLoss(){}} export const SRGBColorSpace='srgb',ACESFilmicToneMapping=1;`,
  '../three/aircraft/fighter-packages.js':'export const loadFighterPackages=async()=>{};export const isFighterPackageReady=()=>false;',
@@ -47,4 +50,31 @@ test('reduced-motion preparation resolves without allocating a worker or GPU mod
 });
 test('background visibility pauses the worker and foreground resumes it',()=>{
  const f=fixture();try{const w=f.instances[0];w.emit({type:'ready'});f.host.ownerDocument.hidden=true;f.host.ownerDocument.dispatchEvent(new window.Event('visibilitychange'));assert.equal(w.sent.at(-1).type,'pause');f.host.ownerDocument.hidden=false;f.host.ownerDocument.dispatchEvent(new window.Event('visibilitychange'));assert.equal(w.sent.at(-1).type,'resume');}finally{f.cleanup();}
+});
+
+test('the native airplane and platform move together through the middle of the lift',()=>{
+ let clock=0;
+ const animation=createDomAnimations(()=>clock);
+ const node=()=>{
+   const element={style:{removeProperty(key){delete this[key];}}};
+   element.animate=(frames,options)=>animation.animate(element,frames,options);
+   return element;
+ };
+ const plane=node(),deck=node(),lift=createHangarLift(plane,deck);
+ const displacement=element=>Number(/translate3d\(0,(-?[\d.]+)(?:px)?,0\)/.exec(animation.sample(element).transform)?.[1]);
+ const check=(height,ms)=>{
+   const expected=-height*.325*hangarPose(ms/1000).lift;
+   assert(Math.abs(displacement(plane)-expected)<.08,`Unexpected lift position at ${ms} ms: ${displacement(plane)}`);
+   assert.equal(displacement(plane),displacement(deck));
+ };
+ try{
+   lift.resize(400);lift.start();
+   for(clock of [0,500,1590,1610,2140]){animation.tick();check(400,clock);}
+   // Late deck dimensions must preserve elapsed time at the next native tick.
+   lift.resize(430);
+   clock+=16;animation.tick();check(430,clock);
+   lift.pause();const parked=displacement(plane);clock+=500;animation.tick();
+   assert.equal(displacement(plane),parked);
+   lift.resume();clock+=16;animation.tick();check(430,2172);
+ }finally{lift.dispose();animation.destroy();}
 });

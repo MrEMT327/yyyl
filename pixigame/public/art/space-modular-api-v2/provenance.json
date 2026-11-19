@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-10",
+  "mode": "Image API through bundled imagegen CLI",
+  "model": "gpt-image-2.5-flare",
+  "quality": "high",
+  "workflow": "Three quiet starfield bases first, then four independent transparent asteroids/orbital modules; chapter-one painterly style; no weather or atmospheric clouds.",
+  "references": [
+    "stage1-anime-v8/harbor-east.png",
+    "stage1-anime-v8/ocean.png"
+  ],
+  "files": [
+    {
+      "file": "base-a-deep-space.png",
+      "role": "base",
+      "sha256": "cf4349ffa5cc26101941013dde11f144a4da71be97029f581b2791c0363fd3bd",
+      "prompt": "Use case: stylized-concept.\nAsset type: opaque 1024x1536 portrait scrolling starfield BASE, not a finished level.\nImage 1 is our approved CHAPTER ONE island, used ONLY to match the actual painting language: broad quiet matte color planes, soft gouache-like blended brushwork, controlled simple shapes, clean stylized anime game illustration. Do not copy its green island, sea, coast, roads, architecture or terrain composition. Image 2 is its underlying ocean, used ONLY as a reference for a calm, low-detail supporting layer, not as a subject or a source of wave patterns.\n\nPaint BASE A: deep vacuum space. Very dark navy dominates, approximately #091426 to #14253b. The canvas is a quiet, flat field of distant space with broad barely visible irregular blue-black painted patches. Add a sparse scattering of tiny, subdued, isolated distant stars, much smaller than gameplay projectiles, with slight natural differences in spacing and brightness. Almost all stars are pinpoints; no diffraction spikes or large glow stars. The middle remains quiet and dark, but all four edges are similar in value for a scrolling base. This is distant space, not a painted floor or terrestrial sky. Avoid any recognizable diagonal ocean brush bands, waves, repeated streaks, photograph-like noisy milky way, dense star glitter or high contrast. The first chapter's softly painted surface treatment should carry over without transferring any terrestrial content.\n\nNo planets, moon, sun, asteroid, rock, terrain, buildings, spacecraft, satellites, debris, foreground particles, atmospheric cloud, haze bank, fog, rain, snow, lightning, horizon, ground, perspective vanishing point, left/right walls, corridor, vignette or border. These objects will be added as separate transparent modules later. No text, UI, labels, logo, watermark, characters or bullets. One original calm portrait BASE ONLY, full bleed, opaque.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "stage1-anime-v8/ocean.png"
+      ]
+    },
+    {
+      "file": "base-b-blue-stars.png",
+      "role": "base",
+      "sha256": "bb17f32494e93505c3207eee6a0965ac849568018d88c89939c69fc8506975f7",
+      "prompt": "Use case: stylized-concept.\nAsset type: opaque 1024x1536 portrait scrolling distant-space BASE, not a finished map.\nImage 1 is our approved CHAPTER ONE island, used solely for its broad matte painterly color planes, clean soft brush edges, restrained surface detail and stylized anime game painting. Image 2 is the chapter-one ocean base, used solely as a low-contrast underlay reference. Do not copy the island, sea, roads, architecture, waves, coastal composition or tropical palette.\n\nPaint BASE B: a quiet far-distant blue star sea. Keep an overall dark navy background, #0b172b to #152c43. Very faint, broad, irregular desaturated teal-blue and slate-blue patches suggest faraway interstellar gas, smoothly painted into the background, never forming foreground clouds or dense smoke. Patches are subtle, sparse and broad, with large empty dark areas; less than one quarter of the canvas carries the slightly lighter blue hue. Sparse tiny dim distant pinprick stars are distributed naturally without constellations, big glow spots, cross spikes or noisy star dust. Maintain approximately the same dark edge values all around so that this base can blend into another navy starfield. Painterly simplification is the same as the first chapter's quiet ground shading, applied to VACUUM SPACE, not an ocean or a terrestrial sky. Do not make diagonal current-like stripes, turbulent swirls, photographic nebula filaments, sparkling clouds or a cinematic bright central galaxy.\n\nNo planets, moons, sun, asteroid, terrain, rocks, station, ship, satellite, architecture, debris, foreground particles, rain, snow, thunderbolt, atmospheric clouds, fog banks, horizon, perspective corridor, banks, frame or vignette. Those scene objects come in separate modules later. No UI, letters, labels, logos, watermark, characters or projectile-like points. One original portrait BASE ONLY, opaque edge-to-edge.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "stage1-anime-v8/ocean.png"
+      ]
+    },
+    {
+      "file": "base-c-violet-stars.png",
+      "role": "base",
+      "sha256": "93acd40fd4c385b78842cb85bb151aff4ad4c8f42d7a2b4d2f9fec0944411bd9",
+      "prompt": "Use case: stylized-concept.\nAsset type: one opaque 1024x1536 portrait scrolling space BASE.\nImage 1 is our approved CHAPTER ONE island. Match only its matte painted color planes, gently visible broad brushwork, simplified illustrative shading, clean restrained detailing and soft anime game finish. Image 2 is the chapter-one ocean and demonstrates only the low-detail supporting role of a scrolling background. Do not transfer water, waves, land, greenery, buildings or island composition.\n\nPaint BASE C: deep navy space with an extremely subtle slate-violet variation. The background stays almost entirely dark #0c172c, with a few broad, very low-contrast dusty violet-blue painted washes around #252a42, dispersed asymmetrically into wide empty stretches of dark space. These are distant interstellar color variations, not atmospheric weather or foreground clouds. Avoid recognizable cloud silhouettes or smoke, flowing wave streaks, bright pink nebulae, galaxy spirals or strong banding. Include only a sparse, uneven scattering of tiny dim distant stars, smaller and weaker than gameplay projectiles. No bright sparkles, starbursts or dense star noise. Keep edges similar to the base navy value, without a frame or vignette. Let the first chapter's quiet hand-painted style unify the materials without copying its setting.\n\nBASE ONLY: no planets, moon, sun, rocks, asteroids, craters, land, buildings, space station, spacecraft, satellite, junk, dust particles, atmospheric clouds, fog, rain, snow, lightning, horizon, vanishing point, corridor or left/right banks. Later modules provide all terrain and architecture. No UI, text, watermark, collage, aircraft, weapons or characters. An original full-bleed opaque portrait starfield underlay.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "stage1-anime-v8/ocean.png"
+      ]
+    },
+    {
+      "file": "asteroid-shard.png",
+      "role": "transparent-region",
+      "sha256": "33938e5a4ad204f89e951421332f9e6dee9df8000e4fbe712cec9cd59e2e10ba",
+      "prompt": "Use case: stylized-concept.\nAsset type: one 1024x1024 RGBA transparent scenery module for a top-down aircraft game.\nReference image 1 is our approved FIRST CHAPTER island. Match its soft matte illustrative brushwork, broad simplified rock faces, gently broken painted color planes, high-angle aerial view, consistent upper-left illumination and clean anime game finish. Do not copy the green island, ocean, vegetation, coastal cliff silhouette or facilities. Reference image 2 is our new deep-space base, for palette coordination only; do not paint any of that background into the output.\n\nPaint a single compact, asymmetric ASTEROID SHARD suspended in vacuum. It is a chunky, fractured mineral boulder with an irregular triangular/oblong silhouette, several large broad slate-gray and muted blue-gray planes, a few restrained shallow impact marks and an uneven broken edge. It is a three-dimensional space rock with a convex, weathered top and some visible short side faces, NOT a giant flat moon-land island, oval terrain tile, mountainside or stepping platform. Overall 70% top surface, 30% low side-face shading. A muted ivory upper-left edge catches the distant sunlight, with restrained cool navy shadows on the lower-right faces. No white snowy material, harsh black outline, detailed realistic pore texture, glistening crystal or excessive crack web. Keep readable form at small gameplay scale. Center it with transparent breathing room all around; silhouette fills about 65-75% of the canvas, not the corners.\n\nOnly the asteroid is opaque. True clean alpha outside its silhouette, including cut-in notches. No baked navy, black or checkerboard backdrop. No ground shadow on empty space, halo, fog, smoke, stars, weather, atmosphere, land, floor, ocean, buildings, debris, flames, motion trail, projectile, spacecraft, text, UI, watermark or frame. One original soft-painted space-rock cutout matching the actual first chapter's painting style.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "space-modular-api-v2/base-a-deep-space.png"
+      ]
+    },
+    {
+      "file": "asteroid-cluster.png",
+      "role": "transparent-region",
+      "sha256": "193aee8559054a21cb9ac2f6429add094f6562ae1f6bcb4d61bce4922e1b1796",
+      "prompt": "Use case: stylized-concept.\nAsset type: 1024x1024 RGBA transparent scenery-region module, viewed from a high aerial angle for a scrolling space shooter.\nImage 1 is the approved first-chapter island: match its matte, broad hand-painted rock shading, soft anime game brushwork, simplified material detail and consistent upper-left light. Do not reproduce its island, grass, cliffs, sea, shore or architecture. Image 2 is our deep-space underlay and supplies only the restrained navy/slate palette; do not include the backdrop or stars in the output.\n\nCreate a loose, irregular cluster of exactly FIVE separate space rocks, with large genuinely transparent gaps between them. One medium elongated angular asteroid is accompanied by two smaller rounded fragmented boulders and two tiny chunks, staggered diagonally without a straight line, perfect ring, symmetrical arrangement or bank-like edge. The medium rock is clearly larger, but no rock dominates the whole canvas. All are suspended in vacuum with convex, faceted tops and short shaded side faces, not floating terrestrial islands or flat platforms. Use desaturated slate-gray and cool blue-gray rocks, a few broad warm-gray sunlit planes and subdued cool shadows. Only a handful of shallow impact dents or fracture planes; no busy craters, fine noise, white moon terrain, granular realistic stone, crystals or high-contrast rim. Keep the cluster airy and readable at small scale. The whole irregular cluster occupies the central 75% of the canvas with plenty of transparent padding at every edge.\n\nGaps and all space outside the five rocks are true transparent alpha. No connecting rock bridge, common footing, supporting slab, shadow on empty space, ground plane, atmospheric cloud, gas haze, stars, sky, weather, station, ship, weapons, debris swarm, glow, smoke or motion trails. No text, UI, labels, watermark or dark matte. One original painterly five-asteroid cluster cutout, not a collage of unrelated art styles.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "space-modular-api-v2/base-a-deep-space.png"
+      ]
+    },
+    {
+      "file": "relay-outpost.png",
+      "role": "transparent-region",
+      "sha256": "63160d42495a167e7bb8beebbab772cd7868ef518791e3531b77cbc4908d6725",
+      "prompt": "Use case: stylized-concept.\nAsset type: one 1024x1024 RGBA transparent space-scenery region, not a complete map.\nImage 1 is our approved FIRST CHAPTER harbor island. Match its actual broad matte hand-painted color planes, soft illustrative brushwork, modest facility detail, elevated top-down camera, gentle upper-left light and coherent footing/architecture. Do not copy its ocean, greenery, island outline, roads or port. Image 2 is our new deep-space base, used only to coordinate muted cool colors; no backdrop is to be painted into the module.\n\nCreate a compact ASTEROID RELAY OUTPOST. One irregular convex slate-gray rocky asteroid hosts a small believable orbital research installation bolted to its upper surface: two low white/slate-blue pressure modules, a compact antenna dish on a squat pedestal, a short cable conduit between the modules, and one modest rectangular dark-blue solar panel array. A tiny amber-lit porthole and one restrained cyan status lamp make the station feel powered, but do not add bloom, light beams or a night-only effect. All facility footings and their local soft shadows must be painted directly onto the rock with the exact same projection and upper-left sunlight, like chapter one's grounded harbor facilities. The rock remains mostly visible, but it must be a chunky asymmetric space boulder with convex top planes and short dark side faces, not a big flat pale lunar island, moon surface tile, concrete slab or cliff bank. Architecture is clearly small relative to its host, rendered with clean broad shapes instead of tiny greeble or gritty photorealism.\n\nUse a high downward view: mostly rooftops and rock tops with just enough short side faces to read the forms. Keep the complete group within the central 75% of the canvas, with transparent room on all sides. Upper-left faces in muted warm gray, rock shadows in slate/navy, facilities in off-white and subdued blue-gray; no snow, saturated vegetation or weather. Only the rock and attached facilities are opaque; all empty space is true alpha. No background, stars, planet, sky, atmospheric clouds, haze, shadow on empty space, flags, people, airplane, flying spacecraft, guns, UI, text, numbers, logos, watermark or frame. One original coherent small asteroid outpost cutout in the first chapter's soft-painted style.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "space-modular-api-v2/base-a-deep-space.png"
+      ]
+    },
+    {
+      "file": "orbital-dock.png",
+      "role": "transparent-region",
+      "sha256": "b458cc8512887fb9e71eaf28bae6bc5f28cb8ae3d00f3abe0c7bbcd6229cfe1f",
+      "prompt": "Use case: stylized-concept.\nAsset type: one 1024x1024 RGBA transparent orbital-architecture module for a high-angle top-down scrolling game.\nImage 1 is the approved chapter-one harbor region. Match its clean broad matte painted shapes, simplified industrial architecture, soft brush edges, restrained details, top-down aerial projection and consistent upper-left light. Do not copy the island, ocean, greenery, roads, coast, crane layout or buildings literally. Image 2 is our navy starfield and provides only palette context; do not include any of the background in the output.\n\nDesign a compact ORBITAL SERVICE DOCK floating in vacuum, with no asteroid underneath. Its recognizable silhouette is an asymmetric, sturdy, open C-shaped service platform with a visible central opening that is fully transparent. A low rectangular hangar module sits at one end, connected to a short chunky structural arm; one modest solar-array wing extends on the opposite side, and a tiny communications mast is mounted close to the hangar. A few small recessed docking pads, restrained cyan portholes and one tiny amber safety lamp provide human scale. This should read as stationary background orbital infrastructure, not a player aircraft, enemy boss, gun turret, flying saucer, spacecraft fleet, emblem or fantasy fortress. No giant circular ring and no endless bridge. Use believable compact engineering with broad legible panels and a few functional details, not hundreds of microscopic greebles.\n\nView the station almost from directly above, showing broad roof/platform tops plus very short shaded side faces; no strong isometric tilt or front elevation. All pieces belong to one coherent structure and share the same upper-left illumination, soft slate-blue shadows and lightly warm off-white upper panels. Use desaturated blue-gray, off-white and muted dark-blue solar panels, consistent with the first chapter's painted industrial materials. The open C silhouette occupies about 70% of the canvas, surrounded by transparent padding. The central opening, space between structures and all exterior space must be real transparent alpha. No glow cloud, floor, earth, rock, stars, planet, sky, atmosphere, weather, fog, rain, smoke, engine jets, shadow cast on empty space, characters, weapons, aircraft, UI, text, labels, logo, frame or watermark. One original soft-painted orbital dock cutout.\n",
+      "references": [
+        "stage1-anime-v8/harbor-east.png",
+        "space-modular-api-v2/base-a-deep-space.png"
+      ]
+    },
+    {
+      "file": "nebula-filament.webp",
+      "role": "distant-nebula",
+      "sha256": "b9325be484aed2468b0d1657a1e7201f44f07b0131763378fd833cd876d35fa9",
+      "date": "2026-11-11",
+      "mode": "ImageGen built-in, WebP with alpha",
+      "prompt": "Game environment sprite for a vertically scrolling painterly anime space shooter. The attached game screenshot is only a lighting and palette reference for a dark navy starfield. Generate one wispy deep-space emission nebula in desaturated indigo, muted lavender and a trace of cool blue. A graceful asymmetric S shaped dust filament with two soft billowing concentrations along it, visibly astronomical, very broad delicate gas gradients, restrained luminous interior with darker voids, clean fine structure only locally. The game will composite it as a distant parallax sprite with reduced opacity. This is a self-contained horizontal 3:2 isolated shape with genuine transparent alpha around it and between dissipated wisps, fully feather to zero before every canvas edge. No opaque background, no solid rectangle, no black backing, no background stars, no large bright points, no white, no planet, no objects, no ground, no atmospheric clouds, no UI, no text, no watermarks. Clear distinct composition at small scale.",
+      "references": [
+        "user-provided gameplay screenshot (palette and lighting only)"
+      ]
+    },
+    {
+      "file": "ringed-planet.webp",
+      "role": "distant-planet",
+      "sha256": "96591a76c15540a73284c83cae35d0a89d1872014f84dd6efe01d8f864a2a02c",
+      "date": "2026-11-11",
+      "mode": "ImageGen built-in, WebP with alpha",
+      "prompt": "Original isolated game environment sprite for a vertically scrolling matte painterly anime space shooter. Use the attached game screenshot solely for dark-navy/slate-blue palette and restraint. Paint one large round blue-slate gas giant planet, a quiet three-quarter phase with a curved softly lit upper-left limb and softly shaded deep navy lower right. Show broad flowing bands of atmosphere and one subdued cool teal band, clean illustrative shapes, a fine pale blue atmospheric limb, no stripes that look like oceans or terrain. Include two thin restrained slightly dusty blue-violet rings tilted diagonally, clean visible separation from the sphere at their ends, physically wrap behind and in front. Upper left is the light source. Muted, cinematic, low-value colors with no near-white hotspots. Entire object and rings within canvas, generous alpha padding, square output, true transparent alpha outside planet/rings and in the gap. No matte, starfield, moon, other objects, sun, lens flare, neon, letters, text or UI.",
+      "references": [
+        "user-provided gameplay screenshot (palette and lighting only)"
+      ]
+    }
+  ]
+}

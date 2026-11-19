@@ -496,6 +496,7 @@ export class Text extends Sprite {
     this._text = String(options.text ?? "");
     this.style = options.style || {};
     this.resolution = options.resolution || 2;
+    this.mipmaps = options.mipmaps === true;
   }
   get text() {
     return this._text;
@@ -580,6 +581,13 @@ export class Text extends Sprite {
       });
       if (this.texture !== Texture.EMPTY) this.texture?.source?.destroy?.();
       this.texture = Texture.from(canvas);
+      if (this.mipmaps) {
+        // A small label can cover several source texels per screen pixel.
+        // Sample a filtered level so thin CJK strokes survive that reduction.
+        const map = this.texture.source._texture;
+        map.generateMipmaps = true;
+        map.minFilter = THREE.LinearMipmapLinearFilter;
+      }
       this.texture.width = width + 4;
       this.texture.height = height + 4;
       this._textKey = key;
@@ -1150,7 +1158,7 @@ export class WebGLRenderer {
     this.screen = new Rectangle(0, 0, options.width || 1, options.height || 1);
     this.canvas =
       options.canvas ||
-      globalThis.wx?.createCanvas?.() ||
+      (globalThis.__THUNDER_RUNTIME_GLOBALS__?.nativeDocument ? document.createElement('canvas') : globalThis.wx?.createCanvas?.()) ||
       document.createElement("canvas");
     this.three = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -1344,10 +1352,15 @@ export class WebGLRenderer {
       } catch {}
     }
   }
-  resize(w, h) {
+  resize(w, h, resolution = this.resolution) {
     this.screen.width = Math.max(1, w);
     this.screen.height = Math.max(1, h);
-    this.three.setSize(this.screen.width, this.screen.height, false);
+    if (resolution === this.resolution) {
+      this.three.setSize(this.screen.width, this.screen.height, false);
+    } else {
+      this.resolution = resolution;
+      this.three.setDrawingBufferSize(this.screen.width, this.screen.height, resolution);
+    }
     this.camera.right = w;
     this.camera.bottom = h;
     this.camera.updateProjectionMatrix();
@@ -1423,6 +1436,13 @@ export class WebGLRenderer {
       if (bloom) this._hasBloomSource = true;
       n._prepare?.();
       const m = n._matrix();
+      // Button feedback moves the artwork, while input keeps its layout matrix.
+      if (n.visualScale) {
+        const { x, y, factor } = n.visualScale;
+        m[4] += (m[0] * x + m[2] * y) * (1 - factor);
+        m[5] += (m[1] * x + m[3] * y) * (1 - factor);
+        for (let i = 0; i < 4; i++) m[i] *= factor;
+      }
       n.object3D.matrixAutoUpdate = false;
       n.object3D.matrix.set(
         m[0],

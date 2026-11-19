@@ -1,4 +1,6 @@
 import {performanceMonitor} from '../performance-monitor.js';
+import {notifyOwnedCanvasFrame,releaseOwnedCanvas} from './release-owned-canvas.js';
+import {createPortraitPaintGate,portraitRenderSize} from './portrait-render-budget.js';
 import {trackWebGLRenderer} from '../renderer-metrics.js';
 import {installCubismBatcher} from './cubism-batcher.js';
 import { CubismFramework, LogLevel, Option } from '../vendor/cubism/src/live2dcubismframework';
@@ -32,6 +34,7 @@ function localUrl(path, base = location.href) {
 }
 
 function loadCore(coreUrl) {
+  const nativeLoader = globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadCubismCore;
   const ready = () => new Promise((resolve, reject) => {
     const deadline = performance.now() + 10000;
     const check = () => {
@@ -42,6 +45,12 @@ function loadCore(coreUrl) {
       else setTimeout(check, 16);
     };
     check();
+  });
+  // Native subpackage loading only evaluates the script; its embedded core
+  // still initializes asynchronously before the framework can call b.asm.
+  if (nativeLoader) return corePromise ||= nativeLoader().then(core => {
+    globalThis.Live2DCubismCore = core;
+    return ready();
   });
   if (globalThis.Live2DCubismCore?.Moc) return corePromise ||= ready();
   if (!corePromise) corePromise = new Promise((resolve, reject) => {
@@ -150,12 +159,15 @@ export function createCubismPortraitPlayer({
   attachmentOffsets = [],
   motionGroups = {},
   createModelAdapter = null,
+  loadModelAdapter = null,
   transitionSeconds = 0,
   initialMemoryBytes = 0,
+  geometryOnly = false,
 } = {}) {
   if (!Number.isFinite(sampleFps) || sampleFps < 1 || sampleFps > 120) throw new RangeError('立绘采样帧率必须为 1–120');
   if (!Number.isFinite(transitionSeconds) || transitionSeconds < 0 || transitionSeconds > 2) throw new RangeError('立绘过渡时长必须为 0–2 秒');
   const step = 1 / sampleFps;
+  const canDrawFrame=createPortraitPaintGate();
   const assetRoot = new URL(localUrl(assetBase));
   if (!assetRoot.pathname.endsWith('/')) assetRoot.pathname += '/';
   assetRoot.search = assetRoot.hash = '';
@@ -163,6 +175,7 @@ export function createCubismPortraitPlayer({
   const coreUrl = localUrl('art/live2d-runtime/live2dcubismcore.min.js', assetRoot.href);
   let host = null, visible = true, paused = false, destroyed = false;
   let state = 'idle', error = null, warned = false, loading = null;
+  let geometryPrepared = false;
   let controller = null, releaseFramework = null, setting = null;
   let canvas = null, gl = null, moc = null, model = null, renderer = null, physics = null, manager = null;
   let consumerInput = null, renderPositionAdapter = null, textureRegionAdapter = null, attachmentAdapter = null;
@@ -221,6 +234,7 @@ export function createCubismPortraitPlayer({
     renderer.setRenderState(null, [0, 0, canvas.width, canvas.height]);
     rendererMetrics?.beginFrame();
     renderer.drawModel();
+    notifyOwnedCanvasFrame(canvas);
     renderedFrames += 1;
     updateHost();
   }
@@ -251,8 +265,11 @@ export function createCubismPortraitPlayer({
     const rect = host.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) { stop(); return; }
     const dpr = Math.min(Math.max(globalThis.devicePixelRatio || 1, minimumResolution), 2);
-    setRenderSize(Math.max(1, Math.round(rect.width * dpr)), Math.max(1, Math.round(rect.height * dpr)));
-    try { draw(); } catch (reason) { fail(reason); }
+    const [width,height]=portraitRenderSize(rect.width,rect.height,dpr);
+    if(canvas.width!==width||canvas.height!==height||!renderedFrames){
+      setRenderSize(width,height);
+      try { draw(); } catch (reason) { fail(reason); }
+    }
     syncPlayback();
   }
 
@@ -323,7 +340,7 @@ export function createCubismPortraitPlayer({
         advance(step);
         changed = true;
       }
-      if (changed) draw();
+      if (changed && (canDrawFrame(now) || !canPlay())) draw();
     } catch (reason) { fail(reason); return; }
     if (canPlay()) raf = requestAnimationFrame(tick);
     else stop();
@@ -368,6 +385,7 @@ export function createCubismPortraitPlayer({
     releaseFramework = null;
     gl?.getExtension('WEBGL_lose_context')?.loseContext();
     gl = null;
+    releaseOwnedCanvas(canvas);
     canvas = null;
     for (const image of images) image.src = '';
     images.clear();
@@ -461,16 +479,19 @@ export function createCubismPortraitPlayer({
     state = 'loading';
     updateHost();
     controller = new AbortController();
-    const [, modelSetting] = await Promise.all([loadCore(coreUrl), read(modelUrl, 'json')]);
+    const [, modelSetting, modelAdapterFactory] = await Promise.all([
+      loadCore(coreUrl), read(modelUrl, 'json'),
+      loadModelAdapter ? loadModelAdapter() : createModelAdapter,
+    ]);
     if (destroyed) return false;
     setting = modelSetting;
     const refs = setting.FileReferences;
     const idleGroup = Object.keys(motionGroups).find(group => motionGroups[group] === 'idle') || 'idle';
-    if (!refs?.Moc || !refs.Textures?.length || !refs.Motions?.[idleGroup]?.[0]?.File) {
+    if (!refs?.Moc || (!geometryOnly && !refs.Textures?.length) || !refs.Motions?.[idleGroup]?.[0]?.File) {
       throw new Error('Cubism model3 缺少模型、纹理或待机动作');
     }
-    const selectedTexturePaths = texturePaths || refs.Textures;
-    if (!Array.isArray(selectedTexturePaths) || !selectedTexturePaths.length) {
+    const selectedTexturePaths = geometryOnly ? [] : texturePaths || refs.Textures;
+    if (!geometryOnly && (!Array.isArray(selectedTexturePaths) || !selectedTexturePaths.length)) {
       throw new Error('Cubism 模型缺少可用的纹理');
     }
     const textureBase = texturePaths ? assetRoot.href : modelUrl;
@@ -486,7 +507,9 @@ export function createCubismPortraitPlayer({
     };
     const results = await Promise.allSettled([
       loadMoc(), refs.Physics ? read(refs.Physics) : Promise.resolve(null),
-      ...selectedTexturePaths.map(path=>loadImage(path,textureBase)), loadMotion('idle'), loadMotion('touch_head'),
+      // Feedback motions already load/cache in playMotion. They must not delay
+      // the initial idle portrait or make an idle-only model fail to appear.
+      ...selectedTexturePaths.map(path=>loadImage(path,textureBase)), loadMotion('idle'),
     ]);
     if (destroyed) return false;
     const failed = results.find(result => result.status === 'rejected');
@@ -573,50 +596,53 @@ export function createCubismPortraitPlayer({
         handContract:handInputAdapter.contract,
       });
     }
-    if (createModelAdapter) {
+    if (modelAdapterFactory) {
       model.update();
-      modelAdapter = createModelAdapter(model);
+      modelAdapter = modelAdapterFactory(model);
     }
-    canvas = document.createElement('canvas');
-    canvas.width = canvas.height = 1;
-    canvas.className = 'lobby-portrait-canvas cubism-portrait-canvas';
-    canvas.style.cssText = 'display:block;width:100%;height:100%;pointer-events:none;background:transparent';
-    canvas.setAttribute('aria-hidden', 'true');
-    gl = canvas.getContext('webgl', {
-      alpha: true, premultipliedAlpha: true, antialias: true,
-      preserveDrawingBuffer: true, powerPreference: 'low-power',
-    });
-    if (!gl) throw new Error('浏览器无法创建 Cubism WebGL 上下文');
-    rendererMetrics = trackWebGLRenderer(gl, performanceMonitor, `portrait-${++metricsSerial}`,
-      () => Boolean(!destroyed && visible && host?.isConnected && !document.hidden));
-    canvas.addEventListener('webglcontextlost', onContextLost);
-    renderer = new CubismRenderer_WebGL();
-    renderer.initialize(model);
-    renderer.startUp(gl);
-    renderer.setIsPremultipliedAlpha(true);
-    meshBatcher = installCubismBatcher(renderer,gl);
-    // The selected atlases include mouth/detail replacements beyond model3's
-    // original texture list; every fetched atlas must receive its GPU slot.
-    for (let i = 0; i < selectedTexturePaths.length; i++) {
-      const image = results[i + 2].value;
-      const texture = gl.createTexture();
-      if (!texture) throw new Error('Cubism 纹理无法创建');
-      textures.push(texture);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,mipmaps?gl.LINEAR_MIPMAP_LINEAR:gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      if (mipmaps) gl.generateMipmap(gl.TEXTURE_2D);
-      renderer.bindTexture(i, texture);
-      image.src = '';
-      images.delete(image);
+    // Reference models can provide posed vertices to a separate renderer.
+    if (!geometryOnly) {
+      canvas = document.createElement('canvas');
+      canvas.width = canvas.height = 1;
+      canvas.className = 'lobby-portrait-canvas cubism-portrait-canvas';
+      canvas.style.cssText = 'display:block;width:100%;height:100%;pointer-events:none;background:transparent';
+      canvas.setAttribute('aria-hidden', 'true');
+      gl = canvas.getContext('webgl', {
+        alpha: true, premultipliedAlpha: true, antialias: true,
+        preserveDrawingBuffer: true, powerPreference: 'low-power',
+      });
+      if (!gl) throw new Error('浏览器无法创建 Cubism WebGL 上下文');
+      rendererMetrics = trackWebGLRenderer(gl, performanceMonitor, `portrait-${++metricsSerial}`,
+        () => Boolean(!destroyed && visible && host?.isConnected && !document.hidden));
+      canvas.addEventListener('webglcontextlost', onContextLost);
+      renderer = new CubismRenderer_WebGL();
+      renderer.initialize(model);
+      renderer.startUp(gl);
+      renderer.setIsPremultipliedAlpha(true);
+      meshBatcher = installCubismBatcher(renderer,gl);
+      // The selected atlases include mouth/detail replacements beyond model3's
+      // original texture list; every fetched atlas must receive its GPU slot.
+      for (let i = 0; i < selectedTexturePaths.length; i++) {
+        const image = results[i + 2].value;
+        const texture = gl.createTexture();
+        if (!texture) throw new Error('Cubism 纹理无法创建');
+        textures.push(texture);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,mipmaps?gl.LINEAR_MIPMAP_LINEAR:gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        if (mipmaps) gl.generateMipmap(gl.TEXTURE_2D);
+        renderer.bindTexture(i, texture);
+        image.src = '';
+        images.delete(image);
+      }
+      gl.bindTexture(gl.TEXTURE_2D, null);
     }
-    gl.bindTexture(gl.TEXTURE_2D, null);
     begin(motions.get('idle'), false, true);
-    if (host) host.appendChild(canvas);
+    if (host && canvas) host.appendChild(canvas);
     fit();
     if (state === 'error') return false;
     state = 'ready';
@@ -627,7 +653,7 @@ export function createCubismPortraitPlayer({
 
   function ensureLoaded() {
     if (destroyed || state === 'error') return Promise.resolve(false);
-    if (!host || !visible || document.hidden) return Promise.resolve(state === 'ready');
+    if ((!host && !geometryPrepared) || !visible || document.hidden) return Promise.resolve(state === 'ready');
     if (!loading) loading = load().catch(reason => { fail(reason); return false; });
     return loading;
   }
@@ -649,6 +675,11 @@ export function createCubismPortraitPlayer({
   else reducedMotion?.addListener?.(onReducedMotion);
 
   return {
+    prepareGeometry() {
+      if (!geometryOnly) throw new TypeError('独立几何加载只支持 geometryOnly 立绘');
+      geometryPrepared = true;
+      return ensureLoaded();
+    },
     attach(nextHost) {
       if (destroyed) return Promise.resolve(false);
       if (nextHost && !nextHost.appendChild) throw new TypeError('立绘需要有效的宿主元素');
@@ -657,12 +688,12 @@ export function createCubismPortraitPlayer({
         observer?.disconnect();
         canvas?.remove();
         host = nextHost || null;
-        if (host && globalThis.ResizeObserver) {
+        if (host && !geometryOnly && globalThis.ResizeObserver) {
           observer ||= new ResizeObserver(fit);
           observer.observe(host);
         }
       }
-      if (host && canvas) host.appendChild(canvas);
+      if (host && canvas && canvas.parentNode!==host) host.appendChild(canvas);
       updateHost();
       fit();
       syncPlayback();

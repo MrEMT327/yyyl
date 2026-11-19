@@ -33,11 +33,15 @@ export function initializeSamplePatrol(raw,campaign={},time=Date.now()) {
   return {version:2,policyVersion:1,beginAt:time,lastSeen:time,day:economyDay(time),quickUsed:0,adUsed:0,
     gearCursor:0,researchCursor:0,remainders:{gold:0,gear:0,research:0,basic:0,advanced:0},...(raw?{legacy:structuredClone(raw)}:{})};
 }
+export function samplePatrolClock(ledger, time) {
+  const clockRollback = time < ledger.lastSeen || time < ledger.beginAt;
+  const seconds = clockRollback ? 0 : Math.min(CAP, Math.floor((time - ledger.beginAt) / 1000));
+  return { clockRollback, seconds };
+}
 export function samplePatrolSnapshot(raw,campaign,time,revision,progression) {
   const native=nativePatrolSnapshot(campaign,[],progression);
   const ledger=initializeSamplePatrol(raw,campaign,time),chapter=continuousChapter(campaign),rates={...localIncomeRates(chapter),...localPatrolVoucherRates(chapter)};
-  const clockRollback=time<ledger.lastSeen||time<ledger.beginAt;
-  const seconds=clockRollback?0:Math.min(CAP,Math.floor((time-ledger.beginAt)/1000));
+  const {clockRollback,seconds}=samplePatrolClock(ledger,time);
   return {...native,revision,development:UNLOCK_ALL_CONTENT,sampleBased:true,chapterKnown:true,stageIndex:chapter-1,
     nativeSettlementPending:false,nativeSettlementKnown:false,payoutSource:'local-patrol-v1',compatibility:true,compatibilityNote:LOCAL_ECONOMY_POLICY.label,
     storedMinutes:seconds/60,clockRollback,quickHours:QUICK_SECONDS/3600,quickMinutes:QUICK_SECONDS/60,quickDurationKnown:true,

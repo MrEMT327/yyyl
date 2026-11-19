@@ -115,8 +115,25 @@
 #gui-casual-lobby .pf-chest-closed img,#gui-casual-lobby .pf-chest-open img{width:100%;height:100%;object-fit:contain}
 #gui-casual-lobby .pf-chest-closed{animation:pf-chest-charge .8s both}
 #gui-casual-lobby .pf-chest-open{animation:pf-chest-open .65s .65s both;transform-origin:50% 83%}
-#gui-casual-lobby .pf-chest-light{position:absolute;left:8%;right:8%;top:14%;height:55%;mix-blend-mode:screen;pointer-events:none;animation:pf-chest-flare .9s .65s both}
-#gui-casual-lobby .pf-chest-light img{width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .pf-chest-light{
+  --pf-flare-height:55cqh;
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:14%;
+  height:var(--pf-flare-height);
+  display:grid;
+  place-items:center;
+  mix-blend-mode:screen;
+  pointer-events:none;
+  animation:pf-chest-flare .9s .65s both;
+}
+#gui-casual-lobby .pf-chest-light img{
+  width:min(100%, var(--pf-flare-height));
+  height:auto;
+  /* Fade out the floor ring baked into the foreground texture. */
+  mask-image:linear-gradient(#000 58%, transparent 70%);
+}
 #gui-casual-lobby .common-reward-dialog.pf-box-result{--popup-width:94cqw;--popup-max-height:82%;min-height:58cqw!important}
 #gui-casual-lobby .pf-box-result .pl-modal-content{min-height:28cqw!important;display:flex;flex-direction:column;justify-content:center;gap:6cqw}
 #gui-casual-lobby .pf-box-result .pl-rewards-grid{padding:2cqw 0!important}

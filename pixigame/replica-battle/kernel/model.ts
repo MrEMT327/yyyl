@@ -63,7 +63,8 @@ export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 export interface Collider extends Point { oldX: number; oldZ: number; radiusX: number; radiusZ: number; box: boolean; angle: number }
 function intervalSweep(x: number, z: number, dx: number, dz: number, rx: number, rz: number): number | null {
   let entry = 0, exit = 1;
-  for (const [p, v, r] of [[x, dx, rx], [z, dz, rz]]) {
+  for (let axis = 0; axis < 2; axis++) {
+    const p = axis === 0 ? x : z, v = axis === 0 ? dx : dz, r = axis === 0 ? rx : rz;
     if (Math.abs(v) < 1e-10) { if (Math.abs(p) > r) return null; continue; }
     const a = (-r - p) / v, b = (r - p) / v;
     entry = Math.max(entry, Math.min(a, b)); exit = Math.min(exit, Math.max(a, b));
@@ -73,14 +74,30 @@ function intervalSweep(x: number, z: number, dx: number, dz: number, rx: number,
 }
 function circleBox(circle: Collider, box: Collider): number | null {
   const co = Math.cos(box.angle), si = Math.sin(box.angle);
-  const local = (x: number, z: number) => ({ x: x * co - z * si, z: x * si + z * co });
-  const start = local(circle.oldX - box.oldX, circle.oldZ - box.oldZ);
-  const end = local(circle.x - box.x, circle.z - box.z);
+  const oldX = circle.oldX - box.oldX, oldZ = circle.oldZ - box.oldZ;
+  const x = circle.x - box.x, z = circle.z - box.z;
+  const start = { x: oldX * co - oldZ * si, z: oldX * si + oldZ * co };
+  const end = { x: x * co - z * si, z: x * si + z * co };
   const dx = end.x - start.x, dz = end.z - start.z, r = circle.radiusX;
-  const times = [intervalSweep(start.x, start.z, dx, dz, box.radiusX + r, box.radiusZ), intervalSweep(start.x, start.z, dx, dz, box.radiusX, box.radiusZ + r)];
-  for (const x of [-box.radiusX, box.radiusX]) for (const z of [-box.radiusZ, box.radiusZ]) times.push(sweptEllipse(start, end, { x, z }, { x, z }, r, r));
-  const hits = times.filter((t): t is number => t !== null);
-  return hits.length ? Math.min(...hits) : null;
+  // A sweep outside the rounded box's enclosing rectangle cannot hit any face
+  // or corner. Keep a margin at its edges for the time-of-impact arithmetic.
+  const extentX = Math.abs(box.radiusX) + Math.abs(r) + 1e-9;
+  const extentZ = Math.abs(box.radiusZ) + Math.abs(r) + 1e-9;
+  if ((start.x > extentX && end.x > extentX) || (start.x < -extentX && end.x < -extentX) ||
+      (start.z > extentZ && end.z > extentZ) || (start.z < -extentZ && end.z < -extentZ)) return null;
+  let first = Math.min(
+    intervalSweep(start.x, start.z, dx, dz, box.radiusX + r, box.radiusZ) ?? Infinity,
+    intervalSweep(start.x, start.z, dx, dz, box.radiusX, box.radiusZ + r) ?? Infinity,
+  );
+  const corner = { x: 0, z: 0 };
+  for (let xSide = -1; xSide <= 1; xSide += 2) {
+    corner.x = xSide * box.radiusX;
+    for (let zSide = -1; zSide <= 1; zSide += 2) {
+      corner.z = zSide * box.radiusZ;
+      first = Math.min(first, sweptEllipse(start, end, corner, corner, r, r) ?? Infinity);
+    }
+  }
+  return first === Infinity ? null : first;
 }
 export function sweep(a: Collider, b: Collider): number | null {
   if (!a.box && !b.box) return sweptEllipse({ x: a.oldX, z: a.oldZ }, a, b, { x: b.oldX, z: b.oldZ }, a.radiusX + b.radiusX, a.radiusX + b.radiusX);

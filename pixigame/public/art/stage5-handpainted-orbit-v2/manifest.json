@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "generator": "built-in image_gen",
+  "reference": "art/stage1-anime-v8/harbor-east.png",
+  "packaging": "Generated PNGs copied unchanged; native transparent alpha preserved.",
+  "assets": [
+    {
+      "file": "maintenance-outposts.png",
+      "sourceGeneratedBasename": "exec-df92deac-efac-4413-8999-d75cabaeed40.png",
+      "sha256": "0b18e460764251b358ffa879a404e90a200040b8ba09b3d8a0052ac3c06051fa",
+      "bytes": 1669697
+    },
+    {
+      "file": "survey-observatory.png",
+      "sourceGeneratedBasename": "exec-b4bcc5d6-3683-42bb-8103-37205164a6bd.png",
+      "sha256": "04ce9ea5da7367e874357554ea0fb97421442c8366330725aabce3c9dfcd1585",
+      "bytes": 2016870
+    },
+    {
+      "file": "cargo-terraces.png",
+      "sourceGeneratedBasename": "exec-95161088-7916-4d42-b471-4a546f0b2467.png",
+      "sha256": "7c066f82d1f3e1024c819c78d527716edf433452c6a55f251bb8b6a75decc5a3",
+      "bytes": 1846300
+    },
+    {
+      "file": "starfield.png",
+      "sourceGeneratedBasename": "exec-c868cc0c-a102-48ed-b624-f10c48b00166.png",
+      "sha256": "72c089215d6d8d8f904e621328ddeab0af1c40e7c7fa72a57b4ba6b6f3bf7cf9",
+      "bytes": 1824451
+    }
+  ]
+}

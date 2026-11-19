@@ -1,10 +1,10 @@
 // Lobby-only presentation. The peripheral domain still owns every reward and action.
 export const PAPER_MODAL_TYPES = new Set([
   'gearDetail','gearMerge','gearMergeList','gearAttributes','gearSources','gearMaterialInfo','gearDowngrade','gearBatch',
-  'tasks', 'patrol', 'signin', 'shopConfirm', 'shopWeaponConfirm',
-  'shopWeaponPreview', 'shopRules', 'researchCard', 'researchSummary',
+  'tasks', 'patrol', 'signin', 'shopConfirm',
+  'shopRules', 'researchCard', 'researchSummary',
   'researchResult', 'rewards', 'weapon', 'pilotInfo', 'aircraftInfo',
-  'fleetOperation', 'fleetSkill', 'innateInfo', 'stamina', 'recruitRewards',
+  'fleetOperation', 'fleetSkill', 'stamina', 'recruitRewards',
 ]);
 
 export function signInPanel(snapshot, { escape: e, number: n, icon, thumbnail, button }) {

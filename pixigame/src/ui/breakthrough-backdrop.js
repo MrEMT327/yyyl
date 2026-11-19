@@ -3,6 +3,7 @@ import {sampleOriginalEffect} from '../../replica-battle/kernel/original-effects
 import {samplePresentedShow,upgradeEffectOpacity} from './upgrade-transition-motion.js';
 import {drawNativeGeometrySprite} from './breakthrough-effect-sprites.js';
 const plans=new Map();
+const softEntry=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
 function plan(tier){
   tier=profile.tiers[tier]?tier:'y';if(plans.has(tier))return plans.get(tier);
   const groups=profile.tiers[tier],surfaces=[];
@@ -36,7 +37,9 @@ export function sampleBreakthroughFrame(seconds,tier='y',reducedMotion=false,sha
     for(const draw of sampled.get(group.effectId))if(surface.layerIds.includes(String(draw.layer.id))){
       const kind=profile.data.textures[draw.sprite.key]?.kind;
       if(reducedMotion&&(surface.side==='front'||kind!=='softGlow'))continue;
-      const opacity=upgradeEffectOpacity(pose.seconds)*(reducedMotion?.12:1);
+      const opacity=upgradeEffectOpacity(pose.seconds)*(reducedMotion?.12:softEntry((pose.seconds-group.enableTime)/(surface.side==='front'?.09:.035)));
+      // Retain the original full-size rays, colours and peak gain. Ease only
+      // their first frames so the light joins the card movement without a pop.
       const sprite=opacity<1?{...draw.sprite,alpha:draw.sprite.alpha*opacity}:draw.sprite;
       surface.draws.push({sprite,material:draw.layer.materials[0]});particleCount++;
       if(kind==='whiteWash')flashAlpha=Math.max(flashAlpha,sprite.alpha);

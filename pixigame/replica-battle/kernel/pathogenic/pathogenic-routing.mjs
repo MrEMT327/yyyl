@@ -168,8 +168,10 @@ export function statusScene(modelId){
 export function warningScene(id){
   const scene=SOURCE_WARNINGS[id];if(!scene)throw new MissingSourceEffect('warning',id);return scene;
 }
-export function validateSceneBindings(graph,extraModels={}) {
-  const required=new Set([ENEMY_ROUND_BULLET_SCENE,...Object.values(SOURCE_FAMILIES).flatMap(f=>[f.body,f.impact]),
+export function battleScenePaths(extraModels={}) {
+  return new Set([ENEMY_ROUND_BULLET_SCENE,...Object.values(SOURCE_FAMILIES).flatMap(f=>[f.body,f.impact]),
     ...Object.values(SOURCE_MODELS),...Object.values(SOURCE_EFFECTS),...Object.values(SOURCE_STATUSES),...Object.values(SOURCE_WARNINGS),...Object.values(extraModels)]);
-  return [...required].filter(path=>!graph.scenes[path]).map(path=>({type:'missing-scene',path}));
+}
+export function validateSceneBindings(graph,extraModels={}) {
+  return [...battleScenePaths(extraModels)].filter(path=>!graph.scenes[path]).map(path=>({type:'missing-scene',path}));
 }

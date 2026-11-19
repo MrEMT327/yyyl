@@ -20,17 +20,41 @@ export const COMBAT_ART_PATHS = Object.freeze({
 const textures = new Map();
 const frames={primary:[198,67,18],secondary:[219,85,18],card:[224,562,24],slot:[128,128,18],utility:[182,92,32],statsControl:[182,92,32],pauseSlot:[128,128,18],audioOn:[348,152,0],audioOff:[348,152,0],audioThumb:[120,120,0]};
 const isAudioSwitch=kind=>['audioOn','audioOff','audioThumb'].includes(kind);
+export function loadCombatUiTexture(url, mipmaps = false) {
+  const art = new TextureLoader().load(url, undefined, undefined, () => { art.userData.artworkFailed = true; });
+  art.colorSpace = SRGBColorSpace;
+  art.generateMipmaps = mipmaps;
+  art.minFilter = mipmaps ? LinearMipmapLinearFilter : LinearFilter;
+  art.magFilter = LinearFilter;
+  return art;
+}
 function texture(kind) {
   if (!COMBAT_ART_PATHS[kind]) throw new Error(`Unknown combat art: ${kind}`);
   if (!textures.has(kind)) {
-    const value = new TextureLoader().load(`${cloudAssetBase}art/${COMBAT_ART_PATHS[kind]}`);
-    value.colorSpace = SRGBColorSpace;
-    value.generateMipmaps = isAudioSwitch(kind);
-    value.minFilter = isAudioSwitch(kind)?LinearMipmapLinearFilter:LinearFilter;
-    value.magFilter = LinearFilter;
-    textures.set(kind,value);
+    textures.set(kind,loadCombatUiTexture(`${cloudAssetBase}art/${COMBAT_ART_PATHS[kind]}`,isAudioSwitch(kind)));
   }
   return textures.get(kind);
+}
+export function combatArtworkSettled(art) {
+  return art.image?.width > 0 || art.userData.artworkFailed === true;
+}
+export function prepareCombatButtonArt(kind) {
+  return combatArtworkSettled(texture(kind));
+}
+export function bindCombatButtonArt(button, skin, texture) {
+  const fallback = button.children[0];
+  button.renderable = false;
+  // Resolve during the UI update immediately before rendering. Until then
+  // both the canvas and the touch router skip this control as a whole.
+  button.prepareButtonArt = () => {
+    if (!combatArtworkSettled(texture)) return false;
+    const ready = texture.image?.width > 0;
+    skin.renderable = ready;
+    fallback.visible = !ready;
+    button.renderable = true;
+    button.prepareButtonArt = null;
+    return true;
+  };
 }
 export function setCombatArt(mesh,kind) {
   const state=mesh.userData.psdCombatArt;

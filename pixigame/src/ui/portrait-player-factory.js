@@ -7,8 +7,13 @@ import { createCommanderPortraitAdapter } from './commander-portrait-adapter.js'
 import { createOrangeReferencePortraitPlayer } from './orange-reference-portrait-player.js';
 import { createPurpleDoctorPortraitPlayer } from './purple-doctor-portrait-player.js';
 import { createLunaMaidPortraitPlayer } from './luna-maid-portrait-player.js';
-import { createBluePonytailEyeLidAdapter } from './blue-ponytail-eye-lid-adapter.js';
 import { createWhiteGoldAppearanceAdapter } from './white-gold-appearance-adapter.js';
+
+async function loadBluePonytailAdapter() {
+  await globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadPortraitData?.();
+  const module = await import('./blue-ponytail-eye-lid-adapter.js');
+  return module.createBluePonytailEyeLidAdapter;
+}
 
 // The lobby and GM use exactly the same resource and camera configuration.
 export function createPilotPortraitPlayer(id, {assetBase=import.meta.env?.BASE_URL ?? '/', geometryDiagnostics=false}={}) {
@@ -16,7 +21,11 @@ export function createPilotPortraitPlayer(id, {assetBase=import.meta.env?.BASE_U
   if (id === 'pilot-09') return createPurpleDoctorPortraitPlayer({assetBase});
   if (id === 'pilot-01') return createOrangeReferencePortraitPlayer({assetBase,runtimePath:'art/orange-jetboard-v5/runtime.json'});
   if (id === 'pilot-03') return createCubismPortraitPlayer({assetBase,modelPath:'art/commander-live2d-v1/commander.model3.json',motionGroups:{Idle:'idle',TapBody:'touch_head'},sampleFps:60,minimumResolution:2,createModelAdapter:createCommanderPortraitAdapter,transitionSeconds:.32});
-  if (id === 'pilot-04') return createCubismPortraitPlayer({assetBase,modelPath:'art/blue-ponytail-v15/blue-ponytail.model3.json',motionGroups:{Idle:'idle'},sampleFps:60,minimumResolution:2,initialMemoryBytes:128*1024*1024,createModelAdapter:createBluePonytailEyeLidAdapter});
+  if (id === 'pilot-04') return createCubismPortraitPlayer({
+    assetBase, modelPath:'art/blue-ponytail-v15/blue-ponytail.model3.json',
+    motionGroups:{Idle:'idle'}, sampleFps:60, minimumResolution:2,
+    initialMemoryBytes:128*1024*1024, loadModelAdapter:loadBluePonytailAdapter,
+  });
   if (id === 'pilot-02') return createRgbaVideoPortraitPlayer({assetBase,manifestPath:'art/engineer-ee76/runtime.json?v=inner-hem-v5'});
   if (id === 'pilot-05') return createGoldenMeshPortraitPlayer({assetBase,manifestPath:'art/golden-yoga-v12/runtime.json'});
   if (id === 'pilot-08') return createRgbaVideoPortraitPlayer({assetBase,manifestPath:'art/violet-astra-v31/runtime.json'});

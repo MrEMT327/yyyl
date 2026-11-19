@@ -34,7 +34,8 @@ export function showSortieLoading(options={}) {
   </section>`;
   overlay.querySelector('h2').textContent=options.stageName||'作战区域';
   const aircraft=currentAircraftId(options.aircraftId);
-  for(const backdrop of overlay.querySelectorAll('.sortie-loading__backdrop')){
+  const backdrops=overlay.querySelectorAll('.sortie-loading__backdrop');
+  for(const backdrop of backdrops){
     backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/sortie-hangar-v1/shaft-section.webp`;
     backdrop.onerror=()=>{backdrop.onerror=null;backdrop.src=`${import.meta.env?.BASE_URL||'/'}art/psd-main-v1/main-background.png`;};
   }
@@ -66,6 +67,10 @@ export function showSortieLoading(options={}) {
   document.documentElement.classList.add('sortie-loading-active');
   document.body.append(overlay);
   const presentation=createSortieHangar(overlay.querySelector('.sortie-hangar__model'),aircraft);
+  const freezePresentation=()=>{
+    presentation.freeze();
+    for(const backdrop of backdrops)for(const animation of backdrop.getAnimations?.()||[])animation.pause();
+  };
   const heading=overlay.querySelector('.sortie-loading__heading');
   const titleTimer=window.setTimeout(()=>heading.classList.add('is-muted'),1600);
   overlay.focus({preventScroll:true});
@@ -74,7 +79,7 @@ export function showSortieLoading(options={}) {
     closed=true;
     window.clearTimeout(titleTimer);
     if(keepMotion) presentation.finish();
-    else presentation.freeze();
+    else freezePresentation();
     closing=(async()=>{
       overlay.classList.add('is-leaving');
       if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -112,7 +117,7 @@ export function showSortieLoading(options={}) {
       if(closed)return;
       failed=true;
       window.clearTimeout(titleTimer);heading.classList.remove('is-muted');
-      presentation.freeze();
+      freezePresentation();
       overlay.classList.add('is-failed');
       overlay.querySelector('.sortie-loading__state').hidden=false;progress.hidden=true;
       status.textContent=message||'准备失败';

@@ -1,0 +1,4249 @@
+{
+  "date": "2026-10-23",
+  "result": "Every chapter20–30 has an ordinary-only full-clear sample; S equipment is not a hard requirement in the current implementation.",
+  "mode": "Latest human confirmation: normal default plus independent developer buttons",
+  "primaryBattleEvidence": {
+    "logicRate": 30,
+    "nativeDeltaRaw": 2184,
+    "cases": 33,
+    "won": 32,
+    "chapters": [
+      {
+        "chapter": 20,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          239.2,
+          243.3,
+          243.7
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 21,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          187.9,
+          192.8,
+          193.9
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 22,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          202.6,
+          260.7,
+          188.2
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 23,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          200.8,
+          187.8,
+          195.7
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 24,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          258.3,
+          261.5,
+          265.3
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 25,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          129.2,
+          146.5,
+          123.4
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 26,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          193.1,
+          192.0,
+          180.4
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 27,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          231.2,
+          248.9,
+          220.4
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 28,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          235.9,
+          254.0,
+          257.5
+        ],
+        "failureWaves": []
+      },
+      {
+        "chapter": 29,
+        "samples": 3,
+        "won": 2,
+        "times": [
+          245.2,
+          277.7
+        ],
+        "failureWaves": [
+          15
+        ]
+      },
+      {
+        "chapter": 30,
+        "samples": 3,
+        "won": 3,
+        "times": [
+          247.2,
+          243.6,
+          281.5
+        ],
+        "failureWaves": []
+      }
+    ],
+    "configuration": {
+      "quality": 50,
+      "level": 16,
+      "labLevel": 30,
+      "talentCount": 200,
+      "aceCount": 30,
+      "gunStar": 5,
+      "gunId": 20101,
+      "series": 1,
+      "planes": []
+    },
+    "notHumanWinRate": true,
+    "notMinimumLoadout": true
+  },
+  "cost": {
+    "gold": 78788000,
+    "talentGold": 53609000,
+    "gearGold": 2475000,
+    "labGold": 22704000,
+    "gearPaper": {
+      "105": 75830,
+      "106": 75830,
+      "107": 75830,
+      "108": 75830,
+      "109": 75830
+    },
+    "labPaper": {
+      "801": 20640,
+      "802": 20640,
+      "803": 20640,
+      "804": 20640,
+      "805": 20640,
+      "806": 20640,
+      "807": 20640,
+      "808": 20640,
+      "809": 20640,
+      "810": 20640,
+      "811": 20640
+    },
+    "gunCards": 7,
+    "planeCards": 0,
+    "aceCores": 30,
+    "normalCoresEarned": 13
+  },
+  "transactionChecks": [
+    {
+      "name": "exact joint spending reaches tested battle loadout",
+      "passed": true,
+      "attack": 11112,
+      "hp": 77716.8,
+      "remainingGold": 0
+    },
+    {
+      "name": "stalled20 patrol",
+      "passed": true,
+      "gold": 1400000,
+      "gearEach": 1400,
+      "labEach": 280,
+      "staminaCost": 15
+    },
+    {
+      "name": "stalled25 patrol",
+      "passed": true,
+      "gold": 2100000,
+      "gearEach": 2380,
+      "labEach": 560,
+      "staminaCost": 15
+    },
+    {
+      "name": "stalled30 patrol",
+      "passed": true,
+      "gold": 2800000,
+      "gearEach": 3360,
+      "labEach": 840,
+      "staminaCost": 15
+    },
+    {
+      "name": "daily loop needs completed sorties, no next-chapter victory",
+      "passed": true,
+      "gunCards": 1,
+      "cores": 1
+    }
+  ],
+  "budgetScenarios": [
+    {
+      "hours": 8,
+      "daily": {
+        "gold": 1600000,
+        "gearEach": 1920,
+        "labEach": 480,
+        "gunCards": 1,
+        "aceCores": 1
+      },
+      "waits": {
+        "gold": 49.2425,
+        "gearPaper": 39.494791666666664,
+        "labPaper": 43,
+        "gunCards": 7,
+        "aceCores": 17
+      },
+      "daysBeforeEquipmentBodies": 49.2425,
+      "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+    },
+    {
+      "hours": 14,
+      "daily": {
+        "gold": 2800000,
+        "gearEach": 3360,
+        "labEach": 840,
+        "gunCards": 1,
+        "aceCores": 1
+      },
+      "waits": {
+        "gold": 28.138571428571428,
+        "gearPaper": 22.56845238095238,
+        "labPaper": 24.571428571428573,
+        "gunCards": 7,
+        "aceCores": 17
+      },
+      "daysBeforeEquipmentBodies": 28.138571428571428,
+      "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+    },
+    {
+      "hours": 18,
+      "daily": {
+        "gold": 3600000,
+        "gearEach": 4320,
+        "labEach": 1080,
+        "gunCards": 1,
+        "aceCores": 1
+      },
+      "waits": {
+        "gold": 21.885555555555555,
+        "gearPaper": 17.55324074074074,
+        "labPaper": 19.11111111111111,
+        "gunCards": 7,
+        "aceCores": 17
+      },
+      "daysBeforeEquipmentBodies": 21.885555555555555,
+      "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+    }
+  ],
+  "bodyPacing": {
+    "kind": "fixed-series full five-slot quality recipe feasibility, seeded current local odds; bodies only; no level-up costs, wins, shop, one-off rewards or patrol talents; S never used as fodder",
+    "trials": 2000,
+    "maxDays": 240,
+    "productionCrosschecks": 200,
+    "initial": "five target-series blue pieces, no purple",
+    "scenarios": [
+      {
+        "chapter": 20,
+        "hours": 8,
+        "trials": 2000,
+        "metrics": {
+          "allFixedPurple": {
+            "p50": 12,
+            "p95": 16,
+            "notReached": 0
+          },
+          "allFixedOrange": {
+            "p50": 22,
+            "p95": 27,
+            "notReached": 0
+          },
+          "allFixedOrangePlus1": {
+            "p50": 37,
+            "p95": 42,
+            "notReached": 0
+          },
+          "allFixedRed": {
+            "p50": 95,
+            "p95": 100,
+            "notReached": 0
+          }
+        }
+      },
+      {
+        "chapter": 20,
+        "hours": 14,
+        "trials": 2000,
+        "metrics": {
+          "allFixedPurple": {
+            "p50": 7,
+            "p95": 11,
+            "notReached": 0
+          },
+          "allFixedOrange": {
+            "p50": 14,
+            "p95": 18,
+            "notReached": 0
+          },
+          "allFixedOrangePlus1": {
+            "p50": 23,
+            "p95": 26,
+            "notReached": 0
+          },
+          "allFixedRed": {
+            "p50": 59,
+            "p95": 62,
+            "notReached": 0
+          }
+        }
+      },
+      {
+        "chapter": 25,
+        "hours": 8,
+        "trials": 2000,
+        "metrics": {
+          "allFixedPurple": {
+            "p50": 12,
+            "p95": 16,
+            "notReached": 0
+          },
+          "allFixedOrange": {
+            "p50": 22,
+            "p95": 27,
+            "notReached": 0
+          },
+          "allFixedOrangePlus1": {
+            "p50": 37,
+            "p95": 42,
+            "notReached": 0
+          },
+          "allFixedRed": {
+            "p50": 95,
+            "p95": 100,
+            "notReached": 0
+          }
+        }
+      },
+      {
+        "chapter": 25,
+        "hours": 14,
+        "trials": 2000,
+        "metrics": {
+          "allFixedPurple": {
+            "p50": 7,
+            "p95": 10,
+            "notReached": 0
+          },
+          "allFixedOrange": {
+            "p50": 15,
+            "p95": 18,
+            "notReached": 0
+          },
+          "allFixedOrangePlus1": {
+            "p50": 23,
+            "p95": 26,
+            "notReached": 0
+          },
+          "allFixedRed": {
+            "p50": 59,
+            "p95": 62,
+            "notReached": 0
+          }
+        }
+      },
+      {
+        "chapter": 30,
+        "hours": 8,
+        "trials": 2000,
+        "metrics": {
+          "allFixedPurple": {
+            "p50": 11,
+            "p95": 15,
+            "notReached": 0
+          },
+          "allFixedOrange": {
+            "p50": 20,
+            "p95": 25,
+            "notReached": 0
+          },
+          "allFixedOrangePlus1": {
+            "p50": 33,
+            "p95": 37,
+            "notReached": 0
+          },
+          "allFixedRed": {
+            "p50": 84,
+            "p95": 89,
+            "notReached": 0
+          }
+        }
+      },
+      {
+        "chapter": 30,
+        "hours": 14,
+        "trials": 2000,
+        "metrics": {
+          "allFixedPurple": {
+            "p50": 7,
+            "p95": 9,
+            "notReached": 0
+          },
+          "allFixedOrange": {
+            "p50": 13,
+            "p95": 16,
+            "notReached": 0
+          },
+          "allFixedOrangePlus1": {
+            "p50": 20,
+            "p95": 23,
+            "notReached": 0
+          },
+          "allFixedRed": {
+            "p50": 51,
+            "p95": 55,
+            "notReached": 0
+          }
+        }
+      }
+    ]
+  },
+  "economy": {
+    "kind": "fixed stalled chapter, all currencies spent jointly; costs exact, incomes conservative current offline policy, not original server rates; quality bodies calculated separately",
+    "increments": [
+      {
+        "from": 1,
+        "to": 60,
+        "goldAllFive": 885000,
+        "paperEach": 7330
+      },
+      {
+        "from": 60,
+        "to": 80,
+        "goldAllFive": 695000,
+        "paperEach": 19500
+      },
+      {
+        "from": 80,
+        "to": 100,
+        "goldAllFive": 895000,
+        "paperEach": 49000
+      },
+      {
+        "from": 100,
+        "to": 120,
+        "goldAllFive": 1095000,
+        "paperEach": 89000
+      },
+      {
+        "from": 120,
+        "to": 140,
+        "goldAllFive": 1295000,
+        "paperEach": 129000
+      }
+    ],
+    "result": [
+      {
+        "chapter": 20,
+        "name": "purple60",
+        "quality": 40,
+        "level": 60,
+        "labLevel": 10,
+        "talentCount": 50,
+        "aceCount": 0,
+        "attack": 3152.6000000000004,
+        "hp": 23154,
+        "cost": {
+          "gold": 2605000,
+          "talentGold": 1180000,
+          "gearGold": 885000,
+          "labGold": 540000,
+          "gearPaper": {
+            "105": 7330,
+            "106": 7330,
+            "107": 7330,
+            "108": 7330,
+            "109": 7330
+          },
+          "labPaper": {
+            "801": 540,
+            "802": 540,
+            "803": 540,
+            "804": 540,
+            "805": 540,
+            "806": 540,
+            "807": 540,
+            "808": 540,
+            "809": 540,
+            "810": 540
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 3
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 3.25625,
+              "gearPaper": 9.1625,
+              "labPaper": 3.375,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 9.1625,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.8607142857142858,
+              "gearPaper": 5.235714285714286,
+              "labPaper": 1.9285714285714286,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.4472222222222222,
+              "gearPaper": 4.072222222222222,
+              "labPaper": 1.5,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 20,
+        "name": "purple80",
+        "quality": 41,
+        "level": 80,
+        "labLevel": 15,
+        "talentCount": 80,
+        "aceCount": 0,
+        "attack": 4776.200000000001,
+        "hp": 33858,
+        "cost": {
+          "gold": 6879000,
+          "talentGold": 3509000,
+          "gearGold": 1580000,
+          "labGold": 1790000,
+          "gearPaper": {
+            "105": 26830,
+            "106": 26830,
+            "107": 26830,
+            "108": 26830,
+            "109": 26830
+          },
+          "labPaper": {
+            "801": 1790,
+            "802": 1790,
+            "803": 1790,
+            "804": 1790,
+            "805": 1790,
+            "806": 1790,
+            "807": 1790,
+            "808": 1790,
+            "809": 1790,
+            "810": 1790
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 5
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 8.59875,
+              "gearPaper": 33.5375,
+              "labPaper": 11.1875,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 33.5375,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 4.913571428571428,
+              "gearPaper": 19.164285714285715,
+              "labPaper": 6.392857142857143,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 19.164285714285715,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 3.8216666666666668,
+              "gearPaper": 14.905555555555555,
+              "labPaper": 4.972222222222222,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 14.905555555555555,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 20,
+        "name": "orange100",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 20,
+        "talentCount": 100,
+        "aceCount": 0,
+        "attack": 7601.000000000001,
+        "hp": 54090,
+        "cost": {
+          "gold": 13774000,
+          "talentGold": 6859000,
+          "gearGold": 2475000,
+          "labGold": 4440000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 4440,
+            "802": 4440,
+            "803": 4440,
+            "804": 4440,
+            "805": 4440,
+            "806": 4440,
+            "807": 4440,
+            "808": 4440,
+            "809": 4440,
+            "810": 4440
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 6
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 17.2175,
+              "gearPaper": 94.7875,
+              "labPaper": 27.75,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 94.7875,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 9.838571428571429,
+              "gearPaper": 54.16428571428571,
+              "labPaper": 15.857142857142858,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 54.16428571428571,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 7.652222222222222,
+              "gearPaper": 42.12777777777778,
+              "labPaper": 12.333333333333334,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 42.12777777777778,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 20,
+        "name": "orange100lab30ace30",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 10764,
+        "hp": 75768,
+        "cost": {
+          "gold": 76724000,
+          "talentGold": 53609000,
+          "gearGold": 2475000,
+          "labGold": 20640000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 95.905,
+              "gearPaper": 94.7875,
+              "labPaper": 129,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 129,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 54.80285714285714,
+              "gearPaper": 54.16428571428571,
+              "labPaper": 73.71428571428571,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 73.71428571428571,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 42.62444444444444,
+              "gearPaper": 42.12777777777778,
+              "labPaper": 57.333333333333336,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 57.333333333333336,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 20,
+        "name": "orange120ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 25,
+        "talentCount": 150,
+        "aceCount": 30,
+        "attack": 11502.3,
+        "hp": 90034.92000000001,
+        "cost": {
+          "gold": 37294000,
+          "talentGold": 23984000,
+          "gearGold": 3570000,
+          "labGold": 9740000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 9740,
+            "802": 9740,
+            "803": 9740,
+            "804": 9740,
+            "805": 9740,
+            "806": 9740,
+            "807": 9740,
+            "808": 9740,
+            "809": 9740,
+            "810": 9740
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 10
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 46.6175,
+              "gearPaper": 206.0375,
+              "labPaper": 60.875,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 206.0375,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 26.638571428571428,
+              "gearPaper": 117.73571428571428,
+              "labPaper": 34.785714285714285,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 117.73571428571428,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 20.718888888888888,
+              "gearPaper": 91.57222222222222,
+              "labPaper": 27.055555555555557,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 91.57222222222222,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 20,
+        "name": "orange120lab30ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 12962.4,
+        "hp": 94234.56000000001,
+        "cost": {
+          "gold": 77819000,
+          "talentGold": 53609000,
+          "gearGold": 3570000,
+          "labGold": 20640000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 97.27375,
+              "gearPaper": 206.0375,
+              "labPaper": 129,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 206.0375,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 55.585,
+              "gearPaper": 117.73571428571428,
+              "labPaper": 73.71428571428571,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 117.73571428571428,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 43.23277777777778,
+              "gearPaper": 91.57222222222222,
+              "labPaper": 57.333333333333336,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 91.57222222222222,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 20,
+        "name": "red140",
+        "quality": 60,
+        "level": 140,
+        "labLevel": 30,
+        "talentCount": 300,
+        "aceCount": 0,
+        "attack": 18183,
+        "hp": 135090,
+        "cost": {
+          "gold": 175864000,
+          "talentGold": 150359000,
+          "gearGold": 4865000,
+          "labGold": 20640000,
+          "gearPaper": {
+            "105": 293830,
+            "106": 293830,
+            "107": 293830,
+            "108": 293830,
+            "109": 293830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 20
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 800000,
+              "gearEach": 800,
+              "labEach": 160,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 219.83,
+              "gearPaper": 367.2875,
+              "labPaper": 129,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 367.2875,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1400000,
+              "gearEach": 1400,
+              "labEach": 280,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 125.61714285714285,
+              "gearPaper": 209.87857142857143,
+              "labPaper": 73.71428571428571,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 209.87857142857143,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 1800000,
+              "gearEach": 1800,
+              "labEach": 360,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 97.70222222222222,
+              "gearPaper": 163.23888888888888,
+              "labPaper": 57.333333333333336,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 163.23888888888888,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "purple60",
+        "quality": 40,
+        "level": 60,
+        "labLevel": 10,
+        "talentCount": 50,
+        "aceCount": 0,
+        "attack": 3152.6000000000004,
+        "hp": 23154,
+        "cost": {
+          "gold": 2605000,
+          "talentGold": 1180000,
+          "gearGold": 885000,
+          "labGold": 540000,
+          "gearPaper": {
+            "105": 7330,
+            "106": 7330,
+            "107": 7330,
+            "108": 7330,
+            "109": 7330
+          },
+          "labPaper": {
+            "801": 540,
+            "802": 540,
+            "803": 540,
+            "804": 540,
+            "805": 540,
+            "806": 540,
+            "807": 540,
+            "808": 540,
+            "809": 540,
+            "810": 540
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 3
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.325892857142857,
+              "gearPaper": 5.873397435897436,
+              "labPaper": 1.875,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.3290816326530612,
+              "gearPaper": 3.3562271062271063,
+              "labPaper": 1.0714285714285714,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.0337301587301588,
+              "gearPaper": 2.6103988603988606,
+              "labPaper": 0.8333333333333334,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "purple80",
+        "quality": 41,
+        "level": 80,
+        "labLevel": 15,
+        "talentCount": 80,
+        "aceCount": 0,
+        "attack": 4776.200000000001,
+        "hp": 33858,
+        "cost": {
+          "gold": 6879000,
+          "talentGold": 3509000,
+          "gearGold": 1580000,
+          "labGold": 1790000,
+          "gearPaper": {
+            "105": 26830,
+            "106": 26830,
+            "107": 26830,
+            "108": 26830,
+            "109": 26830
+          },
+          "labPaper": {
+            "801": 1790,
+            "802": 1790,
+            "803": 1790,
+            "804": 1790,
+            "805": 1790,
+            "806": 1790,
+            "807": 1790,
+            "808": 1790,
+            "809": 1790,
+            "810": 1790
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 5
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 6.141964285714286,
+              "gearPaper": 21.498397435897434,
+              "labPaper": 6.215277777777778,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 21.498397435897434,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 3.5096938775510202,
+              "gearPaper": 12.284798534798535,
+              "labPaper": 3.5515873015873014,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 12.284798534798535,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.729761904761905,
+              "gearPaper": 9.554843304843304,
+              "labPaper": 2.7623456790123457,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 9.554843304843304,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "orange100",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 20,
+        "talentCount": 100,
+        "aceCount": 0,
+        "attack": 7601.000000000001,
+        "hp": 54090,
+        "cost": {
+          "gold": 13774000,
+          "talentGold": 6859000,
+          "gearGold": 2475000,
+          "labGold": 4440000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 4440,
+            "802": 4440,
+            "803": 4440,
+            "804": 4440,
+            "805": 4440,
+            "806": 4440,
+            "807": 4440,
+            "808": 4440,
+            "809": 4440,
+            "810": 4440
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 6
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 12.298214285714286,
+              "gearPaper": 60.76121794871795,
+              "labPaper": 15.416666666666666,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 60.76121794871795,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 7.027551020408163,
+              "gearPaper": 34.72069597069597,
+              "labPaper": 8.80952380952381,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 34.72069597069597,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 5.465873015873016,
+              "gearPaper": 27.004985754985753,
+              "labPaper": 6.851851851851852,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 27.004985754985753,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "orange100lab30ace30",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 10764,
+        "hp": 75768,
+        "cost": {
+          "gold": 76724000,
+          "talentGold": 53609000,
+          "gearGold": 2475000,
+          "labGold": 20640000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 68.50357142857143,
+              "gearPaper": 60.76121794871795,
+              "labPaper": 71.66666666666667,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 71.66666666666667,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 39.14489795918367,
+              "gearPaper": 34.72069597069597,
+              "labPaper": 40.95238095238095,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 40.95238095238095,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 30.446031746031746,
+              "gearPaper": 27.004985754985753,
+              "labPaper": 31.85185185185185,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 31.85185185185185,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "orange120ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 25,
+        "talentCount": 150,
+        "aceCount": 30,
+        "attack": 11502.3,
+        "hp": 90034.92000000001,
+        "cost": {
+          "gold": 37294000,
+          "talentGold": 23984000,
+          "gearGold": 3570000,
+          "labGold": 9740000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 9740,
+            "802": 9740,
+            "803": 9740,
+            "804": 9740,
+            "805": 9740,
+            "806": 9740,
+            "807": 9740,
+            "808": 9740,
+            "809": 9740,
+            "810": 9740
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 10
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 33.29821428571429,
+              "gearPaper": 132.07532051282053,
+              "labPaper": 33.81944444444444,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 132.07532051282053,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 19.027551020408165,
+              "gearPaper": 75.47161172161172,
+              "labPaper": 19.325396825396826,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 75.47161172161172,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 14.799206349206349,
+              "gearPaper": 58.70014245014245,
+              "labPaper": 15.030864197530864,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 58.70014245014245,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "orange120lab30ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 12962.4,
+        "hp": 94234.56000000001,
+        "cost": {
+          "gold": 77819000,
+          "talentGold": 53609000,
+          "gearGold": 3570000,
+          "labGold": 20640000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 69.48125,
+              "gearPaper": 132.07532051282053,
+              "labPaper": 71.66666666666667,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 132.07532051282053,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 39.70357142857143,
+              "gearPaper": 75.47161172161172,
+              "labPaper": 40.95238095238095,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 75.47161172161172,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 30.880555555555556,
+              "gearPaper": 58.70014245014245,
+              "labPaper": 31.85185185185185,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 58.70014245014245,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 24,
+        "name": "red140",
+        "quality": 60,
+        "level": 140,
+        "labLevel": 30,
+        "talentCount": 300,
+        "aceCount": 0,
+        "attack": 18183,
+        "hp": 135090,
+        "cost": {
+          "gold": 175864000,
+          "talentGold": 150359000,
+          "gearGold": 4865000,
+          "labGold": 20640000,
+          "gearPaper": {
+            "105": 293830,
+            "106": 293830,
+            "107": 293830,
+            "108": 293830,
+            "109": 293830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 20
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1120000,
+              "gearEach": 1248,
+              "labEach": 288,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 157.02142857142857,
+              "gearPaper": 235.44070512820514,
+              "labPaper": 71.66666666666667,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 235.44070512820514,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 1960000,
+              "gearEach": 2184,
+              "labEach": 504,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 89.7265306122449,
+              "gearPaper": 134.53754578754578,
+              "labPaper": 40.95238095238095,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 134.53754578754578,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2520000,
+              "gearEach": 2808,
+              "labEach": 648,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 69.78730158730158,
+              "gearPaper": 104.6403133903134,
+              "labPaper": 31.85185185185185,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 104.6403133903134,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "purple60",
+        "quality": 40,
+        "level": 60,
+        "labLevel": 10,
+        "talentCount": 50,
+        "aceCount": 0,
+        "attack": 3251.6000000000004,
+        "hp": 23694,
+        "cost": {
+          "gold": 2659000,
+          "talentGold": 1180000,
+          "gearGold": 885000,
+          "labGold": 594000,
+          "gearPaper": {
+            "105": 7330,
+            "106": 7330,
+            "107": 7330,
+            "108": 7330,
+            "109": 7330
+          },
+          "labPaper": {
+            "801": 540,
+            "802": 540,
+            "803": 540,
+            "804": 540,
+            "805": 540,
+            "806": 540,
+            "807": 540,
+            "808": 540,
+            "809": 540,
+            "810": 540,
+            "811": 540
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 3
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.2158333333333333,
+              "gearPaper": 5.389705882352941,
+              "labPaper": 1.6875,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.266190476190476,
+              "gearPaper": 3.0798319327731094,
+              "labPaper": 0.9642857142857143,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 0.9848148148148148,
+              "gearPaper": 2.395424836601307,
+              "labPaper": 0.75,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "purple80",
+        "quality": 41,
+        "level": 80,
+        "labLevel": 15,
+        "talentCount": 80,
+        "aceCount": 0,
+        "attack": 4930.200000000001,
+        "hp": 34698,
+        "cost": {
+          "gold": 7058000,
+          "talentGold": 3509000,
+          "gearGold": 1580000,
+          "labGold": 1969000,
+          "gearPaper": {
+            "105": 26830,
+            "106": 26830,
+            "107": 26830,
+            "108": 26830,
+            "109": 26830
+          },
+          "labPaper": {
+            "801": 1790,
+            "802": 1790,
+            "803": 1790,
+            "804": 1790,
+            "805": 1790,
+            "806": 1790,
+            "807": 1790,
+            "808": 1790,
+            "809": 1790,
+            "810": 1790,
+            "811": 1790
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 5
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 5.881666666666667,
+              "gearPaper": 19.727941176470587,
+              "labPaper": 5.59375,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 19.727941176470587,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 3.360952380952381,
+              "gearPaper": 11.27310924369748,
+              "labPaper": 3.1964285714285716,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 11.27310924369748,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.614074074074074,
+              "gearPaper": 8.767973856209151,
+              "labPaper": 2.486111111111111,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 8.767973856209151,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "orange100",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 20,
+        "talentCount": 100,
+        "aceCount": 0,
+        "attack": 7810.000000000001,
+        "hp": 55230,
+        "cost": {
+          "gold": 14218000,
+          "talentGold": 6859000,
+          "gearGold": 2475000,
+          "labGold": 4884000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 4440,
+            "802": 4440,
+            "803": 4440,
+            "804": 4440,
+            "805": 4440,
+            "806": 4440,
+            "807": 4440,
+            "808": 4440,
+            "809": 4440,
+            "810": 4440,
+            "811": 4440
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 6
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 11.848333333333333,
+              "gearPaper": 55.75735294117647,
+              "labPaper": 13.875,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 55.75735294117647,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 6.770476190476191,
+              "gearPaper": 31.861344537815125,
+              "labPaper": 7.928571428571429,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 31.861344537815125,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 5.265925925925926,
+              "gearPaper": 24.781045751633986,
+              "labPaper": 6.166666666666667,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 24.781045751633986,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "orange100lab30ace30",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 11112,
+        "hp": 77716.8,
+        "cost": {
+          "gold": 78788000,
+          "talentGold": 53609000,
+          "gearGold": 2475000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 65.65666666666667,
+              "gearPaper": 55.75735294117647,
+              "labPaper": 64.5,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 65.65666666666667,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 37.518095238095235,
+              "gearPaper": 31.861344537815125,
+              "labPaper": 36.857142857142854,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 37.518095238095235,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 29.18074074074074,
+              "gearPaper": 24.781045751633986,
+              "labPaper": 28.666666666666668,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 29.18074074074074,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "orange120ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 25,
+        "talentCount": 150,
+        "aceCount": 30,
+        "attack": 11778.3,
+        "hp": 91676.52,
+        "cost": {
+          "gold": 38268000,
+          "talentGold": 23984000,
+          "gearGold": 3570000,
+          "labGold": 10714000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 9740,
+            "802": 9740,
+            "803": 9740,
+            "804": 9740,
+            "805": 9740,
+            "806": 9740,
+            "807": 9740,
+            "808": 9740,
+            "809": 9740,
+            "810": 9740,
+            "811": 9740
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 10
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 31.89,
+              "gearPaper": 121.19852941176471,
+              "labPaper": 30.4375,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 121.19852941176471,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 18.222857142857144,
+              "gearPaper": 69.25630252100841,
+              "labPaper": 17.392857142857142,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 69.25630252100841,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 14.173333333333334,
+              "gearPaper": 53.86601307189542,
+              "labPaper": 13.527777777777779,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 53.86601307189542,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "orange120lab30ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 13310.4,
+        "hp": 96183.36000000002,
+        "cost": {
+          "gold": 79883000,
+          "talentGold": 53609000,
+          "gearGold": 3570000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 66.56916666666666,
+              "gearPaper": 121.19852941176471,
+              "labPaper": 64.5,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 121.19852941176471,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 38.03952380952381,
+              "gearPaper": 69.25630252100841,
+              "labPaper": 36.857142857142854,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 69.25630252100841,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 29.586296296296297,
+              "gearPaper": 53.86601307189542,
+              "labPaper": 28.666666666666668,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 53.86601307189542,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 25,
+        "name": "red140",
+        "quality": 60,
+        "level": 140,
+        "labLevel": 30,
+        "talentCount": 300,
+        "aceCount": 0,
+        "attack": 18502,
+        "hp": 136830,
+        "cost": {
+          "gold": 177928000,
+          "talentGold": 150359000,
+          "gearGold": 4865000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 293830,
+            "106": 293830,
+            "107": 293830,
+            "108": 293830,
+            "109": 293830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 20
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1200000,
+              "gearEach": 1360,
+              "labEach": 320,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 148.27333333333334,
+              "gearPaper": 216.0514705882353,
+              "labPaper": 64.5,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 216.0514705882353,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2100000,
+              "gearEach": 2380,
+              "labEach": 560,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 84.72761904761904,
+              "gearPaper": 123.45798319327731,
+              "labPaper": 36.857142857142854,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 123.45798319327731,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 2700000,
+              "gearEach": 3060,
+              "labEach": 720,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 65.89925925925925,
+              "gearPaper": 96.02287581699346,
+              "labPaper": 28.666666666666668,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 96.02287581699346,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "purple60",
+        "quality": 40,
+        "level": 60,
+        "labLevel": 10,
+        "talentCount": 50,
+        "aceCount": 0,
+        "attack": 3251.6000000000004,
+        "hp": 23694,
+        "cost": {
+          "gold": 2659000,
+          "talentGold": 1180000,
+          "gearGold": 885000,
+          "labGold": 594000,
+          "gearPaper": {
+            "105": 7330,
+            "106": 7330,
+            "107": 7330,
+            "108": 7330,
+            "109": 7330
+          },
+          "labPaper": {
+            "801": 540,
+            "802": 540,
+            "803": 540,
+            "804": 540,
+            "805": 540,
+            "806": 540,
+            "807": 540,
+            "808": 540,
+            "809": 540,
+            "810": 540,
+            "811": 540
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 3
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.749342105263158,
+              "gearPaper": 4.054203539823009,
+              "labPaper": 1.2053571428571428,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 0.999624060150376,
+              "gearPaper": 2.316687737041719,
+              "labPaper": 0.6887755102040817,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 0.7774853801169591,
+              "gearPaper": 1.8018682399213373,
+              "labPaper": 0.5357142857142857,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "purple80",
+        "quality": 41,
+        "level": 80,
+        "labLevel": 15,
+        "talentCount": 80,
+        "aceCount": 0,
+        "attack": 4930.200000000001,
+        "hp": 34698,
+        "cost": {
+          "gold": 7058000,
+          "talentGold": 3509000,
+          "gearGold": 1580000,
+          "labGold": 1969000,
+          "gearPaper": {
+            "105": 26830,
+            "106": 26830,
+            "107": 26830,
+            "108": 26830,
+            "109": 26830
+          },
+          "labPaper": {
+            "801": 1790,
+            "802": 1790,
+            "803": 1790,
+            "804": 1790,
+            "805": 1790,
+            "806": 1790,
+            "807": 1790,
+            "808": 1790,
+            "809": 1790,
+            "810": 1790,
+            "811": 1790
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 5
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 4.643421052631579,
+              "gearPaper": 14.839601769911505,
+              "labPaper": 3.9955357142857144,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 14.839601769911505,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.6533834586466165,
+              "gearPaper": 8.47977243994943,
+              "labPaper": 2.2831632653061225,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 8.47977243994943,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.0637426900584797,
+              "gearPaper": 6.595378564405113,
+              "labPaper": 1.7757936507936507,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "orange100",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 20,
+        "talentCount": 100,
+        "aceCount": 0,
+        "attack": 7810.000000000001,
+        "hp": 55230,
+        "cost": {
+          "gold": 14218000,
+          "talentGold": 6859000,
+          "gearGold": 2475000,
+          "labGold": 4884000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 4440,
+            "802": 4440,
+            "803": 4440,
+            "804": 4440,
+            "805": 4440,
+            "806": 4440,
+            "807": 4440,
+            "808": 4440,
+            "809": 4440,
+            "810": 4440,
+            "811": 4440
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 6
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 9.353947368421053,
+              "gearPaper": 41.94137168141593,
+              "labPaper": 9.910714285714286,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 41.94137168141593,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 5.345112781954887,
+              "gearPaper": 23.966498103666247,
+              "labPaper": 5.663265306122449,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 23.966498103666247,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 4.1573099415204675,
+              "gearPaper": 18.64060963618486,
+              "labPaper": 4.404761904761905,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 18.64060963618486,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "orange100lab30ace30",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 11112,
+        "hp": 77716.8,
+        "cost": {
+          "gold": 78788000,
+          "talentGold": 53609000,
+          "gearGold": 2475000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 51.834210526315786,
+              "gearPaper": 41.94137168141593,
+              "labPaper": 46.07142857142857,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 51.834210526315786,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 29.619548872180452,
+              "gearPaper": 23.966498103666247,
+              "labPaper": 26.3265306122449,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 29.619548872180452,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 23.037426900584794,
+              "gearPaper": 18.64060963618486,
+              "labPaper": 20.476190476190474,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 23.037426900584794,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "orange120ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 25,
+        "talentCount": 150,
+        "aceCount": 30,
+        "attack": 11778.3,
+        "hp": 91676.52,
+        "cost": {
+          "gold": 38268000,
+          "talentGold": 23984000,
+          "gearGold": 3570000,
+          "labGold": 10714000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 9740,
+            "802": 9740,
+            "803": 9740,
+            "804": 9740,
+            "805": 9740,
+            "806": 9740,
+            "807": 9740,
+            "808": 9740,
+            "809": 9740,
+            "810": 9740,
+            "811": 9740
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 10
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 25.176315789473684,
+              "gearPaper": 91.16703539823008,
+              "labPaper": 21.741071428571427,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 91.16703539823008,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 14.386466165413534,
+              "gearPaper": 52.09544879898862,
+              "labPaper": 12.423469387755102,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 52.09544879898862,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 11.189473684210526,
+              "gearPaper": 40.518682399213375,
+              "labPaper": 9.662698412698413,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 40.518682399213375,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "orange120lab30ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 13310.4,
+        "hp": 96183.36000000002,
+        "cost": {
+          "gold": 79883000,
+          "talentGold": 53609000,
+          "gearGold": 3570000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 52.554605263157896,
+              "gearPaper": 91.16703539823008,
+              "labPaper": 46.07142857142857,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 91.16703539823008,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 30.031203007518798,
+              "gearPaper": 52.09544879898862,
+              "labPaper": 26.3265306122449,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 52.09544879898862,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 23.357602339181287,
+              "gearPaper": 40.518682399213375,
+              "labPaper": 20.476190476190474,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 40.518682399213375,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 29,
+        "name": "red140",
+        "quality": 60,
+        "level": 140,
+        "labLevel": 30,
+        "talentCount": 300,
+        "aceCount": 0,
+        "attack": 18502,
+        "hp": 136830,
+        "cost": {
+          "gold": 177928000,
+          "talentGold": 150359000,
+          "gearGold": 4865000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 293830,
+            "106": 293830,
+            "107": 293830,
+            "108": 293830,
+            "109": 293830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 20
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1520000,
+              "gearEach": 1808,
+              "labEach": 448,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 117.0578947368421,
+              "gearPaper": 162.516592920354,
+              "labPaper": 46.07142857142857,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 162.516592920354,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2660000,
+              "gearEach": 3164,
+              "labEach": 784,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 66.89022556390978,
+              "gearPaper": 92.86662452591656,
+              "labPaper": 26.3265306122449,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 92.86662452591656,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3420000,
+              "gearEach": 4068,
+              "labEach": 1008,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 52.02573099415205,
+              "gearPaper": 72.22959685349066,
+              "labPaper": 20.476190476190474,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 72.22959685349066,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "purple60",
+        "quality": 40,
+        "level": 60,
+        "labLevel": 10,
+        "talentCount": 50,
+        "aceCount": 0,
+        "attack": 3251.6000000000004,
+        "hp": 23694,
+        "cost": {
+          "gold": 2659000,
+          "talentGold": 1180000,
+          "gearGold": 885000,
+          "labGold": 594000,
+          "gearPaper": {
+            "105": 7330,
+            "106": 7330,
+            "107": 7330,
+            "108": 7330,
+            "109": 7330
+          },
+          "labPaper": {
+            "801": 540,
+            "802": 540,
+            "803": 540,
+            "804": 540,
+            "805": 540,
+            "806": 540,
+            "807": 540,
+            "808": 540,
+            "809": 540,
+            "810": 540,
+            "811": 540
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 3
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.661875,
+              "gearPaper": 3.8177083333333335,
+              "labPaper": 1.125,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 0.9496428571428571,
+              "gearPaper": 2.181547619047619,
+              "labPaper": 0.6428571428571429,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 0.7386111111111111,
+              "gearPaper": 1.6967592592592593,
+              "labPaper": 0.5,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "purple80",
+        "quality": 41,
+        "level": 80,
+        "labLevel": 15,
+        "talentCount": 80,
+        "aceCount": 0,
+        "attack": 4930.200000000001,
+        "hp": 34698,
+        "cost": {
+          "gold": 7058000,
+          "talentGold": 3509000,
+          "gearGold": 1580000,
+          "labGold": 1969000,
+          "gearPaper": {
+            "105": 26830,
+            "106": 26830,
+            "107": 26830,
+            "108": 26830,
+            "109": 26830
+          },
+          "labPaper": {
+            "801": 1790,
+            "802": 1790,
+            "803": 1790,
+            "804": 1790,
+            "805": 1790,
+            "806": 1790,
+            "807": 1790,
+            "808": 1790,
+            "809": 1790,
+            "810": 1790,
+            "811": 1790
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 5
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 4.41125,
+              "gearPaper": 13.973958333333334,
+              "labPaper": 3.7291666666666665,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 13.973958333333334,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 2.520714285714286,
+              "gearPaper": 7.9851190476190474,
+              "labPaper": 2.130952380952381,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7.9851190476190474,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 1.9605555555555556,
+              "gearPaper": 6.210648148148148,
+              "labPaper": 1.6574074074074074,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 7,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "orange100",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 20,
+        "talentCount": 100,
+        "aceCount": 0,
+        "attack": 7810.000000000001,
+        "hp": 55230,
+        "cost": {
+          "gold": 14218000,
+          "talentGold": 6859000,
+          "gearGold": 2475000,
+          "labGold": 4884000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 4440,
+            "802": 4440,
+            "803": 4440,
+            "804": 4440,
+            "805": 4440,
+            "806": 4440,
+            "807": 4440,
+            "808": 4440,
+            "809": 4440,
+            "810": 4440,
+            "811": 4440
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 6
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 8.88625,
+              "gearPaper": 39.494791666666664,
+              "labPaper": 9.25,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 39.494791666666664,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 5.077857142857143,
+              "gearPaper": 22.56845238095238,
+              "labPaper": 5.285714285714286,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 22.56845238095238,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 3.9494444444444445,
+              "gearPaper": 17.55324074074074,
+              "labPaper": 4.111111111111111,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 17.55324074074074,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "orange100lab30ace30",
+        "quality": 50,
+        "level": 100,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 11112,
+        "hp": 77716.8,
+        "cost": {
+          "gold": 78788000,
+          "talentGold": 53609000,
+          "gearGold": 2475000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 75830,
+            "106": 75830,
+            "107": 75830,
+            "108": 75830,
+            "109": 75830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 49.2425,
+              "gearPaper": 39.494791666666664,
+              "labPaper": 43,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 49.2425,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 28.138571428571428,
+              "gearPaper": 22.56845238095238,
+              "labPaper": 24.571428571428573,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 28.138571428571428,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 21.885555555555555,
+              "gearPaper": 17.55324074074074,
+              "labPaper": 19.11111111111111,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 21.885555555555555,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "orange120ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 25,
+        "talentCount": 150,
+        "aceCount": 30,
+        "attack": 11778.3,
+        "hp": 91676.52,
+        "cost": {
+          "gold": 38268000,
+          "talentGold": 23984000,
+          "gearGold": 3570000,
+          "labGold": 10714000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 9740,
+            "802": 9740,
+            "803": 9740,
+            "804": 9740,
+            "805": 9740,
+            "806": 9740,
+            "807": 9740,
+            "808": 9740,
+            "809": 9740,
+            "810": 9740,
+            "811": 9740
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 10
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 23.9175,
+              "gearPaper": 85.84895833333333,
+              "labPaper": 20.291666666666668,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 85.84895833333333,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 13.667142857142856,
+              "gearPaper": 49.05654761904762,
+              "labPaper": 11.595238095238095,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 49.05654761904762,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 10.63,
+              "gearPaper": 38.155092592592595,
+              "labPaper": 9.018518518518519,
+              "gunCards": 7,
+              "aceCores": 20
+            },
+            "daysBeforeEquipmentBodies": 38.155092592592595,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "orange120lab30ace30",
+        "quality": 51,
+        "level": 120,
+        "labLevel": 30,
+        "talentCount": 200,
+        "aceCount": 30,
+        "attack": 13310.4,
+        "hp": 96183.36000000002,
+        "cost": {
+          "gold": 79883000,
+          "talentGold": 53609000,
+          "gearGold": 3570000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 164830,
+            "106": 164830,
+            "107": 164830,
+            "108": 164830,
+            "109": 164830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 30,
+          "normalCoresEarned": 13
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 49.926875,
+              "gearPaper": 85.84895833333333,
+              "labPaper": 43,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 85.84895833333333,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 28.529642857142857,
+              "gearPaper": 49.05654761904762,
+              "labPaper": 24.571428571428573,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 49.05654761904762,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 22.189722222222223,
+              "gearPaper": 38.155092592592595,
+              "labPaper": 19.11111111111111,
+              "gunCards": 7,
+              "aceCores": 17
+            },
+            "daysBeforeEquipmentBodies": 38.155092592592595,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      },
+      {
+        "chapter": 30,
+        "name": "red140",
+        "quality": 60,
+        "level": 140,
+        "labLevel": 30,
+        "talentCount": 300,
+        "aceCount": 0,
+        "attack": 18502,
+        "hp": 136830,
+        "cost": {
+          "gold": 177928000,
+          "talentGold": 150359000,
+          "gearGold": 4865000,
+          "labGold": 22704000,
+          "gearPaper": {
+            "105": 293830,
+            "106": 293830,
+            "107": 293830,
+            "108": 293830,
+            "109": 293830
+          },
+          "labPaper": {
+            "801": 20640,
+            "802": 20640,
+            "803": 20640,
+            "804": 20640,
+            "805": 20640,
+            "806": 20640,
+            "807": 20640,
+            "808": 20640,
+            "809": 20640,
+            "810": 20640,
+            "811": 20640
+          },
+          "gunCards": 7,
+          "planeCards": 0,
+          "aceCores": 0,
+          "normalCoresEarned": 20
+        },
+        "scenarios": [
+          {
+            "hours": 8,
+            "daily": {
+              "gold": 1600000,
+              "gearEach": 1920,
+              "labEach": 480,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 111.205,
+              "gearPaper": 153.03645833333334,
+              "labPaper": 43,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 153.03645833333334,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 14,
+            "daily": {
+              "gold": 2800000,
+              "gearEach": 3360,
+              "labEach": 840,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 63.54571428571428,
+              "gearPaper": 87.44940476190476,
+              "labPaper": 24.571428571428573,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 87.44940476190476,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          },
+          {
+            "hours": 18,
+            "daily": {
+              "gold": 3600000,
+              "gearEach": 4320,
+              "labEach": 1080,
+              "gunCards": 1,
+              "aceCores": 1
+            },
+            "waits": {
+              "gold": 49.42444444444445,
+              "gearPaper": 68.01620370370371,
+              "labPaper": 19.11111111111111,
+              "gunCards": 7,
+              "aceCores": 0
+            },
+            "daysBeforeEquipmentBodies": 68.01620370370371,
+            "note": "normal daily core is1 while chapter30 remains uncleared; normal draw cores credited; weekly and one-off cores excluded"
+          }
+        ]
+      }
+    ]
+  },
+  "frozenCurrentEquivalence": {
+    "loadoutChecks": 36,
+    "exactEqual": true,
+    "comparison": "Function statements equal after documented esbuild-local variable renames;36 calculated entries, costs and native progression states exactly equal",
+    "functions": {
+      "Simulation": {
+        "before": "c979700ad97bb7b43f7df7dd5b1f4771802bf61a4e065efc54190445ea5c3a1b",
+        "after": "c979700ad97bb7b43f7df7dd5b1f4771802bf61a4e065efc54190445ea5c3a1b",
+        "equal": true
+      },
+      "calculateStudyLoadout": {
+        "before": "fd04cae0b75757317d2db03fd9baf62e9d60c54963737772ab40b20d66eb4b78",
+        "after": "fd04cae0b75757317d2db03fd9baf62e9d60c54963737772ab40b20d66eb4b78",
+        "equal": true
+      },
+      "applyStudyLoadout": {
+        "before": "fda924da31d200a0f7007b03507ee33e5fea83b442ce8d0ce315c14f6ef78a13",
+        "after": "fda924da31d200a0f7007b03507ee33e5fea83b442ce8d0ce315c14f6ef78a13",
+        "equal": true
+      },
+      "planNativeResearch": {
+        "before": "760982545fbbe458a2b2403d629475ed1954dc4cc3a1d54e4c745e5fa5c89e19",
+        "after": "760982545fbbe458a2b2403d629475ed1954dc4cc3a1d54e4c745e5fa5c89e19",
+        "equal": true
+      }
+    }
+  },
+  "newDefectsFound": 0,
+  "productionNumbersChanged": false,
+  "newRegressionTests": 5,
+  "regressionTestsPassed": 72,
+  "runtimeDataFiles": 41,
+  "runtimeDataVerified": true,
+  "limits": [
+    "Current offline compatibility income and box policy; not original server rates.",
+    "Fixed-phase zero-resource-stock arithmetic, not new-account arrival time or a day-by-day campaign simulation.",
+    "Other battle and one-time rewards, existing stock, patrol talent and weekly cores shorten the static estimates.",
+    "Scripted controller sees live combat objects and makes ten decisions per second; sample wins are not human win-rate measurements.",
+    "Individual play may lose or wait for materials. One chapter29 sample lost at the final boss.",
+    "Browser captures verify initialization, selection and rendering; complete clear evidence comes from the same production combat kernel."
+  ],
+  "report": "ordinary-growth-20261023.html",
+  "sourceHashes": {
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/drop-rewards.ts": "863845e0fbf42aba2f31d1cf7707be617ea8a6930990fd28401e72fb2b99bcd1",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/monster-abilities.json": "ca36c05bceb5c8294b46ce0ab04fbbcb35c15283f8d93b8910750125ee9f180c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/combat-attributes.ts": "f957dd8cea8a70818ba6117b7ff40d41e012a9621f49a82e1eada36b875dd83b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/monster-abilities.ts": "afe3f94f1fc68b98ee00cf6e7d58650fcd3c4ed78b08bc23abd40c2bebcf6e1b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/weapon-runtime-extensions.ts": "9fabcad184c6ba5c12f02bc99e632f97b2f9ab90eb9a233ce1e34fbd1db39301",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-missile.ts": "3c8f3539842a1657f6db28b889d307522eb115c8572de41e486771a2c5f2d4ea",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-drop-missile.ts": "3120403f301c453421572c082d137940a1be1a168a8737f385ee67ab1ad25147",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/enemy-attack-timing.json": "71440756b2e6d22bc9cd59c25a6b4ebfcf666ec92b32d1d70dbc34c8fb00a65b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/enemy-behavior-extensions.ts": "3471c082788af463da8aa150c04a80c1755f3542865d7bbbbd7e61c018dcd9c5",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/boss-behavior.json": "063445501c29a1ff9eed858b3ac0ffa874a2696ff2ebf28c2aac11816bc435c3",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/boss-logic.ts": "8c3f686d83686743d248bace231cb581f4f58957abd03090f6e72a5e1c3485be",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-salvo.ts": "89f41562a7494a73127b57d88f43d4ae1ca053b1a65044d40428f4ee6ae6792c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-back-death.ts": "448ad3ca7855f805724a59d40b5e29d115b7705fa7efacc7ccf05b93bac40a4a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-summons.ts": "6eec1905e921d56393b7c2fb9875f1c23456065cd7a13f557cc7f6a49a74dd83",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/enemy-ai.ts": "6794828ab2dc40e4c65ab68d2863c8d5be92bf23907ff056e698254a3681ad94",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-boss-behavior.ts": "cf957aa419204884c93b9863f95fd8b1145b23897f836d187936eaa9cf296c96",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-map-out-walls.ts": "69499ff0f871bb83c7128f96ff25b451b8773e53a264d1dfd33bcc4008a7178a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/chapter-death-traits.ts": "842314e8893d047d03cd5baf3dbc2b44e72c434807d17612885dd4ed4d0b98c0",
+    "D:/少女航线/yyyl/pixigame/replica-battle/chapter-suicide-traits.ts": "69b5bb9877d50aa0f31a7e8792539e7447f9be3755d57e8f24c7fba3a7544d85",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-orbit-weapon.ts": "a1cf3c1e370dd8d443674b80ed2aceaee49f4b8b223f303feda14820d20d979f",
+    "D:/少女航线/yyyl/pixigame/replica-battle/chapter-enemy-orbit.ts": "2776a81f4dd0c1b9a126fe305f31bd1dbbcf0127b8a12e994edf6cd93586a682",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/content-capabilities.ts": "f288e189bab317d464ca375aaee3271ebb2944e3e46de2840c5ed20a5da695ce",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-camera-projection.ts": "fa52c2a7b9e8dd1c3bfddc329aac93cbb725e5024fedbbd5617ad59cf2506f5b",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-research-runtime.json": "ecac20ae0eb1cf77ec09f66a1e9749382064d5e64907d4d2c607a64711c097d6",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-research-runtime.js": "6291c740ddd2314d4279e7553e5e5d05c8f1b2ae572e475042f45d372b754a86",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-resources.ts": "cb0fe989d204b390012731440080d3a00c94e82dfe45fd39780f927ba1d9b63c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/airdrop-source.json": "a59c4e30172b087ed68c1553cc676dc4ea11a8fd06900bc7e76b5f0b5770f253",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-airdrop-content.ts": "3d78bff639a33b7eb523117349e30842db6fd94bf3cbfa8c9cf11513970fe887",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-material-replacements.js": "8d621f2a2241701f04c005b6f02bb4215ff3d4455e94d792b62dd2fed85d7212",
+    "D:/少女航线/yyyl/pixigame/src/replica/local-economy-policy.js": "a370bfa9cea75508ab8aee76283431848b48fcd2b827c237a00d97034b966ded",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/content.ts": "ae9b9b5d10cac1571d25b91c44edd9901788c388b12df977264ba9d0e93a346f",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/model.ts": "674d77e24fec8617f0a41b4f63909644c722d96fb09ed4d2b5cba5e568d43108",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/drop-motion.ts": "49bba7baf0acb512c996c5c6e6eec390134454e0313c8e53af15c2e1fa24d1a7",
+    "D:/少女航线/yyyl/pixigame/replica-battle/elite-death-visual.js": "5d3ca968f2a2a2d4a30d22bea2be4a17cae7b017055597efccb1e5d7a6c8f66a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/boss-death-visual.js": "edbab024e6f02b8898323aae583b3e4ef69773cdabfcebc51109338abcb51ef7",
+    "D:/少女航线/yyyl/pixigame/replica-battle/small-death-visual.js": "864dd4d8bce31ccdb67c907e32cfb7f8b3413e44d24121ea442c6d06dae05cb5",
+    "D:/少女航线/yyyl/pixigame/replica-battle/weapon-visual-quality.js": "16f0759b9d6abdc62aa782b91b3bc446f53add6a49f064d76a149a6d899288ad",
+    "D:/少女航线/yyyl/pixigame/replica-battle/acid-weapon-visual.js": "2b8d5f35d38bf2acecc1ed220e9bae41da7c5aee37a1fdc3a1f829165d72ed8c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/black-hole-hit-visual.js": "e0c9bc74e47ec4f6c5205365f12743b1ceaeb6670100b643fb452286e6e52631",
+    "D:/少女航线/yyyl/pixigame/replica-battle/ice-saw-hit-visual.js": "8b34b95f9442fa01b8066837879571eceaf2f46a069481a0c9705fa2425e49bf",
+    "D:/少女航线/yyyl/pixigame/replica-battle/sword-hit-visual.js": "6ed4df84b59504f4a2f55be6972de4f59d852c2cf93dec984e6fab5c4d176c74",
+    "D:/少女航线/yyyl/pixigame/replica-battle/ice-weapon-visual.js": "2b99e6b3a5f0511561780a9bbbcc889886410ed1e7b9639f3288111e83cfb809",
+    "D:/少女航线/yyyl/pixigame/replica-battle/magnetic-weapon-visual.js": "8b71a2e918de9aa167363ccbfd037095c47abe67f0eedb9ccac6486fdcaec4a5",
+    "D:/少女航线/yyyl/pixigame/replica-battle/laser-weapon-visual.js": "669c5a03bc00f7f6428af17e90f545573b525b7aafb20498f761edf8e52ef43a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/scorch-weapon-visual.js": "c9cf302138b84a8f3861dcda241baf412c0ddadb5baf3f53ab4f253eca647e88",
+    "D:/少女航线/yyyl/pixigame/replica-battle/missile-weapon-visual.js": "718b074836abde48bc2172cfcab34169c99d4eadf0f2b986fb1a7d01bd4ba9c3",
+    "D:/少女航线/yyyl/pixigame/replica-battle/frost-burst-visual.js": "db670ba07ab274e55163173c33fe6972053fd5ba4ddce9723d6fe1c1a55b38cf",
+    "D:/少女航线/yyyl/pixigame/replica-battle/player-death-visual.js": "1f85299a37823defa4c0189d8338176efc1acbe888945e3ca448945f4690e54e",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-equipment-growth.ts": "c56bf7be75a13eb462d267f31a39f1aa259d74494f316641cb14e4bfa3039c3b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-equipment-weapon-effects.ts": "208383a21121255cf48af534a335aad58ec38730a422f02d28cc2b74bca9d891",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/critical-through.ts": "40d36095bf8e685afe33d5e4c37f81e7c8af9bb0306c5faa36d93600771858b9",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-prism.ts": "7b9a1894424ed5b57662226b4ecb2d1e9bb478456b3fd329f678a4e055ade9e5",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-research-source.json": "cb1943c15f3860a3bc7a27ed6c0020bee6295c3366e79fbcf9e85ec9eb4eb2f2",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/original-effects.ts": "f7a3a0cdab26f56b672b1089d99edbb7473520434e6ecfb9a0e6386a0b74dad0",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/chapter-enemy.ts": "c15dda90cf531e14107f52048687b27125d71961a8fa1d3d83da5cad3a1dc7ea",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/weapon-pattern.ts": "3ef666dfe2ccce77b1a5adb1ac3f93622b8a59b5c2d889f1a76a782070b5453c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/enemy-path.ts": "de92f9adbdab9b959310d9d59c0a7187f850a18f63a0d6fea484ca11c0b1e98b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/chapter-path-self-rotation.ts": "967da4a9e40fcdbaf9c3abba42dab83ba6ab8c4b5471db368a5dc88863b2f07d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/skill-selection.json": "b5db2ea63e5c6f60b6a55af34f53a448ec7a94b7483badc17bb9160d0637709d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/skill-choice.ts": "63bb1fd1180b2ceee3363d296f525609e85280f5b203ad458396844f5f8154c7",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/skill-eligibility.ts": "04842799668c452f3ad8360f6e897e60018dc6249fbbcd6af746af327ac3d269",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-enemy-rebound.ts": "6638fc2f53e214f4954df9598f6a83b9b5619fbf5f46703507d7ba1f9d374b72",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-wall-broadphase.ts": "acbf1372bdbc1b72ce32733f09fdea096937636182b960e9919bc593bf07b103",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-wall-query.ts": "b264b70be74be8622bfa9a9678cb454f62268ba0a6c92737593f5903c05beb0d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-scroll-camera.ts": "a243362e2e97eca7d50737916110bcf0b9e3b9a218e5d5e4e48b37efa3f2ecd4",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/projectile-curves.json": "998ffb036bba56cbafa9ee5878f836e3a7c601f44e093c5d70a7d776d003339d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/enemy-projectile.ts": "a521549363f8c9134262f525fd7520f430d673ace3329d60fa92e05f36d1a29c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/monster-skill-runtime.ts": "74d5dcdb3428bd46b0d1a74fa4ea530806de2c6891aacd18ab7341ea29c6af02",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/enemy-warning.ts": "f7aad5dbbaff6d165e785b80c29938507171440ad922d93a08e3f66a72d7583d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/chest-animation.json": "61a9392cd0bff7c18c88c7a2ce998aa830a09fbe1fcd4a199a033028aba3a2fb",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-battle-rules.json": "58c86f074d00034d0b2b82c8faef0d37a4e130e329bb0dc86f58c303ec7a8ae2",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-loadout-cooldowns.ts": "b53a0517c373daa870a38c346ef79fea5186a9bacfb0d03949ff81cca5f7c62d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-pending-bullet-attributes.ts": "939c3d3c1453bc5c297b9c44d42dc610fcb59aa44e2373ff055dd92e3ac135f3",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/weapon-skill-runtime.ts": "de0257c9391af5751fce349dc746ff53190fa1cf6a4bf99de8511229387dcfc8",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-attributes.ts": "1e92c15c6d3690c02dd7ce3eee867cfecf0aa9b209ccc61d753f721afb63167b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/damage-result.ts": "5123a2074a0ff3420a976c4f667aa27ca5483ec646d64053ec8ac156d523919e",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-special-actions.ts": "2968af3629853a080c6175f78ea951ca52231c00cc124b0809d2d4e41598d25e",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-projectile-mods.ts": "be2c2c6ef057fa50b28f84d69fc4045e8a64e19bf22c3f2cb00b9aab61deeb6b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/plane-special-actions.ts": "6a213f05bee1abbddc77fe5b880896d9ab43122afa6a749ddcbdd7ad7b8e1b28",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-hawk-missile.ts": "d5f2a545427f39ff26711c3d8954ffbcc4df83d988a7eb8b7945a956c3a618d8",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-next-fire-boost.ts": "8ad228f2ec81d500e664bc32bed09bd2619e5d7551492fcc0f9b23e589fc36f1",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-persistent-mod.ts": "1177100a4137c63f9a7d34354cc764815c5a23a988fff5e598085fca05cf670c",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-loadout-drops.ts": "3250b860001d6c71ff304b6fd982f953dbe2d3f1ddd70f5667e3c2d727158972",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-special-attributes.ts": "64489b0d179cedec932b8b4b54bd532f146a3a342ccd05bfa9d40e81675ce219",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-same-target-combo.ts": "67ab75f0e897d50735ba4a27ed4b577183392b5c81b64ec69eb3eba3d6b21c13",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-dependencies.ts": "974e3dcca9880fe4310df969e4bbf2bd241d47f42c3ae02fc85985ea6acffd47",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/special-skill-runtime.ts": "070062ae0ba60f1ebb236e7fe3b77b02229d7cb4b9519db9a1912321078a058b",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-loadout-time-scale.ts": "87b576c7a337d8ce2ae65f295f0b5d57e87ee37251bd37c4158d7197c7982ba4",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/status-effects.ts": "4702d643634cdb48a925a3314a06722a7329163d543234a20d79d640a19bd7db",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/explosion-rules.ts": "80419bce758e3d8470b5642b56ce4403a04af59daeba10cb8e48f5c860293c31",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/through-damage.ts": "34c677eb4fae4bb232f07f2ea1aa3e493668a07a1c7ddddb2db196e644e9b32a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-lasers.ts": "8ba8f726ec06bfb7de6355ebb530ca5534725c2e4a63c60d5edcb618ea9b4526",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-time.ts": "53366ceb3c03ec9ebd703e984724381706d689fbc5e5e693edf4101a38387f97",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-plain-laser.ts": "5dbda8d31a9b82e7a5911a81537330526776561bc826acd47e9c904695c48266",
+    "D:/少女航线/yyyl/pixigame/replica-battle/public/data/wave-presentation.json": "2eff4321945992380252e9047b5a2eaf72c2890e8cd080df3078fbac4f9daed8",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/wave-flow.ts": "05e7232a54a96f68ccad0814a5e92db8bb11f1c298133dcd3fda4d1a1cba33b1",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/random-spawn.ts": "c250623b57ad7ca5f8b4fb2f571abe4d80afbc5e8e5fe4e92255a37908063fad",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/mission-creators.ts": "fe9debb3e20eb2cebe2f9a8a65340a76dec21b01d8d529ec4acee4f453f3b796",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/wave-experience.ts": "3114fff077b8afe7a29ed70b8eefb883d46478a331dfc4f632b0c819ee23b0a4",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-projectile-mods.ts": "bcd05ecfbd2639ce2d3d0cacdc51cb0606bb90e874f5f0eb66d2801757dca473",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-weapon-profile.ts": "a976c5b02d543c501312fd56e94d22c55a37c309cbaf737bdc0d4582dd114abf",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-eject.ts": "ec29509fedac5f7bf9b9a1af8f90abc0264681988d93229cdd7c92dff4138614",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-arc-chain.ts": "07e4d1bfd51a25d7b3ac5464e2a6db127a9080c2cdb561ed35de7f3db9e5d9dc",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-orbit-speed-attributes.ts": "d5f618637906ea1cedc802ea165e0b35e6f1af2d22be579af472710bf11a4ea0",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-death-explosion.ts": "b041fb1496fa73c0dca541c1922dfc84e7a2463cad4492a4fdb4573ebf922fd8",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-curve-sword.ts": "0164bc6f296cc554ed0c46698a651fc6ec8a6a1d3e90142c0a9a2fb35bac79f1",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-lightning-strike.ts": "b5048a4a42679a704d7eb24e2a786f9481eede4c8c4d0d8839be320b40fb015a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-ray-actions.ts": "54f690d8f3643e7b9be2a53b0986fd648c8472d4b9f2fd8a9646b6a294313728",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-reflection-ray.ts": "4b15e850e4fb1bef60ccc01e149b9fbeb1fc063e77796bd54c0a7f63c2dd768d",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-explosion.ts": "8665b858d60c5d9619c7d43f8d169c275f7bcfdd36b4ce2e672c710967033eb7",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-derived-weapon-mods.ts": "e0463058c17fc6f23217864ed1157483e0b58893c21666333ac0bc150b93d531",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-returning-projectile.ts": "bf2a5354c92797abe8db2a310c5426bbac57da6a38b64b26f5e6d0f05cc7cfea",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-thunder.ts": "13296107cdfc1c6eb59baee1b736e3cab3d16b7951a751f3fc6b7b79ac390c6a",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/thunder-presentation.ts": "f222206d4d735cba71f622459070d9a883b4477759b8680b007e41044574f0ac",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-kill-bullet.ts": "63bcf709a561752f4ac670e60ca28c7953f790883465562336bb192098c942e1",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/native-black-hole.ts": "be9ecd9e55b0010910f8336d505e2cc0e7b32ab87a04b540c78a31af4a395bb2",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/simulation.ts": "f827c587fc714bf1aa48049c351747b4914673afa048280a6fbc20764b0f3f54",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/input.ts": "1d8d1b79c796b11362f360dadf3ac300df5cc628ef3b375fee22d4fc2d879bef",
+    "D:/少女航线/yyyl/pixigame/src/replica/default-loadout-state.json": "754e10a9531580e8a93fef4a46358736c3c1e64f65b85d595473a23713efd010",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-economy-attributes.js": "34cbcafe3339cb55dae743a9dde29404a78385999496f3ac2e4672c3c56e99c5",
+    "D:/少女航线/yyyl/pixigame/replica-battle/kernel/loadout-state.ts": "46ca646298a653fd308ee0237bd4e4e0d136d3efcb277b518e2491e94fa231db",
+    "D:/少女航线/yyyl/pixigame/src/replica/loadout-equipment-index.json": "1d0f92ac2ec93ccbff2e869e1de38f63654351366c32c6221851e6bd849d96fc",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-economy-catalog.json": "f57b1a774084eb80ea75c232ad0db2422cdc46eff47aab9a3bbf3a11a4facce4",
+    "D:/少女航线/yyyl/pixigame/src/development-resources.js": "00d9c8ab81d7eaed23e346033197665221c6e9d59ba3f8f6c3e2090a8279d6b1",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-laboratory.js": "691be1c284f7ffb0c22f6f246e276d670a8bec79ec9656ab2e8f9debd6dedd25",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-research-state.js": "b580aa82f07dbe1d78fe553f91bf7ee7fd3049d7c2a5f83f2129c7f09585821d",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-pilot-roster.js": "3788f6b3291d805e7da13a8a854ab912b62fd47ab0d568dc77d9d1436c1530f5",
+    "D:/少女航线/yyyl/pixigame/src/replica/loadout-progression-index.json": "03506216fe5b8833a1f6322b5398ce1ff90daf430763436c6014a0b961c79c20",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-progression.js": "0afd9a3346be0b53f75029bd338b9fe493305a0d7fbaefc889055f639a686064",
+    "D:/少女航线/yyyl/pixigame/src/replica/chapter-weapon-source.json": "2da3be3eff1b77e19f9ee53382a9964207f2479cd2d4c0ced2bbd3984c2b4fcc",
+    "D:/少女航线/yyyl/pixigame/src/replica/chapter-correspondence.json": "2fdfd590dc295c177aaaf16d0b63e9ef0556d53ab78e451ddd578f663cf97322",
+    "D:/少女航线/yyyl/pixigame/src/campaign-stars.js": "1c46115e8c0e4a67a59762d332321ba2391db9c8ef7addaf48664d25b5972dac",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-battle-rating.js": "6e0fce8b554966ec941bcba590e1d950562c9dc86624f6e78c005c0e7852e187",
+    "D:/少女航线/yyyl/pixigame/src/replica/chapter-contract.js": "c279918e119a0585328d668acf1d8207e30cd1db6177510855fe15d9be29ecdd",
+    "D:/少女航线/yyyl/pixigame/src/replica/chapter-weapon-access.js": "8ff1238f82c0e1272825082a92fecddf39cc9eda739d76cea9e14540c3ea4b44",
+    "D:/少女航线/yyyl/pixigame/src/replica/loadout-contract.js": "aeec5063dd5391a0cdcda6733d66ed3ebff726c8627651d80dc8c199398c6e07",
+    "D:/少女航线/yyyl/pixigame/replica-battle/prepare-loadout.ts": "17cc0776771ebf19ee731aee10ac518a37c219a9c7145a4a4e800fa435e5f45c",
+    "D:/少女航线/yyyl/pixigame/src/peripheral/equipment-reference-data.json": "92b30ba780bc24d969390b4fb5a0820b1e666ec4fcf1c73ebecd61187fe642a7",
+    "D:/少女航线/yyyl/pixigame/src/peripheral/shop-reference-data.json": "8c435d508b57081bb2588b119f58f04e9eee1645656868d2573de32e09526385",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-box-progress.js": "557f8bd09fe04494fa082c85fd03f273e9e34f51943706ff88c4bc77fef1ba23",
+    "D:/少女航线/yyyl/pixigame/src/peripheral/equipment-system.js": "df44c7a9e01ebc219c2bc2e1b4ed569be04a91247c6b87f2ebf4651a0365cec5",
+    "D:/少女航线/yyyl/pixigame/src/peripheral/research.js": "d624c2261e715ffcd634104eed9a7b6ab9f7056b0b3a87add79ac685dfb168ff",
+    "D:/少女航线/yyyl/pixigame/src/replica/item-use-batches.js": "11c30e2a78015624f86209764bdede7038ad192aea9976f6186a622854e8e2d2",
+    "D:/少女航线/yyyl/pixigame/src/replica/pilot-copy-grants.js": "b1385bfc759671f07c93b18f03361680eec9c0eeaae39bd194b906d4fe7e1d4b",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-acquisition-catalog.json": "77cd51d2f8cbbc1bd1b8927b8ac5ae8d585ce5a9b6c25134e0b9af7677c4b120",
+    "D:/少女航线/yyyl/pixigame/src/pilot-preview-access.js": "600766dfb9867ef2b7e8e9439c90896c4b60643e456a986ae2e4f2a525a55a5c",
+    "D:/少女航线/yyyl/pixigame/src/pilots.js": "9c45906953b7cbc08e5facc45a4cf7cc251154fc73460b76fab51e9117bd2e78",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-pilot-names.js": "91e465d0e7bcbecbb8e6275eec96273f4d1e738001244f583706027af1fa67fc",
+    "D:/少女航线/yyyl/pixigame/src/replica/local-box-state.js": "3c320c0a7f2401a45fb8e43bbbeab202d1a97bafa346f5ce8b2103e63e8131d8",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-equipment-boxes.js": "99240f795b2e4bde99b819a4f5ac812a23edc4eb211fcfe03e7ed98c44fb5196",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-acquisition-labels.json": "7de02aee19a7d10c784ad28e6157ed15b9d3de096f060174d6fd60a27a567599",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-pilot-fragments.js": "bf97bba6630a28981ed0da58281c8b2b8e8145c8a518a4fbbf0d06b8dae878e8",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-item-names.js": "2445ad15485d22db69113be1e35d48539075c145aa57d8aeb226775b1fd918d6",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/zbby-arsenal.js": "7853597252f73400675e307b32e897dfc06db0549010ff2dbf19850915a0f841",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/common-weapon-design.json": "f85c69a4ddb0346db6086743f999562935ec508e48b90cf77480f8deee4f3824",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/common-weapon-visual-design.json": "99d2c0d5da728e49d7e036f47c04f8f7c090cb818c7f1c45cb6b462f1c7cf6c2",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/common-weapon-visuals.js": "61a07291a6745c205f4a277c39195ac0cc17b1a9c41424a0a66c5f9e2c882c48",
+    "D:/少女航线/yyyl/pixigame/src/growth-tuning.js": "a32a70e2bdde2a97ca923a1e71975d4802d165d659db04b7d131003245da2f7b",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/weapon-progression-config.js": "26d6145f96c9f2bd8ee0b68469d974c2c67eaa35f6e211f5e0af540011f64c10",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/common-weapons.js": "89016140ada2eee09233267b212860c0ea51b7b57cb8ff216e7302fcb117b41e",
+    "D:/少女航线/yyyl/pixigame/src/fixed-parts/airframe-arsenal.js": "c700f83e43d1fe3ea71c8ab40a24e6f5c2d7a4301bb77d43d67b0b56487c5341",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-aircraft-skins.js": "4aa68dc917c2a2cb06dd4d49dff895825b7a67d117b2058713bc6b81cc497c33",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-collection-names.js": "15b509f5a9dce5b153fdd3a25e07974c2648c7f521459d675dc64267d905eaeb",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-client-rules.js": "c0270d987785f1639f439c7dd61889a37b56db908770a78235ca1e965ecf6de8",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-economy.js": "16851e4c9b18e51ab333b551c14055bdb0d5a00650654d019adc85542f6d601b",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-research.js": "8d7e2b33aad305f9e7a63a6ac5a324133140985daac03d266b430022f8c0d521",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-equipment-effects-index.json": "f8bd52841c5452791e6bfe5b5ea317762555a3d13c004270a359bee28ae0a031",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-equipment-economy.js": "eeb36f203e14afc1010d5f4dd4397b748cbdef9a901cb2395a537013d38b8eb8",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-item-art-index.json": "546267924eaf68290f065bf38987b04526d079ee0e1f67e3d65530638d33f4aa",
+    "D:/少女航线/yyyl/pixigame/src/ui/cloud-asset-base.js": "137b45583aae241ca0fa53ba9e714fe443c25d28db019653fc8aecdcaf482bf7",
+    "D:/少女航线/yyyl/pixigame/src/ui/project-ui-art.js": "405f509ef5747baec81a97ae349514012c00fdccfc09daa5aebdce2035806354",
+    "D:/少女航线/yyyl/pixigame/src/ui/resource-icons.js": "f2a374447e183c8d4f92ff8a2e2be72f41778d1448110bfc824f41fd511d2475",
+    "D:/少女航线/yyyl/pixigame/src/ui/character-portraits.js": "e62feccd93284b24e6fd8f4328aac614e0b96246961e692288d4de984a13adec",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-pilot-presentation.js": "a8bd2487533c8c2d0d758f1f29b04728034395cdbc96d933e1049afdaf6ce6c1",
+    "D:/少女航线/yyyl/pixigame/public/art/aircraft-ui-v1/manifest.json": "960133533e757ae5c03606d139d792eaebf106090306937856c8dacac2bc2c99",
+    "D:/少女航线/yyyl/pixigame/src/aircraft-ui-images.js": "64a4d6e5b0b1a74282f84e6d356ecba72fbe50b939828d81345f24d2bd01f0e4",
+    "D:/少女航线/yyyl/pixigame/src/ui/weapon-icon-source.js": "9bfe05fa3a4c380059a978a6bf10489520c55d3482641ffbe9283d9312c15cdd",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-collection-art.js": "947a69190bf917d72c41fa4cee0a0055343c121bcd90d17e9589fe174214db09",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-quality.js": "3be61f1591b93a20b856b9540707bf30d949b28a9368915cd5b25eab1cd7a9ed",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-item-presentation.js": "c75ac1bd4d1e2f5e463c8e8b3a3d0c133db0662b919afd71f24aacb7b4b12840",
+    "D:/少女航线/yyyl/pixigame/src/replica/flight-rewards.js": "ecf85eea33c305906ce3a473cc6fbfc0d40b62f47f9e2d0e3c9ce770e2aea80a",
+    "D:/少女航线/yyyl/pixigame/src/replica/local-growth-policy.js": "09b1c8c67091100e18e428b5c094d2073e4e0c7b55b14d64e96aad4913d9944c",
+    "D:/少女航线/yyyl/pixigame/src/replica/growth-supply.js": "79894bb517428d32a9f62b80079cf0ac02a3add8fa4a54d3521b3af83b1536b5",
+    "D:/少女航线/yyyl/pixigame/src/replica/collection-supply.js": "568ed505cb680b8d50758343ad6ce037bd3408b5bd9df083c06aa18ca4a61cbe",
+    "D:/少女航线/yyyl/pixigame/src/replica/pilot-supply.js": "f1bf2a7eea2b0518c874607a6104c90263ef30e396c81b01c81c1cb576fe6a3c",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-resource-wallet.js": "0fd0964ba24501ff538e1b5ce36f17495f6a15909b986275ec076b56bd1bd0d7",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-patrol-source.json": "96271648f03ea4fca67362c638bdbdb28427b3e3647d1894548aa0b4bee337ec",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-resource-channels-source.json": "30093b8926ca3dce2e232d5866836552b44f9db0b15b31ac5956985d9602d358",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-patrol.js": "7fc14995297509bbfe72b51b5db9b1b9407e354f4585d22a8bb25ee277ab09b4",
+    "D:/少女航线/yyyl/pixigame/src/replica/sample-patrol.js": "896bbf15ba9478ea6b96e1396c2b3be74bb19b369197ea78ca9963293d30db03",
+    "D:/少女航线/yyyl/pixigame/src/replica/battle-material-rewards.js": "a80b71bcf7553da9cc9b0141286cc0bcac77abb1806a470383a1c1dce863f4c9",
+    "D:/少女航线/yyyl/pixigame/src/replica/native-runtime-capabilities.js": "7d793b7ea0ef58dfa0931e7e5a4a9b1777324ac992a24d6331c95d756477e312"
+  },
+  "runtimeDataHashes": {
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/loadout-runtime.json": "1c74e7944cc3fb3ce7707200f99c5bbb00d95d35ddca00dbc8aa3d60442d5ad9",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/player-appearances.json": "ae7891b3b7a888e51f2f8957a9606b1c62238473a06dba6515faca73f7bb2fb2",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/loadout-catalog.json": "074c0edb71635ea575a0f398fa5cfdac22d023c0100cb1395c661ac4de2d89e5",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapters.json": "83cdcf9d02c64f59d157cc8932a81d95004639c48b7dedb9a90ce81f804bc085",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter20.json": "022e8fc2393c652f45c8a5e2852b984efd526428e5bf41470a6cbe9dfe1f6ef3",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/assets.json": "112f0de54da5fbcc69fd11801a6e3c8e18e577f7c1f96d0354e9808bb12d59e9",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/combat.json": "b39cfc4b04e6461340338e65dc9e4eb04cd0edc71bced8f119bc02ea35c3e7c2",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter20.json": "f68a83f1d64241113dd3324394b99acbcf0405651e50bd5b11c19f2396680b20",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/effects-original.json": "09eca515568224e06926eb41c68e270d4ac1d8c7f1342a7d389ac9fa17dd4e6e",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/boss-animation.json": "6f3cb9902ec814a2ce03e3a7cd3f9f02c067b87cad3db4e0ec55271548d7cf05",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/enemy-health-bars.json": "f8b7c110c9ab60ec10e67ca2b0a09b1d364b9356d1a7e5b0c8efb419dcea5720",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/beam-effects.json": "a7b4d28d3fc7fb5244e9e197038bd3b161fde3d74abc3ed446f0138620299443",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/assets-chapters.json": "e09d2cf8c3fba64832fdb69c636fe7ef6bda1bddcd7958f0286cef5376ce5d3e",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/enemy-health-bars-chapters.json": "1895842ee47bceee858f5264c1e51f1b7293f6f9d79a5e7c7f69aa58e2968f5e",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/boss-animation-chapters.json": "e0c166767be41b10928bf792a027f7020ddddfa422445ffe3494ba5b7740deb7",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/npc-chapters.json": "3e30f00c4a1d7874b303ca7174a67b2869037396697a3e60c02c268424515af4",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/audio-chapters.json": "c5e6db3e9b0861d2581d1214031cb68df35c6901438832c832d4ee293f7a0def",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/effects-original-chapters.json": "8f64c17fea7a6c0a87c9ae615439dee8c6a60db6498f4e0ae5308bf53fd7cd0a",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/map-layers.json": "7b29ecc18bdce83021099b27a28f088f050b2a8e67c5f32b886e1fa39b367f70",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/enemy-local-animation-chapters.json": "af0903487c307e59132f9139cf2563010340d5bc44d42fff43dd8ff89057b2bb",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/sword-original-effects.json": "92a76acd8faeabb7cad8c8f23ba4744df6a608314c7bfec38abb4703518adbe0",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter21.json": "0e3d01a369ebfb03b587374e154a376d86dfc133e3f06aa1f936ba0f8ebc5ab6",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter21.json": "0b8525bb60739e0c7255dd86d375e94d1505afaf7448f491fde40d6797c2a365",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter22.json": "b6501428f52c1e3c2e135e9b1e5db5b77f9a1d54df6f5bfe9400c4f7074973fc",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter22.json": "80d039b1c8fe9fa5e17a2a61073240a23a951d13431642af97670490497f7373",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter23.json": "641eb6a18b419ce72cf5d7eca4f464a244bd3e7087a30a83d93851a9d16f7804",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter23.json": "775c6cd72b343db8967971c24ea9d28988ea940f7dad631a18e7aa01d7ac6479",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter24.json": "ad433d79574e702077810ae1cadc8b0337e7b794f52c73a15634522e1858a817",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter24.json": "8f1a1a97c2f0e6fd002e7892ca8d3119cddd29ad3f56e8411dde4307cf427420",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter25.json": "17e8f48155fd2ec1a9b6b3e6a4fbeeba524526ea38e7d02e48b564b8cb53a52b",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter25.json": "09305e4bb9d4e7b14585ebe9d675bc50303f6100ab4d920fa5a89b5189793f50",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter26.json": "dc60ec74ea2746ba9cc950e513da1c6d3ff9b5bb129c18f492163e14e9ea0273",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter26.json": "512c1a94ec930e1d59e963128d99cf7ad0dd53927e9cf5714d8b4cdfc5b3a4ea",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter27.json": "af86734d885c3294b155e3f0251859c4471163c16f395886e3a20b51278709a3",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter27.json": "748faba84c28544869f96dc9a6e2ae15b4f24cf86354308c3c1e69e8a1f4da90",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter28.json": "478e8d24a0e03ba0b7a42402f4f82a0ae4ba269150d4583e924610582afe39e6",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter28.json": "bb7108756a8c56583e1858297a9465e1b8bb3f13c1ddd0165ceadd187f21aa08",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter29.json": "08670484cdacf531f37b9ff3129c646dab0c12d22dbfc2b1dc47fed9653e2a8b",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter29.json": "ad16498a4a9ae86700a1fe62f0c6d1620d0fded2cf9d9334e37d9bb52fac2158",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/chapter30.json": "06d6e39c15f1ac895561bda3e89ddd9e3cad89706aab2fb5d3e8c240403135da",
+    "D:/少女航线/yyyl/pixigame/public/replica-battle/data/geometry-chapter30.json": "8d472df52b5e55ee1fc7e30876f9defa57a9aabb6b93e52ba5a2e678dcaa7206"
+  }
+}

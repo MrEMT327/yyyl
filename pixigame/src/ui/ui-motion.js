@@ -1,14 +1,14 @@
 import {UI_MOTION as T,UI_EASE,QUALITY_LIGHT,uiActionPlan} from './ui-motion-plan.js';
-import {enterSurface} from './surface-motion.js';
+import {enterLobbyTab,enterSurface} from './surface-motion.js';
 import './ui-motion.css';
 
 // One owner per lobby. No mutation observer, game-clock dependency, or animation
 // completion callback that mutates inventory. Re-rendering is not an event.
-export function createUiMotion(root) {
+export function createUiMotion(root, {immediateTabs=false} = {}) {
   const doc=root.ownerDocument,view=doc.defaultView,media=view.matchMedia('(prefers-reduced-motion: reduce)');
   const motions=new Set(),effects=new Set(),frames=new Set();
   const enteredDialogs=new WeakSet();
-  let route=null,modalKey='',menuOpen=false,press=null,epoch=0,disposed=false;
+  let route=null,activeTab=null,modalKey='',menuOpen=false,epoch=0,disposed=false;
   const layer=doc.createElement('div');layer.className='ui-fx-layer';layer.setAttribute('aria-hidden','true');root.append(layer);
   root.classList.add('ui-motion-active');
   const quiet=()=>disposed||media.matches||doc.hidden||root.hidden||!root.isConnected;
@@ -50,37 +50,31 @@ export function createUiMotion(root) {
       transient(spark,[{opacity:0,translate:'0 0',rotate:`${i*45}deg`},{opacity:1,offset:.15},{opacity:0,translate:`${Math.cos(angle)*distance}px ${Math.sin(angle)*distance}px`,rotate:`${i*45+30}deg`}],{duration:620,delay,fill:'backwards'},'spark');
     }
   }
-  function clear(){epoch++;press?.animation?.cancel();press=null;for(const id of frames)view.cancelAnimationFrame(id);frames.clear();for(const a of motions)a.cancel();motions.clear();for(const n of [...effects])discard(n);}
+  function clear(){epoch++;for(const id of frames)view.cancelAnimationFrame(id);frames.clear();for(const a of motions)a.cancel();motions.clear();for(const n of [...effects])discard(n);}
   const control=e=>e.target.closest?.('button,[role="tab"],[role="menuitemradio"]');
-  const stopControlFeedback=node=>node.getAnimations?.().filter(a=>['ui-press','ui-release','ui-keyboard'].includes(a.id)).forEach(a=>a.cancel());
-  // Patrol owns its contour feedback; filtering its transparent hotspot would
-  // isolate the locked-state backdrop filter from the underlying PSD artwork.
-  function down(e){const node=control(e);if(e.button!==0||!node||node.disabled||node.classList.contains('psd-hit-patrol')||quiet()||root.getAttribute('aria-busy')==='true')return;
-    press?.animation?.cancel();stopControlFeedback(node);press={node,id:e.pointerId,x:e.clientX,y:e.clientY};
-    press.animation=animate(node,[{filter:'brightness(1)'},{filter:'brightness(.84)'}],{duration:T.press,fill:'forwards',easing:'ease-out'},'press');
-  }
-  function release(e,cancel=false){if(!press||e.pointerId!==press.id)return;const {node,animation}=press;press=null;animation?.cancel();
-    if(!cancel&&node.isConnected&&!node.disabled)animate(node,[{filter:'brightness(.84)'},{filter:'brightness(1)'}],{duration:T.release},'release');
-  }
-  const move=e=>{if(press&&Math.hypot(e.clientX-press.x,e.clientY-press.y)>8)release(e,true);};
-  const up=e=>release(e),cancel=e=>release(e,true);
   function clicked(e){const node=control(e);if(!node||node.disabled||quiet())return;
-    if(e.detail===0&&!node.classList.contains('psd-hit-patrol')){stopControlFeedback(node);animate(node,[{filter:'brightness(.84)'},{filter:'brightness(1)'}],{duration:T.release},'keyboard');}
     const data={...node.dataset},action=data.action;
     if(!['gearMaterial','pickSlot','catalogSelect','workshopSelect','fleetSkillSlot','recruitPreview','workshopFilterSet'].includes(action))return;
     later(()=>{const target=[...root.querySelectorAll(`[data-action="${action}"]`)].find(n=>['id','slot','kind'].every(k=>!data[k]||n.dataset[k]===data[k]));if(target)flash(target);});
   }
-  root.addEventListener('pointerdown',down,{capture:true,passive:true});root.addEventListener('click',clicked,true);
-  view.addEventListener('pointermove',move,{passive:true});view.addEventListener('pointerup',up,{passive:true});view.addEventListener('pointercancel',cancel,{passive:true});
+  root.addEventListener('click',clicked,true);
   const visibility=()=>{if(doc.hidden)clear();};doc.addEventListener('visibilitychange',visibility);view.addEventListener('blur',clear);view.addEventListener('resize',clear);media.addEventListener('change',clear);
   return {
     page(key,body) {
       const menu=body.querySelector('.fc-filter-options');
       if(menu&&!menuOpen)animate(menu,[{opacity:0},{opacity:1}],{duration:160},'dropdown');
       menuOpen=Boolean(menu);
-      if(route===key)return;const previous=route;route=key;clear();
-      if(previous!==null&&!quiet()){
-        for(const a of enterSurface(body)){motions.add(a);a.finished.then(()=>motions.delete(a),()=>motions.delete(a));}
+      if(route===key)return;
+      const previous=route,tab=root.dataset.tab;
+      const enteringMainTab=tab!==activeTab&&root.dataset.subpage==='';
+      route=key;
+      activeTab=tab;
+      clear();
+      if(previous===null||quiet()||enteringMainTab&&immediateTabs)return;
+      const animations=enteringMainTab?enterLobbyTab(root,body,tab):enterSurface(body);
+      for(const animation of animations){
+        motions.add(animation);
+        animation.finished.then(()=>motions.delete(animation),()=>motions.delete(animation));
       }
     },
     modal(key) {
@@ -127,6 +121,6 @@ export function createUiMotion(root) {
       });
     },
     clear,
-    destroy(){clear();disposed=true;layer.remove();root.classList.remove('ui-motion-active');root.removeEventListener('pointerdown',down,true);root.removeEventListener('click',clicked,true);view.removeEventListener('pointermove',move);view.removeEventListener('pointerup',up);view.removeEventListener('pointercancel',cancel);view.removeEventListener('blur',clear);view.removeEventListener('resize',clear);doc.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',clear);},
+    destroy(){clear();disposed=true;layer.remove();root.classList.remove('ui-motion-active');root.removeEventListener('click',clicked,true);view.removeEventListener('blur',clear);view.removeEventListener('resize',clear);doc.removeEventListener('visibilitychange',visibility);media.removeEventListener('change',clear);},
   };
 }

@@ -51,6 +51,13 @@
   border-image-source: url('/art/psd-buttons-v1/button-orange.png');
   text-shadow: 0 2px 3px #763609;
 }
+.entry-screen__button--art-fallback {
+  border-image: none;
+  border-image-source: none;
+  border: 1px solid #efb779;
+  border-radius: 5px;
+  background: #8e4519;
+}
 .entry-screen__button--secondary {
   border-image-source: url('/art/psd-buttons-v1/button-blue.png');
   border-image-slice: 18;
@@ -97,7 +104,7 @@
 }
 .sortie-loading__status { min-width: 0; margin: 0; color: #f0faff; font-size: clamp(10px, 2.8cqw, 13px); line-height: 1.35; text-align: right; }
 .entry-screen.is-leaving { opacity: 0; transition: opacity .3s ease; }
-:is(html[data-boot], html.sortie-loading-active, html.replica-launch-active) :is(.build-identity, .performance-tools, .performance-hud, #replicaResearchToggle) { visibility: hidden !important; }
+:is(html[data-boot], html.sortie-loading-active, html.replica-launch-active) :is(.build-identity, .performance-tools, .performance-hud) { visibility: hidden !important; }
 
 .sortie-loading__backdrop { opacity: .76; }
 .sortie-loading__shade { background: linear-gradient(180deg, #102c41e8, #1c526b94 43%, #061824de 75%, #06131ff5); }
@@ -137,6 +144,11 @@
 .startup__actions:has(>.entry-screen__button:not([hidden])) { padding-top:clamp(5px,1.5cqw,10px); }
 .startup__actions .entry-screen__button { width:76%;min-height:44px;margin:0 auto;padding:7px 10px;font:400 clamp(16px,4.8cqw,22px)/1.2 PsdPopup,"Microsoft YaHei",sans-serif;letter-spacing:.03em; }
 .startup__actions .entry-screen__button--start { width:min(100%,clamp(160px,44cqw,192px)); }
+#bootCopyDiagnostics:not([hidden]) { margin-top: 6px; }
+#bootDiagnosticsReport:not([hidden]) {
+  display: block; width: 100%; height: 110px; margin-top: 8px; padding: 8px;
+  background: #142738; color: #e0f2ff; font: 12px/1.45 monospace;
+}
 .startup.is-failed .startup__status { color:#fff; }
 .startup.is-failed .startup__progress { display:none; }
 
@@ -159,12 +171,12 @@
 .sortie-loading__shaft-strip { position:absolute;inset:0; }
 .sortie-loading__shaft .sortie-loading__backdrop { position:absolute;inset:0;display:block;width:100%;height:160%;object-fit:cover;animation:sortie-shaft-up 12s linear infinite; }
 .sortie-loading__shaft .sortie-loading__backdrop:first-child { animation-delay:-6s; }
-.sortie-loading.is-failed .sortie-loading__backdrop { animation-play-state:paused; }
 @keyframes sortie-shaft-up {
-  0% {transform:translateY(-37.5%);opacity:0}
-  10%,50% {opacity:1}
-  60%,100% {opacity:0}
-  100% {transform:translateY(0)}
+  0% { transform:translateY(-37.5%); opacity:0; }
+  10% { transform:translateY(-33.75%); opacity:1; }
+  50% { transform:translateY(-18.75%); opacity:1; }
+  60% { transform:translateY(-15%); opacity:0; }
+  100% { transform:translateY(0%); opacity:0; }
 }
 @media (orientation:landscape) and (max-height:500px) {
   .sortie-hangar,.sortie-loading.is-failed .sortie-hangar { left:48%;top:15%;width:50%;height:58%; }

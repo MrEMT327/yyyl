@@ -1,19 +1,5 @@
 import './equipment-toolbar.css';
-const base=`${import.meta.env?.BASE_URL??'/'}art/equipment-controls-v1/`;
-const choices={
-  sort:{label:'武器排序',items:[['quality','按品质'],['level','按等级'],['name','按名称']]},
-  filter:{label:'筛选武器',items:[['owned','已拥有'],['equipped','已装备'],['available','可装备'],['all','全部武器'],['locked','未解锁']]},
-};
-
-export function equipmentToolbar({sort='quality',filter='owned',prefix='eq'}={},escape=String) {
-  const control=(kind,value)=>{
-    const {label,items}=choices[kind],selected=items.find(([id])=>id===value)||items[0],id=`${prefix}-${kind}-options`;
-    return `<div class="eq-choice eq-choice-${kind}"><button type="button" class="eq-choice-trigger psd-button" data-equipment-select="${kind}" value="${selected[0]}" aria-label="${label}：${selected[1]}" aria-haspopup="listbox" aria-expanded="false" aria-controls="${escape(id)}"><span>${selected[1]}</span><img class="eq-choice-chevron" src="${base}chevron-down.svg" alt="" draggable="false"></button><div class="eq-choice-menu" id="${escape(id)}" role="listbox" aria-label="${label}" hidden>${items.map(([key,text])=>`<button type="button" class="eq-choice-option psd-option" role="option" data-equipment-option="${key}" aria-selected="${key===selected[0]}" tabindex="${key===selected[0]?'0':'-1'}"><span>${text}</span><img src="${base}check.svg" alt="" draggable="false"></button>`).join('')}</div></div>`;
-  };
-  return `<div class="eq-inventory-toolbar eq-toolbar-authored"><h2 id="eq-inventory-title" tabindex="-1">武器仓库</h2>${control('sort',sort)}${control('filter',filter)}<button class="eq-workshop-button psd-button" type="button" data-action="openWorkshop"><strong>改装间</strong></button></div>`;
-}
-
-// Keep the existing change/value contract, including equipment state and focus restoration.
+// Shared by the authored listbox controls in reward and supply dialogs.
 export function bindEquipmentChoices(root) {
   const doc=root.ownerDocument,view=doc.defaultView;
   let active=null;

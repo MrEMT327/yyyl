@@ -1,4 +1,5 @@
 import { equipmentBoxRules } from './native-equipment-boxes.js';
+import { nativeEquipmentBoxPrices } from './native-box-prices.js';
 import {equipmentBoxCollectionRates,LOCAL_BOX_POOL_POLICY} from './local-equipment-box-pools.js';
 import {createReplicaProgression} from './native-progression.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
@@ -30,9 +31,9 @@ export function nativeEquipmentBoxPreview(items,gear,time=Date.now(),progression
         items:entries,weight:entries.reduce((n,row)=>n+row.weight,0),denominator:100000};
     }).filter(group=>group.items.length);
     rates.push(...equipmentBoxCollectionRates(rule.pools));
-    const single=row.Single.length===1?row.Single[0]:null;
+    const { single, ten } = nativeEquipmentBoxPrices(id);
     const quotes=[1,10].map(count=>{
-      const diamondCost=count===10?row.Ten:single;
+      const diamondCost=count===10?ten:single;
       const free=count===1&&economy[id].freeAvailable;
       return {count,payment:free?'free':keys>=count?'key':'diamond',itemId:keys>=count?row.Key_ID:2,
         amount:free?0:keys>=count?count:diamondCost,available:free?1:keys>=count?keys:(items[2]||0),

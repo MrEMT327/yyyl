@@ -1,5 +1,4 @@
 import { fixedPartName } from '../fixed-parts/parts.js';
-import { SKILL_MAP } from '../roguelite.js';
 
 const tuning = {power:['伤害强化','power'],cadence:['射速强化','cadence'],coverage:['范围强化','coverage'],evolve:['武器进化','star']};
 export function combatPauseModel(bridge) {
@@ -11,7 +10,7 @@ export function combatPauseModel(bridge) {
   })):game.fixedPartsMode ? (game.fixedLoadout?.weapons||[]).map(w=>({
     id:w.id,itemId:w.itemId,name:fixedPartName(w.itemId),level:1+(nodes[w.id]?.length||0),
     innate:!!w.innate,selected:game.fixedGrowth?.state?.focus===w.id,canFocus:typeof bridge.focusFixedWeapon==='function',
-  })) : (game.activeWeapons||[]).map(w=>({id:w.id,itemId:w.itemId||w.id,name:w.name||fixedPartName(w.id),level:w.level||1}));
+  })) : [];
   const nativeUpgrades=bridge.presentation?.upgrades;
   // An empty native list is authoritative, not a reason to invent weapon nodes.
   const hasNativeUpgrades=Array.isArray(nativeUpgrades);
@@ -27,8 +26,6 @@ export function combatPauseModel(bridge) {
       }
       upgrades.push(...groups.values());
     }
-  } else if(!hasNativeUpgrades) for(const [id,level] of Object.entries(game.skills||{})) {
-    if(level>0) upgrades.push({id,name:SKILL_MAP.get(id)?.name||id,symbol:'up',level});
   }
   const seconds=Math.max(0,Math.floor(game.elapsed||0));
   return {weapons,upgrades,damage:bridge.presentation?.damage,stats:[

@@ -8,6 +8,7 @@ type Clip = { duration: number; fps: number; bindings: {path: string; attribute:
 export class OriginalPunchboard {
   private canvas: HTMLCanvasElement | null = null;
   private button: HTMLButtonElement | null = null;
+  private active = false;
   private stage: 'idle' | 'rolling' | 'result' = 'idle';
   private started = 0;
   private phaseStarted = 0;
@@ -25,13 +26,16 @@ export class OriginalPunchboard {
     }
     return this.images.get(key);
   }
-  mount(host: HTMLElement, rewards: Choice[], pool: {icon: string; name: string}[]) {
-    this.stop(); this.rewards = rewards; this.stage = rewards.length ? 'idle' : 'result';
+  mount(host: HTMLElement | null, rewards: Choice[], pool: {icon: string; name: string}[]) {
+    this.stop(); this.active = true; this.rewards = rewards; this.stage = rewards.length ? 'idle' : 'result';
     this.started = this.phaseStarted = performance.now();
     const choices = pool.length ? pool : rewards;
     this.slots = Array.from({length:16},(_,i)=>choices[i % Math.max(1,choices.length)] || {icon:'10000101',name:'速射机炮'});
     this.stops = rewards.map((_,i)=>Math.floor((i+.5)*16/rewards.length));
     this.stops.forEach((slot,i)=>this.slots[slot]=rewards[i]);
+    // The shared combat HUD draws this state directly. Only the standalone
+    // interface needs the old canvas, layout reads and sprite preloads.
+    if (!host) return;
     host.innerHTML = '<section class="punchboard-screen" role="dialog" aria-modal="true" aria-label="战斗补给"><canvas class="punchboard-canvas" aria-hidden="true"></canvas><button class="punchboard-confirm" data-action="punchboard"><span>开始</span></button><div class="punchboard-accessible" aria-live="polite"></div></section>';
     this.canvas = host.querySelector('canvas'); this.button = host.querySelector('button');
     this.button!.style.backgroundImage = `url("${this.sprites.stg_pause_resume.url}")`;
@@ -40,13 +44,38 @@ export class OriginalPunchboard {
     for (const size of ['S1','S2','M1','M2','L1','L2']) for (const color of ['yellow','red','multicolor','grey']) this.image(`Choose_skills_${size}_normal_${color}`);
     this.update();
   }
-  stop() { this.canvas = null; this.button = null; this.steps = []; }
+  stop() {
+    if (!this.active) return;
+    this.active = false;
+    if (this.canvas) this.canvas.width = this.canvas.height = 0;
+    this.canvas = null; this.button = null; this.steps = [];
+  }
+  private controls(now: number) {
+    const time = (now-this.started)/1000, elapsed = (now-this.phaseStarted)/1000;
+    const hidden = this.stage==='rolling'&&elapsed<.5;
+    const disabled = (this.stage==='idle'&&time<.617)||(this.stage==='result'&&elapsed<1+this.rewards.length*.2);
+    return {time,elapsed,hidden,disabled};
+  }
+  private stepIndex(elapsed: number) {
+    let index = this.steps.length - 1;
+    while (index >= 0 && this.steps[index].at > elapsed) index--;
+    return index;
+  }
+  get presentation() {
+    if (!this.active) return null;
+    const {elapsed,hidden,disabled} = this.controls(performance.now());
+    const step = this.stepIndex(elapsed);
+    return {started:this.started,phaseStarted:this.phaseStarted,stage:this.stage,slots:this.slots,
+      motion:{index:this.stage==='result'?(this.stops[0]??-1):this.steps[step]?.slot??-1,step},disabled:hidden||disabled};
+  }
   /** true means close the existing result, not award it a second time. */
   activate(): boolean {
-    if (!this.button || this.button.disabled) return false;
+    if (!this.active) return false;
+    const now = performance.now(), {hidden,disabled} = this.controls(now);
+    if (hidden || disabled) return false;
     if (this.stage === 'result') return true;
-    this.phaseStarted = performance.now();
-    if (this.stage === 'rolling') { this.showResult(); return false; }
+    this.phaseStarted = now;
+    if (this.stage === 'rolling') { this.showResult(now); return false; }
     this.stage = 'rolling'; this.steps=[];this.soundStep=-1;
     // Native fast/multiple intervals and Select clip. Landing deceleration is
     // adapted to the local skill pool; it is not a full native state-machine port.
@@ -63,8 +92,8 @@ export class OriginalPunchboard {
     this.steps.push({at:at+.1,slot,reward:-2});
     return false;
   }
-  private showResult() {
-    this.stage='result';this.phaseStarted=performance.now();
+  private showResult(now: number) {
+    this.stage='result';this.phaseStarted=now;
     if(this.rewards.length)this.feedback('wheelResult');
     const live=this.canvas?.parentElement?.querySelector('.punchboard-accessible');
     if(live) live.textContent=this.rewards.map(c=>c.name).join('、') || '当前武器已无可用强化';
@@ -115,13 +144,15 @@ export class OriginalPunchboard {
     const root=nodes.find(n=>!n.parent);if(root)visit(root,pw,ph,{x:.5,y:.5});
   }
   update() {
-    const canvas=this.canvas,button=this.button;if(!canvas||!button)return;
-    const now=performance.now(),elapsed=(now-this.phaseStarted)/1000,time=(now-this.started)/1000;
-    if(this.stage==='rolling'&&elapsed>=(this.steps.at(-1)?.at??Infinity)){this.showResult();this.update();return;}
+    if (!this.active) return;
+    const now=performance.now();
+    if(this.stage==='rolling'&&(now-this.phaseStarted)/1000>=(this.steps.at(-1)?.at??Infinity))this.showResult(now);
+    const {elapsed,time,hidden,disabled}=this.controls(now);
     if(this.stage==='rolling'){
-      let step=this.steps.length-1;while(step>=0&&this.steps[step].at>elapsed)step--;
+      const step = this.stepIndex(elapsed);
       if(step!==this.soundStep&&step>=0){this.soundStep=step;this.feedback('wheelTick');}
     }
+    const canvas=this.canvas,button=this.button;if(!canvas||!button)return;
     const host=canvas.parentElement!;
     const height=1080*host.clientHeight/Math.max(1,host.clientWidth);
     if(canvas.width!==1080||canvas.height!==Math.round(height)){canvas.width=1080;canvas.height=Math.round(height);}
@@ -129,8 +160,8 @@ export class OriginalPunchboard {
     const fit=Math.min(1,height/1800);
     button.style.width=`${458*fit/1080*100}%`;button.style.height=`${178*fit/1080*host.clientWidth}px`;
     button.style.top=`${50+(747.1-89)*fit/height*100}%`;
-    button.hidden=this.stage==='rolling'&&elapsed<.5;
-    button.disabled=(this.stage==='idle'&&time<.617)||(this.stage==='result'&&elapsed<1+this.rewards.length*.2);
+    button.hidden=hidden;
+    button.disabled=disabled;
     button.querySelector('span')!.textContent=this.stage==='idle'?'开始':this.stage==='rolling'?'跳过':'确定';
     const born=data.clips.PunchboardResultItem_Born;
     const entrance=born.frames[Math.min(born.frames.length-1,Math.floor(time*born.fps))];

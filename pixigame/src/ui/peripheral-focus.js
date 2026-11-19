@@ -10,13 +10,14 @@ export function captureFocus(root, element = root.ownerDocument.activeElement) {
 }
 export function restoreFocus(root, token) {
   if (!token) return false;
-  const candidates = [...root.querySelectorAll(controls)].filter(el =>
-    el.tagName === token.tag && !el.disabled && !el.closest('[inert]') && el.getClientRects().length);
   // Values in aria-labels can change after a purchase. Stable data attributes win.
   const data = token.attributes.filter(([name]) => name.startsWith('data-'));
   const attributes = data.length ? data : token.attributes;
-  const match = candidates.find(el => attributes.every(([name, value]) => el.getAttribute(name) === value));
-  match?.focus({ preventScroll: true });
+  // In the canvas UI a bounds read can run a full layout. Read bounds only for a logical match.
+  const match = [...root.querySelectorAll(controls)].find(el =>
+    el.tagName === token.tag && !el.disabled && attributes.every(([name, value]) => el.getAttribute(name) === value)
+    && !el.closest('[inert]') && el.getClientRects().length);
+  if (match && match!==root.ownerDocument.activeElement) match.focus({ preventScroll: true });
   return Boolean(match);
 }
 export function trapModalTab(event, dialog) {

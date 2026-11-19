@@ -1,16 +1,16 @@
-import { peripheralSceneForStage, FIVE_LAYER_SCENES } from '../three/peripheral-scenes.js';
+import {campaignMapForStage,campaignChapterNameForStage} from '../three/campaign-map-catalog.js';
 
-/** The same scene resolver drives combat terrain, chapter labels and previews.
- * Only presentation is returned; source chapter IDs and encounter tables stay intact. */
+/** Resolve the chapter's own title and the shared map used in battle and previews. */
 export function chapterPresentationForStage(index) {
-  const scene=peripheralSceneForStage(index);
-  return {name:scene.name,chapterName:`第 ${index+1} 章 · ${scene.name}`,mapSceneId:scene.id};
+  const scene = campaignMapForStage(index);
+  const name = campaignChapterNameForStage(index) ?? scene.name;
+  return {name, chapterName: `第 ${index + 1} 章 · ${name}`, mapSceneId: scene.id};
 }
 
 /** Preview the actual wall/island/depth assets, including reused map groups.
  * Absolute URLs also work in CSS custom properties consumed by stylesheets. */
 export function chapterPreviewBackground(index) {
-  const scene=peripheralSceneForStage(index);
-  const layers=[scene.artUrl,FIVE_LAYER_SCENES[scene.id]?.urls.islands,scene.depthUrl].filter(Boolean);
+  const scene=campaignMapForStage(index);
+  const layers=scene.previewUrl?[scene.previewUrl,scene.artUrl]:[scene.artUrl,scene.depthUrl].filter(Boolean);
   return [...new Set(layers)].map(path=>`url('${new URL(path,document.baseURI).href}')`).join(',');
 }

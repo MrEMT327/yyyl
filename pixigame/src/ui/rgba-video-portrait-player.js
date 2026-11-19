@@ -1,3 +1,7 @@
+import {notifyOwnedCanvasFrame,releaseOwnedCanvas} from './release-owned-canvas.js';
+import {releaseOwnedVideo} from './release-owned-video.js';
+import {isWechatPortrait,portraitRenderSize} from './portrait-render-budget.js';
+
 // Plays frozen native RGBA renders. Colour and alpha share one portable H.264
 // frame, so their timestamps cannot drift and browser alpha-video support is unnecessary.
 const VERTEX=`attribute vec2 position;uniform vec2 fit;varying vec2 uv;void main(){uv=vec2(position.x*.5+.5,.5-position.y*.5);gl_Position=vec4(position*fit,0.,1.);}`;
@@ -27,10 +31,12 @@ void main(){
 }`;
 
 export function createRgbaVideoPortraitPlayer({assetBase=import.meta.env?.BASE_URL ?? '/',manifestPath}={}) {
+  const retainFrame=isWechatPortrait();
   const assetRoot=new URL(assetBase,location.href);
   const sameOrigin=path=>{const u=new URL(path,assetRoot);if(u.origin!==location.origin)throw new Error('角色只允许读取同源资源');return u.href;};
   const manifestUrl=sameOrigin(manifestPath),folder=new URL('./',manifestUrl);
   let host=null,canvas=null,gl=null,program=null,buffer=null,texture=null,fitLocation=null,sizeLocation=null,repairLocation=null;
+  let textureWidth=0,textureHeight=0;
   let manifest=null,current=null,currentName='idle',state='idle',error=null,loading=null,visible=true,paused=false,destroyed=false,held=false,returnToIdle=false,request=0,rendered=0,callback=null;
   const records=new Map(),controller=new AbortController();
   const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');let explicit=false;
@@ -40,17 +46,27 @@ export function createRgbaVideoPortraitPlayer({assetBase=import.meta.env?.BASE_U
   function fail(reason){if(destroyed)return;error=reason;state='error';stopCallback();for(const r of records.values())r.video.pause();updateHost();}
   function shader(kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw new Error(message||'角色着色器创建失败');}return s;}
   function createRenderer(){
-    gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,preserveDrawingBuffer:false,depth:false,stencil:false});if(!gl)throw new Error('无法创建角色画布');
+    gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,preserveDrawingBuffer:retainFrame,depth:false,stencil:false});if(!gl)throw new Error('无法创建角色画布');
     const vs=shader(gl.VERTEX_SHADER,VERTEX),fs=shader(gl.FRAGMENT_SHADER,FRAGMENT);program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
     gl.useProgram(program);buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const at=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(at);gl.vertexAttribPointer(at,2,gl.FLOAT,false,0,0);
     texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.uniform1i(gl.getUniformLocation(program,'frame'),0);fitLocation=gl.getUniformLocation(program,'fit');sizeLocation=gl.getUniformLocation(program,'packedSize');repairLocation=gl.getUniformLocation(program,'repairShirtHoles');gl.disable(gl.BLEND);gl.disable(gl.DEPTH_TEST);
   }
   function draw(){
     if(destroyed||!gl||!current||current.video.readyState<2)return;
-    gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.useProgram(program);gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,current.video);
-    const scale=Math.min(canvas.width/manifest.width,canvas.height/manifest.height);gl.uniform2f(fitLocation,manifest.width*scale/canvas.width,manifest.height*scale/canvas.height);gl.uniform2f(sizeLocation,current.video.videoWidth,current.video.videoHeight);gl.uniform1f(repairLocation,manifest.interiorHoleRepair==='blouse-v1'?1:0);gl.drawArrays(gl.TRIANGLES,0,6);rendered++;updateHost();
+    const video=current.video,width=video.videoWidth,height=video.videoHeight;
+    gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(program);gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+    if(textureWidth===width&&textureHeight===height&&typeof gl.texSubImage2D==='function')
+      gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,gl.RGBA,gl.UNSIGNED_BYTE,video);
+    else {
+      gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,video);
+      textureWidth=width;textureHeight=height;
+    }
+    const scale=Math.min(canvas.width/manifest.width,canvas.height/manifest.height);gl.uniform2f(fitLocation,manifest.width*scale/canvas.width,manifest.height*scale/canvas.height);gl.uniform2f(sizeLocation,current.video.videoWidth,current.video.videoHeight);gl.uniform1f(repairLocation,manifest.interiorHoleRepair==='blouse-v1'?1:0);gl.drawArrays(gl.TRIANGLES,0,6);
+    if(retainFrame)notifyOwnedCanvasFrame(canvas);
+    rendered++;updateHost();
   }
-  function resize(){if(!host||!canvas||!gl)return;const bounds=host.getBoundingClientRect(),dpr=2,w=Math.max(1,Math.round(bounds.width*dpr)),h=Math.max(1,Math.round(bounds.height*dpr));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}draw();}
+  function resize(){if(!host||!canvas||!gl)return;const bounds=host.getBoundingClientRect();if(bounds.width<=0||bounds.height<=0)return;const [w,h]=portraitRenderSize(bounds.width,bounds.height);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}draw();}
   function stopCallback(){if(callback===null)return;if(callback.kind==='video')callback.video.cancelVideoFrameCallback?.(callback.id);else cancelAnimationFrame(callback.id);callback=null;}
   function schedule(){if(callback||!canPlay())return;const v=current.video,step=()=>{callback=null;if(!canPlay())return;try{draw();schedule();}catch(e){fail(e);}};callback=v.requestVideoFrameCallback?{kind:'video',video:v,id:v.requestVideoFrameCallback(step)}:{kind:'raf',id:requestAnimationFrame(step)};}
   function syncPlayback(){stopCallback();if(!current)return;const record=current;if(canPlay()){record.video.play().then(()=>{if(current===record)schedule();}).catch(reason=>{if(destroyed||current!==record||record.video.paused&&!canPlay())return;fail(reason);});}else record.video.pause();updateHost();}
@@ -124,7 +140,15 @@ export function createRgbaVideoPortraitPlayer({assetBase=import.meta.env?.BASE_U
     setPaused(value){paused=Boolean(value);if(!paused){explicit=true;if(held){void start(currentName,true).catch(fail);return;}}syncPlayback();if(paused)draw();},
     setVisible(value){visible=Boolean(value);syncPlayback();},
     captureFrame(size=2048){if(!ready()||!canvas||current.video.readyState<2)return null;const w=canvas.width,h=canvas.height;try{canvas.width=canvas.height=size;draw();return canvas.toDataURL('image/png');}finally{canvas.width=w;canvas.height=h;draw();}},
-    destroy(){if(destroyed)return;destroyed=true;request++;controller.abort();stopCallback();observer?.disconnect();document.removeEventListener('visibilitychange',onVisibility);for(const r of records.values()){r.handlers.abort();r.video.pause();r.video.removeAttribute('src');r.video.load();}records.clear();canvas?.remove();if(host){host.classList.remove('is-ready');for(const k of ['portraitState','motion','time','playing'])delete host.dataset[k];}if(gl){gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.getExtension('WEBGL_lose_context')?.loseContext();}host=null;canvas=null;gl=null;state='destroyed';},
+    destroy(){
+      if(destroyed)return;destroyed=true;request++;controller.abort();stopCallback();
+      observer?.disconnect();document.removeEventListener('visibilitychange',onVisibility);
+      for(const r of records.values()){r.handlers.abort();releaseOwnedVideo(r.video);}
+      records.clear();current=null;
+      if(host){host.classList.remove('is-ready');for(const k of ['portraitState','motion','time','playing'])delete host.dataset[k];}
+      if(gl){gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.getExtension('WEBGL_lose_context')?.loseContext();}
+      releaseOwnedCanvas(canvas);host=canvas=gl=program=buffer=texture=null;state='destroyed';
+    },
     get ready(){return ready();},get state(){return state;},get error(){return error;},get paused(){return paused;},get playing(){return Boolean(current&&!current.video.paused&&canPlay());},get motionName(){return currentName;},get currentTime(){return time();},get duration(){return current?.spec.duration||0;},get frameIndex(){return Math.min((current?.spec.frames||1)-1,Math.floor(time()*(manifest?.fps||30)+1e-6));},get sampleFps(){return manifest?.fps||30;},get availableMotions(){return Object.keys(manifest?.clips||{});},get canvas(){return canvas;},get renderedFrames(){return rendered;},
   };
 }

@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-11",
+  "mode": "ImageGen built-in, transparent WebP export",
+  "files": [
+    {
+      "asset": "sandstone-gate.webp",
+      "folder": "desert-modules-v1",
+      "prompt": "Original transparent game landmark sprite for a portrait scrolling anime aircraft shooter. Ruined sandstone gateway. Two massive rectangular warm sandstone gate towers flanking a broken horizontal lintel and a short buried stepped approach; dry sandy ground, rounded worn edges and a few fallen blocks. Open passage readable from above. No pyramid, carving text, vegetation, characters or fantasy glow. Match a soft hand-painted anime environment with matte opaque color shapes, broad gouache-like brushwork, clean legible forms and restrained fine detail. A steep 70-degree top-down camera shows mostly tops and a little side wall; orthographic, no horizon. Soft upper-left daylight and short grounded shadows consistent with adjacent terrain. Quiet warm dusty beige and ochre, desaturated cool gray-brown shadows. Paint only a small local sand footing and short contact shadow fading irregularly to clear alpha to blend into a beige sand floor. Keep the subject large and recognizable, filling about 72–80% of a square canvas with generous transparent padding on every side. The ground is continuous beneath the subject and becomes fully transparent before the canvas edges. Real RGBA transparency outside the asset. No opaque backdrop, black matte, UI, text, labels, watermark, borders, particles or atmosphere. One landmark only.",
+      "sha256": "246f5c6e1303ff66cc1970f46795b92e2c34618700250065151573d9beb8b01b",
+      "size": [
+        768,
+        768
+      ],
+      "bytes": 141568,
+      "generatedOutput": "exec-fd3e4215-be1c-4328-b422-56e334ffb14e.png"
+    },
+    {
+      "asset": "solar-outpost.webp",
+      "folder": "desert-modules-v1",
+      "prompt": "Original transparent game landmark sprite for a portrait scrolling anime aircraft shooter. Desert solar outpost. Three small blue-gray rectangular solar-panel banks and one low beige power shed connected by short cable channels on sand. Industrial silhouettes, matte muted navy-blue panels with minimal segmentation, very subtle warm details and dusty footings. No vehicles, text, large perimeter walls or bright lights. Match a soft hand-painted anime environment with matte opaque color shapes, broad gouache-like brushwork, clean legible forms and restrained fine detail. A steep 70-degree top-down camera shows mostly tops and a little side wall; orthographic, no horizon. Soft upper-left daylight and short grounded shadows consistent with adjacent terrain. Quiet warm dusty beige and ochre, desaturated cool gray-brown shadows. Paint only a small local sand footing and short contact shadow fading irregularly to clear alpha to blend into a beige sand floor. Keep the subject large and recognizable, filling about 72–80% of a square canvas with generous transparent padding on every side. The ground is continuous beneath the subject and becomes fully transparent before the canvas edges. Real RGBA transparency outside the asset. No opaque backdrop, black matte, UI, text, labels, watermark, borders, particles or atmosphere. One landmark only.",
+      "sha256": "c6a123756cea43e3cf954a28517aee87234740f6c487e7a6d312445b8cf96265",
+      "size": [
+        768,
+        768
+      ],
+      "bytes": 101986,
+      "generatedOutput": "exec-eda68926-f88b-474b-93a4-ba5f85a6096a.png"
+    },
+    {
+      "asset": "wind-carved-spires.webp",
+      "folder": "desert-modules-v1",
+      "prompt": "Original transparent game landmark sprite for a portrait scrolling anime aircraft shooter. Wind-carved sandstone spires. A compact group of three weathered ochre rock towers on a little uneven wind-scoured base, one large flat-capped butte and two low sculpted eroded stone pillars. Broad visible strata and a distinct three-part silhouette. No vegetation, buildings, arches or crystal formations. Match a soft hand-painted anime environment with matte opaque color shapes, broad gouache-like brushwork, clean legible forms and restrained fine detail. A steep 70-degree top-down camera shows mostly tops and a little side wall; orthographic, no horizon. Soft upper-left daylight and short grounded shadows consistent with adjacent terrain. Quiet warm dusty beige and ochre, desaturated cool gray-brown shadows. Paint only a small local sand footing and short contact shadow fading irregularly to clear alpha to blend into a beige sand floor. Keep the subject large and recognizable, filling about 72–80% of a square canvas with generous transparent padding on every side. The ground is continuous beneath the subject and becomes fully transparent before the canvas edges. Real RGBA transparency outside the asset. No opaque backdrop, black matte, UI, text, labels, watermark, borders, particles or atmosphere. One landmark only.",
+      "sha256": "3c89e27de60fb9309026771609339aacbf42502454f2eec5177b045c5e90ce92",
+      "size": [
+        768,
+        768
+      ],
+      "bytes": 116630,
+      "generatedOutput": "exec-e55b0c66-853b-457d-b5d0-4d4219854e17.png"
+    }
+  ]
+}

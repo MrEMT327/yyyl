@@ -6,6 +6,6 @@
 .guide-hand>.guide-pointer-art{display:block;width:40px;height:16px;object-fit:cover;pointer-events:none}
 .guide-hand.points-up{transform:translateX(-50%) rotate(180deg);animation-name:guide-cue-up}
 .lobby-guide .guide-caption{position:absolute;pointer-events:auto;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
-@keyframes guide-cue-down{50%{transform:translate(-50%,3px)}}
-@keyframes guide-cue-up{50%{transform:translate(-50%,-3px) rotate(180deg)}}
+@keyframes guide-cue-down{0%,100%{transform:translate(-50%,0px)}50%{transform:translate(-50%,3px)}}
+@keyframes guide-cue-up{0%,100%{transform:translate(-50%,0px) rotate(180deg)}50%{transform:translate(-50%,-3px) rotate(180deg)}}
 @media(prefers-reduced-motion:reduce){.guide-hand{animation:none!important}}

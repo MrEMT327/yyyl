@@ -7,7 +7,7 @@
 .guide-bubble{box-sizing:border-box;min-height:76px;padding:18px 18px 18px var(--guide-text-inset,40px);border:0;border-image:url('/art/onboarding-dialogue-v2/panel.webp') 64 fill / 18px stretch;color:#233b53;font:600 14px/1.55 'Microsoft YaHei','PingFang SC',sans-serif}
 .guide-message{display:block;white-space:pre-line;overflow-wrap:anywhere;line-height:1.55}
 .lobby-guide[hidden] *,.battle-movement-guide[hidden] *{animation-play-state:paused}
-@keyframes guide-mascot-float{50%{transform:translateY(-3px)}}
+@keyframes guide-mascot-float{0%,100%{transform:translateY(0px)}50%{transform:translateY(-3px)}}
 @keyframes guide-mascot-expression{
   0%,13%,20%,27%,34%,61%,69%,100%{background-position:0% 0}
   14%,19%,28%,33%{background-position:100% 0}

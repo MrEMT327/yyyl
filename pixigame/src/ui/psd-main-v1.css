@@ -20,59 +20,105 @@
 .battle-psd-main .psd-main-portrait>canvas{visibility:hidden}
 .battle-psd-main .psd-main-portrait.is-ready>canvas{visibility:visible}
 .battle-psd-main .psd-main-portrait.is-ready>.psd-main-portrait-fallback{visibility:hidden}
-.battle-psd-main .psd-main-foreground{z-index:2}
-/* The foreground restores the baked patrol clock from its original PSD shade.
-   Remove baked identity, mail, chapter and activity artwork. The live
-   identity frame is drawn separately; the scenery remains visible underneath. */
-.battle-psd-main .psd-main-foreground{clip-path:polygon(evenodd,
-  0 0,100% 0,100% 100%,0 100%,0 0,
-  2.933333% 1.662562%,29.466667% 1.662562%,29.466667% 6.465517%,2.933333% 6.465517%,2.933333% 1.662562%,0 0,
-  0 21%,16% 21%,16% 28%,0 28%,0 21%,0 0,
-  84.666667% 14.716749%,98.133333% 14.716749%,98.133333% 20.997537%,84.666667% 20.997537%,84.666667% 14.716749%,0 0,
-  84.666667% 21.366995%,98.133333% 21.366995%,98.133333% 27.647783%,84.666667% 27.647783%,84.666667% 21.366995%,0 0)}
-.battle-psd-main .psd-main-patrol-clock{position:absolute;left:3.466667%;top:82.266010%;width:24.266667%;height:1.724138%;z-index:4;display:grid;place-items:center;pointer-events:none;background:linear-gradient(90deg,transparent,#14232c 18%,#14232c 82%,transparent);color:#fff;font-size:2.3cqw;font-weight:650;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #101923}
-.battle-psd-main .psd-main-patrol-clock[data-patrol-status='locked']{display:none}
-.battle-psd-main .psd-main-profile-frame{position:absolute;left:2.933333%;top:1.662562%;width:26.533333%;height:4.802956%;z-index:3;pointer-events:none}
-.battle-psd-main .psd-main-identity{position:absolute;left:14cqw;top:4.7cqw;width:14.4cqw;z-index:5;pointer-events:none;color:#fff;text-shadow:0 1px 2px #0a1824}
-.battle-psd-main .psd-main-identity>strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:3.05cqw;line-height:1.25;font-weight:700}
-.battle-psd-main .psd-main-identity>span{display:flex;gap:.4cqw;align-items:baseline;max-width:11.5cqw;margin-top:1.6cqw;white-space:nowrap;color:#ffde43}
-.battle-psd-main .psd-main-identity small{font-size:2.1cqw;font-weight:700}
-.battle-psd-main .psd-main-identity b{font-size:2.3cqw;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
-.battle-psd-main .psd-main-chapter-copy{position:absolute;inset:0;z-index:4;pointer-events:none}
-.battle-psd-main .psd-main-chapter-copy>strong,
-.battle-psd-main .psd-main-chapter-copy>span,
-.battle-psd-main .psd-main-star-total{position:absolute;display:grid;place-items:center;margin:0;padding:0;white-space:nowrap;text-align:center;pointer-events:none}
-.battle-psd-main .psd-main-chapter-copy>strong{left:34.266667cqw;top:19.6cqw;width:31.733333cqw;height:3.866667cqw;color:#fff;font-size:4cqw;font-weight:700;line-height:1;text-shadow:0 1px 2px #102132}
-.battle-psd-main .psd-main-chapter-copy>span{left:40.666667cqw;top:24.8cqw;width:18.666667cqw;height:3.066667cqw;color:#81efff;font-size:3.2cqw;font-weight:650;line-height:1;text-shadow:0 1px 2px #102132}
-.battle-psd-main .psd-main-star-total{left:44.933333cqw;top:33.6cqw;width:14cqw;height:3.066667cqw;color:#fff;font-size:2.85cqw;font-weight:700;line-height:1;text-shadow:0 1px 2px #101923}
+.battle-psd-main .psd-main-shades,.battle-psd-main .psd-main-chapter-frame{position:absolute;z-index:2;pointer-events:none}
 .battle-psd-main .psd-main-hotspots{z-index:30;pointer-events:none}
 .battle-psd-main .psd-main-hotspot{
   position:absolute;display:block;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:0;
-  color:transparent;background:transparent;box-shadow:none;opacity:0;pointer-events:auto;cursor:pointer;
+  background:transparent;box-shadow:none;pointer-events:auto;cursor:pointer;overflow:visible;
 }
-.battle-psd-main .psd-main-hotspot>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-.battle-psd-main .psd-main-hotspot:focus-visible{opacity:1;outline:2px solid #fff;outline-offset:-3px;border-radius:5px}
-.battle-psd-main .psd-main-hotspot:active{opacity:.08;background:#fff}
-/* Patrol's face is baked into the PSD. A white hotspot background obscures it
-   when the locked-state grayscale layer keeps the hotspot fully opaque. */
-#gui-casual-lobby.battle-psd-main .psd-hit-patrol{
-  --patrol-button-shape:polygon(8.2% 17%,95.6% 17%,95.6% 74%,86.8% 89.2%,.5% 89.2%,.5% 32.4%);
-  opacity:1;background:transparent;filter:none;
+.battle-psd-main .psd-main-hotspot:focus-visible{outline:2px solid #fff;outline-offset:-3px;border-radius:5px}
+.battle-psd-main .psd-main-face{position:absolute;inset:0;display:block;pointer-events:none;text-shadow:none}
+.battle-psd-main .psd-main-face-art{position:absolute;display:block;max-width:none;user-select:none}
+.battle-psd-main .psd-hit-patrol[data-chapter-locked] .psd-main-face-art{filter:grayscale(1) brightness(.65)}
+.battle-psd-main .psd-main-affection{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8cqw;
+  color:#fff;text-shadow:0 1px 2px #0c253a,0 0 4px #122740;
 }
-#gui-casual-lobby.battle-psd-main .psd-hit-patrol:active{opacity:1;background:transparent;filter:none;transform:none}
-#gui-casual-lobby.battle-psd-main .psd-hit-patrol::after{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  clip-path:var(--patrol-button-shape);background:linear-gradient(#071c2d18,#071c2d38);
-  opacity:0;transition:opacity 90ms ease-out;
+.battle-psd-main .psd-main-affection img{width:5.7cqw;height:5.7cqw;object-fit:contain;filter:drop-shadow(0 1px 2px #1c2f49)}
+.battle-psd-main .psd-main-affection strong{font-size:clamp(10px,2.9cqw,18px);font-weight:700;line-height:1.15;white-space:nowrap}
+.battle-psd-main .bc-affection{display:grid;gap:12px;color:#203a50}
+.battle-psd-main .bc-affection-pilot{display:flex;align-items:center;gap:12px}
+.battle-psd-main .bc-affection-pilot img{width:clamp(46px,15cqw,76px);aspect-ratio:1;object-fit:contain}
+.battle-psd-main .bc-affection-pilot h3{margin:0 0 3px}
+.battle-psd-main .bc-affection-pilot span,.battle-psd-main .bc-affection-progress,.battle-psd-main .bc-affection-reward{font-size:clamp(12px,3.2cqw,16px)}
+.battle-psd-main .bc-affection-progress{display:grid;gap:6px;padding-top:8px;border-top:1px solid #69849760}
+.battle-psd-main .bc-affection-progress>div{display:flex;justify-content:space-between}
+.battle-psd-main .bc-affection-progress progress{width:100%;height:9px;appearance:none;border:0;border-radius:4px;background:#5c7489;overflow:hidden;accent-color:#116780}
+.battle-psd-main .bc-affection-progress progress::-webkit-progress-bar{background:#5c7489}
+.battle-psd-main .bc-affection-progress progress::-webkit-progress-value{background:#116780}
+.battle-psd-main .bc-affection-progress progress::-moz-progress-bar{background:#116780}
+.battle-psd-main .bc-affection-reward{margin:0}
+#gui-casual-lobby .pl-modal[data-psd-popup][data-modal-type='pilotAffection']{--popup-height:auto}
+#gui-casual-lobby .pl-shell:has(> .pl-modal-host .bc-affection-player) > .pl-nav.lobby-nav{display:none!important}
+#gui-casual-lobby .bc-affection-player{
+  position:absolute;inset:0;background:#000;overflow:hidden;pointer-events:auto;
 }
-#gui-casual-lobby.battle-psd-main .psd-hit-patrol:active::after{opacity:1}
-#gui-casual-lobby.battle-psd-main .psd-hit-patrol[aria-disabled='true']:active::after{opacity:.45}
-.battle-psd-main .psd-hit-patrol[data-chapter-locked]::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  -webkit-backdrop-filter:grayscale(1) brightness(.65);backdrop-filter:grayscale(1) brightness(.65);
-  clip-path:var(--patrol-button-shape);
+#gui-casual-lobby .bc-affection-player>.pl-modal-content{
+  position:absolute;inset:0;margin:0;padding:0;overflow:hidden;scrollbar-gutter:auto;background:#000;
 }
-@media(prefers-reduced-motion:reduce){#gui-casual-lobby.battle-psd-main .psd-hit-patrol::after{transition:none}}
+.bc-affection-player .bc-affection-video{display:block;width:100%;height:100%;object-fit:contain}
+#gui-casual-lobby .bc-affection-video-controls{
+  position:absolute;inset:auto 0 0;display:grid;grid-template-columns:44px minmax(0,1fr) auto 44px;align-items:center;
+  gap:6px;padding:6px 8px max(6px,env(safe-area-inset-bottom));background:#0a1725ed;color:#e3f7ff;
+}
+#gui-casual-lobby .bc-affection-video-controls button{
+  display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:4px;background:none;color:inherit;
+}
+.bc-affection-video-toggle::before{
+  content:"";width:14px;height:16px;background:currentColor;clip-path:polygon(0 0,100% 50%,0 100%);
+}
+.bc-affection-video-toggle[data-playing]::before{
+  clip-path:none;background:linear-gradient(to right,currentColor 35%,transparent 35% 65%,currentColor 65%);
+}
+.bc-affection-video-mute::before{
+  content:"";width:24px;height:24px;background:url('/art/project-supplement-icons-v1/sound.svg') center/contain no-repeat;
+}
+.bc-affection-video-mute[aria-pressed="true"]::before{background-image:url('/art/project-supplement-icons-v1/muted.svg')}
+.bc-affection-video-seek{width:100%;min-width:0;height:44px;margin:0;accent-color:#80d9ee;cursor:pointer}
+.bc-affection-video-time{font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bc-affection-video-controls :is(button,input):focus-visible{outline:2px solid #94e5fa;outline-offset:-2px}
+#gui-casual-lobby .bc-affection-player .bc-affection-player-close{
+  position:absolute;z-index:1;top:max(12px,env(safe-area-inset-top));right:max(12px,env(safe-area-inset-right));
+  width:44px;height:44px;padding:0;border:0;background:transparent url('/art/psd-popup-v1/close.png') center/contain no-repeat;
+}
+#gui-casual-lobby .bc-affection-player-close:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.battle-psd-main .bc-affection-pilots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.battle-psd-main .bc-affection-pilots button{display:flex;align-items:center;justify-content:flex-start;gap:6px;text-align:left}
+.battle-psd-main .bc-affection-pilots img{width:24px;height:24px;object-fit:contain}
+.battle-psd-main .bc-affection-pilots [aria-pressed='true']{outline:2px solid #72dafa;outline-offset:-3px}
+.battle-psd-main .psd-main-patrol-clock{position:absolute;left:0;top:-1.2cqw;width:100%;height:3.733333cqw;z-index:1;display:grid;place-items:center;background:linear-gradient(90deg,transparent,#14232c 18%,#14232c 82%,transparent);color:#fff;font-size:2.3cqw;font-weight:650;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #101923}
+.battle-psd-main .psd-main-patrol-clock[data-patrol-status='locked']{display:none}
+.battle-psd-main .psd-main-identity{position:absolute;left:14cqw;top:1.1cqw;width:14.4cqw;z-index:5;color:#fff;text-shadow:0 1px 2px #0a1824;text-align:left}
+.battle-psd-main .psd-main-identity>strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:3.05cqw;line-height:1.25;font-weight:700}
+.battle-psd-main .psd-main-identity>span{display:flex;gap:.4cqw;align-items:baseline;max-width:11.5cqw;margin-top:1.6cqw;white-space:nowrap;color:#ffde43}
+.battle-psd-main .psd-main-identity small{font-size:2.1cqw;font-weight:700}
+.battle-psd-main .psd-main-identity b{font-size:2.3cqw;line-height:1;font-variant-numeric:tabular-nums}
+.battle-psd-main .psd-main-chapter-copy{position:absolute;inset:0}
+.battle-psd-main .psd-main-chapter-copy>strong,
+.battle-psd-main .psd-main-chapter-copy>span,
+.battle-psd-main .psd-main-star-total{position:absolute;display:grid;place-items:center;margin:0;padding:0;white-space:nowrap;text-align:center}
+.battle-psd-main .psd-main-chapter-copy>strong{left:11.333333cqw;top:.533333cqw;width:31.733333cqw;height:3.866667cqw;color:#fff;font-size:4cqw;font-weight:700;line-height:1;text-shadow:0 1px 2px #102132}
+.battle-psd-main .psd-main-chapter-copy>span{left:17.733333cqw;top:5.733333cqw;width:18.666667cqw;height:3.066667cqw;color:#81efff;font-size:3.2cqw;font-weight:650;line-height:1;text-shadow:0 1px 2px #102132}
+.battle-psd-main .psd-main-star-total{
+  display:flex;align-items:center;justify-content:center;
+  left:11.466667cqw;top:0;width:16cqw;height:6cqw;
+  color:#142d43;font-size:2.85cqw;font-weight:700;line-height:1;
+}
+/* Chest bounds within the 289 × 45 PSD button face: x 24, y 0, w 61, h 43. */
+.battle-psd-main .psd-main-star-chest{
+  left:8.304498%;top:0;width:21.107266%;height:95.555556%;
+  transform-origin:50% 85%;pointer-events:none;
+}
+@media(prefers-reduced-motion:no-preference){
+  .battle-psd-main .psd-main-star-chest{animation:psd-main-star-chest-rock 4.8s ease-in-out infinite}
+}
+@keyframes psd-main-star-chest-rock{
+  0%,4%,24%,100%{transform:translateX(0%) rotate(0deg)}
+  7%{transform:translateX(-5%) rotate(-11deg)}
+  11%{transform:translateX(5%) rotate(10deg)}
+  15%{transform:translateX(-3%) rotate(-6deg)}
+  19%{transform:translateX(2%) rotate(4deg)}
+}
 .battle-psd-main .pl-modal-host{z-index:100}
 
 /* No retired hangar skin below the PSD artwork. */

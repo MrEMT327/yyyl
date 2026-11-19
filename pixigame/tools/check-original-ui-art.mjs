@@ -25,9 +25,10 @@ async function files(dir) {
 }
 export async function inspectOriginalUiArt({shippingRoot=resolve(project,'public'),sourceRoot=resolve(project,'src')}={}) {
   const violations=[],archiveHashes=new Map(audit.archived.filter(f=>/\.(png|jpe?g|webp)$/i.test(f.oldPath)).map(f=>[f.sha256,f.oldPath]));
+  // Local reference parity only. Formal releases also require check-release-assets.mjs, with no replica exemption.
   let replicaFiles = new Map();
   try {
-    const manifest = JSON.parse(await readFile(resolve(shippingRoot, 'replica-battle/source-manifest.json'), 'utf8'));
+    const manifest = JSON.parse(await readFile(resolve(project, 'replica-battle/source-manifest.json'), 'utf8'));
     if (manifest.engine === 'danke-replica-v1') replicaFiles = new Map([...manifest.publicFiles, ...(manifest.originalAssetAdditions || [])].map(row => [`replica-battle/${row.path}`, row.sha256]));
   } catch { /* No replica snapshot is shipped by this target. */ }
   let sourceFiles=0,images=0;
@@ -82,7 +83,7 @@ export async function inspectOriginalUiArt({shippingRoot=resolve(project,'public
       if(dir==='project-resource-icons-v2'&&Math.max(...entry.sourceSize)<1024)violations.push({type:'resource-source-not-hd',path:entry.file});
     }
   } catch(error) {violations.push({type:'generated-icon-manifest',directory:dir,message:error.message});}
-  return {sourceFiles,shippingImages:images,archivedFiles:audit.archived.length,protectedPsdIcons:audit.preservedPsd.length,violations,ok:violations.length===0};
+  return {scope:'local-ui-reference-check-only',releaseAssetAuditRequired:true,sourceFiles,shippingImages:images,archivedFiles:audit.archived.length,protectedPsdIcons:audit.preservedPsd.length,violations,ok:violations.length===0};
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   const result=await inspectOriginalUiArt({shippingRoot:process.argv[2]?resolve(process.argv[2]):undefined});

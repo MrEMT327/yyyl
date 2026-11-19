@@ -1,5 +1,5 @@
 import {UPGRADE_SELECTION_TIMING as BEAT} from './upgrade-selection-timing.js';
-import {NATIVE_BREAKTHROUGH_MOTION as NATIVE,sampleNativeTrack,sampleNativeShow} from './breakthrough-native-motion.js';
+import {NATIVE_BREAKTHROUGH_MOTION as NATIVE,sampleNativeTrack} from './breakthrough-native-motion.js';
 import {upgradeMoveProgress,samplePresentedShow,UPGRADE_TRANSITION} from './upgrade-transition-motion.js';
 const clamp=n=>Math.max(0,Math.min(1,n)),range=(t,a,b)=>clamp((t-a)/Math.max(1,b-a));
 const smooth=t=>t*t*(3-2*t),blend=(a,b,t)=>a+(b-a)*t;
@@ -17,7 +17,6 @@ export function upgradeConfirmationPose(elapsed,timing){
     const gather=upgradeMoveProgress(age),seconds=(age-BEAT.reveal)/1000;
     const baseWidth=timing.cardWidth??179.2,baseHeight=timing.cardHeight??(606*1300/1624),unit=baseWidth/328;
     const press=sampleNativeTrack(NATIVE.press.rootMotion.scaleX,Math.min(age/1000,NATIVE.press.duration),NATIVE.press.duration);
-    const pressEnd=sampleNativeTrack(NATIVE.pressEnd.rootMotion.scaleX,0,NATIVE.pressEnd.duration);
     const scale=age<UPGRADE_TRANSITION.moveStart?press:blend(sampleNativeTrack(NATIVE.press.rootMotion.scaleX,UPGRADE_TRANSITION.moveStart/1000,NATIVE.press.duration),1.2,gather);
     const show=seconds>=0?samplePresentedShow(seconds,timing.tier):null,visible=!show||show.contentVisible;
     return {scale,scaleX:scale*(1+(show?.deltaWidth??0)*unit/baseWidth),scaleY:scale*(1+(show?.deltaHeight??0)*unit/baseHeight),

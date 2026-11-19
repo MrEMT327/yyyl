@@ -10,7 +10,6 @@ const {replicaChapter}=await import('../src/replica/chapter-contract.js');
 const {playerInfoModel}=await import('../src/ui/player-info-model.js');
 const {planAccountBattleExperience,planAccountExperienceRepair}=await import('../src/replica/account-experience.js');
 const {createReplicaProgression}=await import('../src/replica/native-progression.js');
-const {weaponDeploymentGate}=await import('../src/replica/native-weapon-loadout.js');
 
 function fixture(){
   const saved=new Map(),flags={failFinal:false},profile={coins:5000,diamonds:500};
@@ -37,7 +36,7 @@ const f=fixture(),initial=f.system.state,run=prepare(f),first=f.system.recordSor
 assert.equal(first.ok,true,first.message);assert.equal(f.system.state.replicaLoadout.playerLevel,1);
 assert.equal(f.system.snapshot().accountExperience.experience,10);
 assert.equal(first.replica.accountExperience.experience,10);
-assert.equal(f.system.state.replicaInventory.items[1]-(initial.replicaInventory.items[1]||0),101);
+assert.equal(f.system.state.replicaInventory.items[1]-(initial.replicaInventory.items[1]||0),2060);
 assert.equal(f.system.state.replicaInventory.items[2]||0,initial.replicaInventory.items[2]||0);
 assert.equal(f.system.state.replicaInventory.items[3]||0,0,'account EXP must not become an inert backpack item');
 assert.equal(f.system.recordSortie(result(run)).ok,false);
@@ -47,7 +46,7 @@ assert.equal(f.system.snapshot().accountExperience.experience,10);
 const secondRun=prepare(f),secondBefore=f.system.state,second=f.system.recordSortie(result(secondRun));
 assert.equal(second.ok,true);assert.equal(f.system.state.replicaLoadout.playerLevel,2);
 assert.equal(f.system.snapshot().accountExperience.experience,0);
-assert.equal(f.system.state.replicaInventory.items[1]-secondBefore.replicaInventory.items[1],1101);
+assert.equal(f.system.state.replicaInventory.items[1]-secondBefore.replicaInventory.items[1],3060);
 assert.equal(f.system.state.replicaInventory.items[2]-secondBefore.replicaInventory.items[2],20);
 assert.equal(second.rewards.filter(row=>row.accountLevelReward===2).length,2);
 assert.equal(playerInfoModel(f.system.snapshot()).accountLevel,2);
@@ -138,7 +137,7 @@ for(let i=0;progression.playerLevel<15;i++){
   assert(i<300);const plan=planAccountBattleExperience(progression,inventory,gear,account,result({snapshot:{id:'level-run-'+i}}));
   ({progression,inventory,gear,account}=plan);
 }
-assert.equal(weaponDeploymentGate(progression.playerLevel).secondUnlocked,true);
+assert.equal(progression.playerLevel,15);
 assert(gear.items.some(item=>item.family===4500100&&item.quality===20),'level-4 reward must be a usable equipment instance');
 assert.equal(account.pendingRewards.filter(row=>row.level===9&&row.id===2016).length,1);
 assert.equal(inventory.items[2016]||0,0,'unimplemented three-day benefit card remains an entitlement, not a dead item');

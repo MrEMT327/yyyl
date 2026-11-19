@@ -25,6 +25,10 @@ export function defeatResultModel(bridge, page = 0) {
   const rows = result ? result.rows || [] : Object.entries(game.defeatReward || {})
     .filter(([type, amount]) => ['aircraftShards','weaponParts'].includes(type) && amount > 0)
     .map(([type, amount]) => ({type, label:type === 'weaponParts' ? '通用零件' : '飞机碎片', amount:'+'+amount}));
+  const affection = result?.pilotAffection;
+  const affectionSummary = affection?.gained > 0
+    ? `好感度 +${affection.gained}${affection.videoUnlocked ? ' · 已解锁专属视频' : ''}`
+    : '';
   const pageCount = Math.max(1, Math.ceil(rows.length / 10));
   const selectedPage = Math.max(0, Math.min(pageCount - 1, Math.floor(page) || 0));
   return {
@@ -36,7 +40,7 @@ export function defeatResultModel(bridge, page = 0) {
     aircraftImage:result?.aircraftImage,
     recommendations: (result?.recommendations || []).map(row => ({...row, image:defeatRecommendationArt(row)})),
     recommendationTitle: result?.recommendations?.some(row => row.functionId) ? '提升建议' : '推荐技能',
-    page: selectedPage, pageCount, total: rows.length,
+    page: selectedPage, pageCount, total: rows.length, affectionSummary,
     note: result?.note || '本局战斗数据已记录',
     ...resultRewardStatus(result, game.completionSummary?.debugRun),
   };

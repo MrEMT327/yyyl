@@ -15,16 +15,23 @@ export interface PlayerSkin {
 }
 export interface BattleAppearance {
   replaceTerrain?: boolean;
+  combatBloomLevels?: number;
   setWeapons?(weapons: readonly WeaponAppearance[]): void;
   weaponIcon?(weapon: WeaponAppearance): WeaponIcon;
   playerSkin?: PlayerSkin;
   /** Project aircraft wing sockets in screen pixels; visual mounting only. */
   missileMounts?(): readonly {x:number;y:number}[];
   preload(scene: Phaser.Scene): void;
+  onResourceLoadError?(key: string): void;
   create(scene: Phaser.Scene): void;
   update?(frame: {
-    time: number; coastBackgroundTime?: number; clock: number; renderDelta?: number; camera: Readonly<Point>;
+    time: number; coastBackgroundTime?: number; clock: number; renderDelta?: number;
+    /** Unsmoothed display interval in seconds, used only to schedule presentation work. */
+    displayInterval?: number; camera: Readonly<Point>;
     phantomActive?: boolean; playerHitFlash?: boolean; runId?: number;
+    victoryDeparture?: Readonly<{fromZ:number;targetZ:number;elapsed:number}>;
+    /** Actual emitted skill identity, observed without modifying the volley. */
+    aircraftPassiveShot?: Readonly<{uid:number;bornAt:number}>;
     /** Read-only visual events; local night light never feeds back into combat. */
     lightingEffects?: readonly {kind:string;age:number;duration:number;size:number;x:number;z:number}[];
     projectPoint?(x:number,z:number): {x:number;y:number};
