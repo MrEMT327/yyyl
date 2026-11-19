@@ -1,3 +1,7 @@
+import {createCityWindowStamps} from './city-window-stamps.js';
+import {createLavaEmissionStamps} from './lava-emission-stamps.js';
+import {createLavaMotion} from './lava-motion-renderer.js';
+
 // Small cached additive stamps; no full-screen blur, new fog, simulation RNG
 // or independent clock. Lamps and combat light stay below actors and HUD.
 export function sampleNightCombatLights(effects,projectPoint,reducedMotion=false){
@@ -18,7 +22,10 @@ export function sampleNightCombatLights(effects,projectPoint,reducedMotion=false
 }
 
 export function createNightAtmosphere(scene,key){
-  let canvas,windowCanvas,pool=[];
+  let canvas,windowCanvas,streetCanvas,pool=[];
+  const buildingStamps=createCityWindowStamps(scene,`${key}-city`);
+  const lavaStamps=createLavaEmissionStamps(scene,`${key}-lava`);
+  const lavaMotion=createLavaMotion(scene,`${key}-lava-flow`);
   function prepare(){
     if(canvas)return;
     canvas=document.createElement('canvas');canvas.width=canvas.height=64;
@@ -29,6 +36,16 @@ export function createNightAtmosphere(scene,key){
     glow.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,64,64);
     scene.textures.addCanvas(key,canvas);
   }
+  function prepareStreet(){
+    if(streetCanvas)return;
+    // A broad, soft pool of reflected light is separate from the tiny lamp.
+    // The flat central falloff lights the paving instead of reading as a spark.
+    streetCanvas=document.createElement('canvas');streetCanvas.width=streetCanvas.height=96;
+    const ctx=streetCanvas.getContext('2d'),glow=ctx.createRadialGradient(48,48,0,48,48,48);
+    for(const [stop,alpha]of [[0,.66],[.2,.58],[.45,.31],[.7,.10],[.9,.018],[1,0]])
+      glow.addColorStop(stop,'rgba(255,255,255,'+alpha+')');
+    ctx.fillStyle=glow;ctx.fillRect(0,0,96,96);scene.textures.addCanvas(`${key}-street-ground`,streetCanvas);
+  }
   function prepareWindow(){
     if(windowCanvas)return;
     windowCanvas=document.createElement('canvas');windowCanvas.width=64;windowCanvas.height=32;
@@ -36,14 +53,46 @@ export function createNightAtmosphere(scene,key){
     scene.textures.addCanvas(`${key}-window`,windowCanvas);
   }
   return {
-    update(enabled,landmarks=[],flashes=[]){
-      if(!enabled){for(const pair of pool)for(const image of pair)image.setVisible(false);return;}
+    update(enabled,landmarks=[],flashes=[],emissionStrength=1,reducedMotion=false){
+      lavaMotion.begin(reducedMotion);
+      const selected=enabled?landmarks:landmarks.filter(light=>light.shape==='lava-surface');
+      const lights=[...selected.slice(0,24),...(enabled?flashes.slice(0,8):[])];
+      if(!lights.length){for(const pair of pool)for(const image of pair)image.setVisible(false);return;}
       prepare();
-      const lights=[...landmarks.slice(0,24),...flashes.slice(0,8)];
       while(pool.length<lights.length)pool.push([0,1].map(()=>scene.add.image(0,0,key).setBlendMode('ADD').setDepth(18).setScrollFactor(0).setName('project-night-local-light')));
       for(let i=0;i<pool.length;i++){
         const light=lights[i],[halo,core]=pool[i];
         halo.setVisible(Boolean(light));core.setVisible(Boolean(light));if(!light)continue;
+        halo.setRotation?.(0);core.setRotation?.(0);
+        if(light.shape==='lava-surface'){
+          const stamps=lavaStamps.get(light.emissionAsset,light.sourceImage);
+          if(!stamps){halo.setVisible(false);core.setVisible(false);continue;}
+          halo.setTexture(stamps.haloKey);core.setTexture(stamps.coreKey);
+          for(const image of [halo,core])image.setPosition(light.x,light.y).setDisplaySize(light.coreWidth,light.coreHeight)
+            .setRotation(light.angle??0).setTint(0xffffff);
+          halo.setAlpha(light.strength*emissionStrength*.70);core.setAlpha(light.strength*emissionStrength*.88);
+          lavaMotion.bindCore(core,light,stamps);continue;
+        }
+        lavaMotion.resetCore(core);
+        if(light.shape==='building-windows'){
+          const stamps=buildingStamps.get(light.windowAsset);if(!stamps){halo.setVisible(false);core.setVisible(false);continue;}
+          halo.setTexture(stamps.haloKey);core.setTexture(stamps.coreKey);
+          for(const image of [halo,core]){
+            image.setPosition(light.x,light.y).setDisplaySize(light.coreWidth,light.coreHeight).setTint(light.color);
+            image.setRotation?.(light.angle??0);
+          }
+          halo.setAlpha(light.strength*.72);core.setAlpha(light.strength*.80);continue;
+        }
+        if(light.shape==='streetlamp'){
+          prepareStreet();halo.setTexture(`${key}-street-ground`);
+          halo.setPosition(light.poolX??light.x,light.poolY??light.y)
+            .setDisplaySize(light.poolWidth??88,light.poolHeight??62).setTint(light.color)
+            .setAlpha(Math.min(.82,light.strength*.80));
+          halo.setRotation?.(light.poolAngle??0);
+          core.setTexture?.(key);core.setPosition(light.x,light.y).setDisplaySize(11,9)
+            .setTint(0xffedc7).setAlpha(.98);continue;
+        }
+        halo.setTexture?.(key);
         // A broad colored bloom stays separate from the small, warm-white hot
         // core. Combat flashes keep a tighter footprint than fixed lamps.
         const spread=light.size>45?1.65:2.6;
@@ -61,9 +110,10 @@ export function createNightAtmosphere(scene,key){
       }
     },
     dispose(){
-      for(const pair of pool)for(const image of pair)image.destroy();pool=[];
+      lavaMotion.dispose();for(const pair of pool)for(const image of pair)image.destroy();pool=[];buildingStamps.dispose();lavaStamps.dispose();
       if(canvas){if(scene.textures?.exists(key))scene.textures.remove(key);canvas.width=canvas.height=0;canvas=null;}
       if(windowCanvas){if(scene.textures?.exists(`${key}-window`))scene.textures.remove(`${key}-window`);windowCanvas.width=windowCanvas.height=0;windowCanvas=null;}
+      if(streetCanvas){if(scene.textures?.exists(`${key}-street-ground`))scene.textures.remove(`${key}-street-ground`);streetCanvas.width=streetCanvas.height=0;streetCanvas=null;}
     },
   };
 }

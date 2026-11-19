@@ -9,8 +9,8 @@ export function createLobbyOnboarding({root,context,mark}) {
   layer.innerHTML=guideMarkup();
   document.body.append(layer);
   const ring=layer.querySelector('.guide-ring');
-  let active=null,target=null,lastKey='',idle=0,weakChapter=null,marking=false;
-  function hide(){layer.hidden=true;target=null;}
+  let active=null,target=null,lastKey='',placementKey='',idle=0,weakChapter=null,marking=false;
+  function hide(){if(!layer.hidden)layer.hidden=true;target=null;placementKey='';}
   const select=(action,attrs='')=>`[data-action="${action}"]${attrs}`;
   const tab=name=>select('tab',`[data-tab="${name}"]`);
   const item=(action,uid)=>select(action,`[data-id="${CSS.escape(String(uid))}"]`);
@@ -45,17 +45,22 @@ export function createLobbyOnboarding({root,context,mark}) {
     if(lastKey!==key){node.scrollIntoView({block:'nearest',inline:'nearest',behavior:'instant'});lastKey=key;}
     const r=node.getBoundingClientRect(),bounds=root.getBoundingClientRect();
     if(r.width<4||r.height<4||r.bottom<=Math.max(0,bounds.top)||r.top>=Math.min(innerHeight,bounds.bottom)){hide();return false;}
-    // Don't point through unrelated overlays. The guide itself never intercepts
-    // the highlighted control; its own caption/hand are ignored by hit-testing.
-    // Visibility removes the caption from hit-testing without resetting sprite
-    // animations on every positioning tick, as display:none would do.
-    layer.style.visibility='hidden';
-    const hit=document.elementFromPoint(Math.max(1,Math.min(innerWidth-1,r.x+r.width/2)),Math.max(1,Math.min(innerHeight-1,r.y+r.height/2)));
-    layer.style.visibility='';
+    // Ignore the guide's own scrollable caption without changing the tree
+    // while checking whether an unrelated overlay covers the real target.
+    const x=Math.max(1,Math.min(innerWidth-1,r.x+r.width/2)),y=Math.max(1,Math.min(innerHeight-1,r.y+r.height/2));
+    const hit=document.elementsFromPoint
+      ?document.elementsFromPoint(x,y).find(element=>!layer.contains(element))
+      :document.elementFromPoint(x,y,layer);
     if(!hit||!(hit===node||node.contains(hit))){hide();return false;}
-    target=node;layer.hidden=false;layer.classList.toggle('is-strong',strong);layer.dataset.group=String(active?.group||0);
+    const group=String(active?.group||0);
+    const nextPlacement=[r.x,r.y,r.width,r.height,bounds.x,bounds.y,bounds.width,bounds.height,innerWidth,innerHeight,label,strong,group].join('|');
+    if(!layer.hidden&&target===node&&placementKey===nextPlacement)return true;
+    if(layer.hidden)layer.hidden=false;
+    if(layer.classList.contains('is-strong')!==strong)layer.classList.toggle('is-strong',strong);
+    if(layer.dataset.group!==group)layer.dataset.group=group;
     Object.assign(ring.style,{left:`${r.x-4}px`,top:`${r.y-4}px`,width:`${r.width+8}px`,height:`${r.height+8}px`});
     if(!positionGuide(layer,{target:r,bounds,label,strong})){hide();return false;}
+    target=node;placementKey=nextPlacement;
     return true;
   }
   const guard=e=>{
@@ -69,6 +74,7 @@ export function createLobbyOnboarding({root,context,mark}) {
   root.addEventListener('click',guard,true);root.addEventListener('pointerdown',guard,true);window.addEventListener('keydown',guard,true);
   return {
     hide,
+    hideWeakHint(){if(!active)hide();},
     tick(dt=0){
       const c=context(),s=c.snapshot;
       if(!s||!c.visible||c.busy||document.hidden||root.hidden){hide();return;}

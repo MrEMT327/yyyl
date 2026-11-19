@@ -1,5 +1,5 @@
 import type Phaser from 'phaser';
-import type { Enemy, Projectile, RecordData, Point } from './kernel/model';
+import type { Enemy, RecordData, Point } from './kernel/model';
 import { createEnemyFlightMotion } from './scatter-gunboat-flight';
 
 // This adapter owns pixels only. Never write back into the simulation or mounts.
@@ -57,19 +57,6 @@ export function createPatrolDrone(scene: Phaser.Scene, modelId: number, px: numb
   states.set(view, state);
   poseLayers(state, state.flight.update(0), 0);
   return view;
-}
-
-// Actual live projectiles provide the visual trigger; never invent a fire timer.
-export function patrolDroneShots(enemies: readonly Enemy[], projectiles: readonly Projectile[], clock: number): Map<number, number> {
-  const owners = new Set(enemies.filter(e => e.modelId === PATROL_DRONE_MODEL).map(e => e.uid));
-  const result = new Map<number, number>();
-  if (!owners.size) return result;
-  for (const p of projectiles) {
-    if (p.owner !== 'enemy' || !owners.has(p.ownerUid) || p.held || p.age < p.warmup) continue;
-    const time = clock - p.age + p.warmup;
-    if (time > (result.get(p.ownerUid) ?? -Infinity)) result.set(p.ownerUid, time);
-  }
-  return result;
 }
 
 function poseLayers(state: State, pose: ReturnType<State['flight']['update']>, recoil: number): void {

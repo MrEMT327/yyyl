@@ -1,4 +1,4 @@
-import {nativeWeaponType,weaponDeploymentGate} from './native-weapon-loadout.js';
+import {nativeWeaponType} from './native-weapon-loadout.js';
 import { nativeWeaponDisplayText } from './native-weapon-display.js';
 import { advanceNativeLab, synchronizeNativeLabs } from './native-laboratory.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
@@ -47,7 +47,7 @@ export function replicaCollectionSnapshot(value, rawInventory, campaign={}) {
   synchronizeNativeLabs(progression,nativeLabProgressGate(campaign));
   const result = { revision: inventory.revision, gold: inventory.items[1] || 0, slots: progression.skinSkillSlots.slice(), pilotSlots:progression.pilotSkillSlots.slice(),
     useWeaponMap:{...progression.useWeaponMap},weaponSkillMap:structuredClone(progression.weaponSkillMap),
-    playerLevel:progression.playerLevel,weaponDeploymentGate:weaponDeploymentGate(progression.playerLevel), attributeNames: Object.fromEntries(Object.entries(catalog.attributeNames).map(([key,name])=>[key,nativeWeaponDisplayText(name)])), skinId: progression.role.skinId };
+    playerLevel:progression.playerLevel, attributeNames: Object.fromEntries(Object.entries(catalog.attributeNames).map(([key,name])=>[key,nativeWeaponDisplayText(name)])), skinId: progression.role.skinId };
   for (const kind of ['guns','skins','pilots']) result[kind] = catalog[kind].flatMap(row => {
     if (kind === 'pilots' && !isRosterPilot(row.id)) return [];
     const entry = progression[kind].find(entry => entry.id === row.id), owned = Boolean(entry?.active);

@@ -9,7 +9,7 @@ import { pilotSupplyTaskCenter } from './task-center-supply.js';
 import {taskChestArt} from './task-chest-model.js';
 import './task-center-restore.css';
 import './daily-signin.css';
-import {taskStatusMark,TASK_CLAIMED_IMAGE} from './task-center-icons.js';
+import {taskStatusMark} from './task-center-icons.js';
 import './task-center-layout.css';
 import {rewardItemSlot} from './reward-item-slot.js';
 import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';

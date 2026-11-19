@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "date": "2026-11-10",
+  "generator": "OpenAI built-in image_gen",
+  "purpose": "Mixed regular and irregular city grounds with independent building sprites",
+  "assets": [
+    {
+      "id": "ground-residential",
+      "file": "ground-residential.png",
+      "transparent": false,
+      "bytes": 2171861,
+      "sha256": "1fe927fae7317586f0ae34607b028899e98276bc4f9e771dcf80e96b0a8b369d"
+    },
+    {
+      "id": "ground-industrial",
+      "file": "ground-industrial.png",
+      "transparent": false,
+      "bytes": 2306898,
+      "sha256": "e18d1ab3e022450f1945fbffbdb3a303b36c7875623012f48a905c8a45029bc9"
+    },
+    {
+      "id": "building-office",
+      "file": "building-office.png",
+      "transparent": true,
+      "bytes": 683393,
+      "sha256": "e52ee92e86c9f20c6939aca9046b5984ab69adcc8ca4c3f5971ed54f6984f96b"
+    },
+    {
+      "id": "building-apartment",
+      "file": "building-apartment.png",
+      "transparent": true,
+      "bytes": 886742,
+      "sha256": "87b66dcd858355db8cc6e2475f0053d65029ceeb95110efbcce007758982cf35"
+    },
+    {
+      "id": "building-shops",
+      "file": "building-shops.png",
+      "transparent": true,
+      "bytes": 845788,
+      "sha256": "35b30b107a4777951cfa825c6dda8c97cb714b9a6b5712af37844d338f94ddcd"
+    },
+    {
+      "id": "building-warehouse",
+      "file": "building-warehouse.png",
+      "transparent": true,
+      "bytes": 969566,
+      "sha256": "4987c077b90d872c638eab6f6b99e7a67a1002f2f75d1b7bab8b7357db500e9b"
+    },
+    {
+      "id": "building-relay",
+      "file": "building-relay.png",
+      "transparent": true,
+      "bytes": 576968,
+      "sha256": "a33db6fa9539ed80c8d440bc1deac1eb026e4431e83e6c427ccd0e24b6a017d1"
+    },
+    {
+      "id": "building-utility",
+      "file": "building-utility.png",
+      "transparent": true,
+      "bytes": 696672,
+      "sha256": "b1093afd0e889be96919856d48d60687e446c678da32a59e70faa652d150de56"
+    },
+    {
+      "id": "ground-winding",
+      "file": "ground-winding.png",
+      "transparent": false,
+      "bytes": 2292988,
+      "sha256": "7c311c05fba9d79bf76cbd6adc09ccf17df5187106e8a337a81c6bc3ed235858"
+    },
+    {
+      "id": "ground-service-yard",
+      "file": "ground-service-yard.png",
+      "transparent": false,
+      "bytes": 2078804,
+      "sha256": "92b5ac3814ee9e937e9712aa2bf0638d6b9d2a19c25d15a025c5699620ce18e9"
+    },
+    {
+      "id": "building-row-shops-v1",
+      "file": "building-row-shops-v1.png",
+      "transparent": true,
+      "bytes": 643354,
+      "sha256": "156a32da4c9b41c75e8b9e45befdb1fd64e0b70f710ad7cc108cd45d1b4f19af"
+    }
+  ]
+}

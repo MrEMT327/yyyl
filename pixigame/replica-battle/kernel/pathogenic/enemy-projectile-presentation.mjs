@@ -12,6 +12,15 @@ const SPRITE_BODIES = {
   1100017:{art:'oval',width:.5*.55,height:15.8*.55},
   1100019:{art:'ring',width:2,height:2},
 };
+const SPECIAL_BODIES = {1300002:'cone',1100003:'moon',1100015:'moon'};
+const projectileArt = modelId => SPRITE_BODIES[modelId]?.art ?? SPECIAL_BODIES[modelId];
+const enemyArt = new Set([...Object.values(SPRITE_BODIES).map(row => row.art), ...Object.values(SPECIAL_BODIES)]);
+
+export function unusedChapterEnemyProjectileArt(modelIds) {
+  const active = new Set(modelIds.map(projectileArt));
+  return [...enemyArt].filter(art => !active.has(art)).map(art => PREFIX+art);
+}
+
 export const isCorrectedEnemyProjectile = b => b.owner === 'enemy' && MODELS.has(b.modelId) && !b.beam;
 
 export function withCorrectedEnemyResources(graph) {
@@ -23,7 +32,8 @@ export function withCorrectedEnemyResources(graph) {
       [PREFIX+'moon']: {width:1254,height:1254,file:'crescent-red-v1.png',url:'assets/original-projectiles/crescent-red-v1.png'},
       [PREFIX+'oval']: {width:992,height:1586,file:'oval-red-v1.png',url:'assets/original-projectiles/oval-red-v1.png'},
       [PREFIX+'square']: {width:1047,height:1503,file:'square-yellow-v1.png',url:'assets/original-projectiles/square-yellow-v1.png'},
-      [PREFIX+'ring']: {width:1254,height:1254,file:'ring-red-v1.png',url:'assets/original-projectiles/ring-red-v1.png'}}};
+      // The captured sprite uses this revision as well. Share the native image download.
+      [PREFIX+'ring']: {width:1254,height:1254,file:'ring-red-v1.png',url:'assets/original-projectiles/ring-red-v1.png?rev=chapters12-15-native'}}};
 }
 
 const rgba = (hex, alpha = 1) => [(hex>>16&255)/255,(hex>>8&255)/255,(hex&255)/255,alpha];
@@ -124,8 +134,8 @@ export function correctedEnemyProjectileMeshes(b, screen) {
   // Radii already contain native Scale/ScaleAnimMod: never multiply them twice.
   const point=(across,along)=>screen(x+dz*across*b.radiusX+dx*along*b.radiusZ,
     z-dx*across*b.radiusX+dz*along*b.radiusZ);
-  if([1300002,1100003,1100015].includes(b.modelId)){
-    const art=b.modelId===1300002?'cone':'moon';
+  const art = SPECIAL_BODIES[b.modelId];
+  if(art){
     const vertices=[[-1,-1,0,0],[1,-1,1,0],[1,1,1,1],[-1,1,0,1]].map(([x,y,u,v])=>{
       const p=point(x,y);return{position:[p.x,p.y],uv:[u,v],color:[1,1,1,1]};
     });

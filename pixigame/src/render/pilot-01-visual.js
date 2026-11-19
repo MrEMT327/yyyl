@@ -23,8 +23,9 @@ export function cropPilotTexture(texture,id){
  return frame?new Texture({source:texture.source,frame:new Rectangle(...frame)}):texture;
 }
 export function createPilot01Visual(player,texture,secondTexture=null,thirdTexture=null,extraTextures={}){
- if (player.aircraft?.model) {
+ if (player.aircraft?.model || player.aircraft?.deferredModel) {
    return { active: true, pilotId: 'pilot-01', nozzles: [], update(id,time,phase,invincible,disabled=false,pose={}) {
+     if (!player.aircraft.model) return;
      this.pilotId=id;player.aircraft.model.setPilot?.(id);player.aircraft.root.visible=true;
      // Sprite alpha flashing exposes overlapping solid meshes as a cutaway.
      // Keep the hardware solid and use the volume shield for spawn protection.

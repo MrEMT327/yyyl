@@ -3,6 +3,16 @@ import {sha256} from './digest.js';
 import {hydrateBuffers} from './buffers.js';
 export {hydrateBuffers} from './buffers.js';
 const decoder=new TextDecoder();
+const imageFile=/\.(?:png|jpe?g|webp|avif|gif|bmp|svg)$/i;
+
+function removeTextureMaps(graph,missingImages){
+ const removed=missingImages && new Set((graph.textures||[]).filter(texture=>missingImages.has(texture.image)).map(texture=>texture.uuid));
+ graph.images=removed?(graph.images||[]).filter(image=>!missingImages.has(image.uuid)):[];
+ graph.textures=removed?(graph.textures||[]).filter(texture=>!removed.has(texture.uuid)):[];
+ for(const material of graph.materials||[])for(const key of Object.keys(material)){
+  if((key==='map'||key.endsWith('Map'))&&(!removed||removed.has(material[key])))delete material[key];
+ }
+}
 export class PackageObjectLoader extends T.ObjectLoader{
  // Retain Three's exact image decoder/color/orientation rules, but do not
  // serialize independent normal, ORM and nameplate image decodes.
@@ -33,9 +43,9 @@ export function applyMaterialPatches(patches,materials){
   mat.customProgramCacheKey=()=>programKey;mat.needsUpdate=true;
  }
 }
-export async function loadPackage(entry,{signal,read=null,skipTextures=false,objectLoader=null,manifestFile='manifest.json'}={}){
+export async function loadPackage(entry,{signal,read=null,skipTextures=false,allowTextureFallback=false,objectLoader=null,assetBytes,manifestFile='manifest.json'}={}){
  const base=read?null:new URL(`../../public/fighters/${entry.slug}/`,import.meta.url),urls=[];let solid=null,fx=null;
- const nativeAssets=globalThis.__THUNDER_RUNTIME_GLOBALS__;
+ const nativeAssets=assetBytes??globalThis.__THUNDER_RUNTIME_GLOBALS__;
  const revoke=url=>nativeAssets?.revokeAssetBytesUrl?nativeAssets.revokeAssetBytesUrl(url):URL.revokeObjectURL(url);
  async function get(name,expected){
   if(!/^[\w.-]+$/.test(name)||name.startsWith('.'))throw new Error('非法资源文件名');
@@ -47,26 +57,52 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false,obj
   if(expected&&await sha256(bytes)!==expected)throw new Error(name+' 校验失败：资源版本混用或文件被改动，请重新打包目录');
   return bytes;
  }
+ async function getTexture(name,expected){
+  try{return await get(name,expected);}
+  catch(error){
+   if(!allowTextureFallback||signal?.aborted||error.name==='AbortError')throw error;
+   console.warn('[fighter-package] 战机贴图读取失败，使用材质底色',entry.slug,name,error.message);
+   return null;
+  }
+ }
  try{
   const manifest=JSON.parse(decoder.decode(await get(manifestFile,entry.manifestHash)));
   if(manifest.schemaVersion!==1||manifest.id!==entry.id||manifest.rendererRevision!==T.REVISION)throw new Error('战机包 ID / 格式 / 渲染器版本不匹配');
-  const files=Object.entries(manifest.files),loaded=await Promise.all(files.map(async([k,n])=>[k,await get(n,manifest.hashes[n])]));
+  const files=Object.entries(manifest.files),loaded=await Promise.all(files.map(async([key,name])=>[
+   key,await (imageFile.test(name)?getTexture(name,manifest.hashes[name]):get(name,manifest.hashes[name])),
+  ]));
   const data=Object.fromEntries(loaded);
   const structure=JSON.parse(decoder.decode(data.structure)),effects=JSON.parse(decoder.decode(data.effects)),view=JSON.parse(decoder.decode(data.view));
   if(effects.runtime!=='config-flight/1')throw new Error('未知特效运行时版本');
   hydrateBuffers(structure,data.buffers);hydrateBuffers(effects,data.buffers);
   for(const graph of [structure.scene,effects.graph]){
-   if(skipTextures){graph.images=[];graph.textures=[];for(const m of graph.materials||[])for(const k of Object.keys(m))if(k==='map'||k.endsWith('Map'))delete m[k];}
-   else for(const image of graph.images||[]){
-    const name=image.url;if(!manifest.hashes[name])throw new Error('纹理不在版本清单内');
+   if(skipTextures){removeTextureMaps(graph);continue;}
+   let missingImages;
+   for(const image of graph.images||[]){
+    const name=image.url,digest=manifest.hashes[name];if(!digest)throw new Error('纹理不在版本清单内');
     // Surface files were already fetched and verified with the package above.
     // Reuse those bytes rather than downloading every normal/ORM map twice.
     const loadedKey=files.find(([,file])=>file===name)?.[0];
-    const bytes=loadedKey===undefined?await get(name,manifest.hashes[name]):data[loadedKey];
-    const url=nativeAssets?.createAssetBytesUrl?nativeAssets.createAssetBytesUrl(bytes,'image/png'):URL.createObjectURL(new Blob([bytes],{type:'image/png'}));urls.push(url);image.url=url;
+    const bytes=loadedKey===undefined?await getTexture(name,digest):data[loadedKey];
+    if(!bytes){(missingImages ||= new Set()).add(image.uuid);continue;}
+    const url=nativeAssets?.createVerifiedAssetBytesUrl ? nativeAssets.createVerifiedAssetBytesUrl(bytes,'image/png',digest)
+      : nativeAssets?.createAssetBytesUrl ? nativeAssets.createAssetBytesUrl(bytes,'image/png')
+      : URL.createObjectURL(new Blob([bytes],{type:'image/png'}));
+    urls.push(url);image.url=url;
+   }
+   if(missingImages)removeTextureMaps(graph,missingImages);
+  }
+  const loader=objectLoader||new PackageObjectLoader();
+  async function parseGraph(graph){
+   try{return await loader.parseAsync(graph);}
+   catch(error){
+    if(!allowTextureFallback||!graph.images?.length||signal?.aborted||error.name==='AbortError')throw error;
+    console.warn('[fighter-package] 战机贴图解码失败，使用材质底色',entry.slug,error.message);
+    removeTextureMaps(graph);
+    return loader.parseAsync(graph);
    }
   }
-  const loader=objectLoader||new PackageObjectLoader();solid=await loader.parseAsync(structure.scene);fx=await loader.parseAsync(effects.graph);
+  solid=await parseGraph(structure.scene);fx=await parseGraph(effects.graph);
   if(signal?.aborted)throw new DOMException('已切换到其他 Tab','AbortError');
   const combo=new T.Group();combo.add(solid,fx);const {nodes,materials}=indexObjects(combo);applyMaterialPatches(effects.materialPatches,materials);
   for(const node of nodes.values()){node.updateMatrix();if(!node.matrix.elements.every(Number.isFinite))throw new Error('资源变换包含非有限数：'+node.name);}
@@ -74,6 +110,6 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false,obj
   for(const n of nodes.values())if(n.geometry)ownedGeometry.add(n.geometry);
   for(const m of materials.values())for(const v of Object.values(m))if(v?.isTexture)ownedTextures.add(v);
   let disposed=false;
-  return {entry,manifest,view,effects,solid,fx,nodes,materials,urls,bytes:loaded.reduce((n,[,b])=>n+b.byteLength,0),dispose(){if(disposed)return;disposed=true;nodes.forEach(n=>{if(n.isInstancedMesh)n.dispose();});ownedGeometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());ownedTextures.forEach(t=>t.dispose());urls.forEach(revoke);nodes.clear();materials.clear();solid.removeFromParent();fx.removeFromParent();combo.clear();}};
+  return {entry,manifest,view,effects,solid,fx,nodes,materials,urls,bytes:loaded.reduce((n,[,b])=>n+(b?.byteLength??0),0),dispose(){if(disposed)return;disposed=true;nodes.forEach(n=>{if(n.isInstancedMesh)n.dispose();});ownedGeometry.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());ownedTextures.forEach(t=>t.dispose());urls.forEach(revoke);nodes.clear();materials.clear();solid.removeFromParent();fx.removeFromParent();combo.clear();}};
  }catch(error){if(solid)disposeTree(solid);if(fx)disposeTree(fx);urls.forEach(revoke);throw error;}
 }

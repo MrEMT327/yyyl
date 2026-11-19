@@ -20,11 +20,6 @@ const direct=id=>{const row=items.get(id);return Boolean(row&&!row.autoUse&&row.
 const localRandomGroup=id=>Object.hasOwn(chapterDropNames,id);
 const unresolvedPairs=row=>rewardPairs(row).filter(([id])=>!direct(id));
 const rewardView=([id,count])=>{const target=direct(id)?localRewardPairs([[id,count]])[0][0]:id;return {id:target,originalId:id,count,name:itemName(target),localCompatibility:localRandomGroup(id),unverified:!direct(id)&&!localRandomGroup(id),preview:nativeRandomGroupPreview(id)};};
-function fixedChapterRewards(row) {
-  if(rewardPairs(row).some(([id,count])=>!Number.isSafeInteger(id)||id<=0||!Number.isSafeInteger(count)||count<=0))
-    throw Error('原版奖励配置无效，本次未领取');
-  return rewardPairs(row).filter(([id])=>direct(id)).map(([id,count])=>({id,count,name:itemName(id)}));
-}
 const compose=items.get(926);
 const [composeTarget,composeCost]=compose.itemTypeParam[0];
 

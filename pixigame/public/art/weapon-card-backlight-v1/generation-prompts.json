@@ -1,0 +1,10 @@
+[
+  {
+    "asset": "weapon-rays.png",
+    "prompt": "Create a single transparent-background VFX sprite for an original polished anime science-fiction game weapon card. This is ONLY the light behind the weapon; draw no weapon, UI, card, border, lettering, symbols, rings or scenery. Centered cool silver-white radial backlight with soft icy cyan bloom: about 10 to 14 elegant narrow light streaks of varied lengths and thickness, a few longer tapered shafts, wispy feathered edges, luminous white cores and restrained cyan diffusion. The rays radiate from a compact soft center, spread asymmetrically around it, with generous transparent spacing between rays. Premium delicate hand-painted game VFX texture, smooth high-quality alpha gradients, crisp bright accents that remain visible when reduced to a 120px card. No chunky ice spikes, no solid polygon star, no uniformly spaced mechanical spokes, no laser grid, no thick lens rings, no spark shower. Keep all light contained within the central 85% of a square image with fully transparent outer margins, no clipped rays. Color mostly white with subtle cool cyan; avoid saturated blue or dark shadows. Genuine transparent RGBA background with clean luminous edges, no checkerboard or black backing. Center of emission exactly at image center."
+  },
+  {
+    "asset": "soft-core.png",
+    "prompt": "Generate a transparent VFX texture: one SMALL, extremely soft, neutral silver-white bloom at the EXACT center of a square. Its bright core is diffused, not a hard dot, diameter only 8 percent of the image; the faint soft milky halo extends to around 55 percent of the image width and fades gently and continuously to fully transparent. Smooth delicate optical glow with a tiny hint of icy cyan. A restrained light sprite used behind a weapon UI thumbnail, gentle luminosity with subtle natural soft texture and no defined outline. No rays, no star, no circles or rings, no flare ghosts, no particles, no weapon, no object, no text, no border, no colored or black background. Genuine transparent RGBA with fully transparent wide outer margins, no checkerboard."
+  }
+]

@@ -71,7 +71,7 @@ body:has(#gui-casual-lobby:not([hidden])) #buildIdentity {top:3px!important;bott
 #gui-casual-lobby .pi-primary-weapon {padding-bottom:10px}
 #gui-casual-lobby .pi-primary-weapon .pi-slot,#gui-casual-lobby .pi-loadout>.pi-pos-0 {overflow:hidden}
 #gui-casual-lobby .pi-primary-weapon .pi-slot img,#gui-casual-lobby .pi-loadout>.pi-pos-0 img {transform:scale(1.55)}
-#gui-casual-lobby .pi-slot-label,#gui-casual-lobby .pi-slot-level {position:relative;z-index:1}
+#gui-casual-lobby .pi-slot-level {position:relative;z-index:1}
 #gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-item-wrap {padding-bottom:4.5cqw}
 #gui-casual-lobby .wc-page[data-catalog-kind='weapon'] .wc-item-name {height:4.5cqw;line-height:4.5cqw;font-size:clamp(11px,3.2cqw,14px)}
 #gui-casual-lobby .su-task .wc-button:not(:disabled)::before {filter:brightness(1.25)}

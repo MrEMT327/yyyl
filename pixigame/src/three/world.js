@@ -1,3 +1,6 @@
+import {createModularThemeLayer,syncModularThemeLayer} from './modular-theme-layer.js';
+import {campaignRunDefinition,createScenerySeed,reusedCampaignRunDefinition} from './campaign-run-layout.js';
+import {campaignMapSourceIndex} from './campaign-theme-layouts.js';
 import * as T from 'three';
 import {mapLayerGrade,mapAtmosphereShape,COAST_ISLAND_LAYOUT,COAST_ISLAND_Y_OFFSETS} from './map-scene-polish.js';
 import {createCloudModuleLayer,syncCloudModuleLayer} from './cloud-module-layer.js';
@@ -5,11 +8,14 @@ import {coastalWaterShader} from './coastal-water-shader.js';
 import {rainRippleShader} from './rain-ripple-shader.js';
 import {nightWaterShader} from './night-water-shader.js';
 import {sampleNightLandmarks} from './night-landmarks.js';
+import {gradeLocalNightMaterial} from './local-night-grade.js';
 import {lostCitySurfaceShader} from './lost-city-surface-shader.js';
 import {createFloatingPropLayer,syncFloatingPropLayer} from './floating-prop-layer.js';
 import {createRigidTerrainLayer,syncRigidTerrainLayer} from './rigid-terrain-layer.js';
 import {createGroundPropLayer,syncGroundPropLayer} from './ground-prop-layer.js';
-import { PERIPHERAL_SCENES, PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
+import { PERIPHERAL_LAYERS, FIVE_LAYER_SCENES, peripheralSceneForStage, layerLateralOffset, layerScrollOffset } from './peripheral-scenes.js';
+
+const campaignStageIndex=stage=>Number.isFinite(Number(stage))?Math.max(0,Math.floor(Number(stage))):0;
 
 const vertexShader = `varying vec2 terrainUv;void main(){terrainUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
 // The middle plane has a real transparent opening. Through it the distant
@@ -196,12 +202,23 @@ void main(){
   #include <colorspace_fragment>
 }`;
 
-export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLoader = new T.TextureLoader(), renderer = null, preloadInitial = true, initialStage = 0, sceneIds = null, layerMotion = null } = {}) {
+export function worldTextureSources(definition) {
+  const layout = FIVE_LAYER_SCENES[definition.id];
+  const types = layout
+    ? [...new Set(layout.layers.flatMap(layer => layer.modules ? layer.modules.map(module => module[0]) : [layer.source]))]
+    : ['depth', 'ground', 'foreground'];
+  if (layout?.urls.groundAlt) types.push('groundAlt');
+  if (layout?.urls.groundThird) types.push('groundThird');
+  const urls = {...layout?.urls, depth:definition.depthUrl, ground:definition.artUrl, foreground:definition.foregroundUrl};
+  return types.map(type => [type, urls[type]]);
+}
+
+export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLoader = new T.TextureLoader(), renderer = null, preloadInitial = true, initialStage = 0, sceneIds = null, layerMotion = null, layoutSeed } = {}) {
   const group = new T.Group();
   group.name = 'peripheral-chapter-world';
   scene.add(group);
   let disposed = false, elapsed = 0, lateral = 0, lastTime = null, lastMotionRevision;
-  let current = peripheralSceneForStage(initialStage);
+  let current = peripheralSceneForStage(initialStage), currentStage=campaignStageIndex(initialStage);
   const textures = new Map(),rain={value:0},night={value:0},nightResolution={value:new T.Vector2(540,960)};
   const status = new Map();
   // Upload one decoded chapter texture per idle turn, not a stack on the
@@ -222,7 +239,8 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     };
     uploadJob = idle ? view.requestIdleCallback(upload) : view.setTimeout(upload, 80);
   }
-  let layers = [], layerSceneId;
+  const reuseLayoutSeed=layoutSeed??createScenerySeed();
+  let layers = [], layerSceneId, layoutRevision=0, layoutRunId;
   function releaseLayers() {
     for (const {mesh,material,geometry,materials} of layers) {
       mesh.removeFromParent();
@@ -232,13 +250,20 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     layers=[];
   }
   function selectLayers() {
-    if (layerSceneId===current.id) return;
-    releaseLayers(); layerSceneId=current.id;
-    const definitions=FIVE_LAYER_SCENES[current.id]?.layers || PERIPHERAL_LAYERS;
+    const reused=campaignMapSourceIndex(currentStage)!==currentStage;
+    const key=reused?current.id+'/chapter/'+currentStage+'/'+layoutRevision:
+      current.id+(layoutSeed!==undefined&&current.variant>0?':'+layoutRevision:'');
+    if (layerSceneId===key) return;
+    releaseLayers(); layerSceneId=key;
+    const definitions=(FIVE_LAYER_SCENES[current.id]?.layers || PERIPHERAL_LAYERS)
+      .map(definition=>reused?reusedCampaignRunDefinition(current,definition,currentStage,reuseLayoutSeed,layoutRevision):
+        campaignRunDefinition(current,definition,layoutSeed,layoutRevision));
     layers=definitions.map((definition,index)=>{
       if(definition.modules){
-        const createLayer=definition.rigidTerrain?createRigidTerrainLayer:definition.groundedProps?createGroundPropLayer:definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer;
+        const createLayer=definition.themeModules?createModularThemeLayer:definition.rigidTerrain?createRigidTerrainLayer:definition.groundedProps?createGroundPropLayer:definition.role==='props'?createFloatingPropLayer:createCloudModuleLayer;
         const record=createLayer(definition,-1000+index*10,rain,night,nightResolution);
+        if(/^campaign-(desert|forest)-/.test(definition.sceneId??''))
+          for(const material of record.materials.values())gradeLocalNightMaterial(material,night);
         group.add(record.mesh);
         return record;
       }
@@ -287,7 +312,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
       mesh.visible = FIVE_LAYER_SCENES[current.id] ? definition.sceneId === current.id : !definition.sceneId && (!current.singleLayer || definition.id === 'middle');
       if (!mesh.visible) continue;
       if(definition.modules){
-        const syncLayer=definition.rigidTerrain?syncRigidTerrainLayer:definition.groundedProps?syncGroundPropLayer:definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer;
+        const syncLayer=definition.themeModules?syncModularThemeLayer:definition.rigidTerrain?syncRigidTerrainLayer:definition.groundedProps?syncGroundPropLayer:definition.role==='props'?syncFloatingPropLayer:syncCloudModuleLayer;
         syncLayer(record,textures,current.textureId||current.id,elapsed,layerMotion?.(definition,elapsed,1));
         continue;
       }
@@ -342,15 +367,9 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
         status.delete(key);
       }
     }
-    const types = FIVE_LAYER_SCENES[definition.id]
-      ? [...new Set(FIVE_LAYER_SCENES[definition.id].layers.flatMap(layer => layer.modules ? layer.modules.map(module=>module[0]) : [layer.source]))]
-      : ['depth', 'ground', 'foreground'];
-    if(FIVE_LAYER_SCENES[definition.id]?.urls.groundAlt)types.push('groundAlt');
-    if(FIVE_LAYER_SCENES[definition.id]?.urls.groundThird)types.push('groundThird');
-    record.promise = Promise.all(types.map(type => new Promise(resolve => {
+    record.promise = Promise.all(worldTextureSources(definition).map(([type,url]) => new Promise(resolve => {
     const key = `${id}/${type}`;
     status.set(key, 'loading');
-    const url = type === 'depth' ? definition.depthUrl : type === 'ground' ? definition.artUrl : type === 'foreground' ? definition.foregroundUrl : FIVE_LAYER_SCENES[definition.id]?.urls[type];
     if (!url) { status.set(key, 'procedural'); resolve(); return; }
     textureLoader.load(url, texture => {
       if (disposed || sceneCache.get(id) !== record) { texture.dispose(); resolve(); return; }
@@ -384,12 +403,15 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
   function update(time, stage = 0, options = {}) {
     if (disposed) return;
     const nextTime = Number.isFinite(time) ? Math.max(0, time) : 0;
-    const nextScene = peripheralSceneForStage(stage);
-    if (nextTime === lastTime && nextScene.id === current.id && options.motionRevision === lastMotionRevision) return;
+    const nextScene = peripheralSceneForStage(stage), nextStage=campaignStageIndex(stage);
+    const newRun=options.runId!==undefined&&layoutRunId!==undefined&&options.runId!==layoutRunId;
+    if(options.runId!==undefined)layoutRunId=options.runId;
+    if(newRun)layoutRevision++;
+    if (!newRun && nextTime === lastTime && nextScene.id === current.id && nextStage === currentStage && options.motionRevision === lastMotionRevision) return;
     // Camera interpolation can advance between equal simulation-time samples.
     // Refresh the layers then as well, rather than showing a stale position.
     lateral = Number.isFinite(options.lateral) ? Math.max(-1, Math.min(1, options.lateral)) : 0;
-    elapsed = nextTime; lastTime = nextTime; lastMotionRevision = options.motionRevision; current = nextScene;
+    elapsed = nextTime; lastTime = nextTime; lastMotionRevision = options.motionRevision; current = nextScene; currentStage=nextStage;
     requestScene(current);
     syncLayers();
   }
@@ -399,6 +421,7 @@ export function createWorldEnvironment(scene, { shadowsEnabled = true, textureLo
     update,
     setNight(enabled,width=540,height=960){if(!disposed){night.value=enabled?1:0;nightResolution.value.set(width,height);}},
     nightLights(camera,width=540,height=960){return disposed||!night.value?[]:sampleNightLandmarks(layers,camera,width,height);},
+    emissiveLights(camera,width=540,height=960){return disposed?[]:sampleNightLandmarks(layers,camera,width,height,false);},
     setRain(amount){if(!disposed)rain.value=Number.isFinite(amount)?Math.max(0,Math.min(1,amount)):0;},
     preload(stage) { return disposed ? Promise.resolve() : requestScene(peripheralSceneForStage(stage)); },
     setTextures() {},

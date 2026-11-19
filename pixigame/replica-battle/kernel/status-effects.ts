@@ -99,6 +99,9 @@ export interface StatusWeaponFire extends StatusSource { targetUid: number; buff
 export class EnemyStatusEffects {
   private readonly active = new Map<number, Map<number, ActiveStatus>>();
   private readonly weaponFires: StatusWeaponFire[] = [];
+  private attributeVersion = 0;
+  /** Changes only when the active attribute sources/layer counts can change. */
+  get attributeRevision(): number { return this.attributeVersion; }
   /** BuffBase.End only; callback observes attributes before DeInit. */
   onEnd?: (targetUid: number, buffId: number) => void;
   onAdd?: (targetUid: number, buffId: number, source: StatusSource) => void;
@@ -107,11 +110,12 @@ export class EnemyStatusEffects {
 
   clear(targetUid?: number): void {
     if (targetUid === undefined) {
+      if (this.active.size) this.attributeVersion++;
       for (const statuses of this.active.values()) for (const status of statuses.values()) this.removeSyncedBulletAttributes(status);
       this.active.clear(); this.weaponFires.length = 0;
     } else {
       for (const status of this.active.get(targetUid)?.values() || []) this.removeSyncedBulletAttributes(status);
-      this.active.delete(targetUid);
+      if (this.active.delete(targetUid)) this.attributeVersion++;
     }
   }
 
@@ -119,7 +123,7 @@ export class EnemyStatusEffects {
   remove(targetUid: number, buffId: number): void {
     const statuses = this.active.get(targetUid);
     const status = statuses?.get(buffId);
-    if (status) this.removeSyncedBulletAttributes(status);
+    if (status) { this.attributeVersion++; this.removeSyncedBulletAttributes(status); }
     statuses?.delete(buffId);
     if (!statuses?.size) this.active.delete(targetUid);
   }
@@ -210,7 +214,7 @@ export class EnemyStatusEffects {
         // Refresh only: original attacker snapshot and tick phase remain unchanged.
         if (definition.stackingType !== 2) current.remaining = definition.stackingType === 4 ? current.remaining + duration : duration;
         if (definition.stackingType >= 2 && current.layers < Number(definition.maxStackCount || 1)) {
-          current.layers++;
+          current.layers++; this.attributeVersion++;
           current.layerTimes.push(duration);
         }
         if (definition.buffClassName === 8) current.shield = Math.min(current.parameters.MaxCount || 1, current.shield + (current.parameters.AddCount || current.parameters.Count || 1));
@@ -229,7 +233,7 @@ export class EnemyStatusEffects {
       };
       // Type 6 replaces the old fire status, reinitializing both duration and immediate tick.
       if (current) this.removeSyncedBulletAttributes(current);
-      statuses.set(mod.buffId, status);
+      statuses.set(mod.buffId, status); this.attributeVersion++;
       this.syncAttributesToBullets(targetUid, status);
       if (definition.triggerType === 2 || definition.triggerType === 3) {
         const pulse = this.pulse(targetUid, status);
@@ -270,6 +274,7 @@ export class EnemyStatusEffects {
           const previousLayers = status.layers;
           status.layerTimes = status.layerTimes.map(time => time - dt).filter(time => time > 0);
           status.layers = status.layerTimes.length;
+          if (status.layers !== previousLayers) this.attributeVersion++;
           this.removeSyncedBulletAttributes(status, previousLayers - status.layers);
           if (!status.layers) this.end(targetUid, buffId);
         } else if (status.remaining <= 0) this.end(targetUid, buffId);

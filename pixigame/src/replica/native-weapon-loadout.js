@@ -1,13 +1,7 @@
 import catalog from './native-economy-catalog.json' with {type:'json'};
-import rules from './native-weapon-loadout-rules.json' with {type:'json'};
 import {validateWeaponSkillSlots} from './native-weapon-skill-slots.js';
 
-const config=key=>rules.config.find(row=>row.key===key).TypeInt;
-export const WEAPON_SLOT_PREOPEN_LEVEL=config('WeaponSlot2PreOpenLevel');
-export const WEAPON_SLOT_UNLOCK_LEVEL=config('WeaponSlot2UnlockLevel');
 export const nativeWeaponType=id=>catalog.guns.find(row=>row.id===id)?.weaponType||0;
-export const weaponDeploymentGate=playerLevel=>({showSecond:playerLevel>=WEAPON_SLOT_PREOPEN_LEVEL,
-  secondUnlocked:playerLevel>=WEAPON_SLOT_UNLOCK_LEVEL,unlockLevel:WEAPON_SLOT_UNLOCK_LEVEL});
 const record=value=>value&&typeof value==='object'&&!Array.isArray(value);
 
 /** Single canonical adapter for lobby, persistence and battle admission.
@@ -24,14 +18,10 @@ export function normalizeNativeWeaponLoadout(value,guns) {
     useWeaponMap={0:selected[0].id,1:0};
   }
   if(!record(useWeaponMap)||Object.keys(useWeaponMap).some(key=>!['0','1'].includes(key)))throw Error('武器出战槽无效');
-  const deployed={0:useWeaponMap[0],1:useWeaponMap[1]??0},used=new Set();
-  for(const slot of [0,1]){
-    const id=deployed[slot];
-    if(id===0&&slot===1)continue;
-    if(!Number.isSafeInteger(id)||!guns.some(row=>row.id===id&&row.active)||used.has(id))throw Error('出战武器未激活或重复装配');
-    if(slot===1&&!weaponDeploymentGate(playerLevel).secondUnlocked)throw Error('第二武器槽需要账号15级');
-    used.add(id);
-  }
+  const mainWeaponId=useWeaponMap[0];
+  if(!Number.isSafeInteger(mainWeaponId)||!guns.some(row=>row.id===mainWeaponId&&row.active))throw Error('出战武器未激活');
+  // Keep the old save shape and clear its second slot without touching ownership.
+  const deployed={0:mainWeaponId,1:0};
   const weaponSkillMap={};
   if(value.weaponSkillMap!==undefined){
     if(!record(value.weaponSkillMap))throw Error('武器技能配置无效');
@@ -71,30 +61,15 @@ export function normalizeNativeWeaponLoadout(value,guns) {
   return {playerLevel,useWeaponMap:deployed,weaponSkillMap,...(weaponSkillMigration?{weaponSkillMigration}:{})};
 }
 
-/** Mirrors GetBattleSkillWeaponIDs: only deployed types, deduplicated IDs. */
+/** Only the equipped weapon's type supplies star skills to a sortie. */
 export function battleWeaponSkillSources(value,guns){
-  const loadout=normalizeNativeWeaponLoadout(value,guns),sources=new Set();
-  for(const id of Object.values(loadout.useWeaponMap)){
-    if(!id)continue;
-    for(const source of loadout.weaponSkillMap[nativeWeaponType(id)]||[])if(source)sources.add(source);
-  }
-  return [...sources];
+  const loadout=normalizeNativeWeaponLoadout(value,guns);
+  const type=nativeWeaponType(loadout.useWeaponMap[0]);
+  return (loadout.weaponSkillMap[type]||[]).filter(Boolean);
 }
 
 export function selectNativeWeapon(value,id,slot){
+  if(slot!==undefined&&slot!==0)throw Error('只能携带一把出战武器');
   if(!value.guns.some(row=>row.id===id&&row.active))throw Error('原版武器尚未拥有');
-  const map={...value.useWeaponMap},existing=[0,1].find(key=>map[key]===id);
-  if(slot===undefined){
-    if(existing!==undefined)return map;
-    if(!map[0])slot=0;
-    else if(weaponDeploymentGate(value.playerLevel).secondUnlocked&&!map[1])slot=1;
-    else if(weaponDeploymentGate(value.playerLevel).secondUnlocked)throw Error('请选择要替换的出战武器槽');
-    else slot=0;
-  }
-  if(![0,1].includes(slot))throw Error('武器出战槽无效');
-  if(slot===1&&!weaponDeploymentGate(value.playerLevel).secondUnlocked)throw Error('第二武器槽需要账号15级');
-  // Moving an already deployed ID exchanges slots; never duplicates its skill.
-  if(existing!==undefined&&existing!==slot)map[existing]=map[slot];
-  map[slot]=id;
-  return map;
+  return {0:id,1:0};
 }

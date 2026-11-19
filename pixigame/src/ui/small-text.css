@@ -10,7 +10,7 @@
 }
 #gui-casual-lobby.peripheral-lobby .lobby-resource-bar small {font-size:10px;font-weight:600;text-shadow:none;line-height:1.2}
 #gui-casual-lobby.peripheral-lobby .psd-main-identity small {font:600 10px/1.3 var(--small-ui-font);text-shadow:none}
-#gui-casual-lobby.peripheral-lobby .psd-main-star-total {font-size:clamp(11px,3cqw,13px);line-height:1.2}
+#gui-casual-lobby.peripheral-lobby .psd-main-star-total {font-size:clamp(10px,calc(7px + 1.25cqw),13px);line-height:1.2}
 
 /* These compact cards have fixed PSD slots: improve glyphs within the slots. */
 #gui-casual-lobby.peripheral-lobby .ag-card>b {font-size:clamp(11px,3cqw,13px);font-weight:700;line-height:1.3}

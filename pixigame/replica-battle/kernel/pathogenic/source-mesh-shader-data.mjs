@@ -10,9 +10,10 @@ export function updateSourceMeshShaderData(data,item,source,time,line,gain,opaci
  data.time=time;data.projectilePalette=palette;
  for(let i=0;i<3;i++)data.color[i]=line?gain:item.color[i];data.color[3]=line?opacity:item.color[3]*opacity;
  const m=item.matrix??IDENTITY;matrix3(inverseMatrix(m,data.inverseScratch),data.screenToLocal);matrix3(m,data.localToScreen);matrix4(m,data.modelMatrix);
- const w=source.width,h=source.height,crop=line?null:item.texture?.crop;
+ const w=source.pathogenicLogicalSize?.[0]??source.width,h=source.pathogenicLogicalSize?.[1]??source.height,crop=line||source.pathogenicFallback?null:item.texture?.crop;
+ const [atlasX,atlasY]=line?[0,0]:(source.pathogenicAtlasOffset||[0,0]);
  data.textureSize[0]=w;data.textureSize[1]=h;
- data.uvRect[0]=(crop?crop[0]:0)/w;data.uvRect[1]=(crop?crop[1]:0)/h;data.uvRect[2]=(crop?crop[2]:w)/w;data.uvRect[3]=(crop?crop[3]:h)/h;
+ data.uvRect[0]=((crop?crop[0]:0)-atlasX)/w;data.uvRect[1]=((crop?crop[1]:0)-atlasY)/h;data.uvRect[2]=(crop?crop[2]:w)/w;data.uvRect[3]=(crop?crop[3]:h)/h;
  data.mainPremultiplied=installed.binding.premultiplied;data.mainRepeat=item.textureRepeat===2;
  data.uniforms=resolved.uniforms;data.textures=resolved.textures;return data;
 }

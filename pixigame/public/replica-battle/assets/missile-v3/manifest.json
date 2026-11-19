@@ -1,35 +1,28 @@
 {
   "version": 3,
-  "date": "2026-11-06",
-  "generator": "built-in image_gen",
-  "prompt": "Use case: style-transfer / precise-object-edit.\nAsset type: transparent missile projectile body sprite for a polished vertical aircraft game.\nImage 1 is the EDIT TARGET: the currently used tall gold missile with orange-red pointed nose. Image 2 and Image 3 are STYLE REFERENCES ONLY: the game's simple, readable weapon icons. Output just ONE missile body, no icon tile, background, UI, fire or effects.\nPreserve the target's straight upright narrow silhouette, nose pointing up, exactly front-on symmetric view, two small swept tail fins and a short nozzle at bottom. Preserve its overall gold/yellow body and orange-red nose identity. The complete missile should have roughly the same 4.1:1 height-to-width ratio INCLUDING its tail fins. Center it with transparent padding on every side, no cropped points or fins.\nMain correction: the current missile is too detailed and polished like a different game. Redraw it with the clean illustrated simplicity of the reference weapons: confident smooth contours, a tidy narrow dark blue-gray outline, large clean color shapes, only two or three broad shaded planes plus ONE short restrained ivory highlight, light volume, very restrained bevel. The missile needs to remain readable at about 35 to 55 pixels high in play. Keep its center body mostly uninterrupted, with at most ONE simple joint near the lower tail, no stack of rings or strips. Nose one smooth orange-red shape, body one warm gold form, fins one simple gold form each, nozzle one small dark slate form. Outline narrow enough to avoid large black areas.\nRemove the repeated armored panels, long dark center seams, metal banding, chrome collars, multiple inset polygons, grooves, ribbed exhaust, fine edge highlights, realistic reflections and shiny cylindrical rendering. No scratches, texture, cracks, bolts, screw heads, labels, stripes, lettering, stars or decoration. Do not add rings or decorative framing. No glowing halo, no flame, no smoke, no shadow underneath, no drop shadow, no checkerboard painted into the image. Keep an actual transparent alpha background.\nThis is a clean stylized game SPRITE with modest broad shading, not a realistic 3D missile, not a glossy collectible icon, not an ultra-flat line pictogram. Match the references' visual simplicity while retaining the target's gold and orange-red palette.\n",
-  "sourceGeneratedPath": "C:/Users/lvan/.codex/generated_images/01a162ab-afec-7aa3-8c19-e8a4910290ff/exec-8800a3bb-ca9b-45d9-b8a8-72b160dd59c9.png",
-  "sourceSha256": "5caa9140466e8261715c1dbddcf701b3897bb5cf2ac417ff4ff3edd6e9f9eadf",
+  "date": "2026-11-10",
+  "generator": "Image API through bundled imagegen CLI",
+  "prompt": "Use case: precise-object-edit.\nAsset type: transparent missile body sprite for an existing game atlas. The attached image is the EDIT TARGET, not merely a style reference.\n\nMake ONE SMALL COLOR CORRECTION ONLY. The current missile's gold/yellow fuselage is a little too saturated and lemon-yellow in dark gameplay. Reduce the saturation of ONLY the yellow/gold main fuselage and the two yellow tail fins by roughly 20-25%, moving their color toward a softer, slightly muted warm golden/champagne yellow. Keep the same general brightness, broad highlight/shadow relationship and gold identity. It should still clearly be a gold missile, but no longer such a vivid yellow stick. Do not turn it gray, blue, white, brown, muddy, dark, rusty or metallic photorealistic.\n\nCRITICAL INVARIANTS: preserve the exact existing straight upright narrow silhouette and centered placement, nose pointing up, roughly 4.1:1 body height-to-width INCLUDING the tail fins. Keep the two swept fins, tiny nozzle, front-on symmetry, small seam near the tail, simple clean dark-blue-gray outline, exact flat illustrated drawing style and broad modest shading. Keep the orange-red pointed nose and its ivory highlight unchanged in hue. Keep the dark slate nozzle and the outline unchanged. Do not redraw, reshape, broaden, narrow, rotate, tilt, add detail or change any structural part. Preserve transparent breathing room around the whole missile at approximately the same proportional placement as the input. No tip or fin may be cropped.\n\nOnly recolor the existing yellow/gold surfaces slightly. No new texture, scratches, rings, banding, bolts, edge glows, stronger reflections or extra highlights. No flame, trail, exhaust effect, smoke, shadow, background, stars, UI, border, text or watermark. Genuine transparent alpha background outside the missile. Output the same single existing sprite with a restrained softer gold palette, in a 1024x1536 transparent canvas; scale the supplied sprite uniformly with no distortion to preserve its proportions, and use transparent side padding as necessary. Do not stretch the missile to the canvas aspect ratio.\n",
+  "sourceGeneratedPath": "C:\\Users\\lvan\\Documents\\ChatGPT\\模板\\missile-color-v4-20261110\\body.png",
+  "sourceSha256": "6caacc052133c1787978ec2b2f28954aeecea117f11023b267f5f7c0091d4deb",
   "sourceSize": [
-    948,
-    1660
+    1024,
+    1536
   ],
   "sourceCrop": {
-    "left": 299,
-    "top": 58,
-    "width": 351,
-    "height": 1512
+    "left": 355,
+    "top": 54,
+    "width": 314,
+    "height": 1414
   },
   "references": [
     {
       "role": "edit-target",
-      "path": "public/replica-battle/assets/missile-v2/body.png"
-    },
-    {
-      "role": "style-only",
-      "path": "public/art/project-weapon-skill-icons-v3/he-missile.webp"
-    },
-    {
-      "role": "style-only",
-      "path": "public/art/project-weapon-skill-icons-v3/rapid-autocannon.webp"
+      "path": "public/replica-battle/assets/missile-v3/body.png before color revision 1",
+      "sha256": "e8c8b6a96ff223b6b995be95359fcd83a9c0b89a3c7e8124ecceddf80868aa67"
     }
   ],
-  "processing": "Alpha-bound crop, uniform scaling into the existing 361×1485 body region, transparent canvas padding only; no repaint, color edit, added detail or shape deformation.",
+  "processing": "Image API softens gold surfaces; then established alpha crop, uniform fit into the unchanged 361x1485 region and transparent 948x1659 canvas. No manual recoloring or runtime presentation change.",
   "runtime": {
     "region": [
       295,
@@ -48,10 +41,18 @@
   "assets": [
     {
       "file": "body.png",
-      "sha256": "e8c8b6a96ff223b6b995be95359fcd83a9c0b89a3c7e8124ecceddf80868aa67",
-      "bytes": 464854,
+      "sha256": "dd32d3f1c8a9592f20fb8e46445004b3818f31044087a2189c6d4d6e3b67b965",
+      "bytes": 432939,
       "width": 948,
       "height": 1659
     }
-  ]
+  ],
+  "colorRevision": 1,
+  "model": "gpt-image-2.5-flare",
+  "previousAssetSha256": "e8c8b6a96ff223b6b995be95359fcd83a9c0b89a3c7e8124ecceddf80868aa67",
+  "colorCheck": {
+    "oldGoldSaturation": 0.838138714887139,
+    "newGoldSaturation": 0.6284746125328484
+  },
+  "exhaustSha256": "78d64ba8a1853740fc3797069c89f94e2539fff05eb71fcad6985b27406887db"
 }

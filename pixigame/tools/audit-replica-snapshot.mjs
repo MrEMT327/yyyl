@@ -28,7 +28,10 @@ for (const row of manifest.files) {
   else reversiblePatches++;
 }
 for (const row of [...manifest.publicFiles, ...(manifest.originalAssetAdditions || [])]) {
-  if (sha(await readFile(resolve(publicRoot, row.path))) !== row.sha256) violations.push(`public/${row.path}`);
+  // Research-only originals are archived outside the served and shipping trees.
+  const referenceOnly = row.path.startsWith('assets/loadout-ui/') || row.path === 'data/loadout-ui.json';
+  const assetRoot = referenceOnly ? resolve(project, 'art/research-reference-archive/replica-battle') : publicRoot;
+  if (sha(await readFile(resolve(assetRoot, row.path))) !== row.sha256) violations.push(`public/${row.path}`);
 }
 const localize = value => {
   if (typeof value === 'string') return value.replace(/^\/assets\//, 'assets/');

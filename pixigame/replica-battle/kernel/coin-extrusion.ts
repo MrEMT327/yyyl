@@ -1,8 +1,7 @@
-import type Phaser from 'phaser';
-
 export const PROJECT_COIN_ATLAS = 'project-pickup-gold-thick-v1';
 export const PROJECT_COIN_FRAME_COUNT = 32;
-const FRAME_SIZE = 128, COLUMNS = 8;
+export const PROJECT_COIN_FRAME_SIZE = 128;
+const COLUMNS = 8;
 const RADIUS = 57, THICKNESS = 24, SEGMENTS = 32;
 // Opaque bounds of the approved orthographic face. Normalising this rectangle
 // preserves the artwork while giving the disc an exactly circular front.
@@ -27,10 +26,12 @@ function wallPath(ctx: CanvasRenderingContext2D, cosine: number, side: number, w
 /** Orthographic projection of a short cylinder rotating around its vertical
  * axis. The metal wall has its own geometry, bevels, shading and reeding. */
 export function drawProjectCoinFrame(ctx: CanvasRenderingContext2D, face: CanvasImageSource, angle: number) {
+  const image=face as HTMLImageElement;
+  const sx=(image.naturalWidth||Number(image.width)||1254)/1254,sy=(image.naturalHeight||Number(image.height)||1254)/1254;
   const signedCosine = Math.cos(angle), sine = Math.sin(angle), cosine = Math.abs(signedCosine);
   const side = sine * signedCosine >= 0 ? 1 : -1;
   const width = THICKNESS * Math.abs(sine), shift = side * width / 2;
-  ctx.save();ctx.translate(FRAME_SIZE / 2, FRAME_SIZE / 2);
+  ctx.save();ctx.translate(PROJECT_COIN_FRAME_SIZE / 2, PROJECT_COIN_FRAME_SIZE / 2);
   ctx.imageSmoothingEnabled = true;ctx.imageSmoothingQuality = 'high';
   // Rear cap seals the silhouette behind the separately shaded near wall.
   if (cosine > .002) {
@@ -61,7 +62,7 @@ export function drawProjectCoinFrame(ctx: CanvasRenderingContext2D, face: Canvas
   if (cosine > .015) {
     ctx.save();ctx.translate(shift,0);ctx.scale(signedCosine,1);
     ctx.beginPath();ctx.arc(0,0,RADIUS,0,Math.PI*2);ctx.clip();
-    ctx.drawImage(face,FACE.x,FACE.y,FACE.width,FACE.height,-RADIUS,-RADIUS,RADIUS*2,RADIUS*2);
+    ctx.drawImage(face,FACE.x*sx,FACE.y*sy,FACE.width*sx,FACE.height*sy,-RADIUS,-RADIUS,RADIUS*2,RADIUS*2);
     // The face dims as it turns away; the wall keeps its own metallic lighting.
     ctx.fillStyle = `rgba(45,20,0,${.16*(1-cosine)})`;ctx.fillRect(-RADIUS,-RADIUS,RADIUS*2,RADIUS*2);
     ctx.restore();
@@ -69,18 +70,19 @@ export function drawProjectCoinFrame(ctx: CanvasRenderingContext2D, face: Canvas
   ctx.restore();
 }
 
-/** Build the small reusable atlas once per game, before the battle starts.
- * Every live coin then draws one ordinary sprite, with no per-coin geometry. */
-export function ensureProjectCoinFrames(scene: Phaser.Scene, faceKey: string): string {
-  if (scene.textures.exists(PROJECT_COIN_ATLAS)) return PROJECT_COIN_ATLAS;
-  const face = scene.textures.get(faceKey).getSourceImage() as CanvasImageSource;
-  const atlas = scene.textures.createCanvas(PROJECT_COIN_ATLAS,FRAME_SIZE*COLUMNS,FRAME_SIZE*(PROJECT_COIN_FRAME_COUNT/COLUMNS));
-  if (!atlas) throw new Error('Unable to create project coin animation atlas');
-  const ctx = atlas.context;ctx.clearRect(0,0,atlas.width,atlas.height);
+/** Draw the sprite sheet in the asset build, outside the device's canvas renderer. */
+export function drawProjectCoinAtlas(canvas: HTMLCanvasElement, face: CanvasImageSource): void {
+  const size = PROJECT_COIN_FRAME_SIZE;
+  canvas.width = size * COLUMNS;
+  canvas.height = size * (PROJECT_COIN_FRAME_COUNT / COLUMNS);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Unable to draw project coin animation atlas');
   for (let frame = 0; frame < PROJECT_COIN_FRAME_COUNT; frame++) {
-    const x = frame % COLUMNS * FRAME_SIZE, y = Math.floor(frame/COLUMNS) * FRAME_SIZE;
-    ctx.save();ctx.translate(x,y);drawProjectCoinFrame(ctx,face,frame/PROJECT_COIN_FRAME_COUNT*Math.PI*2);ctx.restore();
-    atlas.add(frame,0,x,y,FRAME_SIZE,FRAME_SIZE);
+    const x = (frame % COLUMNS) * size;
+    const y = Math.floor(frame / COLUMNS) * size;
+    ctx.save();
+    ctx.translate(x, y);
+    drawProjectCoinFrame(ctx, face, frame / PROJECT_COIN_FRAME_COUNT * 2 * Math.PI);
+    ctx.restore();
   }
-  atlas.refresh();return PROJECT_COIN_ATLAS;
 }

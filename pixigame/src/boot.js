@@ -1,17 +1,22 @@
 // The HTML loading screen precedes module/CSS/image loading. Never expose the
 // legacy DOM while the renderer and the shared UI are still being constructed.
 import { memoryCheckpoint } from './replica/memory-checkpoints.js';
+import { installBrowserDiagnostics, recordDiagnostic } from './diagnostic-log.js';
 import { mountBuildIdentity } from './build-info.js';
 import './build-info.css';
 import { createStartupScreen } from './ui/startup-screen.js';
+import { mountDomButtonPress } from './ui/dom-button-press.js';
 import { installLocalRewardedAd } from './platform/local-rewarded-ad-runtime.js';
 import { startGameSession } from './platform/game-session-runtime.js';
 // Keep the browser title player-facing; build details remain in the developer panel.
+installBrowserDiagnostics();
 const playerFacingTitle=document.title;
 mountBuildIdentity();
 document.title=playerFacingTitle;
 memoryCheckpoint('host-boot');
 const startup=createStartupScreen();
+const disposeButtonPress=mountDomButtonPress();
+if(import.meta.hot)import.meta.hot.dispose(disposeButtonPress);
 let activeBridge, loadingRuntime, session;
 const requireSession=()=>{
   if(!session?.isCurrent())throw Object.assign(new Error('当前页面已停止运行，请重新进入游戏'),{code:'retired'});
@@ -26,6 +31,7 @@ try {
     },
     onLost(){
       activeBridge?.closeGameSession?.({save:false});
+      recordDiagnostic('启动会话结束', '页面已失去存档权限');
       startup.fail({message:'当前页面已停止运行，请重新进入游戏'});
     },
   });
@@ -53,9 +59,6 @@ try {
     const { mountPerformancePanel } = await import('./ui/performance-panel.js');
     requireSession();
     bridge.performancePanel=mountPerformancePanel({ bridge });
-    const { mountReplicaResearchTool } = await import('./replica/research-tool.js');
-    requireSession();
-    bridge.replicaResearchTool = mountReplicaResearchTool({ bridge });
     bridge.pixiLobby?.update();
     bridge.pixiCombatUi?.update();
     bridge.app.renderer.render({ container: bridge.app.stage });
@@ -66,6 +69,7 @@ try {
   await startup.ready(()=>{if(session.isCurrent())activeBridge?.unlockAudio?.();},{automatic:!activeBridge||activeBridge.game.state!=='menu'});
   memoryCheckpoint('host-visible');
 } catch (error) {
+  recordDiagnostic('启动失败', error?.message);
   session?.release();
   if(!['busy','retired'].includes(error.code))console.error('Game bootstrap failed', error);
   startup.fail(error.code ? {message:error.message} : undefined);

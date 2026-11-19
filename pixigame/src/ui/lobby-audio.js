@@ -95,7 +95,9 @@ export function createLobbySoundPlayer({context,enabled,fetchAudio=globalThis.fe
     try{gain.gain.cancelScheduledValues(ctx.currentTime);gain.gain.setValueAtTime(gain.gain.value,ctx.currentTime);gain.gain.linearRampToValueAtTime(0,ctx.currentTime+.015);source.stop(ctx.currentTime+.02);}catch{}
   }
   return {
-    prepare(){if(!enabled())return;const ctx=context();if(!ctx)return;ctx.resume().catch(()=>{});for(const key of Object.keys(LOBBY_SOUNDS))void load(key);},
+    // A navigation tap must not download/decode every reward sound at once.
+    // play(key) already joins and caches the requested cue on demand.
+    prepare(){if(!enabled())return;const ctx=context();if(!ctx)return;ctx.resume().catch(()=>{});void load('click');},
     async play(key){if(!LOBBY_SOUNDS[key]||!enabled())return;const request=++serial,at=now(),buffer=await load(key);
       if(!buffer||request!==serial||!enabled()||now()-at>300)return;
       const ctx=context();if(!ctx||ctx.state!=='running')return;

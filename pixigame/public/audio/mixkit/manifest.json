@@ -31,6 +31,21 @@
       "source": "mixkit-player-losing-or-failing-2042.wav",
       "file": "defeat-2042.wav",
       "sha256": "01fa604c84ea0a24e7508d1d109537f6c28e3db0d58ab79a76cf60892067eb99"
+    },
+    {
+      "source": "mixkit-magic-sparkle-whoosh-2350.wav",
+      "file": "ice-shot-2350-v1.wav",
+      "sha256": "99b66827bc5dde816ccf13262ec24bc3795432336b7130682f3e84bea8ece569",
+      "derivedFrom": "ice-sparkle-2350.wav",
+      "sourceSha256": "321d550c25ec93fa49e7c2a03bbbe99f2a483575109700e589dd3eb4d2e781c6",
+      "edit": {
+        "startSeconds": 0.14,
+        "durationSeconds": 0.24,
+        "fadeInSeconds": 0.006,
+        "fadeOutSeconds": 0.05,
+        "peak": 0.72,
+        "pitchChanged": false
+      }
     }
   ]
 }

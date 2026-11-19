@@ -4,6 +4,6 @@ const navAsset = id => `${import.meta.env?.BASE_URL ?? '/'}art/psd-main-v1/navig
 export function lobbyNavigation(activeTab = 'battle') {
   return tabs.map(([id,label],index) => {
     const active = id === activeTab;
-    return `<button type="button" class="pl-tab lobby-nav-tab ${active ? 'is-active' : ''}" data-action="tab" data-tab="${id}" aria-label="${label}" aria-current="${active ? 'page' : 'false'}"><img class="psd-nav-icon psd-nav-icon-${id}" src="${navAsset(id)}" alt="" aria-hidden="true" draggable="false"><span>${label}</span>${index<tabs.length-1?'<i class="psd-nav-divider" aria-hidden="true"></i>':''}</button>`;
+    return `<button type="button" class="pl-tab lobby-nav-tab${active ? ' is-active' : ''}" data-action="tab" data-tab="${id}" aria-label="${label}" aria-current="${active ? 'page' : 'false'}"><img class="psd-nav-icon psd-nav-icon-${id}" data-button-face data-button-visual src="${navAsset(id)}" alt="" aria-hidden="true" draggable="false"><span data-button-visual>${label}</span>${index<tabs.length-1?'<i class="psd-nav-divider" aria-hidden="true"></i>':''}</button>`;
   }).join('');
 }

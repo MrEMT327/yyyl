@@ -79,7 +79,8 @@ function attachCanvasChoiceFrame(panel,{width=600,height=1300,revealAt=0,tier='y
 
 /** The outline and its exterior bloom share a mesh, following the PSD cuts.
  * Its transparent middle leaves the weapon illustration and text clear. */
-export function attachBreakthroughChoiceCardAura(card,{width,height,revealAt=0}){
+export function attachBreakthroughChoiceCardAura(card,{width,height,revealAt=0,tier='y'}){
+  const palette=EDGE_PALETTES[tier]||EDGE_PALETTES.y;
   const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false;
   const scale=Math.min(width/224,height/562),pad=30*scale,inside=18*scale,cut=20*scale;
   const positions=[],indices=[];
@@ -89,11 +90,11 @@ export function attachBreakthroughChoiceCardAura(card,{width,height,revealAt=0})
   const geometry=new BufferGeometry();geometry.setAttribute('position',new Float32BufferAttribute(positions,3));geometry.setIndex(indices);
   const material=new ShaderMaterial({
     uniforms:{uTime:{value:0},uOpacity:{value:0},uWidth:{value:width},uHeight:{value:height},uCut:{value:cut},uScale:{value:scale},
-      uGold:{value:new Color(0xffb52e)},uHot:{value:new Color(0xfff6dc)}},
+      uTint:{value:new Color(palette.near)},uHot:{value:new Color(palette.core)}},
     vertexShader:`varying vec2 vPoint;void main(){vPoint=position.xy;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
     fragmentShader:`varying vec2 vPoint;uniform float uTime;uniform float uOpacity;
       uniform float uWidth;uniform float uHeight;uniform float uCut;uniform float uScale;
-      uniform vec3 uGold;uniform vec3 uHot;
+      uniform vec3 uTint;uniform vec3 uHot;
       void main(){
         vec2 p=vPoint;
         float d=max(max(-p.x,p.x-uWidth),max(-p.y,p.y-uHeight));
@@ -108,7 +109,7 @@ export function attachBreakthroughChoiceCardAura(card,{width,height,revealAt=0})
         float innerFade=smoothstep(-10.,-5.,d);
         float alpha=clamp((core*.96+closeGlow*(.40+glint*.12)+aura*.28)*breath*innerFade,0.,1.)*uOpacity;
         if(alpha<.001)discard;
-        gl_FragColor=vec4(mix(uGold,uHot,core*.94),alpha);
+        gl_FragColor=vec4(mix(uTint,uHot,core*.94),alpha);
         #include <colorspace_fragment>
       }`,
     transparent:true,depthTest:false,depthWrite:false,toneMapped:false,side:DoubleSide,

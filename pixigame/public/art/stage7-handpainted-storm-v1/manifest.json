@@ -1,0 +1,26 @@
+{
+  "chapter": 7,
+  "name": "雷暴空域",
+  "date": "2026-11-09",
+  "style": "第一关的手绘俯视场景",
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "name": "weather-ridge.png",
+      "alpha": true
+    },
+    {
+      "name": "cloud-pass.png",
+      "alpha": true
+    },
+    {
+      "name": "relay-terraces.png",
+      "alpha": true
+    },
+    {
+      "name": "storm-sea.png",
+      "alpha": false
+    }
+  ],
+  "notes": "三套云间山脊和气象设施，共用远层手绘云海；不改战斗模拟和天气规则。"
+}

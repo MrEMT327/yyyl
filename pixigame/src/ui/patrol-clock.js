@@ -23,7 +23,7 @@ export function refreshPatrolClocks(root,snapshot) {
   for(const node of root.querySelectorAll('[data-patrol-clock]')){
     const text=clock[node.dataset.patrolClock];
     if(node.textContent!==text)node.textContent=text;
-    node.dataset.patrolStatus=clock.status;
+    if(node.dataset.patrolStatus!==clock.status)node.dataset.patrolStatus=clock.status;
   }
 }
 

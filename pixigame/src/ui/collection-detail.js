@@ -86,7 +86,7 @@ function weaponShowcaseDetail(row,snapshot,{escape:e}){
   const stars=item=>Array.from({length:Math.max(item.star,...item.stages.map(stage=>stage.star))},(_,i)=>projectIcon('star',item.owned&&i<item.star?'':'is-icon-muted')).join('');
   const costs=row.costs.map(cost=>`<span ${itemInspectAttributes(cost.id,e)} class="${cost.available<cost.count?'is-short':''}">${e(cost.name)} <b>${cost.available}/${cost.count}</b></span>`).join('');
   const skillArt=nativeWeaponSkillArt(row);
-  const equip=access.available&&!access.using?button('nativeOperation','穿戴',`data-kind="guns" data-id="${access.selectionId}" data-revision="${collection.revision}" data-operation="select"`):'';
+  const equip=access.available&&!access.using?button('nativeOperation','替换出战',`data-kind="guns" data-id="${access.selectionId}" data-revision="${collection.revision}" data-operation="select"`):'';
   return {title:row.name,content:`<article class="wd-showcase" data-collection-kind="guns" data-weapon-id="${row.id}">
     <section class="wd-stage" aria-label="${e(row.name)}展示">
       <div class="wd-stat-block"><div class="wd-stars" aria-label="${row.owned?row.star:0} / ${model.maxStar} 星">${stars(row)}</div><dl>${model.attributes.map(stat=>`<div><dt>${e(stat.label)}</dt><dd>${e(stat.amount)}</dd></div>`).join('')}</dl></div>

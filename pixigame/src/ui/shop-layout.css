@@ -52,8 +52,9 @@
 #gui-casual-lobby .sn-box-actions .sn-button span {display:flex;align-items:center;justify-content:center;gap:calc(8 * var(--su));line-height:1.1}
 #gui-casual-lobby .sn-box-actions .sn-button img {width:calc(40 * var(--su));height:calc(40 * var(--su));object-fit:contain}
 #gui-casual-lobby .sn-box-actions .sn-free-cost {color:#a7eecc;font-size:.85em}
-#gui-casual-lobby .sn-box-free-time {position:absolute;left:calc(141.4 * var(--su));top:calc(345.875 * var(--su));width:calc(322.8 * var(--su));height:calc(50.25 * var(--su));display:grid;place-items:center;margin:0;color:#e0f2ff;font:500 calc(27 * var(--su))/1.1 'Microsoft YaHei',sans-serif;text-shadow:0 1px 2px #071727}
+#gui-casual-lobby .sn-box-free-time {position:absolute;left:calc(141.4 * var(--su));top:calc(345.875 * var(--su));width:calc(322.8 * var(--su));height:calc(50.25 * var(--su));display:grid;place-items:center;margin:0;color:#e0f2ff;font:500 calc(27 * var(--su))/1.1 'Microsoft YaHei',sans-serif;text-shadow:0 1px 2px #071727;text-align:center;white-space:nowrap}
 #gui-casual-lobby .sn-box-milestone {position:absolute;left:calc(802.475 * var(--su));top:calc(97.13 * var(--su));width:calc(152.81 * var(--su));height:calc(170.72 * var(--su));margin:0;padding:0;border:0;background:none;color:white;opacity:1;filter:none;cursor:pointer}
+#gui-casual-lobby .sn-box-milestone.is-claimable:enabled {z-index:2}
 #gui-casual-lobby .sn-box-milestone:disabled {opacity:1;filter:none;cursor:default}
 #gui-casual-lobby .sn-box-milestone>.reward-item-slot {position:absolute;left:calc(22.505 * var(--su));top:calc(6.06 * var(--su));width:calc(125 * var(--su));height:calc(125 * var(--su));aspect-ratio:1}
 #gui-casual-lobby .sn-milestone-value {position:absolute;left:calc(26.4 * var(--su));top:calc(132.36 * var(--su));width:calc(116.35 * var(--su));height:calc(34.82 * var(--su));display:grid;place-items:center;background:#0c233ac2;color:#effaff;font:700 calc(28 * var(--su))/1 'Microsoft YaHei',sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -68,7 +69,6 @@
 #gui-casual-lobby .sn-box-details .sn-box-pity {margin-top:12px;padding:10px 0;border-block:1px solid #8299ac66}
 #gui-casual-lobby .sn-box-details .sn-box-pity :is(p,small) {color:#203c52}
 #gui-casual-lobby .sn-box-details .sn-box-pity p b {color:#176082}
-#gui-casual-lobby .sn-box-details .sn-pity-rule {font-size:12px;line-height:1.6;text-align:left;color:#36566b;margin:10px 0}
 #gui-casual-lobby .sn-box-details h4 {margin:16px 0 6px;font-size:var(--psd-small-title-size);color:#203c52;text-align:left;line-height:var(--psd-small-title-leading,1.5)}
 /* Six daily offers share two rows. Each category owns its page, so the
    refresh controls and currency offers cannot leak into another category. */

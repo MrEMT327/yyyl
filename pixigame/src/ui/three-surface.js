@@ -21,7 +21,7 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
   // Object3D lets individual meshes keep painter order across nested overlays
   // and the existing lobby modals.
   const group = new THREE.Object3D();
-  const textures = new Set();
+  const textTextures = new Set();
   const controls = [];
   function material(color, opacity = 1, map = null) {
     return new THREE.MeshBasicMaterial({ color, opacity, map, transparent: true,
@@ -95,7 +95,9 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
 
   function text(value, x, y, { size = 20, color = '#edf6fb', weight = 500, align = 'left', maxWidth = 560, tracking = 0,
     wrap = false, maxLines = 0, minSize = size, lineHeight = 0, family = COMBAT_TYPE.family, outline } = {}) {
-    const canvas = documentRef?.createElement('canvas') || globalThis.wx?.createCanvas?.();
+    // These canvases only back textures. On WeChat, give them a native lifetime
+    // instead of registering detached DOM canvases for the whole game session.
+    const canvas = globalThis.wx?.createCanvas?.() || documentRef?.createElement('canvas');
     const ctx = canvas.getContext('2d'), source = String(value);
     let fontSize = size;
     const setFont = () => { ctx.font = `${weight} ${fontSize}px ${family}`; };
@@ -144,7 +146,7 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
       else paint(line, 2, baseline, maxWidth);
     });
     const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
-    texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; textures.add(texture);
+    texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; textTextures.add(texture);
     const mesh=quad(x - (align === 'center' ? width / 2 : align === 'right' ? width : 0), y - height / 2, width, height, '#ffffff', 1, texture);
     mesh.userData.uiText=source;
     if (wrap) { mesh.userData.uiTextLines=lines; mesh.userData.uiFontSize=fontSize; }
@@ -157,7 +159,15 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
   }
   function clear() {
     group.traverse(object => { object.geometry?.dispose(); object.material?.dispose(); });
-    group.clear(); textures.forEach(t => t.dispose()); textures.clear(); controls.length = 0;
+    group.clear();
+    for (const texture of textTextures) {
+      const canvas = texture.image;
+      texture.dispose();
+      texture.image = null;
+      canvas.width = canvas.height = 0;
+    }
+    textTextures.clear();
+    controls.length = 0;
   }
   return { group, controls, quad, panel, polygon, image, resourceIcon, line, text, button, clear, destroy: clear };
 }

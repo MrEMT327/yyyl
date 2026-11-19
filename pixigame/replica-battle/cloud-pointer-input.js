@@ -1,6 +1,6 @@
 // Keep ownership of a combat-UI gesture separate from flight controls. Losing
 // browser capture/focus is a cancellation, never a deferred button click.
-export function bindCloudPointerInput({surface,canvas,handlePointer,windowRef=window,documentRef=document}) {
+export function bindCloudPointerInput({surface,canvas,handlePointer,getScreen=()=>({width:600,height:1300}),windowRef=window,documentRef=document}) {
   let ownedPointer=null,lastPoint={x:0,y:0},disposed=false;
   const release=id=>{
     try {
@@ -20,7 +20,8 @@ export function bindCloudPointerInput({surface,canvas,handlePointer,windowRef=wi
     if(phase!=='start'&&ownedPointer===null)return;
     const rect=canvas.getBoundingClientRect();
     if(!(rect.width>0&&rect.height>0)){cancel();return;}
-    const point={x:(event.clientX-rect.left)*600/rect.width,y:(event.clientY-rect.top)*1300/rect.height};
+    const screen=getScreen();
+    const point={x:(event.clientX-rect.left)*screen.width/rect.width,y:(event.clientY-rect.top)*screen.height/rect.height};
     lastPoint=point;
     const owned=ownedPointer!==null;
     const captured=handlePointer({...point,phase});

@@ -10,6 +10,15 @@ export class CombatBloomPass extends UnrealBloomPass {
     this.activeMips = 4;
     this.zeroMip = new DataTexture(new Uint8Array(4), 1, 1);
     this.zeroMip.needsUpdate = true;
+    // The high pass, blur and compose shaders overwrite all pixels in these
+    // targets. Only the separate additive output pass blends with its background.
+    for (const target of [this.renderTargetBright, ...this.renderTargetsHorizontal, ...this.renderTargetsVertical]) {
+      target.depthBuffer = false;
+    }
+    for (const material of [this.materialHighPassFilter, ...this.separableBlurMaterials, this.compositeMaterial]) {
+      material.depthTest = false;
+      material.depthWrite = false;
+    }
   }
 
   render(renderer, writeBuffer, readBuffer, delta, maskActive) {
@@ -25,24 +34,26 @@ export class CombatBloomPass extends UnrealBloomPass {
     const alpha = renderer.getClearAlpha(), autoClear = renderer.autoClear;
     try {
       renderer.autoClear = false; renderer.setClearColor(this.clearColor, 0);
+      // Clearing color on each new target lets tile-based GPUs discard its
+      // previous contents. These full-target passes have no depth attachment.
       this.highPassUniforms.tDiffuse.value = readBuffer.texture;
       this.highPassUniforms.luminosityThreshold.value = this.threshold;
       this._fsQuad.material = this.materialHighPassFilter;
-      renderer.setRenderTarget(this.renderTargetBright); renderer.clear(); this._fsQuad.render(renderer);
+      renderer.setRenderTarget(this.renderTargetBright); renderer.clear(true, false, false); this._fsQuad.render(renderer);
       let input = this.renderTargetBright;
       for (let i = 0; i < mips; i++) {
         const material = this.separableBlurMaterials[i]; this._fsQuad.material = material;
         material.uniforms.colorTexture.value = input.texture;
         material.uniforms.direction.value = UnrealBloomPass.BlurDirectionX;
-        renderer.setRenderTarget(this.renderTargetsHorizontal[i]); renderer.clear(); this._fsQuad.render(renderer);
+        renderer.setRenderTarget(this.renderTargetsHorizontal[i]); renderer.clear(true, false, false); this._fsQuad.render(renderer);
         material.uniforms.colorTexture.value = this.renderTargetsHorizontal[i].texture;
         material.uniforms.direction.value = UnrealBloomPass.BlurDirectionY;
-        renderer.setRenderTarget(this.renderTargetsVertical[i]); renderer.clear(); this._fsQuad.render(renderer);
+        renderer.setRenderTarget(this.renderTargetsVertical[i]); renderer.clear(true, false, false); this._fsQuad.render(renderer);
         input = this.renderTargetsVertical[i];
       }
       this._fsQuad.material = this.compositeMaterial;
       u.bloomStrength.value = this.strength; u.bloomRadius.value = this.radius; u.bloomTintColors.value = this.bloomTintColors;
-      renderer.setRenderTarget(this.renderTargetsHorizontal[0]); renderer.clear(); this._fsQuad.render(renderer);
+      renderer.setRenderTarget(this.renderTargetsHorizontal[0]); renderer.clear(true, false, false); this._fsQuad.render(renderer);
     } finally {
       renderer.setClearColor(this._oldClearColor, alpha); renderer.autoClear = autoClear;
     }

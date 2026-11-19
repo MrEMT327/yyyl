@@ -1,8 +1,10 @@
 const PREFIX='host://missile-v2/';
+const MISSILE_PARTS=[['body',948,1659,[295,56,361,1485]],['exhaust',724,2172,[114,68,497,2037]]];
+export const MISSILE_ART_KEYS=MISSILE_PARTS.map(([name])=>PREFIX+name);
 const ROCKET='res://scn/player/projectiles/rocket.tscn';
 const BODY_HEIGHT=90;
-const BODY_REGION=[295,56,361,1485];
-const FLAME_REGION=[114,68,497,2037];
+const BODY_REGION=MISSILE_PARTS[0][3];
+const FLAME_REGION=MISSILE_PARTS[1][3];
 
 export function missilePresentation(projectile){
   const upgraded=projectile.modelId===1000012||projectile.modelId===1000014;
@@ -24,7 +26,7 @@ export function missilePresentation(projectile){
 export function withMissilePresentationResources(graph){
   const resources={...graph.resources},textures={...graph.textures};
   const add=(name,type,properties)=>{const id=PREFIX+name;resources[id]={id,type,properties};};
-  for(const [name,width,height,region]of [['body',948,1659,BODY_REGION],['exhaust',724,2172,FLAME_REGION]]){
+  for(const [name,width,height,region]of MISSILE_PARTS){
     const file=name+'.png';
     textures[PREFIX+name]={width,height,file,url:name==='body'?'assets/missile-v3/body.png':'assets/missile-v2/'+file};
     add(name+'-frame','AtlasTexture',{atlas:{$external:PREFIX+name},region});
