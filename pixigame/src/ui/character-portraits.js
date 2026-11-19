@@ -34,7 +34,7 @@ export function characterPortrait(pilot, className = '') {
   if (!config) return '';
   const framing = portraitFramingStyle(pilot.id);
   const placement = framing ? ` data-portrait-framed style="${framing}"` : '';
-  const click = config.feedback ? ' data-action="portraitFeedback" tabindex="0" role="button"' : ' role="img"';
+  const click = config.feedback ? ' data-action="portraitFeedback" data-button-press="off" tabindex="0" role="button"' : ' role="img"';
   return `<div class="character-portrait ${className}" data-character-portrait="${escape(pilot.id)}"${placement}${click} aria-label="${escape(pilot.name || config.label)}${config.feedback?'，点击互动':''}">${config.scene?`<img class="character-portrait-scene" src="${config.scene}" alt="" aria-hidden="true" draggable="false">`:''}<img class="character-portrait-fallback" src="${config.image}" alt="" aria-hidden="true" draggable="false"></div>`;
 }
 

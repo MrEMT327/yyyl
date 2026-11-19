@@ -20,9 +20,17 @@ export function orangeRaisedThighTorsoWeight(x,y){
 export function createOrangeMaterialRetarget(manifest){
  const layers=manifest.layers,groups=manifest.materialGroups,offsets=[];let count=0;
  for(const l of layers){offsets.push(count);count+=l.vertices.length;}
+ const matrices=layers.map(layer=>groups[layer.materialGroup].matrix);
  const byId=new Map(layers.map((l,i)=>[l.id,i]));
  const read=(positions,spec)=>{const o=offsets[byId.get(spec.layer)],out=[0,0];spec.vertices.forEach((v,i)=>{out[0]+=positions[o+v*2]*spec.weights[i];out[1]+=positions[o+v*2+1]*spec.weights[i];});return out;};
- const restManifest={...manifest,layers:layers.map(l=>({...l,vertices:l.vertices.flatMap((v,i)=>i%2?[]:transform(groups[l.materialGroup].matrix,[v,l.vertices[i+1]]))}))};
+ const restManifest={...manifest,layers:layers.map((layer,j)=>{
+  const vertices=Array(layer.vertices.length),[a,b,c,d,e,f]=matrices[j];
+  for(let i=0;i<vertices.length;i+=2){
+   const x=layer.vertices[i],y=layer.vertices[i+1];
+   vertices[i]=a*x+b*y+c;vertices[i+1]=d*x+e*y+f;
+  }
+  return {...layer,vertices};
+ })};
  function apply(positions,{sampleSurface,activeHand,time,motionName,jointPositions}){
   const deltas=new Map();
   const delta=name=>{
@@ -32,7 +40,13 @@ export function createOrangeMaterialRetarget(manifest){
    deltas.set(name,d);return d;
   };
   const map=(group,p)=>{const q=transform(groups[group].matrix,p),d=delta(group);return[q[0]+d[0],q[1]+d[1]];};
-  for(let j=0;j<layers.length;j++){const l=layers[j],o=offsets[j];for(let v=0;v<l.vertices.length;v+=2){const p=map(l.materialGroup,[positions[o+v],positions[o+v+1]]);positions[o+v]=p[0];positions[o+v+1]=p[1];}}
+  for(let j=0;j<layers.length;j++){
+   const l=layers[j],[a,b,c,d,e,f]=matrices[j],[dx,dy]=delta(l.materialGroup),start=offsets[j],end=start+l.vertices.length;
+   for(let i=start;i<end;i+=2){
+    const x=positions[i],y=positions[i+1];
+    positions[i]=a*x+b*y+c+dx;positions[i+1]=d*x+e*y+f+dy;
+   }
+  }
   let torsoPoint=null,pelvisPoint=null,pelvis=null;
   const seated=Boolean(manifest.seatedHipRigRevision&&manifest.materialUpperBody);
   if(manifest.materialUpperBody){

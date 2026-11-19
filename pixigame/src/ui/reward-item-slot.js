@@ -26,7 +26,12 @@ export function paintRewardItemSlot(surface, row, {x,y,size}, paintImage) {
   const artWidth=size*.8,artHeight=size*.71;
   paintImage(surface,row.image,x+(size-artWidth)/2,y+(size-artHeight)/2,artWidth,artHeight);
 
-  const fontSize=size*.22;
+  if(row.isNew){
+    const newSize=Math.max(11,Math.min(15,size*.22));
+    surface.text('新',x+size*.08,y+size*.07+newSize/2,{size:newSize,weight:800,color:'#fff0a8',outline:'#102234'});
+  }
+  if(row.showQuantity===false)return;
+  const fontSize=Math.max(9,Math.min(16,size*.22));
   surface.text('×'+rewardSlotAmount(row.amount),x+size*.91,y+size*.94-fontSize*.4,{
     size:fontSize,weight:400,family:'PsdPopup,"Microsoft YaHei",sans-serif',
     color:'#fff3cd',outline:'#102234',align:'right',maxWidth:size*.84,

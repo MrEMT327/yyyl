@@ -3,16 +3,18 @@ const clampPitch = value => Math.max(-MAX_PITCH, Math.min(MAX_PITCH, value));
 const wrapYaw = value => Math.atan2(Math.sin(value), Math.cos(value));
 
 // Keep view state on the canvas, not its host: lobby renders replace the host.
-export function createModelOrbitInteraction(canvas, { onChange = () => {}, onDragEnd = () => {} } = {}) {
+export function createModelOrbitInteraction(canvas, { onChange = () => {}, onDragEnd = () => {}, region } = {}) {
   let pitch = 0, yaw = 0, pointerId = null, lastX = 0, lastY = 0, interacted = false, disposed = false;
   let yawOnly = false;
   const window = canvas.ownerDocument?.defaultView;
+  if(!region){
   canvas.tabIndex = 0;
   canvas.setAttribute('role', 'img');
   canvas.setAttribute('aria-label', '战机三维预览');
   canvas.setAttribute('aria-keyshortcuts', 'ArrowLeft ArrowRight ArrowUp ArrowDown Home');
   canvas.style.touchAction = 'none';
   canvas.style.userSelect = 'none';
+  }
 
   function change(nextPitch, nextYaw) {
     pitch = yawOnly ? 0 : clampPitch(nextPitch); yaw = wrapYaw(nextYaw); interacted = true;
@@ -32,6 +34,7 @@ export function createModelOrbitInteraction(canvas, { onChange = () => {}, onDra
   }
   function down(event) {
     if (disposed || pointerId !== null || event.isPrimary === false || event.button !== 0) return;
+    if(region&&!region.hit(event))return;
     pointerId = event.pointerId; lastX = event.clientX; lastY = event.clientY;
     canvas.setAttribute('data-orbit-input', 'pointer');
     canvas.focus({ preventScroll: true });
@@ -41,7 +44,7 @@ export function createModelOrbitInteraction(canvas, { onChange = () => {}, onDra
   function move(event) {
     if (event.pointerId !== pointerId || disposed) return;
     if (event.pointerType === 'mouse' && event.buttons === 0) { finish(event); return; }
-    const width = Math.max(1, canvas.getBoundingClientRect().width);
+    const width = Math.max(1,region?.bounds().width??canvas.getBoundingClientRect().width);
     const dx = event.clientX - lastX, dy = event.clientY - lastY;
     lastX = event.clientX; lastY = event.clientY;
     // A drag across the preview turns the aircraft once, independent of DPR.
@@ -50,6 +53,7 @@ export function createModelOrbitInteraction(canvas, { onChange = () => {}, onDra
   }
   function keydown(event) {
     if (disposed || event.altKey || event.ctrlKey || event.metaKey) return;
+    if(region&&!region.focused())return;
     const step = event.shiftKey ? .3 : .12;
     switch (event.key) {
       case 'ArrowLeft': change(pitch, yaw - step); break;
@@ -62,7 +66,7 @@ export function createModelOrbitInteraction(canvas, { onChange = () => {}, onDra
     canvas.setAttribute('data-orbit-input', 'keyboard');
     event.preventDefault(); event.stopPropagation();
   }
-  function doubleClick(event) { if (event.button === 0) { reset(); event.preventDefault(); } }
+  function doubleClick(event) { if (event.button === 0 && (!region||region.hit(event))) { reset(); event.preventDefault(); } }
   const clearInput = () => canvas.setAttribute('data-orbit-input', '');
   const listeners = { blur: clearInput, pointerdown: down, pointermove: move, pointerup: finish, pointercancel: finish, lostpointercapture: finish, keydown, dblclick: doubleClick };
   for (const [name, handler] of Object.entries(listeners)) canvas.addEventListener(name, handler);

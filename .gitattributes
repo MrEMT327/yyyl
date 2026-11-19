@@ -24,3 +24,6 @@ pixigame/src/three/aircraft/game-lod-catalog.json text eol=lf
 
 # The generated damage number atlas is fingerprinted as LF bytes.
 pixigame/public/art/project-damage-numbers-v1/digits.xml text eol=lf
+
+# Vite embeds these shaders as raw strings. Preserve the accepted H5 shader bytes.
+pixigame/src/three/game-screen/*.glsl -text

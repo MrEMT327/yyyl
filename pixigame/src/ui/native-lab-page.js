@@ -2,6 +2,7 @@ import { nativeWeaponDisplayText } from '../replica/native-weapon-display.js';
 import { researchTabs, researchUnlockMessage } from './research-tabs.js';
 import labPresentation from '../replica/native-lab-presentation.json' with {type:'json'};
 import './native-lab-page.css';
+import './skill-element-backgrounds.css';
 import { nativeLabArt } from '../replica/native-collection-art.js';
 import { UNLOCK_ALL_CONTENT } from '../development-resources.js';
 import { nativeLabView } from '../replica/native-client-rules.js';
@@ -23,7 +24,11 @@ export function nativeLabPage({snapshot:s,helpers:h}) {
     const label=chapterLocked?'未开启':row.active?`等级${row.level}，${row.needActive?'技能待激活':maxed?'已满级':`图纸${material?.available||0}/${material?.count||0}`}`:'尚未解锁';
     const count=row.needActive?'待激活':maxed?'MAX':`${compact(material?.available||0,h)}/${h.number(material?.count||0)}`;
     const progress=material?Math.min(100,(material.available/material.count)*100):maxed?100:0;
-    return `<button type="button" class="research-card native-lab-card ${row.active&&!chapterLocked?'':'is-locked'}${chapterLocked?' is-chapter-locked':''}" data-action="nativeLab" data-id="${row.id}" aria-description="${e(row.name)}" aria-label="${e(row.name)}科研，${e(label)}"${chapterLocked?' aria-disabled="true"':''}><span class="research-card-shell" data-psd-quality="0"><img class="native-lab-face" src="${e(nativeLabArt(row))}" alt="${e(row.name)}" draggable="false"><strong class="native-lab-name">${e(row.name)}</strong>${view.canActivate||view.canUpgrade?`<span class="native-lab-notice">${view.canActivate?'激活':'升级'}</span>`:''}${row.active&&!chapterLocked?`<span class="native-lab-progress" aria-label="${e(label)}"><i style="width:${progress}%"></i><b>${count}</b></span><span class="native-lab-level" aria-label="等级${row.level}">${row.level}</span>`:`<span class="native-lab-lock">${h.icon('lock')}</span>${chapterLocked?'':`<span class="native-lab-locked-text">${e(label)}</span>`}`}</span></button>`;
+    const notice = view.canActivate || view.canUpgrade
+      ? '<span class="pl-notice-dot" aria-hidden="true"></span>'
+      : '';
+    const cardLabel = `${row.name}科研，${label}${view.canUpgrade ? '，可升级' : ''}`;
+    return `<button type="button" class="research-card native-lab-card ${row.active&&!chapterLocked?'':'is-locked'}${chapterLocked?' is-chapter-locked':''}" data-action="nativeLab" data-id="${row.id}" aria-description="${e(row.name)}" aria-label="${e(cardLabel)}"${chapterLocked?' aria-disabled="true"':''}><span class="research-card-shell" data-psd-quality="0"><img class="native-lab-face" src="${e(nativeLabArt(row))}" alt="${e(row.name)}" draggable="false"><strong class="native-lab-name">${e(row.name)}</strong>${notice}${row.active&&!chapterLocked?`<span class="native-lab-progress" aria-label="${e(label)}"><i style="width:${progress}%"></i><b>${count}</b></span><span class="native-lab-level" aria-label="等级${row.level}">${row.level}</span>`:`<span class="native-lab-lock">${h.icon('lock')}</span>${chapterLocked?'':`<span class="native-lab-locked-text">${e(label)}</span>`}`}</span></button>`;
   }).join('');
   return `<section class="research-page rg-page native-lab-page" aria-label="科研实验室"><header class="research-banner has-research-tabs">${researchTabs(s,'lab')}${button('nativeStats','出击属性','','research-summary')}</header><div class="research-scroll" tabindex="0" aria-label="科研项目列表"><div class="research-grid">${cards}</div></div></section>`;
 }

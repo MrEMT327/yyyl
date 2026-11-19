@@ -12,10 +12,107 @@
 #gui-casual-lobby .shop-native-v2 .sn-box-art {z-index:1}
 #gui-casual-lobby .shop-native-v2 .sn-box-art {left:calc(320 * var(--su))}
 #gui-casual-lobby .shop-native-v2 .sn-box-art img {animation:none}
+#gui-casual-lobby .sn-chest-particles {
+  position:absolute;
+  inset:-5% -15% -9%;
+  z-index:-1;
+  pointer-events:none;
+}
+#gui-casual-lobby .sn-chest-particle {
+  position:absolute;
+  left:var(--spark-x);
+  top:var(--spark-y);
+  width:calc(var(--spark-size) * var(--su));
+  aspect-ratio:1;
+  opacity:0;
+  background:radial-gradient(circle closest-side,#fff9df 10%,var(--box-light) 34%,#ffbe5c88 50%,#ffb54e20 72%,transparent 98%);
+  animation:sn-chest-particle-drift var(--spark-duration) linear infinite var(--spark-delay);
+}
+#gui-casual-lobby .sn-chest-particle.is-fleck {
+  border-radius:18%;
+  background:linear-gradient(145deg,#ffe6a9d1,#d79b4052 76%);
+}
+#gui-casual-lobby .sn-chest-particle.is-glint {
+  background:radial-gradient(circle closest-side,#fff4c8ba 8%,#ffcc7380 31%,#ffb64d29 65%,transparent 97%);
+  animation-name:sn-chest-particle-glint;
+  animation-timing-function:ease-in-out;
+}
+#gui-casual-lobby .sn-chest-particle.is-glint::after {
+  content:'';
+  position:absolute;
+  inset:16%;
+  background:linear-gradient(135deg,#fff3ca,#fffdf5 56%,#ffda89);
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+}
+@keyframes sn-chest-particle-drift {
+  0% {opacity:0;transform:translate(-50%,-50%) scale(.55) rotate(-16deg)}
+  22% {opacity:.9}
+  58% {opacity:.74}
+  90% {opacity:0}
+  100% {opacity:0;transform:translate(calc(-50% + var(--spark-drift) * var(--su)),calc(-50% - var(--spark-lift) * var(--su))) scale(.9) rotate(24deg)}
+}
+@keyframes sn-chest-particle-glint {
+  0%,10% {opacity:0;transform:translate(-50%,-50%) scale(.35)}
+  29% {opacity:1;transform:translate(-50%,-50%) scale(1)}
+  62%,100% {opacity:0;transform:translate(calc(-50% + var(--spark-drift) * var(--su)),calc(-50% - var(--spark-lift) * var(--su))) scale(.6)}
+}
+/* Clip the travelling highlight to the same image and fit as the chest. */
+#gui-casual-lobby .sn-chest-reflection {
+  position:absolute;
+  grid-area:1 / 1 / 2 / 2;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  -webkit-mask:var(--sn-chest-mask) center / contain no-repeat;
+  mask:var(--sn-chest-mask) center / contain no-repeat;
+  mix-blend-mode:screen;
+}
+#gui-casual-lobby .sn-chest-reflection::before,
+#gui-casual-lobby .sn-chest-reflection::after {
+  content:'';
+  position:absolute;
+  opacity:0;
+}
+#gui-casual-lobby .sn-chest-reflection::before {
+  inset:0 -8%;
+  background:linear-gradient(117deg,transparent 35%,#ffc26318 42%,#ffe8a565 47%,#fffdf1ee 50%,#fff3c88c 52%,#ffc26325 56%,transparent 64%);
+  -webkit-mask:linear-gradient(180deg,transparent 7%,#000 28% 48%,#0009 68%,transparent 95%);
+  mask:linear-gradient(180deg,transparent 7%,#000 28% 48%,#0009 68%,transparent 95%);
+  animation:sn-chest-sweep 4s linear infinite;
+}
+#gui-casual-lobby .sn-chest-reflection::after {
+  left:61%;
+  top:32%;
+  width:16%;
+  height:18%;
+  background:
+    radial-gradient(ellipse 50% 11% at center,#fffef7,#ffe8aaa8 35%,transparent 100%),
+    radial-gradient(ellipse 11% 50% at center,#fffef7,#ffe8aa88 35%,transparent 100%),
+    radial-gradient(closest-side,#fff6d6b0,#ffc76c55 45%,transparent);
+  animation:sn-chest-glint 4s ease-in-out infinite;
+}
+@keyframes sn-chest-sweep {
+  0% {opacity:0;transform:translateX(-70%)}
+  5% {opacity:.84;transform:translateX(-48.125%)}
+  24% {opacity:.84;transform:translateX(35%)}
+  32%,100% {opacity:0;transform:translateX(70%)}
+}
+@keyframes sn-chest-glint {
+  0%,15%,29%,100% {opacity:0;transform:rotate(-18deg) scale(.65)}
+  20% {opacity:.85;transform:rotate(-18deg) scale(1)}
+}
+#gui-casual-lobby:has([role='dialog']) .sn-chest-reflection::before,
+#gui-casual-lobby:has([role='dialog']) .sn-chest-reflection::after {animation-play-state:paused}
+@media (prefers-reduced-motion:reduce) {
+  #gui-casual-lobby .sn-chest-particle {animation:none}
+  #gui-casual-lobby .sn-chest-particle.is-glint {opacity:.3;transform:translate(-50%,-50%) scale(.65)}
+  #gui-casual-lobby .sn-chest-reflection::before {animation:none}
+  #gui-casual-lobby .sn-chest-reflection::after {animation:none;opacity:.32;transform:rotate(-18deg) scale(.78)}
+}
 #gui-casual-lobby .sn-floating-gear {position:absolute;z-index:2;display:grid;place-items:center;width:calc(138 * var(--su));height:calc(138 * var(--su));min-width:40px;min-height:40px;padding:0;border:0;background:none;cursor:pointer}
 #gui-casual-lobby .sn-floating-0 {left:calc(95 * var(--su));top:calc(220 * var(--su));--float-delay:-1.2s}
 #gui-casual-lobby .sn-floating-1 {left:calc(686 * var(--su));top:calc(105 * var(--su));--float-delay:-2.6s}
-#gui-casual-lobby .sn-floating-2 {left:calc(748 * var(--su));top:calc(272 * var(--su));width:calc(116 * var(--su));height:calc(116 * var(--su));min-width:0;min-height:0;--float-delay:-.3s;--float-rise:calc(-2 * var(--su))}
+#gui-casual-lobby .sn-floating-2 {left:calc(748 * var(--su));top:calc(272 * var(--su));width:calc(116 * var(--su));height:calc(116 * var(--su));min-width:0;min-height:0;--float-delay:-.3s;--float-rise:-1.72%}
 #gui-casual-lobby .sn-box:not(.is-advanced) .sn-floating-1 {left:calc(642 * var(--su));top:calc(102 * var(--su))}
 #gui-casual-lobby .sn-floating-orb {position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:50%;border:1px solid #c5edff5c;background:radial-gradient(ellipse at 38% 28%,#d6edff29,#628ca51a 66%,#aee0f02b);animation:sn-equipment-hover 4.4s ease-in-out infinite;animation-delay:var(--float-delay)}
 #gui-casual-lobby .is-advanced .sn-floating-orb {border-color:#ffe4aa73;background:radial-gradient(ellipse at 38% 28%,#ffe9a630,#dcac5b12 66%,#eed1a12b)}
@@ -42,18 +139,22 @@
 #gui-casual-lobby .sn-box-gallery .sn-reward-group-heading>h4 {margin:0;color:inherit;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .sn-reward-group-heading>b {color:#d9f1ff;font-size:clamp(12px,3.3cqw,15px);font-variant-numeric:tabular-nums;white-space:nowrap}
 #gui-casual-lobby .sn-reward-group-heading>b>span {font-size:.85em;font-weight:500}
-#gui-casual-lobby .sn-box-rules {padding:10px 0 4px;border-top:1px solid #7797b25c;color:#25465e;font-size:12px}
-#gui-casual-lobby .sn-box-rules>h4 {margin:0;font-size:var(--psd-small-title-size);line-height:var(--psd-small-title-leading,1.5)}
 #gui-casual-lobby .sn-reward-grid {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px 6px;padding:10px 5px 8px}
 #gui-casual-lobby .sn-reward-preview {min-width:0;margin:0;padding:0;text-align:center}
 #gui-casual-lobby .sn-reward-preview>.reward-item-slot {width:100%;height:auto;aspect-ratio:1}
 #gui-casual-lobby .sn-reward-preview figcaption {padding-top:3px;color:#16364d;font-size:clamp(11px,3.3cqw,15px);font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
-#gui-casual-lobby .sn-box-gallery .sn-pity-rule {padding:0;border:0;font-size:12px;line-height:1.6;margin:5px 0 0}
-@keyframes sn-equipment-hover {0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(var(--float-rise,calc(-8 * var(--su)))) rotate(3deg)}}
+@keyframes sn-equipment-hover {
+  0%,100%{transform:translateY(0%) rotate(-3deg)}
+  50%{transform:translateY(var(--float-rise,-5.8%)) rotate(3deg)}
+}
 @keyframes sn-spark-rise {0%,12%{opacity:0;transform:translateY(9px) scale(.5)}30%{opacity:.8}80%,100%{opacity:0;transform:translateY(-29px) scale(1)}}
-#gui-casual-lobby:has([role='dialog']) :is(.sn-floating-orb,.sn-box-spark,.sn-chest-image) {animation-play-state:paused}
+#gui-casual-lobby:has([role='dialog']) :is(.sn-floating-orb,.sn-box-spark,.sn-chest-image,.sn-chest-particle),
+#gui-casual-lobby .shop-native-v2:not([data-shop-active='boxes']) .sn-chest-particle {animation-play-state:paused}
 @media(prefers-reduced-motion:reduce) {#gui-casual-lobby :is(.sn-floating-orb,.sn-box-spark,.sn-chest-image) {animation:none!important}#gui-casual-lobby .sn-box-spark{opacity:0}}
 @container(max-width:350px) {
  #gui-casual-lobby .shop-native-v2 .sn-box-art {left:calc(360 * var(--su))}
  #gui-casual-lobby .sn-reward-grid {gap:8px 4px}
 }
+
+/* WeChat paints the entire canvas when a box ornament animates. */
+#gui-casual-lobby .shop-native-v2[data-shop-effects='static'] .sn-floating-orb { animation:none }

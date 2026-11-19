@@ -2,30 +2,8 @@ import type Phaser from 'phaser';
 import type { Pickup } from './model';
 
 const TEXTURE = 'original-airdrop-module-shell-v1';
-export const MODULE_PROFILES = {
-  rapid: { color: 0xffbb44, label: '射速强化' },
-  attack: { color: 0xff6657, label: '伤害强化' },
-  invulnerable: { color: 0x70edff, label: '无敌强化' },
-  shield: { color: 0x649fff, label: '护盾强化' },
-  overdrive: { color: 0xdd8dff, label: '综合强化' },
-  generic: { color: 0x8ce2c7, label: '强化模块' },
-  missile: { color: 0xff8d42, label: '导弹支援' },
-} as const;
-type Profile = keyof typeof MODULE_PROFILES;
-export const MODULE_ITEM_PROFILES: Readonly<Record<number, Profile>> = {
-  100: 'rapid', 101: 'invulnerable', 105: 'generic',
-  111: 'invulnerable', 112: 'invulnerable', 113: 'invulnerable',
-  117: 'overdrive', 118: 'overdrive', 119: 'overdrive',
-  148: 'shield', 149: 'shield', 150: 'attack', 151: 'attack',
-  152: 'rapid', 153: 'rapid', 156: 'shield', 157: 'rapid', 158: 'rapid',
-  160: 'overdrive', 161: 'overdrive', 1100: 'generic', 1101: 'generic',
-};
-
-export function moduleProfile(pickup: Pick<Pickup, 'kind' | 'itemId'>): Profile | undefined {
-  // Passive missile airdrop (114) and equipment support (159) share project art.
-  if(pickup.kind === 'trigger' && (pickup.itemId === 114 || pickup.itemId === 159))return 'missile';
-  return pickup.kind === 'buff' ? MODULE_ITEM_PROFILES[pickup.itemId] ?? 'generic' : undefined;
-}
+import {type Profile,MODULE_PROFILES,moduleProfile,airdropModulePose} from './pickup-presentation.ts';
+export {MODULE_PROFILES,MODULE_ITEM_PROFILES,moduleProfile,airdropModulePose} from './pickup-presentation.ts';
 
 export function preloadAirdropModuleArt(scene: Phaser.Scene) {
   scene.load.image(TEXTURE, './assets/airdrop-modules-v1/module-shell.png');
@@ -86,14 +64,6 @@ export function createAirdropModuleVisual(scene: Phaser.Scene, pickup: Pickup): 
   const shadow=scene.add.graphics().fillStyle(0x03121c,.3).fillEllipse(0,23,32,8);
   const beacon=scene.add.graphics().lineStyle(1,color,.35).strokeEllipse(0,22,39,12);
   return scene.add.container(0, 0, [shadow, beacon, body]).setData('airdropModule', { body, light, beacon, profile });
-}
-
-export function airdropModulePose(pickup: Pick<Pickup, 'age' | 'delay' | 'state' | 'stateTime'>) {
-  const time = Math.max(0, pickup.age - pickup.delay);
-  const absorbing = pickup.state === 'absorb';
-  const progress = absorbing ? Math.min(1, Math.max(0, pickup.stateTime) / .18) : 0;
-  return { y: absorbing ? -2 : -2 + Math.sin(time * 2.4) * 1.4,
-    scale: 1 - progress * .3, glow: absorbing ? .3 : .08 + (1 + Math.sin(time * 2.4)) * .035 };
 }
 
 export function updateAirdropModuleVisual(view: Phaser.GameObjects.Container, pickup: Pickup): boolean {

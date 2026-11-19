@@ -6,7 +6,7 @@ import {createAircraftPreviewHistory} from './aircraft-preview-history.js';
 
 // HDR light is composed with its own coverage, retaining transparent hangar
 // backgrounds. Only the aircraft texture is graded, never the surrounding UI.
-export function createAircraftFxRenderer(renderer,{samples=0,stableCoverage=false,temporalCoverage=false}={}) {
+export function createAircraftFxRenderer(renderer,{samples=0,stableCoverage=false,temporalCoverage=false,prepareOutput}={}) {
   // Canvas antialiasing does not reach this offscreen HDR pass. UI previews
   // opt in explicitly; small combat textures retain their existing budget.
   const source=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:Math.min(samples,renderer.capabilities?.maxSamples??0)});
@@ -41,6 +41,7 @@ export function createAircraftFxRenderer(renderer,{samples=0,stableCoverage=fals
         #include <premultiplied_alpha_fragment>
       }`,
   });
+  prepareOutput?.(material);
   const quad=new FullScreenQuad(material),viewport=new T.Vector4(),scissor=new T.Vector4(),color=new T.Color();
   const history=temporalCoverage?createAircraftPreviewHistory(renderer):null;
   let width=1,height=1,night=false;
@@ -64,7 +65,7 @@ export function createAircraftFxRenderer(renderer,{samples=0,stableCoverage=fals
         alpha=renderer.getClearAlpha(),toneMapping=renderer.toneMapping;
       renderer.getViewport(viewport);renderer.getScissor(scissor);renderer.getClearColor(color);
       const info=renderer.info,infoAutoReset=info?.autoReset;
-      if(info){info.autoReset=false;info.reset();}
+      if(info){info.autoReset=false;if(infoAutoReset)info.reset();}
       try{
         renderer.autoClear=false;renderer.setScissorTest(false);renderer.setClearColor(0,0);
         renderer.toneMapping=T.NoToneMapping;renderer.setRenderTarget(source);renderer.clear();draw();

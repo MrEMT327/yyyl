@@ -18,7 +18,7 @@ export function chapterRewardEntries(acquisition) {
   ]);
 }
 
-const milestone=entry=>entry.core?'通关奖励':entry.row.wave?`第 ${entry.row.wave} 波`:entry.row.room?`${entry.row.room} 个房间`:`${entry.row.time} 秒`;
+export const milestone=entry=>entry.core?'通关奖励':entry.row.wave?`第 ${entry.row.wave} 波`:entry.row.room?`${entry.row.room} 个房间`:`${entry.row.time} 秒`;
 
 // The original view focuses its current unclaimed ID and advances after a claim.
 // Preserve independent core grants in chapter order, without skipping an unmet row.
@@ -32,7 +32,7 @@ function rewardSlot(item) {
   return rewardItemSlot({name,amount:item.count,itemId:item.id,artwork,...rewardDisplayQuality({nativeItemId:item.id})},helpers);
 }
 
-function condition(entry) {
+export function condition(entry) {
   if(entry.row.claimed)return '已领取';
   if(entry.row.reached&&!entry.row.canClaim)return '奖励暂不可领取';
   if(entry.core)return `通关第${entry.chapter}章领取`;

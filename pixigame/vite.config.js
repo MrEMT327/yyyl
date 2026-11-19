@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
+import {threeH5RendererGuard} from './tools/three-h5-renderer-guard.mjs';
 import { fileURLToPath } from 'node:url';
 import { optimizeUiAssetUrls } from './src/ui/ui-image-source.js';
+import { assertReleaseAssets } from './tools/check-release-assets.mjs';
 import { copyShippingPublic } from './tools/copy-shipping-public.mjs';
 
 export default defineConfig(({ mode }) => ({
@@ -21,16 +23,23 @@ export default defineConfig(({ mode }) => ({
     // The local preview serves dist while rebuilding. Keep its existing public
     // files and hashed chunks available until new output is written; open tabs
     // can still request a chunk from the preceding build.
-    emptyOutDir: false,
+    outDir: ['zh','4399','release'].includes(String(mode)) ? 'dist-release' : 'dist',
+    emptyOutDir: ['zh','4399','release'].includes(String(mode)),
     copyPublicDir: false,
     rollupOptions: { input: {
       index: fileURLToPath(new URL('./index.html', import.meta.url)),
-      replicaBattle: fileURLToPath(new URL('./replica-battle/index.html', import.meta.url)),
-      pathogenicRange: fileURLToPath(new URL('./pathogenic-range.html', import.meta.url)),
-      gm: fileURLToPath(new URL('./tools/gm.html', import.meta.url)),
+      weaponGallery: fileURLToPath(new URL('./tools/combat-vfx-gallery.html', import.meta.url)),
+      ...(!['zh','4399','release'].includes(String(mode)) ? {
+        pathogenicRange: fileURLToPath(new URL('./pathogenic-range.html', import.meta.url)),
+        gm: fileURLToPath(new URL('./tools/gm.html', import.meta.url)),
+      } : {}),
     } },
   },
   plugins: [
+    { name:'strict-release-media', async configResolved() {
+      if(['zh','4399','release'].includes(String(mode))) await assertReleaseAssets();
+    } },
+    threeH5RendererGuard(fileURLToPath(new URL('./index.html',import.meta.url))),
     copyShippingPublic(),
     {
       name:'thunder-ui-delivery-images',enforce:'pre',

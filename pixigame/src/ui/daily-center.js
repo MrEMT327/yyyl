@@ -9,7 +9,7 @@ import { pilotSupplyTaskCenter } from './task-center-supply.js';
 import {taskChestArt} from './task-chest-model.js';
 import './task-center-restore.css';
 import './daily-signin.css';
-import {taskStatusMark,TASK_CLAIMED_IMAGE} from './task-center-icons.js';
+import {taskStatusMark} from './task-center-icons.js';
 import './task-center-layout.css';
 import {rewardItemSlot} from './reward-item-slot.js';
 import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
@@ -42,7 +42,7 @@ function readyCount(s,period) {
   return rewards.filter(row=>row?.canClaim).length
     +(period==='weekly'?(supply.week.tasks||[]).filter(task=>task.canClaim).length:supply.tasks.filter(task=>task.canClaim).length);
 }
-const hasReady=(s,id)=>!s.rewardPending && !s.rewardBusy && (id==='signin'?s.signIn?.canClaim:id==='achievements'?s.achievements?.items?.some(t=>t.claimable):readyCount(s,id)>0);
+export const hasReady=(s,id)=>!s.rewardPending && !s.rewardBusy && (id==='signin'?s.signIn?.canClaim:id==='achievements'?s.achievements?.items?.some(t=>t.claimable):readyCount(s,id)>0);
 
 export function dailyMilestoneAction(row,pending=false) {
   if(!row || pending || row.pending || row.claimed)return null;

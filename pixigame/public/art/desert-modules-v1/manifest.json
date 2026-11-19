@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "date": "2026-11-10",
+  "generator": "OpenAI Images API via imagegen skill CLI",
+  "model": "gpt-image-2.5-flare",
+  "purpose": "Six-theme campaign: natural modular desert replaces city chapters",
+  "assets": [
+    {
+      "id": "ground-sand",
+      "file": "ground-sand.png",
+      "transparent": false,
+      "bytes": 1396203,
+      "sha256": "6c72e109d4bb9757babecd54678bb8f72996ed6b2fd0fda99969ef648fca8d2c"
+    },
+    {
+      "id": "dune-crescent",
+      "file": "dune-crescent.png",
+      "transparent": true,
+      "bytes": 1511204,
+      "sha256": "391fa4e6fa7621eaed61c48d90447a020eb7e92f7d7869f3ae212b220cf18723"
+    },
+    {
+      "id": "dune-ridge",
+      "file": "dune-ridge.png",
+      "transparent": true,
+      "bytes": 1407080,
+      "sha256": "d0c07968a7032a17e02e7a569f66f47132b68dcb58d6fb1c8f40bad24a4530b4"
+    },
+    {
+      "id": "rock-ridge",
+      "file": "rock-ridge.png",
+      "transparent": true,
+      "bytes": 1546537,
+      "sha256": "b8e69f3cce50d49306f4db75ff7ec6b565c7d0c39decf2e485e258800639e37c"
+    },
+    {
+      "id": "boulders",
+      "file": "boulders.png",
+      "transparent": true,
+      "bytes": 1472473,
+      "sha256": "46a70cdb531b42ebdefd32c235b024c2fad49e11a3bab5001cf67e043ead1ca4"
+    },
+    {
+      "id": "oasis",
+      "file": "oasis.png",
+      "transparent": true,
+      "bytes": 1676863,
+      "sha256": "691b84d0235a609449e6b8a04af9380c573cfeef2af9d42f536dc4a80f7431fc"
+    },
+    {
+      "id": "palms",
+      "file": "palms.png",
+      "transparent": true,
+      "bytes": 1590012,
+      "sha256": "40d5b5e57c752a8044f88f88df2be8d20fb18ea1fd588a31623bb938807bc54a"
+    },
+    {
+      "id": "pyramid",
+      "file": "pyramid.png",
+      "transparent": true,
+      "bytes": 1362413,
+      "width": 1024,
+      "height": 1024,
+      "sha256": "22a6d11f944aa13bbf9e7cc737f9531aba96bef05685f3ad8ed0d1c2899887c7"
+    }
+  ]
+}

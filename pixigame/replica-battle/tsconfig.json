@@ -13,9 +13,12 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": false
   },
-  "include": [
-    "./**/*.ts"
-  ]
+  "files": [
+    "./h5-game.js"
+  ],
+  "include": []
 }

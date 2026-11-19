@@ -12,17 +12,10 @@ import {
   battleToScreen,
   screenToBattle,
 } from "./battle-camera.js";
-import { loadYoga } from "yoga-layout/load";
 
 // Project-owned display tree. All drawing is performed by Three.js; these
 // small primitives keep gameplay and UI independent of a rendering library.
 let nextId = 1;
-let revision = 0;
-let yoga;
-let yogaPromise;
-export async function initializeDisplay() {
-  yoga ||= await (yogaPromise ||= loadYoga());
-}
 export class Point {
   constructor(x = 0, y = x) {
     this.set(x, y);
@@ -107,13 +100,6 @@ export class Container {
   set angle(v) {
     this.rotation = (v * Math.PI) / 180;
   }
-  get layout() {
-    return this._layout;
-  }
-  set layout(value) {
-    this._layout = value ? { ...value } : null;
-    revision++;
-  }
   get width() {
     return this.getLocalBounds().width * Math.abs(this.scale.x);
   }
@@ -139,7 +125,6 @@ export class Container {
       n.parent = this;
       this.object3D.add(n.object3D);
     }
-    revision++;
     return nodes[0];
   }
   addChildAt(n, i) {
@@ -173,7 +158,6 @@ export class Container {
       this.object3D.remove(n.object3D);
       n.parent = null;
     }
-    revision++;
     return nodes[0];
   }
   removeChildren(begin = 0, end = this.children.length) {
@@ -496,16 +480,14 @@ export class Text extends Sprite {
     this._text = String(options.text ?? "");
     this.style = options.style || {};
     this.resolution = options.resolution || 2;
+    this.mipmaps = options.mipmaps === true;
   }
   get text() {
     return this._text;
   }
   set text(v) {
     const n = String(v ?? "");
-    if (n !== this._text) {
-      this._text = n;
-      revision++;
-    }
+    this._text = n;
   }
   _prepare() {
     const s = this.style,
@@ -580,6 +562,13 @@ export class Text extends Sprite {
       });
       if (this.texture !== Texture.EMPTY) this.texture?.source?.destroy?.();
       this.texture = Texture.from(canvas);
+      if (this.mipmaps) {
+        // A small label can cover several source texels per screen pixel.
+        // Sample a filtered level so thin CJK strokes survive that reduction.
+        const map = this.texture.source._texture;
+        map.generateMipmaps = true;
+        map.minFilter = THREE.LinearMipmapLinearFilter;
+      }
       this.texture.width = width + 4;
       this.texture.height = height + 4;
       this._textKey = key;
@@ -1012,119 +1001,136 @@ export class Ticker {
   }
 }
 
-const enumName = (value) => String(value).replace(/-/g, "_").toUpperCase();
-function applyLayoutStyle(node, style) {
-  node.setFlexDirection(yoga.FLEX_DIRECTION_COLUMN);
-  // Legacy UI uses CSS/Pixi flex defaults. Yoga's native default of zero
-  // prevents a 100%-height page from shrinking between the header and tabs.
-  node.setFlexShrink(1);
-  for (const [key, value] of Object.entries(style)) {
-    if (value == null) continue;
-    let fn = "set" + key[0].toUpperCase() + key.slice(1);
-    if (
-      [
-        "flexDirection",
-        "justifyContent",
-        "alignItems",
-        "alignSelf",
-        "alignContent",
-        "flexWrap",
-        "position",
-        "display",
-        "overflow",
-      ].includes(key)
-    ) {
-      const prefix = {
-        flexDirection: "FLEX_DIRECTION",
-        justifyContent: "JUSTIFY",
-        alignItems: "ALIGN",
-        alignSelf: "ALIGN",
-        alignContent: "ALIGN",
-        flexWrap: "WRAP",
-        position: "POSITION_TYPE",
-        display: "DISPLAY",
-        overflow: "OVERFLOW",
-      }[key];
-      fn = key === "position" ? "setPositionType" : fn;
-      node[fn]?.(yoga[prefix + "_" + enumName(value)]);
-      continue;
+export function synchronizeDisplayTree(view,container){
+  view._root = container;
+  if (container.object3D.parent !== view.scene)
+    view.scene.add(container.object3D);
+  const masks = new Set(),
+    seen = new Set();
+  const gather = (n) => {
+    seen.add(n);
+    if (n.mask) masks.add(n.mask);
+    for (const c of n.children) gather(c);
+  };
+  gather(container);
+  let order = 0;
+  const sync = (
+    n,
+    opacity = 1,
+    tint = new THREE.Color(0xffffff),
+    clips = [],
+    world = false,
+    filters = [],
+    bloom = false,
+    additive = false,
+  ) => {
+    world ||= view.worldLayers?.includes(n);
+    bloom ||= n.bloom === true;
+    additive ||= n.additive === true;
+    n.object3D.visible = n.visible && n.renderable && !masks.has(n);
+    if (!n.object3D.visible) return;
+    if (bloom) view._hasBloomSource = true;
+    n._prepare?.();
+    const m = n._matrix();
+    // Button feedback moves the artwork, while input keeps its layout matrix.
+    if (n.visualScale) {
+      const { x, y, factor } = n.visualScale;
+      m[4] += (m[0] * x + m[2] * y) * (1 - factor);
+      m[5] += (m[1] * x + m[3] * y) * (1 - factor);
+      for (let i = 0; i < 4; i++) m[i] *= factor;
     }
-    const edge = key.match(
-      /^(padding|margin)(Top|Right|Bottom|Left|Horizontal|Vertical)?$/,
+    n.object3D.matrixAutoUpdate = false;
+    n.object3D.matrix.set(
+      m[0],
+      m[2],
+      0,
+      m[4],
+      m[1],
+      m[3],
+      0,
+      m[5],
+      0,
+      0,
+      n.scaleDepth ? Math.abs(n.scale.x) : 1,
+      n.depth || 0,
+      0,
+      0,
+      0,
+      1,
     );
-    if (edge) {
-      const e = yoga["EDGE_" + (edge[2]?.toUpperCase() || "ALL")];
-      node["set" + edge[1][0].toUpperCase() + edge[1].slice(1)](e, value);
-      continue;
+    // Three r185 only propagates manually assigned matrices when marked
+    // dirty. Rebuilt menus and moved bullets must reach both batchers.
+    n.object3D.matrixWorldNeedsUpdate = true;
+    opacity *= n.alpha;
+    if (n._syncTintValue !== n.tint || !n._syncLocalTint) {
+      n._syncLocalTint ||= new THREE.Color();
+      n._syncLocalTint.set(n.tint ?? 0xffffff);
+      n._syncTintValue = n.tint;
     }
-    if (["top", "left", "right", "bottom"].includes(key)) {
-      node.setPosition(yoga["EDGE_" + key.toUpperCase()], value);
-      continue;
+    n._syncWorldTint ||= new THREE.Color();
+    tint = n._syncWorldTint.copy(tint).multiply(n._syncLocalTint);
+    filters = n.filters?.length ? [...filters, ...n.filters] : filters;
+    if (n.mask && !world) {
+      const b = n.mask.getBounds();
+      clips = [
+        ...clips,
+        new THREE.Plane(new THREE.Vector3(1, 0, 0), -b.x),
+        new THREE.Plane(new THREE.Vector3(-1, 0, 0), b.x + b.width),
+        new THREE.Plane(new THREE.Vector3(0, 1, 0), -b.y),
+        new THREE.Plane(new THREE.Vector3(0, -1, 0), b.y + b.height),
+      ];
     }
-    if (["gap", "rowGap", "columnGap"].includes(key)) {
-      node.setGap(
-        yoga[
-          "GUTTER_" +
-            (key === "rowGap" ? "ROW" : key === "columnGap" ? "COLUMN" : "ALL")
-        ],
-        value,
-      );
-      continue;
-    }
-    if (
-      typeof node[fn] === "function" &&
-      [
-        "width",
-        "height",
-        "minWidth",
-        "minHeight",
-        "maxWidth",
-        "maxHeight",
-        "flexGrow",
-        "flexShrink",
-        "flexBasis",
-        "aspectRatio",
-      ].includes(key)
-    )
-      node[fn](value);
-  }
-}
-export function layoutTree(root) {
-  if (!yoga) return;
-  const walk = (n) => {
-    if (!n.visible) return;
-    if (n.layout) {
-      build(n);
-      return;
-    }
-    for (const c of n.children) walk(c);
-  };
-  const build = (root) => {
-    const pairs = [];
-    const make = (n) => {
-      const yn = yoga.Node.create();
-      applyLayoutStyle(yn, n.layout);
-      pairs.push([n, yn]);
-      for (const c of n.children)
-        if (c.layout && c.visible) yn.insertChild(make(c), yn.getChildCount());
-      return yn;
-    };
-    const yn = make(root);
-    yn.calculateLayout(undefined, undefined, yoga.DIRECTION_LTR);
-    for (const [n, y] of pairs) {
-      const box = y.getComputedLayout();
-      n.layout.computedLayout = box;
-      if (n !== root) n.position.set(box.left, box.top);
-      const key = [box.left, box.top, box.width, box.height].join();
-      if (n._layoutKey !== key) {
-        n._layoutKey = key;
-        n.emit("layout", n.layout);
+    const visual = (c) => {
+      if (c.userData.display || c.userData.graphicsBatch || c.userData.nativeBatch) return;
+      c.renderOrder = order++;
+      if (c.material) {
+        for (const mat of Array.isArray(c.material)
+          ? c.material
+          : [c.material]) {
+          if (mat.userData.baseOpacity == null)
+            mat.userData.baseOpacity = mat.opacity;
+          mat.opacity = mat.userData.baseOpacity * opacity;
+          if (!mat.userData.baseColor && mat.color)
+            mat.userData.baseColor = mat.color.clone();
+          if (mat.color)
+            mat.color.copy(mat.userData.baseColor).multiply(tint);
+          if (mat.userData.baseBlending == null)
+            mat.userData.baseBlending = mat.blending;
+          mat.blending = additive
+            ? THREE.AdditiveBlending
+            : mat.userData.baseBlending;
+          const nativeBloom = bloom || (world && c.userData.bloom === true);
+          c.layers.set(nativeBloom ? 1 : 0);
+          if (nativeBloom && world && n.visible) view._hasBloomSource = true;
+          materialColorTransform(mat, filters);
+          const count = mat.clippingPlanes?.length || 0;
+          mat.clippingPlanes = clips;
+          if (count !== clips.length) mat.needsUpdate = true;
+        }
       }
-    }
-    yn.freeRecursive();
-    for (const [n] of pairs) for (const c of n.children) if (!c.layout) walk(c);
+      for (const cc of c.children) visual(cc);
+    };
+    for (const c of n.object3D.children) visual(c);
+    const children = n.sortableChildren
+      ? [...n.children].sort((a, b) => a.zIndex - b.zIndex)
+      : n.children;
+    for (const c of children)
+      sync(c, opacity, tint, clips, world, filters, bloom, additive);
   };
-  walk(root);
+  view._hasBloomSource = false;
+  sync(container);
+  for (const n of view._previousNodes || []) {
+    if (seen.has(n) || n.destroyed) continue;
+    let ancestor = n;
+    while (ancestor.parent) ancestor = ancestor.parent;
+    if (ancestor === container) continue;
+    n._disposeVisuals?.();
+    n._geometryKey = null;
+    n._key = null;
+    if (n instanceof Text && n.texture !== Texture.EMPTY)
+      n.texture.source.destroy();
+  }
+  view._previousNodes = seen;
 }
 
 export class WebGLRenderer {
@@ -1143,14 +1149,13 @@ export class WebGLRenderer {
     return this.bloomEnabled;
   }
   async init(options = {}) {
-    await initializeDisplay();
     this.uiOnly = options.uiOnly === true;
     if (this.uiOnly) this.bloomEnabled = false;
     this.resolution = options.resolution || 1;
     this.screen = new Rectangle(0, 0, options.width || 1, options.height || 1);
     this.canvas =
       options.canvas ||
-      globalThis.wx?.createCanvas?.() ||
+      (globalThis.__THUNDER_RUNTIME_GLOBALS__?.nativeDocument ? document.createElement('canvas') : globalThis.wx?.createCanvas?.()) ||
       document.createElement("canvas");
     this.three = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -1254,7 +1259,6 @@ export class WebGLRenderer {
     this.three.shadowMap.enabled = true;
     this.three.shadowMap.type = THREE.PCFShadowMap;
     this.resize(this.screen.width, this.screen.height);
-    this._lastRevision = -1;
     this._pointer = (e) => this.handlePointer(e);
     if (globalThis.__THUNDER_RUNTIME_GLOBALS__?.platformKind !== "wechat")
       for (const type of [
@@ -1344,10 +1348,15 @@ export class WebGLRenderer {
       } catch {}
     }
   }
-  resize(w, h) {
+  resize(w, h, resolution = this.resolution) {
     this.screen.width = Math.max(1, w);
     this.screen.height = Math.max(1, h);
-    this.three.setSize(this.screen.width, this.screen.height, false);
+    if (resolution === this.resolution) {
+      this.three.setSize(this.screen.width, this.screen.height, false);
+    } else {
+      this.resolution = resolution;
+      this.three.setDrawingBufferSize(this.screen.width, this.screen.height, resolution);
+    }
     this.camera.right = w;
     this.camera.bottom = h;
     this.camera.updateProjectionMatrix();
@@ -1389,132 +1398,7 @@ export class WebGLRenderer {
     if (this.menuPass?.()) return;
     this.graphicsBatcher.restore();
     this.nativeBatcher.restore();
-    this._root = container;
-    if (this._lastRevision !== revision) {
-      layoutTree(container);
-      this._lastRevision = revision;
-    }
-    if (container.object3D.parent !== this.scene)
-      this.scene.add(container.object3D);
-    const masks = new Set(),
-      seen = new Set();
-    const gather = (n) => {
-      seen.add(n);
-      if (n.mask) masks.add(n.mask);
-      for (const c of n.children) gather(c);
-    };
-    gather(container);
-    let order = 0;
-    const sync = (
-      n,
-      opacity = 1,
-      tint = new THREE.Color(0xffffff),
-      clips = [],
-      world = false,
-      filters = [],
-      bloom = false,
-      additive = false,
-    ) => {
-      world ||= this.worldLayers?.includes(n);
-      bloom ||= n.bloom === true;
-      additive ||= n.additive === true;
-      n.object3D.visible = n.visible && n.renderable && !masks.has(n);
-      if (!n.object3D.visible) return;
-      if (bloom) this._hasBloomSource = true;
-      n._prepare?.();
-      const m = n._matrix();
-      n.object3D.matrixAutoUpdate = false;
-      n.object3D.matrix.set(
-        m[0],
-        m[2],
-        0,
-        m[4],
-        m[1],
-        m[3],
-        0,
-        m[5],
-        0,
-        0,
-        n.scaleDepth ? Math.abs(n.scale.x) : 1,
-        n.depth || 0,
-        0,
-        0,
-        0,
-        1,
-      );
-      // Three r185 only propagates manually assigned matrices when marked
-      // dirty. Rebuilt menus and moved bullets must reach both batchers.
-      n.object3D.matrixWorldNeedsUpdate = true;
-      opacity *= n.alpha;
-      if (n._syncTintValue !== n.tint || !n._syncLocalTint) {
-        n._syncLocalTint ||= new THREE.Color();
-        n._syncLocalTint.set(n.tint ?? 0xffffff);
-        n._syncTintValue = n.tint;
-      }
-      n._syncWorldTint ||= new THREE.Color();
-      tint = n._syncWorldTint.copy(tint).multiply(n._syncLocalTint);
-      filters = n.filters?.length ? [...filters, ...n.filters] : filters;
-      if (n.mask && !world) {
-        const b = n.mask.getBounds();
-        clips = [
-          ...clips,
-          new THREE.Plane(new THREE.Vector3(1, 0, 0), -b.x),
-          new THREE.Plane(new THREE.Vector3(-1, 0, 0), b.x + b.width),
-          new THREE.Plane(new THREE.Vector3(0, 1, 0), -b.y),
-          new THREE.Plane(new THREE.Vector3(0, -1, 0), b.y + b.height),
-        ];
-      }
-      const visual = (c) => {
-        if (c.userData.display || c.userData.graphicsBatch || c.userData.nativeBatch) return;
-        c.renderOrder = order++;
-        if (c.material) {
-          for (const mat of Array.isArray(c.material)
-            ? c.material
-            : [c.material]) {
-            if (mat.userData.baseOpacity == null)
-              mat.userData.baseOpacity = mat.opacity;
-            mat.opacity = mat.userData.baseOpacity * opacity;
-            if (!mat.userData.baseColor && mat.color)
-              mat.userData.baseColor = mat.color.clone();
-            if (mat.color)
-              mat.color.copy(mat.userData.baseColor).multiply(tint);
-            if (mat.userData.baseBlending == null)
-              mat.userData.baseBlending = mat.blending;
-            mat.blending = additive
-              ? THREE.AdditiveBlending
-              : mat.userData.baseBlending;
-            const nativeBloom = bloom || (world && c.userData.bloom === true);
-            c.layers.set(nativeBloom ? 1 : 0);
-            if (nativeBloom && world && n.visible) this._hasBloomSource = true;
-            materialColorTransform(mat, filters);
-            const count = mat.clippingPlanes?.length || 0;
-            mat.clippingPlanes = clips;
-            if (count !== clips.length) mat.needsUpdate = true;
-          }
-        }
-        for (const cc of c.children) visual(cc);
-      };
-      for (const c of n.object3D.children) visual(c);
-      const children = n.sortableChildren
-        ? [...n.children].sort((a, b) => a.zIndex - b.zIndex)
-        : n.children;
-      for (const c of children)
-        sync(c, opacity, tint, clips, world, filters, bloom, additive);
-    };
-    this._hasBloomSource = false;
-    sync(container);
-    for (const n of this._previousNodes || []) {
-      if (seen.has(n) || n.destroyed) continue;
-      let ancestor = n;
-      while (ancestor.parent) ancestor = ancestor.parent;
-      if (ancestor === container) continue;
-      n._disposeVisuals?.();
-      n._geometryKey = null;
-      n._key = null;
-      if (n instanceof Text && n.texture !== Texture.EMPTY)
-        n.texture.source.destroy();
-    }
-    this._previousNodes = seen;
+    synchronizeDisplayTree(this,container);
     for (const layer of this.worldLayers || []) {
       if (layer.object3D.parent !== this.worldRoot) this.worldRoot.add(layer.object3D);
     }

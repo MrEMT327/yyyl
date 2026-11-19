@@ -5,7 +5,7 @@ export const PURPLE_DOCTOR_PLAYBACK = Object.freeze({sampleFps:30,transitionSeco
 
 // Keep the large mesh binding out of the initial game bundle. A closed or
 // superseded host must not receive a canvas after its asynchronous load finishes.
-export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BASE_URL ?? '/'}={}) {
+export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BASE_URL ?? '/',createSurface}={}) {
   const assetRoot=new URL(assetBase,location.href);
   if(!assetRoot.pathname.endsWith('/'))assetRoot.pathname+='/';
   const folder=new URL('art/purple-doctor-v1/',assetRoot);
@@ -27,7 +27,7 @@ export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BAS
       if(destroyed)return false;
       if(config.schema!=='purple-doctor-layered-runtime-v1'||!config.motionDurations?.idle||binding.layers?.length!==config.layers?.length)throw new Error('医生立绘资源格式不符');
       runtime=config;
-      player=createCubismPortraitPlayer({assetBase,modelPath:new URL(config.sourceModel,folder).href,
+      player=createCubismPortraitPlayer({assetBase,createSurface,modelPath:new URL(config.sourceModel,folder).href,
         texturePaths:[new URL(config.atlas,folder).href],camera:config.camera,
         createModelAdapter:model=>createPurpleDoctorModelAdapter(model,binding),
         ...PURPLE_DOCTOR_PLAYBACK,minimumResolution:1.5});

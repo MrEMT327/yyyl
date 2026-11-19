@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "date": "2026-11-09",
+  "kind": "individual terrain modules and tileable backgrounds",
+  "assets": [
+    {
+      "key": "city-block",
+      "file": "city-block.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1107869,
+      "transparentFraction": 0.676845259444101,
+      "sha256": "ed156ffeff7991fdf726a4eea6005f50fdab9a066bab46d25975a55c08ff9fb0"
+    },
+    {
+      "key": "city-park",
+      "file": "city-park.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1178853,
+      "transparentFraction": 0.6389066947490518,
+      "sha256": "d0b1d4813489d9345432b2f7ba78a2bb69a5363ad847edfa035dfaf0f6e30894"
+    },
+    {
+      "key": "city-depot",
+      "file": "city-depot.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 859097,
+      "transparentFraction": 0.7302641117801028,
+      "sha256": "cf504b5a533d41ac1ea2a62e7a46a44547d44b6c38e178a8c56056a42e23fd9d"
+    },
+    {
+      "key": "volcano-mesa",
+      "file": "volcano-mesa.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1565258,
+      "transparentFraction": 0.5126497917986208,
+      "sha256": "38542a73b14cd5a86c35cb3a4e0fd5ef89b52183882afaba5d265a81732012fd"
+    },
+    {
+      "key": "volcano-crater",
+      "file": "volcano-crater.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1698248,
+      "transparentFraction": 0.5319316305843629,
+      "sha256": "a4770cdee7dbdd10ef7c568b6f38ccd4a14e6e0bf4c7df2704fe791e27e28cfa"
+    },
+    {
+      "key": "volcano-station",
+      "file": "volcano-station.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1579693,
+      "transparentFraction": 0.5435575854236141,
+      "sha256": "5a39b76f2c889107d3339aa692697cc859a285f83f2cf469fe96d4487e6398db"
+    },
+    {
+      "key": "ice-floe",
+      "file": "ice-floe.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 838102,
+      "transparentFraction": 0.6942975460981001,
+      "sha256": "e6b1e6e25e31bb69a4595a38509469b67064f1ff32ffb0020827c1a9a864b810"
+    },
+    {
+      "key": "ice-ridge",
+      "file": "ice-ridge.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1235488,
+      "transparentFraction": 0.5953014150571441,
+      "sha256": "5a6c73ec9f0cc5f20a5732fbaa909ea76ae1b90c52fbfdcc281eb1c32b758a16"
+    },
+    {
+      "key": "ice-station",
+      "file": "ice-station.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1739270,
+      "transparentFraction": 0.4278627371676981,
+      "sha256": "394b5a5296334876dda46bf3fba947b9e038020d4f47fdf9b57ac6ef340fb307"
+    },
+    {
+      "key": "forest-grove",
+      "file": "forest-grove.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1334949,
+      "transparentFraction": 0.584749535139865,
+      "sha256": "a76fb5f306ca4970e69a9c45ac5a0e0725668e6483485acd40758d9bf56ba7de"
+    },
+    {
+      "key": "forest-ruins",
+      "file": "forest-ruins.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1540422,
+      "transparentFraction": 0.5311806048396328,
+      "sha256": "1d9f6d85ad1978cc7b430b425e908b374522fca6ccc810c4e3c33c05d6582185"
+    },
+    {
+      "key": "forest-relay",
+      "file": "forest-relay.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1570711,
+      "transparentFraction": 0.515522894520628,
+      "sha256": "0dac967ab3d40774c8f8aaa6f923994a97449a319b8c97b1cd6126f675345d49"
+    },
+    {
+      "key": "space-asteroid",
+      "file": "space-asteroid.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1496419,
+      "transparentFraction": 0.571473994541232,
+      "sha256": "f14e2c46e5ba4ded21f56f80d48d350c07601a867f9cdac9b6e0245087962631"
+    },
+    {
+      "key": "space-crater",
+      "file": "space-crater.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1409607,
+      "transparentFraction": 0.5490583243668109,
+      "sha256": "59e66ffd33f6aa0c78e8173d2968277a97e90863a3ad4bb687e8815b7aa4452d"
+    },
+    {
+      "key": "space-station",
+      "file": "space-station.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1782487,
+      "transparentFraction": 0.47771787377680097,
+      "sha256": "6a42e7bef2c58dba5398b6971547cd95573a278fadb1b492c1054e8f5e950d09"
+    },
+    {
+      "key": "city-ground",
+      "file": "city-ground.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1526908,
+      "transparentFraction": 0,
+      "sha256": "18b47ce6f75e82b0327e898cdf2e47a9c306b7c799109842113199a1a6ba5c04"
+    },
+    {
+      "key": "volcano-ground",
+      "file": "volcano-ground.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1566644,
+      "transparentFraction": 0,
+      "sha256": "7d62b1d9710eaba1e4cf96bfe35cec2f8599b3c3c068c92560b05426f8bf5322"
+    },
+    {
+      "key": "ice-ground",
+      "file": "ice-ground.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1516175,
+      "transparentFraction": 0,
+      "sha256": "3627cb2bfa8d639e9b4ad97d9c59785fb72070f3241104440c0b96a45b28b149"
+    },
+    {
+      "key": "forest-ground",
+      "file": "forest-ground.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 1604045,
+      "transparentFraction": 0,
+      "sha256": "b48037a6f7d21d25abfe87a546eda6e61d59a5bb6a9d19e1cda1cbf3443a709c"
+    }
+  ]
+}

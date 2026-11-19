@@ -123,25 +123,6 @@
 #gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab:active {filter:brightness(.93)!important}
 #gui-casual-lobby .pl-modal[data-modal-type='tasks'] .dc-tabs .dc-tab:focus-visible {outline:2px solid #72dafa;outline-offset:-3px}
 
-/* Profile rollout explicitly approved on 2026-11-09; same v4 faces as tasks. */
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab{
-  --profile-tab-art:url('/art/project-tabs-v1/tab-inactive.png');
-  position:relative;isolation:isolate;min-height:48px;height:48px;padding:0;
-  border:0!important;border-image:none!important;background:none!important;
-  box-shadow:none!important;color:#d1e0ea!important;text-shadow:none!important;text-decoration:none!important;
-}
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab::before,
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab::after{display:none!important}
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .pi-page-face{
-  position:absolute;inset:6px 0;z-index:-1;pointer-events:none;
-  border:0;border-image:var(--profile-tab-art) 36 fill / 9px stretch;
-}
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab[aria-selected='true']{
-  --profile-tab-art:url('/art/project-tabs-v1/tab-active.png');color:#163650!important;
-}
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab:active{filter:brightness(.93)!important}
-#gui-casual-lobby .pl-modal[data-modal-type='playerInfo'] :is(.pi-pages,.pi-tabs) .psd-tab:focus-visible{outline:2px solid #72dafa;outline-offset:-3px}
-
 /* Equipment destinations keep their approved small pictograms, not the
    blue/gold cost-button treatment used by awaken/recruit/upgrade actions. */
 #gui-casual-lobby.equipment-reference .ag-catalog .ag-button {

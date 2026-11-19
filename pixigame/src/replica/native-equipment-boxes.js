@@ -6,6 +6,7 @@ import source from './native-acquisition-catalog.json' with {type:'json'};
 import equipment from '../peripheral/equipment-reference-data.json' with {type:'json'};
 import { validateReplicaInventory } from './native-economy.js';
 import { nativeBoxProgress, basicBoxReward } from './native-box-progress.js';
+import { nativeEquipmentBoxPrices } from './native-box-prices.js';
 
 import { validateReplicaProgression,createReplicaProgression } from './native-progression.js';
 import { localBoxState } from './local-box-state.js';
@@ -62,7 +63,8 @@ export function planEquipmentBox(gear,rawInventory,operation,rawProgression) {
   if(operation.freeOnly===true&&!freePayment)return {ok:false,message:'免费次数已更新，请重新选择'};
   const keyPayment=(inventory.items[box.Key_ID]||0)>=count;
   if(keyOnly&&(!keyPayment||operation.keyOnly!==box.Key_ID))return {ok:false,message:'箱券不足，本次未消耗钻石'};
-  const debit={id:freePayment?box.Key_ID:keyPayment?box.Key_ID:2,amount:freePayment?0:keyPayment?count:count===10?box.Ten:box.Single[0],free:freePayment};
+  const { single, ten } = nativeEquipmentBoxPrices(id);
+  const debit={id:freePayment?box.Key_ID:keyPayment?box.Key_ID:2,amount:freePayment?0:keyPayment?count:count===10?ten:single,free:freePayment};
   if((inventory.items[debit.id]||0)<debit.amount)return {ok:false,message:'密钥或钻石不足'};
   const maxGrant=Math.max(...items.filter(row=>row[2]>0).map(row=>row[1]))*count;
   if(gear.version!==2||!Array.isArray(gear.items)||gear.items.length+maxGrant>10000

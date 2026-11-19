@@ -79,6 +79,11 @@ test-results/
 /pixigame/tools/*
 !/pixigame/tools/gm.html
 !/pixigame/tools/check-original-ui-art.mjs
+!/pixigame/tools/check-release-assets.mjs
+!/pixigame/tools/audit-three-h5.mjs
+!/pixigame/tools/three-h5-renderer-guard.mjs
+!/pixigame/tools/combat-vfx-gallery.html
+!/pixigame/tools/common-weapon-gallery.js
 !/pixigame/tools/copy-shipping-public.mjs
 !/pixigame/tools/retired-runtime-assets.json
 !/pixigame/tools/check-player-state.mjs

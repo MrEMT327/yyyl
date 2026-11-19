@@ -71,7 +71,7 @@ export async function mountWeaponPreview() {
   }));
   $('#quality').replaceChildren(...WEAPON_QUALITIES.map((name, rank) => new Option(name, rank)));
   // Legacy tools links share this page; copied links use the normal game entry.
-  const entry = new URL(import.meta.env.BASE_URL, location.href);
+  const entry = location.pathname.endsWith('/tools/combat-vfx-gallery.html')?new URL('../',location.href):new URL(import.meta.env.BASE_URL,location.href);
   const entryUrl = location.pathname.endsWith('/tools/combat-vfx-gallery.html') ? new URL(location.search, entry) : new URL(location.href);
   $('#enter-game').href = gameUrl(entryUrl).href;
 

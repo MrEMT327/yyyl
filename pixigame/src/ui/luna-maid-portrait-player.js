@@ -5,7 +5,7 @@ export const LUNA_MAID_ASSET_REVISION='2026-10-26-v10';
 export const LUNA_MAID_PLAYBACK=Object.freeze({sampleFps:30,transitionSeconds:.24});
 
 /** Lazy target mesh loading with safe detach/destroy during fetch. */
-export function createLunaMaidPortraitPlayer({assetBase=import.meta.env?.BASE_URL??'/'}={}){
+export function createLunaMaidPortraitPlayer({assetBase=import.meta.env?.BASE_URL??'/',createSurface}={}){
  const root=new URL(assetBase,location.href);if(!root.pathname.endsWith('/'))root.pathname+='/';
  const folder=new URL('art/luna-maid-v1/',root);
  if(folder.origin!==location.origin)throw Error('女仆立绘只允许读取同源资源');
@@ -19,7 +19,7 @@ export function createLunaMaidPortraitPlayer({assetBase=import.meta.env?.BASE_UR
    const [config,binding]=await Promise.all([read('runtime.json'),read('target-bindings.json')]);if(destroyed)return false;
    if(config.schema!=='luna-maid-layered-runtime-v1'||binding.schema!=='luna-maid-target-binding-v1'||binding.layers?.length!==config.layers?.length||!config.motionDurations?.idle||!binding.retarget?.armSegmentLimits||!binding.retarget?.continuousHands||!binding.retarget?.sleeveAttachment||!binding.retarget?.bodyVolume||!binding.retarget?.eyeArticulation||!binding.retarget?.completeRearFoot)throw Error('女仆立绘格式不符');
    runtime=config;
-   player=createCubismPortraitPlayer({assetBase,modelPath:new URL(config.sourceModel,folder).href,texturePaths:[versioned(config.atlas).href],camera:config.camera,createModelAdapter:model=>createLunaMaidModelAdapter(model,binding),...LUNA_MAID_PLAYBACK,minimumResolution:1.5,initialMemoryBytes:128*1024*1024});
+   player=createCubismPortraitPlayer({assetBase,createSurface,modelPath:new URL(config.sourceModel,folder).href,texturePaths:[versioned(config.atlas).href],camera:config.camera,createModelAdapter:model=>createLunaMaidModelAdapter(model,binding),...LUNA_MAID_PLAYBACK,minimumResolution:1.5,initialMemoryBytes:128*1024*1024});
    player.setVisible(visible);player.setPaused(paused);return true;
   }catch(reason){if(destroyed)return false;error=reason;state='error';updateHost();console.warn('女仆动态立绘载入失败，保留静态图。',reason);return false;}
  }

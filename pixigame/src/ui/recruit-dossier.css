@@ -59,8 +59,9 @@
 #gui-casual-lobby .recruit-reference .recruit-draw.is-ten:not(:disabled)>:is(strong,span) {color:#172e40;text-shadow:none}
 #gui-casual-lobby .recruit-reference .recruit-draw::after {content:none!important}
 #gui-casual-lobby .recruit-reference .recruit-draw>strong {color:#f3f6f8;font:700 clamp(15px,4.2cqw,18px)/1.1 PsdPopup,'Microsoft YaHei',sans-serif;white-space:nowrap}
-#gui-casual-lobby .recruit-reference .recruit-draw>span {display:flex;align-items:center;gap:4px;color:#f3f6f8;font:700 clamp(12px,3.5cqw,14px)/1.1 'Microsoft YaHei',sans-serif}
-#gui-casual-lobby .recruit-reference .recruit-cost-icon {width:15px;height:17px;object-fit:contain}
+#gui-casual-lobby .recruit-reference .recruit-draw>span {display:flex;flex:none;flex-wrap:nowrap;align-items:center;gap:4px;color:#f3f6f8;font:700 clamp(12px,3.5cqw,14px)/1.1 'Microsoft YaHei',sans-serif;white-space:nowrap}
+#gui-casual-lobby .recruit-reference .recruit-draw>span>b {flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}
+#gui-casual-lobby .recruit-reference .recruit-cost-icon {flex:none;width:15px;height:17px;object-fit:contain}
 #gui-casual-lobby .recruit-reference .recruit-draw:disabled {cursor:default}
 #gui-casual-lobby .recruit-reference .recruit-draw:disabled::before {filter:grayscale(.9) brightness(.6)}
 #gui-casual-lobby .recruit-reference .recruit-warning {padding-top:5px;color:#f4d698;font-size:11px}

@@ -1,12 +1,12 @@
 import './developer-skills.css';
 import type { Simulation } from './kernel/simulation';
 import type { GameAudio } from './kernel/audio';
-import type { Interface } from './kernel/ui';
+import type { BattleHudFlow } from './battle-hud-flow';
 
 const escape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
-const categories = { all: '全部', weapon: '武器', passive: '强化', pilot: '驾驶员', plane: '飞机' };
+import {developerSkillTabs as categories,developerSkillPage,canOpenDeveloperSkills} from './developer-skill-menu-model';
 
-export function mountDeveloperSkills(stage: HTMLElement, sim: Simulation, audio: GameAudio, ui: Interface) {
+export function mountDeveloperSkills(stage: HTMLElement, sim: Simulation, audio: GameAudio, ui: BattleHudFlow) {
   // Outside the stage: its capture listener routes canvas HUD pointers before DOM buttons.
   const root = document.createElement('section');
   root.className = 'developer-battle-skills'; root.setAttribute('aria-label', '局内开发技能');
@@ -21,24 +21,17 @@ export function mountDeveloperSkills(stage: HTMLElement, sim: Simulation, audio:
   };
   const resize = new ResizeObserver(fit); resize.observe(stage); window.addEventListener('resize', fit); fit();
   const renderRows = () => {
-    const rows = sim.developerSkillCatalog.filter(item => (tab === 'all' || item.category === tab) && `${item.name} ${item.label} ${item.description}`.includes(query.trim()));
-    const history = [...(sim.content.combat.studyLoadout?.battleSkillIds || []), ...sim.learned.map(item => item.id)];
-    modal.querySelector('.dev-skill-count')!.textContent = `${rows.length} 项`;
-    modal.querySelector('.dev-skill-list')!.innerHTML = rows.slice(0, limit).map(item => {
-      const count = history.filter(id => id === item.id).length;
-      const max = Math.max(1, Number(sim.content.combat.skillRows[item.id]?.MaxCount || 1));
-      const owned = count >= max;
-      const unavailable = !!item.unavailable;
-      return `<button type="button" class="dev-skill-row" data-skill="${item.id}" ${owned || unavailable ? 'disabled' : ''}><span><strong>${escape(item.name)}</strong><small>${escape(item.label)}${count ? ` · 已选 ${count}/${max}` : ''}</small><span class="dev-skill-description">${escape(item.description)}${unavailable ? '（战斗行为待接入）' : ''}</span></span><b>${unavailable ? '待接入' : owned ? '已选' : '选择'}</b></button>`;
-    }).join('') || '<p>没有找到匹配的技能</p>';
-    modal.querySelector<HTMLButtonElement>('[data-dev="more"]')!.hidden = rows.length <= limit;
+    const page=developerSkillPage(sim,tab,query,limit);
+    modal.querySelector('.dev-skill-count')!.textContent = page.total+' 项';
+    modal.querySelector('.dev-skill-list')!.innerHTML = page.rows.map(r=>`<button type="button" class="dev-skill-row" data-skill="${r.id}" ${r.disabled?'disabled':''}><span><strong>${escape(r.name)}</strong><small>${escape(r.label)}</small><span class="dev-skill-description">${escape(r.description)}</span></span><b>${r.status}</b></button>`).join('') || '<p>没有找到匹配的技能</p>';
+    modal.querySelector<HTMLButtonElement>('[data-dev="more"]')!.hidden = !page.more;
   };
   function render() {
     modal.innerHTML = `<section class="dev-skill-dialog" role="dialog" aria-modal="true" aria-label="全部技能"><header><h2>全部技能</h2><button class="dev-skill-button" type="button" data-dev="close" aria-label="关闭全部技能">返回</button></header><p>武器、升级、驾驶员与飞机技能均可选。仅本局生效。</p><nav aria-label="技能分类">${Object.entries(categories).map(([key, name]) => `<button type="button" class="dev-skill-button" data-tab="${key}" aria-pressed="${tab === key}">${name}</button>`).join('')}</nav><label class="dev-skill-search"><input type="search" aria-label="搜索技能" placeholder="搜索技能或驾驶员、飞机" value="${escape(query)}"><span class="dev-skill-count"></span></label><p class="dev-skill-error" role="status">${escape(error)}</p><div class="dev-skill-list"></div><button class="dev-skill-button" data-dev="more" type="button">显示更多</button></section>`;
     renderRows();
   }
   function open() {
-    if (opened || !sim.developerSkillCatalog.length || !['playing', 'paused', 'upgrade'].includes(sim.phase) || sim.player.hp <= 0) return;
+    if (opened || !canOpenDeveloperSkills(sim)) return;
     resume = sim.phase === 'playing';
     if (resume) sim.pause();
     audio.pause(); opened = true; error = ''; modal.hidden = false; launch.hidden = true; render();
@@ -73,7 +66,7 @@ export function mountDeveloperSkills(stage: HTMLElement, sim: Simulation, audio:
   const previous = ui.update.bind(ui);
   const update = () => {
     previous();
-    const available = sim.developerSkillCatalog.length > 0 && ['playing', 'paused', 'upgrade'].includes(sim.phase) && sim.player.hp > 0;
+    const available = canOpenDeveloperSkills(sim);
     root.hidden = !available; launch.hidden = opened;
     if (sim.phase !== 'upgrade') suppressed = false;
     if (!available && opened) { opened = false; modal.hidden = true; resume = false; }

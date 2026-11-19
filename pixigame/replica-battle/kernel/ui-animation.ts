@@ -20,31 +20,39 @@ export class OriginalUpgradeAnimation {
   private images = new Map<string, HTMLImageElement>();
   private cubes: HTMLCanvasElement[] = [];
   private copies: { card: HTMLElement; started: number; showAt: number }[] = [];
-  private tintCanvas = document.createElement('canvas');
+  private tintCanvas?: HTMLCanvasElement;
   private warningCanvas: HTMLCanvasElement | null = null;
-  private warningStarted = 0;
-  private warningType: 2 | 5 = 2;
-  private warningFinish?: () => void;
-  private warningClock: () => number = () => performance.now() / 1000;
-  private roll = new OriginalUiRoll();
+  private warningPaintEnabled = true;
+  private warning: { type: 2 | 5; started: number; clock: () => number; finish?: () => void } | null = null;
+  private roll?: OriginalUiRoll;
   private burst = new ProjectUpgradeBurst();
-  constructor(private sprites: RecordData) {
-    this.sprites = { ...sprites, ...media.sprites, ...tierMedia.sprites };
-    for (const n of [...Object.values(tiers.tiers).flatMap(t => t.nodes), ...data.warning]) if (n.sprite && this.sprites[n.sprite]) {
-      const image = new Image(); image.src = this.sprites[n.sprite].url; this.images.set(n.sprite, image);
+  private externalBursts = new Set<{stage: HTMLElement; tier: string; revealAt: number}>();
+  constructor(private sprites: RecordData) {}
+  private image(key: string) {
+    let image = this.images.get(key);
+    if (image) return image;
+    const tierSprites: Record<string, {url: string} | undefined> = tierMedia.sprites;
+    const animationSprites: Record<string, {url: string} | undefined> = media.sprites;
+    const sprite = tierSprites[key] ?? animationSprites[key] ?? this.sprites[key];
+    if (sprite) {
+      image = new Image(); image.src = sprite.url; this.images.set(key, image);
     }
-    for (const row of Object.values(wavePresentation.types)) for (const key of [row.bgIcon, row.starIcon, row.centerIcon, row.leftIcon, row.rightIcon]) {
-      if (!this.images.has(key) && this.sprites[key]) { const image = new Image(); image.src = this.sprites[key].url; this.images.set(key, image); }
-    }
+    return image;
+  }
+  private preload(keys: (string | null | undefined)[]) {
+    for (const key of keys) if (key) this.image(key);
   }
   dispose() {
     this.stop(); this.clearWarning();
     for (const copy of this.copies) copy.card.remove();
-    this.copies = []; this.burst.prune([]);
+    this.copies = []; this.externalBursts.clear(); this.burst.clear();
+    this.images.clear();
+    if (this.tintCanvas) this.tintCanvas.width = this.tintCanvas.height = 0;
   }
   start(host: HTMLElement) {
     this.host = host; this.started = performance.now();
     this.cubes = [...host.querySelectorAll<HTMLCanvasElement>('.original-cube')];
+    if (this.cubes.length) this.preload(Object.values(tiers.tiers).flatMap(t => t.nodes.map(n => n.sprite)));
     this.update();
   }
   stop() { this.host = null; this.cubes = []; }
@@ -57,6 +65,13 @@ export class OriginalUpgradeAnimation {
   showBreakthrough(card: HTMLElement, showAt=performance.now()) {
     const copy = this.copies.find(c => c.card === card);
     if (copy) copy.showAt = showAt;
+  }
+  showExternalBreakthrough(root: HTMLElement, tier: string, revealAt: number) {
+    const stage = root.closest<HTMLElement>('#stage');
+    if (!stage) return;
+    const burst = { stage, tier, revealAt };
+    this.externalBursts.add(burst);
+    return () => { this.externalBursts.delete(burst); this.burst.remove(burst); };
   }
   pressCard(card: HTMLElement) {
     const clip = popup.clips.Anim_skillSelectItemPressEnd;
@@ -71,34 +86,64 @@ export class OriginalUpgradeAnimation {
       opacity: values[alpha.index],
     })), { duration: clip.duration * 1000, fill: 'forwards', easing: 'linear' });
   }
-  showWarning(root: HTMLElement, type: 2 | 5 = 2, onFinish?: () => void, clock: () => number = () => performance.now() / 1000) {
-    this.warningCanvas?.remove();
+  useExternalWarning() {
+    this.warningPaintEnabled = false;
+    this.releaseWarningCanvas();
+  }
+  private createWarningCanvas(root: HTMLElement, type: 2 | 5) {
     const canvas = document.createElement('canvas'); canvas.className = 'original-warning';
     canvas.width = 1080; canvas.height = Math.round(1080 * root.clientHeight / root.clientWidth);
     canvas.setAttribute('aria-label', wavePresentation.types[type].text); root.append(canvas);
-    this.warningType = type; this.warningFinish = onFinish;
-    this.warningClock = clock;
-    this.warningCanvas = canvas; this.warningStarted = clock();
+    this.warningCanvas = canvas;
+  }
+  private releaseWarningCanvas() {
+    if (this.warningCanvas) {
+      this.warningCanvas.remove();
+      this.warningCanvas.width = this.warningCanvas.height = 0;
+      this.warningCanvas = null;
+    }
+  }
+  showWarning(root: HTMLElement, type: 2 | 5 = 2, onFinish?: () => void, clock: () => number = () => performance.now() / 1000) {
+    this.releaseWarningCanvas();
+    if (this.warningPaintEnabled) {
+      const row = wavePresentation.types[type];
+      this.preload([...data.warning.map(n => n.sprite),row.bgIcon,row.starIcon,row.centerIcon,row.leftIcon,row.rightIcon]);
+      this.roll ??= new OriginalUiRoll();
+      this.createWarningCanvas(root, type);
+    }
+    this.warning = { type, started: clock(), clock, finish: onFinish };
   }
   get warningPresentation() {
-    if (!this.warningCanvas) return null;
-    return {type:this.warningType,elapsed:this.warningClock()-this.warningStarted,duration:data.clips.Anim_UIFX_Warning.duration};
+    const warning = this.warning;
+    return warning ? {type:warning.type,elapsed:warning.clock()-warning.started,duration:wavePresentation.duration} : null;
   }
-  clearWarning() { this.warningCanvas?.remove(); this.warningCanvas = null; this.warningFinish = undefined; }
+  clearWarning() { this.releaseWarningCanvas(); this.warning = null; }
   update() {
-    this.copies = this.copies.filter(copy => copy.card.isConnected);
-    this.burst.prune(this.copies.map(copy => copy.card));
-    for (const copy of this.copies) {
-      const time = (performance.now() - copy.started) / 1000;
-      copy.card.querySelectorAll<HTMLCanvasElement>('.original-cube').forEach(c => this.drawCube(c, time));
-      if (Number.isFinite(copy.showAt)) this.drawBreakthrough(copy.card, (performance.now() - copy.showAt) / 1000);
+    if (this.copies.length) {
+      this.copies = this.copies.filter(copy => {
+        if (!copy.card.isConnected) { this.burst.remove(copy.card); return false; }
+        const time = (performance.now() - copy.started) / 1000;
+        copy.card.querySelectorAll<HTMLCanvasElement>('.original-cube').forEach(c => this.drawCube(c, time));
+        if (Number.isFinite(copy.showAt)) this.drawBreakthrough(copy.card, (performance.now() - copy.showAt) / 1000);
+        return true;
+      });
     }
-    if (this.warningCanvas) {
-      const t = this.warningClock() - this.warningStarted;
+    for (const burst of this.externalBursts) {
+      const {stage,tier,revealAt} = burst, elapsed = (performance.now() - revealAt) / 1000;
+      if (!stage.isConnected || (elapsed >= 0 && !this.burst.draw(burst,stage,tier,elapsed))) {
+        this.externalBursts.delete(burst);
+        this.burst.remove(burst);
+      }
+    }
+    const warning = this.warning;
+    if (warning) {
+      const t = warning.clock() - warning.started;
       // AnimatorListen WarningEnd precedes the final transparent clip tail.
-      if (t >= wavePresentation.finishEvent.time && this.warningFinish) { const finish = this.warningFinish; this.warningFinish = undefined; finish(); }
-      if (t >= data.clips.Anim_UIFX_Warning.duration) this.clearWarning();
-      else this.drawWarning(this.warningCanvas, t);
+      if (t >= wavePresentation.finishEvent.time && warning.finish) { const finish = warning.finish; warning.finish = undefined; finish(); }
+      if (this.warning === warning) {
+        if (t >= wavePresentation.duration) this.clearWarning();
+        else if (this.warningCanvas) this.drawWarning(this.warningCanvas, t, warning.type);
+      }
     }
     if (!this.host) return;
     const time = (performance.now() - this.started) / 1000;
@@ -135,13 +180,13 @@ export class OriginalUpgradeAnimation {
     face.style.visibility = values[active.index] >= .5 ? 'visible' : 'hidden';
     // effectParent is a sibling of GameObject in the APK: hiding the card face
     // must not suppress the later burst during the special-choice handoff.
-    this.burst.draw(card, time, value('m_AnchoredPosition.x'), value('m_AnchoredPosition.y'));
+    this.burst.draw(card,card.closest<HTMLElement>('#stage'),tier,time);
   }
-  private drawWarning(canvas: HTMLCanvasElement, time: number) {
+  private drawWarning(canvas: HTMLCanvasElement, time: number, type: 2 | 5) {
     const ctx = canvas.getContext('2d'); if (!ctx) return;
     const clip = data.clips.Anim_UIFX_Warning, values = frame(clip,time);
     const nodes = data.warning.map(n => ({ ...n, position:{...n.position}, scale:{...n.scale}, size:{...n.size}, anchorMin:{...n.anchorMin}, anchorMax:{...n.anchorMax}, color:n.color ? {...n.color} : {r:1,g:1,b:1,a:1} }));
-    const presentation = wavePresentation.types[this.warningType];
+    const presentation = wavePresentation.types[type];
     const spriteOverrides: Record<string, string> = {
       'newTweenParent/Image_d_1': presentation.bgIcon,
       'newTweenParent/Image_d_1/Image_4': presentation.starIcon,
@@ -171,14 +216,14 @@ export class OriginalUpgradeAnimation {
       const x = isRoot ? 0 : n.position.x+(n.anchorMin.x+(n.anchorMax.x-n.anchorMin.x)*n.pivot.x-parentPivot.x)*parentW;
       const y = isRoot ? 0 : n.position.y+(n.anchorMin.y+(n.anchorMax.y-n.anchorMin.y)*n.pivot.y-parentPivot.y)*parentH;
       ctx.save(); ctx.translate(x,-y); ctx.rotate(-n.rotation.z*Math.PI/180); ctx.scale(n.scale.x,n.scale.y); ctx.globalAlpha *= n.alpha;
-      const image = n.sprite ? this.images.get(n.sprite) : null;
+      const image = n.sprite ? this.image(n.sprite) : null;
       if (image?.complete && image.naturalWidth && w>0 && h>0) {
         ctx.save(); ctx.globalAlpha *= n.color.a;
         if (n.path.endsWith('/RollImage')) {
-          const roll=this.roll.draw(time);
+          const roll=this.roll?.draw(time);
           if (roll) { ctx.globalCompositeOperation='lighter'; ctx.drawImage(roll,-w*n.pivot.x,-h*(1-n.pivot.y),w,h); }
         } else {
-          const tint=this.tintCanvas; tint.width=image.naturalWidth; tint.height=image.naturalHeight;
+          const tint=this.tintCanvas ??= document.createElement('canvas'); tint.width=image.naturalWidth; tint.height=image.naturalHeight;
           const tc=tint.getContext('2d')!; tc.drawImage(image,0,0);
           tc.globalCompositeOperation='multiply'; tc.fillStyle=`rgb(${n.color.r*255},${n.color.g*255},${n.color.b*255})`; tc.fillRect(0,0,tint.width,tint.height);
           tc.globalCompositeOperation='destination-in'; tc.drawImage(image,0,0);
@@ -224,9 +269,9 @@ export class OriginalUpgradeAnimation {
       const x = n.position.x + (n.anchorMin.x + (n.anchorMax.x - n.anchorMin.x) * n.pivot.x - parentPivot.x) * parentW;
       const y = n.position.y + (n.anchorMin.y + (n.anchorMax.y - n.anchorMin.y) * n.pivot.y - parentPivot.y) * parentH;
       ctx.save(); ctx.translate(x,-y); ctx.rotate(-n.rotation.z*Math.PI/180); ctx.scale(n.scale.x,n.scale.y);
-      const image = n.sprite ? this.images.get(n.sprite) : null;
+      const image = n.sprite ? this.image(n.sprite) : null;
       if (image?.complete && image.naturalWidth) {
-        const tint = this.tintCanvas; tint.width = image.naturalWidth; tint.height = image.naturalHeight;
+        const tint = this.tintCanvas ??= document.createElement('canvas'); tint.width = image.naturalWidth; tint.height = image.naturalHeight;
         const tc = tint.getContext('2d')!; tc.drawImage(image,0,0);
         tc.globalCompositeOperation = 'multiply'; tc.fillStyle = `rgb(${n.color.r*255},${n.color.g*255},${n.color.b*255})`; tc.fillRect(0,0,tint.width,tint.height);
         tc.globalCompositeOperation = 'destination-in'; tc.drawImage(image,0,0); tc.globalCompositeOperation = 'source-over';

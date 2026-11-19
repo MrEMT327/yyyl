@@ -136,3 +136,5 @@ export function installCubismBatcher(renderer,gl){
     gl.deleteBuffer(vertexBuffer);gl.deleteBuffer(indexBuffer);gl.deleteProgram(program);
   }};
 }
+
+export {VERTEX as cubismBatchVertex, FRAGMENT as cubismBatchFragment};

@@ -11,6 +11,7 @@ import {installGradientTexture} from './pathogenic-textures.mjs';
 import {particleTrailGeometry} from './pathogenic-particle-trails.mjs';
 import {registerPathogenicShader} from './pathogenic-shader-pipeline';
 import {PathogenicMaterials,PathogenicScreenSnapshot} from './pathogenic-materials';
+import {installMissingSourceTexture,queueSourceTexture} from './source-texture-regions.mjs';
 
 type Any = Record<string,any>;
 type SharedTexture={ref:Any;installed:ReturnType<PathogenicMaterials["installTexture"]>;textureKey:string;source:Phaser.Textures.TextureSource};
@@ -36,9 +37,8 @@ class SourceMesh extends Phaser.GameObjects.Mesh {
   }
   refresh(){super.preUpdate(0,0);}
 }
-export class SourceCoverageError extends Error {
-  constructor(readonly details:any[]){super('Pathogenic source features require implementation: '+JSON.stringify(details));}
-}
+import {SourceCoverageError} from './effect-coverage-error';
+export {SourceCoverageError};
 /** One view owns complete source scenes; there is deliberately no legacy renderer fallback. */
 export class PathogenicSceneView {
   private views=new Map<string,SourceMesh>();
@@ -54,12 +54,59 @@ export class PathogenicSceneView {
   private displaySettings?:Readonly<PathogenicBloomOptions>;
   private snapshot?:PathogenicScreenSnapshot;
   private capture?:Phaser.GameObjects.Extern;
+  private destroyed=false;
+  private readonly deferredTextures=new Map<string,string>();
+  private readonly pendingTextures=new Map<string,{promise:Promise<void>;finish:()=>void}>();
   display?:PathogenicHdrComposite;
   diagnostics:any[]=[];
   constructor(readonly scene:Phaser.Scene,readonly graph:Any){scene.events.once('shutdown',()=>this.destroy());}
-  preload(urlFor:(path:string,texture:Any)=>string){
-    for(const [path,texture]of Object.entries(this.graph.textures) as [string,Any][])
-      this.scene.load.image(path,urlFor(path,texture));
+  preload(urlFor:(path:string,texture:Any)=>string,paths:Iterable<string>=Object.keys(this.graph.textures),deferred?:ReadonlySet<string>){
+    for(const path of paths){
+      const url=urlFor(path,this.graph.textures[path]);
+      if(deferred?.has(path))this.deferredTextures.set(path,url);
+      else queueSourceTexture(this.scene,path,url);
+    }
+  }
+  prepareTextures(paths:Iterable<string>):Promise<void>|undefined {
+    if(this.destroyed||(!this.deferredTextures.size&&!this.pendingTextures.size))return;
+    const loader=this.scene.load,tasks:Promise<void>[]=[];
+    for(const path of paths){
+      const pending=this.pendingTextures.get(path);
+      if(pending){tasks.push(pending.promise);continue;}
+      const url=this.deferredTextures.get(path);
+      if(!url)continue;
+      this.deferredTextures.delete(path);
+      if(this.scene.textures.exists(path))continue;
+      let resolveReady!:()=>void;
+      const promise=new Promise<void>(resolve=>{resolveReady=resolve;});
+      const event='filecomplete-image-'+path;
+      const finish=()=>{
+        loader.off(event,finish);
+        loader.off('loaderror',failed);
+        loader.off('complete',useFallback);
+        this.pendingTextures.delete(path);
+        resolveReady();
+      };
+      const useFallback=()=>{
+        installMissingSourceTexture(this.scene,path,this.graph.textures[path]);
+        finish();
+      };
+      const failed=(file:Phaser.Loader.File)=>{if(file.key===path)useFallback();};
+      this.pendingTextures.set(path,{promise,finish});
+      loader.once(event,finish);
+      loader.on('loaderror',failed);
+      // An image decode error can reach loader completion without a file error event.
+      loader.once('complete',useFallback);
+      try{queueSourceTexture(this.scene,path,url);}
+      catch(error){
+        console.warn('[replica-battle] 战斗图片排队失败，使用备用绘制',path,error);
+        useFallback();
+      }
+      tasks.push(promise);
+    }
+    if(!tasks.length)return;
+    if(loader.list.size&&!loader.isLoading())loader.start();
+    return Promise.all(tasks).then(()=>{});
   }
   setCameraOffset(x:number,y:number){this.cameraOffset=[x,y];}
   configureDisplay(settings:Readonly<PathogenicBloomOptions>){
@@ -155,6 +202,12 @@ export class PathogenicSceneView {
     if(!geometry.indices.length)return;
     const m=item.matrix??MULTIPLY;
     if(Math.abs(m[0]*m[3]-m[1]*m[2])<1e-12)return;
+    // Late script-driven effects can still reach a deferred atlas between waves.
+    const art=item.texture?.key ?? item.texture?.$external;
+    if(art&&(this.deferredTextures.has(art)||this.pendingTextures.has(art))){
+      if(this.deferredTextures.has(art))void this.prepareTextures([art]);
+      return;
+    }
     // Only share within this emitter draw, for the exact same descriptor.
     // Animated atlas crops and subsequent frames still resolve independently.
     let installed:SharedTexture["installed"],textureKey:string,source:Phaser.Textures.TextureSource;
@@ -164,18 +217,25 @@ export class PathogenicSceneView {
       installed=this.materials!.installTexture(item.texture);textureKey=installed.key;source=this.scene.textures.get(textureKey).source[0];
       if(sharedMaterial)sharedMaterial.texture={ref:item.texture,installed,textureKey,source};
     }
-    const resolved=sharedMaterial?.resolved??this.materials!.resolve(item.material,item.materialUniformOverrides??{}, {compatibilityZeroLights:true});
+    const resolved=sharedMaterial?.resolved??this.materials!.resolveForRender(item.material,item.materialUniformOverrides);
     if(sharedMaterial)sharedMaterial.resolved=resolved;
     const pipeline=resolved.registration;
     let view=this.views.get(key);
     if(!view){view=this.meshPool.acquire(()=>{const mesh=new SourceMesh(this.scene,0,0,textureKey);mesh.hideCCW=false;mesh.ignoreDirtyCache=true;this.scene.add.existing(mesh);return mesh;});this.views.set(key,view!);}
-    view.setVisible(true).setTexture(textureKey).setPosition(0,0).setDepth((presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001).setBlendMode(pipeline.blendMode);
+    const depth=(presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001;
+    if(!view.visible)view.setVisible(true);
+    if(view.texture.key!==textureKey||view.texture.source[0]!==source)view.setTexture(textureKey);
+    if(view.x!==0||view.y!==0)view.setPosition(0,0);
+    if(view.depth!==depth)view.setDepth(depth);
+    if(view.blendMode!==pipeline.blendMode)view.setBlendMode(pipeline.blendMode);
     view.prepareProjection();
-    const gain=updateSourceMeshGeometry(view,geometry,source,line);if(!line)view.spriteShape=geometry;
-    const data=view.shaderData??=createSourceMeshShaderData();
-    updateSourceMeshShaderData(data,item,source,time,line,gain,presentation.presentationOpacity??1,projectilePalette,installed,resolved);
-    view.setData('pathogenicShader',data);
-    view.setPipeline(pipeline.key);
+    const gain=updateSourceMeshGeometry(view,geometry,source,line,item.texture?.crop);if(!line)view.spriteShape=geometry;
+    if(!view.shaderData){
+      view.shaderData=createSourceMeshShaderData();
+      view.setData('pathogenicShader',view.shaderData);
+    }
+    updateSourceMeshShaderData(view.shaderData,item,source,time,line,gain,presentation.presentationOpacity??1,projectilePalette,installed,resolved);
+    if(view.getPipelineName()!==pipeline.key)view.setPipeline(pipeline.key);
     view.refresh();this.live.add(key);
   }
   endFrame(){
@@ -184,5 +244,15 @@ export class PathogenicSceneView {
     for(const key of this.histories.keys())if(!this.liveHistories.has(key))this.histories.delete(key);
   }
   reset(){this.display?.clearDimensionCuts();this.snapshot?.beginFrame();for(const v of this.views.values())v.destroy();this.views.clear();this.meshPool.clear();for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();}
-  destroy(){this.display?.destroy();this.reset();this.capture?.destroy();this.capture=undefined;this.snapshot?.destroy();}
+  destroy(){
+    if(this.destroyed)return;
+    this.destroyed=true;
+    this.deferredTextures.clear();
+    for(const pending of this.pendingTextures.values())pending.finish();
+    this.reset();
+    this.display?.destroy();this.display=undefined;
+    this.capture?.destroy();this.capture=undefined;
+    this.snapshot?.destroy();this.snapshot=undefined;
+    this.materials=undefined;
+  }
 }

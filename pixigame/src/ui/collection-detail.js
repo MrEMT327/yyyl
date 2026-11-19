@@ -14,21 +14,8 @@ import {qualityDisplayLabel} from './quality-display-label.js';
 const plain=value=>String(value??'').replace(/<[^>]*>/g,'');
 const button=(action,label,attrs,disabled=false)=>`<button type="button" class="wc-button" data-action="${action}" ${attrs}${disabled?' disabled':''}>${label}</button>`;
 
-export function collectionDetailModel(row,attributeNames={}){
-  const commonIds=new Set(row.stage.skills.filter(skill=>row.stages.every(stage=>stage.skills.some(candidate=>candidate.id===skill.id))).map(skill=>skill.id));
-  const attributes=stage=>(stage.attributes||[]).map(value=>{
-    const separator=value.indexOf('='),key=value.slice(0,separator),amount=value.slice(separator+1);
-    return {key,label:attributeNames[key]||key,amount:`${Number(amount)>=0?'+':''}${amount}${key.endsWith('%')?'%':''}`};
-  });
-  return {
-    maxStar:Math.max(row.star,...row.stages.map(stage=>stage.star)),
-    attributes:attributes(row.stage),
-    skills:row.stage.skills.map(skill=>({id:skill.id,text:plain(skill.description)})),
-    stages:row.stages.map(stage=>({star:stage.star,unlocked:row.owned&&row.star>=stage.star,current:row.owned&&row.star===stage.star,
-      attributes:attributes(stage),skills:stage.skills.filter(skill=>!commonIds.has(skill.id)).map(skill=>({id:skill.id,text:plain(skill.description)}))})),
-  };
-}
-
+import {collectionDetailModel} from './collection-detail-model.js';
+export {collectionDetailModel};
 export function collectionDetail(group,row,snapshot,helpers,{preview=false}={}){
   if(group==='guns')return preview?weaponSkillPreview(row,helpers):weaponShowcaseDetail(row,snapshot,helpers);
   const {escape:e}=helpers,model=collectionDetailModel(row,snapshot.replicaCollection.attributeNames);
@@ -86,7 +73,7 @@ function weaponShowcaseDetail(row,snapshot,{escape:e}){
   const stars=item=>Array.from({length:Math.max(item.star,...item.stages.map(stage=>stage.star))},(_,i)=>projectIcon('star',item.owned&&i<item.star?'':'is-icon-muted')).join('');
   const costs=row.costs.map(cost=>`<span ${itemInspectAttributes(cost.id,e)} class="${cost.available<cost.count?'is-short':''}">${e(cost.name)} <b>${cost.available}/${cost.count}</b></span>`).join('');
   const skillArt=nativeWeaponSkillArt(row);
-  const equip=access.available&&!access.using?button('nativeOperation','穿戴',`data-kind="guns" data-id="${access.selectionId}" data-revision="${collection.revision}" data-operation="select"`):'';
+  const equip=access.available&&!access.using?button('nativeOperation','替换出战',`data-kind="guns" data-id="${access.selectionId}" data-revision="${collection.revision}" data-operation="select"`):'';
   return {title:row.name,content:`<article class="wd-showcase" data-collection-kind="guns" data-weapon-id="${row.id}">
     <section class="wd-stage" aria-label="${e(row.name)}展示">
       <div class="wd-stat-block"><div class="wd-stars" aria-label="${row.owned?row.star:0} / ${model.maxStar} 星">${stars(row)}</div><dl>${model.attributes.map(stat=>`<div><dt>${e(stat.label)}</dt><dd>${e(stat.amount)}</dd></div>`).join('')}</dl></div>

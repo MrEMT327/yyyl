@@ -14,7 +14,7 @@ export class WaveUIPresentation {
   private completeAt = Infinity;
   private completion?: () => void;
 
-  constructor(private animation: OriginalUpgradeAnimation, private root: HTMLElement) {}
+  constructor(private animation: Pick<OriginalUpgradeAnimation, 'clearWarning' | 'showWarning'>, private root: HTMLElement) {}
 
   update(request: WaveUIRequest | undefined, generation: number, playing: boolean, complete: (id: number) => void) {
     const now = performance.now();

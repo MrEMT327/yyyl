@@ -10,6 +10,7 @@ const totals=state=>Object.fromEntries([1,2].map(type=>[type,Object.entries(stat
 // User-approved local odds (2026-10-21), NOT recovered server probabilities.
 export const NATIVE_RESEARCH_LOCAL_WEIGHTS=Object.freeze({2:70,3:25,4:5,5:90,6:10});
 export const NATIVE_RESEARCH_CORE_INTERVAL=15; // TalentEpicCoin=[15,135].
+const NORMAL_AWAKENING_GOLD_CAP = 10_000;
 // Source Skill_Main descriptions, not the retired cloud numeric substitutes.
 const featureLines=row=>{
  const raw=row?.FeatureJson;
@@ -26,8 +27,11 @@ function quote(state,pool){
  const type=pool==='normal'?1:pool==='ace'?2:0;
  if(!type)throw Error('请选择觉醒类型');
  const count=totals(state)[type],table=type===1?source.normal:source.ace;
- const cost=table.find(row=>row.ID===count+1)||table.at(-1);
- const group=source.drops.find(row=>row.drop_id===cost?.drawDrop);
+ const draw=table.find(row=>row.ID===count+1)||table.at(-1);
+ const costs=type===1 ? draw.Cost.map(([id,amount])=>[
+   id, id===1&&Number.isSafeInteger(amount) ? Math.min(amount,NORMAL_AWAKENING_GOLD_CAP) : amount,
+ ]) : draw.Cost;
+ const group=source.drops.find(row=>row.drop_id===draw?.drawDrop);
  // Never reinterpret Rand1's remaining columns as server odds. The user has
  // approved quality-weighted local draws from the original candidate IDs.
  const fixed=group?.Rand1?.length===1&&group.Rand1[0][1]===1?group.Rand1[0][0]:null;
@@ -38,7 +42,7 @@ function quote(state,pool){
  const candidates=[...new Set((group?.Rand1||[]).map(row=>row[0]))].map(id=>cardById.get(String(id)))
   .filter(row=>row&&row.CardType===type&&(state.levels[row.ID]||0)<row.maxLv&&stage(row.ID,(state.levels[row.ID]||0)+1));
  const supported=!finished&&(fixed?Boolean(card&&target&&previous<card.maxLv&&card.CardType===type):candidates.length>0);
- return {cost,card,target,previous,count,supported,finished,candidates,fixed,reason:finished?'该类科技已全部满级，资源未扣除':'科技奖励配置不可用，资源未扣除'};
+ return {costs,card,target,previous,count,supported,finished,candidates,fixed,reason:finished?'该类科技已全部满级，资源未扣除':'科技奖励配置不可用，资源未扣除'};
 }
 function sample(items,weight,rng){
  const roll=rng();
@@ -58,10 +62,10 @@ export function nativeResearchSnapshot(rawProgression,rawInventory) {
      maxLevel:row.maxLv,level,owned:level>0,maxed:level===row.maxLv,
      effects:lines(stage(row.ID,level)),nextEffects:lines(stage(row.ID,level+1)),perLevel:{}};
  });
- const afford=q=>q.supported&&q.cost.Cost.every(([id,count])=>(inventory.items[id]||0)>=count);
+ const afford=q=>q.supported&&q.costs.every(([id,count])=>(inventory.items[id]||0)>=count);
  return {...state,native:true,revision:inventory.revision,cards,owned:cards.filter(row=>row.owned).length,
    effects:cards.filter(row=>row.owned).flatMap(row=>row.effects.map(line=>`${row.name}：${line}`)),
-   normalCost:normal.cost.Cost.find(([id])=>id===1)?.[1]||0,
+   normalCost:normal.costs.find(([id])=>id===1)?.[1]||0,
    normalDraws:normal.count,aceDraws:ace.count,cores:inventory.items[135]||0,
    canNormal:afford(normal),canAce:afford(ace),normalFinished:normal.finished,aceFinished:ace.finished,allFinished:normal.finished&&ace.finished,
    refining:false,refineReady:false,coresSufficient:false,refineSteps:0,untilCore:0,
@@ -79,7 +83,7 @@ export function planNativeResearch(rawProgression,rawInventory,operation,rng=Mat
    q.card=sample(q.candidates.filter(row=>row.Quality===quality),()=>1,rng);
    q.previous=state.levels[q.card.ID]||0;q.target=stage(q.card.ID,q.previous+1);
  }
- for(const [id,count]of q.cost.Cost){
+ for(const [id,count]of q.costs){
    if(!Number.isSafeInteger(count)||count<=0||(inventory.items[id]||0)<count)throw Error('原版材料不足');
    inventory.items[id]-=count;
  }

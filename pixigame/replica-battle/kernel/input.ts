@@ -23,7 +23,8 @@ export class Controls {
     x: { direction: 0, opposed: 0, unreadOpposed: 0, threshold: 0 },
     y: { direction: 0, opposed: 0, unreadOpposed: 0, threshold: 0 },
   };
-  constructor(private surface: HTMLElement, private canMove: () => boolean, private pause: () => void) {
+  constructor(private surface: HTMLElement, private canMove: () => boolean, private pause: () => void, signal?:AbortSignal) {
+    const events={signal};
     surface.addEventListener('pointerdown', event => {
       if (!canMove() || (event.pointerType === 'mouse' && event.button !== 0) || (event.target as HTMLElement)?.closest('button, .overlay')) return;
       if (this.pointer !== null) return;
@@ -36,7 +37,7 @@ export class Controls {
       this.resetDragStrokes();
       try { surface.setPointerCapture(event.pointerId); } catch { this.clear(); return; }
       event.preventDefault();
-    });
+    },events);
     surface.addEventListener('pointermove', event => {
       if (this.pointer !== event.pointerId) return;
       if (!canMove() || (event.pointerType === 'mouse' && event.buttons === 0)) { this.clear(); return; }
@@ -50,23 +51,23 @@ export class Controls {
         if (samples[i].pointerId === event.pointerId) this.recordPointerPosition(samples[i], rect);
       }
       this.recordPointerPosition(event, rect);
-    });
+    },events);
     const release = (event: PointerEvent) => {
       if (event.pointerId === this.pointer) this.clearPointer();
     };
-    surface.addEventListener('pointerup', release);
-    surface.addEventListener('pointercancel', release);
-    surface.addEventListener('lostpointercapture', release);
+    surface.addEventListener('pointerup', release,events);
+    surface.addEventListener('pointercancel', release,events);
+    surface.addEventListener('lostpointercapture', release,events);
     window.addEventListener('keydown', event => {
       if ((event.target as HTMLElement)?.closest('input, textarea, select, [contenteditable="true"]')) return;
       if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Escape'].includes(event.key)) event.preventDefault();
       this.keys.add(event.key.toLowerCase());
       if (!event.repeat && ['Escape', ' '].includes(event.key)) pause();
-    });
-    window.addEventListener('keyup', event => this.keys.delete(event.key.toLowerCase()));
-    window.addEventListener('blur', () => this.clear());
-    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); });
-    surface.addEventListener('contextmenu', event => event.preventDefault());
+    },events);
+    window.addEventListener('keyup', event => this.keys.delete(event.key.toLowerCase()),events);
+    window.addEventListener('blur', () => this.clear(),events);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); },events);
+    surface.addEventListener('contextmenu', event => event.preventDefault(),events);
   }
   private recordPointerPosition(point: { clientX: number; clientY: number }, rect: { width: number; height: number }) {
     if (!Number.isFinite(point.clientX) || !Number.isFinite(point.clientY)) return;

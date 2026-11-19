@@ -2,12 +2,13 @@ import { nativePatrolSnapshot } from './native-patrol.js';
 
 // These old cloud mutations are not translations of native IDs/rules.
 // Keep recovery of already-persisted receipts, but never create new grants.
-export const NATIVE_PENDING_ECONOMY_ACTIONS = new Set([
+const NATIVE_PENDING_ECONOMY_ACTIONS = new Set([
   'claimSignIn','claimTask','claimActivity',
   'fleetActivate','fleetStarUp','fleetSkillEquip','fleetSkillRemove',
   'researchDraw','researchRefine','researchUpgrade','upgradeAircraft','upgradeWeapon',
   'synthesizeWeapon','synthesizeAll',
 ]);
+export const isNativeEconomyActionPending=type=>NATIVE_PENDING_ECONOMY_ACTIONS.has(type);
 export const NATIVE_PENDING_ECONOMY_MESSAGE='功能暂未开放';
 export function nativeEconomyView(value) {
   if(!value.replicaCollection)return value;

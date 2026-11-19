@@ -43,9 +43,10 @@ function polygon(ctx,points) {
   ctx.closePath();
 }
 
-export function drawBossHealthBar(ctx,boss,health,images) {
+export function drawBossHealthBar(ctx,boss,health,images,motion) {
   const {x,y,width:w,height:h}=BOSS_BAR,innerW=w-8;
   ctx.save();
+  if(motion?.active)ctx.translate(motion.x*w,motion.y*w);
   const frame=images.get('health-track');
   if(frame)drawNineSlice(ctx,frame,x,y,w,h,[8,24,8,24]);
   polygon(ctx,[x+5,y+4,x+w-5,y+4,x+w-13,y+h-5,x+13,y+h-5]);
@@ -57,7 +58,7 @@ export function drawBossHealthBar(ctx,boss,health,images) {
   else {ctx.fillStyle='#c65353';ctx.fillRect(x,y,w,h);}
   ctx.restore();ctx.restore();
   const icon=images.get('encounter-boss');
-  if(icon)ctx.drawImage(icon,x-56,y+(h-48)/2,48,48);
+  if(icon)ctx.drawImage(icon,x-56+(motion?.iconX??0)*w,y+(h-48)/2+(motion?.iconY??0)*w,48,48);
   let name=String(boss.visualSpec?.name||boss.config?.title||boss.config?.name||'旗舰');
   ctx.font=`800 23px ${COMBAT_TYPE.family}`;
   while(name.length>1&&ctx.measureText(name).width>w-130)name=name.slice(0,-2)+'…';
@@ -83,19 +84,20 @@ function redWarningFrame(image) {
   context.putImageData(pixels,0,0);warningFrameArt.set(image,canvas);return canvas;
 }
 
-export function drawBossWarning(ctx,view,images) {
+export function drawBossWarning(ctx,view,images,width=750) {
   if(!view)return;
-  const centerY=278,top=centerY-view.height/2,boss=view.type===2;
+  const centerX=width/2,centerY=278,top=centerY-view.height/2,boss=view.type===2;
   const red=boss?'#ff344b':'#ff493b',dark=boss?'#731322':'#791b1c';
   const pulse=view.pulse??1,stripePhase=view.stripePhase??0;
   ctx.save();ctx.globalAlpha=view.alpha;
 
   // A broad, quiet red spill separates this danger cue from the blue sea/map.
-  const spill=ctx.createRadialGradient(375,centerY,70,375,centerY,405);
+  const spill=ctx.createRadialGradient(centerX,centerY,70,centerX,centerY,width*.54);
   spill.addColorStop(0,`rgba(255,32,54,${.24*pulse})`);spill.addColorStop(1,'rgba(255,24,42,0)');
-  ctx.fillStyle=spill;ctx.fillRect(0,top-35,750,view.height+70);
+  ctx.fillStyle=spill;ctx.fillRect(0,top-35,width,view.height+70);
 
-  polygon(ctx,[10,top+14,24,top,726,top,740,top+14,740,top+view.height-14,726,top+view.height,24,top+view.height,10,top+view.height-14]);
+  // The horizontal caps bleed beyond the viewport; the visible tape has no side gutter.
+  polygon(ctx,[-24,top+14,-10,top,width+10,top,width+24,top+14,width+24,top+view.height-14,width+10,top+view.height,-10,top+view.height,-24,top+view.height-14]);
   const bg=ctx.createLinearGradient(0,top,0,top+view.height);
   bg.addColorStop(0,dark);bg.addColorStop(.22,boss?'#bd2638':'#c4322b');
   bg.addColorStop(.55,boss?'#9c1c2d':'#a82525');bg.addColorStop(1,'#490d19');
@@ -104,29 +106,29 @@ export function drawBossWarning(ctx,view,images) {
 
   // Sliding warning tape moves inside the supplied frame, never its corners.
   for(const y of [top+6,top+view.height-17]){
-    ctx.fillStyle='#210b14';ctx.fillRect(20,y,710,11);
-    ctx.save();ctx.beginPath();ctx.rect(24,y,702,11);ctx.clip();
+    ctx.fillStyle='#210b14';ctx.fillRect(0,y,width,11);
+    ctx.save();ctx.beginPath();ctx.rect(0,y,width,11);ctx.clip();
     ctx.fillStyle=red;
-    for(let x=-44+stripePhase;x<780;x+=44){polygon(ctx,[x,y,x+20,y,x+9,y+11,x-11,y+11]);ctx.fill();}
+    for(let x=-44+stripePhase;x<width+44;x+=44){polygon(ctx,[x,y,x+20,y,x+9,y+11,x-11,y+11]);ctx.fill();}
     ctx.restore();
   }
-  const center=ctx.createLinearGradient(20,0,730,0);
+  const center=ctx.createLinearGradient(0,0,width,0);
   center.addColorStop(0,'rgba(23,4,12,0)');center.addColorStop(.22,'rgba(35,5,15,.35)');
   center.addColorStop(.5,'rgba(35,5,15,.53)');center.addColorStop(.78,'rgba(35,5,15,.35)');center.addColorStop(1,'rgba(23,4,12,0)');
-  ctx.fillStyle=center;ctx.fillRect(16,centerY-33,718,67);
-  ctx.fillStyle=`rgba(255,177,171,${.55+.2*pulse})`;ctx.fillRect(26,top+2,698,2);
-  ctx.fillStyle=red;ctx.fillRect(26,top+view.height-4,698,2);
+  ctx.fillStyle=center;ctx.fillRect(0,centerY-33,width,67);
+  ctx.fillStyle=`rgba(255,177,171,${.55+.2*pulse})`;ctx.fillRect(0,top+2,width,2);
+  ctx.fillStyle=red;ctx.fillRect(0,top+view.height-4,width,2);
   ctx.restore();
   const frame=images.get('encounter-frame');
-  if(frame)drawNineSlice(ctx,redWarningFrame(frame),10,top,730,view.height,[24,24,40,24],.86);
+  if(frame)drawNineSlice(ctx,redWarningFrame(frame),-24,top,width+48,view.height,[24,24,40,24],.86);
 
   ctx.globalAlpha=view.contentAlpha;
   for(const side of [-1,1])for(let i=0;i<2;i++){
-    const x=375+side*(238+i*27),y=282;
+    const x=centerX+side*(238+i*27),y=282;
     polygon(ctx,[x-side*10,y-17,x+side*4,y-17,x+side*20,y,x+side*4,y+17,x-side*10,y+17,x+side*6,y]);
     ctx.fillStyle=i?red:'#ffe2d9';ctx.fill();
   }
-  ctx.save();ctx.translate(375,165);ctx.scale(view.iconScale,view.iconScale);
+  ctx.save();ctx.translate(centerX,165);ctx.scale(view.iconScale,view.iconScale);
   const halo=ctx.createRadialGradient(0,0,32,0,0,118);
   halo.addColorStop(0,`rgba(255,42,55,${.42*pulse})`);halo.addColorStop(1,'rgba(255,42,55,0)');
   ctx.fillStyle=halo;ctx.fillRect(-118,-118,236,236);
@@ -140,7 +142,7 @@ export function drawBossWarning(ctx,view,images) {
   if(icon)ctx.drawImage(icon,-64,-64,128,128);
   ctx.restore();
   ctx.font=`900 52px ${COMBAT_TYPE.family}`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.lineJoin='round';ctx.lineWidth=6;ctx.strokeStyle='#360814';ctx.strokeText(view.title,375,282);
-  ctx.fillStyle='#fff4ed';ctx.fillText(view.title,375,282);
+  ctx.lineJoin='round';ctx.lineWidth=6;ctx.strokeStyle='#360814';ctx.strokeText(view.title,centerX,282);
+  ctx.fillStyle='#fff4ed';ctx.fillText(view.title,centerX,282);
   ctx.restore();
 }

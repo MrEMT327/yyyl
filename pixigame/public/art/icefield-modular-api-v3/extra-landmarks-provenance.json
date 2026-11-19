@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-11",
+  "mode": "ImageGen built-in, transparent WebP export",
+  "files": [
+    {
+      "asset": "glacier-arch.webp",
+      "folder": "icefield-modular-api-v3",
+      "prompt": "Original transparent game landmark sprite for a portrait scrolling anime aircraft shooter. Glacier arch. A single wide blue-ice arch over a narrow deep blue cleft, organically bowed, flanked by two chunky white snow shoulders, clearly readable rounded opening and broad faceted ice faces. Natural glacial formation, ice blue and gray shadows. No crystals, giant spikes, electric glow or cave entrance sign. Match a soft hand-painted anime environment with matte opaque color shapes, broad gouache-like brushwork, clean legible forms and restrained fine detail. A steep 70-degree top-down camera shows mostly tops and a little side wall; orthographic, no horizon. Soft upper-left daylight and short grounded shadows consistent with adjacent terrain. Pale blue-white snow, cool blue/slate shadows, gentle warm details if needed. Paint the smallest local ground contact snow and ice patch in matching pale blue with soft irregular alpha feather to blend seamlessly into a scrolling icy floor. Keep the subject large and recognizable, filling about 72–80% of a square canvas with generous transparent padding on every side. The ground is continuous beneath the subject and becomes fully transparent before the canvas edges. Real RGBA transparency outside the asset. No opaque backdrop, black matte, UI, text, labels, watermark, borders, particles or atmosphere. One landmark only.",
+      "sha256": "8c93bb3755220d24fb5f6c74642ce9ee5c722af01e44ef17b609a9b138c54569",
+      "size": [
+        768,
+        768
+      ],
+      "bytes": 128356,
+      "generatedOutput": "exec-869be30b-1bc7-4ef2-9a7d-08d5868d3d90.png"
+    },
+    {
+      "asset": "icebreaker-wreck.webp",
+      "folder": "icefield-modular-api-v3",
+      "prompt": "Original transparent game landmark sprite for a portrait scrolling anime aircraft shooter. Icebound civilian research icebreaker. One small stationary weathered icebreaker wedged into a local patch of broken sheet ice, off-white bridge on a faded orange and slate blue hull, dark deck, grounded and snowbound, a simple coherent ship outline with its bow pointing upper right. No weapons, smoke, water wake, flags or people. Match a soft hand-painted anime environment with matte opaque color shapes, broad gouache-like brushwork, clean legible forms and restrained fine detail. A steep 70-degree top-down camera shows mostly tops and a little side wall; orthographic, no horizon. Soft upper-left daylight and short grounded shadows consistent with adjacent terrain. Pale blue-white snow, cool blue/slate shadows, gentle warm details if needed. Paint the smallest local ground contact snow and ice patch in matching pale blue with soft irregular alpha feather to blend seamlessly into a scrolling icy floor. Keep the subject large and recognizable, filling about 72–80% of a square canvas with generous transparent padding on every side. The ground is continuous beneath the subject and becomes fully transparent before the canvas edges. Real RGBA transparency outside the asset. No opaque backdrop, black matte, UI, text, labels, watermark, borders, particles or atmosphere. One landmark only.",
+      "sha256": "97a7f3eef0a8c832844bfed4e6ce4e0bc19de3495c65d594c61b0e55089c2bd9",
+      "size": [
+        768,
+        768
+      ],
+      "bytes": 134978,
+      "generatedOutput": "exec-d136b583-3065-4dd8-a27b-4ae809bb7c34.png"
+    },
+    {
+      "asset": "frozen-basin.webp",
+      "folder": "icefield-modular-api-v3",
+      "prompt": "Original transparent game landmark sprite for a portrait scrolling anime aircraft shooter. Frozen turquoise basin. An asymmetric oval sinkhole basin lined with rounded snow-covered terraces and a pale turquoise glassy frozen center, two broad crack lines and a little fractured edge ice. High aerial view, clean graphic bowl shape, natural topography. No magical effects, glow, waterfalls or buildings. Match a soft hand-painted anime environment with matte opaque color shapes, broad gouache-like brushwork, clean legible forms and restrained fine detail. A steep 70-degree top-down camera shows mostly tops and a little side wall; orthographic, no horizon. Soft upper-left daylight and short grounded shadows consistent with adjacent terrain. Pale blue-white snow, cool blue/slate shadows, gentle warm details if needed. Paint the smallest local ground contact snow and ice patch in matching pale blue with soft irregular alpha feather to blend seamlessly into a scrolling icy floor. Keep the subject large and recognizable, filling about 72–80% of a square canvas with generous transparent padding on every side. The ground is continuous beneath the subject and becomes fully transparent before the canvas edges. Real RGBA transparency outside the asset. No opaque backdrop, black matte, UI, text, labels, watermark, borders, particles or atmosphere. One landmark only.",
+      "sha256": "1b09e3d9ba144a0bcda1ff9a55de5d0d5778a2b70703880b54ed65154588bae8",
+      "size": [
+        768,
+        768
+      ],
+      "bytes": 143758,
+      "generatedOutput": "exec-b97a7859-6afd-4c77-a588-4f0ea89bc9d3.png"
+    }
+  ]
+}

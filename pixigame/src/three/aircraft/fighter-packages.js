@@ -21,7 +21,7 @@ export function isFighterPackageReady(pilotId) {
 }
 // The game requests only
 // the aircraft it is about to display; concurrent requests share one load.
-export function loadFighterPackages({ read, skipTextures = false, pilotIds, objectLoader, assetBase } = {}) {
+export function loadFighterPackages({ read, skipTextures = false, allowTextureFallback = false, pilotIds, objectLoader, assetBase, assetBytes } = {}) {
   const entries = pilotIds ? [...new Set(pilotIds.map(id => fighterForPilot(id)))] : catalog;
   return Promise.all(entries.map(entry => {
     if (templates.has(entry.slug)) return templates.get(entry.slug);
@@ -31,7 +31,7 @@ export function loadFighterPackages({ read, skipTextures = false, pilotIds, obje
     const useGameLod = derived?.sourceManifestHash === entry.manifestHash;
     const request = loadPackage(useGameLod ? { ...entry, manifestHash: derived.manifestHash } : entry, {
       manifestFile: useGameLod ? 'game-lod-manifest.json' : 'manifest.json',
-      skipTextures, objectLoader,
+      skipTextures, allowTextureFallback, objectLoader, assetBytes,
       read: async (name, _url, signal, expectedHash) => {
         if (read) return read(entry.slug, name);
         const base = assetBase || new URL(import.meta.env.BASE_URL, document.baseURI);

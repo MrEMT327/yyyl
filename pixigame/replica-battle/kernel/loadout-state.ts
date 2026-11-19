@@ -2,7 +2,8 @@ import nativeResearchSource from '../../src/replica/native-research-source.json'
 import defaultLoadoutState from '../../src/replica/default-loadout-state.json' with { type: 'json' };
 import type { GameContent, RecordData } from './model';
 import type { Simulation } from './simulation';
-import { loadLoadoutRuntime, loadPlayerAppearances } from './loadout-resources';
+import { loadLoadoutRuntime, loadPlayerAppearances, type ReadSharedLoadoutJSON } from './loadout-resources';
+import { readLoadoutCatalogFile } from '../../src/replica/loadout-catalog-file.js';
 import { inspectLoadoutSkillSupport } from './special-skill-runtime';
 import { buildLoadoutRuntimeAttributes } from './loadout-attributes';
 import { splitNativeEconomyAttributes } from '../../src/replica/native-economy-attributes.js';
@@ -48,17 +49,23 @@ export interface CalculatedLoadout {
   contributions: { name: string; attributes: Record<string, number> }[];
 }
 const storageKey = 'danke-study-loadout-v1';
-let catalogRequest: Promise<LoadoutCatalog> | undefined;
+const catalogRequests = new WeakMap<typeof fetch, Promise<LoadoutCatalog>>();
 let volatileState: StudyLoadoutState | undefined;
-export function loadLoadoutCatalog(): Promise<LoadoutCatalog> {
-  return catalogRequest ||= Promise.all([fetch('data/loadout-catalog.json', { cache: 'no-store' }), loadLoadoutRuntime(), loadPlayerAppearances()]).then(async ([response, runtime, appearances]) => {
-    if (!response.ok) throw new Error('缺少原包装备目录');
-    const catalog = await response.json();
-    for (const key of ['equipment', 'planes', 'guns', 'pilots', 'labs', 'allSkills']) if (!Array.isArray(catalog[key])) throw new Error(`装备目录格式错误：${key}`);
-    catalog.runtime = runtime;
-    catalog.appearances = appearances;
-    return catalog as LoadoutCatalog;
-  }).catch(error => { catalogRequest = undefined; throw error; });
+function assertLoadoutCatalog(catalog: RecordData): asserts catalog is LoadoutCatalog {
+  for (const key of ['equipment', 'planes', 'guns', 'pilots', 'labs', 'allSkills']) if (!Array.isArray(catalog[key])) throw new Error(`装备目录格式错误：${key}`);
+}
+export function loadLoadoutCatalog(fetchResource: typeof fetch = fetch, readShared?: ReadSharedLoadoutJSON): Promise<LoadoutCatalog> {
+  const cached = catalogRequests.get(fetchResource);
+  if (cached) return cached;
+  const request = Promise.all([
+    readShared ? readShared('loadout-catalog') : readLoadoutCatalogFile('data/loadout-catalog.json', '缺少原包装备目录', fetchResource),
+    loadLoadoutRuntime(fetchResource, readShared), loadPlayerAppearances(fetchResource, readShared),
+  ]).then(([catalog, runtime, appearances]) => {
+    assertLoadoutCatalog(catalog);
+    return { ...catalog, runtime, appearances };
+  }).catch(error => { catalogRequests.delete(fetchResource); throw error; });
+  catalogRequests.set(fetchResource, request);
+  return request;
 }
 export function createDefaultStudyLoadoutState(): StudyLoadoutState {
   return structuredClone(defaultLoadoutState) as StudyLoadoutState;
@@ -88,7 +95,7 @@ export function loadStudyLoadoutState(catalog: LoadoutCatalog): StudyLoadoutStat
   // Invalid native maps fail visibly; never replace them with a new gun/save.
   const weaponLoadout=normalizeNativeWeaponLoadout(saved,state.guns);
   Object.assign(state,weaponLoadout);
-  state.guns.forEach(row=>{row.equipped=Object.values(weaponLoadout.useWeaponMap).includes(row.id);});
+  state.guns.forEach(row=>{row.equipped=row.id===weaponLoadout.useWeaponMap[0];});
   let equipped = false;
   state.pilots = collect('pilots', catalog.pilots); equipped = false;
   state.pilots.forEach(row => { if (row.equipped) { row.equipped = !equipped; equipped = true; } });
@@ -184,20 +191,26 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
   const weaponLoadout=normalizeNativeWeaponLoadout(state,state.guns);
   const selectedGun = state.guns.find(r=>r.id===weaponLoadout.useWeaponMap[0])!;
   const weaponSkillSources=new Set(battleWeaponSkillSources(weaponLoadout,state.guns));
-  let primarySkillId = 0;
+  const attackSkills = (star: RecordData | undefined): number[] => parseStudyFeatures(star?.FeatureInitSkill)
+    .flatMap(feature => feature.Type === 'Skill' ? (String(feature.Args).match(/\d+/g) || []).map(Number) : []);
+  // The selected weapon supplies its attack. A variant may use its group's
+  // attack definition, while its star perks come from the saved skill sources.
+  const selectedGunRow = catalog.guns.find(row => Number(row.id) === selectedGun.id);
+  if (!selectedGunRow) throw new Error('出战武器配置缺失，请重新选择武器');
+  const baseGunRow = catalog.guns.find(row => Number(row.id) === Number(selectedGunRow.baseGunId || selectedGunRow.id));
+  const ownAttacks = attackSkills(currentStar(selectedGunRow, selectedGun.star));
+  const attacks = ownAttacks.length ? ownAttacks : attackSkills(currentStar(baseGunRow || {}, selectedGun.star));
+  if (!attacks.length) throw new Error('出战武器缺少基础攻击配置，请重新选择武器');
+  const primarySkillId = attacks[0];
+  for (const skillId of attacks) {
+    initial.add(skillId);
+    roots.add(skillId);
+  }
   for (const entry of state.guns.filter(r => r.active)) {
     const row = catalog.guns.find(r => Number(r.id) === entry.id); if (!row) continue;
     const star = currentStar(row, entry.star), name = `${row.name} · ${entry.star} 星`;
     add(`${name}收藏`, star?.AttrOnStarUp);
-    if (weaponSkillSources.has(entry.id)) {
-      // Native uses this source's exact star row. A variant with an empty
-      // FeatureInitSkill does NOT borrow a base weapon the player never slotted.
-      for (const f of parseStudyFeatures(star?.FeatureInitSkill)) if (f.Type === 'Skill') for (const id of String(f.Args).match(/\d+/g) || []) {
-        initial.add(Number(id)); roots.add(Number(id));
-        if(!primarySkillId)primarySkillId=Number(id);
-      }
-      feature(name, star?.FeatureOnStarUp, true);
-    }
+    if (weaponSkillSources.has(entry.id)) feature(name, star?.FeatureOnStarUp, true);
   }
   const selectedPilot = state.pilots.find(r => r.equipped);
   const pilotSkillSlots=validatePilotSkillSlots(state.pilotSkillSlots,state.pilots,(id,star)=>
@@ -248,6 +261,8 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
     if (skillSupport[id].supported) battleSkillIds.push(id);
     else unsupportedEffects.push({ source: skill.name, skillId: id, description: `${skill.name}（${id}）：${support.reasons.join('；')}` });
   }
+  if (!primarySkillId || !battleSkillIds.includes(primarySkillId))
+    throw new Error('主武器的基础攻击未能生效，请重新选择出战武器');
   // Preserve the full display ledger, but do not inherit patrol-only values
   // into weapons or reject sortie admission for an out-of-battle attribute.
   const { economyAttributes, battleContributions } = splitNativeEconomyAttributes(contributions);
@@ -269,7 +284,7 @@ export function calculateStudyLoadout(catalog: LoadoutCatalog, state: StudyLoado
   if (state.debugOverride.enabled) { attack = state.debugOverride.attack; hp = state.debugOverride.hp; }
   contributions.unshift({ name: '基础战机', attributes: { Attack: 100, HPMax: 600 } });
   return { attack, hp, attributes, economyAttributes, runtimeAttributes, weaponAttributes: {}, runtimeWeaponAttributes: {}, initialSkillIds: [...initial], battleSkillIds, banSkillIds: [...(state.weaponSelectionBanSkillIds || [])], skillSupport,
-    selectedGunIds: Object.values(weaponLoadout.useWeaponMap).filter(Boolean), selectedGunId: selectedGun.id, primarySkillId, selectedSkinId, selectedPilotId: selectedPilot?.id || 0, unsupportedEffects, contributions };
+    selectedGunIds: [selectedGun.id], selectedGunId: selectedGun.id, primarySkillId, selectedSkinId, selectedPilotId: selectedPilot?.id || 0, unsupportedEffects, contributions };
 }
 export function applyStudyLoadout(content: GameContent, _sim: Simulation, catalog: LoadoutCatalog, state: StudyLoadoutState): CalculatedLoadout {
   const result = calculateStudyLoadout(catalog, state), player = content.chapter.player;
