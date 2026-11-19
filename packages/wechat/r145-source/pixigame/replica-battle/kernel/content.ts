@@ -7,6 +7,7 @@ import { nativeOrdinaryCameraViewport } from './native-camera-projection';
 import { loadLoadoutRuntime, loadPlayerAppearances, type ReadSharedLoadoutJSON } from './loadout-resources';
 import { rewriteBattleUrls } from '../rewrite-battle-urls';
 import { installNativeAirdropContent } from './native-airdrop-content';
+import { cleanBattleArtwork } from './release-battle-artwork.js';
 
 const parse = (text: unknown) => { if (typeof text !== 'string') return text || {}; try { return JSON.parse(text); } catch { try { return JSON.parse(text.replace(/}}$/, '}')); } catch { return {}; } } };
 
@@ -14,11 +15,12 @@ interface ContentHost {
   chapterId: number;
   fetchResource: typeof fetch;
   readSharedLoadoutJSON?: ReadSharedLoadoutJSON;
+  canLoadArt?: (path: string) => boolean;
 }
 
 export async function loadContent(onProgress: ((completed: number, total: number) => void) | undefined, host: ContentHost): Promise<GameContent> {
   if (!host?.fetchResource || !Number.isSafeInteger(host.chapterId)) throw new Error('战斗数据必须由微信宿主指定关卡并加载');
-  const fetchResource = host.fetchResource;
+  const { fetchResource, canLoadArt } = host;
   // Catalog, current chapter resources and shared combat tables.
   let completed = 0;
   const loaded = <T>(value: T): T => {
@@ -32,6 +34,15 @@ export async function loadContent(onProgress: ((completed: number, total: number
     try { return loaded(await response.json()); }
     catch { throw new Error(`资源格式错误：${name}.json，请重新生成资源后刷新。`); }
   };
+  const emptyEffects = () => ({ effects: {}, textures: {}, materials: {}, meshes: {} });
+  const retiredArtwork = {
+    'effects-original': emptyEffects, 'effects-original-chapters': emptyEffects,
+    'sword-original-effects': emptyEffects, 'beam-effects': emptyEffects,
+    'boss-animation': () => ({}), 'enemy-local-animation-chapters': () => ({}),
+    'audio-chapters': () => ({ audio: {}, music: {}, soundKeys: {} }),
+  };
+  const readShared = (name: string) => canLoadArt && Object.hasOwn(retiredArtwork, name)
+    ? Promise.resolve(loaded(retiredArtwork[name as keyof typeof retiredArtwork]())) : read(name);
   const selectionRequest = read('chapters').then(catalog => {
     const requested = host.chapterId;
     const entry = catalog.chapters.find((row: RecordData) => row.id === requested);
@@ -56,8 +67,8 @@ export async function loadContent(onProgress: ((completed: number, total: number
     Promise.all([
       'assets', 'combat', 'effects-original', 'boss-animation', 'enemy-health-bars', 'beam-effects',
       'enemy-health-bars-chapters', 'npc-chapters', 'audio-chapters', 'effects-original-chapters', 'enemy-local-animation-chapters', 'sword-original-effects',
-    ].map(read).concat(loadLoadoutRuntime(fetchResource, host.readSharedLoadoutJSON).then(loaded),
-      loadPlayerAppearances(fetchResource, host.readSharedLoadoutJSON).then(loaded))),
+    ].map(readShared).concat(loadLoadoutRuntime(fetchResource, host.readSharedLoadoutJSON).then(loaded),
+      canLoadArt ? Promise.resolve(loaded({ planes: {}, pilots: {} })) : loadPlayerAppearances(fetchResource, host.readSharedLoadoutJSON).then(loaded))),
   ]);
   const { catalog, requested, entry } = selection;
   const [chapter, geometry, chapterResources] = chapterData;
@@ -70,7 +81,7 @@ export async function loadContent(onProgress: ((completed: number, total: number
     combat[key] = { ...loadoutRuntime[key], ...combat[key] };
   for (const key of ['sprites', 'prefabs', 'effects']) assets[key] = { ...loadoutRuntime.assets?.[key], ...assets[key] };
   installNativeAirdropContent(combat);
-  const addedEffects = loadoutRuntime.assets?.originalEffects;
+  const addedEffects = canLoadArt ? undefined : loadoutRuntime.assets?.originalEffects;
   if (addedEffects) for (const key of ['effects', 'textures', 'materials', 'meshes'])
     originalEffects[key] = { ...addedEffects[key], ...originalEffects[key] };
   chapter.catalog = catalog.chapters;
@@ -90,8 +101,8 @@ export async function loadContent(onProgress: ((completed: number, total: number
   const health = chapterHealth.chapters?.[requested] || chapterHealth;
   for (const key of ['sprites', 'entities', 'models', 'bars']) enemyHealthBars[key] = { ...enemyHealthBars[key], ...health[key] };
   for (const key of ['effects', 'textures', 'materials', 'meshes']) originalEffects[key] = { ...originalEffects[key], ...chapterEffects[key] };
-  if (extra.originalEffects) for (const key of ['effects', 'textures', 'materials', 'meshes']) originalEffects[key] = { ...originalEffects[key], ...extra.originalEffects[key] };
-  if (extra.beamEffects) for (const key of ['effects', 'textures', 'materials', 'meshes']) beamEffects[key] = { ...beamEffects[key], ...extra.beamEffects[key] };
+  if (!canLoadArt && extra.originalEffects) for (const key of ['effects', 'textures', 'materials', 'meshes']) originalEffects[key] = { ...originalEffects[key], ...extra.originalEffects[key] };
+  if (!canLoadArt && extra.beamEffects) for (const key of ['effects', 'textures', 'materials', 'meshes']) beamEffects[key] = { ...beamEffects[key], ...extra.beamEffects[key] };
   for (const key of ['effects', 'textures', 'materials', 'meshes'])
     originalEffects[key] = { ...originalEffects[key], ...swordEffects[key] };
   assets.originalEffects = originalEffects;
@@ -101,9 +112,10 @@ export async function loadContent(onProgress: ((completed: number, total: number
     for (const anchor of ['start', 'end']) originalEffects.effects[`beam:${id}:${anchor}`] = { layers: effect.layers.filter((layer: RecordData) => layer.anchor === anchor), sequences: [] };
   }
   assets.bossAnimation = bossAnimation;
-  assets.bossAnimations = chapterResources.bossAnimations;
+  assets.bossAnimations = canLoadArt ? {} : chapterResources.bossAnimations;
   assets.enemyLocalAnimation = enemyLocalAnimation;
   assets.enemyHealthBars = enemyHealthBars;
+  if (canLoadArt) cleanBattleArtwork(assets, path => canLoadArt(/^\/?assets\//.test(path) ? path.replace(/^\//, '') : path));
   // Extracted textures retain stable names. Pair the new manifest with this
   // revision's images instead of reusing a previous extraction cached for an hour.
   rewriteBattleUrls(assets, (value, key) =>

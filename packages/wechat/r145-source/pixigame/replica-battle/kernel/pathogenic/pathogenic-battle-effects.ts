@@ -88,7 +88,7 @@ export class PathogenicBattleEffects {
   }
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
-  preload(urlFor:(p:string,t:Row)=>string,deferred?:ReadonlySet<string>){
+  preload(urlFor:(p:string,t:Row)=>string | undefined,deferred?:ReadonlySet<string>){
     this.dependencies=battleSourceDependencies(this.graph);
     this.source.preload(urlFor,this.dependencies.textures,deferred);
   }

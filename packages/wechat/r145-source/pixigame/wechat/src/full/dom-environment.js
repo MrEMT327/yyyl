@@ -387,9 +387,20 @@ export function createDomEnvironment(api, { resources, baseURL, markup = '<html>
     if (!src || disposed) return Promise.resolve();
     if (image._loadingSrc === src) return image._imageReady;
     failedImages.delete(image);
+    let resolved;
+    try { resolved = resources.resolve(src, baseURL); }
+    catch (error) {
+      image._loadingSrc = src; image._loaded = false;
+      image._imageReady = Promise.resolve().then(() => {
+        if (!disposed && image._loadingSrc === src) imageError(image, error);
+        throw error;
+      });
+      image._imageReady.catch(() => {});
+      return image._imageReady;
+    }
     if(host.loadImageSurface){
       image._loadingSrc=src;image._loaded=false;
-      const resolved=resources.resolve(src,baseURL),cached=host.peekImageSurface?.(resolved);
+      const cached=host.peekImageSurface?.(resolved);
       if(cached){
         image[nativeSurface]=cached;
         image._loaded=true;
@@ -423,7 +434,7 @@ export function createDomEnvironment(api, { resources, baseURL, markup = '<html>
       const cancel = () => { native.onload = native.onerror = null; pendingImages.delete(cancel); resolve(); };
       pendingImages.add(cancel);
       native.onload = () => finish(); native.onerror = error => finish(new Error(`图片读取失败：${src} ${error?.errMsg || ''}`));
-      native.src = /^(data:|blob:|wxfile:)/.test(src) || src.startsWith(api.env.USER_DATA_PATH) ? src : resources.resolve(src, baseURL);
+      native.src = resolved;
     });
     // Image.onerror is the browser-compatible delivery path. decode() can
     // additionally await/reject this promise without an unhandled rejection.

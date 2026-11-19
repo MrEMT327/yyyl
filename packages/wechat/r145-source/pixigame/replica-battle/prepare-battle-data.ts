@@ -1,6 +1,5 @@
 import { replicaChapter } from '../src/replica/chapter-contract';
 import { chapterPresentationForStage } from '../src/replica/chapter-presentation.js';
-import { installEnemyFireEffects } from './enemy-fire-effects';
 import { loadContent } from './kernel/content';
 import { loadLoadoutCatalog, type LoadoutCatalog } from './kernel/loadout-state';
 import type { GameContent } from './kernel/model';
@@ -13,7 +12,7 @@ export interface PreparedBattleData {
 }
 
 export async function prepareBattleData({
-  chapterId, baseURL, fetchResource, signal, onProgress, loadCatalog = loadLoadoutCatalog, readSharedLoadoutJSON,
+  chapterId, baseURL, fetchResource, signal, onProgress, loadCatalog = loadLoadoutCatalog, readSharedLoadoutJSON, canLoadArt,
 }: {
   chapterId: number;
   baseURL: string;
@@ -22,11 +21,12 @@ export async function prepareBattleData({
   onProgress?: (completed: number, total: number) => void;
   loadCatalog?: typeof loadLoadoutCatalog;
   readSharedLoadoutJSON?: ReadSharedLoadoutJSON;
+  canLoadArt?: (path: string) => boolean;
 }): Promise<PreparedBattleData> {
   const requested = replicaChapter(chapterId);
   if (!requested) throw new Error('出击关卡不存在');
   const [content, catalog] = await Promise.all([
-    loadContent(onProgress, { chapterId, fetchResource, readSharedLoadoutJSON }),
+    loadContent(onProgress, { chapterId, fetchResource, readSharedLoadoutJSON, canLoadArt }),
     loadCatalog(fetchResource, readSharedLoadoutJSON),
   ]);
   if (signal.aborted) throw signal.reason ?? new DOMException('Battle closed', 'AbortError');
@@ -37,7 +37,6 @@ export async function prepareBattleData({
     const chapter = replicaChapter(Number(row.id));
     if (chapter) row.name = chapterPresentationForStage(chapter.stageIndex).name;
   }
-  installEnemyFireEffects(content);
   rewriteBattleUrls(content, value => /^\/?assets\//.test(value)
     ? new URL(value.replace(/^\//, ''), baseURL).href : value);
   return { content, catalog };

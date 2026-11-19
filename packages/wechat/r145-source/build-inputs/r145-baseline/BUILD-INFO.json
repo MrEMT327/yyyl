@@ -25,9 +25,9 @@
   "requirePublicNetwork": true,
   "cdn": {
     "baseURL": "https://i05.shengpin888.com/shaonvhangxian/",
-    "objectCount": 4765,
-    "logicalPaths": 5099,
-    "bytes": 917992307,
+    "objectCount": 1351,
+    "logicalPaths": 1383,
+    "bytes": 714966489,
     "manifest": "../cdn-manifest.json"
   },
   "localFiles": {
@@ -90,15 +90,11 @@
     "art/weapon-variant-skill-icons-v5/weapon-20902.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-20902.png",
     "art/weapon-variant-skill-icons-v5/weapon-21002.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-21002.png",
     "art/weapon-variant-skill-icons-v5/weapon-21102.webp": "battle-skill-art/art/weapon-variant-skill-icons-v5/weapon-21102.png",
-    "replica-battle/assets/pathogenic-source/gfx/player/bullets/dash_attack_animation.png": "battle-data/art/wechat-mobile-v1/dash_attack_animation-c4036dc29526d3f6-300k-c5f9d1501adc3746.webp",
     "art/stage1-anime-v8/ocean.png": "combat-art/art/wechat-mobile-v1/ocean-d157dd6ca3bb4416.png",
     "replica-battle/assets/airdrop-modules-v1/module-shell.png": "combat-art/art/wechat-mobile-v1/module-shell-7d16a7082c76e20a.png",
     "replica-battle/assets/ice-weapons-v2/ice-saw-clean-v3.png": "combat-art/art/wechat-mobile-v1/ice-saw-clean-v3-84b6c68af26f92bc-300k-c5bc341be0e7ee7b.webp",
     "replica-battle/assets/project-medkit-v1/medical-case-front-v1.png": "combat-art/art/wechat-mobile-v1/medical-case-front-v1-591a61810ed08423.png",
     "replica-battle/assets/project-airdrop-supply/airdrop-crate-front-v1.png": "combat-art/art/wechat-mobile-v1/airdrop-crate-front-v1-442ff1cc5e829882.png",
-    "replica-battle/assets/pathogenic-source/gfx/player/bullets/dual_blades_attack.png": "combat-art/art/wechat-mobile-v1/dual_blades_attack-2993eeb58376aadc-300k-751e0cc1f8e53137.webp",
-    "replica-battle/assets/pathogenic-source/gfx/player/bullets/bullet_flame.png": "combat-art/art/wechat-mobile-v1/bullet_flame-d401395e9fb0ae25.png",
-    "replica-battle/assets/pathogenic-source/gfx/enemies/stomp_wave.png": "combat-art/art/wechat-mobile-v1/stomp_wave-d5a5e42124e40c88-300k-8c0d8e1560b950a0.webp",
     "art/project-coin-pickup-v1/coin-turn-v1-0.png": "combat-art/art/wechat-mobile-v1/coin-turn-v1-0-354944b7856f3a59.png",
     "art/project-coin-pickup-v1/coin-turn-v1-1.png": "combat-art/art/wechat-mobile-v1/coin-turn-v1-1-45c711cee7eec04f.png",
     "art/project-coin-pickup-v1/coin-turn-v1.json": "combat-art/art/wechat-mobile-v1/coin-turn-v1-e32b73b615fc7b11.json",
@@ -107,7 +103,6 @@
     "replica-battle/data/sorties-v1/chapter-1.json": "battle-data/replica-battle/data/sorties-v1/chapter-1.json.br",
     "replica-battle/data/combat.json": "battle-data/replica-battle/data/combat.json.br",
     "replica-battle/data/npc-chapters.json": "battle-data/replica-battle/data/npc-chapters.json.br",
-    "replica-battle/data/audio-chapters.json": "battle-data/replica-battle/data/audio-chapters.json.br",
     "fighters/kestrel/game-lod-manifest.json": "combat-art/fighters/kestrel/game-lod-manifest.json.br",
     "fighters/kestrel/game-lod-structure.json": "combat-art/fighters/kestrel/game-lod-structure.json.br",
     "fighters/kestrel/game-lod-effects.json": "combat-art/fighters/kestrel/game-lod-effects.json.br",
@@ -127,7 +122,7 @@
     "replica-battle/assets/original-projectiles/square-yellow-v1.png": "battle-data/art/wechat-mobile-v1/square-yellow-v1-300k-319f52c14d3acc8d.webp",
     "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png": "battle-data/art/wechat-mobile-v1/parts-300k-8e8f2c366accdc33.webp",
     "replica-battle/assets/owned-enemies/heavy-scatter-v1/parts.png": "battle-data/art/wechat-mobile-v1/parts-300k-08ec37f5b6558199.webp",
-    "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png": "battle-data/art/wechat-mobile-v1/parts-300k-fd796d9c85c34a74.webp"
+    "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png": "battle-data/art/wechat-mobile-v1/patrol-drone-d5b9ab5a6e6b066b6.png"
   },
   "packageBytes": {
     "main": 1042072,
@@ -145,7 +140,7 @@
   },
   "totalBytes": 19948688,
   "performance": {
-    "cacheVersion": "c5e812dd6380ce9739b3df2d78a441bea53d61f7525d7299113303b4e901899c",
+    "cacheVersion": "eebcb7672a18566c5d6d1ea278864f241de88b74b49704a7c9a7e34593cc7db6",
     "startupData": {
       "combinedJsonBytes": 8418139,
       "lobbyJsonBytes": 2487636,
@@ -271,21 +266,6 @@
         "sourceSha256": "b57936b5d74d2ab3094e4f53715e76a86d44a9e0108f6af2eb999467b9cfb793",
         "sourceBytes": 910961,
         "bytes": 129494,
-        "size": [
-          1254,
-          1254
-        ]
-      },
-      {
-        "path": "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png",
-        "packagedPath": "battle-data/art/wechat-mobile-v1/parts-300k-fd796d9c85c34a74.webp",
-        "aliases": [
-          "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png"
-        ],
-        "sha256": "fd796d9c85c34a74c76b543924c6b717ef8fdb587bfb930e332ae6cc8d25150a",
-        "sourceSha256": "1e496e68c4c1dada25623ec477032799ef28c32841b0e742bd44ab44c8c45f89",
-        "sourceBytes": 690701,
-        "bytes": 110070,
         "size": [
           1254,
           1254

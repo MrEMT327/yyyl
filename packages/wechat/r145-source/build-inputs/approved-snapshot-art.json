@@ -1,0 +1,382 @@
+{
+  "replica-battle/assets/airdrop-modules-v1/module-shell.png": {
+    "sha256": "7b928a8f6e73a9e01b43e316b919a262e412a4ad4421605ecaede82fa21c711f",
+    "evidence": "airdrop-modules-v1/manifest.json，本项目模块外观"
+  },
+  "replica-battle/assets/escort-light-sword-v2/hilt-v2.png": {
+    "sha256": "03004c1b15262687fb986b7c433b9aa76d5b8a1b539183c719587f7ddfdf98ef",
+    "evidence": "escort-light-sword-v2/generation-prompt.txt，生成的剑柄"
+  },
+  "replica-battle/assets/ice-weapons-v2/dirt_01.png": {
+    "sha256": "6827a0a32a293ec9570fb98d63963b8dd6e6aaba9e1096afad932e93a378bea9",
+    "evidence": "ice-weapons-v2/sources.json，生成的冰武器与 Kenney CC0 粒子"
+  },
+  "replica-battle/assets/ice-weapons-v2/ice-crescent-v2.png": {
+    "sha256": "00525e42a5dc55e13a901298bb9201689ba2f8cbe1a2222ef472ceb732cb4dae",
+    "evidence": "ice-weapons-v2/sources.json，生成的冰武器与 Kenney CC0 粒子"
+  },
+  "replica-battle/assets/ice-weapons-v2/ice-saw-clean-v3.png": {
+    "sha256": "437124fea1963b4dfadcea83fb6b357f2076810b97309ce32e6acea2bc0e67d0",
+    "evidence": "ice-weapons-v2/sources.json，生成的冰武器与 Kenney CC0 粒子"
+  },
+  "replica-battle/assets/ice-weapons-v2/trace_01.png": {
+    "sha256": "34de69bc3f665b23fe9bed15f388efd8e8e4dc1a99f2fc5db9ba8715c525711f",
+    "evidence": "ice-weapons-v2/sources.json，生成的冰武器与 Kenney CC0 粒子"
+  },
+  "replica-battle/assets/light-volume-shots-v1/heavy.png": {
+    "sha256": "37e75af261dd5b26d6d4e40d7a756d36e21315e1365f264799098cf5d9ef28a0",
+    "evidence": "light-volume-shots-v1/SOURCE.json，本项目 SVG 绘制"
+  },
+  "replica-battle/assets/light-volume-shots-v1/piercing.png": {
+    "sha256": "e4cb7b4ea041b40080f5192c8cff81c8d9a28bd0ba2a590e46d1b79b7a903ad1",
+    "evidence": "light-volume-shots-v1/SOURCE.json，本项目 SVG 绘制"
+  },
+  "replica-battle/assets/light-volume-shots-v1/regular.png": {
+    "sha256": "1012fa3a4874837fd091f03e203417bbb9a707bfe2bbe33b4c5e8f45661449fd",
+    "evidence": "light-volume-shots-v1/SOURCE.json，本项目 SVG 绘制"
+  },
+  "replica-battle/assets/missile-v2/exhaust.png": {
+    "sha256": "78d64ba8a1853740fc3797069c89f94e2539fff05eb71fcad6985b27406887db",
+    "evidence": "missile-v2/PROVENANCE.md，生成的导弹尾焰"
+  },
+  "replica-battle/assets/missile-v3/body.png": {
+    "sha256": "dd32d3f1c8a9592f20fb8e46445004b3818f31044087a2189c6d4d6e3b67b965",
+    "evidence": "missile-v3/generation-prompt.txt，生成的导弹弹体"
+  },
+  "replica-battle/assets/original-projectiles/cone-orange-v1.png": {
+    "sha256": "0a4b4af863f9d7af2e0dc980c755f1e6bda1d299ac708483d91151332271dfd4",
+    "evidence": "original-projectiles/PROMPTS.md，生成的敌方弹图"
+  },
+  "replica-battle/assets/original-projectiles/crescent-red-v1.png": {
+    "sha256": "c0c5c4df3fd4a60f26b51d26f678c60d0ae60f18880be050dd439ef4618f7828",
+    "evidence": "original-projectiles/PROMPTS.md，生成的敌方弹图"
+  },
+  "replica-battle/assets/original-projectiles/enemy-orbit-disc-v1.png": {
+    "sha256": "6874d091c29937d583d78fdca8bd33a2142f6401039e73e2c1ed341b836c339a",
+    "evidence": "original-projectiles/PROMPTS.md，生成的敌方弹图"
+  },
+  "replica-battle/assets/original-projectiles/oval-red-v1.png": {
+    "sha256": "8c4e9e1ada23f2f011a2abd2626f9d0b2b9d8eff78e1a64b648cd1361ee17e08",
+    "evidence": "original-projectiles/PROMPTS.md，生成的敌方弹图"
+  },
+  "replica-battle/assets/original-projectiles/ring-red-v1.png": {
+    "sha256": "5494b329292a4845357515ba15fe6bd1324e64b7d26ec389e88580f67e385a56",
+    "evidence": "original-projectiles/PROMPTS.md，生成的敌方弹图"
+  },
+  "replica-battle/assets/original-projectiles/square-yellow-v1.png": {
+    "sha256": "e9357f101eb46d96ef5387db6cb349f4e979a8429699d484fe9d8c02b0adb332",
+    "evidence": "original-projectiles/PROMPTS.md，生成的敌方弹图"
+  },
+  "replica-battle/assets/owned-enemies/bionic-bird-v1/monster1_0000.png": {
+    "sha256": "0f2ace9585817239efaff19a948e3a741e4a5aaec0f88b57f1f990ec5bf08b26",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/bionic-bird-v1/monster1_0001.png": {
+    "sha256": "d6b3525e27cd59af294b7d8f5d1efee481e34e1eeea5b418d7ae82bc2a47e183",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/bionic-bird-v1/monster1_0002.png": {
+    "sha256": "818b5372747196b1398b8d9f41e8b19906d5f952c97d98299f179029a1e4c57e",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/bionic-bird-v1/monster1_0003.png": {
+    "sha256": "5dca105b2576fdf7fb5f99e8e3f64d70a13bc012762bed68fc48cda8a834f385",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/bionic-bird-v1/monster1_0004.png": {
+    "sha256": "3a8c01f4e287ffcf3bc43d32000d370d3e9fd3c5a486fb984a86e08d2e5d3731",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/bionic-bird-v1/monster1_0005.png": {
+    "sha256": "1c25b097ed00a009f543ac2d16e20004b8c9feda86635e5acc4777318d004281",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter10-aether-citadel-v1/parts.png": {
+    "sha256": "2114ca851da480d7bfdb19fed12d0cb657a53b78beedea472831bdf6bc50edd9",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter11-dune-bulwark-v1/parts.png": {
+    "sha256": "8bc528c7f36ff62b86f04ebc291a8337aa5ac3aa9bd2325084b3477701c92a88",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter11-relic-hover-sentry-v1/parts.png": {
+    "sha256": "3850b37a43dfea7d7ba02b9732cc8267c22a1866a87ac6dd1f90f75d91fa1863",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter12-canopy-prowler-v1/parts.png": {
+    "sha256": "a0abcc34175361779e7b299daed8d2b3d9fda6f9da7ea3db667e232669b666ee",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter12-rainforest-aegis-v1/parts.png": {
+    "sha256": "3df3263929d7f4a65532f482b1255b98c33037602d9ed7872f11ba4e543cbf98",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter13-neon-prism-v1/parts.png": {
+    "sha256": "5d208bad245e66103588ec4b91832dddb30ca39c623ec8cd04e9cbf7fe2a1497",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter13-neon-ricochet-v1/parts.png": {
+    "sha256": "9b774daea160f0f22631df3c1534eaf773f298565beaa9d23350bd987ee20a46",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter13-neon-twinrotor-v1/parts.png": {
+    "sha256": "d8bfb07df37fec8e0c46a74934ee036b794663433fefbea09664325ec15d95b7",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter14-salt-crystal-skimmer-v1/parts.png": {
+    "sha256": "9cbc1636a7e1d1a2051b3b5541333b8f6168b25bbfa9c18d6c34e329c530ea30",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter14-salt-mirror-carrier-v1/parts.png": {
+    "sha256": "a8f562282896eda6bcaef5f075550f083164556756bd631c51f2ba1e0ba3a153",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter14-salt-ring-sentinel-v1/parts.png": {
+    "sha256": "8a62f7e4b16a9e9e3655800e981787b1c545551687d1017175e57dfe2f8a0162",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter16-bronze-tide-warden-v1/parts.png": {
+    "sha256": "449f9690b5935370d75b80c0e3672f23357f700f833f73014e684805301af27c",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter16-sunken-bastion-v1/parts.png": {
+    "sha256": "64296acb5a7d7c60be61857a48d67f693f994a370eb05f51ab400fc855592da3",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter16-verdigris-skiff-v1/parts.png": {
+    "sha256": "53b6922c173abec0deb1260eec5c117bbb86f73f9fb6b6b9734e288fb4a5b899",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter17-amethyst-excavator-v1/parts.png": {
+    "sha256": "17465f3a4eeb5e197d2d499efd2f224a1b72ec2edc215c48845d476c40f3daac",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter18-aerial-waystone-v1/parts.png": {
+    "sha256": "e88486122a61e0cc7bf5db6b787edf78c30c54df705f4688bbf5668c8a157507",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter18-cloud-foil-v1/parts.png": {
+    "sha256": "81522a2d6bcb98e9c13e24ee9c57bf5419d2577066eeefc2c71d95a04e8ba122",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter18-ivory-crosswing-v1/parts.png": {
+    "sha256": "50155f3b73da9d0f1fc36b5fb6f44e5d735e5ba5e33469c9619dba1a25bdcad9",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter19-copper-siege-disc-v1/parts.png": {
+    "sha256": "cba34a51e7f1e7f41e28f58cfc78b45aa28c1e9633ef01021dc711fe3f8c5890",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter2-arsenal-boss-v1/parts.png": {
+    "sha256": "3f3d341f4272fbd4fa84e92316be872c88e12da798c2d2cc8ec6bc68f1b0495e",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter2-interceptor-v1/parts.png": {
+    "sha256": "d8583d481b0171e9d6574a5f809e7837ba627763944397613a2dc6f0f87f2d8e",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter2-twin-hover-elite-v1/parts.png": {
+    "sha256": "63ef2f34c8c886fc7af64b98095a4fd3e534d10ca2d3941dae31d083096304c8",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter20-aurora-gyro-v1/parts.png": {
+    "sha256": "10d3fd5244d167815166d5ddb689f6cb4d02afa4e0285c26a51c2ed32996813e",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter20-frost-cruiser-v1/parts.png": {
+    "sha256": "aba8c0ca30ef637964a93a5ded8b00a8fc89259a81f3d07000fb15abc27fcdfc",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter20-night-lancer-v1/parts.png": {
+    "sha256": "8ad5090749ff7b97e61412e52f57f6d85bb51d071cbda748aca811d1f5132018",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter20-polar-broadside-v1/parts.png": {
+    "sha256": "043ac518c5beb40357a9f7762680358deaae54f6f59a30a7b3bc833547e47e82",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter21-amber-seeder-v1/parts.png": {
+    "sha256": "b7f6e4b84a1e06cecfb0e6681990e4a2f9711a75c269336029bac18d3f7e4037",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter21-copper-shear-v1/parts.png": {
+    "sha256": "dd13c28de39e3d5e6126296dd6bd9d90cdeb31a47de0f5809ed190e7b8f81c6f",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter21-fjord-ark-v1/parts.png": {
+    "sha256": "2234e051fe8a4247125a925cf4bdcb2b21f64615d81a3d0a1792136cbf515197",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter21-fjord-beacon-v1/parts.png": {
+    "sha256": "1977642496930fa6d6d813c9dbf9feda3b73d3886a2df91dac09b166814729c3",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter22-marsh-seedrunner-v1/parts.png": {
+    "sha256": "74029832952edef5e5378bb4d1bb23a4357da650f9ee49d6a17a79db75c2a8d7",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter24-offshore-pressure-rig-v1/parts.png": {
+    "sha256": "d3da5e6111eec0a27d784851a02fcac4f0b34078d1b229eea37af279a1485934",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter25-derelict-citadel-v1/parts.png": {
+    "sha256": "9f0955ab9648d0a125d38e88890194e9bd991cee0645a463e4189776dbaf368f",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter25-orbital-dart-v1/parts.png": {
+    "sha256": "23a95779ef6df31f61e83a554619f021059ce635c5953bacd4560b8b1d4ffd5e",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter25-relay-cairn-v1/parts.png": {
+    "sha256": "bfa94fe5ca3e9653374c838aea64ba9cacd29c716d5cc4e732947a19a832e8c9",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter25-salvage-seeker-v1/parts.png": {
+    "sha256": "cb45163635eb579c8919556b2e7764faff95d17ab1192d1ca8898df1064c24ae",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter26-lagoon-bastion-v1/parts.png": {
+    "sha256": "d1b983e49d0dcf4c1ec99602101835a8a2f6dc7d9b242f1441749af16cc5e913",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter27-jade-sweep-v1/parts.png": {
+    "sha256": "41751f7f9149c9b57d8e390c6395ed398742be87382e886423e18f1ef69811b4",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter27-terrace-bulwark-v1/parts.png": {
+    "sha256": "faaae3eb01fb505f0245c4fd824f0d847ac7a8a8b79cc91bd18ae8337eeef325",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter29-basalt-orbiter-v1/parts.png": {
+    "sha256": "e4455d770bb4b4e602afc44ee6ddf0e25da383c39dcda45f98c774128e089111",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter29-geothermal-bastion-v1/parts.png": {
+    "sha256": "b89e8250242494947ae71de5950c4e6431915909058d4b11bf23b0733ee7f3f7",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter29-spring-hauler-v1/parts.png": {
+    "sha256": "6597803c7fca9e24dae80e0be4579db1e516e9e1fb73b64aa16b4b36452e4182",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter3-armored-scout-v1/parts.png": {
+    "sha256": "d044233fda9f8534dbf904b2225c1d0325bf8123e77ec499b95d03e725b3d35e",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter3-broadside-boss-v1/parts.png": {
+    "sha256": "3dc2c1a4c99c1bba0f4c56a78721cd187ae5e64079e03bedbcbef5174ab146e8",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter3-burst-hover-v1/parts.png": {
+    "sha256": "fa7eb29f09c5af3a707f27fbd1792bc8cdf0957953eb3f94fcd3e353b5b75475",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter31-windfield-aegis-v1/parts.png": {
+    "sha256": "2823b02e42ea7d60289a42e3daafbbb793fc8935696f53ff8bd094402de82122",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter33-glacial-reliquary-v1/parts.png": {
+    "sha256": "02fb74e8e6db86c4ce5f071ed2f2da1a66d98d5e19ee73808ae6a55f2de6cdb4",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter38-sluice-warden-v1/parts.png": {
+    "sha256": "3f492d203a47fba4e4576aad8c9346e52a0c0491a403709fff76ec9f54b25cf3",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter4-alien-ray-v1/parts.png": {
+    "sha256": "784f161d77ddf4cfd23cc76644a2df4608927631fefd958a51409bf64b3bf0ba",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter4-crystal-colony-v1/parts.png": {
+    "sha256": "f2a4cd69535bd7225514d8b2b8429f5c6e1d0e8806da3049675a8ec54b7a7e1c",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter41-spore-ward-v1/parts.png": {
+    "sha256": "bd0f40a17985da95842162c4513de9ac6b067a970cc8e61c3148659eff3df441",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter5-meteor-ram-v1/parts.png": {
+    "sha256": "c2c699fdbe3ea442f8006df81caa6b1289fe246228f7a37419cf3cabb88582a8",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter6-crown-nautilus-v1/parts.png": {
+    "sha256": "db8ad8979db629d5413e0c07d13a9ea6f5b607a06de7c4e439f9600de4cc61a6",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter6-garnet-crab-v1/parts.png": {
+    "sha256": "fce96d897d05885b705a93c046eb24e731060767d29f4bdd0db43574ca41f147",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter6-glass-dart-v1/parts.png": {
+    "sha256": "c5a5735e23e174a7db48d3d135ef730b59429789e0d560d41d73473ec4b935e7",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter6-ion-catamaran-v1/parts.png": {
+    "sha256": "339d22329b6e3c28ed76f46ca68258f058b9c320253385df19708eff57ca440f",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter6-porcelain-sentry-v1/parts.png": {
+    "sha256": "e8393c9d91fd8652a1d2b8916eef161cbde717f8db0eced888a04b0825d0e636",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter8-breakwater-wing-v1/parts.png": {
+    "sha256": "4ebf2293cafdd00a3faa1db47d04c3ab12086de9bcec460b00a347323cb706f9",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter8-channel-dart-v1/parts.png": {
+    "sha256": "67e073a19d419249a02bec07143db6faf87615c40bdc79a316f7b87bbbb4eadd",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter8-dock-crane-v1/parts.png": {
+    "sha256": "39ab30486b81d6546568606f9d2f70e8e62291db099bef53e7f8cc1d17366380",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter8-drydock-carrier-v1/parts.png": {
+    "sha256": "481a750a9fb1e8901896a607087bb400a852074272f93d5f24a205d7564942ee",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter8-salvage-buoy-v1/parts.png": {
+    "sha256": "751a6525caccdb369d236931ea6e08b31cbb8e90da177b6497a778ff0c4708ea",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter9-jade-rebound-v1/parts.png": {
+    "sha256": "c710dc409c58be34d4f165d5ebba0768e3d901e0a4f51db1f938e7f34701d239",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter9-mosswing-scout-v1/parts.png": {
+    "sha256": "e0f0c38e3cf9a803dd157bda24857b9ff442790ba22e7704be8348cfd1e7d924",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter9-verdant-bastion-v1/parts.png": {
+    "sha256": "6d9b21f8c3253edbf2f9edab5bc581618f6079c7f906cba88d2130ae485252dd",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png": {
+    "sha256": "0173015a26f2f97a67a0fa3ab027e229fe4a8f7f3408dbf2c2573da6858a00ef",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/heavy-scatter-v1/parts.png": {
+    "sha256": "b57936b5d74d2ab3094e4f53715e76a86d44a9e0108f6af2eb999467b9cfb793",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/patrol-drone-v1/parts.png": {
+    "sha256": "1e496e68c4c1dada25623ec477032799ef28c32841b0e742bd44ab44c8c45f89",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/scatter-gunboat-v1/parts.png": {
+    "sha256": "5f50b48b0efd26d143bf1508ba6bcdeef8a4f5dac799af9c0038fef9d7d97633",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/siege-boss-v1/parts.png": {
+    "sha256": "871fab55640782b6c4449b9b78ef55ea2249e2574d8d90a601e3d2e74abf4722",
+    "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/project-airdrop-supply/airdrop-crate-front-v1.png": {
+    "sha256": "2a01ec64cc0df836ebbfc16370b16731350922c3acadfc7d550db5778fd9975f",
+    "evidence": "project-airdrop-supply/sources.json，生成的空投箱"
+  },
+  "replica-battle/assets/project-medkit-v1/medical-case-front-v1.png": {
+    "sha256": "086340d589d023d23ff94593cdeabd2e561769fa3e78078d6528d06bbbbe7297",
+    "evidence": "project-medkit-v1/sources.json，生成的治疗箱"
+  }
+}

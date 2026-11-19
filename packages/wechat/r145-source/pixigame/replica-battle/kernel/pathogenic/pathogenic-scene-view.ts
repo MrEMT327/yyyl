@@ -73,9 +73,11 @@ export class PathogenicSceneView {
   display?:PathogenicHdrComposite;
   diagnostics:any[]=[];
   constructor(readonly scene:Phaser.Scene,readonly graph:Any,readonly compact=false){scene.events.once('shutdown',()=>this.destroy());}
-  preload(urlFor:(path:string,texture:Any)=>string,paths:Iterable<string>=Object.keys(this.graph.textures),deferred?:ReadonlySet<string>){
+  preload(urlFor:(path:string,texture:Any)=>string | undefined,paths:Iterable<string>=Object.keys(this.graph.textures),deferred?:ReadonlySet<string>){
     for(const path of paths){
-      const url=urlFor(path,this.graph.textures[path]);
+      const texture = this.graph.textures[path];
+      const url = urlFor(path, texture);
+      if (!url) { installMissingSourceTexture(this.scene, path, texture); continue; }
       if(deferred?.has(path))this.deferredTextures.set(path,url);
       else queueSourceTexture(this.scene,path,url,undefined,this.compact);
     }

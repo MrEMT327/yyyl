@@ -75,7 +75,9 @@ export function createNativeNetwork(api, { baseURL, resolve = value => new URL(v
   let disposed = false;
   function fetch(input, options = {}) {
     if(disposed){const error=new Error('Request aborted');error.name='AbortError';return Promise.reject(error);}
-    const url = resolve(typeof input === 'string' || input instanceof URL ? String(input) : input.url);
+    let url;
+    try { url = resolve(typeof input === 'string' || input instanceof URL ? String(input) : input.url); }
+    catch (error) { return Promise.reject(error); }
     return new Promise((accept, reject) => {
       let task, settled = false;
       const finish = (error, result) => { if (settled) return; settled = true; pending.delete(abort); options.signal?.removeEventListener('abort', abort); if (error) reject(error); else accept(result); };

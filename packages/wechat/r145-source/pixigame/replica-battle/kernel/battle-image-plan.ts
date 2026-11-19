@@ -24,6 +24,7 @@ export function planBattleImages(content: GameContent, {
   const priority = new Set<string>();
   const spines: RecordData[] = [...playerSpineLayers(playerLayers, Boolean(bodyPoseOnly))];
   const register = (key: string, url: string, early: boolean) => {
+    if (!url) return;
     if (!images.has(key)) images.set(key, url);
     if (early) priority.add(key);
   };
@@ -64,7 +65,7 @@ export function planBattleImages(content: GameContent, {
   for (const key of ['exp', 'exp5', 'exp5_blue']) sprite(key, true);
   for (const node of urgencySource.nodes) if (node.sprite) sprite(node.sprite);
   const roundShot = assets.sprites.arrow_Monster_rotundity_1_0000;
-  if (roundShot) for (let frame = 1; frame < 4; frame++) {
+  if (roundShot?.url) for (let frame = 1; frame < 4; frame++) {
     const key = `arrow_Monster_rotundity_1_000${frame}`;
     register(key, roundShot.url.replace('arrow_Monster_rotundity_1_0000.png', `${key}.png`), false);
   }

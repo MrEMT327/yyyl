@@ -50,6 +50,7 @@ export function mountReplicaBattlePage(platform: {
   parent: Window;
   canvas: HTMLCanvasElement;
   fetchResource: typeof fetch;
+  canLoadArt?: (path: string) => boolean;
   presentFrame?: () => boolean | void;
   onSlowFrame?: (timing: unknown, phase: Simulation['phase'], wave: number) => void;
   frozenFrame?: { capture: () => boolean; present: () => void };
@@ -110,6 +111,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     chapterId, baseURL: location.href, fetchResource, signal: lifetime.signal,
     loadCatalog: platform.loadCatalog,
     readSharedLoadoutJSON: platform.readSharedLoadoutJSON,
+    canLoadArt: platform.canLoadArt,
     onProgress: (completed, total) => reportLoading('data', completed / total),
   });
 
@@ -207,7 +209,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     watchGraphics(scene.game.canvas, (scene.game.renderer as import('phaser').Renderer.WebGL.WebGLRenderer).gl);
     memoryCheckpoint('battle-textures-ready');
     ui.update(); send('ready');
-  }, skin, undefined, imagePlan, optimizeChapterOne, Boolean(platform.warmBattleImages) && !developerMode);
+  }, skin, undefined, imagePlan, optimizeChapterOne, Boolean(platform.warmBattleImages) && !developerMode, platform.canLoadArt);
   scene.beginMeasure = battlePerformance.beginMeasure;
   ui = new BattleHudFlow(stage, sim, audio, () => {
     audio.pause();

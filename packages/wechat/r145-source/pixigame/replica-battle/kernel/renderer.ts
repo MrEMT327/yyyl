@@ -170,7 +170,8 @@ export class BattleView extends Phaser.Scene {
   beginMeasure?: (phase: 'enemyVisual' | 'projectileVisual' | 'effectVisual', items?: number) => (()=>void)|undefined;
   constructor(private content: GameContent, private sim: Simulation, private ready: () => void, private appearance?: BattleAppearance,
     private loading?: { progress(value: number): void; complete(): void }, private imagePlan?: ReturnType<typeof planBattleImages>,
-    private readonly optimizeChapterOne = false, private readonly nativeChapterEnemyArt = false) {
+    private readonly optimizeChapterOne = false, private readonly nativeChapterEnemyArt = false,
+    private readonly canLoadArt?: (path: string) => boolean) {
     super('battle'); this.px = WIDTH / content.world.width;
     if (imagePlan) {
       this.prefabByModel = imagePlan.prefabByModel;
@@ -194,7 +195,8 @@ export class BattleView extends Phaser.Scene {
       for (const key of this.loadoutArt(this.content.combat.studyLoadout?.battleSkillIds || [])) deferred.delete(key);
       for (const key of chapterOneBossAtlases) deferred.delete(key);
     }
-    this.pathogenic.preload((_p,t)=>t.url,deferred);
+    this.pathogenic.preload((_key, texture) =>
+      !this.canLoadArt || this.canLoadArt(texture.url) ? texture.url : undefined, deferred);
     const models = this.nativeChapterEnemyArt || this.optimizeChapterOne
       ? this.enemyArtModels() : new Set(this.prefabByModel.keys());
     this.preloadEnemyArt(models);
@@ -221,8 +223,7 @@ export class BattleView extends Phaser.Scene {
     });
     this.load.on('loaderror', (file: Phaser.Loader.File) => {
       if (file.key.startsWith('owned-enemy:')) {
-        // The model renderer uses the preloaded prefab sprites when an atlas is missing.
-        console.warn('[replica-battle] 敌机外观加载失败，使用预制贴图', file.key);
+        console.warn('[replica-battle] 敌机外观加载失败，使用备用绘制', file.key);
         return;
       }
       if (['image', 'spritesheet', 'svg'].includes(file.type) || ['spine', 'bitmapfont'].includes(file.multiFile?.type ?? '')) {
@@ -450,13 +451,13 @@ export class BattleView extends Phaser.Scene {
     if (modelId === frenzyPickupModelId) return createFrenzyPickup(this, this.px);
     const container = this.add.container(0, 0);
     const prefab = name ? sourcePrefab : undefined;
-    if (prefab?.composite && this.textures.exists(prefab.composite)) {
+    if (prefab?.composite && assets.sprites[prefab.composite]?.url && this.textures.exists(prefab.composite)) {
       const sprite = this.content.assets.sprites[prefab.composite];
       container.add(this.add.image(0, 0, prefab.composite).setScale(this.px / sprite.ppu));
       return container;
     }
     const animated = new Set(name ? this.content.assets.enemyLocalAnimation?.animatedRendererPaths?.[name] || [] : []);
-    const layers = (prefab?.renderers || []).filter((r: RecordData) => ((r.active && r.enabled) || animated.has(r.hierarchy?.join('/'))) && r.sprite && this.textures.exists(r.sprite)).sort((a: RecordData, b: RecordData) => a.sortingOrder - b.sortingOrder || (a.hierarchyOrder ?? 0) - (b.hierarchyOrder ?? 0));
+    const layers = (prefab?.renderers || []).filter((r: RecordData) => ((r.active && r.enabled) || animated.has(r.hierarchy?.join('/'))) && r.sprite && assets.sprites[r.sprite]?.url && this.textures.exists(r.sprite)).sort((a: RecordData, b: RecordData) => a.sortingOrder - b.sortingOrder || (a.hierarchyOrder ?? 0) - (b.hierarchyOrder ?? 0));
     for (const r of layers) {
       if (restoredSequenceOwnsSprite(modelId, r.hierarchy, this.content.assets)) continue;
       const sprite = this.content.assets.sprites[r.sprite];
@@ -610,7 +611,7 @@ export class BattleView extends Phaser.Scene {
         const index = Math.floor(enemy.age * sequence.fps);
         const frame = sequence.frames[sequence.loop ? index % sequence.frames.length : Math.min(index, sequence.frames.length - 1)];
         const sprite = this.content.assets.sprites[frame];
-        for (const child of view.list) if (child instanceof Phaser.GameObjects.Image && child.getData('sourceSprite') === sequence.rendererSprite) {
+        for (const child of view.list) if (sprite?.url && this.textures.exists(frame) && child instanceof Phaser.GameObjects.Image && child.getData('sourceSprite') === sequence.rendererSprite) {
           child.setTexture(frame).setOrigin(sprite.pivot.x, 1 - sprite.pivot.y);
         }
       }
