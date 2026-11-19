@@ -4,29 +4,18 @@ import { initializeReplicaLoadoutCapabilities } from './native-runtime-capabilit
 import { withNativeResearchRuntime } from './native-research-runtime.js';
 import { nativeWeaponDisplayText } from './native-weapon-display.js';
 import { nativeSkillText } from './native-skill-text.js';
-import { readLoadoutCatalogFile } from './loadout-catalog-file.js';
 let request;
 let cachedKey, cachedResult, pendingKey, pendingResult;
-async function catalog(readShared) {
-  if (readShared) {
-    return Promise.all([
-      readShared('loadout-catalog'), readShared('loadout-runtime'), readShared('player-appearances'),
-    ]).then(([data, runtime, appearances]) => ({ ...data, runtime: withNativeResearchRuntime(runtime), appearances }));
-  }
-  const dataUrl = name => new URL(`${import.meta.env.BASE_URL}replica-battle/data/${name}.json`,document.baseURI);
-  const read = async name => {
-    const response = await fetch(dataUrl(name), {cache:'no-store'});
-    if (!response.ok) throw new Error('原版属性资料读取失败');
+async function catalog() {
+  return request ||= Promise.all(['loadout-catalog','loadout-runtime','player-appearances'].map(async name=>{
+    const response=await fetch(new URL(`${import.meta.env.BASE_URL}replica-battle/data/${name}.json`,document.baseURI),{cache:'no-store'});
+    if(!response.ok)throw new Error('原版属性资料读取失败');
     return response.json();
-  };
-  return request ||= Promise.all([
-    readLoadoutCatalogFile(dataUrl('loadout-catalog'), '原版属性资料读取失败'),
-    read('loadout-runtime'), read('player-appearances'),
-  ]).then(([data,runtime,appearances])=>({...data,runtime:withNativeResearchRuntime(runtime),appearances})).catch(error=>{request=null;throw error;});
+  })).then(([data,runtime,appearances])=>({...data,runtime:withNativeResearchRuntime(runtime),appearances})).catch(error=>{request=null;throw error;});
 }
 /** Read-only adapter. Uses the same calculator/state as battle preparation. */
-async function calculateDetails(value, readShared) {
-  const configuration=validateReplicaConfiguration(value),data=await catalog(readShared);
+async function calculateDetails(value) {
+  const configuration=validateReplicaConfiguration(value),data=await catalog();
   const state=configuration.progression;state.equipment=configuration.equipment.map(row=>({...row}));
   initializeReplicaLoadoutCapabilities();
   const result=calculateStudyLoadout(data,state);
@@ -45,12 +34,12 @@ async function calculateDetails(value, readShared) {
 }
 
 /** Bound cache to one configuration. No rendered textures or game instance. */
-export async function replicaLoadoutDetails(value, readShared) {
+export async function replicaLoadoutDetails(value) {
   const configuration=validateReplicaConfiguration(value),key=replicaConfigurationKey(configuration);
   if(cachedKey===key)return structuredClone(cachedResult);
   if(pendingKey!==key) {
     pendingKey=key;
-    pendingResult=calculateDetails(configuration, readShared).then(result=>{
+    pendingResult=calculateDetails(configuration).then(result=>{
       if(pendingKey===key){cachedKey=key;cachedResult=result;}
       return result;
     }).finally(()=>{if(pendingKey===key){pendingKey=undefined;pendingResult=undefined;}});

@@ -58,10 +58,9 @@ export function createRigidTerrainLayer(definition,renderOrder,rain={value:0},ni
     }
     const s=new T.Mesh(geometry,materials.get(asset));s.renderOrder=order;s.userData.asset=asset;return s;
   }
-  const islands=definition.islands??MODULAR_ISLANDS;
   const clusters=[],waterProps=[],seabedFields=[];
   for(const copy of [-1,0,1]){
-    for(const [index,row] of islands.entries()){
+    for(const [index,row] of MODULAR_ISLANDS.entries()){
       const parent=new T.Group();parent.name=`island-${row.id}-${copy}`;
       const island=sprite(row.asset,renderOrder+2);island.position.y=definition.depth+.1;parent.add(island);
       const parts=(row.parts??[]).map(part=>{
@@ -91,11 +90,11 @@ export function createRigidTerrainLayer(definition,renderOrder,rain={value:0},ni
       const s=sprite('seabed',renderOrder+1);s.position.y=definition.depth+.03;mesh.add(s);seabedFields.push({row,copy,sprite:s});
     }
   }
-  return {definition,mesh,geometry,materials,sea,islands,clusters,waterProps,seabedFields};
+  return {definition,mesh,geometry,materials,sea,clusters,waterProps,seabedFields};
 }
 
 export function syncRigidTerrainLayer(record,textures,sceneId,elapsed,motion={}){
-  const {definition,mesh,materials,sea,islands,clusters,waterProps,seabedFields}=record,p=rigidTerrainPose(elapsed,motion);
+  const {definition,mesh,materials,sea,clusters,waterProps,seabedFields}=record,p=rigidTerrainPose(elapsed,motion);
   mesh.position.set(300+p.lateral,0,p.wrapped);
   for(const [key,mat] of materials){
     if(key.startsWith('effect-')){mat.uniforms.time.value=elapsed;continue;}
@@ -141,7 +140,7 @@ export function syncRigidTerrainLayer(record,textures,sceneId,elapsed,motion={})
   Object.assign(mesh.userData.terrain||={}, {id:definition.id,role:'terrain',name:definition.name,depth:definition.depth,
     speed:SETTINGS.nativeSpeed*SETTINGS.motionScale,nativeSpeed:SETTINGS.nativeSpeed,scroll:p.travel,x:mesh.position.x,source:`${sceneId}/rigid-surface`,
     status:[...materials.entries()].filter(([key])=>!key.startsWith('effect-')).every(([key,m])=>key==='ground'?m.uniforms.artwork.value:m.map)?'ready':'loading',
-    islandVariants:new Set(islands.map(row=>row.asset)).size,islandInstances:islands.length,
+    islandVariants:new Set(MODULAR_ISLANDS.map(row=>row.asset)).size,islandInstances:MODULAR_ISLANDS.length,
     visibleIslands:visible,visibleSites,period:p.period,waterTile:p.tile,opening:null,
     visibleSeabed:seabedFields.filter(s=>s.sprite.visible).length,
     modules:clusters.filter(c=>c.parent.visible).map(c=>({id:c.row.id,source:c.row.asset,x:mesh.position.x+c.parent.position.x,z:p.wrapped+c.parent.position.z,width:c.island.scale.x,height:c.island.scale.z})),

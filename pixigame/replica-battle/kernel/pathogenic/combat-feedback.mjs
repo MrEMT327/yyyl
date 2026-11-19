@@ -332,12 +332,10 @@ export class CombatFeedback{
   if(coin)this.coinCount++;else if(kind==='restore')this.restoreCounts[f.kind]++;else this.normalCount++;
   const color=palette(f),t=age/lifetime;if(kind==='blast'){this.queue('blast-body',this.points,color,t);this.queue('blast-light',this.points,color,t);}else this.queue(kind,this.points,color,t,family,(Math.imul((f.uid??0)|0,1664525)>>>0)%32,yaw!==undefined);return true;
  }
- pickup(p,screen,opacity=1){
+ pickup(p,screen){
   if(this.pickups>=64||p.age<p.delay||!Number.isFinite(p.x)||!Number.isFinite(p.z)||!Number.isFinite(p.age))return;
   const r=p.kind==='exp'?.28:p.kind==='gold'?.45:.58;this.corners(p.x,p.z,r,r,0,screen);if(!this.visible())return;this.pickups++;
-  const color=p.kind==='gold'?[1,.67,.12]:p.kind==='heart'?[.18,1,.43]:[.10,.64,1];// Alpha packs animation phase, so dim additive RGB rather than corrupting phase.
-  const light=clamp(opacity);color[0]*=light;color[1]*=light;color[2]*=light;
-  this.queue('pickup',this.points,color,(Math.max(0,p.age-p.delay)*.7+p.uid*.173)%1);
+  const color=p.kind==='gold'?[1,.67,.12]:p.kind==='heart'?[.18,1,.43]:[.10,.64,1];this.queue('pickup',this.points,color,(Math.max(0,p.age-p.delay)*.7+p.uid*.173)%1);
  }
  status(b,screen){
   if(!isRefinedBasicStatus(b))return false;

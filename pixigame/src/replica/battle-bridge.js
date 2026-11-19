@@ -1,5 +1,4 @@
 import {equipmentArtPath} from './equipment-art.js';
-import { recordDiagnostic } from '../diagnostic-log.js';
 import {captureBattleCheckpoint} from './battle-checkpoint.js';
 import {battleOnboarding} from '../peripheral/onboarding.js';
 import { replicaChapter } from './chapter-contract.js';
@@ -8,23 +7,24 @@ import './replica-battle.css';
 import { showSortieLoading } from '../ui/sortie-loading.js';
 import { replicaConfigurationKey } from './loadout-contract.js';
 import { AIRCRAFTS } from '../pilots.js';
+import { peripheralSceneForStage } from '../three/peripheral-scenes.js';
 import { portraitPresentation } from '../ui/character-portraits.js';
 
 import nativeBattleRules from './native-battle-rules.json' with { type: 'json' };
 
 const CHANNEL = 'shnh-replica-battle-v1';
 const ENGINE = 'danke-replica-v1';
-const PREPARATION_LIMIT_MS = 120000;
-const PREPARATION_IDLE_MS = 60000;
 const LOADING_PHASES = Object.freeze({
   data: [.03,.28,'正在读取关卡…'],
   appearance: [.28,.62,'正在加载飞机与地图…'],
   interface: [.62,.68,'正在准备战斗界面…'],
-  textures: [.68,.95,'正在加载战斗贴图…'],
+  textures: [.68,.95,'正在加载战斗资源…'],
 });
-const preparationStages = {
-  code: '战斗模块', data: '关卡数据', appearance: '飞机与地图', interface: '战斗界面',
-  textures: '战斗贴图', configure: '战前配置', frame: '战斗首帧',
+const chapterNumberText = value => {
+  const digits = ['零','一','二','三','四','五','六','七','八','九'];
+  if (value < 10) return digits[value];
+  if (value < 100) return `${value < 20 ? '' : digits[Math.floor(value / 10)]}十${value % 10 ? digits[value % 10] : ''}`;
+  return String(value);
 };
 
 // Appearance is separate from native progression IDs. Never forward legacy
@@ -41,7 +41,7 @@ export function appearanceOf(snapshot, chapter) {
       id: row.id, type: row.type, name: row.name, image: absolute(row.image || equipmentArtPath(row.art)),
     })),
     assetBase: absolute('./'),
-    map: { id: chapterPresentationForStage(chapter.stageIndex).mapSceneId, terrain: chapter.terrain },
+    map: { id: peripheralSceneForStage(chapter.stageIndex).id, terrain: chapter.terrain },
   };
 }
 
@@ -78,15 +78,9 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     const receipt = peripheral().recordSortie({
       ...result, engine: ENGINE, stageIndex: session.chapter.stageIndex, debugRun: session.trial,
     });
-    if (!receipt.ok) {
-      recordDiagnostic('结算保存失败', receipt.message);
-      throw new Error(receipt.message || '战斗结算尚未保存');
-    }
-    const outcome = result.endReason === 'quit' || result.abandoned ? '退出' : result.won ? '通关' : '战败';
-    recordDiagnostic('结算已保存', `第 ${session.chapter.id} 章 · ${outcome}`);
+    if (!receipt.ok) throw new Error(receipt.message || '战斗结算尚未保存');
     session.settled = true;
-    send(session, 'settled', {runId:result.runId,rewards:receipt.rewards,trial:receipt.replica.trial,
-      pilotAffection:receipt.replica.pilotAffection});
+    send(session, 'settled', {runId:result.runId,rewards:receipt.rewards,trial:receipt.replica.trial});
     if (!session.trial && !receipt.replica.abandoned) onProgress(receipt.replica);
   }
 
@@ -119,16 +113,12 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       completed:Boolean(receipt.ok), message:receipt.message || ''});
   }
 
-  function configurationFor(session) {
-    return session.retrying && session.run
-      ? session.run.snapshot.replicaConfiguration : peripheral().replicaConfiguration();
-  }
-
   function requestConfiguration(session) {
     if (active !== session || session.preparationFailed || session.pendingConfiguration || (session.run && !session.settled && !session.retrying)) return;
     session.startAcknowledged = false;
-    session.armPreparation('configure');
-    const configuration = configurationFor(session);
+    session.armPreparation();
+    const configuration = session.retrying && session.run
+      ? session.run.snapshot.replicaConfiguration : peripheral().replicaConfiguration();
     const requestId = ++session.configurationSerial;
     session.pendingConfiguration = { requestId, configuration, key: replicaConfigurationKey(configuration) };
     send(session, 'configure', { requestId, configuration, configurationKey: session.pendingConfiguration.key });
@@ -160,11 +150,14 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     const chapterLabel = chapterPresentationForStage(chapter.stageIndex).chapterName;
     const snapshot = peripheral()?.snapshot();
     if (!snapshot) return false;
+    const scene = peripheralSceneForStage(chapter.stageIndex);
     const appearance = appearanceOf(snapshot, chapter);
     const aircraft = appearance.aircraft;
     const loadingOptions = {
       stageName: chapterLabel,
       aircraftId: aircraft.id,
+      aircraftName: aircraft.name,
+      sceneImage: scene.depthUrl || scene.artUrl,
       resourceCount: 1,
       indeterminate: true,
     };
@@ -209,7 +202,6 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       session.armPreparation();frame.src=retryUrl.href;
     };
     const failLoading = message => {
-      recordDiagnostic(session.startAcknowledged ? '战斗异常' : '出击准备失败', `第 ${chapter.id} 章 · ${message}`);
       session.loading ||= showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
       session.loading.fail({message,onRetry:!session.startAcknowledged&&!session.settled?retryPreparation:undefined});
     };
@@ -222,14 +214,11 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       failLoading(message);
       session.resolve?.(false);
     };
-    let preparationRemaining, idleRemaining, preparationStartedAt = 0;
-    let preparationStage, preparationProgress, stageProgress;
+    let preparationRemaining = 60000, preparationStartedAt = 0;
     const pausePreparation = () => {
       if (session.timer === null) return;
       clearTimeout(session.timer); session.timer = null;
-      const elapsed = performance.now() - preparationStartedAt;
-      preparationRemaining = Math.max(0, preparationRemaining - elapsed);
-      idleRemaining = Math.max(0, idleRemaining - elapsed);
+      preparationRemaining = Math.max(0, preparationRemaining - (performance.now() - preparationStartedAt));
     };
     const resumePreparation = () => {
       if (active !== session || document.hidden || session.preparationFailed || session.startAcknowledged || session.timer !== null) return;
@@ -237,31 +226,12 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
       session.timer = setTimeout(() => {
         if (active !== session) return;
         if (document.hidden) { pausePreparation(); return; }
-        const awaiting = session.run && !session.settled ? 'started' : session.pendingConfiguration ? 'configured' : 'ready';
-        const percent = Math.round(stageProgress * 100);
-        console.error('[replica-battle] 出击准备超时', { chapterId: chapter.id, awaiting, phase: preparationStage, percent });
-        failPreparation(`关卡准备超时（${preparationStages[preparationStage]} ${percent}%），请重试`);
-      }, Math.min(preparationRemaining, idleRemaining));
+        console.error('[replica-battle] 出击准备超时', { awaiting: session.run && !session.settled ? 'started' : session.pendingConfiguration ? 'configured' : 'ready' });
+        failPreparation('关卡准备超时，请重试');
+      }, preparationRemaining);
     };
-    session.armPreparation = (stage = 'code') => {
-      clearTimeout(session.timer); session.timer = null;
-      preparationRemaining = PREPARATION_LIMIT_MS;
-      idleRemaining = PREPARATION_IDLE_MS;
-      preparationStage = stage;
-      preparationProgress = stageProgress = 0;
-      resumePreparation();
-    };
-    const advancePreparation = (value, stage, fraction, label) => {
-      if (value < preparationProgress) return;
-      preparationStage = stage;
-      stageProgress = fraction;
-      session.loading?.update(value, label);
-      // Only new work extends the idle deadline. Duplicate notifications
-      // do not keep a stalled loader alive, and the total budget still applies.
-      if (value === preparationProgress) return;
-      preparationProgress = value;
-      pausePreparation();
-      idleRemaining = PREPARATION_IDLE_MS;
+    session.armPreparation = () => {
+      clearTimeout(session.timer); session.timer = null; preparationRemaining = 60000;
       resumePreparation();
     };
     session.checkpoint = () => {
@@ -294,7 +264,6 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
     session.resumePage = event => { if (event.persisted) session.leavePage(); };
     // Release the sortie button before its lobby ancestor becomes aria-hidden.
     if (session.focus instanceof HTMLElement) session.focus.blur();
-    recordDiagnostic('开始出击', `第 ${chapter.id} 章${trial ? ' · 试打' : ''}`);
     onEnter(); document.documentElement.classList.add('replica-battle-active');
     document.body.append(host);
     session.loading=showSortieLoading({...loadingOptions,onDismiss:dismissLoading});
@@ -309,13 +278,12 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
           switch (message.type) {
             case 'boot':
               if (session.run && !session.retrying) throw new Error('战斗页面已重新载入，请重试');
-              advancePreparation(.03,'data',0,'正在读取关卡…');
-              send(session, 'initialize', {appearance, initialConfiguration:configurationFor(session)}); break;
+              session.loading?.update(.03,'正在读取关卡…');
+              send(session, 'initialize', { appearance }); break;
             case 'loading-progress': {
               if(session.startAcknowledged||(session.run&&!session.retrying)||!Object.hasOwn(LOADING_PHASES,message.phase)||!Number.isFinite(message.progress))break;
               const [from,to,label]=LOADING_PHASES[message.phase];
-              const fraction = Math.min(1, Math.max(0, message.progress));
-              advancePreparation(from + (to - from) * fraction, message.phase, fraction, label);
+              session.loading?.update(from+(to-from)*Math.min(1,Math.max(0,message.progress)),label);
               break;
             }
             case 'ready':
@@ -326,7 +294,7 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
               if (!candidate || message.requestId !== candidate.requestId) break;
               if (message.configurationKey !== candidate.key) throw new Error('大厅与战斗配置版本不一致，请刷新页面后重新出击');
               session.pendingConfiguration = null;
-              advancePreparation(.98,'frame',0,'正在准备出击…');
+              session.loading?.update(.98,'正在准备出击…');
               // The lift is decorative and stays live until the battle has
               // rendered. The existing preparation timeout covers this gap.
               if(!launch(session,{...candidate,entry:message.entry})){close(session);resolve(false);}
@@ -343,13 +311,9 @@ export function createReplicaBattleBridge({ peripheral, onEnter, onLeave, onProg
               void Promise.resolve(covering?.close({restoreFocus:false,keepMotion:true})).then(()=>{
                 if(active===session&&!session.preparationFailed)send(session,'launch-visible',{runId:session.run.snapshot.id});
               });
-              recordDiagnostic('战斗已启动', `第 ${chapter.id} 章`);
               onState('playing'); resolve(true); break;
             case 'control-ready':
-              if(message.runId===session.run?.snapshot.id){
-                document.documentElement.classList.remove('replica-launch-active');
-                recordDiagnostic('战斗操作就绪', `第 ${chapter.id} 章`);
-              }
+              if(message.runId===session.run?.snapshot.id)document.documentElement.classList.remove('replica-launch-active');
               break;
             case 'onboarding': {
               const group=message.group;

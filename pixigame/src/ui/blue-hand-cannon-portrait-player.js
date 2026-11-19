@@ -1,6 +1,3 @@
-import {notifyOwnedCanvasFrame,releaseOwnedCanvas} from './release-owned-canvas.js';
-import {createPortraitPaintGate,portraitRenderSize} from './portrait-render-budget.js';
-
 // Adapter for the frozen V14 baked WebGL2 mesh streams, not a Cubism model.
 const TRANSITION_SECONDS = .15;
 
@@ -47,7 +44,6 @@ export function advanceSourceMotion(clock, seconds, renderer) {
 }
 
 export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?.BASE_URL ?? '/', runtimePath = 'art/blue-hand-cannon-v28-socket/'} = {}) {
-  const canDrawFrame=createPortraitPaintGate();
   const assetRoot = new URL(assetBase, location.href);
   const root = new URL(runtimePath, assetRoot);
   if (root.origin !== location.origin) throw new Error('角色只允许读取同源资源');
@@ -55,7 +51,6 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
   let state = 'idle', error = null, visible = true, paused = false, destroyed = false;
   let raf = null, lastTime = null, blendFrom = null, rendered = 0, explicit = false;
   let requestedMotion = 'idle';
-  const controller = new AbortController();
   const reduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   const canPlay = () => !destroyed && state === 'ready' && host && visible && !paused && !document.hidden && (!reduced?.matches || explicit);
   const transitioning = () => clock && (clock.phase === 'entry' || clock.phase === 'exit');
@@ -82,12 +77,9 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
     if (!host || !canvas || !renderer) return;
     // The source masks have hard alpha edges. Supersample on 1x displays too,
     // so downscaling the canvas smooths the silhouette without changing poses.
-    const bounds = host.getBoundingClientRect();
-    if(bounds.width<=0||bounds.height<=0)return;
-    const [width,height]=portraitRenderSize(bounds.width,bounds.height);
-    if(canvas.width===width&&canvas.height===height&&rendered)return;
-    if(canvas.width!==width)canvas.width=width;
-    if(canvas.height!==height)canvas.height=height;
+    const bounds = host.getBoundingClientRect(), dpr = 2;
+    const width = Math.max(1, Math.round(bounds.width * dpr)), height = Math.max(1, Math.round(bounds.height * dpr));
+    if (canvas.width !== width || canvas.height !== height) { canvas.width = width; canvas.height = height; }
     // Preserve the source camera's scale and foot line. Extra space is letterbox,
     // never a change to character proportions, cannon scale or motion geometry.
     const scale = Math.min(canvas.width / 824, canvas.height / 1054);
@@ -100,7 +92,6 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
     const t = clock.weight;
     const blend = transitioning() && blendFrom ? {from: blendFrom, weight: t * t * (3 - 2 * t)} : null;
     renderer.draw(clock.key, clock.frame, {blend});
-    notifyOwnedCanvasFrame(canvas);
     rendered += 1; updateHost();
   }
   function schedule() { if (raf === null && canPlay()) raf = requestAnimationFrame(tick); }
@@ -108,7 +99,6 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
   function tick(now) {
     raf = null;
     if (!canPlay()) { lastTime = null; updateHost(); return; }
-    if(!canDrawFrame(now)){schedule();return;}
     const dt = lastTime === null ? 0 : Math.max(0, (now - lastTime) / 1000);
     lastTime = now;
     let remaining = dt;
@@ -139,8 +129,8 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
     canvas = document.createElement('canvas'); canvas.setAttribute('aria-hidden', 'true');
     canvas.width = 784; canvas.height = 1003;
     renderer = new Renderer(canvas, {assetBase: new URL('assets/', root).href});
-    await renderer.load({signal:controller.signal});
-    if (destroyed) return false;
+    await renderer.load();
+    if (destroyed) { renderer.g.getExtension('WEBGL_lose_context')?.loseContext(); return false; }
     if (renderer.bundle.frames !== 526 || renderer.bundle.idleFrames !== 960 || !(renderer.bundle.fps > 0)) throw new Error('V14 动作帧数与冻结清单不符');
     clock = createSourceMotionClock({frames: renderer.bundle.frames, idleFrames: renderer.bundle.idleFrames, fps: renderer.bundle.fps});
     state = 'ready'; if (host) host.appendChild(canvas); fit(); begin('idle'); return true;
@@ -175,11 +165,9 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
       finally { canvas.width = width; canvas.height = height; renderer.view = view; draw(); }
     },
     destroy() {
-      if (destroyed) return; destroyed = true; controller.abort(); stop(); observer?.disconnect();
+      if (destroyed) return; destroyed = true; stop(); observer?.disconnect();
       document.removeEventListener('visibilitychange', onVisibility); reduced?.removeEventListener?.('change', onReduced);
-      renderer?.g.getExtension('WEBGL_lose_context')?.loseContext();
-      releaseOwnedCanvas(canvas);canvas=renderer=clock=blendFrom=null;
-      clearHost();host=null;state='destroyed';
+      renderer?.g.getExtension('WEBGL_lose_context')?.loseContext(); canvas?.remove(); clearHost(); host = null; state = 'destroyed';
     },
     get ready() { return state === 'ready'; }, get state() { return state; }, get error() { return error; },
     get paused() { return paused; }, get playing() { return Boolean(canPlay()); }, get motionName() { return requestedMotion; },

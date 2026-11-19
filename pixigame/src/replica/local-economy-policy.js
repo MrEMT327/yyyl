@@ -1,12 +1,13 @@
 import {NATIVE_PATROL_RULES} from './native-patrol-rules.js';
 import nativePatrolSource from './native-patrol-source.json' with {type:'json'};
-import { replaceUnavailableMaterials } from './native-material-replacements.js';
 
 // Confirmed APK HangUp_HangUp.GoldPerHour. Idle and quick patrol share it;
 // never derive gold from the local material-compensation anchors.
 export const NATIVE_PATROL_GOLD_RATES = Object.freeze(nativePatrolSource.hangUp
   .filter(row => row.Id >= 1 && row.Id <= 60)
   .map(row => Object.freeze({chapter: row.Id, gold: row.GoldPerHour})));
+const nativePatrolGold = new Map(NATIVE_PATROL_GOLD_RATES.map(row => [row.chapter, row.gold]));
+import { replaceUnavailableMaterials } from './native-material-replacements.js';
 
 export const LOCAL_ECONOMY_POLICY = Object.freeze({
   version: 1,

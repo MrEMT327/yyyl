@@ -3,8 +3,8 @@ import nativeSpriteFragment from 'phaser/src/renderer/webgl/shaders/Single-frag.
 import type {PathogenicSceneView} from './pathogenic-scene-view';
 
 // Project combat profile. Select HDR highlights before blurring so ordinary
-// map pixels do not feed the halo. Three levels keep the desktop halo;
-// native phone budgets can select a smaller pyramid with the same filter.
+// map pixels do not feed the halo. Keep the existing three-level pyramid;
+// stronger bloom adds no render targets or blur passes to the first chapter.
 export const COMBAT_BLOOM=Object.freeze({
   glowEnabled:true,intensity:1.45,threshold:1,scale:.25,bloom:0,cap:3.0,
   bloomLevels:3,prefilterBrightPixels:true,
@@ -34,7 +34,7 @@ export function applyFirstChapterShotBloom(group:Phaser.GameObjects.Container,pi
     else if(child instanceof Phaser.GameObjects.Container)applyFirstChapterShotBloom(child,pipeline);
   }
 }
-export function setupFirstChapterBloom(scene:Phaser.Scene,source:PathogenicSceneView,chapterId:number,bloomLevels?:number){
+export function setupFirstChapterBloom(scene:Phaser.Scene,source:PathogenicSceneView,chapterId:number){
   const profile=chapterBloomSettings(chapterId);if(!profile)return undefined;
-  source.configureDisplay({...profile,bloomLevels:bloomLevels??profile.bloomLevels,drawBaseIntoWorld:true});return registerFirstChapterSpriteBloom(scene);
+  source.configureDisplay(profile);return registerFirstChapterSpriteBloom(scene);
 }

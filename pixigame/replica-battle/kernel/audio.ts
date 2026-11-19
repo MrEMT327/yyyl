@@ -1,6 +1,5 @@
 import {FEEDBACK_SOUNDS,feedbackAudioManifest} from '../../src/ui/feedback-sounds.js';
 import {AUDIO_PREFERENCES_KEY,readAudioPreferences,saveAudioPreferences} from '../../src/audio-preferences.js';
-import {preloadBattleAudio} from '../battle-audio-preload.js';
 // Browser audio is unlocked exclusively by a player gesture. No remote resources.
 export class GameAudio {
   private context?: AudioContext;
@@ -16,7 +15,6 @@ export class GameAudio {
   private charges=new Map<string,{source:AudioBufferSourceNode;gain:GainNode;token:string}>();
   private chargeTokens=new Set<string>();
   private loading?: Promise<void>;
-  private loadingController?: AbortController;
   private disposed = false;
   private paused = false;
   private sources = new Set<AudioBufferSourceNode>();
@@ -26,7 +24,6 @@ export class GameAudio {
   private active = true;
   get enabled() {return this.active&&(this.preferences.music||this.preferences.effects);}
   set enabled(value:boolean) {this.active=value;}
-  get needsCombatCues() {return this.enabled&&this.preferences.effects&&!this.paused&&!this.disposed&&Boolean(this.context&&this.master);}
   constructor(private manifest: Record<string, any>) {
     this.manifest={...manifest,...feedbackAudioManifest};
     try {
@@ -47,11 +44,23 @@ export class GameAudio {
       this.compressor.threshold.value=-10;this.compressor.knee.value=12;this.compressor.ratio.value=6;
       this.compressor.attack.value=.003;this.compressor.release.value=.12;
       this.master.connect(this.compressor);this.compressor.connect(this.context.destination);
-      this.loadingController = new AbortController();
-      this.loading = preloadBattleAudio({manifest:this.manifest,context:this.context,signal:this.loadingController.signal,
-        onBuffer:(key,buffer)=>{if(!this.disposed)this.buffers.set(key,buffer);},
-        onError:(key,error)=>{if(!this.disposed)console.warn('[battle audio]',key,error);},
-      });
+      this.loading = Promise.all(Object.entries(this.manifest).map(async ([key, entry]) => {
+        const url = typeof entry === 'string' ? entry : entry.url;
+        if (!url || /BGM/i.test(key) || entry.music) return;
+        try {
+          const response=await fetch(url); if(!response.ok)throw Error(`Audio HTTP ${response.status}: ${url}`);
+          let buffer=await this.context!.decodeAudioData(await response.arrayBuffer());
+          if(this.disposed)return;
+          // Godot loopMode 2 is ping-pong. AudioBuffer may be resampled by the context.
+          if(entry.pingPong){
+            const m=entry.pingPong,a=Math.round(m.begin/m.sampleRate*buffer.sampleRate),b=Math.min(buffer.length,Math.round(m.end/m.sampleRate*buffer.sampleRate)),n=b-a;
+            const loop=this.context!.createBuffer(buffer.numberOfChannels,n*2,buffer.sampleRate);
+            for(let c=0;c<buffer.numberOfChannels;c++){const input=buffer.getChannelData(c),output=loop.getChannelData(c);for(let i=0;i<n;i++){output[i]=input[a+i];output[n+i]=input[b-1-i];}}
+            buffer=loop;
+          }
+          this.buffers.set(key,buffer);
+        } catch(error) { if(!this.disposed)console.warn('[battle audio]',key,error); }
+      })).then(()=>{});
     }
     if (this.disposed)return;
     if (this.context.state === 'suspended') await this.context.resume();
@@ -118,11 +127,10 @@ export class GameAudio {
     source.onended=()=>{if(this.feedbackVoice===voice)this.feedbackVoice=undefined;source.disconnect();gain.disconnect();};source.start();return true;
   }
   // Finite charge clips are cancellable, never looped. A token is one native warning phase.
-  syncCharges(cues: {key:string;token:string;volume:number}[] = []) {
-    const active=this.needsCombatCues?cues:[];
-    if(!active.length&&!this.charges.size)return;
-    const desired=active.length?new Set(active.map(c=>c.token)):null;
-    for(const [key,voice] of this.charges)if(!desired?.has(voice.token)){
+  syncCharges(cues: {key:string;token:string;volume:number}[]) {
+    const active=this.enabled&&this.preferences.effects&&!this.paused&&!this.disposed?cues:[];
+    const desired=new Map(active.map(c=>[c.token,c]));
+    for(const [key,voice] of this.charges)if(!desired.has(voice.token)){
       this.charges.delete(key);const now=this.context!.currentTime;
       voice.gain.gain.cancelScheduledValues(now);voice.gain.gain.setValueAtTime(voice.gain.gain.value,now);
       voice.gain.gain.linearRampToValueAtTime(0,now+.025);try{voice.source.stop(now+.03);}catch{}
@@ -141,16 +149,14 @@ export class GameAudio {
       source.onended=()=>{if(this.charges.get(key)===voice)this.charges.delete(key);this.sources.delete(source);source.disconnect();gain.disconnect();};source.start();
     }
   }
-  syncContinuous(cues: {key:string;volume:number;pulse?:boolean}[] = []) {
-    const active=this.needsCombatCues?cues:[];
-    if(!active.length&&!this.loops.size)return;
-    const desired=active.length?new Map(active.map(c=>[c.key,c])):null;
-    for(const[key,voice]of this.loops)if(!desired?.has(key)){
+  syncContinuous(cues: {key:string;volume:number;pulse?:boolean}[]) {
+    const desired=new Map((this.enabled&&this.preferences.effects&&!this.paused&&!this.disposed?cues:[]).map(c=>[c.key,c]));
+    for(const[key,voice]of this.loops)if(!desired.has(key)){
       this.loops.delete(key); const now=this.context!.currentTime;
       voice.gain.gain.cancelScheduledValues(now);voice.gain.gain.setValueAtTime(voice.gain.gain.value,now);voice.gain.gain.linearRampToValueAtTime(0,now+.035);
       try{voice.source.stop(now+.04);}catch{}
     }
-    if(!desired||!this.context||!this.master)return;
+    if(!this.context||!this.master)return;
     for(const[key,cue]of desired){
       const buffer=this.buffers.get(key),existing=this.loops.get(key);
       if(existing){
@@ -168,7 +174,7 @@ export class GameAudio {
     }
   }
   pause(stopFeedback=true,keepMusic=false) { if(stopFeedback)this.stopFeedback();this.paused=!keepMusic; if(keepMusic)this.playMusic();else this.music?.pause(); this.loops.clear(); this.charges.clear(); for (const source of this.sources) { try { source.stop(); } catch {} } this.sources.clear(); this.effectVoices.clear(); }
-  dispose() { this.disposed=true;this.loadingController?.abort();this.pause();this.buffers.clear();this.compressor?.disconnect(); }
+  dispose() { this.disposed=true;this.pause();this.buffers.clear();this.compressor?.disconnect(); }
   resume() { if (this.disposed) return; this.paused=false; this.playMusic(); }
   restart() { this.pause(); this.chargeTokens.clear(); this.voices.clear();this.feedbackTimes.clear(); if (this.music) this.music.currentTime = 0; this.resume(); }
   setPreference(key:'music'|'effects',enabled:boolean) {

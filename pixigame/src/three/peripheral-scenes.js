@@ -1,7 +1,6 @@
-import {CAMPAIGN_OPENING_MAPS} from './campaign-map-catalog.js';
-import {campaignMapSourceIndex,createCampaignThemeScenes,sampleThemeModuleMotion} from './campaign-theme-layouts.js';
 import {ADVANCED_CHAPTERS} from '../advanced-chapters.js';
 import {mapSceneLayout} from './map-scene-polish.js';
+import {chapterMapRepresentativeStage} from '../replica/chapter-map-reuse.js';
 import {STAGE1_COAST_CLOUDS} from './stage1-cloud-modules.js';
 import {MODULAR_ASSETS,MODULAR_TERRAIN_SETTINGS} from './stage1-modular-layout.js';
 import {COAST_CLOUD_MOTION} from './coast-cloud-motion.js';
@@ -114,11 +113,10 @@ const DETACHED_SCENES = new Set(['space', 'storm-front', 'orbital-wreckage']);
 const SOURCE_CLOUD_SCENES = new Set(['ruins', 'volcano', 'space']);
 
 // All 60 campaign chapters use balanced art; named original scenes remain available.
-const openingCoast = CAMPAIGN_OPENING_MAPS[0];
 const SHARED_COAST_SCENE = Object.freeze({
   ...PERIPHERAL_SCENES[0], id: 'coast-balanced',
   artUrl: `${base}art/project-coast-polished-v2/shore-a.png`,
-  depthUrl: openingCoast.depthUrl,
+  depthUrl: `${base}art/project-coast-balanced-v1/far-water-soft.png`,
 });
 const BALANCED_COAST_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.freeze({
   ...layer, id: `coast-balanced-${layer.role}`, sceneId: SHARED_COAST_SCENE.id,
@@ -129,10 +127,10 @@ const BALANCED_COAST_LAYERS = Object.freeze(COAST_LAYERS.map(layer => Object.fre
   // Authored transparent shoreline uses the existing RGBA shader path.
   ...(layer.role === 'foreground' ? { kind: 2, fullAlpha: true, shoreVariants:true } : {}),
 })));
-// Authored coastal map, also used by later chapters in the six-map rotation.
+// Chapter 1 owns this trial artwork. Later coast chapters keep the shared set.
 export const FIRST_STAGE_SCENE = Object.freeze({
-  ...SHARED_COAST_SCENE, id: openingCoast.id, name: openingCoast.name, smoothBackground: true,
-  artUrl: openingCoast.artUrl,
+  ...SHARED_COAST_SCENE, id: 'coast-defense-balanced', smoothBackground: true,
+  artUrl: `${base}art/stage1-anime-v8/ocean.png`,
   ground: 0x164e87, edge: 0x426a91, accent: 0x518eb1,
 });
 // Independent sea, island and facility sprites share one parent motion frame.
@@ -239,9 +237,9 @@ const FOURTH_STAGE_LAYERS=Object.freeze([
 // Structures, footings and shadows belong to their host asteroid; the quiet
 // starfield keeps independent depth motion without atmospheric cloud planes.
 export const FIFTH_STAGE_SCENE = Object.freeze({
-  ...PERIPHERAL_SCENES[4],id:'orbital-outposts-painted-v2',smoothBackground:true,
-  artUrl:`${base}art/stage5-handpainted-orbit-v2/maintenance-outposts.png`,
-  depthUrl:`${base}art/stage5-handpainted-orbit-v2/starfield.png`,
+  ...PERIPHERAL_SCENES[4],id:'orbital-outposts-restored-balanced',smoothBackground:true,
+  artUrl:`${base}art/stage5-anime-orbit-v1/maintenance-outposts.png`,
+  depthUrl:`${base}art/stage5-anime-orbit-v1/starfield.png`,
   ground:0x0b152c,edge:0x56677e,accent:0x71789c,mist:0x5b6999,
 });
 const ORBIT_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/4.5;
@@ -254,90 +252,25 @@ const FIFTH_STAGE_LAYERS=Object.freeze([
 ].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
   ...layer,id:'orbital-outposts-'+layer.id,sceneId:FIFTH_STAGE_SCENE.id})));
 
-// Chapter 6 uses original API-generated polar icefield sections. The igloo
-// camp, expedition tents and station share the ice clock and painted shadows.
+// Chapter 6 follows chapter 1's aerial painted scale: low snow banks and
+// a clear floe river share one terrain clock. Mist is a separate soft layer.
 export const SIXTH_STAGE_SCENE = Object.freeze({
-  ...PERIPHERAL_SCENES.find(scene=>scene.id==='frozen-rift'),id:'polar-icefield-painted-v2',smoothBackground:true,precipitation:'snow',
-  artUrl:`${base}art/stage6-polar-icefield-api-v2/igloo-field.png`,
-  ground:0x315e75,edge:0x9bb8c8,accent:0x94c7d8,mist:0xa5bfce,
+  ...PERIPHERAL_SCENES.find(scene=>scene.id==='frozen-rift'),id:'floe-river-restored',smoothBackground:true,
+  artUrl:`${base}art/stage6-anime-floe-v1/field-station.png`,
+  ground:0x13465d,edge:0x789aac,accent:0xb5d1dc,mist:0xa5bfce,
 });
 // Native chapter 6 terrain is layer 0, at 2.5 units/s. Match the approved
 // chapter 1 presentation speed without changing map geometry or gameplay.
 const FLOE_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/2.5;
 const SIXTH_STAGE_LAYERS=Object.freeze([
-  {id:'icefield-ground',role:'background',name:'地面·冰盖与极地营地',source:'ground',kind:0,
-    fullSceneBase:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
+  {id:'river-ground',role:'background',name:'地面·雪岸与浮冰河',source:'ground',kind:0,
+    fullSceneBase:true,coastalWater:true,quietWater:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
     nativeLayer:0,motionGroup:'terrain',scrollScale:FLOE_TERRAIN_SCROLL_SCALE,depth:-1000,speed:20,opacity:1},
   canalCloudLayer('coast-defense-distant-clouds','river-distant-mist','远层·冷色薄雾',COAST_CLOUD_MOTION.far,0xa9c4d3,.55),
   canalCloudLayer('coast-defense-large-clouds','river-middle-mist','中层·柔边寒雾',COAST_CLOUD_MOTION.far,0xddebf2,.34),
   canalCloudLayer('coast-defense-near-clouds','river-near-mist','近层·掠过寒雾',COAST_CLOUD_MOTION.near,0xc9dfed,.38),
 ].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
-  ...layer,id:'polar-icefield-'+layer.id,sceneId:SIXTH_STAGE_SCENE.id})));
-
-// Chapter 7 uses chapter 1's painted aerial scale. Ridge facilities and
-// their footing share a terrain tile; distant cloud sea and passing mist
-// move at separate depths. Later storm chapters retain their shared artwork.
-export const SEVENTH_STAGE_SCENE = Object.freeze({
-  ...PERIPHERAL_SCENES.find(scene=>scene.id==='storm-front'),id:'storm-ridges-painted-v1',smoothBackground:true,
-  artUrl:`${base}art/stage7-handpainted-storm-v1/weather-ridge.png`,
-  depthUrl:`${base}art/stage7-handpainted-storm-v1/storm-sea.png`,
-  ground:0x243e52,edge:0x7f94a0,accent:0x8caeb7,mist:0x91a6be,
-});
-// Native chapter 7 layer 4 travels at 5 units/s. Scale its visual terrain
-// to chapter 1's approved travel rate without modifying the native map.
-const STORM_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/5;
-const SEVENTH_STAGE_LAYERS=Object.freeze([
-  {id:'cloud-sea',role:'background',name:'远景·手绘雷云海',source:'depth',kind:0,
-    fullSceneBase:true,cycleTiles:2,nativeLayer:2,scrollScale:.5,depth:-1000,speed:7,opacity:1},
-  {id:'weather-ridges',role:'midground',name:'中景·云间山脊与气象站',source:'ground',kind:2,
-    fullAlpha:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
-    nativeLayer:4,motionGroup:'terrain',scrollScale:STORM_TERRAIN_SCROLL_SCALE,depth:-450,speed:20,opacity:1},
-  canalCloudLayer('coast-defense-distant-clouds','distant-mist','远层·蓝灰碎云',COAST_CLOUD_MOTION.far,0x8195b2,.6),
-  canalCloudLayer('coast-defense-near-clouds','passing-mist','近层·掠过薄云',COAST_CLOUD_MOTION.near,0xa4b7cd,.23),
-].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
-  ...layer,id:'storm-ridges-'+layer.id,sceneId:SEVENTH_STAGE_SCENE.id})));
-
-// Chapter 8 keeps the steel dock identity at chapter 1's painted aerial
-// scale. Quays, crane footings, facilities and their water contacts share one
-// terrain clock; the cloud planes retain their separate altitude motion.
-export const EIGHTH_STAGE_SCENE = Object.freeze({
-  ...PERIPHERAL_SCENES.find(scene=>scene.id==='iron-dock'),id:'steel-dock-painted-v1',smoothBackground:true,
-  artUrl:`${base}art/stage8-handpainted-dock-v1/crane-quay.png`,
-  ground:0x24546a,edge:0x8b9a9b,accent:0x8fb6bc,mist:0x9db5bf,
-});
-// Chapter 8 layer 0 moves at 2.5 native units/s. Match chapter 1's
-// approved visual travel without altering simulation geometry or speeds.
-const DOCK_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/2.5;
-const EIGHTH_STAGE_LAYERS=Object.freeze([
-  {id:'dock-ground',role:'background',name:'地面·手绘码头与船坞水面',source:'ground',kind:0,
-    fullSceneBase:true,coastalWater:true,quietWater:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
-    nativeLayer:0,motionGroup:'terrain',scrollScale:DOCK_TERRAIN_SCROLL_SCALE,depth:-1000,speed:20,opacity:1},
-  canalCloudLayer('coast-defense-distant-clouds','dock-distant-haze','远层·蓝色海雾',COAST_CLOUD_MOTION.far,0x9db8c9,.55),
-  canalCloudLayer('coast-defense-large-clouds','dock-middle-clouds','中层·柔边薄云',COAST_CLOUD_MOTION.far,0xe0ebef,.42),
-  canalCloudLayer('coast-defense-near-clouds','dock-passing-clouds','近层·掠过海雾',COAST_CLOUD_MOTION.near,0xc5d9e2,.32),
-].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
-  ...layer,id:'steel-dock-'+layer.id,sceneId:EIGHTH_STAGE_SCENE.id})));
-
-// Chapter 9 keeps the vine valley and ancient ruins at chapter 1's painted
-// aerial scale. Forest banks, ruins, bridge footings and water contacts share
-// one terrain clock. Later vine-valley chapters retain their shared scenery.
-export const NINTH_STAGE_SCENE = Object.freeze({
-  ...PERIPHERAL_SCENES.find(scene=>scene.id==='red-nest'),id:'emerald-valley-painted-v1',smoothBackground:true,
-  artUrl:`${base}art/stage9-handpainted-valley-v1/fern-terraces.png`,
-  ground:0x245956,edge:0x758873,accent:0xa5bc91,mist:0xb2c8b5,
-});
-// Chapter 9 terrain layer 7 travels at 5 native units/s. Calibrate only its
-// presentation to chapter 1's approved speed; native map data is unchanged.
-const VALLEY_TERRAIN_SCROLL_SCALE=MODULAR_TERRAIN_SETTINGS.nativeSpeed*MODULAR_TERRAIN_SETTINGS.motionScale/5;
-const NINTH_STAGE_LAYERS=Object.freeze([
-  {id:'valley-ground',role:'background',name:'地面·藤谷林地与古迹河道',source:'ground',kind:0,
-    fullSceneBase:true,coastalWater:true,quietWater:true,shoreVariants:true,coastSequence:true,cycleTiles:6,
-    nativeLayer:7,motionGroup:'terrain',scrollScale:VALLEY_TERRAIN_SCROLL_SCALE,depth:-1000,speed:20,opacity:1},
-  canalCloudLayer('coast-defense-distant-clouds','valley-distant-haze','远层·青色山谷薄雾',COAST_CLOUD_MOTION.far,0x9db8ae,.5),
-  canalCloudLayer('coast-defense-large-clouds','valley-middle-mist','中层·柔边林间雾',COAST_CLOUD_MOTION.far,0xdce8db,.36),
-  canalCloudLayer('coast-defense-near-clouds','valley-passing-mist','近层·掠过薄雾',COAST_CLOUD_MOTION.near,0xc8dccb,.3),
-].map(layer=>Object.freeze({width:760,length:6000,sourceWidth:1,moveScale:0,opening:[0,.01],
-  ...layer,id:'emerald-valley-'+layer.id,sceneId:NINTH_STAGE_SCENE.id})));
+  ...layer,id:'floe-river-'+layer.id,sceneId:SIXTH_STAGE_SCENE.id})));
 
 const ORIGINAL_FIVE_LAYER_SCENES = Object.freeze(Object.fromEntries([
   [SHARED_COAST_SCENE.id, Object.freeze({ layers: BALANCED_COAST_LAYERS, urls: Object.freeze({
@@ -408,42 +341,19 @@ const balancedByTheme = Object.freeze(Object.fromEntries([...new Set(BALANCED_CH
     depthUrl: `${base}art/project-chapters-balanced-v1/${theme}/depth.png`,
   }),
 ])));
-const modularCampaign=createCampaignThemeScenes(FIRST_STAGE_SCENE,FIRST_STAGE_LAYERS.filter(layer=>layer.role==='cloud'));
-// Campaign themes, including ice, use independent ground/scenery modules.
-export const BALANCED_CHAPTER_SCENES=modularCampaign.scenes;
+export const BALANCED_CHAPTER_SCENES = Object.freeze(BALANCED_CHAPTER_THEMES.map((theme, index) => index === 0 ? FIRST_STAGE_SCENE : index === 1 ? SECOND_STAGE_SCENE : index === 2 ? THIRD_STAGE_SCENE : index === 3 ? FOURTH_STAGE_SCENE : index === 5 ? SIXTH_STAGE_SCENE : balancedByTheme[theme]));
 export const FIVE_LAYER_SCENES = Object.freeze({
   ...ORIGINAL_FIVE_LAYER_SCENES,
-  [NINTH_STAGE_SCENE.id]:Object.freeze({layers:NINTH_STAGE_LAYERS,urls:Object.freeze({
-    groundAlt:`${base}art/stage9-handpainted-valley-v1/broken-aqueduct.png`,
-    groundThird:`${base}art/stage9-handpainted-valley-v1/temple-grove.png`,
-    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
-    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
-    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
-  })}),
-  [EIGHTH_STAGE_SCENE.id]:Object.freeze({layers:EIGHTH_STAGE_LAYERS,urls:Object.freeze({
-    groundAlt:`${base}art/stage8-handpainted-dock-v1/repair-basin.png`,
-    groundThird:`${base}art/stage8-handpainted-dock-v1/cargo-terminal.png`,
-    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
-    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
-    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
-  })}),
-  [SEVENTH_STAGE_SCENE.id]:Object.freeze({layers:SEVENTH_STAGE_LAYERS,urls:Object.freeze({
-    groundAlt:`${base}art/stage7-handpainted-storm-v1/cloud-pass.png`,
-    groundThird:`${base}art/stage7-handpainted-storm-v1/relay-terraces.png`,
-    cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
-    cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
-    cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
-  })}),
   [SIXTH_STAGE_SCENE.id]:Object.freeze({layers:SIXTH_STAGE_LAYERS,urls:Object.freeze({
-    groundAlt:`${base}art/stage6-polar-icefield-api-v2/fractured-shelf.png`,
-    groundThird:`${base}art/stage6-polar-icefield-api-v2/polar-station.png`,
+    groundAlt:`${base}art/stage6-anime-floe-v1/broken-floes.png`,
+    groundThird:`${base}art/stage6-anime-floe-v1/radio-shelf.png`,
     cloudBank:`${base}art/stage1-anime-v8/cloud-bank.png`,
     cloudLargeA:`${base}art/stage1-anime-v8/cloud-large-a.png`,
     cloudLargeB:`${base}art/stage1-anime-v8/cloud-large-b.png`,
   })}),
   [FIFTH_STAGE_SCENE.id]:Object.freeze({layers:FIFTH_STAGE_LAYERS,urls:Object.freeze({
-    groundAlt:`${base}art/stage5-handpainted-orbit-v2/survey-observatory.png`,
-    groundThird:`${base}art/stage5-handpainted-orbit-v2/cargo-terraces.png`,
+    groundAlt:`${base}art/stage5-anime-orbit-v1/survey-ring.png`,
+    groundThird:`${base}art/stage5-anime-orbit-v1/dock-remnants.png`,
   })}),
   [FOURTH_STAGE_SCENE.id]:Object.freeze({layers:FOURTH_STAGE_LAYERS,urls:Object.freeze({
     groundAlt:`${base}art/stage4-anime-canal-v1/filter-basin.png`,
@@ -486,7 +396,6 @@ export const FIVE_LAYER_SCENES = Object.freeze({
       }),
     }),
   ])),
-  ...modularCampaign.layerPacks,
 });
 export const FIVE_LAYER_DEFINITIONS = Object.freeze(Object.values(FIVE_LAYER_SCENES).flatMap(scene => scene.layers));
 
@@ -513,7 +422,6 @@ export function layerScrollOffset(layer, elapsed, imageAspect = 1.5) {
 /** Owned motion for artwork without a matching native role: atmosphere,
  * storm borders or missing prefabs. Never supplies source layers to simulation. */
 export function authoredLayerMotion(layer, elapsed, aspect, cameraX, unitsPerWorld) {
-  if(layer.themeModules)return sampleThemeModuleMotion(layer,elapsed,cameraX,unitsPerWorld);
   const directional = layer.motionGroup === 'terrain' || layer.role === 'foreground' || layer.role === 'cloud';
   return {
     scroll:layerScrollOffset(layer,elapsed,aspect),
@@ -530,5 +438,15 @@ export function peripheralSceneForStage(stage = 0) {
     if (named) return named;
   }
   const index = Number.isFinite(Number(stage)) ? Math.max(0, Math.floor(Number(stage))) : 0;
-  return BALANCED_CHAPTER_SCENES[index] ?? BALANCED_CHAPTER_SCENES[campaignMapSourceIndex(index)];
+  if (index < BALANCED_CHAPTER_SCENES.length) return BALANCED_CHAPTER_SCENES[index];
+  const representative = chapterMapRepresentativeStage(index);
+  // Preserve the original scene fallback for indices outside the campaign.
+  if (representative === 17) return PERIPHERAL_SCENES.find(scene => scene.id === 'neon-city');
+  // Six new source map groups in chapters 21..26. Later occurrences resolve
+  // through chapterMapRepresentativeStage, so 27/28/29/30 reuse 5/24/21/25.
+  const laterScenes = {20: 'sky-core', 21: 'orbital-wreckage', 22: 'lunar-outpost',
+    23: 'ring-spaceport', 24: 'obsidian-wastes', 25: 'terraced-highlands',
+    41:'lunar-ring-station',42:'lunar-crater-field',43:'lunar-research-camp'};
+  if (laterScenes[representative]) return PERIPHERAL_SCENES.find(scene => scene.id === laterScenes[representative]);
+  return PERIPHERAL_SCENES[Math.min(PERIPHERAL_SCENES.length - 1, representative)];
 }

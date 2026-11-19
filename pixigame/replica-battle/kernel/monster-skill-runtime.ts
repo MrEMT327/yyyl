@@ -22,7 +22,6 @@ export interface MonsterAuraVisual { ownerUid: number; effectId: number; diamete
  * Evidence: research/later-monster-features-native.txt, Check/Enter/Exit/Undo. */
 export class MonsterSkillRuntime {
   private auras = new Map<string, RadiusState>();
-  get hasAuras(): boolean { return this.auras.size > 0; }
   clear(): void { this.auras.clear(); }
   /** Undo is synchronous with owner removal, before a later frame can tick. */
   removeOwner(ownerUid: number): MonsterBuffEvent[] {
@@ -60,7 +59,6 @@ export class MonsterSkillRuntime {
    * Original uses distance <= radius for IsTriggerLess=1, >= for other values.
    * Enter adds once; exit and owner destruction remove. No damage is rolled here. */
   advance(clock: number, actors: readonly MonsterSkillActor[]): MonsterBuffEvent[] {
-    if (!this.auras.size) return [];
     const byId = new Map(actors.map(actor => [actor.uid, actor]));
     const events: MonsterBuffEvent[] = [];
     for (const [key, aura] of this.auras) {

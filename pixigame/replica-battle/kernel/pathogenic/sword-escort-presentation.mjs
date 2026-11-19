@@ -1,14 +1,13 @@
 import {VfxMeshBuffer,quadVisible} from './vfx-buffers.mjs';
 
-const ROOT='host://escort-warm-light-sword-v2/';
-export const ESCORT_SWORD_HILT=ROOT+'hilt';
+const ROOT='host://escort-warm-light-sword-v2/',TEXTURE=ROOT+'hilt';
 export const ESCORT_SWORD_LIMIT=24;
 export const ESCORT_SWORD_ART=Object.freeze({width:2021,height:778,region:Object.freeze([235,142,1606,507]),url:'assets/escort-light-sword-v2/hilt-v2.png'});
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 export const isStoredEscortSword=b=>Boolean(b&&b.owner==='player'&&b.familyId===200101&&b.modelId>0&&b.held&&b.collisionDisabled&&!b.dead&&!b.visualHidden);
 
 export function withSwordEscortResources(graph){
- return {...graph,textures:{...graph.textures,[ESCORT_SWORD_HILT]:{width:ESCORT_SWORD_ART.width,height:ESCORT_SWORD_ART.height,url:ESCORT_SWORD_ART.url,file:'hilt-v2.png'}},
+ return {...graph,textures:{...graph.textures,[TEXTURE]:{width:ESCORT_SWORD_ART.width,height:ESCORT_SWORD_ART.height,url:ESCORT_SWORD_ART.url,file:'hilt-v2.png'}},
   resources:{...graph.resources,[ROOT+'metal']:{type:'CanvasItemMaterial',properties:{blend_mode:0,light_mode:1}},
    [ROOT+'blade']:{type:'ShaderMaterial',properties:{shader:{$external:ROOT+'blade-shader'}}}},
   shaders:{...graph.shaders,[ROOT+'blade-shader']:{code:`shader_type canvas_item;render_mode unshaded,blend_add;
@@ -74,7 +73,7 @@ export class SwordEscortPresentation{
    alpha:(.25+.75*clamp((this.clock-record.bornAt)/.13,0,1))*(.86+near*.14),front:Math.sin(phase)<0,departing:false};
  }
  buffer(key,blade){
-  let buffer=this.buffers.get(key);if(!buffer){buffer=new VfxMeshBuffer(key,ROOT+(blade?'blade':'metal'),0);if(!blade)buffer.mesh.texture={$external:ESCORT_SWORD_HILT};this.buffers.set(key,buffer);}return buffer;
+  let buffer=this.buffers.get(key);if(!buffer){buffer=new VfxMeshBuffer(key,ROOT+(blade?'blade':'metal'),0);if(!blade)buffer.mesh.texture={$external:TEXTURE};this.buffers.set(key,buffer);}return buffer;
  }
  quad(buffer,center,rx,ry,angle,alpha,blade=false){
   const c=Math.cos(angle),s=Math.sin(angle);

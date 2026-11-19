@@ -1,5 +1,3 @@
-import {MagneticDischarges,withMagneticDischargeResources} from './magnetic-discharge-presentation.mjs';
-import {battleTexturePaths} from './battle-texture-dependencies.mjs';
 import {SwordEscortPresentation,withSwordEscortResources} from './sword-escort-presentation.mjs';
 import {LayeredCombatBursts,withLayeredBurstResources} from './layered-combat-bursts.mjs';
 import {WeaponImpactParticles,withWeaponImpactResources} from './weapon-impact-particles.mjs';
@@ -32,7 +30,7 @@ import {isConstructWeapon,constructWeaponScreenMeshes} from './construct-weapon-
 import {isCorrectedStatus,correctedStatusScreenMeshes} from './status-presentation.mjs';
 import {isCorrectedEnemyProjectile,correctedEnemyProjectileMeshes} from './enemy-projectile-presentation.mjs';
 import {PathogenicSceneView,SourceCoverageError} from './pathogenic-scene-view';
-import {createLifecycleSampler} from './pathogenic-lifecycle.mjs';
+import {createLifecycleContext} from './pathogenic-lifecycle.mjs';
 import {sampleScene,resource} from './source-scene-sampler.mjs';
 import {projectileScene,effectScene,statusScene,ENEMY_ROUND_BULLET_SCENE} from './pathogenic-routing.mjs';
 import {godotRandom,gradientSample} from './pathogenic-particles.mjs';
@@ -50,7 +48,6 @@ const graphRoot=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>
 const rootProps=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>n.path==='.').properties;
 /** Combat/raycast stay in the host; sourcePixelScale converts source pixels to screen pixels. */
 export class PathogenicBattleEffects {
-  private magnetic=new MagneticDischarges();
   private feedback=new CombatFeedback();
   private bursts=new LayeredCombatBursts();
   private impacts=new WeaponImpactParticles();
@@ -72,12 +69,11 @@ export class PathogenicBattleEffects {
   readonly swordTrails:SwordEnergyTrails;
   readonly iaido:IaidoVfx;
   readonly audit={draws:0,legacyDraws:0,scenes:new Set<string>(),issues:[] as any[],events:[] as any[],eventsDropped:0};
-  private readonly sampleLifecycle: ReturnType<typeof createLifecycleSampler>;
-  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSpecialWeaponResources(withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph))));this.graph=withMagneticDischargeResources(this.graph);this.sampleLifecycle=createLifecycleSampler(this.graph);this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
+  constructor(readonly scene:any,readonly graph:Row,readonly sourcePixelScale=.25,host:BattleEffectsHost={}){this.host=host;this.graph=withBattleVfxFinish(withCombatFeedbackResources(withElementalVolumeResources(withEnergyFieldResources(withEquipmentResources(withLegendaryIceShardResources(withProjectileMotionResources(withWeaponSkinResources(withScorchPresentationResources(graph)))))))));this.graph=withMissileImpactResources(withMissileSmokeResources(withLayeredBurstResources(this.graph)));this.graph=withSpecialWeaponResources(withSwordWaveResources(withWeaponImpactResources(withSwordEscortResources(this.graph))));this.source=host.view??new PathogenicSceneView(scene,this.graph);this.iceTrails=new IceWeaponTrails(scene,sourcePixelScale);this.swordTrails=new SwordEnergyTrails(this.source);this.iaido=new IaidoVfx(this.source);}
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
-  preload(urlFor:(p:string,t:Row)=>string,deferred?:ReadonlySet<string>){this.source.preload(urlFor,battleTexturePaths(this.graph),deferred);}
-  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=this.scene.scale?.width??NaN;this.viewport.height=this.scene.scale?.height??NaN;this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport);this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.magnetic.beginFrame(clock-this.visualLag,this.viewport);this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);}
+  preload(urlFor:(p:string,t:Row)=>string){this.source.preload(urlFor);}
+  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=this.scene.scale?.width??NaN;this.viewport.height=this.scene.scale?.height??NaN;this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport);this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);}
   private recordAuditEvent(event:Row){
     const events=this.audit.events;
     if(events.length>=1024){const removed=events.length-512;events.splice(0,removed);this.audit.eventsDropped+=removed;}
@@ -100,18 +96,8 @@ export class PathogenicBattleEffects {
   }
   private emit(id:string,path:string,age:number,seed:number,pose:Row,duration?:number,retireImmediately=false){
     pose={...pose,hostOwnsEvents:true,splitOffChance:0};
-    let entry=this.entries.get(id);
-    if(!entry||entry.path!==path||age<entry.age-1e-7){
-      entry=this.make(path,age,seed,pose,duration);
-      this.entries.set(id,entry);
-    }else{
-      // Host emitters construct a new pose and their mutable vectors for this
-      // frame. Keep that snapshot until the effect retires.
-      entry.pose=pose;
-      entry.poseCamera[0]=this.camera[0];
-      entry.poseCamera[1]=this.camera[1];
-    }
-    entry.age=age;entry.lastSeen=this.clock;entry.seenRevision=this.revision;entry.exitAt=undefined;entry.stopAge=undefined;entry.duration=finite(duration)?duration:undefined;entry.retireImmediately=retireImmediately;return this.draw(id,entry);
+    let entry=this.entries.get(id);if(!entry||entry.path!==path||age<entry.age-1e-7){entry=this.make(path,age,seed,pose,duration);this.entries.set(id,entry);}
+    entry.age=age;entry.lastSeen=this.clock;entry.seenRevision=this.revision;entry.exitAt=undefined;entry.stopAge=undefined;entry.pose=structuredClone(pose);entry.poseCamera=[...this.camera];entry.duration=finite(duration)?duration:undefined;entry.retireImmediately=retireImmediately;return this.draw(id,entry);
   }
   private playerCount(){
     const count=this.frameCount??this.host.playerBulletCount?.();if(!Number.isInteger(count)||(count as number)<0)this.fail('host-player-bullet-count-required',count);
@@ -130,7 +116,7 @@ export class PathogenicBattleEffects {
     // Select outgoing phase just before the transition, evaluate its exact exit time.
     const before=this.input(entry,Math.max(0,at-1e-8));delete before.exitAt;delete before.duration;
     before.animationNames={AnimationPlayer:'spawn'};before.animationTimes={AnimationPlayer:at};
-    const life=this.sampleLifecycle(entry.path,before),sample:any=sampleScene(this.graph,entry.path,life.context),node=sample.nodes.find((n:Row)=>n.path==='Visual/Circle');
+    const life=createLifecycleContext(this.graph,entry.path,before),sample:any=sampleScene(this.graph,entry.path,life.context),node=sample.nodes.find((n:Row)=>n.path==='Visual/Circle');
     if(!node)this.fail('orb-capture-node-missing',entry.path);
     entry.capture={'Visual/Circle':{scale:structuredClone(node.properties.scale),modulate:structuredClone(node.properties.modulate)}};
   }
@@ -193,7 +179,7 @@ export class PathogenicBattleEffects {
   private draw(id:string,entry:Entry){
     if(entry.bornAt>this.clock||entry.lastDraw===this.revision)return;this.activateBranch(id,entry);this.captureExit(entry);
     const input=this.input(entry);
-    const life:any=this.sampleLifecycle(entry.path,input);if(life.unsupported.length){this.audit.issues.push(...life.unsupported);throw new SourceCoverageError(life.unsupported);}
+    const life:any=createLifecycleContext(this.graph,entry.path,input);if(life.unsupported.length){this.audit.issues.push(...life.unsupported);throw new SourceCoverageError(life.unsupported);}
     if(entry.path.endsWith('/lightning_beam.tscn')&&!entry.lightningPoints){if(!entry.pose.refreshLightningPath)entry.lightningPoints=structuredClone(life.context.linePoints['Visual/Line2D']);const m=entry.pose.rootTransform,scale=Math.hypot(m[0],m[1]);for(const c of life.childScenes)c.sourceScale=scale;}
     this.spawnChildren(id,entry,life);const stop=entry.path.endsWith('/magnetic_pull_area.tscn')?life.sourceState.particleStopAge:(life.sourceState.particleStopAge??entry.stopAge??entry.exitAt);
     let result:Row|undefined;
@@ -206,10 +192,7 @@ export class PathogenicBattleEffects {
     const drawn=this.skinVfx.projectile(b,screen);if(drawn){this.audit.draws++;this.audit.scenes.add('project:weapon-skin-'+this.skinVfx.skinId);}return drawn;
   }
   projectile(b:Projectile&Row,screen:(x:number,z:number)=>ScreenPoint,element=0){
-    // Held escort swords can own the visual even when the original shot is hidden.
-    if(this.weaponSkinProjectile(b,screen)||b.dead||b.visualHidden)return;
-    if(this.magnetic.projectile(b,screen))return;
-    this.feedback.beam(b,screen);
+    if(b.dead||b.visualHidden)return;if(this.weaponSkinProjectile(b,screen))return;this.feedback.beam(b,screen);
     if(isLayeredIceCyclone(b)){
       const meshes=iceCycloneMeshes(b,screen,this.viewport,this.volumeMeshes.get('cyclone:'+b.uid));
       if(meshes.length){this.source.drawMeshes(`projectile:${b.uid}:layered-cyclone`,meshes,undefined,{presentationDepth:COMBAT_LAYERS.area,presentationOpacity:.9});this.audit.draws++;this.audit.scenes.add('host:layered-ice-cyclone');}
@@ -381,7 +364,7 @@ export class PathogenicBattleEffects {
     const displayAge=fx.modelId===210016?Math.max(1/60,fx.age):fx.age;
     this.emit(`effect:${fx.uid}`,path,displayAge,fx.uid,{rootTransform:this.pose(screen(fx.x,fx.z),fx.angle??0,displayScale),event:explosion?'explode':undefined,...(fx.modelId===210016?{explosionPhysicsFrames:2}:{}),overrides,projectilePalette:presentation.palette,presentationDepth:fx.modelId===220014?COMBAT_LAYERS.warning:COMBAT_LAYERS.impact,presentationOpacity:fx.kind==='hit'?.85:1},fx.duration);
   }
-  pickup(item:Row,screen:(x:number,z:number)=>ScreenPoint,opacity=1){this.feedback.pickup(item,screen,opacity);}
+  pickup(item:Row,screen:(x:number,z:number)=>ScreenPoint){this.feedback.pickup(item,screen);}
   status(buff:Row,screen:(x:number,z:number)=>ScreenPoint){
     if(isRefinedBasicStatus(buff)){
       const before=this.feedback.statuses;this.feedback.status(buff,screen);
@@ -418,7 +401,7 @@ export class PathogenicBattleEffects {
   /** Explicit hit callback; visual sampling never invents a collision. */
   projectileHit(uid:number,age:number,detail:Row={}){
     const entry=this.entries.get(`projectile:${uid}`);if(!entry)return;
-    if(entry.path.endsWith('/operculum_shield.tscn')){const before=this.sampleLifecycle(entry.path,this.input(entry,age)),sample:any=sampleScene(this.graph,entry.path,before.context),visual=sample.nodes.find((n:Row)=>n.path==='Visual');entry.hitEvents.push({at:age,modulateBefore:visual?.properties.modulate??[1,1,1,1],...detail});}
+    if(entry.path.endsWith('/operculum_shield.tscn')){const before=createLifecycleContext(this.graph,entry.path,this.input(entry,age)),sample:any=sampleScene(this.graph,entry.path,before.context),visual=sample.nodes.find((n:Row)=>n.path==='Visual');entry.hitEvents.push({at:age,modulateBefore:visual?.properties.modulate??[1,1,1,1],...detail});}
     this.recordAuditEvent({type:'host-hit',uid,age,...detail});
   }
   private prefire(id:string,seed:number,age:number,total:number,pose:Row){
@@ -435,15 +418,14 @@ export class PathogenicBattleEffects {
     for(const[id,entry]of this.entries){
       if(entry.independent){entry.age=this.clock-entry.bornAt;if(entry.age<0)continue;}
       else if(entry.seenRevision!==this.revision){if(entry.retireImmediately){this.entries.delete(id);continue;}if(entry.exitAt===undefined){entry.exitAt=entry.age;entry.stopAge=entry.exitAt;}entry.age=this.clock-entry.bornAt;}
-      if((entry.independent||entry.exitAt!==undefined)&&entry.age-(entry.exitAt??entry.duration??0)>entry.retention){this.entries.delete(id);continue;}
-      if(entry.lastDraw!==this.revision)this.draw(id,entry);
+      if((entry.independent||entry.exitAt!==undefined)&&entry.age-(entry.exitAt??entry.duration??0)>entry.retention){this.entries.delete(id);continue;}this.draw(id,entry);
       // draw already suppresses completed scenes; do not resample their empty
       // lifecycle for the remaining eight-second safety retention window.
       if(entry.visualComplete&&(entry.independent||entry.exitAt!==undefined))this.entries.delete(id);
     }
-    this.magnetic.draw(this.source,COMBAT_LAYERS.playerShot+.02);this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.impacts.draw(this.source,COMBAT_LAYERS.impact);this.bursts.draw(this.source);this.missileImpacts.draw(this.source,COMBAT_LAYERS.impact);if(this.escortScreen)this.escortSwords.draw(this.source,this.escortScreen);if(this.smokeScreen)this.missileSmoke.draw(this.source,this.smokeScreen);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();this.volumeMeshes.endFrame();
+    this.skinVfx.draw(this.source,COMBAT_LAYERS.playerShot+.1);this.feedback.draw(this.source);this.impacts.draw(this.source,COMBAT_LAYERS.impact);this.bursts.draw(this.source);this.missileImpacts.draw(this.source,COMBAT_LAYERS.impact);if(this.escortScreen)this.escortSwords.draw(this.source,this.escortScreen);if(this.smokeScreen)this.missileSmoke.draw(this.source,this.smokeScreen);this.swordTrails.endFrame();this.iaido.endFrame();this.motionAccents.draw(this.source,{player:COMBAT_LAYERS.playerShot,enemy:COMBAT_LAYERS.enemyShot});this.source.endFrame();this.iceTrails.endFrame();this.volumeMeshes.endFrame();
   }
-  reset(){this.magnetic.reset();this.escortSwords.reset();this.escortScreen=undefined;this.bursts.reset();this.impacts.reset();this.missileImpacts.reset();this.missileSmoke.reset();this.smokeScreen=undefined;this.skinVfx.reset();this.volumeMeshes.reset();this.feedback.reset();this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
+  reset(){this.escortSwords.reset();this.escortScreen=undefined;this.bursts.reset();this.impacts.reset();this.missileImpacts.reset();this.missileSmoke.reset();this.smokeScreen=undefined;this.skinVfx.reset();this.volumeMeshes.reset();this.feedback.reset();this.motionAccents.reset();this.hitAdmission.reset();this.entries.clear();this.source.reset();this.iceTrails.reset();this.swordTrails.reset();this.iaido.reset();}
   destroy(){this.reset();this.source.destroy();}
 }
 

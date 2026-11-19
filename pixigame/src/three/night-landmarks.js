@@ -1,7 +1,4 @@
 import {Vector3} from 'three';
-import {sampleVolcanoNightLandmarks} from './volcano-night-landmarks.js';
-import {sampleCityNightLandmarks} from './city-night-landmarks.js';
-import {sampleIcefieldNightLandmarks} from './icefield-night-landmarks.js';
 
 // Normalized TOP-LEFT pixel locations on our own island artwork. Each point
 // remains attached to an actual painted window, pier light or runway marker.
@@ -25,8 +22,6 @@ function surfaceLandmarks(record,camera,width,height,lights){
   if(!d?.shoreVariants||!u?.artwork?.value||!u.repeatY)return;
   const repeats=u.repeatY.value,scroll=u.scroll.value,sourceHeight=u.sourceHeight?.value??1,sourceWidth=u.sourceWidth?.value??1;
   if(!(repeats>0&&sourceHeight>0&&sourceWidth>0))return;
-  mesh.updateWorldMatrix(true,false);
-  const worldMatrix=mesh.matrixWorld;
   for(let strip=Math.floor(scroll);strip<=Math.ceil(scroll+repeats);strip++){
     const section=((strip%6)+6)%6;
     const texture=d.coastSequence?(section===0||section===3?u.artwork.value:section===1||section===5?u.alternateArt?.value:u.thirdArt?.value):
@@ -42,7 +37,7 @@ function surfaceLandmarks(record,camera,width,height,lights){
       const lx=(sx/iw-.5)/sourceWidth*d.width,lz=(.5-v)*d.length;
       panePoint.set(lx,0,lz);paneEdge.set(lx+pw/iw/sourceWidth*d.width,0,lz);
       paneTop.set(lx,0,lz+ph/ih/sourceHeight/.975/repeats*d.length);
-      panePoint.applyMatrix4(worldMatrix);paneEdge.applyMatrix4(worldMatrix);paneTop.applyMatrix4(worldMatrix);
+      mesh.localToWorld(panePoint);mesh.localToWorld(paneEdge);mesh.localToWorld(paneTop);
       panePoint.project(camera);paneEdge.project(camera);paneTop.project(camera);
       const x=(panePoint.x*.5+.5)*width,y=(.5-panePoint.y*.5)*height;
       if(x<-20||x>width+20||y<-20||y>height+20)continue;
@@ -55,25 +50,17 @@ function surfaceLandmarks(record,camera,width,height,lights){
 }
 
 const point=new Vector3();
-export function sampleNightLandmarks(records,camera,width=540,height=960,includeNightLights=true){
+export function sampleNightLandmarks(records,camera,width=540,height=960){
   const lights=[];
   camera.updateMatrixWorld();
   for(const record of records){
     if(!record.mesh.visible)continue;
-    // Molten terrain emits in every weather; lamps remain a night-only pass.
-    lights.push(...sampleVolcanoNightLandmarks(record,camera,width,height));
-    if(!includeNightLights)continue;
+    record.mesh.updateWorldMatrix(true,true);
     surfaceLandmarks(record,camera,width,height,lights);
-    lights.push(...sampleCityNightLandmarks(record,camera,width,height));
-    lights.push(...sampleIcefieldNightLandmarks(record,camera,width,height));
     for(const cluster of record.clusters??[]){
       if(!cluster.parent.visible||!cluster.island.material.map)continue;
-      const islandAnchors=anchors[cluster.row.asset];
-      if(!islandAnchors)continue;
-      const island=cluster.island;
-      island.updateWorldMatrix(true,false);
-      for(const [u,v,size]of islandAnchors){
-        point.set(u-.5,0,v-.5).applyMatrix4(island.matrixWorld).project(camera);
+      for(const [u,v,size]of anchors[cluster.row.asset]??[]){
+        point.set(u-.5,0,v-.5);cluster.island.localToWorld(point);point.project(camera);
         const x=(point.x*.5+.5)*width,y=(.5-point.y*.5)*height;
         if(x< -18||x>width+18||y< -18||y>height+18)continue;
         lights.push({x,y,size:size*1.8,strength:.9,color:0xffb65e});

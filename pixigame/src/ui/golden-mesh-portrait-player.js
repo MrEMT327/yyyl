@@ -1,7 +1,5 @@
 import { createGoldenPositionRefiner } from './golden-position-refiner.js';
 import { createGoldenMeshRenderer } from './golden-mesh-renderer.js';
-import { releaseOwnedCanvas } from './release-owned-canvas.js';
-import { createPortraitPaintGate, portraitRenderSize } from './portrait-render-budget.js';
 
 // Plays the delivered target rig. Stored 60 Hz states stay discrete; only the
 // explicit native target transitions blend geometry and effective opacity.
@@ -10,7 +8,6 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
   const sameOrigin=path=>{const u=new URL(path,assetRoot);if(u.origin!==location.origin)throw new Error('角色只允许读取同源资源');return u.href;};
   const manifestUrl=sameOrigin(manifestPath),folder=new URL('./',manifestUrl),controller=new AbortController();
   const records=new Map(),images=new Map(),reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const canDrawFrame=createPortraitPaintGate();
   let host=null,canvas=null,renderer=null,manifest=null,loading=null,current=null,currentName='idle';
   let state='idle',error=null,visible=true,paused=false,destroyed=false,explicit=false,returnToIdle=true;
   let positions=null,rest=null,opacities=null,orders=null,visibilities=null,transition=null,positionRefiner=null;
@@ -21,13 +18,7 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
   function stop(){if(raf)cancelAnimationFrame(raf);raf=0;lastTimestamp=null;}
   function fail(reason){if(destroyed)return;error=reason;state='error';stop();updateHost();console.warn('Golden target portrait failed',reason);}
   function draw(){if(destroyed||!renderer||!current)return;renderer.draw(positions,opacities,orders,visibilities);rendered++;updateHost();}
-  function resize(){
-    if(!renderer||!host)return;
-    const {width,height}=host.getBoundingClientRect();
-    if(width<=0||height<=0)return;
-    const resized=renderer.resize(...portraitRenderSize(width,height));
-    if(resized||!rendered)draw();
-  }
+  function resize(){if(!renderer||!host)return;const b=host.getBoundingClientRect(),dpr=2;renderer.resize(Math.max(1,Math.round(b.width*dpr)),Math.max(1,Math.round(b.height*dpr)));draw();}
   function beginTransition(startFrame=0){transition={positions:positions.slice(),opacity:Float32Array.from(opacities,(v,i)=>visibilities[i]?v:0),startFrame};}
   function applyFrame(index){
     const spec=current.spec,data=current.data,stride=manifest.strideInt16,count=manifest.positionFloatCount;
@@ -75,7 +66,6 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
     if(raf||!canPlay())return;
     raf=requestAnimationFrame(timestamp=>{
       raf=0;if(!canPlay()){lastTimestamp=null;return;}
-      if(!canDrawFrame(timestamp)){schedule();return;}
       const delta=lastTimestamp===null?0:Math.max(0,(timestamp-lastTimestamp)/1000);lastTimestamp=timestamp;
       try{advanceClock(delta);draw();schedule();}catch(reason){fail(reason);}
     });
@@ -128,7 +118,7 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
     setPaused(value){paused=Boolean(value);if(!paused)explicit=true;sync();if(paused)draw();},
     setVisible(value){const next=Boolean(value);if(next===visible)return;visible=next;sync();},
     captureFrame(size=2048){if(!ready()||!renderer)return null;const w=canvas.width,h=canvas.height;try{renderer.resize(size,size);draw();return canvas.toDataURL('image/png');}finally{renderer.resize(w,h);draw();}},
-    destroy(){if(destroyed)return;destroyed=true;request++;stop();controller.abort();observer?.disconnect();document.removeEventListener('visibilitychange',visibility);renderer?.destroy();releaseOwnedCanvas(canvas);records.clear();images.clear();current=transition=null;rest=positions=opacities=orders=visibilities=null;if(host){host.classList.remove('is-ready');for(const k of ['portraitState','motion','time','frame','playing','transition'])delete host.dataset[k];}host=null;canvas=null;renderer=null;state='destroyed';},
+    destroy(){if(destroyed)return;destroyed=true;request++;stop();controller.abort();observer?.disconnect();document.removeEventListener('visibilitychange',visibility);renderer?.destroy();canvas?.remove();records.clear();images.clear();rest=positions=opacities=orders=visibilities=null;if(host){host.classList.remove('is-ready');for(const k of ['portraitState','motion','time','frame','playing','transition'])delete host.dataset[k];}host=null;canvas=null;renderer=null;state='destroyed';},
     get ready(){return ready();},get state(){return state;},get error(){return error;},get paused(){return paused;},get playing(){return Boolean(canPlay());},get motionName(){return currentName;},get currentTime(){return clock;},get duration(){return current?.spec.duration||0;},get frameIndex(){return frameIndex;},get sampleFps(){return manifest?.fps||60;},get availableMotions(){return Object.keys(manifest?.clips||{});},get canvas(){return canvas;},get renderedFrames(){return rendered;},
   };
   return api;

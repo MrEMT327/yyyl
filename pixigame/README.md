@@ -24,7 +24,7 @@ Three.js 3D 街机竖版射击游戏。当前默认入口为 2026-09-24 [外围�
 
 正式战斗继续使用现有 common-combat 武器模拟与已装武器三选一，保留弹道、命中、特效及旧品质机能。新增海岸、遗迹、熔岩三套原创生图地表，机库和关卡岛屿也使用原创生图。模型资产映射仍见 [V34 战机表](docs/fighter-v34-integration.md)，开发总览 `/tools/fighter-gallery.html`。
 
-打开根地址 `/` 即进入 PSD 大厅。
+打开根地址 `/` 即进入新大厅，开发时 `/?lobby-tab=assembly` 直接进入武器页。网页只保留最新 PSD 大厅；旧 `pixi-ui`、`legacy-ui` 预览开关已移除。微信 Canvas 宿主暂保留旧大厅，网页不依赖 Pixi 运行时。
 
 早期 9 槽/连接器原型保留在 [固定件记录](../doc/fixed-parts/pathogenic-formal-combat.md) 和 [FP 台账](../doc/fixed-parts/README.md)，不作为新版正式外围入口。新版未自行定义融合配方、最终 64 卡效果或旧投入补偿比例。
 

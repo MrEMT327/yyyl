@@ -2,13 +2,9 @@ import {cloudAssetBase} from './cloud-asset-base.js';
 // Original artwork is never loaded. These cached alpha sprites are project
 // geometry, driven by the separately audited native numeric particle profile.
 const SIZE=256,LIMIT=16,bases=new Map(),tints=new Map();
-let atlas=null,atlasRequested=false;
-export function prepareBreakthroughAtlas(){
-  if(atlasRequested||typeof Image==='undefined')return;
-  atlasRequested=true;
-  const pending=new Image();
-  pending.onload=()=>{atlas=pending;bases.clear();tints.clear();};
-  pending.src=cloudAssetBase+'art/project-breakthrough-vfx-v1/energy-atlas-v1.png';
+let atlas=null;
+if(typeof Image!=='undefined'){
+  const pending=new Image();pending.onload=()=>{atlas=pending;bases.clear();tints.clear();};pending.src=cloudAssetBase+'art/project-breakthrough-vfx-v1/energy-atlas-v1.png';
 }
 function paintAtlas(c,texture,key,index,columns,rows){
   const cells={ray:key.endsWith('v00')||key.endsWith('v06')?7:0,softGlow:1,shockwave:2,star:3,fleck:4,rune:5,noise:6};
@@ -39,7 +35,6 @@ function shape(c,kind,index=0){
   }
 }
 function base(key,texture){
-  prepareBreakthroughAtlas();
   if(bases.has(key))return bases.get(key);
   const s=surface(),cols=texture.sheet?.columns||1,rows=texture.sheet?.rows||1;
   for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){s.ctx.save();s.ctx.translate((x+.5)*SIZE/cols,(y+.5)*SIZE/rows);s.ctx.scale(SIZE/(cols*2),SIZE/(rows*2));if(!paintAtlas(s.ctx,texture,key,y*cols+x,cols,rows))shape(s.ctx,texture.kind,y*cols+x);s.ctx.restore();}
@@ -50,14 +45,7 @@ function base(key,texture){
 }
 function uvPattern(c,image,st,speed,time){
   const sx=st?.scale?.x??1,sy=st?.scale?.y??1,ox=(st?.offset?.x||0)+(speed?.r||0)*time,oy=(st?.offset?.y||0)+(speed?.g||0)*time;
-  const x=ox*SIZE,y=oy*SIZE,pattern=c.createPattern(image,'repeat');
-  // Transform the pattern and its fill together. In texture coordinates this
-  // rectangle covers the same output tile and only needs numeric Canvas APIs.
-  c.save();
-  c.setTransform(1/sx,0,0,1/sy,-x/sx,-y/sy);
-  c.fillStyle=pattern;
-  c.fillRect(x,y,SIZE*sx,SIZE*sy);
-  c.restore();
+  const p=c.createPattern(image,'repeat');p.setTransform(new DOMMatrix([1/sx,0,0,1/sy,-ox*SIZE/sx,-oy*SIZE/sy]));c.fillStyle=p;c.fillRect(0,0,SIZE,SIZE);
 }
 function raster(sprite,material,texture,textures,time){
   const flow=material.shaderName==='Effects/UVFlow',gain=sprite.blend==='add'?1:(sprite.tintGain||1);

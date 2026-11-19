@@ -92,6 +92,9 @@ function polygonGeometry(points){
  const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(vertices,3));g.computeVertexNormals();return g;
 }
 function scalePoints(points,scale){return points.map(([x,y])=>[x*scale,y*scale]);}
+function softFilm(color,opacity=.18){
+ return new T.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.22,transparent:true,opacity,metalness:0,roughness:.58,side:T.DoubleSide,depthWrite:false});
+}
 function ribbonPanelMaterial(color,edgeColor,opacity=.22){
  const uniforms={uTime:{value:0},uColor:{value:color.clone()},uEdgeColor:{value:edgeColor.clone()},uOpacity:{value:opacity}};
  const material=new T.ShaderMaterial({

@@ -10,24 +10,20 @@ function ramp(a,b,x){const t=clamp((x-a)/(b-a));return t*t*(3-2*t);}
  * Missile birth transforms are captured, so shots do NOT follow a moving wing.
  */
 export class WeaponSystem{
- constructor(fighter,definition,{deploymentOnly=false}={}){
-  this.fighter=fighter;this.definition=definition;this.config=fighter.config;
-  this.timeline=deploymentOnly?null:new WeaponTimeline(definition.weapons);
+ constructor(fighter,definition){
+  this.fighter=fighter;this.definition=definition;this.timeline=new WeaponTimeline(definition.weapons);this.config=fighter.config;
   this.geometries=new Set();this.materials=new Set();this.textures=new Set();this.disposed=false;
   this.root=new T.Group();this.root.name='V38/WeaponWorldFX';fighter.group.add(this.root);
   this.attachedRoot=new T.Group();this.attachedRoot.name='V38/DeploymentFX';fighter.ship.add(this.attachedRoot);
   this._p=new T.Vector3();this._q=new T.Quaternion();this._q2=new T.Quaternion();this._dir=new T.Vector3();this._inverse=new T.Matrix4();
   this._geo={};this._mat={};this.radial=this._radial();this.lastTime=null;this.renderedShots=0;
-  this.channels=deploymentOnly?[]:definition.weapons.map((spec,index)=>this._channel(spec,index));
-  this.loadedInPreview=deploymentOnly?definition.weapons.filter(spec=>MISSILES.has(spec.kind))
-   .map(spec=>fighter.asset.nodes.get(spec.source?.node)).filter(Boolean):[];
+  this.channels=definition.weapons.map((spec,index)=>this._channel(spec,index));
   this.charged=(definition.chargeMaterials||[]).map(id=>fighter.asset.materials.get(id)).filter(Boolean);
   this.bladeMaterials=(definition.bladeMaterials||[]).map(id=>fighter.asset.materials.get(id)).filter(Boolean);
-  this.blades=deploymentOnly?[]:(definition.blades||[]).map((spec,i)=>this._blade(spec,i));
+  this.blades=(definition.blades||[]).map((spec,i)=>this._blade(spec,i));
   this.focusKnot=null;
-  const convergingWeapon=deploymentOnly?null:definition.weapons.find(w=>w.converge);
-  if(convergingWeapon){
-   const group=new T.Group();group.position.fromArray(convergingWeapon.converge);group.visible=false;this.attachedRoot.add(group);
+  if(definition.weapons.some(w=>w.converge)){
+   const point=definition.weapons.find(w=>w.converge).converge,group=new T.Group();group.position.fromArray(point);group.visible=false;this.attachedRoot.add(group);
    const optical=this.mesh(this.geometry('convergence-crystal',()=>new T.OctahedronGeometry(.13,0)),this.material('convergence-core','#f5eaff',.85),group);
    const orbit=this.mesh(this.geometry('convergence-orbit',()=>new T.TorusGeometry(.32,.010,6,4)),this.material('convergence-ring',definition.color,.6),group);this.focusKnot={root:group,optical,orbit};
   }
@@ -128,12 +124,10 @@ export class WeaponSystem{
   if(this.lastTime!==null&&time<this.lastTime-1e-6)this.clear();this.lastTime=time;
   const cfg=this.config,rig=this.fighter.deployment,ready=rig.progress>=.985&&Boolean(cfg.deployed),gain=Math.max(0,Math.min(2,cfg.weaponEffectScale??1))*(cfg.weaponGlow??1)*(this.fighter.globals.glow??1);
   const fireFxEnabled=cfg.weaponFireEffects===true;
-  const events=this.timeline?.step(time,{ready,firing:fireFxEnabled&&cfg.firing});
-  if(fireFxEnabled&&events)for(const event of events)this._spawn(this.channels[event.index],event);
-  const live=fireFxEnabled&&this.timeline?.enabled;
+  const events=this.timeline.step(time,{ready,firing:fireFxEnabled&&cfg.firing});if(fireFxEnabled)for(const event of events)this._spawn(this.channels[event.index],event);
+  const live=fireFxEnabled&&this.timeline.enabled;
   for(const m of this.charged)m.emissiveIntensity=gain*(.08+rig.progress*.48+(live?.32:0));
   for(const m of this.bladeMaterials)m.emissiveIntensity=gain*rig.progress*.8;
-  for(const missile of this.loadedInPreview)missile.visible=true;
   for(let i=0;i<this.channels.length;i++){
    const c=this.channels[i],spec=c.spec,age=time-this.timeline.channels[i].last;
    this._socket(c);c.muzzle.position.copy(this._p);c.muzzle.quaternion.copy(this._q);
@@ -190,10 +184,7 @@ export class WeaponSystem{
   if(this.sparks.visible){const a=this.sparks.geometry.attributes.position,p=rig.progress;for(let i=0;i<a.count;i++){const angle=i*2.39996,r=1.6+(i%7)*.30+Math.max(0,p-.45)*2.4;a.setXYZ(i,Math.cos(angle)*r,.35+((i*17)%13)/13*(.4+p),Math.sin(angle)*r+.55);}a.needsUpdate=true;this.sparks.material.opacity=Math.sin(p*Math.PI)*.52*gain;}
   this.root.visible=this.fighter.active;this.attachedRoot.visible=this.fighter.active;
  }
- snapshot(){
-  const firing=this.timeline?.snapshot()??{enabled:false,shots:0,kinds:[],byKind:{}};
-  return {...firing,role:this.definition.role,mounts:this.channels.length,ready:this.fighter.deployment.progress>=.985,activeProjectiles:this.channels.reduce((n,c)=>n+c.pool.filter(p=>p.root.visible).length,0),activeBeams:this.channels.filter(c=>c.beam?.root.visible).length,loadedMissiles:this.loadedInPreview.filter(node=>node.visible).length+this.channels.filter(c=>c.loaded?.visible).length};
- }
- clear(){this.timeline?.reset();this.lastTime=null;for(const c of this.channels){c.muzzle.visible=false;if(c.beam)c.beam.root.visible=false;if(c.loaded)c.loaded.visible=true;for(const s of c.pool){s.born=-Infinity;s.root.visible=false;if(s.trail)s.trail.visible=false;if(s.smoke)s.smoke.visible=false;}}for(const r of this.rings)r.visible=false;this.sparks.visible=false;}
+ snapshot(){return {...this.timeline.snapshot(),role:this.definition.role,mounts:this.channels.length,ready:this.fighter.deployment.progress>=.985,activeProjectiles:this.channels.reduce((n,c)=>n+c.pool.filter(p=>p.root.visible).length,0),activeBeams:this.channels.filter(c=>c.beam?.root.visible).length,loadedMissiles:this.channels.filter(c=>c.loaded?.visible).length};}
+ clear(){this.timeline.reset();this.lastTime=null;for(const c of this.channels){c.muzzle.visible=false;if(c.beam)c.beam.root.visible=false;if(c.loaded)c.loaded.visible=true;for(const s of c.pool){s.born=-Infinity;s.root.visible=false;if(s.trail)s.trail.visible=false;if(s.smoke)s.smoke.visible=false;}}for(const r of this.rings)r.visible=false;this.sparks.visible=false;}
  dispose(){if(this.disposed)return;this.clear();this.disposed=true;this.root.removeFromParent();this.attachedRoot.removeFromParent();this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());this.textures.forEach(t=>t.dispose());this.root.clear();this.attachedRoot.clear();}
 }

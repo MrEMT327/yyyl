@@ -1,10 +1,9 @@
 import {BufferGeometry,Float32BufferAttribute,Mesh,ShaderMaterial,Color,DoubleSide,AdditiveBlending} from 'three';
 import {Container} from '../three/display.js';
-import {EDGE_PALETTES} from './breakthrough-edge-profile.js';
 
 // A thin ribbon follows the PSD's top-left and bottom-right cut corners.
 // Geometry stays fixed; the existing UI render pass only advances a uniform.
-export function attachUpgradeChoiceBorderFlow(card,{width,height,tier='y'}){
+export function attachUpgradeChoiceBorderFlow(card,{width,height}){
   if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return null;
   const scale=Math.min(width/224,height/562),inset=3*scale,cut=20*scale,halfWidth=9*scale;
   const points=[[inset+cut,inset],[width-inset,inset],[width-inset,height-inset-cut],
@@ -28,17 +27,17 @@ export function attachUpgradeChoiceBorderFlow(card,{width,height,tier='y'}){
   geometry.setAttribute('position',new Float32BufferAttribute(positions,3));
   geometry.setAttribute('aDistance',new Float32BufferAttribute(distances,1));
   geometry.setAttribute('aAcross',new Float32BufferAttribute(across,1));geometry.setIndex(indices);
-  // The flowing edge follows the offered weapon stage, independently of its slot.
-  const palette=EDGE_PALETTES[tier]||EDGE_PALETTES.y;
+  // Every reinforcement uses the same warm gold, independent of its PSD frame.
+  const colors=[0xffba3b,0xffe294];
   const material=new ShaderMaterial({
     uniforms:{uPhase:{value:0},uLength:{value:arcs[count]},uOpacity:{value:1},
-      uColorA:{value:new Color(palette.far)},uColorB:{value:new Color(palette.other)},uHot:{value:new Color(palette.core)}},
+      uColorA:{value:new Color(colors[0])},uColorB:{value:new Color(colors[1])}},
     vertexShader:`attribute float aDistance; attribute float aAcross;
       varying float vDistance; varying float vAcross;
       void main(){vDistance=aDistance;vAcross=aAcross;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
     fragmentShader:`varying float vDistance; varying float vAcross;
       uniform float uPhase; uniform float uLength; uniform float uOpacity;
-      uniform vec3 uColorA; uniform vec3 uColorB; uniform vec3 uHot;
+      uniform vec3 uColorA; uniform vec3 uColorB;
       void main(){
         // Two equal light trails stay half a perimeter apart.
         float halfLength=uLength*.5;
@@ -52,7 +51,7 @@ export function attachUpgradeChoiceBorderFlow(card,{width,height,tier='y'}){
         float light=max(tail,head*1.25);
         float alpha=clamp((core*.9+halo*.62)*(light+.035),0.,1.)*uOpacity;
         vec3 color=mix(uColorA,uColorB,.5+.5*sin(vDistance/halfLength*6.283185));
-        gl_FragColor=vec4(mix(color,uHot,head*.35),alpha);
+        gl_FragColor=vec4(mix(color,vec3(1.),head*.35),alpha);
         #include <colorspace_fragment>
       }`,
     transparent:true,depthTest:false,depthWrite:false,toneMapped:false,side:DoubleSide,

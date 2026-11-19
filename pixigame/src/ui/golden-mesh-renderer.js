@@ -1,5 +1,3 @@
-import { notifyOwnedCanvasFrame } from './release-owned-canvas.js';
-
 // The fixed target meshes use artwork-space coordinates and top-left UVs.
 // Textures are premultiplied before mipmap generation, matching native main.gd.
 const VERTEX = `#version 300 es
@@ -168,7 +166,6 @@ export function createGoldenMeshRenderer(canvas, manifest, textures) {
   gl.uniform1i(uniforms.seamUnderlayTexture,6);
   gl.uniform1i(uniforms.fixedHairTexture,7);
   gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);gl.enable(gl.BLEND);
-  gl.clearColor(0,0,0,0);gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
 
   // Every sampler always has a complete texture, including disabled repairs.
   // A dedicated texture also keeps an old mask attachment off the sampling units.
@@ -199,25 +196,16 @@ export function createGoldenMeshRenderer(canvas, manifest, textures) {
     return {texture,weight,rect};
   }
   const byId=new Map();
-  // All callers already write their pose into one packed Float32Array.
-  // Upload that array once; each VAO reads its own byte range.
-  const positionCount=manifest.meshes.reduce((count,mesh)=>Math.max(count,mesh.stateOffset+mesh.vertices.length),0);
-  const positionBuffer=gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER,positionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER,positionCount*Float32Array.BYTES_PER_ELEMENT,gl.DYNAMIC_DRAW);
   for(const [index,definition] of manifest.meshes.entries()){
     const opening=definition.alphaOpening;
     if(opening&&(!Array.isArray(opening.polygon)||opening.polygon.length<3||opening.polygon.length>48||!opening.polygon.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))||opening.artworkSize?.length!==2||!opening.artworkSize.every(v=>Number.isFinite(v)&&v>0)||!Number.isFinite(opening.feather)||opening.feather<=0||!Number.isFinite(opening.outline)||opening.outline<0))throw new Error('角色局部镂空配置无效：'+definition.id);
     const texture=textureRecords.get(definition.texture);if(!texture)throw new Error('角色贴图缺失：'+definition.texture);
     const vao=gl.createVertexArray();gl.bindVertexArray(vao);
-    gl.bindBuffer(gl.ARRAY_BUFFER,positionBuffer);gl.enableVertexAttribArray(positionAt);
-    gl.vertexAttribPointer(positionAt,2,gl.FLOAT,false,0,definition.stateOffset*Float32Array.BYTES_PER_ELEMENT);
+    const positions=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,positions);gl.bufferData(gl.ARRAY_BUFFER,definition.vertices.length*4,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(positionAt);gl.vertexAttribPointer(positionAt,2,gl.FLOAT,false,0,0);
     const uvs=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,uvs);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(definition.uvs),gl.STATIC_DRAW);gl.enableVertexAttribArray(uvAt);gl.vertexAttribPointer(uvAt,2,gl.FLOAT,false,0,0);
     const indices=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,indices);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint32Array(definition.indices),gl.STATIC_DRAW);
     const repair=fixedRepair(definition,'materialRepair','rgbaTexture'),rgbRepair=fixedRepair(definition,'rgbMaterialRepair','rgbTexture');
-    let openingPoints;
-    if(opening){openingPoints=new Float32Array(96);openingPoints.set(opening.polygon.flat());}
-    const record={index,definition,texture,vao,uvs,indices,count:definition.indices.length,mask:null,repair,rgbRepair,openingPoints};meshRecords.push(record);byId.set(definition.id,record);
+    const record={index,definition,texture,vao,positions,uvs,indices,count:definition.indices.length,mask:null,repair,rgbRepair};meshRecords.push(record);byId.set(definition.id,record);
   }
   gl.bindVertexArray(null);
   for(const record of meshRecords){
@@ -234,118 +222,74 @@ export function createGoldenMeshRenderer(canvas, manifest, textures) {
     record.mask=maskRecords.get(key);
   }
   gl.bindFramebuffer(gl.FRAMEBUFFER,null);
-  const boundTextures=[];
-  let textureUnit=-1, multiplyBlend, currentOpacity;
-  const integers=Object.create(null),vectors=Object.create(null);
-  function bindTexture(unit,texture) {
-    if(boundTextures[unit]===texture)return;
-    if(textureUnit!==unit){gl.activeTexture(gl.TEXTURE0+unit);textureUnit=unit;}
-    gl.bindTexture(gl.TEXTURE_2D,texture);boundTextures[unit]=texture;
-  }
-  // Keep every sampler complete. Material flags decide whether it is sampled.
-  for(let unit=0;unit<8;unit++)bindTexture(unit,defaultTexture);
-  function integer(name,value) {
-    if(integers[name]===value)return;
-    gl.uniform1i(uniforms[name],value);integers[name]=value;
-  }
-  function vec2(name,value) {
-    if(vectors[name]===value)return;
-    gl.uniform2fv(uniforms[name],value);vectors[name]=value;
-  }
-  function vec4(name,value) {
-    if(vectors[name]===value)return;
-    gl.uniform4fv(uniforms[name],value);vectors[name]=value;
-  }
-  function blend(operation) {
-    const multiply=operation===2;
-    if(multiplyBlend===multiply)return;
-    multiplyBlend=multiply;
-    if(multiply)gl.blendFuncSeparate(gl.DST_COLOR,gl.ZERO,gl.ZERO,gl.ONE);
-    else gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
-  }
-  function opacity(value) {
-    if(currentOpacity===value)return;
-    gl.uniform1f(uniforms.opacity,value);currentOpacity=value;
-  }
   function drawRecord(record){
     const {repair,rgbRepair}=record;
     const skinPatch=record.definition.fixedSkinPatch;
-    integer('fixedSkinPatchEnabled',skinPatch?1:0);
-    if(skinPatch){vec2('fixedSkinPatchSize',skinPatch.size);vec4('fixedSkinPatchRect',skinPatch.rect);vec2('fixedSkinPatchSample',skinPatch.sample);}
+    gl.uniform1i(uniforms.fixedSkinPatchEnabled,skinPatch?1:0);
+    if(skinPatch){gl.uniform2fv(uniforms.fixedSkinPatchSize,skinPatch.size);gl.uniform4fv(uniforms.fixedSkinPatchRect,skinPatch.rect);gl.uniform2fv(uniforms.fixedSkinPatchSample,skinPatch.sample);}
     const hairPatch=record.definition.fixedHairPatch;
-    integer('fixedHairEnabled',hairPatch?1:0);
-    if(hairPatch){vec4('fixedHairCrop',hairPatch.crop);bindTexture(7,textureRecords.get(hairPatch.texture)||defaultTexture);}
+    gl.uniform1i(uniforms.fixedHairEnabled,hairPatch?1:0);
+    if(hairPatch){gl.uniform4fv(uniforms.fixedHairCrop,hairPatch.crop);gl.activeTexture(gl.TEXTURE7);gl.bindTexture(gl.TEXTURE_2D,textureRecords.get(hairPatch.texture)||defaultTexture);}
     const seam=record.definition.seamUnderlay;
-    integer('seamUnderlayEnabled',seam?1:0);
-    if(seam){vec4('seamBodyCrop',seam.bodyCrop);vec4('seamUnderlayCrop',seam.underlayCrop);vec2('seamFadeY',seam.fadeY);bindTexture(6,textureRecords.get(seam.texture)||defaultTexture);}
+    gl.uniform1i(uniforms.seamUnderlayEnabled,seam?1:0);
+    if(seam){gl.uniform4fv(uniforms.seamBodyCrop,seam.bodyCrop);gl.uniform4fv(uniforms.seamUnderlayCrop,seam.underlayCrop);gl.uniform2fv(uniforms.seamFadeY,seam.fadeY);gl.activeTexture(gl.TEXTURE6);gl.bindTexture(gl.TEXTURE_2D,textureRecords.get(seam.texture)||defaultTexture);}
     const opening=record.definition.alphaOpening;
-    integer('openingCount',opening?.polygon.length||0);
+    gl.uniform1i(uniforms.openingCount,opening?.polygon.length||0);
+    gl.uniform1i(uniforms.openingKeepInside,opening?.keepInside?1:0);
     if(opening){
-      integer('openingKeepInside',opening.keepInside?1:0);
-      if(vectors['openingPoints[0]']!==record.openingPoints)gl.uniform2f(uniforms.openingEdge,opening.feather,opening.outline);
-      vec2('openingPoints[0]',record.openingPoints);
-      vec2('openingArtworkSize',opening.artworkSize);
+      const points=new Float32Array(96);points.set(opening.polygon.flat());
+      gl.uniform2fv(uniforms['openingPoints[0]'],points);
+      gl.uniform2fv(uniforms.openingArtworkSize,opening.artworkSize);
+      gl.uniform2f(uniforms.openingEdge,opening.feather,opening.outline);
     }
-    integer('repairEnabled',repair?1:0);integer('rgbRepairEnabled',rgbRepair?1:0);
-    if(repair){vec4('repairUVRect',repair.rect);bindTexture(2,repair.texture);bindTexture(3,repair.weight);}
-    if(rgbRepair){vec4('rgbRepairUVRect',rgbRepair.rect);bindTexture(4,rgbRepair.texture);bindTexture(5,rgbRepair.weight);}
-    bindTexture(0,record.texture);gl.bindVertexArray(record.vao);gl.drawElements(gl.TRIANGLES,record.count,gl.UNSIGNED_INT,0);
+    gl.uniform1i(uniforms.repairEnabled,repair?1:0);gl.uniform1i(uniforms.rgbRepairEnabled,rgbRepair?1:0);
+    gl.uniform4fv(uniforms.repairUVRect,repair?.rect||[0,0,1,1]);gl.uniform4fv(uniforms.rgbRepairUVRect,rgbRepair?.rect||[0,0,1,1]);
+    for(const [unit,texture] of [[2,repair?.texture],[3,repair?.weight],[4,rgbRepair?.texture],[5,rgbRepair?.weight]]){gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,texture||defaultTexture);}
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,record.texture);gl.bindVertexArray(record.vao);gl.drawElements(gl.TRIANGLES,record.count,gl.UNSIGNED_INT,0);
   }
-  const ordered=meshRecords.slice(),previousOrder=new Float32Array(meshRecords.length).fill(NaN);
   function draw(positions,opacities,orders,visibilities){
     if(destroyed)return;
-    gl.useProgram(program);
-    gl.bindBuffer(gl.ARRAY_BUFFER,positionBuffer);
-    gl.bufferSubData(gl.ARRAY_BUFFER,0,positions.length===positionCount?positions:positions.subarray(0,positionCount));
+    gl.useProgram(program);gl.enable(gl.BLEND);gl.blendEquationSeparate(gl.FUNC_ADD,gl.FUNC_ADD);
+    gl.uniform1i(uniforms.hemOverlayEnabled,0);
+    for(const record of meshRecords){const start=record.definition.stateOffset;gl.bindBuffer(gl.ARRAY_BUFFER,record.positions);gl.bufferSubData(gl.ARRAY_BUFFER,0,positions.subarray(start,start+record.definition.vertices.length));}
     // All mask sources use the same updated geometry buffers. Source visibility,
     // opacity, blend mode and own masks do not affect this nonrecursive alpha union.
-    if(maskRecords.size){
-      gl.uniform2f(uniforms.containFit,1,1);integer('operation',3);integer('masked',0);opacity(1);blend(3);
-      // Unbind an old mask before rendering into that mask's attachment.
-      bindTexture(1,defaultTexture);
-      for(const mask of maskRecords.values()){
-        gl.bindFramebuffer(gl.FRAMEBUFFER,mask.framebuffer);gl.viewport(0,0,manifest.width,manifest.height);gl.clear(gl.COLOR_BUFFER_BIT);
-        for(const source of mask.sources)drawRecord(source);
-      }
+    gl.uniform2f(uniforms.containFit,1,1);gl.uniform1i(uniforms.operation,3);gl.uniform1i(uniforms.masked,0);gl.uniform1i(uniforms.invertedMask,0);gl.uniform1f(uniforms.opacity,1);
+    gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+    // Unbind any old mask on unit 1 before rendering into that mask's attachment.
+    gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,defaultTexture);
+    for(const mask of maskRecords.values()){
+      gl.bindFramebuffer(gl.FRAMEBUFFER,mask.framebuffer);gl.viewport(0,0,manifest.width,manifest.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
+      for(const source of mask.sources)drawRecord(source);
     }
-    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
     const scale=Math.min(canvas.width/manifest.width,canvas.height/manifest.height);gl.uniform2f(uniforms.containFit,manifest.width*scale/canvas.width,manifest.height*scale/canvas.height);
-    if(previousOrder.some((value,i)=>value!==orders[i])){
-      ordered.sort((a,b)=>orders[a.index]-orders[b.index]||a.index-b.index);
-      previousOrder.set(orders);
-    }
+    const ordered=meshRecords.slice().sort((a,b)=>orders[a.index]-orders[b.index]||a.index-b.index);
     for(const record of ordered){
-      const index=record.index,definition=record.definition,alpha=opacities[index];
-      if(definition.maskOnly||!visibilities[index]||alpha<=0)continue;
-      const operation=definition.blend==='add'?1:definition.blend==='multiply'?2:0;
-      blend(operation);integer('operation',operation);opacity(alpha);integer('masked',record.mask?1:0);
-      if(record.mask){integer('invertedMask',definition.invertedMask?1:0);bindTexture(1,record.mask.texture);}
-      drawRecord(record);
+      const index=record.index,definition=record.definition,opacity=opacities[index];
+      if(definition.maskOnly||!visibilities[index]||opacity<=0)continue;
+      let operation=0;
+      if(definition.blend==='add'){operation=1;gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);}
+      else if(definition.blend==='multiply'){operation=2;gl.blendFuncSeparate(gl.DST_COLOR,gl.ZERO,gl.ZERO,gl.ONE);}
+      else gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+      gl.uniform1i(uniforms.operation,operation);gl.uniform1f(uniforms.opacity,opacity);gl.uniform1i(uniforms.masked,record.mask?1:0);gl.uniform1i(uniforms.invertedMask,definition.invertedMask?1:0);
+      gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,record.mask?.texture||defaultTexture);drawRecord(record);
       const hemOverlay=definition.frontHemOverlay;
       if(hemOverlay){
         const shorts=byId.get(hemOverlay.source);
         if(shorts&&visibilities[shorts.index]&&opacities[shorts.index]>0){
-          blend(0);integer('operation',0);opacity(opacities[shorts.index]);integer('masked',0);
-          vec4('hemOverlayCrop',hemOverlay.crop);integer('hemOverlayEnabled',1);drawRecord(shorts);integer('hemOverlayEnabled',0);
+          gl.blendFuncSeparate(gl.ONE,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+          gl.uniform1i(uniforms.operation,0);gl.uniform1f(uniforms.opacity,opacities[shorts.index]);gl.uniform1i(uniforms.masked,0);gl.uniform1i(uniforms.invertedMask,0);
+          gl.uniform4fv(uniforms.hemOverlayCrop,hemOverlay.crop);gl.uniform1i(uniforms.hemOverlayEnabled,1);drawRecord(shorts);gl.uniform1i(uniforms.hemOverlayEnabled,0);
         }
       }
     }
     gl.bindVertexArray(null);gl.flush();
-    notifyOwnedCanvasFrame(canvas);
   }
-  function resize(width,height){
-    if(destroyed)return false;
-    width=Math.max(1,Math.round(width));height=Math.max(1,Math.round(height));
-    if(canvas.width===width&&canvas.height===height)return false;
-    if(canvas.width!==width)canvas.width=width;
-    if(canvas.height!==height)canvas.height=height;
-    gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);
-    return true;
-  }
+  function resize(width,height){if(destroyed)return;canvas.width=Math.max(1,Math.round(width));canvas.height=Math.max(1,Math.round(height));gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,canvas.width,canvas.height);}
   function destroy(){
     if(destroyed)return;destroyed=true;
-    for(const record of meshRecords){gl.deleteVertexArray(record.vao);gl.deleteBuffer(record.uvs);gl.deleteBuffer(record.indices);}
-    gl.deleteBuffer(positionBuffer);
+    for(const record of meshRecords){gl.deleteVertexArray(record.vao);gl.deleteBuffer(record.positions);gl.deleteBuffer(record.uvs);gl.deleteBuffer(record.indices);}
     for(const texture of textureRecords.values())gl.deleteTexture(texture);
     gl.deleteTexture(defaultTexture);
     for(const mask of maskRecords.values()){gl.deleteTexture(mask.texture);gl.deleteFramebuffer(mask.framebuffer);}

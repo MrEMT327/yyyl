@@ -13,13 +13,6 @@ export function compactPilotAvatar(url) {
   };
 }
 
-// Battle renders in /replica-battle/, while these assets belong to the host
-// root (or its deployment subdirectory). Resolve before crossing that boundary.
-export function pilotAvatarUrl(pilot, assetBase) {
-  const source = pilot?.avatar || compactPilotAvatar(pilotAvatarIcon(pilot?.id)).src || pilot?.image;
-  return source ? new URL(source, assetBase).href : undefined;
-}
-
 export function pilotAvatarIcon(id) {
   return ids.has(id) ? `${base}art/pilot-head-icons-v1/${id}.png` : null;
 }

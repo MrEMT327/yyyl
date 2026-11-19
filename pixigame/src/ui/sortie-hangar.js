@@ -6,7 +6,6 @@ import {createSortieHangarScene} from './sortie-hangar-scene.js';
 import {createHangarLift} from './sortie-hangar-lift.js';
 import {AIRCRAFT_PREVIEW_PIXEL_RATIO} from '../three/aircraft/aircraft-preview-quality.js';
 import {positionSortieAircraftImage} from './sortie-aircraft-image.js';
-import {releaseOwnedCanvas} from './release-owned-canvas.js';
 
 export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   const elevator=host.parentElement.querySelector('.sortie-hangar__elevator');
@@ -14,7 +13,6 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   const lift=createHangarLift(host,elevator),reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   host.dataset.aircraftId=aircraftId;
   let renderer,model,worker,canvas,workerSizeKey,frame=0,epoch=0,elapsed=0,paused=false,disposed=false,finished=false,started=false,mainStarted=false;
-  let canvasTransferred=false;
   let resolveReady;const ready=new Promise(resolve=>{resolveReady=resolve;});
   const settle=()=>{if(finished)return;finished=true;clearTimeout(deadline);resolveReady();};
   const deadline=setTimeout(()=>{if(!started)fallback();else settle();},HANGAR_VISUAL_TIMEOUT_MS);
@@ -28,11 +26,7 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
       retiring.postMessage({type:'dispose'});setTimeout(()=>retiring.terminate(),250);
     }
     model?.dispose();model=null;
-    // Clear ownership before forceContextLoss can deliver a lost event.
-    const surface=canvas;canvas=null;
-    renderer?.dispose();renderer?.forceContextLoss();renderer=null;
-    if(canvasTransferred)surface?.remove();else releaseOwnedCanvas(surface);
-    canvasTransferred=false;
+    renderer?.dispose();renderer?.forceContextLoss();renderer=null;canvas?.remove();canvas=null;
   }
   function fallback(){release();lift.dispose();host.classList.remove('has-model');phase('fallback');settle();}
   function dimensions(){
@@ -89,8 +83,7 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
       canvas=newCanvas();renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,preserveDrawingBuffer:true,powerPreference:'low-power'});
       renderer.setPixelRatio(AIRCRAFT_PREVIEW_PIXEL_RATIO);renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;
       renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=AIRCRAFT_RENDER_STYLE.exposure;
-      const surface=canvas;
-      canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(!disposed&&canvas===surface)fallback();},{once:true});
+      canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();if(!disposed)fallback();},{once:true});
       model=createSortieHangarScene(renderer,aircraftId);resize();await model.warmup();if(!disposed&&!finished)begin();
     }catch(error){if(!disposed){console.warn('[sortie presentation] using aircraft image',error);fallback();}}
   }
@@ -102,7 +95,7 @@ export function createSortieHangar(host,aircraftId,{onPhase=()=>{}}={}){
   // compilation for this canvas. Keep that work off the loading UI thread.
   else if(typeof Worker!=='undefined'&&HTMLCanvasElement.prototype.transferControlToOffscreen){
     try{
-      canvas=newCanvas();const offscreen=canvas.transferControlToOffscreen();canvasTransferred=true;
+      canvas=newCanvas();const offscreen=canvas.transferControlToOffscreen();
       worker=new Worker(new URL('./sortie-hangar.worker.js',import.meta.url),{type:'module'});host.dataset.renderer='worker';
       worker.onmessage=({data})=>{
         if(disposed)return;

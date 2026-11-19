@@ -87,40 +87,18 @@ function laserPhase(available,input){
  * `duration` means a host-supplied active-life limit; `exitAt` is an actual exit
  * event time. Neither changes source fade/linger duration.
  */
-function lifecycleDefinition(graph, scenePath) {
-  const scene = graph.scenes[scenePath];
-  if (!scene) throw Error('Unknown lifecycle scene '+scenePath);
-  const props = scene.nodes.find(node=>node.path==='.')?.properties || {};
-  const player = scene.nodes.find(node=>node.path==='AnimationPlayer'&&node.type==='AnimationPlayer');
-  const available = animations(graph,player);
-  const lines = scene.nodes.filter(node=>node.type==='Line2D'&&node.properties.unique_name_in_owner);
-  const explosions = scene.nodes.filter(node=>node.properties.script?.$external?.endsWith('/explosion.gd'));
-  return {scene,props,player,available,lines,explosions,name:basename(scenePath),script:props.script?.$external||''};
-}
-
-// A battle owns its authored graph. Share definitions across the projectiles
-// that sample the same scene while creating independent state for every draw.
-export function createLifecycleSampler(graph) {
-  const definitions = new Map();
-  return (scenePath,input={}) => {
-    let definition = definitions.get(scenePath);
-    if (!definition) {
-      definition = lifecycleDefinition(graph,scenePath);
-      definitions.set(scenePath,definition);
-    }
-    return createLifecycleContext(graph,scenePath,input,definition);
-  };
-}
-
-export function createLifecycleContext(graph,scenePath,input={},definition=lifecycleDefinition(graph,scenePath)){
-  const {scene,props,player,available,lines,explosions,name,script}=definition;
+export function createLifecycleContext(graph,scenePath,input={}){
+  const scene=graph.scenes[scenePath];if(!scene)throw Error('Unknown lifecycle scene '+scenePath);
   const age=input.age??input.time??0;if(!finite(age)||age<0)throw Error('age must be finite and nonnegative');
   input={...input,age};
+  const root=scene.nodes.find(n=>n.path==='.'),props=root?.properties||{},name=basename(scenePath);
   const context={time:age,rootTransform:input.rootTransform||IDENTITY,overrides:{},linePoints:{},animationNames:{},animationTimes:{},captureProperties:input.captureProperties,damageRatio:input.damageRatio??1,widthGrow:input.widthGrow};
   const result={context,phase:'active',completed:false,childScenes:[],hostEvents:[],unsupported:[],provenance:[],sourceState:{}};
   const issue=(code,detail)=>result.unsupported.push({code,scenePath,detail});
   const host=(event,at,detail)=>result.hostEvents.push({event,at,owner:'host',detail});
   let exitAt=finite(input.exitAt)?input.exitAt:finite(input.duration)?input.duration:null;
+  const player=scene.nodes.find(n=>n.path==='AnimationPlayer'&&n.type==='AnimationPlayer'),available=animations(graph,player);
+  const script=props.script?.$external||'';
   const isBullet=['/bullet.gd','/rocket.gd','/grenade.gd','/harpoon_bullet.gd','/plasma_whip_bullet.gd','/orb.gd'].some(s=>script.endsWith(s));
   if(isBullet&&exitAt===null&&!input.awaitHostExit)exitAt=props.lifetime??1;
   if(script.endsWith('/explosion.gd'))exitAt=finite(input.explodeAt)?input.explodeAt:null;
@@ -129,8 +107,8 @@ export function createLifecycleContext(graph,scenePath,input={},definition=lifec
     result.provenance.push(LIFECYCLE_SOURCES.laser);
     const endpoint=input.localEndpoint||(finite(input.beamLength)?[0,input.beamLength]:null);
     if(endpoint){
-      for(const node of lines){
-        const first=node.properties.points?.[0]||[0,0];context.linePoints[node.path]=[first,endpoint];
+      for(const node of scene.nodes.filter(n=>n.type==='Line2D')){
+        if(node.properties.unique_name_in_owner){const first=node.properties.points?.[0]||[0,0];context.linePoints[node.path]=[first,endpoint];}
       }
     }else issue('raycast-endpoint-required','Pass localEndpoint or beamLength from actual host raycast; stored negative-Y point is editor data.');
     host('collision-and-damage',null,'Source hit/raycast/reflect logic is not executed by visual sampling.');
@@ -262,7 +240,7 @@ export function createLifecycleContext(graph,scenePath,input={},definition=lifec
   // Explosion._ready hides the entire scene. Child explosions reparent to world
   // when triggered, so return a detached child description instead of tying its
   // half-second animation to the bullet's shorter queue_free animation.
-  for(const node of explosions){
+  for(const node of scene.nodes.filter(n=>n.properties.script?.$external?.endsWith('/explosion.gd'))){
     const path=node.path,p=node.properties,isRoot=path==='.';
     const eventAt=isRoot?(input.event==='explode'?0:exitAt):exitAt;
     const triggered=eventAt!==null&&age>=eventAt;

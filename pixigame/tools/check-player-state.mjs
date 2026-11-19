@@ -51,7 +51,7 @@ for(const pools of [[{id:'pilot',singleCost:0}],{pilot:{singleCost:0}}])
 for(const[kind,id]of [['skins',10104],['pilots',40300]]){
   f.acquire(kind,id);assert(f.native(kind,id).ok);
   const snapshot=f.system.snapshot(),base=nativeCollectionRows(kind,snapshot).find(row=>nativeCollectionAccess(kind,snapshot,row).isBase);
-  assert(base);assert.equal(base.owned,kind==='skins');assert(nativeCollectionAccess(kind,snapshot,base).available);
+  assert(base);assert.equal(base.owned,false);assert(nativeCollectionAccess(kind,snapshot,base).available);
   assert(f.native(kind,0).ok);
   const after=f.reload().snapshot(),profile=playerInfoModel(after);
   assert.equal(kind==='skins'?after.aircraftId:after.pilotId,'pilot-01');

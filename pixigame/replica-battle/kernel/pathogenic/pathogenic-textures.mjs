@@ -34,45 +34,34 @@ export function gradientPixels(graph, descriptor) {
   return {width:w,height:h,data,hdr:!!p.use_hdr};
 }
 
-function gradientFilter(gl,hdr,isWebGL2) {
-  if(!hdr)return gl.LINEAR;
-  if(!isWebGL2&&!gl.getExtension('OES_texture_float'))throw Error('Float textures unavailable: cannot preserve source HDR gradients');
-  // Float sampling and float LINEAR filtering are separate capabilities. Keep
-  // the source Float32 data; the material shader interpolates four NEAREST
-  // samples when the latter extension is absent (including on WebGL2).
-  return gl.getExtension('OES_texture_float_linear')?gl.LINEAR:gl.NEAREST;
-}
-
-/** Preserve HDR floats and the exact authored 8-bit values of SDR gradients. */
+/** Store source HDR gradient values as floats. An 8-bit canvas silently clips them. */
 export function installGradientTexture(scene,graph,descriptor) {
   if(scene.textures.exists(descriptor.key))return descriptor.key;
   const renderer=scene.game.renderer,gl=renderer.gl;
   if(!gl)throw Error('Pathogenic source materials require WebGL');
-  // Native adapters do not always expose the browser context constructor.
-  const isWebGL2=(typeof WebGL2RenderingContext!=='undefined'&&gl instanceof WebGL2RenderingContext)||/^WebGL 2\b/.test(gl.getParameter(gl.VERSION));
+  const isWebGL2=typeof WebGL2RenderingContext!=='undefined'&&gl instanceof WebGL2RenderingContext;
+  if(!isWebGL2&&!gl.getExtension('OES_texture_float'))throw Error('Float textures unavailable: cannot preserve source HDR gradients');
+  if(!gl.getExtension('OES_texture_float_linear'))throw Error('Float texture linear filtering unavailable');
   const pixels=gradientPixels(graph,descriptor);
-  const data=pixels.hdr?pixels.data:Uint8Array.from(pixels.data,value=>Math.round(value*255));
-  const filter=gradientFilter(gl,pixels.hdr,isWebGL2);
-  const wrapper=renderer.createTexture2D(0,filter,filter,gl.CLAMP_TO_EDGE,gl.CLAMP_TO_EDGE,gl.RGBA,null,pixels.width,pixels.height,false,true,false);
+  const wrapper=renderer.createTexture2D(0,gl.LINEAR,gl.LINEAR,gl.CLAMP_TO_EDGE,gl.CLAMP_TO_EDGE,gl.RGBA,null,pixels.width,pixels.height,false,true,false);
   // Phaser's wrapper owns context restoration/deletion. Replace its upload step,
   // so restoration re-uploads the same source Float32 data rather than RGBA8.
   wrapper._processTexture=function(){
     const gl=this.gl;
     if(gl.isContextLost())return;
-    // Extensions are reset on context restore. Reacquire them and update the
-    // live wrapper metadata so the next draw uses the matching sampler path.
-    const filter=gradientFilter(gl,pixels.hdr,isWebGL2);
+    // WebGL1 extension enablement is reset with the context. Phaser recreates
+    // wrapped textures before its final renderer extension setup, so reacquire
+    // the exact float capabilities here before uploading the original HDR data.
+    if(!isWebGL2&&!gl.getExtension('OES_texture_float'))throw Error('Float textures unavailable: cannot preserve source HDR gradients');
+    if(!gl.getExtension('OES_texture_float_linear'))throw Error('Float texture linear filtering unavailable');
     const previous=gl.getParameter(gl.TEXTURE_BINDING_2D);
-    try{
-      gl.bindTexture(gl.TEXTURE_2D,this.webGLTexture);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,filter);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,filter);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
-      gl.texImage2D(gl.TEXTURE_2D,0,pixels.hdr&&isWebGL2?gl.RGBA32F:gl.RGBA,pixels.width,pixels.height,0,gl.RGBA,pixels.hdr?gl.FLOAT:gl.UNSIGNED_BYTE,data);
-      this.minFilter=filter;this.magFilter=filter;
-      this.pathogenicManualLinear=pixels.hdr&&filter===gl.NEAREST;
-    }finally{gl.bindTexture(gl.TEXTURE_2D,previous);}
+    gl.bindTexture(gl.TEXTURE_2D,this.webGLTexture);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D,0,isWebGL2?gl.RGBA32F:gl.RGBA,pixels.width,pixels.height,0,gl.RGBA,gl.FLOAT,pixels.data);
+    gl.bindTexture(gl.TEXTURE_2D,previous);
   };
   wrapper._processTexture();
   scene.textures.addGLTexture(descriptor.key,wrapper);

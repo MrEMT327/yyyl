@@ -41,13 +41,9 @@ function branchForChoice(familyId: number, choice: Choice): AppliedWeaponSkill |
   return Object.freeze({ skillId: choice.id, parentStageId: parentId, star: parent.star, kind: branch.kind });
 }
 
-const appearances = new WeakMap<Simulation, { revision: number; weapons: readonly WeaponAppearance[] }>();
-
 export function readWeaponAppearances(sim: Simulation): readonly WeaponAppearance[] {
-  const revision = sim.equipmentRevision, cached = appearances.get(sim);
-  if (cached && cached.revision === revision) return cached.weapons;
   const families = Object.values(sim.content.combat.families) as RecordData[];
-  const weapons = [
+  return [
     ...(sim.mainWeaponEquipped ? [{ entityId: sim.content.chapter.player.weaponEntityId, state: sim.cannon }] : []),
     ...Array.from(sim.secondary, ([entityId, state]) => ({ entityId, state })),
   ].map(({ entityId, state }) => {
@@ -62,9 +58,6 @@ export function readWeaponAppearances(sim: Simulation): readonly WeaponAppearanc
     return Object.freeze({ familyId: family.id, entityId, stageId: stage.skillId, star: stage.star,
       breakthroughs: skills.filter(skill => skill.kind === 'breakthrough').length, skills: Object.freeze(skills) });
   });
-  const result = Object.freeze(weapons);
-  if (revision !== undefined) appearances.set(sim, { revision, weapons: result });
-  return result;
 }
 
 /** Preview only the actual offered ID. No reroll, stat calculation or call to

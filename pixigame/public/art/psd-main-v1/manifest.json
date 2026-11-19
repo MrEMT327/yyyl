@@ -21,18 +21,7 @@
   "runtime_image_composite_excludes": [
     "组 2 (top-level PSD layer 7): persistent global bottom navigation"
   ],
-  "interactive_regions": "HTML hit areas aligned to the source PSD, with independently animated artwork and live labels.",
-  "button_faces": {
-    "directory": "buttons/",
-    "source": "main-foreground-live-patrol.png (original PSD export); chapter arrows and their underlay use the corresponding layers of 主界面.psd",
-    "star_rewards_chest": {
-      "image": "star-rewards-chest.png",
-      "source_psd_layer_id": 254,
-      "source_bounds": [264, 239, 325, 282],
-      "plate": "star-rewards.png"
-    },
-    "note": "Runtime uses separate scene shading, chapter frame, and button faces. The scene shading is taken from the original PSD top and bottom shade layers. The earlier flattened foreground stays as the source export."
-  },
+  "interactive_regions": "transparent HTML buttons aligned to source PSD coordinates; bottom navigation rendered by the global shell",
   "navigation": {
     "source_group": "组 2 (top-level PSD layer 7)",
     "source_bounds": [

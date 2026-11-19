@@ -19,7 +19,6 @@ export const pathogenicAudioManifest = { ...Object.fromEntries(Object.entries(fi
   `pathogenic:${key}`, {url:`/audio/pathogenic/${file}`, ...(key==='laserLoop'?{pingPong:{begin:10000,end:110000,sampleRate:44100}}:{})}
 ])),
   'mixkit:ice':{url:'/audio/mixkit/ice-sparkle-2350.wav'},
-  'mixkit:iceShot':{url:'/audio/mixkit/ice-shot-2350-v1.wav'},
   'mixkit:acid':{url:'/audio/mixkit/acid-bubble-3000.wav'},
   'mixkit:shield':{url:'/audio/mixkit/shield-power-1679.wav'},
   'mixkit:bossDeath':{url:'/audio/mixkit/boss-explosion-2759.wav'},
@@ -46,8 +45,6 @@ export const combatCues: Record<number,Cue> = {
   [-26]:{key:'mixkit:bossDeath',volume:.18,interval:.5},
   [-24]:cue('eliteArrival',.14,3),
   [-27]:cue('blackHole',.14,.24),
-  [-28]:{key:'mixkit:iceShot',volume:.10,interval:.12},
-  [-29]:cue('explosion',.09,.14), // Mechanical deaths share the existing single explosion voice.
   100007:cue('bossArrival',.14,3),
   270001:cue('revive',.24,.5), 270012:cue('burn',.065,.3), 270015:cue('specialPickup',.16,.25),
   260002:cue('pickup',.24,.07), 260003:cue('heal',.36,.3), 410001:cue('upgrade',.38,.4),
@@ -55,12 +52,6 @@ export const combatCues: Record<number,Cue> = {
   330005:cue('death',.15,.14),330006:cue('death',.15,.14),330007:cue('heavyDeath',.21,.25),
   330008:cue('heavyDeath',.21,.25),210001:cue('heavyDeath',.21,.25),
 };
-// CharacterTag 103 identifies mechanical enemies independently of their rank.
-export function enemyDeathSound(enemy: Pick<Enemy,'boss'|'elite'>, tags: readonly number[] = []) {
-  if(enemy.boss)return -26;
-  if(tags.includes(103))return -29;
-  return enemy.elite ? -11 : -12;
-}
 // Verified skill projectiles, not a global replacement of original sound IDs.
 // Mixkit trials are scoped to identified ice blade, acid projectiles, and shields. Managed missiles sound only at release.
 const skillGuns = new Set([200151,200152,200156]);
@@ -70,19 +61,16 @@ const skillSlashes = new Set([360011,400006,400007,400019]);
 // Guangmang and Phantom are projectile ray volleys.
 const skillRays = new Set([400002,400010]);
 const skillLasers = new Set([360017,400027]);
-const segmentedSounds = new Set(['Thunder','FlashChain','FollowFlashChain','SectorSpreadMod']);
-const enemyLoopTrajectory = /laser|reflectionray/i;
 type AudioProjectile = Pick<Projectile,'owner'|'familyId'|'beam'|'trajectory'> & Partial<Pick<Projectile,'weaponId'>>;
 export function continuousCue(b: AudioProjectile) {
-  if(b.owner!=='player')return b.beam && enemyLoopTrajectory.test(b.trajectory||'') ? 'laserLoop' : undefined;
-  if(b.beam&&(b.familyId===200121||b.familyId===200171||skillLasers.has(b.weaponId||0)))return 'laserLoop';
+  if(b.owner!=='player')return b.beam && /laser|reflectionray/i.test(b.trajectory||'') ? 'laserLoop' : undefined;
+  if(skillLasers.has(b.weaponId||0)&&b.beam)return 'laserLoop';
+  if([200121,200171].includes(b.familyId)&&b.beam)return 'laserLoop';
   if((b.familyId===200001&&b.beam)||(b.familyId===200011&&(b.beam||b.trajectory==='SectorSpreadMod')))return 'lightning';
   return undefined;
 }
 export function projectileSound(b: AudioProjectile & Pick<Projectile,'modelId'>, original:number, primaryFamily=200151) {
   if(b.owner!=='player')return !b.beam && b.trajectory==='MoveStraight' ? -13 : 0;
-  // Frost Butterfly / Frost Orb splinters: replace only their captured legacy launch cue.
-  if([400023,400026].includes(b.weaponId||0)&&original===300002)return -28;
   if(skillRays.has(b.weaponId||0))return -21;
   if([200061,400020,400021].includes(b.weaponId||0))return -22; // Acid gun and bubble volley.
   if([400035,400036,400037].includes(b.weaponId||0))return -23; // Shield launch.
@@ -105,23 +93,15 @@ export function projectileSound(b: AudioProjectile & Pick<Projectile,'modelId'>,
 }
 export function activeCombatSounds(projectiles:Projectile[], playing:boolean, enemies:Enemy[]=[] ) {
   if(!playing)return [];
-  let keys: Map<string,number> | undefined;
-  let liveOwners: Set<number> | undefined;
+  const keys=new Map<string,number>();
   for(const b of projectiles){
     if(b.dead||b.held||b.collisionDisabled||b.damageDisabled||b.age<b.warmup)continue;
-    const key=continuousCue(b);
-    if(!key||(!b.segments?.length&&segmentedSounds.has(b.trajectory||'')))continue;
-    if(b.owner==='enemy'){
-      // Ordinary enemy bullets never reach the owner lookup.
-      if(!liveOwners){
-        liveOwners=new Set();
-        for(const e of enemies)if(!e.dead&&e.hp>0)liveOwners.add(e.uid);
-      }
-      if(!liveOwners.has(b.ownerUid))continue;
+    if(['Thunder','FlashChain','FollowFlashChain','SectorSpreadMod'].includes(b.trajectory||'')&&!b.segments?.length)continue;
+    if(b.owner==='enemy'&&!enemies.some(e=>e.uid===b.ownerUid&&!e.dead&&e.hp>0))continue;
+    const key=continuousCue(b);if(key){
+      const volume=b.owner==='enemy'?.065:skillLasers.has(b.weaponId)?.075:key==='laserLoop'?.12:.16;
+      keys.set(key,Math.max(keys.get(key)||0,volume));
     }
-    const volume=b.owner==='enemy'?.065:skillLasers.has(b.weaponId)?.075:key==='laserLoop'?.12:.16;
-    keys ??= new Map();
-    keys.set(key,Math.max(keys.get(key)||0,volume));
   }
-  return keys ? Array.from(keys,([key,volume])=>({key:`pathogenic:${key}`,volume,pulse:key==='lightning'})) : [];
+  return [...keys].map(([key,volume])=>({key:`pathogenic:${key}`,volume,pulse:key==='lightning'}));
 }

@@ -3,6 +3,7 @@
 #gui-casual-lobby .pl-modal-backdrop:has([data-modal-type='playerInfo']){padding:0!important}
 #gui-casual-lobby .pl-modal-host:has([data-modal-type='playerInfo']){z-index:100!important}
 #gui-casual-lobby [data-modal-type='playerInfo']>.pl-modal-content{display:block;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding-bottom:0!important}
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo']:has([data-profile-tab='weapon']){--popup-height:150cqw!important}
 #gui-casual-lobby .pi-profile{display:flex;flex-direction:column;min-width:0;min-height:100%;box-sizing:border-box;gap:12px;font:14px/1.45 'Microsoft YaHei',sans-serif;color:#18354e}
 #gui-casual-lobby .pi-profile :is(h3,p,dl,dd){margin:0}
 #gui-casual-lobby .pi-identity{display:grid;grid-template-columns:20% minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0 12px;border-bottom:1px solid #6c8ba6}
@@ -27,6 +28,8 @@
 #gui-casual-lobby .pi-progress{display:flex;flex-direction:column;text-align:right;gap:3px}
 #gui-casual-lobby .pi-progress strong{font-size:14px}
 #gui-casual-lobby .pi-progress span{font-size:11px;color:#365571}
+#gui-casual-lobby .pi-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;flex:none}
+#gui-casual-lobby .pi-tabs .wc-button{min-height:44px;padding:7px 2px;font-size:clamp(13px,3.7cqw,17px)}
 #gui-casual-lobby .pi-content{flex:none;min-height:0;overflow:visible;padding:2px 0 8px;outline-offset:-2px}
 #gui-casual-lobby .pi-loadout{position:relative;display:grid;grid-template-columns:21% minmax(0,1fr) 21%;grid-template-rows:repeat(3,auto);gap:8px 10px;height:auto;max-height:none;min-height:0;padding:6px 0;background:none;border-bottom:1px solid #7895ac}
 #gui-casual-lobby .pi-loadout-plane{position:relative;grid-column:2;grid-row:1 / span 3;min-width:0;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
@@ -38,6 +41,7 @@
 #gui-casual-lobby .pi-slot img{display:block;width:100%;height:65%;min-height:0;object-fit:contain;flex:1}
 #gui-casual-lobby .pi-slot>.supply-weapon-art{display:grid;width:92%;height:65%;flex:1;min-height:0}
 #gui-casual-lobby .pi-slot .supply-weapon-art img{max-width:none;max-height:none;padding:0;margin:0;transform:none}
+#gui-casual-lobby .pi-slot-label{font-size:11px;line-height:1.3;font-weight:700;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 #gui-casual-lobby .pi-slot-level{font-size:11px;line-height:1.2;font-weight:700}
 #gui-casual-lobby .pi-slot.is-empty{color:#203d55;text-shadow:none}
 #gui-casual-lobby .pi-slot .psd-empty-mark{width:clamp(20px,6cqw,28px);height:clamp(20px,6cqw,28px);min-height:20px;margin:auto}
@@ -107,6 +111,14 @@
 #gui-casual-lobby .pi-profile:has(.pi-roster-item:nth-child(7)) .pi-skill-list article p{margin:0;line-height:1.3;overflow-wrap:anywhere}
 #gui-casual-lobby .pi-profile:has(.pi-roster-item:nth-child(7)) .pi-roster{padding-top:3px}
 #gui-casual-lobby .pi-profile:has(.pi-roster-item:nth-child(7)) .pi-roster-item img{height:8cqw;max-height:46px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-roster-list{grid-template-columns:repeat(4,minmax(0,1fr))}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-aircraft-hero>.pi-plane{height:24cqw;max-height:110px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-aircraft-hero{padding:3px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-stats{margin-top:2px;padding:4px 6px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-skill-list{padding-top:4px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-roster-list{margin-top:4px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-footer{padding-top:4px}
+#gui-casual-lobby .pi-profile[data-profile-tab='aircraft']:has(.pi-roster-item:nth-child(7)) .pi-footer .wc-button{min-height:40px;--wc-button-height:40px}
 @media(max-width:360px),(max-height:650px){
   #gui-casual-lobby .pi-profile{gap:3px}
   #gui-casual-lobby .pi-profile:has(.pi-roster-item:nth-child(7)){gap:3px}
@@ -126,10 +138,14 @@
   #gui-casual-lobby .pl-modal .pi-profile .pi-content{padding-bottom:4px}
   #gui-casual-lobby .pi-loadout{height:auto;min-height:0;gap:6px 8px}
   #gui-casual-lobby .pi-loadout>.pi-slot{padding:2px}
-  #gui-casual-lobby .pi-loadout .pi-slot-level{font-size:clamp(8px,3.5cqw,9px);line-height:1.1}
+  #gui-casual-lobby .pi-loadout :is(.pi-slot-label,.pi-slot-level){font-size:clamp(8px,3.5cqw,9px);line-height:1.1}
   #gui-casual-lobby .pi-stats{margin-top:4px;padding:6px 4px}
   #gui-casual-lobby .pi-footer{padding-top:4px}
   #gui-casual-lobby .pi-footer .wc-button{min-height:40px;--wc-button-height:40px}
 }
 
 /* Equipment content determines its popup height; the action follows the stats. */
+#gui-casual-lobby .pl-modal[data-modal-type='playerInfo']:has([data-profile-tab='equipment']){--popup-height:auto!important;--popup-min-height:0px}
+#gui-casual-lobby .pi-profile[data-profile-tab='equipment']{min-height:0;gap:8px}
+#gui-casual-lobby .pi-profile[data-profile-tab='equipment'] .pi-content{padding-bottom:0}
+#gui-casual-lobby .pi-profile[data-profile-tab='equipment'] .pi-footer{margin-top:0;padding-top:4px;border-top:0}

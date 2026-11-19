@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { enemyBarHitPulse, ENEMY_BAR_HIT_SECONDS } from './enemy-health-hit-motion';
 import { clamp, lerp, type Enemy, type RecordData } from './model';
 
 /** StateBarMonster: original sliced Images, SetRight fill and HP tweens. */
@@ -9,7 +8,6 @@ export class EnemyHealthBar extends Phaser.GameObjects.Container {
   private hpFrom = 1;
   private reduceFrom = 1;
   private changedAt = 0;
-  private hitAt = -Infinity;
   private shownAt?: number;
   private diedAt?: number;
   private lastEnemy?: Enemy;
@@ -35,11 +33,6 @@ export class EnemyHealthBar extends Phaser.GameObjects.Container {
     let hp = lerp(this.hpFrom, this.target, clamp((clock - this.changedAt) / hpSeconds, 0, 1));
     let reduce = lerp(this.reduceFrom, this.target, clamp((clock - this.changedAt) / reduceSeconds, 0, 1));
     const ratio = clamp(enemy.hp / enemy.maxHp, 0, 1);
-    if (ratio < this.target && !enemy.dead && clock - this.hitAt >= ENEMY_BAR_HIT_SECONDS) this.hitAt = clock;
-    if (enemy.dead || clock < this.hitAt) this.hitAt = -Infinity;
-    const pulse = enemyBarHitPulse(clock - this.hitAt);
-    // Absolute scale prevents cumulative growth under rapid multi-hit weapons.
-    this.setScale(1 + pulse * .10, 1 - pulse * .16);
     if (ratio !== this.target) {
       this.hpFrom = hp; this.reduceFrom = reduce; this.target = ratio; this.changedAt = clock;
       if (this.shownAt === undefined) this.shownAt = clock;

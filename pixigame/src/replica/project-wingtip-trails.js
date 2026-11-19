@@ -94,49 +94,21 @@ export function drawWingtipTrails(graphics,segments){
   }
 }
 
-export function createWingtipHighlights(scene) {
-  const key = 'project-aircraft-wingtip-light';
-  const size = 64, center = size / 2, textureRadius = center - 2, glowRadius = 4.6;
-  const texture = scene.textures.createCanvas(key, size, size);
-  const ctx = texture.getContext();
-  // Bake the additive falloff once. The two foreground lights share the texture.
-  ctx.globalCompositeOperation = 'lighter';
-  const disc = (fraction, color, alpha) => {
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(center, center, fraction * textureRadius, 0, 2 * Math.PI);
-    ctx.fill();
-  };
-  for (let ring = 8; ring >= 1; ring--) {
-    const t = ring / 8;
-    disc(t, '#5bc3ec', .12 * Math.exp(-3 * t * t));
+// Separate foreground caps keep the emission points readable on bright hulls.
+// History stays behind the fighter; these two tiny lights never move it.
+export function drawWingtipHighlights(graphics,tips,{visible=true,clock=0,width=80,thrust=0,rollActive=false}={}){
+  if(!graphics)return;graphics.clear();
+  if(!visible||tips?.length!==2||![clock,width,...tips.flatMap(p=>[p.x,p.y])].every(Number.isFinite))return;
+  const scale=clamp(Math.abs(width)/80,.65,3.5),power=rollActive?.95:clamp(.65+clamp(thrust,0,1)*.4,.65,.9);
+  for(const [side,tip]of tips.entries()){
+    const intensity=power*(.92+.08*Math.sin(clock*5+side*1.7));
+    // Low-opacity concentric falloff avoids the old three hard disc edges.
+    // Only two tiny tips use this gradient; no blur pass or extra texture.
+    for(let ring=8;ring>=1;ring--){
+      const t=ring/8,alpha=.12*Math.exp(-3*t*t)*intensity;
+      graphics.fillStyle(0x5bc3ec,alpha).fillCircle(tip.x,tip.y,4.6*t*scale);
+    }
+    graphics.fillStyle(0xbcebf5,.18*intensity).fillCircle(tip.x,tip.y,.55*scale);
+    graphics.fillStyle(0xe2f8ff,.14*intensity).fillCircle(tip.x,tip.y,.25*scale);
   }
-  disc(.55 / glowRadius, '#bcebf5', .18);
-  disc(.25 / glowRadius, '#e2f8ff', .14);
-  texture.refresh();
-  const lights = [0, 1].map(side => scene.add.image(0, 0, key)
-    .setDepth(25.05).setName(`${key}-${side}`).setBlendMode('ADD').setVisible(false));
-
-  return {
-    update(tips, {visible = true, clock = 0, width = 80, thrust = 0, rollActive = false} = {}) {
-      if (!visible || tips?.length !== 2 || !Number.isFinite(clock) || !Number.isFinite(width)
-          || tips.some(tip => !Number.isFinite(tip.x) || !Number.isFinite(tip.y))) {
-        for (const light of lights) light.setVisible(false);
-        return;
-      }
-      const scale = clamp(Math.abs(width) / 80, .65, 3.5);
-      const displaySize = size * glowRadius / textureRadius * scale;
-      const power = rollActive ? .95 : clamp(.65 + clamp(thrust, 0, 1) * .4, .65, .9);
-      for (const [side, light] of lights.entries()) {
-        const tip = tips[side];
-        const intensity = power * (.92 + .08 * Math.sin(clock * 5 + side * 1.7));
-        light.setPosition(tip.x, tip.y).setDisplaySize(displaySize, displaySize).setAlpha(intensity).setVisible(true);
-      }
-    },
-    destroy() {
-      for (const light of lights) light.destroy();
-      if (scene.textures?.exists(key)) scene.textures.remove(key);
-    },
-  };
 }

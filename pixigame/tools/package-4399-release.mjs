@@ -1,13 +1,10 @@
-import { assertReleaseAssets, assertReleaseBytes, releaseAssetIndex } from './check-release-assets.mjs';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { join, relative, resolve } from 'node:path';
 import JSZip from 'jszip';
 
 const root = resolve(process.cwd());
-const distDir = join(root, 'dist-release');
-const releaseIndex = await releaseAssetIndex();
-await assertReleaseAssets({shippingRoot:distDir,index:releaseIndex});
+const distDir = join(root, 'dist');
 const platformSdkPath = join(root, 'public', 'cpsdk_4399.js');
 const outputRoot = join(root, 'outputs', '4399');
 const fixedZipDate = new Date('1980-01-01T00:00:00.000Z');
@@ -69,9 +66,7 @@ const zip = new JSZip();
 for (const absolute of files) {
   const archivePath = relative(distDir, absolute).split('\\').join('/');
   if (archivePath === 'cpsdk_4399.js') continue;
-  const content = archivePath === 'cpsdk.js' ? platformSdk : await readFile(absolute);
-  assertReleaseBytes(archivePath, content, releaseIndex);
-  zip.file(archivePath, content, {
+  zip.file(archivePath, archivePath === 'cpsdk.js' ? platformSdk : await readFile(absolute), {
     binary: true,
     date: fixedZipDate,
     createFolders: true,

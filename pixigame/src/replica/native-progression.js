@@ -66,7 +66,7 @@ export function validateReplicaProgression(value) {
   const pilotSkillSlots=validatePilotSkillSlots(value.pilotSkillSlots,pilots,(id,star)=>
     Boolean(economyCatalog.pilots.find(row=>row.id===id)?.stages.find(row=>row.star===star)?.skills.length));
   const weaponLoadout=normalizeNativeWeaponLoadout(value,guns);
-  guns.forEach(row=>{row.equipped=row.id===weaponLoadout.useWeaponMap[0];});
+  guns.forEach(row=>{row.equipped=Object.values(weaponLoadout.useWeaponMap).includes(row.id);});
   return { ...defaults, role: { ...defaults.role, skinId, skinStar: skin?.star || 0 },
     guns, pilots, skins, labs, nativeResearch: nativeResearchState(value.nativeResearch), skinSkillSlots: slots, pilotSkillSlots, ...weaponLoadout };
 }

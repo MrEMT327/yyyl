@@ -4,37 +4,6 @@ import {createOrangeElbowJoin,ORANGE_FOREARM_MATERIAL} from './orange-elbow-join
 import {evaluateOrangeHeldCard,evaluateOrangeHandTurn,turnOrangeHandPoint,ORANGE_CARD_HAND_MATERIAL,ORANGE_CARD_THUMB_MATERIAL,splitOrangeCardGripLayers} from './orange-held-card.js';
 import {createCubismPortraitPlayer} from './cubism-portrait-player.js';
 import {createGoldenMeshRenderer} from './golden-mesh-renderer.js';
-import {releaseOwnedCanvas} from './release-owned-canvas.js';
-import {isWechatPortrait,portraitRenderSize} from './portrait-render-budget.js';
-
-function jetboardTriangles(layer) {
- const {vertices,uvs,indices}=layer;
- const columns=indices[1],rows=vertices.length/(2*columns);
- if(!Number.isInteger(columns)||columns<2||!Number.isInteger(rows)||rows<2
-   ||indices.length!==6*(columns-1)*(rows-1)||uvs.length!==vertices.length)return indices;
- const right=columns-1,bottom=(rows-1)*columns;
- // Only collapse a complete rectangle with affine position-to-UV mapping.
- // The motion solver and the palm contact still use the authored vertices.
- let at=0;
- for(let y=0;y<rows;y++){
-  const v=y/(rows-1);
-  for(let x=0;x<columns;x++){
-   const i=y*columns+x,u=x/right;
-   if(Math.abs(uvs[2*i]-u)>1e-8||Math.abs(uvs[2*i+1]-v)>1e-8)return indices;
-   for(let axis=0;axis<2;axis++){
-    const origin=vertices[axis],expected=origin
-      +(vertices[2*right+axis]-origin)*u+(vertices[2*bottom+axis]-origin)*v;
-    if(Math.abs(vertices[2*i+axis]-expected)>1e-6)return indices;
-   }
-   if(x<right&&y<rows-1){
-    if(indices[at]!==i||indices[at+1]!==i+columns||indices[at+2]!==i+1
-      ||indices[at+3]!==i+1||indices[at+4]!==i+columns||indices[at+5]!==i+columns+1)return indices;
-    at+=6;
-   }
-  }
- }
- return [0,bottom,right,right,bottom,bottom+right];
-}
 
 // Original authored Cubism parameters/physics drive new target RGBA meshes.
 // This is deliberately identified as a custom target renderer, not a new MOC.
@@ -43,21 +12,16 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
  if(root.origin!==location.origin)throw Error('角色资源必须同源');
  const controller=new AbortController(),images=new Set(),reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
  const sameOrigin=path=>{const url=new URL(path,root);if(url.origin!==location.origin)throw Error('角色资源必须同源');return url.href;};
- let host=null,canvas=null,source=null,renderer=null,manifest=null,loading=null;
+ let host=null,canvas=null,sourceHost=null,source=null,renderer=null,manifest=null,loading=null;
  let state='idle',error=null,paused=false,visible=true,destroyed=false,raf=null,previous=null,accumulator=0,frames=0;
  let explicit=false,motionRequest=0;
  let debugLayers=null,constrain=null,geometryStats=null,propStats=null,retarget=null,retargetStats=null,elbowJoin=null;
  let positions=null,opacities=null,orders=null,visibility=null,layers=null,offsets=null,parameterIndices=null;
  const canPlay=()=>!destroyed&&state==='ready'&&host?.isConnected&&visible&&!paused&&!document.hidden&&(!reduced?.matches||explicit);
  const stop=()=>{if(raf!==null)cancelAnimationFrame(raf);raf=null;previous=null;};
- function updateHost(){
-  if(!host)return;
-  const data={portraitState:state,portraitRevision:manifest?.hipRepairRevision||manifest?.materialRevision||'',motion:source?.motionName||'idle',time:(source?.currentTime||0).toFixed(4),playing:String(Boolean(canPlay())),representation:'reference-driven-target-mesh'};
-  for(const [key,value] of Object.entries(data))if(host.dataset[key]!==value)host.dataset[key]=value;
-  if(host.classList.contains('is-ready')!==(state==='ready'))host.classList.toggle('is-ready',state==='ready');
- }
+ function updateHost(){if(!host)return;Object.assign(host.dataset,{portraitState:state,portraitRevision:manifest?.hipRepairRevision||manifest?.materialRevision||'',motion:source?.motionName||'idle',time:(source?.currentTime||0).toFixed(4),playing:String(Boolean(canPlay())),representation:'reference-driven-target-mesh'});host.classList.toggle('is-ready',state==='ready');}
  function clearHost(){if(!host)return;host.classList.remove('is-ready');for(const key of ['portraitState','portraitRevision','motion','time','playing','representation'])delete host.dataset[key];}
- function dispose(){renderer?.destroy();renderer=null;source?.destroy();source=null;releaseOwnedCanvas(canvas);canvas=null;for(const img of images)img.src='';images.clear();}
+ function dispose(){renderer?.destroy();renderer=null;source?.destroy();source=null;canvas?.remove();canvas=null;sourceHost?.remove();sourceHost=null;for(const img of images)img.src='';images.clear();}
  function fail(reason){if(destroyed)return;error=reason;state='error';stop();controller.abort();dispose();updateHost();console.warn('橙红发立绘载入失败，保留静态立绘。',reason);}
  const pixel=(x,y)=>[x*125+800,-y*125+215];
  function rigidTransform(index,rest){
@@ -77,8 +41,8 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
  }
  function draw(){
   if(state!=='ready'||!source?.model||!renderer)return;
-  const model=source.model,raw=model.getModel(),sourceVertices=raw.drawables.vertexPositions;
-  const get=i=>sourceVertices[i];
+  const model=source.model,raw=model.getModel(),cache=new Map();
+  const get=i=>{if(!cache.has(i))cache.set(i,model.getDrawableVertexPositions(i));return cache.get(i);};
   const rotations=new Map();
   const sampleSurface=binding=>{
    const [index,a,b,c,u,w,z,ox=0,oy=0,ex,ey,fx,fy]=binding,mesh=get(index);
@@ -181,18 +145,12 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   if(constrain)geometryStats=constrain(positions);
   renderer.draw(positions,opacities,orders,visibility);frames++;updateHost();
  }
- function fit(){
-  if(destroyed||!canvas||!renderer||!host)return;
-  const {width,height}=host.getBoundingClientRect();
-  if(width<=0||height<=0)return;
-  const resized=renderer.resize(...portraitRenderSize(width,height));
-  if(resized||frames===0)draw();
- }
+ function fit(){if(destroyed||!canvas||!renderer||!host)return;const rect=host.getBoundingClientRect(),dpr=2;renderer.resize(Math.max(1,Math.round(rect.width*dpr)),Math.max(1,Math.round(rect.height*dpr)));draw();}
  function schedule(){if(raf===null&&canPlay())raf=requestAnimationFrame(tick);}
  function tick(now){
   raf=null;if(!canPlay()){previous=null;return;}
   accumulator+=previous===null?0:Math.min(.25,Math.max(0,(now-previous)/1000));previous=now;
-  try{let changed=false;while(accumulator+1e-8>=1/30&&canPlay()){accumulator-=1/30;const before=source.motionName;if(!source.stepFrames(1))throw source.error||Error('参考运动核无法更新');if(before!=='idle'&&source.motionName==='idle')explicit=false;changed=true;}if(changed)draw();if(canPlay())schedule();else{stop();if(!changed)updateHost();}}catch(e){fail(e);}
+  try{let changed=false;while(accumulator+1e-8>=1/30&&canPlay()){accumulator-=1/30;const before=source.motionName;if(!source.stepFrames(1))throw source.error||Error('参考运动核无法更新');if(before!=='idle'&&source.motionName==='idle')explicit=false;changed=true;}if(changed)draw();sync();}catch(e){fail(e);}
  }
  function sync(){if(canPlay())schedule();else stop();updateHost();}
  async function waitForDocument(){
@@ -220,52 +178,18 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   offsets=[];let count=0;
   for(const layer of layers){offsets.push(count);count+=layer.vertices.length;}
   positions=new Float32Array(count);opacities=new Float32Array(layers.length);orders=new Float32Array(layers.length);visibility=new Uint8Array(layers.length).fill(1);
-  source=createCubismPortraitPlayer({assetBase:assetRoot.href,modelPath:sameOrigin(manifest.referenceModel),geometryOnly:true,sampleFps:30,initialMemoryBytes:128*1024*1024});
+  sourceHost=document.createElement('div');sourceHost.setAttribute('aria-hidden','true');
+  Object.assign(sourceHost.style,{position:'absolute',width:'1px',height:'1px',opacity:'0',overflow:'hidden',pointerEvents:'none'});host?.appendChild(sourceHost);
+  source=createCubismPortraitPlayer({assetBase:assetRoot.href,modelPath:sameOrigin(manifest.referenceModel),hiddenDrawableIndices:Array.from({length:500},(_,i)=>i),sampleFps:30,initialMemoryBytes:128*1024*1024});
   source.setPaused(true);
-  async function loadTextures() {
-   const paths = [...new Set(layers.map(layer=>layer.texture))], results = new Map();
-   let next = 0;
-   async function worker() {
-    while (!destroyed && next < paths.length) {
-     const path = paths[next++], img = new Image();
-     images.add(img); img.src = sameOrigin(path); await img.decode();
-     results.set(path,img);
-    }
-   }
-   // Bound the native queue so hiding the portrait can stop the remaining layers.
-   await Promise.all(Array.from({length:isWechatPortrait()?Math.min(4,paths.length):paths.length},worker));
-   return results;
-  }
-  // The geometry-only motion source does not depend on the target atlases.
-  // Prepare both together so a slow image cannot delay the first model fetch.
-  const [textureResult,sourceResult]=await Promise.allSettled([
-   loadTextures(),
-   (async()=>{await waitForDocument();return !destroyed&&source.prepareGeometry();})(),
-  ]);
+  const textures=new Map(await Promise.all([...new Set(layers.map(layer=>layer.texture))].map(async texture=>{const img=new Image();images.add(img);img.src=sameOrigin(texture);await img.decode();return[texture,img];})));
+  if(destroyed)return false;await waitForDocument();if(destroyed)return false;
+  if(!await source.attach(sourceHost)||!source?.ready){if(destroyed)return false;throw source?.error||Error('参考运动核无法加载');}
   if(destroyed)return false;
-  if(textureResult.status==='rejected')throw textureResult.reason;
-  if(sourceResult.status==='rejected')throw sourceResult.reason;
-  if(!sourceResult.value||!source?.ready)throw source?.error||Error('参考运动核无法加载');
-  const textures=textureResult.value;
   source.seek(0);parameterIndices=new Map(Array.from(source.model.getModel().parameters.ids,(id,i)=>[id,i]));
   canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');Object.assign(canvas.style,{position:'absolute',inset:'0',width:'100%',height:'100%'});
   const shorts=layers.find(layer=>layer.id==='shorts-underlap'),backHair=layers.find(layer=>layer.id==='hair-back-right');
-  const compactJetboard=isWechatPortrait()&&manifest.materialRevision==='jetboard-v5-clean-r5';
-  const meshManifest={
-   width:manifest.view?.width||manifest.width,height:manifest.view?.height||manifest.height,
-   camera:{scale:1,offset:manifest.view?.offset||[0,0]},
-   meshes:layers.map((layer,i)=>({
-    id:layer.id,texture:layer.texture,vertices:layer.vertices,uvs:layer.uvs,stateOffset:offsets[i],
-    indices:compactJetboard&&layer.id==='jetboard'&&layer.rigid!==undefined ? jetboardTriangles(layer) : layer.indices,
-    masks:layer.masks||[],blend:layer.blend||'normal',invertedMask:Boolean(layer.invertedMask),
-    ...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='body'&&shorts?{
-     seamUnderlay:{texture:shorts.texture,bodyCrop:layer.crop,underlayCrop:shorts.crop,fadeY:[638,645]},
-     ...(backHair?{fixedHairPatch:{texture:backHair.texture,crop:backHair.crop}}:{}),
-    }:{}),
-    ...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='front-forearm'?ORANGE_FOREARM_MATERIAL:{}),
-    ...(layer.cardGripDepth==='back'?ORANGE_CARD_HAND_MATERIAL:layer.cardGripDepth==='front'?ORANGE_CARD_THUMB_MATERIAL:{}),
-   })),
-  };
+  const meshManifest={width:manifest.view?.width||manifest.width,height:manifest.view?.height||manifest.height,camera:{scale:1,offset:manifest.view?.offset||[0,0]},meshes:layers.map((layer,i)=>({id:layer.id,texture:layer.texture,vertices:layer.vertices,uvs:layer.uvs,indices:layer.indices,stateOffset:offsets[i],masks:layer.masks||[],blend:layer.blend||'normal',invertedMask:Boolean(layer.invertedMask),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='body'&&shorts?{seamUnderlay:{texture:shorts.texture,bodyCrop:layer.crop,underlayCrop:shorts.crop,fadeY:[638,645]},...(backHair?{fixedHairPatch:{texture:backHair.texture,crop:backHair.crop}}:{})}:{}),...(manifest.materialRevision==='jetboard-v5-clean-r5'&&layer.id==='front-forearm'?ORANGE_FOREARM_MATERIAL:{}),...(layer.cardGripDepth==='back'?ORANGE_CARD_HAND_MATERIAL:layer.cardGripDepth==='front'?ORANGE_CARD_THUMB_MATERIAL:{})}))};
   renderer=createGoldenMeshRenderer(canvas,meshManifest,textures);images.clear();
   canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();fail(Error('角色画布连接已中断'));},{signal:controller.signal});
   host?.appendChild(canvas);state='ready';fit();sync();return true;
@@ -276,7 +200,7 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
  const onReduced=()=>{explicit=false;if(reduced?.matches&&state==='ready'){void source.playMotion('idle').then(()=>{if(destroyed||state!=='ready')return;source.setPaused(true);source.seek(0);accumulator=0;draw();sync();});}sync();};
  document.addEventListener('visibilitychange',onVisibility);reduced?.addEventListener?.('change',onReduced);
  return{
-  async attach(next){if(destroyed)return false;if(next&&!next.appendChild)throw TypeError('需要有效宿主');if(host!==next){if(host)observer?.unobserve(host);clearHost();host=next;canvas?.remove();if(host){if(canvas)host.appendChild(canvas);observer?.observe(host);}}
+  async attach(next){if(destroyed)return false;if(next&&!next.appendChild)throw TypeError('需要有效宿主');if(host!==next){if(host)observer?.unobserve(host);clearHost();host=next;canvas?.remove();sourceHost?.remove();if(host){if(sourceHost)host.appendChild(sourceHost);if(canvas)host.appendChild(canvas);observer?.observe(host);}}
    sync();if(!host)return false;const ready=await ensure();if(!destroyed){fit();sync();}return ready;},
   async playMotion(name){const request=++motionRequest;if(!await ensure()||destroyed||request!==motionRequest)return false;const ok=await source.playMotion(name);if(destroyed||request!==motionRequest)return false;source.setPaused(true);if(!ok)return false;explicit=true;paused=false;previous=null;accumulator=0;draw();sync();return true;},
   setPaused(value){if(destroyed)return;paused=Boolean(value);if(!paused)explicit=true;source?.setPaused(true);sync();},

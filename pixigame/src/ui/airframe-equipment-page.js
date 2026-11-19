@@ -2,13 +2,13 @@ import {compactPilotAvatar} from '../pilot-avatar-icons.js';
 import {compactCombatStat} from './compact-combat-stat.js';
 import {emptySlotMark} from './psd-empty-slot.js';
 import {projectIcon} from './project-ui-art.js';
+import {weaponIconUrl} from './weapon-icon-source.js';
 import {supplyWeaponArt} from './supply-visuals.js';
 import {nativeCollectionArt} from '../replica/native-collection-art.js';
 import {GEAR_PARTS,GEAR_QUALITY_NAMES,gearName} from '../peripheral/equipment-system.js';
 import {gearDetailSkills,gearDetailIncrease} from './gear-detail-model.js';
 import {equipmentArtPath} from '../replica/equipment-art.js';
 import {nativeItemArt} from '../replica/native-item-presentation.js';
-import {resolveUiAssetUrl} from './ui-image-source.js';
 import './airframe-equipment-page.css';
 const base=import.meta.env?.BASE_URL??'/';
 // Configuration changes invalidate native combat details until recalculation finishes.
@@ -18,9 +18,7 @@ export const gearArt=id=>base+equipmentArtPath(id);
 const entryIcon=kind=>`<span class="ag-entry-icon ag-entry-${kind}" aria-hidden="true"></span>`;
 export const gearTypeBadge=(item,h,extra='')=>{
   const part=GEAR_PARTS.find(part=>part.type===item.type);
-  if (!part) return '';
-  const typeArt = resolveUiAssetUrl(gearArt(part.id));
-  return `<span class="ag-equipment-type ${extra}" role="img" aria-label="装备类型：${h.escape(item.part)}" style="--equipment-type-art:url(&quot;${h.escape(typeArt)}&quot;)"><i aria-hidden="true"></i></span>`;
+  return part?`<span class="ag-equipment-type ${extra}" role="img" aria-label="装备类型：${h.escape(item.part)}" style="--equipment-type-art:url('${gearArt(part.id)}')"><i aria-hidden="true"></i></span>`:'';
 };
 const btn=(action,label,data='',disabled=false)=>`<button type="button" class="wc-button ag-button" data-action="${action}" ${data} ${disabled?'disabled':''}>${label}</button>`;
 export const gearCard=(item,h,{action='gearDetail',selected=false,mount=false,disabled=false}={})=>{
@@ -61,6 +59,7 @@ export function airframeEquipmentPage({snapshot:s,helpers:h},{sort='quality',fil
   </div><div class="ag-toolbar"><label class="ag-select"><span class="ag-sr">装备排序</span><select data-gear-select="sort" aria-label="装备排序">${[['quality','按品质排序'],['part','按部位排序'],['level','按等级排序']].map(([id,name])=>`<option value="${id}" ${id===sort?'selected':''}>${name}</option>`).join('')}</select></label>${filter==='all'?'<strong class="ag-toolbar-title">装备</strong>':btn('gearClearFilter','全部装备')}${btn('openWorkshop',`改装间${hasMerge?`<img class="ag-workshop-dot" src="${base}art/project-notification-dot-v1/red-dot.png" alt="" aria-hidden="true" draggable="false">`:''}`,`aria-label="${hasMerge?'改装间，有装备可合成':'改装间'}"`)}</div>
     <div class="ag-inventory eq-inventory"><h2 class="ag-sr">驾驶员装备</h2><div class="ag-grid">${list.map(item=>card(item,h)).join('')}</div>${!list.length?'<p class="ag-empty">暂无闲置装备</p>':''}${Object.values(gear.fodder).some(n=>n>0)?`<div class="ag-inventory-extra"><h2>合成材料</h2><div class="ag-materials">${Object.entries(gear.fodder).filter(([,count])=>count>0).map(([key,count])=>{const [type,q]=key.split(':').map(Number),part=gear.blueprints.find(p=>p.type===type);return `<button type="button" class="ag-material" data-action="gearMaterialInfo" data-part="${type}" data-quality="${q}"><img src="${gearArt(part.id)}" alt=""><span>${e(part.name)}</span><span>${e(GEAR_QUALITY_NAMES[q])}材料</span><b>×${n(count)}</b></button>`;}).join('')}</div></div>`:''}</div></section>`;
 }
+function attributesTable(item,h,next=false){return `<div class="ag-attr-table"><p><span>${h.escape(item.attributeName)}</span><b>${h.number(item.attribute)}${next&&item.nextAttribute!=null?` → <em>${h.number(item.nextAttribute)}</em>`:''}</b></p><p><span>可强化至</span><b>${item.maxLevel}</b></p></div>`;}
 function costRow(item,gear,s,h){
   if(!item.cost)return '';
   const part=gear.blueprints.find(part=>part.type===item.type),have=part?.count||0;

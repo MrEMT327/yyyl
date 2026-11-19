@@ -13,7 +13,7 @@ export const DEFEAT_REFERENCE = Object.freeze({
 });
 export function defeatResultLayout(model) {
   const rows=Math.max(1,Math.ceil(Math.min(10,model.total??model.rewards.length)/5));
-  const extra=(rows-1)*104, paging=model.pageCount>1?48:0, affectionHeight=model.affectionSummary?38:0;
+  const extra=(rows-1)*104, paging=model.pageCount>1?48:0;
   const rewards={...DEFEAT_REFERENCE.rewards,height:DEFEAT_REFERENCE.rewards.height+extra};
   const rewardHeaderHeight=43,border=3,rewardSize=88,rewardStride=104;
   const rewardContent={x:rewards.x+border,y:rewards.y+rewardHeaderHeight+border,
@@ -24,20 +24,19 @@ export function defeatResultLayout(model) {
   const groupHeight=rewardSize+(visibleRows-1)*rewardStride;
   const rewardTop=rewardContent.y+(rewardContent.height-groupHeight)/2;
   const recommendationRows=Math.ceil(model.recommendations.length/4);
-  const recommendationTop=DEFEAT_REFERENCE.recommendations.y+extra+paging+affectionHeight;
+  const recommendationTop=DEFEAT_REFERENCE.recommendations.y+extra+paging;
   // The project's PSD outer frame has wider metal corners than the reference.
   // Keep the reference height; fit the visible inner rectangle to the shared
   // content edges so the recommendation border cannot cover those corners.
   const recommendations={...DEFEAT_REFERENCE.recommendations,x:rewards.x,width:rewards.width,
     y:recommendationTop,height:DEFEAT_REFERENCE.recommendations.height*Math.max(1,recommendationRows)+(model.unlocks?.length||0)*32};
-  const bottom=Math.max(DEFEAT_REFERENCE.body.y+DEFEAT_REFERENCE.body.height+extra+paging+affectionHeight,
+  const bottom=Math.max(DEFEAT_REFERENCE.body.y+DEFEAT_REFERENCE.body.height+extra+paging,
     recommendationRows||model.stats?.length||model.unlocks?.length?recommendationTop+recommendations.height+24:0);
-  const buttonTop=Math.max(DEFEAT_REFERENCE.confirm.y+extra+paging+affectionHeight,bottom+20);
+  const buttonTop=Math.max(DEFEAT_REFERENCE.confirm.y+extra+paging,bottom+20);
   return {...DEFEAT_REFERENCE.body,height:bottom-DEFEAT_REFERENCE.body.y,
     kills:DEFEAT_REFERENCE.kills,rewards,recommendations,
     rewardTop,rewardSize,rewardStride,rewardContent,rewardHeaderHeight,
     pagerTop:rewards.y+rewards.height+3,recommendationTop,recommendationRows,
-    affectionTop:rewards.y+rewards.height+paging+9,
     buttonTop,confirm:{...DEFEAT_REFERENCE.confirm,y:buttonTop},
     stats:{x:DEFEAT_REFERENCE.stats.x+(DEFEAT_REFERENCE.stats.width-96)/2,
       y:buttonTop+(DEFEAT_REFERENCE.confirm.height-96)/2,width:96,height:96}};

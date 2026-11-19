@@ -40,7 +40,7 @@ export const DIRECT_RECRUIT_RESOURCES=Object.freeze([
   Object.freeze({id:'blueprint',amount:10,weight:15,name:'随机装备图纸'}),
   Object.freeze({id:112,amount:1,weight:5,name:'高级箱券'}),
 ]);
-const pilotRecruitCost = () => globalThis.__THUNDER_RUNTIME_GLOBALS__?.platformKind === 'wechat' ? 120 : 100;
+const RECRUIT_COST=100;
 const RECRUIT_PITY=Object.freeze({pilot:10,ssr:30,ur:70});
 const RESOURCE_KEYS={1:'coins',113:'basicKey',blueprint:'blueprint',112:'advancedKey'};
 const blueprints=[105,106,107,108,109];
@@ -246,13 +246,11 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
   const gate=recurringProgressGate(campaign),unlocked=!clockRollback&&(UNLOCK_ALL_CONTENT||gate.reached);
   const weekly=weeklyTaskView(l,taskCounters.weekly);
   for(const task of weekly.rows)task.canClaim&&=unlocked;
-  const singleCost = pilotRecruitCost();
-  const tenCost = singleCost * 10;
   return {revision:inventory.revision,history:l.history,directHistory:directRecruitHistory(l),boxHistory:l.boxHistory,development:UNLOCK_ALL_CONTENT,
     collection:{},
     clockRollback,taskGate:{...gate,reached:unlocked,...(clockRollback?{reason:'日期异常，请恢复设备日期'}:{})},growth:growthSupplySnapshot(progression,inventory,l,campaign),
     pool:{id:'pilot',mixed:false,direct:true,originLabel:'驾驶员招募',development:UNLOCK_ALL_CONTENT,
-      singleCost:UNLOCK_ALL_CONTENT?0:singleCost,tenCost:UNLOCK_ALL_CONTENT?0:tenCost,totalPulls:l.total,directTotalPulls:l.directRecruit.total,
+      singleCost:UNLOCK_ALL_CONTENT?0:RECRUIT_COST,tenCost:UNLOCK_ALL_CONTENT?0:RECRUIT_COST*10,totalPulls:l.total,directTotalPulls:l.directRecruit.total,
       probabilities:{pilot:DIRECT_RECRUIT_PILOT_WEIGHT/100,...Object.fromEntries(DIRECT_RECRUIT_RESOURCES.map(row=>[RESOURCE_KEYS[row.id],row.weight/100]))},
       probabilityLabels:{pilot:'驾驶员',coins:'金币 ×1000',basicKey:'普通箱券 ×1',blueprint:'随机装备图纸 ×10',advancedKey:'高级箱券 ×1'},
       rarityProbabilities:DIRECT_RECRUIT_RATES,
@@ -261,7 +259,7 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
       pityDetails:[{id:'pilot',triggerAt:RECRUIT_PITY.pilot}],
       guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员`,
       duplicateText:'重复获得同名卡，用于手动升星；满星后转为积分。',
-      rules:[`单次${singleCost}钻石，十次${tenCost}钻石。`,
+      rules:[`单次${RECRUIT_COST}钻石，十次${RECRUIT_COST*10}钻石。`,
         `基础概率：驾驶员${DIRECT_RECRUIT_PILOT_WEIGHT}%、${DIRECT_RECRUIT_RESOURCES.map(row=>row.name+row.weight+'%').join('、')}。`,
         `驾驶员稀有度条件概率：${Object.keys(DIRECT_RECRUIT_RATES).join('／')}为${Object.values(DIRECT_RECRUIT_RATES).map(rate=>rate*100+'%').join('／')}。`,
         `${RECRUIT_PITY.pilot}抽内必得驾驶员。单抽与十连共享保底。`,
@@ -300,7 +298,7 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
   let title='获得奖励',cost=0,taskActivityOnly=false,taskActivityPoints=0;
   if(operation.action==='draw') {
     const count=operation.count;if(![1,10].includes(count))throw Error('请选择单次或十次招募');
-    cost=UNLOCK_ALL_CONTENT?0:count*pilotRecruitCost();debit(2,cost);
+    cost=UNLOCK_ALL_CONTENT?0:count*RECRUIT_COST;debit(2,cost);
     for(let i=0;i<count;i++){
       const pity=l.directRecruit;
       const forced=Object.entries(RECRUIT_PITY).some(([key,limit])=>pity[key]>=limit-1);

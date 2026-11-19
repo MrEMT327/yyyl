@@ -79,6 +79,7 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, vic
   }
   bridge.ui.defeatStartedAt??=performance.now();
   const model=(victory?victoryResultModel:defeatResultModel)(bridge,bridge.ui.defeatRewardPage),layout=defeatResultLayout(model);
+  if(victory&&model.showAd){layout.ad={x:layout.rewards.x,y:layout.buttonTop,width:layout.rewards.width,height:66};layout.confirm.y+=80;layout.stats.y+=80;}
   backdrop(root,0x090d1e,.78);
   const panel=new Container();panel.label=victory?'battle-victory-panel':'battle-defeat-panel';panel.resultSnapshot=model;
   const fit=Math.min(1,1274/(layout.confirm.y+layout.confirm.height));panel.pivot.set(300,0);panel.position.x=300;panel.scale.set(fit);
@@ -152,9 +153,6 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, vic
     reward.eventMode='static';reward.cursor='pointer';reward.hitArea=new Rectangle(x,y,size,size);
     reward.on('pointertap',()=>{if(panel.motion.ready&&!bridge.ui.defeatStats)bridge.showItemDescription?.(row);});
   });
-  if(model.affectionSummary)layer('pilot-affection-result',1.26,s=>{
-    s.text(model.affectionSummary,300,layout.affectionTop+18,{size:24,color:'#ffdba6',weight:800,align:'center',maxWidth:510});
-  });
   layer('defeat-recommendations',1.3,s=>{
     const y=layout.recommendationTop;
     if(victory){
@@ -185,7 +183,8 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, vic
   });
   const control=o=>{const n=button({...o,onPress:()=>{if(panel.motion.ready&&!bridge.ui.defeatStats)o.onPress();}});panel.addChild(n);panel.motion.buttons.push({n,disabled:!!o.disabled});return n;};
   if(model.pageCount>1)for(const [text,dir,x]of[['‹',-1,164],['›',1,366]])control({x,y:layout.pagerTop+4,width:70,height:44,text,fontSize:30,variant:'secondary',disabled:model.page+dir<0||model.page+dir>=model.pageCount,onPress:()=>{bridge.ui.defeatRewardPage=model.page+dir;bridge.pixiCombatUi?.render();}});
-  control({...layout.confirm,text:model.pending?'保存并返回':'确定',fontSize:35,variant:'primary',onPress:()=>{bridge.ui.defeatRewardPage=0;bridge.finishBattleResult();}});
+  if(layout.ad)control({...layout.ad,text:model.adPending?'广告播放中…':'看广告 · 货币奖励翻倍',fontSize:25,variant:'secondary',disabled:model.adPending,onPress:()=>bridge.requestAdVictoryDouble?.()});
+  control({...layout.confirm,text:model.pending?'保存并返回':'确定',fontSize:35,variant:'primary',disabled:model.adPending,onPress:()=>{bridge.ui.defeatRewardPage=0;bridge.finishBattleResult();}});
   const statsButton=control({...layout.stats,text:'',art:'statsControl',artCorner:14,variant:'secondary',onPress:()=>{bridge.ui.defeatStats=true;bridge.pixiCombatUi?.render();}});
   statsButton.hitArea=new Rectangle((layout.stats.width-112)/2,(layout.stats.height-112)/2,112,112);
   const statsIconSize=52;
@@ -233,5 +232,5 @@ export function updateDefeatResult(panel,now,bridge) {
   }
   m.banner.pivot.set(300,370);m.banner.position.set(300,370);m.banner.scale.set(p.bannerScale);
   for(const {n,index}of m.smoke){const f=(p.smokeTime*.24+index/6)%1;n.position.set(351+Math.sin(index*2+f*3)*9,213-f*76);n.scale.set(.23+f*.38);n.alpha=reduced?0:(1-f)*.36*p.reveal(.05);}
-  for(const {n,disabled}of m.buttons){n.alpha=p.reveal(1.25);n.enabled=p.ready&&!disabled&&!bridge.ui.defeatStats;}
+  for(const {n,disabled}of m.buttons){n.alpha=p.reveal(1.25);n.enabled=p.ready&&!disabled&&!bridge.ui.defeatStats&&!bridge.game.victoryRewardDoubleNotice;}
 }

@@ -1,5 +1,4 @@
 export function projectileScene(b: any, extraModels?: {}): any;
-export function battleScenePaths(extraModels?: Record<string, string>): Set<string>;
 export function effectScene(fx: any): any;
 export function statusScene(modelId: any): any;
 export function warningScene(id: any): any;

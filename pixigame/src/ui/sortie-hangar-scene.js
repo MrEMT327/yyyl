@@ -6,7 +6,6 @@ import {createAircraftLighting} from '../three/aircraft/aircraft-lighting.js';
 import {createPreviewBatcher} from './preview-batcher.js';
 import {hangarPivot} from './sortie-hangar-pivot.js';
 import {hangarPose} from './sortie-hangar-motion.js';
-import {warmRenderPrograms} from '../replica/project-aircraft-render.js';
 
 // Identical geometry, pivot, finish and lighting on both rendering paths.
 export function createSortieHangarScene(renderer,aircraftId){
@@ -35,7 +34,7 @@ export function createSortieHangarScene(renderer,aircraftId){
   // The elevator changes only the outer pose. Bake parked meshes ONCE;
   // do not traverse and rebuild the batch buffers on every animation frame.
   const batcher=createPreviewBatcher(normalized);batcher.update();
-  let bufferWidth=-1,bufferHeight=-1,disposed=false;
+  let bufferWidth=-1,bufferHeight=-1;
   return {
     resize(width,height,deckHeight){
       const nextWidth=Math.round(width),nextHeight=Math.round(height);
@@ -51,7 +50,11 @@ export function createSortieHangarScene(renderer,aircraftId){
       camera.updateProjectionMatrix();
     },
     warmup(){
-      return warmRenderPrograms(renderer,scene,camera,()=>!disposed);
+      const compiling=renderer.compileAsync(scene,camera);
+      // An offscreen canvas has not presented yet. Submit queued shader work
+      // before polling completion; otherwise the first frame may wait for a swap.
+      renderer.getContext().flush();
+      return compiling;
     },
     draw(seconds,reduced=false){
       const pose=hangarPose(seconds,reduced);
@@ -61,10 +64,6 @@ export function createSortieHangarScene(renderer,aircraftId){
       // The calibrated pivot stays on the platform axis for the entire turn.
       renderer.render(scene,camera);return pose;
     },
-    dispose(){
-      if(disposed)return;
-      disposed=true;
-      batcher.destroy();style.dispose();asset.dispose();environment.dispose();scene.clear();
-    },
+    dispose(){batcher.destroy();style.dispose();asset.dispose();environment.dispose();scene.clear();},
   };
 }

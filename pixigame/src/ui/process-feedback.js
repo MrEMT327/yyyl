@@ -48,9 +48,7 @@ function collection(record,s,h) {
   }).join('');
   const comparison=up?`<span class="pf-star-before"><small>${n(record.before.star)}星</small>${star(record.before.star,pilot?5:record.before.star)}</span>${arrow()}<span class="pf-star-after"><small>${n(row.star)}星</small>${star(row.star,pilot?5:row.star)}</span>`:star(row.star);
   const hero=heroImage(nativeCollectionArt(row,'default'));
-  const attributePanel=attrs?panel(attrs,'pf-attributes'):'';
-  const skillPanel=skillRows?panel(`${up?'<span class="pf-skill-heading">技能提升</span>':''}${skillRows}`,'pf-skills'):'';
-  const body=`${banner(up?'升星成功':'获得'+feedbackKindLabel(record.kind))}<div class="pf-stage" aria-hidden="true">${image(record.kind==='guns'?art+'hologram-reveal.png':'/art/aircraft-activation-v1/activation-stage.png','pf-stage-light')}${image(art+'hologram-reveal.png','pf-stage-pulse')}</div><div class="pf-hero-wrap">${hero}</div>${sparks()}<h3 class="pf-name">${insetFrame()}${e(row.name)}</h3><div class="pf-star-change${up?' is-upgrade':''}">${comparison}</div>${attributePanel}${skillPanel}`;
+  const body=`${banner(up?'升星成功':'获得'+feedbackKindLabel(record.kind))}<div class="pf-stage" aria-hidden="true">${image(record.kind==='guns'?art+'hologram-reveal.png':'/art/aircraft-activation-v1/activation-stage.png','pf-stage-light')}${image(art+'hologram-reveal.png','pf-stage-pulse')}</div><div class="pf-hero-wrap">${hero}</div>${sparks()}<h3 class="pf-name">${insetFrame()}${e(row.name)}</h3><div class="pf-star-change${up?' is-upgrade':''}">${comparison}</div>${panel(attrs,'pf-attributes')}${panel(`${up?'<span class="pf-skill-heading">技能提升</span>':''}${skillRows}`,'pf-skills')}`;
   return frame(body,{className:`pf-collection pf-kind-${record.kind}${up?' pf-star-result':''}`,footer:dismiss()});
 }
 function gearSlot(item,h,{inspectable=true,quantity=false}={}) {

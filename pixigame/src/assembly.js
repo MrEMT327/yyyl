@@ -109,7 +109,7 @@ function currentAircraftVisualConfig() {
  * Creates the canonical aircraft renderer used by both the hangar preview and
  * live combat. Consumers may scale the root, but never redraw parts separately.
  */
-export function createAssemblyAircraftVisual({ deferModel = false } = {}) {
+export function createAssemblyAircraftVisual() {
   // Scale altitude with the airframe so rolling wings retain their true span.
   const root = new Container({ scaleDepth: true });
   const engine = new Container();
@@ -153,18 +153,10 @@ export function createAssemblyAircraftVisual({ deferModel = false } = {}) {
     markings,
     fixedOrbitFront,
     fixedOrbitTracks: [],
-    deferredModel: deferModel,
   };
-  // Resources are loaded by the scene that will actually display this model.
-  // Keep ordinary previews eager; the hidden native host opts into deferral.
-  visual.ensureModel = () => {
-    if (visual.model) return visual.model;
-    visual.model = createFighterView({ pilotId: currentAircraftVisualConfig().pilot.id });
-    redrawAssemblyAircraftVisual(visual);
-    root.addChild(visual.model);
-    return visual.model;
-  };
-  if (!deferModel) visual.ensureModel();
+  visual.model = createFighterView({ pilotId: currentAircraftVisualConfig().pilot.id });
+  redrawAssemblyAircraftVisual(visual);
+  root.addChild(visual.model);
   if (visual.retroSprite) visual.retroSprite.visible = false;
   for (const node of [engine, shadow, wing, tail, underlay, body, armor, cockpit, energy, markings]) node.visible = false;
   return visual;
@@ -495,7 +487,6 @@ function drawPilotMarking(graphics, airframe, primary, accent) {
 
 export function redrawAssemblyAircraftVisual(visual) {
   if (!visual?.root) return visual;
-  if (visual.deferredModel && !visual.model) return visual;
   if (visual.model) {
     const config = currentAircraftVisualConfig();
     rebuildFixedOrbit(visual, config, hexColor(config.pilot.accent, 0xeefbff));
@@ -1596,12 +1587,124 @@ function drawGrid(parent) {
   parent.addChild(grid);
 }
 
+function mirroredWingPolygon(points, centerX = 280, centerY = 233, side = 1) {
+  return points.flatMap(([x, y]) => [centerX + x * side, centerY + y]);
+}
+
 function drawAirframe(parent) {
   const visual = createAssemblyAircraftVisual();
   visual.root.position.set(280, 218);
   visual.root.scale.set(0.94);
   parent.addChild(visual.root);
   return visual;
+}
+
+// Kept temporarily as a geometry reference while old save screenshots remain
+// in documentation; the live hangar and combat both use drawAirframe above.
+function drawAirframeLegacy(parent) {
+  const wingModule = MODULE_MAP.get(assemblyState.mounts.wing);
+  const wingProfile = WING_PROFILES[wingModule?.id] || WING_PROFILES['wing-swept'];
+  const engineModule = MODULE_MAP.get(assemblyState.mounts.engine);
+  const engineProfile = ENGINE_PROFILES[engineModule?.id] || ENGINE_PROFILES['engine-ion'];
+  const tailModule = MODULE_MAP.get(assemblyState.mounts.tail);
+  const tailProfile = TAIL_PROFILES[tailModule?.id] || TAIL_PROFILES['tail-vector'];
+  const leftWing = mirroredWingPolygon(wingProfile.points);
+  const rightWing = mirroredWingPolygon(wingProfile.points, 280, 233, -1);
+  const wingColor = wingModule?.color || COLORS.cyan;
+  const body = new Graphics()
+    .ellipse(280, 233, 62, 174).fill({ color: 0x071a23, alpha: 0.96 })
+    .ellipse(280, 233, 62, 174).stroke({ color: 0x82d8dc, width: 1.3, alpha: 0.35 })
+    .poly([280, 64, 300, 146, 300, 314, 280, 398, 260, 314, 260, 146])
+    .fill({ color: 0x153743, alpha: 0.94 })
+    .poly([280, 69, 292, 154, 288, 340, 280, 387, 272, 340, 268, 154])
+    .stroke({ color: 0xb7f9f4, width: 1.2, alpha: 0.34 })
+    .poly(leftWing)
+    .fill({ color: assemblyState.mounts.wing ? 0x123a48 : 0x081b22, alpha: 0.94 })
+    .poly(rightWing)
+    .fill({ color: assemblyState.mounts.wing ? 0x123a48 : 0x081b22, alpha: 0.94 })
+    .poly(leftWing)
+    .stroke({ color: wingColor, width: 1.8, alpha: assemblyState.mounts.wing ? 0.72 : 0.12 })
+    .poly(rightWing)
+    .stroke({ color: wingColor, width: 1.8, alpha: assemblyState.mounts.wing ? 0.72 : 0.12 });
+  parent.addChild(body);
+
+  if (wingModule) {
+    const wingMarkings = new Graphics()
+      .moveTo(258, 210).lineTo(leftWing[2], leftWing[3])
+      .moveTo(302, 210).lineTo(rightWing[2], rightWing[3])
+      .stroke({ color: wingColor, width: 2, alpha: 0.34 });
+    parent.addChild(wingMarkings);
+  }
+
+  const cockpit = new Graphics()
+    .poly([280, 102, 294, 172, 280, 203, 266, 172])
+    .fill({ color: 0x75dfeb, alpha: 0.4 })
+    .poly([280, 112, 287, 168, 280, 184, 273, 168])
+    .fill({ color: 0xd9ffff, alpha: 0.34 });
+  parent.addChild(cockpit);
+
+  const leftTail = mirroredWingPolygon(tailProfile.points, 280, 342);
+  const rightTail = mirroredWingPolygon(tailProfile.points, 280, 342, -1);
+  const tailColor = tailModule?.color || 0x8dffca;
+  const tail = new Graphics()
+    .poly(leftTail)
+    .fill({ color: assemblyState.mounts.tail ? 0x174856 : 0x081b22, alpha: 0.96 })
+    .poly(rightTail)
+    .fill({ color: assemblyState.mounts.tail ? 0x174856 : 0x081b22, alpha: 0.96 })
+    .poly(leftTail)
+    .stroke({ color: tailColor, width: 1.7, alpha: assemblyState.mounts.tail ? 0.72 : 0.12 })
+    .poly(rightTail)
+    .stroke({ color: tailColor, width: 1.7, alpha: assemblyState.mounts.tail ? 0.72 : 0.12 })
+    .moveTo(268, 343).lineTo(leftTail[2], leftTail[3])
+    .moveTo(292, 343).lineTo(rightTail[2], rightTail[3])
+    .stroke({ color: tailColor, width: 1.5, alpha: assemblyState.mounts.tail ? 0.34 : 0.08 });
+  parent.addChild(tail);
+
+  const engineAlpha = assemblyState.mounts.engine ? 0.8 : 0.16;
+  const engineColor = engineModule?.color || 0x55dfff;
+  const engineBottom = 374;
+  const engines = new Graphics();
+  for (const offset of engineProfile.nozzles) {
+    const x = 280 + offset;
+    const halfWidth = engineProfile.width / 2;
+    engines
+      .roundRect(
+        x - halfWidth,
+        engineBottom - engineProfile.housing,
+        engineProfile.width,
+        engineProfile.housing,
+        Math.min(7, halfWidth),
+      )
+      .fill({ color: 0x0d2732, alpha: 0.96 })
+      .roundRect(
+        x - halfWidth,
+        engineBottom - engineProfile.housing,
+        engineProfile.width,
+        engineProfile.housing,
+        Math.min(7, halfWidth),
+      )
+      .stroke({ color: engineColor, width: 1.2, alpha: engineAlpha * 0.52 })
+      .poly([
+        x - halfWidth * 0.62, engineBottom - 1,
+        x + halfWidth * 0.62, engineBottom - 1,
+        x, engineBottom + engineProfile.plume,
+      ])
+      .fill({ color: engineColor, alpha: engineAlpha * engineProfile.flare })
+      .poly([
+        x - Math.max(2, halfWidth * 0.26), engineBottom,
+        x + Math.max(2, halfWidth * 0.26), engineBottom,
+        x, engineBottom + engineProfile.plume * 0.7,
+      ])
+      .fill({ color: 0xe8ffff, alpha: engineAlpha });
+  }
+  if (engineProfile.key === 'singularity') {
+    engines
+      .circle(280, engineBottom - 24, 13)
+      .stroke({ color: engineColor, width: 2.2, alpha: engineAlpha * 0.8 })
+      .circle(280, engineBottom - 24, 5)
+      .fill({ color: engineColor, alpha: engineAlpha * 0.58 });
+  }
+  parent.addChild(engines);
 }
 
 function drawDashedSegment(graphic, from, to, dash = 8, gap = 5) {

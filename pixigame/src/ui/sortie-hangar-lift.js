@@ -13,11 +13,9 @@ export function createHangarLift(host,elevator){
     current=Number(animations[0]?.currentTime??current);cancel();
     if(!started||reduced||typeof host.animate!=='function'||typeof elevator.animate!=='function'){apply();return;}
     for(const node of [host,elevator]){
-      // The native canvas animation interpolates transforms with matching units.
-      const animation=node.animate([{transform:'translate3d(0,0px,0)'},{transform:`translate3d(0,${-height*.325}px,0)`}],timing);
+      const animation=node.animate([{transform:'translate3d(0,0,0)'},{transform:`translate3d(0,${-height*.325}px,0)`}],timing);
       animation.currentTime=Math.min(duration,current);
       if(paused||current>=duration)animation.pause();
-      else if(current>0)animation.play();
       animations.push(animation);
     }
   };

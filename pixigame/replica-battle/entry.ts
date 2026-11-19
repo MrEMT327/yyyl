@@ -1,5 +1,4 @@
 import '../src/ui/scroll-surfaces.css';
-import { mountDomButtonPress } from '../src/ui/dom-button-press.js';
 import {createBattlePerformanceReporter} from '../src/replica/battle-performance.js';
 import {createBattleLaunch} from './battle-launch.js';
 import './battle-launch.css';
@@ -9,59 +8,37 @@ import { mountDeveloperSkills } from './developer-skills-ui';
 import { pathogenicAudioManifest, combatCues, activeCombatSounds } from './kernel/combat-audio';
 import '../src/ui/guide-presentation.css';
 import {createMovementGuide} from './battle-onboarding';
+import { installEnemyFireEffects } from './enemy-fire-effects';
 import { memoryCheckpoint } from '../src/replica/memory-checkpoints.js';
-import { createBattleLifetime, disposeNativeAudio, disposeNativeGame } from './battle-lifetime.js';
+import { createBattleLifetime, disposeNativeUi, disposeNativeAudio, disposeNativeGame } from './battle-lifetime.js';
 import { createBattleActivity } from './battle-activity.js';
-import { installReleaseSlowMotion } from './battle-release-time.js';
 import { createBattleGraphics } from './battle-graphics.js';
-import { createBattleFrameReuse } from './battle-frame-reuse.js';
 import { installSafeTouchCancel } from './safe-touch-cancel.js';
 import { installBattleCheckpoint } from '../src/replica/battle-checkpoint.js';
 import { replicaChapter } from '../src/replica/chapter-contract';
-import { createBattleRunContent, prepareBattleData, type PreparedBattleData } from './prepare-battle-data';
-import type {ReadSharedLoadoutJSON} from './kernel/loadout-resources';
+import { chapterPresentationForStage } from '../src/replica/chapter-presentation.js';
+import { loadContent } from './kernel/content';
 import { Simulation } from './kernel/simulation';
 import { BattleView, makeGame } from './kernel/renderer';
-import {planBattleImages} from './kernel/battle-image-plan';
 import { GameAudio } from './kernel/audio';
 import { pathogenicBattleMusic } from '../src/battle-music.js';
 import { Controls } from './kernel/input';
-import { BattleHudFlow } from './battle-hud-flow';
+import { Interface } from './kernel/ui';
 import { mountCloudCombat } from './cloud-combat.js';
 import { nativeLogicRate, nativeLogicDelta } from './kernel/native-time';
 import { smoothCoastTime } from '../src/replica/coast-background-time.mjs';
-import { loadLoadoutCatalog, createDefaultStudyLoadoutState, applyStudyLoadout } from './kernel/loadout-state';
+import { loadLoadoutCatalog, loadStudyLoadoutState, createDefaultStudyLoadoutState, applyStudyLoadout } from './kernel/loadout-state';
 import { createAppearance } from './appearance';
 import { loadFighterPackages } from '../src/three/aircraft/fighter-packages.js';
-import { peripheralSceneForStage } from '../src/three/peripheral-scenes.js';
-import { worldTextureSources } from '../src/three/world.js';
 import { prepareReplicaLoadout } from './prepare-loadout';
-import { playerSpineLayers, selectPlayerAppearance } from './kernel/player-appearance';
-import { ensureBattlePlayerAssets } from './battle-player-assets';
 import type { Choice } from './kernel/model';
 import { readWeaponAppearances, previewWeaponAppearance } from './weapon-appearance';
+import { createProjectInterfaceSprites } from '../src/ui/project-battle-interface-art.js';
 import { projectExperienceContent } from '../src/replica/project-experience-art.js';
 import '../src/ui/project-battle-interface-art.css';
 
-export function mountReplicaBattlePage(platform: {
-  window: Window & typeof globalThis;
-  document: Document;
-  location: Location;
-  parent: Window;
-  canvas: HTMLCanvasElement;
-  fetchResource: typeof fetch;
-  presentFrame?: () => boolean | void;
-  frozenFrame?: { capture: () => boolean; present: () => void };
-  loadCatalog?: typeof loadLoadoutCatalog;
-  readSharedLoadoutJSON?: ReadSharedLoadoutJSON;
-  warmBattleImages?: (urls: string[], signal: AbortSignal) => Promise<void>;
-  warmBattleTerrain?: (urls: string[], signal: AbortSignal) => Promise<unknown>;
-  loadBattleData?: (chapterId: number, signal: AbortSignal, prepare: () => Promise<PreparedBattleData>) => Promise<PreparedBattleData>;
-  skinHost?: Parameters<typeof import('../src/replica/project-presentation.js').createProjectPresentation>[0]['host'];
-}) {
-const {window,document,location,parent} = platform;
-const lifetime = createBattleLifetime(window);
-lifetime.add(mountDomButtonPress());
+const lifetime = createBattleLifetime();
+const researchMode = new URLSearchParams(location.search).get('study') === '1';
 const CHANNEL = 'shnh-replica-battle-v1';
 const session = new URLSearchParams(location.search).get('session');
 const battlePerformance=createBattlePerformanceReporter({session});
@@ -73,7 +50,7 @@ const reportLoading = (phase: string, progress: number) => {
 };
 const stage = document.getElementById('stage')!;
 let startRun: ((runId: string, configurationKey: string, onboarding?: {movement?:boolean;firstChoice?:boolean}, defeatCount?:number) => void) | undefined;
-let configureRun: ((requestId: number, configuration: unknown, configurationKey: unknown) => Promise<void>) | undefined;
+let configureRun: ((requestId: number, configuration: unknown, configurationKey: unknown) => void) | undefined;
 let currentRunId = '', reported = false;
 let started = false;
 let acknowledgeGuide: ((message:any)=>void)|undefined;
@@ -90,89 +67,77 @@ function fail(error: unknown) {
   if (loading) loading.textContent = message;
 }
 
-async function initialize(appearance: any, initialConfiguration?: unknown) {
-  if (!requestedChapter) throw new Error('出击关卡不存在');
+function localAssetUrls(node: unknown): void {
+  if (!node || typeof node !== 'object') return;
+  if (Array.isArray(node)) {
+    for (let index=0;index<node.length;index++) {
+      const value=node[index];
+      if (typeof value==='string' && /^\/?assets\//.test(value)) node[index]=new URL(value.replace(/^\//,''),location.href).href;
+      else if(value && typeof value==='object') localAssetUrls(value);
+    }
+    return;
+  }
+  for (const [key, value] of Object.entries(node)) {
+    if (typeof value === 'string' && /^\/?assets\//.test(value)) {
+      (node as Record<string, unknown>)[key] = new URL(value.replace(/^\//, ''), location.href).href;
+    } else if (value && typeof value === 'object') localAssetUrls(value);
+  }
+}
+
+async function initialize(appearance: any) {
   memoryCheckpoint('battle-load-start');
   reportLoading('data',0);
-  const fetchResource = platform.fetchResource;
-  // Keep the aircraft request running while data and terrain are prepared.
-  // Its result is consumed by the presentation, so slow aircraft decoding
-  // cannot hold back the first terrain texture request.
-  const assetBase = new URL(appearance.assetBase, location.href);
-  const aircraftReady = loadFighterPackages({pilotIds:[appearance.aircraft.id],allowTextureFallback:true,assetBase,
-    read:platform.skinHost?.readFighterFile,objectLoader:platform.skinHost?.objectLoader,assetBytes:platform.skinHost?.assetBytes});
-  // Data may fail or the battle may close before presentation consumes it.
-  // Observe an early rejection without replacing the original result.
-  void aircraftReady.catch(() => {});
-  const chapterId = requestedChapter.id;
-  const prepare = () => prepareBattleData({
-    chapterId, baseURL: location.href, fetchResource, signal: lifetime.signal,
-    loadCatalog: platform.loadCatalog,
-    readSharedLoadoutJSON: platform.readSharedLoadoutJSON,
-    onProgress: (completed, total) => reportLoading('data', completed / total),
-  });
-
-  const battleData = platform.loadBattleData ? platform.loadBattleData(chapterId, lifetime.signal, prepare) : prepare();
-  if (platform.warmBattleTerrain && appearance.map?.terrain === 'cloud') {
-    const scene = peripheralSceneForStage(requestedChapter.stageIndex);
-    const sources = worldTextureSources(scene).flatMap(([, path]) => path ? [new URL(path, assetBase).href] : []);
-    void platform.warmBattleTerrain(sources, lifetime.signal);
-  }
-  const data = await battleData;
+  // Start the selected aircraft alongside chapter data. createAppearance
+  // consumes this same parsed template instead of starting another load.
+  const [content, catalog] = await Promise.all([
+    loadContent((completed,total)=>reportLoading('data',completed/total)),
+    loadLoadoutCatalog(), document.fonts.load('16px DankeUI'),
+    loadFighterPackages({pilotIds:[appearance.aircraft.id],assetBase:new URL(appearance.assetBase,location.href)}),
+  ]);
   if (lifetime.disposed) return;
-  const content = createBattleRunContent(data.content), { catalog } = data;
+  if (!requestedChapter || Number(content.chapter.chapter.id) !== requestedChapter.id) throw new Error('关卡与出击请求不一致');
+  // This host uses project map artwork. Adapt only the display name so the
+  // ready screen and result UI agree with the selected terrain and lobby.
+  const chapterPresentation=chapterPresentationForStage(requestedChapter.stageIndex);
+  content.chapter.chapter.name=chapterPresentation.name;
+  for (const row of content.chapter.catalog) {
+    const chapter = replicaChapter(Number(row.id));
+    if (chapter) row.name = chapterPresentationForStage(chapter.stageIndex).name;
+  }
+  document.title=`彼方之遥 · ${chapterPresentation.chapterName}`;
+  installEnemyFireEffects(content);
+  localAssetUrls(content);
   memoryCheckpoint('battle-data-ready');
   reportLoading('data',1);
-  // The initial selection prepares the renderer. The final configuration
-  // handshake still validates every sortie before it can start.
+  // Default state only prepares the renderer. A validated native configuration
+  // must replace it before the first tick of every actual sortie.
   let prepared: ReturnType<typeof prepareReplicaLoadout> | undefined;
   let firstFrame: {runId:string; configurationKey:string} | undefined;
   let activeEntry: ReturnType<typeof prepareReplicaLoadout>['entry'] | undefined;
-  // Construct the actual consumer before checking its supported attributes.
-  // A fresh battle module has no registrations from the lobby or prior sorties.
+  const entryLoadout = createDefaultStudyLoadoutState();
+  let studyLoadout: ReturnType<typeof import('./kernel/loadout').mountStudyLoadout> | undefined;
+  let researchStart: (() => void) | undefined;
   const sim = new Simulation(content);
-  const entryLoadout = initialConfiguration === undefined ? createDefaultStudyLoadoutState()
-    : prepareReplicaLoadout(catalog, initialConfiguration).state;
-
   const movementGuide=createMovementGuide(stage);lifetime.add(()=>movementGuide.destroy());
   let waitingForMovement=false,guideRetryAt=0;
   const pendingGuides=new Set<number>();
   acknowledgeGuide=message=>{if(message.runId===currentRunId)pendingGuides.delete(message.group);};
-  const flushGuides=()=>{if(!pendingGuides.size||performance.now()<guideRetryAt||!currentRunId||reported)return;guideRetryAt=performance.now()+800;for(const group of pendingGuides)send('onboarding',{runId:currentRunId,group});};
-  sim.rewardedReviveEnabled = true;
+  const flushGuides=()=>{if(performance.now()<guideRetryAt||!currentRunId||reported)return;guideRetryAt=performance.now()+800;for(const group of pendingGuides)send('onboarding',{runId:currentRunId,group});};
+  sim.rewardedReviveEnabled = !researchMode;
   let reviveRequestSerial = 0, pendingReviveRequest = 0, pendingReviveKind = 'ad';
   applyStudyLoadout(content, sim, catalog, entryLoadout);
-  const visualContent = projectExperienceContent(content);
-  const replaceTerrain = appearance.map?.terrain === 'cloud';
-  const imagePlan = platform.warmBattleImages ? planBattleImages(visualContent, {
-    playerLayers: selectPlayerAppearance(content).layers,
-    bodyPoseOnly: true,
-    replaceTerrain,
-    nativeTerrain: !replaceTerrain && Boolean(content.assets.map.nativeLayers?.renderers?.length),
-  }) : undefined;
-  if (imagePlan) {
-    const orderedURLs = [...new Set(imagePlan.images.map(([, url]) => url))];
-    void platform.warmBattleImages?.(orderedURLs, lifetime.signal);
-  }
   const music = pathogenicBattleMusic(content.chapter.chapter.id, content.assets.audio, content.chapter.musicKey, content.assets.soundKeys?.[100006]);
   const audio = new GameAudio({ ...content.assets.audio, ...pathogenicAudioManifest, ...music, 'project:flight-roll': { url: new URL('../assets/audio/sfx/dodge.wav', import.meta.url).href }, 'project:defeat': {url:new URL('../audio/mixkit/defeat-2042.wav',document.baseURI).href} });
   lifetime.add(() => disposeNativeAudio(audio));
-  let controls: Controls, ui: BattleHudFlow, accumulated = 0, lastPhase = '';
+  let controls: Controls, ui: Interface, accumulated = 0, lastPhase = '';
   let activity: ReturnType<typeof createBattleActivity> | undefined;
   let cloudFrame=(callback:()=>void)=>callback();
-  let frameReuse: ReturnType<typeof createBattleFrameReuse> | undefined;
-  const graphics = createBattleGraphics({signal:lifetime.signal,onChange:()=>{frameReuse?.invalidate();activity?.enforce();ui?.update();}});
+  const graphics = createBattleGraphics({signal:lifetime.signal,onChange:()=>{activity?.enforce();ui?.update();}});
   lifetime.add(() => graphics.destroy());
   const watchGraphics=(canvas:HTMLCanvasElement,context:WebGLRenderingContext|WebGL2RenderingContext)=>{graphics.watch(canvas,context);battlePerformance.watch(canvas,context);};
   reportLoading('appearance',0);
-  const appearanceReady = createAppearance(content, appearance, fail, watchGraphics,
-    (completed,total)=>reportLoading('appearance',completed/total),
-    ()=>audio.effect('project:flight-roll',.22,.5),platform.skinHost,aircraftReady).then(skin => {
-      lifetime.add(() => skin.dispose());
-      return skin;
-    });
-  const skin = await appearanceReady;
-  if (lifetime.disposed) return;
+  const skin = await createAppearance(content, appearance, fail, watchGraphics, (completed,total)=>reportLoading('appearance',completed/total), ()=>audio.effect('project:flight-roll',.22,.5));
+  lifetime.add(() => skin.dispose());
   const launch=createBattleLaunch({
     stage,player:()=>sim.player,bounds:()=>sim.cameraWorldBounds,
     reducedMotion:()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -185,35 +150,31 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   if (!lifetime.disposed) memoryCheckpoint('battle-skin-ready');
   if (lifetime.disposed) return;
   reportLoading('appearance',1);
-  let appliedEquipmentRevision = -1;
-  const syncWeaponSkins = () => {
-    const revision = sim.equipmentRevision;
-    if (revision === appliedEquipmentRevision) return;
-    skin.setWeapons?.(readWeaponAppearances(sim));
-    appliedEquipmentRevision = revision;
-  };
+  const syncWeaponSkins = () => skin.setWeapons?.(readWeaponAppearances(sim));
   syncWeaponSkins();
-  const weaponIcon = (familyId: number, choice?: Choice) => {
-    const identity = choice ? previewWeaponAppearance(sim, choice, false)
+  const weaponIcon = (familyId: number, _star: number, choice?: Choice, preview = false) => {
+    const identity = choice ? previewWeaponAppearance(sim, choice, preview)
       : readWeaponAppearances(sim).find(row => row.familyId === familyId);
-    return identity ? skin.weaponIcon?.(identity)?.key : undefined;
+    return identity ? skin.weaponIcon?.(identity) : undefined;
   };
-  const developerMode = developerSkillsEnabled();
-  const optimizeChapterOne = chapterId === 1 && Boolean(platform.warmBattleImages) && !developerMode;
-  const scene = new BattleView(visualContent, sim, () => {
+  const scene = new BattleView(projectExperienceContent(content), sim, () => {
     installSafeTouchCancel(scene.game.input);
     watchGraphics(scene.game.canvas, (scene.game.renderer as import('phaser').Renderer.WebGL.WebGLRenderer).gl);
     memoryCheckpoint('battle-textures-ready');
-    ui.update(); send('ready');
-  }, skin, undefined, imagePlan, optimizeChapterOne, Boolean(platform.warmBattleImages) && !developerMode);
-  ui = new BattleHudFlow(stage, sim, audio, () => {
+    ui.update(); studyLoadout?.update(); send(researchMode ? 'research-ready' : 'ready');
+  }, skin);
+  const requestStart = () => researchMode ? researchStart?.() : send('retry');
+  ui = new Interface(document.getElementById('ui')!, sim, audio, createProjectInterfaceSprites(content.assets.sprites), requestStart, () => {
     audio.pause();
-    const result=currentRunId&&!reported ? battleResult(sim.phase!=='won'&&sim.phase!=='lost') : undefined;
-    if(result){reported=true;sim.pause();controls?.clear();}
-    send('home',result?{result}:{});
-  }, weaponIcon, optimizeChapterOne ? card => scene.prepareChoiceArt(card) : undefined);
-  lifetime.add(() => ui.dispose());
-  {
+    if (researchMode) { sim.reset(); studyLoadout?.update(); }
+    else {
+      const result=currentRunId&&!reported ? battleResult(sim.phase!=='won'&&sim.phase!=='lost') : undefined;
+      if(result){reported=true;sim.pause();controls?.clear();}
+      send('home',result?{result}:{});
+    }
+  }, weaponIcon, researchMode);
+  lifetime.add(() => disposeNativeUi(ui));
+  if (!researchMode) {
     const requestReviveAd = () => {
       if (!currentRunId || reported || !sim.beginReviveAd()) return;
       controls?.clear(); audio.pause();
@@ -251,46 +212,45 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     if (lifetime.disposed) return;
   }
   reportLoading('interface',1);
-  if (developerMode) {
-    const developerSkills = mountDeveloperSkills(stage, sim, audio, ui);
-    lifetime.add(() => developerSkills.destroy());
-  }
-  const configureDeveloperSkills = () => { sim.developerSkillCatalog = developerMode ? buildDeveloperSkillCatalog(content, catalog) : []; };
+  const developerSkills = mountDeveloperSkills(stage, sim, audio, ui);
+  lifetime.add(() => developerSkills.destroy());
+  const configureDeveloperSkills = () => { sim.developerSkillCatalog = developerSkillsEnabled() ? buildDeveloperSkillCatalog(content, catalog) : []; };
   controls = new Controls(stage, () => !launch.active && sim.phase === 'playing' && sim.player.hp > 0, () => {if(!launch.active)ui.togglePause();});
   lifetime.add(() => controls.clear());
   activity = createBattleActivity({
-    allowParentFocus: true, signal: lifetime.signal,
+    allowParentFocus: !researchMode, signal: lifetime.signal,
     suspend: () => { if(!launch.active)sim.pause(); controls.clear(); audio.pause(); },
     refresh: () => ui.update(), blocked: graphics.blocked,
   });
   const updateUi = ui.update.bind(ui);
   ui.update = () => { activity!.enforce(); updateUi(); };
   lifetime.add(() => activity!.destroy());
-  const releasedTime=installReleaseSlowMotion({scene,controls,signal:lifetime.signal,
-    isPlaying:()=>!launch.active&&!waitingForMovement&&!sim.victoryPresentationActive&&sim.phase==='playing'&&sim.player.hp>0});
-  lifetime.add(()=>releasedTime.destroy());
-  let configurationGeneration = 0;
-  configureRun = async (requestId, configuration, configurationKey) => {
+  if (researchMode) {
+    // Same original study state/calculator; never reads the host's formal save.
+    const { mountStudyLoadout } = await import('./kernel/loadout');
+    if (lifetime.disposed) return;
+    researchStart = () => {
+      applyStudyLoadout(content, sim, catalog, loadStudyLoadoutState(catalog));
+      configureDeveloperSkills();
+      accumulated = 0; controls.clear(); audio.unlock().catch(() => {}); sim.start(); syncWeaponSkins();
+      audio.startMusic(content.chapter.musicKey); audio.restart(); ui.update(); studyLoadout?.update();
+    };
+    studyLoadout = mountStudyLoadout({ content, sim, onStart: researchStart });
+    stage.removeAttribute('data-awaiting-start');
+  }
+  configureRun = (requestId, configuration, configurationKey) => {
+    if (researchMode) throw new Error('研究模式不接受正式出击配置');
     if (currentRunId && !reported) throw new Error('当前战斗尚未结算');
     prepared = undefined;
-    const generation = ++configurationGeneration;
     // A still-open old lobby must not silently wait on a newer iframe contract.
     if (typeof configurationKey !== 'string') throw new Error('大厅版本已更新，请刷新页面后重新出击');
     const candidate = prepareReplicaLoadout(catalog, configuration);
     if (candidate.key !== configurationKey) throw new Error('大厅与战斗配置版本不一致，请刷新页面后重新出击');
-    try {
-      const layers = playerSpineLayers(selectPlayerAppearance(content, candidate.entry).layers, Boolean(skin.playerSkin));
-      await ensureBattlePlayerAssets(scene, layers, lifetime.signal);
-      await scene.prepareLoadoutArt(candidate.entry.battleSkillIds);
-    } catch (error) {
-      if (generation === configurationGeneration) throw error;
-      return;
-    }
-    if (lifetime.disposed || generation !== configurationGeneration) return;
     prepared = candidate;
     send('configured', { requestId, configurationKey: prepared.key, entry: prepared.entry });
   };
   startRun = (runId, configurationKey, onboarding={}, defeatCount=0) => {
+    if (researchMode) throw new Error('研究模式不接受正式出击指令');
     if (!prepared || prepared.key !== configurationKey || (currentRunId && !reported)) {
       throw new Error('战前配置尚未确认或当前战斗尚未结算');
     }
@@ -314,22 +274,22 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
       runId:currentRunId,won:!quit&&sim.phase==='won',abandoned:false,
       endReason:quit?'quit':sim.phase==='won'?'victory':'defeat',
       chapterId:requestedChapter!.id,gold:sim.gold,kills:sim.kills,bossKills:sim.bossKills,level:sim.level,
-      wave:sim.wave,completedWave:sim.completedWave,clock:sim.clock,damageDealt:sim.damageDealt,
+      wave:sim.wave,clock:sim.clock,damageDealt:sim.damageDealt,
       hp:sim.player.hp,maxHp:sim.player.maxHp,revivesUsed:sim.revivesUsed,adRevivesUsed:sim.adRevivesUsed,
       damageByWeapon:Array.from(sim.damageByWeapon),entry:activeEntry,
     };
   }
-  const checkpoint = installBattleCheckpoint(() => currentRunId ? battleResult(sim.phase !== 'won' && sim.phase !== 'lost') : null,window);
+  const checkpoint = installBattleCheckpoint(() => currentRunId ? battleResult(sim.phase !== 'won' && sim.phase !== 'lost') : null);
   lifetime.add(() => checkpoint.freeze());
   const reportPhase = () => {
     if (sim.phase !== lastPhase) { lastPhase = sim.phase; send('phase', { phase: lastPhase }); }
-    if (!reported && currentRunId && (sim.phase === 'won' || sim.phase === 'lost')) {
+    if (!researchMode && !reported && currentRunId && (sim.phase === 'won' || sim.phase === 'lost')) {
       reported = true;
       send('result', {result:battleResult()});
     }
   };
-  // Keep the native 1/30 wall-clock cadence and Q16 delta 0x888, followed
-  // by sound/music delivery and the combat interface.
+  // Kept verbatim in cadence/order from kernel/main.ts: wall clock 1/30,
+  // native Q16 delta 0x888, then sound/music delivery and original UI.
   const logicStep = 1 / nativeLogicRate;
   const nativeDelta = nativeLogicDelta;
   let backgroundRunId = sim.runId;
@@ -347,9 +307,9 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     if(sim.tutorialChoiceCompleted){pendingGuides.add(4);sim.tutorialChoiceCompleted=false;guideRetryAt=0;}
     flushGuides();movementGuide.show(waitingForMovement&&sim.phase==='playing');
     if (sim.phase !== 'playing') {
-      audio.syncContinuous(); audio.syncCharges();
+      audio.syncContinuous([]); audio.syncCharges([]);
       if (!document.hidden) sim.advanceRevivePrompt(Math.max(0, delta / 1000));
-      accumulated = 0; controls.clear(); sim.advanceResultPresentation(Math.min(delta / 1000, .1)); syncWeaponSkins(); ui.update(); reportPhase(); return;
+      accumulated = 0; controls.clear(); sim.advanceResultPresentation(Math.min(delta / 1000, .1)); syncWeaponSkins(); ui.update(); studyLoadout?.update(); reportPhase(); return;
     }
     accumulated += Math.min(delta / 1000, 0.1);
     while (accumulated >= logicStep && sim.phase === 'playing') {
@@ -379,60 +339,35 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     }
     sim.musicRequests.length = 0;
     sim.sounds.length = 0;
-    if(audio.needsCombatCues&&sim.phase==='playing'&&sim.player.hp>0){
-      audio.syncContinuous(activeCombatSounds(sim.projectiles,true,sim.enemies));
-      audio.syncCharges(sim.activeEnemyCharges());
-    }else{
-      audio.syncContinuous();audio.syncCharges();
-    }
-    syncWeaponSkins(); reportPhase();
+    audio.syncContinuous(activeCombatSounds(sim.projectiles, sim.phase === 'playing' && sim.player.hp > 0, sim.enemies));
+    audio.syncCharges(sim.activeEnemyCharges());
+    syncWeaponSkins(); ui.update(); studyLoadout?.update(); reportPhase();
   });
   stage.addEventListener('pointerdown', () => { audio.unlock().catch(() => {}); }, { passive: true, signal:lifetime.signal });
   // Attach before Phaser starts preload; its loader reports completed assets.
   const preload=scene.preload.bind(scene);
   scene.preload=()=>{
-    // Static same-origin textures can decode directly without an XHR blob copy.
-    scene.load.imageLoadType = 'HTMLImageElement';
     reportLoading('textures',0);
     scene.load.on('progress',(value:number)=>reportLoading('textures',value));
     preload();
   };
-  const frozenFrame = platform.frozenFrame;
-  if (frozenFrame) {
-    frameReuse = createBattleFrameReuse({
-      getRunId: () => currentRunId,
-      canFreeze: () => !lifetime.disposed && !document.hidden && !launch.active &&
-        (sim.phase === 'paused' || sim.phase === 'upgrade') && !graphics.blocked(),
-      capture: frozenFrame.capture,
-      updateOverlay(delta) {
-        scene.onFrame?.(delta);
-        frozenFrame.present();
-      },
-    });
-    document.addEventListener('visibilitychange',frameReuse.invalidate,{signal:lifetime.signal});
-  }
-  const game = makeGame(scene,platform.canvas,frameReuse?.install);
-  lifetime.add(() => {
-    scene.onFrame = undefined;
-    disposeNativeGame(game, () => scene.releaseBattleVisuals());
-  });
+  const game = makeGame(scene);
   // Phaser's create callback means textures exist, not that the configured
   // sortie has rendered. Acknowledge after drawing under the loading cover.
   game.events.on('postrender', (renderer: unknown) => {
-    if(!renderer || lifetime.disposed || document.hidden || graphics.blocked())return;
-    if(platform.presentFrame?.()!==false)frameReuse?.presented();
-    if(!firstFrame)return;
+    if(!firstFrame || !renderer || lifetime.disposed || document.hidden || graphics.blocked())return;
     const rendered=firstFrame;firstFrame=undefined;
     send('started',rendered);
   });
   battlePerformance.attach(game);
+  lifetime.add(() => { scene.onFrame = undefined; disposeNativeGame(game); });
 }
 
 window.addEventListener('message', event => {
   if (lifetime.disposed || event.origin !== location.origin || event.source !== parent) return;
   const message = event.data;
   if (message?.channel !== CHANNEL || message.session !== session) return;
-  if (message.type === 'initialize' && !started) { started = true; initialize(message.appearance, message.initialConfiguration).catch(fail); }
+  if (message.type === 'initialize' && !started) { started = true; initialize(message.appearance).catch(fail); }
   try {
     if (message.type === 'launch-visible' && message.runId === currentRunId) revealLaunch?.();
     if (message.type === 'settled' && message.runId === currentRunId) applySettlement?.(message);
@@ -440,7 +375,7 @@ window.addEventListener('message', event => {
     if (message.type === 'onboarding-saved') acknowledgeGuide?.(message);
     if (message.type === 'configure' && Number.isSafeInteger(message.requestId)) {
       if (!configureRun) throw new Error('战斗资源尚未准备完成');
-      void configureRun(message.requestId, message.configuration, message.configurationKey).catch(fail);
+      configureRun(message.requestId, message.configuration, message.configurationKey);
     }
     if (message.type === 'start' && typeof message.runId === 'string' && typeof message.configurationKey === 'string') {
       if (!startRun) throw new Error('战斗资源尚未准备完成');
@@ -457,5 +392,3 @@ window.addEventListener('error', event => fail(event.error || event.message), {s
 window.addEventListener('unhandledrejection', event => fail(event.reason), {signal:lifetime.signal});
 if (parent !== window && session) send('boot', {chapterId:requestedChapter?.id});
 else document.querySelector('#loading')!.textContent = '请从少女航线关卡入口出击';
-return { dispose: lifetime.dispose };
-}

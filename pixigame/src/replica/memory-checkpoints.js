@@ -1,5 +1,3 @@
-import { recordDiagnostic } from '../diagnostic-log.js';
-
 // Bounded diagnostic metadata only: no saves, identifiers or gameplay records.
 const key = 'shnh-memory-checkpoints-v1';
 export function memoryCheckpoint(stage) {
@@ -12,6 +10,5 @@ export function memoryCheckpoint(stage) {
     const previous=JSON.parse(localStorage.getItem(key)||'[]');
     localStorage.setItem(key,JSON.stringify([...(Array.isArray(previous)?previous:[]).slice(-15),record]));
   } catch { /* Storage may be unavailable. */ }
-  recordDiagnostic('加载阶段', `${stage}${record.heapMiB === null ? '' : ' · 堆内存 ' + record.heapMiB + ' MiB'}`);
   console.info('[memory-stage]', JSON.stringify(record));
 }

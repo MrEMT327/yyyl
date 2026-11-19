@@ -28,12 +28,6 @@ export class DeploymentController{
  }
  sample(time){
   if(!Number.isFinite(time))throw new Error('无效变形时间');
-  // Combat can sample the same authored safe path on its own presentation
-  // clock. Showcase deployment retains the original reversible timeline.
-  if(Number.isFinite(this.config.deploymentProgress)){
-   this.target=Boolean(this.config.deployed);this.lastTime=time;
-   return this.seekTimeline(clamp01(this.config.deploymentProgress)*this.duration);
-  }
   const wanted=Boolean(this.config.deployed),changed=wanted!==this.target;
   const dt=this.lastTime===null?0:Math.max(0,time-this.lastTime);
   if(changed){this.target=wanted;this.started=time;for(const p of this.parts)p.from=p.value;}

@@ -12,7 +12,7 @@ const hash=n=>{const f=Math.sin(n*127.13+31.74)*43758.5453;return f-Math.floor(f
 /** One runtime for every aircraft. There are intentionally no aircraft IDs,
  * airframe imports, silhouette points or per-variant material branches here. */
 export class ConfigFighter{
- constructor({scene,camera,config,globals,depthInfo,asset,deploymentOnly=false}){
+ constructor({scene,camera,config,globals,depthInfo,asset}){
   this.config=config;this.globals=globals;this.camera=camera;this.depthInfo=depthInfo;this.asset=asset;this.view=asset.view;
   this.flight=asset.effects.motion.flightDynamics?new FlightKinematics(config,asset.effects.motion.flightDynamics):null;
   this._bridgeA=new T.Vector3();this._bridgeB=new T.Vector3();
@@ -70,7 +70,7 @@ export class ConfigFighter{
   this._deck(asset.effects.deck);
   this.specialFx=buildSpecialFx(asset.effects.specialFx,config,this.ownedGeometries,this.ownedMaterials,this.variant);
   if(this.specialFx){this.ship.add(this.specialFx.root);if(this.specialFx.ribbonRoot)this.ship.add(this.specialFx.ribbonRoot);}
-  this.weapons=asset.effects.arsenal?new WeaponSystem(this,asset.effects.arsenal,{deploymentOnly}):null;
+  this.weapons=asset.effects.arsenal?new WeaponSystem(this,asset.effects.arsenal):null;
  }
  get duration(){return Infinity;}
  _batch(root,animated){

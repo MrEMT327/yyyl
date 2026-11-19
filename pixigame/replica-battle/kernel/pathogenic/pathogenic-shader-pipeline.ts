@@ -22,16 +22,12 @@ export interface CompiledCanvasShader {
   requiresScreen: boolean; unshaded: boolean; compatibilityZeroLights: boolean;
 }
 export interface ShaderTextureBinding {
-  texture: PathogenicSampleTexture;
+  texture: Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper;
   /** True for ordinary Phaser image uploads; false for straight/float data. */
   premultiplied: boolean;
   /** Runtime validation, e.g. a current-frame backbuffer copy with no feedback. */
   validate?: () => void;
 }
-type PathogenicSampleTexture=Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper & {
-  /** Float32 gradients without OES_texture_float_linear use shader bilinear. */
-  pathogenicManualLinear?: boolean;
-};
 export interface PathogenicShaderDraw {
   /** Simulation time in seconds. Caller handles Godot TIME rollover and pause. */
   time: number;
@@ -188,7 +184,6 @@ export function compilePathogenicCanvasShader(source: CanvasShaderSource, option
   const samplerHelpers = samplers.map(name => {
     const main = name === 'TEXTURE', sampler = main ? 'uMainSampler' : name;
     return `uniform float pgPremult_${name};
-uniform vec2 pgLinearPixelSize_${name};
 vec4 pgDecode_${name}(vec4 value) {
   if (pgPremult_${name} > 0.5 && value.a > 0.000001) value.rgb /= value.a;
   return value;
@@ -206,26 +201,11 @@ vec4 pgSample_${name}(vec2 uv) {
     vec4 c11 = pgDecode_TEXTURE(texture2D(uMainSampler, b));
     return mix(mix(c00, c10, weight.x), mix(c01, c11, weight.x), weight.y);
   }` : ''}
-  vec2 textureUv = ${main ? 'uPgUvRect.xy + uv * uPgUvRect.zw' : 'uv'};
-  if (pgLinearPixelSize_${name}.x > 0.0) {
-    // Texel-center coordinates reproduce LINEAR + CLAMP_TO_EDGE exactly.
-    // Interpolate the original HDR channels, without clipping them to RGBA8.
-    vec2 point = textureUv / pgLinearPixelSize_${name} - vec2(0.5);
-    vec2 a = (floor(point) + vec2(0.5)) * pgLinearPixelSize_${name};
-    vec2 b = a + pgLinearPixelSize_${name};
-    vec2 weight = fract(point);
-    vec4 c00 = texture2D(${sampler}, a);
-    vec4 c10 = texture2D(${sampler}, vec2(b.x, a.y));
-    vec4 c01 = texture2D(${sampler}, vec2(a.x, b.y));
-    vec4 c11 = texture2D(${sampler}, b);
-    return pgDecode_${name}(mix(mix(c00, c10, weight.x), mix(c01, c11, weight.x), weight.y));
-  }
-  vec4 value = texture2D(${sampler}, textureUv);
+  vec4 value = texture2D(${sampler}, ${main ? 'uPgUvRect.xy + uv * uPgUvRect.zw' : 'uv'});
   return pgDecode_${name}(value);
 }`;
   }).join('\n');
   const common = `precision highp float;
-precision highp sampler2D;
 uniform float uPgTime;
 uniform sampler2D uMainSampler;
 uniform vec4 uPgColor;
@@ -311,7 +291,7 @@ void main() {
 
 /** Matrices are mandatory to avoid accidentally using viewport pixels as source
  * local/world coordinates. Texture defaults are not silently invented. */
-type UniformUpload={uniform:CanvasUniform;matrix:boolean;size:number;method:string;premult:string;linearPixelSize:string};
+type UniformUpload={uniform:CanvasUniform;matrix:boolean;size:number;method:string;premult:string};
 const NON_FINITE=(value:number)=>!Number.isFinite(value);
 const ZERO_PALETTE:[number,number,number,number]=[0,0,0,0];
 const WHITE_MODULATE:[number,number,number,number]=[1,1,1,1];
@@ -329,14 +309,8 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
     this.uniformUploads=program.uniforms.map(uniform=>{
       const matrix=uniform.type.startsWith('mat'),dimension=matrix?Number(uniform.type.at(-1)):Number(/vec([234])$/.exec(uniform.type)?.[1]??1);
       return {uniform,matrix,size:matrix?dimension*dimension:dimension,
-        method:matrix?`setMatrix${dimension}fv`:`set${dimension}${/^(?:int|bool|ivec|bvec)/.test(uniform.type)?'i':'f'}`,premult:`pgPremult_${uniform.name}`,linearPixelSize:`pgLinearPixelSize_${uniform.name}`};
+        method:matrix?`setMatrix${dimension}fv`:`set${dimension}${/^(?:int|bool|ivec|bvec)/.test(uniform.type)?'i':'f'}`,premult:`pgPremult_${uniform.name}`};
     });
-  }
-  private setLinearSampling(name:string,texture?:PathogenicSampleTexture) {
-    if(texture?.pathogenicManualLinear){
-      if(!(texture.width>0&&texture.height>0))throw new PathogenicShaderCoverageError(this.program.source.path,'invalid manual-linear texture size');
-      this.set2f(name,1/texture.width,1/texture.height);
-    }else this.set2f(name,0,0);
   }
   onBind(object?: Phaser.GameObjects.GameObject) {
     // PipelineManager.set(pipeline) is also a legal lifecycle bind without a
@@ -364,9 +338,6 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
     this.setMatrix4fv('MODEL_MATRIX', false, this.modelMatrix);
     this.set1f('pgPremult_TEXTURE', data.mainPremultiplied === false ? 0 : 1);
     this.set1f('uPgMainRepeat',data.mainRepeat?1:0);
-    // Read the actual bound frame each draw, not a cached flag that can become
-    // stale after texture replacement or context restoration.
-    this.setLinearSampling('pgLinearPixelSize_TEXTURE',(object as Phaser.GameObjects.Mesh).frame?.glTexture);
     let unit = 1;
     for (const upload of this.uniformUploads) {
       const uniform=upload.uniform;
@@ -375,11 +346,9 @@ export class PathogenicShaderPipeline extends Phaser.Renderer.WebGL.Pipelines.Si
         if (!binding) throw new PathogenicShaderCoverageError(this.program.source.path, `missing texture ${uniform.name} (${uniform.hints || 'no default'})`);
         binding.validate?.();
         if (unit >= this.renderer.maxTextures) fail('texture unit capacity exceeded');
-        const texture=binding.texture;
-        this.bindTexture(texture, unit);
+        this.bindTexture(binding.texture, unit);
         this.set1i(uniform.name, unit++);
         this.set1f(upload.premult, binding.premultiplied ? 1 : 0);
-        this.setLinearSampling(upload.linearPixelSize,texture);
         continue;
       }
       const value = data.uniforms?.[uniform.name] ?? uniform.defaultValue;

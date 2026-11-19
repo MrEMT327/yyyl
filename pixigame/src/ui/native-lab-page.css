@@ -7,7 +7,7 @@
 #gui-casual-lobby[data-tab='research'] .research-banner.has-research-tabs .research-summary::before {content:none!important}
 #gui-casual-lobby .research-tab:focus-visible {outline:2px solid #b9f4ff;outline-offset:-3px}
 #gui-casual-lobby[data-tab='research'] .native-lab-card {aspect-ratio:216/296}
-#gui-casual-lobby .native-lab-face {position:absolute;top:5%;left:50%;width:auto;height:55%;aspect-ratio:1;transform:translateX(-50%);object-fit:contain;pointer-events:none}
+#gui-casual-lobby .native-lab-face {position:absolute;inset:5% 5% 35%;width:90%;height:60%;object-fit:contain;pointer-events:none}
 #gui-casual-lobby .native-lab-name {position:absolute;left:4%;right:4%;bottom:24%;display:block;color:#f0f7ff;font:600 clamp(9px,2.6cqw,12px)/1.3 "Microsoft YaHei",sans-serif;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #102030;pointer-events:none}
 #gui-casual-lobby .native-lab-card.is-locked .native-lab-face {filter:brightness(.5) saturate(.65)}
 #gui-casual-lobby .native-lab-card.is-chapter-locked .native-lab-face {filter:grayscale(1) brightness(.5)}
@@ -20,12 +20,7 @@
 #gui-casual-lobby .native-lab-locked-text {position:absolute;left:4%;right:4%;bottom:5%;text-align:center;color:#fff;text-shadow:0 1px 2px #17222b;font:700 clamp(9px,2.7cqw,14px)/1.2 sans-serif}
 #gui-casual-lobby .native-lab-page .research-footer {padding:2cqw;color:#e1ebf2;font-size:clamp(10px,2.8cqw,14px);line-height:1.5}
 
-#gui-casual-lobby .native-lab-card .pl-notice-dot {
-  top: 6%;
-  right: 6%;
-  z-index: 1;
-  pointer-events: none;
-}
+#gui-casual-lobby .native-lab-notice {position:absolute;top:6%;right:5%;z-index:1;padding:2px 4px;background:#a52d37;color:#fff;border:1px solid #ffd89c;border-radius:3px;font-size:clamp(9px,2.6cqw,13px);line-height:1.3}
 .native-lab-detail .native-lab-operation {padding:10px 0;border-block:1px solid #57717e;margin-block:10px}
 .native-lab-detail .native-lab-operation .wc-button,.native-lab-detail .native-lab-developer .wc-button {width:100%;--wc-button-height:48px;margin-block:8px}
 .native-lab-detail .wc-button:disabled {opacity:.5;cursor:default}

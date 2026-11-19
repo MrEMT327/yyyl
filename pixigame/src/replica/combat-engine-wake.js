@@ -3,21 +3,16 @@ import * as THREE from 'three';
 // Small, screen-readable exhaust behind the original hull. Read only the real
 // nozzle transforms; do not turn on the package's long showcase trails.
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
-export function sampleCombatEngineWake(fighter,camera,{clock,displaySize,textureSize=256,thrust=0,matricesReady=false}){
+export function sampleCombatEngineWake(fighter,camera,{clock,displaySize,textureSize=256,thrust=0}){
   if(!Number.isFinite(clock)||!Number.isFinite(displaySize)||displaySize<=0)return [];
-  if(!matricesReady){
-    fighter.object3D.updateWorldMatrix(true,true);camera.updateMatrixWorld(true);
-  }
+  fighter.object3D.updateWorldMatrix(true,true);camera.updateMatrixWorld(true);
   const pixels=textureSize/clamp(displaySize,36,240),rows=[];
   const color=new THREE.Color(fighter.runtime.config.engineColor||'#65cfff').getHexString();
-  const position=new THREE.Vector3(),direction=new THREE.Vector3(),start=new THREE.Vector3();
-  const jets=fighter.runtime.jets;
-  for(let i=0;i<Math.min(jets.length,6);i++){
-    const jet=jets[i];
+  for(const [i,jet]of fighter.runtime.jets.slice(0,6).entries()){
     const object=jet.object;if(!object.visible)continue;
-    position.setFromMatrixPosition(object.matrixWorld);
-    direction.set(...(jet.axis||[0,0,1])).transformDirection(object.matrixWorld);
-    const a=start.copy(position).project(camera),b=position.add(direction).project(camera);
+    const p=object.getWorldPosition(new THREE.Vector3());
+    const direction=new THREE.Vector3(...(jet.axis||[0,0,1])).transformDirection(object.matrixWorld);
+    const a=p.clone().project(camera),b=p.add(direction).project(camera);
     const x=(a.x*.5+.5)*textureSize,y=(.5-a.y*.5)*textureSize;
     let dx=b.x-a.x,dy=a.y-b.y;const norm=Math.hypot(dx,dy);
     if(![x,y,norm].every(Number.isFinite)||norm<1e-7||x<3||y<3||x>textureSize-3||y>textureSize-3)continue;
@@ -49,50 +44,4 @@ export function drawCombatEngineWake(ctx,rows){
     ctx.restore();
   }
   ctx.restore();
-}
-
-// Bound the rotated paths/ellipses, including antialiasing. The wake still uses
-// the authored additive blend, but only this patch needs to be composited.
-export function combatEngineWakeBounds(rows,size){
-  if(!rows.length)return null;
-  let left=size,top=size,right=0,bottom=0;
-  for(const {x,y,dx,dy,width,length,pixels} of rows){
-    const margin=Math.max(width,width*.62+pixels*.65)+2;
-    left=Math.min(left,x+Math.min(0,dx*length)-margin);
-    top=Math.min(top,y+Math.min(0,dy*length)-margin);
-    right=Math.max(right,x+Math.max(0,dx*length)+margin);
-    bottom=Math.max(bottom,y+Math.max(0,dy*length)+margin);
-  }
-  left=Math.max(0,Math.floor(left));top=Math.max(0,Math.floor(top));
-  return {x:left,y:top,width:Math.min(size,Math.ceil(right))-left,height:Math.min(size,Math.ceil(bottom))-top};
-}
-
-// Compose only the tail patch. The original alpha and drawing commands stay
-// the same as the CPU snapshot so the tail is always beneath the aircraft.
-export function createCombatWakeLayer(createCanvas) {
-  const canvas = createCanvas('2d');
-  canvas.width = canvas.height = 1;
-  const context = canvas.getContext('2d');
-  if (!context) throw new Error('无法创建飞机尾焰纹理');
-  return {
-    paint(target, rows, {x, y, width, height}) {
-      if (canvas.width < width) canvas.width = width;
-      if (canvas.height < height) canvas.height = height;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      context.save();
-      try {
-        context.beginPath();
-        context.rect(0, 0, width, height);
-        context.clip();
-        context.translate(-x, -y);
-        drawCombatEngineWake(context, rows);
-      } finally { context.restore(); }
-      target.save();
-      try {
-        target.globalCompositeOperation = 'destination-over';
-        target.drawImage(canvas, 0, 0, width, height, x, y, width, height);
-      } finally { target.restore(); }
-    },
-    dispose() { canvas.width = canvas.height = 0; },
-  };
 }

@@ -1,11 +1,11 @@
 import {markDamageText,recordEnemyHit,recordCombatResult} from './combat-hit-presentation.mjs';
 import {recordHealingReceipt,recordMedicalPickupReceipt} from './healing-receipt.mjs';
 import {markImpactDirection} from './impact-direction.mjs';
-import { projectileSound, enemyDeathSound } from './combat-audio';
+import { projectileSound } from './combat-audio';
 import {nativeProtectHpRateRaw} from '../../src/replica/native-failure-protection.js';
 import {firstGuideChoices} from '../battle-onboarding';
 import {recordTransportFeedback,recordInterceptionFeedback} from './special-weapon-feedback.mjs';
-import { clamp, lerp, sweep, newWeapon, type Collider, type WeaponState, type Choice, type Effect, type Enemy, type GameContent, type Phase, type Pickup, type Point, type Projectile, type RecordData, type Spawn } from './model';
+import { clamp, lerp, sweep, newWeapon, type WeaponState, type Choice, type Effect, type Enemy, type GameContent, type Phase, type Pickup, type Point, type Projectile, type RecordData, type Spawn } from './model';
 import { advancePickup, createPickup } from './drop-motion';
 import { markOrdinaryDeathVisual } from '../small-death-visual.js';
 import { markCoinPickupEffect, recordCoinPickupReceipt } from './coin-pickup-feedback.mjs';
@@ -131,9 +131,6 @@ export class Simulation {
   private readonly weaponStatuses: EnemyStatusEffects;
   private basePlayerAttributes: Record<string, number> = {};
   private effectivePlayerAttributes: Record<string, number> = {};
-  private buffAttributesDirty = true;
-  private playerAttributeRevision = -1;
-  private weaponAttributeRevision = -1;
   private specialAttributeSources = new Map<string, { familyId: number; attributes: Record<string, number> }>();
   private specialTargetAttributes = new Map<number, Map<string, Record<string, number>>>();
   private hpThresholds = new Map<string, NativeHpThresholdState>();
@@ -178,11 +175,6 @@ export class Simulation {
   time = 0;
   clock = 0;
   wave = 1;
-  private lastCompletedWave = 0;
-  get completedWave() {
-    const finishing = this.waveFlow.state === 8 ? this.waveFlow.currentWave : 0;
-    return Math.max(this.lastCompletedWave, finishing);
-  }
   /** Last RefreshMonsters attribute source, including NPC/empty missions. */
   currentMissionId = 0;
   runId = 0;
@@ -203,7 +195,6 @@ export class Simulation {
   bossKills = 0;
   gold = 0;
   private protectHpRate = 1;
-  private readonly chapter19ReducedBulletOwners = new Set<number>();
   damageDealt = 0;
   damageByWeapon = new Map<number, number>();
   bestCombo = 0;
@@ -218,8 +209,6 @@ export class Simulation {
   tutorialChoiceCompleted = false;
   choices: Choice[] = [];
   learned: Choice[] = [];
-  private equipmentVersion = 0;
-  get equipmentRevision() { return this.equipmentVersion; }
   treasures: { uid: number; modelId: number; x: number; z: number; scale: number; radius: number; progress: number; animation: 'Born' | 'Idle' | 'Enter' | 'Death'; animationAge: number }[] = [];
   private claimedTreasure?: number;
   treasureRewards: Choice[] = [];
@@ -409,7 +398,6 @@ export class Simulation {
     this.protectHpRate = 1;
     this.skillSlashAudioAt = -Infinity;
     this.phase = 'ready'; this.time = this.clock = this.exp = this.kills = this.bossKills = this.gold = this.damageDealt = 0;
-    this.lastCompletedWave = 0;
     this.wave = this.level = 1; this.serial = 1; this.shots = []; this.pendingLevels = 0; this.seed = 0x1badf00d;
     this.playerBulletHurtCount = 0;
     this.rerollsUsed = 0; this.skillChoiceCategory.index = 0; this.breakthroughChoice = false;
@@ -499,9 +487,7 @@ export class Simulation {
     this.thunders = new WeakMap(); this.killBullets = new WeakMap();
     this.playerMotion = { x: 0, z: 0, rawX: 0 };
     this.globalCrit = this.globalCritDamage = this.globalAttackBonus = 0; this.globalCooldown = 1;
-    this.chapter19ReducedBulletOwners.clear();
     this.enemies = []; this.projectiles = []; this.pickups = []; this.effects = []; this.choices = []; this.learned = []; this.secondary.clear();
-    this.equipmentVersion++;
     const p = this.content.chapter.player;
     this.player = { x: 0, z: -this.content.world.height * 0.3, oldX: 0, oldZ: -this.content.world.height * 0.3, hp: p.hp, maxHp: p.hp, attack: p.attack, invincible: 0, fireAt: 0, hitFlash: 0 };
     this.cannon = newWeapon(p.weaponSkillId, p.bulletId);
@@ -592,9 +578,6 @@ export class Simulation {
     if (this.phase !== 'revive' || this.revivePending) return;
     this.reviveCountdown = 0; this.phase = 'lost';
   }
-  /** Victory presentation is committed, even while loot drains or the page pauses. */
-  get victoryPresentationActive() { return this.resultDelay > 0; }
-  get victoryDeparturePresentation(): Readonly<{fromZ:number;targetZ:number;elapsed:number}> | undefined { return this.victoryDeparture; }
   pause() { if (this.phase === 'playing') this.phase = 'paused'; }
   resume() { if (this.phase === 'paused') this.phase = 'playing'; }
   announce(text: string, seconds = 2) { this.notice = text; this.noticeUntil = this.clock + seconds; }
@@ -665,16 +648,15 @@ export class Simulation {
     this.weaponStatuses.advance(dt, uid => Boolean(this.playerWeaponState(uid)), () => this.random());
     for (const command of this.playerSkillProgram.dispatch({ type: 2, passiveOwner: true, ownerPoint: { x: p.x, z: p.z } }, this.clock, () => this.random())) this.applyNativeWeaponAction(0, command);
     this.updateLoadoutHpThresholds();
-    this.refreshBuffAttributes(true);
+    this.refreshBuffAttributes();
     for (const request of this.statuses.drainWeaponFires()) {
       const enemy = this.enemies.find(e => e.uid === request.targetUid);
       if (enemy) this.emitPlayerWeapon(request.createdWeaponId, request.familyId, enemy, enemy.angle, enemy.uid, 0x88);
     }
     if (p.hp <= 0) { this.beginPlayerDeath(); return; }
     for (const familyId of this.weaponPrograms.keys()) this.dispatchWeaponEvent(2, familyId, { skipPlayer: true });
-    // Ordinary waves have no radius-trigger skills, so no actor snapshot is needed.
-    const actors = this.monsterSkills.hasAuras ? [{ uid: 0, x: p.x, z: p.z, attack: p.attack, dead: p.hp <= 0, side: 'player' as const },
-      ...this.enemies.map(e => ({ uid:e.uid, x:e.x, z:e.z, attack:e.attack, dead:e.dead, side:'enemy' as const }))] : [];
+    const actors = [{ uid: 0, x: p.x, z: p.z, attack: p.attack, dead: p.hp <= 0, side: 'player' as const },
+      ...this.enemies.map(e => ({ ...e, side: 'enemy' as const }))];
     for (const event of this.monsterSkills.advance(this.clock, actors)) {
       const statuses = event.targetUid === 0 ? this.playerStatuses : this.statuses;
       if (event.kind === 'exit') statuses.remove(event.targetUid, event.buffId);
@@ -842,7 +824,6 @@ export class Simulation {
       } else if (action.kind === 'cancel-wave-creators') {
         this.creators.cancelWave(action.wave.number);
       } else if (action.kind === 'wave-finish') {
-        this.lastCompletedWave = Math.max(this.lastCompletedWave, Number(action.wave.number));
         // MainDropManager.WaveGold -> IMainChapter.waveGold, followed by
         // WaterfallBattleManager.AddExpAndGold's FP multiply and CeilToInt.
         // All captured normal chapters have waveGold=0. Picked-up monster
@@ -1103,9 +1084,6 @@ export class Simulation {
     this.enemyBehaviors.set(enemy.uid, { attack: createAttackLoop(Number(d.ai.parameters?.fireDelay || 0)), entry, entryDuration, busyUntil: 0, weaponId: 0,
       path: path ? createNativeEnemyPath(path) : undefined, pathOrigin: { ...enemy.origin }, loopZ: s.loopZ, loopRestartZOffset: s.loopRestartZOffset });
     this.enemies.push(enemy);
-    if (this.content.chapter.chapter.id === 19 && s.wave >= 10 && s.wave <= 14) {
-      this.chapter19ReducedBulletOwners.add(enemy.uid);
-    }
     if ((d.raw.SpecialTrait || []).some((trait: unknown) => chapterEnemyOrbitTraitSupported(this.content, s.entityId, trait)))
       this.enemyOrbits.add(enemy);
     this.nativeEnemyCount++;
@@ -1714,7 +1692,6 @@ export class Simulation {
       this.hpThresholds.set(key, state);
       const change = advanceNativeHpThreshold(command.args, state, this.player.hp / this.player.maxHp, this.clock);
       this.specialAttributeSources.set(key, { familyId, attributes: change.attributes });
-      this.buffAttributesDirty = true;
       for (const buffId of change.buffIds) this.playerStatuses.hit(0, [{ buffId, probability: 1 }], { attack: this.player.attack, familyId, weaponId: 0, timeShieldExtraDuration: this.playerCombatAttributes().TimeShieldExtraDuration || 0 }, () => this.random());
       for (const buffId of change.removeBuffIds) this.playerStatuses.remove(0, buffId);
       if (change.recoverHpFraction > 0) this.healPlayer(this.player.maxHp * change.recoverHpFraction);
@@ -1789,41 +1766,19 @@ export class Simulation {
     this.releasedMissileAudio.add(b);this.sounds.push(-17);
   }
   activeEnemyCharges() {
-    if(this.phase!=='playing'||this.player.hp<=0||!this.enemies.length)return [];
-    // The effects array also holds hits, damage numbers and explosions.
-    // Index charge markers once, and only look at queued shots when one matters.
-    let alarms: Map<number,{uid:number;weaponId:number}[]> | undefined;
-    if(this.shots.length)for(const fx of this.effects){
-      if(fx.ownerUid===undefined||fx.age<0||fx.age>=fx.duration)continue;
-      const id=this.enemyChargeEffects.get(fx);
-      if(!id)continue;
-      alarms ??= new Map();
-      const row={uid:fx.uid,weaponId:id}, existing=alarms.get(fx.ownerUid);
-      if(existing)existing.push(row);else alarms.set(fx.ownerUid,[row]);
-    }
-    let pending: Map<number,Set<number>> | undefined;
+    if(this.phase!=='playing'||this.player.hp<=0)return [];
     const result: {key:string;token:string;volume:number}[]=[];
     for(const e of this.enemies){
       if(e.dead||e.hp<=0)continue;
       if(e.laserWarning&&e.age<e.laserWarning.until){
         result.push({key:'pathogenic:laserCharge',token:`warning:${e.uid}:${e.laserWarning.until}`,volume:.06});continue;
       }
-      const markers=alarms?.get(e.uid);
-      if(!markers)continue;
-      if(!pending){
-        pending=new Map();
-        for(const s of this.shots)if(s.owner==='enemy'&&alarms!.has(s.ownerUid)){
-          const weapons=pending.get(s.ownerUid);
-          if(weapons)weapons.add(s.weaponId);else pending.set(s.ownerUid,new Set([s.weaponId]));
-        }
-      }
-      const weapons=pending.get(e.uid);
-      if(!weapons)continue;
-      // Keep warning voice priority: enemies first, then markers by spawn order.
-      for(const {uid,weaponId} of markers){
-        if(!weapons.has(weaponId))continue;
-        const laser=originalIsLaserTrajectory(this.content.chapter.weapons[weaponId]?.trajectory||'');
-        result.push({key:laser?'pathogenic:laserCharge':'pathogenic:charge',token:`alarm:${uid}`,volume:.055});
+      for(const fx of this.effects){
+        const id=this.enemyChargeEffects.get(fx);
+        if(!id||fx.ownerUid!==e.uid||fx.age<0||fx.age>=fx.duration)continue;
+        if(!this.shots.some(s=>s.owner==='enemy'&&s.ownerUid===e.uid&&s.weaponId===id))continue;
+        const laser=originalIsLaserTrajectory(this.content.chapter.weapons[id]?.trajectory||'');
+        result.push({key:laser?'pathogenic:laserCharge':'pathogenic:charge',token:`alarm:${fx.uid}`,volume:.055});
       }
     }
     return result;
@@ -1915,15 +1870,7 @@ export class Simulation {
       { attack: this.player.attack, familyId: this.content.chapter.player.entityId, weaponId: 0 }, () => this.random());
     this.refreshBuffAttributes();
   }
-  private refreshBuffAttributes(skipUnchanged = false) {
-    const playerRevision = this.playerStatuses.attributeRevision, weaponRevision = this.weaponStatuses.attributeRevision;
-    // Explicit skill/loadout/special-action updates always rebuild. Only the
-    // regular step may reuse a result whose buff sources have not changed.
-    // Orbit speed actions retain their ordered per-step attribute observation.
-    if (skipUnchanged && !this.buffAttributesDirty && !this.secondary.has(200141)
-      && this.playerAttributeRevision === playerRevision && this.weaponAttributeRevision === weaponRevision) return;
-    this.buffAttributesDirty = false;
-    this.playerAttributeRevision = playerRevision; this.weaponAttributeRevision = weaponRevision;
+  private refreshBuffAttributes() {
     const defs = this.content.combat.attributeDefinitions;
     const playerAttributes = { ...this.basePlayerAttributes };
     const merge = (attrs: Record<string, number>, entry: { name: string; value: number }) => {
@@ -3668,7 +3615,7 @@ export class Simulation {
       if ((b.dead && !deathExplosion) || b.collisionDisabled || this.arcChains.get(b)?.waiting || this.ejections.get(b)?.waiting || b.age < b.warmup) continue;
       this.erasePlayerBulletsWithEnemyOrbit(b);
       const dx = Math.sin(b.angle), dz = Math.cos(b.angle);
-      const offsetX = (b.offsetX || 0) * dz, offsetZ = -(b.offsetX || 0) * dx;
+      const offsetX = (b.offsetX || 0) * Math.cos(b.angle), offsetZ = -(b.offsetX || 0) * Math.sin(b.angle);
       const orbitFixed = b.owner === 'enemy' && b.weaponId === 70053;
       const a = { x: (orbitFixed ? b.x : b.oldX) + dx * b.offsetZ + offsetX, z: (orbitFixed ? b.z : b.oldZ) + dz * b.offsetZ + offsetZ };
       const end = b.beam ? { x: b.x + dx * b.beamLength, z: b.z + dz * b.beamLength } : { x: b.x + dx * b.offsetZ + offsetX, z: b.z + dz * b.offsetZ + offsetZ };
@@ -3681,38 +3628,25 @@ export class Simulation {
       if (b.owner === 'player') {
         if (!deathExplosion) this.killEnemyBullets(b);
         if (b.dead && !deathExplosion) continue;
-        const colliders: Collider[] = [];
-        if (!directTarget && this.enemies.length && segments.length) {
-          const { angle, radiusX, radiusZ } = b;
-          if (deathExplosion) {
-            const { x, z } = b, radius = deathExplosion.radius;
-            colliders.push({ x, z, oldX: x, oldZ: z, box: false, angle, radiusX: radius, radiusZ: radius });
-          } else {
-            const chain = this.arcLinks.has(b);
-            // Reflection rays use each selected target segment, even for a Type 8 record.
-            const stationary = !(b.beam && b.ray) && (this.content.chapter.bullets[b.bulletId].parameters.Type === 8 ||
-              ['FixedPos', 'SemiCircleMov2Mod', 'MoveAndReturnStay', 'OverLapShapeAndStay', 'FollowOwner'].includes(b.trajectory || ''));
-            for (const { from, to } of segments) {
-              if (chain) {
-                const x = (from.x + to.x) / 2, z = (from.z + to.z) / 2;
-                colliders.push({ x, z, oldX: x, oldZ: z, box: true, angle, radiusX, radiusZ: Math.hypot(to.x - from.x, to.z - from.z) / 2 });
-              } else if (stationary) {
-                colliders.push({ x: end.x, z: end.z, oldX: end.x, oldZ: end.z, box: b.box, angle, radiusX, radiusZ });
-              } else {
-                colliders.push({ x: to.x, z: to.z, oldX: from.x, oldZ: from.z, box: !(b.beam || b.fixedSegments) && b.box, angle, radiusX, radiusZ });
-              }
-            }
-          }
-        }
         const hits: { enemy: Enemy; at: number }[] = [];
-        const forcedTarget = this.forcedProjectileTargets.get(b.uid), lastArcTarget = this.arcChains.get(b)?.lastTarget;
         for (const e of this.enemies) {
-          if (forcedTarget !== undefined && forcedTarget !== e.uid) continue;
+          if (this.forcedProjectileTargets.has(b.uid) && this.forcedProjectileTargets.get(b.uid) !== e.uid) continue;
           if (e.dead || (!deathExplosion && !b.repeatHits && !b.beam && b.hit.has(e.uid))) continue;
-          if (lastArcTarget === e.uid) continue;
+          if (this.arcChains.get(b)?.lastTarget === e.uid) continue;
           let first: number | null = directTarget ? 0 : null;
-          for (let index = 0; index < colliders.length; index++) {
-            const at = sweep(colliders[index], e);
+          for (const [index, segment] of segments.entries()) {
+            if (directTarget) break;
+            const type8 = this.content.chapter.bullets[b.bulletId].parameters.Type === 8;
+            const chain = this.arcLinks.has(b);
+            const mid = { x: (segment.from.x + segment.to.x) / 2, z: (segment.from.z + segment.to.z) / 2 };
+            const collider = chain ? { ...b, ...mid, oldX: mid.x, oldZ: mid.z, box: true, radiusX: b.radiusX,
+              radiusZ: Math.hypot(segment.to.x - segment.from.x, segment.to.z - segment.from.z) / 2 }
+              // Reflection rays collide along each selected target segment. Their
+              // Type 8 record is not a stationary shape at the maximum range.
+              : b.beam && b.ray ? { ...b, ...segment.to, oldX: segment.from.x, oldZ: segment.from.z, box: false }
+              : type8 || ['FixedPos', 'SemiCircleMov2Mod', 'MoveAndReturnStay', 'OverLapShapeAndStay', 'FollowOwner'].includes(b.trajectory || '') ? { ...b, x: end.x, z: end.z, oldX: end.x, oldZ: end.z }
+              : { ...b, ...segment.to, oldX: segment.from.x, oldZ: segment.from.z, box: b.beam || b.fixedSegments ? false : b.box };
+            const at = sweep(deathExplosion ? { ...b, oldX: b.x, oldZ: b.z, box: false, radiusX: deathExplosion.radius, radiusZ: deathExplosion.radius, offsetX: 0, offsetZ: 0 } : collider, e);
             if (at !== null && (first === null || index + at < first)) first = index + at;
           }
           if (first !== null) hits.push({ enemy: e, at: first });
@@ -3831,9 +3765,7 @@ export class Simulation {
         }
       } else if (!b.hitTimes.has(0) || b.age - b.hitTimes.get(0)! >= b.hitInterval) {
         const radius = this.content.chapter.entities[this.content.chapter.player.entityId].stats.shape[0] * this.playerScale;
-        const playerCollider: Collider = { x: p.x, z: p.z, oldX: p.oldX, oldZ: p.oldZ, radiusX: radius, radiusZ: radius, box: false, angle: 0 };
-        const { angle, radiusX, radiusZ } = b, box = !b.beam && b.box;
-        if (segments.some(({ from, to }) => sweep({ x: to.x, z: to.z, oldX: from.x, oldZ: from.z, radiusX, radiusZ, box, angle }, playerCollider) !== null)) {
+        if (segments.some(segment => sweep({ ...b, ...segment.to, oldX: segment.from.x, oldZ: segment.from.z, box: b.beam ? false : b.box }, { ...p, radiusX: radius, radiusZ: radius, box: false, angle: 0 }) !== null)) {
           // IsEntityCanHit records the contact before CharacterComponentOnHit.
           // Hero invincibility/shield may reject HP damage but do not reject
           // HurtTarget's successful-contact result or its through lifecycle.
@@ -3978,7 +3910,7 @@ export class Simulation {
       e.deathRemaining = 4 * nativeLogicDelta;
       this.playEnemyDeathEffect(e, effectId).age = -3 * nativeLogicDelta;
     }
-    e.deathSound = enemyDeathSound(e, raw.Tag || []);
+    e.deathSound = e.boss ? -26 : e.elite ? -11 : -12; // Boss and elite retain separate presentation cues.
   }
   private playEnemyDeathEffect(enemy: Enemy, effectId: number) {
     const effect = this.effect('explosion', enemy.x, enemy.z, enemy.boss ? 1.2 : 0.55,
@@ -4083,9 +4015,6 @@ export class Simulation {
       const modifiers = nativeInstalledAttributeContributions(installed.filter(c => c.action === 254), { weaponId: 0, attackerIsRayTarget: matched });
       if (modifiers['HurtDecrease%']) reduction = mergeNativeAttribute(reduction, modifiers['HurtDecrease%'], 2);
     }
-    if (projectile?.owner === 'enemy' && this.chapter19ReducedBulletOwners.has(projectile.ownerUid)) {
-      damage *= 0.85;
-    }
     damage = damage * reduction - incoming.flatReduction;
     damage = nativeDamageResult(damage);
     const p = this.player;
@@ -4181,7 +4110,6 @@ export class Simulation {
     if (!study) throw new Error('战斗配置尚未就绪');
     study.battleSkillIds = [...new Set<number>([...study.battleSkillIds.filter((value: number) => !plan.removed.includes(value)), ...plan.external])];
     this.learned = this.learned.filter(card => !plan.removed.includes(card.id));
-    this.equipmentVersion++;
     this.pendingLevels = 0; this.tutorialFirstChoiceActive = false;
     // Apply through the same weapon/state/trigger path as normal level-up cards.
     for (const choice of plan.choices) {
@@ -4330,7 +4258,6 @@ export class Simulation {
     }
     if (card.advance && state) state.stageId = card.advance;
     this.learned.push(card);
-    this.equipmentVersion++;
     // HPMax is recomputed with the shared attribute stack in refreshBuffAttributes.
     this.refreshNativeWeaponSkills();
     this.dispatchNativeSkillLearned(card.id);

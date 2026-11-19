@@ -9,11 +9,7 @@ export function installBattleCheckpoint(read, host = window) {
   return { freeze() { if (read) { last = read(); read = null; } } };
 }
 export function captureBattleCheckpoint(host) {
-  if (!host) return null;
-  try {
-    const EventType = host.CustomEvent ?? CustomEvent;
-    const event = new EventType(CAPTURE, {detail: {result: null}});
-    host.dispatchEvent(event);
-    return event.detail.result;
-  } catch { return null; }
+  const event = new CustomEvent(CAPTURE, {detail: {result: null}});
+  try { host?.dispatchEvent(event); } catch { return null; }
+  return event.detail.result;
 }

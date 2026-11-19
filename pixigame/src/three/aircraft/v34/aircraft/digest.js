@@ -4,20 +4,15 @@ const K=new Uint32Array([0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,
 const rotr=(n,b)=>(n>>>b)|(n<<(32-b));
 export function sha256Fallback(bytes){
  const input=bytes instanceof Uint8Array?bytes:new Uint8Array(bytes),n=input.length;
- // Hash complete blocks in place. iOS needs the JS fallback; padding must
- // not allocate and copy the entire geometry or texture buffer.
- const remainder=n%64,complete=n-remainder,tail=new Uint8Array(remainder<56?64:128);
- tail.set(input.subarray(complete));tail[remainder]=0x80;
- const source=new DataView(input.buffer,input.byteOffset,input.byteLength),end=new DataView(tail.buffer);
- end.setUint32(tail.length-8,Math.floor(n/0x20000000));end.setUint32(tail.length-4,(n*8)>>>0);
+ const length=Math.ceil((n+9)/64)*64,data=new Uint8Array(length);data.set(input);data[n]=0x80;
+ const dv=new DataView(data.buffer);dv.setUint32(length-8,Math.floor(n/0x20000000));dv.setUint32(length-4,(n*8)>>>0);
  const h=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]),w=new Uint32Array(64);
- for(let off=0;off<complete+tail.length;off+=64){
-  const block=off<complete?source:end,base=off<complete?off:off-complete;
-  for(let i=0;i<16;i++)w[i]=block.getUint32(base+i*4);
+ for(let off=0;off<length;off+=64){
+  for(let i=0;i<16;i++)w[i]=dv.getUint32(off+i*4);
   for(let i=16;i<64;i++){const x=w[i-15],y=w[i-2],s0=rotr(x,7)^rotr(x,18)^(x>>>3),s1=rotr(y,17)^rotr(y,19)^(y>>>10);w[i]=(w[i-16]+s0+w[i-7]+s1)>>>0;}
-  let a=h[0],b=h[1],c=h[2],d=h[3],e=h[4],f=h[5],g=h[6],j=h[7];
+  let [a,b,c,d,e,f,g,j]=h;
   for(let i=0;i<64;i++){const t1=(j+(rotr(e,6)^rotr(e,11)^rotr(e,25))+((e&f)^(~e&g))+K[i]+w[i])>>>0,t2=((rotr(a,2)^rotr(a,13)^rotr(a,22))+((a&b)^(a&c)^(b&c)))>>>0;j=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}
-  h[0]+=a;h[1]+=b;h[2]+=c;h[3]+=d;h[4]+=e;h[5]+=f;h[6]+=g;h[7]+=j;
+  const vals=[a,b,c,d,e,f,g,j];for(let i=0;i<8;i++)h[i]=(h[i]+vals[i])>>>0;
  }
  return Array.from(h,n=>n.toString(16).padStart(8,'0')).join('');
 }

@@ -10,7 +10,7 @@ import { replicaInventoryAfterSettlement, validateReplicaInventory } from './nat
 // Result gold is the durable total prepared from pickups and any approved
 // local progress curve. FirstReward remains once-only; FinishReward is not
 // treated as a server grant table for unverified repeat materials.
-export function planNativeSettlement(rawInventory, rawGear, rawClaims, result, rawMaterials, { firstMainlineClear = false } = {}) {
+export function planNativeSettlement(rawInventory, rawGear, rawClaims, result, rawMaterials) {
   const inventory=replicaInventoryAfterSettlement(rawInventory,result);
   const claims=structuredClone(rawClaims ?? {});
   if(!claims || Array.isArray(claims) || typeof claims!=='object'
@@ -22,13 +22,9 @@ export function planNativeSettlement(rawInventory, rawGear, rawClaims, result, r
   if(result.trial || result.abandoned)return {inventory,gear,claims,rewards,materials};
   const gold=Math.floor(result.gold);
   if(gold>0)rewards.push({type:'coins',id:1,name:'金币',amount:gold});
-  const unclaimedWin = result.won && !claims[result.chapterId];
-  const originalFirst = unclaimedWin ? source.firstRewards[result.chapterId] : null;
-  const first = [...(originalFirst ?? [])];
-  if (unclaimedWin && firstMainlineClear && globalThis.__THUNDER_RUNTIME_GLOBALS__?.platformKind === 'wechat') {
-    first.push([2, 300]);
-  }
-  if(first.length){
+  // Exact captured FirstReward; preserve once-only claim records.
+  const first=result.won && !claims[result.chapterId]?source.firstRewards[result.chapterId]:null;
+  if(first?.length){
     if(typeof result.runId!=='string'||!result.runId)throw new Error('首通结算缺少战斗记录');
     for(const [id,amount] of first){
       if(!Number.isSafeInteger(amount)||amount<=0)throw new Error('原版首通奖励数量无效');
@@ -58,9 +54,9 @@ export function planNativeSettlement(rawInventory, rawGear, rawClaims, result, r
         rewards.push({type:'native-item',id,name:nativeCollectionDisplayName(id)||catalog.itemNames[id]||item.note||('物品 '+id),amount,firstClear:true});
       }
     }
-    // The mainline clear ledger tracks the diamond bonus, including chapters
-    // that have no claim entry in the original FirstReward table.
-    if (originalFirst?.length) claims[result.chapterId] = result.runId;
+    // Independent of the bounded battle history. Persist together with inventory
+    // and gear; never mark claimed before the reward save succeeds.
+    claims[result.chapterId]=result.runId;
   }
   return {inventory:validateReplicaInventory(inventory),gear,claims,rewards,materials};
 }

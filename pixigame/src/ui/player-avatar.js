@@ -1,7 +1,6 @@
 import './player-avatar.css';
 import {pilotAvatarIcon,compactPilotAvatar} from '../pilot-avatar-icons.js';
 import {PLAYER_FRAMES} from '../player-appearance.js';
-import {resolveUiAssetUrl} from './ui-image-source.js';
 const base=import.meta.env?.BASE_URL??'/';
 const frameIds=new Set(PLAYER_FRAMES.map(row=>row.id));
 
@@ -12,6 +11,5 @@ export function playerAvatar(snapshot,h,{avatar,frame,className=''}={}){
   const pilot=snapshot.pilots?.find(row=>row.id===id);
   const source=compactPilotAvatar(pilotAvatarIcon(id)||pilot?.avatar||pilot?.image||'');
   const frameId=frameIds.has(frame)?frame:frameIds.has(appearance.frame)?appearance.frame:'blue';
-  const frameArt = resolveUiAssetUrl(`${base}art/player-avatar-frames-v1/${frameId}.png`);
-  return `<span class="player-avatar ${className}" data-player-avatar="${h.escape(id||'')}" data-player-frame="${frameId}" style="--player-frame-art:url(&quot;${h.escape(frameArt)}&quot;)"><img src="${h.escape(source.src)}" ${source.srcset?`srcset="${h.escape(source.srcset)}" sizes="120px"`:''} alt="${h.escape(pilot?.name||'玩家头像')}" draggable="false"><span class="player-avatar-frame" aria-hidden="true"></span></span>`;
+  return `<span class="player-avatar ${className}" data-player-avatar="${h.escape(id||'')}" data-player-frame="${frameId}" style="--player-frame-art:url('${base}art/player-avatar-frames-v1/${frameId}.png')"><img src="${h.escape(source.src)}" ${source.srcset?`srcset="${h.escape(source.srcset)}" sizes="120px"`:''} alt="${h.escape(pilot?.name||'玩家头像')}" draggable="false"><span class="player-avatar-frame" aria-hidden="true"></span></span>`;
 }

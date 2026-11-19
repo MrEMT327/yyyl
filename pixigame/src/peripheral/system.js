@@ -1,4 +1,3 @@
-import { recordDiagnostic } from '../diagnostic-log.js';
 import {playerAppearanceSnapshot,planPlayerAppearance} from '../player-appearance.js';
 import { createPeripheralSaveGuard } from './save-guard.js';
 import {localFailureCount,recordLocalFailureProtection,LOCAL_FAILURE_PROTECTION_VERSION} from '../replica/local-failure-protection.js';
@@ -13,11 +12,10 @@ import { nativeAchievementSnapshot } from '../replica/native-achievements.js';
 import {captureNativeAchievementEvidence,planNativeAchievementProgress} from '../replica/native-achievement-progress.js';
 import { BATTLE_MATERIAL_POLICY, battleMaterialSnapshot, prepareBattleMaterialRewards } from '../replica/battle-material-rewards.js';
 import { planNativeSettlement } from '../replica/native-settlement.js';
-import { PILOT_AFFECTION_MAX, pilotAffectionPoints, planPilotAffection } from './pilot-affection.js';
 import {prepareBattleGoldSettlement} from '../replica/battle-gold-rewards.js';
 import {createAccountExperience,accountExperienceSnapshot,planAccountBattleExperience,planAccountExperienceRepair} from '../replica/account-experience.js';
 import { assessReplicaBattle, countStars as countReplicaStars } from '../replica/native-battle-rating.js';
-import { nativeEconomyView, isNativeEconomyActionPending, NATIVE_PENDING_ECONOMY_MESSAGE } from '../replica/native-economy-availability.js';
+import { nativeEconomyView, NATIVE_PENDING_ECONOMY_ACTIONS, NATIVE_PENDING_ECONOMY_MESSAGE } from '../replica/native-economy-availability.js';
 import { flightDay, flightLedger, flightRewardsSnapshot, planFlightReward, flightRewardView } from '../replica/flight-rewards.js';
 import { REPLICA_WALLET_SOURCE, REPLICA_RESOURCE_IDS, replicaResourceWallet, applyReplicaResourceReceipt } from '../replica/native-resource-wallet.js';
 import { nativeCollectionIdentity } from '../replica/native-collection-access.js';
@@ -36,24 +34,24 @@ import { planDeveloperCurrency } from '../developer-tools.js';
 import { prepareDevelopmentInventory } from '../replica/development-inventory.js';
 import { prepareDevelopmentUnlocks } from '../replica/development-unlocks.js';
 import { pilotSupplySnapshot, planPilotSupply, recordPilotSupplyBattle, recordPilotSupplyUpgrade, recordPilotSupplyWeeklyEvent, recordPilotSupplyEvent, addPilotSupplyCredits } from '../replica/pilot-supply.js';
-import { initializeSamplePatrol, samplePatrolClock, samplePatrolSnapshot, planSamplePatrol } from '../replica/sample-patrol.js';
+import { initializeSamplePatrol, samplePatrolSnapshot, planSamplePatrol } from '../replica/sample-patrol.js';
 import { COMMON_WEAPONS, commonWeaponStats } from '../fixed-parts/common-weapons.js';
 import { weaponLevelCap, weaponLevelLimitMessage } from '../fixed-parts/weapon-progression-config.js';
 import { getGachaState, transactPeripheralInventory } from '../gacha.js';
-import { grantItemToInventory } from '../gacha-engine.js';
-import { GACHA_POOLS } from '../gacha-config.js';
+import { drawFromPool, grantItemToInventory } from '../gacha-engine.js';
+import { GACHA_POOLS, GACHA_ITEM_MAP } from '../gacha-config.js';
 // Legacy login state is read only for migration and durable-receipt recovery.
 import { loadDailyLoginState, saveDailyLoginState } from '../daily-login.js';
-import { createWorkshopSnapshot } from './workshop.js';
+import { createWorkshopSnapshot, synthesizeWorkshopWeapon, synthesizeWorkshopBatch } from './workshop.js';
 import { nativeResearchSnapshot, planNativeResearch } from '../replica/native-research.js';
 import { sanitizeResearch, researchModifiers } from './research.js';
 import { createShopService } from './shop.js';
 import { createStarRewardService, campaignStarTotals } from './star-rewards.js';
 import { TASK_ACTIVITY, TASK_DESTINATIONS, activitySnapshot, achievementMetrics, achievementSnapshot } from './daily-progress.js';
-import { sanitizeRecruitHistory } from './recruit-history.js';
+import { sanitizeRecruitHistory, appendRecruitHistory } from './recruit-history.js';
 import { fleetSkillSnapshot, mergePilotSkillModifiers, fleetCriticalModifiers } from './fleet-skills.js';
-import { sanitizeFleetProgress } from './fleet-progression.js';
-import { pilotPassive, sanitizePilotStars, sanitizePilotRecruit, PILOT_PITY, PILOT_DRAW_CHANCE, PILOT_SHARDS } from './pilot-growth.js';
+import { sanitizeFleetProgress, collectFleetRecruit, planFleetAction } from './fleet-progression.js';
+import { pilotPassive, sanitizePilotStars, sanitizePilotRecruit, planPilotRecruit, PILOT_PITY, PILOT_DRAW_CHANCE, PILOT_SHARDS } from './pilot-growth.js';
 import { RECRUIT_SINGLE_COST, RECRUIT_TEN_COST, WEAPON_NEW_PITY, trailingRecruitMisses } from './recruit-tuning.js';
 import { FIRST_CLEAR_WEAPON_PRIORITY, sortieMaterialReward } from './balance-tuning.js';
 import { rateLoadoutPower } from './power-rating.js';
@@ -146,9 +144,8 @@ export function createPeripheralSystem({
 } = {}) {
   if (!profile || typeof profile !== 'object') throw new Error('外围系统需要现有 profile 钱包');
   if(!canWrite())throw new Error('当前页面已停止运行，请重新进入游戏');
-  let activeSortie = null, sortieSerial = 0, storageWarning = '';
+  let activeSortie = null, sortieSerial = 0, storageWarning = '', patrolAdBusy = false, patrolAdError = '', unsavedPatrolReward = null;
   let nativeDetails = null;
-  let lobbyProjection;
   let flightAdBusy = false, pendingFlightAd = null;
   const saveGuard = createPeripheralSaveGuard(storage, PERIPHERAL_STORAGE_KEY);
   let state;
@@ -166,7 +163,7 @@ export function createPeripheralSystem({
   const existingOnboardingSave = state?.version === 1;
   const currentTime = () => Number(now());
   const pilots = () => pilotApi.get();
-  const temporaryPilots = (roster = pilots()) => roster.temporaryUnlocked || [];
+  const temporaryPilots = () => pilots().temporaryUnlocked || [];
   let persistentPilotId = state?.pilotId || pilots().persistentSelected || pilots().selected;
   const serializeState = value => {
     const roster = pilots();
@@ -175,10 +172,7 @@ export function createPeripheralSystem({
   };
   const inventory = () => collectionApi.get();
   function writePeripheralState(next) {
-    if (!storageCurrent()) {
-      recordDiagnostic('存档写入失败', storageWarning);
-      return false;
-    }
+    if (!storageCurrent()) return false;
     try {
       // Lifetime achievement counters and the actual wallet/box/sortie
       // change share one durable write. Failed saves never advance evidence.
@@ -191,14 +185,13 @@ export function createPeripheralSystem({
       }
       storageWarning = saveGuard.conflicted ? staleSaveMessage : '设备暂不可保存，请恢复存储后重试';
     } catch { storageWarning = '设备暂不可保存，当前改动仅保留在本次会话'; }
-    recordDiagnostic('存档写入失败', storageWarning);
     return false;
   }
   function persist() { return writePeripheralState(state); }
   function commit() { if(!persist())return false; saveProfile(); onChange(); return true; }
   function syncDay() {
     if (!storageCurrent()) return;
-    if (state.dailyRewardReceipt) return; // Settle the old period before resetting its claim records.
+    if (state.dailyRewardReceipt || unsavedPatrolReward) return; // Settle the old period before resetting its claim records.
     const today = dayKey(currentTime());
     if (!state.daily || today > state.daily.date) {
       state.daily = { date: today, counters: { login: 1 }, claimed: [] };
@@ -329,7 +322,7 @@ export function createPeripheralSystem({
   function syncRetiredChipInventory(){
     if (!storageCurrent()) return;
     // Existing reward receipts must settle before changing the inventory revision.
-    if(activeSortie||state.dailyRewardReceipt||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    if(activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
     try{
       const next=planRetiredChipCleanup(state.replicaInventory);if(!next)return;
       const previous=state.replicaInventory;state.replicaInventory=next;
@@ -338,7 +331,7 @@ export function createPeripheralSystem({
   }
   syncRetiredChipInventory();
   function syncRetiredPilotFragments(){
-    if(!storageCurrent()||activeSortie||state.dailyRewardReceipt||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    if(!storageCurrent()||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
     try{
       const plan=planRetiredPilotFragments(state.replicaInventory,state.replicaLoadout);if(!plan)return;
       const previous=state,next=copy(state);
@@ -354,7 +347,7 @@ export function createPeripheralSystem({
   let starterGrantsAttempted=false;
   function syncStarterGrants(){
     if (!storageCurrent()) return;
-    if(starterGrantsAttempted||(state.nativeStarterCore&&state.nativeStarterItems)||activeSortie||state.dailyRewardReceipt||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    if(starterGrantsAttempted||(state.nativeStarterCore&&state.nativeStarterItems)||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
     starterGrantsAttempted=true;
     try{
       let next=planNativeStarterCore(state,currentTime())||state;
@@ -366,7 +359,7 @@ export function createPeripheralSystem({
   syncStarterGrants();
   let starterAircraftAttempted=false;
   function syncStarterAircraft(){
-    if(!storageCurrent()||starterAircraftAttempted||state.nativeStarterAircraft||activeSortie||state.dailyRewardReceipt||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+    if(!storageCurrent()||starterAircraftAttempted||state.nativeStarterAircraft||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
     starterAircraftAttempted=true;
     try{
       const next=planNativeStarterAircraft(state,currentTime());if(!next)return;
@@ -381,7 +374,7 @@ export function createPeripheralSystem({
   }
   function syncAccountExperience(){
     if(!storageCurrent()||(state.replicaAccountExperience?.defeatExperienceRestored===true&&state.replicaAccountExperience?.quitExperienceRestored===true)
-      ||activeSortie||state.dailyRewardReceipt||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
+      ||activeSortie||state.dailyRewardReceipt||unsavedPatrolReward||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
     try{
       const plan=planAccountExperienceRepair(state.replicaLoadout,state.replicaInventory,state.equipment,state.replicaAccountExperience,state.replicaCampaign,state.replicaResults);
       const previous=state,next=copy(state);
@@ -486,7 +479,7 @@ export function createPeripheralSystem({
     }catch{return false;}
   }
   const shop = createShopService({getState:()=>state.shop, getWallet:shopWallet, now:currentTime, playAd:playShopAd,rng,
-    canUse:()=>storageCurrent() && !activeSortie && !state.dailyRewardReceipt, onChange,
+    canUse:()=>storageCurrent() && !activeSortie && !patrolAdBusy && !unsavedPatrolReward && !state.dailyRewardReceipt, onChange,
     saveState:nextShop=>{
       const marked=nextShop.pending&&!state.shop?.pending
         ? {...nextShop,pending:{...nextShop.pending,walletSource:REPLICA_WALLET_SOURCE}} : nextShop;
@@ -522,7 +515,7 @@ export function createPeripheralSystem({
   const starRewards = createStarRewardService({
     getState:()=>state.starRewards, getWallet:()=>({...shopWallet(),cores:state.research.cores}),
     getTotals:()=>campaignStarTotals(getCampaign(),stages), maxStars:stages.length*3,
-    canUse:()=>storageCurrent() && !activeSortie && !state.shop?.pending && !state.researchDebit && !state.dailyRewardReceipt, onChange,
+    canUse:()=>storageCurrent() && !activeSortie && !patrolAdBusy && !unsavedPatrolReward && !state.shop?.pending && !state.researchDebit && !state.dailyRewardReceipt, onChange,
     saveState:nextRewards=>{
       const marked=nextRewards.pending&&!state.starRewards?.pending
         ? {...nextRewards,pending:{...nextRewards.pending,walletSource:REPLICA_WALLET_SOURCE}} : nextRewards;
@@ -635,24 +628,20 @@ export function createPeripheralSystem({
   if(state.replicaAchievementProgress===undefined&&!state.dailyRewardReceipt&&!state.replicaPendingSettlement
     &&!state.shop?.pending&&!state.starRewards?.pending)persist();
 
-  function ownPilot(id, roster = pilots()) {
-    return temporaryPilots(roster).includes(id)||persistentPilot(id,roster);
+  function ownPilot(id) {
+    return temporaryPilots().includes(id)||(!state.fleet.pending.pilot.includes(id)&&(state.fleet.ownedPilots.includes(id)||pilots().owned.includes(id)));
   }
-  function persistentPilot(id, roster) {return !state.fleet.pending.pilot.includes(id)&&(state.fleet.ownedPilots.includes(id)||(roster??pilots()).owned.includes(id));}
-  function ownAircraft(id, collection) { return !state.fleet?.pending?.aircraft?.includes(id)&&(state.ownedAircraft.includes(id)||integer((collection??inventory()).inventory[`aircraft:${id}`]?.count)>0); }
-  function currentFleetBanks(roster = pilots(), collection = inventory()) {
+  function persistentPilot(id) {return !state.fleet.pending.pilot.includes(id)&&(state.fleet.ownedPilots.includes(id)||pilots().owned.includes(id));}
+  function ownAircraft(id) { return !state.fleet?.pending?.aircraft?.includes(id)&&(state.ownedAircraft.includes(id)||integer(inventory().inventory[`aircraft:${id}`]?.count)>0); }
+  function currentFleetBanks() {
     return {
-      pilot:fleetSkillSnapshot('pilot',AIRCRAFTS.map(p=>{
-        const activated=persistentPilot(p.id,roster), temporary=temporaryPilots(roster).includes(p.id);
-        return {...p,stars:state.pilotStars[p.id],owned:activated||temporary,temporaryUnlocked:!activated&&temporary};
-      }),state.fleet.skills.pilot),
-      aircraft:fleetSkillSnapshot('aircraft',PERIPHERAL_AIRCRAFT.map(a=>({...a,aircraftName:a.name,stars:state.fleet.aircraftStars[a.id],owned:ownAircraft(a.id,collection)})),state.fleet.skills.aircraft),
+      pilot:fleetSkillSnapshot('pilot',AIRCRAFTS.map(p=>({...p,stars:state.pilotStars[p.id],owned:ownPilot(p.id),temporaryUnlocked:!persistentPilot(p.id)&&temporaryPilots().includes(p.id)})),state.fleet.skills.pilot),
+      aircraft:fleetSkillSnapshot('aircraft',PERIPHERAL_AIRCRAFT.map(a=>({...a,aircraftName:a.name,stars:state.fleet.aircraftStars[a.id],owned:ownAircraft(a.id)})),state.fleet.skills.aircraft),
     };
   }
   function syncPilotUnlocks() {
     if (!storageCurrent()) return;
-    const highest = getCampaign().highestCleared;
-    const cleared = Number.isFinite(Number(highest)) ? integer(highest, -1) : -1;
+    const cleared = Number.isFinite(Number(getCampaign().highestCleared)) ? integer(getCampaign().highestCleared, -1) : -1;
     for (let index = 1; index < AIRCRAFTS.length; index++) {
       const id=AIRCRAFTS[index].id;
       if(cleared>=index-1&&!temporaryPilots().includes(id)&&!persistentPilot(id)&&!state.fleet.pending.pilot.includes(id)) {
@@ -673,10 +662,10 @@ export function createPeripheralSystem({
     });
   }
   // Historical task/shop projections still read legacy chapter records. No payout.
-  function highestLegacyClearedStage(results = Object.entries(getCampaign().results || {})) {
+  function highestLegacyClearedStage() {
+    const results = getCampaign().results || {};
     for (let index = stages.length - 1; index >= 0; index--) {
-      const prefix=`${stages[index].id}:`;
-      if (results.some(([key, value]) => key.startsWith(prefix) && (value.cleared || value.stars > 0))) return index;
+      if (Object.entries(results).some(([key, value]) => key.startsWith(`${stages[index].id}:`) && (value.cleared || value.stars > 0))) return index;
     }
     return -1;
   }
@@ -692,6 +681,71 @@ export function createPeripheralSystem({
   }
   const fail = message => ({ ok: false, message });
   const pass = (message, extra = {}) => ({ ok: true, message, ...extra });
+  function recruit(poolId, requestedCount) {
+    // Legacy pool names remain valid; pilot supply owns its new character pity.
+    const key = ['pilot', 'pilot_permanent', 'aircraft', 'aircraft_permanent'].includes(poolId) ? 'aircraft_permanent'
+      : poolId === 'weapon' || poolId === 'weapon_permanent' ? 'weapon_permanent' : null;
+    if (!key) return fail('请选择战姬池或武器池');
+    const amount = Number(requestedCount) === 10 ? 10 : 1, cost = amount === 10 ? RECRUIT_TEN_COST : RECRUIT_SINGLE_COST;
+    if (profile.diamonds < cost) return fail('钻石不足');
+    if (key === 'aircraft_permanent') {
+      const manual=state.fleet.mode==='manual';
+      const collected=[...new Set([...pilots().owned,...state.fleet.ownedPilots,...state.fleet.pending.pilot])];
+      const progress=manual?Object.fromEntries(AIRCRAFTS.map(p=>[p.id,Math.min(5,state.pilotStars[p.id]+state.fleet.copies.pilot[p.id])])):state.pilotStars;
+      const plan = planPilotRecruit({ stars: progress, owned: collected, firstStar:manual?1:0,
+        ownedAircraft: state.ownedAircraft, pity: state.pilotRecruit.pity,
+        ssrPity: state.pilotRecruit.ssrPity, urPity: state.pilotRecruit.urPity, count: amount, rng });
+      if(manual) {
+        const grant=collectFleetRecruit(state.fleet,plan.rewards,{pilotStars:state.pilotStars,ownedPilots:collected,ownedAircraft:state.ownedAircraft});
+        const next=copy(state);next.fleet=grant.fleet;next.ownedAircraft=plan.ownedAircraft;
+        const recruitToken=`fleet-${currentTime()}-${next.fleet.revision}-${state.pilotRecruit.totalPulls+amount}`;
+        next.fleet.recruitPresentation={token:recruitToken,pool:'pilot',rewards:grant.rewards};
+        next.pilotRecruit={...next.pilotRecruit,pity:plan.pity,ssrPity:plan.ssrPity,urPity:plan.urPity,totalPulls:next.pilotRecruit.totalPulls+amount};
+        next.recruitHistory=appendRecruitHistory(next.recruitHistory,{at:currentTime(),pool:'pilot',cost,rewards:grant.rewards});
+        next.daily.counters.recruits=integer(next.daily.counters.recruits)+amount;
+        next.weekly.counters.recruits=integer(next.weekly.counters.recruits)+amount;
+        const result=deliverDaily(next,{diamonds:-cost,aircraftShards:plan.shards},{source:{type:'fleetRecruit',pool:'pilot',rewards:grant.rewards},rewards:grant.rewards,message:'招募完成'});
+        return {...result,recruitPool:'pilot',recruitToken};
+      }
+      let pilotStorageFailed = false;
+      for (const id of plan.recruitedPilots) {
+        if (pilotApi.grant(id, 1)?.some(r => r.storagePersisted === false)) pilotStorageFailed = true;
+      }
+      profile.diamonds -= cost;
+      state.pilotStars = plan.stars;
+      state.pilotRecruit.pity = plan.pity;
+      state.pilotRecruit.ssrPity = plan.ssrPity;
+      state.pilotRecruit.urPity = plan.urPity;
+      state.pilotRecruit.totalPulls += amount;
+      state.aircraftShards += plan.shards;
+      state.ownedAircraft = plan.ownedAircraft;
+      state.recruitHistory = appendRecruitHistory(state.recruitHistory, { at: currentTime(), pool: 'pilot', cost, rewards: plan.rewards });
+      if (pilotStorageFailed) storageWarning = '角色存档暂不可保存，当前改动仅保留在本次会话';
+      count('recruits', amount); commit();
+      return pass('招募完成', { rewards: plan.rewards, storageWarning });
+    }
+    const result = collectionApi.transact(next => {
+      const drawn = drawFromPool(next, key, amount, rng);
+      const rewards = [];
+      for (const receipt of drawn.results) {
+        const item = receipt.item;
+        if (!item) continue;
+        const parts = integer(receipt.fragmentsAdded);
+        drawn.state.weaponProgress.weapons[item.refId].fragments -= parts;
+        drawn.state.weaponProgress.universalFragments += parts;
+        rewards.push({ id: item.refId, drawQuality: receipt.quality, name: receipt.isFirst ? item.name : `${item.name} · 通用零件 ×${parts}`, isNew: receipt.isFirst, type: receipt.isFirst ? 'weapon' : 'weaponParts', amount: receipt.isFirst ? 1 : parts });
+      }
+      Object.assign(next, drawn.state);
+      return pass('招募完成', { rewards });
+    });
+    if (!result.ok) return result;
+    profile.diamonds -= cost;
+    state.recruitHistory = appendRecruitHistory(state.recruitHistory, {
+      at:currentTime(),pool:key==='aircraft_permanent'?'pilot':'weapon',cost,rewards:result.rewards,
+    });
+    count('recruits', amount); commit();
+    return pass('招募完成', { rewards: result.rewards, storageWarning });
+  }
   function flightInput(time=currentTime()) {
     return {ledger:state.flightRewards,inventory:state.replicaInventory,progression:state.replicaLoadout,campaign:state.replicaCampaign,time};
   }
@@ -805,8 +859,8 @@ export function createPeripheralSystem({
   function developerToolsAccess({ reset = false } = {}) {
     if (!storageCurrent()) return fail(storageWarning);
     if (activeSortie) return fail('请先结束当前战斗');
-    if (flightAdBusy || shop.busy) return fail('操作正在进行，请完成后再使用开发工具');
-    if (!reset && (pendingFlightAd || state.replicaPendingSettlement || state.dailyRewardReceipt || state.shop?.pending || state.starRewards?.pending)) return fail('奖励待保存，请先恢复存档再领取开发资源');
+    if (flightAdBusy || patrolAdBusy || shop.busy) return fail('操作正在进行，请完成后再使用开发工具');
+    if (!reset && (pendingFlightAd || unsavedPatrolReward || state.replicaPendingSettlement || state.dailyRewardReceipt || state.shop?.pending || state.starRewards?.pending)) return fail('奖励待保存，请先恢复存档再领取开发资源');
     return { ok: true };
   }
   function action(type, payload = {}) {
@@ -857,17 +911,6 @@ export function createPeripheralSystem({
         return pass('科研界面已解锁');
       } catch (error) { return fail(error.message); }
     }
-    if (type === 'developerAffectionMax') {
-      const access = developerToolsAccess();
-      if (!access.ok) return access;
-      const pilot = AIRCRAFTS.find(row => row.id === state.pilotId);
-      if (!pilot || payload.pilotId !== pilot.id) return fail('出战驾驶员已切换，请重新点击');
-      if (pilotAffectionPoints(state.pilotAffection?.[pilot.id]) === PILOT_AFFECTION_MAX) return pass('好感度已满');
-      const pilotAffection = { ...state.pilotAffection, [pilot.id]: PILOT_AFFECTION_MAX };
-      if (!saveDailyState({ ...state, pilotAffection })) return fail('好感度未保存，请重试');
-      onChange();
-      return pass('好感度已满');
-    }
     if (type === 'developerCurrency') {
       const access = developerToolsAccess();
       if (!access.ok) return access;
@@ -904,6 +947,7 @@ export function createPeripheralSystem({
     }
     if (type === 'renamePlayer') {
       if(activeSortie)return fail('请先结束当前战斗');
+      if(patrolAdBusy||unsavedPatrolReward)return fail('请先完成当前巡逻奖励的领取');
       try {
         const plan=planNativePlayerRename(state.replicaPlayerIdentity,state.replicaInventory,profile.playerName,payload);
         const beforeIdentity=state.replicaPlayerIdentity,beforeInventory=state.replicaInventory;
@@ -921,6 +965,7 @@ export function createPeripheralSystem({
     }
     if(['claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample'].includes(type)){
       if(activeSortie)return fail('请先结束当前战斗');
+      if(patrolAdBusy||unsavedPatrolReward)return fail('其他广告奖励正在处理，请先完成领取');
       syncDay();
       if(!syncSamplePatrol())return fail(storageWarning||'巡逻存档未能保存');
       if(type==='quickPatrolAd')return samplePatrolAd(payload.expectedRevision);
@@ -930,6 +975,7 @@ export function createPeripheralSystem({
     }
     if(type==='backpackUse') {
       if(activeSortie)return fail('请先结束当前战斗');
+      if(patrolAdBusy||unsavedPatrolReward)return fail('请先完成当前奖励保存');
       if(payload.expectedRevision!==state.replicaInventory.revision)return fail('道具数量已变化，请重新确认');
       const rule=backpackUseRule(payload.id);
       if(!rule)return fail('该道具没有可用的背包操作');
@@ -948,6 +994,7 @@ export function createPeripheralSystem({
     }
     if(type==='pilotSupply'){
       if(activeSortie)return fail('请先结束当前战斗');
+      if(patrolAdBusy||unsavedPatrolReward)return fail('其他广告奖励正在处理，请先完成领取');
       if(payload.action==='ad')return pilotSupplyAd(payload.expectedRevision);
       const time=currentTime();
       try{return savePilotSupplyPlan(planPilotSupply(...supplyInput(),payload,time,{campaign:state.replicaCampaign,taskCounters:taskCounters(time)}));}
@@ -1012,6 +1059,14 @@ export function createPeripheralSystem({
         onChange(); return pass('出战配置已保存', { replicaLoadout: copy(next) });
       } catch (error) { return fail(error.message); }
     }
+    if (patrolAdBusy) return fail('广告正在播放，请稍候');
+    if (unsavedPatrolReward) {
+      if (type !== 'recoverDailyRewards') return fail('广告奖励待保存，请重试保存');
+      const {next,resources,options} = unsavedPatrolReward;
+      const result = deliverDaily(next,resources,options);
+      if (result.ok || state.dailyRewardReceipt) unsavedPatrolReward = null;
+      return result;
+    }
     const recoveredRecruit=state.dailyRewardReceipt?.source?.type==='fleetRecruit';
     if (!recoverDailyReward()) return fail('奖励存档待恢复，请重试');
     const presentation=state.fleet.recruitPresentation;
@@ -1027,10 +1082,11 @@ export function createPeripheralSystem({
     if (!shop.recover()) return fail('商城存档待恢复，请重新进入游戏');
     if (!settleResearchDebit()) return fail(storageWarning);
     if(type==='recoverDailyRewards')return pass('奖励存档已恢复');
-    if(isNativeEconomyActionPending(type))return fail(NATIVE_PENDING_ECONOMY_MESSAGE);
+    if(NATIVE_PENDING_ECONOMY_ACTIONS.has(type))return fail(NATIVE_PENDING_ECONOMY_MESSAGE);
     if (type === 'claimStarReward') {
       if(!state.replicaLoadout)return starRewards.claim(payload);
       if(activeSortie)return fail('请先结束当前战斗');
+      if(patrolAdBusy||unsavedPatrolReward)return fail('请先完成当前奖励保存');
       try {
         const plan=planNativeStarClaim(state.starRewards,state.replicaInventory,state.replicaCampaign,payload,stages.length*3,rng);
         const next=copy(state);next.starRewards=plan.state;next.replicaInventory=plan.inventory;
@@ -1080,6 +1136,19 @@ export function createPeripheralSystem({
       onChange();
       return pass(plan.message,{gearResult:{operation,pool:plan.pool,uid:payload.uid||id,fromLevel:plan.fromLevel,toLevel:plan.toLevel,fromQuality:plan.fromQuality,toQuality:plan.toQuality,steps:plan.steps,drawn:plan.drawn||[],pilotRewards:plan.pilotRewards||[],weaponRewards:plan.weaponRewards||[],aircraftRewards:plan.aircraftRewards||[],keyReward:plan.keyReward,receipt:plan.receipt?copy(plan.receipt):null}});
     }
+    if(['fleetActivate','fleetStarUp','fleetSkillEquip','fleetSkillRemove'].includes(type)) {
+      if(activeSortie)return fail('请先完成当前出击');
+      const kind=payload.kind,owned=kind==='pilot'?ownPilot(id):ownAircraft(id);
+      const plan=planFleetAction(state.fleet,state.pilotStars,{kind,id,slot:payload.slot,revision:payload.expectedRevision,
+        operation:{fleetActivate:'activate',fleetStarUp:'starUp',fleetSkillEquip:'equip',fleetSkillRemove:'unequip'}[type],
+        owned,temporary:kind==='pilot'&&!persistentPilot(id)&&temporaryPilots().includes(id)});
+      if(!plan.ok)return plan;
+      const next=copy(state);next.fleet=plan.fleet;next.pilotStars=plan.pilotStars;
+      if(type==='fleetActivate'&&kind==='aircraft'&&!next.ownedAircraft.includes(id))next.ownedAircraft.push(id);
+      if(!saveDailyState(next))return fail(type==='fleetSkillEquip'||type==='fleetSkillRemove'?'无法保存技能配置':'无法保存本次操作，卡片未消耗');
+      if(type==='fleetActivate'&&kind==='pilot'&&!pilots().owned.includes(id))pilotApi.grant(id,1);
+      onChange();return pass(plan.message,{kind,id,previousStars:plan.previousStars,stars:plan.stars});
+    }
     if (type === 'selectPilot') {
       if(!ownPilot(id))return fail('请先激活该驾驶员');
       const previousPersistentPilotId=persistentPilotId;
@@ -1109,8 +1178,68 @@ export function createPeripheralSystem({
       if(!saveDailyState(next))return fail('无法保存装配，本次未更换武器');
       onChange();return pass(weaponId ? '武器已装配' : '武器已卸下');
     }
+    if (type === 'upgradeAircraft' || type === 'upgradeWeapon') return fail('请在原版战机或武器目录中进行养成');
+    if (type === 'upgradeAircraft') {
+      const aircraftId = id || state.aircraftId;
+      if (!PERIPHERAL_AIRCRAFT_MAP.has(aircraftId) || !ownAircraft(aircraftId)) return fail('请先获得该飞机');
+      const record = state.aircraft[aircraftId], cost = aircraftUpgradeCost(record.level);
+      if (!cost) return fail('已达基础强化上限');
+      if (profile.coins < cost.coins || state.aircraftShards < cost.aircraftShards) return fail('金币或通用飞机碎片不足');
+      profile.coins -= cost.coins; state.aircraftShards -= cost.aircraftShards; record.level++;
+      count('upgrades'); commit(); return pass(record.level % 10 === 0 ? '战机阶段强化完成 · 攻击与耐久额外增强' : '飞机基础攻击与耐久已强化');
+    }
+    if (type === 'upgradeWeapon') {
+      const result = collectionApi.transact(next => {
+        const weapon = next.weaponProgress.weapons[id];
+        if (!weapon?.unlocked) return fail('请先获得该武器');
+        const cost = peripheralWeaponUpgradeCost(weapon.level, weapon.qualityRank);
+        if (!cost) return fail(weaponLevelLimitMessage(weapon.qualityRank));
+        if (profile.coins < cost.coins || next.weaponProgress.universalFragments < cost.weaponParts) return fail('金币或通用武器零件不足');
+        weapon.level++; next.weaponProgress.universalFragments -= cost.weaponParts;
+        return pass(weapon.level % 10 === 0 ? '武器阶段强化完成 · 伤害额外增强' : '武器基础伤害已强化', { cost });
+      });
+      if (result.ok) { profile.coins -= result.cost.coins; count('upgrades'); commit(); }
+      return result;
+    }
+    if (type === 'synthesizeWeapon' || type === 'synthesizeAll') {
+      const result = collectionApi.transact(next => {
+        const synthesis = type === 'synthesizeWeapon'
+          ? synthesizeWorkshopWeapon(next.weaponProgress, id, payload.expectedQualityRank)
+          : synthesizeWorkshopBatch(next.weaponProgress, payload.token);
+        if (!synthesis.ok) return synthesis;
+        // Only progress changes. Inventory identities, aircraft fits and the
+        // already-frozen combat loadout keep their existing instances.
+        next.weaponProgress = synthesis.state;
+        const { state: _progress, ...receipt } = synthesis;
+        return receipt;
+      });
+      if (result.ok) { count('upgrades', result.steps?.length || 1); commit(); }
+      return result;
+    }
     if (type === 'recruit') return action('pilotSupply',{...payload,action:'draw'});
+    if (type === 'claimTask') {
+      const task = [...DAILY_TASKS, ...WEEKLY_TASKS].find(t => t.id === (payload.taskId || id));
+      const period = task?.id.startsWith('weekly-') ? state.weekly : state.daily;
+      if (!task || period.claimed.includes(task.id)) return fail('奖励已领取');
+      if (integer(period.counters[task.counter]) < task.target) return fail('任务尚未完成');
+      const reward = taskRewardForStage(task, highestLegacyClearedStage());
+      const next=copy(state),record=task.id.startsWith('weekly-')?next.weekly:next.daily;
+      (record.rewardReceipts ||= {})[task.id]=copy(reward);
+      record.claimed.push(task.id);
+      return deliverDaily(next,reward,{source:{type:'task',id:task.id},message:'任务奖励已领取'});
+    }
+    if(type==='claimActivity') {
+      if(!['daily','weekly'].includes(payload.period))return fail('任务分类不存在');
+      const activity=snapshot().activity[payload.period];
+      const item=activity.items.find(row=>row.id===String(id));
+      if(!item)return fail('奖励档位不存在');
+      if(item.claimed)return fail('此档奖励已领取');
+      if(!item.claimable)return fail('活跃度不足');
+      const next=copy(state);(next[payload.period].activityClaimed ||= []).push(item.id);
+      return deliverDaily(next,item.reward,{source:{type:'activity',period:payload.period,id:item.id},message:'活跃奖励已领取'});
+    }
     if(type==='claimAchievement') {
+      if(patrolAdBusy||unsavedPatrolReward)return fail('请先完成当前巡逻奖励的领取');
       const item=currentAchievements().items.find(row=>row.id===id);
       if(!item)return fail('成就不存在');
       if(item.claimed)return fail('成就奖励已领取');
@@ -1126,11 +1255,12 @@ export function createPeripheralSystem({
     if (type === 'sweep') return fail('扫荡已改为巡逻，请在出击页领取巡逻奖励');
     return fail('未知操作');
   }
-  function currentLoadout(banks = currentFleetBanks(), collection = inventory()) {
+  function currentLoadout() {
+    const banks=currentFleetBanks();
     return compilePeripheralLoadout({ aircraftId: state.aircraftId, pilotId: state.pilotId,
       pilotStars: state.pilotStars[state.pilotId],
       slots: state.aircraft[state.aircraftId].slots, aircraftLevel: state.aircraft[state.aircraftId].level,
-      weaponProgress: collection.weaponProgress, research: state.research,
+      weaponProgress: inventory().weaponProgress, research: state.research,
       aircraftStars:state.fleet.aircraftStars[state.aircraftId],
       pilotSkills:banks.pilot.skills.filter(s=>s.slot>=0),aircraftSkills:banks.aircraft.skills.filter(s=>s.slot>=0),equipment:state.equipment });
   }
@@ -1187,7 +1317,11 @@ export function createPeripheralSystem({
   function prepareSortie({ trial = false, engine = 'legacy', chapterId, replicaConfiguration: requestedConfiguration } = {}) {
     if (!storageCurrent()) return fail(storageWarning);
     if(flightAdBusy||pendingFlightAd)return fail('请先完成当前奖励领取');
+    if (flightAdBusy) return fail('广告正在播放，请稍候');
+    if (pendingFlightAd) return fail('广告奖励待保存，请到每日特惠重试领取');
     if (!recoverReplicaSettlement() || !recoverInterruptedSortie()) return fail(storageWarning || '上一局奖励待恢复，请先重试保存');
+    if (patrolAdBusy) return fail('广告正在播放，请稍候');
+    if (unsavedPatrolReward) return fail('广告奖励待保存，请重试保存');
     if (!recoverDailyReward()) return fail('奖励存档待恢复，请重试');
     if (!starRewards.recover()) return fail('星级奖励存档待恢复，请重新进入');
     if (shop.busy || !shop.recover()) return fail('请先完成商城操作或恢复存档');
@@ -1256,12 +1390,7 @@ export function createPeripheralSystem({
     }
     let settlement, protection, accountExperience;
     try { if (!state.processedRuns.includes(pending.result.runId)) {
-      const { chapterId, won } = pending.result;
-      const firstMainlineClear = Boolean(won && replicaChapter(chapterId) && !state.replicaCampaign.clearedChapterIds.includes(chapterId));
-      settlement = planNativeSettlement(
-        state.replicaInventory, state.equipment, state.replicaFirstClearClaims, pending.result, state.replicaBattleMaterials,
-        { firstMainlineClear }
-      );
+      settlement = planNativeSettlement(state.replicaInventory, state.equipment, state.replicaFirstClearClaims, pending.result, state.replicaBattleMaterials);
       const repair=planAccountExperienceRepair(state.replicaLoadout,settlement.inventory,settlement.gear,state.replicaAccountExperience,state.replicaCampaign,state.replicaResults);
       accountExperience=planAccountBattleExperience(repair?.progression??state.replicaLoadout,repair?.inventory??settlement.inventory,
         repair?.gear??settlement.gear,repair?.account??state.replicaAccountExperience,pending.result);
@@ -1287,14 +1416,6 @@ export function createPeripheralSystem({
       state.replicaBattleMaterials = settlement.materials;
       if(protection)state.localFailureProtection=protection;
       state.replicaAccountExperience??=createAccountExperience(state.replicaLoadout);
-      const pilotId = pending.result.pilotId;
-      if (AIRCRAFTS.some(pilot => pilot.id === pilotId)) {
-        const affection = planPilotAffection(state.pilotAffection?.[pilotId], pending.result);
-        if (affection) {
-          state.pilotAffection = {...state.pilotAffection, [pilotId]: affection.points};
-          pending.result.pilotAffection = affection;
-        }
-      }
       pending.result.settlementRewards = [...settlement.rewards,...(accountExperience?.rewards||[])];
       state.processedRuns.push(pending.result.runId); state.processedRuns = state.processedRuns.slice(-50);
       state.replicaResults ||= []; state.replicaResults.push(pending.result); state.replicaResults = state.replicaResults.slice(-50);
@@ -1329,11 +1450,9 @@ export function createPeripheralSystem({
       failureProtectionPolicyVersion:LOCAL_FAILURE_PROTECTION_VERSION, nativeDefeatCount:activeSortie.snapshot.nativeDefeatCount,
       materialPolicyVersion:BATTLE_MATERIAL_POLICY.version,
       chapterId: chapter.id, stageIndex: chapter.stageIndex, replicaConfiguration: copy(activeSortie.snapshot.replicaConfiguration) };
-    record.pilotId = activeSortie.snapshot.pilotId;
-    delete record.pilotAffection;
     try{record.localMaterialRewards=prepareBattleMaterialRewards(record);}
     catch(error){return fail(error.message);}
-    // Battle input is pickup gold. Freeze the chapter progress
+    // Battle input is pickup gold. Freeze the approved chapter-7 progress
     // reward into this pending receipt; recovery must never recalculate it.
     let battleGold;
     try{battleGold=prepareBattleGoldSettlement({...record,gold});}
@@ -1444,37 +1563,18 @@ export function createPeripheralSystem({
     syncPilotUnlocks(); syncSamplePatrol(); if(!commit())return fail(storageWarning); return pass('出击记录已更新', { rewards: [...rewardItems(materialReward),
       ...rewardItems(firstMaterials).map(reward => ({ ...reward, source: 'first-clear' })), ...gearRewards, ...(firstClear?.rewards || [])] });
   }
-  function lobbyClock() {
-    const time = currentTime();
-    const ledger = state.samplePatrol;
-    if (!lobbyProjection || !Number.isSafeInteger(time) || !ledger?.policyVersion ||
-        time < lobbyProjection.time || time - lobbyProjection.time >= 30_000 || time >= lobbyProjection.nextShopChange ||
-        dayKey(time) !== lobbyProjection.localDay || flightDay(time) !== lobbyProjection.economyDay ||
-        ledger !== lobbyProjection.ledger || activeSortie || state.dailyRewardReceipt || state.replicaPendingSettlement ||
-        pendingFlightAd || flightAdBusy || state.shop?.pending || state.starRewards?.pending ||
-        (state.stamina < MAX_STAMINA && time - state.staminaUpdatedAt >= STAMINA_INTERVAL_MS) ||
-        !storageCurrent() || storageWarning !== lobbyProjection.storageWarning) return null;
-    const {seconds, clockRollback} = samplePatrolClock(ledger, time);
-    if (clockRollback !== lobbyProjection.clockRollback ||
-        Math.floor(seconds / lobbyProjection.interval) !== lobbyProjection.patrolBucket) return null;
-    return { time, storedMinutes: seconds / 60, clockRollback };
-  }
   function snapshot() {
     if (storageCurrent()) {
-      syncDay(); if(!state.dailyRewardReceipt)syncPilotUnlocks(); syncSamplePatrol();
+      syncDay(); if(!state.dailyRewardReceipt && !unsavedPatrolReward)syncPilotUnlocks(); syncSamplePatrol();
       if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();syncStarterAircraft();syncAccountExperience();
-      if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !state.firstClearWeaponClaimed) claimStageOneWeapon();
+      if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !unsavedPatrolReward && !state.firstClearWeaponClaimed) claimStageOneWeapon();
     }
-    const time=currentTime(), flightLedgerState=state.flightRewards ?? flightLedger(null,loadDailyLoginState(storage));
-    const flightRewards=flightRewardsSnapshot(flightLedgerState,state.replicaInventory,state.replicaCampaign,time);
+    const flightRewards = state.flightRewards ?? flightLedger(null,loadDailyLoginState(storage));
     // A stale page may be rendered before its first period sync; display only.
     const periods = {daily:state.daily || {counters:{},claimed:[]},weekly:state.weekly || {counters:{},claimed:[]}};
-    // Read after recovery and migration. Every part of this projection sees
-    // the same inventory and roster, and the next snapshot reads them afresh.
-    const collection = inventory(), roster = pilots(), selected = state.aircraft[state.aircraftId];
-    const banks=currentFleetBanks(roster,collection), loadout=currentLoadout(banks,collection);
-    const legacyResults=Object.entries(getCampaign().results || {});
-    const incomeStage = highestLegacyClearedStage(legacyResults);
+    const collection = inventory(), ownedPilots = pilots().owned, selected = state.aircraft[state.aircraftId];
+    const loadout = currentLoadout();
+    const incomeStage = highestLegacyClearedStage();
     const entryDetails=currentNativeDetails();
     const powerRating=entryDetails?{version:'native-v1',total:entryDetails.power,attack:entryDetails.attack,maxHp:entryDetails.hp}:null;
     const tasks = [...DAILY_TASKS, ...WEEKLY_TASKS].map(t => {
@@ -1499,6 +1599,7 @@ export function createPeripheralSystem({
         nextDamage: commonWeaponStats({ itemId: w.id, ...progress, level: cost ? progress.level + 1 : progress.level }).damage,
         interval: w.interval, mechanism: w.mechanic, qualityRules: w.qualityRules };
     });
+    const campaign = getCampaign();
     const markPending=(rows,type,period)=>rows.map(row=>({...row,
       pending:state.dailyRewardReceipt?.source?.type===type && state.dailyRewardReceipt.source.id===row.id
         && (!period || state.dailyRewardReceipt.source.period===period),
@@ -1507,55 +1608,49 @@ export function createPeripheralSystem({
     const achievements=currentAchievements();
     const nativeCollection = replicaCollectionSnapshot(state.replicaLoadout, state.replicaInventory, state.replicaCampaign);
     const identity = nativeCollectionIdentity(nativeCollection,state);
-    const view = nativeEconomyView({
+    return nativeEconomyView({
       version: 1, playerName:nativePlayerIdentity(state.replicaPlayerIdentity,profile.playerName).name,
       accountExperience:accountExperienceSnapshot(state.replicaLoadout,state.replicaAccountExperience),
       playerRename:nativePlayerRenameQuote(state.replicaPlayerIdentity,state.replicaInventory,profile.playerName), ...identity,
-      playerAppearance:playerAppearanceSnapshot(state.playerAppearance,{roster:AIRCRAFTS,...identity,nativeCollection,ownedPilots:roster.owned}),
-      fleet:{revision:state.fleet.revision,mode:state.fleet.mode,...banks,recruitPresentation:copy(state.fleet.recruitPresentation||null)},
+      playerAppearance:playerAppearanceSnapshot(state.playerAppearance,{roster:AIRCRAFTS,...identity,nativeCollection,ownedPilots:pilots().owned}),
+      fleet:{revision:state.fleet.revision,mode:state.fleet.mode,...currentFleetBanks(),recruitPresentation:copy(state.fleet.recruitPresentation||null)},
       wallet: { ...replicaResourceWallet(state.replicaInventory), stamina: UNLIMITED_RESOURCES ? DEVELOPMENT_BALANCE : state.stamina,
         maxStamina: MAX_STAMINA, aircraftShards: state.aircraftShards, weaponParts: collection.weaponProgress.universalFragments, cores: state.replicaInventory.items[135] || 0 },
       replicaLoadout: copy(state.replicaLoadout),
       replicaCollection: nativeCollection,
-      pilotSupply: {...pilotSupplySnapshot(state.pilotSupply,state.replicaInventory,state.replicaLoadout,time,state.replicaCampaign,taskCounters()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.pilotSupply),adAvailable:typeof playShopAd==='function'},
+      pilotSupply: {...pilotSupplySnapshot(state.pilotSupply,state.replicaInventory,state.replicaLoadout,currentTime(),state.replicaCampaign,taskCounters()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.pilotSupply),adAvailable:typeof playShopAd==='function'},
       replicaCampaign: copy(state.replicaCampaign), onboarding: normalizeOnboarding(state.onboarding),
-      nativeAcquisition: nativeAcquisitionSnapshot(state.replicaInventory,state.replicaCampaign,state.replicaClaims,state.equipment,time,state.replicaLoadout),
-      flightRewards: {...flightRewards,adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd&&!pendingFlightAd.pilotSupply&&!pendingFlightAd.samplePatrol),adAvailable:typeof playShopAd==='function'},
+      nativeAcquisition: nativeAcquisitionSnapshot(state.replicaInventory,state.replicaCampaign,state.replicaClaims,state.equipment,currentTime(),state.replicaLoadout),
+      flightRewards: {...flightRewardsSnapshot(flightRewards,state.replicaInventory,state.replicaCampaign,currentTime()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd&&!pendingFlightAd.pilotSupply&&!pendingFlightAd.samplePatrol),adAvailable:typeof playShopAd==='function'},
       research: nativeResearchSnapshot(state.replicaLoadout, state.replicaInventory),
       starRewards: state.replicaLoadout?{...nativeStarRewardSnapshot(state.starRewards,state.replicaCampaign,stages.length*3),revision:state.replicaInventory.revision}:starRewards.snapshot(),
       shop: shop.snapshot(),
-      pilots: AIRCRAFTS.map((p, index) => {
-        const stars=state.pilotStars[p.id], activated=persistentPilot(p.id,roster);
-        const temporary=temporaryPilots(roster).includes(p.id), passive=pilotPassive(p.id,stars);
-        return { id: p.id, name: p.name, image: p.image, avatar: p.avatar, lobbyPortrait: p.lobbyPortrait,
+      pilots: AIRCRAFTS.map((p, index) => ({ id: p.id, name: p.name, image: p.image, avatar: p.avatar, lobbyPortrait: p.lobbyPortrait,
         callsign: p.callsign, title: p.title, aircraftId: p.id, aircraftName: p.aircraft,
-        stars, maxStars: 5,copies:state.fleet.copies.pilot[p.id],activated,
-        description: passive.description, skillName: PERIPHERAL_PILOT_PASSIVES[p.id].name,
-        passiveDescription: passive.description,
-        passive, nextPassive: stars < 5 ? pilotPassive(p.id,stars+1) : null,
-        color: p.color, rarity: p.rarity, owned: activated||temporary, affection: pilotAffectionPoints(state.pilotAffection?.[p.id]),
-        temporaryUnlocked: !activated&&temporary,
-        unlockText: index ? `招募或通关第 ${index} 关获得同名卡` : '初始人物' };
-      }),
+        stars: state.pilotStars[p.id], maxStars: 5,copies:state.fleet.copies.pilot[p.id],activated:persistentPilot(p.id),
+        description: pilotPassive(p.id, state.pilotStars[p.id]).description, skillName: PERIPHERAL_PILOT_PASSIVES[p.id].name,
+        passiveDescription: pilotPassive(p.id, state.pilotStars[p.id]).description,
+        passive: pilotPassive(p.id, state.pilotStars[p.id]), nextPassive: state.pilotStars[p.id] < 5 ? pilotPassive(p.id, state.pilotStars[p.id] + 1) : null,
+        color: p.color, rarity: p.rarity, owned: ownPilot(p.id),
+        temporaryUnlocked: !persistentPilot(p.id) && temporaryPilots().includes(p.id),
+        unlockText: index ? `招募或通关第 ${index} 关获得同名卡` : '初始人物' })),
       aircraft: PERIPHERAL_AIRCRAFT.map(a => { const level = state.aircraft[a.id].level;
-        const stars=state.fleet.aircraftStars[a.id], starGrowth=aircraftGrowth(Math.max(1,stars));
-        const nextStar=aircraftGrowth(Math.min(5,stars+1)), cost=aircraftUpgradeCost(level), owned=ownAircraft(a.id,collection);
+        const starGrowth=aircraftGrowth(Math.max(1,state.fleet.aircraftStars[a.id]));
         const baseCurrent=aircraftGrowth(level),baseNext=aircraftGrowth(level+1);
         const current={attack:baseCurrent.attack*starGrowth.attack,hp:baseCurrent.hp*starGrowth.hp},next={attack:baseNext.attack*starGrowth.attack,hp:baseNext.hp*starGrowth.hp};
         return { ...a,
-        level, stars,maxStars:5,copies:state.fleet.copies.aircraft[a.id],maxLevel: PERIPHERAL_MAX_LEVEL, nextMilestoneLevel: nextGrowthMilestone(level, PERIPHERAL_MAX_LEVEL),
-        owned, loadout: copy(state.aircraft[a.id].slots), aircraftName: a.name, attack: Math.round(a.baseAttack * current.attack),
+        level, stars:state.fleet.aircraftStars[a.id],maxStars:5,copies:state.fleet.copies.aircraft[a.id],maxLevel: PERIPHERAL_MAX_LEVEL, nextMilestoneLevel: nextGrowthMilestone(level, PERIPHERAL_MAX_LEVEL),
+        owned: ownAircraft(a.id), loadout: copy(state.aircraft[a.id].slots), aircraftName: a.name, attack: Math.round(a.baseAttack * current.attack),
         nextAttack: Math.round(a.baseAttack * next.attack),
         hp: Math.round(a.baseHp * current.hp),
         nextHp: Math.round(a.baseHp * next.hp),
-        nextStarAttack:Math.round(a.baseAttack*baseCurrent.attack*nextStar.attack),
-        nextStarHp:Math.round(a.baseHp*baseCurrent.hp*nextStar.hp),cost,
-        canUpgrade: owned && Boolean(cost) && profile.coins >= cost.coins && state.aircraftShards >= cost.aircraftShards }; }),
+        nextStarAttack:Math.round(a.baseAttack*baseCurrent.attack*aircraftGrowth(Math.min(5,state.fleet.aircraftStars[a.id]+1)).attack),
+        nextStarHp:Math.round(a.baseHp*baseCurrent.hp*aircraftGrowth(Math.min(5,state.fleet.aircraftStars[a.id]+1)).hp),cost: aircraftUpgradeCost(level),
+        canUpgrade: ownAircraft(a.id) && Boolean(aircraftUpgradeCost(level)) && profile.coins >= aircraftUpgradeCost(level).coins && state.aircraftShards >= aircraftUpgradeCost(level).aircraftShards }; }),
       weapons, loadout: copy(selected.slots), loadoutToken:fitToken(state.aircraftId,selected.slots), innateWeapon: PERIPHERAL_AIRCRAFT_MAP.get(state.aircraftId).weaponId,
       workshop: createWorkshopSnapshot(collection.weaponProgress, { slots: selected.slots, aircraft: state.aircraft }),
       stages: stages.map((stage, index) => {
-        const prefix=`${stage.id}:`;let bestScore=0;
-        for(const [key,value] of legacyResults)if(key.startsWith(prefix))bestScore=Math.max(bestScore,integer(value.bestScore));
+        const results = Object.entries(campaign.results || {}).filter(([key]) => key.startsWith(`${stage.id}:`)).map(([, value]) => value);
         const nativeChapter = replicaChapterForStage(index);
         const stars = nativeChapter ? countReplicaStars(state.replicaCampaign.starMasks?.[nativeChapter.id] || 0) : 0;
         const bestCleared = Boolean(nativeChapter && state.replicaCampaign.clearedChapterIds.includes(nativeChapter.id));
@@ -1563,11 +1658,11 @@ export function createPeripheralSystem({
         chapterName: stage.chapterName || stage.arc || `第 ${index + 1} 章 · ${stage.name}`,
         unlocked: replicaStageAccessible(index, state.replicaCampaign.highestUnlocked),
         stars, bestCleared, progressText: bestCleared ? stars ? `已通关 · ${stars} 星` : '已通关' : '未通关',
-        bestScore };
+        bestScore: Math.max(0, ...results.map(value => integer(value.bestScore))) };
       }),
       selectedStageIndex: getSelectedStage(), power: entryDetails?.power ?? null, powerRating,
       nativeStats: entryDetails ? copy(entryDetails) : null,
-      patrol: {...samplePatrolSnapshot(state.samplePatrol,state.replicaCampaign,time,state.replicaInventory.revision,state.replicaLoadout),
+      patrol: {...samplePatrolSnapshot(state.samplePatrol,state.replicaCampaign,currentTime(),state.replicaInventory.revision,state.replicaLoadout),
         adAvailable:typeof playPatrolAd==='function',adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.samplePatrol),
         staminaUnlimited:UNLIMITED_RESOURCES},
       equipment: replicaGearSnapshot(state.equipment,state.replicaInventory),
@@ -1601,27 +1696,15 @@ export function createPeripheralSystem({
             `当前补给档位保底：最多 ${Math.max(1, 10 - (collection.pools[pool.key]?.pity?.purple || 0))} 抽获得紫档或金档，最多 ${Math.max(1, 60 - (collection.pools[pool.key]?.pity?.gold || 0))} 抽获得金档。`,
             '紫/金补给档位原有10/60抽计数保留。新武器保底与档位保底可同抽触发，但仍只发一份武器结果：首次解锁，重复按档位转零件，不会首次解锁又加送零件。',
             '单抽十连共享保底，切池或重启不清零。正常资源新档从初始武器开始；老档已解锁内容全部保留。下列档位概率为非保底基础概率。'] })),
-      tasks, rewardPending:Boolean(!Object.hasOwn(state,'flightRewards') || state.dailyRewardReceipt || pendingFlightAd || state.shop?.pending || state.starRewards?.pending),
-      rewardBusy:Boolean(flightAdBusy || shop.busy),
-      pendingReward:state.dailyRewardReceipt?.source||null,
+      tasks, rewardPending:Boolean(!Object.hasOwn(state,'flightRewards') || state.dailyRewardReceipt || unsavedPatrolReward || pendingFlightAd || state.shop?.pending || state.starRewards?.pending),
+      rewardBusy:Boolean(flightAdBusy || patrolAdBusy || shop.busy),
+      pendingReward:state.dailyRewardReceipt?.source||(unsavedPatrolReward?{...unsavedPatrolReward.options.source,unsaved:true}:null),
       activity:Object.fromEntries(['daily','weekly'].map(period=>{const activity=activitySnapshot(period,tasks,periods[period]);return [period,{...activity,items:markPending(activity.items,'activity',period)}];})),
       achievements:{...achievements,items:markPending(achievements.items,'achievement')},
-      signIn: flightRewards.signIn,
+      signIn: flightRewardsSnapshot(flightRewards,state.replicaInventory,state.replicaCampaign,currentTime()).signIn,
       staminaDescription: UNLIMITED_RESOURCES ? '网页测试：体力无限，出击和快速巡逻不扣体力。' : `每次出击消耗 ${SORTIE_STAMINA} 点体力。每 ${STAMINA_INTERVAL_MS / 60000} 分钟恢复 1 点，自然恢复至 ${MAX_STAMINA} 点。`,
       migration: copy(state.migration), storageWarning,
     });
-    const { patrol } = view;
-    const interval = patrol.intervalSeconds || 600;
-    // At these boundaries the buttons and prices can change along with the clock.
-    const shopBoundaries = [view.shop.resetAt, state.equipment.localBoxState?.lastSeen,
-      ...view.nativeAcquisition.equipmentBoxes.map(box => box.compatibility?.nextFreeAt)];
-    lobbyProjection = {
-      time, ledger: state.samplePatrol, localDay: dayKey(time), economyDay: flightDay(time),
-      interval, patrolBucket: Math.floor((patrol.storedMinutes * 60 + 1e-7) / interval),
-      clockRollback: patrol.clockRollback, storageWarning,
-      nextShopChange: Math.min(...shopBoundaries.filter(boundary => Number.isSafeInteger(boundary) && boundary > time)),
-    };
-    return view;
   }
   if(state.equipment.migrationRefund&&!state.dailyRewardReceipt){
     const next=copy(state),refund=next.equipment.migrationRefund;delete next.equipment.migrationRefund;
@@ -1636,7 +1719,7 @@ export function createPeripheralSystem({
     if(!persist()){state.onboarding=previous;return false;}
     return true;
   }
-  return { completeBattleGuide, snapshot, lobbyClock, action, prepareSortie, recordSortie, checkpointSortie, replicaConfiguration, acceptReplicaLoadoutDetails, developerToolsAccess, getAircraftId: () => state.aircraftId,
+  return { completeBattleGuide, snapshot, action, prepareSortie, recordSortie, checkpointSortie, replicaConfiguration, acceptReplicaLoadoutDetails, developerToolsAccess, getAircraftId: () => state.aircraftId,
     get replicaResults() { if(recoverReplicaSettlement())recoverInterruptedSortie(); return copy(state.replicaResults || []); },
     get state() { return copy(state); } };
 }

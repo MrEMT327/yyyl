@@ -1,12 +1,12 @@
 import './developer-skills.css';
 import type { Simulation } from './kernel/simulation';
 import type { GameAudio } from './kernel/audio';
-import type { BattleHudFlow } from './battle-hud-flow';
+import type { Interface } from './kernel/ui';
 
 const escape = (value: unknown) => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const categories = { all: '全部', weapon: '武器', passive: '强化', pilot: '驾驶员', plane: '飞机' };
 
-export function mountDeveloperSkills(stage: HTMLElement, sim: Simulation, audio: GameAudio, ui: BattleHudFlow) {
+export function mountDeveloperSkills(stage: HTMLElement, sim: Simulation, audio: GameAudio, ui: Interface) {
   // Outside the stage: its capture listener routes canvas HUD pointers before DOM buttons.
   const root = document.createElement('section');
   root.className = 'developer-battle-skills'; root.setAttribute('aria-label', '局内开发技能');

@@ -1,4 +1,4 @@
-// The cut has one readable luminous edge. Scene echoes use a continuous falloff with no
+// The cut has one fine edge. Scene echoes use a continuous falloff with no
 // colored face, strip boundary, outer outline, or second parallel light edge.
 export const DIMENSION_SWORD_GLSL = `
 uniform float uDimensionCount;
@@ -43,14 +43,12 @@ vec4 dimensionResolve() {
     vec2 ghostShift = n * sign(across) * (3. + 7. * style.x);
     vec3 ghost = dimensionResolvedAt(vUv - dimensionUvOffset(ghostShift)).rgb;
     color.rgb = mix(color.rgb, ghost, falloff * style.x * .12);
-    // Screen-space optical thickness only; the native cut/hit dimensions stay unchanged.
-    float coreWidth = mix(2.8, 3.6, style.z);
-    float edge = exp(-pow(d / coreWidth, 2.) * 1.35);
+    float edge = exp(-d * 3.1);
     // This cut is drawn in the final resolve, after the shared bloom texture.
     // Supply its own compact falloff here without another full-screen pass.
     float bloomGain = clamp(uIntensity / 1.7, 0., 1.25);
-    float nearGlow = exp(-d * d * .10) * .24;
-    float halo = exp(-d * d * .018) * .075;
+    float nearGlow = exp(-d * d * .65) * .17;
+    float halo = exp(-d * d * .10) * .045;
     vec3 light = vec3(.20, .52, 1.05) * (nearGlow + halo) * bloomGain
       + mix(vec3(.64, .96, 1.4), vec3(1.20, 1.36, 1.5), style.z) * edge;
     float cell = floor((along + shape.z * 130.) / 63.);

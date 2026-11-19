@@ -10,7 +10,7 @@
 @media(prefers-reduced-motion:reduce){.cloud-ui-mode.cloud-defeat-visible::after{animation:none}}
 @media(prefers-reduced-motion:reduce){.cloud-ui-mode.cloud-victory-visible::after{animation:none}}
 /* UI_Punchboard's packaged default is a full-stretch black Image, alpha 192/255.
-   Dimming belongs to the battle viewport behind the card surfaces. */
+   Dimming belongs to the battle viewport, not the narrower card canvas. */
 .cloud-ui-mode.cloud-supply-visible::after{content:'';position:absolute;inset:0;z-index:19;background:rgba(0,0,0,.7529411765);pointer-events:none}
 /* Breakthrough backdrop occupies 19; keep the dimmer behind it and cards at 20. */
 .cloud-ui-mode.cloud-upgrade-visible::after{z-index:18}

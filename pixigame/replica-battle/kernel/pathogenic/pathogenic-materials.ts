@@ -5,7 +5,6 @@ import {registerPathogenicShader,PathogenicShaderCoverageError,type ShaderTextur
 import {resolveTexture} from './source-scene-sampler.mjs';
 // @ts-ignore Source extraction helper is deliberately shared as plain JS.
 import {installGradientTexture} from './pathogenic-textures.mjs';
-import {sourceTextureKey} from './source-texture-regions.mjs';
 type Any=Record<string,any>;
 const straightUploads=new WeakMap<Phaser.Textures.TextureSource,{key:string;binding:ShaderTextureBinding}>();
 /** Upload the original image with UNPACK_PREMULTIPLY_ALPHA_WEBGL=false.
@@ -25,11 +24,7 @@ function straightTexture(scene:Phaser.Scene,key:string){
   try{
     if(scene.textures.exists(copyKey))throw new PathogenicShaderCoverageError(copyKey,'stale straight-copy key belongs to another texture source');
     const texture=r.createTexture2D(0,original.minFilter,original.magFilter,original.wrapT,original.wrapS,gl.RGBA,image,source.width,source.height,false,true,original.flipY);
-    const copied=scene.textures.addGLTexture(copyKey,texture);
-    if(!copied){r.deleteTexture(texture);throw new PathogenicShaderCoverageError(copyKey,'straight texture registration failed');}
-    if((source as any).pathogenicAtlasOffset)(copied.source[0] as any).pathogenicAtlasOffset=(source as any).pathogenicAtlasOffset;
-    if((source as any).pathogenicLogicalSize)(copied.source[0] as any).pathogenicLogicalSize=(source as any).pathogenicLogicalSize;
-    if((source as any).pathogenicFallback)(copied.source[0] as any).pathogenicFallback=true;
+    scene.textures.addGLTexture(copyKey,texture);
     const result={key:copyKey,binding:{texture,premultiplied:false}};straightUploads.set(source,result);return result;
   }finally{gl.activeTexture(active);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,pma);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,flip);}
 }
@@ -134,11 +129,7 @@ export class PathogenicScreenSnapshot {
    * One capture is shared by following effects, matching Godot backbuffer use. */
   createCaptureObject(depth:number):Phaser.GameObjects.Extern {
     const snapshot=this;
-    class Capture extends Phaser.GameObjects.Extern {
-      // Leave sprite batches intact when no screen-reading effect is visible.
-      willRender(camera:Phaser.Cameras.Scene2D.Camera){return snapshot.requested&&super.willRender(camera);}
-      render(){if(snapshot.requested)snapshot.capture();}
-    }
+    class Capture extends Phaser.GameObjects.Extern {render(){if(snapshot.requested)snapshot.capture();}}
     const object=new Capture(this.scene);object.setDepth(depth);this.scene.add.existing(object);return object;
   }
   destroy(){if(!this.destroyed){this.target?.destroy();this.destroyed=true;}}
@@ -146,7 +137,6 @@ export class PathogenicScreenSnapshot {
 
 /** Resolve original material overrides and bind actual texture dependencies. */
 export class PathogenicMaterials {
-  private readonly staticMaterials=new Map<string|null,ReturnType<PathogenicMaterials["resolve"]>|null>();
   constructor(readonly scene:Phaser.Scene,readonly graph:Any,readonly screen?:PathogenicScreenSnapshot){}
   installTexture(ref:any):{key:string;descriptor:Any|null;binding:ShaderTextureBinding;channels:CanvasTextureChannels}{
     const channels=resolveCanvasTexture(this.graph,ref),d=channels.diffuse;
@@ -154,7 +144,6 @@ export class PathogenicMaterials {
     let key=d?.key??'__WHITE'; // Godot's absent TEXTURE default is solid white.
     if(d?.resource?.startsWith('GradientTexture'))key=installGradientTexture(this.scene,this.graph,d);
     else if(d?.resource)throw new PathogenicShaderCoverageError(key,`texture ${d.resource} needs its original generator/imported image`);
-    else if(d)key=sourceTextureKey(this.scene,d);
     if(!this.scene.textures.exists(key))throw new PathogenicShaderCoverageError(key,'texture not preloaded');
     const straight=straightTexture(this.scene,key);
     return {...straight,descriptor:d,channels};
@@ -162,20 +151,6 @@ export class PathogenicMaterials {
   installCanvasChannels(ref:any){
     const channels=resolveCanvasTexture(this.graph,ref);
     return {channels,diffuse:this.installTexture(ref),normal:channels.normal?this.installTexture(channels.normal):null,specular:channels.specular?this.installTexture(channels.specular):null};
-  }
-  // Captures and auxiliary samplers must be refreshed at draw time. Only
-  // authored materials with no overrides or sampler dependencies can share
-  // their resolved values for the lifetime of this battle.
-  resolveForRender(materialRef:any,overrides?:Any){
-    const key=materialRef
-      ? (typeof materialRef==='string'?materialRef:materialRef.type?undefined:materialRef.$ref)
-      : null;
-    if(key===undefined||overrides)return this.resolve(materialRef,overrides);
-    const cached=this.staticMaterials.get(key);
-    if(cached!==undefined)return cached??this.resolve(materialRef);
-    const resolved=this.resolve(materialRef);
-    this.staticMaterials.set(key,resolved.dependencies.length===0?resolved:null);
-    return resolved;
   }
   resolve(materialRef:any,overrides:Any={},options:{compatibilityZeroLights?:boolean}={compatibilityZeroLights:true}){
     const material=getResource(this.graph,materialRef),p=material?.properties??{};
@@ -208,8 +183,7 @@ export class PathogenicMaterials {
       if(/filter_nearest|mipmap|repeat_enable/.test(uniform.hints))throw new PathogenicShaderCoverageError(source.path,`custom sampler state requires isolated texture view: ${uniform.name}`);
       if(!value)throw new PathogenicShaderCoverageError(source.path,`sampler ${uniform.name} has no texture dependency`);
       const installed=this.installTexture(value),d=installed.descriptor;
-      const logicalSize=(this.scene.textures.get(installed.key).source[0] as any).pathogenicLogicalSize;
-      if(d?.crop&&(d.crop[0]!==0||d.crop[1]!==0||d.crop[2]!==(logicalSize?.[0]??installed.binding.texture.width)||d.crop[3]!==(logicalSize?.[1]??installed.binding.texture.height)))throw new PathogenicShaderCoverageError(source.path,`atlas sampler ${uniform.name} needs independent normalized texture coordinates`);
+      if(d?.crop&&(d.crop[0]!==0||d.crop[1]!==0||d.crop[2]!==installed.binding.texture.width||d.crop[3]!==installed.binding.texture.height))throw new PathogenicShaderCoverageError(source.path,`atlas sampler ${uniform.name} needs independent normalized texture coordinates`);
       textures[uniform.name]=installed.binding;dependencies.push({uniform:uniform.name,texture:d,channels:installed.channels,hints:uniform.hints});
     }
     return {registration,uniforms,textures,dependencies,material,source};

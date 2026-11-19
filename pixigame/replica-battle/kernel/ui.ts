@@ -15,28 +15,21 @@ const clock = (time: number) => `${Math.floor(time / 60).toString().padStart(2, 
 export class Interface {
   private last = '';
   private lastNotice = '';
-  private hud!: HTMLElement;
-  private overlay!: HTMLElement;
-  private banner!: HTMLElement;
+  private hud: HTMLElement;
+  private overlay: HTMLElement;
+  private banner: HTMLElement;
   private upgradeAnimation: OriginalUpgradeAnimation;
   private punchboard: OriginalPunchboard;
   private wavePresentation: WaveUIPresentation;
   selectionStartedAt = 0;
   private selecting = false;
-  private cancelChoiceBurst?: () => void;
   private pauseView: 'inventory' | 'stats' | 'settings' = 'inventory';
   private selectionTimers: number[] = [];
   private resultAudioKey = '';
-  private externalHud: boolean;
-  constructor(private root: HTMLElement, private sim: Simulation, private audio: GameAudio, private sprites: RecordData, private onStart: () => void, private onHome?: () => void, private weaponIcon?: (familyId: number, star: number, choice?: Choice, preview?: boolean) => { key: string; url: string } | undefined, options: { externalHud?: boolean } = {}) {
-    this.externalHud = options.externalHud === true;
+  constructor(private root: HTMLElement, private sim: Simulation, private audio: GameAudio, private sprites: RecordData, private onStart: () => void, private onHome?: () => void, private weaponIcon?: (familyId: number, star: number, choice?: Choice, preview?: boolean) => { key: string; url: string } | undefined, private researchMode = false) {
     this.upgradeAnimation = new OriginalUpgradeAnimation(sprites);
     this.punchboard = new OriginalPunchboard(sprites,key=>this.audio.feedback(key));
     this.wavePresentation = new WaveUIPresentation(this.upgradeAnimation, root);
-    if (this.externalHud) {
-      this.upgradeAnimation.useExternalWarning();
-      return;
-    }
     root.innerHTML = `<section id="hud"><button id="pause-button" class="pause-button" aria-label="暂停">${this.image('Pause')}</button><div class="wave-readout"><strong id="wave-count">第 1/15 波</strong><div class="experience"><span id="level">Lv.1</span><div class="track">${this.image('bossProgress_bar_bottom', 'track-bg')}<div class="track-fill"><i id="experience-fill">${this.image('stg_expProcess')}</i></div>${this.image('stg_Pos', 'experience-marker')}</div></div></div><div class="counters"><span>${this.image('Integral_bottom_box', 'counter-bg')}${this.image('ui_coin', 'counter-icon')}<b id="gold">0</b></span><span>${this.image('Integral_bottom_box', 'counter-bg')}${this.image('ui_kill', 'counter-icon')}<b id="kills">0</b></span></div></section><div id="wave-banner"></div><div id="boss-hud" hidden>${this.image('bossProgress_icon', 'boss-icon')}<div>${this.image('bossProgress_bar_bottom', 'boss-track')}<i>${this.image('stg_boss_progress1')}</i></div></div><div id="loadout" hidden></div><div id="overlay"></div>`;
     this.hud = root.querySelector('#hud')!; this.overlay = root.querySelector('#overlay')!; this.banner = root.querySelector('#wave-banner')!;
     root.querySelector('.wave-readout')!.insertAdjacentHTML('afterbegin', this.image('stg_point', 'wave-title-bg'));
@@ -45,70 +38,52 @@ export class Interface {
       const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]');
       if (!button) return;
       switch (button.dataset.action) {
+        case 'start': this.saveEntryStats(); this.audio.unlock().catch(() => {}); this.onStart(); break;
+        case 'chapter': {
+          const chapter = Number(button.dataset.chapter);
+          if (this.sim.content.chapter.catalog.some((row: RecordData) => row.id === chapter)) {
+            const url = new URL(location.href); url.searchParams.set('chapter', String(chapter)); location.assign(url);
+          }
+          break;
+        }
         case 'continue': this.sim.resume(); this.audio.resume(); break;
-        case 'punchboard': this.advanceBattleSupply(); return;
+        case 'punchboard': if (this.sim.phase === 'treasure' && this.punchboard.activate()) { this.sim.closeTreasure(); this.audio.resume(); } break;
         case 'restart': this.audio.unlock().catch(() => {}); this.onStart(); break;
         case 'sound': this.audio.toggle(); if (this.sim.phase === 'paused') this.audio.pause(); this.last = ''; break;
         case 'pause-stats': this.pauseView = 'stats'; break;
         case 'pause-settings': this.pauseView = 'settings'; break;
         case 'pause-back': this.pauseView = 'inventory'; break;
-        case 'home': this.leaveBattle(); return;
+        case 'home': if (this.onHome) this.onHome(); else { this.sim.reset(); this.audio.pause(); } break;
         case 'choose': this.selectCard(button); break;
       }
       this.update();
     });
   }
-  leaveBattle() {
-    const phase = this.sim.phase;
-    if (phase !== 'paused' && phase !== 'won' && phase !== 'lost') return;
-    if (this.onHome) this.onHome(); else { this.sim.reset(); this.audio.pause(); }
-    this.update();
+  private saveEntryStats() {
+    const player = this.sim.content.chapter.player;
+    const value = (selector: string, fallback: number) => {
+      const input = this.overlay.querySelector<HTMLInputElement>(selector), number = Number(input?.value);
+      return Number.isFinite(number) && number > 0 ? Math.min(1e9, Math.max(1, number)) : fallback;
+    };
+    player.attack = value('#entry-attack', player.attack); player.hp = value('#entry-hp', player.hp);
+    try { localStorage.setItem(`danke-entry-${this.sim.content.chapter.chapter.id}`, JSON.stringify({ attack: player.attack, hp: player.hp })); } catch { /* Optional browser storage. */ }
   }
-  advanceBattleSupply() {
-    if (this.sim.phase !== 'treasure') return;
-    if (this.punchboard.activate()) { this.sim.closeTreasure(); this.audio.resume(); }
-    this.update();
-  }
-  get battleSupplyPresentation() { return this.punchboard.presentation; }
-  get bossWarningPresentation() { return this.upgradeAnimation.warningPresentation; }
-  chooseFromHud(id: number) { return this.selectCard(id); }
   togglePause() { if (this.sim.phase === 'playing') { this.sim.pause(); this.audio.pause(); } else if (this.sim.phase === 'paused') { this.sim.resume(); this.audio.resume(); } this.update(); }
-  private selectCard(target: HTMLButtonElement | number) {
-    if (this.selecting || this.sim.phase !== 'upgrade') return false;
-    const button = typeof target === 'number' ? null : target;
-    const id = typeof target === 'number' ? target : Number(target.dataset.id);
-    const card = this.sim.choices.find(c => c.id === id);
-    if (!card) return false;
-    const runId = this.sim.runId;
+  private selectCard(button: HTMLButtonElement) {
+    if (this.selecting || this.sim.phase !== 'upgrade') return;
+    const card = this.sim.choices.find(c => c.id === Number(button.dataset.id));
+    if (!card) return;
     const commit = () => {
-      if (this.sim.runId !== runId || this.sim.phase !== 'upgrade' || !this.sim.choices.includes(card)) {
-        this.selecting = false;
-        this.cancelChoiceBurst?.();
-        this.cancelChoiceBurst = undefined;
-        this.update();
-        return;
-      }
       this.sim.sounds=this.sim.sounds.filter(id=>id!==410001);
-      this.cancelChoiceBurst = undefined; // An accepted breakthrough keeps its visual tail.
       this.sim.choose(card.id);
       this.selecting = false;
-      this.resumeAfterChoice();
+      if (this.sim.phase === 'playing') this.audio.resume();
       this.update();
     };
     this.selectionStartedAt=performance.now();
     this.selecting = true;
     // Confirm the accepted press while combat is still paused, before its sounds resume.
     this.audio.feedback('choice');
-    if (!button) {
-      // The visible card owns its own movement. The effect behind it still
-      // needs its original stage surfaces and the same absolute cue times.
-      if (card.opensBreakthrough) {
-        const tier = ['y','r','c'][Math.min(2,Math.floor((Math.max(1,card.star || 1)-1)/3))];
-        this.cancelChoiceBurst = this.upgradeAnimation.showExternalBreakthrough(this.root,tier,this.selectionStartedAt+selectionBeat.reveal);
-      }
-      this.selectionTimers.push(window.setTimeout(commit,card.opensBreakthrough?selectionBeat.breakthroughCommit:selectionBeat.normalCommit));
-      return true;
-    }
     this.overlay.classList.add('selecting');
     const bounds = button.getBoundingClientRect(), host = this.root.getBoundingClientRect();
     this.upgradeAnimation.stop();
@@ -116,7 +91,7 @@ export class Interface {
     if (!card.opensBreakthrough) {
       // BaseSkillSelectItem submits on the original .4s PressEnd event.
       this.selectionTimers.push(window.setTimeout(commit, selectionBeat.normalCommit));
-      return true;
+      return;
     }
     const copy = button.cloneNode(true) as HTMLButtonElement;
     copy.removeAttribute('data-action'); copy.tabIndex = -1;
@@ -133,9 +108,7 @@ export class Interface {
     // The original Show has no verified separate impact sound; keep the accepted press cue.
     this.selectionTimers.push(window.setTimeout(commit, selectionBeat.breakthroughCommit));
     this.selectionTimers.push(window.setTimeout(() => copy.remove(), selectionBeat.finish));
-    return true;
   }
-  private resumeAfterChoice() { if (this.sim.phase === 'playing') this.audio.resume(); }
   private weaponIconKey(familyId: number, star: number, choice?: Choice, preview = false): string {
     const image = this.weaponIcon?.(familyId, star, choice, preview);
     if (image) { this.sprites[image.key] = { url: image.url }; return image.key; }
@@ -155,31 +128,26 @@ export class Interface {
       if(this.audio.feedback('upgrade'))s.sounds=s.sounds.filter(id=>id!==410001);
     }
     this.wavePresentation.update(s.waveUIRequest, s.runId, s.phase === 'playing', id => s.completeWaveUI(id));
-    // The visible HUD uses the simulation snapshot directly. Keep the hidden
-    // interface's wave and choice callbacks, but skip writing a second HUD.
-    if (!this.externalHud) {
-      this.hud.hidden = s.phase === 'ready';
-      this.root.querySelector('#wave-count')!.textContent = `第 ${s.wave}/${s.content.chapter.chapter.waveCount} 波`;
-      this.root.querySelector('#level')!.textContent = `Lv.${s.level}`;
-      (this.root.querySelector('#experience-fill') as HTMLElement).style.width = `${s.expProgress * 100}%`;
-      (this.root.querySelector('.experience-marker') as HTMLElement).style.left = `${(21 + s.expProgress * 493) / 540 * 100}%`;
-      this.root.querySelector('#gold')!.textContent = String(Math.floor(s.gold));
-      this.root.querySelector('#kills')!.textContent = String(s.kills);
-      const bossHud = this.root.querySelector('#boss-hud') as HTMLElement;
-      bossHud.hidden = !s.boss;
-      if (s.boss) (bossHud.querySelector('i') as HTMLElement).style.width = `${Math.max(0, s.boss.hp / s.boss.maxHp) * 100}%`;
-      const banner = s.noticeUntil > s.clock && s.phase === 'playing' ? s.notice : '';
-      if (banner !== this.lastNotice) {
-        this.lastNotice = banner;
-        this.banner.textContent = banner;
-        this.banner.classList.toggle('visible', Boolean(banner));
-      }
+    this.hud.hidden = s.phase === 'ready';
+    this.root.querySelector('#wave-count')!.textContent = `第 ${s.wave}/${s.content.chapter.chapter.waveCount} 波`;
+    this.root.querySelector('#level')!.textContent = `Lv.${s.level}`;
+    (this.root.querySelector('#experience-fill') as HTMLElement).style.width = `${s.expProgress * 100}%`;
+    (this.root.querySelector('.experience-marker') as HTMLElement).style.left = `${(21 + s.expProgress * 493) / 540 * 100}%`;
+    this.root.querySelector('#gold')!.textContent = String(Math.floor(s.gold));
+    this.root.querySelector('#kills')!.textContent = String(s.kills);
+    const bossHud = this.root.querySelector('#boss-hud') as HTMLElement;
+    bossHud.hidden = !s.boss;
+    if (s.boss) (bossHud.querySelector('i') as HTMLElement).style.width = `${Math.max(0, s.boss.hp / s.boss.maxHp) * 100}%`;
+    const banner = s.noticeUntil > s.clock && s.phase === 'playing' ? s.notice : '';
+    if (banner !== this.lastNotice) {
+      this.lastNotice = banner;
+      this.banner.textContent = banner;
+      this.banner.classList.toggle('visible', Boolean(banner));
     }
     if (s.phase === 'ready' || s.phase === 'won' || s.phase === 'lost' || s.player.hp <= 0) this.upgradeAnimation.clearWarning();
     if (s.phase !== 'upgrade' && this.selecting) {
       this.selectionTimers.forEach(clearTimeout); this.selectionTimers = []; this.selecting = false;
-      this.cancelChoiceBurst?.(); this.cancelChoiceBurst = undefined;
-      if (!this.externalHud) this.root.querySelectorAll('.selected-card').forEach(node => node.remove());
+      this.root.querySelectorAll('.selected-card').forEach(node => node.remove());
     }
     this.upgradeAnimation.update();
     if (s.phase === 'treasure') this.punchboard.update();
@@ -189,24 +157,16 @@ export class Interface {
     if (state === this.last) return;
     this.last = state;
     this.upgradeAnimation.stop();
-    if (this.externalHud) {
-      if (s.phase === 'ready' || s.phase === 'playing') return;
-      if (s.phase === 'paused') return;
-      if (s.phase === 'upgrade' || s.phase === 'treasure') {
-        this.audio.pause(false,true);
-        if (s.phase === 'treasure') this.openSupply(null);
-        return;
-      }
-      this.audio.pause();
-      this.scheduleResultCue();
-      return;
-    }
     this.root.querySelector('#loadout')!.innerHTML = s.phase === 'ready' ? '' : this.equippedWeapons().map(weapon => this.image(weapon.icon)).join('');
     this.overlay.className = s.phase === 'playing' ? '' : `overlay ${s.phase}`;
     if (s.phase === 'playing') { this.overlay.innerHTML = ''; return; }
-    // The WeChat lobby owns chapter selection and entry stats. While waiting
-    // for its configuration handshake, no hidden web setup form is needed.
-    if (s.phase === 'ready') { this.overlay.innerHTML = ''; return; }
+    if (s.phase === 'ready') {
+      const chapter = s.content.chapter.chapter, player = s.content.chapter.player;
+      const chapters = s.content.chapter.catalog.map((row: RecordData) => `<button data-action="chapter" data-chapter="${row.id}" class="${row.id === chapter.id ? 'active' : ''}" aria-pressed="${row.id === chapter.id}">${row.id}</button>`).join('');
+      this.overlay.style.setProperty('--chapter-columns', String(Math.min(8, Math.ceil(s.content.chapter.catalog.length / 2))));
+      this.overlay.innerHTML = `<div class="chapter-heading"><span>${this.researchMode ? '研究试打' : '普通关卡'}</span><h1>第 <em>${chapter.id}</em> 章</h1><p>${escape(chapter.name)} · ${chapter.waveCount} 波敌袭</p><nav class="chapter-picker" aria-label="选择关卡">${chapters}</nav></div><div class="start-panel"><div class="starter-weapon">${this.image(this.weaponIconKey(10000101, 1))}<span>速射机炮</span></div><fieldset class="entry-stats"><legend>入场战力 · 本地设置</legend><label>攻击<input id="entry-attack" type="number" inputmode="decimal" min="1" max="1000000000" value="${player.attack}"></label><label>生命<input id="entry-hp" type="number" inputmode="decimal" min="1" max="1000000000" value="${player.hp}"></label></fieldset><button class="primary" data-action="start">开始战斗</button><p class="input-hint">拖动移动 · 自动射击</p><button class="text-button" data-action="sound">${this.audio.enabled ? '音效开启' : '音效关闭'}</button></div>`;
+      return;
+    }
     if (s.phase === 'revive') {
       this.audio.pause(); this.overlay.innerHTML = ''; return;
     }
@@ -222,24 +182,12 @@ export class Interface {
     }
     if (s.phase === 'treasure') {
       this.audio.pause(false,true);
-      this.openSupply(this.overlay);
+      const rewards = s.treasureRewards.map(c => this.skinReward(c));
+      const pool = [...this.equippedWeapons(), ...s.learned.filter(c => c.id >= 11000000), ...rewards];
+      this.punchboard.mount(this.overlay, rewards.map(c => ({ ...c, description: c.description || originalSkillDescription(c as unknown as RecordData) || effectDescription(c.effects) })), [...new Map(pool.map(c => [c.icon, c])).values()]);
       return;
     }
     this.audio.pause();
-    this.scheduleResultCue();
-    this.renderResult();
-  }
-  private openSupply(host: HTMLElement | null) {
-    const s = this.sim;
-    const rewards = s.treasureRewards.map(c => this.skinReward(c));
-    const pool = [...this.equippedWeapons(), ...s.learned.filter(c => c.id >= 11000000), ...rewards];
-    const displayRewards = host
-      ? rewards.map(c => ({ ...c, description: c.description || originalSkillDescription(c as unknown as RecordData) || effectDescription(c.effects) }))
-      : rewards;
-    this.punchboard.mount(host, displayRewards, [...new Map(pool.map(c => [c.icon, c])).values()]);
-  }
-  private scheduleResultCue() {
-    const s = this.sim;
     const resultKey=`${s.runId}:${s.phase}`;
     if((s.phase==='won'||s.phase==='lost')&&this.resultAudioKey!==resultKey){
       this.resultAudioKey=resultKey;
@@ -252,10 +200,7 @@ export class Interface {
           this.audio.effect(cue,expectedPhase==='won'?.24:.19,1);
       },delay));
     }
-  }
-  private renderResult() {
-    const s = this.sim;
-    this.overlay.innerHTML = `<div class="result-panel"><span class="result-kicker">普通 · 第 ${s.content.chapter.chapter.id} 章</span><h2>${s.phase === 'won' ? '战斗胜利' : '战斗结束'}</h2><div class="result-rule"></div><dl><div><dt>抵达波次</dt><dd>${s.wave}<small> / ${s.content.chapter.chapter.waveCount}</small></dd></div><div><dt>击败敌人</dt><dd>${s.kills}</dd></div><div><dt>战斗时间</dt><dd>${clock(s.clock)}</dd></div><div><dt>造成伤害</dt><dd>${Math.round(s.damageDealt).toLocaleString('zh-CN', {useGrouping:false})}</dd></div></dl><button class="primary" data-action="restart">再次挑战</button><button class="secondary" data-action="home">返回关卡</button></div>`;
+    this.overlay.innerHTML = `<div class="result-panel"><span class="result-kicker">${this.researchMode ? '研究试打' : '普通'} · 第 ${s.content.chapter.chapter.id} 章</span><h2>${s.phase === 'won' ? '战斗胜利' : '战斗结束'}</h2><div class="result-rule"></div><dl><div><dt>抵达波次</dt><dd>${s.wave}<small> / ${s.content.chapter.chapter.waveCount}</small></dd></div><div><dt>击败敌人</dt><dd>${s.kills}</dd></div><div><dt>战斗时间</dt><dd>${clock(s.clock)}</dd></div><div><dt>造成伤害</dt><dd>${Math.round(s.damageDealt).toLocaleString('zh-CN', {useGrouping:false})}</dd></div></dl><button class="primary" data-action="restart">再次挑战</button><button class="secondary" data-action="home">${this.researchMode ? '返回配装' : '返回关卡'}</button></div>`;
   }
   private equippedWeapons() {
     const s = this.sim;
@@ -303,7 +248,7 @@ export class Interface {
     };
     const button = (action: string, key: string, label: string, cls: string) => `<button class="pause-control ${cls}" data-action="${action}" aria-label="${label}">${this.image(key)}${action === 'continue' ? '<span>继续</span>' : ''}</button>`;
     const details = this.pauseView === 'inventory' ? '' : this.pauseView === 'stats' ? this.damageStatistics() : `<div class="pause-detail-shade"><section class="pause-detail" role="dialog" aria-modal="true" aria-label="设置"><h3>设置</h3><button class="pause-sound" data-action="sound" aria-pressed="${this.audio.enabled}">${this.image(this.audio.enabled ? 'stg_pause_soundOpen' : 'stg_pause_soundClose')}<span>声音${this.audio.enabled ? '开启' : '关闭'}</span></button><button class="secondary" data-action="pause-back">返回</button></section></div>`;
-    return `<div class="pause-screen" ${details ? 'inert' : ''}><h2 class="pause-title">暂停</h2>${panel('active', '武器', weapons)}${panel('passive', '强化', [...passives.values()])}${button('pause-stats', 'stg_pause_hurt', '伤害统计', 'pause-stats')}${button('pause-settings', 'stg_pause_setting', '设置', 'pause-settings')}${button('continue', 'stg_pause_resume', '继续战斗', 'pause-resume')}${button('home', 'stg_pause_main', '返回关卡', 'pause-home')}</div>${details}`;
+    return `<div class="pause-screen" ${details ? 'inert' : ''}><h2 class="pause-title">暂停</h2>${panel('active', '武器', weapons)}${panel('passive', '强化', [...passives.values()])}${button('pause-stats', 'stg_pause_hurt', '伤害统计', 'pause-stats')}${button('pause-settings', 'stg_pause_setting', '设置', 'pause-settings')}${button('continue', 'stg_pause_resume', '继续战斗', 'pause-resume')}${button('home', 'stg_pause_main', this.researchMode ? '返回配装' : '返回关卡', 'pause-home')}</div>${details}`;
   }
   private card(c: Choice) {
     const family = this.sim.content.combat.families?.[c.group] || Object.values(this.sim.content.combat.families || {}).find((f: any) => f.id === c.group) as RecordData | undefined;
