@@ -29,5 +29,6 @@ export function refreshPatrolClocks(root,snapshot) {
 
 export function patrolRenderSignature(snapshot) {
   const patrol={...snapshot.patrol};delete patrol.storedMinutes;
-  return JSON.stringify({...snapshot,patrol,patrolClockStatus:patrolClockState(snapshot.patrol).status});
+  const carnival=snapshot.carnival?{...snapshot.carnival,observedAt:undefined}:snapshot.carnival;
+  return JSON.stringify({...snapshot,carnival,patrol,patrolClockStatus:patrolClockState(snapshot.patrol).status});
 }

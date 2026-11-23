@@ -53,32 +53,36 @@ function bolt(g,state,cloud,w){
   g.flush();
 }
 export function nativeWeather(stage,options){
-  const {width:w,height:h}=stage,model=createBattleWeather(options),art=createWeatherArt(stage,options.theme);
+  const model=createBattleWeather(options),art=createWeatherArt(stage,options.theme);
   const wash=art.sprite(-999),flash=art.sprite(-997),lightning=new BattleGeometry(stage.scene,-996);
   const far=new BattleGeometry(stage.scene,-994),near=new BattleGeometry(stage.scene,26),screenFlash=new BattleGeometry(stage.scene,45);
   const lights=createNightLights(stage,art),motion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   const clouds=weatherCloudLayout('day',0).map((_,i)=>({image:art.sprite(-998),veil:art.sprite(-995),key:i%2?'cloud':'bank'}));
-  let last=null,lastFrame=null,rows=[],cloudIndex=-1;
+  let last=null,lastFrame=null,rows=[],cloudIndex=-1,viewport;
   function update(frame){
     const state=model.update(frame,motion?.matches??false);lastFrame=frame;
-    if(state===last)return;
+    const view=stage.viewport,changed=viewport!==view;
+    if(state===last&&!changed)return;
+    viewport=view;
+    const {left:x,top:y,width:w,height:h}=view;
+    for(const mesh of [lightning,far,near,screenFlash])mesh.position.set(x,y,0);
     const {profile,time}=state;
-    if(!last||state.revision!==last.revision){
+    if(!last||changed||state.revision!==last.revision){
       rows=particlesFor(state,w,h);
       const positions=weatherCloudLayout(profile.id,state.seed);clouds.forEach((c,i)=>Object.assign(c,positions[i]));
     }
     const tint=profile.id==='night'&&options.nightGradeInWorld?0xffffff:profile.groundTint;
     stage.tint(stage.ground,mixColor(tint,0xcbd8eb,state.flash*.65));
-    art.place(wash,'wash-'+profile.id,w/2,h/2,w,h,0xffffff,profile.rain?.92+Math.sin(time*.23)*.06:1);
+    art.place(wash,'wash-'+profile.id,x+w/2,y+h/2,w,h,0xffffff,profile.rain?.92+Math.sin(time*.23)*.06:1);
     const storm=profile.id==='storm'||profile.lightning===true,alpha=storm?.84:profile.id==='rain'?.16:0;
     clouds.forEach((c,i)=>Object.assign(c,sampleWeatherCloudPose(c,i,state,w,h)));
     cloudIndex=selectLightningCloud(clouds,weatherNoise(state.seed+state.cycle*73+4)<.5?0:1,w,h);
     clouds.forEach((c,i)=>{
       const light=storm?state.flash*(i===cloudIndex?2.6:.65):0,size=w*c.scale;
-      art.place(c.image,c.key,c.x,c.y,size,size,mixColor(storm?0x273347:0x7a8ba1,0xd3deed,Math.min(.8,light)),alpha*(i<2?1:.64));
-      art.place(c.veil,c.key,c.x,c.y,size,size,0x34435b,alpha*.12);
+      art.place(c.image,c.key,x+c.x,y+c.y,size,size,mixColor(storm?0x273347:0x7a8ba1,0xd3deed,Math.min(.8,light)),alpha*(i<2?1:.64));
+      art.place(c.veil,c.key,x+c.x,y+c.y,size,size,0x34435b,alpha*.12);
     });
-    const c=clouds[cloudIndex];if(c)art.place(flash,'flash',c.x,c.y+h*.36,w,h,0xffffff,state.flash*.8);
+    const c=clouds[cloudIndex];if(c)art.place(flash,'flash',x+c.x,y+c.y+h*.36,w,h,0xffffff,state.flash*.8);
     bolt(lightning,state,c,w);precipitation(state,rows,w,h,far,near);
     screenFlash.clear();if(state.flash>0)screenFlash.quad(0,0,w,0,w,h,0,h,0xe1edff,state.flash*.68);screenFlash.flush();
     last=state;

@@ -4,8 +4,8 @@ import {isWechatPortrait,portraitRenderSize} from './portrait-render-budget.js';
 
 // Plays frozen native RGBA renders. Colour and alpha share one portable H.264
 // frame, so their timestamps cannot drift and browser alpha-video support is unnecessary.
-const VERTEX=`attribute vec2 position;uniform vec2 fit;varying vec2 uv;void main(){uv=vec2(position.x*.5+.5,.5-position.y*.5);gl_Position=vec4(position*fit,0.,1.);}`;
-const FRAGMENT=`precision highp float;
+export const PORTRAIT_VERTEX=`attribute vec2 position;uniform vec2 fit;varying vec2 uv;void main(){uv=vec2(position.x*.5+.5,.5-position.y*.5);gl_Position=vec4(position*fit,0.,1.);}`;
+export const PORTRAIT_FRAGMENT=`precision highp float;
 uniform sampler2D frame;uniform vec2 packedSize;uniform float repairShirtHoles;varying vec2 uv;
 float opacity(vec2 p){return clamp((texture2D(frame,p+vec2(.5,0.)).r-1./255.)/(253./255.),0.,1.);}
 void main(){
@@ -47,7 +47,7 @@ export function createRgbaVideoPortraitPlayer({assetBase=import.meta.env?.BASE_U
   function shader(kind,source){const s=gl.createShader(kind);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)){const message=gl.getShaderInfoLog(s);gl.deleteShader(s);throw new Error(message||'角色着色器创建失败');}return s;}
   function createRenderer(){
     gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:false,preserveDrawingBuffer:retainFrame,depth:false,stencil:false});if(!gl)throw new Error('无法创建角色画布');
-    const vs=shader(gl.VERTEX_SHADER,VERTEX),fs=shader(gl.FRAGMENT_SHADER,FRAGMENT);program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
+    const vs=shader(gl.VERTEX_SHADER,PORTRAIT_VERTEX),fs=shader(gl.FRAGMENT_SHADER,PORTRAIT_FRAGMENT);program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(program));
     gl.useProgram(program);buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const at=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(at);gl.vertexAttribPointer(at,2,gl.FLOAT,false,0,0);
     texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);gl.uniform1i(gl.getUniformLocation(program,'frame'),0);fitLocation=gl.getUniformLocation(program,'fit');sizeLocation=gl.getUniformLocation(program,'packedSize');repairLocation=gl.getUniformLocation(program,'repairShirtHoles');gl.disable(gl.BLEND);gl.disable(gl.DEPTH_TEST);
   }
@@ -111,7 +111,7 @@ export function createRgbaVideoPortraitPlayer({assetBase=import.meta.env?.BASE_U
   async function initialize(){
     state='loading';updateHost();const response=await fetch(manifestUrl,{signal:controller.signal});if(!response.ok)throw new Error('角色资源清单读取失败');manifest=await response.json();if(!['engineer-ee76-video-v1','rgba-portrait-video-v1'].includes(manifest.schema)||manifest.packedWidth!==manifest.width*2||!manifest.clips?.idle)throw new Error('角色资源格式无效');if(destroyed)return;
     canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');if(host)host.append(canvas);
-    if(createSurface)surface=createSurface(canvas,manifest,VERTEX,FRAGMENT);else createRenderer();
+    if(createSurface)surface=createSurface(canvas,manifest,PORTRAIT_VERTEX,PORTRAIT_FRAGMENT);else createRenderer();
     resize();await start('idle',false);resize();
   }
   const observer=typeof ResizeObserver==='function'?new ResizeObserver(resize):null;

@@ -5,7 +5,7 @@ import {shopRates} from './shop-rates.js';
 import {paintItemDetail} from './item-details.js';
 import {pendingNotice} from './chapter-rewards.js';
 import {shopProductImage} from './menu-shop.js';
-import {shopOfferName,shopItemId,shopPurchaseMax,equipmentBox} from '../../ui/shop-page.js';
+import {shopOfferName,shopItemId,shopPurchaseMax,equipmentBox} from '../../ui/shop-offer-model.js';
 import {STAMINA_RECOVERY_DESCRIPTION} from '../../peripheral/config.js';
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
 import {availabilityMessage} from '../../ui/resource-availability.js';

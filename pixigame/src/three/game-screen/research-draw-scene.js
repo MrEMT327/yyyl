@@ -1,10 +1,11 @@
 import {Vector2,Vector3} from 'three';
 import {RESEARCH_DRAW_TIMINGS} from '../../ui/draw-presentation-plan.js';
-import {researchResultChanges} from '../../ui/research-result.js';
+import {researchResultChanges} from '../../ui/research-result-model.js';
 import {researchArt,researchCardQuality} from '../../ui/research-art.js';
 import {animateMeshes,easing} from './ui-motion.js';
 import {tiltMaterial} from './card-tilt.js';
 import {area,box,clamp,pic,qualityFrame,slice,titleFont,words} from './menu-art.js';
+import {artworkSize} from './image-loading.js';
 const aura='/art/project-research-draw-reference-v5/card-aura.png',burst='/art/project-research-draw-reference-v5/reveal-rays.png',question='/art/research-comic-v1/question.svg';
 const shades=['#d6e8f2','#92e3b1','#81cfff','#d5adff','#ffda8a'],linear=[0,0,1,1],easeOut=[0,0,.58,1],easeIn=[.42,0,1,1];
 function mask(mesh,ink){
@@ -19,7 +20,7 @@ function light(a,t,src,b,color){return mask(pic(a,t,src,b),color);}
 function opening(d,t,a,b){
   const {rank}=d,timing=RESEARCH_DRAW_TIMINGS[rank],dur=timing.reveal/1000,cx=b.x+b.w/2,cy=b.y+b.h/2;
   const needed=[aura,burst,question,qualityFrame(0),researchArt(d.card.icon)].map(url=>t.texture(url));
-  if(needed.some(tx=>!tx.image?.width&&!tx.userData.failed))return;
+  if(needed.some(tx=>!artworkSize(tx.image)[0]&&!tx.userData.failed))return;
   const entered=d.startCharge(needed.some(tx=>tx.userData.failed)),opts={entered,reduced:false};
   const shake=[{at:0}];
   for(const p of timing.pulses){for(const [off,y,rotation,scale] of [[0,0,0,1],[67,.12,-6,.85],[117,-.01,2.8,1.0708],[167,0,-1.59,1.0155],[300,0,0,1]])shake.push({at:(p+off)/timing.reveal,y:y*b.h,rotation,scale});}
@@ -41,9 +42,9 @@ function opening(d,t,a,b){
   for(const p of timing.pulses){const pulse=light(a,t,aura,bLight,ink);animateMeshes(t,[pulse],cx,cy,{...opts,outer,duration:.33,delay:p/1000,curve:easeOut,
     frames:[{at:0,opacity:0,scale:.94},{at:.18,opacity:.68,scale:1.01},{at:1,opacity:0,scale:1.3}]});}
 }
-function spotlight(d,t,w,h,head,foot,origin){
+function spotlight(d,t,w,h,head,foot,origin,short){
   const {card,modal,rank}=d,r=modal.result,changes=r.nativeChanges||researchResultChanges(card,r.previousLevel,r.level);
-  const short=window.innerHeight<=650,cw=short?104:clamp(.34*w,108,150),ch=short?132:clamp(.4363*w,138,192),ink=shades[rank];
+  const cw=short?104:clamp(.34*w,108,150),ch=short?132:clamp(.4363*w,138,192),ink=shades[rank];
   const f=clamp(.07*w,24,32),nameH=1.35*f,margin=short?12:22,lvlTop=short?8:12,lvlBottom=short?10:20,statH=short?65:73;
   const statHeight=22+changes.length*statH,newH=r.previousLevel?0:51;
   const width=Math.min(.86*w,360),left=(w-width)/2,coreH=r.earnedCore?40:0,full=newH+ch+margin+nameH+lvlTop+35+lvlBottom+statHeight+coreH;
@@ -85,14 +86,14 @@ function spotlight(d,t,w,h,head,foot,origin){
     words(a,'星核  ×'+r.earnedCore,cx+15,y+26,14,{color:'#e1edf3'});});
   area(t,'result-card','觉醒结果',box(left,top+newH,width,full-newH),'none',{},'base');
 }
-export function paintResearchDraw(d,w,h,t){
-  const a=t.layer('awakening-stage').art,open=d.flow.phase==='opening',short=window.innerHeight<=650,head=short?52:70,foot=56+Math.max(.06*window.innerHeight,d.safeBottom);
+export function paintResearchDraw(d,w,h,t,viewportHeight=h){
+  const a=t.layer('awakening-stage').art,open=d.flow.phase==='opening',short=viewportHeight<=650,head=short?52:70,foot=56+Math.max(.06*viewportHeight,d.safeBottom);
   a.quad(0,0,w,h,'#000',.667);area(t,'blank',open?'跳过动画':'点击空白处关闭',box(0,0,w,h),open?'skip':'next');
   const cy=head+(h-head-foot)/2-.16*w,cw=clamp(.34*w,108,150),ch=cw*308/240;
   if(open){const b=box((w-cw)/2,cy-ch/2,cw,ch);opening(d,t,a,b);
     const skip=box(w-(short?16:18)-58,short?4:18,58,44);slice(a,t,'/art/psd-buttons-v1/button-blue.png',skip,10);
     words(a,'跳过',skip.x+29,skip.y+22,14,{weight:500,color:'#dceef8'});area(t,'skip','跳过',skip,'skip');
-  }else spotlight(d,t,w,h,head,foot,cy);
+  }else spotlight(d,t,w,h,head,foot,cy,short);
   const front=t.layer('awakening-footer').art,bw=Math.min(w*.84,360),b=box((w-bw)/2,h-foot+12,bw,44),caption=open?'点击任意位置跳过动画':'点击空白处关闭';
   words(front,caption,w/2,b.y+22,open?13:14,{weight:500,color:open?'#a7bfce':'#d0dce3',tracking:open?0:1});
   area(t,'confirm',open?'跳过':'确定',b,open?'skip':'next');

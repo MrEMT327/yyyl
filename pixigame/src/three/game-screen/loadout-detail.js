@@ -1,5 +1,4 @@
-import {equippedSlots,slotLabel} from '../../ui/equipment-labels.js';
-import {WEAPON_EQUIP_SLOTS} from '../../ui/weapon-equip-controls.js';
+import {equippedSlots,slotLabel,WEAPON_EQUIP_SLOTS} from '../../ui/equipment-labels.js';
 import {weaponCatalogSkills} from '../../ui/weapon-catalog-skills.js';
 import {weaponIconUrl} from '../../ui/weapon-icon-source.js';
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';

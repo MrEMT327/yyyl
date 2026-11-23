@@ -13,8 +13,9 @@ import './workshop-reference-page.css';
 const image=(name,cls='')=>name==='workshop-plus'?emptySlotMark(`ws-empty-mark ${cls}`):`<img class="${cls}" src="${projectIconUrl('equipment-upgrade')}" alt="" aria-hidden="true" draggable="false">`;
 export const workshopNumber=value=>Number(value||0).toLocaleString('zh-CN',{useGrouping:false,maximumFractionDigits:3});
 const button=(action,label,attrs='',cls='',disabled=false)=>`<button type="button" class="wc-button ${cls}" data-action="${action}" ${attrs}${disabled?' disabled':''}>${label}</button>`;
-export const WORKSHOP_FILTERS=['all','ready','equipped',...WEAPON_QUALITIES.map((_,i)=>`q${i}`)];
-const filterLabel=(value,leveling)=>value==='all'?'全部':value==='ready'?(leveling?'可强化':'可升星'):value==='equipped'?'已装备':WEAPON_QUALITIES[Number(value.slice(1))]||'全部';
+import { WORKSHOP_FILTERS } from './workshop-filters.js';
+export { WORKSHOP_FILTERS } from './workshop-filters.js';
+
 export function workshopFilterDialog(value,mode='level',gear) {
   const choices=mode==='gear'?[['all','全部'],...gear.blueprints.map(p=>[String(p.type),p.name])]:WORKSHOP_FILTERS.map(key=>[key,filterLabel(key,mode==='level')]);
   return {title:mode==='gear'?'筛选装备部位':'筛选武器',content:`<div class="ws-filter-options">${choices.map(([key,label])=>button('workshopFilterSelect',label,`data-filter="${key}" aria-pressed="${key===value}"`)).join('')}</div>`};

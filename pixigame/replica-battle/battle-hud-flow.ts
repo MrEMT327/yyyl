@@ -2,7 +2,7 @@ import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js
 import { UPGRADE_SELECTION_TIMING } from '../src/ui/upgrade-selection-timing.js';
 export interface ChoiceBurst {
   prepare():void;remove(owner:object):void;clear():void;
-  draw(owner:object,stage:HTMLElement,tier:string,seconds:number):boolean;
+  draw(owner:object,stage:HTMLElement|undefined,tier:string,seconds:number):boolean;
 }
 import { WaveUIPresentation } from './kernel/wave-ui';
 import wavePresentation from './public/data/wave-presentation.json';
@@ -17,9 +17,9 @@ class BattleEffects {
   private warning: Warning | null = null;
   private readonly bursts = new Set<{ tier: string; revealAt: number }>();
 
-  constructor(private readonly stage: HTMLElement,private readonly burst:ChoiceBurst) {}
+  constructor(private readonly stage:HTMLElement|undefined,private readonly burst:ChoiceBurst,private readonly active:()=>boolean) {}
 
-  showWarning(_root: HTMLElement, type: 2 | 5 = 2, finish?: () => void, clock = () => performance.now() / 1000) {
+  showWarning(_root: HTMLElement|undefined, type: 2 | 5 = 2, finish?: () => void, clock = () => performance.now() / 1000) {
     this.warning = { type, started: clock(), clock, finish };
   }
 
@@ -45,7 +45,7 @@ class BattleEffects {
   update() {
     for (const owner of this.bursts) {
       const elapsed = (performance.now() - owner.revealAt) / 1000;
-      if (!this.stage.isConnected || (elapsed >= 0 && !this.burst.draw(owner, this.stage, owner.tier, elapsed))) {
+      if (!this.active() || (elapsed >= 0 && !this.burst.draw(owner, this.stage, owner.tier, elapsed))) {
         this.removeBurst(owner);
       }
     }
@@ -175,10 +175,10 @@ export class BattleHudFlow {
   selectionStartedAt = 0;
   selecting = false;
 
-  constructor(private readonly stage: HTMLElement, private readonly sim: Simulation, private readonly audio: GameAudio,
+  constructor(stage: HTMLElement|undefined, private readonly sim: Simulation, private readonly audio: GameAudio,
     private readonly onHome: () => void, private readonly weaponIcon: (familyId: number, choice?: Choice) => string | undefined,
-    private readonly prepareChoiceArt: ((choice: Choice) => Promise<void> | undefined)|undefined,burst:ChoiceBurst) {
-    this.effects = new BattleEffects(stage,burst);
+    private readonly prepareChoiceArt: ((choice: Choice) => Promise<void> | undefined)|undefined,burst:ChoiceBurst,private readonly lifecycle={active:()=>Boolean(stage?.isConnected),visible:()=>!document.hidden}) {
+    this.effects = new BattleEffects(stage,burst,lifecycle.active);
     this.wave = new WaveUIPresentation(this.effects, stage);
     this.supply = new BattleSupplyRoll(cue => { this.audio.feedback(cue); });
   }
@@ -233,7 +233,7 @@ export class BattleHudFlow {
       this.resumeAfterChoice();
       this.update();
     };
-    this.choiceTimer = window.setTimeout(() => {
+    this.choiceTimer = setTimeout(() => {
       this.choiceTimer = undefined;
       if (art) void art.then(commit);
       else commit();
@@ -245,7 +245,7 @@ export class BattleHudFlow {
 
   private cancelChoice() {
     this.choiceGeneration++;
-    if (this.choiceTimer !== undefined) window.clearTimeout(this.choiceTimer);
+    if (this.choiceTimer !== undefined) clearTimeout(this.choiceTimer);
     this.choiceTimer = undefined;
     this.cancelChoiceBurst?.(); this.cancelChoiceBurst = undefined;
     this.selecting = false;
@@ -302,10 +302,10 @@ export class BattleHudFlow {
     if ((s.phase === 'won' || s.phase === 'lost') && this.resultAudioKey !== resultKey) {
       this.resultAudioKey = resultKey;
       const phase = s.phase, run = s.runId;
-      if (this.resultTimer !== undefined) window.clearTimeout(this.resultTimer);
-      this.resultTimer = window.setTimeout(() => {
+      if (this.resultTimer !== undefined) clearTimeout(this.resultTimer);
+      this.resultTimer = setTimeout(() => {
         this.resultTimer = undefined;
-        if (s.runId === run && s.phase === phase && !document.hidden && this.stage.isConnected) {
+        if (s.runId === run && s.phase === phase && this.lifecycle.visible() && this.lifecycle.active()) {
           this.audio.effect(phase === 'won' ? 'mixkit:victory' : 'mixkit:defeat', phase === 'won' ? .24 : .19, 1);
         }
       }, phase === 'won' ? 1700 : 0);
@@ -316,7 +316,7 @@ export class BattleHudFlow {
     if (this.disposed) return;
     this.disposed = true;
     this.cancelChoice();
-    if (this.resultTimer !== undefined) window.clearTimeout(this.resultTimer);
+    if (this.resultTimer !== undefined) clearTimeout(this.resultTimer);
     this.effects.dispose();
     this.supply.stop();
   }

@@ -1,5 +1,5 @@
 import {area,box,fmt,pic,slice,titleFont,words} from './menu-art.js';
-import {equipmentBox} from '../../ui/shop-page.js';
+import {equipmentBox} from '../../ui/shop-offer-model.js';
 import {nativeItemArt} from '../../replica/native-item-presentation.js';
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
 

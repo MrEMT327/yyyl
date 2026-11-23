@@ -1,4 +1,5 @@
-import {AdditiveBlending,BufferAttribute,BufferGeometry,DoubleSide,DynamicDrawUsage,LinearFilter,Mesh,NormalBlending,OrthographicCamera,Scene,ShaderMaterial,TextureLoader} from 'three';
+import {AdditiveBlending,BufferAttribute,BufferGeometry,DoubleSide,DynamicDrawUsage,LinearFilter,Mesh,NormalBlending,OrthographicCamera,Scene,ShaderMaterial} from 'three';
+import {artworkTexture} from './image-loading.js';
 import {breakthroughBackdropPose,sampleBreakthroughFrame} from '../../ui/breakthrough-backdrop.js';
 import profile from '../../ui/breakthrough-native-particles.json';
 import art from './breakthrough-art.json';
@@ -53,18 +54,18 @@ function batch(texture,blend,order){
   },dispose(){geometry.dispose();material.dispose();mesh.removeFromParent();}};
 }
 
-export function createThreeBreakthrough(renderer,region=renderer.domElement){
+export function createThreeBreakthrough(renderer,region=renderer.domElement,{bounds=()=>region.getBoundingClientRect(),now=()=>performance.now(),reducedMotion,active}={}){
   const camera=new OrthographicCamera(0,1,0,1,-2,2),scenes={front:new Scene(),rear:new Scene()},owners=new Map();
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const reduced=reducedMotion?{get matches(){return reducedMotion();}}:matchMedia('(prefers-reduced-motion: reduce)');
   let atlas=null;
   function prepare(){
     if(atlas)return;
-    atlas=new TextureLoader().load(art.image);atlas.generateMipmaps=false;atlas.minFilter=atlas.magFilter=LinearFilter;
+    atlas=artworkTexture(art.image,undefined,()=>{});atlas.generateMipmaps=false;atlas.minFilter=atlas.magFilter=LinearFilter;
   }
   function remove(owner){const v=owners.get(owner);if(v){for(const b of v.batches)b.dispose();owners.delete(owner);}}
   function draw(owner,stage,tier,seconds){
-    if(!stage?.isConnected||!breakthroughBackdropPose(seconds).visible){remove(owner);return false;}
-    prepare();const frame=sampleBreakthroughFrame(seconds,tier,reduced.matches,performance.now()/1000);
+    if(!(active?.()??stage?.isConnected)||!breakthroughBackdropPose(seconds).visible){remove(owner);return false;}
+    prepare();const frame=sampleBreakthroughFrame(seconds,tier,reduced.matches,now()/1000);
     let view=owners.get(owner);
     if(view&&view.tier!==tier){remove(owner);view=null;}
     if(!view){
@@ -75,7 +76,7 @@ export function createThreeBreakthrough(renderer,region=renderer.domElement){
   }
   function paint(side){
     if(!owners.size||!atlas?.image?.width)return;
-    const {width:w,height:h}=region.getBoundingClientRect();if(!w||!h)return;
+    const {width:w,height:h}=bounds();if(!w||!h)return;
     const unit=Math.min(w/600,h/1300)*(179.2/328)*1.2;
     if(camera.right!==w||camera.bottom!==h){camera.right=w;camera.bottom=h;camera.updateProjectionMatrix();}
     for(const row of owners.values()){

@@ -1,7 +1,8 @@
 import {
   ACESFilmicToneMapping,Camera,Color,LinearFilter,LinearMipmapLinearFilter,Mesh,NoColorSpace,
-  OrthographicCamera,PlaneGeometry,RawShaderMaterial,Scene,SRGBColorSpace,TextureLoader,Vector2,Vector4,WebGLRenderTarget
+  OrthographicCamera,PlaneGeometry,RawShaderMaterial,Scene,SRGBColorSpace,Vector2,Vector4,WebGLRenderTarget
 } from 'three';
+import {artworkTexture} from './image-loading.js';
 import {createThreeSurface} from '../../ui/three-surface.js';
 import {nineSliceGeometry} from '../../ui/nine-slice-geometry.js';
 import {sortieAircraftImageLayout,sortieAircraftImageUrl} from '../../ui/sortie-aircraft-image.js';
@@ -49,8 +50,8 @@ function layout(w,h,stageName,failed){
   return {panel,hangar,text,title:stageName};
 }
 
-export function createSortieView(device,host,aircraftId,stageName,redraw){
-  const r=device.three,canvas=device.display.input,loader=new TextureLoader(),textures=new Map();
+export function createSortieViewForOutput(device,outputHost,aircraftId,stageName,redraw){
+  const r=device.three,textures=new Map();
   const screenCamera=new Camera(),camera=new OrthographicCamera(0,1,0,1,-1,1);
   const platform=createThreeSurface(),labels=createThreeSurface(),front=new Scene(),equipment=new Scene();
   equipment.add(platform.group);front.add(labels.group);
@@ -58,20 +59,15 @@ export function createSortieView(device,host,aircraftId,stageName,redraw){
   const reveal={frame:{value:null},rect:{value:new Vector4(0,0,1,1)},opacity:{value:0},hasFrame:{value:0}};
   const environment=screenPass(shaftFragment,shaft),transition=screenPass(revealFragment,reveal,true);
   const oldVp=new Vector4(),oldSc=new Vector4(),oldColor=new Color(),output=new Vector4();
-  const css=canvas.getAttribute('style'),className=canvas.className;
-  const attrNames=['role','aria-label','aria-description','tabindex'];
-  const attrs=attrNames.map(k=>canvas.getAttribute(k));
   let width=0,height=0,wPixels=0,hPixels=0,sceneLayout=null,key='',controls=[],titleNode=null;
   let deck=null,plane=null,disposed=false,artVersion=0,combatTarget=null,battleVisible=false;
 
-  host.append(canvas);canvas.className='three-sortie-canvas';canvas.style.cssText='position:absolute;inset:0;display:block;width:100%;height:100%;outline:none;touch-action:none;pointer-events:auto';
-  canvas.tabIndex=0;canvas.setAttribute('role','application');canvas.setAttribute('aria-label','出击准备');
   function load(key,url,raw=false,fallbackUrl){
-    const texture=loader.load(url,()=>{
+    const texture=artworkTexture(url,()=>{
       if(disposed)return;
       if(key==='shaft'){shaft.shaft.value=texture;shaft.sourceSize.value.set(texture.image.width,texture.image.height);shaft.available.value=1;}
       artVersion++;redraw();
-    },undefined,()=>{if(!disposed&&fallbackUrl){texture.dispose();load(key,fallbackUrl,raw);}});
+    },()=>{if(!disposed&&fallbackUrl){texture.dispose();load(key,fallbackUrl,raw);}});
     texture.colorSpace=raw?NoColorSpace:SRGBColorSpace;texture.minFilter=LinearMipmapLinearFilter;texture.magFilter=LinearFilter;
     textures.set(key,texture);
   }
@@ -123,9 +119,9 @@ export function createSortieView(device,host,aircraftId,stageName,redraw){
   }
   function paint(state){
     if(disposed||device.cover!==view)return;
-    const rect=host.getBoundingClientRect();if(!rect.width||!rect.height)return;
+    const rect=outputHost.bounds();if(!rect.width||!rect.height)return;
     width=rect.width;height=rect.height;
-    const ratio=Math.min(globalThis.devicePixelRatio||1,Math.max(1,1672/height));
+    const ratio=Math.min(outputHost.density(),Math.max(1,1672/height));
     wPixels=Math.max(540,Math.round(width*ratio));hPixels=Math.max(960,Math.round(height*ratio));
     const signature=[width,height,state.failed,state.message&&state.failed?state.message:'',state.retry,state.focus,state.keyboard,!!state.model,artVersion].join('|');
     if(signature!==key){key=signature;rebuild(state);}
@@ -133,7 +129,7 @@ export function createSortieView(device,host,aircraftId,stageName,redraw){
     const target=r.getRenderTarget(),clipped=r.getScissorTest(),clear=r.autoClear,alpha=r.getClearAlpha(),tone=r.toneMapping,exposure=r.toneMappingExposure;
     r.getViewport(oldVp);r.getScissor(oldSc);r.getClearColor(oldColor);
     try{
-      output.copy(device.display.begin(host,wPixels,hPixels,redraw,true));
+      output.copy(outputHost.begin(wPixels,hPixels,redraw));
       r.autoClear=false;r.setClearColor(0x071520,1);r.clear();
       viewport(panel.x,0,panel.w,height);shaft.still.value=Number(state.reduced);shaft.seconds.value=state.seconds;
       r.render(environment.scene,screenCamera);
@@ -160,7 +156,7 @@ export function createSortieView(device,host,aircraftId,stageName,redraw){
     }
   }
   const view={
-    paint,hit(x,y){const b=host.getBoundingClientRect();x-=b.x+(sceneLayout?.panel.x||0);y-=b.y;
+    paint,hit(x,y){const b=outputHost.bounds();x-=b.x+(sceneLayout?.panel.x||0);y-=b.y;
       return controls.find(c=>x>=c.x&&y>=c.y&&x<=c.x+c.w&&y<=c.y+c.h)?.id;},
     get battleTarget(){return combatTarget??=new WebGLRenderTarget(540,960,{minFilter:LinearFilter,magFilter:LinearFilter,depthBuffer:true});},
     present(){battleVisible=true;redraw(true);},
@@ -168,12 +164,27 @@ export function createSortieView(device,host,aircraftId,stageName,redraw){
       if(disposed)return;disposed=true;
       for(const t of textures.values())t.dispose();platform.clear();labels.clear();environment.dispose();transition.dispose();combatTarget?.dispose();
       if(device.cover!==view)return;device.cover=null;
-      for(let i=0;i<attrNames.length;i++){if(attrs[i]===null)canvas.removeAttribute(attrNames[i]);else canvas.setAttribute(attrNames[i],attrs[i]);}
-      canvas.className=className;if(css===null)canvas.removeAttribute('style');else canvas.setAttribute('style',css);
-      if(device.battle)device.battle.show();
-      else{device.home.append(canvas);device.repaintHome?.();}
+      outputHost.release();
+      if(device.battle)device.battle.show();else device.repaintHome?.();
     }
   };
   device.cover=view;return view;
 }
 
+
+export function createSortieView(device,host,aircraftId,stageName,redraw){
+  const canvas=device.display.input;
+  const css=canvas.getAttribute('style'),className=canvas.className;
+  const attrNames=['role','aria-label','aria-description','tabindex'];
+  const attrs=attrNames.map(k=>canvas.getAttribute(k));
+  host.append(canvas);canvas.className='three-sortie-canvas';canvas.style.cssText='position:absolute;inset:0;display:block;width:100%;height:100%;outline:none;touch-action:none;pointer-events:auto';
+  canvas.tabIndex=0;canvas.setAttribute('role','application');canvas.setAttribute('aria-label','出击准备');
+  const outputHost={bounds:()=>host.getBoundingClientRect(),density:()=>globalThis.devicePixelRatio||1,
+    begin:(w,h,request)=>device.display.begin(host,w,h,request,true),
+    release(){
+      for(let i=0;i<attrNames.length;i++){if(attrs[i]===null)canvas.removeAttribute(attrNames[i]);else canvas.setAttribute(attrNames[i],attrs[i]);}
+      canvas.className=className;if(css===null)canvas.removeAttribute('style');else canvas.setAttribute('style',css);
+      if(!device.battle)device.home.append(canvas);
+    }};
+  return createSortieViewForOutput(device,outputHost,aircraftId,stageName,redraw);
+}

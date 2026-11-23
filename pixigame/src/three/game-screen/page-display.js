@@ -1,18 +1,15 @@
 import {Color,Vector2,Vector4} from 'three';
 
-// One physical backbuffer. Each view provides its design resolution and an input
-// region in CSS pixels. Letterboxing and the diagnostics use the same renderer.
-export function createPageDisplay(renderer){
-  const canvas=renderer.domElement,input=document.createElement('div'),viewport=new Vector4(),size=new Vector2(),color=new Color();
-  canvas.className='three-page-output';canvas.setAttribute('aria-hidden','true');
-  canvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;display:block;pointer-events:none;z-index:2147483647';
-  document.body.append(canvas);
+// All views share this drawing buffer. The platform supplies the screen and game bounds.
+export function createGameDisplay(renderer,screenBounds){
+  const viewport=new Vector4(),size=new Vector2(),color=new Color();
+  const canvas=renderer.domElement;
   const gl=renderer.getContext(),limits=gl.getParameter(gl.MAX_VIEWPORT_DIMS);
   let width=1,height=1,request=null,diagnostics=null,covered=true;
   const display={
-    input,canvas,
-    begin(region,w,h,refresh,cover=false){
-      const b=region.getBoundingClientRect(),page=canvas.getBoundingClientRect();
+    canvas,
+    begin(b,w,h,refresh,cover=false){
+      const page=screenBounds();
       if(!b.width||!b.height||!page.width||!page.height)return viewport.set(0,0,0,0);
       width=page.width;height=page.height;request=refresh;covered=cover;
       const sx=Math.min(w/b.width,limits[0]/width),sy=Math.min(h/b.height,limits[1]/height);
@@ -34,7 +31,19 @@ export function createPageDisplay(renderer){
       finally{renderer.setViewport(viewport);renderer.setScissor(viewport);renderer.setScissorTest(true);renderer.autoClear=clear;}
     },
     refresh(){request?.();},attach(view){diagnostics=view;request?.();},
-    close(){diagnostics?.destroy();canvas.remove();input.remove();request=diagnostics=null;}
+    close(){diagnostics?.destroy();request=diagnostics=null;}
   };
   return display;
+}
+
+export function createPageDisplay(renderer){
+  const canvas=renderer.domElement,input=document.createElement('div');
+  canvas.className='three-page-output';canvas.setAttribute('aria-hidden','true');
+  canvas.style.cssText='position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;display:block;pointer-events:none;z-index:2147483647';
+  document.body.append(canvas);
+  const view=createGameDisplay(renderer,()=>canvas.getBoundingClientRect());
+  return {...view,input,
+    begin(region,w,h,refresh,cover){return view.begin(region.getBoundingClientRect(),w,h,refresh,cover);},
+    close(){view.close();canvas.remove();input.remove();}
+  };
 }

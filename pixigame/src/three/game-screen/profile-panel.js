@@ -3,23 +3,23 @@ import {paintLobbyPaper} from './panel-paper.js';
 import {paintItemDetail} from './item-details.js';
 import {createNameField} from './profile-name-field.js';
 import {area,box,button,clamp,fmt,pic,qualityFrame,slice,words} from './menu-art.js';
-import {playerInfoModel} from '../../ui/player-info-model.js';
-import {playerRenameQuote} from '../../ui/player-info.js';
-import {playerAvatarArt} from '../../ui/player-avatar.js';
+import {playerInfoModel,playerRenameQuote} from '../../ui/player-info-model.js';
+import {playerAvatarArt} from '../../ui/player-avatar-art.js';
 import {aircraftUiImage} from '../../aircraft-ui-images.js';
 import {weaponIconUrl} from '../../ui/weapon-icon-source.js';
 import {nativeCollectionArt} from '../../replica/native-collection-art.js';
 import {rewardDisplayQuality} from '../../replica/item-display-quality.js';
 import {equipmentArtPath} from '../../replica/equipment-art.js';
 import {GEAR_PARTS} from '../../peripheral/equipment-system.js';
+import {artworkSize} from './image-loading.js';
 
 const emptyFrame='/art/psd-equipment-v1/frame-empty.png';
 function fit(a,t,url,b,cover=false,alignY=.5){
-  const m=pic(a,t,url,b),im=m.material.map?.image;
-  if(!im?.height)return m;
-  const k=(cover?Math.max:Math.min)(b.w/im.width,b.h/im.height);
-  if(!cover){m.scale.set(im.width*k,-im.height*k,1);return m;}
-  const fx=b.w/(im.width*k),fy=b.h/(im.height*k),uv=m.geometry.attributes.uv;
+  const m=pic(a,t,url,b),[iw,ih]=artworkSize(m.material.map?.image);
+  if(!iw||!ih)return m;
+  const k=(cover?Math.max:Math.min)(b.w/iw,b.h/ih);
+  if(!cover){m.scale.set(iw*k,-ih*k,1);return m;}
+  const fx=b.w/(iw*k),fy=b.h/(ih*k),uv=m.geometry.attributes.uv;
   for(let i=0;i<uv.count;i++)uv.setXY(i,(1-fx)*.5+uv.getX(i)*fx,(1-fy)*(1-alignY)+uv.getY(i)*fy);
   return m;
 }
@@ -124,10 +124,11 @@ export function openProfilePanel(screen,host,send){
     if(cmd.type==='inspect'){inspect=cmd.data;field?.visible(false);refresh();return;}
     if(cmd.type==='close'&&inspect){inspect=null;field?.visible(true);refresh();return;}
     if(cmd.type==='editName'){field?.focus();return;}
+    if(cmd.type==='playerRenameSave'){save();return;}
     const cancel=cmd.type==='close'&&cmd.via==='keyboard'&&latest.modal.editingName;
     if(cmd.type!=='none')send(cancel?'playerRenameCancel':cmd.type,cmd.data||{},host);
   });
-  function save(){if(latest.quote.renameReady&&latest.snapshot.playerRename.canRename)send('playerRenameSave',latest.renameData,host);}
+  function save(){if(latest.quote.renameReady&&latest.snapshot.playerRename.canRename)send('playerRenameSave',{...latest.renameData,name:field?.value},host);}
   function refresh(){
     panel.update({...latest,inspect,coverNavigation:true,backdropAlpha:.55},
       JSON.stringify([latest.signature,latest.profile.name,latest.modal.editingName,latest.modal.nameError,latest.snapshot.playerRename,inspect]),'profile');
@@ -137,7 +138,7 @@ export function openProfilePanel(screen,host,send){
     latest={snapshot,modal:{...modal},signature,profile,quote,avatar:playerAvatarArt(snapshot),
       renameData:{renameRevision:quote.renameReady?r.revision:'',renameCost:quote.renameReady?r.cost:'',renameName:snapshot.playerName||profile.name}};
     if(modal.editingName&&!field)field=createNameField(panel.surface,modal.nameDraft??profile.name,panel.invalidate,save,
-      ()=>send('playerRenameCancel',{},host),()=>screen.repaintHome?.());
+      ()=>send('playerRenameCancel',{},host),()=>screen.repaintHome?.(),screen.createTextField);
     if(!modal.editingName&&field){field.close(true);field=null;}
     refresh();
   },close(){field?.close();field=null;panel.close();}};

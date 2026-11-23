@@ -1,7 +1,7 @@
 import {area,box,clamp,titleFont,words} from './menu-art.js';
 import {paintLobbyPaper} from './panel-paper.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
-import {boxRewardGroups,percent} from '../../ui/shop-box-presentation.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
+import {boxRewardGroups,percent} from '../../ui/shop-box-art.js';
 import {pendingNotice} from './chapter-rewards.js';
 
 export function shopRates(data,w,h,t){

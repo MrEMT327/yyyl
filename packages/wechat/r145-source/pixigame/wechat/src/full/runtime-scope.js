@@ -4,6 +4,7 @@ import URLSearchParams from 'core-js-pure/actual/url-search-params/index.js';
 import { cloneGameData } from '../platform.js';
 import { fromByteArray, toByteArray } from 'base64-js';
 import { createNativeEvents } from './native-events.js';
+export { createNativeCrypto } from './native-crypto.js';
 
 // Each original H5 entry receives its own globals. A closed battle must not
 // leave animation frames, keyboard listeners, timers or media in the lobby.
@@ -52,23 +53,4 @@ export function createRuntimeScope(parent = globalThis) {
       timeouts.clear(); intervals.clear(); frames.clear(); disposers.clear();
     },
   };
-}
-
-export async function createNativeCrypto(api) {
-  const manager = api.getUserCryptoManager(); let pool = new Uint8Array(), refill;
-  const replenish = () => refill ||= new Promise((resolve, reject) => manager.getRandomValues({ length: 16384,
-    success(result) { const bytes = new Uint8Array(result.randomValues); const next = new Uint8Array(pool.length + bytes.length); next.set(pool); next.set(bytes, pool.length); pool = next; resolve(); }, fail: reject,
-  })).finally(() => { refill = null; });
-  await replenish();
-  const crypto = {
-    getRandomValues(view) {
-      if (!ArrayBuffer.isView(view) || view instanceof Float32Array || view instanceof Float64Array) throw new TypeError('Expected integer typed array');
-      if (view.byteLength > pool.length) throw new Error('随机数缓冲尚未准备好');
-      new Uint8Array(view.buffer, view.byteOffset, view.byteLength).set(pool.subarray(0, view.byteLength)); pool = pool.slice(view.byteLength);
-      if (pool.length < 4096) replenish().catch(error => console.warn('[random]', error));
-      return view;
-    },
-    randomUUID() { const bytes = crypto.getRandomValues(new Uint8Array(16)); bytes[6] = bytes[6] & 15 | 64; bytes[8] = bytes[8] & 63 | 128; const hex = [...bytes].map(v => v.toString(16).padStart(2, '0')).join(''); return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`; },
-  };
-  return crypto;
 }

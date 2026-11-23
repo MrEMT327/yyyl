@@ -1,6 +1,9 @@
 import {area,box,pic,slice,words,clamp,titleFont} from './menu-art.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {taskReward} from './task-model.js';
+import {createTextureCanvas} from '../../ui/three-surface.js';
+
+let measureContext;
 const medal='/art/project-task-icons-v1/activity-medal.png';
 const disabledSkin=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',
   '#include <map_fragment>\nfloat gray=dot(diffuseColor.rgb,vec3(.2126,.7152,.0722)); diffuseColor.rgb=vec3(gray)*.38;');};
@@ -41,7 +44,8 @@ export function taskList(s,rows,w,t,clip,zone,achievements=false,switched=0,init
   const buttonW=80,buttonH=44,trackH=Math.max(15,.04*w),side=.095*w;
   const actionCol=Math.max(64,w*.19),badgeW=.08*w;
   const innerW=bw-2*pad,labelW=achievements?innerW:Math.max(1,innerW-badgeW-buttonW-2*gap);
-  const ctx=(globalThis.OffscreenCanvas?new OffscreenCanvas(1,1):document.createElement('canvas')).getContext('2d');ctx.font='400 '+fs+'px '+titleFont;
+  const ctx=measureContext??=createTextureCanvas({measurement:true}).getContext('2d');
+  ctx.font='400 '+fs+'px '+titleFont;
   const wrap=name=>{let line='',count=1;for(const ch of String(name)){if(line&&ctx.measureText(line+ch).width>labelW){line='';count++;}line+=ch;}return count;};
   let y=clip.y+(achievements?.01*w:0);
   const positions=rows.map(row=>{

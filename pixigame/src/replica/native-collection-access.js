@@ -24,7 +24,7 @@ export function nativeCollectionAccess(group,snapshot,row){
   const isBase=Boolean(base&&base.appearances[row.id]===appearance);
   const baseSelected=group==='skins'?snapshot.replicaCollection.skinId===0
     :group==='pilots'&&!snapshot.replicaCollection.pilots.some(pilot=>pilot.equipped);
-  const using=Boolean(row.equipped||(isBase&&baseSelected&&(group==='skins'||!activated)));
+  const using=Boolean(row.equipped||(isBase&&baseSelected));
   return {isBase,basicOnly:isBase&&!activated,available:Boolean(activated||isBase),using,
     selectionId:isBase&&!activated?0:Number(row.id),activated,collectionUsing:activated&&using};
 }

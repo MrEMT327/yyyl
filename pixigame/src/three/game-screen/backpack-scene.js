@@ -1,4 +1,4 @@
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {preparePsdPopupArt,paintPsdPopup} from '../../ui/psd-popup-art.js';
 import {nineSliceGeometry} from '../../ui/nine-slice-geometry.js';
 import {createLobbyPanel} from './lobby-panel.js';

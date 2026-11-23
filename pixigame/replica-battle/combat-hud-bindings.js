@@ -2,11 +2,12 @@ import {syncBossHud} from '../src/ui/boss-encounter-hud.js';
 import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js';
 import {createBattleUiFrame} from './battle-ui-frame.js';
 import { bindCloudPointerInput } from './cloud-pointer-input.js';
-import {resizeCloudCombatViewport} from './cloud-combat-viewport.js';
+import {resizeCombatViewport,resizeCloudCombatViewport} from './cloud-combat-viewport.js';
 import { createUpgradeSelectionLayer } from '../src/ui/upgrade-selection-layer.js';
 import { Container } from '../src/three/display.js';
 import { createPixiCombatUi } from '../src/ui/pixi-lobby.js';
-import { TextureLoader, SRGBColorSpace } from 'three';
+import { SRGBColorSpace } from 'three';
+import {artworkTexture} from '../src/three/game-screen/image-loading.js';
 import { battleCardIconUrl } from '../src/replica/battle-card-art.js';
 import { battleSkillDescription as description } from './battle-hud-flow';
 import { assessReplicaBattle } from '../src/replica/native-battle-rating.js';
@@ -18,14 +19,14 @@ import { aircraftUiImage } from '../src/aircraft-ui-images.js';
 import { cloudAssetBase } from '../src/ui/cloud-asset-base.js';
 import { BATTLE_REVIVE_DIAMONDS } from '../src/replica/battle-revive-purchase.js';
 
-export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,requestDiamondRevive,aircraftId},
+export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,requestDiamondRevive,aircraftId,hudHost,reducedMotion},
   {canvas,renderer,pixelRatio,nativeHudTiles,mount,draw,setPhase,disposeRenderer}){
   if(signal?.aborted){disposeRenderer();throw new DOMException('Battle closed during UI loading','AbortError');}
-  const scene=new Container(),textures=new Map(),loader=new TextureLoader();
+  const scene=new Container(),textures=new Map();
   const selectionLayer=createUpgradeSelectionLayer(scene);
   const keyFor=card=>{
     const url=battleCardIconUrl(card),key=url;
-    if(url&&!textures.has(key)){const texture=loader.load(url);texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;texture.userData.skillIconUrl=url;textures.set(key,texture);}
+    if(url&&!textures.has(key)){const texture=artworkTexture(url,undefined,()=>{});texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;texture.userData.skillIconUrl=url;textures.set(key,texture);}
     return key;
   };
   const currentWeapons=()=>ui.equippedWeapons().map(weapon=>{
@@ -50,7 +51,8 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   };
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,
     fixedGrowth:{state:{nodes:{},pendingLevels:1,rerolls:0}},fixedLoadout:{weapons:[]},pauseMode:'pause'};
-  const bridge={game,presentation,scene,selectionLayer,nativeHudTiles,app:{renderer},ui:{},runStats:{},
+  const bridge={game,presentation,scene,selectionLayer,nativeHudTiles,app:{renderer},ui:{},runStats:{},reducedMotion,
+    loadImageSurface:hudHost?.loadImageSurface,
     showPauseMenu(){
       if(sim.phase!=='playing'&&sim.phase!=='paused')return;
       game.pauseMode='pause';
@@ -177,14 +179,19 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     } else { lastSupply=''; game.battleSupply=null; }
   }
   sync();const cloud=createPixiCombatUi({bridge,parent:scene});bridge.pixiCombatUi=cloud;
-  stage.classList.add('cloud-ui-mode');mount?.();
-  const resize=()=>resizeCloudCombatViewport(stage,canvas,renderer,scene,pixelRatio);
-  const observer=new ResizeObserver(resize);observer.observe(stage);resize();
-  const input=bindCloudPointerInput({surface:stage,canvas,handlePointer:cloud.handlePointer,getScreen:()=>renderer.screen});
+  stage?.classList.add('cloud-ui-mode');mount?.();
+  const resize=()=>{
+    if(!hudHost)return resizeCloudCombatViewport(stage,canvas,renderer,scene,pixelRatio);
+    const {width,height}=hudHost.bounds();return resizeCombatViewport(width,height,renderer,scene,pixelRatio,hudHost.safeInsets?.());
+  };
+  const inputOptions={handlePointer:cloud.handlePointer,getScreen:()=>renderer.screen};
+  const input=hudHost?hudHost.bindInput(inputOptions):bindCloudPointerInput({surface:stage,canvas,...inputOptions});
+  const stopResize=hudHost?hudHost.watchResize(resize):(()=>{const observer=new ResizeObserver(resize);observer.observe(stage);return ()=>observer.disconnect();})();
+  resize();
   const frame=createBattleUiFrame(()=>{sync();cloud.update();draw(scene,cloud,selectionLayer);});
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
-  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;observer.disconnect();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();disposeRenderer();};
-  window.addEventListener('pagehide',destroy,{once:true});update();
+  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();if(!hudHost)window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;stopResize();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();disposeRenderer();};
+  if(!hudHost)window.addEventListener('pagehide',destroy,{once:true});update();
   return {update,destroy,frame:frame.run,setSettlement(receipt){settlement=receipt;update();}};
 }

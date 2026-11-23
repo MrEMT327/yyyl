@@ -1,5 +1,8 @@
+import {artworkTexture} from '../three/game-screen/image-loading.js';
 import { Container, Rectangle } from '../three/display.js';
-import { TextureLoader, CanvasTexture, SRGBColorSpace, LinearFilter } from 'three';
+import { CanvasTexture, SRGBColorSpace, LinearFilter } from 'three';
+import { createTextureCanvas } from './three-surface.js';
+import { prefersReducedMotion } from './status-feedback.js';
 import { paintPsdPopup } from './psd-popup-art.js';
 import { paintPsdPopupTitle } from './psd-popup-title.js';
 import { drawUiSymbol } from './ui-symbols.js';
@@ -7,7 +10,7 @@ import { defeatResultModel } from './defeat-result-model.js';
 import { upgradeIconLayout } from './upgrade-icon-layout.js';
 import { defeatResultLayout } from './defeat-result-layout.js';
 import { defeatMotion } from './defeat-result-motion.js';
-import { paintRewardItemSlot } from './reward-item-slot.js';
+import { paintRewardItemSlot } from './reward-item-art.js';
 import { cloudAssetBase } from './cloud-asset-base.js';
 import { paintDefeatSection } from './defeat-section-frame.js';
 import { nineSliceGeometry } from './nine-slice-geometry.js';
@@ -24,7 +27,7 @@ const victoryRaysUrl = `${cloudAssetBase}art/project-research-draw-reference-v5/
 export function preloadDefeatArt() {
   for (const url of [defeatHeaderUrl,defeatBadgeUrl,victoryHeaderUrl,victoryBadgeUrl,victoryStarUrl,victoryRaysUrl]) {
     if (textures.has(url)) continue;
-    const texture = new TextureLoader().load(url);
+    const texture = artworkTexture(url,undefined,()=>{});
     texture.colorSpace = SRGBColorSpace;
     texture.generateMipmaps = false;
     texture.minFilter = LinearFilter;
@@ -34,14 +37,14 @@ export function preloadDefeatArt() {
 let smokeTexture;
 function smokeArt() {
   if(smokeTexture)return smokeTexture;
-  const canvas=document.createElement('canvas');canvas.width=canvas.height=96;
+  const canvas=createTextureCanvas();canvas.width=canvas.height=96;
   const ctx=canvas.getContext('2d'),gradient=ctx.createRadialGradient(48,48,3,48,48,47);
   gradient.addColorStop(0,'rgba(166,170,181,.8)');gradient.addColorStop(.45,'rgba(111,119,133,.5)');gradient.addColorStop(1,'rgba(64,74,89,0)');
   ctx.fillStyle=gradient;ctx.fillRect(0,0,96,96);smokeTexture=new CanvasTexture(canvas);smokeTexture.colorSpace=SRGBColorSpace;return smokeTexture;
 }
 export function icon(surface, url, x, y, width, height, fit = true) {
   if (!textures.has(url)) {
-    const texture = new TextureLoader().load(url);
+    const texture = artworkTexture(url,undefined,()=>{});
     texture.colorSpace = SRGBColorSpace;
     texture.generateMipmaps = false;
     texture.minFilter = LinearFilter;
@@ -215,7 +218,7 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, vic
 }
 export function updateDefeatResult(panel,now,bridge) {
   if(!panel?.motion)return;
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches,m=panel.motion;
+  const reduced=(bridge.reducedMotion??prefersReducedMotion)(),m=panel.motion;
   const p=(m.victory?victoryMotion:defeatMotion)((now-m.start)/1000,reduced);m.ready=p.ready;
   for(const {n,delay}of m.layers){const a=p.reveal(delay);n.alpha=a;n.position.y=16*(1-a);}
   // The generated crest includes its plaque; keep its edges level as it settles.

@@ -1,13 +1,14 @@
 import * as T from 'three';
 import baked from './home-art.json';
 import {guidePlacement} from '../../ui/guide-layout.js';
+import {carnivalMedal} from './carnival-art.js';
 
 const files={heart:'/art/psd-combat-v1/heart.png',chest:'/art/psd-main-v1/buttons/star-rewards-chest.png',
   navBackground:'/art/project-navigation-v2/background.png',navFrame:'/art/psd-main-v1/navigation/horizontal-frame.png',
   divider:'/art/psd-main-v1/navigation/divider.png',developer:'/art/psd-buttons-v1/button-blue.png',
   gold:'/art/psd-equipment-v1/frame-gold.png',caption:'/art/onboarding-dialogue-v2/panel.webp',
-  mascot:'/art/onboarding-assistant-v1/expressions.png',pointer:baked.pointer};
-import {navTop,navEdges} from './home-navigation.js';
+  mascot:'/art/onboarding-assistant-v1/expressions.png',pointer:baked.pointer,carnival:carnivalMedal};
+import {homeInsets,navEdges,navArtwork,navBodyEnd,navFillStart,carnivalEntryBox,affectionY} from './home-navigation.js';
 const tabs=[['shop',28.75,1507,84,84],['assembly',176.25,1510,69,86],['battle',320,1483,114,99],['research',491.25,1507,92,96],['supply',642.75,1512,80,91]];
 const vert=`precision highp float;attribute vec3 position;attribute vec2 uv;uniform mat4 modelViewMatrix,projectionMatrix;varying vec2 coords;void main(){coords=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
 const frag=`precision highp float;uniform sampler2D art;uniform vec4 region,splice;uniform vec2 pixels,box;uniform vec3 tint;uniform float alpha,octagon;varying vec2 coords;
@@ -43,7 +44,10 @@ export async function createHomeHud(load,model,redraw){
   const textures={};
   const routes=[...Object.entries(files),...Object.entries(baked.nav).map(([id,url])=>['nav-'+id,url]),...Object.entries(baked.fonts).map(([id,f])=>['font-'+id,f.image])];
   if(model.avatar)routes.push(['avatar',model.avatar]);if(model.frame)routes.push(['frame',model.frame]);
-  await Promise.all(routes.map(async([key,url])=>{textures[key]=await own(url);}));
+  await Promise.all(routes.map(async([key,url])=>{
+    try{textures[key]=await own(url);}catch(error){if(key!=='carnival')throw error;}
+  }));
+  textures.carnival??=textures.chest;
   const solid=new T.DataTexture(new Uint8Array([255,255,255,255]),1,1);solid.needsUpdate=true;
   textures.solid={map:solid,w:1,h:1};
   function material(b){return new T.RawShaderMaterial({vertexShader:vert,fragmentShader:frag,transparent:true,depthTest:false,depthWrite:false,side:T.DoubleSide,forceSinglePass:true,
@@ -59,7 +63,13 @@ export async function createHomeHud(load,model,redraw){
   function solidColor(u,v){u.set((v>>16&255)/255,(v>>8&255)/255,(v&255)/255);}
   const avatar=sprite('avatar','avatar',1);if(avatar)avatar.material.uniforms.octagon.value=1;
   const frame=sprite('frame','frame',2),heart=sprite('heart','heart',3),chest=sprite('chest','chest',4),dev=sprite('dev','developer',5);
+  const carnival=sprite('carnival','carnival',4),carnivalReady=sprite('carnival-ready','solid',17);
+  solidColor(carnivalReady.material.uniforms.tint.value,0xfa5d67);carnivalReady.material.uniforms.octagon.value=1;
   const shade=sprite('footer','navBackground',10),rail=sprite('rail','navFrame',11);
+  const floor=sprite('footer-floor','navBackground',10);
+  const trim=sprite('footer-trim','navBackground',10);
+  floor.material.uniforms.region.value.set(0,navFillStart,1,navBodyEnd-navFillStart);
+  trim.material.uniforms.region.value.set(0,navBodyEnd,1,1-navBodyEnd);
   const dividers=Array.from({length:4},(_,i)=>sprite('gap'+i,'divider',12));
   for(const [name] of tabs)sprite(name,'nav-'+name,13);
   const ring=sprite('guide-ring','gold',30),bubble=sprite('guide-panel','caption',31),mascot=sprite('guide-bot','mascot',32);
@@ -141,36 +151,57 @@ export async function createHomeHud(load,model,redraw){
   }
   function paint(renderer,now){
     if(!view||disposed)return;
-    const s=state,unit=750/view.width,safe=s.safeBottom*unit||0,navY=navTop(safe);
-    place(avatar,25.8,31.8,63.2,63.2);place(frame,13.5,19.5,87.7,87.7);place(heart,35.1,350.6,42.75,42.75);
+    const s=state,unit=750/view.width,l=homeInsets(view),top=l.top,ny=y=>l.nav+(y-1473)*l.height/151;
+    const aff=affectionY(s.carnival),eventY=carnivalEntryBox[1]+top;
+    place(avatar,25.8,31.8+top,63.2,63.2);place(frame,13.5,19.5+top,87.7,87.7);place(heart,35.1,aff+12.6+top,42.75,42.75);
+    if(s.carnival){
+      const iconH=50*textures.carnival.h/textures.carnival.w;
+      place(carnival,31.5,eventY+36-iconH/2,50,iconH);
+      if(s.carnivalReady)place(carnivalReady,76,eventY+11,14,14);else carnivalReady.visible=false;
+    }else carnival.visible=carnivalReady.visible=false;
     const p=s.reduced?0:(now%4.8)/4.8,angle=mixKeys(p,[[0,0],[.04,0],[.07,-11],[.11,10],[.15,-6],[.19,4],[.24,0],[1,0]])*Math.PI/180;
     const shift=mixKeys(p,[[0,0],[.04,0],[.07,-.05],[.11,.05],[.15,-.03],[.19,.02],[.24,0],[1,0]])*61;
-    const ox=30.5,oy=43*.85;place(chest,264+shift+ox-ox*Math.cos(angle)+oy*Math.sin(angle),239+oy-ox*Math.sin(angle)-oy*Math.cos(angle),61,43);chest.rotation.z=angle;
-    place(shade,0,navY,750,151);place(rail,0,navY,750,148);
-    for(let i=0;i<dividers.length;i++)place(dividers[i],navEdges[i+1],navY,3,148);
-    for(const [name,x,y,w,h] of tabs)place(sprites.get(name),x-30,y-safe-30,w+60,h+60);
-    label('nav','战役',375,1594-safe,28,{order:15,shadow:0x111111,shadeY:2*unit});
+    const ox=30.5,oy=43*.85;place(chest,264+shift+ox-ox*Math.cos(angle)+oy*Math.sin(angle),239+top+oy-ox*Math.sin(angle)-oy*Math.cos(angle),61,43);chest.rotation.z=angle;
+    const inset=Math.max(0,1624-l.floor),skin=navArtwork(l.nav,l.height,inset);
+    shade.material.uniforms.region.value.w=inset?navBodyEnd:1;
+    place(shade,0,l.nav,750,inset?skin.body:l.height);
+    if(inset){
+      place(floor,0,skin.fillY,750,skin.fillHeight);
+      place(trim,0,skin.trimY,750,skin.trim);
+      const railHeight=l.height*148/151,crop=Math.min(1,skin.body/railHeight);
+      rail.material.uniforms.region.value.w=crop;
+      place(rail,0,l.nav,750,railHeight*crop);
+    }else{
+      floor.visible=trim.visible=false;rail.material.uniforms.region.value.w=1;
+      place(rail,0,l.nav,750,l.height*148/151);
+    }
+    for(let i=0;i<dividers.length;i++)place(dividers[i],navEdges[i+1],l.nav,3,l.height*148/151);
+    for(const [name,x,y,w,h] of tabs)place(sprites.get(name),x-30,ny(y-30),w+60,(h+60)*l.height/151);
+    label('nav','战役',375,ny(1594),28,{order:15,shadow:0x111111,shadeY:2*unit});
+    for(const m of labels.get('nav').nodes)m.userData.navScale=l.height/151;
     const heading=s.stage?.chapterName?.replace(/^(?:第\s*[\d零一二三四五六七八九十百]+\s*章)\s*·?\s*/,'')||'蔚蓝海岸';
-    label('chapter','第'+chapterNumber(s.chapter+1)+'章·'+heading,376,161.5,30,{font:'title',shadow:0x102132});
-    label('waves',(s.stage?.waveCount||15)+'波·'+(s.stage?.bestCleared?'已通关':s.stage?.unlocked===false?'未解锁':'待挑战'),375,197.5,24,{color:0x81efff,shadow:0x102132});
-    label('stars','累计'+s.total+'/'+s.maximum,386,261.5,clamp(23.6,11*unit,19*unit),{color:0x142d43});
-    label('profile',s.name,105,49.5,22.875,{align:'left',maxWidth:108,shadow:0x0a1824});
-    const powerTitle=label('power-title','战力',105,89,Math.max(15.75,10*unit),{align:'left',color:0xffde43});
-    label('power',s.power,108+powerTitle,90.4,17.25,{align:'left',color:0xffde43,shadow:0x0a1824});
+    label('chapter','第'+chapterNumber(s.chapter+1)+'章·'+heading,376,161.5+top,30,{font:'title',shadow:0x102132});
+    label('waves',(s.stage?.waveCount||15)+'波·'+(s.stage?.bestCleared?'已通关':s.stage?.unlocked===false?'未解锁':'待挑战'),375,197.5+top,24,{color:0x81efff,shadow:0x102132});
+    label('stars','累计'+s.total+'/'+s.maximum,386,261.5+top,clamp(23.6,11*unit,19*unit),{color:0x142d43});
+    label('profile',s.name,105,49.5+top,22.875,{align:'left',maxWidth:108,shadow:0x0a1824});
+    const powerTitle=label('power-title','战力',105,89+top,Math.max(15.75,10*unit),{align:'left',color:0xffde43});
+    label('power',s.power,108+powerTitle,90.4+top,17.25,{align:'left',color:0xffde43,shadow:0x0a1824});
     for(const [i,k] of ['stamina','coins','diamonds'].entries()){
       const str=walletValue(s.wallet?.[k],s.wallet?.unlimited);
-      label(k,str,327+i*170,69.5,str.length>4?19.1:22.5,{font:'system'});
+      label(k,str,327+i*170,69.5+top,str.length>4?19.1:22.5,{font:'system'});
     }
-    label('affection','好感度',56.5,411.8,clamp(21.75,10*unit,18*unit),{shadow:0x172b40});
+    label('carnival',s.carnival?'七日活动':'',56.5,eventY+73.8,clamp(20,9*unit,16*unit),{shadow:0x172b40,maxWidth:101});
+    label('affection','好感度',56.5,aff+73.8+top,clamp(21.75,10*unit,18*unit),{shadow:0x172b40});
     const dh=Math.max(67.5,38*unit),dw=Math.max(105,44*unit);
-    if(s.developer){place(dev,736.5-dw,470.96,dw,dh);dev.material.uniforms.splice.value.set(18,21,0,0);}
+    if(s.developer){place(dev,736.5-dw,470.96+top,dw,dh);dev.material.uniforms.splice.value.set(18,21,0,0);}
     else dev.visible=false;
-    label('developer',s.developer?'开发':'',736.5-dw/2,470.96+dh/2,clamp(25.5,12*unit,17*unit),{font:'title',color:0xedf4f7,shadow:0x07131f});
-    label('patrol',s.patrol||'',117,1343,17.25,{shadow:0x101923});
+    label('developer',s.developer?'开发':'',736.5-dw/2,470.96+dh/2+top,clamp(25.5,12*unit,17*unit),{font:'title',color:0xedf4f7,shadow:0x07131f});
+    label('patrol',s.patrol||'',117,1343+l.dock,17.25,{shadow:0x101923});
     const groups=[
       ['profile',['avatar','frame'],['profile','power-title','power']],
       ['chapter-title',[],['chapter','waves']],['star-rewards',['chest'],['stars']],
-      ['affection',['heart'],['affection']],['developer',['dev'],['developer']],['patrol',[],['patrol']],
+      ['carnival',['carnival','carnival-ready'],['carnival']],['affection',['heart'],['affection']],
+      ['developer',['dev'],['developer']],['patrol',[],['patrol']],
       ...['stamina','coins','diamonds'].map(id=>[id,[],[id]]),
       ...tabs.map(([id])=>['nav-'+id,[id],id==='battle'?['nav']:[]])
     ];
@@ -178,7 +209,7 @@ export async function createHomeHud(load,model,redraw){
       const p=pressScales.get(id);
       function apply(mesh,isText){
         if(!mesh)return;
-        if(isText)mesh.scale.set(1,1,1);
+        if(isText)mesh.scale.set(1,mesh.userData.navScale||1,1);
         if(!p)return;
         mesh.position.x=p.x+(mesh.position.x-p.x)*p.k;mesh.position.y=p.y+(mesh.position.y-p.y)*p.k;
         mesh.scale.x*=p.k;mesh.scale.y*=p.k;
@@ -204,4 +235,3 @@ export async function createHomeHud(load,model,redraw){
     dispose(){disposed=true;for(const l of labels.values()){for(const m of l.nodes)m.material.dispose();l.geometry.dispose();}
       for(const mesh of sprites.values())mesh.material.dispose();for(const b of maps.values())b.map.dispose();solid.dispose();rect.dispose();scene.clear();}};
 }
-

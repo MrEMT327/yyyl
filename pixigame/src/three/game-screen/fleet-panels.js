@@ -55,6 +55,6 @@ export function openFleetPanel(screen,host,send){
   },cmd=>{if(!['holo','none'].includes(cmd.type))send(cmd.type,cmd.data||{},host);});
   return {host,close:panel.close,update(snapshot,modal,signature){const id=[modal.type,modal.id,modal.kind,modal.skillKey].join('|');
     if(id!==identity){entered=performance.now()/1000;panel.scroll('base',0);}identity=id;
-    panel.update({snapshot,modal,entered,reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,sheetMetrics:metrics,safeBottom:screen.menuView?.safeBottom||0},
+    panel.update({snapshot,modal,entered,reduced:(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches),sheetMetrics:metrics,safeBottom:screen.menuView?.safeBottom||0},
       [id,signature,modal.operation,modal.error,modal.result?.previousStars,modal.targetSlot,modal.readonly,modal.requireSlotSelection].join('|'),id);}};
 }

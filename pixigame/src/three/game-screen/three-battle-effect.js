@@ -17,12 +17,12 @@ const uniform=value=>({value});
 
 export function createBattleEffectPass(renderer,width,height,scene=new Three.Scene()) {
   const camera=new Three.Camera();
-  const meshes=new Map(),programs=new Map();
+  const meshes=new Map(),programs=new Map(),pool=new Map();
   const projection=new Three.Matrix4(),resolution=new Three.Vector2();
-  let frame=0;
-  function resize(w,h){
+  let frame=0,pooled=0;
+  function resize(w,h,left=0,top=0){
     resolution.set(w,h);
-    projection.set(2/w,0,0,-1, 0,-2/h,0,1, 0,0,0,0, 0,0,0,1);
+    projection.set(2/w,0,0,-1-2*left/w, 0,-2/h,0,1+2*top/h, 0,0,0,0, 0,0,0,1);
   }
   resize(width,height);
   function compile(source,zeroLights){
@@ -83,7 +83,19 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     else linear.set(0,0);
   }
   function disposeEntry(entry){
-    scene.remove(entry.mesh);entry.mesh.geometry.dispose();entry.mesh.material.dispose();
+    entry.mesh.removeFromParent();entry.mesh.geometry.dispose();entry.mesh.material.dispose();
+  }
+  function releaseEntry(entry){
+    const g=entry.mesh.geometry;
+    if(pooled>=96||g.getAttribute('inPosition')?.count>64||g.index?.count>192){disposeEntry(entry);return;}
+    entry.mesh.removeFromParent();
+    const list=pool.get(entry.program)??[];
+    list.push(entry);pool.set(entry.program,list);pooled++;
+  }
+  function acquire(program){
+    const entry=pool.get(program)?.pop();
+    if(!entry)return make(program);
+    pooled--;scene.add(entry.mesh);return entry;
   }
   // Inputs are the source sampler's pixel-space vertices; batches with a
   // gradient retain their independent vertex colours, opacity and HDR gain.
@@ -93,8 +105,8 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     const program=compile(source,zeroLights);
     let entry=meshes.get(id);
     if(!entry||entry.program!==program){
-      if(entry)disposeEntry(entry);
-      entry=make(program);meshes.set(id,entry);
+      if(entry)releaseEntry(entry);
+      entry=acquire(program);meshes.set(id,entry);
     }
     const {mesh}=entry,g=mesh.geometry,u=mesh.material.uniforms;
     mesh.visible=true;mesh.renderOrder=depth;entry.frame=frame;
@@ -106,12 +118,13 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     const uv=attribute(g,'inTexCoord',vertices.length,2,Float32Array);
     const tint=attribute(g,'inTint',vertices.length,4,Uint8Array,true);
     const [ox,oy]=main.atlasOrigin||[0,0];
+    const [logicalWidth,logicalHeight]=main.pathogenicLogicalSize??[main.width,main.height];
     let gain=1;
     if(line)for(const vertex of vertices)gain=Math.max(gain,vertex.color[0],vertex.color[1],vertex.color[2]);
     for(let i=0;i<vertices.length;i++){
       const vertex=vertices[i],[x,y]=vertex.uv;
       position.setXY(i,vertex.position[0],vertex.position[1]);
-      uv.setXY(i,line?x:(x-ox)/main.width,line?y:(y-oy)/main.height);
+      uv.setXY(i,line?x:(x-ox)/logicalWidth,line?y:(y-oy)/logicalHeight);
       const color=line?vertex.color:white;
       // The authored vertex program expects the little-endian B,G,R,A tint
       // byte layout. Preserve the reference's 8-bit quantization.
@@ -128,7 +141,7 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     u.uPgTime.value=draw.time;u.uPgColor.value=draw.color||white;
     u.uPgProjectilePalette.value=draw.projectilePalette||neutral;u.uPgCanvasModulate.value=draw.canvasModulate||white;
     u.uPgUvRect.value=draw.uvRect||fullUV;u.uPgMainRepeat.value=Number(!!draw.mainRepeat);
-    u.uPgTexturePixelSize.value.set(1/main.width,1/main.height);
+    u.uPgTexturePixelSize.value.set(1/logicalWidth,1/logicalHeight);
     u.uPgScreenToLocal.value=draw.screenToLocal||identity3;
     u.uPgLocalToScreen.value=draw.localToScreen||identity3;u.MODEL_MATRIX.value=draw.modelMatrix||identity4;
     bindTexture(u,'TEXTURE',main);
@@ -141,12 +154,14 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
   function finish(){
       for(const [id,entry] of meshes){
         if(entry.frame===frame)continue;
-        disposeEntry(entry);meshes.delete(id);
+         releaseEntry(entry);meshes.delete(id);
       }
   }
   return {
     begin(){frame++;},resize,submit,scene,compile,finish,
     draw(){finish();renderer.render(scene,camera);},
-    dispose(){for(const entry of meshes.values())disposeEntry(entry);meshes.clear();programs.clear();}
+    dispose(){for(const entry of meshes.values())disposeEntry(entry);
+      for(const list of pool.values())for(const entry of list)disposeEntry(entry);
+      pooled=0;pool.clear();meshes.clear();programs.clear();}
   };
 }

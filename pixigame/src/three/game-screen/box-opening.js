@@ -32,7 +32,7 @@ function opening(data,w,h,t){
   animateMeshes(t,[flare],w*.5,cy,{...data,delay:.65,duration:.9,frames:[{at:0,opacity:0,scale:.4},{at:.45,scale:1.15},{at:1,opacity:.55}]});
 }
 export function openBoxOpening(screen,host,send,sound){
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);
   let id=null,timer,closed=false;
   const panel=createLobbyPanel(screen,host,'装备开箱',opening,cmd=>{if(cmd.type==='processSkipBox'||cmd.type==='close')send('processSkipBox',{},host);},{overlay:true});
   return {host,close(){closed=true;clearTimeout(timer);panel.close();},update(_snapshot,modal){

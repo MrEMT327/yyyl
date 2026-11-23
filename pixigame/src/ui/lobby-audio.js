@@ -108,5 +108,6 @@ export function createLobbySoundPlayer({context,enabled,fetchAudio=globalThis.fe
       const current={source,gain,ctx};voice=current;source.onended=()=>{source.disconnect();gain.disconnect();if(voice===current)voice=null;};source.start();
     },
     stop(){serial++;stopVoice();},
+    clear(){serial++;stopVoice();buffers.clear();lastPlayed.clear();},
   };
 }

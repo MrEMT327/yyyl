@@ -6,7 +6,7 @@ import {releaseOwnedVideo} from '../../ui/release-owned-video.js';
 import {pilotAffectionVideo} from '../../peripheral/pilot-affection.js';
 
 const clock=value=>{const seconds=Math.floor(Number.isFinite(value)?value:0);return Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');};
-function layout(data,w,h,t){
+export function affectionVideoLayout(data,w,h,t){
   const {media,texture,seek}=data,a=t.layer('affection-film').art;
   a.quad(0,0,w,h,'#000');
   if(media.videoWidth&&media.videoHeight){
@@ -40,7 +40,7 @@ export function openAffectionVideo(screen,host,send){
   const media=host.ownerDocument.createElement('video');media.playsInline=true;media.autoplay=true;media.preload='metadata';media.controls=false;
   media.disablePictureInPicture=true;media.disableRemotePlayback=true;
   const texture=new VideoTexture(media);texture.colorSpace=SRGBColorSpace;texture.minFilter=LinearFilter;
-  const abort=new AbortController(),opts={signal:abort.signal},panel=createLobbyPanel(screen,host,'专属视频',layout,c=>{
+  const abort=new AbortController(),opts={signal:abort.signal},panel=createLobbyPanel(screen,host,'专属视频',affectionVideoLayout,c=>{
     if(c.type==='close'){send('close',{},host);return;}
     if(c.type==='mute'){media.muted=!media.muted;return;}
     if(c.type==='toggle'){if(media.paused||media.ended){if(media.error)media.load();media.play().catch(refresh);}else media.pause();}

@@ -91,6 +91,7 @@ export function openUtilityPanel(screen,host,send){
     }});return 'base';
   },async cmd=>{
     if(cmd.type==='copy'){
+      if(screen.copyText){const copied=await screen.copyText(state.modal.report);if(!panel.closed){copyStatus=copied?'已复制':'复制失败';refresh();}return;}
       clipboardField?.remove();const field=host.ownerDocument.createElement('textarea');field.value=state.modal.report;field.readOnly=true;
       field.setAttribute('aria-label','诊断日志内容');field.style.cssText='position:absolute;inset:0;width:1px;height:1px;opacity:0;pointer-events:none';host.append(field);clipboardField=field;
       const ok=await copyDiagnosticReport(field);if(!host.isConnected||field!==clipboardField)return;

@@ -1,10 +1,10 @@
 import './lobby-growth-feedback.css';
 
-const actions = new Set(['upgradeAircraft', 'upgradeWeapon', 'synthesizeWeapon', 'synthesizeAll']);
-export const hasLobbyGrowthFeedback = action => actions.has(action);
+import {hasLobbyGrowthFeedback} from './lobby-growth-actions.js';
+export {hasLobbyGrowthFeedback} from './lobby-growth-actions.js';
 
 export function showLobbyGrowthFeedback(root, before, after, action, payload) {
-  if (!actions.has(action) || !root.isConnected) return;
+  if (!hasLobbyGrowthFeedback(action) || !root.isConnected) return;
   const aircraft = action === 'upgradeAircraft';
   const previous = aircraft ? before.aircraft : before.weapons;
   const current = aircraft ? after.aircraft : after.weapons;

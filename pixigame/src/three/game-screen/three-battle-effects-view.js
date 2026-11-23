@@ -18,7 +18,11 @@ export class BattleEffectsView {
   beginFrame(time){
     if(time<this.clock)this.reset();
     this.clock=time;this.live.clear();this.livePlayers.clear();this.liveHistories.clear();
-    this.host.stage.glow.begin();this.pass.begin();
+    const stage=this.host.stage,viewport=stage.viewport;
+    if(this.viewport!==viewport){
+      this.viewport=viewport;this.pass.resize(viewport.width,viewport.height,viewport.left,viewport.top);
+    }
+    stage.glow.begin();this.pass.begin();
   }
   texture(ref){
     const bindingData=this.source.channels(this.graph,ref),desc=bindingData.diffuse;
@@ -61,6 +65,7 @@ export class BattleEffectsView {
     const main=this.texture(item.texture);if(!main)return;
     const resolved=shared?.material??this.resolve(item.material,item.materialUniformOverrides);
     if(shared)shared.material=resolved;
+    if(Object.values(resolved.textures).some(binding=>!binding))return;
     let entry=this.views.get(id);
     if(!entry){entry={data:this.source.createData()};this.views.set(id,entry);}
     let gain=1;
@@ -82,4 +87,3 @@ export class BattleEffectsView {
   reset(){for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();this.views.clear();}
   destroy(){this.reset();this.pass.dispose();for(const b of this.gradients.values())b.texture.dispose();this.gradients.clear();}
 }
-

@@ -51,7 +51,7 @@ export function createTextField(surface,value,changed,submit,cancel,repaint,{lab
       if(str)words(inkArt,str,l-2,cy,size,{align:'left',weight:400,color,maxWidth:Math.max(8,measure(str)+4)});
     caret=focused&&!selectionW?inkArt.quad(selectionX,cy-size*.56,1,size*1.125,ink):null;
   }
-  return {draw,focus(){input.focus({preventScroll:true});},visible(on){
+  return {draw,get value(){return input.value;},focus(){input.focus({preventScroll:true});},visible(on){
     if(shown===on)return;shown=on;input.style.visibility=on?'visible':'hidden';
     if(!on&&doc.activeElement===input)surface.focus({preventScroll:true});
   },close(restore=false){

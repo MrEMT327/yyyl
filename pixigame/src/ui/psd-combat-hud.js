@@ -36,8 +36,7 @@ const extraAssets={
   'encounter-warning':`${cloudAssetBase}art/project-enemy-markers-v1/warning.svg`,
   'encounter-frame':`${cloudAssetBase}art/weapon-catalog-psd-v1/frame-blue.png`,
 };
-function loadAssets() {
-  const loadImageSurface = globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadImageSurface;
+function loadAssets(loadImageSurface) {
   for (const name of [...Object.keys(definitions),...Object.keys(extraAssets)]) {
     if (assets.has(name)) continue;
     const url = name === 'coins' ? RESOURCE_ICONS.coins.url : extraAssets[name] || `${cloudAssetBase}art/psd-combat-v1/${name}.png`;
@@ -150,7 +149,7 @@ function repaint(layer,key,draw) {
   layer.sprite.texture.source.update();
 }
 export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () => 300) {
-  loadAssets();
+  loadAssets(bridge.loadImageSurface ?? globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadImageSurface);
   const mount = new Container(); mount.label='psd-combat-hud';
   mount.scale.set(600/W,1300/H);root.addChild(mount);
   const nativeTiles=bridge.nativeHudTiles;

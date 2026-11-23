@@ -1,14 +1,11 @@
 import {ACESFilmicToneMapping,Color,DoubleSide,HalfFloatType,ShaderMaterial,SRGBColorSpace,Vector4,WebGLRenderTarget} from 'three';
 import {createModelRenderer} from '../../ui/peripheral-models.js';
 import {measureScreen} from './screen-metrics.js';
+import {equipmentLayout} from './equipment-layout.js';
 
-export function equipmentPreviewRect(w,h){
-  const u=w/369.453;
-  return {x:18.5*u,y:138.5*u,w:339.9*u,h:236.4*u};
-}
-export function menuAircraft(screen,page,scene,refresh,request,active,{profile='equipment',rect=equipmentPreviewRect}={}){
+export function menuAircraft(screen,page,scene,refresh,request,active,{profile='equipment',rect=w=>equipmentLayout(w,0).preview,port=null,stageModel=false,acceptOrbit=()=>true}={}){
   const r=screen.three,canvas=screen.display.input,color=new Color(),viewport=new Vector4(),scissor=new Vector4();
-  const target=new WebGLRenderTarget(2,2,{type:HalfFloatType,depthBuffer:true,stencilBuffer:false,samples:Math.min(4,r.capabilities.maxSamples)});
+  const target=new WebGLRenderTarget(2,2,{type:HalfFloatType,depthBuffer:true,stencilBuffer:false,samples:port?0:Math.min(4,r.capabilities.maxSamples)});
   const exposureUniform={value:1.12};
   // Three applies the display transform only on screen. Keep the intermediate
   // HDR and apply the aircraft's own exposure when painting it over the hangar.
@@ -29,11 +26,11 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
           #include <colorspace_fragment>
         }`});
   }
-  let closed=false,ready=false,fit='';
+  let closed=false,ready=false,fit='',model,wanted,settledFrames=0,prefetch='';
   const metrics=measureScreen(r,profile==='patrol'?'Three 巡逻战机':'Three 装备战机',()=>!closed&&active(),false);
-  function bounds(){const p=page.getBoundingClientRect(),b=rect(p.width,p.height);return {width:b.w,height:b.h,left:p.left+b.x,top:p.top+b.y};}
+  function bounds(){const p=port?port.bounds():page.getBoundingClientRect(),b=rect(p.width,p.height);return {width:b.w,height:b.h,left:p.left+b.x,top:p.top+b.y};}
   const interactive=profile==='equipment'||profile==='catalog';
-  const embedded={target,bounds,profile,hit:e=>interactive&&active()&&scene.pick(e)==='aircraft',focused:()=>interactive&&active()&&scene.focused==='aircraft',
+  const embedded={target,bounds,profile,port,stageModel,hit:e=>interactive&&active()&&acceptOrbit()&&scene.pick(e)==='aircraft',focused:()=>interactive&&active()&&scene.focused==='aircraft',
     draw(exposure,paint){
       if(closed)return;
       exposureUniform.value=exposure;
@@ -48,12 +45,35 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
       }
       if(!ready){ready=true;refresh();}request();
     }};
-  const model=createModelRenderer({screen,embedded});
-  return {target,paint,get ready(){return ready;},update(snapshot,aircraftId=snapshot.aircraftId){
+  function configure(snapshot,aircraftId){
     const {width,height}=bounds(),next=aircraftId+'-'+width+'-'+height;
-    if(fit!==next){ready=false;fit=next;model.attach(page,aircraftId);}
+    if(fit!==next){ready=false;fit=next;model.attach(port??page,aircraftId);}
     model.showAircraft(aircraftId,snapshot);
-  },tick(dt){model.update(dt,active());},close(){closed=true;metrics.release();model.destroy();target.dispose();
-    delete canvas.dataset.modelReady;delete canvas.dataset.aircraftId;delete canvas.dataset.viewProfile;}};
+  }
+  if(!port)model=createModelRenderer({screen,embedded});
+  return {target,paint,get ready(){return ready;},update(snapshot,aircraftId=snapshot.aircraftId){
+    if(model&&!stageModel){wanted=null;configure(snapshot,aircraftId);}
+    else{
+      wanted=[snapshot,aircraftId];
+      if(stageModel&&port&&aircraftId&&prefetch!==aircraftId){
+        ready=false;
+        prefetch=aircraftId;
+        // Transfer the selected fighter while the page gathers its artwork.
+        // The package loader shares this request with the staged 3D preview.
+        void port.loadAircraft(aircraftId).catch(()=>{});
+      }
+    }
+  },tick(dt){
+    const visible=active();
+    // Give the 2D layout and GPU uploads their own frames before building
+    // the studio. The native equipment page waits for this preview offscreen.
+    if(!model){
+      if(!visible||!wanted||++settledFrames<3)return;
+      model=createModelRenderer({screen,embedded});return;
+    }
+    if(visible&&wanted){const next=wanted;wanted=null;configure(...next);}
+    model.update(dt,visible);
+  },pause(){model?.update(0,false);
+  },close(){closed=true;metrics.release();model?.destroy();target.dispose();
+    if(canvas){delete canvas.dataset.modelReady;delete canvas.dataset.aircraftId;delete canvas.dataset.viewProfile;}}};
 }
-

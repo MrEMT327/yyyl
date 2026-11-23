@@ -2,8 +2,8 @@ import {art,box,button,area,pic,slice,words,titleFont,bodyFont,qualityFrame,fmt,
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
 import {nativeItemArt} from '../../replica/native-item-presentation.js';
 import {availabilityMessage,isResourceShortage} from '../../ui/resource-availability.js';
-import {boxChestArt,boxShowcaseItems,advancedParticles} from '../../ui/shop-box-presentation.js';
-import {shopItemId,shopCardName} from '../../ui/shop-page.js';
+import {boxChestArt,boxShowcaseItems,advancedParticles} from '../../ui/shop-box-art.js';
+import {shopItemId,shopCardName} from '../../ui/shop-offer-model.js';
 import {formatPatrolDuration} from '../../ui/patrol-clock.js';
 
 const names={coins:'金币',diamonds:'钻石',stamina:'体力',weaponParts:'武器零件'};
@@ -116,6 +116,15 @@ export function shopMenu(data,w,h,t,chrome){
   function offer(o,i,label,actual=o){
     const [type,amount]=Object.entries(o.reward)[0],id=shopItemId(type),x=(14.8+i%3*116.8)*u,y=cursor+Math.floor(i/3)*165*u,b=box(x,y,108.4*u,157.7*u);
     const short=!blocked&&isResourceShortage(actual.reason),cost=actual.cost,reason=blocked?(s.rewardPending?'奖励待保存':'奖励处理中'):availabilityMessage(actual.reason);
+    // The PSD frame is only a border; restore the solid card face and its
+    // original bottom pattern, instead of showing the hangar through the card.
+    rows.panel(x,y,b.w,b.h,{fill:'#20394b',stroke:null,opacity:1,cut:7*u});
+    const triangleUrl='/art/weapon-catalog-psd-v1/triangles-blue.png';
+    const triangle=t.texture(triangleUrl).image;
+    if(triangle?.width){
+      const th=b.w*triangle.height/triangle.width;
+      pic(rows,t,triangleUrl,box(x,y+b.h-th,b.w,th));
+    }
     slice(rows,t,'/art/weapon-catalog-psd-v1/frame-blue.png',b,10*u);
     words(rows,label,x+5*u,y+15*u,12*u,{align:'left',maxWidth:102*u});
     const path=shopProductImage(type,amount);
@@ -148,4 +157,3 @@ export function shopMenu(data,w,h,t,chrome){
     area(t,'section-'+id,label,b,'shopSection',{section:id});
   }
 }
-

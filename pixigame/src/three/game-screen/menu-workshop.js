@@ -17,12 +17,15 @@ export function workshopMenu(data,w,h,t){
   const a=t.layer('workshop').art,gear=data.workshop.kind==='gear',top=Math.max(12,w*.0325),stageH=(gear?.80:.704)*w;
   const barY=top+stageH,barH=gear?Math.max(50,w*117.9/1080):Math.max(44,w*.105),gridY=barY+barH;
   const footH=(gear?Math.max(56,w*.15):Math.max(54,.16*w))+(data.safeBottom||0),footY=h-footH;
-  pic(a,t,atlas['workshop-wall'],box(0,top,w,h-top));
+  const bleed=t.topBleed||0;
+  pic(a,t,atlas['workshop-wall'],bleed?box(0,-bleed,w,h+bleed):box(0,top,w,h-top));
   pic(a,t,atlas['workshop-stage'],box(0,top,w,stageH));
   pic(a,t,atlas['workshop-header'],box(w*.03,top+.023*w,.94*w,w*.082));
   pic(a,t,atlas['workshop-warehouse'],box(0,barY,w,barH));words(a,'仓库',w/2,barY+barH/2,clamp(.048*w,16,22),{family:titleFont});
   pic(a,t,art['gear-grid'],box(0,gridY,w,Math.max(1,footY-gridY)));
-  const foot=t.layer('workshop-footer').art;pic(foot,t,atlas['workshop-footer'],box(0,footY,w,footH));
+  const foot=t.layer('workshop-footer').art,safe=data.safeBottom||0;
+  if(safe)foot.quad(0,h-safe,w,safe,'#101c23');
+  pic(foot,t,atlas['workshop-footer'],box(0,footY,w,footH-safe));
   const dockY=footY+(footH-(data.safeBottom||0))/2;
   const back=box(10,dockY-22,48,44);slice(foot,t,'/art/project-return-button-v1/face.png',box(back.x,dockY-19,48,38),8);
   const arrow=symbol(foot,t,'chevron-right',box(back.x+11,dockY-13,26,26));arrow.rotation.z=Math.PI;
@@ -55,4 +58,3 @@ export function workshopMenu(data,w,h,t){
   const layout={a,top,stageH,gridY,footY,button,assistant};
   (gear?gearWorkshop:weaponWorkshop)(data,w,h,t,layout);
 }
-

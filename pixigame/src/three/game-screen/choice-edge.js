@@ -1,7 +1,9 @@
-import {Camera,CustomBlending,LinearFilter,Mesh,NoColorSpace,OneFactor,RawShaderMaterial,Scene,TextureLoader,Vector2,Vector3,Vector4} from 'three';
+import {Camera,CustomBlending,LinearFilter,Mesh,NoColorSpace,OneFactor,RawShaderMaterial,Scene,Vector2,Vector3,Vector4} from 'three';
 import {Container} from '../../three/display.js';
 import {EDGE_PALETTES,edgeTierFromStar,edgeBasePulse,edgeFlashSample} from '../../ui/breakthrough-edge-profile.js';
+import {prefersReducedMotion} from '../../ui/status-feedback.js';
 import {borderGeometry,borderVertex,createEdgeMasks} from './choice-edge-masks.js';
+import {artworkTexture} from './image-loading.js';
 import art from './choice-edge-art.json';
 
 const clamp=n=>Math.min(1,Math.max(0,n));
@@ -42,7 +44,7 @@ void main(){
 
 // Source colours blend in display space, then the completed frame adds to the existing HUD.
 export function createChoiceEdgePainter(tier){
-  const palette=EDGE_PALETTES[tier]||EDGE_PALETTES.y,atlas=new TextureLoader().load(art.flash);
+  const palette=EDGE_PALETTES[tier]||EDGE_PALETTES.y,atlas=artworkTexture(art.flash,undefined,()=>{});
   atlas.colorSpace=NoColorSpace;atlas.generateMipmaps=false;atlas.minFilter=atlas.magFilter=LinearFilter;
   const value=v=>({value:v}),u={
     wideMask:value(null),nearMask:value(null),fineMask:value(null),flashAtlas:value(atlas),
@@ -72,7 +74,7 @@ export function createChoiceEdgePainter(tier){
         let f=edgeFlashSample(w,h,seconds);
         if(f.slot!==lastSlot&&!f.visible)f=edgeFlashSample(w,h,f.slot*.1+.009);
         lastSlot=f.slot;
-        if(f.visible){
+        if(f.visible&&atlas.image){
           const radians=f.angle*Math.PI/180,size=Math.max(.001,f.size*f.scale);
           u.flashPose.value.set(f.x,f.y,Math.cos(radians)/size,Math.sin(radians)/size);
           u.flashTile.value=f.index;u.flashAlpha.value=f.alpha;
@@ -84,9 +86,9 @@ export function createChoiceEdgePainter(tier){
   },invalidate(){lastTick=-1;},dispose(){release();material.dispose();atlas.dispose();}};
 }
 
-export function attachBreakthroughChoiceFrame(panel,{display,revealAt=0,star,tier=edgeTierFromStar(star)}){
+export function attachBreakthroughChoiceFrame(panel,{display,revealAt=0,star,tier=edgeTierFromStar(star),reduced=prefersReducedMotion()}){
   const node=new Container({label:'breakthrough-choice-screen-frame'});node.eventMode='none';node.interactiveChildren=false;panel.addChild(node);
-  const born=Math.max(performance.now(),revealAt),reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false;
+  const born=Math.max(performance.now(),revealAt);
   const painter=createChoiceEdgePainter(tier),canvas=display.canvas;
   let stoppedAt=null,disposed=false;
   function paint(r){
@@ -102,4 +104,3 @@ export function attachBreakthroughChoiceFrame(panel,{display,revealAt=0,star,tie
   node._disposeVisuals=()=>{if(disposed)return;disposed=true;display.screenOverlays.delete(paint);output.removeEventListener?.('webglcontextrestored',painter.invalidate);painter.dispose();};
   return node;
 }
-

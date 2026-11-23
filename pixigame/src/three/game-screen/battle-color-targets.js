@@ -44,6 +44,7 @@ export function createBattleColorTargets(renderer,w,h,hullSize){
     }
   }
   return {ground:ground.texture,hull:hull.texture,
+    resizeGround(w,h){ground.setSize(w,h);},
     drawGround(scene,camera,backdrop){paint(ground,scene,backdrop,1,()=>renderer.render(scene,camera));},
     drawHull(scene,draw){paint(hull,scene,0,0,draw);},
     dispose(){ground.dispose();hull.dispose();}};

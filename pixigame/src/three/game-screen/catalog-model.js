@@ -5,6 +5,7 @@ import {nativeWeaponSkillArt} from '../../replica/native-weapon-skill-art.js';
 import {nativeWeaponDisplayText} from '../../replica/native-weapon-display.js';
 import {nativePilotAppearance} from '../../replica/native-pilot-presentation.js';
 import {NATIVE_AIRCRAFT_SKINS} from '../../replica/native-aircraft-skins.js';
+import {NATIVE_PILOT_SKINS} from '../../replica/native-pilot-roster.js';
 import {collectionQualityRank} from '../../replica/native-quality.js';
 
 const groups={weapon:'guns',aircraft:'skins',pilot:'pilots'};
@@ -18,7 +19,10 @@ export function catalogModel(data){
     return {row,id:row.id,actualId:row.catalogSelectionId??row.id,name:row.name,skillName:skills.map(k=>plain(k.name)).join('、')||row.name,
       description:skills.map(k=>plain(k.description)).join('\n'),image:nativeCollectionArt(row),skillIcon:weapons?nativeWeaponSkillArt(row):source&&nativeSkillArt(source),
       skillLabel:source&&plain(source.name),activated:access.activated,access,rank:collectionQualityRank(row.quality),stars:Math.max(1,...row.stages.map(v=>v.star))};};
-  const items=list.map(decorate),requested=raw.find(r=>String(r.id)===String(ui.id)),family=weapons&&requested?nativeWeaponGroupId(requested):ui.id;
+  const appearanceIds=kind==='pilot'?NATIVE_PILOT_SKINS:kind==='aircraft'?NATIVE_AIRCRAFT_SKINS:{};
+  const items=list.map(decorate),requested=raw.find(r=>String(r.id)===String(ui.id)||
+    Boolean(ui.id&&(r.baseAppearanceId||appearanceIds[r.id])===ui.id));
+  const family=weapons&&requested?nativeWeaponGroupId(requested):requested?.id??ui.id;
   const selected=items.find(i=>String(i.id)===String(family))||items.find(i=>i.access.using)||items[0];
   if(!selected)return null;
   const displayed=ui.skillTab&&!weapons?items.find(i=>i.access.using)||selected:selected;
@@ -38,4 +42,3 @@ export function catalogBounds(w,h,safe=0){
   return {top,content,hero,divider,head,slot,slotY,controls,btn,list:divider+head,end:h-footer,footer};
 }
 export function catalogAircraftRect(w,h){const v=catalogBounds(w,h);return {x:.02*w,y:v.top+v.content/2-.8823*w,w:.96*w,h:.70*w};}
-

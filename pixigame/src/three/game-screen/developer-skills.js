@@ -74,13 +74,21 @@ function layoutMenu(model,w,h,t){
   if(more)control(a,t,box(x,y+ph-60,width,40),'more','显示更多','more',{});
 }
 
-export function mountThreeDeveloperSkills(screen,stage,sim,audio,ui){
-  const doc=stage.ownerDocument,win=doc.defaultView,host=doc.createElement('div'),abort=new AbortController(),ctx=doc.createElement('canvas').getContext('2d');
-  host.style.cssText='position:fixed;z-index:1;pointer-events:none';host.hidden=true;stage.after(host);
+export function mountThreeDeveloperSkills(screen,stage,sim,audio,ui,native=null){
+  const doc=stage?.ownerDocument,win=doc?.defaultView,host=native?{...native.region,frameBounds:native.region.bounds,priority:6}:doc.createElement('div');
+  const abort=native?null:new AbortController(),ctx=(native?native.createRaster():doc.createElement('canvas')).getContext('2d');
+  if(!native){host.style.cssText='position:fixed;z-index:1;pointer-events:none';host.hidden=true;stage.after(host);}
   let open=false,available=false,resume=false,suppressed=false,tab='all',query='',error='',limit=45,field=null,revision=0,closed=false,page;
+  if(native)host.accepts=({x,y})=>{
+    if(!available||screen.cover)return false;
+    const rect=host.bounds(),b=launcher(rect.width,rect.height);
+    return open||x>=rect.left+b.x&&x<=rect.left+b.x+b.w&&y>=rect.top+b.y&&y<=rect.top+b.y+b.h;
+  };
+  const focus=()=>panel.surface?.focus({preventScroll:true});
   const panel=createLobbyPanel(screen,host,'全部技能',layoutMenu,action,{battle:true,interactive:()=>available,handlesKey:k=>open||k==='Enter'||k===' '});
   const surface=panel.surface;
   function cover(){
+    if(native)return;
     const rect=stage.getBoundingClientRect();Object.assign(host.style,{left:rect.x+'px',top:rect.y+'px',width:rect.width+'px',height:rect.height+'px'});
     const b=launcher(rect.width,rect.height);
     surface.style.clipPath=open?'none':'inset('+b.y+'px 10px '+Math.max(0,rect.height-b.y-b.h)+'px '+Math.max(0,b.x)+'px)';
@@ -95,15 +103,15 @@ export function mountThreeDeveloperSkills(screen,stage,sim,audio,ui){
   function enter(){
     if(open||!canOpenDeveloperSkills(sim))return;
     resume=sim.phase==='playing';if(resume)sim.pause();audio.pause();open=true;error='';
-    field=createTextField(surface,query,value=>{
+    field=(screen.createTextField??createTextField)(surface,query,value=>{
       if(value!==query){query=value;limit=45;panel.scroll('base',0);refresh(true);}else panel.invalidate();
-    },()=>surface.focus({preventScroll:true}),leave,()=>{}, {label:'搜索技能',placeholder:'搜索技能或驾驶员、飞机',size:12,autoFocus:false,search:true});
-    cover();refresh(true);surface.focus({preventScroll:true});
+    },focus,leave,()=>{}, {label:'搜索技能',placeholder:'搜索技能或驾驶员、飞机',size:12,autoFocus:false,search:true});
+    cover();refresh(true);focus();
   }
   function leave(){
     if(!open)return;open=false;suppressed=sim.phase==='upgrade';field?.close();field=null;
     if(resume&&sim.phase==='paused')sim.resume();if(sim.phase==='playing')audio.resume();resume=false;
-    cover();refresh();surface.focus({preventScroll:true});
+    cover();refresh();focus();
   }
   function action(cmd){
     if(cmd.type==='open')return enter();if(cmd.type==='close')return leave();if(!open)return;
@@ -115,18 +123,22 @@ export function mountThreeDeveloperSkills(screen,stage,sim,audio,ui){
       catch(reason){error=reason instanceof Error?reason.message:String(reason);refresh(true);}
     }
   }
-  surface.addEventListener('keydown',e=>{if(open||e.key==='Enter'||e.key===' ')e.stopPropagation();},{signal:abort.signal});
-  const resize=new ResizeObserver(cover);resize.observe(stage);win.addEventListener('resize',cover,{signal:abort.signal});
-  win.addEventListener('scroll',cover,{capture:true,passive:true,signal:abort.signal});cover();refresh();
+  let remove;
+  if(!native){
+    surface.addEventListener('keydown',e=>{if(open||e.key==='Enter'||e.key===' ')e.stopPropagation();},{signal:abort.signal});
+    const resize=new ResizeObserver(cover);resize.observe(stage);win.addEventListener('resize',cover,{signal:abort.signal});
+    win.addEventListener('scroll',cover,{capture:true,passive:true,signal:abort.signal});remove=()=>{abort.abort();resize.disconnect();host.remove();};
+  }else remove=native.watch(()=>panel.invalidate());
+  cover();refresh();
   const previous=ui.update.bind(ui);
   ui.update=()=>{
     previous();const next=canOpenDeveloperSkills(sim);
-    if(next!==available){available=next;host.hidden=!next;
+    if(next!==available){available=next;if(!native)host.hidden=!next;
       if(!next&&open){open=false;resume=false;field?.close();field=null;cover();}refresh();}
     if(sim.phase!=='upgrade')suppressed=false;
     if(available&&sim.phase==='upgrade'&&!open&&!suppressed)enter();
   };
   return {draw(){if(available&&!closed)panel.draw(screen.three);},destroy(){
-    closed=true;ui.update=previous;abort.abort();resize.disconnect();field?.close();panel.close();host.remove();
+    closed=true;ui.update=previous;field?.close();panel.close();remove();
   }};
 }

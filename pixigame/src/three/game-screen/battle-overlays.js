@@ -18,12 +18,13 @@ void main(){
   gl_FragColor=vec4(mix(a.rgb*a.a,b.rgb*b.a,p)/(255.*alpha),alpha*fade);
 }`;
 
-export function createBattleOverlays(renderer,{region=renderer.domElement,noticeHost=region,launching=()=>false}={}){
-  const canvas=region,scene=new Scene(),camera=new Camera(),reduced=matchMedia('(prefers-reduced-motion: reduce)');
+export function createBattleOverlays(renderer,{region=renderer.domElement,noticeHost=region,launching=()=>false,
+  bounds=()=>region.getBoundingClientRect(),density=()=>globalThis.devicePixelRatio||1,now=()=>performance.now(),reducedMotion}={}){
+  const scene=new Scene(),camera=new Camera(),reduced=reducedMotion?{get matches(){return reducedMotion();}}:matchMedia('(prefers-reduced-motion: reduce)');
   let mesh=null,phase='',mode=0,entered=0,notice='',labelArt=null,nw=0,nh=0;
   const labels=new Scene(),textCamera=new OrthographicCamera(0,1,0,1,-2,2);
   function phaseChange(next){
-    if(next===phase)return;phase=next;mode=modes[next]||0;entered=performance.now();
+    if(next===phase)return;phase=next;mode=modes[next]||0;entered=now();
   }
   function drawBackdrop(){
     if(!mode||launching())return;
@@ -34,24 +35,24 @@ export function createBattleOverlays(renderer,{region=renderer.domElement,notice
     }
     const u=mesh.material.uniforms;u.mode.value=mode;u.fade.value=1;
     if(mode>=3&&!reduced.matches){
-      const t=Math.min(1,(performance.now()-entered)/(phase==='won'?550:600));
+      const t=Math.min(1,(now()-entered)/(phase==='won'?550:600));
       if(t<1)u.fade.value=.35+.65*easeOut(t);
     }
     renderer.render(scene,camera);
   }
   function setNotice(text){
     text=String(text||'');if(text===notice)return;
-    if(notice&&noticeHost.getAttribute('aria-description')===notice)noticeHost.removeAttribute('aria-description');
+    if(notice&&noticeHost?.getAttribute?.('aria-description')===notice)noticeHost.removeAttribute('aria-description');
     notice=text;labelArt?.destroy();labels.clear();labelArt=null;
-    if(text)noticeHost.setAttribute('aria-description',text);
+    if(text)noticeHost?.setAttribute?.('aria-description',text);
   }
   function drawNotice(){
     if(!notice)return;
-    const {width:w,height:h}=canvas.getBoundingClientRect();if(!w||!h)return;
+    const {width:w,height:h}=bounds();if(!w||!h)return;
     if(!labelArt||w!==nw||h!==nh){
       labelArt?.destroy();labels.clear();labelArt=createThreeSurface();labels.add(labelArt.group);
       nw=w;nh=h;textCamera.right=w;textCamera.bottom=h;textCamera.updateProjectionMatrix();
-      const ratio=globalThis.devicePixelRatio||1,snap=n=>Math.round(n*ratio)/ratio;
+      const ratio=density(),snap=n=>Math.round(n*ratio)/ratio;
       const x=snap(w*.08),y=snap(h*.4),pw=w-2*x;
       const label=labelArt.text(notice,w/2,0,{size:16,weight:400,align:'center',family:'"Microsoft YaHei","PingFang SC",sans-serif',
         color:'#fff',wrap:true,lineHeight:'normal',maxWidth:Math.max(1,w*.84-42)});
@@ -64,7 +65,7 @@ export function createBattleOverlays(renderer,{region=renderer.domElement,notice
     renderer.render(labels,textCamera);
   }
   return {phaseChange,drawBackdrop,drawNotice,notice:setNotice,destroy(){
-    if(notice&&noticeHost.getAttribute('aria-description')===notice)noticeHost.removeAttribute('aria-description');
+    if(notice&&noticeHost?.getAttribute?.('aria-description')===notice)noticeHost.removeAttribute('aria-description');
     mesh?.geometry.dispose();mesh?.material.dispose();labelArt?.destroy();labels.clear();scene.clear();
   }};
 }

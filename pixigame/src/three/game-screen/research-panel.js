@@ -35,9 +35,12 @@ export function researchSheet(t,data,w,h){
   }});
 }
 export function openResearchPanel(screen,host,send,sound){
-  const pref=matchMedia('(prefers-reduced-motion: reduce)'),cues=new Set();
+  const pref=(screen.reducedMotion ? {get matches(){return screen.reducedMotion();}} : matchMedia('(prefers-reduced-motion: reduce)')),cues=new Set();
   let model,receipt,signature,flow,timer=0,chargeStart=null,entered=0,guard=0,version=0,closed=false;
-  const panel=createLobbyPanel(screen,host,'科技', (data,w,h,t)=>{if(data.plan)paintResearchDraw(data,w,h,t);else researchSheet(t,data,w,h);},command=>{
+  const panel=createLobbyPanel(screen,host,'科技', (data,w,h,t)=>{
+    if(data.plan)paintResearchDraw(data,w,h,t,screen.viewportHeight?.()??globalThis.window?.innerHeight??h);
+    else researchSheet(t,data,w,h);
+  },command=>{
     if(command.type==='none')return;
     if(!model?.plan){if(command.type==='close')send('close',{},host);return;}
     if(flow.phase==='spotlight'&&performance.now()<guard&&command.via!=='keyboard')return;
@@ -55,8 +58,8 @@ export function openResearchPanel(screen,host,send,sound){
     timer=setTimeout(()=>{if(closed||flow.phase!=='opening')return;switchPhase(failed?'skip':'next');},failed?0:RESEARCH_DRAW_TIMINGS[model.rank].reveal);
   }return chargeStart;}
   function preference(){if(pref.matches&&flow?.phase==='opening')switchPhase('skip');}
-  pref.addEventListener('change',preference);
-  return {host,close(){closed=true;clearTimeout(timer);pref.removeEventListener('change',preference);if(cues.size)sound?.(null);panel.close();},
+  pref.addEventListener?.('change',preference);
+  return {host,close(){closed=true;clearTimeout(timer);pref.removeEventListener?.('change',preference);if(cues.size)sound?.(null);panel.close();},
     update(snapshot,modal,key){if(receipt===modal&&signature===key)return;
       const plan=drawPresentationPlan(modal,snapshot),card=snapshot.research?.cards.find(c=>c.id===(modal.result?.cardId||modal.id));
       const first=modal!==receipt;receipt=modal;signature=key;model={snapshot,modal,card,plan,rank:Math.max(0,Math.min(4,plan?.entries[0].rank??0))};

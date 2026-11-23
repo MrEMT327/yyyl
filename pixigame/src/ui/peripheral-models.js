@@ -116,7 +116,10 @@ export function createPeripheralModels({ onReady = () => {}, captureThumbnail, s
 export function createModelRenderer({onReady=()=>{},images=new Map(),captureThumbnail,warmShaders=false,screen,embedded}){
   const lease=embedded ? null : screen?.previewLease();
   lease?.acquire();
-  const canvas=embedded&&screen.display?screen.display.input:screen?.three.domElement??document.createElement('canvas');
+  const port=embedded?.port,canvas=port?null:embedded&&screen.display?screen.display.input:screen?.three.domElement??document.createElement('canvas');
+  const stageModel=Boolean(port&&embedded.stageModel);
+  const connected=()=>port?port.visible():Boolean(canvas?.isConnected),hidden=()=>port?!port.visible():document.hidden;
+  const metadata=(key,value)=>{if(canvas)canvas.dataset[key]=value;};
   let renderer;
   // This canvas is presented at 30 Hz and moved between live UI hosts. Retain
   // its last pixels through skipped draws and DOM refreshes, just as on pause.
@@ -137,12 +140,12 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   canvas.className = 'pl-model-canvas';canvas.setAttribute('data-engine',`three.js r${THREE.REVISION}`);
   }
-  canvas.dataset.modelReady = 'false';
+  metadata("modelReady",'false');
   const exhaustRenderer = singlePass ? null : createCombatAircraftRenderer(renderer, 1, 1);
-  const fxRenderer = singlePass ? null : createAircraftFxRenderer(renderer,{samples:AIRCRAFT_PREVIEW_SAMPLES,stableCoverage:true,temporalCoverage:!captureThumbnail});
+  const fxRenderer = singlePass ? null : createAircraftFxRenderer(renderer,{samples:port?0:AIRCRAFT_PREVIEW_SAMPLES,stableCoverage:true,temporalCoverage:!captureThumbnail});
   const drawingSize = new THREE.Vector2();
   const exhaustFighter = {runtime:null};
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reducedMotion = port ? {matches:false} : window.matchMedia('(prefers-reduced-motion: reduce)');
   const scene = new THREE.Scene(), mount = new THREE.Group(), attitude = new THREE.Group(); scene.add(mount); mount.add(attitude);
   const batcher=createPreviewBatcher(mount);
   // Metal needs a reflected environment as well as directional lighting.
@@ -161,7 +164,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
   const coverageContext={camera,object:mount,depth:null,allowHistory:false,pose:0};
   camera.position.set(7, 20, -25); camera.lookAt(0, 0, -.5);
   // A transparent receiver grounds the actual hull and equipped parts in the PSD hangar.
-  const shadowImage=document.createElement('canvas');shadowImage.width=shadowImage.height=64;
+  const shadowImage=port?port.createRaster():document.createElement('canvas');shadowImage.width=shadowImage.height=64;
   const shadowContext=shadowImage.getContext('2d'),gradient=shadowContext.createRadialGradient(32,32,0,32,32,32);
   gradient.addColorStop(0,'#11294199');gradient.addColorStop(1,'#11294100');shadowContext.fillStyle=gradient;shadowContext.fillRect(0,0,64,64);
   const shadowTexture=new THREE.CanvasTexture(shadowImage);
@@ -176,8 +179,8 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
   const preparedPrograms = new WeakSet();
   let previewRequested = false;
   let equipmentStyle,panelDepth;
-  const releaseMetrics=embedded?()=>{}:performanceMonitor.registerRenderer('preview',()=>({active:visible&&canvas.isConnected&&!document.hidden,...renderer.info.render,...renderer.info.memory,batching:batcher.stats}));
-  const orbit = createModelOrbitInteraction(canvas, {region:embedded,
+  const releaseMetrics=embedded?()=>{}:performanceMonitor.registerRenderer('preview',()=>({active:visible&&connected()&&!hidden(),...renderer.info.render,...renderer.info.memory,batching:batcher.stats}));
+  const orbit = (port ? options=>port.createOrbit(embedded,options) : options=>createModelOrbitInteraction(canvas,options))({region:embedded,
     onChange: () => { lastFrame = -1; },
     onDragEnd: () => { if (pendingReady && !disposed) { pendingReady = false; onReady(); } },
   });
@@ -199,14 +202,14 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     const height=thumbnail?390:Math.round(width/ratio);
     const size=embedded?renderSize.set(embedded.target.width/previewPixelRatio,embedded.target.height/previewPixelRatio):renderer.getSize(renderSize);
     if(size.x===width&&size.y===height)return false;
-    canvas.dataset.modelReady='false';
+    metadata("modelReady",'false');
     if(embedded)embedded.target.setSize(width*previewPixelRatio,height*previewPixelRatio);
     else renderer.setSize(width,height,false);
     camera.top=13*height/width;camera.bottom=-camera.top;camera.updateProjectionMatrix();
     lastFrame=-1;return true;
   }
-  const viewportObserver=new ResizeObserver(()=>{
-    if(!disposed&&visible&&canvas.isConnected&&fitViewport()&&runtime&&currentId===requestedId)renderModel();
+  const viewportObserver=port?null:new ResizeObserver(()=>{
+    if(!disposed&&visible&&connected()&&fitViewport()&&runtime&&currentId===requestedId)renderModel();
   });
   function applyViewLighting() {
     scene.environmentIntensity = AIRCRAFT_RENDER_STYLE.environmentIntensity;
@@ -222,7 +225,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     viewProfile = profile;
     applyViewLighting();
     fitViewport(thumbnail,bounds);
-    canvas.dataset.viewProfile = profile;
+    metadata("viewProfile",profile);
     // All previews keep the approved parallel projection; only viewing direction varies.
     camera.position.set(...(profile === 'equipment' ? [19, 29, -28] : profile === 'patrol' ? [21, 8, -3] : profile === 'battle' ? [27, 13, -26] : [7, 20, -25]));
     // Patrol exposes the aircraft's authored engine jets on the effects layer.
@@ -266,7 +269,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
         runtime.config.exhaustLength=(fighterForPilot(currentId).defaults.exhaustLength??1)*1.35;
         runtime.config.engineGlow=(fighterForPilot(currentId).defaults.engineGlow??1)*(runtime.config.boost?1.5:1.15);
       }
-      if(performanceMonitor.enabled){canvas.dataset.deploymentPhase=pose.phase;canvas.dataset.deploymentProgress=pose.progress.toFixed(3);}
+      if(performanceMonitor.enabled){metadata("deploymentPhase",pose.phase);metadata("deploymentProgress",pose.progress.toFixed(3));}
     }
     runtime.sample(time); equipment?.update(time, runtime); fixedParts?.update();
     if(runtime.asset.solid.userData.cleanAircraftSurface)for(const [i,jet]of runtime.jets.entries()){
@@ -275,9 +278,9 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
       jet.object.scale.y=base.y*(runtime.config.boost?1.3:1.1);
     }
     if(performanceMonitor.enabled){
-      canvas.dataset.engineMode=runtime.config.boost?'boost':'idle';
-      canvas.dataset.deploymentFx=runtime.weapons?.sparks.visible?'active':'idle';
-      canvas.dataset.animationTime=time.toFixed(3);
+      metadata("engineMode",runtime.config.boost?'boost':'idle');
+      metadata("deploymentFx",runtime.weapons?.sparks.visible?'active':'idle');
+      metadata("animationTime",time.toFixed(3));
     }
   }
   function withPreviewGeometry(draw) {
@@ -298,7 +301,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
       renderer.setRenderTarget(embedded?.target??null);
       withPreviewGeometry(cleanSurface=>{
         renderer.clear();
-        if(performanceMonitor.enabled)canvas.dataset.fxJets=JSON.stringify(runtime.jets.map(({object})=>({visible:object.visible,mask:object.layers.mask,camera:camera.layers.mask,gain:object.material.uniforms.uGain.value,scale:object.scale.toArray()})));
+        if(performanceMonitor.enabled)metadata("fxJets",JSON.stringify(runtime.jets.map(({object})=>({visible:object.visible,mask:object.layers.mask,camera:camera.layers.mask,gain:object.material.uniforms.uGain.value,scale:object.scale.toArray()}))));
         if(cleanSurface&&fxRenderer){
           if(embedded)drawingSize.set(embedded.target.width,embedded.target.height);else renderer.getDrawingBufferSize(drawingSize);exhaustRenderer.resize(drawingSize.x,drawingSize.y);exhaustFighter.runtime=runtime;
           coverageContext.allowHistory=!runtime.deployment.moving&&!orbit.dragging;
@@ -313,14 +316,14 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     };
     performanceMonitor.measure('preview',()=>embedded?embedded.draw(previewExposure,draw):draw());
     lastFrame=Math.floor((isAnimated()?elapsed:0)*30);
-    if(canvas.dataset.modelReady!=='true')canvas.dataset.modelReady='true';
+    metadata('modelReady','true');
   }
   async function warmFirstFrame(model, notify) {
     const current = () => !disposed && runtime === model;
     const deadline = performance.now() + shaderWarmupMs;
     const waiting = () => current() && performance.now() < deadline;
     warmingPreview = model;
-    canvas.dataset.modelReady = 'false';
+    metadata("modelReady",'false');
     try {
       await withPreviewGeometry(cleanSurface => {
         if (!cleanSurface) return warmRenderPrograms(renderer,scene,camera,waiting);
@@ -332,7 +335,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     } catch(error) { if(current())console.warn('[peripheral shaders]',error); }
     if (!current()) return;
     warmingPreview = null;
-    if (visible && canvas.isConnected && !document.hidden && currentId===requestedId) { renderModel(); if(notify)notifyReady(); }
+    if (visible && connected() && !hidden() && currentId===requestedId) { renderModel(); if(notify)notifyReady(); }
   }
   function advanceSinglePassWarmup() {
     if (!pendingPrograms) {
@@ -366,7 +369,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     const setupAt=performanceMonitor.enabled?performance.now():0;
     currentId = id; currentFitKey = fitKey;
     fxRenderer?.resetHistory();
-    canvas.dataset.modelReady = 'false';
+    metadata("modelReady",'false');
     batcher.clear();equipmentStyle?.dispose(); equipmentStyle = null;panelDepth?.dispose();panelDepth=null;
     fixedParts?.dispose(); fixedParts = null; equipment?.dispose(); equipment = null; runtime?.dispose(); runtime = null; attitude.clear();
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
@@ -395,7 +398,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     runtime.veilKinematics = { pose: runtime.poseAtTime, socketAt: (_time, socket, out) => out.copy(socket), socketVelocity: (_time, _socket, out) => out.set(0, 0, 0) };
     if (!asset.solid.userData.cleanAircraftSurface) for (const light of runtime.lights) light.object.removeFromParent();
     camera.layers.set(0);if(asset.solid.userData.cleanAircraftSurface||viewProfile==='patrol')camera.layers.enable(1);
-    canvas.dataset.modelVersion=entry.version;
+    metadata("modelVersion",entry.version);
     runtime.spawn(new THREE.Vector3()); equipment?.update(0, runtime); lastFrame = -1;
     jetRestScales=runtime.jets.map(({object})=>object.scale.clone());
     fxRenderer?.setColor(entry.defaults.engineColor||'#66d7f0');
@@ -408,8 +411,8 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     // Refraction would redraw the preview before the glass pass. Set the menu
     // material once after styling and fitting the hull, rather than per frame.
     mount.traverse(node=>{for(const material of [].concat(node.material||[]))if(material.isMeshPhysicalMaterial&&material.transmission>0){material.transmission=0;material.needsUpdate=true;}});
-    canvas.dataset.mountedWeapons = JSON.stringify(Object.fromEntries(loadout.weapons.flatMap(w => w.slots.map(slot => [slot, w.itemId]))));
-    canvas.dataset.aircraftId = id;
+    metadata("mountedWeapons",JSON.stringify(Object.fromEntries(loadout.weapons.flatMap(w => w.slots.map(slot => [slot, w.itemId])))));
+    metadata("aircraftId",id);
     // Inventory thumbnails always use the same pose. Caching another aircraft
     // must never change the orientation the player is currently inspecting.
     // The offline baking tool opts into capture. No runtime UI reads GPU pixels.
@@ -424,21 +427,23 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
       warmingPreview = runtime;
       pendingPrograms = null;
     }
-    else { renderModel(); if (notify) notifyReady(); }
+    else if(!stageModel){renderModel();if(notify)notifyReady();}
     if(performanceMonitor.enabled)performanceMonitor.record('preview-setup',performance.now()-setupAt);
   }
   function showAircraft(id, snapshot = requestedSnapshot) {
     requestedId = id || 'pilot-01'; requestedSnapshot = snapshot || {};
-    if (nativePreview) { previewRequested = true; return; }
+    if (nativePreview||stageModel) { previewRequested = true; return; }
     showRequestedAircraft();
   }
   function showRequestedAircraft() {
-    if(!visible||!canvas.isConnected)return;
+    if(!visible||!connected())return;
     if (isFighterPackageReady(requestedId)) { drawAircraft(requestedId); return; }
-    canvas.dataset.modelReady = 'false';
+    metadata("modelReady",'false');
     const wanted = requestedId;
-    loadFighterPackages({ pilotIds: [wanted] }).then(() => {
-      if (!disposed && visible && canvas.isConnected && requestedId === wanted) drawAircraft(wanted);
+    (port?port.loadAircraft(wanted):loadFighterPackages({pilotIds:[wanted]})).then(() => {
+      if(disposed||requestedId!==wanted)return;
+      if(stageModel)previewRequested=true;
+      else if(visible&&connected())drawAircraft(wanted);
     }).catch(error => console.warn('[peripheral aircraft]', error));
   }
   return {
@@ -448,12 +453,12 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
         visible=!!host;if(!host){orbit.cancel();return;}
         if(id)requestedId=id;
         if(viewProfile!==embedded.profile){setCameraView(embedded.profile,false,embedded.bounds());restartShowcase();applyViewPose();}
-        else if(fitViewport(false,embedded.bounds())&&runtime)renderModel();
+        else if(fitViewport(false,embedded.bounds())&&runtime&&(!stageModel||currentId===requestedId))renderModel();
         return;
       }
       if (!host) {
         // A cached native tab already owns the last painted frame.
-        if(lease)lease.release();else if(!warmShaders||canvas.isConnected)canvas.remove();
+        if(lease)lease.release();else if(!warmShaders||connected())canvas.remove();
         viewportObserver.disconnect(); observedHost=null; orbit.cancel();
         return;
       }
@@ -461,7 +466,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
       visible = true;
       const currentModel=runtime&&(!id||id===currentId);
       if(id)requestedId=id;
-      if(!currentModel)canvas.dataset.modelReady='false';
+      if(!currentModel)metadata("modelReady",'false');
       const entering = observedHost === null;
       const moved=canvas.parentNode!==host;
       // The absolutely positioned canvas cannot affect its host's size.
@@ -484,7 +489,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     showAircraft,
     slotPoint(id) {
       const slot=fixedParts?.slots.find(s=>s.id===id);
-      if(!slot||!canvas.isConnected)return null;
+      if(!slot||!connected())return null;
       fixedParts.root.updateWorldMatrix(true,false);
       const point=fixedParts.root.localToWorld(new THREE.Vector3().fromArray(slot.position)).project(camera);
       if(point.z < -1 || point.z > 1)return null;
@@ -497,7 +502,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     update(dt = .016, isVisible = true) {
       const resumed = isVisible && !visible;
       visible = isVisible; if (disposed) return;
-      if (!visible || document.hidden || (lease&&screen.preview!==lease) || !canvas.isConnected) { orbit.cancel(); return; }
+      if (!visible || hidden() || (lease&&screen.preview!==lease) || !connected()) { orbit.cancel(); return; }
       if (resumed) showAircraft(requestedId, requestedSnapshot);
       if (previewRequested) {
         previewRequested = false;
@@ -521,7 +526,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     },
     destroy() {
       if (disposed) return; disposed = true;
-      releaseMetrics();batcher.destroy();viewportObserver.disconnect();orbit.destroy();
+      releaseMetrics();batcher.destroy();viewportObserver?.disconnect();orbit.destroy();
       equipmentStyle?.dispose();panelDepth?.dispose();fixedParts?.dispose();equipment?.dispose();runtime?.dispose();
       exhaustRenderer?.dispose();fxRenderer?.dispose();shadowFloor.geometry.dispose();shadowFloor.material.dispose();
       shadowTexture.dispose();releaseOwnedCanvas(shadowImage);environment?.dispose();

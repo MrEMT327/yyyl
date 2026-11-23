@@ -13,3 +13,4 @@ export const NATIVE_PILOT_SKINS = Object.freeze({
   40900: 'pilot-10',
 });
 export const isRosterPilot = id => Object.hasOwn(NATIVE_PILOT_SKINS, id);
+export const STARTER_PILOT_ID=40100;

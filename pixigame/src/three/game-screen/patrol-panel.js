@@ -155,10 +155,13 @@ export function openPatrolPanel(screen,host,send,kind,scrollPositions){
     if(kind==='quickPatrol'&&cmd.type==='close'&&latest?.snapshot.patrol.adBusy)return;
     if(cmd.type!=='none')send(cmd.type,cmd.data||{},host);
   },{overlay:kind==='patrolReceipt',onScroll(zone,value){if(zone==='base')scrollPositions?.set(scrollKey,value);}});
-  function refresh(){if(!latest||closed)return;panel.update({...latest,entered,inspect,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches},
+  function refresh(){if(!latest||closed)return;panel.update({...latest,entered,inspect,reduced:(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches)},
     [latest.signature,latest.modal.title,latest.modal.rewards&&JSON.stringify(latest.modal.rewards),preview?.ready,inspect?.itemId].join('|'),kind);}
-  if(kind==='patrol')preview=menuAircraft(screen,host,panel,refresh,()=>screen.repaintHome?.(),()=>!closed&&screen.panel===panel&&!inspect,
-    {profile:'patrol',rect:patrolAircraftRect});
+  if(kind==='patrol'){
+    const open=screen.openPatrolAircraft??((region,...args)=>menuAircraft(screen,region,...args));
+    preview=open(host,panel,refresh,()=>screen.repaintHome?.(),()=>!closed&&screen.panel===panel&&!inspect,
+      {profile:'patrol',rect:patrolAircraftRect});
+  }
   return {host,close(){closed=true;preview?.close();panel.close();},tick(dt){preview?.tick(dt);},
     clock(p){const time=patrolClockState(p).time;if(updateClock&&time!==latest.clockTime){latest.clockTime=time;updateClock(time);screen.repaintHome?.();}},
     update(snapshot,modal,signature){

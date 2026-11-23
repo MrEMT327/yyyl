@@ -12,7 +12,7 @@ function abortError() {
   return error;
 }
 
-export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBase, assetTransfers = {}, cdnFiles, requirePublicNetwork = false, cacheVersion = '', loadPackage }) {
+export function createWechatResources(api, { assetOrigin, localFiles = {}, fallbackFiles = {}, cdnBase, assetTransfers = {}, cdnFiles, requirePublicNetwork = false, cacheVersion = '', loadPackage }) {
   const origin = assetOrigin.replace(/\/+$/, '');
   const assetHost = new URL(origin).origin;
   const remote = cdnBase ? new URL(cdnBase.replace(/\/+$/, '') + '/') : null;
@@ -21,7 +21,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
   const battleData = new Set(Object.entries(assetTransfers)
     .filter(([key,row]) => /^replica-battle\/data\/.+\.json$/.test(key) && row.encoding === 'gzip' && row.bytes > 0)
     .map(([,row]) => row.path));
-  const packagedPaths = new Set(Object.values(localFiles));
+  const packagedPaths = new Set([...Object.values(localFiles), ...Object.values(fallbackFiles)]);
   const packagedCompressed = new Map(Object.entries(localFiles)
     .filter(([key,path]) => /\.(json|bin)$/.test(key) && path.endsWith('.br'))
     .map(([key,path]) => [path,key]));
@@ -114,6 +114,14 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
     if (packagedPaths.has(path) && loadPackage) await loadPackage(path.split('/')[0]);
     if (disposed) throw abortError();
     return path;
+  }
+
+  function readyFallbackFile(path, baseURL = origin + '/') {
+    if (!remote || disposed) return;
+    const url = new URL(path, baseURL);
+    if (url.origin !== remote.origin || !url.pathname.startsWith(remote.pathname)) return;
+    const key = decodeURIComponent(url.pathname.slice(remote.pathname.length));
+    if (Object.hasOwn(fallbackFiles, key)) return readyLocalFile(fallbackFiles[key]);
   }
 
   function preloadAssetPackage(name) {
@@ -260,7 +268,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
   }
 
   return {
-    resolve, canLoad, releaseAssets: Boolean(releaseFiles), readBytes, decodeBytes, readyLocalFile, preloadAssetPackage, isVersionedBattleData,
+    resolve, canLoad, releaseAssets: Boolean(releaseFiles), readBytes, decodeBytes, readyLocalFile, readyFallbackFile, preloadAssetPackage, isVersionedBattleData,
     requestAsset: transport.request, cacheStats: transport.stats, flushCache: transport.flush,
     async readJSON(path, options) { return JSON.parse(buf2string(new Uint8Array(await readBytes(path, options)))); },
     createAssetBytesUrl, createVerifiedAssetBytesUrl, revokeAssetBytesUrl, createTextureScope,

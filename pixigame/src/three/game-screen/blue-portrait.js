@@ -4,11 +4,12 @@ import fragmentShader from './blue-portrait.frag.glsl?raw';
 import {createBluePose} from './blue-pose.js';
 import {mountPortraitSurface} from './h5-portrait.js';
 
-async function readArtwork(base,signal){
+async function readArtwork(base,signal,output){
   const read=async(path,type)=>{
-    const r=await fetch(new URL(path,base),{signal});if(!r.ok)throw Error('立绘资源加载失败 '+path);return r[type]();
+    const r=await (output?.fetchResource??fetch)(new URL(path,base).href,{signal});if(!r.ok)throw Error('立绘资源加载失败 '+path);return r[type]();
   };
   async function image(path){
+    if(output)return output.loadImage(new URL(path,base).href);
     const element=new Image();
     const abort=()=>element.removeAttribute('src');
     signal.addEventListener('abort',abort,{once:true});
@@ -133,3 +134,19 @@ export function createBluePortrait(canvas,{assetBase},monitor,device){
   };
 }
 
+
+export function createBluePortraitForOutput(renderer,{assetBase},output){
+  let data=null,player=null,pose=null,closed=false,w=784,h=1003;
+  return {
+    view:[372,-35,824,1054],
+    async load({signal}){
+      const loaded=await readArtwork(assetBase,signal,output);signal.throwIfAborted();if(closed)return;
+      data=loaded;data.parts.forEach((part,index)=>{part.ordinal=index;});
+      pose=createBluePose(data.parts,data.bundle);player=output.render(createBlueScene(renderer,data));player.resize(w,h);
+    },
+    resize(width,height){w=width;h=height;player?.resize(w,h);},
+    draw(key,frame,{blend=null}={}){if(player){pose.update(key,frame,blend);player.draw(this.view,key,frame);}},
+    get last(){return pose?.snapshot()??null;},get bundle(){return data?.bundle;},
+    destroy(){closed=true;player?.destroy();player=pose=data=null;},
+  };
+}

@@ -1,10 +1,8 @@
 import catalog from '../replica/chapter-detail-catalog.json';
-import {chapterPresentationForStage} from '../replica/chapter-presentation.js';
 import {nativeItemPresentation} from '../replica/native-item-presentation.js';
 import {rewardItemSlot} from './reward-item-slot.js';
 import './chapter-details.css';
 import {cloudAssetBase} from './cloud-asset-base.js';
-import settlement from '../replica/native-settlement-source.json';
 
 function enemyPortrait(modelId,h){
   const art=catalog.art[modelId];
@@ -13,14 +11,8 @@ function enemyPortrait(modelId,h){
   return `<svg viewBox="${x-pad} ${y-pad} ${w+pad*2} ${height+pad*2}" aria-hidden="true">${art.layers.map(l=>`<g opacity="${l.alpha}" transform="translate(${l.x} ${l.y}) rotate(${l.angle*180/Math.PI}) scale(${l.sx} ${l.sy})"><svg x="${-l.ox*l.rect[2]}" y="${-l.oy*l.rect[3]}" width="${l.rect[2]}" height="${l.rect[3]}" viewBox="${l.rect.join(' ')}"><image href="${cloudAssetBase+l.url}" width="${l.size[0]}" height="${l.size[1]}"/></svg></g>`).join('')}</svg>`;
 }
 
-export function chapterDetailModel(snapshot,index){
-  const stage=snapshot.stages[index],data=catalog.chapters.find(c=>c.id===(stage.replicaChapterId||index+1));
-  const title=chapterPresentationForStage(index).name||stage.name;
-  // FinishReward is an old display list, not a verified grant table. Present
-  // only live collected gold and the same once-only rewards as settlement.
-  const drops=[{id:1,firstClear:false},...(settlement.firstRewards[data.id]||[]).map(([id])=>({id,firstClear:true}))];
-  return {title,stage,enemies:data.enemies,drops};
-}
+import { chapterDetailModel } from './chapter-detail-model.js';
+export { chapterDetailModel } from './chapter-detail-model.js';
 
 export function chapterDetails(snapshot,index,h){
   const {title,stage,enemies,drops}=chapterDetailModel(snapshot,index);

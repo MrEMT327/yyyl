@@ -2,13 +2,16 @@ import {area,box,clamp,pic,slice,titleFont,words} from './menu-art.js';
 import atlas from './catalog-art.json';
 import {projectIconUrl} from '../../ui/project-ui-art.js';
 import {skillIconBackgroundArt} from '../../replica/skill-element-background-art.js';
+import {artworkSize} from './image-loading.js';
 export {atlas};
 export function symbol(a,t,id,b){return pic(a,t,projectIconUrl(id),b,true);}
 export function normalFit(a,t,url,b,cover=false,crop=null){
   if(!url)return null;
-  const texture=t.texture(url),im=texture.image;
-  if(!im?.width)return a.image(texture,b.x,b.y,b.w,b.h);
-  const cut=crop||{x:0,y:0,width:1,height:1},width=im.width*cut.width,height=im.height*cut.height;
+  const texture=t.texture(url),[iw,ih]=artworkSize(texture.image);
+  if(!iw||!ih){
+    const mesh=a.image(texture,b.x,b.y,b.w,b.h);mesh.visible=false;return mesh;
+  }
+  const cut=crop||{x:0,y:0,width:1,height:1},width=iw*cut.width,height=ih*cut.height;
   const k=(cover?Math.max:Math.min)(b.w/width,b.h/height),sw=width*k,sh=height*k;
   if(!cover)return a.image(texture,b.x+(b.w-sw)/2,b.y+(b.h-sh)/2,sw,sh,crop);
   const fx=b.w/sw,fy=b.h/sh;return a.image(texture,b.x,b.y,b.w,b.h,{x:cut.x+cut.width*(1-fx)/2,y:cut.y+cut.height*(1-fy)/2,width:cut.width*fx,height:cut.height*fy});
@@ -36,15 +39,29 @@ export function psdAction(a,t,b,{id,label,cmd,data={},zone=null,disabled=false,g
     if(icon)normalFit(a,t,icon,box(text.position.x-text.scale.x/2-imageW,cy-imageW/2,imageW,imageW));}
   area(t,id,label,b,cmd,data,zone,disabled);
 }
-export function catalogGrid(d,t,w,bounds,context){
+export function catalogGrid(d,t,w,bounds,windowed=false){
   const {kind,items,selected,group}=d,gun=kind==='weapon',pilot=kind==='pilot';
   const size=gun?.223*w:pilot?.238*w:.2225*w,sideY=gun?size*1.145:pilot?size*316/276:size*1.215;
   const left=w*(gun?.022:pilot?.012:.025),stepX=gun?w*.2442:pilot?w*.246:w*.2403,stepY=gun?sideY+24+4.3:pilot?sideY+.008*w:sideY+.016*w;
   const pad=w*(gun?.03:pilot?.005:.021),zone=kind+'-list';
-  const rect=box(0,bounds.list,w,bounds.end-bounds.list);t.region(zone,rect,pad+Math.ceil(items.length/4)*stepY+.02*w);
+  const rect=box(0,bounds.list,w,bounds.end-bounds.list);
+  t.region(zone,rect,pad+Math.ceil(items.length/4)*stepY+.02*w,'y',{redrawStep:windowed?stepY:0});
+  const offset=windowed?t.offset(zone):0;
   const a=t.layer('catalog-grid',zone).art;
   items.forEach((it,i)=>{const x=left+i%4*stepX,y=bounds.list+pad+Math.floor(i/4)*stepY,b=box(x,y,size,sideY),chosen=it.id===selected.id;
-    pic(a,t,atlas['card-frame-'+it.rank],b);
+    const inWindow=!windowed||y+stepY>=rect.y+offset-stepY&&y<=rect.y+offset+rect.h+stepY;
+    const select=()=>area(t,'select-'+it.id,it.name,b,'catalogSelect',{id:String(it.id),kind},zone);
+    const btn=gun&&chosen?box(x+3,y+sideY-20,size-6,44):null;
+    const label=it.activated?'改造':'获取';
+    if(!inWindow){
+      select();if(btn)area(t,'detail-'+it.id,label,btn,'nativeCollectionDetail',{id:it.actualId,kind:group},zone);
+      return;
+    }
+    const frame=pic(a,t,atlas['card-frame-'+it.rank],b);
+    if(windowed&&!frame.material.map?.image){
+      const placeholder=a.panel(b.x,b.y,b.w,b.h,{fill:'#24384a',stroke:'#526c80',opacity:1,cut:3});
+      placeholder.renderOrder=-1;
+    }
     const face=gun?box(x+.09*size,y+.08*sideY,.82*size,.67*sideY):pilot?box(x+.08*size,y+.07*sideY,.84*size,.70*sideY):box(x+.04*size,y+.07*sideY,.92*size,.73*sideY);
     const m=normalFit(a,t,it.image,face,pilot,d.kind==='aircraft'?{x:.18,y:.12,width:.64,height:.76}:null);
     if(m&&!it.activated&&!it.row.baseOnly){m.material.color.set(gun&&chosen?'#e7e7e7':pilot?'#c8c5c6':'#c0c0c0');}
@@ -53,10 +70,10 @@ export function catalogGrid(d,t,w,bounds,context){
     if(!it.activated&&!it.row.baseOnly){const lock=symbol(a,t,'lock',box(x+size*.79,y+sideY*.075,size*.13,size*.15));lock.material.color.set('#b3c5cd');}
     stars(a,t,box(x+size*.065,y+sideY*.80,size*.87,sideY*.145),it.stars,it.row.star,{align:'center'});
     if(chosen)selection(a,t,b);
-    area(t,'select-'+it.id,it.name,b,'catalogSelect',{id:String(it.id),kind},zone);
+    select();
     if(gun){
-      if(chosen){const btn=box(x+3,y+sideY-20,size-6,44);pic(a,t,atlas['card-action'],btn);
-        const label=it.activated?'改造':'获取';words(a,label,x+size/2,btn.y+btn.h*.76,clamp(w*.032,10,16),{family:titleFont});
+      if(btn){pic(a,t,atlas['card-action'],btn);
+        words(a,label,x+size/2,btn.y+btn.h*.76,clamp(w*.032,10,16),{family:titleFont});
         area(t,'detail-'+it.id,label,btn,'nativeCollectionDetail',{id:it.actualId,kind:group},zone);
       }else words(a,it.name,x+size/2,y+sideY+11,clamp(w*.035,11,16),{family:titleFont,maxWidth:size});}
   });

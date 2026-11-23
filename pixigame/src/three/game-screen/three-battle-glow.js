@@ -30,6 +30,7 @@ export function createBattleGlow(renderer,w,h){
   const material=new T.RawShaderMaterial({vertexShader:vert,fragmentShader:frag,uniforms:u,depthTest:false,depthWrite:false,blending:T.NoBlending});
   const scene=new T.Scene(),quad=new T.Mesh(geometry,material),camera=new T.Camera();scene.add(quad);quad.frustumCulled=false;
   const cuts=[];
+  let left=0,top=0;
   function pass(output,input,mode,beginOutput){
     if(!output&&beginOutput)beginOutput();
     else{renderer.setRenderTarget(output);renderer.setViewport(0,0,output?.width??w,output?.height??h);}
@@ -38,6 +39,19 @@ export function createBattleGlow(renderer,w,h){
   }
   return {
     binding:{texture:back.texture,width:w,height:h},needsBackground:false,
+    warmupJobs(){
+      return [()=>renderer.compile?.(scene,camera),...[world,back,...down,...up].map(target=>()=>renderer.initRenderTarget?.(target))];
+    },
+    resize(frame){
+      w=frame.width;h=frame.height;left=frame.left;top=frame.top;
+      world.setSize(w,h);back.setSize(w,h);this.binding.width=w;this.binding.height=h;
+      let x=w,y=h;
+      for(let i=0;i<down.length;i++){
+        x=Math.max(4,Math.floor(x/2));y=Math.max(4,Math.floor(y/2));
+        down[i].setSize(x,y);up[i]?.setSize(x,y);
+      }
+      u.uDimensionViewport.value.set(w,h);
+    },
     begin(){cuts.length=0;this.needsBackground=false;},
     addCut(cut){let i=cuts.findIndex(v=>v.uid===cut.uid);if(i<0){if(cuts.length===3)cuts.shift();i=cuts.length;}cuts[i]=cut;},
     paint(content,view,output=null,beginOutput){
@@ -49,11 +63,10 @@ export function createBattleGlow(renderer,w,h){
       for(let i=0;i<down.length;i++)pass(down[i],i?down[i-1].texture:world.texture,i?2:1);
       for(let i=up.length-1;i>=0;i--)pass(up[i],i===up.length-1?down.at(-1).texture:up[i+1].texture,3);
       u.uDimensionCount.value=cuts.length;
-      cuts.forEach((c,i)=>{u.uDimensionLine.value[i].fromArray(c.line);u.uDimensionShape.value[i].fromArray(c.shape);u.uDimensionStyle.value[i].fromArray(c.style);});
+      cuts.forEach(({line,shape,style},i)=>{u.uDimensionLine.value[i].set(line[0]-left,line[1]-top,line[2],line[3]);u.uDimensionShape.value[i].fromArray(shape);u.uDimensionStyle.value[i].fromArray(style);});
       pass(output,up[0].texture,4,beginOutput);
       view.layers.mask=4;renderer.render(content,view);view.layers.mask=1;
     },
     dispose(){for(const item of [world,back,...up,...down,geometry,material])item.dispose();}
   };
 }
-

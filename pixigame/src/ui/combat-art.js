@@ -1,5 +1,6 @@
 import { cloudAssetBase } from './cloud-asset-base.js';
-import { TextureLoader, SRGBColorSpace, LinearFilter, LinearMipmapLinearFilter, PlaneGeometry } from 'three';
+import { SRGBColorSpace, LinearFilter, LinearMipmapLinearFilter, PlaneGeometry } from 'three';
+import {artworkTexture} from '../three/game-screen/image-loading.js';
 import { nineSliceGeometry } from './nine-slice-geometry.js';
 
 // Combat uses the same original metal controls as the current project UI.
@@ -21,7 +22,7 @@ const textures = new Map();
 const frames={primary:[198,67,18],secondary:[219,85,18],card:[224,562,24],slot:[128,128,18],utility:[182,92,32],statsControl:[182,92,32],pauseSlot:[128,128,18],audioOn:[348,152,0],audioOff:[348,152,0],audioThumb:[120,120,0]};
 const isAudioSwitch=kind=>['audioOn','audioOff','audioThumb'].includes(kind);
 export function loadCombatUiTexture(url, mipmaps = false) {
-  const art = new TextureLoader().load(url, undefined, undefined, () => { art.userData.artworkFailed = true; });
+  const art = artworkTexture(url, undefined, () => { art.userData.artworkFailed = true; });
   art.colorSpace = SRGBColorSpace;
   art.generateMipmaps = mipmaps;
   art.minFilter = mipmaps ? LinearMipmapLinearFilter : LinearFilter;

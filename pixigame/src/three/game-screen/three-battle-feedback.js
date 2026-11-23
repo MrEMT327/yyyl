@@ -80,8 +80,9 @@ export function damageBorder(host,age){
   let v=host.damageBorder;
   if(!(age>=0&&age<.2)){if(v)v.visible=false;return;}
   if(!v){v=new BattleGeometry(host.stage.scene,49.95);host.damageBorder=v;}
-  v.clear();const t=clamp((age-.02)/.18),a=.32*(1-t*t*(3-2*t)),c=0xff2838,w=540,h=960,s=w*.18,b=h*.14;
+  const {left,top,width:w,height:h}=host.stage.viewport;
+  v.position.set(left,top,0);
+  v.clear();const t=clamp((age-.02)/.18),a=.32*(1-t*t*(3-2*t)),c=0xff2838,s=w*.18,b=h*.14;
   v.quad(0,0,s,0,s,h,0,h,c,a,0,0,a);v.quad(w-s,0,w,0,w,h,w-s,h,c,0,a,a,0);
   v.quad(0,0,w,0,w,b,0,b,c,a,a,0,0);v.quad(0,h-b,w,h-b,w,h,0,h,c,0,0,a,a);v.flush();
 }
-

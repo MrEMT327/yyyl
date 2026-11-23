@@ -4,7 +4,7 @@ import {createLobbyFeedback,createLobbySoundPlayer} from '../ui/lobby-audio.js';
 import {recordDiagnostic} from '../diagnostic-log.js';
 
 // Lobby music and UI feedback need no legacy combat sound pools or synthesizer.
-const LOBBY_MUSIC_URL=new URL('../../assets/audio/sfx/music/skin_calm.mp3',import.meta.url).href;
+export const LOBBY_MUSIC_URL=new URL('../../assets/audio/sfx/music/skin_calm.mp3',import.meta.url).href;
 export function createLobbyAudio({game,storage,windowRef=window,documentRef=document,disabled=false}){
   const preferences=readAudioPreferences(storage);
   let context,closed=false,retryContextAt=0;

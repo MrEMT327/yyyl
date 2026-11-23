@@ -1,3 +1,5 @@
+import { battleChapterIndex } from './battle-chapter-index.js';
+export { battleChapterIndex } from './battle-chapter-index.js';
 import { chapterRewardsDialog } from './chapter-rewards-panel.js';
 import {playerAvatar} from './player-avatar.js';
 import { patrolClockState } from './patrol-clock.js';
@@ -12,12 +14,6 @@ import { characterPortrait, portraitPresentation } from './character-portraits.j
 // Keep the PSD scenery and controls around an independently animated portrait.
 
 export const battleHeader = lobbyHeader;
-
-export function battleChapterIndex(snapshot, requestedChapter) {
-  const max = Math.max(0, (snapshot.stages?.length || 0) - 1);
-  const current = snapshot.selectedStageIndex || 0;
-  return Math.max(0, Math.min(max, Number.isInteger(requestedChapter) ? requestedChapter : current));
-}
 
 export function battleNavigation() { return lobbyNavigation('battle'); }
 

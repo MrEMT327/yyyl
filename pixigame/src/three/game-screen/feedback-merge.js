@@ -1,6 +1,6 @@
 import {area,box,clamp,words} from './menu-art.js';
 import {outerFrame,groupMotion,label,heading,submit,inset,glyph,countUp,reveal} from './feedback-art.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {equipmentArtPath} from '../../replica/equipment-art.js';
 import {mergeFeedbackFeatures} from '../../ui/process-feedback-model.js';
 

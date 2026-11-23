@@ -1,5 +1,5 @@
 import {nextLobbyGuide,guideFinished,reachedGuideProgress} from '../peripheral/onboarding.js';
-export function createThreeLobbyGuide({root,context,mark,home}){
+export function createThreeLobbyGuide({hidden,context,mark,home}){
   let active=null,idle=0,weakChapter=null,marking=false;
   function hide(){home()?.setGuide(null);}
   function destination(c){
@@ -19,7 +19,7 @@ export function createThreeLobbyGuide({root,context,mark,home}){
     return ['gear-'+active.uid,g===9?'查看这件装备':'点击已装配的装备'];
   }
   return {hide,hideWeakHint(){if(!active)hide();},tick(dt){
-    const c=context(),s=c.snapshot,v=home();if(!v||!s||!c.visible||c.busy||root.hidden||document.hidden){hide();return;}
+    const c=context(),s=c.snapshot,v=home();if(!v||!s||!c.visible||c.busy||hidden()){hide();return;}
     if(active&&guideFinished(s,active.group)&&active.group!==14&&!(active.group===8&&c.modal?.type==='shopBoxResult'))active=null;
     if(active&&[9,14].includes(active.group)&&!s.equipment?.items?.some(i=>i.uid===active.uid&&(active.group===9?!i.equipped:i.equipped&&i.canUpgrade)))active=null;
     if(!active&&!c.modal&&!c.subpage)active=nextLobbyGuide(s);

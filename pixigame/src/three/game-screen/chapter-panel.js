@@ -1,8 +1,8 @@
 import {createLobbyPanel} from './lobby-panel.js';
 import {paintLobbyPaper} from './panel-paper.js';
 import {area,box,button,pic,slice,words,titleFont,clamp} from './menu-art.js';
-import {chapterDetailModel} from '../../ui/chapter-details.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {chapterDetailModel} from '../../ui/chapter-detail-model.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {paintItemDetail} from './item-details.js';
 import {nativeItemPresentation} from '../../replica/native-item-presentation.js';
 import {pendingNotice,rewardPage,starPage} from './chapter-rewards.js';
@@ -66,11 +66,11 @@ export function openChapterPanel(screen,host,send,kind){
   });
   function refresh(){
     const id=kind+'|'+(latest.modal.stageIndex??'');
-    panel.update({...latest,inspect,entered,reduced:matchMedia('(prefers-reduced-motion: reduce)').matches},
+    panel.update({...latest,inspect,entered,reduced:(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches)},
       [signature,id,latest.snapshot.nativeAcquisition?.revision,latest.snapshot.starRewards?.revision,Boolean(latest.snapshot.rewardBusy),Boolean(latest.snapshot.rewardPending),inspect?.itemId].join('|'),id);
   }
   return {host,close:panel.close,update(snapshot,modal,key){
-    latest={snapshot,modal:{...modal},backdropAlpha:.55,coverNavigation:kind==='nativeStarRewards',safeBottom:parseFloat(getComputedStyle(host).paddingBottom)||0};
+    latest={snapshot,modal:{...modal},backdropAlpha:.55,coverNavigation:kind==='nativeStarRewards',safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)};
     signature=key;refresh();
   }};
 }

@@ -1,5 +1,5 @@
 import {box,pic,words,titleFont,clamp} from './menu-art.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {itemDescriptionModel} from '../../ui/item-description-model.js';
 import {paintPsdPopup,preparePsdPopupArt} from '../../ui/psd-popup-art.js';
 

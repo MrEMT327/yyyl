@@ -7,12 +7,14 @@ import {recruitCard} from './recruit-card.js';
 import {animateMeshes} from './ui-motion.js';
 import {drawPresentationPlan,initialDrawPresentation,advanceDrawPresentation} from '../../ui/draw-presentation-plan.js';
 import {DRAW_GATE_ART,DRAW_GATE_DURATION_MS} from '../../ui/draw-gate.js';
+import {artworkSize} from './image-loading.js';
 
 function room(a,t,w,h,variant){
   const direct=variant==='grid',stage=variant==='stage',url='/art/project-scene-backgrounds-v3/'+(direct?'recruit-result':stage?'draw-receiver':'logistics-bay')+'.png';
-  const m=pic(a,t,url,box(0,0,w,h)),im=m.material.map.image,k=im?Math.max(w/im.width,h/im.height):1;
-  const sx=im?w/(k*im.width):1,sy=im?h/(k*im.height):1;
+  const m=pic(a,t,url,box(0,0,w,h)),[iw,ih]=artworkSize(m.material.map?.image);
   const weave=t.texture('/art/project-workshop-background-v2/psd-scanlines.png');
+  if(!iw||!ih)return;
+  const k=Math.max(w/iw,h/ih),sx=w/(k*iw),sy=h/(k*ih);
   m.material.onBeforeCompile=s=>{
     s.uniforms.sceneCrop={value:new Vector4(sx,sy,.5*(1-sx),.5*(1-sy))};s.uniforms.sceneSize={value:new Vector2(w,h)};
     s.uniforms.stripes={value:weave};s.uniforms.drawRoom={value:direct?0:stage?1:2};
@@ -40,7 +42,7 @@ function staged(data,w,h,t){
   const i=order[flow.cursor],row=data.entries[i],header=76;
   if(opening){
     const tex=t.texture(DRAW_GATE_ART);
-    if(tex.image?.width||tex.userData.failed){
+     if(artworkSize(tex.image)[0]||tex.userData.failed){
       const entered=data.startGate();for(let side=0;side<2;side++){const b=box(side*w/2,0,w/2,h);
         const m=a.image(tex,b.x,b.y,b.w,b.h,{x:side/2,y:0,width:.5,height:1});
         animateMeshes(t,[m],b.x+b.w/2,h/2,{entered,reduced:false,duration:DRAW_GATE_DURATION_MS/1000,curve:[.55,0,.3,1],frames:[{at:0},{at:.22},{at:1,x:(side?1:-1)*w/2}]});}
@@ -59,7 +61,7 @@ function staged(data,w,h,t){
 function summary(data,w,h,t){
   const a=t.layer('recruit-receipt-room').art,{plan,entries}=data,grid=plan.grid,count=entries.length,single=count===1;
   room(a,t,w,h,grid?'grid':'summary');
-  const footerH=grid?56+clamp(.08*window.innerHeight,28,68)+data.safeBottom:78+data.safeBottom,header=grid?0:76;
+  const footerH=grid?56+clamp(.08*(data.windowHeight||h),28,68)+data.safeBottom:78+data.safeBottom,header=grid?0:76;
   const by=h-footerH,bw=160,b=box((w-bw)/2,by+(grid?8:14),bw,48);
   if(!grid){
     a.quad(0,0,w,header,'#0b1b2d',.60);words(a,data.modal.title||'招募结果',16,header/2,clamp(.062*w,23,32),{align:'left',family:titleFont});
@@ -82,7 +84,8 @@ function summary(data,w,h,t){
   });
 }
 export function openRecruitResults(screen,host,send,sound){
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const windowHeight=()=>screen.viewportHeight?.() ?? window.innerHeight;
   let latest,receipt,flow,inspect=null,timer=0,gateEpoch=null,entered=0,revision=0;
   const panel=createLobbyPanel(screen,host,'招募结果', (data,w,h,t)=>{
     if(data.flow.phase==='summary')summary(data,w,h,t);else staged(data,w,h,t);
@@ -108,7 +111,7 @@ export function openRecruitResults(screen,host,send,sound){
   function startGate(){if(gateEpoch==null){gateEpoch=performance.now()/1000;if(!cues.has('opening')){cues.add('opening');sound?.('drawCharge');}
     timer=setTimeout(()=>{flow=advanceDrawPresentation(flow,'next',latest.plan);transition();},DRAW_GATE_DURATION_MS);}
     return gateEpoch;}
-  function refresh(){panel.update({...latest,flow,inspect,entered,startGate,reduced,safeBottom:screen.menuView?.safeBottom||0},++revision,'recruit-'+flow.phase);}
+  function refresh(){panel.update({windowHeight:windowHeight(),...latest,flow,inspect,entered,startGate,reduced,safeBottom:screen.menuView?.safeBottom||0},++revision,'recruit-'+flow.phase);}
   return {host,close(){clearTimeout(timer);panel.close();},update(snapshot,modal){
     if(receipt===modal)return;
     receipt=modal;cues.clear();

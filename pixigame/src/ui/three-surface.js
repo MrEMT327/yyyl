@@ -1,11 +1,23 @@
 import * as THREE from 'three';
+import {artworkTexture} from '../three/game-screen/image-loading.js';
 import { RESOURCE_ICONS, resourceIconType } from './resource-icons.js';
 import { COMBAT_TYPE } from './combat-theme.js';
+
+export function createTextureCanvas({ documentRef = globalThis.document, measurement = false } = {}) {
+  const canvas = globalThis.wx?.createCanvas?.()
+    || (measurement && typeof OffscreenCanvas === 'function' ? new OffscreenCanvas(1, 1) : documentRef?.createElement?.('canvas'));
+  if (!canvas) throw new Error('当前环境无法创建纹理画布');
+  if (measurement) canvas.width = canvas.height = 1;
+  return canvas;
+}
+
+let popupFont='PsdPopup';
+export function setPopupSurfaceFont(family){popupFont=family?JSON.stringify(family):'PsdPopup';}
 
 const resourceTextures=new Map();
 function sharedResourceTexture(type){
   if(!resourceTextures.has(type)){
-    const texture=new THREE.TextureLoader().load(RESOURCE_ICONS[type].url);
+    const texture=artworkTexture(RESOURCE_ICONS[type].url,undefined,()=>{});
     texture.colorSpace=THREE.SRGBColorSpace;
     texture.generateMipmaps=false;
     texture.minFilter=THREE.LinearFilter;
@@ -97,10 +109,10 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
     wrap = false, maxLines = 0, minSize = size, lineHeight = 0, family = COMBAT_TYPE.family, outline, shadow } = {}) {
     // These canvases only back textures. On WeChat, give them a native lifetime
     // instead of registering detached DOM canvases for the whole game session.
-    const canvas = globalThis.wx?.createCanvas?.() || documentRef?.createElement('canvas');
+    const canvas = createTextureCanvas({ documentRef });
     const ctx = canvas.getContext('2d'), source = String(value);
     let fontSize = size;
-    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${family}`; };
+    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${family.replace(/\bPsdPopup\b/g,popupFont)}`; };
     const measure = value => ctx.measureText(value).width + Math.max(0, value.length - 1) * tracking;
     const breakLines = () => {
       const lines = [];

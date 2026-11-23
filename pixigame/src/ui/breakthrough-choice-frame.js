@@ -2,6 +2,7 @@ import {BufferGeometry,Float32BufferAttribute,Mesh,ShaderMaterial,Color,DoubleSi
 import {Container} from '../three/display.js';
 export {attachBreakthroughChoiceFrame} from '../three/game-screen/choice-edge.js';
 import {EDGE_PALETTES} from './breakthrough-edge-profile.js';
+import {prefersReducedMotion} from './status-feedback.js';
 
 // Branch modifiers inherit the parent's weapon tier. Ordinary stage offers,
 // passive choices and the two fallback rewards must not acquire this frame.
@@ -12,9 +13,8 @@ export function isBreakthroughBranchOffer(offers=[]){
 
 /** The outline and its exterior bloom share a mesh, following the PSD cuts.
  * Its transparent middle leaves the weapon illustration and text clear. */
-export function attachBreakthroughChoiceCardAura(card,{width,height,revealAt=0,tier='y'}){
+export function attachBreakthroughChoiceCardAura(card,{width,height,revealAt=0,tier='y',reduced=prefersReducedMotion()}){
   const palette=EDGE_PALETTES[tier]||EDGE_PALETTES.y;
-  const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches??false;
   const scale=Math.min(width/224,height/562),pad=30*scale,inside=18*scale,cut=20*scale;
   const positions=[],indices=[];
   const quad=(x0,y0,x1,y1)=>{const n=positions.length/3;positions.push(x0,y0,0,x1,y0,0,x0,y1,0,x1,y1,0);indices.push(n,n+1,n+2,n+1,n+3,n+2);};

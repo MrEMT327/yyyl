@@ -1,5 +1,6 @@
 import {area,bodyFont,box,button,pic,slice,words} from './menu-art.js';
 import {paintLobbyPaper,paintSecondaryPaper} from './panel-paper.js';
+import {createTextureCanvas} from '../../ui/three-surface.js';
 
 function lineCount(cache,text,width,font,tracking){
   const key=[width,font,tracking,text].join('|');
@@ -15,7 +16,7 @@ function lineCount(cache,text,width,font,tracking){
   cache.counts.set(key,count);return count;
 }
 export function sheetMetrics(){
-  const canvas=typeof OffscreenCanvas==='function'?new OffscreenCanvas(1,1):document.createElement('canvas');
+  const canvas=createTextureCanvas({measurement:true});
   return {context:canvas.getContext('2d'),counts:new Map()};
 }
 

@@ -36,7 +36,7 @@ function layout(data,w,h,t){
   return 'base';
 }
 export function openProcessFeedback(screen,host,send,sound){
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);
   let latest,identity,inspect=null,entered;
   const panel=createLobbyPanel(screen,host,'成长结果',layout,cmd=>{
     if(cmd.type==='inspect'){inspect=mergeItem(latest.record.results[cmd.data.index].after);refresh();return;}

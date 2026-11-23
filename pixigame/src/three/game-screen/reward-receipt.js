@@ -2,7 +2,7 @@ import {createLobbyPanel} from './lobby-panel.js';
 import {paintItemDetail} from './item-details.js';
 import {area,box,pic,words,titleFont,clamp} from './menu-art.js';
 import {slicedFrameGeometry} from '../../ui/nine-slice-geometry.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {rewardItemModel} from '../../ui/reward-item-model.js';
 import {shopBoxRewards} from '../../ui/shop-box-result-cards.js';
 import {boxActions,paintBoxActions} from './box-result-actions.js';
@@ -72,7 +72,7 @@ function receipt(data,w,h,t){
 
 export function openRewardReceipt(screen,host,send,sound){
   let latest,inspectIndex=null,identity,entered;
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);
   const panel=createLobbyPanel(screen,host,'获得奖励',receipt,command=>{
     if(command.type==='inspect'){inspectIndex=command.data.index;refresh();return;}
     if(command.type==='close'&&inspectIndex!=null){inspectIndex=null;refresh();return;}

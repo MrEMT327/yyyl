@@ -9,6 +9,7 @@ import { paintPauseCategoryIcon } from './pause-category-art.js';
 import { upgradeIconLayout, fitUpgradeIcon } from './upgrade-icon-layout.js';
 import iconCrops from './psd-choice-icon-crops.json' with {type:'json'};
 import {beginAudioSwitch,audioSwitchPosition} from './audio-switch-motion.js';
+import {prefersReducedMotion} from './status-feedback.js';
 
 function weaponImage(surface,texture,id,box) {
   if(!texture)return;
@@ -95,7 +96,7 @@ export function renderCombatPause(root,bridge,art,{surface,button,backdrop}) {
       [['sound','声音'],['music','音乐'],['effects','音效']].filter(([key])=>typeof settings[key]==='boolean'&&typeof bridge.setCombatAudioSetting==='function').forEach(([key,name],i)=>{
         label(name,90,510+i*120,28,'#173449');
         const enabled=settings[key];
-        const reduced=globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+         const reduced=(bridge.reducedMotion??prefersReducedMotion)();
         const toggle=control(key,330,475+i*120,174,76,'',()=>{
           bridge.setCombatAudioSetting?.(key,!settings[key]);
           if(!reduced)beginAudioSwitch(bridge,key,enabled,!enabled);

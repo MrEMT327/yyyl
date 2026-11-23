@@ -5,10 +5,11 @@ import {nativeCollectionArt,nativeSkillArt} from '../../replica/native-collectio
 import {nativeWeaponSkillArt} from '../../replica/native-weapon-skill-art.js';
 import {skillIconBackgroundArt} from '../../replica/skill-element-background-art.js';
 import bounds from '../../ui/process-feedback-art-bounds.json';
+import {artworkSize} from './image-loading.js';
 
 function portrait(a,t,row,b,w){
   const url=nativeCollectionArt(row,'default');if(!url)return;
-  const trim=bounds.assets[new URL(url,document.baseURI).pathname];
+  const trim=bounds.assets[new URL(url,globalThis.document?.baseURI||'https://localhost/').pathname];
   if(!trim){pic(a,t,url,b,true);return;}
   const [x,y,iw,ih]=trim.viewBox,k=Math.min(b.w/iw,b.h/ih),nw=iw*k,nh=ih*k,pad=.025*w;
   const r=box(b.x+(b.w-nw)/2-pad,b.y+(b.h-nh)/2-pad,nw+2*pad,nh+2*pad);
@@ -60,7 +61,9 @@ export function collectionFeedback(data,w,h,t){
   const stage={cx:w/2,cy:st.y+st.h/2,duration:.8,delay:.18,frames:[{at:0,opacity:0,scale:.7},{at:1}]};
   part(st,()=>{const url=gun?hologram:'/art/aircraft-activation-v1/activation-stage.png';
     if(gun){pic(a,t,url,st,true);return;}
-    const tex=t.texture(url),iw=st.w*(pilot?1:.9),ih=iw*(tex.image?.height||1)/(tex.image?.width||1);
+    const [sw,sh]=artworkSize(t.texture(url).image);
+    if(!sw||!sh)return;
+    const iw=st.w*(pilot?1:.9),ih=iw*sh/sw;
     pic(a,t,url,box((w-iw)/2,st.y+st.h-ih,iw,ih));
   },stage);
   part(st,()=>{const m=pic(a,t,hologram,st,true);if(data.reduced)m.material.opacity=.4;},{delay:1,duration:2.8,frames:pulse,loop:true},[stage]);

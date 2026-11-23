@@ -1,0 +1,566 @@
+{
+  "rasters": [
+    {
+      "path": "art/combat-stat-icons-v3/attack.svg",
+      "file": "3a50dcc387eb4f4b8540.png",
+      "svgSha256": "dfbf0680271eefba28e4544808c17bc35fc1431dd8581d60e10502e2b10f0cae"
+    },
+    {
+      "path": "art/combat-stat-icons-v3/durability.svg",
+      "file": "19ace44fcd0e1ddc3620.png",
+      "svgSha256": "d1ac8e1cb4073fb6a8af479d783a889671b80227c31cc2c56552408228e9329b"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/angles-right.svg",
+      "file": "65f90edefb378f48725c.png",
+      "svgSha256": "56ad02e6be5efec512f4259fc666d0dedd284ef7941aa988967ddac1cdcde0c7"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/crosshairs.svg",
+      "file": "3cd61233b19d001ec1c9.png",
+      "svgSha256": "6c0032121b7e02637bbea64ffc6622f1ace47c1d3b771991e46f0d676ae4a9e7"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/exclamation.svg",
+      "file": "8e76192c2cae71882af5.png",
+      "svgSha256": "300968736ca96446a03e87c0f353e72dd57e0a56a8fa57da5ec2eab24f8fa5a5"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/heart.svg",
+      "file": "2c61659876e3c4a2604f.png",
+      "svgSha256": "32ad8d5198f892c06cd0a3bef843c200bc8c2faacbdd39e31378b0b277da78af"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/lock.svg",
+      "file": "b209e993c1467a79b260.png",
+      "svgSha256": "c235ecb8a5bfed86989c97d9be37b9647cb3f3ae3218c2f8afcbcc4e13289218"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/star.svg",
+      "file": "910d358da3c82cb92fce.png",
+      "svgSha256": "a3793e8d54bebf5958d6a0539c75fc117d42e06cc197621ae67d32438a787627"
+    },
+    {
+      "path": "art/equipment-comic-v1/icons/user-astronaut.svg",
+      "file": "fee2a89e14516c966021.png",
+      "svgSha256": "cc41391d4057d0a664c6e421f74663516012f80f6c24284330b2dd9961d5fd45"
+    },
+    {
+      "path": "art/equipment-controls-v1/button-disabled.svg",
+      "file": "5d038df2ea3e486a39f4.png",
+      "svgSha256": "93ddb48b3083feb9c3704cd4eb31e33c1094bb1c2cf92ed8e6bf03460dcd7a7b"
+    },
+    {
+      "path": "art/equipment-controls-v1/button-normal.svg",
+      "file": "d70046d6bf0674078551.png",
+      "svgSha256": "fb42ad9c756616002462d5b5f7746a739fe17150a77b8d7aebdfc91132d2176c"
+    },
+    {
+      "path": "art/equipment-controls-v1/button-pressed.svg",
+      "file": "64ace8a66c69ac4c62c6.png",
+      "svgSha256": "5721ef5dbe63381d31b3d9eded99d2d268390f662e2cc8f210dcedd3bb2e4c05"
+    },
+    {
+      "path": "art/equipment-controls-v1/button-selected.svg",
+      "file": "9cccfcf3293bfcb77401.png",
+      "svgSha256": "bcbc0a0e8c68e6b986d1882bbe7c40ccc7066a76bceb6642a68d68d629ba2c7b"
+    },
+    {
+      "path": "art/equipment-controls-v1/check.svg",
+      "file": "6e1a193f4b8bc0b3d3b7.png",
+      "svgSha256": "f082713f2886fa543babd061d4c4aa36ea2ceb2d3f2bf90c06f324940947c2ff"
+    },
+    {
+      "path": "art/equipment-controls-v1/chevron-down.svg",
+      "file": "8d1ec85704ca6f2868f6.png",
+      "svgSha256": "62370b05f728b5e697c27bf1e2223ee81959cead9b4b103ffbce3901f7efa737"
+    },
+    {
+      "path": "art/equipment-controls-v1/menu-panel.svg",
+      "file": "95867cf3d76acdf2b8ce.png",
+      "svgSha256": "1d329ca29b4a24324a134fb9cd9ea4b96ad6075634006fca24a2c20aebcd5712"
+    },
+    {
+      "path": "art/equipment-controls-v1/option-selected.svg",
+      "file": "76ff92b69dca9300e3e2.png",
+      "svgSha256": "b0a55340fb3117664b42223841cef321968657ebaeec64dd703af1da0bdf4b7c"
+    },
+    {
+      "path": "art/project-enemy-markers-v1/warning.svg",
+      "file": "4e98a176f0192211f3e0.png",
+      "svgSha256": "c08c12eab142e6c2accc4a700fa1e24b628247aee047e35fa62ff628c8c6f647"
+    },
+    {
+      "path": "art/project-equipment-blueprints-v2/equipment-blueprints.svg",
+      "file": "d40a783bb42728f2f2b9.png",
+      "svgSha256": "c7bbdc3151055d8cc82be93ef0d85595b1f451042941577d723e0ce664c086a3"
+    },
+    {
+      "path": "art/project-material-groups-v1/equipment-blueprints.svg",
+      "file": "31549df584e58ea3b4a3.png",
+      "svgSha256": "eb7b78245169bbaacde66fc9b972b63b75613c504ebe6f158e161e04ef7807ae"
+    },
+    {
+      "path": "art/project-material-groups-v1/research-blueprints.svg",
+      "file": "841cd62bc6533345f837.png",
+      "svgSha256": "50a51e5e3b945dd28ba90ef20563ecff246f991752cd9f788118055e183c7cd8"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/801.svg",
+      "file": "7265c507f97fbbe7fedd.png",
+      "svgSha256": "e4a1297ba736549dc78efed6c783494267a6a38d8c9df7e1143f03fe55133dbe"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/802.svg",
+      "file": "1b8ca4795f5df1dbf6b6.png",
+      "svgSha256": "335d2a95125eb2cd3446c32b44f1959ac71952fd70f09ffd77708b57c51f17d6"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/803.svg",
+      "file": "241218ec27c9598edeb1.png",
+      "svgSha256": "549202c9655aecb12e706b9b2c00068f605415a35c27745b2198f0203cd43e35"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/804.svg",
+      "file": "01f0aa536b43e00a945a.png",
+      "svgSha256": "d25f4696577da37cacfb96aebaafd06b07a2fc68d81153d533a13aa29a5c196d"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/805.svg",
+      "file": "3f3cbfec1b65925c56a5.png",
+      "svgSha256": "5d1fd0da891a527ec62bd2d23e71c7c1221352b04df5dce8726cc54b50a57b3b"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/806.svg",
+      "file": "ff3732f690acb5bcffbb.png",
+      "svgSha256": "ad156d6410067259075c8110289de6165fa2b6947ca0f988ae1f0ec2edd24016"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/807.svg",
+      "file": "0e85d4660d0e4dde63b2.png",
+      "svgSha256": "22ca1bd902aa96cc97f289479326bd07aae56cedb566705ae463e28cd208eb8a"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/808.svg",
+      "file": "22955bf0e08d7eaedc98.png",
+      "svgSha256": "b50749f4f2c663b3dd494e6a6b5076b074f6b70c14fc0d05150904247aea56b4"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/809.svg",
+      "file": "9c896f2bb4740aae0344.png",
+      "svgSha256": "3960034a7f66a02455ed1f100c80b97897708b81c27573eaffc20a25cb0b0290"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/810.svg",
+      "file": "8fc4641a9bf20ab30e5e.png",
+      "svgSha256": "7e6398662074737c20e3eb62aef6cb18bb83bdb2ce5abe89a90657e1d4170584"
+    },
+    {
+      "path": "art/project-research-blueprints-v2/811.svg",
+      "file": "fb53f3565f0e480034a4.png",
+      "svgSha256": "0823478b071b344ac67feef6486573aff8ffda5d6cedfabdc954112628758904"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/boss.svg",
+      "file": "7722a91a83f248c61744.png",
+      "svgSha256": "0876b116d7e39d74708f04fcb6ef8f0b9d6295fc11e56775f08213157c195b91"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/grade.svg",
+      "file": "be8c2e09d64c0a42aa00.png",
+      "svgSha256": "5ba18647c4bc16095c043ca210c8b45c1bc1cabe5f5e6fd7b8f95c9cbaf4a2db"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/home.svg",
+      "file": "b3fb82e6f780a549e30f.png",
+      "svgSha256": "0e629dc3a6f65b214527940d02e8d0c62f44582ba93cda90b01521dd0d464aa4"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/muted.svg",
+      "file": "43523b37670c6fc77e64.png",
+      "svgSha256": "50b1ec6ec2393218a16b8d4a557a3ffcd62566186f26095db08a9e75072c3093"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-L-grey.svg",
+      "file": "985a202452df1698578d.png",
+      "svgSha256": "a082b83ddc6e9651b84e8842e007797e0bc97dc2d04751578c39085feec8bc05"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-L-multicolor.svg",
+      "file": "9ecf64f13b2ce9e97bbf.png",
+      "svgSha256": "356669d5f981516684d35e233480751484a719e8f68bf903da45be628ea84237"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-L-red.svg",
+      "file": "b6c90c5635127bec31bf.png",
+      "svgSha256": "48090e13c68d16455eb4fc458da00ed8f0cf1d3e57d93c90ae9e315a076f95cb"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-L-white.svg",
+      "file": "6d8436277ec3c1f00c0a.png",
+      "svgSha256": "bd176a4247a99350c94a9c36f672a20cfce92d2ff4f49ce85aca462302c9b06f"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-L-yellow.svg",
+      "file": "a2efebb05fb703c000e3.png",
+      "svgSha256": "b7936fc20c75d9184a390dee39a6327a81e285efcfe670af38b4f2324216da7e"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-M-grey.svg",
+      "file": "79eba054d7f97b740349.png",
+      "svgSha256": "d27f713222dd7633b632eb0a188849d09a065e8deea49e33d485fb5b1c023b70"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-M-multicolor.svg",
+      "file": "b1b0c35b8b41c5f955af.png",
+      "svgSha256": "a2d6d8411d47f80e1f5307f1eae06064e68ced66635750d8532fdc1df05b0241"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-M-red.svg",
+      "file": "30c44177b9f683c7ac0f.png",
+      "svgSha256": "08c8c71df9e6c1232f85bc11b4932aa1dc442a4749504e75baf4cdf896c4f604"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-M-white.svg",
+      "file": "cca500cb1755d561be6f.png",
+      "svgSha256": "a570121f0ade5ecedeb382b2574f2e98b80a1471591a34f2dba71d2b6ac0816f"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-M-yellow.svg",
+      "file": "41613f80b8848f2bb659.png",
+      "svgSha256": "99213d004b3a0f260c3fa1c6100528276eb133e08a3ecbcdb4759dbc1967c252"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-S-grey.svg",
+      "file": "7f5e9aebbd38624d13ae.png",
+      "svgSha256": "a82d177892542538c996659e8f38a38e0158209c868117535a2c1cebde5d90d3"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-S-multicolor.svg",
+      "file": "503d2c7bc805062cb994.png",
+      "svgSha256": "1ea5d708992549cdc423a24857756e05f3edd4ab3f44d3847875d9c4f0df273b"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-S-red.svg",
+      "file": "48e2d155adba5c1ae686.png",
+      "svgSha256": "f9995b8b3c19a6f4108ac6da87e2bc75f2c93e10701afbde3f2a472c084dcbeb"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-S-white.svg",
+      "file": "2b66af447a7957bbed11.png",
+      "svgSha256": "d92a77c781f2825e26c8d93ead362cc5e2b9813dcc2a59f513a7d1e854b453f6"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/rank-S-yellow.svg",
+      "file": "04eb9c556ea2f0640457.png",
+      "svgSha256": "8019906927f3d054e20541a55cfff58c529abd2adea79e90187158187fd70dbd"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/settings.svg",
+      "file": "7a8f8a79a3ddf9ae3663.png",
+      "svgSha256": "27db93d19723a04392710a8c27c459d7c227dda8f76734a5e3bc7b4378984280"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/sound.svg",
+      "file": "8f46fe91cad30c9d1422.png",
+      "svgSha256": "f080ed10a68713f5ca21b8fdcc0b0fe9898c49e53fd1dbdf2d2c16b21b9a7432"
+    },
+    {
+      "path": "art/project-supplement-icons-v1/target.svg",
+      "file": "d582eae0656bcc69ed3f.png",
+      "svgSha256": "c4d210612fa5355d502a105a96122b34d6edc58f1c164268527ba1f0d83ccacb"
+    },
+    {
+      "path": "art/project-toast-v1/toast-frame.svg",
+      "file": "7fd5465c3a95c13ff628.png",
+      "svgSha256": "80eec97c1c5f5d5884281c0c2f2c8a3fd82b6f23bfe651c6dfd9ba65e8af10f2"
+    },
+    {
+      "path": "art/psd-popup-v1/task-face.svg",
+      "file": "f7967a677f6d690312e5.png",
+      "svgSha256": "a67ec18cf3c107312ce926d6018091359ce09954b9da1221bcbe2ee75659012e"
+    },
+    {
+      "path": "art/research-comic-v1/question.svg",
+      "file": "afaa358373b7c1ea1709.png",
+      "svgSha256": "cf0d14aaa89b50b68c884b2520d453fcd55838fdc85cc0f07a404949cd237f10"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/bolt.svg",
+      "file": "4e0a8bfc5ee29cd74be3.png",
+      "svgSha256": "c23816fcca202a690a4b6fdcc4f807965b2697dafdd2d3b67e0696cff250b774"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/box.svg",
+      "file": "1422d998d8646fef709d.png",
+      "svgSha256": "36742c8f4746c26526e23b17104f9298947a6c1c6ba5476f3d6dde981ba9ae78"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/cart-shopping.svg",
+      "file": "f3002f12a2a3c19fbe51.png",
+      "svgSha256": "081462ef633cf257c77ba0ea9b79af6fd402360957ab42aa0875b6dec7d2f133"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/check.svg",
+      "file": "85ac94e7eaecbd0f2932.png",
+      "svgSha256": "238257f08a1167f608209d7ef44fa3eaa59859811a2cedeab34cd9b63667e410"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/chevron-down.svg",
+      "file": "09c25984009345abb5a2.png",
+      "svgSha256": "a723e5030c161fb85ea9de06a11d25a49b9e8c9648cb1190df7a7b2dc2d724b1"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/chevron-right.svg",
+      "file": "dde52db9c4eeb4bb44f3.png",
+      "svgSha256": "4fac1f4b7bead300d2bf49b8bf6f0984ac4fce3fe870116cd54637072a9376b7"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/circle-info.svg",
+      "file": "49ef1f6e47bcf2530087.png",
+      "svgSha256": "76a4160cf2229bdb5e2a24cf9028a13425e87bb496d46ca5ace4a91b7531d1d0"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/coins.svg",
+      "file": "ae3ec2a0a4e3b15cb689.png",
+      "svgSha256": "6e2e660befe185060c4011c5bda386d4cf1dc27dde6a18cafabfd39fc94a6397"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/gear.svg",
+      "file": "b74bba18106611f3a165.png",
+      "svgSha256": "b9a38444d7af356e89bb9b2d11852847f969e8b9a45981ca0a1387477247ae81"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/gem.svg",
+      "file": "c3ccae8bfe9e10c24d1e.png",
+      "svgSha256": "8d44c59a6d97410af8aadfb2ac2c9d0494a3d215bb4e03c94894df73aafc7283"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/gift.svg",
+      "file": "409739699285730ac80b.png",
+      "svgSha256": "7a7117cba668d12caecb0ecde0219735e48e52e6c7f76f22b1ddd3206038a721"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/id-card.svg",
+      "file": "b019eba3473f9ec218e5.png",
+      "svgSha256": "3cdc5fe55dfe49a0e47a362b4bd3e850bae969cca3d922477d4d54af2821c6cc"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/jet-fighter.svg",
+      "file": "f39febc91cbbc4d96fad.png",
+      "svgSha256": "f211294104b9129c88ae85cba84296b849785f0557c786bf65049d2ca8471c5b"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/medal.svg",
+      "file": "e5b4510146975fd1b49b.png",
+      "svgSha256": "f8eab823faee7629ba2c9f9542b3f5d30fb4a422896cb6a7d435a8c59c9a8d44"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/play.svg",
+      "file": "f387700f4f21a6af2700.png",
+      "svgSha256": "2450714e90ceba7026b56f3a926a73b13772210cb9b4ec50b7f3baeacaa439c9"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/plus.svg",
+      "file": "3b085250cc4fccaa35e9.png",
+      "svgSha256": "8c1c05a38a072f42156542c6f3c6f91f0188e7bf27990f81ff42f42e0719c7e5"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/store.svg",
+      "file": "b184272861564c99e54b.png",
+      "svgSha256": "c874ce83d5fd78e6d6ae2d9171e5f7705418816b6116a5174ec1886ae6c2acf6"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/wrench.svg",
+      "file": "cb004ea66a31c64dc170.png",
+      "svgSha256": "d7be3a4062ed7a7bc86c3ea92672f8e814bd75de095630396eaecd63e5dc24e1"
+    },
+    {
+      "path": "art/shop-comic-v1/icons/xmark.svg",
+      "file": "b84b1ac1c17137f19c4c.png",
+      "svgSha256": "591fea2ae19d968cac870da11a403068f083a84bb909ee248e11353ed319ec8d"
+    }
+  ],
+  "fallbacks": [
+    {
+      "path": "replica-battle/assets/project-airdrop-supply/airdrop-crate-front-v1.png",
+      "file": "bfeecd038ef531523511.png"
+    },
+    {
+      "path": "replica-battle/assets/owned-enemies/siege-boss-v1/parts.png",
+      "file": "0df5e9c7709972da9c20.png"
+    }
+  ],
+  "localImages": [
+    {
+      "path": "art/battle-skill-icons-v4/10000001.webp",
+      "sha256": "bfe087f77680ad754dad160f9e71119ad8ce1b5d8ebb0bf12e7fc409ad752f1d",
+      "file": "1f8818c65928e3f11ee5.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000002.webp",
+      "sha256": "8dec18886b43033427310be41d06e933b44ae83a09d2805af040162864e84447",
+      "file": "113a19d85b9eb0ff1f98.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000201.webp",
+      "sha256": "f81b9487b383aa9472792c49887383b385768843a9036f459084dd902bc60d50",
+      "file": "c66416602346a5bba42f.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000301.webp",
+      "sha256": "035eaa81398af34de9ae61612a1ba1ff8a8f2e9be712d54108714be0357ed0f6",
+      "file": "c46c5af7c4188f99d0b8.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000401.webp",
+      "sha256": "3f66896ec3511cdc4149759dc19fc75e66338c485dbb4549e10622475aa89ae5",
+      "file": "e2ce35d29b63bc78c35a.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000701.webp",
+      "sha256": "1d281840d4251369732dc2bd9b1d0889684031ef26634e65967b6d9087ea57a3",
+      "file": "eef7ae57fa8ecb9ebc19.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10000901.webp",
+      "sha256": "8994a35039eb8908c6f76bc1f87e12c97d65992740edd9fb5559b9d93c5c3565",
+      "file": "4bbfe3e037f7fc088f7d.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001101.webp",
+      "sha256": "230f78a5cf2079b90fb0a4ccc561839aa64aa5b455add7c6e0e3acd47f70eec3",
+      "file": "7ebdef029c19fecbfda9.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001501.webp",
+      "sha256": "d5bf3e3da39089d6859687e5683568639ee8cded1b0ec88edb014767b576220b",
+      "file": "e8b5f178b67c02aa17ed.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/10001601.webp",
+      "sha256": "50c9d715b674002f2d2410de6b452736adcb0a841cb439c0056a950dbf460849",
+      "file": "213de77c7b3921792f2a.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000101.webp",
+      "sha256": "8b84600f1e0a65625b07a0080fb561d32d64ded2efe6fec931746aa210636e14",
+      "file": "377838f1b26d7c76d055.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000201.webp",
+      "sha256": "b8ee643c1f61bb1c0bd635d5d1c5e7dcf7e8a7bf5f72f3c33fda677b6d96fed1",
+      "file": "3c12e1b3668f1bec0065.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000301.webp",
+      "sha256": "39fcee361db356aa4e0de0507a6be0421179daff1e3b2743de3d90bf87f73b13",
+      "file": "64376d299524825fa830.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000307.webp",
+      "sha256": "0ef0465e3219c144055460194cde9715fb66fb9bd9fb669a6a7257400423b202",
+      "file": "f4bf3b7395b848dcf067.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000601.webp",
+      "sha256": "6569b4064b0e04b04bac991cfbf7ec3bb75fcca0227b3d0a677912bae665cca8",
+      "file": "a119ba5be9e954ce45d7.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11000801.webp",
+      "sha256": "7dcef1f68f21cfe2ae0ec31a064c1a6af8940ca0b8fefc7d1f43e797c46c6146",
+      "file": "f939fd0e78e2672cd31d.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001101.webp",
+      "sha256": "7c56ba0d11121dcfc7486d26e8d1a936c08378ab5825d70a1c26c0317d633cdc",
+      "file": "126e35720ba21c74599b.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001401.webp",
+      "sha256": "3278e55779cece955f65a3be48915f8e866ce5772c7e883e123d2070fdd49b89",
+      "file": "6ad4c62b1e73f3f4168a.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001601.webp",
+      "sha256": "e60ddfe303d11f7b7518a2c584cf4fe2183b15b30ba285abf1c85b4f574e1625",
+      "file": "f578382762789fda51d8.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11001701.webp",
+      "sha256": "6281e86db7f7f17b2e8a962b62bf8ca24baf5f8092cb54cf069de6b8f90296b7",
+      "file": "2f426993e5b1cb001acb.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11002001.webp",
+      "sha256": "d112183bef896ae198fcc9bf8882c357994f8e65bd99c518c361877f3546412c",
+      "file": "fa808a02b01cb02e7fb2.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11002201.webp",
+      "sha256": "136c591c9ef9559e972d94dc84c8fc5a6a096bbabcc4d3d309fc6f0605a58ef1",
+      "file": "744233862870fc8f3f3d.png"
+    },
+    {
+      "path": "art/battle-skill-icons-v4/11002501.webp",
+      "sha256": "9cbde662c3ea0595b340e1b087f9d5e04578ea8426f850d0ce0485ddb825d752",
+      "file": "498906a1eacb603726f2.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20102.webp",
+      "sha256": "842d1e77087a34f52b60a1328eb9259737527fb6f892df65be88ae809f9d9e6e",
+      "file": "2d8531966fadea8c8585.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20202.webp",
+      "sha256": "76d78f79ef3cbc206002646cd50d1d94736fc1edf9f9562c44a9eba60ae25002",
+      "file": "df1845a0ed3faf8b7961.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20302.webp",
+      "sha256": "e38bfb0d90c1a5d14f4abd1c53848a759a7baf7f45f9a83b5376bbc06168e822",
+      "file": "b8fbbcb7b9fad6b7123e.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20402.webp",
+      "sha256": "de9f654e5b38e515ca6d7f1b8c0e3b7a7fd0acee581af2dca3a3de10991bbde7",
+      "file": "36a22b01c6ec171dc202.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20502.webp",
+      "sha256": "5f62a702c47b7dfcc17d86a615f6290a09c05c26f79db82b876196f31f50244a",
+      "file": "19833ebb3fdf433259b5.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20602.webp",
+      "sha256": "25ed59308a396277a781ea3490be5fcf932e02ae1d0319c153f12589fc45d061",
+      "file": "8a6ca2ed6a1c1e94af8e.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20702.webp",
+      "sha256": "54d608df07620fffceda8716db90f7e710c2cbc5cb5b509e39c72425f9c728b9",
+      "file": "363af58d71f1cebd079a.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20802.webp",
+      "sha256": "4987ca3a7ce0a9b94ff390918e30cc3739631177399797320fd9ed78d43aade3",
+      "file": "95354e32f50681269030.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-20902.webp",
+      "sha256": "e3b53f893ee10dae24e18df4d3065539a6a4e79800a9c31cc2bc5138e505f7d3",
+      "file": "5e792e2e02a7bd55cd55.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-21002.webp",
+      "sha256": "c55a99bc70ffef604eec7c825adafd0613fde4efe9650c9aecf6c7f67b0c281f",
+      "file": "d53ecd6db20efb04f6f0.png"
+    },
+    {
+      "path": "art/weapon-variant-skill-icons-v5/weapon-21102.webp",
+      "sha256": "8d1dc107d0a0f34932eac0556dfc02edccfbc60cb4483d5b2b6e7a37854adb35",
+      "file": "1f84cfb089f79f6587ea.png"
+    }
+  ]
+}

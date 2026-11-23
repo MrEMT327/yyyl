@@ -1,9 +1,9 @@
 import {area,box,pic,resourceBar,slice,words,titleFont,clamp} from './menu-art.js';
 import {paintLobbyPaper} from './panel-paper.js';
-import {chapterRewardEntries,selectedChapterReward,condition,milestone} from '../../ui/chapter-rewards-panel.js';
+import {chapterRewardEntries,selectedChapterReward,condition,milestone} from '../../ui/chapter-reward-model.js';
 import {nativeItemPresentation} from '../../replica/native-item-presentation.js';
 import {rewardDisplayQuality} from '../../replica/item-display-quality.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {easing as progress} from './ui-motion.js';
 
 const star='/art/project-ui-icons-v1/star.png',tray='/art/chapter-details-tray-v1/tray.png';

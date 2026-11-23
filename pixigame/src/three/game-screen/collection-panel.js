@@ -90,8 +90,8 @@ export function openCollectionPanel(screen,host,send){
     const id=[modal.type,modal.kind,modal.id,modal.mode,modal.operation].join('|');
     if(identity!==id){entered=performance.now()/1000;inspect=null;panel.scroll('base',0);}identity=id;
     key=[signature,modal.error,modal.result?.previousStars,snapshot.replicaCollection.revision,snapshot.rewardBusy].join('|');
-    model={snapshot,modal,sheetMetrics:metrics,reduced:matchMedia('(prefers-reduced-motion:reduce)').matches,entered,
-      safeBottom:screen.menuView?.safeBottom||0,coverNavigation:!!host.closest('[data-subpage]:not([data-subpage=""])')};refresh();
+    model={snapshot,modal,sheetMetrics:metrics,reduced:(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches),entered,
+      safeBottom:screen.menuView?.safeBottom||0,coverNavigation:screen.lobbyLocation ? Boolean(screen.lobbyLocation.subpage) : Boolean(host.closest('[data-subpage]:not([data-subpage=""])'))};refresh();
   }};
 }
 

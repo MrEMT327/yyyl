@@ -1,7 +1,7 @@
 import {createLobbyPanel} from './lobby-panel.js';
 import {paintLobbyPaper} from './panel-paper.js';
 import {area,box,pic,slice,words,clamp,titleFont} from './menu-art.js';
-import {DAILY_TABS,hasReady} from '../../ui/daily-center.js';
+import {DAILY_TABS,hasReady} from '../../ui/daily-tabs.js';
 import {taskChestArt,taskChestModel} from '../../ui/task-chest-model.js';
 import {paintPsdPopup,preparePsdPopupArt} from '../../ui/psd-popup-art.js';
 import {paintItemDetail} from './item-details.js';
@@ -9,6 +9,7 @@ import {pendingNotice} from './chapter-rewards.js';
 import {activityModel,signInCard,achievementRows} from './task-model.js';
 import {taskList,rewardSlot,taskPageFade} from './task-list.js';
 import art from './receipt-art.json';
+import {artworkSize} from './image-loading.js';
 const medal='/art/project-task-icons-v1/activity-medal.png';
 
 function drawChest(t,a,w,g,row,model,data){
@@ -77,9 +78,9 @@ function signIn(data,w,t,clip){
     const bodyY=y+heading+.012*w,bodyH=height-heading-.012*w-foot;
     if(day.pilot){
       const pw=.44*w,ph=bodyH+.05*w,portrait=pic(a,t,day.pilot.image,box(cx+bw-pad+.01*w-pw,bodyY-.05*w,pw,ph));
-      const im=portrait.material.map?.image;
-      if(im?.width){
-        const vertical=ph/(2.3*pw*im.height/im.width);
+      const [iw,ih]=artworkSize(portrait.material.map?.image);
+      if(iw&&ih){
+        const vertical=ph/(2.3*pw*ih/iw);
         portrait.material.onBeforeCompile=shader=>{
           shader.uniforms.signinCrop={value:vertical};
           shader.fragmentShader='uniform float signinCrop;\n'+shader.fragmentShader.replace('#include <map_fragment>',
@@ -123,7 +124,7 @@ function tasks(data,w,h,t){
 }
 function chestTip(data,w,h,t){
   const row=taskChestModel(data.snapshot,data.period,data.id),a=t.layer('chest-tip').art;
-  const from=data.source.state().controls.find(c=>c.id==='chest-'+data.id),host=data.host.getBoundingClientRect();
+  const from=data.source.state().controls.find(c=>c.id==='chest-'+data.id),host=data.bounds();
   const center=from?from.x+from.w/2-host.x:w/2,top=from?from.y-host.y+.005*w:h*.4;
   const items=row?.rewards||[],side=.16*w,gap=.025*w,cols=clamp(items.length,1,3),width=clamp(cols*side+(cols-1)*gap+.08*w,.24*w,.76*w);
   const height=.07*w+Math.max(1,Math.ceil(items.length/cols))*(side+gap)-gap,x=clamp(center-width/2,.04*w+6,w-.04*w-6-width),y=Math.max(8,top+.18*side*.75-height-7);
@@ -146,15 +147,15 @@ export function openTaskPanel(screen,host,send,kind,scrollPositions){
     if(cmd.type==='close'&&inspect){inspect=null;refresh();return;}
     if(cmd.type!=='none')send(cmd.type,cmd.data||{},host);
   },{overlay:tip,onScroll(zone,value){if(DAILY_TABS.some(tab=>tab.id===zone))scrollPositions?.set(zone,value);}});
-  panel.surface.addEventListener('keydown',keyTab,true);
+  panel.surface?.addEventListener('keydown',keyTab,true);
   function keyTab(e){
     if(inspect||tip||!panel.focused?.startsWith('tab-')||!['Home','End','ArrowLeft','ArrowRight'].includes(e.key))return;
     const index=DAILY_TABS.findIndex(d=>d.id===latest.period),i=e.key==='Home'?0:e.key==='End'?3:(index+(e.key==='ArrowLeft'?3:1))%4;
     e.preventDefault();e.stopImmediatePropagation();send('taskPeriod',{period:DAILY_TABS[i].id},host);
   }
-  function refresh(){const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;panel.update({...latest,source,host,entered,inspect,reduced,switched:reduced?0:switched},
+  function refresh(){const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);panel.update({...latest,source,bounds:panel.bounds,entered,inspect,reduced,switched:reduced?0:switched},
     [latest.signature,latest.period,latest.id,inspect?.itemId,inspect?.name].join('|'),kind);}
-  return {host,close(){panel.surface.removeEventListener('keydown',keyTab,true);panel.close();},update(snapshot,modal,signature){
+  return {host,close(){panel.surface?.removeEventListener('keydown',keyTab,true);panel.close();},update(snapshot,modal,signature){
     const period=modal.period||'daily';
     if(latest&&latest.period!==period)switched=performance.now()/1000;
     latest={snapshot,signature,period,id:modal.id,initial:scrollPositions?.get(period)||0};refresh();

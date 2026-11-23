@@ -56,15 +56,25 @@ function fleetHero(data,d,a,t,w,h,v){
     skill(a,t,selected.skillIcon,box(b.x+(b.w-iw)/2,b.y,iw,iw));words(a,selected.skillLabel,b.x+b.w/2,b.y+iw+7,.0255*w,{maxWidth:b.w});
     area(t,'preview-skill',selected.skillLabel,b,'nativeSkillPreview',{kind:d.group,id:selected.id});}
   const row=selected.row,ops=[];
-  if(selected.activated||row.baseOnly)ops.push('select');
-  if(!row.baseOnly)ops.push(selected.activated?'star':'unlock');
+  if(selected.access.available)ops.push('select');
+  if(!selected.access.basicOnly)ops.push(selected.activated?'star':'unlock');
   const total=.82*w,space=.07*total,bwBtn=total*(.465),bh=Math.max(44,85*w/750),start=(w-(ops.length*bwBtn+(ops.length-1)*space))/2;
   ops.forEach((op,i)=>{const opBox=box(start+i*(bwBtn+space),v.controls+(v.btn-bh)/2,bwBtn,bh),select=op==='select',
     title=select?(selected.access.using?'使用中':'使用'):row.maxed?'已满星':op==='star'?'升星':'激活',costs=select?[]:row.costs||[],
     payload={kind:d.group,operation:op,id:select?selected.access.selectionId:selected.id,revision:d.collection.revision,shortage:costs.some(c=>c.available<c.count)};
     const disabled=select?!selected.access.available||selected.access.using:row.maxed||d.s.rewardPending||d.s.rewardBusy;
     if(!costs.length){psdAction(a,t,opBox,{id:op,label:title,cmd:'nativeOperation',data:payload,disabled,gold:plane&&!select});return;}
-    slice(a,t,plane?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',opBox,10);
+    const skin=slice(a,t,plane?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',opBox,10);
+    if(disabled)skin.material.color.set(0x87939e);
+    if(costs.length===1){
+      const c=costs[0],cy=opBox.y+bh/2,mid=opBox.x+bwBtn*.51,isz=Math.min(20,w*.048),value=`${c.available}/${c.count}`;
+      words(a,title,opBox.x+bwBtn*.27,cy,clamp(w*.036,12,17),{family:titleFont,maxWidth:bwBtn*.43});
+      const img=nativeItemArt(c.id),b=box(mid,cy-isz/2,isz,isz);
+      if(img)normalFit(a,t,img,b);
+      words(a,value,mid+isz+3,cy,clamp(w*.03,10,14),{align:'left',color:payload.shortage?'#ffafa2':'#f2f8fb',maxWidth:bwBtn*.49-isz-8});
+      area(t,op,title,opBox,'nativeOperation',payload,null,disabled);
+      return;
+    }
     words(a,title,opBox.x+bwBtn/2,opBox.y+bh*.30,clamp(w*.038,13,19),{family:titleFont});area(t,op,title,opBox,'nativeOperation',payload,null,disabled);
     const budget=bwBtn*.89/costs.length;
     costs.forEach((c,index)=>{const ix=opBox.x+(bwBtn-budget*costs.length)/2+(index+.5)*budget,cy=opBox.y+.71*bh,isz=Math.min(.059*w,budget*.47);
@@ -75,13 +85,16 @@ function fleetHero(data,d,a,t,w,h,v){
 }
 export function catalogMenu(data,w,h,t){
   const d=data.catalogView,v=catalogBounds(w,h,data.safeBottom),kind=data.tab,a=t.layer('catalog-room').art,tech=d?.ui.skillTab;
-  a.quad(0,0,w,h,'#20202a');pic(a,t,atlas[kind+'-wall'],box(0,v.top,w,v.content));
+  const bleed=t.topBleed||0;
+  a.quad(0,-bleed,w,h+bleed,'#20202a');pic(a,t,atlas[kind+'-wall'],bleed?box(0,-bleed,w,h+bleed):box(0,v.top,w,v.content));
   if(!d){words(a,'暂无内容',w/2,h/2,15);area(t,'back','返回装备',box(0,h-60,64,60),'catalogBack');return;}
   const areaGrid=tech&&d.kind!=='weapon';pic(a,t,'/art/psd-equipment-v1/inventory-grid.webp',areaGrid?box(0,v.top,w,v.content):box(0,v.list,w,v.end-v.list));
   pic(a,t,atlas[kind+'-hero'],box(0,v.top,w,v.hero));
   if(kind==='weapon')weaponHero(d,a,t,w,v);else fleetHero(data,d,a,t,w,h,v);
   const edge=t.layer('catalog-section').art;pic(edge,t,'/art/psd-equipment-v1/hangar-divider.png',box(0,v.divider-.08*w,w,.08*w));
   pic(edge,t,atlas[kind+'-'+(tech?'skill':'list')+'-heading'],box(0,v.divider,w,v.head));
-  if(!tech)catalogGrid(d,t,w,v);else if(kind==='weapon')weaponSkills(d,t,w,v);else fleetSkills(d,t,w,v);
-  bottomNav(t.layer('catalog-navigation').art,t,d,w,h,box(0,v.end,w,v.footer));
+  if(!tech)catalogGrid(d,t,w,v,data.windowedCatalog);else if(kind==='weapon')weaponSkills(d,t,w,v);else fleetSkills(d,t,w,v);
+  const foot=t.layer('catalog-navigation').art;
+  if(data.safeBottom)foot.quad(0,h-data.safeBottom,w,data.safeBottom,'#101c23');
+  bottomNav(foot,t,d,w,h,box(0,v.end,w,v.footer-(data.safeBottom||0)));
 }

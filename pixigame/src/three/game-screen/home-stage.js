@@ -1,4 +1,5 @@
 import * as T from 'three';
+import {homeArtOffset,homeInsets} from './home-navigation.js';
 
 export const viewportPixel=(position,density)=>Math.round(Math.round(position)*density);
 
@@ -67,15 +68,15 @@ export function createHomeStage(images) {
     mesh.renderOrder=order;mesh.frustumCulled=false;character.add(mesh);
     return {image,texture,material,box,mesh};
   }
-  let view=null;
+  let view=null,insets=null;
   function place(item){
     if(!view)return;
     const {left,top,width,height,ratio,wNative,hNative}=view;
     const [x,y,w,h]=item.bounds,[hx,hy,hw,hh]=item.hit;
-    const cx=hx+hw/2,cy=hy+hh/2,s=item.scale;
+    const cx=hx+hw/2,cy=hy+hh/2,s=item.scale,dy=homeArtOffset(item.id,insets);
     const pixel=(p,base,length,design)=>viewportPixel(base+length*p/design,ratio)-viewportPixel(base,ratio);
     const x0=pixel(cx+(x-cx)*s,left,width,750),x1=pixel(cx+(x+w-cx)*s,left,width,750);
-    const y0=pixel(cy+(y-cy)*s,top,height,1624),y1=pixel(cy+(y+h-cy)*s,top,height,1624);
+    const y0=pixel(cy+(y-cy)*s+dy,top,height,1624),y1=pixel(cy+(y+h-cy)*s+dy,top,height,1624);
     item.box.set(x0*750/wNative,y0*1624/hNative,(x1-x0)*750/wNative,(y1-y0)*1624/hNative);
   }
   for(const [i,[id,,bounds,hit=bounds]] of homePictures.entries()){
@@ -85,11 +86,11 @@ export function createHomeStage(images) {
     const box=new T.Vector4(...bounds);
     const material=createMaterial(texture,box);
     const mesh=new T.Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=i;
-    (id==='background'?behind:front).add(mesh);items.set(id,{texture,material,bounds,hit,box,scale:1});
+    (id==='background'?behind:front).add(mesh);items.set(id,{id,texture,material,bounds,hit,box,scale:1});
   }
   return {
     drawBehind(renderer){renderer.render(behind,camera);},
-    layout(value){view=value;for(const item of items.values())place(item);},
+    layout(value){view=value;insets=homeInsets(value);for(const item of items.values())place(item);},
     setPortraitScenery(image){
       releaseImage(scenery);scenery=portraitImage(image,0);
     },

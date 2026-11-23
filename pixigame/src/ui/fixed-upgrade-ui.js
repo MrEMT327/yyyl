@@ -3,7 +3,7 @@ import { fixedUpgradeView } from './fixed-upgrade-view.js';
 import { createThreeSurface } from './three-surface.js';
 import { upgradeCardView } from './upgrade-attack-card.js';
 import { drawUpgradeWeaponIcon } from './upgrade-weapon-icon.js';
-import { upgradeSummary } from './upgrade-summary.js';
+import { upgradeSummary } from './upgrade-summary-model.js';
 import { confirmUpgradeCard } from './run-growth-feedback.js';
 import { COMBAT_UI } from './combat-theme.js';
 import { upgradeIconLayout, fitUpgradeIcon } from './upgrade-icon-layout.js';
@@ -16,6 +16,7 @@ import { drawBattleChoicePips } from './battle-choice-progress.js';
 import {attachUpgradeChoiceBorderFlow} from './upgrade-choice-border-flow.js';
 import {attachBreakthroughChoiceFrame,attachBreakthroughChoiceCardAura,isBreakthroughBranchOffer} from './breakthrough-choice-frame.js';
 import { drawBattleElementBadge, BATTLE_ELEMENT_BADGE_SIZE } from './battle-element-badge.js';
+import { prefersReducedMotion } from './status-feedback.js';
 
 function attachSurface(parent,surface){const node=new Container();node.object3D.add(surface.group);node._disposeVisuals=()=>surface.destroy();parent.addChild(node);return node;}
 
@@ -47,7 +48,8 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     ? offer.slots.join('/') || offer.model.owner : '';
 
   const breakthroughBranches=isBreakthroughBranchOffer(offers);
-  if(breakthroughBranches)attachBreakthroughChoiceFrame(panel,{display:bridge.app.renderer,revealAt,star:offers[0]?.skill.star});
+  const reduced=(bridge.reducedMotion??prefersReducedMotion)();
+  if(breakthroughBranches)attachBreakthroughChoiceFrame(panel,{display:bridge.app.renderer,revealAt,star:offers[0]?.skill.star,reduced});
 
   // Keep the attribute on the final row, below quality and run level.
   const width = px(224), height = py(bridge.presentation ? 606 : 562);
@@ -129,8 +131,8 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
       if(footer.width>width-24)footer.scale.set((width-24)/footer.width);
       if(!model.instant)card.__upgradeLevelLabel=footer;
     }
-    attachUpgradeChoiceBorderFlow(card,{width,height,tier:flowTier});
-    if(breakthroughBranches)attachBreakthroughChoiceCardAura(card,{width,height,revealAt,tier:flowTier});
+    attachUpgradeChoiceBorderFlow(card,{width,height,tier:flowTier,reduced});
+    if(breakthroughBranches)attachBreakthroughChoiceCardAura(card,{width,height,revealAt,tier:flowTier,reduced});
     panel.addChild(card);
   });
   if(state.pendingLevels>1)text(panel,`还可选 ${state.pendingLevels} 次`,
@@ -195,10 +197,10 @@ export function renderFixedUpgradeUi({ root, bridge, art, makeText, place, makeB
       const valid=()=>skill.opensBreakthrough&&selectionLayer
         ? !selectionLayer.disposed&&bridge.game.fixedGrowth.state.offer?.runId===runId&&['levelup','playing'].includes(bridge.game.state)
         : bridge.game.state==='levelup';
-      confirmUpgradeCard(card,width,height,()=>{confirming=false;},valid,skill,{nativeTiming:true,selectionLayer,offer,startedAt:bridge.selectionStartedAt});
+      confirmUpgradeCard(card,width,height,()=>{confirming=false;},valid,skill,{nativeTiming:true,selectionLayer,offer,startedAt:bridge.selectionStartedAt,reducedMotion:bridge.reducedMotion});
       return;
     }
-    confirmUpgradeCard(card,width,height,()=>{confirming=false;bridge.chooseSkill(skill);},()=>bridge.game.state==='levelup',skill);
+    confirmUpgradeCard(card,width,height,()=>{confirming=false;bridge.chooseSkill(skill);},()=>bridge.game.state==='levelup',skill,{reducedMotion:bridge.reducedMotion});
   };
   if(bridge.presentation || bridge.currentUpgradeChoices.every(skill=>skill.airframe))return renderAirframeChoices({root,bridge,art,makeText,place,makeButton,backdrop,choose});
   const state=bridge.game.fixedGrowth.state;

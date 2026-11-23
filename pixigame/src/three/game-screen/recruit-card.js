@@ -1,8 +1,9 @@
 import {Color,Vector2,Vector3,Vector4} from 'three';
 import {area,box,clamp,pic,slice,words} from './menu-art.js';
-import {paintRewardItemSlot} from '../../ui/reward-item-slot.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {animateMeshes} from './ui-motion.js';
 import {tiltMaterial} from './card-tilt.js';
+import {artworkSize} from './image-loading.js';
 
 const poses={
   'pilot-03':[6.2,-2.48,0],'pilot-04':[6.2,-2.66,0],'pilot-05':[3.7,-1.39,-.07],'pilot-06':[3.1,-.93,0],
@@ -36,7 +37,9 @@ function foiledPlate(a,t,b,style,u){
 function portrait(a,t,b,pilot,small,u){
   const bounds=small?box(b.x+b.w*.05,b.y+b.h*.12,b.w*.9,b.h*.83):box(b.x-b.w*.09,b.y+b.h*.14,b.w*1.18,b.h*.77);
   const tex=t.texture(pilot.image),shape=small?(poses[pilot.id]||[3,-1,0]):[1.25,-.125,0],pw=bounds.w*shape[0];
-  const ph=pw*(tex.image?.height||1)/(tex.image?.width||1);
+  const [iw,ih]=artworkSize(tex.image);
+  if(!iw||!ih)return;
+  const ph=pw*ih/iw;
   const uv=new Vector4(shape[1],shape[2],pw/bounds.w,ph/bounds.h);
   const mesh=a.image(tex,bounds.x,bounds.y,bounds.w,bounds.h);
   shader(mesh,'recruit-portrait',{...u,artBox:{value:uv},imageArea:{value:new Vector2(bounds.w,bounds.h)},fade:{value:small ? .82 : .58}},

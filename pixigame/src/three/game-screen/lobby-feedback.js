@@ -1,4 +1,5 @@
-import {LinearFilter,OrthographicCamera,Scene,SRGBColorSpace,TextureLoader} from 'three';
+import {LinearFilter,OrthographicCamera,Scene,SRGBColorSpace} from 'three';
+import {artworkTexture} from './image-loading.js';
 import {createThreeSurface} from '../../ui/three-surface.js';
 import {slicedFrameGeometry} from '../../ui/nine-slice-geometry.js';
 import {walletGains} from '../../ui/reward-feedback-policy.js';
@@ -8,31 +9,33 @@ import art from './utility-art.json';
 
 const compact=new Intl.NumberFormat('zh-CN',{notation:'compact',maximumFractionDigits:1,useGrouping:false});
 const number=v=>Math.abs(v)>=1e6?compact.format(v):String(Math.round(v));
-export function createLobbyFeedback(screen){
+export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFrame=callback=>requestAnimationFrame(callback),
+  cancelFrame=id=>cancelAnimationFrame(id),reducedMotion,layout}={}){
   const scene=new Scene(),camera=new OrthographicCamera(0,1,0,1,-10,10);
-  const ink=createThreeSurface(),marks=createThreeSurface(),now=()=>performance.now();
-  const quiet=matchMedia('(prefers-reduced-motion:reduce)');
+  const ink=createThreeSurface(),marks=createThreeSurface();
+  const quiet=reducedMotion?{get matches(){return reducedMotion();}}:matchMedia('(prefers-reduced-motion:reduce)');
   scene.add(ink.group,marks.group);
   let frame=null,skin=null,ready=false,power=null,signature='',count=null,zoom=null,touch=null,closed=false;
   let effects=[];
   function request(){if(!closed)screen.repaintHome?.();}
-  function root(){return (screen.homeView||screen.menuView)?.page?.closest('#gui-casual-lobby');}
-  function key(){const r=root();return r?[r.dataset.tab,r.dataset.subpage,screen.panel?.surface.getAttribute('aria-label')?.split('，')[0]].join('|'):'';}
+  function root(){return (screen.homeView||screen.menuView)?.page?.closest?.('#gui-casual-lobby');}
+  function key(){const page=layout?layout():root()?.dataset;return page?[page.tab,page.subpage,screen.panel?.name].join('|'):'';}
+  const bounds=()=>layout?layout()?.bounds:root()?.getBoundingClientRect();
   function rectFor(id){
-    const b=root()?.getBoundingClientRect();if(!b)return;
+    const b=bounds();if(!b)return;
     const owner=screen.panel?.state().controls.find(x=>x.id===id)||screen.menuView?.state().controls.find(x=>x.id===id);
     if(owner)return {x:owner.x-b.x,y:owner.y-b.y,w:owner.w,h:owner.h};
     const entry=screen.homeView?.controls().find(x=>x.id===id)?.box;if(entry)return {x:entry[0]*b.width/750,y:entry[1]*b.height/1624,w:entry[2]*b.width/750,h:entry[3]*b.height/1624};
   }
   function mark(box,color,duration,delay=0){if(!box||!box.w||!box.h)return;effects.push({box,color,duration,t:now()+delay});effects=effects.slice(-28);request();}
   function endPower(){power=null;ink.clear();signature='';count=zoom=null;}
-  function clear(){if(frame!==null)cancelAnimationFrame(frame);frame=null;endPower();effects=[];marks.clear();touch=null;request();}
+  function clear(){if(frame!==null)cancelFrame(frame);frame=null;endPower();effects=[];marks.clear();touch=null;request();}
   function show(before,after){
-    if(!Number.isFinite(before)||!Number.isFinite(after)||!root()||root().hidden)return;
+    if(!Number.isFinite(before)||!Number.isFinite(after)||!bounds()||(layout?layout()?.hidden:root()?.hidden))return;
     before=Math.round(before);after=Math.round(after);if(before===after)return;
     const k=key(),t=now(),base=power?.k===k&&t-power.t<=800&&power.after===before?power.base:before;
     if(base===after){endPower();return;}power={k,t,base,after};signature='';
-    if(!skin){skin=new TextureLoader().load(art.toast,()=>{if(closed)return;ready=true;signature='';request();});skin.colorSpace=SRGBColorSpace;skin.minFilter=LinearFilter;}
+    if(!skin){skin=artworkTexture(art.toast,()=>{if(closed)return;ready=true;signature='';request();},()=>{});skin.colorSpace=SRGBColorSpace;skin.minFilter=LinearFilter;}
     request();
   }
   function drawPower(w,h,t){
@@ -54,13 +57,13 @@ export function createLobbyFeedback(screen){
     const pose=quiet.matches?{rise:0,scale:1,pulse:1}:powerNoticePose(elapsed/1000);
     ink.group.scale.set(pose.scale,pose.scale,1);ink.group.position.set(w/2,h/2-(200+pose.rise)*w/1080,0);count.scale.copy(zoom).multiplyScalar(pose.pulse);
   }
-  return {capture(b){const r=root()?.getBoundingClientRect();if(r&&b)touch={x:b.x-r.x,y:b.y-r.y,w:b.w??b.width,h:b.h??b.height};},
+  return {capture(b){const r=bounds();if(r&&b)touch={x:b.x-r.x,y:b.y-r.y,w:b.w??b.width,h:b.h??b.height};},
     wallet(before,after){const gains=walletGains(before,after);if(!screen.panel&&!quiet.matches)for(const {type} of gains)mark(rectFor(type),'#e1f4ff',300);return gains.length>0;},
     failure(){mark(touch,'#ff967f',500);},
     equip(slot){mark(rectFor('slot-'+slot)||rectFor(slot),'#8bf4db',650);},
     pulse(id,delay=0){if(!quiet.matches)mark(rectFor(id),'#ffe18a',450,delay);},
     power(before,after){if(!Number.isFinite(before)||!Number.isFinite(after)||before===after)return;
-      if(frame!==null)cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{frame=null;show(before,after);});},
+      if(frame!==null)cancelFrame(frame);frame=requestFrame(()=>{frame=null;show(before,after);});},
     get active(){return !!power||effects.length>0;},
     draw(renderer,w,h){if(!power&&!effects.length)return;const t=now();drawPower(w,h,t);marks.clear();
       effects=effects.filter(e=>t-e.t<e.duration);for(const e of effects){const p=(t-e.t)/e.duration;if(p<0)continue;

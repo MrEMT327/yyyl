@@ -81,7 +81,7 @@ function createMeshBatch(model,records,materials,maskPass,atlasCount){
   return {scene,update,dispose(){geometry.dispose();}};
 }
 
-function createModelSurface(renderer,model,images,mipmaps){
+export function createModelSurface(renderer,model,images,mipmaps){
   const textures=images.map(image=>{
     const t=new T.Texture(image);t.flipY=false;t.premultiplyAlpha=true;t.colorSpace=T.NoColorSpace;
     t.generateMipmaps=mipmaps;t.minFilter=mipmaps?T.LinearMipmapLinearFilter:T.LinearFilter;t.magFilter=T.LinearFilter;t.needsUpdate=true;

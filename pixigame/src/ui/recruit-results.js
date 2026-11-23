@@ -39,9 +39,7 @@ export function pilotRecruitResults(rewards,pilots,{number,renderReward,grid=fal
   }).join('')}</div>`;
 }
 
-export function isRecruitResult(modal) {
-  return modal?.type==='rewards' && (modal.recruit===true || ['pilot','weapon'].includes(modal.recruitPool));
-}
+export { isRecruitResult } from './reward-modal-model.js';
 
 // Result receipts are already committed; this surface only presents and closes them.
 function fullscreenDialog({title,content,type,kind,variant,confirmLabel,count,minimal=false}, {escape:e,button}) {

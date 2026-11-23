@@ -6,9 +6,16 @@ import {healthAt,keepDyingBar,urgency,damageBorder} from './three-battle-feedbac
 import {enemyArt} from '../../../replica-battle/three-enemies/index.js';
 import {sampleNativeEnemyAnimation} from '../../../replica-battle/kernel/native-enemy-animation.ts';
 import {BattleShotPresentation} from '../../../replica-battle/kernel/enemy-recoil-shots.ts';
+import {battleTexturePaths} from '../../../replica-battle/kernel/pathogenic/battle-texture-dependencies.mjs';
 import {playerVisibility} from '../../../replica-battle/kernel/combat-readability.mjs';
 
 const width=540,height=960;
+// Large situational atlases aren't needed for the first presentation. In
+// WeChat their download retries must not hold the opening flight hostage.
+export function deferWechatBattleArtwork(key,url){
+  return key==='res://gfx/environment/explosion_dna.png'||key==='res://gfx/enemies/stomp_wave.png'||
+    /\/original-projectiles\/square-yellow-v1\.png(?:[?#]|$)/.test(url);
+}
 export class NativeBattleView {
   constructor(content,sim,ready,appearance,source) {
     Object.assign(this,{content,sim,ready,appearance,source});
@@ -31,10 +38,30 @@ export class NativeBattleView {
   get cameraPosition(){return this.cameraView.position;}
   screen(x,z){const c=this.cameraPosition;return {x:width/2+(x-c.x)*this.px,y:height/2-(z-c.z)*this.px};}
   queue(key,url){if(url)this.pendingArt.set(key,url);}
-  async preload(progress){
+  async preload(progress,onDecoded,prioritize=false){
     const a=this.content.assets,need=key=>this.queue(key,a.sprites[key]?.url);
+    const urgent=new Set();
     queueBattleArt(this);for(const row of this.source.urgencyNodes)if(row.sprite)need(row.sprite);
-    for(const [path,t] of Object.entries(this.fx.graph.textures))this.queue(path,t.url);
+    if(prioritize){
+      const earlyModels=[...new Set((this.content.spawns||[]).filter(row=>row.wave<=3)
+        .map(row=>this.content.chapter.entities[row.entityId]?.modelId).filter(Number.isFinite))];
+      const queueForWarmup={art:this.art,queue:(key,url)=>{urgent.add(key);this.queue(key,url);}};
+      for(const author of enemyArt)author.preload(queueForWarmup,earlyModels);
+      for(const model of earlyModels){
+        const prefab=a.prefabs[this.models.get(model)];
+        if(!prefab)continue;
+        for(const key of [prefab.composite,...(prefab.renderers||[]).filter(r=>r.active&&r.enabled).map(r=>r.sprite)]){
+          if(!a.sprites[key]?.url)continue;
+          urgent.add(key);need(key);
+        }
+      }
+    }
+    const routed=prioritize?battleTexturePaths(this.fx.graph):null;
+    for(const [path,t] of Object.entries(this.fx.graph.textures)){
+      this.art.expectSize(path,t.width,t.height);
+      if(routed&&!routed.has(path))this.art.defer(path,t.url);
+      else this.queue(path,t.url);
+    }
     for(const author of enemyArt)author.preload(this,Array.from(this.models.keys()));
     for(const r of a.enemyLocalAnimation?.spriteReferences||[])need(this.paths.get(String(r.pathId)));
     for(const [name,prefab] of Object.entries(a.prefabs)){
@@ -48,8 +75,13 @@ export class NativeBattleView {
     }
     for(const [key,sprite] of Object.entries(a.enemyHealthBars?.sprites||{}))this.queue(key,sprite.url);
     if(!this.appearance.replaceTerrain)for(const r of a.map.nativeLayers?.renderers||[])need(r.sprite);
-    await this.art.loadAll(this.pendingArt,progress);
+    const required=new Map(),later=new Map();
+    for(const [key,url] of this.pendingArt)(prioritize&&!urgent.has(key)&&deferWechatBattleArtwork(key,url)?later:required).set(key,url);
+    await this.art.loadAll(required,progress,(key,texture)=>onDecoded?.(key,texture,urgent.has(key)));
     if(this.closed)return;this.ready();
+    if(later.size)void this.art.loadAll(later,null,null,{workers:2,onFailure:(key,error)=>{
+      if(!this.closed)console.warn('[Three 延后贴图]',key,error?.message||error);
+    }});
   }
   prefab(id,depth){
     const key=this.models.get(id),a=this.content.assets,p=a.prefabs[key];
@@ -164,7 +196,10 @@ export class NativeBattleView {
     }
   }
   update(delta){
+    const now=this.profileClock,t0=now?.();
+    this.stage.refreshViewport?.();
     this.onFrame?.(delta);this.advanceCameraView(delta);
+    const t1=now?.();
     const sim=this.sim,c=this.content,dt=sim.phase==='playing'?Math.min(Math.max(delta/1000,0),.1):0;
     this.active.clear();
     const clock=this.renderSamples.beginFrame(sim.clock,sim.runId,sim.phase,delta/1000),status=this.statusIndex.update(sim);
@@ -185,6 +220,7 @@ export class NativeBattleView {
       playerHitFlash:sim.phase==='playing'&&player.hp>0&&player.hitFlash>.14,renderDelta:dt,displayInterval:this.rawDelta/1000,
       flight:{x:player.x,z:player.z,speed:sim.playerMovementSpeed,radius:entity.stats.shape[0]*sim.playerScale,active:sim.phase==='playing'&&player.hp>0},
       mapCameraOffset:layer=>this.mapCameraOffsets.position(layer)});
+    const t2=now?.();
     damageBorder(this,(sim.phase==='playing'||player.hp<=0)&&sim.phase!=='ready'&&player.hitFlash>0?this.renderSamples.age(.3-player.hitFlash):-1);
     for(const e of sim.enemies)this.enemy(e,dt,clock,status);
     for(const t of sim.treasures)treasureArt(this,t);
@@ -221,7 +257,8 @@ export class NativeBattleView {
       if(sim.phase!=='ready'&&keepDyingBar(obj,clock))continue;
       this.stage.remove(obj);this.objects.delete(key);
     }
-    this.stage.render();
+    const t3=now?.(),passes=this.stage.render(now);
+    if(now)this.reportSlowFrame?.({interval:this.rawDelta,logic:t1-t0,terrainAndPlane:t2-t1,entitiesAndEffects:t3-t2,draw:now()-t3,...passes});
   }
   effect(e){
     if(!e||e.age<0)return;
@@ -231,16 +268,19 @@ export class NativeBattleView {
     if(e.kind!=='text')this.fx.effect(row,this.project,this.source.deathScale(row));
     else floatingText(this,row,this.source.textLayout(e,this.renderSamples.age(e.age)));
   }
-  start(progress,frame,fail){
-    let last=performance.now(),id=0;
+  // Hosts can wrap the update to measure renderer timing.
+  paintFrame(update){return update();}
+  start(progress,frame,fail,{now=()=>performance.now(),requestFrame=callback=>requestAnimationFrame(callback),cancelFrame=id=>cancelAnimationFrame(id),warmTextures}={}){
+    let last=now(),id=0;
     const tick=time=>{
       if(this.closed)return;
       try{this.rawDelta=Math.max(0,time-last);last=time;this.paintFrame(()=>this.update(this.scaledDelta?this.scaledDelta(this.rawDelta):this.rawDelta));
-        frame();id=requestAnimationFrame(tick);}catch(error){fail(error);}
+        frame();id=requestFrame(tick);}catch(error){fail(error);}
     };
-    this.preload(progress).then(()=>{if(!this.closed){last=performance.now();id=requestAnimationFrame(tick);}}).catch(fail);
-    return ()=>{this.closed=true;cancelAnimationFrame(id);this.fx.destroy();this.art.dispose();
+    for(const job of warmTextures?this.stage.warmupJobs():[])warmTextures.push(job);
+    this.preload(progress,warmTextures?.add,Boolean(warmTextures)).then(()=>{warmTextures?.close();if(!this.closed){last=now();id=requestFrame(tick);}})
+      .catch(error=>{warmTextures?.close();fail(error);});
+    return ()=>{this.closed=true;warmTextures?.close();cancelFrame(id);this.fx.destroy();this.art.dispose();
       this.stage.remove(this.damageBorder);for(const obj of this.objects.values())this.stage.remove(obj);this.objects.clear();};
   }
 }
-

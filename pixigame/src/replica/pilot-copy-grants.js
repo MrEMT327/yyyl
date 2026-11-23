@@ -1,5 +1,5 @@
 import catalog from './native-economy-catalog.json' with {type:'json'};
-import { isRosterPilot } from './native-pilot-roster.js';
+import { isRosterPilot, STARTER_PILOT_ID } from './native-pilot-roster.js';
 
 const pilots=new Map(catalog.pilots.filter(row=>!row.closed&&isRosterPilot(row.id)).map(row=>[row.id,row]));
 export const PILOT_CREDIT_COST=3;
@@ -17,7 +17,7 @@ export function pilotCreditReward(amount,sourcePilotId) {
 export function grantPilotCards(inventory,progression,id,amount,{activate=false}={}) {
   const row=pilots.get(id);
   if(!row||!Number.isSafeInteger(amount)||amount<1)throw Error('驾驶员同名卡奖励无效');
-  const hadActivePilot=progression.pilots.some(pilot=>pilot.active);
+  const hadActivePilot=progression.pilots.some(pilot=>pilot.active&&(pilot.id!==STARTER_PILOT_ID||pilot.equipped));
   let owned=progression.pilots.find(p=>p.id===id),isNew=false,copies=amount;
   if(activate&&!owned?.active){
     isNew=true;copies--;

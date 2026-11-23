@@ -2,8 +2,8 @@ import * as T from 'three';
 import {createBattleGlow} from './three-battle-glow.js';
 import {createBattleColorTargets} from './battle-color-targets.js';
 import {flightLights} from './three-flight-lights.js';
+import {authoredBattleFrame,battleWidth as width,battleHeight as height} from './battle-frame-layout.js';
 
-const width=540,height=960;
 const vertex = `precision highp float;
   attribute vec3 position;
   attribute vec2 uv;
@@ -67,7 +67,17 @@ export function createBattleStage(renderer) {
   ground.material.uniforms.pivot.value.set(0,0);ground.visible=false;
   const hull=makeSprite({texture:colorTargets.hull,width:256,height:256,framebuffer:true,premultiplied:true},25);
   hull.visible=false;
-  const stage={scene,camera,renderer,glow,white: whiteBinding,makeSprite,remove,tint,ground,hull,width,height,
+  const stage={scene,camera,renderer,glow,white: whiteBinding,makeSprite,remove,tint,ground,hull,width,height,viewport:authoredBattleFrame,
+    setViewport(frame){
+      const previous=this.viewport;
+      if(!frame||frame.width===previous.width&&frame.height===previous.height)return;
+      this.viewport=frame;
+      camera.left=frame.left;camera.right=frame.left+frame.width;
+      camera.top=frame.top;camera.bottom=frame.top+frame.height;camera.updateProjectionMatrix();
+      colorTargets.resizeGround(frame.width,frame.height);glow.resize(frame);
+      ground.position.set(frame.left,frame.top,0);
+      ground.material.uniforms.size.value.set(frame.width,frame.height);
+    },
     drawGround(scene,camera,backdrop){colorTargets.drawGround(scene,camera,backdrop);ground.visible=true;},
     drawHull:colorTargets.drawHull,
     hullPose(pose){
@@ -75,21 +85,30 @@ export function createBattleStage(renderer) {
       hull.material.uniforms.size.value.set(size*pose.scaleX,size*pose.scaleY);
       hull.material.uniforms.opacity.value=pose.alpha;hull.visible=pose.visible;
     },
-    render(){
+    warmupJobs(){
+      this.refreshViewport?.();
+      return [...glow.warmupJobs(),()=>renderer.compile?.(scene,camera)];
+    },
+    render(profile){
       this.placeWake();
       renderer.setScissorTest(false);
       const output=this.outputTarget?.()??null;
       const clear=renderer.autoClear;renderer.autoClear=false;
+      let worldDraw=0,uiDraw=0;
       try{
         scene.traverse(n=>{if(n.isMesh)n.layers.set(n.renderOrder>=49.9?2:n.renderOrder>=29?1:0);});
-        glow.paint(scene,camera,output,this.beginOutput);this.drawBackdrop?.();this.drawBreakthrough?.('rear');this.drawHud?.();
+        const start=profile?.();
+        glow.paint(scene,camera,output,this.beginOutput);
+        const overlay=profile?.();
+        this.drawBackdrop?.();this.drawBreakthrough?.('rear');this.drawHud?.();
         this.drawBreakthrough?.('front');this.drawMovementGuide?.();this.drawNotice?.();this.drawDeveloperSkills?.();
+        if(profile){worldDraw=overlay-start;uiDraw=profile()-overlay;}
       }finally{renderer.autoClear=clear;if(output)renderer.setRenderTarget(null);}
       this.afterFrame?.();
+      if(profile)return {worldDraw,uiDraw};
     },
     dispose(){this.disposeLights();for (const mesh of spriteMeshes)mesh.material.dispose();spriteMeshes.clear();
       colorTargets.dispose();glow.dispose();quad.dispose();white.dispose();scene.clear();}
   };
   return Object.assign(stage,flightLights(stage));
 }
-

@@ -1,5 +1,8 @@
 import {nineSliceGeometry} from '../../ui/nine-slice-geometry.js';
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
+import {navArtwork,navBodyEnd,navFillStart} from './home-navigation.js';
+import {artworkSize} from './image-loading.js';
+import {equipmentLayout} from './equipment-layout.js';
 import art from './menu-art.json';
 
 export {art};
@@ -12,8 +15,8 @@ export function words(a,value,x,y,size,opts={}){
 }
 export function pic(a,t,url,b,contain=false){return t.image(a,url,b.x,b.y,b.w,b.h,contain);}
 export function slice(a,t,url,b,edge=10,cut=18){
-  const m=pic(a,t,url,b),im=m.material.map?.image;
-  m.geometry.dispose();m.geometry=nineSliceGeometry(b.w,b.h,im?.width||219,im?.height||85,cut,edge);return m;
+  const m=pic(a,t,url,b),[iw,ih]=artworkSize(m.material.map?.image);
+  m.geometry.dispose();m.geometry=nineSliceGeometry(b.w,b.h,iw||219,ih||85,cut,edge);return m;
 }
 export function button(a,t,b,{title,price,icon,gold=false,short=false,disabled=false,skin,titleColor='#fff',shortColor='#ffb59a',family=titleFont,titleSize=clamp(b.w*.092,12,17),priceSize=Math.min(14,b.w*.10),priceColor='#fff'}){
   const plate=skin?pic(a,t,skin,b):slice(a,t,gold?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,Math.min(12,b.h*.24));
@@ -30,10 +33,37 @@ export const qualityFrame=rank=>'/art/psd-equipment-v1/frame-'+(['gray','green',
 export function area(t,id,label,b,action,data={},zone=null,disabled=false){
   t.control(id,label,b,{type:action,data},{zone,disabled});
 }
+function equipmentRoom(root,t,w,h,bleed,layout){
+  // Keep the divider at the toolbar boundary, preserving the shape of the
+  // 750 × 1624 PSD's angled edge when the native hangar is shortened.
+  const url='/art/psd-equipment-v1/equipment-background.webp',height=w*1624/750;
+  root.quad(0,-bleed,w,h+bleed,'#293b51');
+  if(bleed){
+    // Extend only above the content origin to fill the capsule area, without
+    // shifting the PSD's divider. Mirror the top strip so its edge joins.
+    const uv=pic(root,t,url,box(0,-bleed,w,bleed)).geometry.attributes.uv;
+    for(let i=0;i<uv.count;i++)uv.setY(i,1-uv.getY(i)*Math.min(1,bleed/height));
+  }
+  if(!layout.compacted){pic(root,t,url,box(0,0,w,height));return;}
+  const {top,bottom,originalEnd,u}=layout,divider=32*u;
+  const band=(dst,dy,src,sy)=>verticalSlice(root,t,url,box(0,dst,w,dy),src/height,(src+sy)/height);
+  band(0,top,0,top);
+  band(top,bottom-top-divider,top,originalEnd-top-divider);
+  band(bottom-divider,divider,originalEnd-divider,divider);
+  band(bottom,height-originalEnd,originalEnd,height-originalEnd);
+}
+function verticalSlice(front,t,url,b,top,bottom){
+  const {uv}=pic(front,t,url,b).geometry.attributes;
+  for(let i=0;i<uv.count;i++)uv.setY(i,1-bottom+uv.getY(i)*(bottom-top));
+}
+const railHeight=w=>w*151/750;
+export const menuNavY=(w,h,safeBottom=0)=>h-railHeight(w)-safeBottom;
 export function chrome(data,w,h,t){
   const tab=data.tab,s=data.snapshot,u=w/369.453,root=t.layer('room').art;
-  pic(root,t,art[tab+'-background'],box(0,0,w,h));
-  const railH=w*151/750+(data.safeBottom||0),navY=h-railH;
+  const railH=railHeight(w),navY=menuNavY(w,h,data.safeBottom);
+  const bleed=t.topBleed||0,equipment=tab==='assembly'?equipmentLayout(w,navY,data.adaptiveEquipment):null;
+  if(equipment)equipmentRoom(root,t,w,h,bleed,equipment);
+  else pic(root,t,art[tab+'-background'],box(0,-bleed,w,h+bleed));
   const title=t.layer('heading').art;
   const heading=box(w*.02,4*u,w*.33,44*u);
   if(tab==='supply'&&data.fleetReturnKind){
@@ -42,9 +72,16 @@ export function chrome(data,w,h,t){
     area(t,'fleet-return',label,heading,'fleetSupplyBack');
   }else pic(title,t,art[tab+'-heading'],heading);
   resourceBar(t,title,s,w);
-  return {top:tab==='assembly'?w*.125:Math.max(12,w*.0325)+w*(tab==='supply' ? .125 : .1805),navY,
+  return {top:tab==='assembly'?w*.125:Math.max(12,w*.0325)+w*(tab==='supply' ? .125 : .1805),navY,equipment,
     footer(){
-      const front=t.layer('footer').art;pic(front,t,art[tab+'-footer'],box(0,navY,w,railH));
+      const front=t.layer('footer').art,inset=data.safeBottom||0;
+      const url=art[tab+'-footer'];
+      if(inset){
+        const skin=navArtwork(navY,railH,inset),background='/art/project-navigation-v2/background.png';
+        verticalSlice(front,t,url,box(0,navY,w,skin.body),0,navBodyEnd);
+        verticalSlice(front,t,background,box(0,skin.fillY,w,skin.fillHeight),navFillStart,navBodyEnd);
+        verticalSlice(front,t,background,box(0,skin.trimY,w,skin.trim),navBodyEnd,1);
+      }else pic(front,t,url,box(0,navY,w,railH));
       let x=0;for(const [key,label] of [['shop','商城'],['assembly','装备'],['battle','战役'],['research','天赋'],['supply','招募']]){
         const width=w*(key===tab ? .2506 : .18735);
         area(t,'nav-'+key,label,box(x,navY,width,railH),'tab',{tab:key});x+=width;
@@ -63,4 +100,3 @@ export function resourceBar(t,title,s,w){
     area(t,id,['体力','金币','钻石'][i],box(x,y,b.w,Math.max(b.h,44)),i?'shopSection':'stamina',i?{section:i===1?'resources':'supply'}:{});
   }
 }
-

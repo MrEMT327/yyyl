@@ -5,17 +5,17 @@ export const PURPLE_DOCTOR_PLAYBACK = Object.freeze({sampleFps:30,transitionSeco
 
 // Keep the large mesh binding out of the initial game bundle. A closed or
 // superseded host must not receive a canvas after its asynchronous load finishes.
-export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BASE_URL ?? '/',createSurface}={}) {
-  const assetRoot=new URL(assetBase,location.href);
+export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BASE_URL ?? '/',createSurface,output=null}={}) {
+  const assetRoot=new URL(assetBase,(output?.baseURL??location.href));
   if(!assetRoot.pathname.endsWith('/'))assetRoot.pathname+='/';
   const folder=new URL('art/purple-doctor-v1/',assetRoot);
-  if(folder.origin!==location.origin)throw new Error('角色只允许读取同源资源');
-  const controller=new AbortController();
+  if(folder.origin!==new URL(output?.baseURL??location.href).origin)throw new Error('角色只允许读取同源资源');
+  const controller=(output?.makeAbort?.()??new AbortController());
   let player=null,host=null,loading=null,error=null,destroyed=false,visible=true,paused=false;
   let state='idle',runtime=null,revision=0;
-  const updateHost=()=>{if(!host||player)return;host.dataset.portraitState=state;host.classList.remove('is-ready');};
+  const updateHost=()=>{if(output||!host||player)return;host.dataset.portraitState=state;host.classList.remove('is-ready');};
   const read=async name=>{
-    const response=await fetch(new URL(name,folder),{signal:controller.signal});
+    const response=await (output?.fetchResource??fetch)(new URL(name,folder),{signal:controller.signal});
     if(!response.ok)throw new Error(`医生立绘资源读取失败 (${response.status}): ${name}`);
     return response.json();
   };
@@ -27,7 +27,7 @@ export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BAS
       if(destroyed)return false;
       if(config.schema!=='purple-doctor-layered-runtime-v1'||!config.motionDurations?.idle||binding.layers?.length!==config.layers?.length)throw new Error('医生立绘资源格式不符');
       runtime=config;
-      player=createCubismPortraitPlayer({assetBase,createSurface,modelPath:new URL(config.sourceModel,folder).href,
+      player=createCubismPortraitPlayer({geometryHost:output,assetBase,createSurface,modelPath:new URL(config.sourceModel,folder).href,
         texturePaths:[new URL(config.atlas,folder).href],camera:config.camera,
         createModelAdapter:model=>createPurpleDoctorModelAdapter(model,binding),
         ...PURPLE_DOCTOR_PLAYBACK,minimumResolution:1.5});
@@ -42,9 +42,9 @@ export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BAS
   const api={
     async attach(next){
       if(destroyed)return false;
-      if(next&&!next.appendChild)throw new TypeError('立绘需要有效的宿主元素');
+      if(next&&!output&&!next.appendChild)throw new TypeError('立绘需要有效的宿主元素');
       const ticket=++revision,previous=host;
-      if(previous!==next&&!player){previous?.classList.remove('is-ready');if(previous)delete previous.dataset.portraitState;}
+      if(!output&&previous!==next&&!player){previous?.classList.remove('is-ready');if(previous)delete previous.dataset.portraitState;}
       host=next||null;
       if(player)return player.attach(host);
       if(!host)return false;
@@ -60,7 +60,7 @@ export function createPurpleDoctorPortraitPlayer({assetBase=import.meta.env?.BAS
     captureFrame(size){return player?.captureFrame(size)??null;},
     destroy(){
       if(destroyed)return;destroyed=true;revision++;controller.abort();player?.destroy();
-      if(host){host.classList.remove('is-ready');for(const key of ['portraitState','motion','time','frame','playing','transition'])delete host.dataset[key];}
+      if(!output&&host){host.classList.remove('is-ready');for(const key of ['portraitState','motion','time','frame','playing','transition'])delete host.dataset[key];}
       host=null;state='destroyed';
     },
     get state(){return destroyed?'destroyed':player?.state??state;},get ready(){return !destroyed&&Boolean(player?.ready);},

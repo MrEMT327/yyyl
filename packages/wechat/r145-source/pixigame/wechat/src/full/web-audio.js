@@ -1,15 +1,16 @@
 // WeChat exposes callback-based decoding on devices; the browser preview can
 // also return a Promise. Present one browser-compatible asynchronous contract.
-export function wrapNativeAudioContext(native) {
+export function wrapNativeAudioContext(native,{openingPcm=false,decodeTimeout=0}={}) {
   const methods = new Map();
   let closing;
   const close = () => closing ||= Promise.resolve().then(() => native.close());
   function decodeAudioData(data, successCallback, errorCallback) {
     const decoded = new Promise((resolve, reject) => {
-      let settled = false;
+      let settled = false,timer;
       const fail = reason => {
         if (settled) return;
         settled = true;
+        clearTimeout(timer);
         reject(reason instanceof Error ? reason : new Error(reason?.errMsg || String(reason || '音频解码失败')));
       };
       const ready = buffer => {
@@ -19,10 +20,14 @@ export function wrapNativeAudioContext(native) {
           return;
         }
         settled = true;
+        clearTimeout(timer);
         resolve(buffer);
       };
       if (closing) { fail(new Error('音频上下文已关闭')); return; }
       try {
+        const opening=openingPcm?decodeOpeningWav(native,data):null;
+        if(opening){ready(opening);return;}
+        if(decodeTimeout>0)timer=setTimeout(()=>fail(new Error('原生音效解码超时')),decodeTimeout);
         const result = native.decodeAudioData(data, ready, fail);
         if (result && typeof result.then === 'function') result.then(ready, fail);
         else if (result && typeof result.getChannelData === 'function') ready(result);
@@ -57,4 +62,29 @@ export function wrapNativeAudioContext(native) {
     },
     set(target, key, value) { return Reflect.set(target, key, value, target); },
   });
+}
+
+// The packaged opening cues are small mono PCM WAVs. Fill their native audio
+// buffers directly so a delayed device decoder cannot suppress the first shot.
+function decodeOpeningWav(native,data){
+  if(!(data instanceof ArrayBuffer)||data.byteLength<44||data.byteLength>128000)return null;
+  const v=new DataView(data);
+  if(v.getUint32(0)!==0x52494646||v.getUint32(8)!==0x57415645)return null;
+  let ready=false;
+  for(let at=12;at+8<=v.byteLength;){
+    const tag=v.getUint32(at),size=v.getUint32(at+4,true),start=at+8;
+    if(size>v.byteLength-start)return null;
+    if(tag===0x666d7420){
+      if(size<16||v.getUint16(start,true)!==1||v.getUint16(start+2,true)!==1||
+        v.getUint32(start+4,true)!==16000||v.getUint16(start+14,true)!==16)return null;
+      ready=true;
+    }else if(tag===0x64617461){
+      if(!ready||!size||size%2)return null;
+      const buffer=native.createBuffer(1,size/2,16000),samples=buffer.getChannelData(0);
+      for(let i=0;i<samples.length;i++)samples[i]=v.getInt16(start+2*i,true)/32768;
+      return buffer;
+    }
+    at=start+size+(size&1);
+  }
+  return null;
 }

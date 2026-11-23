@@ -23,7 +23,6 @@ import graph from '../../../replica-battle/kernel/pathogenic/scene-graph.json';
 import urgency from '../../../replica-battle/public/data/enemy-warning.json';
 import chests from '../../../replica-battle/public/data/chest-animation.json';
 
-const WIDTH=540,HEIGHT=960;
 const sources={
   ViewPosition:NativeViewPosition,MapOffsets:NativeMapCameraOffsets,Samples:CombatRenderSamples,StatusIndex:CombatStatusIndex,MissileMounts:MissileWingMounts,
   player:selectPlayerAppearance,passiveShot:aircraftPassiveShot,warningEnd:warningEndPoint,thunder:thunderBeam,pickupAlpha:pickupExpiryAlpha,
@@ -61,22 +60,23 @@ export class CombatView extends NativeBattleView {
         let distance = q.maxDistance;
         let hit = false;
         let normal = { x: -q.direction.x, y: -q.direction.y };
-        for (const edge of [0, WIDTH])
+        const {left,top,width,height}=this.stage.viewport,right=left+width,bottom=top+height;
+        for (const edge of [left, right])
             if (Math.abs(q.direction.x) > 1e-9) {
                 const d = (edge - q.origin.x) / q.direction.x, y = q.origin.y + q.direction.y * d;
-                if (d >= 0 && d < distance && y >= 0 && y <= HEIGHT) {
+                if (d >= 0 && d < distance && y >= top && y <= bottom) {
                     distance = d;
                     hit = true;
-                    normal = { x: edge === 0 ? 1 : -1, y: 0 };
+                    normal = { x: edge === left ? 1 : -1, y: 0 };
                 }
             }
-        for (const edge of [0, HEIGHT])
+        for (const edge of [top, bottom])
             if (Math.abs(q.direction.y) > 1e-9) {
                 const d = (edge - q.origin.y) / q.direction.y, x = q.origin.x + q.direction.x * d;
-                if (d >= 0 && d < distance && x >= 0 && x <= WIDTH) {
+                if (d >= 0 && d < distance && x >= left && x <= right) {
                     distance = d;
                     hit = true;
-                    normal = { x: 0, y: edge === 0 ? 1 : -1 };
+                    normal = { x: 0, y: edge === top ? 1 : -1 };
                 }
             }
         const end = { x: from.x + q.direction.x * distance / this.px, z: from.z - q.direction.y * distance / this.px };

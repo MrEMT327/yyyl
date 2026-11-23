@@ -101,8 +101,9 @@ function detail(data,w,h,t){
   const full=bw+4*u,bwidth=item.equipped?(full-16)/3:full*.58;
   actions.forEach(([type,title,disabled],i)=>{
     const b=box(item.equipped?left-2*u+i*(bwidth+8):(w-bwidth)/2,fy+(showCosts?36:0),bwidth,48);
-    if(type==='gearUpgrade'||type==='gearUpgradeAll')pic(foot,t,art['gear-upgrade-'+(disabled?'off':'on')],b);
-    else slice(foot,t,item.equipped?'/art/psd-buttons-v1/button-blue.png':'/art/psd-equipment-v1/button-gold.png',b,9);
+    const upgrade=type==='gearUpgrade'||type==='gearUpgradeAll';
+    const plate=slice(foot,t,upgrade||!item.equipped?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,9);
+    if(disabled)plate.material.color.set(0x87939e);
     words(foot,title,b.x+b.w/2,b.y+24,item.equipped?clamp(w*.035,12,16):20,{family:titleFont,color:disabled?'#bac8d2':'#edf4f7'});
     area(t,type,title,b,type,{id:item.uid},null,disabled);
   });
@@ -127,8 +128,8 @@ export function openGearPanel(screen,host,send){
   },command=>{if(command.type!=='none')send(command.type,command.data||{},host);});
   return {host,close:panel.close,update(snapshot,modal,signature){
     const id=modal.type+'|'+(modal.id||'')+'|'+(modal.part||'')+'|'+(modal.quality||'');
-    panel.update({snapshot,modal:{...modal},sheetMetrics:metrics,coverNavigation:screen.menuView?.page?.closest('[data-subpage="workshop"]')!=null,safeBottom:parseFloat(getComputedStyle(host).paddingBottom)||0},
+    panel.update({snapshot,modal:{...modal},sheetMetrics:metrics,coverNavigation:screen.lobbyLocation ? screen.lobbyLocation.subpage==='workshop' : screen.menuView?.page?.closest('[data-subpage="workshop"]')!=null,
+      safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)},
       [signature,id,modal.revision,modal.error,snapshot.equipment?.revision,modal.mode,modal.filter,modal.tokens,modal.materialIds?.join(','),modal.plan?.token,modal.drawn?.join(',')].join('|'),id);
   }};
 }
-
