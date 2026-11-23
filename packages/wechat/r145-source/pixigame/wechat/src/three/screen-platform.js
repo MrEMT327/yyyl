@@ -20,13 +20,19 @@ function bounds(left, top, width, height) {
 }
 
 function readWindow(api) {
-  const { windowWidth, windowHeight, pixelRatio, safeArea } = api.getWindowInfo();
+  const { windowWidth, windowHeight, pixelRatio, safeArea, statusBarHeight } = api.getWindowInfo();
   const menu = api.getMenuButtonBoundingClientRect?.();
-  const top = Math.max(safeArea?.top || 0, menu?.height > 0 ? menu.bottom : 0);
+  const menuButton = menu?.height > 0 && Number.isFinite(menu.left) && Number.isFinite(menu.top) &&
+    Number.isFinite(menu.bottom) && menu.left > 0 && menu.top >= 0 && menu.bottom > menu.top && menu.bottom <= windowHeight
+    ? { left: menu.left, top: menu.top, bottom: menu.bottom }
+    : undefined;
+  const top = Math.max(safeArea?.top || 0, menuButton?.bottom || 0);
   return {
     screen: bounds(0, 0, windowWidth, windowHeight),
     density: Math.max(1, Math.min(pixelRatio || 1, 2)),
     safeTop: Math.min(top, windowHeight),
+    safeContentTop: Math.min(windowHeight, Math.max(0, safeArea?.top || 0, statusBarHeight || 0)),
+    menuButton,
     safeBottom: Math.max(0, windowHeight - (safeArea?.bottom ?? windowHeight)),
   };
 }
@@ -52,7 +58,7 @@ function decode(api, path, cancelDecodes) {
   });
 }
 
-export function openWechatThreeScreen(api, resources, baseURL) {
+export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
   const nativeCanvas = globalThis.canvas || api.createCanvas();
   const context = nativeCanvas.getContext('webgl2', { alpha: true, antialias: true, premultipliedAlpha: true });
   if (!context || typeof context.texStorage2D !== 'function') {
@@ -69,6 +75,20 @@ export function openWechatThreeScreen(api, resources, baseURL) {
   const display = createGameDisplay(renderer, () => viewport.screen);
   const localFiles = createAssetCache(api, resources), cancelDecodes = new Set();
   const failedArtwork = new Set();
+  const now = typeof globalThis.performance?.now === 'function'
+    ? globalThis.performance.now.bind(globalThis.performance)
+    : Date.now;
+
+  function readArtwork(file, trace, started, path, fallback = false) {
+    if (!trace) return decode(api, file, cancelDecodes);
+    const decoding = now();
+    return decode(api, file, cancelDecodes).then(image => {
+      const source = fallback ? '包内回退' : /^https?:/i.test(path) ? 'CDN/缓存' : '包内';
+      trace.slowArtwork(path, source, decoding - started, now() - decoding);
+      return image;
+    });
+  }
+
   const loadArtwork = createArtworkLoader({
     address: path => resources.resolve(path, baseURL),
     onFailure(path, error) {
@@ -78,22 +98,30 @@ export function openWechatThreeScreen(api, resources, baseURL) {
     },
     async openImage(path) {
       if (closed) throw new Error('贴图读取已取消');
+      const trace = debugLog?.activeMenu, started = trace ? now() : 0;
       try {
         const file = await localFiles.localFile(path, baseURL);
         if (closed) throw new Error('贴图读取已取消');
-        return await decode(api, file, cancelDecodes);
+        return await readArtwork(file, trace, started, path);
       } catch (error) {
         if (closed) throw error;
         const fallback = await resources.readyFallbackFile(path, baseURL);
         if (!fallback || closed) throw error;
-        return decode(api, fallback, cancelDecodes);
+        return readArtwork(fallback, trace, started, path, true);
       }
     },
   });
+  async function warmArtworkFiles(sources, signal) {
+    // Share pending downloads with the regular decoder. Keep one slot per
+    // warmup so critical data and artwork can still enter the queue.
+    for (const source of new Set(sources)) {
+      if (closed || signal.aborted) break;
+      try { await localFiles.localFile(source, baseURL); }
+      catch { /* The regular artwork loader handles retries and fallbacks. */ }
+    }
+  }
+
   const restoreArtwork = useArtworkLoader(loadArtwork);
-  const now = typeof globalThis.performance?.now === 'function'
-    ? globalThis.performance.now.bind(globalThis.performance)
-    : Date.now;
 
   function notifyViewport() {
     viewport = readWindow(api);
@@ -150,7 +178,7 @@ export function openWechatThreeScreen(api, resources, baseURL) {
   on('onHide', 'offHide', () => { foreground = false; cancelTouches(); notifyViewport(); });
   on('onShow', 'offShow', () => { foreground = true; notifyViewport(); });
   return {
-    renderer, display, loadArtwork, now,
+    renderer, display, loadArtwork, warmArtworkFiles, now, debugLog,
     get viewport() { return viewport; },
     get visible() { return foreground; },
     requestFrame(paint) { return clockSource.requestAnimationFrame(() => { if (!closed) paint(now()); }); },

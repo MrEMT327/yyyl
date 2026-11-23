@@ -20,11 +20,15 @@ export function supportsMenu(tab,subpage){return subpage?isCatalog(subpage)||sub
 export function mountThreeMenu(device,host,send,interactive,setSection){
   const renderer=device.three;
   const staged=Boolean(host.prepareArtwork);
+  const progressive=Boolean(host.progressiveEntry);
+  const nativeLayout=staged||progressive;
+  const mountedAt=host.beginEntryTrace?host.now():undefined;
   const saved={color:renderer.getClearColor(new Color()),alpha:renderer.getClearAlpha(),autoClear:renderer.autoClear};
   let state=null,identity='',tab='',revision=0,frame=0,closed=false,pendingScroll=null,guide=null,guideHud=null,guideLoading=false;
   let preview=null,sortOpen=false,lastTick=0,inspect=null;
   let previewRect,previewWidth,previewHeight,previewInset;
   let entering=null,entryBuilt=false,portraitFrame=0,wantsPortrait=false;
+  let presented=false,entryTrace=null;
   function visible(){return !closed&&host.visible()&&!device.battle&&!device.preview&&!device.cover;}
   const metrics=measureScreen(renderer,'Three 功能页',visible);
   function request(){if(!frame&&visible())frame=host.requestFrame(draw);}
@@ -32,7 +36,13 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
   const scene=createLobbyPanel(device,host.region,'少女航线', (model,w,h,tools)=>{
     if(model.tab==='workshop')workshopMenu(model,w,h,tools);
     else if(isCatalog(model.tab))catalogMenu(model,w,h,tools);
-    else{const bars=chrome(model,w,h,tools);menus[model.tab](model,w,h,tools,bars);bars.footer();}
+    else{
+      const bars=chrome(model,w,h,tools);
+      const section=progressive&&model.tab==='shop'?pendingScroll:null;
+      menus[model.tab](model,w,h,tools,bars,section);
+      if(section!==null)pendingScroll=null;
+      bars.footer();
+    }
     if(inspect){paintItemDetail({...model,inspect},w,h,tools);return 'inspect';}
     return 'base';
   },command=>{
@@ -50,7 +60,8 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
       else send('catalogBack',{},host.anchor);
     }else if(!['close','orbit'].includes(command.type))send(command.type,command.data||{},host.anchor);
   },{
-    main:true,interactive:()=>entering===null&&interactive(),repaint:staged?request:undefined,
+    main:true,interactive:()=>entering===null&&(!progressive||presented)&&interactive(),
+    repaint:nativeLayout?request:undefined,progressive,artworkVisible:visible,
     allows:id=>Boolean(inspect)||!guide?.strong||guide.id===id,
     onScroll(zone,y,anchors,max){
       if(tab!=='shop'||zone!=='base')return;
@@ -63,6 +74,16 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
   function startEntry(){
     host.cancelFrame(portraitFrame);portraitFrame=0;wantsPortrait=false;portrait.setActive?.(false);
     entering=host.now();entryBuilt=false;scene.stage();request();
+  }
+  function finishEntryTrace(status){
+    entryTrace?.stop(status);
+    entryTrace=null;
+  }
+  function prepareScene(){
+    if(!entryTrace)return scene.prepare();
+    const start=host.now(),ready=scene.prepare();
+    entryTrace.prepare(host.now()-start);
+    return ready;
   }
   function applyScroll(notify){
     if(pendingScroll===null)return;
@@ -80,7 +101,7 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
   }
   function prepareEntry(){
     if(!entryBuilt){
-      const ready=scene.prepare();
+      const ready=prepareScene();
       const catalog=isCatalog(tab),wait=host.now()-entering;
       if(wait<900||catalog&&!ready&&wait<2000){
         if(!host.prepareArtwork(scene.artwork())){request();return false;}
@@ -89,7 +110,7 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
       }
       entryBuilt=true;
       if(scene.commit({batchLate:!catalog})){
-        scene.prepare();request();return false;
+        prepareScene();request();return false;
       }
     }
     entering=null;
@@ -106,7 +127,12 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     frame=0;if(!state||!visible())return;
     const enteringPage=entering!==null;
     if(entering!==null&&!prepareEntry())return;
-    metrics.draw(drawFrame);device.display.present();
+    const start=entryTrace?host.now():0;
+    const painted=metrics.draw(drawFrame);
+    if(!device.panel?.fullscreen)device.display.present();
+    if(painted&&entryTrace&&!entryTrace.paint(scene.artwork(),preview?.ready,tab==='shop'?state.shopSection:undefined,host.now()-start)){
+      entryTrace=null;
+    }
     // Let the still portrait and controls paint before requesting Live2D.
     if(enteringPage&&tab==='pilot')wantsPortrait=true;
     schedulePortrait();
@@ -115,11 +141,17 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     if(!host.ownsOutput())host.take();
     const {rect:b,density:ratio}=host.layout();if(!b.width||!b.height)return;
     const w=Math.max(1,Math.round(b.width*ratio)),h=Math.max(1,Math.round(b.height*ratio));
-    if(staged){scene.prepare();applyScroll(false);}
+    const panel=device.panel;
+    if(panel?.fullscreen){
+      host.begin(w,h,request);
+      panel.draw(renderer);
+      return;
+    }
+    if(nativeLayout){prepareScene();applyScroll(false);}
     if(tab==='pilot')portrait.paintPose(renderer);
     host.begin(w,h,request);renderer.setClearColor(0,0);renderer.autoClear=false;renderer.clear();
     scene.draw(renderer);
-    if(!staged)applyScroll();
+    if(!nativeLayout)applyScroll();
     device.panel?.draw(renderer);
     if(guide&&guideHud&&(guide.modal?device.panel:interactive())&&!inspect){
       const target=(guide.modal?device.panel:scene).state().controls.find(c=>c.id===guide.id);
@@ -127,9 +159,12 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     }
     device.feedback?.draw(renderer,b.width,b.height);
     device.toast?.draw(renderer,b.width,b.height);
+    presented=true;
+    return true;
   }
-  const unwatch=host.onLayout(()=>{if(state)state.safeBottom=host.layout().safeBottom;
-    portrait.resize();if(preview&&state&&(!staged||visible()))preview.update(state.snapshot,state.catalogView?.plane||state.snapshot.aircraftId);scene.invalidate();request();});
+  const unwatch=host.onLayout((_viewport,foreground)=>{if(foreground===false)finishEntryTrace('切到后台');
+    if(state)state.safeBottom=host.layout().safeBottom;
+    portrait.resize();if(preview&&state&&(!nativeLayout||visible()))preview.update(state.snapshot,state.catalogView?.plane||state.snapshot.aircraftId);scene.invalidate();request();});
   function ensureGuide(){
     if(guideHud||guideLoading)return;guideLoading=true;
     const load=url=>loadArtwork(optimizeUiAssetUrls(url));
@@ -139,10 +174,16 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     const changed=next.tab!==tab;
     const nextKey=[key,next.tab,next.section,next.shopSection,next.gearSort,next.gearFilter,next.selected,next.fleetReturnKind,JSON.stringify(next.catalog),JSON.stringify(next.workshop)].join('|');
     if(!changed&&identity===nextKey)return;
+    if(changed&&host.beginEntryTrace){
+      finishEntryTrace('切页');
+      entryTrace=host.beginEntryTrace(next.tab,false,tab?undefined:mountedAt);
+    }
     identity=nextKey;tab=next.tab;
-    if(changed){preview?.close();preview=null;sortOpen=false;inspect=null;if(staged)startEntry();}
+    if(changed){preview?.close();preview=null;presented=false;sortOpen=false;inspect=null;if(staged)startEntry();}
     if(host.adaptiveEquipment&&tab==='assembly'&&next.gearFilter!==state?.gearFilter)scene.scroll('warehouse',0,false);
-    state={...next,sortOpen,reduced:host.reducedMotion(),safeBottom:host.layout().safeBottom,adaptiveEquipment:host.adaptiveEquipment,windowedCatalog:staged};
+    state={...next,sortOpen,reduced:host.reducedMotion(),safeBottom:host.layout().safeBottom,
+      adaptiveEquipment:host.adaptiveEquipment,windowedCatalog:staged,progressive,
+      prioritizedArtwork:nativeLayout&&Object.hasOwn(menus,tab)&&(tab!=='research'||next.section!=='lab')};
     if(isCatalog(tab))state.catalogView=catalogModel(state);
     portrait.select(state.catalogView?.appearance?.id||'');state.portrait=portrait;
     if(tab==='aircraft'&&state.catalogView?.plane){
@@ -152,19 +193,22 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     }
     if(tab==='assembly'){
       preview??=host.openAircraft(scene,refresh,request,()=>visible()&&interactive(),
-        {stageModel:staged,acceptOrbit:()=>entering===null,rect:hangarPreview});
+        {stageModel:nativeLayout,prefetchModel:!progressive,acceptOrbit:()=>entering===null&&(!progressive||presented),rect:hangarPreview});
       state.preview=preview;preview.update(next.snapshot);
     }
     if(tab==='shop')state.showcases=shopData(next.snapshot);
-    if(changed)pendingScroll=tab==='shop'?next.shopSection:tab==='workshop'&&next.workshop.kind==='weapon'&&next.workshop.id?'selected-weapon':null;
+    if(changed)pendingScroll=tab==='shop'?(next.shopSection==='stamina'?'coins':next.shopSection):
+      tab==='workshop'&&next.workshop.kind==='weapon'&&next.workshop.id?'selected-weapon':null;
     refresh();request();
   },activate(){
     device.menuView=view;device.repaintHome=request;
+    if(state&&host.beginEntryTrace)entryTrace=host.beginEntryTrace(tab,true);
     if(staged&&state)startEntry();
     if(preview&&state)preview.update(state.snapshot,state.catalogView?.plane||state.snapshot.aircraftId);
     request();
   },park(){
-    host.cancelFrame(frame);frame=0;lastTick=0;scene.cancelInput();
+    finishEntryTrace('离开页面');
+    host.cancelFrame(frame);frame=0;lastTick=0;presented=false;scene.cancelInput();
     host.cancelFrame(portraitFrame);portraitFrame=0;wantsPortrait=false;portrait.setActive?.(false);
     if(host.ownsOutput())host.release();
     if(sortOpen||inspect){sortOpen=false;inspect=null;state.sortOpen=false;refresh();}
@@ -184,10 +228,10 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
       if(guide?.id===g?.id&&guide?.strong===g?.strong&&guide?.text===g?.text&&guide?.modal===g?.modal)return;
       guide=g;if(g)ensureGuide();request();
     },
-    tick(){if(entering===null&&preview&&visible())tickPreview();schedulePortrait();
+    tick(){if(entering===null&&preview&&visible()&&(!progressive||presented))tickPreview();schedulePortrait();
       if(visible()&&(!host.reducedMotion()&&(interactive()&&scene.animated||guide)||!host.ownsOutput()))request();},
     close(){
-      if(closed)return;closed=true;metrics.release();host.cancelFrame(frame);host.cancelFrame(portraitFrame);unwatch();preview?.close();portrait.close();scene.close();guideHud?.dispose();
+      if(closed)return;closed=true;finishEntryTrace('离开页面');metrics.release();host.cancelFrame(frame);host.cancelFrame(portraitFrame);unwatch();preview?.close();portrait.close();scene.close();guideHud?.dispose();
       if(device.menuView===view)device.menuView=null;if(device.repaintHome===request)device.repaintHome=null;
       if(host.ownsOutput()){
         host.release();

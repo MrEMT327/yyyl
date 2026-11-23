@@ -8,7 +8,7 @@ const files={heart:'/art/psd-combat-v1/heart.png',chest:'/art/psd-main-v1/button
   divider:'/art/psd-main-v1/navigation/divider.png',developer:'/art/psd-buttons-v1/button-blue.png',
   gold:'/art/psd-equipment-v1/frame-gold.png',caption:'/art/onboarding-dialogue-v2/panel.webp',
   mascot:'/art/onboarding-assistant-v1/expressions.png',pointer:baked.pointer,carnival:carnivalMedal};
-import {homeInsets,navEdges,navArtwork,navBodyEnd,navFillStart,carnivalEntryBox,affectionY} from './home-navigation.js';
+import {homeInsets,navEdges,navArtwork,navBodyEnd,navFillStart,carnivalEntryBox,affectionY,profileFrame} from './home-navigation.js';
 const tabs=[['shop',28.75,1507,84,84],['assembly',176.25,1510,69,86],['battle',320,1483,114,99],['research',491.25,1507,92,96],['supply',642.75,1512,80,91]];
 const vert=`precision highp float;attribute vec3 position;attribute vec2 uv;uniform mat4 modelViewMatrix,projectionMatrix;varying vec2 coords;void main(){coords=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
 const frag=`precision highp float;uniform sampler2D art;uniform vec4 region,splice;uniform vec2 pixels,box;uniform vec3 tint;uniform float alpha,octagon;varying vec2 coords;
@@ -153,7 +153,8 @@ export async function createHomeHud(load,model,redraw){
     if(!view||disposed)return;
     const s=state,unit=750/view.width,l=homeInsets(view),top=l.top,ny=y=>l.nav+(y-1473)*l.height/151;
     const aff=affectionY(s.carnival),eventY=carnivalEntryBox[1]+top;
-    place(avatar,25.8,31.8+top,63.2,63.2);place(frame,13.5,19.5+top,87.7,87.7);place(heart,35.1,aff+12.6+top,42.75,42.75);
+    const [frameX,frameY,frameW,frameH]=profileFrame;
+    place(avatar,25.8,31.8+l.profile,63.2,63.2);place(frame,frameX,frameY+l.profile,frameW,frameH);place(heart,35.1,aff+12.6+top,42.75,42.75);
     if(s.carnival){
       const iconH=50*textures.carnival.h/textures.carnival.w;
       place(carnival,31.5,eventY+36-iconH/2,50,iconH);
@@ -183,12 +184,12 @@ export async function createHomeHud(load,model,redraw){
     label('chapter','第'+chapterNumber(s.chapter+1)+'章·'+heading,376,161.5+top,30,{font:'title',shadow:0x102132});
     label('waves',(s.stage?.waveCount||15)+'波·'+(s.stage?.bestCleared?'已通关':s.stage?.unlocked===false?'未解锁':'待挑战'),375,197.5+top,24,{color:0x81efff,shadow:0x102132});
     label('stars','累计'+s.total+'/'+s.maximum,386,261.5+top,clamp(23.6,11*unit,19*unit),{color:0x142d43});
-    label('profile',s.name,105,49.5+top,22.875,{align:'left',maxWidth:108,shadow:0x0a1824});
-    const powerTitle=label('power-title','战力',105,89+top,Math.max(15.75,10*unit),{align:'left',color:0xffde43});
-    label('power',s.power,108+powerTitle,90.4+top,17.25,{align:'left',color:0xffde43,shadow:0x0a1824});
+    label('profile',s.name,105,49.5+l.profile,22.875,{align:'left',maxWidth:108,shadow:0x0a1824});
+    const powerTitle=label('power-title','战力',105,89+l.profile,Math.max(15.75,10*unit),{align:'left',color:0xffde43});
+    label('power',s.power,108+powerTitle,90.4+l.profile,17.25,{align:'left',color:0xffde43,shadow:0x0a1824});
     for(const [i,k] of ['stamina','coins','diamonds'].entries()){
       const str=walletValue(s.wallet?.[k],s.wallet?.unlimited);
-      label(k,str,327+i*170,69.5+top,str.length>4?19.1:22.5,{font:'system'});
+      label(k,str,327+i*170,69.5+l.wallet,str.length>4?19.1:22.5,{font:'system'});
     }
     label('carnival',s.carnival?'七日活动':'',56.5,eventY+73.8,clamp(20,9*unit,16*unit),{shadow:0x172b40,maxWidth:101});
     label('affection','好感度',56.5,aff+73.8+top,clamp(21.75,10*unit,18*unit),{shadow:0x172b40});

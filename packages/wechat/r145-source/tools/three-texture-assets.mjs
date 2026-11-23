@@ -10,19 +10,19 @@ export async function loadThreeTextureAssets(inputs, publicDirectory) {
   const files = new Map();
   const aliases = {}, fallbackAliases = {};
 
-  function add(path, source, expectedFile) {
-    if (source.length < 24 || source.readUInt32BE(0) !== 0x89504e47) {
-      throw new Error('无效的微信 PNG 纹理 ' + path);
+  async function readTexture(path, file, format = 'png') {
+    const pattern = format === 'jpg' ? /^[a-f0-9]{20}\.jpg$/ : /^[a-f0-9]{20}\.png$/;
+    if (!pattern.test(file)) throw new Error('无效的微信纹理文件名 ' + file);
+    const source = await readFile(join(directory, file));
+    const signature = source.length >= 24 && (format === 'jpg'
+      ? source.readUInt16BE(0) === 0xffd8 && source.readUInt16BE(source.length - 2) === 0xffd9
+      : source.readUInt32BE(0) === 0x89504e47);
+    if (!signature || sha256(source).slice(0, 20) + '.' + format !== file) {
+      throw new Error('微信纹理校验失败 ' + path);
     }
-    const filename = 'texture-' + sha256(source).slice(0, 20) + '.png';
+    const filename = 'texture-' + file;
     if (!files.has(filename)) files.set(filename, { filename, source });
-    if (filename !== 'texture-' + expectedFile) throw new Error('微信 PNG 纹理校验失败 ' + path);
     return filename;
-  }
-
-  async function readTexture(path, file) {
-    if (!/^[a-f0-9]{20}\.png$/.test(file)) throw new Error('无效的微信纹理文件名 ' + file);
-    return add(path, await readFile(join(directory, file)), file);
   }
 
   for (const { path, file, svgSha256 } of rasters) {
@@ -31,12 +31,14 @@ export async function loadThreeTextureAssets(inputs, publicDirectory) {
     aliases[path] = await readTexture(path, file);
   }
   for (const { path, sha256: expected, file } of localImages) {
-    if (!/^art\/(?:battle-skill-icons-v4|weapon-variant-skill-icons-v5)\/[\w-]+\.webp$/.test(path) || Object.hasOwn(aliases, path)) {
-      throw new Error('无效或重复的本地技能图标 ' + path);
+    const skill = /^art\/(?:battle-skill-icons-v4|weapon-variant-skill-icons-v5)\/[\w-]+\.webp$/.test(path);
+    const pageArt = /^art\/three-ui\/three-art-[a-f0-9]{12}\.png$/.test(path);
+    if ((!skill && !pageArt) || Object.hasOwn(aliases, path)) {
+      throw new Error('无效或重复的本地微信图片 ' + path);
     }
     const source = await readFile(join(publicDirectory, path));
-    if (sha256(source) !== expected) throw new Error('技能图标原件已更新，请同步微信纹理 ' + path);
-    aliases[path] = await readTexture(path, file);
+    if (sha256(source) !== expected) throw new Error('图片原件已更新，请同步微信纹理 ' + path);
+    aliases[path] = await readTexture(path, file, pageArt ? 'jpg' : 'png');
   }
   for (const { path, file } of fallbacks) fallbackAliases[path] = await readTexture(path, file);
   const entries = [...files.values()];

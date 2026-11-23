@@ -32,19 +32,34 @@ export function createBattleColorTargets(renderer,w,h,hullSize){
   const make=(w,h)=>{const target=new WebGLRenderTarget(w,h,{minFilter:LinearFilter,magFilter:LinearFilter,
     samples,depthBuffer:true,stencilBuffer:false,generateMipmaps:false});attachments.add(target);return target;};
   const ground=make(w,h),hull=make(hullSize,hullSize),vp=new Vector4(),sc=new Vector4(),color=new Color(),background=new Color();
-  function paint(target,scene,clearColor,alpha,draw){
-    prepareScene(scene);
-    const previous=renderer.getRenderTarget(),clip=renderer.getScissorTest(),a=renderer.getClearAlpha();
-    renderer.getViewport(vp);renderer.getScissor(sc);renderer.getClearColor(color);
+  function withTarget(target,draw){
+    const previous=renderer.getRenderTarget(),clip=renderer.getScissorTest();
+    renderer.getViewport(vp);renderer.getScissor(sc);
     try{
       renderer.setRenderTarget(target);renderer.setViewport(0,0,target.width,target.height);renderer.setScissorTest(false);
-      renderer.setClearColor(background.set(clearColor).convertLinearToSRGB(),alpha);renderer.clear();draw();
+      return draw();
     }finally{
-      renderer.setRenderTarget(previous);renderer.setViewport(vp);renderer.setScissor(sc);renderer.setScissorTest(clip);renderer.setClearColor(color,a);
+      renderer.setRenderTarget(previous);renderer.setViewport(vp);renderer.setScissor(sc);renderer.setScissorTest(clip);
     }
+  }
+  function paint(target,scene,clearColor,alpha,draw){
+    prepareScene(scene);
+    return withTarget(target,()=>{
+      const autoClear=renderer.autoClear,a=renderer.getClearAlpha();
+      renderer.getClearColor(color);
+      try{
+        // The ground pass clears explicitly. The hull callback also draws
+        // depth and exhaust passes that manage their own clearing.
+        if(target===ground)renderer.autoClear=false;
+        renderer.setClearColor(background.set(clearColor).convertLinearToSRGB(),alpha);renderer.clear();draw();
+      }finally{
+        renderer.autoClear=autoClear;renderer.setClearColor(color,a);
+      }
+    });
   }
   return {ground:ground.texture,hull:hull.texture,
     resizeGround(w,h){ground.setSize(w,h);},
+    warmGround(scene,warm){prepareScene(scene);return withTarget(ground,warm);},
     drawGround(scene,camera,backdrop){paint(ground,scene,backdrop,1,()=>renderer.render(scene,camera));},
     drawHull(scene,draw){paint(hull,scene,0,0,draw);},
     dispose(){ground.dispose();hull.dispose();}};

@@ -76,7 +76,8 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
           const parked=[...retainedViews].filter(([page,slot])=>page.catalog&&!slot.active);
           if(parked.length>=2)drop(...parked[0]);
         }
-        return retain(host,page=>mountWechatMenu(device,platform,page,send,interactive,setSection,{stageEntry:true}));
+        return retain(host,page=>mountWechatMenu(device,platform,page,send,interactive,setSection,
+          {stageEntry:true,progressiveEntry:!host.catalog}));
       }
       return mountWechatMenu(device,platform,host,send,interactive,setSection,{stageEntry:true});
     },

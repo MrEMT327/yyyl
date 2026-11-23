@@ -3,7 +3,8 @@ import {createModelRenderer} from '../../ui/peripheral-models.js';
 import {measureScreen} from './screen-metrics.js';
 import {equipmentLayout} from './equipment-layout.js';
 
-export function menuAircraft(screen,page,scene,refresh,request,active,{profile='equipment',rect=w=>equipmentLayout(w,0).preview,port=null,stageModel=false,acceptOrbit=()=>true}={}){
+export function menuAircraft(screen,page,scene,refresh,request,active,{profile='equipment',rect=w=>equipmentLayout(w,0).preview,
+  port=null,stageModel=false,prefetchModel=true,acceptOrbit=()=>true}={}){
   const r=screen.three,canvas=screen.display.input,color=new Color(),viewport=new Vector4(),scissor=new Vector4();
   const target=new WebGLRenderTarget(2,2,{type:HalfFloatType,depthBuffer:true,stencilBuffer:false,samples:port?0:Math.min(4,r.capabilities.maxSamples)});
   const exposureUniform={value:1.12};
@@ -26,7 +27,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
           #include <colorspace_fragment>
         }`});
   }
-  let closed=false,ready=false,fit='',model,wanted,settledFrames=0,prefetch='';
+  let closed=false,ready=false,fit='',model,wanted,settledFrames=0,queuedAircraft='';
   const metrics=measureScreen(r,profile==='patrol'?'Three 巡逻战机':'Three 装备战机',()=>!closed&&active(),false);
   function bounds(){const p=port?port.bounds():page.getBoundingClientRect(),b=rect(p.width,p.height);return {width:b.w,height:b.h,left:p.left+b.x,top:p.top+b.y};}
   const interactive=profile==='equipment'||profile==='catalog';
@@ -55,18 +56,17 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
     if(model&&!stageModel){wanted=null;configure(snapshot,aircraftId);}
     else{
       wanted=[snapshot,aircraftId];
-      if(stageModel&&port&&aircraftId&&prefetch!==aircraftId){
+      if(stageModel&&port&&aircraftId&&queuedAircraft!==aircraftId){
         ready=false;
-        prefetch=aircraftId;
-        // Transfer the selected fighter while the page gathers its artwork.
-        // The package loader shares this request with the staged 3D preview.
-        void port.loadAircraft(aircraftId).catch(()=>{});
+        queuedAircraft=aircraftId;
+        // Catalogs can start the transfer while gathering artwork. Equipment
+        // starts it from tick() after the first interactive frame.
+        if(prefetchModel)void port.loadAircraft(aircraftId).catch(()=>{});
       }
     }
   },tick(dt){
     const visible=active();
-    // Give the 2D layout and GPU uploads their own frames before building
-    // the studio. The native equipment page waits for this preview offscreen.
+    // Give the menu artwork its own frames before building the studio.
     if(!model){
       if(!visible||!wanted||++settledFrames<3)return;
       model=createModelRenderer({screen,embedded});return;

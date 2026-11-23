@@ -1,3 +1,25 @@
+export function createInlineNativeVideo(api, options) {
+  return api.createVideo({autoplay:false,controls:false,showCenterPlayBtn:false,
+    enablePlayGesture:false,enableProgressGesture:false,objectFit:'contain',
+    autoPauseIfNavigate:true,autoPauseIfOpenNative:true,...options});
+}
+
+export function retireNativeVideo(video, width, height) {
+  // Clear the native layer before waiting for stop to release its last frame.
+  try {
+    video.x=width+1;video.y=height+1;
+    video.width=video.height=1;video.muted=true;
+  } catch (error) { console.warn('[wechat-video-hide]',error); }
+  const destroy=()=>{try{video.destroy();}catch(error){console.warn('[wechat-video-dispose]',error);}};
+  let stopping;
+  try { stopping=video.stop?.(); } catch { destroy();return; }
+  if(!stopping?.then){destroy();return;}
+  let released=false;
+  const timer=setTimeout(finish,250);
+  function finish(){if(released)return;released=true;clearTimeout(timer);destroy();}
+  void Promise.resolve(stopping).then(finish,finish);
+}
+
 // Visible movies use the native player. RGBA portrait videos still need the
 // decoder surface because their frames are sampled by the game renderer.
 export function attachNativeVideoPlayer(host,element,onDispose) {
@@ -31,22 +53,7 @@ export function attachNativeVideoPlayer(host,element,onDispose) {
   function destroyPlayer(){
     if(frameId)scope.cancelAnimationFrame(frameId);frameId=0;
     const old=player;player=null;seeking=false;
-    if(!old)return;
-    // The native layer is independent of the game canvas and can retain its
-    // last frame while stopping. Move it clear before showing the lobby again.
-    try{
-      old.x=scope.innerWidth+1;old.y=scope.innerHeight+1;
-      old.width=old.height=1;old.muted=true;
-    }catch(reason){console.warn('[wechat-video-hide]',reason);}
-    const destroy=()=>{try{old.destroy();}catch(reason){console.warn('[wechat-video-dispose]',reason);}};
-    let stopping;
-    try{stopping=old.stop?.();}catch{destroy();return;}
-    if(!stopping?.then){destroy();return;}
-    // Release the object even if a native stop never answers.
-    let released=false;
-    const timer=setTimeout(finish,250);
-    function finish(){if(released)return;released=true;clearTimeout(timer);destroy();}
-    void Promise.resolve(stopping).then(finish,finish);
+    if(old)retireNativeVideo(old,scope.innerWidth,scope.innerHeight);
   }
   function dispose(){
     if(disposed)return;
@@ -54,7 +61,8 @@ export function attachNativeVideoPlayer(host,element,onDispose) {
   }
   function ensurePlayer(){
     if(player)return player;
-    const current=api.createVideo({src:host.resources.resolve(source,host.document.baseURI),x:0,y:0,width:1,height:1,autoplay:false,controls:false,showCenterPlayBtn:false,enablePlayGesture:false,enableProgressGesture:false,objectFit:'contain',muted,loop:element.loop,autoPauseIfNavigate:true,autoPauseIfOpenNative:true});
+    const current=createInlineNativeVideo(api,{src:host.resources.resolve(source,host.document.baseURI),
+      x:0,y:0,width:1,height:1,muted,loop:element.loop});
     player=current;
     const listen=(name,fn)=>current[name](data=>{if(!disposed&&player===current)fn(data);});
     listen('onPlay',()=>{paused=false;ended=false;emit(element,'play');emit(element,'playing');});

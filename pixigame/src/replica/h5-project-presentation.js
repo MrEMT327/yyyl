@@ -268,7 +268,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
     const isActive=()=>!disposed;
     await Promise.all([
       renderWithAircraftStyle(renderer,()=>aircraftRenderer.warmup(aircraftScene,aircraftCamera,fighter,hdr,isActive)),
-      ...(replaceTerrain?[warmRenderPrograms(renderer,worldScene,coastCamera||camera,isActive)]:[]),
+      ...(replaceTerrain?[battle.warmGround(worldScene,()=>warmRenderPrograms(renderer,worldScene,coastCamera||camera,isActive))]:[]),
     ]);
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
     renderAircraftTexture(0, { bank: 0, pitch: 0, roll: 0, thrust: 0 });
@@ -357,17 +357,22 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       if(split&&!terrainDeferred){worldDue=false;terrainDeferred=true;}
       else{if(split)renderAircraft=false;terrainDeferred=false;}
       let landmarks;
-      if (worldDue) {
-        camera.aspect=viewWidth/viewHeight;
-        camera.fov=2*THREE.MathUtils.radToDeg(Math.atan(Math.tan(THREE.MathUtils.degToRad(fixedFov/2))*viewHeight/HEIGHT));
-        camera.updateProjectionMatrix();
-        if(coastCamera){
-          coastCamera.left=-365.625*viewWidth/WIDTH;coastCamera.right=-coastCamera.left;
-          coastCamera.top=650*viewHeight/HEIGHT;coastCamera.bottom=-coastCamera.top;coastCamera.updateProjectionMatrix();
+      if (worldDue && replaceTerrain) {
+        if (lastWorldViewport !== view) {
+          if (coastCamera) {
+            coastCamera.left=-365.625*viewWidth/WIDTH;coastCamera.right=-coastCamera.left;
+            coastCamera.top=650*viewHeight/HEIGHT;coastCamera.bottom=-coastCamera.top;coastCamera.updateProjectionMatrix();
+          } else {
+            camera.aspect=viewWidth/viewHeight;
+            camera.fov=2*THREE.MathUtils.radToDeg(Math.atan(Math.tan(THREE.MathUtils.degToRad(fixedFov/2))*viewHeight/HEIGHT));
+            camera.updateProjectionMatrix();
+          }
         }
-        const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
-        camera.position.set(cameraHome.x + shiftX, cameraHome.y, cameraHome.z + shiftZ);
-        camera.lookAt(targetHome.x + shiftX, 0, targetHome.z + shiftZ);
+        if (!coastCamera) {
+          const shiftX = frame.camera.x * unitsPerWorld, shiftZ = -frame.camera.z * unitsPerWorld;
+          camera.position.set(cameraHome.x + shiftX, cameraHome.y, cameraHome.z + shiftZ);
+          camera.lookAt(targetHome.x + shiftX, 0, targetHome.z + shiftZ);
+        }
         environment.update(backgroundTime, stageIndex, { motionRevision: worldKey, runId:frame.runId });
         if(weather){
           const worldCamera=coastCamera||camera;

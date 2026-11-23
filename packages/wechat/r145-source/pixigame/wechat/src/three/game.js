@@ -1,5 +1,6 @@
 import { setPopupSurfaceFont } from '../../../../../../../pixigame/src/ui/three-surface.js';
 import { createWechatThreeRuntime } from './runtime.js';
+import { createWechatDebugLog } from './debug-log.js';
 import { createWechatServices } from './services.js';
 import { createWechatPortraits } from './portraits.js';
 import { openWechatAffectionVideo } from './video.js';
@@ -21,10 +22,12 @@ export function openWechatGame(api,config){
   const loadCubism=()=>cubism??=config.loadCubism().then(createCore=>createCore({console,atob,TextDecoder}));
   async function boot(){
     active?.close();
+    const debugLog=createWechatDebugLog(api,config.buildId);
     const services=createWechatServices(api,config);
     const {baseURL,resources}=services;
-    const runtime=createWechatThreeRuntime(api,{resources,baseURL});
+    const runtime=createWechatThreeRuntime(api,{resources,baseURL,debugLog});
     const {platform,device}=runtime;
+    const startTime=debugLog?platform.now():0;
     const portraits=createWechatPortraits(api,platform,services,device,baseURL,loadCubism);
     const entry={close(){try{runtime.close();}finally{portraits.destroy();services.close();setPopupSurfaceFont(null);}}};
     active=entry;
@@ -64,6 +67,7 @@ export function openWechatGame(api,config){
       await font;
       if(active===entry){
         startup.stage(2,'正在准备大厅…');
+        debugLog?.info('大厅就绪',{loadMs:Math.round(platform.now()-startTime)});
         await startup.ready(()=>{game.unlockAudio();game.pixiLobby.startPortraits();device.repaintHome?.();});
       }
     }catch(error){report(error);if(active===entry)startup.fail(error);}

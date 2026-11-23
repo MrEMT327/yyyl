@@ -3,6 +3,7 @@ export function createWechatPanelInput(api, platform, region) {
   return {
     bounds:()=>region.bounds(),
     frameBounds:()=>region.frameBounds(),
+    viewport:()=>platform.viewport,
     overlay:Boolean(region.overlay),
     now:platform.now,requestFrame:platform.requestFrame,cancelFrame:platform.cancelFrame,
     watch:platform.onViewport,

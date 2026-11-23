@@ -1,6 +1,6 @@
 import {artworkSize,loadArtwork} from './image-loading.js';
 import {OrthographicCamera,Scene,Texture,Vector4,SRGBColorSpace,LinearFilter,LinearMipmapLinearFilter} from 'three';
-import {createThreeSurface} from '../../ui/three-surface.js';
+import {createSurfaceTextCache,createThreeSurface} from '../../ui/three-surface.js';
 import {optimizeUiAssetUrls} from '../../ui/ui-image-source.js';
 
 const inside=(r,x,y)=>r&&x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h;
@@ -60,7 +60,7 @@ function browserPanelInput(screen,host,name,main) {
 
 // A panel paints above the retained lobby scene on the same Three device.
 // Its transparent H5 focus target only delivers pointer, wheel and IME input.
-export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,overlay=false,battle=false,onScroll,repaint,interactive=()=>true,allows=()=>true,handlesKey=()=>true}={}){
+export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,overlay=false,battle=false,fullscreen=false,onScroll,repaint,progressive=false,artworkVisible,interactive=()=>true,allows=()=>true,handlesKey=()=>true}={}){
   const input=screen.createPanelInput?.(host,name,{main,overlay,battle})||browserPanelInput(screen,host,name,main);
   const underlay=overlay||input.overlay?screen.panel:null;
   const surface=input.surface,camera=new OrthographicCamera(0,1,0,1,-10,10),textures=new Map();
@@ -69,6 +69,11 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   let pendingArt=false,prevW=0,prevH=0,activeScope='base',identity='',artBatch=null;
   let staging=false,artChanged=false;
   const currentArtwork=new Set(),deferredArtwork=new Set(),decodedArtwork=new Map();
+  const layoutArtwork=new Set(),imageUpdates=new Map(),artworkPriorities=new Map();
+  const canUpdateImage=texture=>imageUpdates.has(texture)&&!layoutArtwork.has(texture);
+  const batchesArtwork=()=>progressive||data?.prioritizedArtwork&&!staging;
+  const mayInstall=t=>currentArtwork.has(t)&&!deferredArtwork.has(t)&&(dirty||artBatch===null||canUpdateImage(t));
+  const textCache=progressive?createSurfaceTextCache():null;
   const textureReady=t=>Boolean(t.image||t.userData.failed);
   let guideTarget=null;
   const allowed=id=>allows(id)&&(!guideTarget||guideTarget===id);
@@ -79,14 +84,26 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     else if(!battle&&!redraw)redraw=input.requestFrame(()=>{redraw=0;if(!closed)screen.repaintHome?.();});
   }
   function layer(key,clip=null){
-    const scene=new Scene(),art=createThreeSurface(),p={key,scene,art,clip};
+    const scene=new Scene(),art=createThreeSurface({textCache}),p={key,scene,art,clip};
     scene.add(art.group);layers.push(p);return p;
   }
-  function region(key,rect,length,axis='y',{parent=null,initial=0,redrawStep=0}={}){
+  function region(key,rect,length,axis='y',{parent=null,initial=0,redrawStep=0,scrollTo}={}){
     activeRegions.add(key);
     const prev=regions.get(key);
-    const row={rect,axis,parent,redrawStep,max:Math.max(0,length-(axis==='x'?rect.w:rect.h)),offset:prev?.offset??initial};
+    const row={rect,axis,parent,redrawStep,max:Math.max(0,length-(axis==='x'?rect.w:rect.h)),offset:scrollTo??prev?.offset??initial};
     row.offset=limit(row.offset,0,row.max);regions.set(key,row);
+  }
+  function scrollWindow(key){
+    const {rect,axis,offset,redrawStep}=regions.get(key);
+    if(!redrawStep)return null;
+    // Draw through the end of this scroll step so a drag can reuse the scene.
+    const start=Math.floor(offset/redrawStep)*redrawStep;
+    if(axis==='x'){
+      const left=rect.x+start;
+      return {left,right:left+rect.w+redrawStep};
+    }
+    const top=rect.y+start;
+    return {top,bottom:top+rect.h+redrawStep};
   }
   function placement(zone){
     if(!zone)return {dx:0,dy:0,clip:null};
@@ -97,23 +114,40 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   function control(id,label,rect,action,{zone=null,scope='base',disabled=false,trackPointer=false,onPoint,onKey}={}){
     controls.push({id,label,...rect,action,zone,scope,disabled,trackPointer,onPoint,onKey});
   }
-  function installImage(t,image){
+  function installImage(t,image,inPlace=false){
     if(image){t.image=image;t.needsUpdate=true;}
     else t.userData.failed=true;
+    if(inPlace){
+      const updates=imageUpdates.get(t);
+      imageUpdates.delete(t);
+      if(image)for(const update of updates)update(image);
+    }
   }
   function installDecodedArtwork(){
-    let changed=false;
+    let layoutChanged=false,uploads=0,pixels=0;
+    const batched=batchesArtwork();
     for(const [t,image] of decodedArtwork){
       if(deferredArtwork.has(t))continue;
-      installImage(t,image);decodedArtwork.delete(t);changed=true;
+      if(batched){
+        if(!mayInstall(t))continue;
+        if(image){
+          const [w,h]=artworkSize(image),area=w*h;
+          // Let a large background paint on its own frame.
+          if(uploads>=4||(uploads>0&&pixels+area>400000))break;
+          uploads++;pixels+=area;
+        }
+      }
+      const inPlace=canUpdateImage(t);
+      installImage(t,image,inPlace);decodedArtwork.delete(t);
+      if(!inPlace)layoutChanged=true;
     }
-    return changed;
+    return layoutChanged;
   }
   function releaseDeferredArtwork(){
     if(!deferredArtwork.size||![...deferredArtwork].every(t=>textureReady(t)||decodedArtwork.has(t)))return;
     deferredArtwork.clear();request(true);
   }
-  function texture(url){
+  function texture(url,layoutDependent=true,priority=1){
     const key=optimizeUiAssetUrls(url);
     if(!textures.has(key)){
       const ready=screen.preparedArtwork?.get(key);
@@ -122,6 +156,11 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
         const t=new Texture();
         const done=image=>{
           if(closed||textures.get(key)!==t)return;
+          const inPlace=canUpdateImage(t)&&!deferredArtwork.has(t);
+          if(inPlace&&!batchesArtwork()){
+            installImage(t,image,true);request();
+            return;
+          }
           if(staging){
             // A staging scene is offscreen. Expose its textures for pre-upload.
             installImage(t,image);
@@ -131,44 +170,73 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
           // Animated/scrolling panels can paint before their batched rebuild.
           // Keep new pixels off the old mesh until UVs and aspect are rebuilt.
           decodedArtwork.set(t,image);
+          if(inPlace){request();return;}
           if(deferredArtwork.has(t)){releaseDeferredArtwork();return;}
           if(!screen.preparedArtwork){request(true);return;}
           if((repaint&&!currentArtwork.has(t))||artBatch!==null)return;
           artBatch=setTimeout(()=>{artBatch=null;request(true);},55);
         };
         t.colorSpace=SRGBColorSpace;t.generateMipmaps=true;t.minFilter=LinearMipmapLinearFilter;t.magFilter=LinearFilter;textures.set(key,t);
-        loadArtwork(key).then(image=>{
+        const rank=data.prioritizedArtwork?()=>!closed&&artworkVisible()?artworkPriorities.get(t)??-1:-1:undefined;
+        loadArtwork(key,rank).then(image=>{
           const [w,h]=artworkSize(image);done(w>0&&h>0?image:null);
         },()=>done(null));
       }
     }
     const t=textures.get(key);
     if(repaint)currentArtwork.add(t);
+    if(data.prioritizedArtwork)artworkPriorities.set(t,Math.max(priority,artworkPriorities.get(t)??0));
+    if(layoutDependent)layoutArtwork.add(t);
     return t;
   }
-  function image(art,url,x,y,w,h,contain=true){
+  function imageRect(url,source,x,y,w,h,contain){
+    if(!contain)return {x,y,w,h};
+    const [iw,ih]=artworkSize(source);
+    if(!iw||!ih)return {x,y,w,h};
+    // Hangar artwork already uses the live model's camera framing.
+    const aircraftIcon=url.includes('/aircraft-ui-v1/')&&!url.endsWith('-hangar.webp');
+    const scale=Math.min(w/iw,h/ih)*(aircraftIcon?1.45:1);
+    const width=iw*scale,height=ih*scale;
+    return {x:x+(w-width)/2,y:y+(h-height)/2,w:width,h:height};
+  }
+  function image(art,url,x,y,w,h,contain=true,{updateInPlace=false,onImage,priority}={}){
     if(!url)return art.quad(x,y,w,h,'#ffffff',0);
-    const tex=texture(url),im=tex.image;
-    if(!im||deferredArtwork.has(tex)){
-      const mesh=art.image(tex,x,y,w,h);mesh.visible=false;return mesh;
+    const tex=texture(url,!updateInPlace,priority);
+    if(tex.image&&!deferredArtwork.has(tex)){
+      const rect=imageRect(url,tex.image,x,y,w,h,contain);
+      const mesh=art.image(tex,rect.x,rect.y,rect.w,rect.h);
+      onImage?.(mesh);
+      return mesh;
     }
-    if(contain&&im){
-      const [iw,ih]=artworkSize(im);
-      if(iw>0&&ih>0){
-        const multiplier=url.includes('/aircraft-ui-v1/')?1.45:1,k=Math.min(w/iw,h/ih)*multiplier;
-        const nw=iw*k,nh=ih*k;x+=(w-nw)/2;y+=(h-nh)/2;w=nw;h=nh;
-      }
+    const mesh=art.image(tex,x,y,w,h);
+    mesh.visible=false;
+    if(updateInPlace&&!textureReady(tex)){
+      // The card already owns its mesh and hit area. Fit late pixels without rebuilding the page.
+      let updates=imageUpdates.get(tex);
+      if(!updates){updates=[];imageUpdates.set(tex,updates);}
+      updates.push(source=>{
+        const rect=imageRect(url,source,x,y,w,h,contain);
+        mesh.position.x=rect.x+rect.w/2;
+        mesh.position.y=rect.y+rect.h/2;
+        mesh.scale.x=rect.w;
+        // Keep the screen-space quad's Y direction when the texture arrives.
+        mesh.scale.y=-rect.h;
+        onImage?.(mesh);
+        mesh.visible=true;
+      });
     }
-    return art.image(tex,x,y,w,h);
+    return mesh;
   }
   function build(box,c){
     if(dirty||box.width!==prevW||box.height!==prevH){
-      clearTimeout(artBatch);artBatch=null;installDecodedArtwork();
-      currentArtwork.clear();artChanged=false;
+      clearTimeout(artBatch);artBatch=null;
+      if(!batchesArtwork())installDecodedArtwork();
+      currentArtwork.clear();artworkPriorities.clear();layoutArtwork.clear();imageUpdates.clear();artChanged=false;
       for(const p of layers)p.art.clear();layers.length=0;controls.length=0;animations.length=0;frameEffects.length=0;pressEffects.length=0;anchors.clear();activeRegions.clear();pendingArt=false;
-      const tools={layer,region,control,image,texture,topBleed:Math.max(0,box.y-c.y),animate:fn=>animations.push(fn),anchor:(key,value)=>anchors.set(key,value),
+      const tools={layer,region,scrollWindow,control,image,texture,viewport:input.viewport?.(),topBleed:Math.max(0,box.y-c.y),animate:fn=>animations.push(fn),anchor:(key,value)=>anchors.set(key,value),
         frame:fn=>frameEffects.push(fn),pressEffect:fn=>pressEffects.push(fn),offset:key=>regions.get(key)?.offset||0,waitForArt:()=>{pendingArt=true;},keyFocus:keyboard?focusId:null};
       activeScope=layout(data,box.width,box.height,tools)||'base';
+      textCache?.prune();
       if(repaint){
         for(const t of deferredArtwork)if(!currentArtwork.has(t))deferredArtwork.delete(t);
         if(textures.size>96)for(const [key,t] of textures){
@@ -209,7 +277,7 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
       }
     }finally{r.setScissor(scissor);r.setScissorTest(clipped);r.autoClear=clear;}
     if(pendingArt)request(true);
-    else if(!main&&animations.length)request();
+    else if(batchesArtwork()&&[...decodedArtwork.keys()].some(mayInstall)||!main&&animations.length)request();
   }
   function pos(x,y){const r=input.bounds();return {x:x-r.x,y:y-r.y};}
   function hit(x,y){
@@ -300,7 +368,7 @@ function begin(screenX,screenY,pointerId){
   }
   input.bind({begin,move,end,commit,cancel,wheel,key});
   const unwatch=input.watch(()=>request(true));
-  const view={surface,bounds:input.bounds,name,draw(r){underlay?.draw(r);paint(r);},get closed(){return closed;},
+  const view={surface,bounds:input.bounds,name,fullscreen,draw(r){underlay?.draw(r);paint(r);},get closed(){return closed;},
     get animated(){return underlay?.animated||animations.length>0||Boolean(pressEffects.length&&press?.hit&&!press.drag);},invalidate:()=>request(true),
     stage(){
       staging=true;
@@ -311,6 +379,7 @@ function begin(screenX,screenY,pointerId){
     prepare(){
       const b=input.bounds(),c=input.frameBounds();
       if(closed||!data||!b.width||!c.width||!c.height)return false;
+      if(batchesArtwork()&&installDecodedArtwork())dirty=true;
       build(b,c);
       return !pendingArt&&[...currentArtwork].every(textureReady);
     },
@@ -320,7 +389,7 @@ function begin(screenX,screenY,pointerId){
       const rebuild=artChanged||pendingArt;
       // If the CDN is slow, hold late art as one batch instead of having it
       // appear one image at a time in an already interactive page.
-      if(batchLate)for(const t of currentArtwork)if(!textureReady(t))deferredArtwork.add(t);
+      if(batchLate)for(const t of currentArtwork)if(!textureReady(t)&&!canUpdateImage(t))deferredArtwork.add(t);
       if(rebuild||deferredArtwork.size)dirty=true;
       return dirty;
     },
@@ -341,7 +410,8 @@ function begin(screenX,screenY,pointerId){
     if(closed)return;closed=true;clearTimeout(artBatch);input.cancelFrame(redraw);unwatch();field?.();input.close();
     if(screen.panel===view)screen.panel=underlay&&!underlay.closed?underlay:null;
     for(const p of layers)p.art.clear();for(const [key,t] of textures)if(screen.preparedArtwork?.get(key)!==t)t.dispose();
-    decodedArtwork.clear();
+    textCache?.clear();
+    decodedArtwork.clear();artworkPriorities.clear();layoutArtwork.clear();imageUpdates.clear();
     if(!battle)screen.repaintHome?.();
   }};
   if(!main&&!battle){screen.panel=view;input.focus?.();}

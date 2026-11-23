@@ -71,11 +71,11 @@ export function mountThreeHome(device,host,send,interactive){
     hud?.setGuide(control?{...guide,target:control.box,reduced:host.reducedMotion()}:null);
   }
   function position(){
-    const {rect:p,density:ratio,safeBottom,safeTop}=host.layout();if(!p.width||!p.height)return;
+    const {rect:p,density:ratio,safeBottom,safeTop,safeContentTop,menuButton}=host.layout();if(!p.width||!p.height)return;
     const x0=viewportPixel(p.left,ratio),y0=viewportPixel(p.top,ratio);
     const wNative=viewportPixel(p.right,ratio)-x0,hNative=viewportPixel(p.bottom,ratio)-y0;
     if(!wNative||!hNative)return;
-    viewport={width:p.width,height:p.height,left:p.left,top:p.top,ratio,wNative,hNative,safeBottom,safeTop};
+    viewport={width:p.width,height:p.height,left:p.left,top:p.top,ratio,wNative,hNative,safeBottom,safeTop,safeContentTop,menuButton};
     const [x,y,w,h]=portraitSize(pilot,p.width,p.height);
     if(marker)host.movePortrait(marker,x,y,w,h);
     const ax=viewportPixel(p.x+x,ratio)-x0,ay=viewportPixel(p.y+y,ratio)-y0;
@@ -114,11 +114,18 @@ export function mountThreeHome(device,host,send,interactive){
     frame=0;if(!available()||!viewport)return;
     if(host.stageEntry&&!firstPaint&&(!stage||!hud||stillPending)&&host.now()-opened<900){schedule();return;}
     firstPaint=true;
-    metrics.draw(drawFrame);device.display.present();
+    metrics.draw(drawFrame);
+    if(!device.panel?.fullscreen)device.display.present();
   }
   function drawFrame(){
     take();
     const {wNative,hNative}=viewport;
+    const panel=device.panel;
+    if(panel?.fullscreen){
+      host.begin(wNative,hNative,schedule);
+      panel.draw(renderer);
+      return;
+    }
     renderer.setRenderTarget(null);renderer.autoClear=false;renderer.setScissorTest(false);renderer.setClearColor(0,0);
     if(pose?.dirty){
       if(!target)target=new WebGLRenderTarget(pose.w,pose.h,{depthBuffer:false,stencilBuffer:false,minFilter:LinearFilter});

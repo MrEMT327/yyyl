@@ -78,6 +78,7 @@ export function createBattleStage(renderer) {
       ground.position.set(frame.left,frame.top,0);
       ground.material.uniforms.size.value.set(frame.width,frame.height);
     },
+    warmGround:colorTargets.warmGround,
     drawGround(scene,camera,backdrop){colorTargets.drawGround(scene,camera,backdrop);ground.visible=true;},
     drawHull:colorTargets.drawHull,
     hullPose(pose){

@@ -1,8 +1,9 @@
-import { Camera, DataTexture, LinearFilter, Mesh, NoBlending, NoColorSpace, PlaneGeometry, RawShaderMaterial, RGBAFormat, Scene, SRGBColorSpace, UnsignedByteType, Vector2 } from 'three';
+import { Camera, DataTexture, LinearFilter, Mesh, NoBlending, NoColorSpace, PlaneGeometry, RawShaderMaterial, RGBAFormat, Scene, UnsignedByteType, Vector2 } from 'three';
 import { PORTRAIT_VERTEX, PORTRAIT_FRAGMENT } from '../../../../../../../pixigame/src/ui/rgba-video-portrait-player.js';
 import { affectionVideoLayout } from '../../../../../../../pixigame/src/three/game-screen/affection-video.js';
 import { createLobbyPanel } from '../../../../../../../pixigame/src/three/game-screen/lobby-panel.js';
 import { pilotAffectionVideo } from '../../../../../../../pixigame/src/peripheral/pilot-affection.js';
+import { createInlineNativeVideo, retireNativeVideo } from '../full/video-player.js';
 
 function openDecoder(api,platform,services,onFrame,onEnd,onError){
   const decoder=api.createVideoDecoder();
@@ -118,56 +119,76 @@ export function createWechatVideoPortrait(api,services,device,host,id){
 }
 
 export function openWechatAffectionVideo(api,platform,services,screen,host,send){
-  let source='',decoder=null,audio=null,closed=false,revision=0,videoTexture=null,duration=0;
-  const media={videoWidth:0,videoHeight:0,currentTime:0,paused:true,ended:false,muted:false,error:null,get duration(){return duration;}};
-  const panel=createLobbyPanel(screen,host,'专属视频',affectionVideoLayout,command=>{
-    if(command.type==='close'){send('close',{},host);return;}
-    if(command.type==='mute'){media.muted=!media.muted;if(audio)audio.volume=media.muted?0:1;draw(true);return;}
-    if(command.type==='toggle'){
-      if(media.paused||media.ended)play(media.ended?0:media.currentTime);
-      else {media.paused=true;decoder?.pause();audio?.pause();draw(true);}
+  let source='',player=null,closed=false,loading=false,error=false,revision=0;
+  const fullscreenHost={...host,bounds:host.frameBounds};
+  const panel=createLobbyPanel(screen,fullscreenHost,'专属视频',affectionVideoLayout,command=>{
+    if(command.type==='close')send('close',{},host);
+    if(command.type==='retry')void play();
+  },{fullscreen:true});
+
+  function bounds(){
+    const {x,y,width,height}=platform.viewport.screen;
+    return {x,y,width,height};
+  }
+  const unwatch=platform.onViewport(()=>{
+    if(player)for(const [key,value] of Object.entries(bounds())){
+      if(player[key]!==value)player[key]=value;
     }
+    refresh();
   });
-  function draw(rebuild=false){
-    if(closed)return;
-    if(rebuild)panel.update({media,texture:videoTexture,seek,safeBottom:platform.viewport.safeBottom},++revision,source);
+
+  function refresh(){
+    if(closed||!source)return;
+    panel.update({native:Boolean(player),loading,error,safeTop:platform.viewport.safeTop},++revision,source);
     screen.repaintHome?.();
   }
-  function play(offset){
-    media.paused=false;media.error=null;media.ended=false;
-    void decoder.play(source,offset);
-    if(audio){audio.seek(offset);audio.play();}
-    draw(true);
+  function release(){
+    const previous=player;
+    player=null;
+    if(previous){
+      const {width,height}=platform.viewport.screen;
+      retireNativeVideo(previous,width,height);
+    }
   }
-  function seek(offset){if(Number.isFinite(offset)&&decoder)play(offset);}
-  function release(){decoder?.close();decoder=null;audio?.destroy();audio=null;videoTexture?.dispose();videoTexture=null;}
+  function fail(reason){
+    if(closed)return;
+    release();
+    error=true;loading=false;
+    console.warn('[Three 专属视频]',reason?.errMsg||reason?.message||String(reason));
+    refresh();
+  }
+
+  async function play(){
+    if(closed||!source||player)return;
+    loading=true;error=false;refresh();
+    let current;
+    try {
+      if(typeof api.createVideo!=='function')throw Error('当前微信环境不支持专属视频播放');
+      current=createInlineNativeVideo(api,{src:services.resolve(source),...bounds(),
+        objectFit:'cover',backgroundColor:'#000000',underGameView:true});
+      player=current;
+      const listen=(name,callback)=>current[name](event=>{if(player===current)callback(event);});
+      function ready(){
+        if(loading){loading=false;refresh();}
+      }
+      listen('onPlay',ready);
+      listen('onTimeUpdate',ready);
+      listen('onWaiting',()=>{if(!loading){loading=true;refresh();}});
+      listen('onEnded',ready);
+      listen('onError',fail);
+      refresh();
+      await current.play();
+    } catch(reason) {
+      if(!current||player===current)fail(reason);
+    }
+  }
   return {
     host,
     update(_snapshot,modal){
       const file=pilotAffectionVideo(modal.pilotId);
-      if(!file)return;
-      const path=new URL(file,services.baseURL).href;
-      if(path===source)return;
-      release();source=path;duration=0;
-      media.videoWidth=media.videoHeight=media.currentTime=0;
-      decoder=openDecoder(api,platform,services,(bytes,w,h,position)=>{
-        const resize=!videoTexture||media.videoWidth!==w||media.videoHeight!==h;
-        const newSecond=Math.floor(media.currentTime)!==Math.floor(position);
-        if(resize){
-          videoTexture?.dispose();videoTexture=new DataTexture(bytes,w,h,RGBAFormat,UnsignedByteType);
-          videoTexture.flipY=true;videoTexture.colorSpace=SRGBColorSpace;videoTexture.minFilter=videoTexture.magFilter=LinearFilter;
-          media.videoWidth=w;media.videoHeight=h;
-        }else videoTexture.image.data=bytes;
-        videoTexture.needsUpdate=true;media.currentTime=position;draw(newSecond||resize);
-      },position=>{duration=Math.max(duration,position);media.ended=media.paused=true;audio?.pause();draw(true);},
-      error=>{media.error=error;media.paused=true;audio?.pause();draw(true);});
-      audio=api.createInnerAudioContext();
-      audio.src=services.resolve(source);
-      audio.volume=media.muted?0:1;
-      audio.onCanplay(()=>{if(audio?.duration>0){duration=audio.duration;draw(true);}});
-      play(0);
+      if(!file||file===source)return;
+      release();source=file;void play();
     },
-    close(){closed=true;release();panel.close();},
+    close(){if(closed)return;closed=true;unwatch();release();panel.close();},
   };
 }
-

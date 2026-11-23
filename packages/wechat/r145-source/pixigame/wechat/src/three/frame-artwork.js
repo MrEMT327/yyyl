@@ -60,7 +60,7 @@ export function prewarmLobbyArtwork(platform,device,active){
     if(!url||closed)return;
     const key=optimizeUiAssetUrls(url);
     // A single decode in flight leaves slots for player-triggered artwork.
-    platform.loadArtwork(key).then(image=>{
+    platform.loadArtwork(key,-1).then(image=>{
       if(closed)return;
       queue.push(()=>{
         const area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);

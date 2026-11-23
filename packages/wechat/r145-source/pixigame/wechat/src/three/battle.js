@@ -167,6 +167,8 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   const fetchResource=(path,options)=>services.fetchResource(new URL(path,battleURL).href,options);
   try{return mountSharedBattleSession({bindings,hudHost,skinHost,fetchResource,
     canvas:platform.display.canvas,readSharedLoadoutJSON:services.readSharedLoadoutJSON,loadBattleData:services.loadBattleData,
+    warmBattleTerrain:platform.warmArtworkFiles,
+    warmBattleImages:(urls,signal)=>platform.warmArtworkFiles(urls.slice(0,24),signal),
     memoryContext:{page:battleAddress.pathname,canvases:Number(Boolean(platform.display.canvas)),storage:services.storage},
     setNotice:overlays.notice,setLoadingMessage:overlays.notice},rendering);}
   catch(error){lifetime.dispose();throw error;}

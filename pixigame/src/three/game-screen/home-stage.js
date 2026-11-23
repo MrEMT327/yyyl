@@ -1,5 +1,5 @@
 import * as T from 'three';
-import {homeArtOffset,homeInsets} from './home-navigation.js';
+import {homeArtOffset,homeInsets,profileHit,walletTop} from './home-navigation.js';
 
 export const viewportPixel=(position,density)=>Math.round(Math.round(position)*density);
 
@@ -17,7 +17,7 @@ export const homePictures=[
   ['patrol','buttons/patrol.png',[26,1345,182,111]],
   ['backpack','buttons/backpack.png',[545,1364,182,92]],
   ['start','buttons/start.png',[224,1341,301,117]],
-  ['profile','profile-live-frame.png',[22,27,199,78],[0,27,221,100]],
+  ['profile','profile-live-frame.png',[22,27,199,78],profileHit],
 ];
 const wallets=[
   ['stamina',234,[253,47,30,44]],
@@ -25,7 +25,7 @@ const wallets=[
   ['diamonds',574,[601,50,20,39]],
 ];
 for(const [key,x,icon] of wallets){
-  const bar=[x,46,163,46];
+  const bar=[x,walletTop,163,46];
   for(const [part,file,art] of [
     ['background','resources/'+key+'-background.png',bar],
     ['icon','/art/project-resource-icons-v2/'+key+'.png',icon],

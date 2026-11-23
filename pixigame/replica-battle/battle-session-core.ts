@@ -240,12 +240,13 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     checkpointMemory('battle-textures-ready');
     ui.update(); send('ready');
   }, skin, undefined, imagePlan, optimizeChapterOne, Boolean(platform.warmBattleImages) && !developerMode);
+  const prepareChoiceArt = optimizeChapterOne ? scene.prepareChoiceArt?.bind(scene) : undefined;
   ui = new BattleHudFlow(stage, sim, audio, () => {
     audio.pause();
     const result=currentRunId&&!reported ? battleResult(sim.phase!=='won'&&sim.phase!=='lost') : undefined;
     if(result){reported=true;sim.pause();controls?.clear();}
     send('home',result?{result}:{});
-  }, weaponIcon, optimizeChapterOne ? card => scene.prepareChoiceArt(card) : undefined,engine.createChoiceBurst(),{active:()=>!lifetime.disposed,visible:()=>!hidden()});
+  }, weaponIcon, prepareChoiceArt,engine.createChoiceBurst(),{active:()=>!lifetime.disposed,visible:()=>!hidden()});
   lifetime.add(() => ui.dispose());
   {
     const requestReviveAd = () => {

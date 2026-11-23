@@ -14,6 +14,36 @@ export function createTextureCanvas({ documentRef = globalThis.document, measure
 let popupFont='PsdPopup';
 export function setPopupSurfaceFont(family){popupFont=family?JSON.stringify(family):'PsdPopup';}
 
+function releaseTextTexture(texture) {
+  const canvas = texture.image;
+  texture.dispose();
+  texture.image = null;
+  canvas.width = canvas.height = 0;
+}
+
+export function createSurfaceTextCache() {
+  const entries = new Map(), used = new Set();
+  return {
+    get(key, rasterize) {
+      if (!entries.has(key)) entries.set(key, rasterize());
+      used.add(key);
+      return entries.get(key);
+    },
+    prune() {
+      for (const [key, entry] of entries) {
+        if (used.has(key)) continue;
+        releaseTextTexture(entry.texture);
+        entries.delete(key);
+      }
+      used.clear();
+    },
+    clear() {
+      used.clear();
+      this.prune();
+    },
+  };
+}
+
 const resourceTextures=new Map();
 function sharedResourceTexture(type){
   if(!resourceTextures.has(type)){
@@ -28,7 +58,7 @@ function sharedResourceTexture(type){
 
 // Screen-space Three.js primitives. Canvas is used only to rasterize text;
 // controls remain individual meshes with independent hit regions.
-export function createThreeSurface({ documentRef = globalThis.document, textResolution = 2 } = {}) {
+export function createThreeSurface({ documentRef = globalThis.document, textResolution = 2, textCache = null } = {}) {
   // Group.renderOrder also changes Three's groupOrder sorting bucket. A plain
   // Object3D lets individual meshes keep painter order across nested overlays
   // and the existing lobby modals.
@@ -107,12 +137,25 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
 
   function text(value, x, y, { size = 20, color = '#edf6fb', weight = 500, align = 'left', maxWidth = 560, tracking = 0,
     wrap = false, maxLines = 0, minSize = size, lineHeight = 0, family = COMBAT_TYPE.family, outline, shadow } = {}) {
+    const source = String(value), fontFamily = family.replace(/\bPsdPopup\b/g, popupFont);
+    const style = { size, color, weight, align, maxWidth, tracking, wrap, maxLines, minSize, lineHeight, fontFamily, outline, shadow };
+    const rasterize = () => rasterText(source, style);
+    const { texture, width, height, lines, fontSize, step } = textCache
+      ? textCache.get(JSON.stringify([source, style, textResolution]), rasterize)
+      : rasterize();
+    if (!textCache) textTextures.add(texture);
+    const mesh=quad(x - (align === 'center' ? width / 2 : align === 'right' ? width : 0), y - height / 2, width, height, '#ffffff', 1, texture);
+    mesh.userData.uiText=source;
+    if (wrap) { mesh.userData.uiTextLines=lines; mesh.userData.uiFontSize=fontSize; mesh.userData.uiLineHeight=step; }
+    return mesh;
+  }
+  function rasterText(source, { size, color, weight, align, maxWidth, tracking, wrap, maxLines, minSize, lineHeight, fontFamily, outline, shadow }) {
     // These canvases only back textures. On WeChat, give them a native lifetime
     // instead of registering detached DOM canvases for the whole game session.
     const canvas = createTextureCanvas({ documentRef });
-    const ctx = canvas.getContext('2d'), source = String(value);
+    const ctx = canvas.getContext('2d');
     let fontSize = size;
-    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${family.replace(/\bPsdPopup\b/g,popupFont)}`; };
+    const setFont = () => { ctx.font = `${weight} ${fontSize}px ${fontFamily}`; };
     const measure = value => ctx.measureText(value).width + Math.max(0, value.length - 1) * tracking;
     const breakLines = () => {
       const lines = [];
@@ -163,11 +206,8 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
       else paint(line, 2, baseline, maxWidth);
     });
     const texture = new THREE.CanvasTexture(canvas); texture.colorSpace = THREE.SRGBColorSpace;
-    texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter; textTextures.add(texture);
-    const mesh=quad(x - (align === 'center' ? width / 2 : align === 'right' ? width : 0), y - height / 2, width, height, '#ffffff', 1, texture);
-    mesh.userData.uiText=source;
-    if (wrap) { mesh.userData.uiTextLines=lines; mesh.userData.uiFontSize=fontSize; mesh.userData.uiLineHeight=step; }
-    return mesh;
+    texture.generateMipmaps = false; texture.minFilter = THREE.LinearFilter;
+    return { texture, width, height, lines, fontSize, step };
   }
   function button(id, label, x, y, w, h, onPress, { disabled = false, ...style } = {}) {
     const mesh = panel(x, y, w, h, style);
@@ -177,12 +217,7 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
   function clear() {
     group.traverse(object => { object.geometry?.dispose(); object.material?.dispose(); });
     group.clear();
-    for (const texture of textTextures) {
-      const canvas = texture.image;
-      texture.dispose();
-      texture.image = null;
-      canvas.width = canvas.height = 0;
-    }
+    for (const texture of textTextures) releaseTextTexture(texture);
     textTextures.clear();
     controls.length = 0;
   }

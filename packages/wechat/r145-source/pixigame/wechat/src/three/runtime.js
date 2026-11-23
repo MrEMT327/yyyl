@@ -9,8 +9,8 @@ import { createWechatPanelInput } from './panel-input.js';
 import { mountWechatLobby } from './lobby.js';
 import { createWechatSortieBridge } from './battle.js';
 
-export function createWechatThreeRuntime(api,{resources,baseURL}) {
-  const platform=openWechatThreeScreen(api,resources,baseURL);
+export function createWechatThreeRuntime(api,{resources,baseURL,debugLog}) {
+  const platform=openWechatThreeScreen(api,resources,baseURL,debugLog);
   const watchers=new Set();
   const device={
     three:platform.renderer,display:platform.display,
