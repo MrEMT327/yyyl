@@ -21,7 +21,7 @@ export function mountWechatHome(device, platform, region, send, interactive) {
     dropPortrait: portrait => portrait.close(),
     ownsPortrait: (portrait, surface) => portrait.surface === surface,
     bindInput(handlers) {
-      const input = createHomePointer({ ...handlers, bounds: getBounds }, clock);
+      const input = createHomePointer({ ...handlers, bounds: getBounds, immediateTabs: true }, clock);
       const unsubscribe = platform.bindTouches(({phase, x, y, pointerId}) => {
         if (phase === 'start') input.start(x, y, pointerId);
         else if (phase === 'move') input.move(x, y, pointerId);

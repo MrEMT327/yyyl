@@ -99,6 +99,7 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   lifetime.add(()=>overlays.destroy());
   const skinHost={
     baseURL,battleAssetBase:battleURL,staggerPresentation:true,
+    aircraftCoverageStrength:.5,
     readFighterFile:services.readFighterFile,objectLoader:services.objectLoader,assetBytes:services.assetBytes,
     openBattleSurface:()=>openWechatBattleSurface(device,platform,region),
     textureLoader:{load(path,loaded,_progress,failed){return artworkTexture(path,loaded,failed);}},

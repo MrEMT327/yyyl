@@ -15,7 +15,7 @@ export function createAircraftFxRenderer(renderer,{samples=0,stableCoverage=fals
   bloom.compositeMaterial.uniforms.bloomFactors.value=[1,.35,0,0,0];
   const material=new T.ShaderMaterial({
     depthTest:false,depthWrite:false,blending:T.NoBlending,premultipliedAlpha:true,
-    defines:stableCoverage?{STABLE_COVERAGE:1}:{},
+    defines:stableCoverage?{STABLE_COVERAGE:Number(stableCoverage).toFixed(3)}:{},
     uniforms:{source:{value:source.texture},halo:{value:bloom.renderTargetsHorizontal[0].texture},haloTint:{value:new T.Color('#66d7f0')},texel:{value:new T.Vector2(1,1)},reconstruct:{value:1}},
     vertexShader:'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}',
     fragmentShader:`uniform sampler2D source,halo;uniform vec3 haloTint;uniform vec2 texel;uniform float reconstruct;varying vec2 vUv;
@@ -25,9 +25,12 @@ export function createAircraftFxRenderer(renderer,{samples=0,stableCoverage=fals
           // A half-texel footprint smooths subpixel panel coverage. Filter in
           // premultiplied linear light, before grading: no dark alpha fringes,
           // temporal history, motion lag or changes to uniform paint regions.
-          if(reconstruct>.5){vec2 d=texel*.5;
-          base=base*.5+.125*(texture2D(source,vUv+d)+texture2D(source,vUv-d)
-            +texture2D(source,vUv+vec2(d.x,-d.y))+texture2D(source,vUv+vec2(-d.x,d.y)));}
+          if(reconstruct>.5){
+            vec2 d=texel*.5;
+            const float sideWeight=STABLE_COVERAGE*.125;
+            base=base*(1.-4.*sideWeight)+sideWeight*(texture2D(source,vUv+d)+texture2D(source,vUv-d)
+              +texture2D(source,vUv+vec2(d.x,-d.y))+texture2D(source,vUv+vec2(-d.x,d.y)));
+          }
         #endif
         vec3 light=max(vec3(0.),texture2D(halo,vUv).rgb);
         float peak=max(light.r,max(light.g,light.b));

@@ -30,7 +30,7 @@ export function homeControls(state,viewport,portrait){
     ({id,label,box:boxes.get(id),action,data:id==='portrait'?{characterPortrait:state.pilotId}:data||{}}));
 }
 // Shared command hit testing and press animation in the lobby's design coordinates.
-export function createHomePointer({bounds,controls,enabled,guide,scale},clock){
+export function createHomePointer({bounds,controls,enabled,guide,scale,immediateTabs=false},clock){
   let held=null;
   const motion=createButtonPressMotion(scale,enabled,clock);
   const allowed=()=>{const g=guide();return controls().filter(c=>!g?.strong||c.id===g.id);};
@@ -39,16 +39,22 @@ export function createHomePointer({bounds,controls,enabled,guide,scale},clock){
     const a=(x-r.x)*750/r.width,b=(y-r.y)*1624/r.height;
     return allowed().find(({box:[left,top,w,h]})=>a>=left&&a<left+w&&b>=top&&b<top+h);
   }
-  function reset(){if(held)motion.release(held.control.id);held=null;}
+  function release(){
+    if(held.immediate)scale(held.control.id,1);else motion.release(held.control.id);
+  }
+  function reset(){if(held&&!held.moved)release();held=null;}
   return {allowed,
     start(x,y,pointer){
       if(!enabled()||held)return;
       const control=hit(x,y);if(!control)return;
-      held={control,pointer,x,y,moved:false};motion.start(control.id);return control;
+      const immediate=immediateTabs&&control.action==='tab';
+      held={control,pointer,x,y,moved:false,immediate};
+      if(immediate)scale(control.id,.94);else motion.start(control.id);
+      return control;
     },
     move(x,y,pointer){
       if(held?.pointer!==pointer)return;
-      if(Math.hypot(x-held.x,y-held.y)>10){held.moved=true;motion.release(held.control.id);}
+      if(!held.moved&&Math.hypot(x-held.x,y-held.y)>10){held.moved=true;release();}
     },
     end(x,y,pointer){
       if(held?.pointer!==pointer)return;

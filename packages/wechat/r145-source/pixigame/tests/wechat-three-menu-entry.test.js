@@ -78,11 +78,15 @@ test('WeChat home guide frames the drawn tab and its center still opens the tab'
       const arrows=matches(homeArt.pointer);
       assert.equal(arrows.length,2);
       for(const arrow of arrows)near(centerX(arrow),centerX(icon));
-      const pointer=createHomePointer({bounds:()=>viewport,controls:()=>controls,enabled:()=>true,guide:()=>guide,scale(){}},
+      const scales=[];
+      const pointer=createHomePointer({bounds:()=>viewport,controls:()=>controls,enabled:()=>true,guide:()=>guide,
+        immediateTabs:true,scale(...args){scales.push(args);}},
         {request:()=>0,cancel(){},now:()=>0});
       const x=centerX(ring)*width/750,y=centerY(ring)*height/1624;
       assert.equal(pointer.start(x,y,1)?.id,id);
+      assert(scales.at(-1)?.[0]===id&&scales.at(-1)[1]<1,'tab responds on touch start');
       assert.equal(pointer.end(x,y,1)?.id,id);
+      assert.deepEqual(scales.at(-1),[id,1]);
       pointer.close();
     }
   }
@@ -127,7 +131,8 @@ function fixture(t,debugLog,options={}) {
   platform.renderer=renderer;
   const device={three:renderer,display:platform.display,
     createPanelInput:host=>createWechatPanelInput({},platform,host)};
-  const region={bounds:()=>content,frameBounds:()=>screen,visible:()=>visible,catalog:options.catalog,recruit:options.recruit,workshop:options.workshop,
+  const region={bounds:()=>content,frameBounds:()=>screen,visible:()=>visible,main:options.main,
+    catalog:options.catalog,recruit:options.recruit,workshop:options.workshop,
     openPortrait:(refresh,redraw)=>catalogPortrait(device,null,refresh,redraw,{
       bounds:()=>content,
       open(){events.push('portrait');return {layout(){},close(){}};},
@@ -576,6 +581,32 @@ test('WeChat shop centers its title beside the capsule and docks its five tabs',
   assert.equal(f.commands.length,actions);
 });
 
+test('WeChat main footer paints its press on the next frame and accepts normal thumb drift',t=>{
+  const f=fixture(t,undefined,{main:true});
+  let footer;
+  const render=f.renderer.render;
+  f.renderer.render=(scene,camera)=>{
+    footer=scene.children[0].children.filter(mesh=>mesh.visible);
+    render(scene,camera);
+  };
+  f.view.update({tab:'shop',shopSection:'coins',snapshot:shopSnapshot()},'shop');
+  f.paint();
+  const count=footer.length,tab=f.control('nav-research');
+  const x=tab.x+tab.w/2,y=tab.y+tab.h/2;
+  f.point('start',x,y);f.paint();
+  assert.equal(footer.length,count+1);
+  assert.equal(footer.at(-1).position.x,x);
+  assert.deepEqual(f.commands,[]);
+  f.point('move',x+8,y);f.point('end',x+8,y);f.paint();
+  assert.equal(footer.length,count);
+  assert.deepEqual(f.commands[0].slice(0,2),['tab',{tab:'research'}]);
+  f.point('start',x,y);f.paint();
+  f.point('move',x+16,y);f.paint();
+  assert.equal(footer.length,count);
+  f.point('end',x+16,y);
+  assert.equal(f.commands.length,1);
+});
+
 test('WeChat stops an invisible portrait decoder and only restarts when the portrait is shown again',async t=>{
   const calls=[];
   const api={createVideoDecoder:()=>({on(){},start({source}){calls.push('start '+source);},
@@ -631,7 +662,7 @@ test('WeChat equipment can be used before images and 3D, then loads additional r
 });
 
 test('WeChat prepares the parked hangar before the first visible equipment frame',async t=>{
-  const f=fixture(t,undefined,{atomicEntry:true,parked:true});
+  const f=fixture(t,undefined,{main:true,atomicEntry:true,parked:true});
   f.view.update({tab:'assembly',gearFilter:'all',gearSort:'quality',snapshot:equipmentSnapshot()},'equipment');
   assert.equal(f.view.prepareOffscreen(),false);
   const background=optimizeUiAssetUrls('/art/psd-equipment-v1/equipment-background.webp');
@@ -699,9 +730,27 @@ const firstScreens=[
     art:()=>[atlas[tab+'-hero'],...(tab==='aircraft'?[nativeCollectionArt({id:10101},'preview')]:
       tab==='pilot'?[PILOT_PORTRAITS['pilot-01'].image]:[])]})),
 ];
+for(const page of [
+  ...firstScreens.filter(page=>!page.catalog),
+  {tab:'assembly',data:()=>({gearFilter:'all',gearSort:'quality',snapshot:equipmentSnapshot()})},
+]){
+  test(`WeChat ${page.tab} opens with usable tabs before its prewarm finishes`,t=>{
+    const f=fixture(t,undefined,{main:true,atomicEntry:true,parked:true,recruit:page.tab==='supply'});
+    f.view.update({tab:page.tab,...page.data()},page.tab);
+    assert.equal(f.view.prepareOffscreen(),false);
+    f.activate();f.paint();
+    assert.deepEqual(f.events,['paint']);
+    assert.equal(f.images.size,0);
+    for(const tab of ['shop','assembly','battle','research','supply']){
+      f.click(f.control('nav-'+tab));
+      assert.deepEqual(f.commands.at(-1).slice(0,2),['tab',{tab}]);
+    }
+  });
+}
+
 for(const page of firstScreens){
   test(`WeChat paints the prepared ${page.tab} artwork and controls together on its first visible frame`,async t=>{
-    const f=fixture(t,undefined,{atomicEntry:true,parked:true,catalog:page.catalog});
+    const f=fixture(t,undefined,{main:!page.catalog,atomicEntry:true,parked:true,catalog:page.catalog});
     const data={tab:page.tab,...page.data()};
     f.view.update(data,page.tab);
     assert.equal(f.view.prepareOffscreen(),false);

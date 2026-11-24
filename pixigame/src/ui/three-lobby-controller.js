@@ -524,7 +524,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     bridge.switchLobbyTab?.(value); render(true,snapshot); focus?.pageScroll(tabScroll[value]||0);
     if (value === 'shop') scrollShopSection(shopSection);
     if (value==='assembly' && previousSubpage) { focusEquipmentSource(equipmentReturnFocus); equipmentReturnFocus=null; }
-    if(previousTab !== tab) actionFeedback.pulse('nav-'+value);
+    if(previousTab!==tab&&bridge.platformKind!=='wechat')actionFeedback.pulse('nav-'+value);
   }
   function returnFromCatalog() {
     if(subpage==='workshop'&&workshopKind==='gear'&&gearWorkshopOrigin){

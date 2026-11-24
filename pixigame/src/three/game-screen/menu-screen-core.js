@@ -20,7 +20,8 @@ const menus={shop:shopMenu,research:researchMenu,assembly:equipmentMenu,supply:r
 export function supportsMenu(tab,subpage){return subpage?isCatalog(subpage)||subpage==='workshop':Object.hasOwn(menus,tab);}
 export function mountThreeMenu(device,host,send,interactive,setSection){
   const renderer=device.three;
-  const staged=Boolean(host.prepareArtwork);
+  const {prepareArtwork}=host;
+  const staged=prepareArtwork&&!host.region.main;
   const progressive=Boolean(host.progressiveEntry);
   const mountedAt=host.beginEntryTrace?host.now():undefined;
   const saved={color:renderer.getClearColor(new Color()),alpha:renderer.getClearAlpha(),autoClear:renderer.autoClear};
@@ -83,9 +84,9 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     entryTrace?.stop(status);
     entryTrace=null;
   }
-  function prepareScene(){
-    if(!entryTrace)return scene.prepare();
-    const start=host.now(),ready=scene.prepare();
+  function prepareScene(offscreen=false){
+    if(!entryTrace)return scene.prepare(offscreen);
+    const start=host.now(),ready=scene.prepare(offscreen);
     entryTrace.prepare(host.now()-start);
     return ready;
   }
@@ -108,7 +109,7 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     if(!entryBuilt){
       let ready=prepareScene();
       if(tab==='workshop'&&pendingScroll!==null){applyScroll(false);ready=prepareScene();}
-      if((offscreen||host.now()-entering<(host.entryWaitMs??900))&&(!host.prepareArtwork(scene.artwork())||!ready)){
+      if((offscreen||host.now()-entering<(host.entryWaitMs??900))&&(!prepareArtwork(scene.artwork())||!ready)){
         request();return false;
       }
       entryBuilt=true;
@@ -218,7 +219,13 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
       tab==='workshop'?workshopOpeningScroll():null;
     refresh();request();
   },prepareOffscreen(){
-    return Boolean(!closed&&state&&(entering===null||prepareEntry(true)));
+    if(closed||!state)return false;
+    if(prepareArtwork&&!staged){
+      // Warm main tabs offscreen without holding their visible first frame.
+      const ready=prepareScene(true);
+      return prepareArtwork(scene.artwork())&&ready;
+    }
+    return entering===null||prepareEntry(true);
   },activate(){
     device.menuView=view;device.repaintHome=request;
     if(state&&host.beginEntryTrace)entryTrace=host.beginEntryTrace(tab,!parked);

@@ -8,6 +8,8 @@ export function openWechatBattleSurface(device,platform,region){
     attach:()=>region.enter(),
     detach:()=>region.leave(),
     frame:()=>fullBattleFrame(region.bounds()),
+    smoothEnemyMinification:true,
+    outputScale:4/3,
     begin:({width,height})=>platform.display.begin(region.bounds(),width,height,null),
   });
 }

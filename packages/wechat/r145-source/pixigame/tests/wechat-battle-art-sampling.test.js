@@ -6,6 +6,7 @@ import {createBattleColorTargets} from '../../../../../pixigame/src/three/game-s
 import {createBattleStage} from '../../../../../pixigame/src/three/game-screen/three-battle-stage.js';
 import {useArtworkLoader} from '../../../../../pixigame/src/three/game-screen/image-loading.js';
 import {MISSILE_ART_KEYS} from '../../../../../pixigame/replica-battle/kernel/pathogenic/missile-presentation.mjs';
+import {openWechatBattleSurface} from '../wechat/src/three/battle-surface.js';
 
 test('Battle coin minification blends premultiplied atlas pixels',async t=>{
   const restore=useArtworkLoader(async()=>({width:1024,height:512}));
@@ -56,6 +57,54 @@ test('Battle hull keeps its mipmaps when the canvas reports zero MSAA samples',t
   assert.deepEqual([targets.hull.image.width,targets.hull.image.height],[256,256]);
   assert.equal(targets.ground.minFilter,LinearFilter);
   assert.equal(targets.ground.generateMipmaps,false);
+});
+
+test('Enemy minification can be enabled for a sprite without affecting other battle sprites',t=>{
+  const renderer={capabilities:{maxSamples:0},getContext:()=>({SAMPLES:0x80a9,getParameter:()=>0})};
+  const webStage=createBattleStage(renderer),wechatStage=createBattleStage(renderer,{smoothEnemyMinification:true});
+  t.after(()=>{webStage.dispose();wechatStage.dispose();});
+
+  const enemy=wechatStage.makeSprite(wechatStage.white,20);
+  const pickup=wechatStage.makeSprite(wechatStage.white,20);
+  wechatStage.smoothEnemySprite(enemy);
+
+  assert.equal(enemy.material.defines.ENEMY_MINIFICATION,1);
+  assert.equal(pickup.material.defines.ENEMY_MINIFICATION,undefined);
+  assert.equal(wechatStage.hull.material.defines.ENEMY_MINIFICATION,undefined);
+  assert.equal(webStage.smoothEnemySprite,undefined);
+  assert.deepEqual(wechatStage.viewport,webStage.viewport);
+});
+
+test('WeChat draws the battle at higher output resolution with the original terrain and glow sizes',t=>{
+  const draws=[],displaySizes=[];
+  let target=null;
+  const renderer={capabilities:{maxSamples:0},getContext:()=>({SAMPLES:0x80a9,getParameter:()=>0}),
+    getRenderTarget:()=>target,setRenderTarget(next){target=next;},
+    getViewport:v=>v,getScissor:v=>v,getScissorTest:()=>false,getClearColor:c=>c,getClearAlpha:()=>0,
+    setPixelRatio(){},setScissorTest(){},setScissor(){},setViewport(){},setClearColor(){},clear(){},
+    render(){draws.push(target?[target.width,target.height]:null);}};
+  let bounds={width:390,height:844};
+  const display={begin(_bounds,width,height){target=null;displaySizes.push([width,height]);},present(){}};
+  const device={three:renderer,display};
+  const surface=openWechatBattleSurface(device,{display},{bounds:()=>bounds,enter(){},leave(){}});
+  t.after(()=>surface.close());
+  const {stage}=surface;
+  stage.glow.needsBackground=true;
+  stage.render();
+  assert.deepEqual([stage.viewport.width,stage.viewport.height],[540,1169]);
+  const ground=stage.ground.userData.binding.texture.image;
+  assert.deepEqual([ground.width,ground.height],[540,1169]);
+  assert.deepEqual(draws.slice(0,4),[[720,1559],[540,1169],[720,1559],[270,584]]);
+  assert.deepEqual(displaySizes,[[720,1559]]);
+
+  bounds={width:360,height:640};
+  stage.refreshViewport();
+  const coverTarget={setSize(width,height){Object.assign(this,{width,height});}};
+  device.cover={battleTarget:coverTarget};
+  stage.render();
+  assert.deepEqual([coverTarget.width,coverTarget.height],[720,1280]);
+  assert.deepEqual(draws.at(-1),[720,1280]);
+  assert.equal(displaySizes.length,1);
 });
 
 test('Busy battle scene prepares its transforms once and skips an empty foreground pass',t=>{

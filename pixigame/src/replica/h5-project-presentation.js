@@ -45,7 +45,10 @@ export async function createH5Presentation({ content, appearance, onError, onGra
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
   const staggerPresentation=Boolean(host?.staggerPresentation);
   const aircraftRenderer = createCombatAircraftRenderer(renderer, aircraftTextureSize, aircraftTextureSize, { cullExhaustDepth: staggerPresentation });
-  const aircraftFxRenderer = createAircraftFxRenderer(renderer,{stableCoverage:true,prepareOutput:prepareBattleColorMaterial});
+  const aircraftFxRenderer = createAircraftFxRenderer(renderer, {
+    stableCoverage: host?.aircraftCoverageStrength ?? true,
+    prepareOutput: prepareBattleColorMaterial,
+  });
   const surface = renderer.domElement;
   let disposed = false, fighter, pose;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };

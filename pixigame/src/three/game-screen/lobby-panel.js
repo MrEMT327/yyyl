@@ -280,7 +280,8 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     try{
       const time=input.now()/1000;
       for(let i=animations.length-1;i>=0;i--)if(animations[i](time)===false)animations.splice(i,1);
-      for(const effect of frameEffects)effect(time);
+      const heldControl=press?.drag?null:press?.hit;
+      for(const effect of frameEffects)effect(time,heldControl);
       for(const effect of pressEffects)effect(pressedControl(),time);
       for(const p of layers){
         const zone=p.clip&&regions.get(p.clip);
@@ -335,10 +336,12 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   function move(screenX,screenY,pointerId){
     if(press?.id!==pointerId)return;
     const p=pos(screenX,screenY);press.px=p.x;press.py=p.y;
-    if(!press.drag&&Math.hypot(p.x-press.x,p.y-press.y)>6){
+    const tabPress=nativeInput&&press.hit?.action.type==='tab';
+    if(!press.drag&&Math.hypot(p.x-press.x,p.y-press.y)>(tabPress?10:6)){
       const axis=Math.abs(p.x-press.x)>Math.abs(p.y-press.y)?'x':'y',z=scrolling(press.x,press.y,axis);
       if(!press.hit?.trackPointer||z?.[1].max>0&&z[1].axis===axis){
         press.drag=true;press.zone=z?.[0];press.scroll=z?.[1].offset??0;
+        if(tabPress)request();
       }
     }
     if(pressEffects.length)request();
@@ -385,9 +388,10 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     }
     request(true);
   }
-  function prepare(){
+  function prepare(offscreen=false){
     const b=input.bounds(),c=input.frameBounds();
     if(closed||!data||!b.width||!c.width||!c.height)return false;
+    if(offscreen&&artBatch!==null){clearTimeout(artBatch);artBatch=null;}
     if(batchesArtwork()&&installDecodedArtwork())dirty=true;
     if(prepareArtwork&&artChanged&&[...currentArtwork].every(textureReady))dirty=true;
     build(b,c);

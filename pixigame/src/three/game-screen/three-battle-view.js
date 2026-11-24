@@ -132,6 +132,7 @@ export class NativeBattleView {
       group=this.prefab(e.modelId,20);this.objects.set(key,group);
       let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
       for(const mesh of group.children){
+        this.stage.smoothEnemySprite?.(mesh);
         const u=mesh.material.uniforms,w=u.size.value.x*mesh.scale.x,h=u.size.value.y*mesh.scale.y;
         const cx=Math.cos(mesh.rotation.z),sy=Math.sin(mesh.rotation.z);
         for(const tx of [0,1])for(const ty of [0,1]){

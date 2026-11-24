@@ -31,15 +31,15 @@ export function openThreeBattleSurface(device,host) {
   const battle={bounds:host.bounds,show:host.attach};
   device.battle=battle;if(!device.cover)battle.show();
   renderer.setRenderTarget(null);renderer.setPixelRatio(1);renderer.setScissorTest(false);
-  const stage=createBattleStage(renderer);
+  const stage=createBattleStage(renderer,host);
   stage.refreshViewport=()=>stage.setViewport(host.frame?.());
   stage.refreshViewport();
   stage.outputTarget=()=>{
     const output=device.cover?.battleTarget;
-    if(output){const {width,height}=stage.viewport;if(output.width!==width||output.height!==height)output.setSize(width,height);}
+    if(output){const {width,height}=stage.glow.outputSize;if(output.width!==width||output.height!==height)output.setSize(width,height);}
     return output??null;
   };
-  stage.beginOutput=()=>host.begin(stage.viewport);
+  stage.beginOutput=()=>host.begin(stage.glow.outputSize);
   stage.afterFrame=()=>{if(device.cover)device.cover.present?.();else device.display.present();};
   let disposed=false;
   return {renderer,stage,canvas:host.input,session:battle,close(){

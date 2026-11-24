@@ -123,6 +123,14 @@ export function chrome(data,w,h,t){
         if(!footerReady)fallback.push(words(front,label,x+width/2,navY+railH/2,14*u,{color:key===tab?'#ffd28a':'#e0effb'}));
         area(t,'nav-'+key,label,box(x,navY,width,hitHeight),'tab',{tab:key});x+=width;
       }
+      if(data.native){
+        const tint=front.quad(0,navY,1,hitHeight,'#ffe8a7',.18);
+        tint.visible=false;
+        t.frame((_time,control)=>{
+          tint.visible=control?.action.type==='tab';
+          if(tint.visible){tint.position.x=control.x+control.w/2;tint.scale.x=control.w;}
+        });
+      }
     }};
 }
 export function resourceBar(t,title,s,w,y=walletTop*w/750,artwork){

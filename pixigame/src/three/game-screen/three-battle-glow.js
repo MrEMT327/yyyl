@@ -18,9 +18,10 @@ void main(){
  if(uMode<3.5){gl_FragColor=godotGlowUpsample(uInput,vUv,uPixel);return;}gl_FragColor=dimensionResolve();
 }`;
 
-export function createBattleGlow(renderer,w,h){
+export function createBattleGlow(renderer,w,h,outputScale=1){
   const target=(x,y,type=T.HalfFloatType)=>new T.WebGLRenderTarget(x,y,{type,minFilter:T.LinearFilter,magFilter:T.LinearFilter,depthBuffer:false,stencilBuffer:false});
-  const world=target(w,h),back=target(w,h,T.UnsignedByteType),down=[],up=[];
+  const outputSize={width:Math.round(w*outputScale),height:Math.round(h*outputScale)};
+  const world=target(outputSize.width,outputSize.height),back=target(w,h,T.UnsignedByteType),down=[],up=[];
   let x=w,y=h;for(let i=0;i<3;i++){x=Math.max(4,Math.floor(x/2));y=Math.max(4,Math.floor(y/2));down.push(target(x,y));if(i<2)up.push(target(x,y));}
   const vectors=()=>Array.from({length:3},()=>new T.Vector4());
   const values={uInput:null,uScene:null,uPixel:new T.Vector2(),uMode:0,uFilter:new T.Vector4(1,.25,0,3),uIntensity:1.45,
@@ -31,20 +32,26 @@ export function createBattleGlow(renderer,w,h){
   const scene=new T.Scene(),quad=new T.Mesh(geometry,material),camera=new T.Camera();scene.add(quad);quad.frustumCulled=false;
   const cuts=[];
   let left=0,top=0;
+  function bindWorld(){
+    renderer.setRenderTarget(world);
+    renderer.setViewport(0,0,world.width,world.height);
+  }
   function pass(output,input,mode,beginOutput){
     if(!output&&beginOutput)beginOutput();
-    else{renderer.setRenderTarget(output);renderer.setViewport(0,0,output?.width??w,output?.height??h);}
+    else{renderer.setRenderTarget(output);renderer.setViewport(0,0,output?.width??outputSize.width,output?.height??outputSize.height);}
     u.uMode.value=mode;u.uInput.value=input;u.uScene.value=mode===4?world.texture:input;
-    u.uPixel.value.set(1/(output?.width??w),1/(output?.height??h));renderer.render(scene,camera);
+    // The final glow kernel and sword distortion keep their authored battle units.
+    u.uPixel.value.set(1/(mode===4?w:output.width),1/(mode===4?h:output.height));renderer.render(scene,camera);
   }
   return {
-    binding:{texture:back.texture,width:w,height:h},needsBackground:false,
+    outputSize,binding:{texture:back.texture,width:w,height:h},needsBackground:false,
     warmupJobs(){
       return [()=>renderer.compile?.(scene,camera),...[world,back,...down,...up].map(target=>()=>renderer.initRenderTarget?.(target))];
     },
     resize(frame){
       w=frame.width;h=frame.height;left=frame.left;top=frame.top;
-      world.setSize(w,h);back.setSize(w,h);this.binding.width=w;this.binding.height=h;
+      outputSize.width=Math.round(w*outputScale);outputSize.height=Math.round(h*outputScale);
+      world.setSize(outputSize.width,outputSize.height);back.setSize(w,h);this.binding.width=w;this.binding.height=h;
       let x=w,y=h;
       for(let i=0;i<down.length;i++){
         x=Math.max(4,Math.floor(x/2));y=Math.max(4,Math.floor(y/2));
@@ -59,10 +66,10 @@ export function createBattleGlow(renderer,w,h){
       if(autoUpdate)content.updateMatrixWorld();
       content.matrixWorldAutoUpdate=false;
       try{
-        renderer.setRenderTarget(world);renderer.setViewport(0,0,w,h);renderer.setClearColor(0x315257,1);renderer.clear();
+        bindWorld();renderer.setClearColor(0x315257,1);renderer.clear();
         if(this.needsBackground){
           view.layers.mask=1;renderer.render(content,view);pass(back,world.texture,0);
-          renderer.setRenderTarget(world);renderer.setViewport(0,0,w,h);view.layers.mask=2;renderer.render(content,view);
+          bindWorld();view.layers.mask=2;renderer.render(content,view);
         }else{view.layers.mask=3;renderer.render(content,view);}
         for(let i=0;i<down.length;i++)pass(down[i],i?down[i-1].texture:world.texture,i?2:1);
         for(let i=up.length-1;i>=0;i--)pass(up[i],i===up.length-1?down.at(-1).texture:up[i+1].texture,3);

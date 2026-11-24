@@ -5,13 +5,13 @@ import {flightLights} from './three-flight-lights.js';
 import {authoredBattleFrame,battleWidth as width,battleHeight as height} from './battle-frame-layout.js';
 
 const vertex = `precision highp float;
-  attribute vec3 position;
-  attribute vec2 uv;
+  in vec3 position;
+  in vec2 uv;
   uniform mat4 modelViewMatrix, projectionMatrix;
   uniform vec4 region;
   uniform vec2 size, pivot;
   uniform float invert;
-  varying vec2 coords;
+  out vec2 coords;
   void main(){
     vec2 xy=vec2(uv.x,1.0-uv.y);
     coords=region.xy+vec2(xy.x,mix(xy.y,1.0-xy.y,invert))*region.zw;
@@ -22,24 +22,54 @@ const fragment = `precision highp float;
   uniform vec3 tint;
   uniform vec4 statusTint;
   uniform float opacity,fill,premult;
-  varying vec2 coords;
+  in vec2 coords;
+  out vec4 color;
+  #ifdef ENEMY_MINIFICATION
+    uniform vec4 region;
+
+    vec4 enemyTap(vec2 uv,vec2 lo,vec2 hi){
+      vec4 tex=textureLod(art,clamp(uv,lo,hi),0.);
+      tex.rgb*=mix(tex.a,1.,premult);
+      return tex;
+    }
+
+    vec4 sampleArt(){
+      vec2 pixels=vec2(textureSize(art,0));
+      vec2 dx=dFdx(coords),dy=dFdy(coords);
+      vec2 xPixels=dx*pixels,yPixels=dy*pixels;
+      // Keep every tap within this atlas frame, including the bilinear footprint.
+      vec2 inset=.5/pixels,lo=region.xy+inset,hi=max(lo,region.xy+region.zw-inset);
+      if(max(dot(xPixels,xPixels),dot(yPixels,yPixels))>2.25){
+        vec2 a=(dx+dy)*.25,b=(dx-dy)*.25;
+        return .25*(enemyTap(coords+a,lo,hi)+enemyTap(coords-a,lo,hi)
+          +enemyTap(coords+b,lo,hi)+enemyTap(coords-b,lo,hi));
+      }
+      return enemyTap(coords,lo,hi);
+    }
+  #else
+    vec4 sampleArt(){
+      vec4 tex=texture(art,coords);
+      tex.rgb*=mix(tex.a,1.,premult);
+      return tex;
+    }
+  #endif
   void main(){
-    vec4 tex=texture2D(art,coords);
-    vec3 rgb=mix(tex.rgb*mix(tex.a,1.,premult)*tint,tex.a*tint,fill);
+    vec4 tex=sampleArt();
+    vec3 rgb=mix(tex.rgb*tint,tex.a*tint,fill);
     rgb=mix(rgb,tex.a*statusTint.rgb,statusTint.a);
-    gl_FragColor=vec4(rgb,tex.a)*opacity;
+    color=vec4(rgb,tex.a)*opacity;
   }`;
 
-export function createBattleStage(renderer) {
+export function createBattleStage(renderer,{smoothEnemyMinification=false,outputScale=1}={}) {
   const scene=new T.Scene(),camera=new T.OrthographicCamera(0,width,0,height,-10,10);
-  const quad=new T.PlaneGeometry(1,1),spriteMeshes=new Set(),glow=createBattleGlow(renderer,width,height);
+  const quad=new T.PlaneGeometry(1,1),spriteMeshes=new Set(),glow=createBattleGlow(renderer,width,height,outputScale);
   const white=new T.DataTexture(new Uint8Array([255,255,255,255]),1,1);
   white.needsUpdate=true;
   const whiteBinding={texture:white,width:1,height:1};
   const colorTargets=createBattleColorTargets(renderer,width,height,256);
   function makeSprite(binding,layer,parent=scene) {
     const material=new T.RawShaderMaterial({
-      vertexShader:vertex,fragmentShader:fragment,transparent:true,depthWrite:false,depthTest:false,
+      vertexShader:vertex,fragmentShader:fragment,glslVersion:T.GLSL3,transparent:true,depthWrite:false,depthTest:false,
       side:T.DoubleSide,forceSinglePass:true,blending:T.CustomBlending,
       blendSrc:T.OneFactor,blendDst:T.OneMinusSrcAlphaFactor,
       uniforms:{art:{value:binding.texture},size:{value:new T.Vector2(binding.width,binding.height)},
@@ -68,6 +98,7 @@ export function createBattleStage(renderer) {
   const hull=makeSprite({texture:colorTargets.hull,width:256,height:256,framebuffer:true,premultiplied:true},25);
   hull.visible=false;
   const stage={scene,camera,renderer,glow,white: whiteBinding,makeSprite,remove,tint,ground,hull,width,height,viewport:authoredBattleFrame,
+    smoothEnemySprite:smoothEnemyMinification?mesh=>{mesh.material.defines.ENEMY_MINIFICATION=1;}:undefined,
     setViewport(frame){
       const previous=this.viewport;
       if(!frame||frame.width===previous.width&&frame.height===previous.height)return;
