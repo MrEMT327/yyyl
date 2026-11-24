@@ -8,7 +8,7 @@ import {pilotAffectionVideo} from '../../peripheral/pilot-affection.js';
 export function affectionVideoLayout(data,w,h,t){
   const {media,texture,native,loading,error,safeTop=0}=data;
   const film=t.layer('affection-film').art;
-  if(!native)film.quad(0,0,w,h,'#000');
+  if(!native)t.backdrop(film,1);
   if(texture&&media.videoWidth&&media.videoHeight){
     const scale=Math.max(w/media.videoWidth,h/media.videoHeight);
     const width=scale*media.videoWidth,height=scale*media.videoHeight;

@@ -130,7 +130,7 @@ export function openProfilePanel(screen,host,send){
   });
   function save(){if(latest.quote.renameReady&&latest.snapshot.playerRename.canRename)send('playerRenameSave',{...latest.renameData,name:field?.value},host);}
   function refresh(){
-    panel.update({...latest,inspect,coverNavigation:true,backdropAlpha:.55},
+    panel.update({...latest,inspect,backdropAlpha:.55},
       JSON.stringify([latest.signature,latest.profile.name,latest.modal.editingName,latest.modal.nameError,latest.snapshot.playerRename,inspect]),'profile');
   }
   return {host,update(snapshot,modal,signature){

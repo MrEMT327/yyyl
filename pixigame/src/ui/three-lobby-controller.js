@@ -88,7 +88,8 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
   let weaponSkillSlot=-1;
   let subpage = '', catalogSkillTab = false, catalogFilter = 'all', workshopId = null, workshopFilter = 'all', workshopMode = 'level';
   const catalogScrollPositions = new Map();
-  const fleetUi={aircraft:{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null},pilot:{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null}};
+  const emptyFleetSelection=()=>({selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});
+  const fleetUi={aircraft:emptyFleetSelection(),pilot:emptyFleetSelection()};
   let fleetSupplyReturn=null;
   const fleetItem=(kind,id)=>(kind==='aircraft'?snapshot.aircraft:snapshot.pilots).find(item=>item.id===id);
   const workshopScrollPositions = new Map();
@@ -305,6 +306,11 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     modal=null; render(true);
     focusEquipmentSource(opener);
   }
+  function carnivalEntry(){
+    const activity=snapshot.carnival;
+    if(!activity||activity.expired)return null;
+    return {type:'carnival',day:activity.day,milestone:activity.milestones.find(row=>row.canClaim)?.points};
+  }
   function returnToParentModal() {
     if(!modal?.returnTo)return false;
     const parent=modal.returnTo,opener=parent.childOpener,scroll=parent.rewardReturnScroll,positions=parent.rewardReturnScrollState;delete parent.childOpener;delete parent.rewardReturnScroll;delete parent.rewardReturnScrollState;
@@ -418,6 +424,25 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     throw new Error('缺少 Three 界面 '+modal.type);
   }
   let pendingAwakeningFeedback=null;
+  const sendMenuAction=(action,data,opener)=>runLobbyCommand(action,data,opener);
+  const menuInteractive=()=>visible&&!busy&&!modal;
+  const selectShopSection=section=>{shopSection=section;};
+  function firstCatalogId(kind){
+    if(kind==='aircraft')return snapshot.aircraftId;
+    if(kind==='pilot')return snapshot.pilotId;
+    return selectedWeapon||weaponFor(snapshot.loadout[selectedSlot])?.id||snapshot.weapons.find(w=>w.owned)?.id;
+  }
+  function menuCatalog(kind,entering=false){
+    const id=entering?firstCatalogId(kind):kind==='weapon'?selectedWeapon:kind==='aircraft'?browseAircraft:browsePilot;
+    const selection=fleetUi[kind]&&(entering?emptyFleetSelection():fleetUi[kind]);
+    return {id,skillTab:!entering&&catalogSkillTab,selectedSkillSlot:kind==='weapon'?weaponSkillSlot:undefined,...selection};
+  }
+  function menuData(page,catalog=null,workshop=null){
+    const data={tab:page,snapshot,catalog,workshop};
+    if(catalog&&!workshop)return data;
+    return {...data,section:researchSection,shopSection,selected:selectedRecruitPilot,
+      gearSort,gearFilter,fleetReturnKind:fleetSupplyReturn?.kind,time:bridge.getPeripheralClock?.()?.time};
+  }
   function render(force = false, currentSnapshot = null) {
     return performanceMonitor.measure('ui-render',()=>renderContent(force,currentSnapshot));
   }
@@ -454,19 +479,18 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if(!nativeMenu&&menuView){menuView.close();menuView=null;}
     if(!nativeHome&&homeView){homeView.close();homeView=null;}
     if(tab==='research'&&researchSection==='lab'&&researchUnlockMessage(snapshot.replicaCampaign))researchSection='talent';
-    const page=presentation.showPage({tab,subpage,nativeHome,nativeMenu,polished:polishedTab()});
+    const page=presentation.showPage({tab,subpage,nativeHome,nativeMenu,workshopKind,polished:polishedTab()});
     const bodyChanged=(nativeHome?homeView:menuView)?.page!==page;
     if(nativeMenu){
       if(menuView?.page!==page){
         menuView?.close();
-        menuView=screen.mountMenu(page,(action,data,opener)=>runLobbyCommand(action,data,opener),()=>visible&&!busy&&!modal,
-          section=>{shopSection=section;});
+        menuView=screen.mountMenu(page,sendMenuAction,menuInteractive,selectShopSection);
       }
-      const catalog=subpage?{id:subpage==='weapon'?selectedWeapon:subpage==='aircraft'?browseAircraft:browsePilot,skillTab:catalogSkillTab,
-        selectedSkillSlot:subpage==='weapon'?weaponSkillSlot:undefined,...(fleetUi[subpage]||{})}:null;
-      const workshop=subpage==='workshop'?{kind:workshopKind,id:workshopId,filter:workshopFilter,mode:workshopMode,draft:gearWorkshop,backLabel:catalogWorkshopReturn?'返回武器目录':'返回装备'}:null;
-      menuView.update({tab:subpage||tab,snapshot,catalog,workshop,section:researchSection,shopSection,selected:selectedRecruitPilot,
-        gearSort,gearFilter,fleetReturnKind:fleetSupplyReturn?.kind,time:bridge.getPeripheralClock?.()?.time},signature);
+      const catalog=subpage&&subpage!=='workshop'?menuCatalog(subpage):null;
+      const gear=workshopKind==='gear';
+      const workshop=subpage==='workshop'?{kind:workshopKind,id:gear?null:workshopId,filter:workshopFilter,mode:gear?'level':workshopMode,
+        draft:gear?gearWorkshop:null,backLabel:catalogWorkshopReturn?'返回武器目录':'返回装备'}:null;
+      menuView.update(menuData(subpage||tab,catalog,workshop),signature);
     }
     let pilotChanged=Boolean(nativeMenu&&menuView?.portraitChanged());
     if(nativeHome){
@@ -534,10 +558,10 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if (!['weapon','aircraft','pilot'].includes(kind)) return;
     if (tab==='assembly' && !subpage) equipmentReturnFocus=captureFocus(root);
     tab = 'assembly'; subpage = kind; modal = null; catalogSkillTab = false; catalogFilter = 'all';
-    if(fleetUi[kind])Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});
-    if (kind === 'aircraft') browseAircraft = snapshot.aircraftId;
-    if (kind === 'pilot') browsePilot = snapshot.pilotId;
-    if (kind === 'weapon') selectedWeapon ||= weaponFor(snapshot.loadout[selectedSlot])?.id || snapshot.weapons.find(w=>w.owned)?.id;
+    if(fleetUi[kind])Object.assign(fleetUi[kind],emptyFleetSelection());
+    if (kind === 'aircraft') browseAircraft = firstCatalogId(kind);
+    if (kind === 'pilot') browsePilot = firstCatalogId(kind);
+    if (kind === 'weapon') selectedWeapon = firstCatalogId(kind);
     render(true); focus?.pageScroll(0);
   }
   function openGrowthSupply(period,target) {
@@ -552,10 +576,9 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if(action!=='dismiss')bridge.playUiClick?.();
     const id=data.id;
     if(action==='carnival'){
-      const activity=snapshot.carnival;
-      if(!activity||activity.expired)return;
-      modal={type:'carnival',day:activity.day,milestone:activity.milestones.find(row=>row.canClaim)?.points,
-        opener:captureFocus(root,target)};
+      const entry=carnivalEntry();
+      if(!entry)return;
+      modal={...entry,opener:captureFocus(root,target)};
       renderModal();return;
     }
     if(action==='carnivalDay'||action==='carnivalMilestone'){
@@ -619,7 +642,16 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       if(modal?.type!=='pilotSupplyTasks'||!['daily','week'].includes(data.period))return;
       modal.period=data.period;renderModal();focus?.scrollTop(modalHost,0);return;
     }
-    if(action==='flightReward'){await act('flightReward',{action:data.operation,revision:Number(data.revision)});return;}
+    if(action==='shopSpecials'){
+      modal={type:action,period:'daily',opener:captureFocus(root,target)};renderModal();return;
+    }
+    if(action==='shopSpecialPeriod'){
+      if(modal?.type==='shopSpecials'&&Object.hasOwn(snapshot.flightRewards?.adOffers||{},data.period)){
+        modal.period=data.period;renderModal();
+      }
+      return;
+    }
+    if(action==='flightReward'){await act('flightReward',{action:data.operation,period:data.period,revision:Number(data.revision)});return;}
     if(action==='pilotSupply'){
       await act('pilotSupply',{action:data.operation,count:data.count===undefined?undefined:Number(data.count),
         id:['task','weeklyTask'].includes(data.operation)?id:Number(id),expectedRevision:Number(data.revision)});return;
@@ -1159,6 +1191,32 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     get tab() { return tab; }, get snapshot() { return snapshot; },
     get state() { return { tab, subpage, catalogSkillTab, catalogFilter, visible, modal: modal?.type || null, selectedSlot, selectedWeapon, pool:'pilot', workshopId }; },
     switchTab, render() { render(true); }, refresh() { render(true); },
+    prepareMenus(){
+      if(!destroyed&&snapshot){
+        return screen.prepareMenus?.(page=>({data:menuData(page),key:signature}),sendMenuAction,menuInteractive,selectShopSection);
+      }
+    },
+    prepareCatalogs(){
+      if(!destroyed&&snapshot?.replicaCollection){
+        screen.prepareCatalogs?.(page=>({data:menuData(page,menuCatalog(page,true)),key:signature}),
+          sendMenuAction,menuInteractive,selectShopSection);
+      }
+    },
+    prepareActivityPanels(){
+      if(destroyed||!snapshot)return;
+      screen.prepareActivityPanels?.(kind=>{
+        const modal=kind==='tasks'?{type:'tasks',period:'daily'}:carnivalEntry();
+        return modal?{snapshot,modal,signature}:null;
+      },runLobbyCommand,dailyScrollPositions);
+    },
+    prepareWorkshops(){
+      if(destroyed||!snapshot)return;
+      screen.prepareWorkshops?.(kind=>{
+        const gear=kind==='gear',workshop={kind,id:gear?null:firstCatalogId('weapon')??null,filter:'all',mode:'level',
+          draft:gear?emptyGearMerge(snapshot.equipment.revision):null,backLabel:'返回装备'};
+        return {data:menuData('workshop',null,workshop),key:signature};
+      },sendMenuAction,menuInteractive,selectShopSection);
+    },
     startPortraits() {
       if(destroyed||portraitsEnabled||portraitStartFrame!==null)return;
       // Let the interactive lobby and its still portrait paint first.

@@ -1,5 +1,6 @@
 const menuSampleMs = 6000;
 const slowArtworkMs = 150;
+const battleSampleMs = 5000;
 const ms = value => Math.round(Math.max(0, value));
 
 function countArtwork(initial, visible) {
@@ -82,5 +83,27 @@ export function createWechatDebugLog(api, buildId) {
     return trace;
   }
 
-  return { info, beginMenu, get activeMenu() { return activeMenu; } };
+  function beginBattle(chapter) {
+    let frames=0,elapsed=0,over33ms=0,maxGap=0;
+    let previous,previousWave,gapFrame,gapWave;
+    function resetWindow(){frames=elapsed=over33ms=maxGap=0;gapFrame=gapWave=undefined;}
+    return {reset(){resetWindow();previous=previousWave=undefined;},sample(interval,wave,stats){
+      if(!(interval>0&&Number.isFinite(interval)))return;
+      frames++;elapsed+=interval;
+      if(interval>maxGap){
+        // The interval starts before this frame. Keep the previous frame's timings.
+        maxGap=interval;gapFrame=previous;gapWave=previousWave;
+      }
+      previous=stats;previousWave=wave;
+      if(interval>=1000/30)over33ms++;
+      if(elapsed<battleSampleMs)return;
+      const frameBeforeMaxGap=gapFrame&&{wave:gapWave,logic:ms(gapFrame.logic),terrainAndPlane:ms(gapFrame.terrainAndPlane),
+        entitiesAndEffects:ms(gapFrame.entitiesAndEffects),draw:ms(gapFrame.draw),worldDraw:ms(gapFrame.worldDraw),uiDraw:ms(gapFrame.uiDraw)};
+      info('局内帧率',{chapter,wave,frames,elapsedMs:ms(elapsed),fps:Math.round(10000*frames/elapsed)/10,
+        framesOver33ms:over33ms,maxGapMs:ms(maxGap),frameBeforeMaxGap});
+      resetWindow();
+    }};
+  }
+
+  return { info, beginMenu, beginBattle, get activeMenu() { return activeMenu; } };
 }

@@ -55,40 +55,44 @@ function animate(t,meshes,data,steps){
 
 export function rewardPage(data,w,h,t){
   const s=data.snapshot,acq=s.nativeAcquisition,entries=chapterRewardEntries(acq),selected=selectedChapterReward(entries);
-  const root=t.layer('reward-scene').art,bgH=Math.max(h*1.30,w*2.817),bgW=bgH*852/1846;
-  pic(root,t,'/art/chapter-reward-scene-v2/background.png',box((w-bgW)/2,0,bgW,bgH));
-  const headerH=.29*w,bottomH=clamp(.15*w,58,70),bodyH=h-headerH-bottomH;
+  const frame=t.frameRect,root=t.layer('reward-scene').art;
+  const bgH=Math.max(frame.h*1.30,frame.w*2.817),bgW=bgH*852/1846;
+  t.backdrop(root,1,'#0b1525');
+  pic(root,t,'/art/chapter-reward-scene-v2/background.png',box(frame.x+(frame.w-bgW)/2,frame.y,bgW,bgH));
   const top=t.layer('chapter-reward-heading').art;resourceBar(t,top,s,w);
-  const bannerY=.015*w+36+(w<=350 ? .06 : .09)*w,bannerH=Math.max(1,headerH-.015*w-36);
+  const bannerY=.015*w+36+(w<=350 ? .06 : .09)*w,bannerH=Math.max(1,.275*w-36);
   const titleStart=top.group.children.length,banner=pic(top,t,'/art/psd-choice-v1/banner.png',box(0,bannerY,w,bannerH));
   const visible=bannerH/(w*239/756),uv=banner.geometry.attributes.uv;
   for(let i=0;i<uv.count;i++)uv.setY(i,.5+(uv.getY(i)-.5)*visible);
   words(top,'通关奖励',w/2,bannerY+bannerH/2,clamp(w*.057,21,26),{family:titleFont,shadow:{color:'#102232',y:1,blur:2}});
   animate(t,top.group.children.slice(titleStart),data,[{cx:w/2,cy:bannerY,fromY:-8,delay:0,duration:.35}]);
-  const a=t.layer('chapter-reward-list','base').art,footer=t.layer('chapter-return').art;
-  const back=box(.03*w,h-bottomH+(bottomH-Math.max(3,data.safeBottom)-44)/2,48,44);
+  const a=t.layer('chapter-reward-content').art,footer=t.layer('chapter-return').art;
+  const gap=.03*w,safeBottom=Math.max(3,t.viewport?.safeBottom??data.safeBottom??0);
+  const footerY=h-safeBottom-gap-44,actionY=footerY-gap-48;
+  const back=box(gap,footerY,48,44);
   const faceH=clamp(.093*w,38,42);
   slice(footer,t,'/art/project-return-button-v1/face.png',box(back.x,back.y+(44-faceH)/2,48,faceH),8);
   const chevron=pic(footer,t,'/art/project-ui-icons-v1/chevron-right.png',box(back.x+11,back.y+9,26,26),true);
   chevron.rotation.z=Math.PI;area(t,'close','返回',back,'close');
-  const saveH=pendingNotice(s,a,t,w,.055*w,headerH,.89*w,'base');
+  const bodyTop=bannerY+bannerH+gap;
+  const start=bodyTop+pendingNotice(s,a,t,w,.055*w,bodyTop,.89*w);
   if(!acq||!entries.length){
-    words(a,acq?'暂无章节奖励。':'章节奖励暂未就绪。',16,headerH+saveH+24,14,{align:'left'});
-    t.region('base',box(0,headerH,w,bodyH),saveH+55);return;
+    words(a,acq?'暂无章节奖励。':'章节奖励暂未就绪。',16,start+24,14,{align:'left'});
+    return;
   }
   const row=selected?.row,items=row?.rewards||[],hasStars=s.starRewards?.native&&s.starRewards.modes?.length;
-  const note=items.some(i=>i.unverified),gap=.03*w,nodeH=.871*w,slotSize=w*(items.length>=4 ? .16 : .22);
+  const note=items.some(i=>i.unverified),slotSize=w*(items.length>=4 ? .16 : .22);
   const trayW=.89*w,space=.024*w,cols=Math.max(1,Math.floor((trayW-.06*w+space)/(slotSize+space)));
   const lines=Math.ceil(items.length/cols),titleSize=clamp(w*.045,17,21),labelH=titleSize*1.4;
   const trayH=selected?Math.max(.34*w,.065*w+labelH+lines*slotSize+Math.max(0,lines-1)*space+(note ? .02*w+15.4 : 0)):0;
-  const starsHeight=hasStars ? .015*w+44 : 0,footH=Math.max(.24*w,48+starsHeight);
-  const total=nodeH+(selected?gap+trayH:0)+gap+footH;
-  const y=headerH+saveH+.025*w+Math.max(0,(bodyH-saveH-.045*w-total)/2);
-  t.region('base',box(0,headerH,w,bodyH),Math.max(bodyH,saveH+.045*w+total));
-  const nodeStart=a.group.children.length,node=box(.13*w,y,.74*w,nodeH);
+  // Fit the milestone within the space left by the reward tray and fixed buttons.
+  const room=actionY-gap-start-(selected?gap+trayH:0);
+  const nodeH=clamp(room,1,.871*w),nodeW=nodeH*.74/.871;
+  const y=start+Math.max(0,(room-nodeH)/2);
+  const nodeStart=a.group.children.length,node=box((w-nodeW)/2,y,nodeW,nodeH);
   pic(a,t,'/art/chapter-reward-node-v1/node.png',node,true);
-  words(a,selected?milestone(selected):'已领完',w/2,y+nodeH*.41,clamp(w*.084,28,38),{family:titleFont,shadow:{color:'#0b182a',y:2,blur:3}});
-  words(a,selected?'第 '+selected.chapter+' 章':'章节奖励',w/2,y+nodeH*.67,clamp(w*.041,15,19),{family:titleFont});
+  words(a,selected?milestone(selected):'已领完',w/2,y+nodeH*.41,Math.min(nodeH*.16,clamp(w*.084,28,38)),{family:titleFont,shadow:{color:'#0b182a',y:2,blur:3}});
+  words(a,selected?'第 '+selected.chapter+' 章':'章节奖励',w/2,y+nodeH*.67,Math.min(nodeH*.12,clamp(w*.041,15,19)),{family:titleFont});
   animate(t,a.group.children.slice(nodeStart),data,[{cx:w/2,cy:y+nodeH/2,fromScale:.88,fromY:12,delay:0,duration:.45,ease:nodeEase}]);
   if(selected){
     const ty=y+nodeH+gap,first=a.group.children.length,trayStep={cx:w/2,cy:ty+trayH/2,fromY:10,delay:.12,duration:.35};
@@ -100,21 +104,19 @@ export function rewardPage(data,w,h,t){
       const line=Math.floor(i/cols),count=Math.min(cols,items.length-line*cols);
       const x=(w-(count*slotSize+(count-1)*space))/2+(i%cols)*(slotSize+space);
       const sy=ty+.04*w+labelH+line*(slotSize+space),start=a.group.children.length;
-      slot(a,t,item,x,sy,slotSize,'reward-item-'+i,'base');
+      slot(a,t,item,x,sy,slotSize,'reward-item-'+i);
       animate(t,a.group.children.slice(start),data,[{cx:x+slotSize/2,cy:sy+slotSize/2,fromScale:.85,fromY:6,delay:Math.min(.3,.2+.05*i),duration:.3},trayStep]);
     });
   }
-  const footY=y+nodeH+(selected?gap+trayH:0)+gap;
-  const actionY=footY+(footH-48-starsHeight)/2;
   if(row?.canClaim){
     const b=box(.26*w,actionY,.48*w,48),enabled=!s.rewardPending&&!s.rewardBusy;
     claim(t,a,b,'获取奖励',enabled,clamp(.05*w,18,23));
-    area(t,'claim','获取奖励',b,selected.core?'nativeChapterCoreReward':'nativeChapterReward',{id:row.id,revision:acq.revision},'base',!enabled);
+    area(t,'claim','获取奖励',b,selected.core?'nativeChapterCoreReward':'nativeChapterReward',{id:row.id,revision:acq.revision},null,!enabled);
   }else words(a,selected?condition(selected):'全部奖励已领取',w/2,actionY+24,clamp(.038*w,14,17),{weight:400,shadow:{color:'#102232',y:1,blur:2}});
   if(hasStars){
-    const cy=actionY+48+.015*w+22;
-    pic(a,t,star,box(w/2-36.5,cy-9,17,18),true);words(a,'星级奖励',w/2-15.5,cy,13,{align:'left',weight:600});
-    area(t,'stars','星级奖励',box(w/2-41,cy-22,82,44),'nativeStarRewards',{},'base');
+    const cy=footerY+22;
+    pic(footer,t,star,box(w/2-36.5,cy-9,17,18),true);words(footer,'星级奖励',w/2-15.5,cy,13,{align:'left',weight:600});
+    area(t,'stars','星级奖励',box(w/2-41,footerY,82,44),'nativeStarRewards');
   }
 }
 

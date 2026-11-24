@@ -9,14 +9,14 @@ import {hangarPose} from './sortie-hangar-motion.js';
 import {warmRenderPrograms} from '../replica/project-aircraft-render.js';
 
 // Identical geometry, pivot, finish and lighting on both rendering paths.
-export function createSortieHangarScene(renderer,aircraftId){
+export function createSortieHangarScene(renderer,aircraftId,{environmentSize=256}={}){
   const scene=new THREE.Scene(),mount=new THREE.Group();scene.add(mount);
   const camera=new THREE.OrthographicCamera(-8,8,8,-8,.1,100);
   camera.position.set(0,4.7,-24);camera.up.set(0,1,0);camera.lookAt(0,4.7,0);
   createAircraftLighting(scene);
   const room=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);
   let environment;
-  try{environment=pmrem.fromScene(room,.04);}finally{room.dispose();pmrem.dispose();}
+  try{environment=pmrem.fromScene(room,.04,.1,100,{size:environmentSize});}finally{room.dispose();pmrem.dispose();}
   scene.environment=environment.texture;
   const asset=instantiateFighterPackage(aircraftId);
   const bounds=new THREE.Box3().setFromObject(asset.solid,true),size=bounds.getSize(new THREE.Vector3());
@@ -51,7 +51,11 @@ export function createSortieHangarScene(renderer,aircraftId){
       camera.updateProjectionMatrix();
     },
     warmup(){
-      return warmRenderPrograms(renderer,scene,camera,()=>!disposed);
+      const tone=renderer.toneMapping;
+      renderer.toneMapping=THREE.ACESFilmicToneMapping;
+      // The shared renderer must compile the same program that the cover draws.
+      try{return warmRenderPrograms(renderer,scene,camera,()=>!disposed);}
+      finally{renderer.toneMapping=tone;}
     },
     draw(seconds,reduced=false){
       const pose=hangarPose(seconds,reduced);

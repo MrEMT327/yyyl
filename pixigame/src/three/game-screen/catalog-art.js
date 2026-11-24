@@ -52,7 +52,7 @@ export function catalogGrid(d,t,w,bounds,windowed=false){
     const inWindow=!windowed||y+stepY>=rect.y+offset-stepY&&y<=rect.y+offset+rect.h+stepY;
     const select=()=>area(t,'select-'+it.id,it.name,b,'catalogSelect',{id:String(it.id),kind},zone);
     const btn=gun&&chosen?box(x+3,y+sideY-20,size-6,44):null;
-    const label=it.activated?'改造':'获取';
+    const label=it.activated?'改造':'获取',locked=!it.access.available;
     if(!inWindow){
       select();if(btn)area(t,'detail-'+it.id,label,btn,'nativeCollectionDetail',{id:it.actualId,kind:group},zone);
       return;
@@ -64,10 +64,11 @@ export function catalogGrid(d,t,w,bounds,windowed=false){
     }
     const face=gun?box(x+.09*size,y+.08*sideY,.82*size,.67*sideY):pilot?box(x+.08*size,y+.07*sideY,.84*size,.70*sideY):box(x+.04*size,y+.07*sideY,.92*size,.73*sideY);
     const m=normalFit(a,t,it.image,face,pilot,d.kind==='aircraft'?{x:.18,y:.12,width:.64,height:.76}:null);
-    if(m&&!it.activated&&!it.row.baseOnly){m.material.color.set(gun&&chosen?'#e7e7e7':pilot?'#c8c5c6':'#c0c0c0');}
+    if(windowed&&!gun&&!m?.visible)words(a,it.name,b.x+b.w/2,b.y+b.h/2,12,{maxWidth:b.w-6});
+    if(m&&locked){m.material.color.set(gun&&chosen?'#e7e7e7':pilot?'#c8c5c6':'#c0c0c0');}
     if(pilot)skill(a,t,it.skillIcon||projectIconUrl('skill-tab'),box(x+.07*size,y+.06*sideY,.213*size,.213*size));
-    if(it.access.collectionUsing)symbol(a,t,'check',box(x+size*.07,y+sideY*.05,size*.22,size*.22));
-    if(!it.activated&&!it.row.baseOnly){const lock=symbol(a,t,'lock',box(x+size*.79,y+sideY*.075,size*.13,size*.15));lock.material.color.set('#b3c5cd');}
+    if(it.access.using)symbol(a,t,'check',box(x+size*.07,y+sideY*.05,size*.22,size*.22));
+    if(locked){const lock=symbol(a,t,'lock',box(x+size*.79,y+sideY*.075,size*.13,size*.15));lock.material.color.set('#b3c5cd');}
     stars(a,t,box(x+size*.065,y+sideY*.80,size*.87,sideY*.145),it.stars,it.row.star,{align:'center'});
     if(chosen)selection(a,t,b);
     select();
@@ -78,10 +79,18 @@ export function catalogGrid(d,t,w,bounds,windowed=false){
       }else words(a,it.name,x+size/2,y+sideY+11,clamp(w*.035,11,16),{family:titleFont,maxWidth:size});}
   });
 }
-export function bottomNav(a,t,d,w,h,rect){
-  pic(a,t,atlas[d.kind+'-'+(d.ui.skillTab?'skill':'list')+'-footer'],rect);
+export function bottomNav(a,t,d,w,rect,progressive){
+  const plate=pic(a,t,atlas[d.kind+'-'+(d.ui.skillTab?'skill':'list')+'-footer'],rect);
   const button=Math.max(44,166*w/1080),gap=6*w/1080,pad=10*w/1080,theBack=d.kind==='weapon'&&d.ui.skillTab&&d.slot!=null;
+  const label={weapon:'武器',aircraft:'战机',pilot:'驾驶员'}[d.kind];
+  if(progressive&&!plate.visible){
+    a.quad(0,rect.y,w,rect.h,'#172735');
+    const y=rect.y+rect.h/2;
+    words(a,'返回',pad+24,y,14);
+    words(a,label,w-pad-1.5*button-gap,y,14);
+    words(a,'技能',w-pad-.5*button,y,14);
+  }
   area(t,'back',theBack?'返回技能列表':'返回装备',box(pad,rect.y,Math.max(48,.13*w),rect.h),theBack?'nativeWeaponSkillBrowse':'catalogBack',theBack?{id:d.skillWeapon.id}:{});
-  area(t,'mode-list',{weapon:'武器',aircraft:'战机',pilot:'驾驶员'}[d.kind],box(w-pad-2*button-gap,rect.y,button,rect.h),'catalogMode',{mode:'list'});
+  area(t,'mode-list',label,box(w-pad-2*button-gap,rect.y,button,rect.h),'catalogMode',{mode:'list'});
   area(t,'mode-skills','技能',box(w-pad-button,rect.y,button,rect.h),'catalogMode',{mode:'skills'});
 }

@@ -35,17 +35,16 @@ function button(art,tools,r,command){
   if(command.disabled)plate.material.color.setHex(0x87939e);
   label(art,command.label,r.x+r.w/2,r.y+r.h/2,13,'#fff',r.w-10,'center',700);
 }
-function backdrop(art,tools,panel,w,h,scope,alpha){
-  // The original navigation rail sits above inventory backdrops.
-  art.quad(0,0,w,h*1473/1624,'#000000',alpha);
-  tools.control('outside','返回',rect(0,0,w,h),{type:'close'},{scope});
+function backdrop(art,tools,panel,scope,alpha){
+  tools.backdrop(art,alpha);
+  tools.control('outside','返回',tools.frameRect,{type:'close'},{scope});
   tools.control('paper','',panel,{type:'none'},{scope});
 }
 function grid(data,w,h,tools){
   const unit=w/1080,psd=w/750,pw=994*unit,ph=Math.min(1443.230957*unit,h*.88);
   const p=rect((w-pw)/2,(h-ph)/2-50.324402*unit,pw,ph);
   const art=tools.layer('bag').art;
-  backdrop(art,tools,p,w,h,'base',.6);paper(art,'primary',p,psd,tools);
+  backdrop(art,tools,p,'base',.6);paper(art,'primary',p,psd,tools);
   const tx=p.x+58*psd,ty=p.y+69.5*psd;
   label(art,'背包',tx,ty+2,40*psd,'#57677a',pw-158*psd,'left',400,titleFont);
   label(art,'背包',tx,ty,40*psd,'#fff',pw-158*psd,'left',400,titleFont);
@@ -109,7 +108,7 @@ function detail(data,w,h,psd,tools){
   const ph=Math.min(h*.85,topInset+bodyLength+bottomInset),p=rect((w-pw)/2,(h-ph)/2,pw,ph);
   const bodyY=p.y+topInset,bodyH=Math.max(1,ph-topInset-bottomInset);
   // The backdrop is registered first so dialog controls and list rows win hit tests.
-  backdrop(frame,tools,p,w,h,'detail',.6);paper(frame,'secondary',p,psd,tools);
+  backdrop(frame,tools,p,'detail',.6);paper(frame,'secondary',p,psd,tools);
   const font=Math.max(16,Math.min(22,32*psd));
   label(frame,item.name,innerX,p.y+39*psd+font*1.15/2,font,'#1c334c',pw-154*psd,'left',400,titleFont);
   itemSlot(frame,item,innerX,p.y+112*psd,55,tools.image,false);
@@ -121,7 +120,7 @@ function detail(data,w,h,psd,tools){
   if(!data.openChoices||!chosen)return 'detail';
   const options=tools.layer('choice-frame').art,rows=tools.layer('choices','choice').art;
   const rowH=44,listH=Math.min(h*.64,chosen.options.length*rowH),list=rect(innerX,(h-listH)/2,innerW,listH);
-  backdrop(options,tools,list,w,h,'choice',.4);options.quad(list.x,list.y,list.w,list.h,'#d9e3ed');
+  backdrop(options,tools,list,'choice',.4);options.quad(list.x,list.y,list.w,list.h,'#d9e3ed');
   tools.region('choice',list,chosen.options.length*rowH);
   chosen.options.forEach((o,i)=>{const r=rect(list.x,list.y+i*rowH,list.w,rowH);
     if(o.id===chosen.selected.id)rows.quad(r.x,r.y,r.w,r.h,'#b2d6eb');

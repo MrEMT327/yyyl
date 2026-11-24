@@ -12,7 +12,7 @@ import {collectionQualityRank} from '../../replica/native-quality.js';
 export function weaponShowcase(data,w,h,t,row){
   const s=data.snapshot,collection=s.replicaCollection,model=collectionDetailModel(row,collection.attributeNames);
   const access=nativeCollectionAccess('guns',s,row),pw=.9*w,ph=Math.min(h*.84,1.4*w);
-  const p=paintSecondaryPaper(t,w,h,pw,ph,row.name,{dimHeight:data.coverNavigation?h:h-w*151/750-data.safeBottom,alpha:.60});
+  const p=paintSecondaryPaper(t,w,h,pw,ph,row.name,{alpha:.60});
   const x=p.x+40*w/750,bw=pw-80*w/750,top=p.top,vh=Math.max(90,.27*w),gap=w*.025,sh=Math.max(1,ph-(top-p.y)-.07*w-vh-gap);
   const a=t.layer('weapon-stage').art,b=box(x,top,bw,sh),attrs={kind:'guns',id:row.id,revision:collection.revision};
   pic(a,t,detailArt['weapon-stage'],b);const inset=w*.0325,sx=x+inset,sy=top+inset;

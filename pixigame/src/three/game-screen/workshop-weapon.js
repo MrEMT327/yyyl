@@ -53,15 +53,19 @@ export function weaponWorkshop(data,w,h,t,layout){
   const prices=cost.filter(([,c])=>c>0).map(([,c,n])=>number(n)+'/'+number(c)).join('   ');
   button('compose',label,canChange?'workshopMode':leveling?'upgrade':'workshopSynthesize','confirm',!ready&&!canChange,
     {kind:'weapon',id:item?.id||'',rank:item?.qualityRank??'',...(canChange?{mode:'quality'}:{})},{price:prices||undefined,icon:prices&&cost[0][0]?nativeItemArt(cost[0][0]):undefined});
-  const cols=5,gap=.02*w,pad=.045*w,side=(w-2*pad-(cols-1)*gap)/cols,zone='workshop-'+ui.mode+'-'+ui.filter,grid=t.layer('weapon-inventory',zone).art;
-  items.forEach((it,i)=>{const b=box(pad+i%cols*(side+gap),gridY+gap+Math.floor(i/cols)*(side+gap),side,side);
-    slice(grid,t,qualityFrame(it.qualityRank),b,8);
-    normalFit(grid,t,image(it.growth),box(b.x+4,b.y+2,b.w-8,b.h-23));stars(grid,t,box(b.x+5,b.y+b.h-22,b.w-10,8),5,it.qualityRank,{align:'center'});
-    words(grid,'Lv.'+(it.growth.level||1),b.x+b.w/2,b.y+b.h-7,10);
-    if(it.equipped||it.id===s.innateWeapon)words(grid,it.id===s.innateWeapon?'专属':'已装备',b.x+4,b.y+7,9,{align:'left',color:'#fff4b2'});
-    if(item?.id===it.id){selection(grid,t,b);t.anchor('selected-weapon',Math.max(0,Math.floor(i/cols)*(side+gap)-(footY-gridY-side)/2));}
+  const cols=5,gap=.02*w,pad=.045*w,side=(w-2*pad-(cols-1)*gap)/cols,step=side+gap,zone='workshop-'+ui.mode+'-'+ui.filter;
+  t.region(zone,box(0,gridY,w,Math.max(1,footY-gridY)),gap+Math.ceil(items.length/cols)*step,'y',{redrawStep:data.progressive?step:0});
+  const window=t.scrollWindow(zone),grid=t.layer('weapon-inventory',zone).art;
+  items.forEach((it,i)=>{const row=Math.floor(i/cols)*step,b=box(pad+i%cols*step,gridY+gap+row,side,side),selected=item?.id===it.id;
+    if(selected)t.anchor('selected-weapon',Math.max(0,row-(footY-gridY-side)/2));
+    if(!window||b.y+b.h>window.top&&b.y<window.bottom){
+      slice(grid,t,qualityFrame(it.qualityRank),b,8);
+      normalFit(grid,t,image(it.growth),box(b.x+4,b.y+2,b.w-8,b.h-23));stars(grid,t,box(b.x+5,b.y+b.h-22,b.w-10,8),5,it.qualityRank,{align:'center'});
+      words(grid,'Lv.'+(it.growth.level||1),b.x+b.w/2,b.y+b.h-7,10);
+      if(it.equipped||it.id===s.innateWeapon)words(grid,it.id===s.innateWeapon?'专属':'已装备',b.x+4,b.y+7,9,{align:'left',color:'#fff4b2'});
+      if(selected)selection(grid,t,b);
+    }
     area(t,'weapon-'+it.id,it.name,b,'workshopSelect',{id:it.id},zone);});
   if(!items.length)words(grid,'暂无符合条件的武器',w/2,gridY+w*.07,12,{color:'#a2b9c7'});
-  t.region(zone,box(0,gridY,w,Math.max(1,footY-gridY)),gap+Math.ceil(items.length/cols)*(side+gap));
 }
 

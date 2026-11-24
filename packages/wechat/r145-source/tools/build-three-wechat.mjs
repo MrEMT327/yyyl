@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { gzipSync } from 'node:zlib';
 import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
@@ -13,6 +14,10 @@ import { loadThreeCompatMedia } from './three-compat-media.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const repo=resolve(root,'../../..'),h5=join(repo,'pixigame');
 const inputs=join(root,'build-inputs');
+const bundledBattleData=[
+  'replica-battle/data/chapter1.json',
+  'replica-battle/data/enemy-health-bars-chapters.json',
+];
 const requiredAssets=[
   'art/entry-screens-v4/startup.png',
   'art/three-ui/three-art-072afc9e0d40.png',
@@ -45,18 +50,29 @@ export async function buildThreeWechat({output}={}){
   const networkAssets={cdnBase:cdnBase.href,assetTransfers,cdnFiles,cacheVersion};
   const textures=await loadThreeTextureAssets(inputs,join(h5,'public'));
   const compat=await loadThreeCompatMedia(inputs,h5);
+  const battleData=await Promise.all(bundledBattleData.map(async path=>{
+    const input=await readFile(join(h5,'public',path)),transfer=assetTransfers[path];
+    if(transfer?.encoding!=='gzip'||transfer.bytes!==input.length)throw Error('包内关卡数据与 CDN 清单不一致 '+path);
+    return {path,filename:'battle-data-'+sha(input).slice(0,20)+'.json.gz',source:gzipSync(input,{level:9})};
+  }));
   await checkThreeUiTextureCoverage(h5,textures,listed,assetTransfers);
   const uploadSizes=new Map(uploads.map(({path,bytes})=>[path,bytes]));
-  const required=[...new Set([...requiredAssets,...uploadSizes.keys()])];
+  const versionedAssets=Object.keys(assetTransfers).filter(key=>assetTransfers[key].version);
+  const required=[...new Set([...requiredAssets,...uploadSizes.keys(),...versionedAssets])];
   async function checkAsset(key){
-    const path=assetTransfers[key]?.path??key;
+    const transfer=assetTransfers[key],path=transfer?.path??key;
     if(!listed.has(path))return key+'（未登记）';
     try{
       const url=new URL(path.split('/').map(encodeURIComponent).join('/'),cdnBase);
-      const response=await fetch(url,{method:'HEAD',headers:{'accept-encoding':'identity'},redirect:'error',signal:AbortSignal.timeout(8000)});
+      if(transfer?.version)url.searchParams.set('v',transfer.version);
+      const response=await fetch(url,{method:transfer?.version?'GET':'HEAD',headers:{'accept-encoding':'identity'},
+        redirect:'error',signal:AbortSignal.timeout(transfer?.version?15000:8000)});
       if(!response.ok)return path+'（HTTP '+response.status+'）';
       if(/text\/html/i.test(response.headers.get('content-type')??''))return path+'（响应为网页）';
-      if(uploadSizes.has(path)&&Number(response.headers.get('content-length'))!==uploadSizes.get(path))return path+'（文件大小不符）';
+      if(transfer?.version){
+        const bytes=Buffer.from(await response.arrayBuffer());
+        if(bytes.length!==transfer.bytes||sha(bytes)!==transfer.sha256)return path+'（版本文件校验失败）';
+      }else if(uploadSizes.has(path)&&Number(response.headers.get('content-length'))!==uploadSizes.get(path))return path+'（文件大小不符）';
       return null;
     }catch(error){return path+'（'+(error.cause?.code??error.name)+'）';}
   }
@@ -93,13 +109,14 @@ export async function buildThreeWechat({output}={}){
     .map(({filename,source})=>[filename,place(filename,source)]));
   const localFiles=Object.fromEntries(Object.entries({...textures.aliases,...compat.images,...compat.effects}).map(([path,filename])=>
     [path,texturePaths.get(filename)]));
+  for(const {path,filename,source} of battleData)localFiles[path]=place(filename,source);
   const musicFiles=Object.fromEntries(Object.entries(compat.music).map(([key,filename])=>[key,texturePaths.get(filename)]));
   const fallbackFiles=Object.fromEntries(Object.entries(textures.fallbackAliases).map(([path,filename])=>
     [assetTransfers[path]?.path??path,texturePaths.get(filename)]));
   const assets={...networkAssets,localFiles,fallbackFiles,musicFiles};
   const sourceDigest=createHash('sha256');
   for(const [name,source] of [...units].sort(([a],[b])=>a.localeCompare(b)))sourceDigest.update(name).update(source);
-  for(const {filename,source} of [...textures.files,...compat.files])sourceDigest.update(filename).update(source);
+  for(const {filename,source} of [...textures.files,...compat.files,...battleData])sourceDigest.update(filename).update(source);
   sourceDigest.update(JSON.stringify(assets));
   const buildId='three-'+version+'-'+sourceDigest.digest('hex').slice(0,12);
 
@@ -116,6 +133,10 @@ export async function buildThreeWechat({output}={}){
       deviceOrientation:'portrait',showStatusBar:false,iOSHighPerformance:true,
       subpackages:packages.map(({name})=>({name,root:name+'/'})),
     };
+    // Pack the complete CDN inventory and transfer map to leave room for local art.
+    const gzipJSON=value=>gzipSync(JSON.stringify(value),{level:9}).toString('base64');
+    const launchAssets={...assets,cdnFiles:undefined,assetTransfers:undefined,
+      cdnFilesGzip:gzipJSON(cdnFiles),assetTransfersGzip:gzipJSON(assetTransfers),buildId};
     const launcher=[
       'const load={\n'+map+'\n};',
       'const modules=new Map();',
@@ -125,7 +146,7 @@ export async function buildThreeWechat({output}={}){
       '  if(!pending.has(name))pending.set(name,new Promise((resolve,reject)=>wx.loadSubpackage({name,success:resolve,fail:reject})).catch(error=>{pending.delete(name);throw error;}));',
       '  return pending.get(name);',
       '}',
-      'const config='+JSON.stringify({...assets,buildId})+';',
+      'const config='+JSON.stringify(launchAssets)+';',
       'config.loadPackage=loadPackage;',
       'config.loadCubism=()=>Promise.resolve().then(()=>GameGlobal.__shnhReadModule("cubism"));',
       'const packages='+JSON.stringify(packages.map(({name})=>name))+';',
@@ -140,11 +161,12 @@ export async function buildThreeWechat({output}={}){
     const buildSource=JSON.stringify({buildId,source:version,renderer:'Three.js',mode:'wechat-cdn',
       assets:cdnBase.href,modules:modules.length,packagedTextures:Object.keys(textures.aliases).length+Object.keys(compat.images).length+Object.keys(fallbackFiles).length,
       packagedEffects:Object.keys(compat.effects).length,
-      packagedMusic:Object.keys(musicFiles).length,packages:packages.map(({name,bytes})=>({name,bytes})),
+      packagedMusic:Object.keys(musicFiles).length,packagedBattleData:battleData.length,packages:packages.map(({name,bytes})=>({name,bytes})),
       runtimeSha256:sha(parts.get('runtime')),threeSha256:sha(parts.get('@native/game-three')),cubismSha256:sha(cubismScript)},null,2)+'\n';
     const threeLicense=await readFile(join(h5,'node_modules/three/LICENSE'));
     const cubismLicense=await readFile(join(h5,'public/art/live2d-runtime/LIVE2D-PROPRIETARY-LICENSE.html'));
-    const size=ordered.reduce((total,[,body])=>total+Buffer.byteLength(body),textures.bytes+compat.bytes)
+    const dataBytes=battleData.reduce((total,row)=>total+row.source.length,0);
+    const size=ordered.reduce((total,[,body])=>total+Buffer.byteLength(body),textures.bytes+compat.bytes+dataBytes)
       +Buffer.byteLength(launcher+manifestSource+projectSource+buildSource)+threeLicense.length+cubismLicense.length+packages.length*35;
     if(size>MAX_ALL_PACKAGES)throw Error('微信小游戏分包总大小超限 '+size);
     await Promise.all([

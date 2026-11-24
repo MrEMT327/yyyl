@@ -1,11 +1,12 @@
-import {ACESFilmicToneMapping,Color,LinearFilter,Vector4,WebGLRenderTarget} from 'three';
+import {ACESFilmicToneMapping,Color,LinearFilter,LinearMipmapLinearFilter,Material,Vector4,WebGLRenderTarget} from 'three';
 
 // The battle's sprite shaders blend display-encoded premultiplied colours.
 // Write those exact values into the two attachments when the 3D artwork is
 // rasterized, including the hull's authored ACES exposure and exhaust bloom.
-const attachments=new WeakSet(),prepared=new WeakSet();
+const attachments=new WeakSet(),prepared=new WeakMap();
+export function usesOnlyBattleColorTransform(material){return prepared.get(material)===material.onBeforeCompile;}
 export function prepareBattleColorMaterial(material){
-  if(!material||material.isRawShaderMaterial||prepared.has(material))return;prepared.add(material);
+  if(!material||material.isRawShaderMaterial||prepared.has(material))return;
   const compile=material.onBeforeCompile,draw=material.onBeforeRender;
   const oldKey=material.customProgramCacheKey===Object.getPrototypeOf(material).customProgramCacheKey?()=>compile.toString():material.customProgramCacheKey.bind(material);
   const encode={value:0},exposure={value:1};
@@ -22,6 +23,7 @@ export function prepareBattleColorMaterial(material){
       .replace('#include <tonemapping_fragment>','#ifdef TONE_MAPPING\n#include <tonemapping_fragment>\n#else\nif(battleColorMode>1.5)gl_FragColor.rgb=ACESFilmicToneMapping(gl_FragColor.rgb);\n#endif')
       .replace('#include <colorspace_fragment>','if(battleColorMode>.5){gl_FragColor=sRGBTransferOETF(gl_FragColor);}\nelse{\n#include <colorspace_fragment>\n}');
   };
+  prepared.set(material,compile===Material.prototype.onBeforeCompile?material.onBeforeCompile:null);
   material.customProgramCacheKey=()=>oldKey()+'|battle-output';material.needsUpdate=true;
 }
 function prepareScene(scene){
@@ -29,9 +31,10 @@ function prepareScene(scene){
 }
 export function createBattleColorTargets(renderer,w,h,hullSize){
   const gl=renderer.getContext(),samples=Math.min(renderer.capabilities.maxSamples,gl.getParameter(gl.SAMPLES));
-  const make=(w,h)=>{const target=new WebGLRenderTarget(w,h,{minFilter:LinearFilter,magFilter:LinearFilter,
-    samples,depthBuffer:true,stencilBuffer:false,generateMipmaps:false});attachments.add(target);return target;};
-  const ground=make(w,h),hull=make(hullSize,hullSize),vp=new Vector4(),sc=new Vector4(),color=new Color(),background=new Color();
+  const make=(w,h,mipmaps=false)=>{const target=new WebGLRenderTarget(w,h,{
+    minFilter:mipmaps?LinearMipmapLinearFilter:LinearFilter,magFilter:LinearFilter,
+    samples,depthBuffer:true,stencilBuffer:false,generateMipmaps:mipmaps});attachments.add(target);return target;};
+  const ground=make(w,h),hull=make(hullSize,hullSize,true),vp=new Vector4(),sc=new Vector4(),color=new Color(),background=new Color();
   function withTarget(target,draw){
     const previous=renderer.getRenderTarget(),clip=renderer.getScissorTest();
     renderer.getViewport(vp);renderer.getScissor(sc);

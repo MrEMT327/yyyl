@@ -39,7 +39,7 @@ function layoutMenu(model,w,h,t){
   });
   const natural=rows.reduce((sum,r,i)=>sum+r.height+(i?6:0),0),fixed=40+40+8+helpH+8+40+8+38+8+(errorH?errorH+8:0)+(more?48:0);
   const ph=Math.min((h-16)*.92,fixed+Math.max(100,natural)),y=(h-ph)/2,top=y+20;
-  a.quad(0,0,w,h,'#020d18',184/255);
+  t.backdrop(a,184/255,'#020d18');
   const frame=pic(a,t,'/art/weapon-catalog-psd-v1/frame-blue.png',box(8,y,w-16,ph));
   frame.geometry.dispose();frame.geometry=slicedFrameGeometry(w-16,ph,224,562,[24,24,40,24],[12,12,18,12]);
   a.quad(18,y+10,w-36,ph-20,'#afc2d1');

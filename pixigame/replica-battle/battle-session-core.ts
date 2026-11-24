@@ -398,6 +398,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
       } else sim.step(nativeDelta, { x: movement.x, z: -movement.y, dirX: movement.dirX, dirZ: movement.dirZ, rawX: movement.rawX });
       accumulated -= logicStep;
     }
+    scene.interpolationFraction = accumulated / logicStep;
     if (sim.phase === 'playing' && !waitingForMovement)
       scene.coastBackgroundTime = smoothCoastTime(sim.time, accumulated, logicStep, nativeDelta, scene.coastBackgroundTime);
     ui.update();

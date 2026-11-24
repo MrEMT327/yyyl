@@ -66,8 +66,15 @@ export function openWechatGame(api,config){
       });
       await font;
       if(active===entry){
-        startup.stage(2,'正在准备大厅…');
+        startup.stage(2,'正在准备大厅界面…');
+        const preparing=platform.now();
+        const ready=await game.pixiLobby.prepareMenus();
+        if(active!==entry)return;
+        debugLog?.info('大厅首屏预热',{ready,elapsedMs:Math.round(platform.now()-preparing)});
         debugLog?.info('大厅就绪',{loadMs:Math.round(platform.now()-startTime)});
+        game.pixiLobby.prepareActivityPanels();
+        game.pixiLobby.prepareWorkshops();
+        game.pixiLobby.prepareCatalogs();
         await startup.ready(()=>{game.unlockAudio();game.pixiLobby.startPortraits();device.repaintHome?.();});
       }
     }catch(error){report(error);if(active===entry)startup.fail(error);}

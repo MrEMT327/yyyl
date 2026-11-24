@@ -4,7 +4,7 @@ import {gearWorkshop} from './workshop-gear.js';
 import {weaponWorkshop} from './workshop-weapon.js';
 
 function mascot(t,a,b,reduced){
-  const tex=t.texture('/art/onboarding-assistant-v1/expressions.png'),sprite=a.image(tex,b.x,b.y,b.w,b.h);
+  const sprite=pic(a,t,'/art/onboarding-assistant-v1/expressions.png',b);
   const y=sprite.position.y,uv=sprite.geometry.attributes.uv,original=Array.from(uv.array);let last=-1;
   const animate=now=>{
     const phase=now/4.8%1,frame=reduced?0:(phase>=.14&&phase<.2||phase>=.28&&phase<.34)?3:(phase>=.62&&phase<.64||phase>=.67&&phase<.69)?1:phase>=.64&&phase<.67?2:0;
@@ -18,9 +18,11 @@ export function workshopMenu(data,w,h,t){
   const barY=top+stageH,barH=gear?Math.max(50,w*117.9/1080):Math.max(44,w*.105),gridY=barY+barH;
   const footH=(gear?Math.max(56,w*.15):Math.max(54,.16*w))+(data.safeBottom||0),footY=h-footH;
   const bleed=t.topBleed||0;
+  if(data.progressive)a.quad(0,-bleed,w,h+bleed,'#203247');
   pic(a,t,atlas['workshop-wall'],bleed?box(0,-bleed,w,h+bleed):box(0,top,w,h-top));
   pic(a,t,atlas['workshop-stage'],box(0,top,w,stageH));
-  pic(a,t,atlas['workshop-header'],box(w*.03,top+.023*w,.94*w,w*.082));
+  const header=pic(a,t,atlas['workshop-header'],box(w*.03,top+.023*w,.94*w,w*.082));
+  if(data.progressive&&!header.visible)words(a,'改装间',w/2,top+w*.065,18,{family:titleFont});
   pic(a,t,atlas['workshop-warehouse'],box(0,barY,w,barH));words(a,'仓库',w/2,barY+barH/2,clamp(.048*w,16,22),{family:titleFont});
   pic(a,t,art['gear-grid'],box(0,gridY,w,Math.max(1,footY-gridY)));
   const foot=t.layer('workshop-footer').art,safe=data.safeBottom||0;
@@ -29,6 +31,7 @@ export function workshopMenu(data,w,h,t){
   const dockY=footY+(footH-(data.safeBottom||0))/2;
   const back=box(10,dockY-22,48,44);slice(foot,t,'/art/project-return-button-v1/face.png',box(back.x,dockY-19,48,38),8);
   const arrow=symbol(foot,t,'chevron-right',box(back.x+11,dockY-13,26,26));arrow.rotation.z=Math.PI;
+  if(data.progressive&&!arrow.visible)words(foot,'返回',back.x+back.w/2,dockY,13);
   area(t,'back',data.workshop.backLabel,back,'catalogBack');
   function button(id,label,cmd,place,disabled=false,payload={},opts={}){
     const confirm=place==='confirm',width=confirm?(gear?Math.min(160,w*.46):w*.70):Math.min(100,Math.max(80,.215*w));

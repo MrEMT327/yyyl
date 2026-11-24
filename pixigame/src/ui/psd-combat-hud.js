@@ -10,10 +10,11 @@ import { COMBAT_TYPE } from './combat-theme.js';
 import { PLAYER_LOW_HEALTH_RATIO,PLAYER_LOW_HEALTH_COLOR,playerHealthFrame } from '../replica/player-health-display.js';
 import { waveNoticeAlpha } from './wave-notice.js';
 import { RESOURCE_ICONS } from './resource-icons.js';
+import { leftOfMenuCenterY } from '../three/game-screen/home-navigation.js';
 
 // PSD coordinates are authoritative. Only the presentation is scaled to the
 // existing 600 × 1300 combat scene; the world and flight input stay untouched.
-const W = 750, H = 1624;
+const W = 750, H = 1624, TOP_HEIGHT = 460;
 const PLAYER_HEALTH_FILL_WIDTH = 694;
 const assets = new Map();
 const loaded = new Set();
@@ -34,7 +35,6 @@ const definitions = {
 const extraAssets={
   'encounter-boss':projectBattleInterfaceIcon('bossProgress_icon'),
   'encounter-warning':`${cloudAssetBase}art/project-enemy-markers-v1/warning.svg`,
-  'encounter-frame':`${cloudAssetBase}art/weapon-catalog-psd-v1/frame-blue.png`,
 };
 function loadAssets(loadImageSurface) {
   for (const name of [...Object.keys(definitions),...Object.keys(extraAssets)]) {
@@ -128,20 +128,63 @@ function text(ctx, value, x, y, size, {align='left', color='#fff', glow='', stro
   if (stroke) {ctx.lineWidth=stroke;ctx.lineJoin='round';ctx.strokeStyle='#000';ctx.strokeText(value,x,baseline);}
   ctx.fillText(value,x,baseline);ctx.restore();
 }
-// Combat can be wider than the 600 x 1300 HUD safe area. Project the actual
-// renderer edges into the warning layer; only the backdrop grows, not its title/badge.
+const defaultTopLayout = {
+  surface:{x:0,y:0,width:W,height:TOP_HEIGHT,scaleX:1},
+  pause:{x:definitions.pause[0],y:definitions.pause[1],scale:1},
+  grade:[0,0],stats:[0,0],centerX:0,waveY:0,bossY:0,bossWaveY:0,
+};
+
+function topHudLayout(mount, viewport, screen) {
+  if(!viewport?.menuButton)return defaultTopLayout;
+  const {width,height,safeTop,menuButton}=viewport;
+  const origin=mount.toLocal({x:0,y:0}),corner=mount.toLocal({x:screen.width,y:screen.height});
+  const span=corner.x-origin.x,unitX=span/width,unitY=(corner.y-origin.y)/height;
+  const edge=10,buttonSize=44,pauseSize=buttonSize*unitX;
+  const gradeLeft=edge+buttonSize+4;
+  const [gradeX,gradeY,gradeWidth,gradeHeight]=definitions.grade;
+  const center=leftOfMenuCenterY(viewport,gradeLeft+gradeWidth/unitX);
+  if(center===null)return defaultTopLayout;
+  const pauseTop=center-pauseSize/(2*unitY),gradeTop=center-gradeHeight/(2*unitY);
+  const surfaceTop=Math.min(pauseTop,gradeTop)-2;
+  if(surfaceTop<0)return defaultTopLayout;
+
+  // Use screen edges for the header while the authored safe area still
+  // positions menus, warnings and the bottom health bar.
+  const canvasWidth=Math.ceil(span),pixelX=canvasWidth/width;
+  const statsTop=(Math.max(safeTop,menuButton.bottom)+6-surfaceTop)*unitY;
+  const [statsX,statsY,statsWidth,statsHeight]=definitions.stats;
+  const [,progressY,,progressHeight]=definitions['progress-track'];
+  const gap=6*unitY,waveTop=definitions.wave[1];
+  const waveY=statsTop-statsY+progressY+progressHeight+gap-waveTop;
+  const bossY=statsTop+statsHeight+gap-(BOSS_BAR.y-28);
+  const bossWaveY=bossY+BOSS_BAR.y+BOSS_BAR.height+gap-waveTop;
+  return {
+    surface:{x:origin.x,y:origin.y+surfaceTop*unitY,width:canvasWidth,
+      height:Math.max(TOP_HEIGHT,Math.ceil(TOP_HEIGHT+Math.max(waveY,bossWaveY))),scaleX:span/canvasWidth},
+    pause:{x:origin.x+edge*unitX,y:origin.y+pauseTop*unitY,scale:pauseSize/definitions.pause[2]},
+    grade:[gradeLeft*pixelX-gradeX,(gradeTop-surfaceTop)*unitY-gradeY],
+    stats:[canvasWidth-edge*pixelX-statsX-statsWidth,statsTop-statsY],
+    centerX:(canvasWidth-W)/2,waveY,bossY,bossWaveY,
+  };
+}
+
+function resizeLayer(layer,width,height) {
+  if(layer.canvas.width===width&&layer.canvas.height===height)return;
+  const previous=layer.sprite.texture;
+  layer.canvas.width=width;layer.canvas.height=height;
+  layer.sprite.texture=Texture.from(layer.canvas);previous.destroy(true);layer.key=null;
+}
+
+// Keep the warning and its side margins inside the actual combat viewport.
 function fitWarningViewport(layer,mount,bridge) {
   const screenWidth=Number(bridge.app?.screen?.width??bridge.app?.renderer?.screen?.width);
   if(!(screenWidth>0))return;
   const left=mount.toLocal({x:0,y:0}).x,right=mount.toLocal({x:screenWidth,y:0}).x;
   const width=right-left;if(!Number.isFinite(width)||width<=0)return;
-  const pixels=Math.max(1,Math.ceil(width));
-  if(layer.canvas.width!==pixels){
-    const previous=layer.sprite.texture;
-    layer.canvas.width=pixels;
-    layer.sprite.texture=Texture.from(layer.canvas);previous.destroy(true);layer.key=null;
-  }
-  layer.sprite.x=left;layer.sprite.scale.x=width/pixels;
+  const scale=Math.min(1,width/layer.canvas.width);
+  layer.sprite.x=left+(width-layer.canvas.width*scale)/2;
+  layer.sprite.y=BOSS_WARNING_LAYER.y+layer.canvas.height*(1-scale)/2;
+  layer.sprite.scale.set(scale,scale);
 }
 function repaint(layer,key,draw) {
   if (layer.key===key) return;
@@ -153,13 +196,28 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
   const mount = new Container(); mount.label='psd-combat-hud';
   mount.scale.set(600/W,1300/H);root.addChild(mount);
   const nativeTiles=bridge.nativeHudTiles;
-  const top=canvasLayer(mount,0,460,W,nativeTiles), bottom=canvasLayer(mount,1500,124,W,nativeTiles);
-  const warningLayer=canvasLayer(mount,BOSS_WARNING_LAYER.y,BOSS_WARNING_LAYER.height);warningLayer.sprite.visible=false;
-  const pause = new Container(); pause.label='暂停';pause.position.set(4,16);
-  pause.hitArea=new Rectangle(0,0,132,132);pause.enabled=true;pause.eventMode='static';
+  const top=canvasLayer(mount,0,TOP_HEIGHT,W,nativeTiles), bottom=canvasLayer(mount,1500,124,W,nativeTiles);
+  const warningLayer=canvasLayer(mount,BOSS_WARNING_LAYER.y,BOSS_WARNING_LAYER.height,BOSS_WARNING_LAYER.width);
+  warningLayer.sprite.x=(W-BOSS_WARNING_LAYER.width)/2;
+  warningLayer.sprite.visible=false;
+  const [pauseX,pauseY,pauseWidth,pauseHeight]=definitions.pause;
+  const pause = new Container(); pause.label='暂停';pause.position.set(pauseX,pauseY);
+  pause.hitArea=new Rectangle(0,0,pauseWidth,pauseHeight);pause.enabled=true;pause.eventMode='static';
   pause.__pixiUiAction=()=>bridge.showPauseMenu();mount.addChild(pause);
-  const pauseFace=canvasLayer(pause,0,132,132,nativeTiles);
-  let tileLayout;
+  const pauseFace=canvasLayer(pause,0,pauseHeight,pauseWidth,nativeTiles);
+  let tileLayout,viewport,layout=defaultTopLayout;
+  function reflow() {
+    if(viewport===bridge.hudViewport)return false;
+    viewport=bridge.hudViewport;
+    layout=topHudLayout(mount,viewport,bridge.app?.renderer?.screen);
+    const {surface,pause:button}=layout;
+    resizeLayer(top,surface.width,surface.height);
+    top.sprite.position.set(surface.x,surface.y);
+    top.sprite.scale.x=surface.scaleX;
+    pause.position.set(button.x,button.y);pause.scale.set(button.scale);
+    top.key=null;tileLayout=null;
+    return true;
+  }
   function showNativeTiles(){
     if(!nativeTiles||warningLayer.sprite.visible)return false;
     const {width,height}=bridge.app.renderer.screen;
@@ -170,20 +228,22 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     if(tileLayout&&tileLayout.width===width&&tileLayout.height===height&&tileLayout.x===origin.x&&tileLayout.y===origin.y&&tileLayout.factor===factor)return true;
     tileLayout={width,height,x:origin.x,y:origin.y,factor};
     const sx=100*mount.scale.x/width,sy=100*mount.scale.y/height;
-    const place=(layer,x,y,scale=1)=>{
+    const place=(layer,x,y,scaleX=1,scaleY=scaleX)=>{
       const tile=layer.canvas;
-      tile.style.cssText=`position:absolute;left:${100*origin.x/width+x*sx}%;top:${100*origin.y/height+y*sy}%;width:${tile.width*sx*scale}%;height:${tile.height*sy*scale}%;pointer-events:none`;
+      tile.style.cssText=`position:absolute;left:${100*origin.x/width+x*sx}%;top:${100*origin.y/height+y*sy}%;width:${tile.width*sx*scaleX}%;height:${tile.height*sy*scaleY}%;pointer-events:none`;
       if(tile.parentNode!==nativeTiles)nativeTiles.append(tile);
     };
-    place(top,0,0);
+    place(top,top.sprite.x,top.sprite.y,top.sprite.scale.x,1);
     place(bottom,0,bottom.sprite.y);
-    place(pauseFace,pause.x+(press?.x??0)*(1-factor),pause.y+(press?.y??0)*(1-factor),factor);
+    place(pauseFace,pause.x+(press?.x??0)*(1-factor)*pause.scale.x,
+      pause.y+(press?.y??0)*(1-factor)*pause.scale.y,factor*pause.scale.x);
     return true;
   }
   let lastUpdate=-Infinity,healthDisplay=null,bossDisplay=bossHealthStates.get(bridge)??null;
   let bossMotion=bossHitStates.get(bridge)??null;
   const reducedMotion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   return {mount,showNativeTiles,update(now) {
+    const layoutChanged=reflow();
     const game=bridge.game, boss=bridge.boss, stats=bridge.runStats||{};
     if(loadedImageCount!==loaded.size){
       loadedImages=new Map([...loaded].map(name=>[name,assets.get(name)]));
@@ -191,12 +251,15 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     }
     const images=loadedImages;
     repaint(pauseFace,loaded.has('pause'),ctx=>{
-      if(loaded.has('pause'))ctx.drawImage(assets.get('pause'),0,0,132,132);
+      if(loaded.has('pause'))ctx.drawImage(assets.get('pause'),0,0,pauseWidth,pauseHeight);
     });
-    const warning=game.state==='playing'?bossWarningFrame(bridge.presentation?.bossWarning,reducedMotion?.matches??false):null;
+    const warning=game.state==='playing'?bossWarningFrame(bridge.presentation?.bossWarning,bridge.reducedMotion?.()??reducedMotion?.matches??false):null;
     warningLayer.sprite.visible=Boolean(warning);
     if(warning)fitWarningViewport(warningLayer,mount,bridge);
-    repaint(warningLayer,warning?`${loaded.size}:${warning.type}:${Math.floor(warning.elapsed*60)}`:'',ctx=>drawBossWarning(ctx,warning,images,warningLayer.canvas.width));
+    const icon=warning&&images.get(warning.type===2?'encounter-boss':'encounter-warning');
+    const animating=warning&&(warning.alpha<1||warning.sweep<1);
+    repaint(warningLayer,warning?`${warning.type}:${animating?Math.floor(warning.elapsed*30):'hold'}:${Boolean(icon)}`:'',
+      ctx=>drawBossWarning(ctx,warning,icon));
     const bossActive=!!boss&&!boss.dead&&boss.hp>0&&!['ready','victory_result','fixed_result','defeat_result'].includes(game.state);
     const nextBoss=updateBossHealth(bossDisplay,bossActive?boss:null,Number.isFinite(game.elapsed)?game.elapsed*1000:now,reducedMotion?.matches??false);
     const nextMotion=updateBossHitMotion(bossMotion,bossActive?boss:null,Number.isFinite(game.elapsed)?game.elapsed*1000:now,reducedMotion?.matches??false);
@@ -206,7 +269,7 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const maxHp=Math.max(1,Number(stats.maxHp)||100),hp=Math.min(maxHp,Math.max(0,Number(game.hp)||0));
     const healthChanged=!healthDisplay||healthDisplay.hp!==hp||healthDisplay.maxHp!==maxHp;
     healthDisplay=playerHealthFrame(healthDisplay,hp,maxHp,Number(game.elapsed)||0,game.fixedGrowth?.state?.runId??game.peripheralSnapshot?.id??null,reducedMotion?.matches??false);
-    if (!healthChanged&&!bossChanged&&now-lastUpdate<(healthDisplay.animating||bossDisplay.animating||bossMotion.active?1000/30:80)) return;lastUpdate=now;
+    if (!layoutChanged&&!healthChanged&&!bossChanged&&now-lastUpdate<(healthDisplay.animating||bossDisplay.animating||bossMotion.active?1000/30:80)) return;lastUpdate=now;
     const ready=loaded.size;
     const seconds=Math.max(0,Math.floor(game.elapsed||0));
     const time=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
@@ -223,7 +286,8 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const waveAlpha=waveNoticeAlpha(game);
     const values=[ready,time,score,kills,grade,combo,game.flightQuality,game.flightChain,game.flightLastPoints,game.waveIndex,game.waveStatus?.total,waveAlpha,progress,bossActive,bossRatio,Math.round(bossDisplay.bar*BOSS_BAR.width),Math.round(bossDisplay.trail*BOSS_BAR.width),boss?.visualSpec?.name,showNotice?notice.text:'',...['x','y','iconX','iconY'].map(key=>Math.round(bossMotion[key]*BOSS_BAR.width*4))];
     repaint(top,JSON.stringify(values),ctx=>{
-      for(const name of [Number.isFinite(coins)?'stats-coins':'stats','grade'])artwork(ctx,name);
+      ctx.save();ctx.translate(...layout.stats);
+      artwork(ctx,Number.isFinite(coins)?'stats-coins':'stats');
       if(Number.isFinite(coins))artwork(ctx,'coins');
       if(!bossActive){
         artwork(ctx,'progress-track');
@@ -231,7 +295,16 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
       }
       text(ctx,time,713,49,36,{align:'right',glow:'#00cfff'});
       text(ctx,score,510,106,24);text(ctx,kills,713,106,24,{align:'right'});
-      text(ctx,grade,255,59,48,{align:'center',glow:'#00cfff'});
+      ctx.restore();
+      ctx.save();ctx.translate(...layout.grade);
+      artwork(ctx,'grade');text(ctx,grade,255,59,48,{align:'center',glow:'#00cfff'});
+      ctx.restore();
+      if(bossActive){
+        ctx.save();ctx.translate(layout.centerX,layout.bossY);
+        drawBossHealthBar(ctx,boss,bossDisplay,images,bossMotion);
+        ctx.restore();
+      }
+      ctx.save();ctx.translate(layout.centerX,bossActive?layout.bossWaveY:layout.waveY);
       if(waveAlpha>0){
         ctx.save();ctx.globalAlpha=waveAlpha;
         artwork(ctx,'wave');
@@ -244,8 +317,8 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
         text(ctx,`x${Math.max(1,game.flightChain||1)}`,408,268,26,{glow:'#00eaff'});
         text(ctx,`本次+${Math.round(game.flightLastPoints||0)}`,375,309,24,{align:'center',glow:'#00eaff'});
       }
-      if(bossActive)drawBossHealthBar(ctx,boss,bossDisplay,images,bossMotion);
       if(showNotice)text(ctx,notice.text,375,354,24,{align:'center',glow:'#00cfff'});
+      ctx.restore();
     });
     const ratio=healthDisplay.value,shownHp=Math.ceil(ratio*maxHp),level=Math.max(1,Math.round(game.level||1));
     repaint(bottom,JSON.stringify([ready,shownHp,maxHp,level,Math.round(ratio*PLAYER_HEALTH_FILL_WIDTH)]),ctx=>{

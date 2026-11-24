@@ -8,7 +8,14 @@ import {paintItemDetail} from './item-details.js';
 function progression(data,w,h,t){
   const row=data.record,level=row.type==='level',pw=.9*w,ph=Math.min(.85*w,.76*h),p=box((w-pw)/2,(h-ph)/2,pw,ph);
   const a=t.layer('progression').art,part=(b,draw,tr,outer)=>groupMotion(t,a,p,data,b,draw,tr,outer);
-  area(t,'paper','',p,'none');part(p,()=>{outerFrame(a,t,p,w,'primary');heading(a,t,p,w,level?'等级提升':'功能开启');});
+  area(t,'paper','',p,'none');
+  part(p,()=>{
+    outerFrame(a,t,p,w,'primary');
+    if(level)label(a,'等级提升',p.x+.035*w,p.y+.051*w,.040*w,{
+      align:'left',maxWidth:.165*w,color:'#fff',shadow:{color:'#73889e',y:1,blur:2},
+    });
+    else heading(a,t,p,w,'功能开启');
+  });
   const b=frameBox(p,.28,.16,.44,.43),g=frameBox(b,-.30,-.25,1.60,1.50),icon={cx:w/2,cy:b.y+b.h*.5,delay:.2,duration:.7,frames:pop};
   part(g,()=>pic(a,t,hologram,g,true),{duration:2.8,loop:true,frames:pulse},[icon]);
   part(b,()=>pic(a,t,level?'/art/project-supplement-icons-v1/experience.png':'/art/project-talents-v1/patrol.webp',b,true),icon);
@@ -27,7 +34,7 @@ function progression(data,w,h,t){
 }
 function layout(data,w,h,t){
   data={...data,w};const a=t.layer('process-room').art;
-  a.quad(0,0,w,Math.max(0,h-w*151/750-data.safeBottom),'#000',.70);area(t,'outside','关闭',box(0,0,w,h),'close');
+  t.backdrop(a,.70);area(t,'outside','关闭',t.frameRect,'close');
   const type=data.record.type;
   if(type==='collection')collectionFeedback(data,w,h,t);
   else if(type==='merge'||type==='mergeBatch')mergeFeedback(data,w,h,t);
@@ -47,6 +54,6 @@ export function openProcessFeedback(screen,host,send,sound){
   return {host,close:panel.close,update(snapshot,modal){
     const index=modal.index||0,key=modal.id+'-'+index;
     if(key!==identity){identity=key;inspect=null;entered=performance.now()/1000;if(!reduced)sound?.('upgrade');}
-    latest={snapshot,record:modal.records[index],safeBottom:screen.menuView?.safeBottom||0};refresh();
+    latest={snapshot,record:modal.records[index]};refresh();
   }};
 }

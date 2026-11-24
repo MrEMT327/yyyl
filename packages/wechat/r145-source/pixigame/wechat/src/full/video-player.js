@@ -10,7 +10,10 @@ export function retireNativeVideo(video, width, height) {
     video.x=width+1;video.y=height+1;
     video.width=video.height=1;video.muted=true;
   } catch (error) { console.warn('[wechat-video-hide]',error); }
-  const destroy=()=>{try{video.destroy();}catch(error){console.warn('[wechat-video-dispose]',error);}};
+  const report=error=>console.warn('[wechat-video-dispose]',error?.errMsg||error?.message||String(error));
+  const destroy=()=>{
+    try{void Promise.resolve(video.destroy()).catch(report);}catch(error){report(error);}
+  };
   let stopping;
   try { stopping=video.stop?.(); } catch { destroy();return; }
   if(!stopping?.then){destroy();return;}

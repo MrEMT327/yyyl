@@ -26,7 +26,7 @@ function browserLobbyHost(scope){
     frames:{documentRef,requestFrame:callback=>windowRef.requestAnimationFrame(callback),cancelFrame:frame=>windowRef.cancelAnimationFrame(frame)},
     readSharedLoadoutJSON:runtime.readSharedLoadoutJSON,
     setTimeout:windowRef.setTimeout.bind(windowRef),clearTimeout:windowRef.clearTimeout.bind(windowRef),
-    playAd:()=>typeof runtime.playRewardedAd==='function'?runtime.playRewardedAd():playFreeRewardedAd(),
+    playAd:context=>typeof runtime.playRewardedAd==='function'?runtime.playRewardedAd(context):playFreeRewardedAd(),
     restart:()=>windowRef.location.reload(),
     showLobby:()=>shell.classList.add('pixi-lobby-active','peripheral-lobby-active'),
     showToast(message,lobby){
@@ -66,11 +66,11 @@ export async function startLobbySession({
     if(app?.renderer?.toast)app.renderer.toast.show(message);
     else host.showToast?.(message,lobby);
   };
-  async function playAd(){
+  async function playAd(context){
     if(closed)throw Error('当前页面已停止运行');
     if(adPending)throw Error('广告正在播放，请稍候');adPending=true;
     try{
-      const result=await host.playAd();
+      const result=await host.playAd(context);
       if(result===false||result?.completed===false||result?.success===false||(result?.status&&result.status!=='completed')||(result?.code!=null&&Number(result.code)!==10001))throw Error('需完整观看广告才能获得奖励');
       if(closed)throw Error('当前页面已停止运行');
       return {completed:true};

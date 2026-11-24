@@ -6,7 +6,8 @@ const BEAM = 'project-supply-arrival-beam-v1';
 const GLOW = 'project-supply-arrival-glow-v1';
 const RING = 'project-supply-arrival-ring-v1';
 const SIZE = 76;
-import {type ChestPose,clamp,smooth,supplyChestPose} from './supply-chest-pose.ts';
+import {type ChestPose,clamp,smooth,supplyChestPose,supplyCanopyTransform,traceSupplyCords} from './supply-chest-pose.ts';
+const canopyCordAnchors = [[-59,15],[-31,19],[31,19],[59,15]].map(([x,y]) => [.5+x/138,.5+y/69] as const);
 export {supplyChestPose} from './supply-chest-pose.ts';
 
 export function preloadSupplyChestArt(scene: Phaser.Scene) {
@@ -113,22 +114,15 @@ export function updateSupplyChestVisual(view: Phaser.GameObjects.Container, ches
     dust.setPosition(side * (8 + t * (22 + i * 5)), 20 - t * (15 + i * 2))
       .setDisplaySize(18 + t * 48, 10 + t * 24).setAlpha(visible ? Math.sin(p * Math.PI) * .28 : 0);
   }
-  // Both canopy and rope ends use the rendered crate pose, so the cords stay
-  // attached while swaying. Landing releases, folds and fades the canopy.
-  const canopyX = pose.x + Math.sin(pose.time * 5.3) * 4 + pose.collapse * 22;
-  const canopyY = pose.y - bodyHeight * .38 - 82 + pose.collapse * 35;
-  fx.canopy.setPosition(canopyX, canopyY).setDisplaySize(138, 69 * (1 - pose.collapse * .70))
-    .setRotation(pose.rotation * .7 + pose.collapse * .28).setAlpha(pose.canopyAlpha);
+  const canopy = supplyCanopyTransform(pose, bodyHeight);
+  fx.canopy.setPosition(canopy.x, canopy.y).setDisplaySize(canopy.width, canopy.height)
+    .setRotation(canopy.rotation).setAlpha(pose.canopyAlpha);
   fx.cords.clear();
-  if (pose.canopyAlpha > 0) {
+  if (canopy.cordAlpha > 0) {
     for (let pass = 0; pass < 2; pass++) {
       fx.cords.lineStyle(pass === 0 ? 2.6 : 1.1, pass === 0 ? 0x243b3b : 0xe6dec5,
-        pose.canopyAlpha * (1 - pose.collapse) * (pass === 0 ? .65 : .9));
-      for (let i = 0; i < 4; i++) {
-        const offset = i === 0 ? -59 : i === 1 ? -31 : i === 2 ? 31 : 59;
-        fx.cords.lineBetween(canopyX + offset, canopyY + (i === 0 || i === 3 ? 15 : 19),
-          pose.x + (i < 2 ? -24 : 24) * pose.scale, pose.y - bodyHeight * .26 * pose.scale);
-      }
+        canopy.cordAlpha * (pass === 0 ? .65 : .9));
+      traceSupplyCords(pose, bodyHeight, canopy, canopyCordAnchors, (x,y,endX,endY) => fx.cords.lineBetween(x,y,endX,endY));
     }
   }
   // Fixed-size pool, analytic simulation-age sampling. Pausing cannot emit

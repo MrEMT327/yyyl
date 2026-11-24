@@ -25,7 +25,7 @@ export function lobbyPanels(device, {openVideo, inspectItems = (container,read)=
     openBackpack:(host,action)=>openBackpack(device,host,action),
     inspectItems,
     lobbyPanelKind:(type,snapshot)=>supportsFleetPanel(type)?'fleet':supportsUtilityPanel(type)?'utility':supportsSupplyPanel(type)?'supply':supportsCollectionPanel(type)?'collection':supportsGearPanel(type)?'gear':['tasks','carnival','patrol','quickPatrol','playerInfo','recruitRewards','pilotAffection','pilotAffectionVideo','researchSummary','researchCard','researchResult','nativeLab','nativeStats'].includes(type)||supportsShopPanel(type)||supportsChapterPanel(type,snapshot)?type:null,
-    openLobbyPanel(kind,host,send,scrollPositions,sound){
+    openLobbyPanel(kind,host,send,scrollPositions,sound,options){
       if(kind==='fleet')return openFleetPanel(device,host,send);
       if(kind==='utility')return openUtilityPanel(device,host,send);
       if(kind==='supply')return openSupplyPanel(device,host,send);
@@ -38,8 +38,8 @@ export function lobbyPanels(device, {openVideo, inspectItems = (container,read)=
       if(kind==='pilotAffection')return openAffection(device,host,send);
       if(kind==='pilotAffectionVideo')return openVideo(host,send);
       if(supportsShopPanel(kind))return openShopPanel(device,host,send,kind);
-      if(kind==='tasks')return openTaskPanel(device,host,send,kind,scrollPositions);
-      if(kind==='carnival')return openCarnivalPanel(device,host,send);
+      if(kind==='tasks')return openTaskPanel(device,host,send,kind,scrollPositions,options);
+      if(kind==='carnival')return openCarnivalPanel(device,host,send,options);
       if(kind==='patrol'||kind==='quickPatrol')return openPatrolPanel(device,host,send,kind,scrollPositions);
       return openChapterPanel(device,host,send,kind);
     },

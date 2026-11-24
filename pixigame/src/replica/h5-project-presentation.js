@@ -43,22 +43,23 @@ export async function createH5Presentation({ content, appearance, onError, onGra
   renderer.setPixelRatio(1);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
-  const aircraftRenderer = createCombatAircraftRenderer(renderer, aircraftTextureSize, aircraftTextureSize, { cullExhaustDepth: false });
-  const aircraftFxRenderer = createAircraftFxRenderer(renderer,{prepareOutput:prepareBattleColorMaterial});
+  const staggerPresentation=Boolean(host?.staggerPresentation);
+  const aircraftRenderer = createCombatAircraftRenderer(renderer, aircraftTextureSize, aircraftTextureSize, { cullExhaustDepth: staggerPresentation });
+  const aircraftFxRenderer = createAircraftFxRenderer(renderer,{stableCoverage:true,prepareOutput:prepareBattleColorMaterial});
   const surface = renderer.domElement;
   let disposed = false, fighter, pose;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };
   let lastAircraftVisualClock = -1, lastRenderedFlightPose;
   const flightPosition = createFlightPositionState();
   let lastAircraftClock = -1, lastWorldKey = '', lastRollSerial = 0;
-  let lastWorldViewport=null,terrainDeferred=false;
+  let lastWorldViewport=null,lastWorldRun=null,terrainDeferred=false;
   let appliedWeather = null;
   let launchPresentation=null,launchDirty=false;
   let worldContextReady = true;
   const worldLost = () => {worldContextReady = false;};
   const worldRestored = () => {
     const oldLighting=lighting;lighting=makeLighting();aircraftScene.environment=lighting.texture;oldLighting.dispose();
-    worldContextReady=true;lastWorldKey='';weaponsDirty=true;
+    worldContextReady=true;lastWorldKey='';lastWorldViewport=null;terrainDeferred=false;weaponsDirty=true;
   };
   surface.addEventListener('webglcontextlost',worldLost);
   surface.addEventListener('webglcontextrestored',worldRestored);
@@ -309,7 +310,8 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       weather?.update(frame);
       const profile=weather?.profile;
       const night=profile?.id==='night';
-      if(profile!==appliedWeather){
+      const weatherChanged=profile!==appliedWeather;
+      if(weatherChanged){
         environment.setNight?.(night,terrainWidth,terrainHeight);
         updateAircraftNightLighting(aircraftLighting,night);
         aircraftFxRenderer.setNight(night);
@@ -337,7 +339,8 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       const backgroundTime = frame.coastBackgroundTime ?? frame.time;
       const worldWeather = weather?.profile?.id ?? 'clear';
       const view=battle.viewport,viewWidth=view.width,viewHeight=view.height;
-      const worldKey = `${frame.runId??0}/${backgroundTime}/${frame.camera.x}/${frame.camera.z}/${worldWeather}/${viewWidth}/${viewHeight}`;
+      const worldRun=frame.runId??0;
+      const worldKey = `${worldRun}/${backgroundTime}/${frame.camera.x}/${frame.camera.z}/${worldWeather}/${viewWidth}/${viewHeight}`;
       let worldDue = lastWorldKey !== worldKey;
       const moving = Math.abs(flightPose.bank) > .002 || flightPose.thrust > .02 || flightPose.rollActive;
       const scriptedPose = launchPresentation || passivePose.active || frame.victoryDeparture;
@@ -350,10 +353,9 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       updatePhantom(flightPose);
       const poseChanged=flightPoseNeedsRefresh(lastRenderedFlightPose,flightPose);
       let renderAircraft=pose&&(aircraftElapsed<0||aircraftFrameDue||weaponsDirty||launchDirty||passiveDirty||poseChanged);
-      // The terrain and 3D hull are independent cached textures. On the
-      // native fast refresh path, submit these heavy passes on adjacent frames.
-      const split=host.staggerPresentation&&replaceTerrain&&worldDue&&renderAircraft&&lastWorldViewport===view&&
-        frame.displayInterval>0&&frame.displayInterval<.027&&!scriptedPose&&!weaponsDirty&&!launchDirty&&!passiveDirty&&!flightPose.rollActive;
+      // Keep the two cached surfaces on separate frames during both normal and slow play.
+      const split=staggerPresentation&&replaceTerrain&&worldDue&&renderAircraft&&lastWorldViewport===view&&
+        lastWorldRun===worldRun&&!weatherChanged&&frame.displayInterval>0&&!scriptedPose&&!weaponsDirty&&!launchDirty&&!passiveDirty&&!flightPose.rollActive;
       if(split&&!terrainDeferred){worldDue=false;terrainDeferred=true;}
       else{if(split)renderAircraft=false;terrainDeferred=false;}
       let landmarks;
@@ -402,6 +404,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       battle.drawGround(worldScene,coastCamera||camera,selectedScene.ground);
       lastWorldKey = worldKey;
       lastWorldViewport=view;
+      lastWorldRun=worldRun;
     },
   };
 }

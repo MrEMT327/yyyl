@@ -37,11 +37,10 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
       const failure=(phase,error)=>new Error(`${phase}：${url} · ${error?.errMsg || error?.message || String(error)}`);
       const useTemporary=file=>{temporary.set(url,file);resolve(file);};
       const discardPartial=()=>{budget.forget(path);try{files.unlinkSync(path);}catch{}};
-      // An incomplete download has no usable temporary file.
-      // Read its bytes through the binary request path once.
-      const recoverDownloadBytes=async original=>{
+      // Read a broken image transfer through a fresh CDN cache key.
+      const recoverDownloadBytes=async (original,fresh=false)=>{
         try{
-          const bytes=await resources.readBytes(url);
+          const bytes=await resources.readBytes(url,{fresh});
           if(!(bytes instanceof ArrayBuffer) || bytes.byteLength===0)throw new Error('服务器返回了空文件');
           if(!writesFull&&budget.reserve(path,bytes.byteLength)){
             try{files.writeFileSync(path,bytes);resolve(path);return;}
@@ -71,7 +70,7 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
         try{files.saveFile({tempFilePath:result.tempFilePath,filePath:path,success:()=>resolve(path),fail:saveFailed});}
         catch(error){saveFailed(error);}
       },fail:error=>{
-        if(isIncompleteDownload(error))recoverDownloadBytes(error);
+        if(isIncompleteDownload(error))recoverDownloadBytes(error,Boolean(imageType));
         else reject(failure('资源下载失败',error));
       }});
     }).finally(()=>pending.delete(url));pending.set(url,task);return task;

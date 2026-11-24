@@ -45,7 +45,8 @@ export function createRigidTerrainLayer(definition,renderOrder,rain={value:0},ni
   const seaMaterial=new T.ShaderMaterial({vertexShader:vertex,fragmentShader:seaFragment,toneMapped:false,
     uniforms:{artwork:{value:null},time:{value:0},nightAmount:night,nightResolution,rainAmount:rain,rainTravel:{value:0},scroll:{value:0},repeats:{value:new T.Vector2()}},depthWrite:true});
   materials.set('ground',seaMaterial);
-  const sea=new T.Mesh(geometry,seaMaterial);sea.renderOrder=renderOrder;sea.position.y=definition.depth;mesh.add(sea);
+  const sea=new T.Mesh(geometry,seaMaterial);sea.renderOrder=renderOrder;sea.position.y=definition.depth;
+  sea.scale.set(1800,1,3000);mesh.add(sea);
   function sprite(asset,order){
     if(!materials.has(asset)){
       const kind=MODULAR_ASSETS[asset].kind;
@@ -94,49 +95,69 @@ export function createRigidTerrainLayer(definition,renderOrder,rain={value:0},ni
   return {definition,mesh,geometry,materials,sea,islands,clusters,waterProps,seabedFields};
 }
 
+function commitLocalMatrix(node){
+  node.updateMatrix();node.matrixAutoUpdate=false;
+}
+
+// Island assemblies keep their local transforms until the world scale changes.
+function layoutRigidTerrain(record,{units,period,tile}){
+  const {definition,sea,clusters,waterProps,seabedFields}=record;
+  sea.material.uniforms.repeats.value.set(1800/tile,3000/tile);
+  for(const {row,parent,island,sites,parts,copy} of clusters){
+    const asset=MODULAR_ASSETS[row.asset],w=row.width*units,h=w*asset.height/asset.width;
+    parent.position.set(row.x*units,0,650-row.z*units+copy*period);
+    island.scale.set(w,1,h);commitLocalMatrix(parent);commitLocalMatrix(island);
+    for(const {part,sprite} of parts){
+      const art=MODULAR_ASSETS[part.asset],width=part.width*units;
+      sprite.position.x=part.x*w;sprite.position.z=part.z*h;sprite.scale.set(width,1,width*art.height/art.width);
+      commitLocalMatrix(sprite);
+    }
+    for(const {site,sprite,light} of sites){
+      const art=MODULAR_ASSETS[site.asset],width=site.width*units,height=width*art.height/art.width;
+      sprite.position.x=site.x*w;sprite.position.z=site.z*w;sprite.scale.set(width,1,height);sprite.rotation.y=site.rotation??0;
+      commitLocalMatrix(sprite);
+      if(light){
+        light.position.x=sprite.position.x;light.position.z=sprite.position.z-height*.12;
+        const size=width*(site.effect==='radar'?.8:.24);light.scale.set(size,1,size);commitLocalMatrix(light);
+      }
+    }
+  }
+  for(const {row,sprite,host} of waterProps){
+    const art=MODULAR_ASSETS[row.asset],w=row.width*units;
+    sprite.position.set(row.x*host.island.scale.x,definition.depth+.15,row.z*host.island.scale.z);
+    sprite.scale.set(w,1,w*art.height/art.width);sprite.rotation.y=row.rotation??0;commitLocalMatrix(sprite);
+  }
+  for(const {row,copy,sprite} of seabedFields){
+    const width=row.width*units;
+    sprite.position.x=row.x*units;sprite.position.z=650-row.z*units+copy*period;sprite.scale.set(width,1,width);
+    commitLocalMatrix(sprite);
+  }
+  record.layoutUnits=units;
+}
+
 export function syncRigidTerrainLayer(record,textures,sceneId,elapsed,motion={}){
   const {definition,mesh,materials,sea,islands,clusters,waterProps,seabedFields}=record,p=rigidTerrainPose(elapsed,motion);
+  if(record.layoutUnits!==p.units)layoutRigidTerrain(record,p);
   mesh.position.set(300+p.lateral,0,p.wrapped);
   for(const [key,mat] of materials){
     if(key.startsWith('effect-')){mat.uniforms.time.value=elapsed;continue;}
-    const tex=textures.get(`${sceneId}/${key}`)??null;
+    const tex=textures.get(sceneId+'/'+key)??null;
     if(key==='ground')mat.uniforms.artwork.value=tex;
     else if(mat.map!==tex){mat.map=tex;mat.needsUpdate=true;}
   }
-  // A fixed screen cover within the moving parent. UV compensation is exactly
-  // the same displacement as the islands, including horizontal camera motion.
-  sea.position.z=650-p.wrapped;sea.scale.set(1800,1,3000);sea.visible=!!materials.get('ground').uniforms.artwork.value;
-  const u=sea.material.uniforms;u.scroll.value=p.wrapped/p.tile;u.repeats.value.set(1800/p.tile,3000/p.tile);u.time.value=elapsed;u.rainTravel.value=p.travel;
+  // Counter the parent's movement so the sea covers the screen while its UVs scroll.
+  sea.position.z=650-p.wrapped;sea.visible=!!materials.get('ground').uniforms.artwork.value;
+  const u=sea.material.uniforms;u.scroll.value=p.wrapped/p.tile;u.time.value=elapsed;u.rainTravel.value=p.travel;
   let visible=0,visibleSites=0;
-  for(const c of clusters){
-    const {row,parent,island,sites,parts,copy}=c,w=row.width*p.units,h=w*MODULAR_ASSETS[row.asset].height/MODULAR_ASSETS[row.asset].width;
-    parent.position.set(row.x*p.units,0,650-row.z*p.units+copy*p.period);
-    island.scale.set(w,1,h);
-    const worldZ=parent.position.z+p.wrapped;
-    parent.visible=!!island.material.map&&worldZ+h/2>=-100&&worldZ-h/2<=1400;
-    for(const {part,sprite:s} of parts){
-      const a=MODULAR_ASSETS[part.asset],pw=part.width*p.units;
-      s.position.x=part.x*w;s.position.z=part.z*h;s.scale.set(pw,1,pw*a.height/a.width);
-    }
-    for(const {site,sprite,light} of sites){
-      const a=MODULAR_ASSETS[site.asset],width=site.width*p.units,height=width*a.height/a.width;
-      sprite.position.x=site.x*w;sprite.position.z=site.z*w;sprite.scale.set(width,1,height);sprite.rotation.y=site.rotation??0;
-      if(light){light.position.x=sprite.position.x;light.position.z=sprite.position.z-height*.12;
-        const size=width*(site.effect==='radar'?.8:.24);light.scale.set(size,1,size);}
-    }
+  for(const {parent,island,sites} of clusters){
+    const worldZ=parent.position.z+p.wrapped,halfHeight=island.scale.z/2;
+    parent.visible=!!island.material.map&&worldZ+halfHeight>=-100&&worldZ-halfHeight<=1400;
     if(parent.visible){visible++;visibleSites+=sites.length;}
   }
-  for(const {row,sprite,host} of waterProps){
-    const a=MODULAR_ASSETS[row.asset],w=row.width*p.units,hostWidth=host.row.width*p.units;
-    const hostAsset=MODULAR_ASSETS[host.row.asset],hostHeight=hostWidth*hostAsset.height/hostAsset.width;
-    sprite.position.set(row.x*hostWidth,definition.depth+.15,row.z*hostHeight);
-    sprite.scale.set(w,1,w*a.height/a.width);sprite.rotation.y=row.rotation??0;
-    sprite.visible=!!sprite.material.map;
-  }
-  for(const {row,copy,sprite:s} of seabedFields){
-    const w=row.width*p.units;
-    s.position.x=row.x*p.units;s.position.z=650-row.z*p.units+copy*p.period;s.scale.set(w,1,w);
-    const z=s.position.z+p.wrapped;s.visible=!!s.material.map&&z+w/2>=-100&&z-w/2<=1400;
+  for(const {sprite} of waterProps)sprite.visible=!!sprite.material.map;
+  for(const {sprite} of seabedFields){
+    const z=sprite.position.z+p.wrapped,halfWidth=sprite.scale.x/2;
+    sprite.visible=!!sprite.material.map&&z+halfWidth>=-100&&z-halfWidth<=1400;
   }
   Object.assign(mesh.userData.terrain||={}, {id:definition.id,role:'terrain',name:definition.name,depth:definition.depth,
     speed:SETTINGS.nativeSpeed*SETTINGS.motionScale,nativeSpeed:SETTINGS.nativeSpeed,scroll:p.travel,x:mesh.position.x,source:`${sceneId}/rigid-surface`,

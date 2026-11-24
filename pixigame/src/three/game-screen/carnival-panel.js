@@ -26,7 +26,7 @@ function slot(a,t,reward,x,y,size){
 }
 function paint(data,w,h,t){
   const {activity:s,modal}=data,ph=Math.min(h-18,w*1.55),pw=w*.94,u=Math.min(w/390,h/550),
-    header=clamp(64*u,41,67),p=paintLobbyPaper(t,{coverNavigation:true,paperFace:art.taskFace},w,h,pw,ph,header,'七日嘉年华');
+    header=clamp(64*u,41,67),p=paintLobbyPaper(t,{paperFace:art.taskFace},w,h,pw,ph,header,'七日嘉年华');
   if(!s||ph<=0)return;
   const a=p.a,x=p.x+18*u,r=p.x+pw-18*u,iw=r-x,top=p.top;
   const day=s.days.find(row=>row.day===modal.day)??s.days[s.day-1];
@@ -99,13 +99,13 @@ function paint(data,w,h,t){
   }
 }
 
-export function openCarnivalPanel(screen,host,send){
+export function openCarnivalPanel(screen,host,send,options){
   let data,key,revision=0;
   const panel=createLobbyPanel(screen,host,'七日嘉年华',paint,cmd=>{
     if(cmd.type!=='none')send(cmd.type,cmd.data||{},host);
-  });
+  },options);
   const refresh=()=>panel.update(data,++revision,'carnival');
-  return {host,close:panel.close,update(snapshot,modal,signature){
+  return {host,close:panel.close,prepareOffscreen:panel.prepareOffscreen,activate:panel.activate,update(snapshot,modal,signature){
     const activity=snapshot.carnival,countdown=activity?timer(activity,activity.observedAt):'';
     const next=[signature,modal.day,modal.milestone,countdown].join('|');
     if(key===next)return;

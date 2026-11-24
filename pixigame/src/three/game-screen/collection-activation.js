@@ -5,9 +5,9 @@ import {plain} from './catalog-model.js';
 import {nativeCollectionArt,nativeSkillArt} from '../../replica/native-collection-art.js';
 
 export function activation(d,w,h,t,row){
-  const a=t.layer('activation-shade').art,shade=a.quad(0,0,w,h,'#030a16',.85);
+  const a=t.layer('activation-shade').art,shade=t.backdrop(a,.85,'#030a16');
   animateMeshes(t,[shade],w/2,h/2,{...d,duration:.25,frames:[{at:0,opacity:0},{at:1}]});
-  area(t,'outside','关闭',box(0,0,w,h),'close');
+  area(t,'outside','关闭',t.frameRect,'close');
   const body=t.layer('activation','base').art,rec=d.modal.receipt||{},base=w*.05;
   const tracks=[];let y=base;
   function group(duration,start,delay,paint,curve){const first=body.group.children.length,top=y;paint();

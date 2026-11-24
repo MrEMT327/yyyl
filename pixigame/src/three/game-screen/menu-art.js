@@ -1,8 +1,9 @@
 import {nineSliceGeometry} from '../../ui/nine-slice-geometry.js';
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
-import {leftOfMenuTop,navArtwork,navBodyEnd,navFillStart,walletTop} from './home-navigation.js';
+import {leftOfMenuCenterY,bottomNavigation,navArtwork,navBodyEnd,navFillStart,walletTop} from './home-navigation.js';
 import {artworkSize} from './image-loading.js';
 import {equipmentLayout} from './equipment-layout.js';
+import {recruitPreview} from './recruit-preview-atlas.js';
 import art from './menu-art.json';
 
 export {art};
@@ -27,7 +28,12 @@ export function slice(a,t,url,b,edge=10,cut=18,{updateInPlace=false}={}){
   return mesh;
 }
 export function button(a,t,b,{title,price,icon,gold=false,short=false,disabled=false,skin,titleColor='#fff',shortColor='#ffb59a',family=titleFont,titleSize=clamp(b.w*.092,12,17),priceSize=Math.min(14,b.w*.10),priceColor='#fff',artwork}){
-  const plate=skin?pic(a,t,skin,b,false,artwork):slice(a,t,gold?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,Math.min(12,b.h*.24),18,artwork);
+  let fallback;
+  const skinArt=skin&&artwork?{...artwork,onImage:()=>{if(fallback)fallback.visible=false;}}:artwork;
+  const plate=skin?pic(a,t,skin,b,false,skinArt):slice(a,t,gold?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,Math.min(12,b.h*.24),18,artwork);
+  if(skin&&artwork&&!plate.visible){
+    fallback=a.quad(b.x,b.y,b.w,b.h,gold?'#cdb273':'#254762');fallback.renderOrder=-1;
+  }
   if(disabled&&!short&&!skin)plate.material.color.set(0xb5b5b5);
   const cx=b.x+b.w/2;
   words(a,title,cx,b.y+b.h*(price==null ? .50 : .34),titleSize,{family,color:titleColor,maxWidth:b.w-8});
@@ -64,45 +70,45 @@ function verticalSlice(front,t,url,b,top,bottom,options){
   const {uv}=pic(front,t,url,b,false,options).geometry.attributes;
   for(let i=0;i<uv.count;i++)uv.setY(i,1-bottom+uv.getY(i)*(bottom-top));
 }
-const railHeight=w=>w*151/750;
-export const menuNavY=(w,h,safeBottom=0)=>h-railHeight(w)-safeBottom;
+const tabLabels={shop:'商城',assembly:'装备',battle:'战役',research:'天赋',supply:'招募'};
 export function chrome(data,w,h,t){
   const tab=data.tab,s=data.snapshot,u=w/369.453,root=t.layer('room').art;
-  const railH=railHeight(w),navY=menuNavY(w,h,data.safeBottom);
-  const bleed=t.topBleed||0,equipment=tab==='assembly'?equipmentLayout(w,navY,data.adaptiveEquipment):null;
+  const recruitAtlas=data.progressive&&tab==='supply'?t.texture('/'+recruitPreview.path,true,2):null;
+  const {top:navY,height:railH,inset,hitHeight}=bottomNavigation(w,h,data.safeBottom,data.native);
+  const bleed=t.topBleed||0,equipment=tab==='assembly'?equipmentLayout(w,navY,data.native):null;
   const artwork=data.prioritizedArtwork?{updateInPlace:true}:undefined;
   const primary=artwork?{...primaryArtwork,...artwork}:primaryArtwork;
   if(equipment)equipmentRoom(root,t,w,h,bleed,equipment,primary);
   else{
-    if(data.progressive)root.quad(0,-bleed,w,h+bleed,'#203247');
+    if(data.progressive)root.quad(0,-bleed,w,h+bleed,tab==='supply'?'#aabdc8':'#203247');
     pic(root,t,art[tab+'-background'],box(0,-bleed,w,h+bleed),false,artwork?primary:{...primaryArtwork,updateInPlace:tab==='research'});
   }
   const title=t.layer('heading').art;
   const heading=box(w*.02,4*u,w*.33,44*u);
-  const titleTop=leftOfMenuTop(t.viewport,heading.x+heading.w,heading.h);
-  const defaultWalletY=walletTop*w/750,walletY=titleTop===null?defaultWalletY:6;
-  if(titleTop!==null)heading.y=titleTop-bleed;
+  const menuCenter=leftOfMenuCenterY(t.viewport,heading.x+heading.w);
+  const defaultWalletY=walletTop*w/750,walletY=menuCenter===null?defaultWalletY:6;
+  if(menuCenter!==null)heading.y=menuCenter-bleed-heading.h/2;
   const footerUrl=art[tab+'-footer'];
   // Request navigation artwork with the heading, before the scroll content.
   const footerReady=!data.progressive||Boolean(t.texture(footerUrl,!artwork,2).image);
   if(tab==='supply'&&data.fleetReturnKind){
     const label='← 返回'+(data.fleetReturnKind==='aircraft'?'战机':'驾驶员');
     words(title,label,heading.x+4*u,heading.y+heading.h/2,13*u,{align:'left',color:'#e9f5ff'});
-    const hit=titleTop===null?heading:{...heading,w:Math.min(heading.w,w*234/750-heading.x-4)};
+    const hit=menuCenter===null?heading:{...heading,w:Math.min(heading.w,w*234/750-heading.x-4)};
     area(t,'fleet-return',label,hit,'fleetSupplyBack');
   }else{
     let fallback;
     const options=artwork&&data.progressive?{...primary,onImage:()=>{if(fallback)fallback.visible=false;}}:primary;
     const plate=pic(title,t,art[tab+'-heading'],heading,false,options);
-    if(data.progressive&&!plate.visible)fallback=words(title,tab==='shop'?'商城':'装备',heading.x+6*u,heading.y+heading.h/2,18*u,{align:'left',family:titleFont});
+    if(data.progressive&&!plate.visible)fallback=words(title,tabLabels[tab],heading.x+6*u,heading.y+heading.h/2,18*u,{align:'left',family:titleFont});
   }
   resourceBar(t,title,s,w,walletY,artwork);
   const defaultTop=tab==='assembly'?w*.125:Math.max(12,w*.0325)+w*(tab==='supply' ? .125 : .1805);
-  const top=tab==='assembly'||titleTop===null?defaultTop:
+  const top=tab==='assembly'||menuCenter===null?defaultTop:
     Math.max(walletY+Math.max(44,46*w/750)+8,defaultTop+walletY-defaultWalletY);
-  return {top,navY,equipment,artwork,primary,
+  return {top,navY,equipment,artwork,primary,recruitAtlas,
     footer(){
-      const front=t.layer('footer').art,inset=data.safeBottom||0;
+      const front=t.layer('footer').art;
       const url=footerUrl,fallback=[];
       const options=footerReady?primary:{...primary,onImage:()=>{for(const mesh of fallback)mesh.visible=false;}};
       if(!footerReady)fallback.push(front.quad(0,navY,w,railH+inset,'#172735'));
@@ -112,10 +118,10 @@ export function chrome(data,w,h,t){
         verticalSlice(front,t,background,box(0,skin.fillY,w,skin.fillHeight),navFillStart,navBodyEnd,artwork);
         verticalSlice(front,t,background,box(0,skin.trimY,w,skin.trim),navBodyEnd,1,artwork);
       }else pic(front,t,url,box(0,navY,w,railH),false,options);
-      let x=0;for(const [key,label] of [['shop','商城'],['assembly','装备'],['battle','战役'],['research','天赋'],['supply','招募']]){
+      let x=0;for(const [key,label] of Object.entries(tabLabels)){
         const width=w*(key===tab ? .2506 : .18735);
         if(!footerReady)fallback.push(words(front,label,x+width/2,navY+railH/2,14*u,{color:key===tab?'#ffd28a':'#e0effb'}));
-        area(t,'nav-'+key,label,box(x,navY,width,railH),'tab',{tab:key});x+=width;
+        area(t,'nav-'+key,label,box(x,navY,width,hitHeight),'tab',{tab:key});x+=width;
       }
     }};
 }

@@ -10,8 +10,8 @@ export function paintItemDetail(data,w,h,t){
   const desc=words(content,model.description,ix,0,size,{align:'left',color:'#20394f',weight:400,maxWidth:bw,wrap:true,lineHeight:lineH});
   const textH=desc.userData.uiTextLines.length*lineH,bodyH=Math.max(.26*w,Math.min(h*.4,.04*w+textH));
   const header=112*w/750,ph=Math.min(h*.86,header+.24*w+bodyH+.06*w),y=(h-ph)/2,slotY=y+header,divider=slotY+.24*w;
-  art.quad(0,0,w,h,'#030b15',.533);
-  t.control('inspect-outside','返回',box(0,0,w,h),{type:'close'},{scope:'inspect'});
+  t.backdrop(art,.533,'#030b15');
+  t.control('inspect-outside','返回',t.frameRect,{type:'close'},{scope:'inspect'});
   t.control('inspect-paper','',box(x,y,pw,ph),{type:'none'},{scope:'inspect'});
   if(!preparePsdPopupArt('secondary'))t.waitForArt();
   paintPsdPopup(art,'secondary',x,y,pw,ph,w/750);

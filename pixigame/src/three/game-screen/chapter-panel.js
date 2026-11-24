@@ -70,7 +70,7 @@ export function openChapterPanel(screen,host,send,kind){
       [signature,id,latest.snapshot.nativeAcquisition?.revision,latest.snapshot.starRewards?.revision,Boolean(latest.snapshot.rewardBusy),Boolean(latest.snapshot.rewardPending),inspect?.itemId].join('|'),id);
   }
   return {host,close:panel.close,update(snapshot,modal,key){
-    latest={snapshot,modal:{...modal},backdropAlpha:.55,coverNavigation:kind==='nativeStarRewards',safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)};
+    latest={snapshot,modal:{...modal},backdropAlpha:.55,safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)};
     signature=key;refresh();
   }};
 }

@@ -6,9 +6,11 @@ import {normalFit} from './catalog-art.js';
 import {actions,headingValue,hit,label,notice} from './supply-cards.js';
 import {supplyTasks,supplyBoxes,growthChoice} from './supply-tasks.js';
 import {nativeItemArt} from '../../replica/native-item-presentation.js';
+import {rewardDisplayQuality} from '../../replica/item-display-quality.js';
+import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {equipmentBoxRuleLines} from '../../ui/equipment-box-rule-lines.js';
 
-const titles={nativeEquipmentBoxes:'装备箱说明',nativeRecruitInfo:'积分兑换',pilotSupplyBoxes:'积分兑换',pilotSupplyTasks:'补给任务',growthSupplyChoice:'成长补给'};
+const titles={nativeEquipmentBoxes:'装备箱说明',nativeRecruitInfo:'积分兑换',pilotSupplyBoxes:'积分兑换',pilotSupplyTasks:'补给任务',growthSupplyChoice:'成长补给',shopSpecials:'特惠'};
 export const supportsSupplyPanel=k=>Object.hasOwn(titles,k);
 const rate=n=>Number((n/1000).toFixed(4))+'%';
 function boxGuide(r,d){
@@ -33,13 +35,41 @@ function boxGuide(r,d){
   actions(r,[hit('shop','前往商城','equipmentShop',{section:'boxes'})]);
   actions(r,[...(s.equipmentBoxReceipt?[hit('last','上次结果','nativeEquipmentBoxLast')]:[]),hit('bag','打开背包','nativeMaterials')]);
 }
+const specialTabs=[
+  ['daily','每日','每日 00:00 刷新'],
+  ['weekly','每周','周一 00:00 刷新'],
+  ['monthly','每月','每月 1 日 00:00 刷新'],
+];
+function shopSpecials(r,{snapshot:s,modal}){
+  const period=modal.period;
+  const flight=s.flightRewards,offer=flight?.adOffers?.[period];
+  if(!offer)return;
+  const [,title,reset]=specialTabs.find(([id])=>id===period);
+  actions(r,specialTabs.map(([id,name])=>hit('special-'+id,name,'shopSpecialPeriod',{period:id},false,id===period)));
+  r.text('北京时间 '+reset,{size:13,color:'#516e81',align:'right'});
+  r.block(c=>{
+    headingValue(c,title+'特惠','剩余 '+(offer.canClaim?'1 / 1':'0 / 1'));
+    c.grid(offer.rewards,offer.rewards.length,(a,b,reward,show)=>{
+      if(show){
+        const size=Math.min(60,b.w-6),center=b.x+b.w/2;
+        paintRewardItemSlot(a,{...reward,...rewardDisplayQuality(reward)},{x:center-size/2,y:b.y,size},c.t.image);
+        words(a,reward.name,center,b.y+size+12,11,{color:'#385d76',maxWidth:b.w-2});
+      }
+      return hit('special-reward-'+reward.id,reward.title,'inspect',{itemId:reward.id});
+    },{height:84});
+    const label=flight.adBusy?'广告播放中':offer.clockRollback?'设备日期异常':!offer.canClaim?'本期已领取':!flight.adAvailable?'广告暂不可用':'看广告领取';
+    actions(c,[hit('claim-special',label,'flightReward',{operation:'ad',period,revision:flight.revision},
+      s.rewardBusy||s.rewardPending||!offer.canClaim||!flight.adAvailable,true)]);
+  });
+}
 export function openSupplyPanel(screen,host,send){
   let latest,key,identity,inspect=null;const metrics=sheetMetrics();
   function refresh(){panel.update({...latest,inspect},key+'|'+identity+'|'+(inspect?.itemId||''),identity);}
   const panel=createLobbyPanel(screen,host,'补给',(d,w,h,t)=>{
     const type=d.modal.type,title=type==='growthSupplyChoice'?d.snapshot.pilotSupply?.growth?.[d.modal.period]?.name||titles[type]:titles[type];
-    detailSheet(t,d,w,h,{title,width:.92*w,minHeight:h*.84,maxHeight:h*.84,build:r=>{
+    detailSheet(t,d,w,h,{title,width:.92*w,minHeight:type==='shopSpecials'?0:h*.84,maxHeight:h*.84,build:r=>{
       notice(r,d.snapshot);if(type==='nativeEquipmentBoxes')boxGuide(r,d);
+      else if(type==='shopSpecials')shopSpecials(r,d);
       else if(type==='pilotSupplyTasks')supplyTasks(r,d);else if(type==='growthSupplyChoice')growthChoice(r,d);else supplyBoxes(r,d);
     }});
     if(inspect){paintItemDetail(d,w,h,t);return 'inspect';}return 'base';

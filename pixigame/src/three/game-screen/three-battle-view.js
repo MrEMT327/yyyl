@@ -1,19 +1,19 @@
 import * as T from 'three';
 import {BattleArt} from './h5-battle-screen.js';
 import {makeBattleGroup,makeBattlePart,selectBattleRegion} from './three-battle-parts.js';
-import {queueBattleArt,floatingText,pickupArt,treasureArt} from './three-battle-items.js';
+import {queueBattleArt,floatingText,pickupArt,treasureArt,supplyCanopyKey} from './three-battle-items.js';
 import {healthAt,keepDyingBar,urgency,damageBorder} from './three-battle-feedback.js';
 import {enemyArt} from '../../../replica-battle/three-enemies/index.js';
 import {sampleNativeEnemyAnimation} from '../../../replica-battle/kernel/native-enemy-animation.ts';
 import {BattleShotPresentation} from '../../../replica-battle/kernel/enemy-recoil-shots.ts';
 import {battleTexturePaths} from '../../../replica-battle/kernel/pathogenic/battle-texture-dependencies.mjs';
+import {unusedChapterEnemyProjectileArt} from '../../../replica-battle/kernel/pathogenic/enemy-projectile-presentation.mjs';
 import {playerVisibility} from '../../../replica-battle/kernel/combat-readability.mjs';
 
 const width=540,height=960;
-// Large situational atlases aren't needed for the first presentation. In
-// WeChat their download retries must not hold the opening flight hostage.
+// Artwork for later effects, including the supply canopy, can load after the opening flight.
 export function deferWechatBattleArtwork(key,url){
-  return key==='res://gfx/environment/explosion_dna.png'||key==='res://gfx/enemies/stomp_wave.png'||
+  return key===supplyCanopyKey||key==='res://gfx/environment/explosion_dna.png'||key==='res://gfx/enemies/stomp_wave.png'||
     /\/original-projectiles\/square-yellow-v1\.png(?:[?#]|$)/.test(url);
 }
 export class NativeBattleView {
@@ -21,7 +21,7 @@ export class NativeBattleView {
     Object.assign(this,{content,sim,ready,appearance,source});
     this.stage=appearance.screen.stage;this.art=new BattleArt(content.assets.sprites,appearance.battleAssetBase);
     this.backgroundBinding=this.stage.ground.userData.binding;
-    this.pendingArt=new Map();this.objects=new Map();this.motions=new Map();this.active=new Set();
+    this.pendingArt=new Map();this.objects=new Map();this.enemyPositions=new Map();this.active=new Set();
     this.models=new Map();this.paths=new Map();this.coastBackgroundTime=0;
     this.rawDelta=0;this.closed=false;this.px=width/content.world.width;
     this.cameraView=new source.ViewPosition({x:0,z:0},true);this.mapCameraOffsets=new source.MapOffsets();
@@ -57,6 +57,10 @@ export class NativeBattleView {
       }
     }
     const routed=prioritize?battleTexturePaths(this.fx.graph):null;
+    if(routed){
+      const bulletModels=Object.values(this.content.chapter.bullets).map(row=>Number(row.parameters.ModelId));
+      for(const key of unusedChapterEnemyProjectileArt(bulletModels))routed.delete(key);
+    }
     for(const [path,t] of Object.entries(this.fx.graph.textures)){
       this.art.expectSize(path,t.width,t.height);
       if(routed&&!routed.has(path))this.art.defer(path,t.url);
@@ -138,12 +142,8 @@ export class NativeBattleView {
       }
       if(Number.isFinite(minX))this.source.deathBody(e,maxX-minX,maxY-minY,this.px);
     }
-    const revision=e.viewPositionRevision??0,reset=e.viewResetPosition??{x:e.oldX,z:e.oldZ};
-    let motion=this.motions.get(e.uid);
-    if(!motion){motion={view:new this.source.ViewPosition(reset),target:{...reset},revision};this.motions.set(e.uid,motion);}
-    if(motion.revision!==revision){motion.view.setPosition(reset);motion.target={...reset};motion.revision=revision;}
-    if(motion.target.x!==e.x||motion.target.z!==e.z){motion.target={x:e.x,z:e.z};motion.view.setTargetPosition(motion.target);}
-    const world=motion.view.update(dt),pos=this.project(world.x,world.z);
+    const world=this.renderSamples.enemy(e),pos=this.project(world.x,world.z);
+    this.enemyPositions.set(e.uid,world);
     if(group.userData.animate)group.userData.animate(group,e,world,dt,this.sim.clock,this.shots.recoilTimes.get(e.uid));
     else{
       const poses=sampleNativeEnemyAnimation(this.content.assets.enemyLocalAnimation,e.entityId,{age:e.age,mainState:e.dead?'Death':e.animationClip,mainTime:e.dead?e.deathAge||0:e.animationTime??e.age});
@@ -160,7 +160,7 @@ export class NativeBattleView {
       else this.sequence(group,e.modelId,e.age);
     }
     const hit=this.source.hitMotion(e,visualClock,status.frozen.has(e.uid));
-    group.position.set(pos.x+hit.x,pos.y+hit.y,0);group.rotation.z=e.angle+hit.rotation;
+    group.position.set(pos.x+hit.x,pos.y+hit.y,0);group.rotation.z=world.angle+hit.rotation;
     group.scale.set(e.scale*hit.scaleX,e.scale*hit.scaleY,1);
     const freezeState=group.userData.freeze??=this.source.freezeState();
     const frost=this.source.freeze(freezeState,status.frozen.has(e.uid),visualClock);
@@ -179,8 +179,8 @@ export class NativeBattleView {
     }
     healthAt(this,e,world,visualClock);urgency(this,e,pos);
     if(!e.dead&&e.laserWarning){
-      const w=e.laserWarning,c=Math.cos(e.angle),s=Math.sin(e.angle);
-      w.mounts.forEach((mount,i)=>{const from={x:e.x+mount.x*c+mount.z*s,z:e.z-mount.x*s+mount.z*c};
+      const w=e.laserWarning,c=Math.cos(world.angle),s=Math.sin(world.angle);
+      w.mounts.forEach((mount,i)=>{const from={x:world.x+mount.x*c+mount.z*s,z:world.z-mount.x*s+mount.z*c};
         const end=this.source.warningEnd(from,w.target,this.content.world.width,this.content.world.height,this.sim.cameraWorldBounds);
         this.fx.warning(e.uid,i,w.until-e.age,this.project(from.x,from.z),this.project(end.x,end.z));});
     }
@@ -202,7 +202,7 @@ export class NativeBattleView {
     const t1=now?.();
     const sim=this.sim,c=this.content,dt=sim.phase==='playing'?Math.min(Math.max(delta/1000,0),.1):0;
     this.active.clear();
-    const clock=this.renderSamples.beginFrame(sim.clock,sim.runId,sim.phase,delta/1000),status=this.statusIndex.update(sim);
+    const clock=this.renderSamples.beginFrame(sim.clock,sim.runId,sim.phase,delta/1000,this.interpolationFraction),status=this.statusIndex.update(sim);
     const origin=this.project(0,0);this.fx.setCameraOffset(origin.x,origin.y);
     const count=this.shots.update(sim.enemies,sim.projectiles,sim.clock);
     this.fx.beginFrame(sim.clock,sim.runId,{playerBulletCount:count,visualClock:clock,escortSwords:sim.projectiles,escortPlayer:sim.player});
@@ -223,10 +223,11 @@ export class NativeBattleView {
     const t2=now?.();
     damageBorder(this,(sim.phase==='playing'||player.hp<=0)&&sim.phase!=='ready'&&player.hitFlash>0?this.renderSamples.age(.3-player.hitFlash):-1);
     for(const e of sim.enemies)this.enemy(e,dt,clock,status);
-    for(const t of sim.treasures)treasureArt(this,t);
-    for(const uid of this.motions.keys())if(!this.active.has('enemy:'+uid))this.motions.delete(uid);
-    const mounts=this.appearance.missileMounts()?.map(m=>({x:player.x+(m.x-p.x)/this.px,z:player.z-(m.y-p.y)/this.px}));
-    this.missileMounts.beginFrame(sim.clock,sim.runId,sim.projectiles,mounts);
+    for(const t of sim.treasures)treasureArt(this,t,this.renderSamples.age(t.animationAge));
+    for(const uid of this.enemyPositions.keys())if(!this.active.has('enemy:'+uid))this.enemyPositions.delete(uid);
+    this.missileMounts.beginFrame(sim.clock,sim.runId,sim.projectiles,()=>this.appearance.missileMounts()?.map(m=>({
+      x:player.x+(m.x-p.x)/this.px,z:player.z-(m.y-p.y)/this.px,
+    })));
     for(const b of sim.projectiles){
       const bullet=this.missileMounts.projectile(this.renderSamples.projectile(this.source.thunder(b)??b,c.chapter.player.weaponEntityId));
       this.fx.equipmentAccent(bullet,sim.equipmentProjectileAccent(b),this.project);
@@ -243,7 +244,7 @@ export class NativeBattleView {
       this.sequence(view,pickup.modelId,pickup.age-pickup.delay);
     }
     for(const buff of status.visuals){
-      const point=this.motions.get(buff.targetUid)?.view.position;
+      const point=this.enemyPositions.get(buff.targetUid);
       const body=buff.targetUid?status.targets.get(buff.targetUid):null,shape=entity.stats.shape;
       const size=[170002,170001,170004,170012,220022,170000].includes(buff.modelId)?
         {visualRadiusX:body?.radiusX??shape[0]*sim.playerScale,visualRadiusZ:body?.radiusZ??(shape[1]??shape[0])*sim.playerScale}:{};
@@ -264,7 +265,7 @@ export class NativeBattleView {
     if(!e||e.age<0)return;
     let row=e;
     if(e.followPlayer)row={...e,x:this.sim.player.x+(e.followOffset?.x||0),z:this.sim.player.z+(e.followOffset?.z||0)};
-    if(e.ownerUid){const pos=this.motions.get(e.ownerUid)?.view.position;if(!pos)return;row={...row,x:pos.x,z:pos.z};}
+    if(e.ownerUid){const pos=this.enemyPositions.get(e.ownerUid);if(!pos)return;row={...row,x:pos.x,z:pos.z};}
     if(e.kind!=='text')this.fx.effect(row,this.project,this.source.deathScale(row));
     else floatingText(this,row,this.source.textLayout(e,this.renderSamples.age(e.age)));
   }

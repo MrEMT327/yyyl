@@ -7,7 +7,7 @@ import {projectIconUrl} from '../../ui/project-ui-art.js';
 const stageLight='/art/process-feedback-v1/hologram-reveal.png';
 function opening(data,w,h,t){
   const a=t.layer('box-opening').art,adv=data.pool==='advanced',caption=adv?'高级装备箱':'普通装备箱';
-  a.quad(0,0,w,Math.max(0,h-w*151/750-data.safeBottom),'#000',.7);
+  t.backdrop(a,.7);
   pic(a,t,'/art/psd-page-chrome-v1/chapter-face.png',box(w*.22,h*.13,w*.56,h*.08));
   words(a,caption,w*.5,h*.17,w*.06,{family:titleFont,color:'#fff2cf'});
   const skipWidth=Math.max(44,.149*w),skip=box(w*.94-skipWidth,h*.05,skipWidth,44);
@@ -37,7 +37,7 @@ export function openBoxOpening(screen,host,send,sound){
   const panel=createLobbyPanel(screen,host,'装备开箱',opening,cmd=>{if(cmd.type==='processSkipBox'||cmd.type==='close')send('processSkipBox',{},host);},{overlay:true});
   return {host,close(){closed=true;clearTimeout(timer);panel.close();},update(_snapshot,modal){
     if(id===modal.id)return;id=modal.id;clearTimeout(timer);
-    panel.update({pool:modal.pool,entered:performance.now()/1000,reduced,safeBottom:screen.menuView?.safeBottom||0},id,'opening-'+id);
+    panel.update({pool:modal.pool,entered:performance.now()/1000,reduced},id,'opening-'+id);
     if(!reduced)sound('reward');
     timer=setTimeout(()=>{if(!closed)send('processSkipBox',{},host);},reduced?100:1900);
   }};

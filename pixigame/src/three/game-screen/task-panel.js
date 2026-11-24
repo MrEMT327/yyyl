@@ -107,7 +107,7 @@ function signIn(data,w,t,clip){
   taskPageFade(a,t,data.switched);
 }
 function tasks(data,w,h,t){
-  const width=.92*w,height=Math.min(w*1.5,h*.9),p=paintLobbyPaper(t,{...data,coverNavigation:true,paperFace:art.taskFace},w,h,width,height,w/6,'任务');
+  const width=.92*w,height=Math.min(w*1.5,h*.9),p=paintLobbyPaper(t,{...data,paperFace:art.taskFace},w,h,width,height,w/6,'任务');
   const margin=40*w/750,x=p.x+margin,bw=width-2*margin,step=bw/4,faceH=step*32/70;
   for(const [i,tab] of DAILY_TABS.entries()){
     const current=data.period===tab.id,left=x+step*i,center=p.top+24;
@@ -135,7 +135,7 @@ function chestTip(data,w,h,t){
   items.forEach((r,i)=>rewardSlot(t,a,data.snapshot,r,box(x+.04*w+(i%cols)*(side+gap),y+.035*w+Math.floor(i/cols)*(side+gap),side,side),'chest-item-'+i));
   if(!row)words(a,'该奖励已更新，请返回任务查看。',x+width/2,y+height/2,13,{color:'#203b50',maxWidth:width-10,wrap:true});
 }
-export function openTaskPanel(screen,host,send,kind,scrollPositions){
+export function openTaskPanel(screen,host,send,kind,scrollPositions,options){
   const tip=kind==='taskChestPreview',source=tip?screen.panel:null,entered=performance.now()/1000;
   let latest,inspect=null,switched=0;
   const panel=createLobbyPanel(screen,host,tip?'宝箱奖励':'任务',(data,w,h,t)=>{
@@ -146,7 +146,7 @@ export function openTaskPanel(screen,host,send,kind,scrollPositions){
     if(cmd.type==='inspect'){inspect=cmd.data;panel.scroll('inspect',0);refresh();return;}
     if(cmd.type==='close'&&inspect){inspect=null;refresh();return;}
     if(cmd.type!=='none')send(cmd.type,cmd.data||{},host);
-  },{overlay:tip,onScroll(zone,value){if(DAILY_TABS.some(tab=>tab.id===zone))scrollPositions?.set(zone,value);}});
+  },{...options,overlay:tip,onScroll(zone,value){if(DAILY_TABS.some(tab=>tab.id===zone))scrollPositions?.set(zone,value);}});
   panel.surface?.addEventListener('keydown',keyTab,true);
   function keyTab(e){
     if(inspect||tip||!panel.focused?.startsWith('tab-')||!['Home','End','ArrowLeft','ArrowRight'].includes(e.key))return;
@@ -155,7 +155,8 @@ export function openTaskPanel(screen,host,send,kind,scrollPositions){
   }
   function refresh(){const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);panel.update({...latest,source,bounds:panel.bounds,entered,inspect,reduced,switched:reduced?0:switched},
     [latest.signature,latest.period,latest.id,inspect?.itemId,inspect?.name].join('|'),kind);}
-  return {host,close(){panel.surface?.removeEventListener('keydown',keyTab,true);panel.close();},update(snapshot,modal,signature){
+  return {host,prepareOffscreen:panel.prepareOffscreen,activate:panel.activate,
+    close(){panel.surface?.removeEventListener('keydown',keyTab,true);panel.close();},update(snapshot,modal,signature){
     const period=modal.period||'daily';
     if(latest&&latest.period!==period)switched=performance.now()/1000;
     latest={snapshot,signature,period,id:modal.id,initial:scrollPositions?.get(period)||0};refresh();

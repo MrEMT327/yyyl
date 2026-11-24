@@ -104,7 +104,10 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
     textureLoader:{load(path,loaded,_progress,failed){return artworkTexture(path,loaded,failed);}},
   };
   const hudHost={bounds,watchResize:platform.onViewport,bindInput:options=>touch.bindInput(options),
-    safeInsets:()=>({top:platform.viewport.safeTop,bottom:platform.viewport.safeBottom}),
+    safeInsets:()=>{
+      const {safeTop:top,safeBottom:bottom,menuButton}=platform.viewport;
+      return {top,bottom,menuButton};
+    },
     loadImageSurface:platform.loadArtwork};
   let skills;
   const rendering={
@@ -115,12 +118,14 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       createH5Presentation({content,appearance,onError,onGraphicsContext,onProgress,onFlightRoll,host,aircraftReady}),
     createView(content,sim,ready,skin){
       const view=new CombatView(content,sim,ready,skin);
+      const frameSummary=platform.debugLog?.beginBattle?.(chapterId);
       let lastReport=-Infinity,reports=0;
       view.profileClock=platform.now;
       view.reportSlowFrame=stats=>{
+        if(sim.phase!=='playing'||launchActive||device.cover||!platform.visible){frameSummary?.reset();return;}
+        frameSummary?.sample(stats.interval,sim.wave,stats);
         const now=platform.now(),cpu=stats.logic+stats.terrainAndPlane+stats.entitiesAndEffects+stats.draw;
-        if(sim.phase!=='playing'||launchActive||device.cover||reports>=16||now-lastReport<3000||
-          (stats.interval<48&&cpu<28))return;
+        if(reports>=16||now-lastReport<3000||(stats.interval<48&&cpu<28))return;
         reports++;lastReport=now;
         const timings=Object.fromEntries(Object.entries(stats).map(([key,value])=>[key,Math.round(value)]));
         console.info('[Three 局内慢帧]',JSON.stringify({...timings,chapter:chapterId,wave:sim.wave,
@@ -168,7 +173,7 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   try{return mountSharedBattleSession({bindings,hudHost,skinHost,fetchResource,
     canvas:platform.display.canvas,readSharedLoadoutJSON:services.readSharedLoadoutJSON,loadBattleData:services.loadBattleData,
     warmBattleTerrain:platform.warmArtworkFiles,
-    warmBattleImages:(urls,signal)=>platform.warmArtworkFiles(urls.slice(0,24),signal),
+    warmBattleImages:(urls,signal)=>platform.warmArtworkFiles(urls.slice(0,24),signal,3),
     memoryContext:{page:battleAddress.pathname,canvases:Number(Boolean(platform.display.canvas)),storage:services.storage},
     setNotice:overlays.notice,setLoadingMessage:overlays.notice},rendering);}
   catch(error){lifetime.dispose();throw error;}

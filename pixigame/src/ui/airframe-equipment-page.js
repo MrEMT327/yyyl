@@ -104,12 +104,13 @@ export function gearModal(modal,{snapshot:s,helpers:h}){
     const skills=gearDetailSkills(item);
     // Entry origin controls return navigation, never an equipped item's actions.
     const slotDetail=Boolean(item.equipped);
+    const equipLabel=gear.equipLockReason||(gear.items.some(other=>other.equipped&&other.type===item.type)?'替换':'装备');
     return {title:'装备详情',content:`<div class="ag-modal ag-equipment-detail" data-quality="${item.qualityRank}" data-detail-origin="${slotDetail?'slot':'warehouse'}">
       <div class="ag-equipment-hero"><div class="ag-equipment-icon"><div class="ag-equipment-art ag-card" data-quality="${item.qualityRank}" data-psd-quality="${item.qualityRank}"><img src="${gearArt(item.art)}" alt="${e(item.name)}"></div>${gearTypeBadge(item,h)}</div><div class="ag-equipment-heading"><h3>${e(item.name)}</h3><div class="ag-equipment-meta"><span class="ag-quality">${e(item.qualityName)}</span><span>${item.equipped?'已装配':'未装配'}${item.locked?' · 已锁定':''}</span></div><p class="ag-equipment-level">等级 <b>Lv.${item.level} / ${item.maxLevel}</b></p>${slotDetail&&item.canDowngrade?btn('gearDowngradePreview','降阶',data):''}</div></div>
       <div class="ag-equipment-stat"><strong>${e(item.attributeName)} +${n(item.attribute)}</strong>${increase!=null?`<em aria-label="下一级增加${n(increase)}">(+${n(increase)})</em>`:''}</div>
       <section class="ag-equipment-skills" aria-label="装备技能"><h3>装备技能</h3><ul>${skills.map(feature=>`<li data-quality="${feature.quality}" class="${feature.unlocked?'is-unlocked':'is-locked'}"><span class="ag-skill-mark ${feature.unlocked?'':'is-lock'}" aria-hidden="true"></span><span><span class="ag-sr">${e(feature.qualityName)}${feature.unlocked?'已解锁':'解锁'}：</span>${e(feature.text)}</span></li>`).join('')}</ul></section>
       ${error}
-      <footer class="ag-equipment-footer">${slotDetail?`${costRow(item,gear,s,h)}<div class="ag-actions ag-slot-actions" role="group" aria-label="已装配装备操作">${btn('gearUnequip','卸下',data)}${btn('gearUpgrade','升级',data,!item.canUpgrade)}${btn('gearUpgradeAll','一键升级',data,!item.canUpgrade)}</div>`:`<div class="ag-actions ag-equipment-primary">${btn('gearEquip',gear.items.some(other=>other.equipped&&other.type===item.type)?'替换':'装备',data)}</div>`}</footer>
+      <footer class="ag-equipment-footer">${slotDetail?`${costRow(item,gear,s,h)}<div class="ag-actions ag-slot-actions" role="group" aria-label="已装配装备操作">${btn('gearUnequip','卸下',data)}${btn('gearUpgrade','升级',data,!item.canUpgrade)}${btn('gearUpgradeAll','一键升级',data,!item.canUpgrade)}</div>`:`<div class="ag-actions ag-equipment-primary">${btn('gearEquip',equipLabel,data,Boolean(gear.equipLockReason))}</div>`}</footer>
     </div>`};
   }
   if(modal.type==='gearDowngrade'){

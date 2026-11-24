@@ -8,19 +8,23 @@ const sockets=new WeakMap(),LIFETIME=.36,MAX_POINTS=20;
 export function projectWingtipPositions(fighter,camera,pose){
   const runtime=fighter.runtime;
   if(!pose?.visible||!runtime?.trails?.length)return [];
-  fighter.object3D.updateWorldMatrix(true,true);camera.updateMatrixWorld(true);
+  const ship=runtime.ship;
+  ship.updateWorldMatrix(true,false);camera.updateWorldMatrix(true,false);
+  const anchorPoint=socket=>{
+    if(!Array.isArray(socket))runtime.asset?.nodes?.get(socket.node)?.updateWorldMatrix(true,false);
+    return runtime.anchorLocal(socket,new THREE.Vector3());
+  };
   let selected=sockets.get(runtime);
   if(!selected){
     const anchors=runtime.trails.map(trail=>({socket:trail.socket,
-      x:runtime.anchorLocal(trail.socket,new THREE.Vector3()).x})).sort((a,b)=>a.x-b.x);
+      x:anchorPoint(trail.socket).x})).sort((a,b)=>a.x-b.x);
     selected=anchors.length>=2?[anchors[0].socket,anchors.at(-1).socket]:[];
     sockets.set(runtime,selected);
   }
   const width=Math.max(pose.width,pose.height)*pose.scaleX;
   const height=Math.max(pose.width,pose.height)*pose.scaleY;
   return selected.map(socket=>{
-    const point=runtime.anchorLocal(socket,new THREE.Vector3());
-    runtime.ship.localToWorld(point);point.project(camera);
+    const point=anchorPoint(socket).applyMatrix4(ship.matrixWorld).project(camera);
     return {x:pose.x+point.x*width/2,y:pose.y-point.y*height/2};
   });
 }

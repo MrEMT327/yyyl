@@ -60,18 +60,21 @@ function browserPanelInput(screen,host,name,main) {
 
 // A panel paints above the retained lobby scene on the same Three device.
 // Its transparent H5 focus target only delivers pointer, wheel and IME input.
-export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,overlay=false,battle=false,fullscreen=false,onScroll,repaint,progressive=false,artworkVisible,interactive=()=>true,allows=()=>true,handlesKey=()=>true}={}){
-  const input=screen.createPanelInput?.(host,name,{main,overlay,battle})||browserPanelInput(screen,host,name,main);
+export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,overlay=false,battle=false,fullscreen=false,onScroll,repaint,
+  prepareArtwork,entryWaitMs=120,progressive=Boolean(prepareArtwork),artworkVisible,backgroundPriority=-1,interactive=()=>true,allows=()=>true,handlesKey=()=>true}={}){
+  const nativeInput=screen.createPanelInput?.(host,name,{main,overlay,battle});
+  const input=nativeInput||browserPanelInput(screen,host,name,main);
   const underlay=overlay||input.overlay?screen.panel:null;
   const surface=input.surface,camera=new OrthographicCamera(0,1,0,1,-10,10),textures=new Map();
   const layers=[],controls=[],animations=[],frameEffects=[],pressEffects=[],regions=new Map(),activeRegions=new Set(),anchors=new Map(),scissor=new Vector4(),viewport=new Vector4();
   let data=null,dirty=true,closed=false,redraw=0,press=null,clickTarget=null,focusId=null,keyboard=false,field=null;
-  let pendingArt=false,prevW=0,prevH=0,activeScope='base',identity='',artBatch=null;
-  let staging=false,artChanged=false;
+  let pendingArt=false,prevW=0,prevH=0,prevFrame=null,activeScope='base',identity='',artBatch=null;
+  let parked=Boolean(prepareArtwork),entering=null,staging=parked,artChanged=false,groupLateArtwork=false;
+  const tracksArtwork=Boolean(repaint||prepareArtwork);
   const currentArtwork=new Set(),deferredArtwork=new Set(),decodedArtwork=new Map();
   const layoutArtwork=new Set(),imageUpdates=new Map(),artworkPriorities=new Map();
   const canUpdateImage=texture=>imageUpdates.has(texture)&&!layoutArtwork.has(texture);
-  const batchesArtwork=()=>progressive||data?.prioritizedArtwork&&!staging;
+  const batchesArtwork=()=>!staging&&(progressive||data?.prioritizedArtwork);
   const mayInstall=t=>currentArtwork.has(t)&&!deferredArtwork.has(t)&&(dirty||artBatch===null||canUpdateImage(t));
   const textCache=progressive?createSurfaceTextCache():null;
   const textureReady=t=>Boolean(t.image||t.userData.failed);
@@ -80,12 +83,13 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   function request(rebuild=false){
     if(closed)return;
     dirty=dirty||rebuild;
+    if(parked)return;
     if(repaint)repaint();
     else if(!battle&&!redraw)redraw=input.requestFrame(()=>{redraw=0;if(!closed)screen.repaintHome?.();});
   }
-  function layer(key,clip=null){
+  function layer(key,clip=null,index=layers.length){
     const scene=new Scene(),art=createThreeSurface({textCache}),p={key,scene,art,clip};
-    scene.add(art.group);layers.push(p);return p;
+    scene.add(art.group);layers.splice(index,0,p);return p;
   }
   function region(key,rect,length,axis='y',{parent=null,initial=0,redrawStep=0,scrollTo}={}){
     activeRegions.add(key);
@@ -145,47 +149,53 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   }
   function releaseDeferredArtwork(){
     if(!deferredArtwork.size||![...deferredArtwork].every(t=>textureReady(t)||decodedArtwork.has(t)))return;
+    if(groupLateArtwork){
+      for(const t of deferredArtwork)if(decodedArtwork.has(t)){
+        installImage(t,decodedArtwork.get(t),canUpdateImage(t));decodedArtwork.delete(t);
+      }
+      groupLateArtwork=false;
+    }
     deferredArtwork.clear();request(true);
   }
   function texture(url,layoutDependent=true,priority=1){
     const key=optimizeUiAssetUrls(url);
-    if(!textures.has(key)){
-      const ready=screen.preparedArtwork?.get(key);
-      if(ready)textures.set(key,ready);
-      else{
-        const t=new Texture();
-        const done=image=>{
-          if(closed||textures.get(key)!==t)return;
-          const inPlace=canUpdateImage(t)&&!deferredArtwork.has(t);
-          if(inPlace&&!batchesArtwork()){
-            installImage(t,image,true);request();
-            return;
-          }
-          if(staging){
-            // A staging scene is offscreen. Expose its textures for pre-upload.
-            installImage(t,image);
-            if(currentArtwork.has(t)){artChanged=true;request();}
-            return;
-          }
-          // Animated/scrolling panels can paint before their batched rebuild.
-          // Keep new pixels off the old mesh until UVs and aspect are rebuilt.
-          decodedArtwork.set(t,image);
-          if(inPlace){request();return;}
-          if(deferredArtwork.has(t)){releaseDeferredArtwork();return;}
-          if(!screen.preparedArtwork){request(true);return;}
-          if((repaint&&!currentArtwork.has(t))||artBatch!==null)return;
-          artBatch=setTimeout(()=>{artBatch=null;request(true);},55);
-        };
-        t.colorSpace=SRGBColorSpace;t.generateMipmaps=true;t.minFilter=LinearMipmapLinearFilter;t.magFilter=LinearFilter;textures.set(key,t);
-        const rank=data.prioritizedArtwork?()=>!closed&&artworkVisible()?artworkPriorities.get(t)??-1:-1:undefined;
-        loadArtwork(key,rank).then(image=>{
-          const [w,h]=artworkSize(image);done(w>0&&h>0?image:null);
-        },()=>done(null));
-      }
+    const prioritized=Boolean(prepareArtwork||data.prioritizedArtwork);
+    let t=textures.get(key);
+    if(!t){
+      t=new Texture();
+      const done=image=>{
+        if(closed||textures.get(key)!==t)return;
+        const inPlace=canUpdateImage(t)&&!deferredArtwork.has(t);
+        if(inPlace&&!batchesArtwork()){
+          installImage(t,image,true);request();
+          return;
+        }
+        if(staging){
+          // A staging scene is offscreen. Expose its textures for pre-upload.
+          installImage(t,image);
+          if(currentArtwork.has(t)){artChanged=true;request();}
+          return;
+        }
+        // Animated/scrolling panels can paint before their batched rebuild.
+        // Keep new pixels off the old mesh until UVs and aspect are rebuilt.
+        decodedArtwork.set(t,image);
+        if(inPlace){request();return;}
+        if(deferredArtwork.has(t)){releaseDeferredArtwork();return;}
+        if(!nativeInput){request(true);return;}
+        if((tracksArtwork&&!currentArtwork.has(t))||artBatch!==null)return;
+        artBatch=setTimeout(()=>{artBatch=null;request(true);},55);
+      };
+      t.colorSpace=SRGBColorSpace;t.generateMipmaps=true;t.minFilter=LinearMipmapLinearFilter;t.magFilter=LinearFilter;textures.set(key,t);
+      const rank=prioritized?()=>{
+        if(closed||textures.get(key)!==t)return -Infinity;
+        return (artworkVisible?.()??!parked)?artworkPriorities.get(t)??-1:backgroundPriority;
+      }:undefined;
+      loadArtwork(key,rank,progressive).then(image=>{
+        const [w,h]=artworkSize(image);done(w>0&&h>0?image:null);
+      },()=>done(null));
     }
-    const t=textures.get(key);
-    if(repaint)currentArtwork.add(t);
-    if(data.prioritizedArtwork)artworkPriorities.set(t,Math.max(priority,artworkPriorities.get(t)??0));
+    if(tracksArtwork)currentArtwork.add(t);
+    if(prioritized)artworkPriorities.set(t,Math.max(priority,artworkPriorities.get(t)??0));
     if(layoutDependent)layoutArtwork.add(t);
     return t;
   }
@@ -199,9 +209,10 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     const width=iw*scale,height=ih*scale;
     return {x:x+(w-width)/2,y:y+(h-height)/2,w:width,h:height};
   }
-  function image(art,url,x,y,w,h,contain=true,{updateInPlace=false,onImage,priority}={}){
+  function image(art,url,x,y,w,h,contain=true,{updateInPlace=false,onImage,priority,keepUnused=true}={}){
     if(!url)return art.quad(x,y,w,h,'#ffffff',0);
     const tex=texture(url,!updateInPlace,priority);
+    if(!keepUnused)tex.userData.keepUnused=false;
     if(tex.image&&!deferredArtwork.has(tex)){
       const rect=imageRect(url,tex.image,x,y,w,h,contain);
       const mesh=art.image(tex,rect.x,rect.y,rect.w,rect.h);
@@ -228,24 +239,32 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     return mesh;
   }
   function build(box,c){
-    if(dirty||box.width!==prevW||box.height!==prevH){
+    const x=c.x-box.x,y=c.y-box.y,w=c.width,h=c.height;
+    if(dirty||box.width!==prevW||box.height!==prevH||prevFrame?.x!==x||prevFrame?.y!==y||prevFrame?.w!==w||prevFrame?.h!==h){
       clearTimeout(artBatch);artBatch=null;
       if(!batchesArtwork())installDecodedArtwork();
       currentArtwork.clear();artworkPriorities.clear();layoutArtwork.clear();imageUpdates.clear();artChanged=false;
       for(const p of layers)p.art.clear();layers.length=0;controls.length=0;animations.length=0;frameEffects.length=0;pressEffects.length=0;anchors.clear();activeRegions.clear();pendingArt=false;
-      const tools={layer,region,scrollWindow,control,image,texture,viewport:input.viewport?.(),topBleed:Math.max(0,box.y-c.y),animate:fn=>animations.push(fn),anchor:(key,value)=>anchors.set(key,value),
+      const frameRect={x,y,w,h};
+      function backdrop(art,alpha,color='#000'){
+        const index=layers.findIndex(layer=>layer.art===art);
+        // Keep the shade outside a dialog's content clip and below that dialog.
+        const shade=layers[index]?.clip?layer('backdrop',null,index).art:art;
+        return shade.quad(x,y,w,h,color,alpha);
+      }
+      const tools={layer,region,scrollWindow,control,image,texture,frameRect,backdrop,stagedArtwork:Boolean(prepareArtwork),
+        viewport:input.viewport?.(),topBleed:Math.max(0,-y),animate:fn=>animations.push(fn),anchor:(key,value)=>anchors.set(key,value),
         frame:fn=>frameEffects.push(fn),pressEffect:fn=>pressEffects.push(fn),offset:key=>regions.get(key)?.offset||0,waitForArt:()=>{pendingArt=true;},keyFocus:keyboard?focusId:null};
       activeScope=layout(data,box.width,box.height,tools)||'base';
       textCache?.prune();
-      if(repaint){
+      if(tracksArtwork){
         for(const t of deferredArtwork)if(!currentArtwork.has(t))deferredArtwork.delete(t);
-        if(textures.size>96)for(const [key,t] of textures){
-          if(currentArtwork.has(t))continue;
-          textures.delete(key);decodedArtwork.delete(t);if(screen.preparedArtwork?.get(key)!==t)t.dispose();
-          if(textures.size<=96)break;
+        for(const [key,t] of textures){
+          if(currentArtwork.has(t)||(textures.size<=96&&t.userData.keepUnused!==false))continue;
+          textures.delete(key);decodedArtwork.delete(t);t.dispose();
         }
       }
-      dirty=false;prevW=box.width;prevH=box.height;
+      dirty=false;prevW=box.width;prevH=box.height;prevFrame=frameRect;
       releaseDeferredArtwork();
     }
   }
@@ -306,8 +325,8 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     screen.feedback?.capture({x:b.x+c.x-z.dx,y:b.y+c.y-z.dy,w:c.w,h:c.h});
     onAction(c.action);
   }
-function begin(screenX,screenY,pointerId){
-    if(!interactive()||press)return false;
+  function begin(screenX,screenY,pointerId){
+    if(!interactive()||press||entering!==null)return false;
     const {x,y}=pos(screenX,screenY),z=scrolling(x,y);keyboard=false;clickTarget=null;
     press={id:pointerId,x,y,px:x,py:y,start:input.now()/1000,hit:hit(x,y),zone:z?.[0],scroll:z?.[1].offset??0,drag:false};request();
     if(press.hit?.onPoint&&!press.hit.disabled){focusId=press.hit.id;press.hit.onPoint(pressedControl());}
@@ -366,30 +385,57 @@ function begin(screenX,screenY,pointerId){
     }
     request(true);
   }
-  input.bind({begin,move,end,commit,cancel,wheel,key});
+  function prepare(){
+    const b=input.bounds(),c=input.frameBounds();
+    if(closed||!data||!b.width||!c.width||!c.height)return false;
+    if(batchesArtwork()&&installDecodedArtwork())dirty=true;
+    if(prepareArtwork&&artChanged&&[...currentArtwork].every(textureReady))dirty=true;
+    build(b,c);
+    return !pendingArt&&[...currentArtwork].every(textureReady);
+  }
+  function prepareFirstFrame(){
+    const ready=prepare(),textures=new Set(currentArtwork);
+    for(const {art} of layers)for(const mesh of art.group.children){
+      const texture=mesh.material.map;
+      if(mesh.visible&&texture?.image)textures.add(texture);
+    }
+    return prepareArtwork(textures)&&ready;
+  }
+  const actions={begin,move,end,commit,cancel,wheel,key};
+  if(!parked)input.bind(actions);
   const unwatch=input.watch(()=>request(true));
-  const view={surface,bounds:input.bounds,name,fullscreen,draw(r){underlay?.draw(r);paint(r);},get closed(){return closed;},
+  const view={surface,bounds:input.bounds,name,fullscreen,draw(r){
+    if(closed||parked)return;
+    if(entering!==null){
+      if(!prepareFirstFrame()&&input.now()-entering<entryWaitMs){request();return;}
+      entering=null;view.commit({groupLate:true});
+    }
+    // Drain artwork requested by later dialog pages before painting.
+    if(prepareArtwork&&decodedArtwork.size)prepare();
+    underlay?.draw(r);paint(r);
+  },get closed(){return closed;},
     get animated(){return underlay?.animated||animations.length>0||Boolean(pressEffects.length&&press?.hit&&!press.drag);},invalidate:()=>request(true),
     stage(){
       staging=true;
       if(deferredArtwork.size){deferredArtwork.clear();dirty=true;}
+      groupLateArtwork=false;
       clearTimeout(artBatch);artBatch=null;
       if(installDecodedArtwork())artChanged=true;
     },
-    prepare(){
-      const b=input.bounds(),c=input.frameBounds();
-      if(closed||!data||!b.width||!c.width||!c.height)return false;
-      if(batchesArtwork()&&installDecodedArtwork())dirty=true;
-      build(b,c);
-      return !pendingArt&&[...currentArtwork].every(textureReady);
+    prepare,
+    prepareOffscreen(){return parked&&!closed&&prepareFirstFrame();},
+    activate(){
+      if(closed||!parked)return;
+      parked=false;entering=input.now();
+      input.bind(actions);screen.panel=view;input.focus?.();request();
     },
     artwork:()=>currentArtwork,
-    commit({batchLate=true}={}){
-      staging=false;
+    commit({batchLate=true,groupLate=false}={}){
+      staging=false;groupLateArtwork=groupLate;
       const rebuild=artChanged||pendingArt;
       // If the CDN is slow, hold late art as one batch instead of having it
       // appear one image at a time in an already interactive page.
-      if(batchLate)for(const t of currentArtwork)if(!textureReady(t)&&!canUpdateImage(t))deferredArtwork.add(t);
+      if(batchLate)for(const t of currentArtwork)if(!textureReady(t)&&(groupLate||!canUpdateImage(t)))deferredArtwork.add(t);
       if(rebuild||deferredArtwork.size)dirty=true;
       return dirty;
     },
@@ -403,17 +449,17 @@ function begin(screenX,screenY,pointerId){
     data={...next,key};request(true);
   },state(){
     const b=input.bounds();
-     return {ready:!staging&&!dirty&&!pendingArt&&[...(repaint?currentArtwork:textures.values())].every(textureReady),items:data?.items?.length,detail:data?.item?.name,controls:controls.filter(c=>c.scope===activeScope&&c.action.type!=='none').map(c=>{
+     return {ready:!staging&&!dirty&&!pendingArt&&[...(tracksArtwork?currentArtwork:textures.values())].every(textureReady),items:data?.items?.length,detail:data?.item?.name,controls:controls.filter(c=>c.scope===activeScope&&c.action.type!=='none').map(c=>{
       const z=placement(regions.get(c.zone));return {id:c.id,label:c.label,x:b.x+c.x-z.dx,y:b.y+c.y-z.dy,w:c.w,h:c.h,disabled:c.disabled};
     })};
   },close(){
     if(closed)return;closed=true;clearTimeout(artBatch);input.cancelFrame(redraw);unwatch();field?.();input.close();
     if(screen.panel===view)screen.panel=underlay&&!underlay.closed?underlay:null;
-    for(const p of layers)p.art.clear();for(const [key,t] of textures)if(screen.preparedArtwork?.get(key)!==t)t.dispose();
+    for(const p of layers)p.art.clear();for(const t of textures.values())t.dispose();
     textCache?.clear();
     decodedArtwork.clear();artworkPriorities.clear();layoutArtwork.clear();imageUpdates.clear();
-    if(!battle)screen.repaintHome?.();
+    if(!battle&&!parked)screen.repaintHome?.();
   }};
-  if(!main&&!battle){screen.panel=view;input.focus?.();}
+  if(!main&&!battle&&!parked){screen.panel=view;input.focus?.();}
   return view;
 }

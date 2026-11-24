@@ -36,10 +36,14 @@ function fleetDetail(d,w,h,t,row){
     if(plane)r.custom(120,(a,b)=>normalFit(a,t,nativeCollectionArt(row,'default'),b,false,{x:.18,y:.12,width:.64,height:.76}));
     r.text((plane?row.star:row.owned?row.star:0)+' / '+(plane?5:model.maxStar)+' 星',{size:14,pad:5});
     if(plane){
-      r.line();model.attributes.forEach(v=>pair(r,v.label,v.amount));r.line();r.text(name||'技能',{size:16,weight:700,pad:5});
+      if(model.attributes.length){
+        r.text(row.owned?'收藏属性':'激活后收藏属性',{size:16,weight:700,pad:5});
+        r.line();model.attributes.forEach(v=>pair(r,v.label,v.amount));r.line();
+      }
+      r.text(name||'技能',{size:16,weight:700,pad:5});
       r.text(description);
     }else rule(r,d,row.stage.skills[0]&&nativeSkillArt(row.stage.skills[0]),name||(row.owned?'当前技能':'技能预览'),description||'当前星级无技能');
-    if(!row.baseOnly){r.gap(8);r.action('grow',label(row),'nativeOperation',{...args,operation:row.owned?'star':'unlock'},{disabled:row.maxed||s.rewardPending||s.rewardBusy});}
+    if(!row.baseOnly){r.gap(8);r.action('grow',plane&&access.basicOnly?'激活收藏':label(row),'nativeOperation',{...args,operation:row.owned?'star':'unlock'},{disabled:row.maxed||s.rewardPending||s.rewardBusy});}
     if(plane){
       if(!row.baseOnly&&!row.closed)r.text('获取：高级装备箱。重复获得同名卡用于升星。',{size:13,pad:5});
     }else{
@@ -49,7 +53,7 @@ function fleetDetail(d,w,h,t,row){
       if(!row.maxed)for(const c of row.costs)pair(r,c.name,c.available+' / '+c.count,c.available<c.count?'#a22e31':'#294e5e');
       r.gap(6);r.action('stars','星级效果','nativeSkillPreview',args);
     }
-    if(access.activated||row.baseOnly){r.gap(6);r.action('equip',access.using?'使用中':'使用','nativeOperation',{...args,id:access.selectionId,operation:'select'},{disabled:!access.available||access.using});}
+    if(access.available){r.gap(6);r.action('equip',access.using?'使用中':'使用','nativeOperation',{...args,id:access.selectionId,operation:'select'},{disabled:!access.available||access.using});}
   }});
 }
 function operation(d,w,h,t,row){
@@ -91,7 +95,7 @@ export function openCollectionPanel(screen,host,send){
     if(identity!==id){entered=performance.now()/1000;inspect=null;panel.scroll('base',0);}identity=id;
     key=[signature,modal.error,modal.result?.previousStars,snapshot.replicaCollection.revision,snapshot.rewardBusy].join('|');
     model={snapshot,modal,sheetMetrics:metrics,reduced:(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches),entered,
-      safeBottom:screen.menuView?.safeBottom||0,coverNavigation:screen.lobbyLocation ? Boolean(screen.lobbyLocation.subpage) : Boolean(host.closest('[data-subpage]:not([data-subpage=""])'))};refresh();
+      safeBottom:screen.menuView?.safeBottom||0};refresh();
   }};
 }
 

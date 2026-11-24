@@ -1,4 +1,7 @@
 import { ObjectLoader, Source } from 'three';
+import { toByteArray } from 'base64-js';
+import { buf2string } from 'pako/lib/utils/strings.js';
+import inflateCodec from 'pako/lib/inflate.js';
 import { createWechatResources } from '../full/resources.js';
 import { createAssetCache } from '../full/asset-cache.js';
 import { createBattleDataCache } from '../full/battle-data-cache.js';
@@ -49,14 +52,20 @@ class NativeObjectLoader extends ObjectLoader {
   }
 }
 
+function inflateJSON(packed){
+  return packed?JSON.parse(buf2string(inflateCodec.inflate(toByteArray(packed)))):undefined;
+}
+
 export function createWechatServices(api,config){
   const cdn=new URL(config.cdnBase);
   if(cdn.protocol!=='https:'||cdn.username||cdn.password||cdn.search||cdn.hash||!cdn.pathname.endsWith('/')){
     throw Error('微信小游戏 CDN 必须配置 HTTPS 目录地址');
   }
   const baseURL=new URL('/',cdn).href;
-  const resources=createWechatResources(api,{assetOrigin:baseURL,cdnBase:cdn.href,cdnFiles:config.cdnFiles,
-    assetTransfers:config.assetTransfers,localFiles:config.localFiles,fallbackFiles:config.fallbackFiles,requirePublicNetwork:true,
+  const cdnFiles=config.cdnFiles??inflateJSON(config.cdnFilesGzip);
+  const assetTransfers=config.assetTransfers??inflateJSON(config.assetTransfersGzip);
+  const resources=createWechatResources(api,{assetOrigin:baseURL,cdnBase:cdn.href,cdnFiles,
+    assetTransfers,localFiles:config.localFiles,fallbackFiles:config.fallbackFiles,requirePublicNetwork:true,
     cacheVersion:config.cacheVersion??config.buildId,loadPackage:config.loadPackage});
   const files=createAssetCache(api,resources),loadouts=new Map();
   const assetBytes=resources.createTextureScope(),battleData=createBattleDataCache();

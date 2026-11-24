@@ -78,6 +78,7 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
   const now = typeof globalThis.performance?.now === 'function'
     ? globalThis.performance.now.bind(globalThis.performance)
     : Date.now;
+  let lastTouchAt = -Infinity;
 
   function readArtwork(file, trace, started, path, fallback = false) {
     if (!trace) return decode(api, file, cancelDecodes);
@@ -91,6 +92,7 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
 
   const loadArtwork = createArtworkLoader({
     address: path => resources.resolve(path, baseURL),
+    cachePixels: 1500000, // Small lobby images only, with no retained WebGL textures.
     onFailure(path, error) {
       if (closed || failedArtwork.has(path) || failedArtwork.size >= 48) return;
       failedArtwork.add(path);
@@ -111,14 +113,17 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
       }
     },
   });
-  async function warmArtworkFiles(sources, signal) {
-    // Share pending downloads with the regular decoder. Keep one slot per
-    // warmup so critical data and artwork can still enter the queue.
-    for (const source of new Set(sources)) {
-      if (closed || signal.aborted) break;
-      try { await localFiles.localFile(source, baseURL); }
-      catch { /* The regular artwork loader handles retries and fallbacks. */ }
-    }
+  async function warmArtworkFiles(sources, signal, workers = 1) {
+    // These are file reads only. The normal artwork loader shares their
+    // downloads and retains control of decoding and upload.
+    const files = [...new Set(sources)];
+    let next = 0;
+    await Promise.all(Array.from({length: Math.min(workers, files.length)}, async () => {
+      while (!closed && !signal.aborted && next < files.length) {
+        try { await localFiles.localFile(files[next++], baseURL); }
+        catch { /* The regular artwork loader handles retries and fallbacks. */ }
+      }
+    }));
   }
 
   const restoreArtwork = useArtworkLoader(loadArtwork);
@@ -145,6 +150,7 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
 
   function tap(phase, event) {
     if (!foreground || closed) return;
+    lastTouchAt = now();
     for (const changed of event.changedTouches || []) {
       const pointerId = changed.identifier ?? 0;
       const x = changed.clientX ?? changed.x, y = changed.clientY ?? changed.y;
@@ -181,6 +187,7 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
     renderer, display, loadArtwork, warmArtworkFiles, now, debugLog,
     get viewport() { return viewport; },
     get visible() { return foreground; },
+    get inputIdle() { return !heldPointers.size && now() - lastTouchAt >= 100; },
     requestFrame(paint) { return clockSource.requestAnimationFrame(() => { if (!closed) paint(now()); }); },
     cancelFrame(handle) { clockSource.cancelAnimationFrame(handle); },
     onViewport(handler) {

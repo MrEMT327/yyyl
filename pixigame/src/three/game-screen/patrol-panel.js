@@ -64,7 +64,7 @@ function idle(data,w,h,t){
   const content=skyH+(locked?(ratesList.length?8+headingH+6+rateH:0):
     (p.nativeSettlementPending?0:timeH)+noteH+rateH+8+headingH+6+rewardsH+(p.development?48:0))+recoveryHeight(rec,w)+.02*w;
   const header=w/6,tail=52*w/750,ph=Math.min(h*.88,header+content+footerH+tail);
-  const sheet=paintLobbyPaper(t,{...data,coverNavigation:true},w,h,wPaper,ph,header,'巡逻收益',a);
+  const sheet=paintLobbyPaper(t,data,w,h,wPaper,ph,header,'巡逻收益',a);
   const top=sheet.top,footY=sheet.y+ph-tail-footerH;
   t.region('base',box(x,top,bw,Math.max(1,footY-top)),content,'y',{initial:data.initial});
   paintPatrolScene(body,t,data,w,x,top,bw);let y=top+skyH;
@@ -132,7 +132,7 @@ function quick(data,w,h,t){
   }
 }
 function receipt(data,w,h,t){
-  const width=567*w/750,ph=Math.min(714*w/750,.88*h),sheet=paintLobbyPaper(t,{...data,coverNavigation:true},w,h,width,ph,w/6,data.modal.title||'获得奖励');
+  const width=567*w/750,ph=Math.min(714*w/750,.88*h),sheet=paintLobbyPaper(t,data,w,h,width,ph,w/6,data.modal.title||'获得奖励');
   const x=sheet.x+40*w/750,bw=width-80*w/750,total=ph-w/6-52*w/750,body=t.layer('patrol-result','base').art;
   const raw=data.modal.rewards||[],rows=raw.some(r=>r.nativeItemId)?patrolItems(raw):patrolItems(null,Object.fromEntries(raw.map(r=>[r.type,r.amount])));
   const grid=gridLayout(rows,bw,4,.02*w);patrolGrid(body,t,rows,w,x,sheet.top,grid,true);

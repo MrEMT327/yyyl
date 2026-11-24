@@ -29,9 +29,15 @@ const available = new Set([...cdn.entries, ...(cdn.three?.entries ?? []), ...(cd
 const skillPaths = new Set(skills.assets.map(row => `art/${row.pack || 'battle-skill-icons-v4'}/${row.file}`));
 const localImages = new Map((manifest.localImages ?? []).map(row => [row.path, row]));
 const pngs = new Map();
-for (const path of skillPaths) {
-  if (available.has(transfers[path]?.path ?? path)) continue;
-  assert.match(path, /^art\/(?:battle-skill-icons-v4|weapon-variant-skill-icons-v5)\/[\w-]+\.webp$/);
+function addLocalImage(path, source, png) {
+  const file=sha(png).slice(0,20)+'.png';
+  pngs.set(file,png);
+  localImages.set(path, { path, sha256: sha(source), file });
+}
+const supplyCanopy = 'art/project-supply-parachute-v2/canopy.webp';
+for (const path of [...skillPaths, supplyCanopy]) {
+  if (path !== supplyCanopy && available.has(transfers[path]?.path ?? path)) continue;
+  if (path !== supplyCanopy) assert.match(path, /^art\/(?:battle-skill-icons-v4|weapon-variant-skill-icons-v5)\/[\w-]+\.webp$/);
   const source = await readFile(join(h5, 'public', path));
   const info = await sharp(source).metadata();
   assert(info.format === 'webp' && info.width && info.height, path);
@@ -39,11 +45,18 @@ for (const path of skillPaths) {
   // Change only the file format, never the decoded artwork.
   const png=await sharp(source).png({compressionLevel:9}).toBuffer();
   assert((await sharp(png).ensureAlpha().raw().toBuffer()).equals(await sharp(source).ensureAlpha().raw().toBuffer()),path);
-  const file=sha(png).slice(0,20)+'.png';
-  pngs.set(file,png);
-  localImages.set(path, { path, sha256: sha(source), file });
+  addLocalImage(path,source,png);
 }
 
+for (const [path,width] of [
+  ['replica-battle/assets/missile-v3/body.png',64],
+  ['replica-battle/assets/missile-v2/exhaust.png',32],
+]) {
+  const source = await readFile(join(h5, 'public', path));
+  const png = await sharp(source).resize(width,128,{fit:'fill'})
+    .png({palette:true,dither:0,compressionLevel:9,effort:10}).toBuffer();
+  addLocalImage(path,source,png);
+}
 const skillBytes=[...pngs.values()].reduce((sum,png)=>sum+png.length,0);
 const rasters = new Map(manifest.rasters.map(row => [row.path, row]));
 const sheets = [

@@ -72,6 +72,11 @@ export function cloudNativeCatalog(ctx){
   const t=template(kind==='weapon'?weaponCatalogPage({...ctx,snapshot:view,selectedId:String(selected.id),helpers}):fleetCatalogPage({...ctx,selectedSkillSlot,snapshot:view,selectedId:String(selected.id),helpers}));
   if(['aircraft','pilot'].includes(kind)&&!ctx.skillTab){
     const actions=t.content.querySelector('.fc-hero-actions');
+    if(kind==='aircraft'&&!selected.baseOnly&&nativeCollectionAccess(group,s,selected).basicOnly){
+      const use=template(button('selectAircraft','使用',`data-id="${e(selected.id)}"`)).content.firstElementChild;
+      use.classList.add('fc-operation');
+      actions?.prepend(use);
+    }
     if(selected.owned&&selected.maxed&&!actions?.querySelector('[data-action="fleetStar"]')){
       const maxStar=template(button('fleetStar','已满星',`data-id="${e(selected.id)}"`,true)).content.firstElementChild;
       maxStar.classList.add('fc-operation','is-star-up');actions?.append(maxStar);
@@ -82,11 +87,13 @@ export function cloudNativeCatalog(ctx){
     node.dataset.psdQuality=String(collectionQualityRank(row.quality));
     node.removeAttribute('data-rarity');
     const access=nativeCollectionAccess(group,s,row);
-    const using=access.collectionUsing;
-    const status=row.baseOnly?'，基础外观':access.activated?'':'，未激活';
-    node.classList.toggle('is-locked',!access.activated&&!row.baseOnly);
+    const {using,available}=access;
+    const status=access.basicOnly?'，基础可用':access.activated?'':'，未激活';
+    node.classList.toggle('is-locked',!available);
     if(!using)node.querySelector('.fc-worn-check')?.remove();
-    if(!access.activated&&!row.baseOnly&&!node.querySelector('.wc-lock'))node.insertAdjacentHTML('beforeend',projectIcon('lock','wc-lock'));
+    const lock=node.querySelector('.wc-lock');
+    if(available)lock?.remove();
+    else if(!lock)node.insertAdjacentHTML('beforeend',projectIcon('lock','wc-lock'));
     node.setAttribute('aria-label',`${[row.name,qualityDisplayLabel(row.qualityName,row.qualityKnown),`${row.star}星`].filter(Boolean).join('，')}${status}${using?'，使用中':''}${node.getAttribute('aria-pressed')==='true'&&!using?'，预览中':''}`);
     const stars=node.querySelector('.wc-stars');
     if(stars){
@@ -110,7 +117,7 @@ export function cloudNativeCatalog(ctx){
     headerStars.setAttribute('aria-label',`${displayed.star} / ${maxStar} 星`);
     headerStars.innerHTML=Array.from({length:maxStar},(_,i)=>projectIcon('star',displayed.owned&&i<displayed.star?'':'is-icon-muted')).join('');
   }
-  if(kind==='aircraft'){
+  if(kind==='aircraft'&&!nativeCollectionAccess(group,s,displayed).basicOnly){
     // Display configured collection attributes, not the retired cloud estimates.
     const stage=displayed.owned?displayed.stage:displayed.stages.find(stage=>stage.star===displayed.defaultStar)||displayed.stage;
     if(stage.attributes?.length)t.content.querySelector('.fc-identity')?.insertAdjacentHTML('beforeend',`<div class="fc-header-stats">${nativeAttributeRows(stage,s,h)}</div>`);
@@ -142,7 +149,8 @@ export function cloudNativeCatalog(ctx){
         const art=nativeItemArt(cost.id);
         return `<span class="fc-operation-cost" aria-label="${e(cost.name)} ${cost.available}/${cost.count}">${art?`<span ${itemInspectAttributes(cost.id,e)} class="fc-operation-cost-art${NATIVE_AIRCRAFT_SKINS[cost.id]?' is-aircraft':''}"><img src="${e(art)}" alt="" draggable="false"></span>`:e(cost.name)}<b class="${cost.available<cost.count?'is-short':''}">${cost.available}/${cost.count}</b></span>`;
       }).join('');
-      node.innerHTML=`<strong>${row.maxed?'已满星':row.owned?'升星':'激活'}</strong>${costs?`<small>${costs}</small>`:''}`;
+      const label=row.maxed?'已满星':row.owned?'升星':kind==='aircraft'&&nativeCollectionAccess(group,s,row).basicOnly?'激活收藏':'激活';
+      node.innerHTML=`<strong>${label}</strong>${costs?`<small>${costs}</small>`:''}`;
     }else if(['selectAircraft','selectPilot','catalogEquipWeapon'].includes(action))operation(node,row,'select');
     else if(action==='fleetSkillPreview'){
       node.dataset.action='nativeSkillPreview';node.dataset.kind=group;node.dataset.id=String(row.id);
@@ -245,6 +253,7 @@ export function cloudNativeCollectionDetail(group,id,s,h){
   const row=nativeCollectionRows(group,s).find(row=>row.id===Number(id));
   if(!row)return {title:'详情',content:'<p>记录不存在</p>'};
   if(group==='guns')return collectionDetail(group,row,s,h);
+  const access=nativeCollectionAccess(group,s,row);
   const retained=group==='pilots'?template(collectionDetail(group,row,s,h).content):null;
   const item=collectionView(row,h),kind=group==='skins'?'aircraft':'pilot';
   const helpers={...h,thumbnail:()=>h.img(nativeCollectionArt(row,'default'),row.name,'pl-model-thumb')};
@@ -253,7 +262,7 @@ export function cloudNativeCollectionDetail(group,id,s,h){
     :fleetPilotDetail({pilot:item,snapshot:s,helpers,skillFor:()=>({name:item.skillName,description:item.description,image:nativeSkillArt(row.stage.skills[0]),icon:"skill-tab"})}));
   if(kind==='aircraft'){
     t.content.querySelector('.fc-detail>p').textContent=`${row.star} / 5 星`;
-    t.content.querySelector('.fc-detail-stats').innerHTML=nativeAttributeRows(row.stage,s,h);
+    t.content.querySelector('.fc-detail-stats').innerHTML=access.basicOnly?'':nativeAttributeRows(row.stage,s,h);
     t.content.querySelector('.fc-detail>h3').textContent=item.skillName||'技能';
     t.content.querySelector('.fc-detail>h3+p').textContent=item.description;
     t.content.querySelector('.fc-detail-cost')?.remove();
@@ -269,7 +278,7 @@ export function cloudNativeCollectionDetail(group,id,s,h){
   }
   const action=t.content.querySelector('.fc-detail-button');
   const shortage=!row.maxed&&row.costs.some(cost=>Number(cost.available)<Number(cost.count));
-  action.textContent=row.maxed?'已满星':row.owned?'升星':'激活';
+  action.textContent=row.maxed?'已满星':row.owned?'升星':kind==='aircraft'&&access.basicOnly?'激活收藏':'激活';
   if(shortage&&!retained)action.dataset.shortage='true';
   nativeDetailAction(action,group,row,s,row.owned?'star':'unlock',true);
   if(row.baseOnly)action.remove();
@@ -307,8 +316,7 @@ export function cloudNativeCollectionDetail(group,id,s,h){
   }
   if(group==='skins'){
     if(!row.baseOnly&&!row.closed)t.content.querySelector('.fc-detail').insertAdjacentHTML('beforeend','<p class="ag-hint">获取：高级装备箱。重复获得同名卡用于升星。</p>');
-    const access=nativeCollectionAccess(group,s,row);
-    if(access.activated||row.baseOnly){
+    if(access.available){
       t.content.querySelector('.fc-detail').insertAdjacentHTML('beforeend',
         button('nativeOperation',access.using?'使用中':'使用',
           `data-kind="skins" data-id="${access.selectionId}" data-revision="${s.replicaCollection.revision}" data-operation="select"`,access.using).replace('class="wc-button"','class="wc-button fc-detail-button"'));

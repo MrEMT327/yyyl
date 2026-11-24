@@ -1,6 +1,7 @@
 import {loadArtwork} from './image-loading.js';
 import * as T from 'three';
 import {createBattleStage} from './three-battle-stage.js';
+import {MISSILE_ART_KEYS} from '../../../replica-battle/kernel/pathogenic/missile-presentation.mjs';
 
 export function openBattleScreen(slot,device) {
   const canvas=device.display.input,css=canvas.getAttribute('style');
@@ -64,11 +65,17 @@ export class BattleArt {
     const loaded=loadArtwork(new URL(url,this.baseURL).href).then(image=>{
       if(this.closed)return;
       const texture=new T.Texture(image);
-      texture.flipY=false;texture.premultiplyAlpha=false;texture.generateMipmaps=false;
-      texture.minFilter=texture.magFilter=T.LinearFilter;
-      texture.colorSpace=T.NoColorSpace;texture.needsUpdate=true;
-      const result={texture,width:image.naturalWidth||image.width,height:image.naturalHeight||image.height,frames:new Map()};
+      const width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;
       const size=this.authoredSizes.get(key);
+      const compactMissile=Boolean(size&&width<size[0]&&height<size[1]&&MISSILE_ART_KEYS.includes(key));
+      // The compact body uses mipmaps for its solid outline. The exhaust keeps its soft alpha from the prepared image.
+      const minFilter=key==='coins'?T.LinearMipmapLinearFilter:
+        compactMissile&&key===MISSILE_ART_KEYS[0]?T.LinearMipmapNearestFilter:T.LinearFilter;
+      const mipmaps=minFilter!==T.LinearFilter,premultiplied=mipmaps||compactMissile;
+      texture.flipY=false;texture.premultiplyAlpha=premultiplied;texture.generateMipmaps=mipmaps;
+      texture.minFilter=minFilter;texture.magFilter=T.LinearFilter;
+      texture.colorSpace=T.NoColorSpace;texture.needsUpdate=true;
+      const result={texture,premultiplied,width,height,frames:new Map()};
       if(size&&(size[0]!==result.width||size[1]!==result.height))result.pathogenicLogicalSize=size;
       this.bindings.set(key,result);return result;
     }).finally(()=>this.pending.delete(key));

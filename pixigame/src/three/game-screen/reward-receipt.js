@@ -40,8 +40,8 @@ function receipt(data,w,h,t){
   const gridH=rows.reduce((sum,row,j)=>sum+row.height+(j?g.rowGap:0),0);
   const contentH=(live ? .07 : .03)*w+gridH+actionsH;
   const ph=Math.max(live ? .58*w : 0,Math.min((h-.10*w)*(live ? .82 : .76),header+contentH+.07*w)),y=(h-ph)/2;
-  paper.quad(0,0,w,h,'#030c16',.5);
-  area(t,'outside','关闭',box(0,0,w,h),'close');area(t,'paper','',box(x,y,pw,ph),'none');
+  t.backdrop(paper,.5,'#030c16');
+  area(t,'outside','关闭',t.frameRect,'close');area(t,'paper','',box(x,y,pw,ph),'none');
   const frame=pic(paper,t,art.paper,box(x,y,pw,ph));frame.geometry.dispose();
   frame.geometry=slicedFrameGeometry(pw,ph,567,714,[110,44,55,255],w/750);
   const font=clamp(40*w/750,16,26);

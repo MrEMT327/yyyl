@@ -58,7 +58,7 @@ export function gearAttributes(item){
 }
 export function createGearState(){
  const items=GEAR_PARTS.map(({type})=>({uid:`gear-${type}`,family:4000000+type*100000+100,quality:10,locked:false}));
- return {version:2,revision:0,serial:5,items,slots:Object.fromEntries(GEAR_PARTS.map(({type},i)=>[type,items[i].uid])),levels:Object.fromEntries(GEAR_PARTS.map(({type})=>[type,1])),blueprints:Object.fromEntries(GEAR_PARTS.map(({type})=>[type,0])),fodder:Object.fromEntries(GEAR_PARTS.flatMap(({type})=>[[`${type}:40`,0],[`${type}:50`,0]])),draws:0,keys:{basic:0,advanced:0},basicRewardClaims:0,nativeBoxProgress:nativeBoxProgress()};
+ return {version:2,revision:0,serial:5,items,slots:Object.fromEntries(GEAR_PARTS.map(({type})=>[type,null])),levels:Object.fromEntries(GEAR_PARTS.map(({type})=>[type,1])),blueprints:Object.fromEntries(GEAR_PARTS.map(({type})=>[type,0])),fodder:Object.fromEntries(GEAR_PARTS.flatMap(({type})=>[[`${type}:40`,0],[`${type}:50`,0]])),draws:0,keys:{basic:0,advanced:0},basicRewardClaims:0,nativeBoxProgress:nativeBoxProgress()};
 }
 export function sanitizeGearState(value){
  if(!value||![1,2].includes(value.version))return createGearState();

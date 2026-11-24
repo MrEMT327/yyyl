@@ -8,7 +8,8 @@ function failureMessage(error){
 const opaqueNativeFailure=/^(?:request|downloadFile):fail\s*$/i;
 
 export function isIncompleteDownload(error){
-  return /file data is empty|empty file|ERR_CONTENT_LENGTH_MISMATCH|(?:errcode|cronet_error_code):\s*-354\b/i.test(failureMessage(error));
+  if(error?.name==='AbortError')return false;
+  return /file data is empty|empty file|ERR_CONTENT_LENGTH_MISMATCH|(?:errcode|cronet_error_code):\s*-354\b|downloadFile:fail\s+Error:\s+aborted\b/i.test(failureMessage(error));
 }
 
 export function transientNetworkFailure(error){
@@ -107,7 +108,9 @@ export function createWechatTransport(api,{concurrency=4,sortieConcurrency=6,max
       pump();
     }
     try{
-      const task=api[operation.type]({...operation.options,success:result=>finish('success',result),fail:error=>finish('fail',error),complete:undefined});
+      const {retryURL,...options}=operation.options;
+      const url=attempt>1&&retryURL?retryURL(options.url):options.url;
+      const task=api[operation.type]({...options,url,success:result=>finish('success',result),fail:error=>finish('fail',error),complete:undefined});
       if(!ended&&!operation.done){
         operation.task=task;
         const timeout=operation.options.timeout;

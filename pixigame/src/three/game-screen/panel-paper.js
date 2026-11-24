@@ -2,9 +2,9 @@ import {area,box,pic,words,clamp,titleFont} from './menu-art.js';
 import {paintPsdPopup,preparePsdPopupArt} from '../../ui/psd-popup-art.js';
 import {slicedFrameGeometry} from '../../ui/nine-slice-geometry.js';
 
-export function paintSecondaryPaper(t,w,h,width,height,title,{header=112*w/750,inkY,dimHeight=h,alpha=.55,a=t.layer('secondary-paper').art}={}){
+export function paintSecondaryPaper(t,w,h,width,height,title,{header=112*w/750,inkY,alpha=.55,a=t.layer('secondary-paper').art}={}){
   const x=(w-width)/2,y=(h-height)/2;
-  a.quad(0,0,w,dimHeight,'#000',alpha);area(t,'outside','返回',box(0,0,w,h),'close');area(t,'paper','',box(x,y,width,height),'none');
+  t.backdrop(a,alpha);area(t,'outside','返回',t.frameRect,'close');area(t,'paper','',box(x,y,width,height),'none');
   if(!preparePsdPopupArt('secondary'))t.waitForArt();paintPsdPopup(a,'secondary',x,y,width,height,w/750);
   const font=clamp(32*w/750,16,22);words(a,title,x+38*w/750,y+(inkY??39*w/750+font*.575),font,{align:'left',color:'#1c334c',family:titleFont});
   const side=Math.max(44,85*w/750),close=box(x+width+16*w/750-side,y-21*w/750,side,side);
@@ -13,11 +13,11 @@ export function paintSecondaryPaper(t,w,h,width,height,title,{header=112*w/750,i
 
 export function paintLobbyPaper(t,data,w,h,width,height,header,title,a=t.layer('paper').art){
   const u=w/369.453,x=(w-width)/2,y=(h-height)/2;
-  const dimHeight=data.coverNavigation?h:h-w*151/750-(data.safeBottom||0);
-  a.quad(0,0,w,dimHeight,'#000000',data.backdropAlpha??.6);
-  area(t,'outside','返回',box(0,0,w,h),'close');area(t,'paper','',box(x,y,width,height),'none');
-  if(!preparePsdPopupArt('primary'))t.waitForArt();
-  paintPsdPopup(a,'primary',x,y,width,height,w/750);
+  t.backdrop(a,data.backdropAlpha??.6);
+  area(t,'outside','返回',t.frameRect,'close');area(t,'paper','',box(x,y,width,height),'none');
+  const paintImage=t.stagedArtwork?t.image:undefined;
+  if(!paintImage&&!preparePsdPopupArt('primary'))t.waitForArt();
+  paintPsdPopup(a,'primary',x,y,width,height,w/750,paintImage);
   if(data.paperFace){
     const face=pic(a,t,data.paperFace,box(x,y,width,height));
     face.geometry.dispose();face.geometry=slicedFrameGeometry(width,height,567,714,[110,44,55,255],w/750);

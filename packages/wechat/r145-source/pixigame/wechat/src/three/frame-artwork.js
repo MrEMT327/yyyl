@@ -1,7 +1,3 @@
-import {Texture,SRGBColorSpace,LinearFilter,LinearMipmapLinearFilter} from 'three';
-import {art} from '../../../../../../../pixigame/src/three/game-screen/menu-art.js';
-import {optimizeUiAssetUrls} from '../../../../../../../pixigame/src/ui/ui-image-source.js';
-
 // Optional work on the existing renderer: one job per turn, yielding when
 // the previous frame was slow. Never force the foreground view to wait.
 export function frameWork(platform,active,fastInterval=28){
@@ -39,55 +35,11 @@ export function createMenuArtworkWarmup(platform){
       const area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);
       if(count&&(count>=4||pixels+area>400000))return false;
       uploaded.add(texture);
-      if(texture.userData.menuPrewarmed)continue;
       if(upload(platform,texture,1600000)){count++;pixels+=area;}
     }
     // Do not stack the first complete screen draw on an upload frame.
     return count===0;
   };
-}
-
-export function prewarmLobbyArtwork(platform,device,active){
-  const cache=new Map(),queue=frameWork(platform,active);
-  let closed=false,planned=false,last=0,pixels=0;
-  const urls=[
-    '/art/psd-equipment-v1/equipment-background.webp',art['shop-background'],art['assembly-footer'],art['shop-footer'],
-    art['warehouse-toolbar'],art['gear-grid'],art['advanced-tray'],art['basic-tray'],
-    art['assembly-heading'],art['shop-heading'],
-  ];
-  function step(){
-    const url=urls.shift();
-    if(!url||closed)return;
-    const key=optimizeUiAssetUrls(url);
-    // A single decode in flight leaves slots for player-triggered artwork.
-    platform.loadArtwork(key,-1).then(image=>{
-      if(closed)return;
-      queue.push(()=>{
-        const area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);
-        const texture=new Texture(image);
-        texture.colorSpace=SRGBColorSpace;texture.minFilter=LinearMipmapLinearFilter;texture.magFilter=LinearFilter;
-        texture.generateMipmaps=true;texture.needsUpdate=true;
-        if(pixels+area<=3500000&&upload(platform,texture,1400000)){
-          texture.userData.menuPrewarmed=true;cache.set(key,texture);pixels+=area;
-        }
-        else texture.dispose();
-        stepLater();
-      });
-    },stepLater);
-  }
-  function stepLater(){queue.push(step);}
-  device.preparedArtwork=cache;
-  return {tick(){
-    if(closed||!active())return;
-    const now=platform.now();
-    if(!planned){if(!last){last=now;return;}if(now-last<600)return;
-      planned=true;stepLater();
-    }
-    queue.resume();
-  },close(){
-    closed=true;queue.close();for(const texture of cache.values())texture.dispose();cache.clear();
-    if(device.preparedArtwork===cache)delete device.preparedArtwork;
-  }};
 }
 
 const earlyBattleArt=new Set(['coins','digits','combat-labels','medkit','shell','modules','crate']);

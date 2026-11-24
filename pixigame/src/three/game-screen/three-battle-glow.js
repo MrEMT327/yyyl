@@ -54,18 +54,25 @@ export function createBattleGlow(renderer,w,h){
     },
     begin(){cuts.length=0;this.needsBackground=false;},
     addCut(cut){let i=cuts.findIndex(v=>v.uid===cut.uid);if(i<0){if(cuts.length===3)cuts.shift();i=cuts.length;}cuts[i]=cut;},
-    paint(content,view,output=null,beginOutput){
-      renderer.setRenderTarget(world);renderer.setViewport(0,0,w,h);renderer.setClearColor(0x315257,1);renderer.clear();
-      if(this.needsBackground){
-        view.layers.mask=1;renderer.render(content,view);pass(back,world.texture,0);
-        renderer.setRenderTarget(world);renderer.setViewport(0,0,w,h);view.layers.mask=2;renderer.render(content,view);
-      }else{view.layers.mask=3;renderer.render(content,view);}
-      for(let i=0;i<down.length;i++)pass(down[i],i?down[i-1].texture:world.texture,i?2:1);
-      for(let i=up.length-1;i>=0;i--)pass(up[i],i===up.length-1?down.at(-1).texture:up[i+1].texture,3);
-      u.uDimensionCount.value=cuts.length;
-      cuts.forEach(({line,shape,style},i)=>{u.uDimensionLine.value[i].set(line[0]-left,line[1]-top,line[2],line[3]);u.uDimensionShape.value[i].fromArray(shape);u.uDimensionStyle.value[i].fromArray(style);});
-      pass(output,up[0].texture,4,beginOutput);
-      view.layers.mask=4;renderer.render(content,view);view.layers.mask=1;
+    paint(content,view,output=null,beginOutput,hasForeground=true){
+      const autoUpdate=content.matrixWorldAutoUpdate;
+      if(autoUpdate)content.updateMatrixWorld();
+      content.matrixWorldAutoUpdate=false;
+      try{
+        renderer.setRenderTarget(world);renderer.setViewport(0,0,w,h);renderer.setClearColor(0x315257,1);renderer.clear();
+        if(this.needsBackground){
+          view.layers.mask=1;renderer.render(content,view);pass(back,world.texture,0);
+          renderer.setRenderTarget(world);renderer.setViewport(0,0,w,h);view.layers.mask=2;renderer.render(content,view);
+        }else{view.layers.mask=3;renderer.render(content,view);}
+        for(let i=0;i<down.length;i++)pass(down[i],i?down[i-1].texture:world.texture,i?2:1);
+        for(let i=up.length-1;i>=0;i--)pass(up[i],i===up.length-1?down.at(-1).texture:up[i+1].texture,3);
+        u.uDimensionCount.value=cuts.length;
+        cuts.forEach(({line,shape,style},i)=>{u.uDimensionLine.value[i].set(line[0]-left,line[1]-top,line[2],line[3]);u.uDimensionShape.value[i].fromArray(shape);u.uDimensionStyle.value[i].fromArray(style);});
+        pass(output,up[0].texture,4,beginOutput);
+        if(hasForeground){view.layers.mask=4;renderer.render(content,view);}
+      }finally{
+        view.layers.mask=1;content.matrixWorldAutoUpdate=autoUpdate;
+      }
     },
     dispose(){for(const item of [world,back,...up,...down,geometry,material])item.dispose();}
   };

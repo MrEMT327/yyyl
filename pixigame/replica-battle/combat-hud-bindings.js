@@ -182,7 +182,10 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   stage?.classList.add('cloud-ui-mode');mount?.();
   const resize=()=>{
     if(!hudHost)return resizeCloudCombatViewport(stage,canvas,renderer,scene,pixelRatio);
-    const {width,height}=hudHost.bounds();return resizeCombatViewport(width,height,renderer,scene,pixelRatio,hudHost.safeInsets?.());
+    const {width,height}=hudHost.bounds(),insets=hudHost.safeInsets?.();
+    if(!resizeCombatViewport(width,height,renderer,scene,pixelRatio,insets))return false;
+    bridge.hudViewport=insets?.menuButton?{width,height,safeTop:insets.top,menuButton:insets.menuButton}:null;
+    return true;
   };
   const inputOptions={handlePointer:cloud.handlePointer,getScreen:()=>renderer.screen};
   const input=hudHost?hudHost.bindInput(inputOptions):bindCloudPointerInput({surface:stage,canvas,...inputOptions});

@@ -32,7 +32,7 @@ function wrapText(a,text,width,size,opts={}){
 function column(t,pw,w,h,header,extent,kind,title,data){
   const u=w/750,exchange=kind==='shopConfirm',bottom=(exchange?22:40)*u,padding=(exchange?6:12)*u;
   const ph=Math.min((h-.1*w)*.86,header+bottom+extent+padding);
-  const paper=paintSecondaryPaper(t,w,h,pw,ph,title,{header,inkY:(header+(exchange?10:14)*u)/2,alpha:.6,dimHeight:data.dimHeight,a:data.paper});
+  const paper=paintSecondaryPaper(t,w,h,pw,ph,title,{header,inkY:(header+(exchange?10:14)*u)/2,alpha:.6,a:data.paper});
   const x=paper.x+40*u,bw=pw-80*u;
   t.region('base',box(x-12*u,paper.top,bw+24*u,Math.max(1,ph-header-bottom)),extent+padding,'y',{parent:'shop-room'});
   return {x,bw,y:paper.top,visibleBody:ph-header-bottom-padding};
@@ -125,8 +125,8 @@ function boxConfirm(data,w,h,t){
 export function openShopPanel(screen,host,send,kind){
   let latest,inspect=null;
   const panel=createLobbyPanel(screen,host,actions[kind],(d,w,h,t)=>{
-    const dimHeight=Math.max(0,h-w*151/750-d.safeBottom);t.region('shop-room',box(0,0,w,dimHeight),dimHeight);
-    const data={...d,dimHeight,paper:t.layer('shop-paper','shop-room').art};
+    const contentHeight=Math.max(0,h-w*151/750-d.safeBottom);t.region('shop-room',box(0,0,w,contentHeight),contentHeight);
+    const data={...d,paper:t.layer('shop-paper','shop-room').art};
     if(kind==='stamina')stamina(data,w,h,t);else if(kind==='shopConfirm')exchange(data,w,h,t);
     else if(kind==='shopBoxRates')shopRates(data,w,h,t);else boxConfirm(data,w,h,t);
     if(inspect){paintItemDetail({...data,inspect},w,h,t);return 'inspect';}return 'base';

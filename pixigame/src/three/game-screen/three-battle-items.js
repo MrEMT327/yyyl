@@ -6,6 +6,7 @@ import {BattleGeometry} from './three-battle-geometry.js';
 
 const files={digits:'/art/project-damage-numbers-v1/digits.png',medkit:'./assets/project-medkit-v1/medical-case-front-v1.png',
   shell:'./assets/airdrop-modules-v1/module-shell.png',crate:'./assets/project-airdrop-supply/airdrop-crate-front-v1.png'};
+export const supplyCanopyKey='project-supply-parachute-v1';
 export function queueBattleArt(host){
   for(const [key,url] of Object.entries({...files,...baked.images}))host.queue(key,url);
 }
@@ -107,15 +108,27 @@ function chest(host){
   const halo=beamSprite(),beam=beamSprite(),streaks=Array.from({length:7},beamSprite);
   const dust=Array.from({length:5},()=>{const n=image(smokeKey);host.stage.tint(n,0xc2b8a5);return n;});
   const smoke=Array.from({length:16},(_,i)=>{const n=image(smokeKey);host.stage.tint(n,[0xe06b6a,0xcc394b,0xaf263b][i%3]);return n;});
-  const cords=lines(),canopy=image('project-supply-parachute-v1'),crate=image('crate'),sparks=lines(true),b=host.art.get('crate');
+  const cords=lines(),canopyArt=host.art.get(supplyCanopyKey);
+  cords.reserve(192);
+  const canopy=host.stage.makeSprite(canopyArt??host.stage.white,layer+=.00001,node);
+  canopy.visible=Boolean(canopyArt);
+  const crate=image('crate'),sparks=lines(true),b=host.art.get('crate');
   data.supplyChestHeight=76*b.height/b.width;data.supplyChestBody=crate;
   data.supplyChestLights={height:960,halo,beam,impact,idle,rings,streaks,dust,sparks,canopy,cords,smoke};
   data.progress=new BattleGeometry(node,50);return node;
 }
-export function treasureArt(host,t){
+export function treasureArt(host,t,animationAge){
   const node=obtain(host,'treasure:'+t.uid,()=>chest(host)),pos=host.project(t.x,t.z);
-  locate(node,pos.x,pos.y);updateSupplyChestVisual(node,t,host.source.supplyDuration(t));
-  const f=node.userData.supplyChestLights;f.cords.flush();f.sparks.flush();
+  const f=node.userData.supplyChestLights;
+  if(!f.canopy.visible){
+    const binding=host.art.get(supplyCanopyKey);
+    if(binding){
+      f.canopy.material.uniforms.art.value=binding.texture;
+      f.canopy.visible=true;
+    }
+  }
+  locate(node,pos.x,pos.y);updateSupplyChestVisual(node,t,host.source.supplyDuration(t),animationAge);
+  f.cords.flush();f.sparks.flush();
   const bar=node.userData.progress;bar.clear();
   if(t.progress>0&&t.animation!=='Death'){
     bar.quad(-27,30,27,30,27,39,-27,39,0x091014,.9);const right=-25+50*t.progress;

@@ -17,12 +17,26 @@ export function showSortieOnOutput({screen,stageName='作战区域',aircraftId,r
   const aircraft=currentAircraftId(aircraftId),reduced=host.motionPreference;
   const state={reduced:reduced.matches,failed:false,retry:false,model:null,modelSeconds:0,seconds:0,
     titleOpacity:1,reveal:0,focus:null,keyboard:false,message:'',progress:0};
-  let started=host.now(),idleSince=null,frozenTime=null,modelSince=0,pendingModel=null,allowModel=!reduced.matches;
+  const motionStep=(host.motionStepMs??Infinity)/1000;
+  const motionTiming=host.motionTiming?{frames:0,slowFrames:0,maxGapMs:0}:null;
+  let started=host.now(),idleSince=null,frozenTime=null,modelSince=0,modelClock=0,pendingModel=null,allowModel=!reduced.matches;
+  let cancelModelStart=null;
   let frame=0,titleTimer=0,disposed=false,closePromise=null,closingAt=null,finish=null,closeTimer=0,tryAgain=null,press=null,lastBattleFrame=-Infinity;
   const view=host.view(screen,aircraft,stageName,redraw);
   function elapsed(now){return Math.max(0,((frozenTime??idleSince??now)-started)/1000);}
   function render(now){
-    state.seconds=elapsed(now);state.modelSeconds=Math.max(0,state.seconds-modelSince);
+    state.seconds=elapsed(now);
+    if(state.model){
+      const time=Math.max(0,state.seconds-modelSince),delta=Math.max(0,time-modelClock);
+      // A slow frame should not advance the aircraft through several unseen angles.
+      state.modelSeconds+=Math.min(delta,motionStep);modelClock=time;
+      if(motionTiming&&delta>0&&frozenTime===null&&!state.reduced){
+        const ms=Math.round(delta*1000);
+        motionTiming.frames++;
+        if(ms>45)motionTiming.slowFrames++;
+        motionTiming.maxGapMs=Math.max(motionTiming.maxGapMs,ms);
+      }
+    }
     state.titleOpacity=state.failed?1:!state.reduced?1-ease((state.seconds-1.6)/.5):Number(state.seconds<1.6);
     state.reveal=closingAt===null?0:state.reduced?1:ease((now-closingAt)/300);
     view.paint(state);
@@ -46,11 +60,26 @@ export function showSortieOnOutput({screen,stageName='作战区域',aircraftId,r
     else{if(idleSince!==null&&frozenTime===null)started+=now-idleSince;idleSince=null;request();}
   }
   function modeChange(){state.reduced=reduced.matches;request();}
+  function afterCoverFrame(){
+    return new Promise(resolve=>{
+      function done(){cancelModelStart=null;resolve();}
+      let handle=host.requestFrame(()=>{handle=host.requestFrame(done);});
+      cancelModelStart=()=>{host.cancelFrame(handle);done();};
+    });
+  }
   async function prepareModel(){
     if(!allowModel)return;
     try{
       await host.loadAircraft(aircraft);if(!allowModel||disposed)return;
-      const model=createSortieHangarScene(screen.three,aircraft);pendingModel=model;
+      if(host.deferModel){
+        await afterCoverFrame();
+        if(!allowModel||disposed)return;
+      }
+      const model=createSortieHangarScene(screen.three,aircraft,host.hangarOptions);pendingModel=model;
+      if(host.deferModel){
+        await afterCoverFrame();
+        if(!allowModel||disposed)return;
+      }
       await model.warmup();
       if(!allowModel||disposed||state.failed)return;
       state.model=model;pendingModel=null;modelSince=elapsed(host.now());
@@ -58,8 +87,8 @@ export function showSortieOnOutput({screen,stageName='作战区域',aircraftId,r
     }catch(error){if(!disposed&&allowModel)console.warn('[sortie presentation] using aircraft image',error);}
     finally{if(pendingModel){pendingModel.dispose();pendingModel=null;}}
   }
-  const timeout=setTimeout(()=>{allowModel=false;},HANGAR_VISUAL_TIMEOUT_MS);
-  function stopModelLoad(){allowModel=false;clearTimeout(timeout);}
+  const timeout=setTimeout(stopModelLoad,HANGAR_VISUAL_TIMEOUT_MS);
+  function stopModelLoad(){allowModel=false;clearTimeout(timeout);cancelModelStart?.();}
   function describe(){host.describe?.(state.failed?state.message+'，'+(state.focus==='retry'?'重试':'返回'):stageName+'，'+(state.message||'出击准备'));}
   function freeze(){
     if(frozenTime===null)frozenTime=idleSince??host.now();
@@ -69,6 +98,7 @@ export function showSortieOnOutput({screen,stageName='作战区域',aircraftId,r
     if(disposed)return;disposed=true;stopModelLoad();clearTimeout(closeTimer);clearTimeout(titleTimer);host.cancelFrame(frame);
     unbind();state.model?.dispose();state.model=null;
     view.close();host.close(restoreFocus);
+    if(motionTiming?.frames)host.motionTiming(motionTiming);
   }
   function close({restoreFocus=true,keepMotion=false}={}){
     if(closePromise)return closePromise;

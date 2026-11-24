@@ -7,8 +7,10 @@ export function showWechatSortie(platform,services,options){
     motionPreference:{matches:false},
     now:platform.now,requestFrame:platform.requestFrame,cancelFrame:platform.cancelFrame,
     hidden:()=>!platform.visible,loadAircraft:services.loadAircraft,
+    motionStepMs:1000/30,deferModel:true,hangarOptions:{environmentSize:128},
+    motionTiming:platform.debugLog?stats=>platform.debugLog.info('出击转台',stats):undefined,
     view:(device,id,label,redraw)=>createSortieViewForOutput(device,{
-      bounds,density:()=>platform.viewport.density,
+      bounds,density:()=>platform.viewport.density,maxRenderHeight:1152,
       begin:(w,h,request)=>platform.display.begin(bounds(),w,h,request,true),
       release(){},
     },id,label,redraw),

@@ -30,8 +30,6 @@ export function supplyTasks(r,d){
     actions(c,[cmd('task-'+task.id,task.claimed?'已领取':task.canClaim?'领取':'未完成','task',{id:task.id},!task.canClaim)]);});r.gap(8);}
   growthEntry(r,s,period);
   if(!week){
-    const f=s.flightRewards;if(f?.ad)r.block(c=>{headingValue(c,'每日特惠','每日1次');rewards(c,f.ad.rewards,'daily-ad');
-      actions(c,[hit('ad-flight',f.adPending?'重试保存':f.adBusy?'广告播放中':!f.ad.canClaim?'已领取':!f.adAvailable?'广告暂不可用':'看广告领取',f.adPending?'recoverDailyRewards':'flightReward',{operation:'ad',revision:f.revision},f.adBusy||!f.adPending&&(blocked||!f.ad.canClaim||!f.adAvailable))]);});r.gap(8);
     r.block(c=>{headingValue(c,'广告补给',fmt(p.ad.count)+' / '+fmt(p.ad.limit)+'次');rewards(c,p.ad.rewards,'ad');
       actions(c,[cmd('ad',p.adPending?'重试保存':p.adBusy?'广告播放中':!p.ad.canClaim?'已领完':!p.adAvailable?'广告暂不可用':'看广告领取','ad',{},p.adBusy||!p.adPending&&(!p.ad.canClaim||!p.adAvailable)),
         ...(p.development?[cmd('dev-ad','开发领取','devAd',{},!p.ad.canClaim||p.adBusy||p.adPending)]:[])]);});r.gap(8);

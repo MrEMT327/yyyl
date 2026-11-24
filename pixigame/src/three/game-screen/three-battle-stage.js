@@ -97,9 +97,13 @@ export function createBattleStage(renderer) {
       const clear=renderer.autoClear;renderer.autoClear=false;
       let worldDraw=0,uiDraw=0;
       try{
-        scene.traverse(n=>{if(n.isMesh)n.layers.set(n.renderOrder>=49.9?2:n.renderOrder>=29?1:0);});
+        let hasForeground=false;
+        scene.traverseVisible(node=>{
+          if(node.isMesh)node.layers.set(node.renderOrder>=49.9?2:node.renderOrder>=29?1:0);
+          if(node.layers.mask&4)hasForeground=true;
+        });
         const start=profile?.();
-        glow.paint(scene,camera,output,this.beginOutput);
+        glow.paint(scene,camera,output,this.beginOutput,hasForeground);
         const overlay=profile?.();
         this.drawBackdrop?.();this.drawBreakthrough?.('rear');this.drawHud?.();
         this.drawBreakthrough?.('front');this.drawMovementGuide?.();this.drawNotice?.();this.drawDeveloperSkills?.();

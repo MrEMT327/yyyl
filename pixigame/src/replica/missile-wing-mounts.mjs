@@ -9,10 +9,12 @@ export class MissileWingMounts {
     if(reset)this.records.clear();
     const dt=reset?0:Math.max(0,clock-this.clock);
     this.run=run;this.clock=clock;
+    const held=[];
+    for(const b of projectiles)if(b.held&&rocket(b))held.push(b);
+    if(typeof mounts==='function')mounts=held.length?mounts():null;
     this.mounts=mounts?.length===2&&mounts.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.z))?mounts:null;
     if(!this.mounts){this.records.clear();return;}
-    const held=[],ids=new Set();
-    for(const b of projectiles)if(rocket(b)&&b.held){held.push(b);ids.add(b.uid);}
+    const ids=new Set(held.map(b=>b.uid));
     for(const uid of this.records.keys())if(!ids.has(uid))this.records.delete(uid);
     const center={x:(mounts[0].x+mounts[1].x)/2,z:(mounts[0].z+mounts[1].z)/2};
     const span=Math.abs(mounts[1].x-mounts[0].x)/2;

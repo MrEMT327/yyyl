@@ -121,7 +121,7 @@ export function createSortieViewForOutput(device,outputHost,aircraftId,stageName
     if(disposed||device.cover!==view)return;
     const rect=outputHost.bounds();if(!rect.width||!rect.height)return;
     width=rect.width;height=rect.height;
-    const ratio=Math.min(outputHost.density(),Math.max(1,1672/height));
+    const ratio=Math.min(outputHost.density(),Math.max(1,(outputHost.maxRenderHeight??1672)/height));
     wPixels=Math.max(540,Math.round(width*ratio));hPixels=Math.max(960,Math.round(height*ratio));
     const signature=[width,height,state.failed,state.message&&state.failed?state.message:'',state.retry,state.focus,state.keyboard,!!state.model,artVersion].join('|');
     if(signature!==key){key=signature;rebuild(state);}

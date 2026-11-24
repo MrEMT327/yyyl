@@ -163,7 +163,7 @@ export async function createHomeHud(load,model,redraw){
     const p=s.reduced?0:(now%4.8)/4.8,angle=mixKeys(p,[[0,0],[.04,0],[.07,-11],[.11,10],[.15,-6],[.19,4],[.24,0],[1,0]])*Math.PI/180;
     const shift=mixKeys(p,[[0,0],[.04,0],[.07,-.05],[.11,.05],[.15,-.03],[.19,.02],[.24,0],[1,0]])*61;
     const ox=30.5,oy=43*.85;place(chest,264+shift+ox-ox*Math.cos(angle)+oy*Math.sin(angle),239+top+oy-ox*Math.sin(angle)-oy*Math.cos(angle),61,43);chest.rotation.z=angle;
-    const inset=Math.max(0,1624-l.floor),skin=navArtwork(l.nav,l.height,inset);
+    const {inset}=l,skin=navArtwork(l.nav,l.height,inset);
     shade.material.uniforms.region.value.w=inset?navBodyEnd:1;
     place(shade,0,l.nav,750,inset?skin.body:l.height);
     if(inset){
@@ -177,7 +177,16 @@ export async function createHomeHud(load,model,redraw){
       place(rail,0,l.nav,750,l.height*148/151);
     }
     for(let i=0;i<dividers.length;i++)place(dividers[i],navEdges[i+1],l.nav,3,l.height*148/151);
-    for(const [name,x,y,w,h] of tabs)place(sprites.get(name),x-30,ny(y-30),w+60,(h+60)*l.height/151);
+    let paintedGuide=lastGuide;
+    for(const [name,x,y,w,h] of tabs){
+      place(sprites.get(name),x-30,ny(y-30),w+60,(h+60)*l.height/151);
+      if(lastGuide?.id==='nav-'+name){
+        // The tap area ends above the system gesture inset. The guide follows
+        // the icon's placement in the full rail, with room for its glow.
+        const padding=6*unit;
+        paintedGuide={...lastGuide,target:[x-padding,ny(y)-padding,w+2*padding,h*l.height/151+2*padding]};
+      }
+    }
     label('nav','战役',375,ny(1594),28,{order:15,shadow:0x111111,shadeY:2*unit});
     for(const m of labels.get('nav').nodes)m.userData.navScale=l.height/151;
     const heading=s.stage?.chapterName?.replace(/^(?:第\s*[\d零一二三四五六七八九十百]+\s*章)\s*·?\s*/,'')||'蔚蓝海岸';
@@ -224,7 +233,7 @@ export async function createHomeHud(load,model,redraw){
       const edges=[[x,y,w,t],[x,y+h-t,w,t],[x,y,t,h],[x+w-t,y,t,h]];
       outline.forEach((m,i)=>place(m,...edges[i]));
     }
-    guide(lastGuide,now,unit);renderer.render(scene,camera);
+    guide(paintedGuide,now,unit);renderer.render(scene,camera);
   }
   return {updateModel,setGuide(g){lastGuide=g;},setFocus(box){focusBox=box;},setPress(id,k,[x,y,w,h]){
     if(k===1)pressScales.delete(id);else pressScales.set(id,{k,x:x+w/2,y:y+h/2});

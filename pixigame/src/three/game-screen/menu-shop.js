@@ -162,12 +162,15 @@ export function shopMenu(data,w,h,t,chrome,scrollTo=null){
     offer(o,i,coinsOffersY,['少量金币','一袋金币','一箱金币'][i],free&&(free.unlimited||free.remaining==null||free.remaining>0)?free:o);
   });
   const tabs=t.layer('category-tabs').art;pic(tabs,t,'/art/project-navigation-v2/background.png',box(0,bottom,w,bar),false,artwork);
-  for(const [i,[id,label]] of [['boxes','宝箱'],['daily','每日商店'],['coins','金币']].entries()){
-    const b=box((3.5+121.8*i)*u,bottom,119*u,bar),active=id===(data.shopSection==='stamina'?'coins':data.shopSection);
+  const categories=[['boxes','宝箱'],['daily','每日商店'],['coins','金币']];
+  if(s.flightRewards?.adOffers)categories.push(['specials','特惠']);
+  const gap=2.8*u,categoryWidth=(w-gap*(categories.length+1))/categories.length;
+  for(const [i,[id,label]] of categories.entries()){
+    const b=box(gap+i*(categoryWidth+gap),bottom,categoryWidth,bar),active=id===(data.shopSection==='stamina'?'coins':data.shopSection);
     const face=box(b.x,b.y+bar*.23,b.w,bar*.74),dot=6*u;
     pic(tabs,t,'/art/psd-page-chrome-v1/'+(active?'chapter-face.png':'chapter-idle.png'),face,false,artwork);
     words(tabs,label,b.x+b.w/2,b.y+bar*.6,14*u,{family:titleFont});
     if(id==='daily'&&s.shop?.hasFree)tabs.panel(face.x+face.w-14*u,face.y+4*u,dot,dot,{fill:'#ff586c',stroke:'#381f2d',radius:dot/2});
-    area(t,'section-'+id,label,b,'shopSection',{section:id});
+    area(t,'section-'+id,label,b,id==='specials'?'shopSpecials':'shopSection',id==='specials'?{}:{section:id});
   }
 }

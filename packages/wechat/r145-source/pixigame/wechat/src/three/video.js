@@ -5,45 +5,87 @@ import { createLobbyPanel } from '../../../../../../../pixigame/src/three/game-s
 import { pilotAffectionVideo } from '../../../../../../../pixigame/src/peripheral/pilot-affection.js';
 import { createInlineNativeVideo, retireNativeVideo } from '../full/video-player.js';
 
-function openDecoder(api,platform,services,onFrame,onEnd,onError){
-  const decoder=api.createVideoDecoder();
+const decoderWork=new WeakMap();
+function queueDecoder(api,run){
+  const next=(decoderWork.get(api)??Promise.resolve()).then(run);
+  decoderWork.set(api,next.catch(()=>{}));
+  return next;
+}
+
+export function openWechatPortraitDecoder(api,platform,services,onFrame,onEnd,onError){
+  let decoder=null;
   let generation=0,frame=0,active=false,closed=false,loaded=false;
   let position=0,source='';
   function schedule(){if(active&&!closed&&!frame)frame=platform.requestFrame(tick);}
   function tick(){
     frame=0;
     if(closed||!active)return;
-    const next=decoder.getFrameData();
-    if(next?.data&&next.width>0&&next.height>0){
-      const bytes=new Uint8Array(next.data);
-      if(bytes.length===next.width*next.height*4){
-        position=Math.max(0,Number(next.pkPts)||0)/1000;
-        onFrame(bytes,next.width,next.height,position);
-      }
+    let next,bytes;
+    try{
+      next=decoder.getFrameData();
+      const data=next?.data;
+      if(data)bytes=new Uint8Array(data);
+    }catch(error){
+      cancelPlayback();void queueDecoder(api,release);onError(error);return;
+    }
+    if(bytes&&next.width>0&&next.height>0&&bytes.length===next.width*next.height*4){
+      position=Math.max(0,Number(next.pkPts)||0)/1000;
+      onFrame(bytes,next.width,next.height,position);
     }
     schedule();
   }
-  decoder.on('ended',()=>{if(active&&!closed){active=false;onEnd(position);}});
+  function createDecoder(){
+    const player=api.createVideoDecoder();
+    player.on('ended',()=>{if(decoder===player&&active&&!closed){active=false;onEnd(position);}});
+    return player;
+  }
+  async function release(){
+    const previous=decoder;decoder=null;loaded=false;
+    try{await previous?.remove();}catch{/* A broken decoder is not reused. */}
+  }
+  async function stop(){
+    if(loaded){await decoder.stop();loaded=false;}
+  }
   async function play(path=source,time=position){
     const id=++generation;active=false;
+    const stale=()=>closed||id!==generation;
     try{
-      if(loaded){loaded=false;await decoder.stop();}
       const file=await services.localFile(path);
-      if(closed||id!==generation)return;
-      source=path;await decoder.start({source:file,mode:0,abortAudio:true});
-      if(closed||id!==generation)return;
-      loaded=true;
-      if(time>0)await decoder.seek(time*1000);
-      if(closed||id!==generation)return;
-      position=time;active=true;schedule();
-    }catch(error){if(!closed&&id===generation)onError(error);}
+      if(stale())return;
+      await queueDecoder(api,async()=>{
+        if(stale())return;
+        try{
+          await stop();
+          if(stale())return;
+          decoder??=createDecoder();
+          source=path;
+          await decoder.start({source:file,mode:0,abortAudio:true});
+          loaded=true;
+          if(stale())return;
+          if(time>0)await decoder.seek(time*1000);
+          if(stale())return;
+          position=time;active=true;schedule();
+        }catch(error){await release();throw error;}
+      });
+    }catch(error){if(!stale())onError(error);}
   }
-  function pause(){
+  function cancelPlayback(){
     active=false;generation++;
     if(frame)platform.cancelFrame(frame);frame=0;
   }
+  function pause(){
+    if(closed)return;
+    cancelPlayback();
+    const id=generation;
+    // Stop native decoding while the portrait is hidden, even without a next play.
+    void queueDecoder(api,async()=>{
+      if(closed||id!==generation)return;
+      try{await stop();}
+      catch(error){await release();if(!closed&&id===generation)onError(error);}
+    });
+  }
   return {play,pause,get position(){return position;},get active(){return active;},
-    close(){if(closed)return;pause();closed=true;Promise.resolve(decoder.remove()).catch(()=>{});}};
+    close(){if(closed)return;cancelPlayback();closed=true;void queueDecoder(api,release);}};
 }
 
 function packedPortraitModel(renderer,manifest){
@@ -93,7 +135,7 @@ export function createWechatVideoPortrait(api,services,device,host,id){
     manifest=await response.json();
     if(closed)return;
     model=packedPortraitModel(device.three,manifest);output=host.render(model);fit();
-    decoder=openDecoder(api,platform,services,(bytes,w,h)=>{
+    decoder=openWechatPortraitDecoder(api,platform,services,(bytes,w,h)=>{
       if(w!==manifest.packedWidth||h!==manifest.height){decoder.pause();console.warn('[Three 立绘] 视频尺寸不符');return;}
       model.setFrame(bytes,w,h);output.draw();
     },()=>{

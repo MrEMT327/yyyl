@@ -81,7 +81,7 @@ export function detailSheet(t,data,w,h,{title,secondary=false,width=w*(secondary
   };
   build(row);
   const ph=Math.min(maxHeight,Math.max(minHeight,header+y+bottom)),paper=secondary?
-    paintSecondaryPaper(t,w,h,width,ph,title,{header,alpha:data.backdropAlpha??.6,dimHeight:data.coverNavigation?h:h-w*151/750-(data.safeBottom||0),a:background}):
+    paintSecondaryPaper(t,w,h,width,ph,title,{header,alpha:data.backdropAlpha??.6,a:background}):
     paintLobbyPaper(t,data,w,h,width,ph,header,title,background);
   for(const m of body.group.children)m.position.y+=paper.top;
   for(const [id,label,b,cmd,payload,disabled] of targets)area(t,id,label,box(b.x,b.y+paper.top,b.w,b.h),cmd,payload,'base',disabled);

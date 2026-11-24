@@ -43,7 +43,7 @@ function fleetHero(data,d,a,t,w,h,v){
   const bw=Math.max(76,.26*w,text.scale.x+20);
   const plate=slice(title,t,'/art/psd-page-chrome-v1/chapter-face.png',box(tx,ty,bw,ht),5,18);plate.renderOrder=-1;
   stars(title,t,box(tx+12,ty+ht+.002*w,.31*w,.055*w),p.stars,p.activated?p.row.star:0);
-  if(plane){
+  if(plane&&!p.access.basicOnly){
     const stage=p.activated?p.row.stage:p.row.stages.find(s=>s.star===p.row.defaultStar)||p.row.stage;
     let x=tx+12,cy=ty+ht+.057*w+.01*w+.022*w;
     for(const line of stage.attributes||[]){const [key,n]=line.split('='),label=d.collection.attributeNames[key]||key,
@@ -57,10 +57,10 @@ function fleetHero(data,d,a,t,w,h,v){
     area(t,'preview-skill',selected.skillLabel,b,'nativeSkillPreview',{kind:d.group,id:selected.id});}
   const row=selected.row,ops=[];
   if(selected.access.available)ops.push('select');
-  if(!selected.access.basicOnly)ops.push(selected.activated?'star':'unlock');
+  if(!row.baseOnly&&(!selected.access.basicOnly||plane))ops.push(selected.activated?'star':'unlock');
   const total=.82*w,space=.07*total,bwBtn=total*(.465),bh=Math.max(44,85*w/750),start=(w-(ops.length*bwBtn+(ops.length-1)*space))/2;
   ops.forEach((op,i)=>{const opBox=box(start+i*(bwBtn+space),v.controls+(v.btn-bh)/2,bwBtn,bh),select=op==='select',
-    title=select?(selected.access.using?'使用中':'使用'):row.maxed?'已满星':op==='star'?'升星':'激活',costs=select?[]:row.costs||[],
+    title=select?(selected.access.using?'使用中':'使用'):row.maxed?'已满星':op==='star'?'升星':selected.access.basicOnly?'激活收藏':'激活',costs=select?[]:row.costs||[],
     payload={kind:d.group,operation:op,id:select?selected.access.selectionId:selected.id,revision:d.collection.revision,shortage:costs.some(c=>c.available<c.count)};
     const disabled=select?!selected.access.available||selected.access.using:row.maxed||d.s.rewardPending||d.s.rewardBusy;
     if(!costs.length){psdAction(a,t,opBox,{id:op,label:title,cmd:'nativeOperation',data:payload,disabled,gold:plane&&!select});return;}
@@ -96,5 +96,5 @@ export function catalogMenu(data,w,h,t){
   if(!tech)catalogGrid(d,t,w,v,data.windowedCatalog);else if(kind==='weapon')weaponSkills(d,t,w,v);else fleetSkills(d,t,w,v);
   const foot=t.layer('catalog-navigation').art;
   if(data.safeBottom)foot.quad(0,h-data.safeBottom,w,data.safeBottom,'#101c23');
-  bottomNav(foot,t,d,w,h,box(0,v.end,w,v.footer-(data.safeBottom||0)));
+  bottomNav(foot,t,d,w,box(0,v.end,w,v.footer-(data.safeBottom||0)),data.progressive);
 }

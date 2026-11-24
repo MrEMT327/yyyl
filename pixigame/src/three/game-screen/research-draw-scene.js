@@ -88,7 +88,7 @@ function spotlight(d,t,w,h,head,foot,origin,short){
 }
 export function paintResearchDraw(d,w,h,t,viewportHeight=h){
   const a=t.layer('awakening-stage').art,open=d.flow.phase==='opening',short=viewportHeight<=650,head=short?52:70,foot=56+Math.max(.06*viewportHeight,d.safeBottom);
-  a.quad(0,0,w,h,'#000',.667);area(t,'blank',open?'跳过动画':'点击空白处关闭',box(0,0,w,h),open?'skip':'next');
+  t.backdrop(a,.667);area(t,'blank',open?'跳过动画':'点击空白处关闭',t.frameRect,open?'skip':'next');
   const cy=head+(h-head-foot)/2-.16*w,cw=clamp(.34*w,108,150),ch=cw*308/240;
   if(open){const b=box((w-cw)/2,cy-ch/2,cw,ch);opening(d,t,a,b);
     const skip=box(w-(short?16:18)-58,short?4:18,58,44);slice(a,t,'/art/psd-buttons-v1/button-blue.png',skip,10);

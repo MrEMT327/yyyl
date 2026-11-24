@@ -9,11 +9,12 @@ import {drawPresentationPlan,initialDrawPresentation,advanceDrawPresentation} fr
 import {DRAW_GATE_ART,DRAW_GATE_DURATION_MS} from '../../ui/draw-gate.js';
 import {artworkSize} from './image-loading.js';
 
-function room(a,t,w,h,variant){
+function room(a,t,variant){
+  const frame=t.frameRect,{w,h}=frame;
   const direct=variant==='grid',stage=variant==='stage',url='/art/project-scene-backgrounds-v3/'+(direct?'recruit-result':stage?'draw-receiver':'logistics-bay')+'.png';
-  const m=pic(a,t,url,box(0,0,w,h)),[iw,ih]=artworkSize(m.material.map?.image);
+  const m=pic(a,t,url,frame),[iw,ih]=artworkSize(m.material.map?.image);
   const weave=t.texture('/art/project-workshop-background-v2/psd-scanlines.png');
-  if(!iw||!ih)return;
+  if(!m.visible||!iw||!ih){t.backdrop(a,1,'#0b1b2d');return;}
   const k=Math.max(w/iw,h/ih),sx=w/(k*iw),sy=h/(k*ih);
   m.material.onBeforeCompile=s=>{
     s.uniforms.sceneCrop={value:new Vector4(sx,sy,.5*(1-sx),.5*(1-sy))};s.uniforms.sceneSize={value:new Vector2(w,h)};
@@ -37,15 +38,18 @@ function action(a,t,b,title,id,cmd,opts={}){
   area(t,id,title,b,cmd,data,zone);
 }
 function staged(data,w,h,t){
-  const a=t.layer('reveal-stage').art,{plan,flow}=data;room(a,t,w,h,'stage');
+  const a=t.layer('reveal-stage').art,{plan,flow}=data;room(a,t,'stage');
   const opening=flow.phase==='opening',count=plan.entries.length,order=flow.review?plan.entries.map(e=>e.index):plan.featured;
   const i=order[flow.cursor],row=data.entries[i],header=76;
   if(opening){
     const tex=t.texture(DRAW_GATE_ART);
-     if(artworkSize(tex.image)[0]||tex.userData.failed){
-      const entered=data.startGate();for(let side=0;side<2;side++){const b=box(side*w/2,0,w/2,h);
-        const m=a.image(tex,b.x,b.y,b.w,b.h,{x:side/2,y:0,width:.5,height:1});
-        animateMeshes(t,[m],b.x+b.w/2,h/2,{entered,reduced:false,duration:DRAW_GATE_DURATION_MS/1000,curve:[.55,0,.3,1],frames:[{at:0},{at:.22},{at:1,x:(side?1:-1)*w/2}]});}
+    if(artworkSize(tex.image)[0]||tex.userData.failed){
+      const {x,y,w:width,h:height}=t.frameRect,half=width/2,entered=data.startGate();
+      for(let side=0;side<2;side++){
+        const left=x+side*half;
+        const m=a.image(tex,left,y,half,height,{x:side/2,y:0,width:.5,height:1});
+        animateMeshes(t,[m],left+half/2,y+height/2,{entered,reduced:false,duration:DRAW_GATE_DURATION_MS/1000,curve:[.55,0,.3,1],frames:[{at:0},{at:.22},{at:1,x:(side?1:-1)*half}]});
+      }
     }
   }else if(row){
     const cw=Math.min(w*.55,285,(h-220)/1.8),ch=cw*1.80,b=box((w-cw)/2,(h-ch)/2,cw,ch);
@@ -60,7 +64,7 @@ function staged(data,w,h,t){
 }
 function summary(data,w,h,t){
   const a=t.layer('recruit-receipt-room').art,{plan,entries}=data,grid=plan.grid,count=entries.length,single=count===1;
-  room(a,t,w,h,grid?'grid':'summary');
+  room(a,t,grid?'grid':'summary');
   const footerH=grid?56+clamp(.08*(data.windowHeight||h),28,68)+data.safeBottom:78+data.safeBottom,header=grid?0:76;
   const by=h-footerH,bw=160,b=box((w-bw)/2,by+(grid?8:14),bw,48);
   if(!grid){

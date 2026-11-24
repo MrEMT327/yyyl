@@ -12,7 +12,9 @@ function emptyMark(a,t,b){
   const m=pic(a,t,'/art/psd-main-v1/resources/diamonds-plus.png',box(b.x+(b.w-side)/2,b.y+(b.h-side)/2,side,side),true);
   m.material.onBeforeCompile=s=>{s.fragmentShader=s.fragmentShader.replace('#include <map_fragment>','#include <map_fragment>\ndiffuseColor.rgb=vec3(.39,.55,.63);');};m.material.opacity=.85;
 }
-export function gearTile(a,t,b,item,{action,zone,idPrefix='gear-',selected=false,disabled=false}={}){
+export function gearTile(a,t,b,item,{action,zone,idPrefix='gear-',selected=false,disabled=false,draw=true}={}){
+  if(action)area(t,idPrefix+item.uid,item.name+'，'+item.qualityName+'，等级'+item.level,b,action,{id:item.uid},zone,disabled);
+  if(!draw)return;
   const {x,y,w}=b,first=a.group.children.length;
   slice(a,t,qualityFrame(item.qualityRank),b,8);
   pic(a,t,gearArt(item.art),box(x+w*.08,y+w*.155,w*.84,w*.69),true);
@@ -26,7 +28,6 @@ export function gearTile(a,t,b,item,{action,zone,idPrefix='gear-',selected=false
   if(item.quality%10)words(a,'+'+item.quality%10,x+w*.84,y+w*.14,11,{color:'#ffe48a'});
   if(item.locked)words(a,'锁',x+w*.81,y+w*.23,10);
   if(disabled)for(const m of a.group.children.slice(first))m.material.opacity*=.4;
-  if(action)area(t,idPrefix+item.uid,item.name+'，'+item.qualityName+'，等级'+item.level,b,action,{id:item.uid},zone,disabled);
 }
 function recipeSlot(a,t,b,item,{index,ghost=false,choose=false,quality,logicalSize}={}){
   if(item){
@@ -69,19 +70,22 @@ export function gearWorkshop(data,w,h,t,layout){
   button('filter',ui.filter==='all'?'筛选':g.blueprints.find(p=>String(p.type)===ui.filter)?.name||'全部','workshopFilter','left');
   button('batch','一键合成','workshopGearBatch','right',!g.items.some(i=>i.quality<40&&!i.locked&&i.merge.available));
   button('compose','合成','workshopGearCompose','confirm',!ready);
-  const cols=4,pad=.045*w,gap=.02*w,side=(w-2*pad-(cols-1)*gap)/cols,zone='workshop-'+ui.filter;
+  const cols=4,pad=.045*w,gap=.02*w,side=(w-2*pad-(cols-1)*gap)/cols,step=side+gap,zone='workshop-'+ui.filter;
   const items=g.items.filter(i=>ui.filter==='all'||String(i.type)===ui.filter).sort((a,b)=>b.quality-a.quality||a.type-b.type||a.uid.localeCompare(b.uid));
+  const fy=gridY+gap+Math.ceil(items.length/cols)*step+w*.01,bw=(w-2*pad-gap)/2,rh=Math.max(46,w*.125);
+  const fodder=Object.entries(g.fodder||{}).filter(([key,n])=>n>0&&(ui.filter==='all'||key.split(':')[0]===ui.filter));
+  t.region(zone,box(0,gridY,w,Math.max(1,footY-gridY)),fy-gridY+Math.ceil(fodder.length/2)*(rh+gap),'y',{redrawStep:data.progressive?step:0});
+  const window=t.scrollWindow(zone),inWindow=b=>!window||b.y+b.h>window.top&&b.y<window.bottom;
   const grid=t.layer('gear-inventory',zone).art;
   items.forEach((it,i)=>{const selected=it.uid===target?.uid||materialIds.includes(it.uid);
-    gearTile(grid,t,box(pad+i%cols*(side+gap),gridY+gap+Math.floor(i/cols)*(side+gap),side,side),it,{action:'workshopGearPick',zone,selected,disabled:!!target&&!stale&&!selected&&!option?.candidates.includes(it.uid)});});
-  const fy=gridY+gap+Math.ceil(items.length/cols)*(side+gap)+w*.01,bw=(w-2*pad-gap)/2,rh=Math.max(46,w*.125);
-  const fodder=Object.entries(g.fodder||{}).filter(([key,n])=>n>0&&(ui.filter==='all'||key.split(':')[0]===ui.filter));
+    const b=box(pad+i%cols*step,gridY+gap+Math.floor(i/cols)*step,side,side);
+    gearTile(grid,t,b,it,{action:'workshopGearPick',zone,selected,draw:inWindow(b),disabled:!!target&&!stale&&!selected&&!option?.candidates.includes(it.uid)});});
   fodder.forEach(([key,n],i)=>{const [type,q]=key.split(':').map(Number),bp=g.blueprints.find(b=>b.type===type),b=box(pad+i%2*(bw+gap),fy+Math.floor(i/2)*(rh+gap),bw,rh);
     const allowed=!stale&&key===option?.tokenKey&&tokens+materialIds.length<option.required,selected=key===option?.tokenKey?tokens:0;
+    if(!inWindow(b)){area(t,'token-'+key,'',b,'workshopGearToken',{key},zone,!allowed);return;}
     psdAction(grid,t,b,{id:'token-'+key,label:'',cmd:'workshopGearToken',data:{key},zone,disabled:!allowed});
     const sb=box(b.x+5,b.y+(rh-w*.09)/2,w*.09,w*.09);slice(grid,t,qualityFrame(Math.floor(q/10)-1),sb,5);pic(grid,t,gearArt(bp.id),sb,true);
     words(grid,bp.name+'材料 '+selected+'/'+n,b.x+b.w*.60,b.y+b.h/2,12,{maxWidth:b.w*.72});
   });
-  t.region(zone,box(0,gridY,w,Math.max(1,footY-gridY)),fy-gridY+Math.ceil(fodder.length/2)*(rh+gap));
 }
 

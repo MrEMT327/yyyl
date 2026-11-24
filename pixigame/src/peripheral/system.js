@@ -4,11 +4,10 @@ import { createPeripheralSaveGuard } from './save-guard.js';
 import {localFailureCount,recordLocalFailureProtection,LOCAL_FAILURE_PROTECTION_VERSION} from '../replica/local-failure-protection.js';
 import {planNativeStarterItems,NATIVE_INITIAL_STAMINA} from '../replica/native-starter-items.js';
 import {planNativeStarterCore} from '../replica/native-starter-core.js';
-import {planNativeStarterAircraft} from '../replica/native-starter-aircraft.js';
 import {planNativeStarterPilot} from '../replica/native-starter-pilot.js';
 import {STARTER_PILOT_ID} from '../replica/native-pilot-roster.js';
 import {planRetiredPilotFragments} from '../replica/retired-pilot-fragments.js';
-import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide} from './onboarding.js';
+import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide, reachedGuideProgress} from './onboarding.js';
 import { backpackUseRule, planBackpackUse } from '../replica/native-backpack-use.js';
 import { nativeStarRewardSnapshot, planNativeStarClaim } from '../replica/native-star-rewards.js';
 import { nativeAchievementSnapshot } from '../replica/native-achievements.js';
@@ -375,17 +374,6 @@ export function createPeripheralSystem({
     }catch(error){storageWarning=error.message;}
   }
   syncStarterGrants();
-  let starterAircraftAttempted=false;
-  function syncStarterAircraft(){
-    if(!storageCurrent()||starterAircraftAttempted||state.nativeStarterAircraft||activeSortie||state.dailyRewardReceipt||pendingFlightAd||state.replicaPendingSettlement||state.shop?.pending||state.starRewards?.pending)return;
-    starterAircraftAttempted=true;
-    try{
-      const next=planNativeStarterAircraft(state,currentTime());if(!next)return;
-      const previous=state;state=next;
-      if(!persist()){state=previous;storageWarning='初始战机状态尚未保存，请恢复存储后重新进入游戏';}
-    }catch(error){storageWarning=error.message;}
-  }
-  syncStarterAircraft();
   let starterPilotAttempted=false;
   function syncStarterPilot(){
     if(starterPilotAttempted||state.replicaLoadout?.pilots?.some(row=>row.id===STARTER_PILOT_ID&&row.active)
@@ -798,7 +786,7 @@ export function createPeripheralSystem({
     }
     onChange();return pass('奖励已领取',{rewards:plan.rewards});
   }
-  async function flightAd(revision) {
+  async function flightAd(revision,period='daily') {
     if(flightAdBusy)return fail('广告正在播放，请稍候');
     if(pendingFlightAd) {
       const result=saveFlightPlan(pendingFlightAd);
@@ -807,16 +795,18 @@ export function createPeripheralSystem({
     }
     if(revision!==state.replicaInventory.revision)return fail('库存已更新，请重新操作');
     const started=currentTime();
-    if(!flightRewardsSnapshot(state.flightRewards,state.replicaInventory,state.replicaCampaign,started).ad.canClaim)return fail('今日已领取或日期异常');
+    const offers=flightRewardsSnapshot(state.flightRewards,state.replicaInventory,state.replicaCampaign,started).adOffers;
+    if(!Object.hasOwn(offers,period))return fail('特惠档位无效');
+    if(!offers[period].canClaim)return fail(period==='daily'?'今日已领取或日期异常':'本期已领取或日期异常');
     if(typeof playShopAd!=='function')return fail('广告服务暂未就绪');
     if(!persist())return fail('暂时无法保存，广告未开始');
     flightAdBusy=true;onChange();
     try {
-      const result=await playShopAd();
+      const result=await playShopAd({placement:'shop-specials',period});
       if(result?.completed!==true)return fail('未完整观看广告，未发放奖励');
       if (!storageCurrent()) return fail(storageWarning);
       // All user economy actions are gated while this video is open.
-      pendingFlightAd=planFlightReward(flightInput(started),{action:'ad',completed:true,revision:state.replicaInventory.revision});
+      pendingFlightAd=planFlightReward(flightInput(started),{action:'ad',period,completed:true,revision:state.replicaInventory.revision});
       const saved=saveFlightPlan(pendingFlightAd);
       if(saved.ok)pendingFlightAd=null;
       return saved;
@@ -987,7 +977,7 @@ export function createPeripheralSystem({
     if(type==='flightReward'||type==='claimSignIn'){
       if(activeSortie)return fail('请先结束当前战斗');
       const operation=type==='claimSignIn'?{action:'signin',revision:state.replicaInventory.revision}:payload;
-      if(operation.action==='ad')return flightAd(operation.revision);
+      if(operation.action==='ad')return flightAd(operation.revision,operation.period);
       // Ad completion may only originate from the awaited platform callback.
       try{return saveFlightPlan(planFlightReward(flightInput(),operation,rng));}
       catch(error){return fail(error.message);}
@@ -1076,6 +1066,10 @@ export function createPeripheralSystem({
       if(activeSortie)return fail('请先完成当前出击');
       const operation=type==='gearPreview'?payload.operation:{gearEquip:'equip',gearUnequip:'unequip',gearLock:'lock',gearUpgrade:'upgrade',gearUpgradeAll:'upgradeAll',gearDowngrade:'downgrade',gearMerge:'merge',gearBatch:'batch',gearSupply:'supply',gearClaimBasicReward:'claimBasicReward'}[type];
       if(type==='gearPreview'&&!['batch','downgrade'].includes(operation))return fail('未知预览');
+      if(operation==='equip'){
+        const lockReason=gearEquipLockReason();
+        if(lockReason)return fail(lockReason);
+      }
       if(!recoverReplicaSettlement())return fail(storageWarning);
       const plan=planReplicaGear(state.equipment,state.replicaInventory,{...payload,uid:payload.uid||id,revision:payload.expectedRevision,operation,time:currentTime()},state.replicaLoadout);
       if(!plan.ok)return plan;
@@ -1496,10 +1490,15 @@ export function createPeripheralSystem({
         Math.floor(seconds / lobbyProjection.interval) !== lobbyProjection.patrolBucket) return null;
     return { time, storedMinutes: seconds / 60, clockRollback };
   }
+  function gearEquipLockReason() {
+    // Earlier saves that already finished the equip tutorial retain access.
+    const unlocked = reachedGuideProgress(state.replicaCampaign, 2) || guideFinished(state, 9);
+    return unlocked ? '' : '通关第1章后可装备';
+  }
   function snapshot() {
     if (storageCurrent()) {
       syncDay(); if(!state.dailyRewardReceipt)syncPilotUnlocks(); syncSamplePatrol();
-      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();syncStarterAircraft();syncStarterPilot();syncAccountExperience();
+      if(recoverReplicaSettlement())recoverInterruptedSortie();syncRetiredChipInventory();syncRetiredPilotFragments();syncStarterGrants();syncStarterPilot();syncAccountExperience();
       if (!state.replicaMainline && !activeSortie && !state.dailyRewardReceipt && !state.firstClearWeaponClaimed) claimStageOneWeapon();
       const time=currentTime(),activity=carnivalInvalid?null:carnivalClock(state.carnival,time);
       if(!carnivalInvalid&&(state.carnival===undefined||
@@ -1612,7 +1611,7 @@ export function createPeripheralSystem({
       patrol: {...samplePatrolSnapshot(state.samplePatrol,state.replicaCampaign,time,state.replicaInventory.revision,state.replicaLoadout),
         adAvailable:typeof playPatrolAd==='function',adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.samplePatrol),
         staminaUnlimited:UNLIMITED_RESOURCES},
-      equipment: replicaGearSnapshot(state.equipment,state.replicaInventory),
+      equipment: {...replicaGearSnapshot(state.equipment,state.replicaInventory),equipLockReason:gearEquipLockReason()},
       equipmentBoxReceipt: copy(state.replicaEquipmentBoxReceipt || null),
       battleMaterials: battleMaterialSnapshot(state.replicaBattleMaterials),
       visualLoadout: { weapons: loadout.weapons.map(row => ({ itemId: row.itemId, slots: [...row.slots], innate: Boolean(row.innate) })) },
