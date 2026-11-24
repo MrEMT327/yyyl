@@ -33,8 +33,8 @@ function localUrl(path, base = location.href) {
   return url.href;
 }
 
-function loadCore(coreUrl) {
-  const nativeLoader = globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadCubismCore;
+function loadCore(coreUrl,loader) {
+  const nativeLoader = loader ?? globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadCubismCore;
   const ready = () => new Promise((resolve, reject) => {
     const deadline = performance.now() + 10000;
     const check = () => {
@@ -163,21 +163,27 @@ export function createCubismPortraitPlayer({
   transitionSeconds = 0,
   initialMemoryBytes = 0,
   geometryOnly = false,
+  createSurface = null,
+  geometryHost = null,
 } = {}) {
   if (!Number.isFinite(sampleFps) || sampleFps < 1 || sampleFps > 120) throw new RangeError('立绘采样帧率必须为 1–120');
   if (!Number.isFinite(transitionSeconds) || transitionSeconds < 0 || transitionSeconds > 2) throw new RangeError('立绘过渡时长必须为 0–2 秒');
   const step = 1 / sampleFps;
   const canDrawFrame=createPortraitPaintGate();
-  const assetRoot = new URL(localUrl(assetBase));
+  const address=geometryHost ? (path,base=geometryHost.baseURL)=>new URL(path,base).href : localUrl;
+  const hidden=geometryHost?.hidden??(()=>document.hidden);
+  const request=geometryHost?.requestFrame??(callback=>requestAnimationFrame(callback));
+  const cancel=geometryHost?.cancelFrame??(id=>cancelAnimationFrame(id));
+  const assetRoot = new URL(address(assetBase));
   if (!assetRoot.pathname.endsWith('/')) assetRoot.pathname += '/';
   assetRoot.search = assetRoot.hash = '';
-  const modelUrl = localUrl(modelPath, assetRoot.href);
-  const coreUrl = localUrl('art/live2d-runtime/live2dcubismcore.min.js', assetRoot.href);
+  const modelUrl = address(modelPath, assetRoot.href);
+  const coreUrl = address('art/live2d-runtime/live2dcubismcore.min.js', assetRoot.href);
   let host = null, visible = true, paused = false, destroyed = false;
   let state = 'idle', error = null, warned = false, loading = null;
   let geometryPrepared = false;
   let controller = null, releaseFramework = null, setting = null;
-  let canvas = null, gl = null, moc = null, model = null, renderer = null, physics = null, manager = null;
+  let surface = null, canvas = null, gl = null, moc = null, model = null, renderer = null, physics = null, manager = null;
   let consumerInput = null, renderPositionAdapter = null, textureRegionAdapter = null, attachmentAdapter = null;
   let modelAdapter = null;
   let observer = null, raf = null, previous = 0, accumulator = 0;
@@ -190,20 +196,20 @@ export function createCubismPortraitPlayer({
   const reducedMotion = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
 
   function updateHost() {
-    if (!host) return;
+    if(!host||geometryHost)return;
     const values={portraitState:state,motion:current?.name||'idle',time:currentTime.toFixed(1),playing:String(raf!==null)};
     for(const [key,value] of Object.entries(values))if(host.dataset[key]!==value)host.dataset[key]=value;
     host.classList.toggle('is-ready', state === 'ready');
   }
 
   function clearHost() {
-    if (!host) return;
+    if(!host||geometryHost)return;
     host.classList.remove('is-ready');
     for (const key of ['portraitState', 'motion', 'time', 'playing']) delete host.dataset[key];
   }
 
   function stop() {
-    if (raf !== null) cancelAnimationFrame(raf);
+    if (raf !== null) cancel(raf);
     raf = null;
     previous = 0;
     accumulator = 0;
@@ -211,21 +217,25 @@ export function createCubismPortraitPlayer({
   }
 
   function canPlay() {
-    return !destroyed && state === 'ready' && visible && host?.isConnected
-      && !document.hidden && !paused && (!reducedMotion?.matches || explicitPlayback);
+    return !destroyed && state === 'ready' && visible && (geometryHost?Boolean(host):host?.isConnected)
+      && !hidden() && !paused && (!reducedMotion?.matches || explicitPlayback);
   }
 
   function syncPlayback() {
     if (!canPlay()) { stop(); return; }
     if (raf === null) {
       previous = performance.now();
-      raf = requestAnimationFrame(tick);
+      raf = request(tick);
       updateHost();
     }
   }
 
   function draw() {
-    if (!gl || !renderer || destroyed) return;
+    if(destroyed)return;
+    if(surface){
+      surface.draw(projection.getArray());renderedFrames++;updateHost();return;
+    }
+    if(!gl||!renderer)return;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(0, 0, 0, 0);
@@ -239,9 +249,11 @@ export function createCubismPortraitPlayer({
     updateHost();
   }
 
-  function setRenderSize(width, height) {
-    if (canvas.width !== width) canvas.width = width;
-    if (canvas.height !== height) canvas.height = height;
+  let surfaceWidth=0,surfaceHeight=0;
+  function setRenderSize(width,height){
+    surfaceWidth=width;surfaceHeight=height;
+    if(canvas){if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;}
+    surface?.resize(width,height);
     if (camera?.scaleNdc?.length === 2 && camera?.translateNdc?.length === 2) {
       const fitted = portraitCamera(camera,width,height);
       projection.loadIdentity();
@@ -261,12 +273,12 @@ export function createCubismPortraitPlayer({
   }
 
   function fit() {
-    if (!host || !canvas || !model || !gl || destroyed) return;
-    const rect = host.getBoundingClientRect();
+    if(!host||!model||(!gl&&!surface)||destroyed)return;
+    const rect=geometryHost?geometryHost.bounds():host.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) { stop(); return; }
     const dpr = Math.min(Math.max(globalThis.devicePixelRatio || 1, minimumResolution), 2);
-    const [width,height]=portraitRenderSize(rect.width,rect.height,dpr);
-    if(canvas.width!==width||canvas.height!==height||!renderedFrames){
+    const [width,height]=geometryHost?.renderSize?.(rect.width,rect.height,dpr)??portraitRenderSize(rect.width,rect.height,dpr);
+    if(surfaceWidth!==width||surfaceHeight!==height||!renderedFrames){
       setRenderSize(width,height);
       try { draw(); } catch (reason) { fail(reason); }
     }
@@ -342,7 +354,7 @@ export function createCubismPortraitPlayer({
       }
       if (changed && (canDrawFrame(now) || !canPlay())) draw();
     } catch (reason) { fail(reason); return; }
-    if (canPlay()) raf = requestAnimationFrame(tick);
+    if (canPlay()) raf = request(tick);
     else stop();
     updateHost();
     if(changed&&performanceMonitor.enabled){performanceMonitor.frame('portrait');performanceMonitor.record('portrait',performance.now()-sampleAt);}
@@ -352,6 +364,7 @@ export function createCubismPortraitPlayer({
     stop();
     rendererMetrics?.destroy();
     rendererMetrics = null;
+    surface?.destroy();surface=null;
     meshBatcher?.destroy();
     meshBatcher = null;
     canvas?.removeEventListener('webglcontextlost', onContextLost);
@@ -413,16 +426,17 @@ export function createCubismPortraitPlayer({
   }
 
   async function read(path, kind = 'arrayBuffer', baseUrl = modelUrl) {
-    const url = localUrl(path, baseUrl);
+    const url = address(path, baseUrl);
     try {
-      const response = await fetch(url, { signal: controller.signal });
+      const response = await (geometryHost?.fetchResource??fetch)(url,{signal:controller.signal});
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response[kind]();
     } catch (cause) { throw new Error(`Cubism 资源读取失败: ${url}`, { cause }); }
   }
 
   async function loadImage(path, baseUrl = modelUrl) {
-    const blob = await read(path, 'blob', baseUrl);
+    if(geometryHost?.loadImage)return geometryHost.loadImage(address(path,baseUrl));
+    const blob = await read(path,'blob',baseUrl);
     if (destroyed) return null;
     const image = new Image();
     images.add(image);
@@ -478,9 +492,9 @@ export function createCubismPortraitPlayer({
   async function load() {
     state = 'loading';
     updateHost();
-    controller = new AbortController();
+    controller = geometryHost?.makeAbort?.() ?? new AbortController();
     const [, modelSetting, modelAdapterFactory] = await Promise.all([
-      loadCore(coreUrl), read(modelUrl, 'json'),
+      loadCore(coreUrl,geometryHost?.loadCore), read(modelUrl,'json'),
       loadModelAdapter ? loadModelAdapter() : createModelAdapter,
     ]);
     if (destroyed) return false;
@@ -601,45 +615,53 @@ export function createCubismPortraitPlayer({
       modelAdapter = modelAdapterFactory(model);
     }
     // Reference models can provide posed vertices to a separate renderer.
-    if (!geometryOnly) {
+    if(!geometryOnly&&geometryHost){
+      if(!geometryHost.createCubism)throw Error('小游戏缺少立绘网格输出');
+      surface=geometryHost.createCubism(model,selectedTexturePaths.map((_,i)=>results[i+2].value),mipmaps);
+    }else if (!geometryOnly) {
       canvas = document.createElement('canvas');
       canvas.width = canvas.height = 1;
       canvas.className = 'lobby-portrait-canvas cubism-portrait-canvas';
       canvas.style.cssText = 'display:block;width:100%;height:100%;pointer-events:none;background:transparent';
       canvas.setAttribute('aria-hidden', 'true');
-      gl = canvas.getContext('webgl', {
-        alpha: true, premultipliedAlpha: true, antialias: true,
-        preserveDrawingBuffer: true, powerPreference: 'low-power',
-      });
-      if (!gl) throw new Error('浏览器无法创建 Cubism WebGL 上下文');
-      rendererMetrics = trackWebGLRenderer(gl, performanceMonitor, `portrait-${++metricsSerial}`,
-        () => Boolean(!destroyed && visible && host?.isConnected && !document.hidden));
-      canvas.addEventListener('webglcontextlost', onContextLost);
-      renderer = new CubismRenderer_WebGL();
-      renderer.initialize(model);
-      renderer.startUp(gl);
-      renderer.setIsPremultipliedAlpha(true);
-      meshBatcher = installCubismBatcher(renderer,gl);
-      // The selected atlases include mouth/detail replacements beyond model3's
-      // original texture list; every fetched atlas must receive its GPU slot.
-      for (let i = 0; i < selectedTexturePaths.length; i++) {
-        const image = results[i + 2].value;
-        const texture = gl.createTexture();
-        if (!texture) throw new Error('Cubism 纹理无法创建');
-        textures.push(texture);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,mipmaps?gl.LINEAR_MIPMAP_LINEAR:gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        if (mipmaps) gl.generateMipmap(gl.TEXTURE_2D);
-        renderer.bindTexture(i, texture);
-        image.src = '';
-        images.delete(image);
+      if(createSurface){
+        const atlases=selectedTexturePaths.map((_,i)=>results[i+2].value);
+        surface=createSurface(canvas,model,atlases,mipmaps);
+      }else{
+        gl = canvas.getContext('webgl', {
+          alpha: true, premultipliedAlpha: true, antialias: true,
+          preserveDrawingBuffer: true, powerPreference: 'low-power',
+        });
+        if (!gl) throw new Error('浏览器无法创建 Cubism WebGL 上下文');
+        rendererMetrics = trackWebGLRenderer(gl, performanceMonitor, `portrait-${++metricsSerial}`,
+          () => Boolean(!destroyed && visible && host?.isConnected && !hidden()));
+        canvas.addEventListener('webglcontextlost', onContextLost);
+        renderer = new CubismRenderer_WebGL();
+        renderer.initialize(model);
+        renderer.startUp(gl);
+        renderer.setIsPremultipliedAlpha(true);
+        meshBatcher = installCubismBatcher(renderer,gl);
+        // The selected atlases include mouth/detail replacements beyond model3's
+        // original texture list; every fetched atlas must receive its GPU slot.
+        for (let i = 0; i < selectedTexturePaths.length; i++) {
+          const image = results[i + 2].value;
+          const texture = gl.createTexture();
+          if (!texture) throw new Error('Cubism 纹理无法创建');
+          textures.push(texture);
+          gl.bindTexture(gl.TEXTURE_2D, texture);
+          gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, 1);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+          gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,mipmaps?gl.LINEAR_MIPMAP_LINEAR:gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          if (mipmaps) gl.generateMipmap(gl.TEXTURE_2D);
+          renderer.bindTexture(i, texture);
+          image.src = '';
+          images.delete(image);
+        }
+        gl.bindTexture(gl.TEXTURE_2D, null);
       }
-      gl.bindTexture(gl.TEXTURE_2D, null);
     }
     begin(motions.get('idle'), false, true);
     if (host && canvas) host.appendChild(canvas);
@@ -653,14 +675,14 @@ export function createCubismPortraitPlayer({
 
   function ensureLoaded() {
     if (destroyed || state === 'error') return Promise.resolve(false);
-    if ((!host && !geometryPrepared) || !visible || document.hidden) return Promise.resolve(state === 'ready');
+    if ((!host && !geometryPrepared) || !visible || hidden()) return Promise.resolve(state === 'ready');
     if (!loading) loading = load().catch(reason => { fail(reason); return false; });
     return loading;
   }
 
   function onVisibility() {
     syncPlayback();
-    if (!document.hidden) void ensureLoaded();
+    if (!hidden()) void ensureLoaded();
   }
 
   function onReducedMotion() {
@@ -670,7 +692,10 @@ export function createCubismPortraitPlayer({
     syncPlayback();
   }
 
-  document.addEventListener('visibilitychange', onVisibility);
+  const unresize=geometryHost?.watchBounds?.(fit);
+  const unwatch=geometryHost ? geometryHost.watchVisibility(onVisibility) : (()=>{
+    document.addEventListener('visibilitychange',onVisibility);return ()=>document.removeEventListener('visibilitychange',onVisibility);
+  })();
   if (reducedMotion?.addEventListener) reducedMotion.addEventListener('change', onReducedMotion);
   else reducedMotion?.addListener?.(onReducedMotion);
 
@@ -682,13 +707,13 @@ export function createCubismPortraitPlayer({
     },
     attach(nextHost) {
       if (destroyed) return Promise.resolve(false);
-      if (nextHost && !nextHost.appendChild) throw new TypeError('立绘需要有效的宿主元素');
+      if(nextHost&&!geometryHost&&!nextHost.appendChild) throw new TypeError('立绘需要有效的宿主元素');
       if (nextHost !== host) {
         clearHost();
         observer?.disconnect();
         canvas?.remove();
         host = nextHost || null;
-        if (host && !geometryOnly && globalThis.ResizeObserver) {
+        if(host&&!geometryHost&&!geometryOnly&&globalThis.ResizeObserver) {
           observer ||= new ResizeObserver(fit);
           observer.observe(host);
         }
@@ -757,7 +782,7 @@ export function createCubismPortraitPlayer({
       catch(reason){fail(reason);return false;}
     },
     captureFrame(size = 1024) {
-      if (destroyed || state !== 'ready' || !canvas || !model || !gl) return null;
+      if (destroyed || state !== 'ready' || !canvas || !model || (!gl&&!surface)) return null;
       if (!Number.isFinite(size) || size < 1) throw new RangeError('导出尺寸必须是正数');
       const edge = Math.round(size);
       const width = canvas.width, height = canvas.height;
@@ -765,10 +790,9 @@ export function createCubismPortraitPlayer({
       try {
         setRenderSize(edge, edge);
         draw();
-        return canvas.toDataURL('image/png');
+        return surface?surface.captureFrame(edge):canvas.toDataURL('image/png');
       } finally {
-        canvas.width = width;
-        canvas.height = height;
+        setRenderSize(width,height);
         projection.setMatrix(matrix);
         draw();
       }
@@ -781,7 +805,7 @@ export function createCubismPortraitPlayer({
       controller?.abort();
       observer?.disconnect();
       observer = null;
-      document.removeEventListener('visibilitychange', onVisibility);
+      unwatch();unresize?.();
       if (reducedMotion?.removeEventListener) reducedMotion.removeEventListener('change', onReducedMotion);
       else reducedMotion?.removeListener?.(onReducedMotion);
       cleanup();
@@ -801,7 +825,7 @@ export function createCubismPortraitPlayer({
     get sampleFps() { return sampleFps; },
     get renderedFrames() { return renderedFrames; },
     get availableMotions() { return [...motionRefs.keys()]; },
-    get canvas() { return canvas; },
+    get canvas() { return surface?.canvas??canvas; },
     get model() { return model; },
     get renderer() { return renderer; },
     get batcher() { return meshBatcher; },

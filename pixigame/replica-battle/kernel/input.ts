@@ -6,7 +6,7 @@ import { clampNativePlayerTarget } from './native-camera-projection';
 // release discard the old direction instead of making the player repay it.
 const MAX_DRAG_LEAD_SECONDS = .06;
 
-export class Controls {
+export class BattleControls {
   dx = 0;
   dy = 0;
   held = false;
@@ -23,51 +23,26 @@ export class Controls {
     x: { direction: 0, opposed: 0, unreadOpposed: 0, threshold: 0 },
     y: { direction: 0, opposed: 0, unreadOpposed: 0, threshold: 0 },
   };
-  constructor(private surface: HTMLElement, private canMove: () => boolean, private pause: () => void) {
-    surface.addEventListener('pointerdown', event => {
-      if (!canMove() || (event.pointerType === 'mouse' && event.button !== 0) || (event.target as HTMLElement)?.closest('button, .overlay')) return;
-      if (this.pointer !== null) return;
-      this.pointer = event.pointerId;
-      this.lastX = event.clientX;
-      this.lastY = event.clientY;
-      this.held = true;
-      this.target = this.rawTarget = this.lastDragCamera = null; this.dx = this.dy = 0;
-      this.reverseX = this.reverseY = false;
-      this.resetDragStrokes();
-      try { surface.setPointerCapture(event.pointerId); } catch { this.clear(); return; }
-      event.preventDefault();
-    });
-    surface.addEventListener('pointermove', event => {
-      if (this.pointer !== event.pointerId) return;
-      if (!canMove() || (event.pointerType === 'mouse' && event.buttons === 0)) { this.clear(); return; }
-      const rect = surface.getBoundingClientRect();
-      if (!(rect.width > 0 && rect.height > 0)) { this.clear(); return; }
-      // Browsers may deliver a whole touch curve in one event. The newest
-      // intentional stroke still owns a turn, even if its net endpoint is
-      // ahead of the starting point. Bound work on unusually long batches.
-      const samples = event.getCoalescedEvents?.();
-      if (samples) for (let i = Math.max(0, samples.length - 32); i < samples.length; i++) {
-        if (samples[i].pointerId === event.pointerId) this.recordPointerPosition(samples[i], rect);
-      }
-      this.recordPointerPosition(event, rect);
-    });
-    const release = (event: PointerEvent) => {
-      if (event.pointerId === this.pointer) this.clearPointer();
-    };
-    surface.addEventListener('pointerup', release);
-    surface.addEventListener('pointercancel', release);
-    surface.addEventListener('lostpointercapture', release);
-    window.addEventListener('keydown', event => {
-      if ((event.target as HTMLElement)?.closest('input, textarea, select, [contenteditable="true"]')) return;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Escape'].includes(event.key)) event.preventDefault();
-      this.keys.add(event.key.toLowerCase());
-      if (!event.repeat && ['Escape', ' '].includes(event.key)) pause();
-    });
-    window.addEventListener('keyup', event => this.keys.delete(event.key.toLowerCase()));
-    window.addEventListener('blur', () => this.clear());
-    document.addEventListener('visibilitychange', () => { if (document.hidden) this.clear(); });
-    surface.addEventListener('contextmenu', event => event.preventDefault());
+  constructor(private releaseCapture: (id:number)=>void = ()=>{}) {}
+
+  begin(id:number,x:number,y:number) {
+    if(this.pointer!==null||!Number.isFinite(x)||!Number.isFinite(y))return false;
+    this.pointer=id;this.lastX=x;this.lastY=y;this.held=true;
+    this.target=this.rawTarget=this.lastDragCamera=null;this.dx=this.dy=0;
+    this.reverseX=this.reverseY=false;this.resetDragStrokes();
+    return true;
   }
+  move(id:number,x:number,y:number,rect:{width:number;height:number}) {
+    if(this.pointer!==id)return;
+    if(!(rect.width>0&&rect.height>0)){this.clear();return;}
+    this.recordPointerPosition({clientX:x,clientY:y},rect);
+  }
+  end(id:number) {if(this.pointer===id)this.clearPointer();}
+  owns(id:number) {return this.pointer===id;}
+  setKey(key:string,down:boolean) {
+    if(down)this.keys.add(key.toLowerCase());else this.keys.delete(key.toLowerCase());
+  }
+
   private recordPointerPosition(point: { clientX: number; clientY: number }, rect: { width: number; height: number }) {
     if (!Number.isFinite(point.clientX) || !Number.isFinite(point.clientY)) return;
     this.appendDragStroke('x', (point.clientX - this.lastX) / rect.width, 1 / rect.width);
@@ -151,6 +126,41 @@ export class Controls {
     this.target = this.rawTarget = this.lastDragCamera = null;
     this.reverseX = this.reverseY = false;
     this.resetDragStrokes();
-    if (pointer !== null) try { this.surface.releasePointerCapture(pointer); } catch { /* Already released by the browser. */ }
+    if(pointer!==null)this.releaseCapture(pointer);
+  }
+}
+
+export class Controls extends BattleControls {
+  constructor(surface: HTMLElement, canMove: () => boolean, pause: () => void, signal?:AbortSignal) {
+    super(id=>{try{surface.releasePointerCapture(id);}catch{}});
+    const events={signal};
+    surface.addEventListener('pointerdown',event=>{
+      if(!canMove()||event.pointerType==='mouse'&&event.button!==0||(event.target as HTMLElement)?.closest('button, .overlay'))return;
+      if(!this.begin(event.pointerId,event.clientX,event.clientY))return;
+      try{surface.setPointerCapture(event.pointerId);}catch{this.clear();return;}
+      event.preventDefault();
+    },events);
+    surface.addEventListener('pointermove',event=>{
+      if(!this.owns(event.pointerId))return;
+      if(!canMove()||event.pointerType==='mouse'&&event.buttons===0){this.clear();return;}
+      const rect=surface.getBoundingClientRect(),samples=event.getCoalescedEvents?.();
+      if(samples)for(const sample of samples.slice(-32))if(sample.pointerId===event.pointerId)
+        this.move(sample.pointerId,sample.clientX,sample.clientY,rect);
+      this.move(event.pointerId,event.clientX,event.clientY,rect);
+    },events);
+    const release=(event:PointerEvent)=>this.end(event.pointerId);
+    surface.addEventListener('pointerup',release,events);
+    surface.addEventListener('pointercancel',release,events);
+    surface.addEventListener('lostpointercapture',release,events);
+    window.addEventListener('keydown',event=>{
+      if((event.target as HTMLElement)?.closest('input, textarea, select, [contenteditable="true"]'))return;
+      if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Escape'].includes(event.key))event.preventDefault();
+      this.setKey(event.key,true);
+      if(!event.repeat&&['Escape',' '].includes(event.key))pause();
+    },events);
+    window.addEventListener('keyup',event=>this.setKey(event.key,false),events);
+    window.addEventListener('blur',()=>this.clear(),events);
+    document.addEventListener('visibilitychange',()=>{if(document.hidden)this.clear();},events);
+    surface.addEventListener('contextmenu',event=>event.preventDefault(),events);
   }
 }

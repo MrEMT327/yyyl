@@ -6,46 +6,9 @@ const BEAM = 'project-supply-arrival-beam-v1';
 const GLOW = 'project-supply-arrival-glow-v1';
 const RING = 'project-supply-arrival-ring-v1';
 const SIZE = 76;
-type ChestPose = { animation: string; animationAge: number; progress: number };
-const clamp = (n: number) => Math.max(0, Math.min(1, n));
-const smooth = (a: number, b: number, n: number) => { const t = clamp((n - a) / (b - a)); return t * t * (3 - 2 * t); };
-
-/** Presentation fits inside the existing birth clip. Nothing here advances
- * the simulation or waits for the parachute before allowing pickup. */
-export function supplyChestPose(chest: ChestPose, duration: number) {
-  const age = Number.isFinite(chest.animationAge) ? Math.max(0, chest.animationAge) : 0;
-  const length = Number.isFinite(duration) && duration > 0 ? duration : 1.5;
-  const progress = clamp(age / length), born = chest.animation === 'Born';
-  const time = age * 1.5 / length;
-  let scale = 1, alpha = 1, y = -4, rotation = 0, idle = 1, x = 0;
-  if (born) {
-    const fall = smooth(.03, .98, time), suspended = 1 - smooth(.84, 1.04, time);
-    scale = .88 + .12 * fall + Math.exp(-Math.pow((time - 1.05) / .07, 2)) * .025;
-    alpha = smooth(.015, .13, time);
-    y -= (1 - fall) * 170;
-    x = Math.sin(time * 6.5) * 5 * suspended;
-    rotation = Math.sin(time * 6.5) * .025 * suspended;
-    if (time > .98) y += Math.sin((time - .98) * 18) * Math.exp(-(time - .98) * 8) * 3;
-    idle = smooth(.98, 1.18, time);
-  } else if (chest.animation === 'Death') {
-    scale = 1 - progress * .3; alpha = 1 - progress; y -= progress * 12;
-    idle = 1 - progress;
-  } else {
-    y += Math.sin(age * 3) * 2;
-    if (chest.progress > 0 || chest.animation === 'Enter') rotation = Math.sin(age * 36) * .035;
-  }
-  const active = born && time >= 1 / 60 && time < 1.5;
-  const beam = active ? smooth(1 / 60, .09, time) * (1 - smooth(.90, 1.12, time)) : 0;
-  const flash = active ? Math.exp(-Math.pow((time - 1.02) / .045, 2)) : 0;
-  const collapse = born ? smooth(.98, 1.44, time) : 1;
-  const canopyAlpha = born ? smooth(.015, .13, time) * (1 - smooth(1.02, 1.44, time)) : 0;
-  return { age, time, active, beam, flash, fall: smooth(.03, .98, time),
-    ringA: active ? clamp((time - .98) / .34) : 1,
-    ringB: active ? clamp((time - 1.05) / .42) : 1,
-    canopyAlpha, collapse, smokeTime: born ? time : 1.5 + age,
-    smokeStrength: chest.animation === 'Death' ? 0 : 1,
-    idle, scale, alpha, x, y, rotation };
-}
+import {type ChestPose,clamp,smooth,supplyChestPose,supplyCanopyTransform,traceSupplyCords} from './supply-chest-pose.ts';
+const canopyCordAnchors = [[-59,15],[-31,19],[31,19],[59,15]].map(([x,y]) => [.5+x/138,.5+y/69] as const);
+export {supplyChestPose} from './supply-chest-pose.ts';
 
 export function preloadSupplyChestArt(scene: Phaser.Scene) {
   scene.load.image(TEXTURE, './assets/project-airdrop-supply/airdrop-crate-front-v1.png');
@@ -151,22 +114,15 @@ export function updateSupplyChestVisual(view: Phaser.GameObjects.Container, ches
     dust.setPosition(side * (8 + t * (22 + i * 5)), 20 - t * (15 + i * 2))
       .setDisplaySize(18 + t * 48, 10 + t * 24).setAlpha(visible ? Math.sin(p * Math.PI) * .28 : 0);
   }
-  // Both canopy and rope ends use the rendered crate pose, so the cords stay
-  // attached while swaying. Landing releases, folds and fades the canopy.
-  const canopyX = pose.x + Math.sin(pose.time * 5.3) * 4 + pose.collapse * 22;
-  const canopyY = pose.y - bodyHeight * .38 - 82 + pose.collapse * 35;
-  fx.canopy.setPosition(canopyX, canopyY).setDisplaySize(138, 69 * (1 - pose.collapse * .70))
-    .setRotation(pose.rotation * .7 + pose.collapse * .28).setAlpha(pose.canopyAlpha);
+  const canopy = supplyCanopyTransform(pose, bodyHeight);
+  fx.canopy.setPosition(canopy.x, canopy.y).setDisplaySize(canopy.width, canopy.height)
+    .setRotation(canopy.rotation).setAlpha(pose.canopyAlpha);
   fx.cords.clear();
-  if (pose.canopyAlpha > 0) {
+  if (canopy.cordAlpha > 0) {
     for (let pass = 0; pass < 2; pass++) {
       fx.cords.lineStyle(pass === 0 ? 2.6 : 1.1, pass === 0 ? 0x243b3b : 0xe6dec5,
-        pose.canopyAlpha * (1 - pose.collapse) * (pass === 0 ? .65 : .9));
-      for (let i = 0; i < 4; i++) {
-        const offset = i === 0 ? -59 : i === 1 ? -31 : i === 2 ? 31 : 59;
-        fx.cords.lineBetween(canopyX + offset, canopyY + (i === 0 || i === 3 ? 15 : 19),
-          pose.x + (i < 2 ? -24 : 24) * pose.scale, pose.y - bodyHeight * .26 * pose.scale);
-      }
+        canopy.cordAlpha * (pass === 0 ? .65 : .9));
+      traceSupplyCords(pose, bodyHeight, canopy, canopyCordAnchors, (x,y,endX,endY) => fx.cords.lineBetween(x,y,endX,endY));
     }
   }
   // Fixed-size pool, analytic simulation-age sampling. Pausing cannot emit

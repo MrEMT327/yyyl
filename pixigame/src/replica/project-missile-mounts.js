@@ -13,9 +13,10 @@ export function projectMissileWingMounts(fighter,camera,pose){
   const x=(bounds.min.x+bounds.max.x)/2,y=(bounds.min.y+bounds.max.y)/2,z=(bounds.min.z+bounds.max.z)/2;
   const half=(bounds.max.x-bounds.min.x)*.41;
   if(!(half>0))return [];
-  fighter.object3D.updateWorldMatrix(true,true);camera.updateMatrixWorld(true);
+  const ship=runtime.ship;
+  ship.updateWorldMatrix(true,false);camera.updateWorldMatrix(true,false);
   pair[0].set(x-half,y,z);pair[1].set(x+half,y,z);
-  for(const point of pair){runtime.ship.localToWorld(point);point.project(camera);}
+  for(const point of pair)point.applyMatrix4(ship.matrixWorld).project(camera);
   const left=pose.x+Math.min(pair[0].x,pair[1].x)*width/2;
   const right=pose.x+Math.max(pair[0].x,pair[1].x)*width/2;
   const railY=pose.y-(pair[0].y+pair[1].y)*height/4;

@@ -1,9 +1,8 @@
 import { emptySlotMark } from './psd-empty-slot.js';
 import { equippedSlots, slotLabel } from './equipment-labels.js';
 
-export const WEAPON_EQUIP_SLOTS = ['W3', 'W4', 'W5', 'W6'];
-
-// Presentation only: ownership and loadout validation remain in the peripheral system.
+import { WEAPON_EQUIP_SLOTS } from './equipment-labels.js';
+export { WEAPON_EQUIP_SLOTS } from './equipment-labels.js';
 export function weaponEquipControls({ snapshot, weapon, selectedSlot, helpers, showStatus = true, requireSlotSelection = false }) {
   const { escape: e, thumbnail, button } = helpers;
   const fitted = equippedSlots(snapshot, weapon.id);

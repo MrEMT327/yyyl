@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite';
+import {threeH5RendererGuard} from './tools/three-h5-renderer-guard.mjs';
 import { fileURLToPath } from 'node:url';
 import { optimizeUiAssetUrls } from './src/ui/ui-image-source.js';
 import { assertReleaseAssets } from './tools/check-release-assets.mjs';
@@ -27,7 +28,7 @@ export default defineConfig(({ mode }) => ({
     copyPublicDir: false,
     rollupOptions: { input: {
       index: fileURLToPath(new URL('./index.html', import.meta.url)),
-      replicaBattle: fileURLToPath(new URL('./replica-battle/index.html', import.meta.url)),
+      weaponGallery: fileURLToPath(new URL('./tools/combat-vfx-gallery.html', import.meta.url)),
       ...(!['zh','4399','release'].includes(String(mode)) ? {
         pathogenicRange: fileURLToPath(new URL('./pathogenic-range.html', import.meta.url)),
         gm: fileURLToPath(new URL('./tools/gm.html', import.meta.url)),
@@ -38,6 +39,7 @@ export default defineConfig(({ mode }) => ({
     { name:'strict-release-media', async configResolved() {
       if(['zh','4399','release'].includes(String(mode))) await assertReleaseAssets();
     } },
+    threeH5RendererGuard(fileURLToPath(new URL('./index.html',import.meta.url))),
     copyShippingPublic(),
     {
       name:'thunder-ui-delivery-images',enforce:'pre',

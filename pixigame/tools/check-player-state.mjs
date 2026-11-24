@@ -13,6 +13,8 @@ const {nativeWeaponGroupId,nativeWeaponGroupRows}=await import('../src/replica/n
 const {grantPilotCards}=await import('../src/replica/pilot-copy-grants.js');
 const {playerInfoModel}=await import('../src/ui/player-info-model.js');
 const {supplyPool}=await import('../src/ui/supply-pools.js');
+const {battleOnboarding,nextLobbyGuide}=await import('../src/peripheral/onboarding.js');
+const {replicaChapter}=await import('../src/replica/chapter-contract.js');
 const {PERIPHERAL_STORAGE_KEY}=await import('../src/peripheral/config.js');
 const {default:catalog}=await import('../src/replica/native-economy-catalog.json',{with:{type:'json'}});
 
@@ -22,7 +24,7 @@ function fixture(owned=['pilot-01']){
   const pilot={selected:owned[0],persistentSelected:owned[0],temporaryUnlocked:[],owned:[...owned],resonance:{}};
   let collection=createInitialGachaState();
   const options={storage,profile:{coins:5000,diamonds:500},now:()=>Date.UTC(2026,9,30,4),
-    getCampaign:()=>({highestCleared:-1}),pilotApi:{get:()=>structuredClone(pilot),grant(id){if(!pilot.owned.includes(id))pilot.owned.push(id);return[{storagePersisted:true}];},select(id){pilot.selected=pilot.persistentSelected=id;return true;}},
+    getCampaign:()=>({highestCleared:-1}),stages:[{id:'stage-1',name:'第1章'}],pilotApi:{get:()=>structuredClone(pilot),grant(id){if(!pilot.owned.includes(id))pilot.owned.push(id);return[{storagePersisted:true}];},select(id){pilot.selected=pilot.persistentSelected=id;return true;}},
     collectionApi:{get:()=>structuredClone(collection),transact(update){const next=structuredClone(collection),result=update(next);if(result.ok)collection=next;return result;}}};
   let system=createPeripheralSystem(options);
   return {flags,pilot,get system(){return system;},reload(){system=createPeripheralSystem(options);return system;},
@@ -44,6 +46,57 @@ assert.equal(authority.reload().snapshot().basePilotId,'pilot-02');assert.equal(
 authority.pilot.selected='pilot-01';
 assert.equal(authority.system.prepareSortie({trial:true}).snapshot.pilotId,'pilot-02');
 
+const initial=fixture(),start=initial.reload().snapshot(),configuration=initial.system.replicaConfiguration();
+assert.deepEqual(configuration.equipment,[]);
+assert.equal(start.equipment.items.length,5);
+assert(Object.values(start.equipment.slots).every(uid=>uid===null));
+assert.equal(start.equipment.totals.attack,0);
+assert.equal(start.equipment.totals.hp,0);
+assert.deepEqual(configuration.progression.skins,[]);
+assert.equal(configuration.progression.role.id,10100);
+assert.equal(configuration.progression.role.skinId,0);
+const initialPlane=start.replicaCollection.skins.find(row=>row.id===10101);
+assert.equal(initialPlane.star,0);
+assert.equal(nativeCollectionAccess('skins',start,initialPlane).using,true);
+assert.equal(nativeCollectionAccess('skins',start,initialPlane).activated,false);
+assert.deepEqual(battleOnboarding(start,1),{movement:true,firstChoice:true});
+assert.equal(nextLobbyGuide(start),null);
+
+const starterGear=start.equipment.items[0];
+const gearAction=(type)=>initial.system.action(type,{id:starterGear.uid,expectedRevision:initial.system.snapshot().equipment.revision});
+assert.equal(gearAction('gearEquip').message,start.equipment.equipLockReason);
+const engine='danke-replica-v1';
+function finishFirstChapter(won){
+  const run=initial.system.prepareSortie({engine,chapterId:1,replicaConfiguration:initial.system.replicaConfiguration()});
+  assert.equal(run.ok,true,run.message);
+  const result=initial.system.recordSortie({runId:run.snapshot.id,engine,chapterId:1,stageIndex:0,
+    wave:won?replicaChapter(1).waveCount:1,won,endReason:won?'victory':'defeat',clock:60,gold:0,hp:won?600:0,maxHp:600,kills:0,revivesUsed:0});
+  assert.equal(result.ok,true,result.message);
+}
+finishFirstChapter(false);
+assert.equal(nextLobbyGuide(initial.system.snapshot()),null);
+assert.equal(gearAction('gearEquip').ok,false);
+finishFirstChapter(true);
+assert.deepEqual(nextLobbyGuide(initial.reload().snapshot()),{group:9,uid:starterGear.uid});
+initial.flags.fail=true;
+assert.equal(gearAction('gearEquip').ok,false);
+initial.flags.fail=false;
+assert.equal(initial.system.state.onboarding.completed.includes(9),false);
+assert.equal(gearAction('gearEquip').ok,true);
+assert.equal(initial.reload().snapshot().equipment.slots[starterGear.type],starterGear.uid);
+assert.equal(initial.system.state.onboarding.completed.includes(9),true);
+assert.equal(gearAction('gearUnequip').ok,true);
+assert.notEqual(nextLobbyGuide(initial.system.snapshot())?.group,9);
+
+const legacy=fixture();
+legacy.edit(state=>{
+  state.equipment.slots[starterGear.type]=starterGear.uid;
+  state.replicaLoadout.skins=[{id:10101,star:1,active:true,equipped:false}];
+});
+const retained=legacy.system.replicaConfiguration();
+assert.equal(retained.equipment.length,1);
+assert.equal(retained.progression.skins.find(plane=>plane.id===10101)?.active,true);
+
 const f=fixture();
 const currentPool=f.system.snapshot().pilotSupply.pool;
 for(const pools of [[{id:'pilot',singleCost:0}],{pilot:{singleCost:0}}])
@@ -51,7 +104,7 @@ for(const pools of [[{id:'pilot',singleCost:0}],{pilot:{singleCost:0}}])
 for(const[kind,id]of [['skins',10104],['pilots',40300]]){
   f.acquire(kind,id);assert(f.native(kind,id).ok);
   const snapshot=f.system.snapshot(),base=nativeCollectionRows(kind,snapshot).find(row=>nativeCollectionAccess(kind,snapshot,row).isBase);
-  assert(base);assert.equal(base.owned,kind==='skins');assert(nativeCollectionAccess(kind,snapshot,base).available);
+  assert(base);assert.equal(base.owned,kind==='pilots');assert(nativeCollectionAccess(kind,snapshot,base).available);
   assert(f.native(kind,0).ok);
   const after=f.reload().snapshot(),profile=playerInfoModel(after);
   assert.equal(kind==='skins'?after.aircraftId:after.pilotId,'pilot-01');
@@ -75,4 +128,4 @@ assert(f.native('guns',variant.id).ok);
 const progression=structuredClone(f.system.state.replicaLoadout),inventory=structuredClone(f.system.state.replicaInventory);
 grantPilotCards(inventory,progression,40400,1,{activate:true});
 assert.equal(progression.pilots.some(row=>row.equipped),false);
-console.log('Player-state checks passed: normal startup, base return, native ownership, profile identity, save rollback, weapon variants and later rewards.');
+console.log('Player-state checks passed: fresh loadout, first-chapter equipment tutorial, saved gear, aircraft and pilot selection, save rollback and later rewards.');

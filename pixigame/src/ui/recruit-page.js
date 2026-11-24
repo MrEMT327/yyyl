@@ -1,3 +1,5 @@
+import {recruitItems,recruitBoxItems,recruitFeatured} from './recruit-selection.js';
+export {recruitItems,recruitBoxItems,recruitFeatured} from './recruit-selection.js';
 import { nativeRewardPresentation } from '../replica/native-item-presentation.js';
 import { resourceIcon } from './resource-icons.js';
 import { projectIcon } from './project-ui-art.js';
@@ -16,14 +18,6 @@ const collectionStatus=item=>{
   const owned=item?.activated??Boolean(item?.owned&&!item?.temporaryUnlocked);
   return owned?'已拥有':item?.copies?'待激活':item?.temporaryUnlocked?'试玩':'未拥有';
 };
-export function recruitItems(s){return s.pilots||[];}
-// Show the actual recruitment candidates, excluding the two base pilots.
-export function recruitBoxItems(s){
-  if(!s.pilotSupply)return recruitItems(s);
-  const ids=new Set(s.pilotSupply.candidates.map(row=>row.skinId));
-  return recruitItems(s).filter(row=>ids.has(row.id));
-}
-export function recruitFeatured(s,selected){const items=recruitItems(s);return items.find(x=>x.id===selected)||items.find(x=>x.id==='pilot-01')||items[0];}
 // Browsing changes the illustration only. Costs, rates and guarantees are canonical.
 export function recruitPage({snapshot:s,helpers:h,selected}){
  const {escape:e,number:n}=h,info=supplyPool(s,'pilot'),items=recruitItems(s),featured=recruitFeatured(s,selected);

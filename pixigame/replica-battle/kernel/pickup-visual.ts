@@ -1,21 +1,13 @@
 import type Phaser from 'phaser';
 import type { Pickup } from './model';
 import { cloudAssetBase } from '../../src/ui/cloud-asset-base.js';
-import { PROJECT_COIN_ATLAS, PROJECT_COIN_FRAME_COUNT } from './coin-extrusion';
+import { PROJECT_COIN_ATLAS } from './coin-extrusion';
 import { preloadAirdropModuleArt, createAirdropModuleVisual, updateAirdropModuleVisual } from './airdrop-module-visual';
 
 const COIN_ART_DIRECTORY = cloudAssetBase + 'art/project-coin-pickup-v1/';
 const MEDKIT = 'project-medkit-armored-front-v1';
-const COIN_HEIGHT = 32;
-const COIN_WIDTH = 32;
-const COIN_TURNS_PER_SECOND = 1.4;
-
-export function projectCoinPose(pickup: Pick<Pickup, 'uid' | 'age' | 'delay'>) {
-  const age = Math.max(0, pickup.age - pickup.delay);
-  const angle = age * Math.PI * 2 * COIN_TURNS_PER_SECOND + (Math.abs(pickup.uid) % 17) * .37;
-  const turn = (angle / (Math.PI * 2)) % 1;
-  return { frame: Math.floor(turn * PROJECT_COIN_FRAME_COUNT), width: COIN_WIDTH, height: COIN_HEIGHT };
-}
+import {COIN_WIDTH,COIN_HEIGHT,projectCoinPose} from './pickup-presentation.ts';
+export {projectCoinPose} from './pickup-presentation.ts';
 
 export function preloadPickupArt(scene: Phaser.Scene) {
   preloadAirdropModuleArt(scene);

@@ -15,10 +15,8 @@ import {rewardItemSlot} from './reward-item-slot.js';
 import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
 import {taskDisplayOrder} from './task-display-order.js';
 
-export const DAILY_TABS=Object.freeze([
-  {id:'signin',label:'签到'}, {id:'daily',label:'每日'},
-  {id:'weekly',label:'每周'}, {id:'achievements',label:'成就'},
-]);
+import { DAILY_TABS, hasReady } from './daily-tabs.js';
+export { DAILY_TABS, hasReady } from './daily-tabs.js';
 const base=import.meta.env?.BASE_URL ?? '/';
 const taskArt=name=>`${base}art/project-task-icons-v1/${({'chest-idle':'chest-closed','chest-open':'chest-open','daily-activity':'activity-medal','weekly-activity':'activity-medal'})[name]||name}.png`;
 const sprite=(name,cls='')=>`<img class="${cls}" src="${taskArt(name)}" alt="" aria-hidden="true" draggable="false">`;
@@ -32,18 +30,6 @@ function rewards(reward,h,cls='') {
   if(Array.isArray(reward))return `<span class="dc-rewards ${cls}">${reward.map(row=>`<span aria-label="${e(row.name)} ${n(row.count)}">${img(rewardArt(row),row.name,'dc-native-reward-icon')}<b>×${n(row.count)}</b></span>`).join('')}</span>`;
   return `<span class="dc-rewards ${cls}">${Object.entries(reward||{}).filter(([,v])=>v>0).map(([key,value])=>`<span aria-label="${names[key]||key} ${n(value)}">${icon(icons[key]||'gift')}<b>×${n(value)}</b></span>`).join('')}</span>`;
 }
-function readyCount(s,period) {
-  const supply=s.pilotSupply;
-  if(!supply)return (s.tasks||[]).filter(t=>t.type===period&&t.claimable).length
-    +(s.activity?.[period]?.items||[]).filter(t=>t.claimable).length;
-  const rewards=period==='weekly'
-    ?(supply.week.milestones||[supply.week])
-    :(supply.activity.milestones||[supply.activity]);
-  return rewards.filter(row=>row?.canClaim).length
-    +(period==='weekly'?(supply.week.tasks||[]).filter(task=>task.canClaim).length:supply.tasks.filter(task=>task.canClaim).length);
-}
-const hasReady=(s,id)=>!s.rewardPending && !s.rewardBusy && (id==='signin'?s.signIn?.canClaim:id==='achievements'?s.achievements?.items?.some(t=>t.claimable):readyCount(s,id)>0);
-
 export function dailyMilestoneAction(row,pending=false) {
   if(!row || pending || row.pending || row.claimed)return null;
   return row.claimable?'claimActivity':'dailyMilestone';

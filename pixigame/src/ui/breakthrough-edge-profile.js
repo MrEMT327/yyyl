@@ -39,8 +39,8 @@ export function sampleEdgeMainPath(frames,seconds){
 }
 
 
-export function buildEdgeArcFrames(width,height){
-  if(!(width>4&&height>4))return Array.from({length:EDGE_FRAME_COUNT},()=>({main:'',branches:'',echo:'',points:[]}));
+export function buildEdgeArcFrames(width,height,{paths=true}={}){
+  if(!(width>4&&height>4))return Array.from({length:EDGE_FRAME_COUNT},()=>({main:'',branches:'',echo:'',points:[],branchLines:[],echoLines:[]}));
   const scale=Math.min(width/600,height/1300),perimeter=2*(width+height),tile=perimeter/7;
   return Array.from({length:EDGE_FRAME_COUNT},(_,frame)=>{
     const main=[],branches=[],echo=[];
@@ -60,20 +60,24 @@ export function buildEdgeArcFrames(width,height){
         const sign=random(seed+29)>.5?1:-1,span=length*(.18+random(seed+43)*.13),tip=(11+random(seed+47)*13)*scale;
         const split=[spinePoint(width,height,s,frame),spinePoint(width,height,s+sign*span*.36,frame,tip*.36),
           spinePoint(width,height,s+sign*span*.65,frame,tip*.18),spinePoint(width,height,s+sign*span,frame,tip)];
-        branches.push(path(split));
-        if(random(seed+53)>.62)echo.push(path([split[1],spinePoint(width,height,s-sign*span*.25,frame,tip*.63),split[3]]));
+        branches.push(split);
+        if(random(seed+53)>.62)echo.push([split[1],spinePoint(width,height,s-sign*span*.25,frame,tip*.63),split[3]]);
       }
     }
-    return{main:path(main)+' Z',branches:branches.join(' '),echo:echo.join(' '),points:main};
+    return {points:main,branchLines:branches,echoLines:echo,...(paths?{main:path(main)+' Z',branches:branches.map(path).join(' '),echo:echo.map(path).join(' ')}:{})};
   });
 }
 
 // Varying inward width gives the broad base a contour rather than a flat bar.
-export function edgeBaseMask(width,height){
-  if(!(width>4&&height>4))return'';
+export function edgeBaseContour(width,height){
+  if(!(width>4&&height>4))return [];
   const p=2*(width+height),scale=Math.min(width/600,height/1300),steps=Math.min(1024,Math.max(16,Math.ceil(p/(42*scale)))),points=[];
   for(let i=0;i<steps;i++)points.push(edgePoint(width,height,p*i/steps,(22+random(i*43+19)*16)*scale));
-  return `M0,0 H${width} V${height} H0 Z `+path(points)+' Z';
+  return points;
+}
+export function edgeBaseMask(width,height){
+  const points=edgeBaseContour(width,height);if(!points.length)return '';
+  return 'M0,0 H'+width+' V'+height+' H0 Z '+path(points)+' Z';
 }
 
 const FLASHES=[

@@ -8,9 +8,7 @@ export const commonRewardFrame=()=>`<div class="common-reward-frame" aria-hidden
   [0,659,255,55],[255,659,268,55],[523,659,44,55],
 ].map(region=>`<svg viewBox="${region.join(' ')}" preserveAspectRatio="none" focusable="false"><image href="${frameArt}" width="567" height="714"/></svg>`).join('')}</div>`;
 
-export function isCommonReward(modal) {
-  return modal?.type==='shopBoxResult' || (modal?.type==='rewards' && !modal.patrol && !modal.recruit && !['pilot','weapon'].includes(modal.recruitPool));
-}
+export { isCommonReward } from './reward-modal-model.js';
 
 // The domain has already granted the receipt. Dismissal never awards it again.
 export function commonRewardsDialog({title='获得奖励',content}, {escape:e}) {

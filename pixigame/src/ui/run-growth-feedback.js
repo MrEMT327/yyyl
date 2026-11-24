@@ -6,9 +6,9 @@ import { upgradeConfirmationTiming, upgradeConfirmationPose } from './upgrade-co
 import {createUpgradeSelectionParticles} from './upgrade-selection-particles.js';
 import {UPGRADE_SELECTION_TIMING as SELECTION_BEAT} from './upgrade-selection-timing.js';
 import {UPGRADE_TRANSITION,upgradeOfferKey} from './upgrade-transition-motion.js';
+import {prefersReducedMotion} from './status-feedback.js';
 let levelLight = { until: 0, started: 0, milestone: false };
 let upgradeLight=null;
-const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export function showRunLevelFeedback(previous, level) {
   if (level <= previous) return;
   const milestone = Math.floor(level / 5) > Math.floor(previous / 5), started = performance.now();
@@ -31,11 +31,11 @@ export function updateGrowthHud(refs, now) {
       receipt.text=`${upgradeLight.label} · ${upgradeLight.name}`;receipt.style.fill=upgradeLight.color;
       receipt.position.set(16,(refs.levelY??1146)-34);
       receipt.scale.set(Math.min(1,540/Math.max(1,receipt.width)));
-      receipt.alpha=reducedMotion()?1:Math.min(1,age/100,(upgradeLight.lifetime-age)/220);
+      receipt.alpha=prefersReducedMotion()?1:Math.min(1,age/100,(upgradeLight.lifetime-age)/220);
     }
   }
   const remaining = levelLight.until - now;
-  if (refs.level) refs.level.scale.set(remaining > 0 && !reducedMotion() ? 1 + .13 * Math.sin(Math.min(1, (now-levelLight.started)/350)*Math.PI) : 1);
+  if (refs.level) refs.level.scale.set(remaining > 0 && !prefersReducedMotion() ? 1 + .13 * Math.sin(Math.min(1, (now-levelLight.started)/350)*Math.PI) : 1);
   if (!refs.xpBar?.parent) return;
   if (!refs.growthLight || refs.growthLight.destroyed) {
     refs.growthLight = new Graphics(); refs.growthLight.eventMode = 'none';
@@ -47,14 +47,14 @@ export function updateGrowthHud(refs, now) {
   const xpY = refs.xpY ?? 1170, levelY = refs.levelY ?? 1146;
   light.roundRect(11,xpY-2,578,9,4).stroke({color,width:2,alpha:.8*fade});
   light.roundRect(11,levelY-4,134,34,4).stroke({color,width:2,alpha:.8*fade});
-  if (!reducedMotion()) {
+  if (!prefersReducedMotion()) {
     const progress = Math.min(1,(now-levelLight.started)/550);
     light.roundRect(12+520*progress,xpY,56,5,2).fill({color:0xffffff,alpha:.85*fade});
   }
 }
 export function confirmUpgradeCard(card, width, height, commit, valid, skill, options = {}) {
   card.__upgradeConfirmCancel?.();
-  const profile=upgradeFeedbackProfile(skill),reduced=reducedMotion();
+  const profile=upgradeFeedbackProfile(skill),reduced=(options.reducedMotion??prefersReducedMotion)();
   const timing=upgradeConfirmationTiming(skill,profile,Boolean(options.nativeTiming),reduced);
   timing.cardWidth=width;timing.cardHeight=height;
   const color=timing.breakthrough?({y:0xffcd76,r:0xffa47e,c:0xb6c6ff}[timing.tier]):profile.color;

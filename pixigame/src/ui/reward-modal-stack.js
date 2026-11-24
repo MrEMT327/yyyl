@@ -1,9 +1,4 @@
-export const isRewardReceiptModal=modal=>['rewards','shopBoxResult','researchResult'].includes(modal?.type);
-export const isRewardLayerModal=modal=>isRewardReceiptModal(modal)||['taskChestPreview','aircraftActivation','processFeedback','boxOpening'].includes(modal?.type);
-// Skill inspection retains its source WeaponInfo just like a receipt retains
-// its source page. It is still a read-only preview, never a reward receipt.
-export const isRetainedModalLayer=modal=>isRewardLayerModal(modal)||(modal?.type==='nativeSkillPreview'&&modal.kind==='guns'&&modal.returnTo?.type==='nativeCollectionDetail');
-export const modalIdentity=modal=>modal?`${modal.type}:${modal.id||''}:${modal.view||''}`:'';
+export { isRewardReceiptModal, isRewardLayerModal, isRetainedModalLayer, modalIdentity } from './reward-modal-model.js';
 export const activeModalHost=root=>root.querySelector('[data-reward-layer="overlay"]')||root.querySelector('.pl-modal-host');
 
 export function captureModalScroll(host) {

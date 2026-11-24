@@ -4,7 +4,7 @@ import { getWechatTransport } from './transport.js';
 
 // Shared by lobby fetch, battle XHR and direct binary readers. API requests,
 // authenticated requests and explicit no-cache requests never enter this cache.
-export function createAssetTransport(api, { accepts, decode = (_url, bytes) => bytes, version = '', concurrency = 6,
+export function createAssetTransport(api, { accepts, decode = (_url, bytes) => bytes, retryURL, version = '', concurrency = 6,
   memoryLimit = 8 * 1024 * 1024, diskLimit = 64 * 1024 * 1024, cacheTimeoutMs = 1500 } = {}) {
   const jobs = new Map(), queue = [], memory = new Map(), disk = new Map();
   const fs = api.getFileSystemManager();
@@ -126,7 +126,7 @@ export function createAssetTransport(api, { accepts, decode = (_url, bytes) => b
       const job = queue.shift(); if (job.done || !job.subscribers.size) continue;
       job.active = true; active++; stats.requests++;
       try {
-        job.task = upstream.request({ url: job.url, method: 'GET', responseType: 'arraybuffer', dataType: 'text', timeout: job.timeout,
+        job.task = upstream.request({ url: job.url, retryURL, method: 'GET', responseType: 'arraybuffer', dataType: 'text', timeout: job.timeout,
           success(result) {
             if (job.done) return;
             try {

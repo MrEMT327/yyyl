@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { aircraftFxBudget } from '../three/aircraft/aircraft-fx-budget.js';
+import { usesOnlyBattleColorTransform } from '../three/game-screen/battle-color-targets.js';
 
 export async function warmRenderPrograms(renderer, scene, camera, isActive) {
   if (!isActive()) return;
@@ -112,7 +113,7 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
           // Keep the children visible even when this mesh cannot affect depth.
           depthMaterial = noDepth;
         } else if (object.isMesh && (material.isMeshStandardMaterial || material.isMeshBasicMaterial) &&
-            material.onBeforeCompile === THREE.Material.prototype.onBeforeCompile &&
+            (material.onBeforeCompile === THREE.Material.prototype.onBeforeCompile || usesOnlyBattleColorTransform(material)) &&
             !material.transparent && !material.alphaTest && !material.alphaHash && !material.alphaToCoverage &&
             !material.displacementMap && !material.transmission && !material.wireframe &&
             !material.polygonOffset && !material.clippingPlanes?.length &&

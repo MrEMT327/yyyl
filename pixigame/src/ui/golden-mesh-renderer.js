@@ -148,7 +148,12 @@ void main(){
   else colour=c*factor;
 }`;
 
+let portraitRendererFactory;
+export function setPortraitRendererFactory(factory) {
+  portraitRendererFactory = factory;
+}
 export function createGoldenMeshRenderer(canvas, manifest, textures) {
+  if (portraitRendererFactory) return portraitRendererFactory(canvas, manifest, textures);
   const gl=canvas.getContext('webgl2',{alpha:true,premultipliedAlpha:true,antialias:false,preserveDrawingBuffer:true,depth:false,stencil:false});
   if(!gl)throw new Error('当前浏览器无法创建角色 WebGL2 画布');
   const meshRecords=[],textureRecords=new Map(),maskRecords=new Map();

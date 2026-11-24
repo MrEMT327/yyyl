@@ -37,9 +37,8 @@ class SourceMesh extends Phaser.GameObjects.Mesh {
   }
   refresh(){super.preUpdate(0,0);}
 }
-export class SourceCoverageError extends Error {
-  constructor(readonly details:any[]){super('Pathogenic source features require implementation: '+JSON.stringify(details));}
-}
+import {SourceCoverageError} from './effect-coverage-error';
+export {SourceCoverageError};
 /** One view owns complete source scenes; there is deliberately no legacy renderer fallback. */
 export class PathogenicSceneView {
   private views=new Map<string,SourceMesh>();

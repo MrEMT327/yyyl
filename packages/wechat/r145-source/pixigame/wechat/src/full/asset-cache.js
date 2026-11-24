@@ -1,4 +1,4 @@
-import { getWechatTransport } from './transport.js';
+import { getWechatTransport, isIncompleteDownload } from './transport.js';
 import { sha256Fallback } from '../../../src/three/aircraft/v34/aircraft/digest.js';
 import { string2buf } from 'pako/lib/utils/strings.js';
 import { imageDataUrl, isStorageQuotaError } from './asset-storage.js';
@@ -37,11 +37,10 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
       const failure=(phase,error)=>new Error(`${phase}：${url} · ${error?.errMsg || error?.message || String(error)}`);
       const useTemporary=file=>{temporary.set(url,file);resolve(file);};
       const discardPartial=()=>{budget.forget(path);try{files.unlinkSync(path);}catch{}};
-      // Some device download implementations reject a response before creating
-      // a temp file. Retry that specific failure via binary wx.request once.
-      const recoverEmptyFile=async original=>{
+      // Read a broken image transfer through a fresh CDN cache key.
+      const recoverDownloadBytes=async (original,fresh=false)=>{
         try{
-          const bytes=await resources.readBytes(url);
+          const bytes=await resources.readBytes(url,{fresh});
           if(!(bytes instanceof ArrayBuffer) || bytes.byteLength===0)throw new Error('服务器返回了空文件');
           if(!writesFull&&budget.reserve(path,bytes.byteLength)){
             try{files.writeFileSync(path,bytes);resolve(path);return;}
@@ -57,7 +56,7 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
           return;
         }
         try{
-          if(!result.tempFilePath || !nonEmpty(result.tempFilePath)){recoverEmptyFile(new Error('下载文件为空'));return;}
+          if(!result.tempFilePath || !nonEmpty(result.tempFilePath)){recoverDownloadBytes(new Error('下载文件为空'));return;}
         }catch(error){reject(failure('下载临时文件读取失败',error));return;}
         let size;try{size=files.statSync(result.tempFilePath).size;}catch{}
         if(writesFull||!budget.reserve(path,size)){useTemporary(result.tempFilePath);return;}
@@ -71,7 +70,7 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
         try{files.saveFile({tempFilePath:result.tempFilePath,filePath:path,success:()=>resolve(path),fail:saveFailed});}
         catch(error){saveFailed(error);}
       },fail:error=>{
-        if(/file data is empty|empty file/i.test(error.errMsg || ''))recoverEmptyFile(error);
+        if(isIncompleteDownload(error))recoverDownloadBytes(error,Boolean(imageType));
         else reject(failure('资源下载失败',error));
       }});
     }).finally(()=>pending.delete(url));pending.set(url,task);return task;

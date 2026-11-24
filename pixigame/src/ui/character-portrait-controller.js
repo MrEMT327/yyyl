@@ -2,7 +2,7 @@ import { createPilotPortraitPlayer } from './portrait-player-factory.js';
 import { PILOT_PORTRAITS } from './character-portraits.js';
 
 /** Reuses recent portraits across markup changes without retaining every GPU player. */
-export function createCharacterPortraits({maxCachedPlayers=2}={}) {
+export function createCharacterPortraits({maxCachedPlayers=2,videoSurface,cubismSurface,blueSurface}={}) {
   const players = new Map();
   const pendingFeedback = new Map();
   const cacheLimit=Number.isInteger(maxCachedPlayers)&&maxCachedPlayers>0?maxCachedPlayers:2;
@@ -34,7 +34,7 @@ export function createCharacterPortraits({maxCachedPlayers=2}={}) {
       discardPlayer(id,player);
     }
     for (const id of hosts.keys()) {
-      const player=players.get(id)||createPilotPortraitPlayer(id);
+      const player=players.get(id)||createPilotPortraitPlayer(id,{videoSurface,cubismSurface,blueSurface});
       players.delete(id);players.set(id,player);
     }
     for (const [id,player] of players) {

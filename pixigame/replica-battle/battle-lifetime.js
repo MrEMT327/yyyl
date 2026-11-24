@@ -2,8 +2,8 @@ import { releaseOwnedCanvas } from '../src/ui/release-owned-canvas.js';
 
 // Own resources created by the integration; the copied simulation is unchanged.
 export const DISPOSE_BATTLE_EVENT = 'shnh-dispose-replica-battle';
-export function createBattleLifetime(events = window) {
-  const controller = new AbortController(), callbacks = [];
+export function createBattleLifetime(events = window,makeAbort=()=>new AbortController()) {
+  const controller = makeAbort(), callbacks = [];
   let disposed = false;
   const add = cleanup => { if (disposed) cleanup(); else callbacks.push(cleanup); };
   const dispose = () => {
@@ -15,8 +15,8 @@ export function createBattleLifetime(events = window) {
     }
     callbacks.length = 0;
   };
-  events.addEventListener(DISPOSE_BATTLE_EVENT, dispose, {signal:controller.signal});
-  events.addEventListener('pagehide', dispose, {signal:controller.signal});
+  events?.addEventListener(DISPOSE_BATTLE_EVENT, dispose, {signal:controller.signal});
+  events?.addEventListener('pagehide', dispose, {signal:controller.signal});
   return {add, dispose, signal:controller.signal, get disposed() {return disposed;}};
 }
 

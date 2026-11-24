@@ -1,4 +1,3 @@
-import type Phaser from 'phaser';
 import type { NativeMapLayer } from './kernel/native-map-layers';
 import type { Point } from './kernel/model';
 import type { WeaponAppearance } from './weapon-appearance';
@@ -13,7 +12,7 @@ export interface PlayerSkin {
   width: number; height: number;
   update(pose: PlayerSkinPose): void;
 }
-export interface BattleAppearance {
+export interface BattleAppearance<Scene = unknown> {
   replaceTerrain?: boolean;
   combatBloomLevels?: number;
   setWeapons?(weapons: readonly WeaponAppearance[]): void;
@@ -21,9 +20,9 @@ export interface BattleAppearance {
   playerSkin?: PlayerSkin;
   /** Project aircraft wing sockets in screen pixels; visual mounting only. */
   missileMounts?(): readonly {x:number;y:number}[];
-  preload(scene: Phaser.Scene): void;
+  preload(scene: Scene): void;
   onResourceLoadError?(key: string): void;
-  create(scene: Phaser.Scene): void;
+  create(scene: Scene): void;
   update?(frame: {
     time: number; coastBackgroundTime?: number; clock: number; renderDelta?: number;
     /** Unsmoothed display interval in seconds, used only to schedule presentation work. */

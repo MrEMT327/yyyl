@@ -3,7 +3,8 @@ import type { Enemy, RecordData, Point } from './kernel/model';
 import { createEnemyFlightMotion } from './scatter-gunboat-flight';
 
 // This adapter owns pixels only. Never write back into the simulation or mounts.
-export const SCATTER_GUNBOAT_MODEL = 120135;
+import {SCATTER_GUNBOAT_MODEL} from './kernel/enemy-recoil-models.ts';
+export {SCATTER_GUNBOAT_MODEL} from './kernel/enemy-recoil-models.ts';
 const textureKey = 'owned-enemy:scatter-gunboat-v1';
 const atlasUrl = 'assets/owned-enemies/scatter-gunboat-v1/parts.png';
 const regions = {

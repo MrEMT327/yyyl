@@ -1,3 +1,4 @@
+import {artworkTexture} from '../three/game-screen/image-loading.js';
 import * as T from 'three';
 import { COMMON_WEAPONS } from '../fixed-parts/common-weapons.js';
 import { weaponIconUrl } from './weapon-icon-source.js';
@@ -20,7 +21,7 @@ export function acquireFixedPartThumbnails(renderer, { textureLoader } = {}) {
     textures.get = id => {
       if (disposed || textures.has(id)) return lookup(id);
       if (COMMON_WEAPONS[id]) {
-        const texture = (textureLoader ||= new T.TextureLoader()).load(weaponIconUrl(id));
+        const texture = textureLoader ? textureLoader.load(weaponIconUrl(id)) : artworkTexture(weaponIconUrl(id),undefined,()=>{});
         texture.colorSpace = T.SRGBColorSpace;
         texture.userData.inventoryIcon = true;
         textures.set(id, texture); illustrations.push(texture);

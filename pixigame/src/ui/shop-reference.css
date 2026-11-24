@@ -26,7 +26,11 @@
 #gui-casual-lobby .store-reference .store-category.is-active {background:linear-gradient(transparent,#4082a82b);color:#f2fbff}
 #gui-casual-lobby .store-reference .store-category::after {content:"";position:absolute;bottom:0;left:15%;right:15%;height:2px;background:transparent}
 #gui-casual-lobby .store-reference .store-category.is-active::after {background:#8ce8f7;box-shadow:0 -2px 8px #68cde344}
-#gui-casual-lobby .store-reference .store-free-dot {flex:none;width:6px;height:6px;background:#ff6570;border-radius:50%;box-shadow:0 0 0 1px #092032}
+#gui-casual-lobby .store-reference .store-free-dot {
+  position:absolute;top:calc(100% - var(--page-tab-face-height,100%) + 4px);right:8px;
+  z-index:1;width:6px;height:6px;background:#ff6570;border-radius:50%;
+  box-shadow:0 0 0 1px #092032;pointer-events:none;
+}
 #gui-casual-lobby .store-reference .store-scroll {
   position:relative;min-height:0;height:auto;padding:0;overflow-x:hidden;overflow-y:auto;
   background:var(--project-store-background);background-blend-mode:overlay,normal,normal;

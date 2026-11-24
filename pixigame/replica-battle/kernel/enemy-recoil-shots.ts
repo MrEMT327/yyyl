@@ -1,8 +1,5 @@
 import type { Enemy, Projectile } from './model';
-import { SCATTER_GUNBOAT_MODEL } from '../scatter-gunboat-art';
-import { PATROL_DRONE_MODEL } from '../patrol-drone-art';
-import { HEAVY_SCATTER_MODEL } from '../heavy-scatter-art';
-import { ELITE_SCATTER_MODEL } from '../elite-scatter-art';
+import {SCATTER_GUNBOAT_MODEL,PATROL_DRONE_MODEL,HEAVY_SCATTER_MODEL,ELITE_SCATTER_MODEL} from './enemy-recoil-models.ts';
 
 const recoilModels = new Set([SCATTER_GUNBOAT_MODEL, PATROL_DRONE_MODEL, HEAVY_SCATTER_MODEL, ELITE_SCATTER_MODEL]);
 

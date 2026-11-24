@@ -38,26 +38,28 @@ function jetboardTriangles(layer) {
 
 // Original authored Cubism parameters/physics drive new target RGBA meshes.
 // This is deliberately identified as a custom target renderer, not a new MOC.
-export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.BASE_URL??'/',runtimePath='art/orange-final-lap-v1/runtime.json'}={}) {
- const assetRoot=new URL(assetBase,location.href),runtimeUrl=new URL(runtimePath,assetRoot),root=new URL('./',runtimeUrl);
- if(root.origin!==location.origin)throw Error('角色资源必须同源');
- const controller=new AbortController(),images=new Set(),reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
- const sameOrigin=path=>{const url=new URL(path,root);if(url.origin!==location.origin)throw Error('角色资源必须同源');return url.href;};
+export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.BASE_URL??'/',runtimePath='art/orange-final-lap-v1/runtime.json',output=null}={}) {
+ const baseURL=output?.baseURL??location.href,origin=new URL(baseURL).origin;
+ const assetRoot=new URL(assetBase,baseURL),runtimeUrl=new URL(runtimePath,assetRoot),root=new URL('./',runtimeUrl);
+ if(root.origin!==origin)throw Error('角色资源必须同源');
+ const controller=output?.makeAbort?.()??new AbortController(),images=new Set(),reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
+ const sameOrigin=path=>{const url=new URL(path,root);if(url.origin!==origin)throw Error('角色资源必须同源');return url.href;};
+ const hidden=output?.hidden??(()=>document.hidden),request=output?.requestFrame??(fn=>requestAnimationFrame(fn)),cancel=output?.cancelFrame??(id=>cancelAnimationFrame(id));
  let host=null,canvas=null,source=null,renderer=null,manifest=null,loading=null;
  let state='idle',error=null,paused=false,visible=true,destroyed=false,raf=null,previous=null,accumulator=0,frames=0;
  let explicit=false,motionRequest=0;
  let debugLayers=null,constrain=null,geometryStats=null,propStats=null,retarget=null,retargetStats=null,elbowJoin=null;
  let positions=null,opacities=null,orders=null,visibility=null,layers=null,offsets=null,parameterIndices=null;
- const canPlay=()=>!destroyed&&state==='ready'&&host?.isConnected&&visible&&!paused&&!document.hidden&&(!reduced?.matches||explicit);
- const stop=()=>{if(raf!==null)cancelAnimationFrame(raf);raf=null;previous=null;};
+ const canPlay=()=>!destroyed&&state==='ready'&&(output?Boolean(host):host?.isConnected)&&visible&&!paused&&!hidden()&&(!reduced?.matches||explicit);
+ const stop=()=>{if(raf!==null)cancel(raf);raf=null;previous=null;};
  function updateHost(){
-  if(!host)return;
+  if(!host||output)return;
   const data={portraitState:state,portraitRevision:manifest?.hipRepairRevision||manifest?.materialRevision||'',motion:source?.motionName||'idle',time:(source?.currentTime||0).toFixed(4),playing:String(Boolean(canPlay())),representation:'reference-driven-target-mesh'};
   for(const [key,value] of Object.entries(data))if(host.dataset[key]!==value)host.dataset[key]=value;
   if(host.classList.contains('is-ready')!==(state==='ready'))host.classList.toggle('is-ready',state==='ready');
  }
- function clearHost(){if(!host)return;host.classList.remove('is-ready');for(const key of ['portraitState','portraitRevision','motion','time','playing','representation'])delete host.dataset[key];}
- function dispose(){renderer?.destroy();renderer=null;source?.destroy();source=null;releaseOwnedCanvas(canvas);canvas=null;for(const img of images)img.src='';images.clear();}
+ function clearHost(){if(!host||output)return;host.classList.remove('is-ready');for(const key of ['portraitState','portraitRevision','motion','time','playing','representation'])delete host.dataset[key];}
+ function dispose(){renderer?.destroy();renderer=null;source?.destroy();source=null;if(!output)releaseOwnedCanvas(canvas);canvas=null;for(const img of images)img.src='';images.clear();}
  function fail(reason){if(destroyed)return;error=reason;state='error';stop();controller.abort();dispose();updateHost();console.warn('橙红发立绘载入失败，保留静态立绘。',reason);}
  const pixel=(x,y)=>[x*125+800,-y*125+215];
  function rigidTransform(index,rest){
@@ -182,13 +184,13 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   renderer.draw(positions,opacities,orders,visibility);frames++;updateHost();
  }
  function fit(){
-  if(destroyed||!canvas||!renderer||!host)return;
-  const {width,height}=host.getBoundingClientRect();
+  if(destroyed||!renderer||!host)return;
+  const {width,height}=output?output.bounds():host.getBoundingClientRect();
   if(width<=0||height<=0)return;
-  const resized=renderer.resize(...portraitRenderSize(width,height));
+  const resized=renderer.resize(...(output?.renderSize?.(width,height)??portraitRenderSize(width,height)));
   if(resized||frames===0)draw();
  }
- function schedule(){if(raf===null&&canPlay())raf=requestAnimationFrame(tick);}
+ function schedule(){if(raf===null&&canPlay())raf=request(tick);}
  function tick(now){
   raf=null;if(!canPlay()){previous=null;return;}
   accumulator+=previous===null?0:Math.min(.25,Math.max(0,(now-previous)/1000));previous=now;
@@ -196,17 +198,17 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
  }
  function sync(){if(canPlay())schedule();else stop();updateHost();}
  async function waitForDocument(){
-  if(!document.hidden)return;
+  if(!hidden())return;
   await new Promise((resolve,reject)=>{
-   const done=()=>{document.removeEventListener('visibilitychange',onChange);controller.signal.removeEventListener('abort',onAbort);};
-   const onChange=()=>{if(!document.hidden){done();resolve();}},onAbort=()=>{done();reject(controller.signal.reason);};
-   document.addEventListener('visibilitychange',onChange);controller.signal.addEventListener('abort',onAbort,{once:true});
+   let stop;const done=()=>{stop?.();controller.signal.removeEventListener('abort',onAbort);};
+   const onChange=()=>{if(!hidden()){done();resolve();}},onAbort=()=>{done();reject(controller.signal.reason);};
+   stop=watchVisibility(onChange);controller.signal.addEventListener('abort',onAbort,{once:true});
    if(controller.signal.aborted)onAbort();
   });
  }
  async function initialize(){
   state='loading';updateHost();
-  const response=await fetch(runtimeUrl,{signal:controller.signal});if(!response.ok)throw Error(`角色清单 HTTP ${response.status}`);manifest=await response.json();if(destroyed)return false;
+  const response=await (output?.fetchResource??fetch)(runtimeUrl,{signal:controller.signal});if(!response.ok)throw Error(`角色清单 HTTP ${response.status}`);manifest=await response.json();if(destroyed)return false;
   if(manifest.schema!=='orange-reference-driven-target-mesh-v1')throw Error('不支持的角色清单');
   if(manifest.materialRevision==='jetboard-v5-clean-r5'){
    // Only two local clothing regions use the generated repair. The original
@@ -220,16 +222,16 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   offsets=[];let count=0;
   for(const layer of layers){offsets.push(count);count+=layer.vertices.length;}
   positions=new Float32Array(count);opacities=new Float32Array(layers.length);orders=new Float32Array(layers.length);visibility=new Uint8Array(layers.length).fill(1);
-  source=createCubismPortraitPlayer({assetBase:assetRoot.href,modelPath:sameOrigin(manifest.referenceModel),geometryOnly:true,sampleFps:30,initialMemoryBytes:128*1024*1024});
+  source=createCubismPortraitPlayer({assetBase:assetRoot.href,modelPath:sameOrigin(manifest.referenceModel),geometryOnly:true,sampleFps:30,initialMemoryBytes:128*1024*1024,geometryHost:output});
   source.setPaused(true);
   async function loadTextures() {
    const paths = [...new Set(layers.map(layer=>layer.texture))], results = new Map();
    let next = 0;
    async function worker() {
     while (!destroyed && next < paths.length) {
-     const path = paths[next++], img = new Image();
-     images.add(img); img.src = sameOrigin(path); await img.decode();
-     results.set(path,img);
+     const path=paths[next++],url=sameOrigin(path);
+     if(output)results.set(path,await output.loadImage(url));
+     else {const img=new Image();images.add(img);img.src=url;await img.decode();results.set(path,img);}
     }
    }
    // Bound the native queue so hiding the portrait can stop the remaining layers.
@@ -248,7 +250,7 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   if(!sourceResult.value||!source?.ready)throw source?.error||Error('参考运动核无法加载');
   const textures=textureResult.value;
   source.seek(0);parameterIndices=new Map(Array.from(source.model.getModel().parameters.ids,(id,i)=>[id,i]));
-  canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');Object.assign(canvas.style,{position:'absolute',inset:'0',width:'100%',height:'100%'});
+  if(!output){canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');Object.assign(canvas.style,{position:'absolute',inset:'0',width:'100%',height:'100%'});}
   const shorts=layers.find(layer=>layer.id==='shorts-underlap'),backHair=layers.find(layer=>layer.id==='hair-back-right');
   const compactJetboard=isWechatPortrait()&&manifest.materialRevision==='jetboard-v5-clean-r5';
   const meshManifest={
@@ -266,17 +268,19 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
     ...(layer.cardGripDepth==='back'?ORANGE_CARD_HAND_MATERIAL:layer.cardGripDepth==='front'?ORANGE_CARD_THUMB_MATERIAL:{}),
    })),
   };
-  renderer=createGoldenMeshRenderer(canvas,meshManifest,textures);images.clear();
-  canvas.addEventListener('webglcontextlost',event=>{event.preventDefault();fail(Error('角色画布连接已中断'));},{signal:controller.signal});
-  host?.appendChild(canvas);state='ready';fit();sync();return true;
+  renderer=output?output.createMesh(meshManifest,textures):createGoldenMeshRenderer(canvas,meshManifest,textures);images.clear();
+  canvas?.addEventListener('webglcontextlost',event=>{event.preventDefault();fail(Error('角色画布连接已中断'));},{signal:controller.signal});
+  if(canvas)host?.appendChild(canvas);state='ready';fit();sync();return true;
  }
- const ensure=()=>destroyed||state==='error'?Promise.resolve(false):!host||!visible||document.hidden?Promise.resolve(state==='ready'):loading||=(initialize().catch(e=>{fail(e);return false;}));
- const observer=typeof ResizeObserver==='function'?new ResizeObserver(fit):null;
- const onVisibility=()=>{sync();if(!document.hidden)void ensure();};
+ const ensure=()=>destroyed||state==='error'?Promise.resolve(false):!host||!visible||hidden()?Promise.resolve(state==='ready'):loading||=(initialize().catch(e=>{fail(e);return false;}));
+ const observer=!output&&typeof ResizeObserver==='function'?new ResizeObserver(fit):null;
+ const onVisibility=()=>{sync();if(!hidden())void ensure();};
  const onReduced=()=>{explicit=false;if(reduced?.matches&&state==='ready'){void source.playMotion('idle').then(()=>{if(destroyed||state!=='ready')return;source.setPaused(true);source.seek(0);accumulator=0;draw();sync();});}sync();};
- document.addEventListener('visibilitychange',onVisibility);reduced?.addEventListener?.('change',onReduced);
+ const watchVisibility=output?.watchVisibility??(fn=>{document.addEventListener('visibilitychange',fn);return ()=>document.removeEventListener('visibilitychange',fn);});
+ const unwatch=watchVisibility(onVisibility),unresize=output?.watchBounds?.(fit);
+ reduced?.addEventListener?.('change',onReduced);
  return{
-  async attach(next){if(destroyed)return false;if(next&&!next.appendChild)throw TypeError('需要有效宿主');if(host!==next){if(host)observer?.unobserve(host);clearHost();host=next;canvas?.remove();if(host){if(canvas)host.appendChild(canvas);observer?.observe(host);}}
+  async attach(next){if(destroyed)return false;if(next&&!output&&!next.appendChild)throw TypeError('需要有效宿主');if(host!==next){if(host)observer?.unobserve(host);clearHost();host=next;canvas?.remove();if(host&&!output){if(canvas)host.appendChild(canvas);observer?.observe(host);}}
    sync();if(!host)return false;const ready=await ensure();if(!destroyed){fit();sync();}return ready;},
   async playMotion(name){const request=++motionRequest;if(!await ensure()||destroyed||request!==motionRequest)return false;const ok=await source.playMotion(name);if(destroyed||request!==motionRequest)return false;source.setPaused(true);if(!ok)return false;explicit=true;paused=false;previous=null;accumulator=0;draw();sync();return true;},
   setPaused(value){if(destroyed)return;paused=Boolean(value);if(!paused)explicit=true;source?.setPaused(true);sync();},
@@ -285,9 +289,9 @@ export function createOrangeReferencePortraitPlayer({assetBase=import.meta.env?.
   seek(time){if(state!=='ready')return false;paused=true;stop();const ok=source.seek(time);accumulator=0;draw();return ok;},
   stepFrames(count=1){if(state!=='ready'||!Number.isInteger(count)||count<1||count>600)return false;paused=true;stop();const ok=source.stepFrames(count);draw();return ok;},
   restart(){if(state!=='ready')return false;return this.playMotion(source.motionName);},
-  captureFrame(size=1536){if(!canvas||state!=='ready')return null;if(!Number.isFinite(size)||size<1)throw RangeError('导出尺寸必须是正数');const w=canvas.width,h=canvas.height;try{renderer.resize(Math.round(size),Math.round(size));draw();return canvas.toDataURL('image/png');}finally{renderer.resize(w,h);draw();}},
-  destroy(){if(destroyed)return;destroyed=true;motionRequest++;stop();controller.abort();observer?.disconnect();document.removeEventListener('visibilitychange',onVisibility);reduced?.removeEventListener?.('change',onReduced);dispose();positions=opacities=orders=visibility=layers=offsets=parameterIndices=manifest=elbowJoin=null;clearHost();host=null;state='destroyed';},
-  get state(){return state;},get ready(){return state==='ready';},get error(){return error;},get canvas(){return canvas;},get source(){return source;},get manifest(){return manifest;},
+  captureFrame(size=1536){if(renderer?.captureFrame)return renderer.captureFrame(size);if(!canvas||state!=='ready')return null;if(!Number.isFinite(size)||size<1)throw RangeError('导出尺寸必须是正数');const w=canvas.width,h=canvas.height;try{renderer.resize(Math.round(size),Math.round(size));draw();return canvas.toDataURL('image/png');}finally{renderer.resize(w,h);draw();}},
+  destroy(){if(destroyed)return;destroyed=true;motionRequest++;stop();controller.abort();observer?.disconnect();unwatch();unresize?.();reduced?.removeEventListener?.('change',onReduced);dispose();positions=opacities=orders=visibility=layers=offsets=parameterIndices=manifest=elbowJoin=null;clearHost();host=null;state='destroyed';},
+  get state(){return state;},get ready(){return state==='ready';},get error(){return error;},get canvas(){return renderer?.canvas??canvas;},get source(){return source;},get manifest(){return manifest;},
   get currentTime(){return source?.currentTime||0;},get duration(){return source?.duration||0;},get motionName(){return source?.motionName||'idle';},get availableMotions(){return source?.availableMotions||[];},
   get retargetStats(){return retargetStats;},get propStats(){return propStats;},get geometryStats(){return geometryStats;},get renderedFrames(){return frames;},get paused(){return paused;},get positions(){return positions;},get opacities(){return opacities;},get orders(){return orders;},get playing(){return Boolean(canPlay());},get frameIndex(){return source?.frameIndex||0;},get sampleFps(){return 30;},
  };

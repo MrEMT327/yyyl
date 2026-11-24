@@ -51,6 +51,9 @@ export interface CalculatedLoadout {
 const storageKey = 'danke-study-loadout-v1';
 const catalogRequests = new WeakMap<typeof fetch, Promise<LoadoutCatalog>>();
 let volatileState: StudyLoadoutState | undefined;
+function assertLoadoutCatalog(catalog: RecordData): asserts catalog is LoadoutCatalog {
+  for (const key of ['equipment', 'planes', 'guns', 'pilots', 'labs', 'allSkills']) if (!Array.isArray(catalog[key])) throw new Error(`装备目录格式错误：${key}`);
+}
 export function loadLoadoutCatalog(fetchResource: typeof fetch = fetch, readShared?: ReadSharedLoadoutJSON): Promise<LoadoutCatalog> {
   const cached = catalogRequests.get(fetchResource);
   if (cached) return cached;
@@ -58,8 +61,8 @@ export function loadLoadoutCatalog(fetchResource: typeof fetch = fetch, readShar
     readShared ? readShared('loadout-catalog') : readLoadoutCatalogFile('data/loadout-catalog.json', '缺少原包装备目录', fetchResource),
     loadLoadoutRuntime(fetchResource, readShared), loadPlayerAppearances(fetchResource, readShared),
   ]).then(([catalog, runtime, appearances]) => {
-    for (const key of ['equipment', 'planes', 'guns', 'pilots', 'labs', 'allSkills']) if (!Array.isArray(catalog[key])) throw new Error(`装备目录格式错误：${key}`);
-    return { ...catalog, runtime, appearances } as LoadoutCatalog;
+    assertLoadoutCatalog(catalog);
+    return { ...catalog, runtime, appearances };
   }).catch(error => { catalogRequests.delete(fetchResource); throw error; });
   catalogRequests.set(fetchResource, request);
   return request;

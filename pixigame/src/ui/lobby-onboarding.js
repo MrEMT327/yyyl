@@ -4,39 +4,46 @@ import './lobby-onboarding.css';
 import './guide-presentation.css';
 
 // DOM adapter: targets are re-resolved after every lobby/modal render.
-export function createLobbyOnboarding({root,context,mark}) {
+export function createLobbyOnboarding({root,context,mark,home}) {
   const layer=document.createElement('div');layer.className='lobby-guide';layer.hidden=true;
   layer.innerHTML=guideMarkup();
   document.body.append(layer);
   const ring=layer.querySelector('.guide-ring');
   let active=null,target=null,lastKey='',placementKey='',idle=0,weakChapter=null,marking=false;
-  function hide(){if(!layer.hidden)layer.hidden=true;target=null;placementKey='';}
+  function hide(){home?.()?.setGuide(null);if(!layer.hidden)layer.hidden=true;target=null;placementKey='';}
   const select=(action,attrs='')=>`[data-action="${action}"]${attrs}`;
   const tab=name=>select('tab',`[data-tab="${name}"]`);
   const item=(action,uid)=>select(action,`[data-id="${CSS.escape(String(uid))}"]`);
   function destination(c){
     const g=active.group,m=c.modal;
-    if(g===8&&m?.type==='shopBoxResult')return ['.common-reward-dismiss','点击空白处关闭'];
+    if(g===8&&m?.type==='shopBoxResult')return ['.common-reward-dismiss','点击空白处关闭','close'];
     if(m){
-      if(g===8&&m.type==='shopBoxConfirm'&&m.pool===active.pool&&m.count===1)return [select('shopBoxOpen'),'开启宝箱'];
+      if(g===8&&m.type==='shopBoxConfirm'&&m.pool===active.pool&&m.count===1)return [select('shopBoxOpen'),'开启宝箱','open-box'];
       if((g===9||g===14)&&m.type==='gearDetail'&&m.id===active.uid){
-        if(g===14&&m.detailOrigin!=='slot')return [select('close'),'返回装备槽升级'];
-        return [item(g===9?'gearEquip':'gearUpgrade',active.uid),g===9?'装配这件装备':'升级已装配的装备'];
+        if(g===14&&m.detailOrigin!=='slot')return [select('close'),'返回装备槽升级','close'];
+        return [item(g===9?'gearEquip':'gearUpgrade',active.uid),g===9?'装配这件装备':'升级已装配的装备',g===9?'gearEquip':'gearUpgrade'];
       }
       return null;
     }
     if(c.subpage)return null;
     if(g===8){
-      if(c.tab!=='shop')return [tab('shop'),'进入商城'];
-      if(c.shopSection!=='boxes')return [select('shopSection','[data-section="boxes"]'),'查看装备宝箱'];
-      return [select('shopBoxConfirm',`[data-pool="${active.pool}"][data-count="1"]`),'开启1次'];
+      if(c.tab!=='shop')return [tab('shop'),'进入商城','nav-shop'];
+      if(c.shopSection!=='boxes')return [select('shopSection','[data-section="boxes"]'),'查看装备宝箱','section-boxes'];
+      return [select('shopBoxConfirm',`[data-pool="${active.pool}"][data-count="1"]`),'开启1次','open-'+active.pool+'-1'];
     }
-    if(c.tab!=='assembly')return [tab('assembly'),'进入装备页'];
-    if(c.gearFilter!=='all')return [select('gearClearFilter'),'查看全部装备'];
-    return [item('gearDetail',active.uid)+(g===14?'[data-gear-origin="slot"]':''),g===9?'查看这件装备':'点击已装配的装备'];
+    if(c.tab!=='assembly')return [tab('assembly'),'进入装备页','nav-assembly'];
+    if(c.gearFilter!=='all')return [select('gearClearFilter'),'查看全部装备','clear-filter'];
+    return [item('gearDetail',active.uid)+(g===14?'[data-gear-origin="slot"]':''),g===9?'查看这件装备':'点击已装配的装备','gear-'+active.uid];
   }
   function usable(node){return node&&!node.disabled&&!node.closest('[hidden],[aria-hidden="true"]')&&node.getClientRects().length>0;}
-  function show(selector,label,strong){
+  function show(selector,label,strong,controlId){
+    const view=home?.();
+    const modalGuide=Boolean(context().modal);
+    if(view&&controlId&&(!modalGuide||view.canGuidePanel?.(controlId))){
+      layer.hidden=true;target=null;placementKey='';
+      view.setGuide({id:controlId,text:label,strong,modal:modalGuide});return true;
+    }
+    view?.setGuide(null);
     const host=context().modal?root.querySelector('.pl-modal-host'):root;
     const candidates=[...(host?.querySelectorAll(selector)||[])];
     const node=candidates.find(usable);
@@ -84,7 +91,7 @@ export function createLobbyOnboarding({root,context,mark}) {
       if(active){
         const dest=destination(c);
         if(!dest){hide();return;}
-        if(show(...dest,true)&&active.group===14&&!guideFinished(s,14)&&!marking){
+        if(show(dest[0],dest[1],true,dest[2])&&active.group===14&&!guideFinished(s,14)&&!marking){
           // Native group 14 is consumed when it starts, while this session
           // keeps the remaining target/upgrade steps alive.
           marking=true;Promise.resolve(mark(14,active.uid)).finally(()=>{marking=false;});
@@ -95,7 +102,7 @@ export function createLobbyOnboarding({root,context,mark}) {
       if(weakChapter!==chapter){weakChapter=chapter;idle=0;}idle+=Math.max(0,dt);
       if(!c.modal&&!c.subpage&&c.tab==='battle'&&chapter<=3&&!reachedGuideProgress(s.replicaCampaign,4)
         &&(chapter===1&&!guideFinished(s,1)||idle>=60)&&!s.rewardPending&&!s.rewardBusy){
-        show(select('start'),'点击出战',false);return;
+        show(select('start'),'点击出战',false,'start');return;
       }
       hide();
     },

@@ -3,7 +3,8 @@ import type { Enemy, RecordData, Point } from './kernel/model';
 import { createEnemyFlightMotion } from './scatter-gunboat-flight';
 
 // This adapter owns pixels only. Never write back into the simulation or mounts.
-export const PATROL_DRONE_MODEL = 120137;
+import {PATROL_DRONE_MODEL} from './kernel/enemy-recoil-models.ts';
+export {PATROL_DRONE_MODEL} from './kernel/enemy-recoil-models.ts';
 const textureKey = 'owned-enemy:patrol-drone-v1';
 const atlasUrl = 'assets/owned-enemies/patrol-drone-v1/parts.png';
 const regions = {

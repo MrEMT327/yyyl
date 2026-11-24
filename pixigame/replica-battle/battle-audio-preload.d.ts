@@ -6,4 +6,6 @@ export function preloadBattleAudio(options: {
   signal?: AbortSignal;
   onBuffer(key: string, buffer: AudioBuffer): void;
   onError?(key: string, error: unknown): void;
+  maxWorkers?: number;
 }): Promise<void>;
+export function isOpeningBattleSound(key:string):boolean;

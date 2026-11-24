@@ -22,16 +22,28 @@ export function flightDay(time) {
   if(!Number.isFinite(time))throw new Error('日期无效');
   return new Date(time+8*3600000).toISOString().slice(0,10); // Fixed UTC+8 reset.
 }
+export function flightWeekStart(day) {
+  const date=new Date(day+'T00:00:00Z');
+  date.setUTCDate(date.getUTCDate()-(date.getUTCDay()+6)%7);
+  return date.toISOString().slice(0,10);
+}
+const AD_OFFERS=new Map([
+  ['daily',{field:'adDay',start:day=>day,rewards:FLIGHT_AD_REWARDS}],
+  ['weekly',{field:'adWeek',start:flightWeekStart,rewards:[item(113,3),item(112,1),item(1,5000)]}],
+  ['monthly',{field:'adMonth',start:day=>day.slice(0,8)+'01',rewards:[item(112,4),item(2,200),item(1,20000)]}],
+]);
 export function flightLedger(value,legacy={}) {
   const result=structuredClone(value||{version:1,chapters:[],signCount:legacy.claimedCount||0,
     signDay:legacy.lastClaimDay||'',starterPending:(legacy.claimedCount||0)>=2,
     adDay:'',misses:0,total:0,history:[]});
+  result.adWeek??='';
+  result.adMonth??='';
   if(result.version!==1||!Array.isArray(result.chapters)||new Set(result.chapters).size!==result.chapters.length||
     result.chapters.some(x=>!Number.isInteger(x)||x<1||x>50)||
     !Number.isInteger(result.signCount)||result.signCount<0||result.signCount>SIGNIN_LAST_DAY||
     !Number.isInteger(result.misses)||result.misses<0||result.misses>=10||
     !Number.isSafeInteger(result.total)||result.total<0||
-    ![result.signDay,result.adDay].every(x=>x===''||/^\d{4}-\d{2}-\d{2}$/.test(x)))
+    ![result.signDay,result.adDay,result.adWeek,result.adMonth].every(x=>x===''||/^\d{4}-\d{2}-\d{2}$/.test(x)))
     throw new Error('奖励领取记录无效，未覆盖旧记录');
   if(!result.signinPolicy&&!result.legacySignIn&&result.signCount>0)
     result.legacySignIn={policy:'girl-flight-signin-v1',count:Math.min(7,result.signCount)};
@@ -67,11 +79,15 @@ export function flightRewardsSnapshot(ledger,inventory,campaign,time) {
   // Keep the just-completed week visible for the rest of its claim day.
   const displayIndex=claims.starterPending||claims.driverPending?0:today>claims.signDay?claims.signCount:Math.max(0,claims.signCount-1);
   const weekStart=Math.floor(displayIndex/7)*7;
+  const adOffers=Object.fromEntries([...AD_OFFERS].map(([period,offer])=>{
+    const start=offer.start(today),last=claims[offer.field];
+    return [period,{canClaim:start>last,clockRollback:start<last,rewards:offer.rewards.map(flightRewardView)}];
+  }));
   return {
     revision:inventory.revision,diamonds:inventory.items[2]||0,
     misses:claims.misses,total:claims.total,history:(claims.history||[]).map(row=>({...row,rewards:row.rewards.map(r=>({...r,name:nativeCollectionDisplayName(r.id)||r.name}))})),
     chapters:[], // Compatibility only; use nativeAcquisition.rewards.
-    ad:{canClaim:today>claims.adDay,rewards:FLIGHT_AD_REWARDS.map(flightRewardView)},
+    ad:adOffers.daily,adOffers,
     signIn:{ruleSource:LOCAL_SIGNIN_POLICY_ID,nativeRewardScheduleKnown:true,gate:{...gate,reached:unlocked},projectAdapted:true,referenceLayout:true,source:SIGNIN_SOURCE,serverRulesKnown:false,today,lastClaimDay:claims.signDay,claimedCount:claims.signCount,weekStart,
       completed:claims.signCount===SIGNIN_LAST_DAY&&!claims.starterPending&&!claims.driverPending,canClaim:canSign,starterPending:claims.starterPending,driverPending:Boolean(claims.driverPending),
       supplements:{},days:Array.from({length:7},(_,i)=>{
@@ -143,8 +159,12 @@ export function planFlightReward({ledger,inventory,progression,campaign,time},op
   } else if(operation.action==='chapter') {
     throw new Error('旧章节礼包已停用，请前往章节奖励领取');
   } else if(operation.action==='ad') {
-    if(!operation.completed||today<=l.adDay)throw new Error('广告未完成、今日已领取或日期异常');
-    FLIGHT_AD_REWARDS.forEach(give);l.adDay=today;
+    const period=operation.period??'daily',offer=AD_OFFERS.get(period);
+    if(!offer)throw new Error('特惠档位无效');
+    const start=offer.start(today);
+    if(operation.completed!==true||start<=l[offer.field])throw new Error('广告未完成、'+(period==='daily'?'今日':'本期')+'已领取或日期异常');
+    offer.rewards.forEach(give);
+    l[offer.field]=start;
   } else if(operation.action==='draw') {
     // Retired custom mixed box: preserve historical receipts, never charge.
     throw new Error('钻石收藏箱已取消，请使用现有宝箱');

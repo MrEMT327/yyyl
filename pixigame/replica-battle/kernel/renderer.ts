@@ -188,7 +188,7 @@ export class BattleView extends Phaser.Scene {
     this.pathogenic.configureHost({weaponSkinId:()=>this.content.combat.studyLoadout?.selectedGunIds??Number(this.content.combat.studyLoadout?.selectedGunId||0),playerBulletCount:()=>this.sim.projectiles.filter(b=>b.owner==='player'&&!b.dead).length,raycastBeam:q=>this.sourceRaycast(q),nativeSwordEffects:this.content.assets.originalEffects});
     const deferred = this.optimizeChapterOne ? new Set(chapterOneDeferredAtlases) : undefined;
     if (deferred) {
-      for (const key of unusedChapterEnemyProjectileArt(Object.values(this.content.chapter.bullets).map(row => row.parameters.ModelId))) deferred.add(key);
+      for (const key of unusedChapterEnemyProjectileArt(Object.values<{parameters:{ModelId:number}}>(this.content.chapter.bullets).map(row => row.parameters.ModelId))) deferred.add(key);
       for (const key of this.loadoutArt(this.content.combat.studyLoadout?.battleSkillIds || [])) deferred.delete(key);
     }
     this.pathogenic.preload((_p,t)=>t.url,deferred);

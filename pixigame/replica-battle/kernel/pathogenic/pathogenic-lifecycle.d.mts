@@ -46,3 +46,5 @@ export const LIFECYCLE_SOURCES: Readonly<{
     shield: "scn/player/projectiles/operculum_shield.gd";
     magnetic: "scn/player/projectiles/magnetic_pull_area.gd";
 }>;
+
+export function createLifecycleSampler(graph:unknown):(scenePath:string,input:Record<string,any>)=>ReturnType<typeof createLifecycleContext>;

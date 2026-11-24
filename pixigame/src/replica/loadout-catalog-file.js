@@ -3,8 +3,9 @@
 export async function readLoadoutCatalogFile(url, missingMessage, fetchResource = fetch) {
   if (import.meta.env?.PROD && typeof DecompressionStream === 'function') {
     try {
-      const source = new URL(url, document.baseURI);
-      const compressedUrl = new URL('sorties-v1/loadout-catalog.json.gz', source);
+      // Keep a relative URL relative to the supplied battle resource loader.
+      const source = String(url).split(/[?#]/, 1)[0];
+      const compressedUrl = source.slice(0, source.lastIndexOf('/') + 1) + 'sorties-v1/loadout-catalog.json.gz';
       const response = await fetchResource(compressedUrl, {cache:'no-cache'});
       if (response.ok && response.body) {
         return await new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();

@@ -6,11 +6,11 @@ import { aircraftUiImage } from '../aircraft-ui-images.js';
 import { weaponIconUrl } from '../ui/weapon-icon-source.js';
 import { weaponThemeArt } from '../ui/weapon-theme-art.js';
 import { projectCollectionIcon } from './project-collection-icons.js';
+import { resolveUiAssetUrl } from '../ui/ui-image-source.js';
 
-const absolute = url => url ? new URL(url, document.baseURI).href : null;
 export function nativeCollectionArt(row, view='thumbnail') {
   const plane=row.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[row.id];
-  if(plane)return absolute(aircraftUiImage(plane,view));
+  if(plane){const url=aircraftUiImage(plane,view);return url?resolveUiAssetUrl(url):null;}
   const pilot=nativePilotAppearance(row.id);
   if(pilot)return view==='thumbnail'?pilot.avatar:pilot.image;
   return weaponThemeArt(row.catalogSelectionId??row.id)||(row.appearance&&weaponIconUrl(row.appearance))||projectCollectionIcon(row.icon);

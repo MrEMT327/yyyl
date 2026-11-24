@@ -16,22 +16,22 @@ async function loadBluePonytailAdapter() {
 }
 
 // The lobby and GM use exactly the same resource and camera configuration.
-export function createPilotPortraitPlayer(id, {assetBase=import.meta.env?.BASE_URL ?? '/', geometryDiagnostics=false}={}) {
-  if (id === 'pilot-07') return createLunaMaidPortraitPlayer({assetBase});
-  if (id === 'pilot-09') return createPurpleDoctorPortraitPlayer({assetBase});
-  if (id === 'pilot-01') return createOrangeReferencePortraitPlayer({assetBase,runtimePath:'art/orange-jetboard-v5/runtime.json'});
-  if (id === 'pilot-03') return createCubismPortraitPlayer({assetBase,modelPath:'art/commander-live2d-v1/commander.model3.json',motionGroups:{Idle:'idle',TapBody:'touch_head'},sampleFps:60,minimumResolution:2,createModelAdapter:createCommanderPortraitAdapter,transitionSeconds:.32});
-  if (id === 'pilot-04') return createCubismPortraitPlayer({
+export function createPilotPortraitPlayer(id, {assetBase=import.meta.env?.BASE_URL ?? '/', geometryDiagnostics=false,videoSurface,cubismSurface,blueSurface,output=null}={}) {
+  if (id === 'pilot-07') return createLunaMaidPortraitPlayer({assetBase,createSurface:cubismSurface,output});
+  if (id === 'pilot-09') return createPurpleDoctorPortraitPlayer({assetBase,createSurface:cubismSurface,output});
+  if (id === 'pilot-01') return createOrangeReferencePortraitPlayer({assetBase,output,runtimePath:'art/orange-jetboard-v5/runtime.json'});
+  if (id === 'pilot-03') return createCubismPortraitPlayer({geometryHost:output,createSurface:cubismSurface,assetBase,modelPath:'art/commander-live2d-v1/commander.model3.json',motionGroups:{Idle:'idle',TapBody:'touch_head'},sampleFps:60,minimumResolution:2,createModelAdapter:createCommanderPortraitAdapter,transitionSeconds:.32});
+  if (id === 'pilot-04') return createCubismPortraitPlayer({geometryHost:output,createSurface:cubismSurface,
     assetBase, modelPath:'art/blue-ponytail-v15/blue-ponytail.model3.json',
     motionGroups:{Idle:'idle'}, sampleFps:60, minimumResolution:2,
     initialMemoryBytes:128*1024*1024, loadModelAdapter:loadBluePonytailAdapter,
   });
-  if (id === 'pilot-02') return createRgbaVideoPortraitPlayer({assetBase,manifestPath:'art/engineer-ee76/runtime.json?v=inner-hem-v5'});
-  if (id === 'pilot-05') return createGoldenMeshPortraitPlayer({assetBase,manifestPath:'art/golden-yoga-v12/runtime.json'});
-  if (id === 'pilot-08') return createRgbaVideoPortraitPlayer({assetBase,manifestPath:'art/violet-astra-v31/runtime.json'});
-  if (id === 'pilot-06') return createBlueHandCannonPortraitPlayer({assetBase});
+  if (id === 'pilot-02') return createRgbaVideoPortraitPlayer({assetBase,createSurface:videoSurface,manifestPath:'art/engineer-ee76/runtime.json?v=inner-hem-v5'});
+  if (id === 'pilot-05') return createGoldenMeshPortraitPlayer({assetBase,output,manifestPath:'art/golden-yoga-v12/runtime.json'});
+  if (id === 'pilot-08') return createRgbaVideoPortraitPlayer({assetBase,createSurface:videoSurface,manifestPath:'art/violet-astra-v31/runtime.json'});
+  if (id === 'pilot-06') return createBlueHandCannonPortraitPlayer({assetBase,createRenderer:blueSurface,output});
   if (id !== 'pilot-10') throw new Error(`未知动态立绘: ${id}`);
-  return createCubismPortraitPlayer({
+  return createCubismPortraitPlayer({geometryHost:output,createSurface:cubismSurface,
     assetBase,
     modelPath:`art/white-gold-luoen-r13/${r13.model}`,
     texturePaths:r13.textures.map(path=>`art/white-gold-luoen-r13/${path}`),

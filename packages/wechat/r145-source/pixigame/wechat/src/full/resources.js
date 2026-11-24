@@ -12,7 +12,7 @@ function abortError() {
   return error;
 }
 
-export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBase, assetTransfers = {}, cdnFiles, requirePublicNetwork = false, cacheVersion = '', loadPackage }) {
+export function createWechatResources(api, { assetOrigin, localFiles = {}, fallbackFiles = {}, cdnBase, assetTransfers = {}, cdnFiles, requirePublicNetwork = false, cacheVersion = '', loadPackage }) {
   const origin = assetOrigin.replace(/\/+$/, '');
   const assetHost = new URL(origin).origin;
   const remote = cdnBase ? new URL(cdnBase.replace(/\/+$/, '') + '/') : null;
@@ -21,9 +21,9 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
   const battleData = new Set(Object.entries(assetTransfers)
     .filter(([key,row]) => /^replica-battle\/data\/.+\.json$/.test(key) && row.encoding === 'gzip' && row.bytes > 0)
     .map(([,row]) => row.path));
-  const packagedPaths = new Set(Object.values(localFiles));
+  const packagedPaths = new Set([...Object.values(localFiles), ...Object.values(fallbackFiles)]);
   const packagedCompressed = new Map(Object.entries(localFiles)
-    .filter(([key,path]) => /\.(json|bin)$/.test(key) && path.endsWith('.br'))
+    .filter(([key,path]) => /\.(json|bin)$/.test(key) && /\.(?:br|gz)$/.test(path))
     .map(([key,path]) => [path,key]));
   const userFiles = api.env?.USER_DATA_PATH ? api.env.USER_DATA_PATH.replace(/\/+$/, '') + '/' : null;
   const files = api.getFileSystemManager();
@@ -33,8 +33,13 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
   let textureWritesFull = false;
   cleanStaleTextures(api, files, api.env?.USER_DATA_PATH);
   const namespace = `${Date.now().toString(36)}-${++resourceSerial}`;
-  let disposed = false;
-  const transport = createAssetTransport(api, { version: cacheVersion, decode: decodeBytes,
+  let disposed = false, recoverySerial = 0;
+  function freshURL(url) {
+    const address = new URL(url);
+    address.searchParams.set('wx_asset_retry', namespace + '-' + ++recoverySerial);
+    return address.href;
+  }
+  const transport = createAssetTransport(api, { version: cacheVersion, decode: decodeBytes, retryURL: freshURL,
     accepts(url) {
       if (!remote || !requirePublicNetwork) return false;
       const address = new URL(url);
@@ -60,6 +65,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
         if (releaseFiles && !releaseFiles.has(file)) throw new Error('资源未列入微信发布清单：' + key);
         const mapped = new URL(transfer ? file.split('/').map(encodeURIComponent).join('/') : encodedKey, remote);
         mapped.search = url.search; mapped.hash = url.hash;
+        if (transfer?.version) mapped.searchParams.set('v', transfer.version);
         return publicURL(mapped);
       }
     }
@@ -99,7 +105,10 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
     const address = new URL(url);
     if (address.origin !== remote.origin || !address.pathname.startsWith(remote.pathname)) return data;
     const expected = compressed.get(decodeURIComponent(address.pathname.slice(remote.pathname.length)));
-    if (expected === undefined) return data;
+    return expected === undefined ? data : decodeGzip(url, data, expected);
+  }
+
+  function decodeGzip(url, data, expected) {
     try {
       let bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
       if (bytes[0] === 31 && bytes[1] === 139) bytes = inflateCodec.inflate(bytes);
@@ -116,6 +125,14 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
     return path;
   }
 
+  function readyFallbackFile(path, baseURL = origin + '/') {
+    if (!remote || disposed) return;
+    const url = new URL(path, baseURL);
+    if (url.origin !== remote.origin || !url.pathname.startsWith(remote.pathname)) return;
+    const key = decodeURIComponent(url.pathname.slice(remote.pathname.length));
+    if (Object.hasOwn(fallbackFiles, key)) return readyLocalFile(fallbackFiles[key]);
+  }
+
   function preloadAssetPackage(name) {
     if (disposed || !loadPackage) return;
     const prefix = name + '/';
@@ -124,9 +141,10 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
     }
   }
 
-  async function readBytes(path, { signal, baseURL } = {}) {
+  async function readBytes(path, { signal, baseURL, fresh = false } = {}) {
     if (disposed || signal?.aborted) return Promise.reject(abortError());
-    const url = resolve(path, baseURL);
+    let url = resolve(path, baseURL);
+    if (fresh && /^https?:/i.test(url)) url = freshURL(url);
     return new Promise((resolveRequest, rejectRequest) => {
       let task, settled = false;
       const finish = (error, data) => {
@@ -147,6 +165,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
           if (settled) return;
           task = transport.request({
             url, method: 'GET', dataType: 'text', responseType: 'arraybuffer', timeout: 30000,
+            ...(fresh ? { cache: 'no-store', retryURL: freshURL } : {}),
             success(result) {
               if (result.statusCode < 200 || result.statusCode >= 300) {
                 finish(new Error(`资源加载失败 (${result.statusCode})：${url}`));
@@ -174,12 +193,17 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
         else {
           readyLocalFile(url).then(() => {
             if (settled) return;
+            const key = packagedCompressed.get(url);
             const options = {
               filePath: url,
-              success(result) { finish(null, result.data); },
+              success(result) {
+                try {
+                  finish(null, key && url.endsWith('.gz') ? decodeGzip(url, result.data, assetTransfers[key].bytes) : result.data);
+                } catch (error) { localFailure(error); }
+              },
               fail(error) { localFailure(new Error(`包内资源读取失败：${url} · ${error.errMsg || ''}`)); },
             };
-            if (packagedCompressed.has(url)) files.readCompressedFile({...options, compressionAlgorithm:'br'});
+            if (key && url.endsWith('.br')) files.readCompressedFile({...options, compressionAlgorithm:'br'});
             else files.readFile(options);
           }).catch(localFailure);
         }
@@ -260,7 +284,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, cdnBa
   }
 
   return {
-    resolve, canLoad, releaseAssets: Boolean(releaseFiles), readBytes, decodeBytes, readyLocalFile, preloadAssetPackage, isVersionedBattleData,
+    resolve, canLoad, releaseAssets: Boolean(releaseFiles), readBytes, decodeBytes, readyLocalFile, readyFallbackFile, preloadAssetPackage, isVersionedBattleData,
     requestAsset: transport.request, cacheStats: transport.stats, flushCache: transport.flush,
     async readJSON(path, options) { return JSON.parse(buf2string(new Uint8Array(await readBytes(path, options)))); },
     createAssetBytesUrl, createVerifiedAssetBytesUrl, revokeAssetBytesUrl, createTextureScope,

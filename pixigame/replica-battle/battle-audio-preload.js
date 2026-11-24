@@ -1,13 +1,13 @@
 const firstSounds = new Set([
   'pathogenic:gun', 'pathogenic:hit', 'pathogenic:hit2', 'pathogenic:hit3', 'pathogenic:hit4',
-  'pathogenic:enemyShot', 'pathogenic:playerHit', 'pathogenic:death', 'pathogenic:pickup',
+  'pathogenic:enemyShot', 'pathogenic:playerHit', 'pathogenic:death', 'pathogenic:pickup','pathogenic:impact',
   'project:flight-roll', 'feedback:choice', 'feedback:upgrade',
 ]);
 
 // Aliases share an immutable decoded buffer. Keep different loop transforms
 // separate, and bound both downloads and decodes instead of bursting the full
 // sound catalog on the first touch inside combat.
-export async function preloadBattleAudio({manifest, context, fetchResource = fetch, baseURL = typeof document === 'undefined' ? undefined : document.baseURI, signal, onBuffer, onError}) {
+export async function preloadBattleAudio({manifest, context, fetchResource = fetch, baseURL = typeof document === 'undefined' ? undefined : document.baseURI, signal, onBuffer, onError,maxWorkers=4}) {
   const groups = new Map();
   for (const [key, entry] of Object.entries(manifest)) {
     const url = typeof entry === 'string' ? entry : entry?.url;
@@ -49,5 +49,7 @@ export async function preloadBattleAudio({manifest, context, fetchResource = fet
       }
     }
   }
-  await Promise.all(Array.from({length: Math.min(4, queue.length)}, () => worker()));
+  await Promise.all(Array.from({length: Math.min(maxWorkers, queue.length)}, () => worker()));
 }
+
+export const isOpeningBattleSound=key=>firstSounds.has(key);

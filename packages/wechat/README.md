@@ -16,10 +16,12 @@ r92 测试包由 `a4c9b8d` 加入，对应源码由 `42e24c5` 加入。`503bff6`
 ## 构建与导入
 
 1. 在 `r145-source/` 维护源码。已有兼容的依赖和缓存可直接复用。需要安装时运行 `npm --prefix pixigame ci`，源码测试用 `npm --prefix pixigame test`。该基线的验收环境为 Node.js 24.18.0。
-2. 从 `r145-source/` 运行 `npm --prefix pixigame run build:wechat`。[构建脚本](r145-source/tools/build-wechat.mjs) 在 Git 忽略的临时目录中生成并校验新包，再完整替换 `packages/wechat/out/game/`，清理旧包与本次的临时文件。构建或校验失败时可以继续使用已有成品。
-3. 在微信开发者工具的「小游戏」模式下复用 `out/game/` 项目。预览时核对成品的 `BUILD-INFO.json` 中的 `buildIdentity.buildId`，并记录对应 Git 提交。当前脚本按运行模块摘要决定是否沿用基线构建号，涉及启动图等包内素材时也核对实际产物。
+2. 从 `r145-source/` 运行 `npm --prefix pixigame run build:wechat`。[构建脚本](r145-source/tools/build-three-wechat.mjs) 在 Git 忽略的临时目录中生成并校验新包，再完整替换 `packages/wechat/out/game/`，清理旧包与本次的临时文件。构建或校验失败时可以继续使用已有成品。
+3. 在微信开发者工具的「小游戏」模式下复用 `out/game/` 项目。预览时核对成品的 `BUILD-INFO.json` 中的 `buildId`，并记录对应 Git 提交。构建号由 H5 提交号、运行模块和 CDN 配置确定。
 
-当前构建会从 `r145-source/build-inputs/` 读取小游戏配置、包内素材、CDN 清单和三个源码覆盖文件。大厅包使用 `lobby-overrides/src/replica/project-aircraft-render.js`，战斗包使用 `battle-overrides/src/replica/native-client-rules.js` 和 `battle-overrides/src/replica/native-equipment-boxes.js`。修改这些模块时以对应包的实际输入为准。
+Three.js 构建直接使用外层 H5 的大厅和战斗源码。微信资源由 `build-inputs/cdn-manifest.json` 配置，启动图、立绘、出击数据和特效从同一 HTTPS CDN 读取。同步 CDN 素材时更新这份清单。
+
+微信 iOS 的 InnerAudio 不支持 OGG。`build-inputs/three-compat-media/` 保存同一批完整战斗曲目的包内 AAC 版本、首波 PCM 音效、目录小图和音频开关；不改变 H5 的原文件。修改源文件后用 `node tools/prepare-three-compat-media.mjs <ffmpeg路径>` 重新生成，然后构建会同时核对源文件和兼容文件哈希。
 
 ## 性能优化基线
 

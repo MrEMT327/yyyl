@@ -1,11 +1,12 @@
 import {BufferGeometry,Float32BufferAttribute,Mesh,ShaderMaterial,Color,DoubleSide,AdditiveBlending} from 'three';
 import {Container} from '../three/display.js';
 import {EDGE_PALETTES} from './breakthrough-edge-profile.js';
+import {prefersReducedMotion} from './status-feedback.js';
 
 // A thin ribbon follows the PSD's top-left and bottom-right cut corners.
 // Geometry stays fixed; the existing UI render pass only advances a uniform.
-export function attachUpgradeChoiceBorderFlow(card,{width,height,tier='y'}){
-  if(globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return null;
+export function attachUpgradeChoiceBorderFlow(card,{width,height,tier='y',reduced=prefersReducedMotion()}){
+  if(reduced)return null;
   const scale=Math.min(width/224,height/562),inset=3*scale,cut=20*scale,halfWidth=9*scale;
   const points=[[inset+cut,inset],[width-inset,inset],[width-inset,height-inset-cut],
     [width-inset-cut,height-inset],[inset,height-inset],[inset,inset+cut]];

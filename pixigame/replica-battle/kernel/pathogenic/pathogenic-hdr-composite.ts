@@ -224,7 +224,9 @@ void main(){
       const gl=this.r.gl;
       if(!this.profile.glowEnabled)gl.bindTexture(gl.TEXTURE_2D,null);
       gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,null);
-      this.r.currentFramebuffer=this.destination;
+      // The default backbuffer has no framebuffer wrapper.
+      const state:{currentFramebuffer:Phaser.Renderer.WebGL.Wrappers.WebGLFramebufferWrapper|null}=this.r;
+      state.currentFramebuffer=this.destination;
     });
     if(this.r.gl.isContextLost()){this.onContextLost();return;}
     (this.r as any).blendModes[Phaser.BlendModes.ADD]=this.savedAddBlend;

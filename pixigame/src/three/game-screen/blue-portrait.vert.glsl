@@ -1,0 +1,1 @@
+in vec2 aPosition;in vec2 aCoverage;out vec2 vCoverage;in vec2 aUV;uniform vec4 uView;out vec2 vUV;out vec2 vWorld;void main(){vCoverage=aCoverage;vWorld=aPosition;vec2 q=(aPosition-uView.xy)/uView.zw;gl_Position=vec4(q.x*2.-1.,1.-q.y*2.,0.,1.);vUV=aUV;}

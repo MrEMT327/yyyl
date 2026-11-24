@@ -5,15 +5,20 @@ export function createFrameLoop(update, {
   documentRef = globalThis.document,
   requestFrame = callback => globalThis.requestAnimationFrame(callback),
   cancelFrame = frame => globalThis.cancelAnimationFrame(frame),
+  isVisible = () => !documentRef?.hidden,
+  watchVisibility = listener => {
+    documentRef?.addEventListener?.('visibilitychange', listener);
+    return () => documentRef?.removeEventListener?.('visibilitychange', listener);
+  },
   onResume = () => {},
 } = {}) {
   let started = false, destroyed = false, frame = null, previous = null;
   const schedule = () => {
-    if (started && !destroyed && !documentRef?.hidden && frame === null) frame = requestFrame(tick);
+    if (started && !destroyed && isVisible() && frame === null) frame = requestFrame(tick);
   };
   const tick = time => {
     frame = null;
-    if (!started || destroyed || documentRef?.hidden) return;
+    if (!started || destroyed || !isVisible()) return;
     const delta = previous === null ? 1000 / 60 : Math.max(0, time - previous);
     previous = time;
     update(time, delta);
@@ -22,13 +27,13 @@ export function createFrameLoop(update, {
   const cancel = () => { if (frame !== null) cancelFrame(frame); frame = null; previous = null; };
   const visibility = () => {
     cancel();
-    if (!documentRef?.hidden && started) { onResume(); schedule(); }
+    if (isVisible() && started) { onResume(); schedule(); }
   };
-  documentRef?.addEventListener?.('visibilitychange', visibility);
+  const unwatch = watchVisibility(visibility);
   return {
     start() { if (destroyed || started) return; started = true; previous = null; onResume(); schedule(); },
     stop() { started = false; cancel(); },
-    destroy() { started = false; destroyed = true; cancel(); documentRef?.removeEventListener?.('visibilitychange', visibility); },
+    destroy() { started = false; destroyed = true; cancel(); unwatch(); },
     get started() { return started; },
   };
 }

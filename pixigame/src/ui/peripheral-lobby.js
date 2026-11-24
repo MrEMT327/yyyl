@@ -10,8 +10,7 @@ import { developerSkillsEnabled, setDeveloperSkillsEnabled } from '../developer-
 import { researchArt } from './research-art.js';
 import {createLobbyOnboarding} from './lobby-onboarding.js';
 import {qualityDisplayLabel} from './quality-display-label.js';
-import { nativeRewardPresentation } from '../replica/native-item-presentation.js';
-import {rewardDisplayQuality,rewardNativeItemId} from '../replica/item-display-quality.js';
+import {rewardItemModel} from './reward-item-model.js';
 import {rewardItemSlot} from './reward-item-slot.js';
 import { copyDiagnosticReport, diagnosticReport } from '../diagnostic-log.js';
 import { developerToolsDialog } from './developer-tools-panel.js';
@@ -183,6 +182,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   let modalHost=modalRoot,rewardLayer=null;
   const initializedShopScrollports=new WeakSet();
   const nativeTabCache = bridge.platformKind === 'wechat';
+  const screen=bridge.app?.renderer;
+  let homeView=null,menuView=null;
+  const usesMenuCanvas=()=>screen?.supportsMenu?.(tab,subpage);
+  const usesHomeCanvas=()=>Boolean(screen?.mountHome)&&tab==='battle'&&!subpage;
   const uiMotion = createUiMotion(root,{immediateTabs:nativeTabCache});
   const pageMarkup = new Map();
   let markupSnapshot;
@@ -222,8 +225,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   let catalogWorkshopReturn = null;
   const releaseHoloCards = bindPilotHoloCards(root);
   const releaseEquipmentChoices = bindEquipmentChoices(root);
-  const portraitPlayer = createCharacterPortraits();
-  const models = createPeripheralModels({ warmShaders: nativeTabCache });
+  const portraitPlayer = createCharacterPortraits(bridge.app?.renderer);
+  const models = createPeripheralModels({warmShaders:nativeTabCache,screen:bridge.app?.renderer?.previewLease?bridge.app.renderer:null});
 
   function read() {
     const raw = bridge.getPeripheralSnapshot?.() || system?.snapshot?.() || {};
@@ -239,7 +242,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     for (const item of [...aircraft, ...weapons]) item.maxLevel ??= raw.growth?.maxLevel;
     return { ...raw, playerName:playerName(raw.playerName || bridge.profileState?.playerName || bridge.game?.callsign), pools, signIn, pilotId, aircraftId, pilots, aircraft, weapons, stages, wallet, loadout: raw.loadout || {}, selectedStageIndex: raw.selectedStageIndex ?? bridge.selectedStageIndex ?? 0, power: raw.replicaCollection ? raw.power : raw.power ?? bridge.profilePower?.() };
   }
-  const itemDescriptions=createItemDescriptionLayer({container:parent,getSnapshot:read});
+  const itemDescriptions=screen?.inspectItems?screen.inspectItems(parent,read):createItemDescriptionLayer({container:parent,getSnapshot:read});
   bridge.showItemDescription=itemDescriptions.open;
   const weaponFor = id => snapshot.weapons.find(w => w.id === (typeof id === 'object' ? id?.itemId || id?.id : id));
   // Weapon inventory emblems depict the equipped hardware; model-pool weapon
@@ -250,12 +253,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   const preview=(id,options={})=>aircraftPreview(id,options);
   const referenceContext = () => ({ snapshot, helpers: { escape, number, icon, img, thumbnail, preview, button, asset, researchArt }, workshopKind,gearWorkshop,workshopId, workshopFilter, workshopMode, workshopBackLabel:catalogWorkshopReturn ? '返回武器目录' : '返回装备' });
 
-  const onboarding=createLobbyOnboarding({root,
+  const onboarding=createLobbyOnboarding({root,home:()=>homeView||menuView,
     context:()=>({snapshot,tab,subpage,modal,researchSection,shopSection,gearFilter,visible,busy,chapterIndex:battleChapterIndex(snapshot||{},battleChapter)}),
     mark:async(group,uid)=>{const handler=bridge.peripheralAction||system?.action;const result=await handler?.call(system||bridge,'onboardingComplete',{group,uid});render(true);return result;}
   });
   function toast(message) {
     if(isResourceShortage(message))message=shortageToast(message);
+    if(bridge.app?.renderer?.toast){bridge.app.renderer.toast.show(message);return;}
     const node = root.querySelector('.pl-toast'); node.classList.remove('is-visible'); node.textContent = message; void node.offsetWidth; node.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => node.classList.remove('is-visible'), 2667);
   }
   function patrolUnlockMessage() {
@@ -328,7 +332,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         const credited = actionFeedback.wallet(walletBefore, snapshot.wallet);
         // A receipt already says what arrived; don't stack a second success toast.
         const powerChanged=Number.isFinite(motionBefore.power)&&Number.isFinite(snapshot.power)&&Math.round(motionBefore.power)!==Math.round(snapshot.power);
-        if (credited || rewards.length || powerChanged || result.researchResult || result.gearResult?.operation==='supply') { clearTimeout(toastTimer); root.querySelector('.pl-toast').classList.remove('is-visible'); }
+        if (credited || rewards.length || powerChanged || result.researchResult || result.gearResult?.operation==='supply') { bridge.app?.renderer?.toast?.clear(); clearTimeout(toastTimer); root.querySelector('.pl-toast').classList.remove('is-visible'); }
       }
       if (result?.ok && subpage === 'workshop' && !modal && !root.contains(document.activeElement)) {
         (body.querySelector('.ws-grid .eq-card.is-selected') || body.querySelector('.ws-slot:not(.is-result)'))?.focus({preventScroll:true});
@@ -389,6 +393,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   }
   const tabMarkupOptions = () => ({pageKey:subpage?null:tab,...(nativeTabCache?{maxCachedPages:TABS.length-1}:{})});
   function renderHeader() {
+    if(usesHomeCanvas()||usesMenuCanvas()){setUiMarkup(header,'');return;}
     const options=nativeTabCache?tabMarkupOptions():undefined;
     if (tab === 'assembly' && !subpage) { setUiMarkup(header,equipmentHeader(referenceContext()),options); return; }
     if (tab === 'battle' && !subpage) { setUiMarkup(header,battleHeader(referenceContext(), snapshot.playerName),options); return; }
@@ -412,6 +417,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   }
   let activeNavTab;
   function renderNav() {
+    if(usesHomeCanvas()||usesMenuCanvas()){setUiMarkup(nav,'');activeNavTab=null;return;}
     if (activeNavTab===tab) return;
     if (!activeNavTab) setUiMarkup(nav,lobbyNavigation(tab));
     else {
@@ -430,24 +436,54 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     return pilotRecruitResults(rewards,view.pilots,{number,renderReward:rewardItemHtml,grid:modal?.recruitGrid===true});
   }
   function rewardItemHtml(r,projectAssets=false) {
-    const id = r.id || r.itemId, type = r.type || r.kind;
-    const known = snapshot.weapons.find(w => w.id === id) || snapshot.aircraft.find(a => a.id === id);
-    const native = nativeRewardPresentation(r);
-    const quality=rewardDisplayQuality(r,native,known),rank=quality.qualityRank;
-    const ownResource=projectAssets?({coins:'psd-main-v1/resources/coins-icon',diamonds:'psd-main-v1/resources/diamonds-icon',stamina:'psd-main-v1/resources/stamina-icon',aircraftShards:'project-inventory-icons-v1/aircraft-shard',weaponParts:'project-inventory-icons-v1/weapon-parts',cores:'project-inventory-icons-v1/technology-core'})[type]:null;
-    const resourceName = ({ coins:'金币', diamonds:'钻石', aircraftShards:'通用飞机碎片', weaponParts:'武器零件', cores:'科技星核', stamina:'体力' })[type];
-    const gearImage=type==='pilotCredits'?icon('medal'):native.image?img(native.image,'','pl-icon ag-reward-art'):type==='nativeItem'&&r.image?img(r.image,'','pl-icon ag-reward-art'):['gear','gearBlueprint','gearKey'].includes(type)&&r.image?img(`${import.meta.env.BASE_URL}${r.image}`,'','pl-icon ag-reward-art'):'';
+    const model=rewardItemModel(r,snapshot,projectAssets);
+    const {name,type,qualityRank:rank}=model;
     {
-      const artwork = gearImage || (ownResource ? img(`${import.meta.env.BASE_URL}art/${ownResource}.png`,'','pl-icon') : '') || thumbnail(id) || icon(({ aircraft:'plane', weapon:'weapon' })[type] || 'crate');
-      const name=native.name || resourceName || r.name || known?.aircraftName || known?.name || '补给';
-      const interactive=projectAssets&&r.gearUid;
+      const quality=model,interactive=model.gearUid;
+      const artwork=model.icon?icon(model.icon):img(model.image,'',model.artClass);
       const tag=interactive?'button':'div',action=interactive?`type="button" data-action="gearDetail" data-id="${escape(r.gearUid)}" aria-label="${escape([name,qualityDisplayLabel(quality.qualityName,quality.qualityKnown),'查看当前装备'].filter(Boolean).join('，'))}"`:'';
-      const slot=rewardItemSlot({name,amount:r.amount??r.count??1,artwork,...quality,itemId:rewardNativeItemId(r)??id,isNew:r.isNew===true},{escape});
+      const slot=rewardItemSlot({...model,artwork},{escape});
       return `<${tag} class="pl-reward-item" data-reward-resource="${escape(type)}" data-reward-rank="${rank}" ${action}>${slot}<b>${escape(name)}</b>${r.receiptStatus?`<small>${escape(r.receiptStatus)}</small>`:''}</${tag}>`;
     }
   }
   function rewardsHtml(rewards,projectAssets=false) {
     return `<div class="pl-rewards-grid">${rewards.map(r=>rewardItemHtml(r,projectAssets)).join('')}</div>`;
+  }
+  let nativeBackpack=null,nativeDialog=null,nativeReceipt=null;
+  function releaseNativeReceipt(){nativeReceipt?.close();nativeReceipt=null;}
+  let nativeOverlayDialog=null;
+  function releaseOverlayDialog(){nativeOverlayDialog?.close();nativeOverlayDialog=null;}
+  function releaseNativeDialog(){nativeDialog?.close();nativeDialog=null;}
+  function releaseNativeBackpack(){
+    nativeBackpack?.close();nativeBackpack=null;
+  }
+  async function useBackpackItem(item,count,targetId,operation,revision,gearRevision){
+    const origin={...modal},rule=backpackUseRule(item.nativeId);
+    const result=await act('backpackUse',{id:item.nativeId,count,targetId,...(operation?{action:operation}:{}),
+      expectedRevision:revision,expectedGearRevision:gearRevision});
+    if(result?.ok&&rule?.kind==='equipmentKey')presentBoxReceipt(result,rule.pool,count,origin);
+  }
+  async function nativeBagAction(command){
+    if(modal?.type!=='backpack'||busy)return;
+    if(command.type==='close'){
+      if(modal.bagSelectOpen){modal.bagSelectOpen=false;renderModal();return;}
+      if(!closeBackpackDetail()&&!returnToParentModal()){modal=null;renderModal();}
+      return;
+    }
+    if(command.type==='select'){
+      if(modal.bagItem||!backpackItems(snapshot).some(i=>i.id===command.id))return;
+      modal.bagItem=command.id;modal.bagChoice=null;modal.bagCount=1;renderModal();return;
+    }
+    const item=backpackItems(snapshot).find(i=>i.id===modal.bagItem);
+    if(!item)return;
+    if(command.type==='quantity'){modal.bagCount=String(command.value);renderModal();return;}
+    if(command.type==='openChoices'){modal.bagSelectOpen=true;renderModal();return;}
+    if(command.type==='choose'){modal.bagChoice=command.id;modal.bagSelectOpen=false;renderModal();return;}
+    if(command.type==='recover'){await act('recoverDailyRewards');return;}
+    if(command.type==='use'&&!command.disabled){
+      const rule=backpackUseRule(item.nativeId),target=rule?.choices?.find(c=>c.id===modal.bagChoice)||rule?.choices?.[0];
+      await useBackpackItem(item,command.count,Number(target?.id||0),command.operation,command.revision,command.gearRevision);
+    }
   }
   function closeBackpackDetail() {
     if (modal?.type !== 'backpack' || !modal.bagItem) return false;
@@ -483,11 +519,26 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     if(['gearDetail','gearSources','gearMergeList'].includes(parent.type))parent.revision=snapshot.equipment.revision;
     modal=parent;renderModal();if(scroll!=null){const content=modalHost.querySelector('.pl-modal-content');if(content)content.scrollTop=scroll;}
     restoreModalScroll(modalHost,positions);
-    if(!restoreFocus(modalHost,opener))(modalHost.querySelector('.dc-tab[aria-selected="true"]')||modalHost.querySelector('.pl-close,.bag-close,.chapter-reward-back'))?.focus({preventScroll:true});return true;
+    if(!restoreFocus(modalHost,opener))(modalHost.querySelector('.dc-tab[aria-selected="true"]')||modalHost.querySelector('.pl-close,.bag-close,.chapter-reward-back,[role=dialog][tabindex]'))?.focus({preventScroll:true});return true;
   }
   function renderModal() {
     if(!modal&&!rewardLayer&&!renderedModalKey&&!modalOpener&&!modalHost.firstChild
       &&!pendingModalBackgroundRefresh&&!pendingAwakeningFeedback&&!pendingProcessRecords.length)return;
+    if(modal?.type!=='backpack'&&!(isRetainedModalLayer(modal)&&modal?.returnTo?.type==='backpack'))releaseNativeBackpack();
+    const receiptParent=modal?.returnTo?.type;
+    const nativeParent=(usesHomeCanvas()||usesMenuCanvas())&&(!receiptParent||receiptParent==='backpack'||screen?.lobbyPanelKind?.(receiptParent,snapshot));
+    const useReceipt=screen?.openRewardReceipt&&isCommonReward(modal)&&nativeParent;
+    const useOpening=screen?.openBoxOpening&&modal?.type==='boxOpening'&&nativeParent;
+    const useProcess=screen?.openProcessFeedback&&modal?.type==='processFeedback'&&(nativeParent||receiptParent==='shopBoxResult');
+    const useRecruit=screen?.openRecruitResults&&isRecruitResult(modal)&&nativeParent;
+    const useTaskTip=screen?.openTaskChestPreview&&modal?.type==='taskChestPreview'&&receiptParent==='tasks'&&(usesHomeCanvas()||usesMenuCanvas());
+    const usePatrolReceipt=screen?.openPatrolReceipt&&modal?.type==='rewards'&&modal.patrol&&['patrol','quickPatrol'].includes(receiptParent);
+    if(!useReceipt&&!useOpening&&!useProcess&&!useRecruit&&!useTaskTip&&!usePatrolReceipt)releaseNativeReceipt();
+    const panelKind=screen?.lobbyPanelKind?.(modal?.type,snapshot);
+    const overlayDialog=Boolean(panelKind&&isRetainedModalLayer(modal)&&modal?.returnTo);
+    if(nativeOverlayDialog&&(!overlayDialog||nativeOverlayDialog.kind!==panelKind))releaseOverlayDialog();
+    if(nativeDialog&&nativeDialog.kind!==panelKind
+      &&!(isRetainedModalLayer(modal)&&nativeDialog.kind===screen?.lobbyPanelKind?.(modal?.returnTo?.type,snapshot)))releaseNativeDialog();
     if(modal?.type!=='pilotAffectionVideo')releaseAffectionVideo();
     if(rewardLayer&&!isRetainedModalLayer(modal)){
       stateFeedback.clearResult();
@@ -519,7 +570,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     const previewWeapon=modal?.type==='nativeCollectionDetail'&&modal.kind==='guns'
       ?snapshot.replicaCollection?.guns.find(row=>row.id===Number(modal.id)):null;
     const modalKey = modalIdentity(previewWeapon?{...modal,id:previewWeapon.baseGunId||previewWeapon.id}:modal);
-    if(['processFeedback','boxOpening','shopBoxResult'].includes(modal?.type)&&renderedModalKey===modalKey){processMotion.play(modalHost,modal);return;}
+    if(!useReceipt&&!useOpening&&!useProcess&&['processFeedback','boxOpening','shopBoxResult'].includes(modal?.type)&&renderedModalKey===modalKey){processMotion.play(modalHost,modal);return;}
     const stableType = modal && (isCommonReward(modal) || isRecruitResult(modal) || modal.type==='recruitRewards' || COMMAND_PANELS.has(modal.type) || ['chapterDetails','developerDiagnostics','pilotAffection','pilotAffectionVideo','taskChestPreview','chapterRewards','chapterCoreRewards','nativeStarRewards','nativeMaterials','nativeStats','nativeEquipmentBoxes','pilotSupplyTasks','pilotSupplyBoxes','nativeRecruitInfo','playerInfo','formation','chapterChest','patrol','quickPatrol','nativeLab','nativeCollectionDetail','nativeSkillPreview','nativeWeaponPreview','growthSupplyChoice','weapon','weaponSkill','weaponSkillGroup','aircraftInfo','pilotInfo','fleetSkill','fleetOperation','workshopBatch','workshopFilter'].includes(modal.type) || modal.type.startsWith('research') || modal.type.startsWith('gear'));
     if (!stableType || renderedModalKey !== modalKey) stateFeedback.clearResult();
     const focused = captureFocus(modalHost);
@@ -562,9 +613,43 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       return;
     }
     if (polishedTab() && !renderedModalKey && !rewardLayer) modalOpener = modal.opener || captureFocus(root);
+    if(useReceipt||useOpening||useProcess||useRecruit||useTaskTip||usePatrolReceipt){
+      const kind=useRecruit?'recruitResult':usePatrolReceipt?'patrolReceipt':modal.type;
+      if(nativeReceipt?.host!==modalHost||nativeReceipt?.kind!==kind){
+        releaseNativeReceipt();
+        const open=useRecruit?screen.openRecruitResults:useProcess?screen.openProcessFeedback:useOpening?screen.openBoxOpening:useTaskTip?screen.openTaskChestPreview:usePatrolReceipt?screen.openPatrolReceipt:screen.openRewardReceipt;
+        nativeReceipt=open(modalHost,runLobbyCommand,key=>bridge.playUiFeedback?.(key));
+        nativeReceipt.kind=kind;
+      }
+      nativeReceipt.update(snapshot,modal,signature);
+      for(const node of [header,body,nav])node.inert=true;
+      renderedModalKey=modalKey;renderedModalContent='';return;
+    }
+    if(screen?.repaintHome&&panelKind){
+      let presenter=overlayDialog?nativeOverlayDialog:nativeDialog;
+      if(presenter?.host!==modalHost||presenter.kind!==panelKind){
+        const scroll=panelKind==='tasks'?dailyScrollPositions:patrolScrollPositions;
+        if(overlayDialog)releaseOverlayDialog();else releaseNativeDialog();
+        presenter=screen.openLobbyPanel(panelKind,modalHost,runLobbyCommand,scroll,k=>bridge.playUiFeedback?.(k));presenter.kind=panelKind;
+        if(overlayDialog)nativeOverlayDialog=presenter;else nativeDialog=presenter;
+      }
+      const panelModal=modal.type==='workshopFilter'?{...modal,filter:workshopFilter,mode:workshopKind==='gear'?'gear':workshopMode}:
+        modal.type==='weapon'&&!modal.requireSlotSelection?{...modal,targetSlot:modal.targetSlot||selectedSlot}:modal;
+      presenter.update(snapshot,panelModal,signature);
+      for(const node of [header,body,nav])node.inert=true;
+      renderedModalKey=modalKey;renderedModalContent='';return;
+    }
     if (modal.type === 'backpack') {
       // Preserve the grid and its focus while a live wallet snapshot updates.
       if (modal.bagItem && !backpackItems(snapshot).some(item => item.id === modal.bagItem)) modal.bagItem = null;
+      const screen=bridge.app?.renderer;
+      if(screen?.repaintHome&&screen.openBackpack){
+        nativeBackpack??=screen.openBackpack(modalHost,nativeBagAction);
+        nativeBackpack.update(backpackItems(snapshot),snapshot,modal);
+        for(const node of [header,body,nav])node.inert=true;
+        renderedModalKey=modalKey;renderedModalContent='';
+        return;
+      }
       const markup = optimizeUiAssetUrls(flattenDisclosureMarkup(backpackDialog(snapshot, modal, referenceContext().helpers)));
       if (renderedModalKey === modalKey && renderedModalContent === markup) return;
       const scroll = modalHost.querySelector('.bag-grid')?.scrollTop ?? 0;
@@ -839,10 +924,11 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     force ||= pendingScrollRender; pendingScrollRender = false;
     if (destroyed) return;
     const next = currentSnapshot || read();
+    if(tab==='battle'&&!subpage)bridge.app?.renderer?.publishHome?.(next,battleChapterIndex(next,battleChapter),bridge.debugToolsEnabled);
     // Switching tabs reuses the current data; skip serializing the whole economy.
     const nextSignature=next===snapshot ? signature : patrolRenderSignature(next);
     if(!busy&&snapshot&&snapshot!==next)pendingProcessRecords.push(...collectionFeedbackRecords(snapshot,next,{stars:false}),...progressionFeedbackRecords(snapshot,next));
-    refreshPatrolClocks(root,next);
+    refreshPatrolClocks(root,next);nativeDialog?.clock?.(next.patrol);
     if (!force && nextSignature === signature) { snapshot=next;if(visible&&!modal&&pendingProcessRecords.length){const records=pendingProcessRecords;pendingProcessRecords=[];showProcessRecords(records);}return; }
     if(isRetainedModalLayer(modal)&&rewardLayer){
       pendingModalBackgroundRefresh=true;signature=nextSignature;snapshot=next;
@@ -886,20 +972,48 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     root.classList.toggle('equipment-comic', tab === 'assembly' && !subpage);
     root.classList.toggle('equipment-reference', tab === 'assembly' && !subpage);
     root.classList.toggle('battle-psd-main', tab === 'battle' && !subpage);
+    const nativeHome=usesHomeCanvas(),nativeMenu=usesMenuCanvas();
+    root.classList.toggle('three-menu-active',Boolean(nativeMenu));
+    if(!nativeMenu&&menuView){menuView.close();menuView=null;}
+    root.classList.toggle('three-home-active',nativeHome);
+    if(!nativeHome&&homeView){homeView.close();homeView=null;}
     renderHeader(); renderNav(); root.dataset.tab = tab; root.dataset.subpage = subpage;
     if(tab==='research'&&researchSection==='lab'&&researchUnlockMessage(snapshot.replicaCampaign))researchSection='talent';
     const ctx = referenceContext();
-    setUiMarkup(resourceHost,subpage ? lobbyResources(ctx, tab === 'assembly' ? 'equipmentShop' : tab === 'research' ? 'researchShop' : 'shopSection') : '');
-    const bodyChanged=setUiMarkup(body, ['weapon','aircraft','pilot'].includes(subpage)
+    setUiMarkup(resourceHost,subpage&&!nativeMenu ? lobbyResources(ctx, tab === 'assembly' ? 'equipmentShop' : tab === 'research' ? 'researchShop' : 'shopSection') : '');
+    const bodyChanged=setUiMarkup(body, nativeMenu ? '<section class="three-menu-viewport" data-three-menu aria-label="功能页"></section>' : ['weapon','aircraft','pilot'].includes(subpage)
       ? cloudNativeCatalog({ ...ctx, kind:subpage, selectedId:subpage==='weapon'?selectedWeapon:subpage==='aircraft'?browseAircraft:browsePilot, skillTab:catalogSkillTab, selectedSkillSlot:subpage==='weapon'?weaponSkillSlot:undefined, filter:catalogFilter, ...(fleetUi[subpage]||{}) })
       : subpage === 'workshop' ? workshopReferencePage(ctx)
+      : nativeHome ? '<section class="bc-page psd-main-page" data-three-home-viewport aria-label="主界面"></section>'
       : tab === 'battle' ? battlePage(ctx,battleChapter)
       : tab === 'assembly' ? cachedMainPage('assembly',gearSort+':'+gearFilter,()=>equipmentPage(ctx,{gearSort,gearFilter}))
       : tab === 'shop' ? cachedMainPage('shop','boxes',()=>shopPage(ctx,nativeTabCache?'boxes':shopSection,{decorations:!nativeTabCache}))
       : tab === 'research' ? (researchSection==='lab'?nativeLabPage(ctx):researchPage(ctx))
       : cloudNativeRecruit({...ctx,selected:selectedRecruitPilot}),tabMarkupOptions());
+    if(nativeMenu){
+      const page=body.firstElementChild;
+      if(menuView?.page!==page){
+        menuView?.close();
+        menuView=screen.mountMenu(page,(action,data,opener)=>runLobbyCommand(action,data,opener),()=>visible&&!busy&&!modal,
+          section=>{shopSection=section;});
+      }
+      const catalog=subpage?{id:subpage==='weapon'?selectedWeapon:subpage==='aircraft'?browseAircraft:browsePilot,skillTab:catalogSkillTab,
+        selectedSkillSlot:subpage==='weapon'?weaponSkillSlot:undefined,...(fleetUi[subpage]||{})}:null;
+      const workshop=subpage==='workshop'?{kind:workshopKind,id:workshopId,filter:workshopFilter,mode:workshopMode,draft:gearWorkshop,backLabel:ctx.workshopBackLabel}:null;
+      menuView.update({tab:subpage||tab,snapshot,catalog,workshop,section:researchSection,shopSection,selected:selectedRecruitPilot,
+        gearSort,gearFilter,fleetReturnKind:fleetSupplyReturn?.kind,time:bridge.getPeripheralClock?.()?.time},signature);
+    }
+    let pilotChanged=Boolean(nativeMenu&&menuView?.portraitChanged());
+    if(nativeHome){
+      const page=body.firstElementChild;
+      if(homeView?.page!==page){
+        homeView?.close();
+        homeView=screen.mountHome(page,(action,data,opener)=>runLobbyCommand(action,data,opener),()=>visible&&!busy&&!modal);
+        pilotChanged=true;
+      }else pilotChanged=homeView.selectPilot(snapshot.pilotId);
+    }
     portraitPlayer.setVisible(visible&&!modal);
-    if(bodyChanged&&portraitsEnabled)portraitPlayer.sync(body);
+    if((bodyChanged||pilotChanged)&&portraitsEnabled)portraitPlayer.sync(body);
     body.scrollTop = oldScroll; renderModal();
     if(pendingEquipmentScroll!==null){equipmentScroll=pendingEquipmentScroll;pendingEquipmentScroll=null;}
     const equipmentScroller = body.querySelector('.eq-inventory');
@@ -958,6 +1072,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   }
   function scrollShopSection(value) {
     shopSection = shopSectionId(value);
+    if(menuView&&tab==='shop'){menuView.section(shopSection);return;}
     const scroller = body.querySelector('.shop-scroll');
     const section = scroller?.querySelector(`[data-shop-section="${shopSection === 'stamina' ? 'coins' : shopSection}"]`);
     if (section) {
@@ -1074,22 +1189,29 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     const target = event.target.closest('[data-action]'); if (!target || !root.contains(target) || target.disabled || busy) return;
     if(target.dataset.resourceShort){event.preventDefault();if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(target.dataset.resourceShort));return;}
     actionFeedback.capture(target);
-    if (target.dataset.action !== 'dismiss') bridge.playUiClick?.();
-    const action = target.dataset.action, id = target.dataset.id;
+    await runLobbyCommand(target.dataset.action,target.dataset,target,event.target===target);
+  });
+  async function runLobbyCommand(action,data,target,direct=true){
+    if(busy||!visible)return;
+    if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(data.resourceShort));return;}
+    if(action==='inspect'){itemDescriptions.open(data,target);return;}
+    if(action==='gearSort'&&['quality','part','level'].includes(data.value)){gearSort=data.value;render(true);return;}
+    if(action!=='dismiss')bridge.playUiClick?.();
+    const id=data.id;
     if(action==='researchSection'){
-      if(tab!=='research'||subpage||!['talent','lab'].includes(target.dataset.section))return;
-      const lock=target.dataset.section==='lab'&&researchUnlockMessage(snapshot.replicaCampaign);
+      if(tab!=='research'||subpage||!['talent','lab'].includes(data.section))return;
+      const lock=data.section==='lab'&&researchUnlockMessage(snapshot.replicaCampaign);
       if(lock){toast(lock);return;}
-      researchSection=target.dataset.section;modal=null;render(true);
+      researchSection=data.section;modal=null;render(true);
       body.querySelector(`[data-action="researchSection"][data-section="${researchSection}"]`)?.focus({preventScroll:true});return;
     }
     if(action==='nativeCollectionOperation'){
-      modal={type:action,kind:target.dataset.kind,id:Number(id),operation:target.dataset.operation,opener:captureFocus(root,target),...(modal?{returnTo:modal}:{})};renderModal();return;
+      modal={type:action,kind:data.kind,id:Number(id),operation:data.operation,opener:captureFocus(root,target),...(modal?{returnTo:modal}:{})};renderModal();return;
     }
-    if(action==='growthSupplyOpen'){openGrowthSupply(target.dataset.period,target);return;}
+    if(action==='growthSupplyOpen'){openGrowthSupply(data.period,target);return;}
     if(action==='growthSupplyClaim'){
       if(modal?.type!=='growthSupplyChoice')return;
-      await act('pilotSupply',{action:'growth',period:modal.period,id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
+      await act('pilotSupply',{action:'growth',period:modal.period,id:Number(id),expectedRevision:Number(data.revision)});return;
     }
     if(action==='bagOpen'){
       const item=backpackItems(snapshot).find(row=>row.nativeId===Number(id));if(!item)return;
@@ -1097,13 +1219,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     }
     if(action==='pilotSupplyBoxes'){modal={type:action,opener:captureFocus(root,target)};renderModal();return;}
     if(action==='pilotSupplyTab'){
-      if(modal?.type!=='pilotSupplyTasks'||!['daily','week'].includes(target.dataset.period))return;
-      modal.period=target.dataset.period;renderModal();const scroll=modalHost.querySelector('.pl-modal-content');if(scroll)scroll.scrollTop=0;return;
+      if(modal?.type!=='pilotSupplyTasks'||!['daily','week'].includes(data.period))return;
+      modal.period=data.period;renderModal();const scroll=modalHost.querySelector('.pl-modal-content');if(scroll)scroll.scrollTop=0;return;
     }
-    if(action==='flightReward'){await act('flightReward',{action:target.dataset.operation,revision:Number(target.dataset.revision)});return;}
+    if(action==='flightReward'){await act('flightReward',{action:data.operation,revision:Number(data.revision)});return;}
     if(action==='pilotSupply'){
-      await act('pilotSupply',{action:target.dataset.operation,count:target.dataset.count===undefined?undefined:Number(target.dataset.count),
-        id:['task','weeklyTask'].includes(target.dataset.operation)?id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
+      await act('pilotSupply',{action:data.operation,count:data.count===undefined?undefined:Number(data.count),
+        id:['task','weeklyTask'].includes(data.operation)?id:Number(id),expectedRevision:Number(data.revision)});return;
     }
     if(action==='nativeWeaponSkinSelect'){
       const rows=snapshot.replicaCollection?.guns||[],current=rows.find(row=>row.id===Number(modal?.id)),next=rows.find(row=>row.id===Number(id));
@@ -1112,41 +1234,41 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       }
       return;
     }
-    if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:target.dataset.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{}),opener:captureFocus(root,target)};renderModal();return;}
-    if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:target.dataset.mode,...(['nativeCollectionDetail','nativeSkillPreview'].includes(modal?.type)?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='nativeCollectionDetail'||action==='nativeSkillPreview'||action==='nativeRecruitInfo'){modal={type:action,kind:data.kind,id:Number(id),...(modal?.type==='nativeCollectionDetail'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{}),opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='nativeWeaponPreview'){modal={type:action,id:Number(id),mode:data.mode,...(['nativeCollectionDetail','nativeSkillPreview'].includes(modal?.type)?{returnTo:{...modal}}:{}),opener:captureFocus(root,target)};renderModal();return;}
     if(action==='nativeWeaponSkillBrowse'){
       const previousSlot=weaponSkillSlot;
       selectedWeapon=id;weaponSkillSlot=-1;
       render(true);if(previousSlot>=0)body.querySelector(`.wg-skill-slot[data-slot="${previousSlot}"]`)?.focus({preventScroll:true});return;
     }
     if(action==='nativeWeaponSkillSlot'){
-      const slot=Number(target.dataset.slot);
+      const slot=Number(data.slot);
       if(subpage==='weapon'&&[0,1].includes(slot)&&snapshot.replicaCollection?.guns.some(row=>row.id===Number(id))){weaponSkillSlot=catalogSkillTab&&weaponSkillSlot===slot&&String(selectedWeapon)===String(id)?-1:slot;catalogSkillTab=true;selectedWeapon=id;render(true);}
       return;
     }
     if(action==='nativeWeaponSkillEquip'){
-      const slot=Number(target.dataset.slot);
+      const slot=Number(data.slot);
       if(subpage!=='weapon'||!catalogSkillTab||![0,1].includes(slot))return;
       if(Number(id)&&!snapshot.replicaCollection?.guns.find(row=>row.id===Number(id))?.owned){toast('技能未激活');return;}
-      await act('replicaCollection',{kind:'guns',action:'slot',id:Number(id),slot,weaponType:Number(target.dataset.weaponType),expectedRevision:Number(target.dataset.revision)});return;
+      await act('replicaCollection',{kind:'guns',action:'slot',id:Number(id),slot,weaponType:Number(data.weaponType),expectedRevision:Number(data.revision)});return;
     }
     if(action==='fleetSkillChoose'){
       const group={pilot:'pilots',aircraft:'skins'}[subpage],state=fleetUi[subpage];
       const row=group&&snapshot.replicaCollection?.[group]?.find(row=>row.id===Number(id));
       if(state&&row?.owned&&row.stage.skills.length){state.selectedSkillId=String(row.id);render(true);body.querySelector(`.pcs-choice[data-id="${row.id}"]`)?.focus({preventScroll:true});}return;
     }
-    if(action==='nativeSlotPick'){const state=fleetUi[subpage];if(state){state.selectedSkillSlot=Number(target.dataset.slot);catalogSkillTab=true;render(true);}return;}
+    if(action==='nativeSlotPick'){const state=fleetUi[subpage];if(state){state.selectedSkillSlot=Number(data.slot);catalogSkillTab=true;render(true);}return;}
     if(action==='nativeEquipmentBoxes'){modal={type:'nativeEquipmentBoxes',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
     if(action==='nativeMaterials'){modal={type:'backpack',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
     if(action==='nativeStarRewards'){modal={type:'nativeStarRewards',opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;}
     if(['chapterRewards','chapterCoreRewards','flightChapters'].includes(action)){
-      modal={type:'chapterRewards',chapter:Number(target.dataset.chapter)||undefined,opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;
+      modal={type:'chapterRewards',chapter:Number(data.chapter)||undefined,opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();return;
     }
     if(action==='nativeChapterCoreReward'){
-      await act('nativeAcquisition',{action:'chapterCoreReward',id:Number(id),expectedRevision:Number(target.dataset.revision)});return;
+      await act('nativeAcquisition',{action:'chapterCoreReward',id:Number(id),expectedRevision:Number(data.revision)});return;
     }
     if(action==='nativeChapterReward'||action==='nativeComposePilotBox'){
-      const result=await act('nativeAcquisition',{action:action==='nativeChapterReward'?'chapterReward':'composePilotBox',count:target.dataset.count===undefined?1:Number(target.dataset.count),id:Number(id),expectedRevision:Number(target.dataset.revision)});
+      const result=await act('nativeAcquisition',{action:action==='nativeChapterReward'?'chapterReward':'composePilotBox',count:data.count===undefined?1:Number(data.count),id:Number(id),expectedRevision:Number(data.revision)});
       if(result?.ok&&action==='nativeChapterReward'){renderModal();}
       return;
     }
@@ -1158,14 +1280,15 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     }
     if (action === 'nativeLabUpgrade' || action === 'nativeLabActivate') {
       await act('replicaCollection', {kind:'labs',id:Number(id),action:action==='nativeLabUpgrade'?'upgrade':'activate',
-        expectedRevision:Number(target.dataset.revision)});
+        expectedRevision:Number(data.revision)});
       renderModal(); return;
     }
     if (action === 'nativeLabLevel') {
       const select = modalHost.querySelector('[data-native-lab-level]');
-      if (!select || Number(select.dataset.nativeLabLevel) !== Number(id)) return;
+      const level=Number(data.level??(Number(select?.dataset.nativeLabLevel)===Number(id)?select.value:NaN));
+      if(!Number.isSafeInteger(level))return;
       await act('replicaCollection', { kind: 'labs', id: Number(id), action: 'preview-level',
-        level: Number(select.value), expectedRevision: Number(target.dataset.revision) });
+        level, expectedRevision: Number(data.revision) });
       renderModal(); return;
     }
     if (action === 'nativeStats') {
@@ -1176,13 +1299,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       return;
     }
     if (action === 'nativeOperation') {
-      const operation=target.dataset.operation,slot=target.dataset.slot===undefined?undefined:Number(target.dataset.slot);
+      const operation=data.operation,slot=data.slot===undefined?undefined:Number(data.slot);
       const origin=modal?{...modal}:null;
       const preview=modal?.type==='nativeCollectionOperation'?{...modal}:null;
-      const kind=target.dataset.kind,before=snapshot.replicaCollection[kind]?.find(row=>row.id===Number(id));
+      const kind=data.kind,before=snapshot.replicaCollection[kind]?.find(row=>row.id===Number(id));
       const previousStars=before?.star;
-      const result=await act('replicaCollection', { action: operation, kind: target.dataset.kind,
-        id: Number(id), slot, expectedRevision: Number(target.dataset.revision) });
+      const result=await act('replicaCollection', { action: operation, kind: data.kind,
+        id: Number(id), slot, expectedRevision: Number(data.revision) });
       if(!showProcessRecords(result?.uiFeedbackRecords,preview?.returnTo||origin)&&preview){modal={...preview,result:result?.ok?{previousStars}:undefined,error:result?.ok?'':result?.message||'操作未完成'};renderModal();}
       if(result?.ok&&operation==='slot'&&fleetUi[subpage]){
         Object.assign(fleetUi[subpage],{selectedSkillSlot:slot,pendingSkillId:null,selectedSkillId:Number(id)?String(id):null});
@@ -1198,10 +1321,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         if(result.message)toast(result.message);render(true);return;
       }
       if(action==='workshopGearRemove'){
-        gearWorkshop=removeGearMergeMaterial(gear,gearWorkshop,Number(target.dataset.index));render(true);return;
+        gearWorkshop=removeGearMergeMaterial(gear,gearWorkshop,Number(data.index));render(true);return;
       }
       if(action==='workshopGearToken'){
-        if(!draft.stale&&draft.option?.tokenKey===target.dataset.key&&draft.tokens<draft.option.tokens&&draft.tokens+draft.materialIds.length<draft.option.required){gearWorkshop.tokens++;render(true);}return;
+        if(!draft.stale&&draft.option?.tokenKey===data.key&&draft.tokens<draft.option.tokens&&draft.tokens+draft.materialIds.length<draft.option.required){gearWorkshop.tokens++;render(true);}return;
       }
       if(action==='workshopGearBatch'){
         const result=await act('gearPreview',{operation:'batch',expectedRevision:gear.revision});
@@ -1220,12 +1343,12 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       const open=(type,extra={})=>{
         modal={type,id:itemId,revision:snapshot.equipment.revision,...(current?.type?.startsWith('gear')||current?.type==='shopBoxResult'?{returnTo:{...current,childOpener:captureFocus(modalHost,target)}}:{}),...extra};renderModal();
       };
-      if(action==='gearDetail'){open('gearDetail',{detailOrigin:target.dataset.gearOrigin==='slot'?'slot':'warehouse'});return;}
+      if(action==='gearDetail'){open('gearDetail',{detailOrigin:data.gearOrigin==='slot'?'slot':'warehouse'});return;}
       if(action==='gearReplace'){if(item){gearFilter=String(item.type);pendingEquipmentScroll=0;switchTab('assembly');}return;}
-      if(action==='gearMaterialInfo'){open('gearMaterialInfo',{id:undefined,part:Number(target.dataset.part),quality:Number(target.dataset.quality)});return;}
+      if(action==='gearMaterialInfo'){open('gearMaterialInfo',{id:undefined,part:Number(data.part),quality:Number(data.quality)});return;}
       if(action==='gearAttributes'||action==='gearSources'||action==='gearMergeList'){open(action,{id:undefined});return;}
       if(action==='gearClearFilter'){gearFilter='all';pendingEquipmentScroll=0;render(true);return;}
-      if(action==='gearChoosePart'){gearFilter=target.dataset.part;pendingEquipmentScroll=0;render(true);return;}
+      if(action==='gearChoosePart'){gearFilter=data.part;pendingEquipmentScroll=0;render(true);return;}
       if(action==='gearBack'){if(!returnToParentModal()){modal=null;renderModal();}return;}
       if(action==='gearMerge'){openGearWorkshop(itemId,target);return;}
       if(action==='gearMaterial'){
@@ -1247,7 +1370,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       const operation={gearConfirmMerge:'gearMerge',gearConfirmBatch:'gearBatch'}[action]||action;
       if(!['gearEquip','gearUnequip','gearUpgrade','gearUpgradeAll','gearLock','gearDowngrade','gearMerge','gearBatch','gearSupply'].includes(operation))return;
       const result=await act(operation,{id:itemId,expectedRevision:current?.revision??snapshot.equipment.revision,
-        materialIds:current?.materialIds||[],tokens:current?.tokens||0,count:Number(target.dataset.count)||1});
+        materialIds:current?.materialIds||[],tokens:current?.tokens||0,count:Number(data.count)||1});
       if(!result?.ok){if(modal){modal.error=result?.message;renderModal();}return;}
       if(operation==='gearEquip'||operation==='gearUnequip'){if(!returnToParentModal()){modal=null;render(true);}return;}
       if(operation==='gearBatch'&&subpage==='workshop'&&workshopKind==='gear'){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);modal=null;if(!showProcessRecords(result.uiFeedbackRecords))render(true);return;}
@@ -1258,7 +1381,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         ...(current?.type==='gearDetail'&&current.returnTo?{returnTo:current.returnTo}:current?.returnTo?.type==='gearMergeList'?{returnTo:current.returnTo}:{})};
       renderModal();return;
     }
-    if (action === 'portraitFeedback') { portraitPlayer.feedback(target.dataset.characterPortrait); return; }
+    if (action === 'portraitFeedback') { portraitPlayer.feedback(data.characterPortrait); return; }
     if(action==='processSkipBox'){finishBoxPresentation();return;}
     if(action==='processFeatureGo'){
       const returnTo=modal?.returnTo;
@@ -1266,11 +1389,11 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       modal={type:'patrol',...(returnTo?{returnTo}:{})};renderModal();return;
     }
     if(action==='processBoxAgain'){
-      const pool=target.dataset.pool,count=Number(target.dataset.count),box=snapshot.nativeAcquisition?.equipmentBoxes?.find(row=>row.id===(pool==='advanced'?3:4));
+      const pool=data.pool,count=Number(data.count),box=snapshot.nativeAcquisition?.equipmentBoxes?.find(row=>row.id===(pool==='advanced'?3:4));
       const quote=box?.quotes.find(row=>row.count===count);if(!quote?.canDraw)return;
       await openShopBox({pool,count,revision:snapshot.equipment.revision,inventoryRevision:snapshot.nativeAcquisition.revision},quote.payment==='free');return;
     }
-    if (action === 'dismiss') { if (event.target === target && !advanceProcessFeedback() && !closeBackpackDetail() && !returnToParentModal() && !closeFleetOperation()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
+    if (action === 'dismiss') { if (direct && !advanceProcessFeedback() && !closeBackpackDetail() && !returnToParentModal() && !closeFleetOperation()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
     if (action === 'close') { if(advanceProcessFeedback()||closeFleetOperation())return; if (!closeBackpackDetail() && !returnToParentModal()) { if(modal?.type==='weapon')closeWeaponDetails();else{modal=null;renderModal();} } return; }
     if (modal?.type === 'backpack') {
       if(action==='recoverDailyRewards'){await act(action);return;}
@@ -1278,26 +1401,21 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         const input=modalHost.querySelector('[data-bag-quantity]');if(!input||input.disabled)return;
         const max=Number(input.max),current=Number(input.value);
         if(max<1)return;
-        const count=target.dataset.max?max:Math.max(1,Math.min(max,(isItemUseBatchCount(current)?current:1)+Number(target.dataset.step)));
+        const count=data.max?max:Math.max(1,Math.min(max,(isItemUseBatchCount(current)?current:1)+Number(data.step)));
         modal.bagCount=String(count);input.value=String(count);updateBagQuantity();return;
       }
       if(action==='bagUse') {
-        const origin={...modal},item=backpackItems(snapshot).find(row=>row.id===modal.bagItem);
+        const item=backpackItems(snapshot).find(row=>row.id===modal.bagItem);
         if(!item||item.nativeId!==Number(id))return;
-        const rule=backpackUseRule(item.nativeId);
         const targetId=Number(modalHost.querySelector('[data-bag-choice]')?.value);
         const input=modalHost.querySelector('[data-bag-quantity]'),selected=target.hasAttribute('data-bag-use-selected');
         if(selected&&(!input||!input.validity.valid||!isItemUseBatchCount(Number(input.value)))){toast('请输入有效的使用数量');return;}
-        const count=selected?Number(input.value):Number(target.dataset.count);
-        const result=await act('backpackUse',{id:item.nativeId,count,targetId,...(target.dataset.useOperation?{action:target.dataset.useOperation}:{}),
-          expectedRevision:Number(target.dataset.revision),expectedGearRevision:Number(target.dataset.gearRevision)});
-        if(result?.ok&&rule?.kind==='equipmentKey') {
-          presentBoxReceipt(result,rule.pool,count,origin);
-        }
+        const count=selected?Number(input.value):Number(data.count);
+        await useBackpackItem(item,count,targetId,data.useOperation,Number(data.revision),Number(data.gearRevision));
         return;
       }
       if(action==='bagGo') {
-        const kind=target.dataset.kind,origin={...modal};
+        const kind=data.kind,origin={...modal};
         if(kind==='lab'){
           const row=snapshot.replicaCollection?.labs?.find(row=>row.id===Number(id));
           const lock=researchUnlockMessage(snapshot.replicaCampaign,row);
@@ -1317,13 +1435,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         else if(kind==='shop'||kind==='supply'){switchTab(kind);return;}
         renderModal();return;
       }
-      if (action === 'bagDetailClose' || (action === 'bagDetailDismiss' && event.target === target)) { closeBackpackDetail(); return; }
+      if (action === 'bagDetailClose' || (action === 'bagDetailDismiss' && direct)) { closeBackpackDetail(); return; }
       if (action === 'bagItem' && !modal.bagItem && backpackItems(snapshot).some(item => item.id === id)) {
         modal.bagOpener = captureFocus(modalHost, target); modal.bagItem = id; modal.bagChoice=null; modal.bagCount=1; renderModal(); return;
       }
-      if (action === 'bagTab' && !modal.bagItem && BACKPACK_TABS.some(item => item.id === target.dataset.tab)) {
-        if ((modal.bagTab || 'all') === target.dataset.tab) return;
-        modal.bagTab = target.dataset.tab; modal.bagResetScroll = true; renderModal();
+      if (action === 'bagTab' && !modal.bagItem && BACKPACK_TABS.some(item => item.id === data.tab)) {
+        if ((modal.bagTab || 'all') === data.tab) return;
+        modal.bagTab = data.tab; modal.bagResetScroll = true; renderModal();
         modalHost.querySelector(`.bag-tab[data-tab="${modal.bagTab}"]`)?.focus({preventScroll:true}); return;
       }
       return;
@@ -1348,19 +1466,19 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         renderModal(); return;
       }
       if (action === 'developerChaptersUnlock') {
-        await act('developerChaptersUnlock', { expectedRevision: Number(target.dataset.revision) });
+        await act('developerChaptersUnlock', { expectedRevision: Number(data.revision) });
         return;
       }
       if (action === 'developerResearchUnlock') {
-        await act('developerResearchUnlock', { expectedRevision: Number(target.dataset.revision) });
+        await act('developerResearchUnlock', { expectedRevision: Number(data.revision) });
         return;
       }
       if (action === 'developerAffectionMax') {
-        await act('developerAffectionMax', { pilotId: target.dataset.pilot });
+        await act('developerAffectionMax', { pilotId: data.pilot });
         return;
       }
       if (action === 'developerCurrency') {
-        await act('developerCurrency', { currency: target.dataset.currency, expectedRevision: Number(target.dataset.revision) });
+        await act('developerCurrency', { currency: data.currency, expectedRevision: Number(data.revision) });
         return;
       }
       if (action === 'debugClear') {
@@ -1377,9 +1495,9 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         renderModal(); return;
       }
     }
-    if (action === 'tab') { if(target.dataset.tab!==tab)fleetSupplyReturn=null;switchTab(target.dataset.tab); return; }
+    if (action === 'tab') { if(data.tab!==tab)fleetSupplyReturn=null;switchTab(data.tab); return; }
     if (action === 'equipmentShop' || action === 'researchShop' || (action === 'shopSection' && tab !== 'shop')) {
-      switchTab('shop',target.dataset.section);
+      switchTab('shop',data.section);
       return;
     }
     if (action === 'equipmentWeapons') { openCatalog('weapon');return; }
@@ -1396,7 +1514,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       card?.focus({preventScroll:true});
       return;
     }
-    if (action === 'researchDraw') { await act('researchDraw', { pool: target.dataset.pool, expectedRevision: Number(target.dataset.revision) }); return; }
+    if (action === 'researchDraw') { await act('researchDraw', { pool: data.pool, expectedRevision: Number(data.revision) }); return; }
     if(action==='researchCard'&&!snapshot.research?.cards?.some(c=>String(c.id)===String(id)&&c.owned))return;
     if (['researchCard', 'researchSummary'].includes(action)) { modal = { type: action, id }; renderModal(); return; }
     if (['tasks','pilotSupplyTasks','signin','achievements'].includes(action)) { modal = {type:'tasks',period:['tasks','pilotSupplyTasks'].includes(action)?'daily':action,...(modal?.type==='activities'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})}; renderModal(); return; }
@@ -1434,10 +1552,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       render(true); return;
     }
     if (['chapterChest','activities'].includes(action)) { modal={type:action}; renderModal(); return; }
-    if (action === 'claimStarReward') { await act('claimStarReward',{mode:target.dataset.mode,id:Number(id),expectedRevision:Number(target.dataset.revision)});return; }
+    if (action === 'claimStarReward') { await act('claimStarReward',{mode:data.mode,id:Number(id),expectedRevision:Number(data.revision)});return; }
     if (action === 'taskPeriod') {
-      if(modal?.type==='tasks' && DAILY_TABS.some(t=>t.id===target.dataset.period) && modal.period!==target.dataset.period) {
-        modal.period=target.dataset.period;delete modal.milestoneId;renderModal();stateFeedback.taskPage();
+      if(modal?.type==='tasks' && DAILY_TABS.some(t=>t.id===data.period) && modal.period!==data.period) {
+        modal.period=data.period;delete modal.milestoneId;renderModal();stateFeedback.taskPage();
         modalHost.querySelector(`.dc-tab[data-period="${modal.period}"]`)?.focus({preventScroll:true});
       }
       return;
@@ -1445,10 +1563,10 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     if(action==='taskChest') {
       if(modal?.type!=='tasks')return;
       const period=modal.period||'daily',item=taskChestModel(snapshot,period,id);
-      if(target.dataset.period!==period||!item)return;
+      if(data.period!==period||!item)return;
       if(item.canClaim){
         const payload={...item.claim.payload};
-        if(target.dataset.revision!=null)payload.expectedRevision=Number(target.dataset.revision);
+        if(data.revision!=null)payload.expectedRevision=Number(data.revision);
         await act(item.claim.action,payload);return;
       }
       modal={type:'taskChestPreview',period,id,returnTo:{...modal,childOpener:captureFocus(modalHost,target),rewardReturnScrollState:captureModalScroll(modalHost)}};
@@ -1462,11 +1580,11 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       modal.milestoneId=modal.milestoneId===id?null:id;renderModal();return;
     }
     if (action === 'dailyMilestoneClose') {if(modal?.type==='tasks'){delete modal.milestoneId;renderModal();}return;}
-    if (action === 'claimActivity') {const result=await act('claimActivity',{id,period:target.dataset.period});if(result?.ok)modalHost.querySelector(`.dc-chest[data-id="${id}"]`)?.focus({preventScroll:true});return;}
+    if (action === 'claimActivity') {const result=await act('claimActivity',{id,period:data.period});if(result?.ok)modalHost.querySelector(`.dc-chest[data-id="${id}"]`)?.focus({preventScroll:true});return;}
     if (action === 'claimAchievement') {const result=await act('claimAchievement',{id});if(result?.ok)modalHost.querySelector(`[data-achievement-id="${id}"]`)?.focus({preventScroll:true});return;}
     if (action === 'recoverDailyRewards') {await act(action);return;}
     if (action === 'dailyGo') {
-      const destination=target.dataset.destination;
+      const destination=data.destination;
       if(destination==='signin'){modal.period='signin';renderModal();return;}
       if(destination==='shopBoxes'){shopSection='boxes';switchTab('shop');return;}
       if(destination==='patrol'){modal={type:'patrol',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
@@ -1485,7 +1603,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       return;
     }
     if(action==='shopBoxConfirm'||action==='shopBoxRates'){
-      const review={type:action,pool:target.dataset.pool==='advanced'?'advanced':'basic',count:Number(target.dataset.count)===10?10:1,revision:snapshot.equipment.revision,inventoryRevision:snapshot.nativeAcquisition?.revision};
+      const review={type:action,pool:data.pool==='advanced'?'advanced':'basic',count:Number(data.count)===10?10:1,revision:snapshot.equipment.revision,inventoryRevision:snapshot.nativeAcquisition?.revision};
       if(action==='shopBoxConfirm'){
         const box=snapshot.nativeAcquisition?.equipmentBoxes.find(box=>box.id===(review.pool==='advanced'?3:4));
         const quote=box?.quotes.find(quote=>quote.count===review.count);
@@ -1504,18 +1622,18 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     }
     if(action==='shopQuantity'){
       const offer=snapshot.shop.items.find(item=>item.id===modal?.id);if(!offer)return;
-      const max=shopPurchaseMax(offer,snapshot.wallet),next=target.dataset.step==='max'?max:(modal.quantity||1)+Number(target.dataset.step);
+      const max=shopPurchaseMax(offer,snapshot.wallet),next=data.step==='max'?max:(modal.quantity||1)+Number(data.step);
       modal.quantity=Math.max(1,Math.min(Math.max(1,max),next));renderModal();return;
     }
     if (action === 'shopSection') {
-      scrollShopSection(target.dataset.section);
+      scrollShopSection(data.section);
       return;
     }
     if (action === 'shopOffer') {
       const item=snapshot.shop.items.find(o=>o.id===id);if(!item?.available)return;
       if(item.cost.amount){modal={type:'shopConfirm',id,token:snapshot.shop.token,quoteKey:shopOfferQuote(item),quantity:1,...(modal?.type==='stamina'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})};renderModal();return;}
       if(item.cost.type==='ad')toast('正在请求广告，完整观看后领取');
-      target.disabled=true;target.setAttribute('aria-busy','true');
+      if(target.tagName==='BUTTON'){target.disabled=true;target.setAttribute('aria-busy','true');}
       const label=target.querySelector('.shop-button-label');
       if(label)label.textContent=item.cost.type==='ad'?'广告加载中…':'领取中…';
       try { await act('shopBuy',{id,token:snapshot.shop.token}); }
@@ -1532,52 +1650,52 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       modal.editingName=false;modal.nameError='';renderModal();modalHost.querySelector('[data-action="playerRename"]')?.focus();return;
     }
     if (action === 'playerRenameSave' && modal?.type === 'playerInfo') {
-      const result=await act('renamePlayer',{name:modal.nameDraft,expectedRevision:Number(target.dataset.renameRevision),
-        expectedCost:Number(target.dataset.renameCost),expectedName:target.dataset.renameName});
+      const result=await act('renamePlayer',{name:modal.nameDraft,expectedRevision:Number(data.renameRevision),
+        expectedCost:Number(data.renameCost),expectedName:data.renameName});
       if(result?.ok){modal.editingName=false;modal.nameError='';pendingModalBackgroundRefresh=true;}
       else modal.nameError=result?.message||'名字未保存，请重试';
       renderModal();modalHost.querySelector(result?.ok?'[data-action="playerRename"]':'[data-player-name]')?.focus();return;
     }
-    if (action === 'catalog') { openCatalog(target.dataset.kind); return; }
+    if (action === 'catalog') { openCatalog(data.kind); return; }
     if (action === 'catalogBack') { returnFromCatalog(); return; }
     if (action === 'catalogGrowth') {
       if (!weaponFor(id)) return;
       modal={type:'weaponSkillGroup',id,opener:captureFocus(root,target)}; renderModal(); return;
     }
     if (action === 'catalogSkill') {
-      if (!weaponCatalogSkillDetail({weapon:weaponFor(id),key:target.dataset.skill,helpers:referenceContext().helpers})) return;
-      modal={type:'weaponSkill',id,skillKey:target.dataset.skill,opener:captureFocus(root,target)}; renderModal(); return;
+      if (!weaponCatalogSkillDetail({weapon:weaponFor(id),key:data.skill,helpers:referenceContext().helpers})) return;
+      modal={type:'weaponSkill',id,skillKey:data.skill,opener:captureFocus(root,target)}; renderModal(); return;
     }
     if (action === 'catalogSelect') { if (subpage === 'weapon') selectedWeapon = id; else if (subpage === 'aircraft') browseAircraft = id; else browsePilot = id; render(true); return; }
-    if (action === 'catalogMode') { weaponSkillSlot=-1;catalogSkillTab = target.dataset.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true); return; }
+    if (action === 'catalogMode') { weaponSkillSlot=-1;catalogSkillTab = data.mode === 'skills'; if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true); return; }
     if(action==='fleetSkillCancel'){const slot=fleetUi[subpage]?.selectedSkillSlot;if(fleetUi[subpage])Object.assign(fleetUi[subpage],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot??0}"]`)?.focus({preventScroll:true});return;}
     if(action==='fleetSkillSlot') {
-      const kind=target.dataset.kind,slot=Number(target.dataset.slot),ui=fleetUi[kind];if(!ui)return;
+      const kind=data.kind,slot=Number(data.slot),ui=fleetUi[kind];if(!ui)return;
       if(ui.pendingSkillId){const result=await act('fleetSkillEquip',{kind,id:ui.pendingSkillId,slot,expectedRevision:snapshot.fleet?.revision});if(result?.ok)Object.assign(ui,{pendingSkillId:null,selectedSkillSlot:null});}
       else ui.selectedSkillSlot=catalogSkillTab&&ui.selectedSkillSlot===slot?null:slot;
       catalogSkillTab=true;render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});return;
     }
     if(action==='fleetSkillEquip') {
-      const kind=target.dataset.kind,ui=fleetUi[kind],slots=snapshot.fleet?.[kind]?.slots||[];if(!ui)return;
+      const kind=data.kind,ui=fleetUi[kind],slots=snapshot.fleet?.[kind]?.slots||[];if(!ui)return;
       const slot=ui.selectedSkillSlot??slots.indexOf(null);
       if(slot<0){ui.pendingSkillId=id;render(true);body.querySelector('.fc-skill-group button')?.focus({preventScroll:true});return;}
-      const result=await act('fleetSkillEquip',{kind,id,slot,expectedRevision:Number(target.dataset.revision)});
+      const result=await act('fleetSkillEquip',{kind,id,slot,expectedRevision:Number(data.revision)});
       if(result?.ok){Object.assign(ui,{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;
     }
-    if(action==='fleetSkillRemove') {const kind=target.dataset.kind,slot=Number(target.dataset.slot),result=await act('fleetSkillRemove',{kind,id,slot,expectedRevision:Number(target.dataset.revision)});if(result?.ok){Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;}
-    if(action==='fleetSkillPreview') {modal={type:'fleetSkill',kind:target.dataset.kind,id,opener:captureFocus(root,target)};renderModal();return;}
+    if(action==='fleetSkillRemove') {const kind=data.kind,slot=Number(data.slot),result=await act('fleetSkillRemove',{kind,id,slot,expectedRevision:Number(data.revision)});if(result?.ok){Object.assign(fleetUi[kind],{selectedSkillSlot:null,pendingSkillId:null,selectedSkillId:null});render(true);body.querySelector(`.fc-skill-group [data-slot="${slot}"]`)?.focus({preventScroll:true});}return;}
+    if(action==='fleetSkillPreview') {modal={type:'fleetSkill',kind:data.kind,id,opener:captureFocus(root,target)};renderModal();return;}
     if(action==='fleetUnlock'||action==='fleetStar') {
       const parent=modal?{...modal,childOpener:captureFocus(modalHost,target)}:null;
-      modal={type:'fleetOperation',kind:target.dataset.kind,id,operation:action==='fleetUnlock'?'activate':'starUp',opener:captureFocus(root,target),...(parent?{returnTo:parent}:{})};renderModal();return;
+      modal={type:'fleetOperation',kind:data.kind,id,operation:action==='fleetUnlock'?'activate':'starUp',opener:captureFocus(root,target),...(parent?{returnTo:parent}:{})};renderModal();return;
     }
     if(action==='fleetConfirm') {
       if(modal?.type!=='fleetOperation')return;
-      const operation={...modal},result=await act(modal.operation==='activate'?'fleetActivate':'fleetStarUp',{kind:modal.kind,id:modal.id,expectedRevision:Number(target.dataset.revision)});
+      const operation={...modal},result=await act(modal.operation==='activate'?'fleetActivate':'fleetStarUp',{kind:modal.kind,id:modal.id,expectedRevision:Number(data.revision)});
       if(showProcessRecords(result?.uiFeedbackRecords,operation.returnTo))return;
       modal={...operation,result:result?.ok?result:undefined,error:result?.ok?'':result?.message||'操作未完成'};renderModal();return;
     }
     if(action==='fleetAcquire') {
-      const kind=target.dataset.kind,chosen=fleetItem(kind,id);if(!chosen)return;
+      const kind=data.kind,chosen=fleetItem(kind,id);if(!chosen)return;
       fleetSupplyReturn={kind,id,skillTab:catalogSkillTab,filter:catalogFilter};
       selectedRecruitPilot=id;modal=null;switchTab('supply');return;
     }
@@ -1587,14 +1705,14 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       if(subpage==='aircraft')browseAircraft=previous.id;else browsePilot=previous.id;
       render(true);body.querySelector('.fc-hero-actions button:not(:disabled)')?.focus({preventScroll:true});return;
     }
-    if (action === 'catalogAcquire') { if(target.dataset.kind==='weapon'){switchTab('shop');return;} if(snapshot.pilots.some(p=>p.id===id))selectedRecruitPilot=id;switchTab('supply');return; }
-    if (action === 'openWorkshop') { if(!id){openGearWorkshop(null,target);return;}workshopKind='weapon';workshopMode=target.dataset.mode==='quality'?'quality':'level';catalogWorkshopReturn=subpage==='weapon'?{skillTab:catalogSkillTab,weaponId:selectedWeapon,opener:captureFocus(root,target)}:null;if(tab==='assembly'&&!subpage)equipmentReturnFocus=captureFocus(root,target);tab = 'assembly'; subpage = 'workshop'; workshopId = id || null; workshopRevealSelection=Boolean(id); workshopFilter = 'all'; modal = null; render(true); return; }
+    if (action === 'catalogAcquire') { if(data.kind==='weapon'){switchTab('shop');return;} if(snapshot.pilots.some(p=>p.id===id))selectedRecruitPilot=id;switchTab('supply');return; }
+    if (action === 'openWorkshop') { if(!id){openGearWorkshop(null,target);return;}workshopKind='weapon';workshopMode=data.mode==='quality'?'quality':'level';catalogWorkshopReturn=subpage==='weapon'?{skillTab:catalogSkillTab,weaponId:selectedWeapon,opener:captureFocus(root,target)}:null;if(tab==='assembly'&&!subpage)equipmentReturnFocus=captureFocus(root,target);tab = 'assembly'; subpage = 'workshop'; workshopId = id || null; workshopRevealSelection=Boolean(id); workshopFilter = 'all'; modal = null; render(true); return; }
     if (action === 'workshopSelect') { workshopId = id; render(true); return; }
-    if (action === 'workshopMode') { workshopMode = target.dataset.mode === 'quality' ? 'quality' : 'level'; workshopFilter = 'all'; render(true); body.querySelector(`.ws-modes [data-mode="${workshopMode}"]`)?.focus({preventScroll:true}); return; }
+    if (action === 'workshopMode') { workshopMode = data.mode === 'quality' ? 'quality' : 'level'; workshopFilter = 'all'; render(true); body.querySelector(`.ws-modes [data-mode="${workshopMode}"]`)?.focus({preventScroll:true}); return; }
     if (action === 'workshopChoose') { body.querySelector('.ref-warehouse')?.scrollTo({top:0,behavior:'smooth'}); body.querySelector('.ref-warehouse :is(.eq-card,.ag-card)')?.focus({preventScroll:true}); return; }
     if (action === 'workshopFilter') { modal={type:'workshopFilter',opener:captureFocus(root,target)};renderModal();return; }
-    if (action === 'workshopFilterSelect') { if(!(workshopKind==='gear'?['all','1','2','3','4','5']:WORKSHOP_FILTERS).includes(target.dataset.filter))return;workshopFilter=target.dataset.filter;modal=null;render(true);return; }
-    if (action === 'workshopSynthesize') { await act('synthesizeWeapon', {id,expectedQualityRank:Number(target.dataset.rank)}); return; }
+    if (action === 'workshopFilterSelect') { if(!(workshopKind==='gear'?['all','1','2','3','4','5']:WORKSHOP_FILTERS).includes(data.filter))return;workshopFilter=data.filter;modal=null;render(true);return; }
+    if (action === 'workshopSynthesize') { await act('synthesizeWeapon', {id,expectedQualityRank:Number(data.rank)}); return; }
     if (action === 'workshopBatch') { const plan = snapshot.workshop?.batch; if (plan?.steps?.length) { modal = {type:'workshopBatch',plan:structuredClone(plan)}; renderModal(); } return; }
     if (action === 'workshopConfirmBatch') { const token = modal?.plan?.token; if (token) { modal = null; await act('synthesizeAll',{token}); } return; }
     if (action === 'patrolQuick' && modal?.type === 'patrol') {modal={type:'quickPatrol',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
@@ -1606,7 +1724,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     if (action === 'pilotInfo') { modal = { type: action, id }; renderModal(); return; }
     if (action === 'aircraftInfo') { modal = { type: action, id }; renderModal(); return; }
     if (action === 'weapon' || action === 'weaponInfo') { openWeaponDetails(id,target,action==='weaponInfo'); return; }
-    if (action === 'pickSlot') { if (WEAPON_EQUIP_SLOTS.includes(target.dataset.slot)) {if(modal?.type==='weapon')modal.targetSlot=target.dataset.slot;else selectedSlot=target.dataset.slot;} renderModal(); return; }
+    if (action === 'pickSlot') { if (WEAPON_EQUIP_SLOTS.includes(data.slot)) {if(modal?.type==='weapon')modal.targetSlot=data.slot;else selectedSlot=data.slot;} renderModal(); return; }
     if (action === 'selectPilot') { await act('selectPilot', { id, pilotId: id }); return; }
     if (action === 'selectAircraft') { const a = snapshot.aircraft.find(a => a.id === id); if (!a?.owned) { switchTab('supply'); return; } await act('selectAircraft', { id, aircraftId: id }); return; }
     if (action === 'catalogEquipWeapon') {
@@ -1616,7 +1734,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       await act('equipWeapon',{id,weaponId:id,slot:free,expectedToken:snapshot.loadoutToken});return;
     }
     if (action === 'equipWeapon') { const w = weaponFor(id); if (!w?.owned) { switchTab('shop'); return; } const slot = modal?.requireSlotSelection?modal.targetSlot:modal?.targetSlot || selectedSlot;if(!slot){toast('选择要替换的位置');return;} const result = await act('equipWeapon', { id, weaponId: id, slot, slotId: slot,expectedToken:modal?.loadoutToken??snapshot.loadoutToken }); if(result?.ok){closeWeaponDetails(slot);actionFeedback.equip(slot);}return; }
-    if (action === 'unequipWeapon') { const slot=target.dataset.slot;const result=await act('equipWeapon', { id:null,weaponId:null,slot,slotId:slot,expectedToken:modal?.loadoutToken??snapshot.loadoutToken });if(result?.ok)closeWeaponDetails(slot);return; }
+    if (action === 'unequipWeapon') { const slot=data.slot;const result=await act('equipWeapon', { id:null,weaponId:null,slot,slotId:slot,expectedToken:modal?.loadoutToken??snapshot.loadoutToken });if(result?.ok)closeWeaponDetails(slot);return; }
     if (action === 'chapterDetails') {modal={type:'chapterDetails',stageIndex:battleChapterIndex(snapshot,battleChapter)};render(true);return;}
     if (action === 'chapterDetailsStart') {
       const index=modal?.type==='chapterDetails'?modal.stageIndex:null;
@@ -1625,21 +1743,21 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       if(result?.ok){modal=null;render(true);if(!result.started)bridge.startGame?.();}
       return;
     }
-    if (action === 'stage') { const index=Number(target.dataset.index); await act('selectStage', { index, stageIndex: index }); battleChapter=index; modal = null; render(true); return; }
+    if (action === 'stage') { const index=Number(data.index); await act('selectStage', { index, stageIndex: index }); battleChapter=index; modal = null; render(true); return; }
     if (action === 'upgrade' && snapshot.replicaCollection) {
-      modal=null;subpage=target.dataset.kind==='aircraft'?'aircraft':'weapon';catalogSkillTab=false;render(true);return;
+      modal=null;subpage=data.kind==='aircraft'?'aircraft':'weapon';catalogSkillTab=false;render(true);return;
     }
-    if (action === 'upgrade') { await act(target.dataset.kind === 'aircraft' ? 'upgradeAircraft' : 'upgradeWeapon', { id }); return; }
-    if (action === 'recruit') { await act('pilotSupply', { action:'draw', count:Number(target.dataset.count), expectedRevision:snapshot.pilotSupply?.revision }); return; }
+    if (action === 'upgrade') { await act(data.kind === 'aircraft' ? 'upgradeAircraft' : 'upgradeWeapon', { id }); return; }
+    if (action === 'recruit') { await act('pilotSupply', { action:'draw', count:Number(data.count), expectedRevision:snapshot.pilotSupply?.revision }); return; }
     if (action === 'claimSignIn') { await act('claimSignIn'); return; }
     if (action === 'claimTask') { const result=await act('claimTask', { id });if(result?.ok)modalHost.querySelector(`[data-task-id="${id}"]`)?.focus({preventScroll:true});return; }
-    if (['claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample'].includes(action)) { await act(action,{expectedRevision:Number(target.dataset.revision)}); return; }
+    if (['claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample'].includes(action)) { await act(action,{expectedRevision:Number(data.revision)}); return; }
     if (action === 'start') {
       const index = battleChapterIndex(snapshot, battleChapter);
       const result = await act('start', { index, stageIndex: index });
       if (result?.ok && !result.started) bridge.startGame?.();
     }
-  });
+  }
   function keydown(event) {
     if (!visible) return;
     gearSelectInput='keyboard';
@@ -1719,7 +1837,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
         onboarding.hide();actionFeedback.clear();stateFeedback.clear();processMotion.clear();uiMotion.clear();
       }else render();
     },
-    update(ticker) { if (destroyed || !visible || document.hidden) return; performanceMonitor.frame('lobby'); return performanceMonitor.measure('ui',()=>{const dt = typeof ticker === 'number' ? ticker : (ticker?.deltaMS || 16.67) / 1000; elapsed += dt; onboarding.tick(dt);
+    update(ticker) { if (destroyed || !visible || document.hidden) return; performanceMonitor.frame('lobby'); return performanceMonitor.measure('ui',()=>{const dt = typeof ticker === 'number' ? ticker : (ticker?.deltaMS || 16.67) / 1000; elapsed += dt; onboarding.tick(dt);homeView?.tick();menuView?.tick();nativeDialog?.tick?.(dt);
       // Retain the last aircraft frame while its whole hangar is being scrolled.
       if (models.attached&&!root.querySelector('.drag-scroll-active .pl-model-canvas'))
         models.update(dt,!modal||Boolean(modalHost.querySelector('[data-model-aircraft],.pl-model-canvas')));
@@ -1734,11 +1852,12 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
           // Only the patrol clock changed; neither equipment nor shop markup uses it.
           if(markupSnapshot===saved)markupSnapshot=snapshot;
           refreshPatrolClocks(root, snapshot);
-          if(tab==='shop')refreshShopClocks(body,snapshot,time);
+          if(tab==='battle'&&!subpage)bridge.app?.renderer?.publishHome?.(snapshot,battleChapterIndex(snapshot,battleChapter),bridge.debugToolsEnabled);
+          if(tab==='shop'){if(menuView)menuView.clock(time);else refreshShopClocks(body,snapshot,time);}
         } else render();
       } }); },
     destroy() {
-      destroyed = true;
+      destroyed = true;releaseNativeReceipt();releaseNativeBackpack();releaseOverlayDialog();releaseNativeDialog();homeView?.close();homeView=null;menuView?.close();menuView=null;
       if(portraitStartFrame!==null)window.cancelAnimationFrame(portraitStartFrame);
       releaseAffectionVideo(); itemDescriptions.destroy(); if(bridge.showItemDescription===itemDescriptions.open)delete bridge.showItemDescription;
       chestPreviewResize.disconnect(); onboarding.destroy(); actionFeedback.destroy(); stateFeedback.clear(); processMotion.destroy(); uiMotion.destroy(); clearTimeout(toastTimer); clearTimeout(debugClearTimer); window.removeEventListener('keydown', keydown); window.removeEventListener('shnh-memory-warning',releaseInactiveTabs); releaseHoloCards(); releaseEquipmentChoices(); portraitPlayer.destroy(); models.destroy(); clearUiMarkupCache(body); clearUiMarkupCache(header); root.remove();

@@ -62,3 +62,11 @@ export function playerInfoModel(snapshot={},callsign='') {
   };
 }
 
+export function playerRenameQuote(rename,number){
+  const renameReady = Boolean(rename && Number.isSafeInteger(rename.cost) && Number.isSafeInteger(rename.revision));
+  const renameLabel = renameReady ? (rename.free ? '免费保存' : `保存${number(rename.cost)}钻`) : '改名费用待同步';
+  const renameHint = renameReady
+    ? (rename.free ? `首次改名免费；之后每次${number(rename.paidCost)}钻石。` : `本次改名消耗 ${number(rename.cost)} 钻石。`)
+    : '改名费用待同步，请重新打开。';
+  return {renameReady,renameLabel,renameHint};
+}

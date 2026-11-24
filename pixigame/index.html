@@ -1,25 +1,11 @@
 <!doctype html>
 <html lang="zh-CN" data-boot="loading">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>彼方之遥 · 战区出击</title>
-<style>html[data-boot]{background:#06151c}html[data-boot] .arcade{visibility:hidden!important}#bootLoading{position:fixed;inset:0;background:#06151c;color:#e2f6ff}</style></head>
+<head><meta name="cloud-asset-base" content="./"><link rel="preload" as="image" crossorigin="anonymous" href="/art/entry-screens-v4/startup.png"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>彼方之遥 · 战区出击</title>
+<style>html[data-boot]{background:#06151c}html[data-boot] .arcade{visibility:hidden!important}#bootLoading{position:fixed;inset:0;background:#06151c;color:#e2f6ff}#bootLoading{display:grid;place-items:center;scroll-padding-bottom:env(safe-area-inset-bottom,0px);height:100dvh;touch-action:none;overflow:hidden;z-index:2147483647}
+#bootLoading>.three-startup-screen{grid-area:1/1;width:min(100vw,46.153846dvh);height:min(100dvh,216.666667vw);outline:none;touch-action:none}
+</style></head>
 <body>
-    <div id="bootLoading" class="entry-screen startup" role="dialog" aria-modal="true" aria-label="彼方之遥启动">
-      <section class="entry-screen__portrait">
-        <img class="startup__art" src="/art/entry-screens-v4/startup.png" alt="" fetchpriority="high" width="852" height="1846" />
-        <h1 class="startup__title">彼方之遥 · 战区出击</h1>
-        <div class="startup__footer">
-          <div class="startup__load">
-            <p id="bootMessage" class="startup__status" role="status" aria-live="polite">正在加载…</p>
-            <div class="startup__progress"><progress class="entry-screen__progress" max="3" value="0" aria-label="启动准备进度"></progress></div>
-          </div>
-          <div class="startup__actions">
-            <button id="bootStart" class="entry-screen__button entry-screen__button--start" type="button" hidden disabled>开始游戏</button>
-            <button id="bootRetry" class="entry-screen__button" type="button" hidden>重新加载</button>
-            <button id="bootCopyDiagnostics" class="entry-screen__button" type="button" hidden>复制诊断</button>
-            <textarea id="bootDiagnosticsReport" aria-label="诊断日志内容" readonly hidden></textarea>
-          </div>
-        </div>
-      </section>
-    </div>
+    <div id="bootLoading" role="dialog" aria-modal="true" aria-label="彼方之遥启动"></div>
 <main class="arcade"><section class="game-shell" id="gameShell"></section></main>
+<script type="module" src="./src/boot.js"></script>
 </body></html>

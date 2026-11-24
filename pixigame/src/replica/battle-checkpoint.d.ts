@@ -1,2 +1,2 @@
-export function installBattleCheckpoint<T>(read: () => T, host?: Window): { freeze(): void };
-export function captureBattleCheckpoint(host?: Window | null): unknown;
+export function installBattleCheckpoint<T>(read: () => T, host?: EventTarget): { freeze(): void };
+export function captureBattleCheckpoint(host?: EventTarget | null): unknown;

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {BoxGeometry, Group, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, ShaderLib, Texture} from 'three';
 import {createFlightVisualState,sampleFlightVisual,flightPoseNeedsRefresh}from'../src/replica/project-flight-visual.js';
 import {createCombatAircraftRenderer} from '../src/replica/project-aircraft-render.js';
-import {CombatRenderSamples} from '../src/replica/combat-render-samples.mjs';
+import {CombatRenderSamples} from '../../../../../pixigame/src/replica/combat-render-samples.mjs';
 import {createCombatHullBatches} from '../src/three/aircraft/combat-hull-batches.js';
 const frame=(clock,x,dt,active=true)=>({clock,runId:1,renderDelta:dt,flight:{x,z:0,speed:10,active}});
 
@@ -32,6 +32,51 @@ test('projectile presentation follows fixed step remainder at 50 Hz and during s
     bullet.x=21;bullet.oldX=0;
     assert.equal(sampler.projectile(bullet,0).x,21);
   }
+});
+
+test('quarter-speed enemies and medkits move in proportion to uneven display intervals', () => {
+  const step=1/30,delta=2184/65536,samples=new CombatRenderSamples();
+  const e={x:2,z:0,oldX:2,oldZ:0,angle:0,viewPositionRevision:0};
+  const kit={kind:'heart',x:0,z:0,age:0,delay:0,state:'stay',stateTime:0,speed:0};
+  const intervals=[1/60,1/50,1/120,1/90,.038,1/60,1/30];
+  let count=0,remainder=0,lastEnemy=0,lastKit=0;
+  samples.beginFrame(0,1,'playing',0,0);samples.enemy(e);samples.pickup(kit);
+  for(let index=0;index<250;index++){
+    const dt=intervals[index%intervals.length]*.25;
+    remainder+=dt;
+    while(remainder>=step){
+      remainder-=step;count++;
+      e.oldZ=e.z;e.z-=delta*.24;
+      kit.z-=delta*2.5;kit.age+=delta;
+    }
+    const snapshot=[{...e},{...kit}];
+    samples.beginFrame(count*delta,1,'playing',dt,remainder/step);
+    const enemy=samples.enemy(e).z,medkit=samples.pickup(kit).z;
+    if(count>1){
+      assert(Math.abs(lastEnemy-enemy-dt/step*delta*.24)<1e-8);
+      assert(Math.abs(lastKit-medkit-dt/step*delta*2.5)<1e-8);
+    }
+    assert.deepEqual([e,kit],snapshot);
+    lastEnemy=enemy;lastKit=medkit;
+  }
+  samples.beginFrame(count*delta,1,'paused',.25,0);
+  assert.equal(samples.enemy(e).z,lastEnemy);assert.equal(samples.pickup(kit).z,lastKit);
+});
+
+test('enemy loop resets snap, and a newly visible medkit starts from its drop point', () => {
+  const step=2184/65536,samples=new CombatRenderSamples();
+  const e={x:0,z:0,oldX:0,oldZ:0,angle:Math.PI-.1,viewPositionRevision:0};
+  const kit={kind:'heart',x:5,z:1,origin:{x:5,z:2},age:step,delay:0,state:'scatter'};
+  samples.beginFrame(0,1,'playing',0,0);samples.enemy(e);
+  samples.beginFrame(step,1,'playing',step/2,.5);
+  e.angle=-Math.PI+.1;
+  assert(Math.abs(samples.enemy(e).angle-Math.PI)<1e-8);
+  assert.equal(samples.pickup(kit).z,1.5);
+  Object.assign(e,{z:35,oldZ:35,angle:0,viewPositionRevision:1});
+  samples.beginFrame(step*2,1,'playing',step,.5);
+  assert.equal(samples.enemy(e).z,35);assert.equal(samples.enemy(e).angle,0);
+  e.dead=true;e.z=34;e.oldZ=35;
+  assert.equal(samples.enemy(e).z,34);
 });
 
 test('phone aircraft submits one color pass and restores wake emitters after a failed draw', () => {

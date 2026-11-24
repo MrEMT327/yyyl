@@ -3,7 +3,8 @@ import type { Enemy, RecordData, Point } from './kernel/model';
 import { createEnemyFlightMotion } from './scatter-gunboat-flight';
 
 // This adapter owns pixels only. Never write back into the simulation or mounts.
-export const HEAVY_SCATTER_MODEL = 120143;
+import {HEAVY_SCATTER_MODEL} from './kernel/enemy-recoil-models.ts';
+export {HEAVY_SCATTER_MODEL} from './kernel/enemy-recoil-models.ts';
 const textureKey = 'owned-enemy:heavy-scatter-v1';
 const atlasUrl = 'assets/owned-enemies/heavy-scatter-v1/parts.png';
 const regions = {

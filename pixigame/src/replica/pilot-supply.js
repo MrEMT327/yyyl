@@ -9,7 +9,7 @@ import { NATIVE_PILOT_SKINS, isRosterPilot } from './native-pilot-roster.js';
 import { nativePilotDisplayName } from './native-pilot-names.js';
 import { validateReplicaInventory } from './native-economy.js';
 import { validateReplicaProgression } from './native-progression.js';
-import { flightDay } from './flight-rewards.js';
+import { flightDay, flightWeekStart as weekStart } from './flight-rewards.js';
 import { nativeItemArt } from './native-item-presentation.js';
 import { nativeItemDisplayName } from './native-item-names.js';
 import { PILOT_DAILY_TASKS, PILOT_WEEKLY_TASKS, PREVIOUS_PILOT_TASK_POINTS, PILOT_ACTIVITY_REWARDS, PILOT_DAILY_ACTIVITY_REWARDS, PILOT_WEEKLY_ACTIVITY_REWARDS, PILOT_AD_REWARDS, recurringProgressGate } from './pilot-supply-reward-policy.js';
@@ -53,11 +53,6 @@ const safe=n=>Number.isSafeInteger(n)&&n>=0;
 const date=value=>typeof value==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(value);
 const pilotName=row=>nativePilotDisplayName(row.id)||row.name;
 const maxStar=row=>Math.max(...row.stages.map(stage=>stage.star));
-function weekStart(day) {
-  const time=new Date(day+'T00:00:00Z');
-  time.setUTCDate(time.getUTCDate()-(time.getUTCDay()+6)%7);
-  return time.toISOString().slice(0,10);
-}
 function history(raw,box=false) {
   if(!Array.isArray(raw))throw Error('补给记录无效');
   return raw.slice(-50).map(row=>{

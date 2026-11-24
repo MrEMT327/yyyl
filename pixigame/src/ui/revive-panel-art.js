@@ -1,4 +1,5 @@
-import {TextureLoader, SRGBColorSpace, LinearFilter} from 'three';
+import {artworkTexture} from '../three/game-screen/image-loading.js';
+import {SRGBColorSpace, LinearFilter} from 'three';
 import {cloudAssetBase} from './cloud-asset-base.js';
 import {projectIconUrl} from './project-ui-art.js';
 
@@ -10,7 +11,7 @@ export const REVIVE_ART = Object.freeze({
 const symbols=new Map();
 export function paintReviveSymbol(surface,name,x,y,size){
   if(!symbols.has(name)){
-    const value=new TextureLoader().load(projectIconUrl(name));
+    const value=artworkTexture(projectIconUrl(name),undefined,()=>{});
     value.colorSpace=SRGBColorSpace;value.generateMipmaps=false;value.minFilter=LinearFilter;
     symbols.set(name,value);
   }
@@ -19,7 +20,7 @@ export function paintReviveSymbol(surface,name,x,y,size){
 let texture;
 export function preloadReviveArt() {
   if(!texture){
-    texture=new TextureLoader().load(`${cloudAssetBase}art/revive-repair-v2/repair-diagram.png`);
+    texture=artworkTexture(`${cloudAssetBase}art/revive-repair-v2/repair-diagram.png`,undefined,()=>{});
     texture.colorSpace=SRGBColorSpace;texture.generateMipmaps=false;texture.minFilter=LinearFilter;
   }
   return texture;

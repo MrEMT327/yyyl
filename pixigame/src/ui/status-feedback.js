@@ -1,8 +1,10 @@
 import {choiceRevealPose,UPGRADE_TRANSITION} from './upgrade-transition-motion.js';
 export const stealthOpacity=remaining=>remaining>0?.16+.84*(1-Math.min(1,remaining)):1;
 export const barrierOpacity=remaining=>.2+.8*Math.max(0,Math.min(1,remaining));
-export function revealChoiceCards(root,start=performance.now()){
-  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+export function prefersReducedMotion(){
+  return globalThis.window?.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+}
+export function revealChoiceCards(root,start=performance.now(),reduced=prefersReducedMotion()){
   const cards=[],walk=n=>{if(n.__fixedCardId)cards.push(n);else n.children?.forEach(walk);};walk(root);
   const extras=[];
   const remember=node=>node.__choiceEntranceBase??={x:node.x,y:node.y,alpha:node.alpha,scaleX:node.scale.x,scaleY:node.scale.y};

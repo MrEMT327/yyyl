@@ -6,18 +6,24 @@ const RELEASE_MS = 145;
 const easeOut = t => 1 - (1 - t) ** 3;
 const mix = (a, b, t) => a + (b - a) * t;
 
-export function createButtonPressMotion(apply, isAlive) {
+const browserMotionClock={
+  request: callback=>globalThis.requestAnimationFrame?.(callback),
+  cancel: frame=>globalThis.cancelAnimationFrame?.(frame),
+  now: ()=>performance.now(),
+  hidden: ()=>globalThis.document?.hidden,
+};
+export function createButtonPressMotion(apply, isAlive, clock=browserMotionClock) {
   const motions = new Map();
   const reduced = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
   let frame = 0;
-  const quiet = () => reduced?.matches || globalThis.document?.hidden;
+  const quiet = () => reduced?.matches || clock.hidden?.();
 
   function cancel(target) {
     if (motions.delete(target)) apply(target, 1);
   }
   function clear() {
     for (const target of motions.keys()) cancel(target);
-    if (frame) globalThis.cancelAnimationFrame?.(frame);
+    if (frame) clock.cancel(frame);
     frame = 0;
   }
   function sample(motion, now) {
@@ -42,12 +48,12 @@ export function createButtonPressMotion(apply, isAlive) {
     if (pending) schedule();
   }
   function schedule() {
-    if (!frame) frame = globalThis.requestAnimationFrame?.(tick) || 0;
+    if (!frame) frame = clock.request(tick) || 0;
   }
   return {
     start(target) {
-      if (!target || quiet() || !isAlive(target) || !globalThis.requestAnimationFrame) return;
-      const now = performance.now(), previous = motions.get(target);
+      if (!target || quiet() || !isAlive(target)) return;
+      const now = clock.now(), previous = motions.get(target);
       if (previous && !previous.releasing) return;
       motions.set(target, { from: previous ? sample(previous, now) : 1, start: now, releasing: false });
       schedule();
@@ -56,7 +62,7 @@ export function createButtonPressMotion(apply, isAlive) {
       const motion = motions.get(target);
       if (!motion || motion.releasing) return;
       if (quiet() || !isAlive(target)) { cancel(target); return; }
-      const now = performance.now();
+      const now = clock.now();
       motions.set(target, { from: sample(motion, now), start: now, releasing: true });
       schedule();
     },

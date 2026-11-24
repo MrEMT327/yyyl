@@ -10,7 +10,7 @@
     "assets:sfx": "node tools/generate-combat-sfx.mjs",
     "predev": "npm run assets:sortie-data",
     "dev": "vite",
-    "prebuild": "npm run check:aircraft-lod && node tools/audit-replica-snapshot.mjs && npm run check:player-state && node tools/check-original-ui-art.mjs && node tools/generate-native-economy.mjs --check && node tools/generate-native-weapon-preview.mjs --check && node tools/generate-native-equipment-effects.mjs --check && node tools/generate-chapter-detail.mjs --check && npm run check:touch-ui && npm run assets:sortie-data",
+    "prebuild": "npm run check:aircraft-lod && node tools/audit-three-h5.mjs && npm run check:player-state && node tools/check-original-ui-art.mjs && node tools/generate-native-economy.mjs --check && node tools/generate-native-weapon-preview.mjs --check && node tools/generate-native-equipment-effects.mjs --check && node tools/generate-chapter-detail.mjs --check && npm run check:touch-ui && npm run assets:sortie-data",
     "build": "vite build",
     "prebuild:economy": "npm run check:player-state && node tools/check-original-ui-art.mjs && npm run check:touch-ui && npm run assets:sortie-data",
     "build:economy": "vite build --mode economy --outDir dist-economy",
@@ -42,11 +42,7 @@
     "check:release-assets": "node tools/check-release-assets.mjs"
   },
   "dependencies": {
-    "canvg": "^4.0.3",
-    "core-js-pure": "^3.51.0",
-    "phaser": "3.90.0",
-    "three": "0.185.1",
-    "yoga-layout": "3.2.1"
+    "three": "0.185.1"
   },
   "devDependencies": {
     "acorn": "8.15.0",

@@ -4,7 +4,7 @@ import { updateReviveCountdown } from './defeat-result-motion.js';
 import { renderDefeatResult, updateDefeatResult } from './defeat-result-ui.js';
 import { REVIVE_ART } from './revive-panel-art.js';
 import { renderRevivePanel, updateReviveTouchTargets, clearRevivePanel } from './revive-panel.js';
-import { revealChoiceCards } from './status-feedback.js';
+import { prefersReducedMotion, revealChoiceCards } from './status-feedback.js';
 import { renderBattleSupply, updateBattleSupply } from './battle-supply-ui.js';
 import { Container, Graphics, Point, Rectangle, Text } from '../three/display.js';
 import { renderFixedUpgradeUi } from './fixed-upgrade-ui.js';
@@ -12,7 +12,6 @@ import { COMBAT_UI, COMBAT_TYPE, combatButtonStyle } from './combat-theme.js';
 import { bindCombatButtonArt, paintCombatArt, prepareCombatButtonArt, setCombatArt } from './combat-art.js';
 import { paintPsdPopup, preparePsdPopupArt } from './psd-popup-art.js';
 import { paintPsdPopupTitle } from './psd-popup-title.js';
-import './psd-titles.css';
 import { acquireFixedPartThumbnails } from './fixed-part-thumbnails.js';
 import { createThreeSurface } from './three-surface.js';
 import { drawUiSymbol } from './ui-symbols.js';
@@ -405,6 +404,7 @@ function addResultCombatUi(root, bridge) {
   });
 }
 export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
+  const reducedMotion=bridge.reducedMotion??prefersReducedMotion;
   // Result and repair artwork load when their screen opens, after sortie assets.
   const fixedPartArt = bridge.presentation?.art ? {textures:bridge.presentation.art,release(){}} : acquireFixedPartThumbnails(bridge.app.renderer);
   const root = new Container();
@@ -504,7 +504,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
       const offer=bridge.game.fixedGrowth?.state.offer;
       const key=offer?`${offer.runId}:${offer.offerId}:${offer.buildVersion}`:'';
       if(key&&key!==lastOfferKey){lastOfferKey=key;offerRevealAt=performance.now();}
-      if(key)revealChoiceCards(root,offerRevealAt);
+      if(key)revealChoiceCards(root,offerRevealAt,reducedMotion());
     }else lastOfferKey='';
     // The main ticker owns scene rendering; rebuilding HUD must not submit
     // another full world/bloom pass during the same frame.
@@ -529,7 +529,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     const game = bridge.game;
     const now = globalThis.performance?.now?.() ?? Date.now();
     if (refs.menuMotion) {
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduced = reducedMotion();
       const t = reduced ? 1 : Math.min(1, Math.max(0, (now - menuRevealAt) / 260));
       const ease = 1 - (1 - t) ** 3;
       refs.menuMotion.alpha = ease;
@@ -540,11 +540,11 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     if(refs.reviveMotion){
       updateReviveTouchTargets(refs,bridge.app?.renderer?.canvas?.getBoundingClientRect?.().width||600);
       const {panel,start}=refs.reviveMotion;
-      const t=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(now-start)/260);
+      const t=reducedMotion()?1:Math.min(1,(now-start)/260);
       const ease=1-(1-t)**3;panel.alpha=ease;panel.position.y=18*(1-ease);
     }
     refs.psdHud?.update(now);
-    if(refs.revive)updateReviveCountdown(refs.revive,game.reviveCountdown,now,globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
+    if(refs.revive)updateReviveCountdown(refs.revive,game.reviveCountdown,now,reducedMotion());
     if(refs.reviveRing){
       const ring=refs.reviveRing;ring.clear();
       const remaining=Math.max(0,Math.min(1,(game.reviveCountdown||0)/5));
@@ -673,7 +673,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     },
     flySupplyReward(target) {
       const hero=refs.battleSupplyBoard?.hero;
-      if(!hero||hero.destroyed||!root.parent||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      if(!hero||hero.destroyed||!root.parent||reducedMotion())return;
       const mount=root.parent,point=mount.toLocal(hero.toGlobal({x:108,y:108}));
       mount.addChild(hero);hero.pivot.set(108,108);hero.position.set(point.x,point.y);hero.eventMode='none';hero.zIndex=21000;
       hero.label='supply-reward-flight';

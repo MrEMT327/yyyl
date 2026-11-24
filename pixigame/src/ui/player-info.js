@@ -12,6 +12,9 @@ import { gearTypeBadge } from './airframe-equipment-page.js';
 
 const base = import.meta.env?.BASE_URL ?? '/';
 
+import { playerRenameQuote } from './player-info-model.js';
+export { playerRenameQuote } from './player-info-model.js';
+
 export function playerInfoPanel(snapshot, modal, helpers, callsign = '') {
   const { escape, number, img, thumbnail } = helpers;
   const profile = playerInfoModel(snapshot, callsign);
@@ -37,11 +40,7 @@ export function playerInfoPanel(snapshot, modal, helpers, callsign = '') {
   }
 
   const rename = snapshot.playerRename;
-  const renameReady = Boolean(rename && Number.isSafeInteger(rename.cost) && Number.isSafeInteger(rename.revision));
-  const renameLabel = renameReady ? (rename.free ? '免费保存' : `保存${number(rename.cost)}钻`) : '改名费用待同步';
-  const renameHint = renameReady
-    ? (rename.free ? `首次改名免费；之后每次${number(rename.paidCost)}钻石。` : `本次改名消耗 ${number(rename.cost)} 钻石。`)
-    : '改名费用待同步，请重新打开。';
+  const {renameReady,renameLabel,renameHint}=playerRenameQuote(rename,number);
   const identityName = modal.editingName
     ? `<div class="pi-rename">
         <label for="player-name">玩家名字</label>

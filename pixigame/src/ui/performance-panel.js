@@ -26,6 +26,7 @@ export function mountPerformancePanel({bridge,documentRef=document}={}) {
         <footer><button type="button" data-perf="reset">重置采样</button><button type="button" data-perf="export">导出报告</button></footer>
       </div>
     </section>`;
+  if(bridge?.gameplayVersion==='three-h5')host.querySelector('.perf-note').textContent='战斗统计同一个 Three.js 渲染器在完整一帧内提交的绘制和三角面，包括地形、角色、特效和界面。帧间隔包含浏览器调度时间。';
   const shell=doc.getElementById('gameShell'),arcade=shell?.closest('.arcade');
   let stage=null;
   if(arcade){stage=doc.createElement('div');stage.className='performance-game-stage';shell.before(stage);stage.append(shell);arcade.append(host);arcade.classList.add('has-performance-tools');}
@@ -45,17 +46,18 @@ export function mountPerformancePanel({bridge,documentRef=document}={}) {
   function paint(){
     latest=collect();const battle=latest.battle,remote=battle.metrics;
     const frames=battle.present?remote?.frames.battle:latest.frames[bridge?.pixiLobby?.state?.visible?'lobby':'combat'];
+    const localThree=Boolean(bridge?.app?.renderer?.battle);
     const live=frames?.active&&frames.count>0;
     const fps=live&&frames.mean?Math.round(1000/frames.mean):0;
-    host.querySelector('[data-label="fps"]').textContent=battle.present?'渲染 FPS':'界面 FPS';
+    host.querySelector('[data-label="fps"]').textContent=battle.present||localThree?'渲染 FPS':'界面 FPS';
     host.querySelector('[data-value="fps"]').textContent=fps||'—';
     host.querySelector('[data-value="frame-ms"]').textContent=live?ms(frames.mean):'—';
     host.querySelector('[data-value="p95"]').textContent=`P95 ${live?ms(frames.p95):'—'}`;
-    host.querySelector('.perf-route').textContent=battle.present?'战斗 / Phaser':latest.route;
+    host.querySelector('.perf-route').textContent=battle.present?'战斗 / Phaser':localThree?'战斗 / Three.js':latest.route;
     const rendering=battle.present?{calls:live&&remote.rendering.available?remote.rendering.calls:null,triangles:live&&remote.rendering.available?remote.rendering.triangles:null,active:remote?.contexts.map(c=>c.name)??[]}:summarizeRendererMetrics(latest.renderers,rendererFrames);
     const cpu=battle.present?{}:latest.costs,combat=battle.present?(live?remote?.costs:{}):{update:cpu.combat,render:cpu.render};
-    latest.rendering=rendering;latest.displayed={source:battle.present?'battle-webgl':'lobby',frames,costs:combat,rendering};
-    host.querySelector('[data-value="source"]').textContent=battle.present?(!remote?'战斗 · 等待真实采样':!live?'战斗 · 暂无渲染帧':!remote.rendering.available?'战斗 · GPU统计不可用':`${[...new Set(remote.contexts.map(c=>c.name))].join(' + ')} · 最近${frames.count}帧均值`):'大厅 · 界面循环 / Three / Live2D';
+    latest.rendering=rendering;latest.displayed={source:battle.present?'battle-webgl':localThree?'three-combat':'lobby',frames,costs:combat,rendering};
+    host.querySelector('[data-value="source"]').textContent=battle.present?(!remote?'战斗 · 等待真实采样':!live?'战斗 · 暂无渲染帧':!remote.rendering.available?'战斗 · GPU统计不可用':`${[...new Set(remote.contexts.map(c=>c.name))].join(' + ')} · 最近${frames.count}帧均值`):localThree?'战斗 · Three.js 整帧':bridge.gameplayVersion==='three-h5'?'大厅 · Three.js':'大厅 · 界面循环 / Three / Live2D';
     host.querySelector('[data-value="calls"]').textContent=count(rendering.calls);
     host.querySelector('[data-value="triangles"]').textContent=count(rendering.triangles);
     const rows=[
@@ -83,7 +85,7 @@ export function mountPerformancePanel({bridge,documentRef=document}={}) {
   }
   const loop=createFrameLoop(time=>{if(time-lastPaint>=500){lastPaint=time;paint();}},{documentRef:doc,requestFrame:fn=>view.requestAnimationFrame(fn),cancelFrame:id=>view.cancelAnimationFrame(id)});
   const releaseRenderer=monitor.registerRenderer('combat',()=>{
-    const r=bridge?.app?.renderer?.three;if(!r)return null;
+    const r=bridge?.app?.renderer?.three;if(!r||bridge?.app?.renderer?.battle)return null;
     return {active:!doc.hidden&&!battleSource.present&&!bridge?.pixiLobby?.state?.visible&&Boolean(r.domElement?.isConnected),...r.info.render,...r.info.memory};
   });
   function observe(){

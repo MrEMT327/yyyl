@@ -7,6 +7,11 @@ function failureMessage(error){
 }
 const opaqueNativeFailure=/^(?:request|downloadFile):fail\s*$/i;
 
+export function isIncompleteDownload(error){
+  if(error?.name==='AbortError')return false;
+  return /file data is empty|empty file|ERR_CONTENT_LENGTH_MISMATCH|(?:errcode|cronet_error_code):\s*-354\b|downloadFile:fail\s+Error:\s+aborted\b/i.test(failureMessage(error));
+}
+
 export function transientNetworkFailure(error){
   const message=failureMessage(error);
   if(/abort|cancel|domain list|not in.*domain|invalid.*url|certificate|cert_|permission|file data is empty|empty file/i.test(message))return false;
@@ -83,7 +88,8 @@ export function createWechatTransport(api,{concurrency=4,sortieConcurrency=6,max
       clearDeadline(operation);
       if(abortAttempt)try{task?.abort?.();}catch{/* The timeout still frees the slot. */}
       release(operation);
-      const retryable=operation.safe&&(kind==='fail'?transientNetworkFailure(result):retryStatuses.has(result.statusCode));
+      const incomplete=operation.type==='downloadFile'&&kind==='fail'&&isIncompleteDownload(result);
+      const retryable=operation.safe&&!incomplete&&(kind==='fail'?transientNetworkFailure(result):retryStatuses.has(result.statusCode));
       if(retryable&&attempt<maxAttempts){
         const delay=retryDelays[Math.min(attempt-1,retryDelays.length-1)]??0;
         operation.timer=setTimer(()=>{operation.timer=null;if(!operation.done){operation.queued=true;queue.push(operation);pump();}},delay);
@@ -102,7 +108,9 @@ export function createWechatTransport(api,{concurrency=4,sortieConcurrency=6,max
       pump();
     }
     try{
-      const task=api[operation.type]({...operation.options,success:result=>finish('success',result),fail:error=>finish('fail',error),complete:undefined});
+      const {retryURL,...options}=operation.options;
+      const url=attempt>1&&retryURL?retryURL(options.url):options.url;
+      const task=api[operation.type]({...options,url,success:result=>finish('success',result),fail:error=>finish('fail',error),complete:undefined});
       if(!ended&&!operation.done){
         operation.task=task;
         const timeout=operation.options.timeout;

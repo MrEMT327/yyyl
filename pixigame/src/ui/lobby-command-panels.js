@@ -1,7 +1,8 @@
 import { chapterPreviewBackground } from '../replica/chapter-presentation.js';
 import './task-popup-polish.css';
 // Presentation only: use the existing task, chapter and activity actions.
-export const COMMAND_PANELS = new Set(['tasks', 'mail', 'chapters', 'stages', 'activities']);
+import { COMMAND_PANELS } from './lobby-command-kinds.js';
+export { COMMAND_PANELS } from './lobby-command-kinds.js';
 
 export function lobbyCommandPanel(type, s, h, period = 'daily') {
   if (!COMMAND_PANELS.has(type) || ['tasks','activities'].includes(type)) return null;
