@@ -138,7 +138,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   // Its result is consumed by the presentation, so slow aircraft decoding
   // cannot hold back the first terrain texture request.
   const assetBase = new URL(appearance.assetBase, battleURL);
-  const aircraftReady = loadFighterPackages({pilotIds:[appearance.aircraft.id],allowTextureFallback:true,assetBase,
+  const aircraftReady = platform.skinHost?.loadAircraft?.(appearance.aircraft.id,{allowTextureFallback:true}) ?? loadFighterPackages({pilotIds:[appearance.aircraft.id],allowTextureFallback:true,assetBase,
     read:platform.skinHost?.readFighterFile,objectLoader:platform.skinHost?.objectLoader,assetBytes:platform.skinHost?.assetBytes});
   // Data may fail or the battle may close before presentation consumes it.
   // Observe an early rejection without replacing the original result.

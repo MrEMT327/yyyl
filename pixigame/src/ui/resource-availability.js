@@ -2,9 +2,10 @@
 export const isResourceShortage = value => /(?:金币|钻石|体力|材料|零件|碎片|图纸|星核|积分|箱券|同名卡|资源|星数).*不足/.test(String(value||''));
 export const availabilityMessage = value => isResourceShortage(value) ? '' : value;
 
-export function shortageToast(value='资源') {
+export function shortageToast(value='资源',action) {
   const name=String(value).match(/(?:金币|钻石|体力|材料|零件|碎片|图纸|星核|积分|箱券|同名卡|星数|资源)/)?.[0]||'资源';
-  return `${name}不足，请通关获得后重试`;
+  const message=`${name}不足`;
+  return action==='researchDraw'?message:`${message}，请通关获得后重试`;
 }
 // Keep the unavailable appearance, but route presses to feedback only.
 export function prepareShortageFeedback(host) {

@@ -23,7 +23,8 @@ interface LoadedFighterPackage extends FighterPackage {
 }
 
 interface FighterPackageOptions {
-  read?: (slug: string, name: string) => ArrayBuffer | Uint8Array | Promise<ArrayBuffer | Uint8Array>;
+  read?: (slug: string, name: string, signal?: AbortSignal) => ArrayBuffer | Uint8Array | Promise<ArrayBuffer | Uint8Array>;
+  makeAbort?: () => Pick<AbortController, 'signal' | 'abort'>;
   skipTextures?: boolean;
   allowTextureFallback?: boolean;
   pilotIds?: readonly string[];
@@ -41,4 +42,8 @@ export const FIGHTER_CATALOG: readonly FighterEntry[];
 export function fighterForPilot(pilotId: string): FighterEntry | undefined;
 export function isFighterPackageReady(pilotId: string): boolean;
 export function loadFighterPackages(options?: FighterPackageOptions): Promise<LoadedFighterPackage[]>;
+export function createFighterPackageSelection(options: FighterPackageOptions): {
+  load(pilotId: string, overrides?: Pick<FighterPackageOptions, 'allowTextureFallback'>): Promise<LoadedFighterPackage>;
+  release(): void;
+};
 export function instantiateFighterPackage(pilotId: string): FighterPackage;

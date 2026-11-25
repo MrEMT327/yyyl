@@ -74,7 +74,17 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
       positionBounds.set(geometry, { attribute: position, version: position.version });
     }
     if (!geometry.boundingBox || geometry.boundingBox.isEmpty()) return false;
-    output.copy(geometry.boundingBox).applyMatrix4(state.clipMatrix.multiplyMatrices(state.viewProjection, object.matrixWorld));
+    const matrix=state.clipMatrix.multiplyMatrices(state.viewProjection,object.matrixWorld),m=matrix.elements;
+    if(m[3]||m[7]||m[11]||m[15]!==1)return false;
+    // Orthographic projection is affine. Transform the box centre and its half extents
+    // directly on the two screen axes used for exhaust overlap.
+    const {min,max}=geometry.boundingBox;
+    const cx=(max.x+min.x)*.5,cy=(max.y+min.y)*.5,cz=(max.z+min.z)*.5;
+    const hx=(max.x-min.x)*.5,hy=(max.y-min.y)*.5,hz=(max.z-min.z)*.5;
+    const x=m[0]*cx+m[4]*cy+m[8]*cz+m[12],y=m[1]*cx+m[5]*cy+m[9]*cz+m[13];
+    const rx=Math.abs(m[0])*hx+Math.abs(m[4])*hy+Math.abs(m[8])*hz;
+    const ry=Math.abs(m[1])*hx+Math.abs(m[5])*hy+Math.abs(m[9])*hz;
+    output.min.x=x-rx;output.max.x=x+rx;output.min.y=y-ry;output.max.y=y+ry;
     return Number.isFinite(output.min.x) && Number.isFinite(output.min.y) &&
       Number.isFinite(output.max.x) && Number.isFinite(output.max.y);
   }
@@ -84,6 +94,7 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
     // Keep a two-pixel margin on both sides of each projected jet proxy.
     state.viewProjection.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
     let count = 0;
+    let minX=1,minY=1,maxX=-1,maxY=-1;
     for (const [jet, visible] of state.jets) {
       if (!visible) continue;
       const region = state.regions[count] ?? (state.regions[count] = new THREE.Box3());
@@ -95,10 +106,17 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
       region.max.x += 4 / width;
       region.min.y -= 4 / height;
       region.max.y += 4 / height;
+      minX=Math.min(minX,region.min.x);minY=Math.min(minY,region.min.y);
+      maxX=Math.max(maxX,region.max.x);maxY=Math.max(maxY,region.max.y);
       count++;
     }
     state.regions.length = count;
-    return count > 0;
+    // This target is sampled only by the jets at gl_FragCoord. Limit even
+    // custom/cutout hull fragments to the union of their screen rectangles.
+    const x=Math.max(0,Math.floor((minX+1)*.5*width)),y=Math.max(0,Math.floor((minY+1)*.5*height));
+    const right=Math.min(width,Math.ceil((maxX+1)*.5*width)),top=Math.min(height,Math.ceil((maxY+1)*.5*height));
+    state.depthRect.set(x,y,Math.max(0,right-x),Math.max(0,top-y));
+    return true;
   }
 
   function withDepthMaterials(fighter, swaps, draw, exhaust) {
@@ -167,15 +185,15 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
     render(scene, camera, fighter, displayWidth = width) {
       const index=depth++,state=states[index]??(states[index]={
         viewport:new THREE.Vector4(),scissor:new THREE.Vector4(),jets:[],swaps:[],
-        physicalViewport:new THREE.Vector4(),viewProjection:new THREE.Matrix4(),clipMatrix:new THREE.Matrix4(),bounds:new THREE.Box3(),regions:[],
+        physicalViewport:new THREE.Vector4(),depthRect:new THREE.Vector4(),viewProjection:new THREE.Matrix4(),clipMatrix:new THREE.Matrix4(),bounds:new THREE.Box3(),regions:[],
         info:{texture:target.depthTexture,resolution,near:0,far:0},
       });
+      const updateMatrices=scene.matrixWorldAutoUpdate;
       const draw=()=>{
         const previousTarget=renderer.getRenderTarget(),viewport=renderer.getViewport(state.viewport),scissor=renderer.getScissor(state.scissor),scissorTest=renderer.getScissorTest();
         const jets=state.jets;let count=0;
         for(const jet of fighter.runtime.jets){const saved=jets[count]??(jets[count]=[]);saved[0]=jet.object;saved[1]=jet.object.visible;count++;}jets.length=count;
         const previousDepth=fighter.runtime.depthInfo;
-        const updateMatrices = scene.matrixWorldAutoUpdate;
         try {
           let exhaust;
           if (cullExhaustDepth && camera.isOrthographicCamera && fighter.withPreparedRender) {
@@ -186,16 +204,18 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
               if (prepareExhaustRegions(camera, state)) exhaust = state;
             }
           }
-          for(const [object]of jets)object.visible=false;
-          // RenderTarget.viewport is already in physical pixels. setViewport
-          // would multiply it by canvas DPR again and misalign the depth map.
-          renderer.setRenderTarget(target);
-          renderer.setScissorTest(false);
-          if(!renderer.autoClear || !renderer.autoClearDepth)renderer.clear(true,true,false);
-          withDepthMaterials(fighter,state.swaps,()=>renderer.render(scene,camera),exhaust);
+          if(!exhaust||(exhaust.depthRect.z>0&&exhaust.depthRect.w>0)){
+            for(const [object]of jets)object.visible=false;
+            // Target viewport and scissor are in physical pixels even at DPR 3.
+            target.scissorTest=Boolean(exhaust);
+            if(exhaust)target.scissor.copy(exhaust.depthRect);
+            renderer.setRenderTarget(target);
+            renderer.setScissorTest(target.scissorTest);
+            if(!renderer.autoClear || !renderer.autoClearDepth)renderer.clear(true,true,false);
+            withDepthMaterials(fighter,state.swaps,()=>renderer.render(scene,camera),exhaust);
+          }
         } catch(error){fighter.runtime.depthInfo=previousDepth;throw error;}
         finally {
-          scene.matrixWorldAutoUpdate = updateMatrices;
           for(const [object,visible]of jets)object.visible=visible;
           renderer.setRenderTarget(previousTarget);renderer.setViewport(viewport);renderer.setScissor(scissor);renderer.setScissorTest(scissorTest);
         }
@@ -212,7 +232,7 @@ export function createCombatAircraftRenderer(renderer, width, height = width, { 
         fighter.runtime.depthInfo=state.info;
         return fighter.withPreparedRender ? fighter.withPreparedRender(camera,draw) : draw();
       }catch(error){fighter.runtime.depthInfo=previousDepth;throw error;}
-      finally{depth--;}
+      finally{scene.matrixWorldAutoUpdate=updateMatrices;depth--;}
     },
     dispose() {
       target.dispose();

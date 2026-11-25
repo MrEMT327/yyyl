@@ -20,6 +20,7 @@ const artBounds=new Map(homePictures.map(([id,,art,hit=art])=>[id,hit]));
 export function homeControls(state,viewport,portrait){
   const unit=750/viewport.width,layout=homeInsets(viewport);
   const boxes=new Map(artBounds);
+  if(!state.showTasks)boxes.delete('tasks');
   boxes.set('chapter-title',[172,143,413,70]);
   if(PILOT_AFFECTION_VISIBLE)boxes.set('affection',[6,affectionY(state.carnival),101,99]);
   if(state.carnival)boxes.set('carnival',carnivalEntryBox);

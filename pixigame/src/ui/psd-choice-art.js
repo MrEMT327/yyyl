@@ -1,12 +1,44 @@
 import { cloudAssetBase } from './cloud-asset-base.js';
-import { loadCombatUiTexture } from './combat-art.js';
+import { createCombatArtworkBatch, loadCombatUiTexture, retryCombatArtwork } from './combat-art.js';
+import { upgradeChoiceSlot } from './upgrade-choice-slots.js';
 
 const assets = new Map();
-export function paintPsdChoiceArt(surface, name, x, y, width, height, {accent}={}) {
-  if (!assets.has(name)) {
-    assets.set(name, loadCombatUiTexture(`${cloudAssetBase}art/psd-choice-v1/${name}.png`));
+
+function psdChoiceTexture(name, priority, onReady) {
+  const cached = assets.get(name);
+  if (cached) {
+    if (cached.image?.width > 0) onReady?.(cached);
+    else retryCombatArtwork(cached, priority, onReady);
+    return cached;
   }
-  const texture = assets.get(name);
+  const texture = loadCombatUiTexture(`${cloudAssetBase}art/psd-choice-v1/${name}.png`, false, priority, onReady);
+  assets.set(name, texture);
+  return texture;
+}
+
+export function preloadPsdChoiceFrames(warmTexture, priority = -2) {
+  for (const name of ['banner', 'card-red', 'card-blue', 'card-prismatic', 'reroll'])
+    psdChoiceTexture(name, priority, warmTexture);
+}
+
+export function createUpgradeArtwork(bridge, art) {
+  const {choices, reroll} = bridge.presentation;
+  const skins = ['banner', ...choices.map(({model}, index) => model.progress?.frameArt || upgradeChoiceSlot(index, choices.length).art)];
+  if (reroll !== false) skins.push('reroll');
+  const frames = skins.map(name => psdChoiceTexture(name, 2));
+  const icons = choices.map(({model}) => art.get(model.itemId)).filter(Boolean);
+  const prepare = createCombatArtworkBatch([...frames, ...icons], bridge.preparePanelTextures);
+  return now => {
+    const ready = prepare(now);
+    return ready && {
+      framesReady: frames.every(texture => ready.has(texture)),
+      iconsReady: icons.every(texture => ready.has(texture)),
+    };
+  };
+}
+
+export function paintPsdChoiceArt(surface, name, x, y, width, height, {accent}={}) {
+  const texture = psdChoiceTexture(name);
   if (!name.startsWith('card-')) {
     surface.image(texture, x, y, width, height);
     return texture;

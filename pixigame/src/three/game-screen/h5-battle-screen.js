@@ -66,7 +66,8 @@ export class BattleArt {
     if(!url||this.closed)return;
     if(this.bindings.has(key))return this.bindings.get(key);
     if(this.pending.has(key))return this.pending.get(key);
-    const loaded=loadArtwork(new URL(url,this.baseURL).href,priority).then(image=>{
+    const demand=()=>this.closed?-Infinity:typeof priority==='function'?priority():priority??0;
+    const loaded=loadArtwork(new URL(url,this.baseURL).href,demand).then(image=>{
       if(this.closed)return;
       const eliteMarker=key===ELITE_HEALTH_ICON;
       const source=eliteMarker?prepareEnemyHealthIcon(image):image;
@@ -84,17 +85,27 @@ export class BattleArt {
       const result={texture,premultiplied,width,height,frames:new Map()};
       if(source!==image)result.ownedCanvas=source;
       if(size&&(size[0]!==result.width||size[1]!==result.height))result.pathogenicLogicalSize=size;
-      this.bindings.set(key,result);return result;
+      this.bindings.set(key,result);this.onDemand.delete(key);return result;
+    },error=>{
+      if(this.closed&&error?.name==='AbortError')return;
+      const entry=this.onDemand.get(key);
+      if(entry){
+        // A later visible use may recover once. Repeated draws share the
+        // pending transfer and never schedule a timer after leaving battle.
+        if(entry.retryAt||error?.name==='AbortError')this.onDemand.delete(key);
+        else entry.retryAt=Date.now()+5000;
+      }
+      throw error;
     }).finally(()=>this.pending.delete(key));
     this.pending.set(key,loaded);return loaded;
   }
-  defer(key,url){if(url)this.onDemand.set(key,url);}
+  defer(key,url){if(url&&!this.closed&&!this.bindings.has(key)&&!this.onDemand.has(key))this.onDemand.set(key,{url,retryAt:0});}
   get(key){
-    const loaded=this.bindings.get(key),url=this.onDemand.get(key);
-    if(!loaded&&url&&!this.closed){
-      this.onDemand.delete(key);
-      this.preload(key,url)?.catch(error=>{if(!this.closed)console.warn('[Three 按需贴图]',key,error?.message||error);});
-    }
+    const loaded=this.bindings.get(key);
+    if(loaded||this.closed)return loaded;
+    const entry=this.onDemand.get(key);
+    if(entry&&!this.pending.has(key)&&(!entry.retryAt||Date.now()>=entry.retryAt))
+      this.preload(key,entry.url)?.catch(error=>{if(!this.closed)console.warn('[Three 按需贴图]',key,error?.message||error);});
     return loaded;
   }
   async loadAll(entries,progress,onDecoded,{workers=12,onFailure,priority}={}){

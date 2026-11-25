@@ -84,7 +84,8 @@ export function planNativeResearch(rawProgression,rawInventory,operation,rng=Mat
    q.previous=state.levels[q.card.ID]||0;q.target=stage(q.card.ID,q.previous+1);
  }
  for(const [id,count]of q.costs){
-   if(!Number.isSafeInteger(count)||count<=0||(inventory.items[id]||0)<count)throw Error('原版材料不足');
+   if(!Number.isSafeInteger(count)||count<=0)throw Error('原版材料不足');
+   if((inventory.items[id]||0)<count)throw Error(({1:'金币不足',135:'星核不足'})[id]??'原版材料不足');
    inventory.items[id]-=count;
  }
  state.levels[q.card.ID]=q.previous+1;progression.nativeResearch=state;inventory.revision++;

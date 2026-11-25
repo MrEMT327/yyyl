@@ -78,7 +78,7 @@ function createActivity(platform,{suspend,refresh,blocked,signal}){
   }};
 }
 
-export function mountWechatBattle({platform,device,services,id,chapterId,emit,baseURL}){
+export function mountWechatBattle({platform,device,services,id,chapterId,emit,baseURL,onResultVisible}){
   const bounds=()=>platform.viewport.screen;
   const region={bounds,enter(){},leave(){device.repaintHome?.();}};
   const battleAddress=new URL('replica-battle/index.html',baseURL);
@@ -91,7 +91,8 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   if(endSortieLoad)lifetime.add(endSortieLoad);
   let launchActive=false;
   let warmLobby=chapterId===1?device.warmFirstSortieMenus:null,nextLobbyWarmup=0;
-  const loadingFrame=(frames=2)=>{
+  const firstSortie=Boolean(device.cover?.firstSortieLoading);
+  const loadingFrame=(frames=firstSortie?1:2)=>{
     if(!device.cover||!platform.visible||lifetime.disposed)return;
     return new Promise(resolve=>{
       let frame=platform.requestFrame(frames===1?done:()=>{frame=platform.requestFrame(done);});
@@ -113,28 +114,32 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
     density:()=>platform.viewport.density});
   lifetime.add(()=>overlays.destroy());
   const draws=platform.debugLog?{terrain:0,aircraft:0,hud:0}:null;
-  let renderBudget;
+  const resultTrace=platform.debugLog?.beginResult?.(chapterId,platform.now);
+  if(resultTrace)lifetime.add(()=>resultTrace.close());
+  let readResultPanel,drawBase=0,triangleBase=0;
   const skinHost={
     baseURL,battleAssetBase:battleURL,staggerPresentation:true,loadingFrame,
     draws,createRenderBudget(worldWidth){
       const {screen,density}=platform.viewport;
-      renderBudget=createNativeBattleRenderBudget({...screen,pixelRatio:density},worldWidth,{adaptive:true,
+      return createNativeBattleRenderBudget({...screen,pixelRatio:density},worldWidth,{adaptive:true,
         onPressureChange:limited=>platform.debugLog?.info('战斗绘制预算',{chapter:chapterId,mode:limited?'降载':'常规'})});
-      return renderBudget;
     },
-    aircraftCoverageStrength:.5,
-    readFighterFile:services.readFighterFile,objectLoader:services.objectLoader,assetBytes:services.assetBytes,
+    aircraftCoverageStrength:.5,compactAircraftGlass:true,
+    loadAircraft:services.loadAircraft,readFighterFile:services.readFighterFile,objectLoader:services.objectLoader,assetBytes:services.assetBytes,
     openBattleSurface:budget=>openWechatBattleSurface(device,platform,region,budget),
     textureLoader:{load(path,loaded,_progress,failed){return artworkTexture(path,loaded,failed);}},
   };
   const hudHost={bounds,watchResize:platform.onViewport,bindInput:options=>touch.bindInput(options),
-    playingHudInterval:()=>renderBudget?.underLoad?75:50,now:platform.now,draws,
+    playingHudInterval:50,now:platform.now,draws,resultTrace,
+    queueResultWarmup:warmTextures.push,resultRaysUrl:'/art/victory-result-v1/reveal-rays.png',
+    bindResultPanel:read=>{readResultPanel=read;},
     safeInsets:()=>{
       const {safeTop:top,safeBottom:bottom,menuButton}=platform.viewport;
       return {top,bottom,menuButton};
     },
     loadImageSurface:platform.loadArtwork,
-    warmSupplyTexture:texture=>warmTextures.add('battle-supply',texture,true)};
+    warmPanelTexture:texture=>{if(!lifetime.disposed)warmTextures.add('combat-ui',texture,true);},
+    preparePanelTextures:textures=>lifetime.disposed||warmTextures.prepare(textures)};
   let skills;
   const rendering={
     mountCombatHud:mountThreeCombatHud,
@@ -146,21 +151,19 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       const view=new CombatView(content,sim,ready,skin);
       const frameSummary=platform.debugLog?.beginBattle?.(chapterId,draws);
       let lastReport=-Infinity,reports=0;
-      view.profileClock=draws||warmLobby?platform.now:undefined;
+      view.profileClock=draws?platform.now:undefined;
       view.reportSlowFrame=stats=>{
         if(launchActive||device.cover||!platform.visible){frameSummary?.reset();return;}
         const now=platform.now(),cpu=stats.logic+stats.terrainAndPlane+stats.entitiesAndEffects+stats.draw;
-        const result=sim.phase==='won'||sim.phase==='lost';
-        if(warmLobby&&now>=nextLobbyWarmup&&(result||sim.phase==='playing'&&sim.clock>=1)&&stats.interval<38&&cpu<18){
-          nextLobbyWarmup=now+50;
-          if(!warmLobby(lifetime.signal)){
-            warmLobby=null;
-            if(!draws)view.profileClock=undefined;
-          }
+        if(sim.phase==='won'||sim.phase==='lost')frameSummary?.finish?.(sim.runId);
+        if(sim.phase!=='playing'||sim.victoryDeparturePresentation){frameSummary?.reset();return;}
+        const info=platform.renderer?.info;
+        if(info?.render){
+          stats.drawCalls=info.render.calls-drawBase;stats.triangles=info.render.triangles-triangleBase;
+          stats.textures=info.memory.textures;stats.geometries=info.memory.geometries;
+          stats.enemies=sim.enemies.length;stats.projectiles=sim.projectiles.length;stats.pickups=sim.pickups.length;
         }
-        if(!draws)return;
-        if(sim.phase!=='playing'){frameSummary?.reset();return;}
-        frameSummary?.sample(stats.interval,sim.wave,stats);
+        frameSummary?.sample(stats.interval,sim.wave,stats,sim.runId);
         if(reports>=16||now-lastReport<3000||(stats.interval<48&&cpu<28))return;
         reports++;lastReport=now;
         const timings=Object.fromEntries(Object.entries(stats).map(([key,value])=>[key,Math.round(value)]));
@@ -183,9 +186,39 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       return {destroy(){scene.scaledDelta=null;}};
     },
     start({scene,lifetime,reportLoading,renderedFrame,fail}){
+      // Hold the startup artwork while configuration is still pending.
+      const canPaint=()=>scene.sim.phase!=='ready'||!device.cover?.firstSortieLoading;
+      const info=draws&&platform.renderer?.info;
+      scene.paintFrame=update=>{
+        if(!canPaint())return;
+        if(!info?.render)return update();
+        const auto=info.autoReset;if(auto)info.reset();info.autoReset=false;
+        drawBase=info.render.calls;triangleBase=info.render.triangles;
+        try{return update();}finally{info.autoReset=auto;}
+      };
+      let width=0,height=0;
       const stop=scene.start(progress=>reportLoading('textures',progress),()=>{
+        if(!canPaint())return;
         if(!scene.frameCount)endSortieLoad?.();
         scene.frameCount=(scene.frameCount||0)+1;renderedFrame();
+        if(draws&&!device.cover&&platform.visible){
+          const size=scene.stage.glow.outputSize;
+          if(width!==size.width||height!==size.height){
+            width=size.width;height=size.height;
+            platform.debugLog.info('战场分辨率',{chapter:chapterId,width,height});
+          }
+          if(scene.sim.phase==='playing'&&scene.sim.victoryDeparturePresentation)resultTrace?.departure(scene.sim.runId);
+        }
+        const ending=scene.sim.phase==='won'||scene.sim.phase==='lost';
+        const panel=ending&&!device.cover&&platform.visible?readResultPanel?.():null;
+        if(panel){resultTrace?.painted(panel);if(panel.motion.ready){onResultVisible?.();onResultVisible=null;}}
+        if(warmLobby&&panel?.motion.ready&&scene.rawDelta<38){
+          const now=platform.now();
+          if(now>=nextLobbyWarmup){
+            nextLobbyWarmup=now+50;
+            if(!warmLobby(lifetime.signal))warmLobby=null;
+          }
+        }
       },fail,{...platform,warmTextures,isVisible:()=>platform.visible,watchVisibility:fn=>watchVisibility(platform,fn)});
       lifetime.add(stop);
     },
@@ -226,16 +259,27 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
 }
 
 export function createWechatSortieBridge(platform,device,services,baseURL,options){
-  let sequence=0;
+  let sequence=0,waitForResult;
   const host={
     baseURL,now:platform.now,hidden:()=>!platform.visible,
-    prepareResultReturn:isCurrent=>device.prepareFirstSortieEquipment?.(isCurrent),
+    async prepareResultReturn(isCurrent){
+      await waitForResult?.();
+      if(isCurrent())return device.prepareFirstSortieEquipment?.(isCurrent);
+    },
     makeSessionId:()=>Date.now().toString(36)+'-'+(++sequence).toString(36),
     setLaunching(){},
     bind({visibility}){return watchVisibility(platform,visibility);},
     createSurface(){
-      return {show(){},close(){},mount(request){
-        return mountWechatBattle({...request,platform,device,services,baseURL});
+      let finish;
+      return {show(){},close(){finish?.();},mount(request){
+        finish?.();
+        let shown=false,release;
+        finish=()=>{shown=true;release?.();};
+        waitForResult=()=>shown?undefined:new Promise(resolve=>{
+          const done=()=>{clearTimeout(timer);release=null;resolve();};
+          const timer=setTimeout(done,450);release=done;
+        });
+        return mountWechatBattle({...request,platform,device,services,baseURL,onResultVisible:finish});
       }};
     },
   };

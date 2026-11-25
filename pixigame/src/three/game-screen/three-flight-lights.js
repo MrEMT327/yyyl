@@ -1,9 +1,22 @@
 import {BattleGeometry} from './three-battle-geometry.js';
+import {Vector2,Vector4} from 'three';
 
 export function flightLights(stage){
   const {scene,hull}=stage;
   const wake=new BattleGeometry(scene,24.92,true),trail=new BattleGeometry(scene,24.6,true);
   const tips=new BattleGeometry(scene,25.05,true);
+  const tipPositions=new Vector4(),tipIntensity=new Vector2();
+  tips.material.uniforms={tipPositions:{value:tipPositions},tipIntensity:{value:tipIntensity}};
+  tips.material.vertexShader=`precision highp float;
+    attribute vec3 position;attribute vec4 color;uniform mat4 projectionMatrix,modelViewMatrix;
+    uniform vec4 tipPositions;uniform vec2 tipIntensity;varying vec4 ink;
+    void main(){
+      vec2 offset=mix(tipPositions.xy,tipPositions.zw,position.z);
+      float a=color.a*mix(tipIntensity.x,tipIntensity.y,position.z);
+      ink=vec4(color.rgb*a,a);
+      gl_Position=projectionMatrix*modelViewMatrix*vec4(position.xy+offset,0.,1.);
+    }`;
+  let tipScale=0;
   let body,exit;
   const ghosts=[24.8,24.85].map(depth=>stage.makeSprite(hull.userData.binding,depth));
   ghosts.forEach(node=>node.visible=false);
@@ -42,22 +55,30 @@ export function flightLights(stage){
       }
     },
     wings(segments,points,{visible,clock,width,thrust,rollActive}){
-      trail.clear();tips.clear();
+      trail.clear();
       for(const s of segments){
         for(const [w,c,a] of [[4.5,0x47baff,.12],[2.1,0x64ddff,.4],[.85,0xd4f0fb,.7+(s.glint||0)*.1]]){
           trail.line(s.x1,s.y1,s.x2,s.y2,w*s.width,c,a*s.alpha);
         }
       }
       trail.flush();
-      if(visible&&points?.length===2){
-        const scale=Math.min(3.5,Math.max(.65,Math.abs(width)/80)),power=rollActive?.95:Math.min(.9,.65+Math.max(0,Math.min(1,thrust))*.4);
-        for(const [side,p] of points.entries()){
-          const intensity=power*(.92+.08*Math.sin(clock*5+side*1.7));
-          for(let ring=8;ring>0;ring--){const t=ring/8,r=4.6*t*scale;tips.ellipse(p.x,p.y,r,r,0x5bc3ec,intensity*.12*Math.exp(-3*t*t));}
-          tips.ellipse(p.x,p.y,.55*scale,.55*scale,0xbcebf5,intensity*.18);tips.ellipse(p.x,p.y,.25*scale,.25*scale,0xe2f8ff,intensity*.14);
+      tips.visible=Boolean(visible&&points?.length===2);
+      if(!tips.visible)return;
+      const scale=Math.min(3.5,Math.max(.65,Math.abs(width)/80));
+      if(scale!==tipScale){
+        tips.clear();
+        for(let side=0;side<2;side++){
+          const first=tips.count;
+          for(let ring=8;ring>0;ring--){const t=ring/8,r=4.6*t*scale;tips.ellipse(0,0,r,r,0x5bc3ec,.12*Math.exp(-3*t*t));}
+          tips.ellipse(0,0,.55*scale,.55*scale,0xbcebf5,.18);tips.ellipse(0,0,.25*scale,.25*scale,0xe2f8ff,.14);
+          // Both lights stay in one draw. The third coordinate selects the wing.
+          for(let i=first;i<tips.count;i++)tips.positions[i*3+2]=side;
         }
+        tips.flush();tipScale=scale;
       }
-      tips.flush();
+      tipPositions.set(points[0].x,points[0].y,points[1].x,points[1].y);
+      const power=rollActive?.95:Math.min(.9,.65+Math.max(0,Math.min(1,thrust))*.4);
+      tipIntensity.set(power*(.92+.08*Math.sin(clock*5)),power*(.92+.08*Math.sin(clock*5+1.7)));
     },
     victory(s){
       if(!s){

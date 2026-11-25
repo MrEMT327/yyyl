@@ -42,7 +42,8 @@ export function catalogPortrait(device,page,refresh,redraw,output=null){
     draw(a,t,w,h,item){if(!id)return;const b=framing(id,w,h),config=PILOT_PORTRAITS[id]||{};
       if(config.scene)pic(a,t,config.scene,b,true);
       if(!target||!pose)pic(a,t,config.image||item.image,b,true);
-      else{const m=a.image(target.texture,b.x,b.y,b.w,b.h);m.material.dispose();
+      else{if(output&&config.image)t.texture(config.image,false); // Keep this pilot's still ready if WeChat releases the animation.
+        const m=a.image(target.texture,b.x,b.y,b.w,b.h);m.material.dispose();
         m.material=new ShaderMaterial({uniforms:{pose:{value:target.texture}},depthTest:false,depthWrite:false,transparent:true,toneMapped:false,side:DoubleSide,forceSinglePass:true,
           blending:CustomBlending,blendSrc:OneFactor,blendDst:OneMinusSrcAlphaFactor,
           vertexShader:'varying vec2 v;void main(){v=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',

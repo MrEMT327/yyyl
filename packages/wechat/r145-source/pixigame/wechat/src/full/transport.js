@@ -7,9 +7,13 @@ function failureMessage(error){
 }
 const opaqueNativeFailure=/^(?:request|downloadFile):fail\s*$/i;
 
-export function isIncompleteDownload(error){
+export function isIncompleteDownload(error,url=''){
   if(error?.name==='AbortError')return false;
-  return /file data is empty|empty file|ERR_CONTENT_LENGTH_MISMATCH|(?:errcode|cronet_error_code):\s*-354\b|downloadFile:fail\s+Error:\s+aborted\b/i.test(failureMessage(error));
+  const message=failureMessage(error);
+  if(/file data is empty|empty file|ERR_CONTENT_LENGTH_MISMATCH|(?:errcode|cronet_error_code):\s*-354\b|downloadFile:fail\s+Error:\s+aborted\b/i.test(message))return true;
+  // Hand reset image streams to the file cache's fresh binary GET. Other
+  // downloads, particularly videos, retain their file-based retry policy.
+  return /\.(?:png|jpe?g|webp)$/i.test(String(url).split(/[?#]/,1)[0])&&/\b(?:ECONNRESET|ERR_CONNECTION_RESET|connection reset by peer)\b/i.test(message);
 }
 
 export function transientNetworkFailure(error){
@@ -88,7 +92,7 @@ export function createWechatTransport(api,{concurrency=4,sortieConcurrency=6,max
       clearDeadline(operation);
       if(abortAttempt)try{task?.abort?.();}catch{/* The timeout still frees the slot. */}
       release(operation);
-      const incomplete=operation.type==='downloadFile'&&kind==='fail'&&isIncompleteDownload(result);
+      const incomplete=operation.type==='downloadFile'&&kind==='fail'&&isIncompleteDownload(result,operation.options.url);
       const retryable=operation.safe&&!incomplete&&(kind==='fail'?transientNetworkFailure(result):retryStatuses.has(result.statusCode));
       if(retryable&&attempt<maxAttempts){
         const delay=retryDelays[Math.min(attempt-1,retryDelays.length-1)]??0;

@@ -3,6 +3,19 @@ const slowArtworkMs = 150;
 const battleSampleMs = 5000;
 const ms = value => Math.round(Math.max(0, value));
 
+const memoryWarningKey = 'shnh.wechat.lastMemoryWarning';
+export function rememberMemoryWarning(api, warning) {
+  try { api.setStorageSync(memoryWarningKey,warning); } catch { /* The system may already be low on memory. */ }
+}
+export function reportPreviousMemoryWarning(api) {
+  try {
+    const warning=api.getStorageSync(memoryWarningKey);
+    if(!warning?.buildId)return;
+    console.warn('[Three 上次内存告警]',JSON.stringify(warning));
+    api.removeStorageSync(memoryWarningKey);
+  } catch { /* Storage availability must not gate startup. */ }
+}
+
 function countArtwork(initial, visible) {
   const counts = { ready: 0, pending: 0, failed: 0, skipped: 0 };
   for (const texture of initial) {
@@ -84,15 +97,28 @@ export function createWechatDebugLog(api, buildId) {
   }
 
   function beginBattle(chapter,draws) {
-    let frames=0,elapsed=0,over33ms=0,maxGap=0;
+    let frames=0,elapsed=0,over33ms=0,over50ms=0,maxGap=0,cpuMs=0,cpuFrames=0;
+    let runId,runFrames=0,runElapsed=0,active=false,reported=false;
+    let aircraftMs=0,projectilesMs=0,finishEffectsMs=0,detailFrames=0;
+    let logicMs=0,worldDrawMs=0,uiDrawMs=0,passFrames=0;
     let previous,previousWave,gapFrame,gapWave;
     let terrain=draws?.terrain,aircraft=draws?.aircraft,hud=draws?.hud;
     function resetWindow(){
-      frames=elapsed=over33ms=maxGap=0;gapFrame=gapWave=undefined;
+      frames=elapsed=over33ms=over50ms=maxGap=cpuMs=cpuFrames=0;gapFrame=gapWave=undefined;
+      aircraftMs=projectilesMs=finishEffectsMs=detailFrames=0;
+      logicMs=worldDrawMs=uiDrawMs=passFrames=0;
       if(draws){terrain=draws.terrain;aircraft=draws.aircraft;hud=draws.hud;}
     }
-    return {reset(){resetWindow();previous=previousWave=undefined;},sample(interval,wave,stats){
+    const runFps=()=>runElapsed?Math.round(10000*runFrames/runElapsed)/10:undefined;
+    function reset(){resetWindow();previous=previousWave=undefined;active=false;}
+    return {reset,finish(id){
+      if(id!==runId||reported||!runElapsed)return;
+      reported=true;info('战斗平均帧率',{chapter,run:runId,activeFrames:runFrames,activeMs:ms(runElapsed),avgFps:runFps(),targetFps:50});
+    },sample(interval,wave,stats,id){
       if(!(interval>0&&Number.isFinite(interval)))return;
+      if(runId!==id){reset();runId=id;runElapsed=runFrames=0;reported=false;}
+      // An interval belongs to active play only when both ends are active.
+      if(active&&id!==undefined){runFrames++;runElapsed+=interval;}active=true;
       frames++;elapsed+=interval;
       if(interval>maxGap){
         // The interval starts before this frame. Keep the previous frame's timings.
@@ -100,17 +126,83 @@ export function createWechatDebugLog(api, buildId) {
       }
       previous=stats;previousWave=wave;
       if(interval>=1000/30)over33ms++;
+      if(interval>=50)over50ms++;
+      if(stats){
+        const cpu=stats.logic+stats.terrainAndPlane+stats.entitiesAndEffects+stats.draw;
+        if(Number.isFinite(cpu)){cpuMs+=cpu;cpuFrames++;}
+        if(Number.isFinite(stats.logic)&&Number.isFinite(stats.worldDraw)&&Number.isFinite(stats.uiDraw)){
+          logicMs+=stats.logic;worldDrawMs+=stats.worldDraw;uiDrawMs+=stats.uiDraw;passFrames++;
+        }
+        if(Number.isFinite(stats.aircraftMs)&&Number.isFinite(stats.projectilesMs)&&Number.isFinite(stats.effectCleanupMs)){
+          aircraftMs+=stats.aircraftMs;projectilesMs+=stats.projectilesMs;finishEffectsMs+=stats.effectCleanupMs;detailFrames++;
+        }
+      }
       if(elapsed<battleSampleMs)return;
       const frameBeforeMaxGap=gapFrame&&{wave:gapWave,logic:ms(gapFrame.logic),terrainAndPlane:ms(gapFrame.terrainAndPlane),
         entitiesAndEffects:ms(gapFrame.entitiesAndEffects),draw:ms(gapFrame.draw),worldDraw:ms(gapFrame.worldDraw),uiDraw:ms(gapFrame.uiDraw)};
+      if(Number.isFinite(gapFrame?.aircraftMs)){
+        for(const key of ['terrainMs','aircraftMs','enemiesMs','projectilesMs','pickupsAndEffectsMs'])
+          frameBeforeMaxGap[key]=ms(gapFrame[key]);
+        // The remainder includes host scheduling and work outside this view update.
+        frameBeforeMaxGap.outsideUpdateMs=ms(Math.max(0,maxGap-gapFrame.logic-gapFrame.terrainAndPlane-gapFrame.entitiesAndEffects-gapFrame.draw));
+      }
+      if(Number.isFinite(gapFrame?.drawCalls)){
+        for(const key of ['drawCalls','triangles','textures','geometries','enemies','projectiles','pickups'])frameBeforeMaxGap[key]=gapFrame[key];
+      }
+      if(Number.isFinite(gapFrame?.pickupMs)){
+        for(const key of ['pickupMs','statusAndEffectsMs','effectCleanupMs'])frameBeforeMaxGap[key]=ms(gapFrame[key]);
+        frameBeforeMaxGap.textEffects=gapFrame.textEffects;
+      }
       const perSecond=count=>Math.round(10000*count/elapsed)/10;
       const visualHz=draws?{terrain:perSecond(draws.terrain-terrain),aircraft:perSecond(draws.aircraft-aircraft),
         hud:perSecond(draws.hud-hud)}:undefined;
       info('局内帧率',{chapter,wave,frames,elapsedMs:ms(elapsed),fps:perSecond(frames),
-        framesOver33ms:over33ms,maxGapMs:ms(maxGap),frameBeforeMaxGap,visualHz});
+        runAvgFps:runFps(),activeMs:id===undefined?undefined:ms(runElapsed),
+        meanStageMs:detailFrames?{aircraft:+(aircraftMs/detailFrames).toFixed(1),projectiles:+(projectilesMs/detailFrames).toFixed(1),
+          effectFinish:+(finishEffectsMs/detailFrames).toFixed(1),
+          ...(passFrames?{logic:+(logicMs/passFrames).toFixed(1),worldDraw:+(worldDrawMs/passFrames).toFixed(1),
+            uiDraw:+(uiDrawMs/passFrames).toFixed(1)}:{})}:undefined,
+        framesOver33ms:over33ms,framesOver50ms:over50ms,meanUpdateMs:cpuFrames?Math.round(10*cpuMs/cpuFrames)/10:undefined,
+        maxGapMs:ms(maxGap),frameBeforeMaxGap,visualHz});
       resetWindow();
     }};
   }
 
-  return { info, beginMenu, beginBattle, get activeMenu() { return activeMenu; } };
+  function beginResult(chapter,now){
+    let run,outcome,started,flightRun,flightAt,receiptMs,firstPaintMs,waitLogged,complete=false;
+    function start(id,phase){
+      if((phase!=='won'&&phase!=='lost')||(run===id&&outcome===phase))return;
+      run=id;outcome=phase;started=now();receiptMs=firstPaintMs=undefined;waitLogged=complete=false;
+    }
+    function details(elapsedMs){return {chapter,run,outcome:outcome==='won'?'胜利':'失败',elapsedMs,firstPaintMs,receiptMs,
+      departureMs:outcome==='won'&&flightRun===run?ms(started-flightAt):undefined};}
+    return {start,departure(id){if(flightRun!==id){flightRun=id;flightAt=now();}},
+      receipt(id,phase){start(id,phase);if(run===id&&outcome===phase)receiptMs??=ms(now()-started);},
+      painted(panel){
+        if(!outcome||complete||!panel)return;
+        const elapsed=ms(now()-started),first=firstPaintMs===undefined;
+        if(!first&&!panel.motion.ready&&elapsed<2000)return;
+        const textures=panel.resultTextures;
+        let pending=0,failed=0;
+        for(const texture of textures??[])if(!texture.image?.width){
+          if(texture.userData.artworkFailed)failed++;else pending++;
+        }
+        const status=()=>{
+          const pendingAssets=[],failedAssets=[];
+          for(const texture of textures??[])if(!texture.image?.width){
+            const names=texture.userData.artworkFailed?failedAssets:pendingAssets;
+            if(names.length<4)names.push(String(texture.userData.artworkUrl??'').split(/[?#]/,1)[0].split('/').slice(-2).join('/'));
+          }
+          return {...details(elapsed),textures:textures?.size??0,pending,failed,pendingAssets,failedAssets,
+            rewards:panel.resultSnapshot.rewards.length,receiptPending:panel.resultSnapshot.pending,controlsReady:panel.motion.ready};
+        };
+        if(first){firstPaintMs=elapsed;info('结算首帧',status());}
+        if(!pending&&!panel.resultSnapshot.pending&&panel.motion.ready){
+          complete=true;info('结算就绪',status());
+        }else if(!waitLogged&&elapsed>=2000){waitLogged=true;info('结算仍在等待',status());}
+      },
+      close(){if(outcome&&!complete)info('结算离开',details(ms(now()-started)));complete=true;},
+    };
+  }
+  return { info, beginMenu, beginBattle,beginResult, get activeMenu() { return activeMenu; } };
 }

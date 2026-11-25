@@ -65,6 +65,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
       wanted=[snapshot,aircraftId];
       if(stageModel&&port&&aircraftId&&queuedAircraft!==aircraftId){
         ready=false;
+        if(queuedAircraft)port.releaseAircraft?.();
         queuedAircraft=aircraftId;
         // Equipment prepares its first render only while opening the visible hangar.
         if(prefetchModel)void port.loadAircraft(aircraftId).catch(()=>{});
@@ -78,7 +79,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
       catch(error){console.warn('[Three 装备战机]',error?.message||error);}
     }
     // A finished still is used for this visit if the preview cannot be drawn.
-    model?.destroy();model=null;fit='';settledFrames=0;ready=false;showStill=true;return true;
+    view.releaseModel();showStill=true;return true;
   },tick(dt){
     if(showStill)return;
     const visible=active();
@@ -92,8 +93,9 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
   },pause(){model?.update(0,false);showStill=false;prepareStarted=null;
   },releaseModel(){
     model?.destroy();model=null;target.setSize(2,2);
+    port?.releaseAircraft?.();
     fit='';settledFrames=0;ready=false;showStill=false;prepareStarted=null;
-  },close(){closed=true;metrics.release();model?.destroy();target.dispose();
+  },close(){closed=true;metrics.release();model?.destroy();port?.releaseAircraft?.();target.dispose();
     if(canvas){delete canvas.dataset.modelReady;delete canvas.dataset.aircraftId;delete canvas.dataset.viewProfile;}}};
   return view;
 }

@@ -15,10 +15,15 @@ void main(){
  if(uMode<.5){gl_FragColor=texture2D(uInput,vUv);return;}
  if(uMode<1.5){vec2 h=uPixel*.5;vec3 c=tap(vUv)*4.;c+=tap(vUv-h)+tap(vUv+h)+tap(vUv-vec2(h.x,-h.y))+tap(vUv+vec2(h.x,-h.y));gl_FragColor=vec4(c/8.,1.);return;}
  if(uMode<2.5){gl_FragColor=godotGlowDownsample(uInput,vUv,uPixel);return;}
- if(uMode<3.5){gl_FragColor=godotGlowUpsample(uInput,vUv,uPixel);return;}gl_FragColor=dimensionResolve();
+ if(uMode<3.5){gl_FragColor=godotGlowUpsample(uInput,vUv,uPixel);return;}
+ if(uMode>4.5){
+   vec4 scene=texture2D(uScene,vUv);
+   gl_FragColor=vec4(godotGlowResolve(scene.rgb,texture2D(uInput,vUv).rgb,uIntensity),scene.a);return;
+ }
+ gl_FragColor=dimensionResolve();
 }`;
 
-export function createBattleGlow(renderer,w,h,outputScale=1){
+export function createBattleGlow(renderer,w,h,outputScale=1,compact=false){
   const target=(x,y,type=T.HalfFloatType)=>new T.WebGLRenderTarget(x,y,{type,minFilter:T.LinearFilter,magFilter:T.LinearFilter,depthBuffer:false,stencilBuffer:false});
   const outputSize={width:Math.round(w*outputScale),height:Math.round(h*outputScale)};
   const world=target(outputSize.width,outputSize.height),back=target(w,h,T.UnsignedByteType),down=[],up=[];
@@ -36,12 +41,13 @@ export function createBattleGlow(renderer,w,h,outputScale=1){
     renderer.setRenderTarget(world);
     renderer.setViewport(0,0,world.width,world.height);
   }
-  function pass(output,input,mode,beginOutput){
+  function pass(output,input,mode,beginOutput,kernel=output){
     if(!output&&beginOutput)beginOutput();
     else{renderer.setRenderTarget(output);renderer.setViewport(0,0,output?.width??outputSize.width,output?.height??outputSize.height);}
-    u.uMode.value=mode;u.uInput.value=input;u.uScene.value=mode===4?world.texture:input;
+    const composite=mode>=4;
+    u.uMode.value=mode;u.uInput.value=input;u.uScene.value=composite?world.texture:input;
     // The final glow kernel and sword distortion keep their authored battle units.
-    u.uPixel.value.set(1/(mode===4?w:output.width),1/(mode===4?h:output.height));renderer.render(scene,camera);
+    u.uPixel.value.set(1/(composite?w:kernel.width),1/(composite?h:kernel.height));renderer.render(scene,camera);
   }
   return {
     outputSize,binding:{texture:back.texture,width:w,height:h},needsBackground:false,
@@ -71,13 +77,23 @@ export function createBattleGlow(renderer,w,h,outputScale=1){
           view.layers.mask=1;renderer.render(content,view);pass(back,world.texture,0);
           bindWorld();view.layers.mask=2;renderer.render(content,view);
         }else{view.layers.mask=3;renderer.render(content,view);}
-        const levels=underLoad&&!cuts.length&&!this.needsBackground?2:down.length;
+        const ordinary=!cuts.length&&!this.needsBackground;
+        const lightBloom=underLoad&&ordinary;
+        const compactBloom=compact&&ordinary;
+        const levels=lightBloom?2:down.length;
         let bloom=world.texture;
         for(let i=0;i<levels;i++){pass(down[i],bloom,i?2:1);bloom=down[i].texture;}
-        for(let i=levels-2;i>=0;i--){pass(up[i],bloom,3);bloom=up[i].texture;}
+        // Keep the wide halo from the coarse levels. The native final pass
+        // reconstructs this smooth light with hardware bilinear filtering.
+        for(let i=levels-2;i>=(compactBloom?1:0);i--){pass(up[i],bloom,3);bloom=up[i].texture;}
+        if(compactBloom&&lightBloom){
+          // Keep thin lasers soft under pressure using the original filter
+          // footprint on a quarter-sized light buffer.
+          pass(up[1],bloom,3,undefined,up[0]);bloom=up[1].texture;
+        }
         u.uDimensionCount.value=cuts.length;
         cuts.forEach(({line,shape,style},i)=>{u.uDimensionLine.value[i].set(line[0]-left,line[1]-top,line[2],line[3]);u.uDimensionShape.value[i].fromArray(shape);u.uDimensionStyle.value[i].fromArray(style);});
-        pass(output,bloom,4,beginOutput);
+        pass(output,bloom,compactBloom||lightBloom?5:4,beginOutput);
         if(hasForeground){view.layers.mask=4;renderer.render(content,view);}
       }finally{
         view.layers.mask=1;content.matrixWorldAutoUpdate=autoUpdate;

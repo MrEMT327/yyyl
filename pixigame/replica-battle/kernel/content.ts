@@ -47,13 +47,14 @@ export async function loadContent(onProgress: ((completed: number, total: number
       throw new Error(`第 ${requested} 关资源包不匹配`);
     return bundle;
   };
-  // Only chapter-specific paths depend on the catalog. Start shared tables
-  // immediately, with one joined failure path for every request.
-  const [selection, chapterData, sharedData] = await Promise.all([
+  // Chapter one's sortie bundle is keyed by ID and can start alongside the catalog.
+  const chapterResourcesRequest = (host.chapterId === 1
+    ? loadChapterResources(host.chapterId)
+    : selectionRequest.then(({ requested }) => loadChapterResources(requested))).then(loaded);
+  const [selection, chapterData, chapterResources, sharedData] = await Promise.all([
     selectionRequest,
-    selectionRequest.then(({ entry, requested }) => Promise.all([
-      read(entry.chapterFile), read(entry.geometryFile), loadChapterResources(requested).then(loaded),
-    ])),
+    selectionRequest.then(({ entry }) => Promise.all([read(entry.chapterFile), read(entry.geometryFile)])),
+    chapterResourcesRequest,
     Promise.all([
       'assets', 'combat', 'effects-original', 'boss-animation', 'enemy-health-bars', 'beam-effects',
       'enemy-health-bars-chapters', 'npc-chapters', 'audio-chapters', 'effects-original-chapters', 'enemy-local-animation-chapters', 'sword-original-effects',
@@ -62,7 +63,7 @@ export async function loadContent(onProgress: ((completed: number, total: number
   ]);
   if (host.loadingFrame) await host.loadingFrame();
   const { catalog, requested, entry } = selection;
-  const [chapter, geometry, chapterResources] = chapterData;
+  const [chapter, geometry] = chapterData;
   const [assets, combat, originalEffects, bossAnimation, enemyHealthBars, beamEffects,
     chapterHealth, npcChapters, chapterAudio, chapterEffects, enemyLocalAnimation, swordEffects, loadoutRuntime, playerAppearances] = sharedData;
   assets.playerAppearances = playerAppearances;

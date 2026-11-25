@@ -20,7 +20,7 @@ import { prefersReducedMotion } from './status-feedback.js';
 
 function attachSurface(parent,surface){const node=new Container();node.object3D.add(surface.group);node._disposeVisuals=()=>surface.destroy();parent.addChild(node);return node;}
 
-function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton, backdrop, choose }) {
+function renderAirframeChoices({ root, bridge, art, artwork, makeText, place, makeButton, backdrop, choose }) {
   const state = bridge.game.fixedGrowth.state;
   const revealAt=bridge.selectionLayer?.getChoiceRevealAt(state.offer)||0;
   // 三选一.psd is a 750×1624 composition. Only its UI layers are drawn here;
@@ -31,9 +31,11 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
   const panel = new Container({ label: 'run-upgrade-choices' }); root.addChild(panel);
   const text = (parent, value, x, y, size, fill, extra = {}) =>
     place(parent, makeText(value, { size, fill, ...extra }), x, y);
-  const banner = createThreeSurface();
-  paintPsdChoiceArt(banner, 'banner', px(-3), py(229), px(756), py(239));
-  attachSurface(panel, banner);
+  if (artwork?.framesReady !== false) {
+    const banner = createThreeSurface();
+    paintPsdChoiceArt(banner, 'banner', px(-3), py(229), px(756), py(239));
+    attachSurface(panel, banner);
+  }
   text(panel, '选择强化', px(375), py(324), 38, COMBAT_UI.text, {anchorX:.5,weight:'900'});
 
   const offers = bridge.presentation?.choices || bridge.currentUpgradeChoices.slice(0, 3).map(skill => {
@@ -69,19 +71,21 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     card.__upgradeConfirmFocus = {x:300,y:650};
     card.__fixedUpgradeView = bridge.presentation ? model : fixedUpgradeView(skill,state);
     card.cardSnapshot = () => ({...model,summary:effect,recipientMarker,presentation:'psd-three-choice'});
-    const frameSurface = createThreeSurface();
-    const frameTexture = paintPsdChoiceArt(frameSurface,progress?.frameArt||frame.art,0,0,width,height,{accent:progress?.palette});
-    bindCombatButtonArt(card, attachSurface(card,frameSurface), frameTexture);
+    if (artwork?.framesReady !== false) {
+      const frameSurface = createThreeSurface();
+      const frameTexture = paintPsdChoiceArt(frameSurface,progress?.frameArt||frame.art,0,0,width,height,{accent:progress?.palette});
+      bindCombatButtonArt(card, attachSurface(card,frameSurface), frameTexture, {showWhileLoading:true});
+    }
     const surface = createThreeSurface({textResolution:3});
     const texture = art?.get(model.itemId);
-    if (texture) {
+    if (texture && artwork?.iconsReady !== false) {
       const source=texture.userData.inventoryIcon?null:choiceIconCrops[model.itemId];
       const crop=source&&{x:source.crop[0],y:source.crop[1],width:source.crop[2],height:source.crop[3]};
       const icon=crop?{...fitUpgradeIcon(...source.size,crop,{x:15,y:80,width:148,height:158}),crop}
         :upgradeIconLayout(texture,{x:15,y:80,width:148,height:158});
       surface.image(texture,icon.x,icon.y,icon.width,icon.height,icon.crop)
         .material.toneMapped = !texture.userData.inventoryIcon;
-    } else drawUpgradeWeaponIcon(surface,model.itemId,29,96,122);
+    } else if(!artwork)drawUpgradeWeaponIcon(surface,model.itemId,29,96,122);
     const stars = bridge.presentation||model.qualityKnown===false ? 0 : Math.min(6,model.qualityRank+1);
     for(let i=0;i<stars;i++)
       drawUiSymbol(surface,'star',(width-stars*18+4)/2+i*18,height-(bridge.presentation?104:30),14,'#e9f5ff');
@@ -144,12 +148,14 @@ function renderAirframeChoices({ root, bridge, art, makeText, place, makeButton,
     text:`换一批 ${Math.max(0,state.rerolls)}/${totalRerolls}`,
     textColor:COMBAT_UI.text,fontSize:24,disabled:!state.rerolls,
     onPress:()=>bridge.rerollFixedUpgrade()});
-  const rerollSurface=createThreeSurface();
-  const rerollTexture=paintPsdChoiceArt(rerollSurface,'reroll',0,0,px(219),py(85));
-  const rerollSkin=attachSurface(reroll,rerollSurface);
-  reroll.setChildIndex(rerollSkin,1);
-  rerollSkin.alpha=state.rerolls?1:.45;
-  bindCombatButtonArt(reroll,rerollSkin,rerollTexture);
+  if (artwork?.framesReady !== false) {
+    const rerollSurface=createThreeSurface();
+    const rerollTexture=paintPsdChoiceArt(rerollSurface,'reroll',0,0,px(219),py(85));
+    const rerollSkin=attachSurface(reroll,rerollSurface);
+    reroll.setChildIndex(rerollSkin,1);
+    rerollSkin.alpha=state.rerolls?1:.45;
+    bindCombatButtonArt(reroll,rerollSkin,rerollTexture);
+  }
   reroll.__fixedReroll = true;
   panel.addChild(reroll);
 }
@@ -181,7 +187,7 @@ function addEffectText(parent, runs, x, y, width, size, ink, makeText, place, { 
   flush();return (row+1)*lineHeight;
 }
 
-export function renderFixedUpgradeUi({ root, bridge, art, makeText, place, makeButton, backdrop }) {
+export function renderFixedUpgradeUi({ root, bridge, art, artwork, makeText, place, makeButton, backdrop }) {
   let confirming = false;
   const originalButton = makeButton;
   makeButton = options => originalButton({...options,onPress:()=>{if(!confirming)options.onPress?.();}});
@@ -190,19 +196,21 @@ export function renderFixedUpgradeUi({ root, bridge, art, makeText, place, makeB
     const offer={...bridge.game.fixedGrowth.state.offer};
     confirming = true;
     if (bridge.presentation) {
-      if (bridge.chooseSkill(skill) === false) { confirming = false; return; }
-      const runId=bridge.game.fixedGrowth.state.offer?.runId;
-      const selectionLayer=bridge.selectionLayer;
-      if(!skill.opensBreakthrough)selectionLayer?.cancel();
+      const runId=offer.runId,selectionLayer=bridge.selectionLayer;
       const valid=()=>skill.opensBreakthrough&&selectionLayer
         ? !selectionLayer.disposed&&bridge.game.fixedGrowth.state.offer?.runId===runId&&['levelup','playing'].includes(bridge.game.state)
         : bridge.game.state==='levelup';
-      confirmUpgradeCard(card,width,height,()=>{confirming=false;},valid,skill,{nativeTiming:true,selectionLayer,offer,startedAt:bridge.selectionStartedAt,reducedMotion:bridge.reducedMotion});
+      const accepted=bridge.chooseSkill(skill,startedAt=>{
+        if(card.destroyed||!card.parent||!valid()){confirming=false;return;}
+        if(!skill.opensBreakthrough)selectionLayer?.cancel();
+        confirmUpgradeCard(card,width,height,()=>{confirming=false;},valid,skill,{nativeTiming:true,selectionLayer,offer,startedAt,reducedMotion:bridge.reducedMotion});
+      });
+      if(accepted===false)confirming=false;
       return;
     }
     confirmUpgradeCard(card,width,height,()=>{confirming=false;bridge.chooseSkill(skill);},()=>bridge.game.state==='levelup',skill,{reducedMotion:bridge.reducedMotion});
   };
-  if(bridge.presentation || bridge.currentUpgradeChoices.every(skill=>skill.airframe))return renderAirframeChoices({root,bridge,art,makeText,place,makeButton,backdrop,choose});
+  if(bridge.presentation || bridge.currentUpgradeChoices.every(skill=>skill.airframe))return renderAirframeChoices({root,bridge,art,artwork,makeText,place,makeButton,backdrop,choose});
   const state=bridge.game.fixedGrowth.state;
   backdrop(root,0x050d18,.90);
   const text=(parent,value,x,y,size,fill,extra={})=>place(parent,makeText(value,{size,fill,...extra}),x,y);

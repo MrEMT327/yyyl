@@ -58,7 +58,7 @@ function decode(api, path, cancelDecodes) {
   });
 }
 
-export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
+export function openWechatThreeScreen(api, resources, baseURL, debugLog, localFiles=createAssetCache(api,resources)) {
   const nativeCanvas = globalThis.canvas || api.createCanvas();
   const context = nativeCanvas.getContext('webgl2', { alpha: true, antialias: true, premultipliedAlpha: true });
   if (!context || typeof context.texStorage2D !== 'function') {
@@ -73,7 +73,7 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
   const subscriptions = new Set(), surfaces = [];
   const heldPointers = new Map(), detach = [];
   const display = createGameDisplay(renderer, () => viewport.screen);
-  const localFiles = createAssetCache(api, resources), cancelDecodes = new Set();
+  const cancelDecodes = new Set();
   const failedArtwork = new Set();
   const now = typeof globalThis.performance?.now === 'function'
     ? globalThis.performance.now.bind(globalThis.performance)
@@ -98,17 +98,23 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
       failedArtwork.add(path);
       console.warn('[Three 贴图读取失败]', path, error?.message || error);
     },
-    async openImage(path) {
-      if (closed) throw new Error('贴图读取已取消');
+    async openImage(path, requireConsumer) {
+      function check() {
+        if (closed) throw Object.assign(new Error('贴图读取已取消'), {name:'AbortError'});
+        requireConsumer();
+      }
+      check();
       const trace = debugLog?.activeMenu, started = trace ? now() : 0;
       try {
         const file = await localFiles.localFile(path, baseURL);
-        if (closed) throw new Error('贴图读取已取消');
+        check();
         return await readArtwork(file, trace, started, path);
       } catch (error) {
-        if (closed) throw error;
+        if (error?.name==='AbortError') throw error;
+        check();
         const fallback = await resources.readyFallbackFile(path, baseURL);
-        if (!fallback || closed) throw error;
+        check();
+        if (!fallback) throw error;
         return readArtwork(fallback, trace, started, path, true);
       }
     },

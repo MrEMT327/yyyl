@@ -8,6 +8,7 @@ import {sampleNativeEnemyAnimation} from '../../../replica-battle/kernel/native-
 import {nativeIsBoss} from '../../../replica-battle/kernel/monster-abilities.ts';
 import {BattleShotPresentation} from '../../../replica-battle/kernel/enemy-recoil-shots.ts';
 import {battleTexturePaths,chapterOneDeferredAtlases,chapterOneWeaponArt} from '../../../replica-battle/kernel/pathogenic/battle-texture-dependencies.mjs';
+import {battleScenePaths,SOURCE_MODELS} from '../../../replica-battle/kernel/pathogenic/pathogenic-routing.mjs';
 import {battleEnemyModels} from '../../../replica-battle/kernel/battle-image-plan.ts';
 import {ELITE_SCATTER_MODEL} from '../../../replica-battle/kernel/enemy-recoil-models.ts';
 import {unusedChapterEnemyProjectileArt} from '../../../replica-battle/kernel/pathogenic/enemy-projectile-presentation.mjs';
@@ -15,6 +16,10 @@ import {playerVisibility} from '../../../replica-battle/kernel/combat-readabilit
 
 const width=540,height=960;
 const eliteAtlas='owned-enemy:elite-scatter-v1',eliteFallback='plane11_elite1_1';
+// The ice cyclone uses native meshes. Keep its generic spear animation available
+// on demand; textures shared with any other opening scene still preload.
+const sortieEffectScenes=battleScenePaths();
+sortieEffectScenes.delete(SOURCE_MODELS[1000043]);
 // Artwork for later effects, including the supply canopy, can load after the opening flight.
 export function deferWechatBattleArtwork(key,url){
   return key===supplyCanopyKey||key==='res://gfx/environment/explosion_dna.png'||key==='res://gfx/enemies/stomp_wave.png'||
@@ -61,7 +66,7 @@ export class NativeBattleView {
         }
       }
     }
-    const routed=prioritize?battleTexturePaths(this.fx.graph):null;
+    const routed=prioritize?battleTexturePaths(this.fx.graph,sortieEffectScenes):null;
     if(routed){
       const bulletModels=Object.values(this.content.chapter.bullets).map(row=>Number(row.parameters.ModelId));
       for(const key of unusedChapterEnemyProjectileArt(bulletModels))routed.delete(key);
@@ -101,7 +106,7 @@ export class NativeBattleView {
     }
     await this.art.loadAll(required,progress,(key,texture)=>onDecoded?.(key,texture,urgent.has(key)));
     if(this.closed)return;this.ready();
-    if(later.size)void this.art.loadAll(later,null,key=>this.refreshLateEnemyArt(key),{workers:2,priority:-1,onFailure:(key,error)=>{
+    if(later.size)return ()=>void this.art.loadAll(later,null,key=>this.refreshLateEnemyArt(key),{workers:2,priority:-1,onFailure:(key,error)=>{
       if(!this.closed)console.warn('[Three 延后贴图]',key,error?.message||error);
     }});
   }
@@ -243,6 +248,8 @@ export class NativeBattleView {
   }
   update(delta){
     const now=this.profileClock,t0=now?.();
+    const timing=now?(this.presentationTiming??={now}):null;
+    if(timing){timing.terrainMs=0;timing.aircraftMs=0;timing.textEffects=0;}
     this.stage.refreshViewport?.();
     this.onFrame?.(delta);this.advanceCameraView(delta);
     const t1=now?.();
@@ -268,20 +275,22 @@ export class NativeBattleView {
       aircraftPassiveShot:this.source.passiveShot(projectiles,sim.clock),lightingEffects:effects,projectPoint:this.project,
       playerHitFlash:!departure&&sim.phase==='playing'&&player.hp>0&&player.hitFlash>.14,renderDelta:dt,displayInterval:this.rawDelta/1000,
       flight:{x:player.x,z:player.z,speed:sim.playerMovementSpeed,radius:entity.stats.shape[0]*sim.playerScale,active:sim.phase==='playing'&&player.hp>0},
-      mapCameraOffset:layer=>this.mapCameraOffsets.position(layer)});
+      mapCameraOffset:layer=>this.mapCameraOffsets.position(layer)},timing);
     const t2=now?.();
     damageBorder(this,!departure&&(sim.phase==='playing'||player.hp<=0)&&sim.phase!=='ready'&&player.hitFlash>0?this.renderSamples.age(.3-player.hitFlash):-1);
     for(const e of enemies)this.enemy(e,dt,clock,status);
     for(const t of departure?[]:sim.treasures)treasureArt(this,t,this.renderSamples.age(t.animationAge));
     for(const uid of this.enemyPositions.keys())if(!this.active.has('enemy:'+uid))this.enemyPositions.delete(uid);
+    const afterEnemies=now?.();
     this.missileMounts.beginFrame(sim.clock,sim.runId,projectiles,()=>this.appearance.missileMounts()?.map(m=>({
       x:player.x+(m.x-p.x)/this.px,z:player.z-(m.y-p.y)/this.px,
     })));
     for(const b of projectiles){
       const bullet=this.missileMounts.projectile(this.renderSamples.projectile(this.source.thunder(b)??b,c.chapter.player.weaponEntityId));
       this.fx.equipmentAccent(bullet,sim.equipmentProjectileAccent(b),this.project);
-      if(!this.fx.weaponSkinProjectile(bullet,this.project))this.fx.projectile(bullet,this.project,Number(c.chapter.bullets[b.bulletId]?.parameters.Element??0));
+      this.fx.projectile(bullet,this.project,Number(c.chapter.bullets[b.bulletId]?.parameters.Element??0));
     }
+    const afterProjectiles=now?.();
     for(const source of departure?[]:sim.pickups){
       const pickup=this.renderSamples.pickup(source),alpha=this.source.pickupAlpha(pickup,c.assets.battleItems[pickup.itemId]);
       this.fx.pickup(pickup,this.project,alpha);
@@ -292,6 +301,7 @@ export class NativeBattleView {
       for(const child of view.children)child.material.uniforms.opacity.value=alpha;
       this.sequence(view,pickup.modelId,pickup.age-pickup.delay);
     }
+    const afterPickups=now?.();
     for(const buff of departure?[]:status.visuals){
       const point=this.enemyPositions.get(buff.targetUid);
       const body=buff.targetUid?status.targets.get(buff.targetUid):null,shape=entity.stats.shape;
@@ -300,35 +310,49 @@ export class NativeBattleView {
       this.fx.status({...buff,...size,x:point?.x??buff.x,z:point?.z??buff.z,age:Number.isFinite(buff.age)?this.renderSamples.age(buff.age):buff.age,
         ...(Number.isFinite(buff.remaining)?{remaining:buff.remaining+Math.max(0,sim.clock-clock)}:{})},this.project);
     }
-    for(const effect of effects)this.effect(effect);
-    if(!departure)for(const effect of this.source.feedback(sim))this.effect(effect);
+    for(const effect of effects)this.effect(effect,timing);
+    if(!departure)for(const effect of this.source.feedback(sim))this.effect(effect,timing);
+    const afterEffects=now?.();
     this.fx.endFrame();
     for(const [key,obj] of this.objects)if(!this.active.has(key)){
       if(!departure&&sim.phase!=='ready'&&keepDyingBar(obj,clock))continue;
       this.stage.remove(obj);this.objects.delete(key);
     }
     const t3=now?.(),passes=this.stage.render(now);
-    if(now)this.reportSlowFrame?.({interval:this.rawDelta,logic:t1-t0,terrainAndPlane:t2-t1,entitiesAndEffects:t3-t2,draw:now()-t3,...passes});
+    if(now)this.reportSlowFrame?.({interval:this.rawDelta,logic:t1-t0,terrainAndPlane:t2-t1,entitiesAndEffects:t3-t2,draw:now()-t3,...passes,
+      terrainMs:timing.terrainMs,aircraftMs:timing.aircraftMs,enemiesMs:afterEnemies-t2,projectilesMs:afterProjectiles-afterEnemies,
+      pickupsAndEffectsMs:t3-afterProjectiles,pickupMs:afterPickups-afterProjectiles,statusAndEffectsMs:afterEffects-afterPickups,
+      effectCleanupMs:t3-afterEffects,textEffects:timing.textEffects});
   }
-  effect(e){
+  effect(e,timing){
     if(!e||e.age<0)return;
     let row=e;
     if(e.followPlayer)row={...e,x:this.sim.player.x+(e.followOffset?.x||0),z:this.sim.player.z+(e.followOffset?.z||0)};
     if(e.ownerUid){const pos=this.enemyPositions.get(e.ownerUid);if(!pos)return;row={...row,x:pos.x,z:pos.z};}
     if(e.kind!=='text')this.fx.effect(row,this.project,this.source.deathScale(row));
-    else floatingText(this,row,this.source.textLayout(e,this.renderSamples.age(e.age)));
+    else{
+      if(timing)timing.textEffects++;
+      floatingText(this,row,this.source.textLayout(e,this.renderSamples.age(e.age)));
+    }
   }
   // Hosts can wrap the update to measure renderer timing.
   paintFrame(update){return update();}
   start(progress,frame,fail,{now=()=>performance.now(),requestFrame=callback=>requestAnimationFrame(callback),cancelFrame=id=>cancelAnimationFrame(id),
     warmTextures,isVisible=()=>true,watchVisibility}={}){
-    let last=now(),id=null,ready=false,dispatch=null;
+    let last=now(),id=null,ready=false,dispatch=null,afterFirstBattleFrame=null;
     const schedule=()=>{if(ready&&!this.closed&&isVisible()&&id===null)id=requestFrame(dispatch);};
     const tick=time=>{
       id=null;
       if(this.closed||!isVisible())return;
-      try{this.rawDelta=Math.max(0,time-last);last=time;this.paintFrame(()=>this.update(this.scaledDelta?this.scaledDelta(this.rawDelta):this.rawDelta));
-        frame();schedule();}catch(error){ready=false;fail(error);}
+      try{
+        this.rawDelta=Math.max(0,time-last);last=time;
+        this.paintFrame(()=>this.update(this.scaledDelta?this.scaledDelta(this.rawDelta):this.rawDelta));
+        frame();
+        if(afterFirstBattleFrame&&this.sim.phase!=='ready'){
+          const warm=afterFirstBattleFrame;afterFirstBattleFrame=null;warm();
+        }
+        schedule();
+      }catch(error){ready=false;fail(error);}
     };
     const restart=()=>{
       if(id!==null)cancelFrame(id);
@@ -339,16 +363,18 @@ export class NativeBattleView {
     };
     const unwatch=watchVisibility?.(restart);
     for(const job of warmTextures?this.stage.warmupJobs():[])warmTextures.push(job);
-    this.preload(progress,warmTextures?.add,Boolean(warmTextures)).then(()=>{
+    this.preload(progress,warmTextures?.add,Boolean(warmTextures)).then(loadLater=>{
       if(this.closed)return;
-      if(warmTextures){
-        warmTextures.reset();
-        warmTextures.push(()=>this.warmBossArtwork(warmTextures));
-      }
+      warmTextures?.reset();
+      // Start optional work after a painted battle frame has claimed the display.
+      if(loadLater||warmTextures)afterFirstBattleFrame=()=>{
+        loadLater?.();
+        warmTextures?.push(()=>this.warmBossArtwork(warmTextures));
+      };
       ready=true;restart();
     })
       .catch(error=>{warmTextures?.close();if(!this.closed)fail(error);});
-    return ()=>{this.closed=true;ready=false;dispatch=null;unwatch?.();warmTextures?.close();if(id!==null)cancelFrame(id);this.fx.destroy();this.art.dispose();
+    return ()=>{this.closed=true;ready=false;dispatch=null;afterFirstBattleFrame=null;unwatch?.();warmTextures?.close();if(id!==null)cancelFrame(id);this.fx.destroy();this.art.dispose();
       this.stage.remove(this.damageBorder);for(const obj of this.objects.values())this.stage.remove(obj);this.objects.clear();};
   }
 }

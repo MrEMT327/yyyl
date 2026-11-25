@@ -109,8 +109,9 @@ export function createHomeStage(images) {
       }
       personMat.uniforms.art.value=texture;personBox.copy(rect);renderer.render(character,camera);
     },
-    drawInFront(renderer,hideStart=false){
+    drawInFront(renderer,hideStart=false,showTasks=true){
       items.get('start').mesh.visible=!hideStart;
+      items.get('tasks').mesh.visible=showTasks;
       renderer.render(front,camera);
     },
     setButtonScale(id,scale){

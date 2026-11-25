@@ -53,7 +53,7 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false,all
   let bytes;
   if(read)bytes=await read(name,url,signal,expected);else{const r=await fetch(url,{signal,cache:'no-cache'});if(!r.ok)throw new Error(name+'：HTTP '+r.status);bytes=await r.arrayBuffer();}
   if(bytes instanceof Uint8Array)bytes=bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
-  if(signal?.aborted)throw new DOMException('已切换到其他 Tab','AbortError');
+  if(signal?.aborted)throw signal.reason??Object.assign(new Error('已切换到其他 Tab'),{name:'AbortError'});
   if(expected&&await sha256(bytes)!==expected)throw new Error(name+' 校验失败：资源版本混用或文件被改动，请重新打包目录');
   return bytes;
  }
@@ -103,7 +103,7 @@ export async function loadPackage(entry,{signal,read=null,skipTextures=false,all
    }
   }
   solid=await parseGraph(structure.scene);fx=await parseGraph(effects.graph);
-  if(signal?.aborted)throw new DOMException('已切换到其他 Tab','AbortError');
+  if(signal?.aborted)throw signal.reason??Object.assign(new Error('已切换到其他 Tab'),{name:'AbortError'});
   const combo=new T.Group();combo.add(solid,fx);const {nodes,materials}=indexObjects(combo);applyMaterialPatches(effects.materialPatches,materials);
   for(const node of nodes.values()){node.updateMatrix();if(!node.matrix.elements.every(Number.isFinite))throw new Error('资源变换包含非有限数：'+node.name);}
   const ownedGeometry=new Set(),ownedTextures=new Set();

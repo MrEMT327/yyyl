@@ -4,6 +4,7 @@ import { readFile, rename, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {resultArtSource,resultArtWidths,warningArt} from './three-texture-assets.mjs';
 
 // Offline art prep, not a runtime dependency. Provide a directory with
 // @resvg/resvg-js and sharp installed, or resolve them normally.
@@ -57,7 +58,19 @@ for (const [path,width] of [
     .png({palette:true,dither:0,compressionLevel:9,effort:10}).toBuffer();
   addLocalImage(path,source,png);
 }
+for (const path of warningArt) {
+  const source = await readFile(join(h5, 'public', path));
+  addLocalImage(path, source, source);
+}
 const skillBytes=[...pngs.values()].reduce((sum,png)=>sum+png.length,0);
+for(const [path,width] of resultArtWidths){
+  const source=await readFile(join(h5,'public',resultArtSource(path)));
+  const image=sharp(source);
+  if(width)image.resize({width,withoutEnlargement:true});
+  const png=width||path.endsWith('/star.png')
+    ?await image.png({palette:true,colours:256,dither:.5,compressionLevel:9,effort:9}).toBuffer():source;
+  addLocalImage(path,source,png);
+}
 const rasters = new Map(manifest.rasters.map(row => [row.path, row]));
 const sheets = [
   ...blueprints.assets.map(row => `art/project-research-blueprints-v2/${row.file}`),

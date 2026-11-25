@@ -215,12 +215,13 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
       prioritizedArtwork:progressive&&(tab!=='research'||next.section!=='lab')};
     if(isCatalog(tab))state.catalogView=catalogModel(state);
     portrait.select(state.catalogView?.appearance?.id||'');state.portrait=portrait;
-    if(tab==='aircraft'&&state.catalogView?.plane){
+    const allowAircraftModel=host.region.allowAircraftModel?.()!==false;
+    if(allowAircraftModel&&tab==='aircraft'&&state.catalogView?.plane){
       preview??=host.openAircraft(scene,refresh,request,()=>visible()&&interactive(),
         {profile:'catalog',rect:catalogAircraftRect,stageModel:progressive,prefetchModel:!progressive,acceptOrbit:canUsePage});
       state.preview=preview;preview.update(next.snapshot,state.catalogView.plane);
     }
-    if(tab==='assembly'){
+    if(allowAircraftModel&&tab==='assembly'){
       preview??=host.openAircraft(scene,refresh,request,()=>preparingModel||visible()&&interactive(),
         {stageModel:progressive,prefetchModel:!progressive,acceptOrbit:canUsePage,rect:hangarPreview});
       state.preview=preview;preview.update(next.snapshot);
@@ -253,14 +254,24 @@ export function mountThreeMenu(device,host,send,interactive,setSection){
     if(staged&&tab==='workshop'&&pendingScroll!==null&&entering===null)startEntry();
     if(preview&&state)preview.update(state.snapshot,state.catalogView?.plane||state.snapshot.aircraftId);
     request();
-  },trimAircraft(){preview?.releaseModel?.();},park(){
+  },trimAircraft(){
+    if(!preview||!state)return;
+    if(host.region.allowAircraftModel?.()===false){
+      preview.close();preview=null;state.preview=null;refresh();request();return;
+    }
+    if(!preview.releaseModel)return;
+    preview.releaseModel();
+    preview.update(state.snapshot,state.catalogView?.plane||state.snapshot.aircraftId);
+    scene.invalidate();
+  },park(){
     finishEntryTrace('离开页面');
     host.cancelFrame(frame);frame=0;lastTick=0;presented=false;scene.cancelInput();
     if(tab==='workshop')pendingScroll=workshopOpeningScroll();
     pausePortrait();
     if(host.ownsOutput())host.release();
     if(sortOpen||inspect){sortOpen=false;inspect=null;state.sortOpen=false;refresh();}
-    preview?.pause?.();
+    if(host.native&&preview?.releaseModel)view.trimAircraft();
+    else preview?.pause?.();
     if(device.menuView===view)device.menuView=null;
     if(device.repaintHome===request)device.repaintHome=null;
   },clock(time){

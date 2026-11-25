@@ -16,7 +16,19 @@ const sortieArt = new Map([
   ['replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png', 'png'],
 ]);
 const supplyCanopyPath = 'art/project-supply-parachute-v2/canopy.webp';
-const warningArt = ['boss-dark-edge', 'elite'].map(name => 'art/project-encounter-warnings-v3/' + name + '.png');
+export const warningArt = ['boss', 'elite'].map(name => 'art/project-encounter-warnings-v4/' + name + '.png');
+// Width zero preserves the source dimensions of artwork shared with other screens.
+export const resultArtWidths = new Map([
+  ['art/defeat-header-v1/damaged-aircraft.png',720], ['art/defeat-wave-badge-v1/badge.png',448],
+  ['art/victory-result-v1/victory-aircraft.png',720], ['art/victory-result-v1/wave-badge.png',384],
+  ['art/project-ui-icons-v1/star.png',0], ['art/victory-result-v1/reveal-rays.png',384],
+  ['art/psd-equipment-v1/button-gold.png',0], ['art/psd-buttons-v1/button-blue.png',0],
+  ['art/psd-utility-controls-v1/backpack-frame.png',0],
+]);
+for(let row=0;row<3;row++)for(let col=0;col<3;col++)
+  resultArtWidths.set(`art/psd-popup-v1/primary-${row}-${col}.png`,0);
+export const resultArtSource=path=>path==='art/victory-result-v1/reveal-rays.png'
+  ? 'art/project-research-draw-reference-v5/reveal-rays.png' : path;
 const localBattleArt = new Set([supplyCanopyPath, ...warningArt,
   'replica-battle/assets/project-airdrop-supply/airdrop-crate-front-v1.png',
   'replica-battle/assets/missile-v3/body.png',
@@ -53,11 +65,11 @@ export async function loadThreeTextureAssets(inputs, publicDirectory) {
   for (const { path, sha256: expected, file } of localImages) {
     const skill = /^art\/(?:battle-skill-icons-v4|weapon-variant-skill-icons-v5)\/[\w-]+\.webp$/.test(path);
     const pageArt = /^art\/three-ui\/three-art-[a-f0-9]{12}\.png$/.test(path);
-    const localFormat = startupArt.get(path) ?? sortieArt.get(path);
+    const localFormat = startupArt.get(path) ?? sortieArt.get(path) ?? (resultArtWidths.has(path)?'png':undefined);
     if ((!skill && !pageArt && !localFormat && !localBattleArt.has(path)) || Object.hasOwn(aliases, path)) {
       throw new Error('无效或重复的本地微信图片 ' + path);
     }
-    const original = path === startupBackdrop ? 'art/entry-screens-v4/startup.png' : path;
+    const original = path === startupBackdrop ? 'art/entry-screens-v4/startup.png' : resultArtSource(path);
     const source = await readFile(join(publicDirectory, original));
     if (sha256(source) !== expected) throw new Error('图片原件已更新，请同步微信纹理 ' + path);
     const format = localFormat ?? (pageArt ? 'jpg' : 'png');
@@ -79,6 +91,9 @@ export async function checkThreeUiTextureCoverage(h5, textures, cdnFiles, transf
   if (!textures.aliases[supplyCanopyPath]?.endsWith('.png')) throw new Error('微信包内缺少 PNG 贴图 ' + supplyCanopyPath);
   for (const path of warningArt) {
     if (!textures.aliases[path]?.endsWith('.png')) throw new Error('微信包内缺少警示贴图 ' + path);
+  }
+  for(const path of resultArtWidths.keys()){
+    if(!textures.aliases[path]?.endsWith('.png'))throw new Error('微信包内缺少结算贴图 '+path);
   }
   const [icons, fleet, blueprints, recruits, menuArt] = await Promise.all([
     'src/replica/skill-icon-art.json',

@@ -17,6 +17,7 @@ export function createProjectPresentation(options: {
     createCanvas?(type: '2d' | 'webgl2'): HTMLCanvasElement;
     textureLoader?: Pick<import('three').TextureLoader, 'load'>;
     objectLoader?: import('three').ObjectLoader;
+    loadAircraft?(id: string, options: {allowTextureFallback: boolean}): Promise<unknown>;
     readFighterFile?(slug: string, name: string): Promise<ArrayBuffer>;
     assetBytes?: {
       createAssetBytesUrl(bytes: ArrayBuffer, mimeType: string): string;

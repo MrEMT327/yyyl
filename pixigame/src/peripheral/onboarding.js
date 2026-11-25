@@ -1,5 +1,6 @@
-// Native guide groups. This state records teaching, never grants rewards or unlocks.
-export const GUIDE_GROUPS = Object.freeze([1, 4, 6, 8, 9, 14]);
+// Saved tutorial milestones for the lobby and combat.
+export const SECOND_SORTIE_GUIDE = 16;
+export const GUIDE_GROUPS = Object.freeze([1, 4, 6, 8, 9, 14, SECOND_SORTIE_GUIDE]);
 export function normalizeOnboarding(value, legacy = {}) {
   if (value?.version === 1) return {version:1, completed:[...new Set((value.completed || []).filter(id=>GUIDE_GROUPS.includes(id)))]};
   const completed=[];
@@ -29,6 +30,13 @@ export function reachedGuideProgress(campaign={}, chapter, wave=0) {
 export function finishedRealSortie(result){
   return result&&!result.trial&&!result.debugRun&&!result.abandoned&&
     (result.won||result.clock>0||result.endReason==='defeat'||result.endReason!=='quit'&&result.wave>0);
+}
+export function needsSecondSortieGuide(state) {
+  const campaign = state.replicaCampaign;
+  return guideFinished(state, 9) && !guideFinished(state, SECOND_SORTIE_GUIDE) &&
+    reachedGuideProgress(campaign, 2) && !campaign.developmentChaptersUnlocked && campaign.highestCleared < 1 &&
+    !(campaign.passedWaves?.[2] > 0) &&
+    !state.replicaResults?.some(result => result.chapterId >= 2 && finishedRealSortie(result));
 }
 export function battleOnboarding(s,chapterId,trial=false){
   return {movement:!trial&&chapterId===1&&!guideFinished(s,1),firstChoice:!trial&&!guideFinished(s,4)};

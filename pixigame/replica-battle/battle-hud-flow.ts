@@ -1,7 +1,8 @@
 import { nativeWeaponDisplayText } from '../src/replica/native-weapon-display.js';
 import { UPGRADE_SELECTION_TIMING } from '../src/ui/upgrade-selection-timing.js';
 export interface ChoiceBurst {
-  prepare():void;remove(owner:object):void;clear():void;
+  prepare(): void | Promise<boolean>;
+  remove(owner:object):void;clear():void;
   draw(owner:object,stage:HTMLElement|undefined,tier:string,seconds:number):boolean;
 }
 import { WaveUIPresentation } from './kernel/wave-ui';
@@ -9,6 +10,8 @@ import wavePresentation from './public/data/wave-presentation.json';
 import type { GameAudio } from './kernel/audio';
 import type { Choice, RecordData } from './kernel/model';
 import type { Simulation } from './kernel/simulation';
+
+const breakthroughAtlasWait = 3000;
 
 type SupplyIcon = Pick<Choice, 'icon' | 'name'>;
 type Warning = { type: 2 | 5; started: number; clock: () => number; finish?: () => void };
@@ -31,7 +34,6 @@ class BattleEffects {
   }
 
   showBreakthrough(tier: string, revealAt: number) {
-    this.burst.prepare();
     const owner = { tier, revealAt };
     this.bursts.add(owner);
     return () => this.removeBurst(owner);
@@ -177,7 +179,7 @@ export class BattleHudFlow {
 
   constructor(stage: HTMLElement|undefined, private readonly sim: Simulation, private readonly audio: GameAudio,
     private readonly onHome: () => void, private readonly weaponIcon: (familyId: number, choice?: Choice) => string | undefined,
-    private readonly prepareChoiceArt: ((choice: Choice) => Promise<void> | undefined)|undefined,burst:ChoiceBurst,private readonly lifecycle={active:()=>Boolean(stage?.isConnected),visible:()=>!document.hidden}) {
+    private readonly prepareChoiceArt: ((choice: Choice) => Promise<void> | undefined)|undefined,private readonly burst:ChoiceBurst,private readonly lifecycle={active:()=>Boolean(stage?.isConnected),visible:()=>!document.hidden}) {
     this.effects = new BattleEffects(stage,burst,lifecycle.active);
     this.wave = new WaveUIPresentation(this.effects, stage);
     this.supply = new BattleSupplyRoll(cue => { this.audio.feedback(cue); });
@@ -205,27 +207,24 @@ export class BattleHudFlow {
     this.update();
   }
 
-  chooseFromHud(id: number) {
+  chooseFromHud(id: number, onStart?: (startedAt: number) => void) {
     if (this.disposed || this.selecting || this.sim.phase !== 'upgrade') return false;
     const card = this.sim.choices.find(choice => choice.id === id);
     if (!card) return false;
     const run = this.sim.runId;
     const generation = ++this.choiceGeneration;
-    const art = this.prepareChoiceArt?.(card);
-    this.selectionStartedAt = performance.now();
+    const art = this.prepareChoiceArt?.(card)?.catch(() => undefined);
     this.selecting = true;
     this.audio.feedback('choice');
-    if (card.opensBreakthrough) {
-      const tier = ['y', 'r', 'c'][Math.min(2, Math.floor((Math.max(1, card.star || 1) - 1) / 3))];
-      this.cancelChoiceBurst = this.effects.showBreakthrough(tier, this.selectionStartedAt + UPGRADE_SELECTION_TIMING.reveal);
-    }
+    const currentChoice = () => {
+      if (this.disposed || generation !== this.choiceGeneration) return false;
+      if (this.sim.runId === run && this.sim.phase === 'upgrade' && this.sim.choices.includes(card)) return true;
+      this.cancelChoice();
+      this.update();
+      return false;
+    };
     const commit = () => {
-      if (this.disposed || generation !== this.choiceGeneration) return;
-      if (this.sim.runId !== run || this.sim.phase !== 'upgrade' || !this.sim.choices.includes(card)) {
-        this.cancelChoice();
-        this.update();
-        return;
-      }
+      if (!currentChoice()) return;
       this.sim.sounds = this.sim.sounds.filter(id => id !== 410001);
       this.cancelChoiceBurst = undefined;
       this.sim.choose(card.id);
@@ -233,11 +232,33 @@ export class BattleHudFlow {
       this.resumeAfterChoice();
       this.update();
     };
-    this.choiceTimer = setTimeout(() => {
-      this.choiceTimer = undefined;
-      if (art) void art.then(commit);
-      else commit();
-    }, card.opensBreakthrough ? UPGRADE_SELECTION_TIMING.breakthroughCommit : UPGRADE_SELECTION_TIMING.normalCommit);
+    const begin = (playEffect: boolean) => {
+      if (!currentChoice()) return;
+      this.selectionStartedAt = performance.now();
+      if (card.opensBreakthrough && playEffect) {
+        const tier = ['y', 'r', 'c'][Math.min(2, Math.floor((Math.max(1, card.star || 1) - 1) / 3))];
+        this.cancelChoiceBurst = this.effects.showBreakthrough(tier, this.selectionStartedAt + UPGRADE_SELECTION_TIMING.reveal);
+      }
+      this.choiceTimer = setTimeout(() => {
+        this.choiceTimer = undefined;
+        if (art) void art.then(commit);
+        else commit();
+      }, card.opensBreakthrough ? UPGRADE_SELECTION_TIMING.breakthroughCommit : UPGRADE_SELECTION_TIMING.normalCommit);
+      onStart?.(this.selectionStartedAt);
+    };
+    const loading = card.opensBreakthrough ? this.burst.prepare() : undefined;
+    if (loading) {
+      let settled = false;
+      const ready = (loaded: boolean) => {
+        if (settled || generation !== this.choiceGeneration) return;
+        settled = true;
+        clearTimeout(this.choiceTimer);
+        this.choiceTimer = undefined;
+        begin(loaded);
+      };
+      this.choiceTimer = setTimeout(() => ready(false), breakthroughAtlasWait);
+      void loading.then(ready, () => ready(false));
+    } else begin(true);
     return true;
   }
 

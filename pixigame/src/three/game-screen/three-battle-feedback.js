@@ -53,8 +53,13 @@ function updateBar(root,enemy,time){
 export function healthAt(host,e,world,time){
   const h=host.content.assets.enemyHealthBars,entity=h.entities[e.entityId];
   if(e.boss||!entity?.showHp||!entity.showHpType)return;
-  const key='health:'+e.uid;host.active.add(key);
-  let bar=host.objects.get(key);if(!bar){bar=makeBar(host,h,entity);host.objects.set(key,bar);}
+  const key='health:'+e.uid;
+  let bar=host.objects.get(key);
+  // Normal enemies first reveal the bar on damage. Keep a previously shown bar
+  // across healing and death so its existing tween and fade still run.
+  if(!bar&&!entity.initiallyVisible&&e.hp>=e.maxHp)return;
+  host.active.add(key);
+  if(!bar){bar=makeBar(host,h,entity);host.objects.set(key,bar);}
   const model=h.models[e.modelId],c=model.center,angle=world.angle??e.angle,cos=Math.cos(angle),sin=Math.sin(angle);
   const p=host.project(world.x+(c[0]*cos+c[2]*sin)*e.scale,world.z+(-c[0]*sin+c[2]*cos+model.healthDistance)*e.scale);
   bar.position.set(p.x,p.y,0);updateBar(bar,e,time);

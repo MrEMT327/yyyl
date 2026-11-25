@@ -5,16 +5,15 @@ import {upgradeIconLayout} from './upgrade-icon-layout.js';
 import {upgradeFeedbackProfile} from './upgrade-feedback-profile.js';
 import {paintPsdPopup,psdPopupArtTextures} from './psd-popup-art.js';
 import {paintPsdPopupTitle} from './psd-popup-title.js';
-import {combatArtTexture,paintCombatArt,retryCombatArtwork} from './combat-art.js';
+import {combatArtTexture,combatArtworkReady,paintCombatArt,retryCombatArtwork} from './combat-art.js';
 import {supplyResultRows,supplyResultLayout} from './battle-supply-results.js';
 
 const SUPPLY_ART_WAIT_MS=5000;
 const unavailable=Object.freeze({failed:true});
 const iconKey=(card,weapons)=>card?.itemId??weapons?.find(weapon=>weapon.id===card?.ownerId)?.itemId;
-const ready=texture=>texture?.image?.width>0&&texture.image.height>0&&!texture.userData.artworkFailed;
 const showsReceipts=supply=>supply.phase==='ready'&&Array.isArray(supply.rewards);
 
-export function createBattleSupplyArtwork(textures,warmTexture){
+export function createBattleSupplyArtwork(textures,warmTexture,prepareTextures){
   let shared,request;
   const uploads=new Set();
   const priority=()=>request&&!request.result?2:-1;
@@ -27,7 +26,7 @@ export function createBattleSupplyArtwork(textures,warmTexture){
       if(warmTexture)for(const texture of [...frame,card,slot,button])uploads.add(texture);
     }
     for(const texture of uploads){
-      if(!ready(texture))continue;
+      if(!combatArtworkReady(texture))continue;
       uploads.delete(texture);
       warmTexture(texture);
     }
@@ -48,11 +47,14 @@ export function createBattleSupplyArtwork(textures,warmTexture){
           return [key,textures.get(key)];
         }));
         const {frame,card,slot,button}=shared;
-        const required=[button,...(wheel?frame:[]),...(cards.length?[card,slot]:[]),...icons.values()];
+        const required=[...new Set([button,...(wheel?frame:[]),...(cards.length?[card,slot]:[]),...icons.values()])];
         request={id,startedAt:now,required,icons,retried:new Set(),result:wheel&&!slots.length?unavailable:null};
       }
       if(request.result)return request.result;
-      if(request.required.every(ready)){
+      const decoded=request.required.filter(combatArtworkReady);
+      const uploaded=prepareTextures?.(decoded)??true;
+      if(decoded.length===request.required.length){
+        if(!uploaded)return null;
         request.result={icons:request.icons,shownAt:now};
         return request.result;
       }

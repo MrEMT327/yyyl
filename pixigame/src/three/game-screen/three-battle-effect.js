@@ -17,7 +17,7 @@ const uniform=value=>({value});
 
 export function createBattleEffectPass(renderer,width,height,scene=new Three.Scene()) {
   const camera=new Three.Camera();
-  const meshes=new Map(),programs=new Map(),pool=new Map();
+  const meshes=new Map(),litPrograms=new Map(),unlitPrograms=new Map(),pool=new Map();
   const projection=new Three.Matrix4(),resolution=new Three.Vector2();
   let frame=0,pooled=0;
   function resize(w,h,left=0,top=0){
@@ -26,11 +26,11 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
   }
   resize(width,height);
   function compile(source,zeroLights){
-    const key=(zeroLights?'0:':'u:')+source.code;
-    let program=programs.get(key);
+    const programs=zeroLights?unlitPrograms:litPrograms;
+    let program=programs.get(source.code);
     if(!program){
       program=compilePathogenicCanvasShader(source,{compatibilityZeroLights:zeroLights});
-      programs.set(key,program);
+      programs.set(source.code,program);
     }
     return program;
   }
@@ -99,7 +99,7 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
   }
   // Inputs are the source sampler's pixel-space vertices; batches with a
   // gradient retain their independent vertex colours, opacity and HDR gain.
-  function submit(id,{source,geometry,main,draw,depth=0,line=false,zeroLights=true}){
+  function submit(id,{source,geometry,main,draw,depth=0,line=false,zeroLights=true,gain}){
     const {vertices,indices}=geometry;
     if(!indices.length)return;
     const program=compile(source,zeroLights);
@@ -119,25 +119,49 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     const tint=attribute(g,'inTint',vertices.length,4,Uint8Array,true);
     const [ox,oy]=main.atlasOrigin||[0,0];
     const [logicalWidth,logicalHeight]=main.pathogenicLogicalSize??[main.width,main.height];
-    let gain=1;
-    if(line)for(const vertex of vertices)gain=Math.max(gain,vertex.color[0],vertex.color[1],vertex.color[2]);
+    // Sprite colour is a uniform. Only gradient lines need a per-vertex tint upload.
+    if(line)entry.whiteTint=null;
+    else if(entry.whiteTint!==tint){tint.array.fill(255);tint.needsUpdate=true;entry.whiteTint=tint;}
+    let uvDirty=false,tintDirty=false;
+    if(line&&gain===undefined){
+      gain=1;
+      for(const {color} of vertices)gain=Math.max(gain,color[0],color[1],color[2]);
+    }
+    let red,green,blue,alpha,r8,g8,b8,a8;
     for(let i=0;i<vertices.length;i++){
       const vertex=vertices[i],[x,y]=vertex.uv;
       position.setXY(i,vertex.position[0],vertex.position[1]);
-      uv.setXY(i,line?x:(x-ox)/logicalWidth,line?y:(y-oy)/logicalHeight);
-      const color=line?vertex.color:white;
-      // The authored vertex program expects the little-endian B,G,R,A tint
-      // byte layout. Preserve the reference's 8-bit quantization.
-      for(let k=0;k<3;k++)tint.array[i*4+k]=Math.round(Math.max(0,Math.min(1,color[2-k]/gain))*255);
-      tint.array[i*4+3]=Math.floor(Math.max(0,Math.min(1,color[3]))*255);
+      const uCoord=Math.fround(line?x:(x-ox)/logicalWidth),vCoord=Math.fround(line?y:(y-oy)/logicalHeight);
+      if(uvDirty||uv.array[i*2]!==uCoord||uv.array[i*2+1]!==vCoord){
+        uv.setXY(i,uCoord,vCoord);uvDirty=true;
+      }
+      if(!line)continue;
+      const c=vertex.color;
+      // Impact and trail quads often share a colour across adjacent vertices.
+      if(c[0]!==red||c[1]!==green||c[2]!==blue||c[3]!==alpha){
+        red=c[0];green=c[1];blue=c[2];alpha=c[3];
+        r8=Math.round(Math.max(0,Math.min(1,red/gain))*255);
+        g8=Math.round(Math.max(0,Math.min(1,green/gain))*255);
+        b8=Math.round(Math.max(0,Math.min(1,blue/gain))*255);
+        a8=Math.floor(Math.max(0,Math.min(1,alpha))*255);
+      }
+      const offset=i*4,bytes=tint.array;
+      if(tintDirty||bytes[offset]!==b8||bytes[offset+1]!==g8||bytes[offset+2]!==r8||bytes[offset+3]!==a8){
+        bytes[offset]=b8;bytes[offset+1]=g8;bytes[offset+2]=r8;bytes[offset+3]=a8;tintDirty=true;
+      }
     }
-    position.needsUpdate=uv.needsUpdate=tint.needsUpdate=true;
+    position.needsUpdate=true;
+    if(uvDirty)uv.needsUpdate=true;
+    if(tintDirty)tint.needsUpdate=true;
     let index=g.index;
     if(!index||index.count<indices.length){
       let capacity=6;while(capacity<indices.length)capacity*=2;
       index=new Three.Uint32BufferAttribute(capacity,1).setUsage(Three.DynamicDrawUsage);g.setIndex(index);
     }
-    index.array.set(indices);index.needsUpdate=true;g.setDrawRange(0,indices.length);
+    if(g.drawRange.count!==indices.length||!indices.every((n,i)=>n===index.array[i])){
+      index.array.set(indices);index.needsUpdate=true;
+    }
+    g.setDrawRange(0,indices.length);
     u.uPgTime.value=draw.time;u.uPgColor.value=draw.color||white;
     u.uPgProjectilePalette.value=draw.projectilePalette||neutral;u.uPgCanvasModulate.value=draw.canvasModulate||white;
     u.uPgUvRect.value=draw.uvRect||fullUV;u.uPgMainRepeat.value=Number(!!draw.mainRepeat);
@@ -162,6 +186,6 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     draw(){finish();renderer.render(scene,camera);},
     dispose(){for(const entry of meshes.values())disposeEntry(entry);
       for(const list of pool.values())for(const entry of list)disposeEntry(entry);
-      pooled=0;pool.clear();meshes.clear();programs.clear();}
+      pooled=0;pool.clear();meshes.clear();litPrograms.clear();unlitPrograms.clear();}
   };
 }

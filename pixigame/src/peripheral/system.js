@@ -7,7 +7,7 @@ import {planNativeStarterCore} from '../replica/native-starter-core.js';
 import {planNativeStarterPilot} from '../replica/native-starter-pilot.js';
 import {STARTER_PILOT_ID} from '../replica/native-pilot-roster.js';
 import {planRetiredPilotFragments} from '../replica/retired-pilot-fragments.js';
-import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide, finishedRealSortie} from './onboarding.js';
+import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide, finishedRealSortie, needsSecondSortieGuide, SECOND_SORTIE_GUIDE} from './onboarding.js';
 import { backpackUseRule, planBackpackUse } from '../replica/native-backpack-use.js';
 import { nativeStarRewardSnapshot, planNativeStarClaim } from '../replica/native-star-rewards.js';
 import { nativeAchievementSnapshot } from '../replica/native-achievements.js';
@@ -1564,6 +1564,7 @@ export function createPeripheralSystem({
       replicaCollection: nativeCollection,
       pilotSupply: {...pilotSupplySnapshot(state.pilotSupply,state.replicaInventory,state.replicaLoadout,time,state.replicaCampaign,taskCounters()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.pilotSupply),adAvailable:typeof playShopAd==='function'},
       replicaCampaign: copy(state.replicaCampaign), onboarding: normalizeOnboarding(state.onboarding), firstSortieRequired:needsFirstSortie,
+      secondSortieGuidePending: needsSecondSortieGuide(state),
       nativeAcquisition: nativeAcquisitionSnapshot(state.replicaInventory,state.replicaCampaign,state.replicaClaims,state.equipment,time,state.replicaLoadout),
       flightRewards: {...flightRewards,adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd&&!pendingFlightAd.pilotSupply&&!pendingFlightAd.samplePatrol),adAvailable:typeof playShopAd==='function'},
       research: nativeResearchSnapshot(state.replicaLoadout, state.replicaInventory),
@@ -1676,8 +1677,9 @@ export function createPeripheralSystem({
   }
   function completeBattleGuide(runId,group) {
     if (!storageCurrent()) return false;
-    if(!activeSortie||activeSortie.snapshot.id!==runId||activeSortie.snapshot.engine!=='danke-replica-v1'||activeSortie.trial||![1,4].includes(group))return false;
+    if(!activeSortie||activeSortie.snapshot.id!==runId||activeSortie.snapshot.engine!=='danke-replica-v1'||activeSortie.trial||![1,4,SECOND_SORTIE_GUIDE].includes(group))return false;
     if(group===1&&activeSortie.snapshot.chapterId!==1)return false;
+    if(group===SECOND_SORTIE_GUIDE&&(activeSortie.snapshot.chapterId!==2||!guideFinished(state,9)))return false;
     if(guideFinished(state,group))return true;
     const previous=state.onboarding;state.onboarding=completeGuide(previous,group);
     if(!persist()){state.onboarding=previous;return false;}

@@ -211,8 +211,10 @@ test('WeChat draws the battle at higher output resolution with the original terr
   stage.refreshViewport();
   const coverTarget={setSize(width,height){Object.assign(this,{width,height});}};
   device.cover={battleTarget:coverTarget};
+  draws.length=0;
   stage.render();
   assert.deepEqual([coverTarget.width,coverTarget.height],[720,1280]);
+  assert.deepEqual(draws.filter(size=>size&&size[0]===720),[[720,1280],[720,1280],[720,1280]]);
   assert.deepEqual(draws.at(-1),[720,1280]);
   assert.equal(displaySizes.length,1);
 });

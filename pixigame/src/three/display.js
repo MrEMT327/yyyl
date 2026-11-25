@@ -540,13 +540,23 @@ export class Text extends Sprite {
       canvas.height = Math.ceil((height + 4) * res);
       ctx.scale(res, res);
       ctx.font = font;
-      ctx.textBaseline = "top";
+      const centerGlyph = s.centerGlyph && lines.length === 1 && !s.letterSpacing;
+      ctx.textBaseline = centerGlyph ? "middle" : "top";
       ctx.fillStyle =
         "#" +
         numericColor(s.fill ?? 0xffffff)
           .toString(16)
           .padStart(6, "0");
       lines.forEach((l, i) => {
+        if (centerGlyph) {
+          ctx.textAlign = "center";
+          const bounds = ctx.measureText(l);
+          const offsetX = (bounds.actualBoundingBoxLeft - bounds.actualBoundingBoxRight) / 2;
+          const offsetY = (bounds.actualBoundingBoxAscent - bounds.actualBoundingBoxDescent) / 2;
+          ctx.fillText(l, (width + 4) / 2 + (Number.isFinite(offsetX) ? offsetX : 0),
+            (height + 4) / 2 + (Number.isFinite(offsetY) ? offsetY : 0));
+          return;
+        }
         let x =
           s.align === "center"
             ? (width - ctx.measureText(l).width) / 2

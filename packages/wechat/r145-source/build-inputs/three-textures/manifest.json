@@ -399,16 +399,6 @@
       "file": "0839f0870ba3a979a944.png"
     },
     {
-      "path": "art/project-encounter-warnings-v3/elite.png",
-      "sha256": "cdbd8abf487b02ec38b630a7724f2296db7f2cecaa145739b6c62bbd376768aa",
-      "file": "cdbd8abf487b02ec38b6.png"
-    },
-    {
-      "path": "art/project-encounter-warnings-v3/boss-dark-edge.png",
-      "sha256": "dd0c944c83d90578eb70d806314092b9018e4cd7d4bb8a9170b4ac6cb930ca63",
-      "file": "dd0c944c83d90578eb70.png"
-    },
-    {
       "path": "art/battle-skill-icons-v4/10000001.webp",
       "sha256": "bfe087f77680ad754dad160f9e71119ad8ce1b5d8ebb0bf12e7fc409ad752f1d",
       "file": "1f8818c65928e3f11ee5.png"
@@ -590,8 +580,8 @@
     },
     {
       "path": "art/project-supply-parachute-v2/canopy.webp",
-      "sha256": "44e2017cee50ad1ceab4b4931a65e224f0ee7c200f3f15f28290754a82a89f39",
-      "file": "91802d57f576335a63e3.png"
+      "sha256": "0372506bb950f300cb2fd4fa359872af302044e9ff7045b6ea72697e9600cb58",
+      "file": "973008edf949ccf88d6a.png"
     },
     {
       "path": "replica-battle/assets/missile-v3/body.png",
@@ -622,6 +612,106 @@
       "path": "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png",
       "sha256": "0173015a26f2f97a67a0fa3ab027e229fe4a8f7f3408dbf2c2573da6858a00ef",
       "file": "e4c2bc7cbb47a28917c7.png"
+    },
+    {
+      "path": "art/defeat-header-v1/damaged-aircraft.png",
+      "sha256": "560b3c0ca94cc511cd8597419505be6afbf56e7310799722320e9069eead78e9",
+      "file": "434f516d7e2bf4b50249.png"
+    },
+    {
+      "path": "art/defeat-wave-badge-v1/badge.png",
+      "sha256": "87491e1b446964d3aef214ded600e2a293fb14f0aeb8f1352318ab1567c740c5",
+      "file": "77170b6cc958e47bd999.png"
+    },
+    {
+      "path": "art/victory-result-v1/victory-aircraft.png",
+      "sha256": "3022aaad4df74bffb081cebb8fa4e0d9399973439f755300f3060b724a8deed1",
+      "file": "44423238371d6d07ff65.png"
+    },
+    {
+      "path": "art/victory-result-v1/wave-badge.png",
+      "sha256": "b0a91191387b5856ad8a192becadae12b593c0b3c3b6831b3e81b660a13535bc",
+      "file": "e65dcf6a9f174a37fae1.png"
+    },
+    {
+      "path": "art/project-ui-icons-v1/star.png",
+      "sha256": "5ab3296d33e565fef8fe82cd8963c2e88516afa705e79325f261c393cfaa2ef6",
+      "file": "c43c5283e9a5c75a6afe.png"
+    },
+    {
+      "path": "art/victory-result-v1/reveal-rays.png",
+      "sha256": "28b65cd12b77ecd4125acc820367748b1b457d8ad23f4f93af8d9f951f7f4e86",
+      "file": "173c12421034d2912ea8.png"
+    },
+    {
+      "path": "art/psd-equipment-v1/button-gold.png",
+      "sha256": "636e601be55785d3b2c9477d985e7b69ed86680c3e04f28969387e766d497a1a",
+      "file": "636e601be55785d3b2c9.png"
+    },
+    {
+      "path": "art/psd-buttons-v1/button-blue.png",
+      "sha256": "ad9cc9560807591295b8ff6cd446e5d57b188b700aa3f32cb1ffc284eeec4382",
+      "file": "ad9cc9560807591295b8.png"
+    },
+    {
+      "path": "art/psd-utility-controls-v1/backpack-frame.png",
+      "sha256": "ea53cab35ff26c0848cbde2db5134e62b587042d90d530c1810ea6b862ae87a2",
+      "file": "ea53cab35ff26c0848cb.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-0-0.png",
+      "sha256": "00218e581e3033762f69ddc2d4a3da4cdbe36fda2fccfdb31273b42bdc5f1139",
+      "file": "00218e581e3033762f69.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-0-1.png",
+      "sha256": "909d04aa371fd49c31206e40c54e5e24408e169d8637208677fce2f661611ef9",
+      "file": "909d04aa371fd49c3120.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-0-2.png",
+      "sha256": "d327429c0231b901700886a4c1efd8764da4fce3c7135a9d85d9de41b0c637cd",
+      "file": "d327429c0231b9017008.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-1-0.png",
+      "sha256": "84fb1ceb6ae0d19adb32dbd43759aa1d214a77cdf95148111215b6fd9e5d95d0",
+      "file": "84fb1ceb6ae0d19adb32.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-1-1.png",
+      "sha256": "ae4976c3731ae63b063ebf4c83d214709ba2011600f49594ea807f19e855ad93",
+      "file": "ae4976c3731ae63b063e.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-1-2.png",
+      "sha256": "04928bd29b72a62bc24dc2cd940ad52fa77ffea6a1201f00bc03f10badd752c2",
+      "file": "04928bd29b72a62bc24d.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-2-0.png",
+      "sha256": "ca4b1c1932522145af2568675233af405773acef80c06a7977f60f7eb9d8f285",
+      "file": "ca4b1c1932522145af25.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-2-1.png",
+      "sha256": "50d9039602ceef68d624b25acabc19a4177c6df0f25612b95573388f95a951fe",
+      "file": "50d9039602ceef68d624.png"
+    },
+    {
+      "path": "art/psd-popup-v1/primary-2-2.png",
+      "sha256": "5e13a2423ede9a493dadabc18f50f68ff3e647302d43876201d37e22c4db42b3",
+      "file": "5e13a2423ede9a493dad.png"
+    },
+    {
+      "path": "art/project-encounter-warnings-v4/elite.png",
+      "file": "8eaab5864e9caa4deb5d.png",
+      "sha256": "8eaab5864e9caa4deb5d6c128cb5641f249e468861ef3d4d48a112137f2878f1"
+    },
+    {
+      "path": "art/project-encounter-warnings-v4/boss.png",
+      "file": "f31da8d9b36376dd4d9e.png",
+      "sha256": "f31da8d9b36376dd4d9eeaf64c06dbc061f7e48e89c93a1796f5935b39c004fc"
     }
   ]
 }

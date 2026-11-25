@@ -1,4 +1,5 @@
 import {nextLobbyGuide,guideFinished,reachedGuideProgress} from '../peripheral/onboarding.js';
+import {SORTIE_STAMINA} from '../peripheral/config.js';
 export function createThreeLobbyGuide({hidden,context,mark,home}){
   let active=null,idle=0,weakChapter=null,marking=false;
   function hide(){home()?.setGuide(null);}
@@ -22,13 +23,20 @@ export function createThreeLobbyGuide({hidden,context,mark,home}){
     const c=context(),s=c.snapshot,v=home();if(!v||!s||!c.visible||c.busy||hidden()){hide();return;}
     if(active&&guideFinished(s,active.group)&&active.group!==14&&!(active.group===8&&c.modal?.type==='shopBoxResult'))active=null;
     if(active&&[9,14].includes(active.group)&&!s.equipment?.items?.some(i=>i.uid===active.uid&&(active.group===9?!i.equipped:i.equipped&&i.canUpgrade)))active=null;
+    const chapter=(c.chapterIndex??s.selectedStageIndex??0)+1;
+    if(s.secondSortieGuidePending && s.stages?.[1]?.unlocked && !s.rewardBusy && !s.rewardPending && !c.modal && !c.subpage){
+      const [id,text] = c.tab!=='battle' ? ['nav-battle','返回战役']
+        : chapter===2 ? ['start','开始第二关']
+        : [chapter<2?'chapter-next':'chapter-prev','切换到第二关'];
+      v.setGuide({id,text,strong:s.wallet?.stamina>=SORTIE_STAMINA,modal:false});
+      return;
+    }
     if(!active&&!c.modal&&!c.subpage)active=nextLobbyGuide(s);
     if(active){const dest=destination(c);if(!dest||c.modal&&!v.canGuidePanel?.(dest[0])){hide();return;}
       v.setGuide({id:dest[0],text:dest[1],strong:true,modal:!!c.modal});
       if(active.group===14&&!guideFinished(s,14)&&!marking){marking=true;Promise.resolve(mark(14,active.uid)).finally(()=>{marking=false;});}return;}
-    const chapter=(c.chapterIndex??s.selectedStageIndex??0)+1;
     if(weakChapter!==chapter){weakChapter=chapter;idle=0;}idle+=Math.max(0,dt);
-    if(!c.modal&&!c.subpage&&c.tab==='battle'&&chapter<=3&&!reachedGuideProgress(s.replicaCampaign,4)&&(chapter===1&&!guideFinished(s,1)||idle>=60)&&!s.rewardPending&&!s.rewardBusy){v.setGuide({id:'start',text:'点击出战',strong:false,modal:false});return;}hide();
+    if(!c.modal&&!c.subpage&&c.tab==='battle'&&chapter<=3&&s.stages?.[chapter-1]?.unlocked&&!reachedGuideProgress(s.replicaCampaign,4)&&(chapter===1&&!guideFinished(s,1)||idle>=60)&&!s.rewardPending&&!s.rewardBusy){v.setGuide({id:'start',text:'点击出战',strong:false,modal:false});return;}hide();
   },result(action,payload,result){if(!result?.ok||!active)return;
     if(active.group===8&&action==='gearSupply'&&Number(payload.count)===1)active={...active,receipt:true};
     if(active.group===14&&action==='gearUpgrade'&&String(payload.id||payload.uid)===active.uid){active=null;hide();}},destroy:hide};

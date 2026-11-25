@@ -49,7 +49,7 @@ import {backpackItems,BACKPACK_TABS} from './backpack-model.js';
 
 import {patrolRenderSignature} from './patrol-clock.js';
 
-import {DAILY_TABS,dailyTabUnlockMessage,isDailyTabAvailable,resolveDailyPeriod} from './daily-tabs.js';
+import {dailyTabUnlockMessage,isDailyTabAvailable,resolveDailyPeriod} from './daily-tabs.js';
 import {taskChestModel} from './task-chest-model.js';
 
 import {emptyGearMerge,gearMergeDraft,pickGearMergeItem,removeGearMergeMaterial} from './gear-merge-selection.js';
@@ -119,8 +119,8 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     context:()=>({snapshot,tab,subpage,modal,researchSection,shopSection,gearFilter,visible,busy,chapterIndex:battleChapterIndex(snapshot||{},battleChapter)}),
     mark:async(group,uid)=>{const handler=bridge.peripheralAction||system?.action;const result=await handler?.call(system||bridge,'onboardingComplete',{group,uid});render(true);return result;}
   });
-  function toast(message) {
-    if(isResourceShortage(message))message=shortageToast(message);
+  function toast(message, action, shortage = isResourceShortage(message)) {
+    if(shortage)message=shortageToast(message,action);
     screen.toast.show(message);
   }
   function patrolUnlockMessage() {
@@ -152,7 +152,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       const handler = bridge.peripheralAction || system?.action;
       const result = handler ? await handler.call(system || bridge, action, payload) : { ok: false, message: '当前功能尚未开放' };
       if(result?.ok&&result.recruitToken)await handler.call(system||bridge,'fleetRecruitSeen',{token:result.recruitToken});
-      if (result?.message && !(result.ok && growthBefore)) toast(action==='replicaCollection'&&['skins','pilots'].includes(payload.kind)&&['unlock','star'].includes(payload.action)&&isResourceShortage(result.message)?'道具不足':action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message);
+      if (result?.message && !(result.ok && growthBefore)) toast(action==='replicaCollection'&&['skins','pilots'].includes(payload.kind)&&['unlock','star'].includes(payload.action)&&isResourceShortage(result.message)?'道具不足':action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message,action);
       if (result?.ok === false && !result.message) toast('暂时无法进行此操作');
       const committedSnapshot=result?.ok?read():snapshot;
       const feedbackRecords=committedFeedbackRecords({before:motionBefore,after:committedSnapshot,action,payload,result});
@@ -318,7 +318,15 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
   function carnivalEntry(){
     const activity=snapshot.carnival;
     if(!activity||activity.expired)return null;
-    return {type:'carnival',day:activity.day,milestone:activity.milestones.find(row=>row.canClaim)?.points};
+    return {type:'carnival',day:activity.day};
+  }
+  function openTasks(period,returnTo){
+    if(!isDailyTabAvailable(snapshot,period??'signin')){
+      if(period)toast(dailyTabUnlockMessage(period));
+      return;
+    }
+    modal={type:'tasks',period:resolveDailyPeriod(snapshot,period),returnTo};
+    renderModal();
   }
   function returnToParentModal() {
     if(!modal?.returnTo)return false;
@@ -329,6 +337,11 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if(!restoreFocus(modalHost,opener))(selectModal(modalHost,'.dc-tab[aria-selected="true"]')||selectModal(modalHost,'.pl-close,.bag-close,.chapter-reward-back,[role=dialog][tabindex]'))?.focus({preventScroll:true});return true;
   }
   function renderModal() {
+    if(modal?.type==='tasks'){
+      const period=resolveDailyPeriod(snapshot,modal.period);
+      if(period)modal.period=period;
+      else modal=modal.returnTo??null;
+    }
     if(!modal&&!rewardLayer&&!renderedModalKey&&!modalOpener
       &&!pendingModalBackgroundRefresh&&!pendingAwakeningFeedback&&!pendingProcessRecords.length)return;
     if(modal?.type!=='backpack'&&!(isRetainedModalLayer(modal)&&modal?.returnTo?.type==='backpack'))releaseNativeBackpack();
@@ -360,7 +373,6 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       modalHost=rewardLayer.layers.overlay;renderedModalKey='';
     }
     if(modal?.type==='collectionSupplyChoice')modal=null;
-    if(modal?.type==='tasks')modal.period=resolveDailyPeriod(snapshot,modal.period);
     if(modal&&isResourceShortage(modal.error))modal={...modal,error:''};
     if(modal?.type==='shopConfirm'){
       const result=reconcileShopReview(modal,snapshot);
@@ -522,7 +534,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
   function switchTab(value, requestedShopSection) {
     if(snapshot?.firstSortieRequired)return;
     const previousTab = tab, previousSubpage = subpage;
-    if (value === 'missions') { modal = {type:'tasks',period:'daily'}; renderModal(); return; }
+    if (value === 'missions') { openTasks(); return; }
     if (value === 'loadout') { openCatalog('pilot'); return; }
     if (value === 'upgrade') { openGearWorkshop(); return; }
     if (!TABS.some(t => t.id === value && !t.locked)) return;
@@ -585,7 +597,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
   }
   async function runLobbyCommand(action,data,target,direct=true){
     if(busy||!visible||isHiddenPilotAffectionAction(action)||snapshot.firstSortieRequired&&action!=='start')return;
-    if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(data.resourceShort));return;}
+    if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(data.resourceShort,action,true);return;}
     if(action==='inspect'){itemDescriptions.open(data,target);return;}
     if(action==='gearSort'&&['quality','part','level'].includes(data.value)){gearSort=data.value;render(true);return;}
     if(action!=='dismiss')bridge.playUiClick?.();
@@ -596,12 +608,10 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       modal={...entry,opener:captureFocus(root,target)};
       renderModal();return;
     }
-    if(action==='carnivalDay'||action==='carnivalMilestone'){
-      if(modal?.type!=='carnival'||!snapshot.carnival)return;
-      const activity=snapshot.carnival,value=Number(id);
-      if(action==='carnivalDay'&&activity.days.some(row=>row.day===value))modal={...modal,day:value};
-      if(action==='carnivalMilestone'&&activity.milestones.some(row=>row.points===value))modal={...modal,milestone:value};
-      renderModal();return;
+    if(action==='carnivalDay'){
+      const day=Number(id);
+      if(modal?.type!=='carnival'||!snapshot.carnival?.days.some(row=>row.day===day&&row.unlocked))return;
+      modal={...modal,day};renderModal();return;
     }
     if(action==='carnivalClaim'){
       if(modal?.type==='carnival')await act(action,data);
@@ -614,7 +624,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       if(!task)return;
       const returnTo={...modal,childOpener:captureFocus(modalHost,target)};
       switch(task.destination){
-        case 'signin':modal={type:'tasks',period:'signin',returnTo};renderModal();break;
+        case 'signin':openTasks('signin',returnTo);break;
         case 'chapters':modal={type:'chapterChest',returnTo};renderModal();break;
         case 'patrol':{
           const lock=patrolUnlockMessage();
@@ -852,8 +862,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
         }
         else if(['guns','skins','pilots'].includes(kind))modal={type:'nativeCollectionDetail',kind,id:Number(id),returnTo:origin};
         else if(kind==='growthDaily'||kind==='growthWeek'){openGrowthSupply(kind==='growthDaily'?'daily':'week',target);return;}
-        else if(kind==='supplyTasks')modal={type:'tasks',period:'daily',returnTo:origin};
-        else if(kind==='signin')modal={type:'tasks',period:'signin',returnTo:origin};
+        else if(kind==='supplyTasks'||kind==='signin'){openTasks(kind==='signin'?'signin':'daily',origin);return;}
         else if(kind==='supplyBoxes')modal={type:'pilotSupplyBoxes',returnTo:origin};
         else if(kind==='patrol'){const lock=patrolUnlockMessage();if(lock){toast(lock);return;}patrolScrollPositions.clear();modal={type:'patrol',returnTo:origin};}
         else if(kind==='nativeStars')modal={type:'nativeStarRewards',returnTo:origin};
@@ -943,7 +952,11 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if (action === 'researchDraw') { await act('researchDraw', { pool: data.pool, expectedRevision: Number(data.revision) }); return; }
     if(action==='researchCard'&&!snapshot.research?.cards?.some(c=>String(c.id)===String(id)&&c.owned))return;
     if (['researchCard', 'researchSummary'].includes(action)) { modal = { type: action, id }; renderModal(); return; }
-    if (['tasks','pilotSupplyTasks','signin','achievements'].includes(action)) { modal = {type:'tasks',period:['tasks','pilotSupplyTasks'].includes(action)?'daily':action,...(modal?.type==='activities'?{returnTo:{...modal,childOpener:captureFocus(modalHost,target)}}:{})}; renderModal(); return; }
+    if (['tasks','pilotSupplyTasks','signin','achievements'].includes(action)) {
+      const period=action==='tasks'?undefined:action==='pilotSupplyTasks'?'daily':action;
+      const returnTo=modal?.type==='activities'?{...modal,childOpener:captureFocus(modalHost,target)}:undefined;
+      openTasks(period,returnTo);return;
+    }
     if (action === 'pilotAffection') {
       modal = {type:'pilotAffection',pilotId:snapshot.pilotId};
       renderModal(); return;
@@ -981,8 +994,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if (action === 'claimStarReward') { await act('claimStarReward',{mode:data.mode,id:Number(id),expectedRevision:Number(data.revision)});return; }
     if (action === 'taskPeriod') {
       const {period}=data;
-      if(modal?.type!=='tasks'||modal.period===period||!DAILY_TABS.some(tab=>tab.id===period))return;
-      if(!isDailyTabAvailable(snapshot,period)){toast(dailyTabUnlockMessage(period));return;}
+      if(modal?.type!=='tasks'||modal.period===period||!isDailyTabAvailable(snapshot,period))return;
       modal.period=period;delete modal.milestoneId;renderModal();actionFeedback.pulse('period-'+period);
       selectModal(modalHost,`.dc-tab[data-period="${period}"]`)?.focus({preventScroll:true});
       return;
@@ -1235,7 +1247,8 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     prepareActivityPanels(){
       if(destroyed||!snapshot)return;
       screen.prepareActivityPanels?.(kind=>{
-        const modal=kind==='tasks'?{type:'tasks',period:'daily'}:carnivalEntry();
+        if(kind==='tasks'&&!isDailyTabAvailable(snapshot,'signin'))return null;
+        const modal=kind==='tasks'?{type:'tasks',period:resolveDailyPeriod(snapshot)}:carnivalEntry();
         return modal?{snapshot,modal,signature}:null;
       },runLobbyCommand,dailyScrollPositions);
     },

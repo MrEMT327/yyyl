@@ -28,23 +28,50 @@ function sized(node,w,h){node.material.uniforms.size.value.set(w,h);return node;
 function locate(node,x,y){node.position.set(x,y,0);return node;}
 function group(){return new T.Group();}
 
+// Keep each damage label in draw order as a single mesh. Positions are in
+// atlas font units so scaling or moving a label never rebuilds its buffers.
+function writeGlyphRun(mesh,table,text,height,art){
+  const runs=Array.from(text,c=>table[c]||table['?']).filter(Boolean);
+  const advance=runs.reduce((sum,r)=>sum+r[6],0);
+  let geometry=mesh.geometry;
+  if(!geometry.hasAttribute('position')||geometry.getAttribute('position').count<runs.length*4){
+    const capacity=Math.max(8,runs.length),indices=[];
+    geometry.dispose();mesh.geometry=geometry=new T.BufferGeometry();
+    geometry.setAttribute('position',new T.BufferAttribute(new Float32Array(capacity*12),3).setUsage(T.DynamicDrawUsage));
+    geometry.setAttribute('uv',new T.BufferAttribute(new Float32Array(capacity*8),2).setUsage(T.DynamicDrawUsage));
+    for(let i=0;i<capacity*4;i+=4)indices.push(i,i+2,i+1,i+2,i+3,i+1);
+    geometry.setIndex(indices);
+  }
+  const positions=geometry.getAttribute('position'),uv=geometry.getAttribute('uv');
+  let cursor=-advance/2,i=0;
+  for(const [x,y,w,h,dx,dy,step] of runs){
+    const left=cursor+dx,top=dy-height*.5,right=left+w,bottom=top+h;
+    const u0=x/art.width,u1=(x+w)/art.width;
+    const v0=(art.framebuffer?y+h:y)/art.height,v1=(art.framebuffer?y:y+h)/art.height;
+    positions.setXY(i,left,top);positions.setXY(i+1,right,top);
+    positions.setXY(i+2,left,bottom);positions.setXY(i+3,right,bottom);
+    uv.setXY(i,u0,v0);uv.setXY(i+1,u1,v0);uv.setXY(i+2,u0,v1);uv.setXY(i+3,u1,v1);
+    cursor+=step;i+=4;
+  }
+  positions.needsUpdate=true;uv.needsUpdate=true;geometry.setDrawRange(0,runs.length*6);geometry.boundingSphere=null;
+  return advance;
+}
+
 export function floatingText(host,fx,layout){
   const text=String(fx.value??'');if(!text)return;
   const numeric=/^[+\-−]?\d+$/.test(text),table=numeric?baked.digits:baked.glyphs,key=numeric?'digits':'combat-labels';
   const ref=numeric?72:64,height=numeric?76:84,unit=layout.fontSize/ref;
   const node=obtain(host,'text:'+fx.uid,group),art=host.art.get(key);
-  if(node.userData.text!==text||node.userData.font!==layout.fontSize){
-    while(node.children.length)host.stage.remove(node.children[0]);
-    const runs=Array.from(text,c=>table[c]||table['?']).filter(Boolean),advance=runs.reduce((n,r)=>n+r[6],0);
-    let cursor=-advance/2;
-    for(const [x,y,w,h,dx,dy,step] of runs){
-      const glyph=part(host,node,key,layout.depth);
-      region(glyph,art,x,y,w,h);sized(glyph,w*unit,h*unit);
-      glyph.material.uniforms.pivot.value.set(0,0);locate(glyph,(cursor+dx)*unit,(dy-height*.5)*unit);cursor+=step;
-    }
-    node.userData.text=text;node.userData.font=layout.fontSize;node.userData.width=advance*unit;
+  if(!art)return;
+  let glyph=node.children[0];
+  if(node.userData.text!==text||node.userData.art!==art){
+    if(glyph)host.stage.remove(glyph);
+    glyph=host.stage.makeLabelSprite(art,layout.depth,node);
+    node.userData.advance=writeGlyphRun(glyph,table,text,height,art);
+    node.userData.text=text;node.userData.art=art;
   }
-  const pt=host.project(fx.x,fx.z),margin=node.userData.width*layout.scale/2+4,color=parseInt(layout.color.slice(1),16);
+  glyph.scale.set(unit,unit,1);glyph.renderOrder=layout.depth;
+  const pt=host.project(fx.x,fx.z),margin=node.userData.advance*unit*layout.scale/2+4,color=parseInt(layout.color.slice(1),16);
   locate(node,Math.max(margin,Math.min(540-margin,pt.x+layout.x)),Math.max(30,Math.min(948,pt.y+layout.y)));
   node.scale.set(layout.scale,layout.scale,1);
   node.matrixAutoUpdate=!layout.slant;
@@ -53,7 +80,7 @@ export function floatingText(host,fx,layout){
     // Give the Chinese label the same forward lean as the damage digits.
     node.matrix.elements[4]=layout.slant*layout.scale;
   }
-  for(const glyph of node.children){host.stage.tint(glyph,color);opacity(glyph,layout.alpha);}
+  host.stage.tint(glyph,color);opacity(glyph,layout.alpha);
 }
 
 function moduleArt(host,node,profile){
@@ -115,7 +142,7 @@ function chest(host){
   const dust=Array.from({length:5},()=>{const n=image(smokeKey);host.stage.tint(n,0xc2b8a5);return n;});
   const smoke=Array.from({length:16},(_,i)=>{const n=image(smokeKey);host.stage.tint(n,[0xe06b6a,0xcc394b,0xaf263b][i%3]);return n;});
   const cords=lines(),canopyArt=host.art.get(supplyCanopyKey);
-  cords.reserve(192);
+  cords.reserve(420);
   const canopy=host.stage.makeSprite(canopyArt??host.stage.white,layer+=.00001,node);
   canopy.visible=Boolean(canopyArt);
   const crate=image('crate'),sparks=lines(true),b=host.art.get('crate');

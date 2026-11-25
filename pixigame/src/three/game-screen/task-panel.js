@@ -105,14 +105,14 @@ function signIn(data,w,t,clip){
   taskPageFade(a,t,data.switched);
 }
 function tasks(data,w,h,t){
+  if(!data.period)return;
   const width=.92*w,height=Math.min(w*1.5,h*.9),p=paintLobbyPaper(t,{...data,paperFace:art.taskFace},w,h,width,height,w/6,'任务');
-  const margin=40*w/750,x=p.x+margin,bw=width-2*margin,step=bw/DAILY_TABS.length,faceH=Math.min(44,step*32/70);
-  for(const [i,tab] of DAILY_TABS.entries()){
+  const margin=40*w/750,x=p.x+margin,bw=width-2*margin,step=bw/data.tabs.length,faceH=Math.min(44,step*32/70);
+  for(const [i,tab] of data.tabs.entries()){
     const current=data.period===tab.id,left=x+step*i,center=p.top+24;
-    const locked=!data.tabs.some(available=>available.id===tab.id);
-    taskTab(p.a,t,box(left,center-faceH/2,step,faceH),tab.label,current,clamp(w*.038,14,18),locked||undefined);
-    if(!locked&&hasReady(data.snapshot,tab.id))p.a.panel(left+step-14,p.top+3,7,7,{radius:4,cut:0,fill:'#ee5767',stroke:'#80313c',opacity:1});
-    area(t,'tab-'+tab.id,locked?tab.label+'，未解锁':tab.label,box(left,p.top,step,48),'taskPeriod',{period:tab.id});
+    taskTab(p.a,t,box(left,center-faceH/2,step,faceH),tab.label,current,clamp(w*.038,14,18));
+    if(hasReady(data.snapshot,tab.id))p.a.panel(left+step-14,p.top+3,7,7,{radius:4,cut:0,fill:'#ee5767',stroke:'#80313c',opacity:1});
+    area(t,'tab-'+tab.id,tab.label,box(left,p.top,step,48),'taskPeriod',{period:tab.id});
   }
   let top=p.top+48+.015*w;top+=pendingNotice(data.snapshot,p.a,t,w,x,top,bw,null);
   const rect=box(x,top,bw,Math.max(1,p.y+height-52*w/750-top));
@@ -147,7 +147,7 @@ export function openTaskPanel(screen,host,send,kind,scrollPositions,options){
   },{...options,overlay:tip,onScroll(zone,value){if(DAILY_TABS.some(tab=>tab.id===zone))scrollPositions?.set(zone,value);}});
   panel.surface?.addEventListener('keydown',keyTab,true);
   function keyTab(e){
-    if(inspect||tip||!panel.focused?.startsWith('tab-')||!['Home','End','ArrowLeft','ArrowRight'].includes(e.key))return;
+    if(inspect||tip||!latest?.tabs.length||!panel.focused?.startsWith('tab-')||!['Home','End','ArrowLeft','ArrowRight'].includes(e.key))return;
     const {tabs,period}=latest,index=tabs.findIndex(tab=>tab.id===period);
     const i=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowLeft'?-1:1)+tabs.length)%tabs.length;
     e.preventDefault();e.stopImmediatePropagation();send('taskPeriod',{period:tabs[i].id},host);

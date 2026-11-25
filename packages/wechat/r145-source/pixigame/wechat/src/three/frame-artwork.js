@@ -9,12 +9,13 @@ export function frameWork(platform,active,fastInterval=28){
   function run(time){
     request=null;
     if(closed||!active())return;
-    const interval=last===null?0:time-last;
+    const interval=last===null?Infinity:time-last;
     last=time;
-    if(interval<fastInterval||interval>80)jobs.shift()();
+    if(interval>=0&&interval<fastInterval)jobs.shift()();
     resume();
   }
-  function clear(){
+  function clear(interval=fastInterval){
+    fastInterval=interval;
     jobs.length=0;last=null;
     if(request!==null)platform.cancelFrame(request);
     request=null;
@@ -44,7 +45,7 @@ export function paceSortieData(waitForPaint,signal){
 
 function upload(platform,texture,maxPixels){
   const r=platform.renderer,image=texture.image,limit=r.capabilities.maxTextureSize;
-  const w=image.naturalWidth||image.width,h=image.naturalHeight||image.height;
+  const w=image?.naturalWidth||image?.width,h=image?.naturalHeight||image?.height;
   if(!w||!h||w>limit||h>limit||w*h>maxPixels||r.getContext().isContextLost())return false;
   try{r.initTexture(texture);return true;}catch{return false;}
 }
@@ -70,17 +71,41 @@ const earlyBattleArt=new Set(['coins','digits','combat-labels','medkit','shell',
 export function prewarmBattleArtwork(platform){
   const work=frameWork(platform,()=>platform.visible,40);
   const unwatch=platform.onViewport?.(work.resume);
-  let count=0,pixels=0;
+  const uploaded=new WeakMap();
+  let count=0,pixels=0,queued=new WeakMap();
+  const areaOf=({image})=>(image?.naturalWidth||image?.width||0)*(image?.naturalHeight||image?.height||0);
+  function warm(texture){
+    if(uploaded.get(texture)===texture.version||!areaOf(texture))return false;
+    uploaded.set(texture,texture.version);
+    return upload(platform,texture,2400000);
+  }
   return {add(key,texture,priority=false){
     if(count>=36||!(priority||earlyBattleArt.has(key)||/^host:\/\/(?:ice-weapons|ice-particles|warm-energy-shots)/.test(key)))return;
-    const {image}=texture,area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);
-    if(!(area>0)||area>2400000||pixels+area>6500000)return;
-    count++;pixels+=area;work.push(()=>upload(platform,texture,2400000));
-  },push(job){work.push(()=>{
+    const {version}=texture,area=areaOf(texture);
+    if(queued.get(texture)===version||uploaded.get(texture)===version||
+      !(area>0)||area>2400000||pixels+area>6500000)return;
+    queued.set(texture,version);
+    count++;pixels+=area;work.push(()=>{
+      if(queued.get(texture)===version)queued.delete(texture);
+      if(texture.version===version)warm(texture);
+    });
+  },
+  prepare(textures){
+    let uploads=0,area=0;
+    for(const texture of textures){
+      if(uploaded.get(texture)===texture.version)continue;
+      const nextArea=areaOf(texture);
+      if(uploads&&(uploads>=2||area+nextArea>450000))return false;
+      if(warm(texture)){uploads++;area+=nextArea;}
+    }
+    return uploads===0;
+  },
+  push(job){work.push(()=>{
     try{if(!platform.renderer.getContext().isContextLost())job();}
     catch(error){console.warn('[Three 战斗预热]',error?.message||error);}
   });},
-    reset(){work.clear();count=pixels=0;},
+    // Loading can use 40 ms frames. Once combat starts, uploads wait for a faster frame.
+    reset(){work.clear(25);count=pixels=0;queued=new WeakMap();},
     close(){work.close();unwatch?.();},
   };
 }

@@ -1,4 +1,5 @@
 import { createPilotPortraitPlayer } from '../../../../../../../pixigame/src/ui/portrait-player-factory.js';
+import { trimUnusedNativeCubismCore } from '../../../../../../../pixigame/src/ui/cubism-portrait-player.js';
 import { PILOT_PORTRAITS } from '../../../../../../../pixigame/src/ui/character-portraits.js';
 import { createPortraitSurface } from '../../../../../../../pixigame/src/three/game-screen/three-portrait-surface.js';
 import { createBluePortraitForOutput } from '../../../../../../../pixigame/src/three/game-screen/blue-portrait.js';
@@ -34,7 +35,13 @@ function rendererOutput(device,token,model){
 }
 
 export function createWechatPortraits(api,platform,services,device,baseURL,loadCore){
-  let allowed=true,active=null;
+  let allowed=true,active=null,memoryPressure=false,foreground=platform.visible;
+  const unwatch=platform.onViewport((_bounds,visible)=>{
+    if(foreground===visible)return;
+    foreground=visible;
+    if(visible)active?.sync();
+    else{active?.releasePlayer();trimUnusedNativeCubismCore();}
+  });
   function open(id){
     const surface=Symbol(id),watchers=new Set();
     let rect={width:0,height:0},closed=false,player=null,pendingFeedback=null,enabled=allowed;
@@ -61,7 +68,7 @@ export function createWechatPortraits(api,platform,services,device,baseURL,loadC
       render:model=>rendererOutput(device,surface,model),
     };
     function sync(){
-      if(closed||!enabled||!rect.width||!rect.height||!PILOT_PORTRAITS[id])return;
+      if(closed||!enabled||memoryPressure||!platform.visible||!rect.width||!rect.height||!PILOT_PORTRAITS[id])return;
       if(!player){
         try{
           const ticket=++generation;
@@ -114,9 +121,9 @@ export function createWechatPortraits(api,platform,services,device,baseURL,loadC
     openCatalog(_device,bounds,refresh,paint){return catalogPortrait(device,null,refresh,paint,{bounds,open});},
     sync(){active?.sync();},
     feedback(id){return active?.id===id?active.feedback():false;},
-    setVisible(next,{leavePage=false}={}){allowed=Boolean(next);active?.setVisible(allowed,leavePage);},
+    setVisible(next,{leavePage=false,suspendLoading=false}={}){allowed=Boolean(next);active?.setVisible(allowed,leavePage||suspendLoading);},
     get pilotId(){return active?.id??null;},
-    releaseHidden(){if(!allowed)active?.releasePlayer();},
-    destroy(){active?.close();active=null;},
+    trimMemory(){memoryPressure=true;active?.releasePlayer();trimUnusedNativeCubismCore();},
+    destroy(){unwatch();active?.close();active=null;},
   };
 }

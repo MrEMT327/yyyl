@@ -1,6 +1,6 @@
 import {equipmentArtPath} from './equipment-art.js';
 import { recordDiagnostic } from '../diagnostic-log.js';
-import {battleOnboarding} from '../peripheral/onboarding.js';
+import {battleOnboarding, SECOND_SORTIE_GUIDE} from '../peripheral/onboarding.js';
 import { replicaChapter } from './chapter-contract.js';
 import { chapterPresentationForStage } from './chapter-presentation.js';
 import { replicaConfigurationKey } from './loadout-contract.js';
@@ -363,6 +363,7 @@ export function createSortieController({peripheral,onEnter,onLeave,onProgress,on
               onState('playing'); resolve(true); break;
             case 'control-ready':
               if(message.runId===session.run?.snapshot.id){
+                if (session.startAcknowledged && chapter.id===2 && !session.trial) peripheral().completeBattleGuide(message.runId, SECOND_SORTIE_GUIDE);
                 host.setLaunching(false);
                 recordDiagnostic('战斗操作就绪', `第 ${chapter.id} 章`);
               }

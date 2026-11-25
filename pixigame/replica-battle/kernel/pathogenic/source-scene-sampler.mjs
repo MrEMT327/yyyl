@@ -115,6 +115,28 @@ function trackTarget(nodes,root,path) {
   }else p=joined(root,relative);
   return {node:nodes.get(p),path:p,property:properties.join(':')};
 }
+const renderScenes=new WeakMap();
+function renderScenePlan(scene){
+  let plan=renderScenes.get(scene);
+  if(!plan){
+    const nodes=new Map();
+    for(const node of scene.nodes){
+      const properties=node.properties??{};
+      nodes.set(node.path,{parent:parentPath(node.path),properties,local:localMatrix(properties)});
+    }
+    plan={nodes,targets:new Map()};renderScenes.set(scene,plan);
+  }
+  return plan;
+}
+function renderTrackTarget(plan,nodes,root,path){
+  // A unique-name lookup can depend on properties set earlier in this sample.
+  if(!plan||path.startsWith('%'))return trackTarget(nodes,root,path);
+  let paths=plan.targets.get(root);
+  if(!paths){paths=new Map();plan.targets.set(root,paths);}
+  let target=paths.get(path);
+  if(!target){const found=trackTarget(nodes,root,path);target={path:found.path,property:found.property};paths.set(path,target);}
+  return {node:nodes.get(target.path),path:target.path,property:target.property};
+}
 function trackIds(properties) {return [...new Set(Object.keys(properties).map(k=>/^tracks\/(\d+)\/type$/.exec(k)?.[1]).filter(x=>x!==undefined))].map(Number).sort((a,b)=>a-b);}
 // Only the internal read-only renderer uses these plans. Public samplers still
 // observe mutable source inputs on every call and return independently owned values.
@@ -152,7 +174,8 @@ export function sampleSceneForRender(graph,scenePath,ctx={}) {return sample(grap
 function sample(graph,scenePath,ctx,renderOnly) {
   const scene=graph.scenes[scenePath];if(!scene)throw Error('Unknown source scene '+scenePath);
   const time=ctx.time??0;if(!Number.isFinite(time))throw Error('Non-finite source time');
-  const nodes=new Map(scene.nodes.map(n=>[n.path,{...n,properties:renderOnly?{...n.properties}:clone(n.properties)}]));
+  const scenePlan=renderOnly?renderScenePlan(scene):null,nodes=new Map();
+  for(const n of scene.nodes)nodes.set(n.path,{...n,properties:renderOnly?{...n.properties}:clone(n.properties)});
   const out={sprites:[],lines:[],particles:[],methods:[],unsupported:[],nodes:[],finished:false};
   const warn=(code,nodePath,detail)=>out.unsupported.push({code,nodePath,detail});
   const plays=new Map(),freed=new Set(),methodEvents=[];
@@ -173,7 +196,7 @@ function sample(graph,scenePath,ctx,renderOnly) {
     for(const id of tracks){
       const pre=`tracks/${id}/`;if(a[pre+'enabled']===false)continue;
       const type=a[pre+'type'],keys=a[pre+'keys'];
-      const target=trackTarget(nodes,root,a[pre+'path']);
+      const target=renderTrackTarget(scenePlan,nodes,root,a[pre+'path']);
       if(!target.node){warn('missing-animation-target',node.path,a[pre+'path']);continue;}
       if(type==='value'){
         try{
@@ -198,8 +221,8 @@ function sample(graph,scenePath,ctx,renderOnly) {
     }
     if(event.method==='stop'&&node.type==='AnimatedSprite2D'){plays.set(node.path,{name:p.animation||'default',age:0,speed:0});p.frame=0;continue;}
     if(event.method==='animate_width_in'||event.method==='animate_width_out'){
-      const line=[...nodes.values()].find(n=>n.type==='Line2D'&&n.path===joined(node.path,'Visual/Line2D'));
-      if(line&&p.base_width){
+      const line=nodes.get(joined(node.path,'Visual/Line2D'));
+      if(line?.type==='Line2D'&&p.base_width){
         const t=clamp(event.age/(event.args[0]||.000001));
         const full=Math.max(5,p.base_width*Math.pow(ctx.damageRatio??1,.7));
         const start=ctx.widthGrow??(ctx.captureProperties?.[line.path]?.width!==undefined?ctx.captureProperties[line.path].width/full:1);
@@ -219,11 +242,15 @@ function sample(graph,scenePath,ctx,renderOnly) {
   const evaluated=new Map();
   function evaluate(node){
     if(evaluated.has(node.path))return evaluated.get(node.path);
-    const p=node.properties,parent=nodes.get(parentPath(node.path));
+    const p=node.properties,staticNode=scenePlan?.nodes.get(node.path);
+    const parent=nodes.get(staticNode?staticNode.parent:parentPath(node.path));
     const state=parent?evaluate(parent):{matrix:rootMatrix,color:ctx.color||WHITE,visible:true,z:ctx.z||0,material:null};
-    const matrix=multiplyMatrix(p.top_level?rootMatrix:state.matrix,localMatrix(p));
+    const base=staticNode?.properties;
+    const local=base&&!ctx.methodHandler&&p.transform===base.transform&&p.position===base.position&&p.scale===base.scale&&
+      p.rotation===base.rotation&&p.skew===base.skew?staticNode.local:localMatrix(p);
+    const matrix=multiplyMatrix(p.top_level?rootMatrix:state.matrix,local);
     const color=colorMultiply(state.color,p.modulate||WHITE),selfColor=colorMultiply(color,p.self_modulate||WHITE);
-    const visible=state.visible&&p.visible!==false&&![...freed].some(f=>f===node.path||f==='.'||node.path.startsWith(f+'/'));
+    const visible=state.visible&&p.visible!==false&&(!freed.size||![...freed].some(f=>f===node.path||f==='.'||node.path.startsWith(f+'/')));
     const z=(p.z_as_relative===false?0:state.z)+(p.z_index||0);
     const material=p.use_parent_material?state.material:p.material;
     const e={matrix,color,selfColor,visible,z,material};evaluated.set(node.path,e);return e;

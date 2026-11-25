@@ -15,12 +15,12 @@ import { createMenuArtworkWarmup, frameWork } from './frame-artwork.js';
 const activityKinds=['tasks','carnival'];
 const mainTabOrder=['assembly','supply','shop','research'];
 
-export function mountWechatLobby(api, platform, device, { bridge, system, deferPortraits, deferFirstSortieLobby, portraits, openAircraft, openVideo, settingsStorage }) {
+export function mountWechatLobby(api, platform, device, { bridge, system, deferPortraits, deferFirstSortieLobby, portraits, openAircraft, openVideo, settingsStorage, releaseBattleCache }) {
   let startupWarmup=null,queueMainMenus=null,queueCatalogs=null,queueWorkshops=null,queueReturnMenus=null;
-  let returnedFromBattle=false;
+  let allowEquipmentStill=false,battleCachePending=false;
   let mountSettledEquipment=null,cancelReturnPreparation=null;
   let warmPilotAvatars=null,avatarWarmup=null;
-  let firstSortieMenus=false,firstSortieQueued=false,warmupQueued=false,visible=true,deferSecondaryWarmup=false,location={tab:'battle',subpage:''};
+  let firstSortieMenus=false,firstSortieQueued=false,warmupQueued=false,visible=true,memoryPressure=false,location={tab:'battle',subpage:''};
   const full=()=>platform.viewport.screen;
   function bounds(){
     const {screen,safeTop}=platform.viewport;
@@ -36,30 +36,35 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
   const activityPreviews=new Map(),prepareActivityArtwork=createMenuArtworkWarmup(platform);
   let activityWarmup=null;
   const home={...region(),stageEntry:true,getBounds:full,openPortrait:id=>portraits.openHome(id,device)};
-  const menu={...region(),openPortrait:(refresh,paint)=>portraits.openCatalog(device,bounds,refresh,paint),
+  const menu={...region(),allowAircraftModel:()=>!memoryPressure,openPortrait:(refresh,paint)=>portraits.openCatalog(device,bounds,refresh,paint),
     openAircraft:(...args)=>openAircraft(device,bounds,...args)};
   const mainPages=new Map(mainTabOrder.map(tab=>[tab,{...menu,main:true,completeEntry:tab==='assembly'||tab==='supply'}]));
-  mainPages.get('assembly').allowAircraftStill=()=>returnedFromBattle;
+  mainPages.get('assembly').allowAircraftStill=()=>allowEquipmentStill;
   const catalogPages=new Map(['weapon','aircraft','pilot'].map(key=>[key,{...menu,catalog:true}]));
   const workshopPages=new Map(['gear','weapon'].map(kind=>[kind,{...menu,workshop:kind}]));
   const retainedViews=new Map();
   const pendingWarmup=new Map(),warmedTabs=[];
-  function drop(page,slot){slot.view.close();retainedViews.delete(page);}
+  function drop(page,slot){pendingWarmup.delete(page);retainedViews.delete(page);slot.view.close();}
   function retain(page,mount,active=true){
     let slot=retainedViews.get(page);
     if(slot?.view.entryFailed){drop(page,slot);slot=null;}
     if(!slot){
-      slot={active};
+      slot={active,visited:active};
       const shown=()=>slot.active&&page.visible();
       slot.view=mount({...page,visible:shown,accepts:shown});
       slot.controller=Object.assign(Object.create(slot.view),{
         page,
-        close(){slot.active=false;slot.view.park();if(!visible&&page!==home)drop(page,slot);},
+        close(){
+          if(page===mainPages.get('assembly'))allowEquipmentStill=true;
+          slot.active=false;
+          if((!visible||memoryPressure)&&page!==home)drop(page,slot);
+          else slot.view.park();
+        },
       });
       retainedViews.set(page,slot);
     }else if(active){
       retainedViews.delete(page);retainedViews.set(page,slot);
-      slot.active=true;slot.view.activate();
+      slot.active=true;slot.visited=true;slot.view.activate();
     }
     return slot.controller;
   }
@@ -82,8 +87,9 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     });
   }
   function queueMenuWarmup(pages,read,send,interactive,setSection){
+    if(memoryPressure)return;
     for(const [tab,host] of pages){
-      if((deferSecondaryWarmup||firstSortieMenus)&&!host.main||retainedViews.has(host)||pendingWarmup.has(host))continue;
+      if(firstSortieMenus&&!host.main||retainedViews.has(host)||pendingWarmup.has(host))continue;
       pendingWarmup.set(host,{tab,mount(){
         const {data,key}=read(tab);
         const view=retainMenu(host,send,interactive,setSection,false);
@@ -113,9 +119,9 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     else finishStartupWarmup();
   }
   function queuePilotAvatars(){
-    if(firstSortieMenus||!warmPilotAvatars)return;
+    if(firstSortieMenus||memoryPressure||!warmPilotAvatars)return;
     warmup.push(()=>warmPilotAvatars?.({
-      get aborted(){return !platform.visible||!isVisible();}
+      get aborted(){return memoryPressure||!platform.visible||!isVisible();}
     }));
   }
   const copyText=text=>new Promise(resolve=>{
@@ -140,14 +146,13 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     for(const slot of activityPreviews.values())slot.view?.close();
     activityPreviews.clear();
   }
-  function releaseIdleViews(includeMain=true){
-    for(const page of pendingWarmup.keys())if(includeMain||!page.main)pendingWarmup.delete(page);
-    if(!pendingWarmup.size)finishStartupWarmup();
+  function releaseIdleViews(){
+    pendingWarmup.clear();finishStartupWarmup();
     clearActivityPreviews();
-    for(const [page,slot] of retainedViews)if(!slot.active&&page!==home&&(includeMain||!page.main))drop(page,slot);
+    for(const [page,slot] of retainedViews)if(!slot.active&&page!==home)drop(page,slot);
   }
   function queueActivityPanels(){
-    if(!visible||deferSecondaryWarmup||firstSortieMenus||!activityWarmup)return;
+    if(!visible||memoryPressure||firstSortieMenus||!activityWarmup)return;
     const {read,send,scroll}=activityWarmup;
     for(const kind of activityKinds){
       if(activityPreviews.has(kind)||!read(kind))continue;
@@ -198,7 +203,7 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
         const urls=pilots.map(pilot=>compactPilotAvatar(pilot.avatar||pilot.image).src).filter(Boolean);
         if(urls.length)avatarWarmup=platform.warmArtworkFiles(urls,signal).finally(()=>{avatarWarmup=null;});
       };
-      queueMainMenus=()=>queueMenuWarmup(mainPages,read,send,interactive,setSection);
+      queueMainMenus=()=>queueMenuWarmup(firstSortieMenus?[['assembly',mainPages.get('assembly')]]:mainPages,read,send,interactive,setSection);
       queueReturnMenus=()=>queueMenuWarmup(['assembly','supply'].map(tab=>[tab,mainPages.get(tab)]),read,send,interactive,setSection);
       if(firstSortieRequired){
         firstSortieMenus=true;
@@ -229,7 +234,7 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
       });
     },
     prepareFirstSortieEquipment(isCurrent){
-      if(!firstSortieMenus||deferSecondaryWarmup||visible||!isCurrent())return;
+      if(!firstSortieMenus||memoryPressure||visible||!isCurrent())return;
       cancelReturnPreparation?.();
       const prepared=mountSettledEquipment?.();
       if(!prepared)return;
@@ -247,10 +252,10 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
         }
         function step(){
           frame=null;
-          if(visible||deferSecondaryWarmup||!isCurrent()){finish();return;}
+          if(visible||memoryPressure||!isCurrent()){finish();return;}
           if(platform.visible&&!device.cover){
             try{
-              if(view.prepareOffscreen(1,true)&&homeReady){
+              if(view.prepareOffscreen(1)&&homeReady){
                 platform.debugLog?.info('结算时装备首屏已准备');
                 finish();return;
               }
@@ -268,7 +273,7 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
       });
     },
     warmFirstSortieMenus(signal){
-      if(!firstSortieMenus||cancelReturnPreparation||deferSecondaryWarmup||visible||signal.aborted||!platform.visible||device.cover)return false;
+      if(!firstSortieMenus||cancelReturnPreparation||memoryPressure||visible||signal.aborted||!platform.visible||device.cover)return false;
       if(!firstSortieQueued){firstSortieQueued=true;queueMainMenus?.();warmPilotAvatars?.(signal);}
       if(pendingWarmup.size)warmNextMenu(1);
       return pendingWarmup.size>0;
@@ -284,6 +289,13 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     mountMenu(host,send,interactive,setSection){
       if(host.main||host.catalog||host.workshop){
         pendingWarmup.delete(host);
+        if(host.catalog||host.workshop){
+          // Unvisited pages keep their prepared first screen. Only the last visited
+          // equipment subpage keeps its scene after browsing or changing selections.
+          for(const [page,slot] of retainedViews){
+            if(page!==host&&(page.catalog||page.workshop)&&slot.visited&&!slot.active)drop(page,slot);
+          }
+        }
         return retainMenu(host,send,interactive,setSection);
       }
       return mountWechatMenu(device,platform,host,send,interactive,setSection);
@@ -308,11 +320,14 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     setVisible(value){
       const returning=value&&!visible;
       visible=value;
-      if(!value&&!firstSortieMenus)releaseIdleViews();
+      if(!value&&!firstSortieMenus){
+        releaseIdleViews();
+        for(const slot of retainedViews.values())if(slot.active)slot.view.trimAircraft?.();
+      }
       else if(returning){
         cancelReturnPreparation?.();
-        deferSecondaryWarmup=false;
-        if(!firstSortieMenus){returnedFromBattle=true;queueReturnMenus?.();queueActivityPanels();queueWorkshops?.();queueCatalogs?.();}
+        allowEquipmentStill=true;battleCachePending=true;
+        if(!firstSortieMenus){queueReturnMenus?.();queueActivityPanels();queueWorkshops?.();queueCatalogs?.();}
       }
       device.repaintHome?.();
     },
@@ -321,6 +336,9 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     retainModal:()=>({overlay:receiptRegion,restore(){}}),
     async copyReport(_host,report){device.toast.show(await copyText(report)?'已复制':'复制失败');},
     showPage({tab,subpage,nativeHome,workshopKind}){
+      if(visible&&battleCachePending&&(mainPages.has(tab)||catalogPages.has(subpage)||subpage==='workshop')){
+        battleCachePending=false;releaseBattleCache?.();
+      }
       if(subpage==='pilot'&&location.subpage!=='pilot')queuePilotAvatars();
       location={tab,subpage};device.lobbyLocation=location;
       if(subpage==='workshop')return workshopPages.get(workshopKind)??menu;
@@ -340,10 +358,8 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
   try{
     const controller=createThreeLobbyController({bridge,system,presentation,deferPortraits,deferFirstSortieLobby});
     controller.trimMemory=()=>{
-      deferSecondaryWarmup=true;cancelReturnPreparation?.();releaseIdleViews(!visible);
-      const equipment=retainedViews.get(mainPages.get('assembly'));
-      if(equipment&&!equipment.active)equipment.view.trimAircraft();
-      if(!visible)firstSortieQueued=false;
+      memoryPressure=true;cancelReturnPreparation?.();releaseIdleViews();
+      for(const slot of retainedViews.values())if(slot.active)slot.view.trimAircraft?.();
     };
     const update=controller.update.bind(controller);
     controller.update=step=>{

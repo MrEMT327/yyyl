@@ -4,7 +4,7 @@ import { createWechatResources } from '../full/resources.js';
 import { createAssetCache } from '../full/asset-cache.js';
 import { createBattleDataCache } from '../full/battle-data-cache.js';
 import { loadArtwork } from '../../../../../../../pixigame/src/three/game-screen/image-loading.js';
-import { loadFighterPackages } from '../../../../../../../pixigame/src/three/aircraft/fighter-packages.js';
+import { createFighterPackageSelection } from '../../../../../../../pixigame/src/three/aircraft/fighter-packages.js';
 import { getWechatTransport } from '../full/transport.js';
 
 function makeAbort(){
@@ -87,16 +87,18 @@ export function createWechatServices(api,config){
     });
     loadouts.set(name,request);return request;
   };
-  const readFighterFile=(slug,name)=>resources.readBytes('fighters/'+slug+'/'+name,{baseURL});
+  const readFighterFile=(slug,name,signal)=>resources.readBytes('fighters/'+slug+'/'+name,{baseURL,signal});
   const objectLoader=new NativeObjectLoader();
+  const createAircraftSelection=()=>createFighterPackageSelection({read:readFighterFile,objectLoader,assetBytes,makeAbort});
+  const sortieAircraft=createAircraftSelection();
   return {
-    baseURL,resources,resolve,fetchResource,makeAbort,storage:persistentStorage(api),musicFiles:config.musicFiles,
+    baseURL,resources,files,resolve,fetchResource,makeAbort,storage:persistentStorage(api),musicFiles:config.musicFiles,
     beginSortieLoad:()=>getWechatTransport(api).beginSortieLoad(),
     readSharedLoadoutJSON,readFighterFile,objectLoader,assetBytes,
     localFile:path=>files.localFile(path,baseURL),
     loadBattleData:(id,signal,prepare,timing)=>battleData.load(id,signal,prepare,timing),clearBattleData:battleData.clear,
-    loadAircraft:(pilotId,{allowTextureFallback=false}={})=>
-      loadFighterPackages({pilotIds:[pilotId],allowTextureFallback,read:readFighterFile,objectLoader,assetBytes}),
-    close(){loadouts.clear();battleData.clear();assetBytes.dispose();resources.dispose();},
+    createAircraftSelection,loadAircraft:sortieAircraft.load,
+    releaseBattleCache(){battleData.clear();sortieAircraft.release();},
+    close(){sortieAircraft.release();loadouts.clear();battleData.clear();files.clearMemory();assetBytes.dispose();resources.dispose();},
   };
 }

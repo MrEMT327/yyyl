@@ -9,6 +9,7 @@ export function openWechatBattleSurface(device,platform,region,budget){
     detach:()=>region.leave(),
     frame:()=>fullBattleFrame(region.bounds()),
     smoothEnemyMinification:true,
+    compactGlow:true,
     renderBudget:budget,
     terrainScale:budget?budget.terrainWidth/battleWidth:1,
     outputScale:4/3,

@@ -14,46 +14,89 @@ export function fighterForPilot(pilotId) {
   return catalog.find(entry => entry.slug === slug);
 }
 
-const templates = new Map();
-const pending = new Map();
+const packages = new Map();
 export function isFighterPackageReady(pilotId) {
-  return templates.has(fighterForPilot(pilotId).slug);
+  return Boolean(packages.get(fighterForPilot(pilotId).slug)?.asset);
 }
-// The game requests only
-// the aircraft it is about to display; concurrent requests share one load.
-export function loadFighterPackages({ read, skipTextures = false, allowTextureFallback = false, pilotIds, objectLoader, assetBase, assetBytes } = {}) {
-  const entries = pilotIds ? [...new Set(pilotIds.map(id => fighterForPilot(id)))] : catalog;
+
+function requestPackage(entry, { read, skipTextures, allowTextureFallback, objectLoader, assetBase, assetBytes, makeAbort }) {
+  const cached = packages.get(entry.slug);
+  if (cached) return cached;
+  const controller = makeAbort?.();
+  const record = { slug: entry.slug, owners: 0, persistent: false, controller, asset: null, ready: null };
+  packages.set(entry.slug, record);
+  const derived = gameLod.entries[entry.slug];
+  // A newly imported source cannot silently receive an older geometry LOD.
+  const useGameLod = derived?.sourceManifestHash === entry.manifestHash;
+  record.ready = loadPackage(useGameLod ? { ...entry, manifestHash: derived.manifestHash } : entry, {
+    manifestFile: useGameLod ? 'game-lod-manifest.json' : 'manifest.json',
+    skipTextures, allowTextureFallback, objectLoader, assetBytes, signal: controller?.signal,
+    read: async (name, _url, signal, expectedHash) => {
+      if (read) return read(entry.slug, name, signal);
+      const base = assetBase || new URL(import.meta.env.BASE_URL, document.baseURI);
+      const url = new URL(`fighters/${entry.slug}/${name}`, base);
+      // Content-addressed requests can reuse the browser cache across the
+      // lobby and battle iframe without mixing imported package revisions.
+      url.searchParams.set('v', expectedHash || entry.manifestHash);
+      const response = await fetch(url, { signal });
+      if (!response.ok) throw new Error(`战机资源加载失败：${entry.name}/${name} (${response.status})`);
+      return response.arrayBuffer();
+    },
+  }).then(asset => {
+    if (packages.get(entry.slug) !== record) {
+      asset.dispose();
+      throw Object.assign(new Error('战机预览已关闭'), {name:'AbortError'});
+    }
+    record.asset = asset;
+    return asset;
+  }).catch(error => {
+    if (packages.get(entry.slug) === record) packages.delete(entry.slug);
+    throw error;
+  });
+  return record;
+}
+
+function releaseOwner(record) {
+  if (--record.owners || record.persistent || packages.get(record.slug) !== record) return;
+  packages.delete(record.slug);
+  if (record.asset) record.asset.dispose();
+  else record.controller?.abort();
+}
+
+// Browser tools can preload the whole roster and instantiate it much later.
+export function loadFighterPackages(options = {}) {
+  const entries = options.pilotIds ? [...new Set(options.pilotIds.map(fighterForPilot))] : catalog;
   return Promise.all(entries.map(entry => {
-    if (templates.has(entry.slug)) return templates.get(entry.slug);
-    if (pending.has(entry.slug)) return pending.get(entry.slug);
-    const derived = gameLod.entries[entry.slug];
-    // A newly imported source cannot silently receive an older geometry LOD.
-    const useGameLod = derived?.sourceManifestHash === entry.manifestHash;
-    const request = loadPackage(useGameLod ? { ...entry, manifestHash: derived.manifestHash } : entry, {
-      manifestFile: useGameLod ? 'game-lod-manifest.json' : 'manifest.json',
-      skipTextures, allowTextureFallback, objectLoader, assetBytes,
-      read: async (name, _url, signal, expectedHash) => {
-        if (read) return read(entry.slug, name);
-        const base = assetBase || new URL(import.meta.env.BASE_URL, document.baseURI);
-        const url = new URL(`fighters/${entry.slug}/${name}`, base);
-        // Content-addressed requests can reuse the browser cache across the
-        // lobby and battle iframe without mixing imported package revisions.
-        url.searchParams.set('v', expectedHash || entry.manifestHash);
-        const response = await fetch(url, { signal });
-        if (!response.ok) throw new Error(`战机资源加载失败：${entry.name}/${name} (${response.status})`);
-        return response.arrayBuffer();
-      },
-    }).then(asset => { templates.set(entry.slug, asset); return asset; })
-      .finally(() => pending.delete(entry.slug));
-    pending.set(entry.slug, request);
-    return request;
+    const record = requestPackage(entry, options);
+    record.persistent = true;
+    return record.ready;
   }));
+}
+
+// Each native preview (and the sortie) holds just its current selection.
+// Live instances also own a reference to their shared geometry and textures.
+export function createFighterPackageSelection(options) {
+  let current;
+  function release() {
+    if (!current) return;
+    const previous = current;
+    current = null;
+    releaseOwner(previous);
+  }
+  return { release, load(pilotId, overrides) {
+    const entry = fighterForPilot(pilotId);
+    if (current?.slug === entry.slug && packages.get(entry.slug) === current) return current.ready;
+    release();
+    current = requestPackage(entry, { ...options, ...overrides });
+    current.owners++;
+    return current.ready;
+  }};
 }
 
 // Hardware and textures remain immutable in the cache. Each preview/combat
 // instance owns its animation targets, materials and writable effect buffers.
 export function instantiateFighterPackage(pilotId) {
-  const entry = fighterForPilot(pilotId), template = templates.get(entry.slug);
+  const entry = fighterForPilot(pilotId), record = packages.get(entry.slug), template = record?.asset;
   if (!template) throw new Error(`战机资源尚未加载：${entry.name}`);
   const nodes = new Map(), materials = new Map(), geometries = new Map();
   const texturesOf = material => [
@@ -102,6 +145,7 @@ export function instantiateFighterPackage(pilotId) {
   const detailKit=cleanSurface ? null : addAircraftDetails({entry,materials,solid,nodes,view:template.view,effects:template.effects});
   const seamTreatment=softenArmorSeams({entry,solid,materials});
   let disposed = false;
+  record.owners++;
   return {
     entry, manifest: template.manifest, view: template.view, effects: template.effects,
     solid, fx, nodes, materials,
@@ -116,6 +160,7 @@ export function instantiateFighterPackage(pilotId) {
       for (const texture of ownedTextures) texture.dispose();
       for (const material of materials.values()) material.dispose();
       solid.removeFromParent(); fx.removeFromParent(); nodes.clear(); materials.clear();
+      releaseOwner(record);
     },
   };
 }

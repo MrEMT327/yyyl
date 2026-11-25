@@ -13,6 +13,7 @@ export function createTextureCanvas({ documentRef = globalThis.document, measure
 
 let popupFont='PsdPopup';
 export function setPopupSurfaceFont(family){popupFont=family?JSON.stringify(family):'PsdPopup';}
+export const surfaceFontFamily=family=>family.replace(/\bPsdPopup\b/g,popupFont);
 
 function releaseTextTexture(texture) {
   const canvas = texture.image;
@@ -137,7 +138,7 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
 
   function text(value, x, y, { size = 20, color = '#edf6fb', weight = 500, align = 'left', maxWidth = 560, tracking = 0,
     wrap = false, maxLines = 0, minSize = size, lineHeight = 0, family = COMBAT_TYPE.family, outline, shadow } = {}) {
-    const source = String(value), fontFamily = family.replace(/\bPsdPopup\b/g, popupFont);
+    const source = String(value), fontFamily = surfaceFontFamily(family);
     const style = { size, color, weight, align, maxWidth, tracking, wrap, maxLines, minSize, lineHeight, fontFamily, outline, shadow };
     const rasterize = () => rasterText(source, style);
     const { texture, width, height, lines, fontSize, step } = textCache
@@ -152,7 +153,7 @@ export function createThreeSurface({ documentRef = globalThis.document, textReso
   function rasterText(source, { size, color, weight, align, maxWidth, tracking, wrap, maxLines, minSize, lineHeight, fontFamily, outline, shadow }) {
     // These canvases only back textures. On WeChat, give them a native lifetime
     // instead of registering detached DOM canvases for the whole game session.
-    const canvas = createTextureCanvas({ documentRef });
+    const canvas = createTextureCanvas({ documentRef, measurement: Boolean(globalThis.wx?.createCanvas) });
     const ctx = canvas.getContext('2d');
     let fontSize = size;
     const setFont = () => { ctx.font = `${weight} ${fontSize}px ${fontFamily}`; };

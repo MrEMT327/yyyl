@@ -9,8 +9,8 @@ import { createWechatPanelInput } from './panel-input.js';
 import { mountWechatLobby } from './lobby.js';
 import { createWechatSortieBridge } from './battle.js';
 
-export function createWechatThreeRuntime(api,{resources,baseURL,debugLog}) {
-  const platform=openWechatThreeScreen(api,resources,baseURL,debugLog);
+export function createWechatThreeRuntime(api,{resources,baseURL,debugLog,files}) {
+  const platform=openWechatThreeScreen(api,resources,baseURL,debugLog,files);
   const watchers=new Set();
   const device={
     three:platform.renderer,display:platform.display,
@@ -40,7 +40,8 @@ export function createWechatThreeRuntime(api,{resources,baseURL,debugLog}) {
       starting=true;
       try{
         const {portraits,openAircraft,openVideo}=options;
-        const mountLobby=state=>mountWechatLobby(api,platform,device,{...state,portraits,openAircraft,openVideo,settingsStorage:options.battleServices.storage});
+        const mountLobby=state=>mountWechatLobby(api,platform,device,{...state,portraits,openAircraft,openVideo,
+          releaseBattleCache:options.battleServices.releaseBattleCache,settingsStorage:options.battleServices.storage});
         const createBattle=setup=>createWechatSortieBridge(platform,device,options.battleServices,baseURL,setup);
         const game=await startWechatLobbySession(api,platform,{...options,device,mountLobby,createBattle});
         if(closed){game.closeGameSession({save:false});throw Error('微信大厅会话已关闭');}

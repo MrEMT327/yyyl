@@ -2,16 +2,17 @@ import { createSortieViewForOutput } from '../../../../../../../pixigame/src/thr
 import { showSortieOnOutput } from '../../../../../../../pixigame/src/three/game-screen/sortie-loading-core.js';
 import { createSortieStarterAircraft } from '../../../../../../../pixigame/src/ui/sortie-starter-aircraft.js';
 
-export function showWechatSortie(platform,services,options){
+export function showWechatSortie(platform,services,options,firstSortieStartup){
+  if(options.firstSortie)return firstSortieStartup().firstSortieLoading(options.onDismiss);
   const bounds=()=>platform.viewport.screen;
   const starterPreview=options.chapterId===1&&options.aircraftId==='pilot-01';
   const host={
     motionPreference:{matches:false},
     now:platform.now,requestFrame:platform.requestFrame,cancelFrame:platform.cancelFrame,
     hidden:()=>!platform.visible,
-    loadAircraft:id=>services.loadAircraft(id,{allowTextureFallback:Boolean(options.firstSortie)}),
-    motionStepMs:1000/30,deferModel:true,keepModelLoading:options.firstSortie,
-    hangarOptions:{environmentSize:128,baked:options.firstSortie,startYaw:options.chapterId===1?Math.PI/5:0,
+    loadAircraft:id=>services.loadAircraft(id),
+    motionStepMs:1000/30,deferModel:true,
+    hangarOptions:{environmentSize:128,startYaw:options.chapterId===1?Math.PI/5:0,
       createPreviewAircraft:starterPreview?createSortieStarterAircraft:undefined},
     motionTiming:platform.debugLog?stats=>platform.debugLog.info('出击转台',stats):undefined,
     view:(device,id,label,redraw)=>createSortieViewForOutput(device,{

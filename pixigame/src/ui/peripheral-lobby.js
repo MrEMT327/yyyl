@@ -257,8 +257,8 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     context:()=>({snapshot,tab,subpage,modal,researchSection,shopSection,gearFilter,visible,busy,chapterIndex:battleChapterIndex(snapshot||{},battleChapter)}),
     mark:async(group,uid)=>{const handler=bridge.peripheralAction||system?.action;const result=await handler?.call(system||bridge,'onboardingComplete',{group,uid});render(true);return result;}
   });
-  function toast(message) {
-    if(isResourceShortage(message))message=shortageToast(message);
+  function toast(message, action, shortage = isResourceShortage(message)) {
+    if(shortage)message=shortageToast(message,action);
     if(bridge.app?.renderer?.toast){bridge.app.renderer.toast.show(message);return;}
     const node = root.querySelector('.pl-toast'); node.classList.remove('is-visible'); node.textContent = message; void node.offsetWidth; node.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer = setTimeout(() => node.classList.remove('is-visible'), 2667);
   }
@@ -290,7 +290,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
       const handler = bridge.peripheralAction || system?.action;
       const result = handler ? await handler.call(system || bridge, action, payload) : { ok: false, message: '当前功能尚未开放' };
       if(result?.ok&&result.recruitToken)await handler.call(system||bridge,'fleetRecruitSeen',{token:result.recruitToken});
-      if (result?.message && !(result.ok && growthBefore)) toast(action==='replicaCollection'&&['skins','pilots'].includes(payload.kind)&&['unlock','star'].includes(payload.action)&&isResourceShortage(result.message)?'道具不足':action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message);
+      if (result?.message && !(result.ok && growthBefore)) toast(action==='replicaCollection'&&['skins','pilots'].includes(payload.kind)&&['unlock','star'].includes(payload.action)&&isResourceShortage(result.message)?'道具不足':action==='shopBuy'&&result.message==='商品状态已更新，请重新选择'?'商品已更新':result.message,action);
       if (result?.ok === false && !result.message) toast('暂时无法进行此操作');
       const committedSnapshot=result?.ok?read():snapshot;
       const feedbackRecords=committedFeedbackRecords({before:motionBefore,after:committedSnapshot,action,payload,result});
@@ -1187,13 +1187,13 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
   const actionFeedback = createActionFeedback(root);
   root.addEventListener('click', async event => {
     const target = event.target.closest('[data-action]'); if (!target || !root.contains(target) || target.disabled || busy) return;
-    if(target.dataset.resourceShort){event.preventDefault();if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(target.dataset.resourceShort));return;}
+    if(target.dataset.resourceShort){event.preventDefault();if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(target.dataset.resourceShort,target.dataset.action,true);return;}
     actionFeedback.capture(target);
     await runLobbyCommand(target.dataset.action,target.dataset,target,event.target===target);
   });
   async function runLobbyCommand(action,data,target,direct=true){
     if(busy||!visible||isHiddenPilotAffectionAction(action))return;
-    if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(data.resourceShort));return;}
+    if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(data.resourceShort,action,true);return;}
     if(action==='inspect'){itemDescriptions.open(data,target);return;}
     if(action==='gearSort'&&['quality','part','level'].includes(data.value)){gearSort=data.value;render(true);return;}
     if(action!=='dismiss')bridge.playUiClick?.();

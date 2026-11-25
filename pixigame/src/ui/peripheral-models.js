@@ -153,7 +153,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
   // Metal needs a reflected environment as well as directional lighting.
   // Without one, reflective surfaces become flat dark blocks and glass loses depth.
   let environment;
-  if (parallelShaders) {
+  if (port || parallelShaders) {
     environment = bakedStudioEnvironment();
   } else if (!singlePass) {
     const studio = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer);
@@ -365,6 +365,11 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     renderModel();
     notifyReady();
   }
+  function releaseAircraftInstance() {
+    batcher.clear();equipmentStyle?.dispose();equipmentStyle=null;panelDepth?.dispose();panelDepth=null;
+    fixedParts?.dispose();fixedParts=null;equipment?.dispose();equipment=null;runtime?.dispose();runtime=null;
+    exhaustFighter.runtime=null;warmingPreview=null;pendingPrograms=null;attitude.clear();
+  }
   function drawAircraft(id, notify = true, snapshot = requestedSnapshot) {
     const loadout = peripheralModelLoadout(id, snapshot), fitKey = peripheralModelLoadoutKey(loadout);
     if (!isFighterPackageReady(id) || disposed || runtime && id === currentId && fitKey === currentFitKey) return;
@@ -372,8 +377,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     currentId = id; currentFitKey = fitKey;
     fxRenderer?.resetHistory();
     metadata("modelReady",'false');
-    batcher.clear();equipmentStyle?.dispose(); equipmentStyle = null;panelDepth?.dispose();panelDepth=null;
-    fixedParts?.dispose(); fixedParts = null; equipment?.dispose(); equipment = null; runtime?.dispose(); runtime = null; attitude.clear();
+    releaseAircraftInstance();
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
     const effects=asset.effects;
     // The scene uses tinted glass. An old flight binding would re-enable
@@ -434,6 +438,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
   }
   function showAircraft(id, snapshot = requestedSnapshot) {
     requestedId = id || 'pilot-01'; requestedSnapshot = snapshot || {};
+    if(stageModel&&runtime&&currentId!==requestedId)releaseAircraftInstance();
     if (nativePreview||stageModel) { previewRequested = true; return; }
     showRequestedAircraft();
   }
@@ -446,7 +451,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
       if(disposed||requestedId!==wanted)return;
       if(stageModel)previewRequested=true;
       else if(visible&&connected())drawAircraft(wanted);
-    }).catch(error => console.warn('[peripheral aircraft]', error));
+    }).catch(error => { if(!disposed&&requestedId===wanted&&error?.name!=='AbortError')console.warn('[peripheral aircraft]',error); });
   }
   return {
     images, available: true,
@@ -528,8 +533,7 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
     },
     destroy() {
       if (disposed) return; disposed = true;
-      releaseMetrics();batcher.destroy();viewportObserver?.disconnect();orbit.destroy();
-      equipmentStyle?.dispose();panelDepth?.dispose();fixedParts?.dispose();equipment?.dispose();runtime?.dispose();
+      releaseMetrics();releaseAircraftInstance();batcher.destroy();viewportObserver?.disconnect();orbit.destroy();
       exhaustRenderer?.dispose();fxRenderer?.dispose();shadowFloor.geometry.dispose();shadowFloor.material.dispose();
       shadowTexture.dispose();releaseOwnedCanvas(shadowImage);environment?.dispose();
       if(lease)lease.release();else if(!embedded){renderer.dispose();renderer.forceContextLoss();releaseOwnedCanvas(canvas);}

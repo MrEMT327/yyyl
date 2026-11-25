@@ -7,6 +7,7 @@ const FRAME_SLICE=18;
 export const slotTier=({qualityRank,qualityKnown})=>qualityKnown!==false&&Number.isInteger(qualityRank)
   ? ITEM_QUALITY_TIERS[qualityRank] : undefined;
 export const quantity=value=>Number.isFinite(Number(value))?Math.max(0,Math.floor(Number(value))):0;
+export const rewardSlotFrameUrl=row=>`${cloudAssetBase}art/psd-equipment-v1/frame-${slotTier(row)?.color??'empty'}.png`;
 
 export function rewardSlotAmount(value) {
   const count=quantity(value);
@@ -15,8 +16,7 @@ export function rewardSlotAmount(value) {
 }
 // Match the PSD plate, centred art window and quantity style in reward-item-slot.css.
 export function paintRewardItemSlot(surface, row, {x,y,size}, paintImage) {
-  const tier=slotTier(row)?.color??'empty';
-  const frame=paintImage(surface,`${cloudAssetBase}art/psd-equipment-v1/frame-${tier}.png`,x,y,size,size,false);
+  const frame=paintImage(surface,rewardSlotFrameUrl(row),x,y,size,size,false);
   frame.geometry.dispose();
   frame.geometry=nineSliceGeometry(size,size,FRAME_SIZE,FRAME_SIZE,FRAME_SLICE,size*FRAME_SLICE/FRAME_SIZE);
 

@@ -72,16 +72,18 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
     job.promise=new Promise((resolve,reject)=>{
       job.cancel=()=>reject(canceled());
       job.run=async()=>{
+        const requireConsumer=()=>{if(rank(job)===-Infinity)throw canceled();};
         try{
           let image;
-          try{image=await openImage(key);}
-          catch{
-            if(rank(job)===-Infinity)throw canceled();
+          try{image=await openImage(key,requireConsumer);}
+          catch(error){
+            if(error?.name==='AbortError'||error?.artworkRetryExhausted)throw error;
+            requireConsumer();
             await new Promise(done=>setTimeout(done,220));
-            if(rank(job)===-Infinity)throw canceled();
-            image=await openImage(key);
+            requireConsumer();
+            image=await openImage(key,requireConsumer);
           }
-          if(rank(job)===-Infinity)throw canceled();
+          requireConsumer();
           if(job.reuse)remember(key,image);
           resolve(image);
         }catch(error){reject(error);if(error?.name!=='AbortError')onFailure?.(key,error);}

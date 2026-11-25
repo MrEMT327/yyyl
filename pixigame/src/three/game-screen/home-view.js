@@ -149,7 +149,7 @@ export function mountThreeHome(device,host,send,interactive){
   function drawContents(panel,portrait=null,time=host.now()){
     if(stage){
       stage.drawBehind(renderer);stage.drawCharacter(renderer,portrait,actor);
-      stage.drawInFront(renderer,device.homeState.firstSortieRequired);
+      stage.drawInFront(renderer,device.homeState.firstSortieRequired,device.homeState.showTasks);
     }
     hud?.paint(renderer,time/1000);
     panel?.draw(renderer);

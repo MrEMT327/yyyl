@@ -61,17 +61,24 @@ export function supplyCanopyTransform(pose: SupplyChestPose, bodyHeight: number)
   };
 }
 
+type SupplyCordSocket = Readonly<{x: number; y: number}>;
+
 export function traceSupplyCords(pose: SupplyChestPose, bodyHeight: number,
   canopy: ReturnType<typeof supplyCanopyTransform>, anchors: readonly (readonly [number, number])[],
-  draw: (x: number, y: number, endX: number, endY: number) => void) {
+  draw: (x: number, y: number, endX: number, endY: number) => void,
+  sockets?: readonly [SupplyCordSocket, SupplyCordSocket]) {
   const cos = Math.cos(canopy.rotation), sin = Math.sin(canopy.rotation);
-  const socketY = pose.y - bodyHeight * .26 * pose.scale;
+  const defaultSocketY = pose.y - bodyHeight * .26 * pose.scale;
   const segments = canopy.slack > 0 ? 4 : 1;
+  const cordsPerSide = sockets ? anchors.length / 2 : 2;
   for (const [i, [u, v]] of anchors.entries()) {
     const dx = (u - .5) * canopy.width, dy = (v - .5) * canopy.height;
     const startX = canopy.x + dx * cos - dy * sin;
     const startY = canopy.y + dx * sin + dy * cos;
-    const socketX = pose.x + (i < 2 ? -24 : 24) * pose.scale;
+    const left = i < cordsPerSide;
+    const socket = sockets?.[left ? 0 : 1];
+    const socketX = socket?.x ?? (pose.x + (left ? -24 : 24) * pose.scale);
+    const socketY = socket?.y ?? defaultSocketY;
     let x = startX, y = startY;
     for (let step = 1; step <= segments; step++) {
       const t = step / segments;

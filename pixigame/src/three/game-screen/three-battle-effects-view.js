@@ -12,6 +12,7 @@ export class BattleEffectsView {
     this.views=new Map();this.players=new Map();this.histories=new Map();this.live=new Set();
     this.livePlayers=new Set();this.liveHistories=new Set();this.cameraOffset=[0,0];this.clock=0;
     this.gradients=new Map();this.diagnostics=[];
+    this.staticMaterials=new Map();
   }
   setCameraOffset(x,y){this.cameraOffset=[x,y];}
   dimensionCut(cut){this.host.stage.glow.addCut(cut);}
@@ -25,7 +26,7 @@ export class BattleEffectsView {
     stage.glow.begin();this.pass.begin();
   }
   texture(ref){
-    const bindingData=this.source.channels(this.graph,ref),desc=bindingData.diffuse;
+    const desc=ref?.key&&ref.resource!=='CanvasTexture'?ref:this.source.channels(this.graph,ref).diffuse;
     if(!desc)return this.host.stage.white;
     if(!desc.resource?.startsWith('GradientTexture'))return this.host.art.get(desc.key);
     let binding=this.gradients.get(desc.key);
@@ -38,8 +39,10 @@ export class BattleEffectsView {
     binding={texture:tex,width:p.width,height:p.height,manualLinear:manual};this.gradients.set(desc.key,binding);
     return binding;
   }
-  resolve(ref,overrides={}){
+  resolve(ref,overrides){
     const material=this.source.resource(this.graph,ref),props=material?.properties||{};
+    const cacheable=!overrides&&!ref?.type;
+    if(cacheable&&this.staticMaterials.has(material))return this.staticMaterials.get(material);
     let shader=plain;
     if(material?.type==='ShaderMaterial'){
       const path=props.shader.$external;shader={path,...this.graph.shaders[path]};
@@ -48,15 +51,19 @@ export class BattleEffectsView {
       shader={path:'canvas-'+mode,code:'shader_type canvas_item; render_mode blend_'+mode+(props.light_mode===1?', unshaded':'')+'; void fragment() {}'};
     }
     const uniforms={},textures={};
-    for(const decl of this.pass.compile(shader,true).uniforms){
-      const key='shader_parameter/'+decl.name,value=overrides[decl.name]??overrides[key]??props[key]??decl.defaultValue;
+    const declarations=this.pass.compile(shader,true).uniforms;
+    for(const decl of declarations){
+      const key='shader_parameter/'+decl.name,value=overrides?.[decl.name]??overrides?.[key]??props[key]??decl.defaultValue;
       if(decl.type==='sampler2D'){
         if(/hint_screen_texture/.test(decl.hints)){
           this.host.stage.glow.needsBackground=true;textures[decl.name]=this.host.stage.glow.binding;
         }else textures[decl.name]=this.texture(value);
       }else uniforms[decl.name]=decl.type==='vec3'&&Array.isArray(value)&&value.length===4?value.slice(0,3):value;
     }
-    return {shader,uniforms,textures};
+    const result={shader,uniforms,textures};
+    // Samplers include the current frame's screen and textures that may still be loading.
+    if(cacheable&&!declarations.some(d=>d.type==='sampler2D'))this.staticMaterials.set(material,result);
+    return result;
   }
   mesh(id,item,geometry,time,line=false,palette,presentation={},shared){
     if(!geometry.indices.length)return;
@@ -72,7 +79,7 @@ export class BattleEffectsView {
     if(line)for(const v of geometry.vertices)gain=Math.max(gain,v.color[0],v.color[1],v.color[2]);
     this.source.updateData(entry.data,item,main,time,line,gain,presentation.presentationOpacity??1,palette,{binding:main},resolved);
     const depth=(presentation.presentationDepth??30)+Math.max(-500,Math.min(500,item.z??0))*.001;
-    this.pass.submit(id,{source:resolved.shader,geometry,main,draw:entry.data,depth,line});
+    this.pass.submit(id,{source:resolved.shader,geometry,main,draw:entry.data,depth,line,gain});
     if(!line)entry.spriteShape=geometry;this.live.add(id);
   }
   drawMeshes(id,meshes,palette,presentation){
@@ -85,5 +92,5 @@ export class BattleEffectsView {
     for(const id of this.histories.keys())if(!this.liveHistories.has(id))this.histories.delete(id);
   }
   reset(){for(const p of this.players.values())p.reset();this.players.clear();this.histories.clear();this.views.clear();}
-  destroy(){this.reset();this.pass.dispose();for(const b of this.gradients.values())b.texture.dispose();this.gradients.clear();}
+  destroy(){this.reset();this.staticMaterials.clear();this.pass.dispose();for(const b of this.gradients.values())b.texture.dispose();this.gradients.clear();}
 }

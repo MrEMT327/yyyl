@@ -24,10 +24,11 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   if(signal?.aborted){disposeRenderer();throw new DOMException('Battle closed during UI loading','AbortError');}
   const scene=new Container(),textures=new Map();
   const selectionLayer=createUpgradeSelectionLayer(scene);
+  const warmPanelTexture=hudHost?.warmPanelTexture??hudHost?.warmSupplyTexture;
   const keyFor=card=>{
     const url=battleCardIconUrl(card),key=url;
     if(url&&!textures.has(key)){
-      const texture=loadCombatUiTexture(url,true);
+      const texture=loadCombatUiTexture(url,true,undefined,art=>{if(!disposed)warmPanelTexture?.(art);});
       texture.userData.inventoryIcon=true;
       texture.userData.skillIconUrl=url;
       textures.set(key,texture);
@@ -57,7 +58,9 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,
     fixedGrowth:{state:{nodes:{},pendingLevels:1,rerolls:0}},fixedLoadout:{weapons:[]},pauseMode:'pause'};
   const bridge={game,presentation,scene,selectionLayer,nativeHudTiles,app:{renderer},ui:{},runStats:{},reducedMotion,
-    loadImageSurface:hudHost?.loadImageSurface,warmSupplyTexture:hudHost?.warmSupplyTexture,
+    loadImageSurface:hudHost?.loadImageSurface,warmPanelTexture,preparePanelTextures:hudHost?.preparePanelTextures,
+    queueResultWarmup:hudHost?.queueResultWarmup,resultRaysUrl:hudHost?.resultRaysUrl,
+    resultRecommendations:()=>resultRecommendations??=nativeResultRecommendations(sim.content.chapter.chapter,sim.content.combat),
     showPauseMenu(){
       if(sim.phase!=='playing'&&sim.phase!=='paused')return;
       game.pauseMode='pause';
@@ -74,10 +77,8 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     requestDiamondRevive(){requestDiamondRevive?.();},
     declineRevive(){sim.declineRevive();ui.update();},
     confirmExitRun(){ui.leaveBattle();},finishBattleResult(){ui.leaveBattle();},
-    chooseSkill(skill){
-      const accepted=ui.chooseFromHud(skill.id);
-      if(accepted)bridge.selectionStartedAt=ui.selectionStartedAt;
-      return accepted;
+    chooseSkill(skill,onStart){
+      return ui.chooseFromHud(skill.id,onStart);
     },
     rerollFixedUpgrade(){if(!ui.selecting&&sim.rerollUpgrade())ui.update();},
     startBattleSupply(){ui.advanceBattleSupply();},skipBattleSupply(){ui.advanceBattleSupply();},claimBattleSupply(){ui.advanceBattleSupply();},
@@ -92,11 +93,14 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     },
   };
   let lastSupply='',supply={},lastPhase='',displayPhase='',disposed=false,settlement=null;
+  let receiptRun,resultReceipt;
   let resultRecommendations, equipmentRevision=-1, offeredChoices, offeredIds='', supplyWeapons=[];
   let offerRemaining, offerRun, offerBuild;
   function sync(){
     const showingResult=sim.phase==='won'||sim.phase==='lost';
     const phaseChanged=lastPhase!==sim.phase;
+    if(settlement&&receiptRun!==sim.runId)settlement=null;
+    if(showingResult&&phaseChanged)hudHost?.resultTrace?.start(sim.runId,sim.phase);
     if(lastPhase!==sim.phase){
       game.state=({ready:'ready',playing:'playing',paused:'paused',upgrade:'levelup',treasure:'battle-supply',revive:'revive-prompt',won:'victory_result',lost:'fixed_result'})[sim.phase]||'playing';
       if(sim.phase==='paused')game.pauseMode='pause';
@@ -161,8 +165,10 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     }
     if(game.fixedGrowth.state.offer?.runId!==sim.runId)
       game.fixedGrowth.state.offer={runId:sim.runId,offerId:'',buildVersion:sim.learned.length};
-    if(showingResult){
+    if(showingResult&&(phaseChanged||presentation.result?.runId!==sim.runId||resultReceipt!==settlement)){
       resultRecommendations ??= nativeResultRecommendations(sim.content.chapter.chapter,sim.content.combat);
+      resultReceipt=settlement;
+      presentation.resultRevision=(presentation.resultRevision??0)+1;
       presentation.result={runId:sim.runId,chapterId:sim.content.chapter.chapter.id,wave:sim.wave,kills:sim.kills,pending:!settlement,trial:Boolean(settlement?.trial),
         aircraftImage:aircraftUiImage(aircraftId || 'pilot-01','default')?.replace(/^.*?art\//,`${cloudAssetBase}art/`),
         recommendations:resultRecommendations,
@@ -171,7 +177,7 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
         progress:sim.phase==='won'?'通关星级':`抵达第 ${sim.wave}/${sim.content.chapter.chapter.waveCount} 波`,
         rows:nativeResultRows(settlement), pilotAffection:settlement?.pilotAffection,
         note:settlement?(settlement.trial?'研究战斗，不计入正式库存':'奖励已存入库存'):'正在保存战斗奖励'};
-    } else presentation.result=null;
+    } else if(!showingResult)presentation.result=null;
     const board=sim.phase==='treasure'?ui.battleSupplyPresentation:null;
     if(board){
       const key=`${sim.runId}:${board.started}:${board.stage}`;
@@ -196,6 +202,7 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     } else { lastSupply=''; game.battleSupply=null; }
   }
   sync();const cloud=createPixiCombatUi({bridge,parent:scene});bridge.pixiCombatUi=cloud;
+  hudHost?.bindResultPanel?.(()=>cloud.resultPanel);
   stage?.classList.add('cloud-ui-mode');mount?.();
   const resize=()=>{
     if(!hudHost)return resizeCloudCombatViewport(stage,canvas,renderer,scene,pixelRatio);
@@ -210,7 +217,8 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   resize();
   const frame=createBattleUiFrame(()=>{
     sync();cloud.update();
-    const phase=sim.phase==='treasure'&&!cloud.battleSupplyVisible?'playing':sim.phase;
+    const waitingForPanel=(sim.phase==='won'||sim.phase==='lost')&&!cloud.resultPanel;
+    const phase=waitingForPanel?displayPhase||'playing':sim.phase==='treasure'&&!cloud.battleSupplyVisible?'playing':sim.phase;
     if(displayPhase!==phase){
       displayPhase=phase;setPhase(phase,phase==='won'||phase==='lost');
     }
@@ -224,7 +232,11 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   });
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
-  const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();if(!hudHost)window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;stopResize();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();disposeRenderer();};
+  const destroy=()=>{if(disposed)return;disposed=true;hudHost?.bindResultPanel?.(null);frame.destroy();if(!hudHost)window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;stopResize();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();disposeRenderer();};
   if(!hudHost)window.addEventListener('pagehide',destroy,{once:true});update();
-  return {update,destroy,frame:frame.run,setSettlement(receipt){settlement=receipt;update();}};
+  return {update,destroy,frame:frame.run,setSettlement(receipt){
+    receiptRun=sim.runId;settlement=receipt;
+    hudHost?.resultTrace?.receipt(sim.runId,sim.phase);
+    update();
+  }};
 }

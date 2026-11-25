@@ -1,5 +1,5 @@
-import {AdditiveBlending,BufferAttribute,BufferGeometry,DoubleSide,DynamicDrawUsage,LinearFilter,Mesh,NormalBlending,OrthographicCamera,Scene,ShaderMaterial} from 'three';
-import {artworkTexture} from './image-loading.js';
+import {AdditiveBlending,BufferAttribute,BufferGeometry,DoubleSide,DynamicDrawUsage,LinearFilter,Mesh,NormalBlending,OrthographicCamera,Scene,ShaderMaterial,Texture} from 'three';
+import {artworkSize,loadArtwork} from './image-loading.js';
 import {breakthroughBackdropPose,sampleBreakthroughFrame} from '../../ui/breakthrough-backdrop.js';
 import profile from '../../ui/breakthrough-native-particles.json';
 import art from './breakthrough-art.json';
@@ -77,15 +77,32 @@ function batch(texture,blend,order){
 export function createThreeBreakthrough(renderer,region=renderer.domElement,{bounds=()=>region.getBoundingClientRect(),now=()=>performance.now(),reducedMotion,active}={}){
   const camera=new OrthographicCamera(0,1,0,1,-2,2),scenes={front:new Scene(),rear:new Scene()},owners=new Map();
   const reduced=reducedMotion?{get matches(){return reducedMotion();}}:matchMedia('(prefers-reduced-motion: reduce)');
-  let atlas=null;
-  function prepare(){
-    if(atlas)return;
-    atlas=artworkTexture(art.image,undefined,()=>{});atlas.generateMipmaps=false;atlas.minFilter=atlas.magFilter=LinearFilter;
+  let atlas = null, preparation;
+  function prepare(priority = 1) {
+    if (atlas) return;
+    if (preparation) {
+      preparation.priority = Math.max(preparation.priority, priority);
+      return preparation.ready;
+    }
+    const job = {priority};
+    preparation = job;
+    job.ready = loadArtwork(art.image, () => preparation === job ? job.priority : -Infinity).then(image => {
+      const [width, height] = artworkSize(image);
+      if (preparation !== job || !width || !height) return false;
+      atlas = new Texture(image);
+      atlas.generateMipmaps = false;
+      atlas.minFilter = atlas.magFilter = LinearFilter;
+      atlas.needsUpdate = true;
+      return true;
+    }).catch(() => false).finally(() => {
+      if (preparation === job) preparation = undefined;
+    });
+    return job.ready;
   }
   function remove(owner){const v=owners.get(owner);if(v){for(const b of v.batches)b.dispose();owners.delete(owner);}}
   function draw(owner,stage,tier,seconds){
-    if(!(active?.()??stage?.isConnected)||!breakthroughBackdropPose(seconds).visible){remove(owner);return false;}
-    prepare();const frame=sampleBreakthroughFrame(seconds,tier,reduced.matches,now()/1000);
+    if(!atlas||!(active?.()??stage?.isConnected)||!breakthroughBackdropPose(seconds).visible){remove(owner);return false;}
+    const frame=sampleBreakthroughFrame(seconds,tier,reduced.matches,now()/1000);
     let view=owners.get(owner);
     if(view&&view.tier!==tier){remove(owner);view=null;}
     if(!view){
@@ -95,7 +112,7 @@ export function createThreeBreakthrough(renderer,region=renderer.domElement,{bou
     view.frame=frame;return true;
   }
   function paint(side){
-    if(!owners.size||!atlas?.image?.width)return;
+    if(!owners.size||!atlas)return;
     const {width:w,height:h}=bounds();if(!w||!h)return;
     const unit=Math.min(w/600,h/1300)*(179.2/328)*1.2;
     if(camera.right!==w||camera.bottom!==h){camera.right=w;camera.bottom=h;camera.updateProjectionMatrix();}
@@ -107,7 +124,9 @@ export function createThreeBreakthrough(renderer,region=renderer.domElement,{bou
     }
     if(scenes[side].children.some(m=>m.visible))renderer.render(scenes[side],camera);
   }
+  void prepare(-1);
   return {prepare,remove,draw,paint,clear(){
+    preparation=undefined;
     for(const owner of owners.keys())remove(owner);
     atlas?.dispose();atlas=null;
   }};

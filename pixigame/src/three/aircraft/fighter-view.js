@@ -18,7 +18,7 @@ function supportClipping(material) {
     '$&\n#include <clipping_planes_fragment>\n');
 }
 
-export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace = false } = {}) {
+export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace = false, trackDisplayTint = true, compactGlass = false, maxAnimationDelta = .05 } = {}) {
   const view = new Container();
   view._bounds = { x:-8*size, y:-8*size, width:16*size, height:16*size };
   const mount = new THREE.Group(), attitude = new THREE.Group();
@@ -60,7 +60,8 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
       if (!object.material) return;
       object.onBeforeRender = prepare;
       for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
-        visualMaterials.add(material);
+        // Direct scene renders do not apply the display adapter's parent tint.
+        if (trackDisplayTint) visualMaterials.add(material);
         if (!nativeSpace) material.transparent = true;
         material.userData.preserveShaderOpacity = true;
         supportClipping(material);
@@ -102,6 +103,16 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     disposeFixedParts();
     hullStyle?.dispose(); hullStyle = null; equipment?.dispose(); runtime?.dispose(); attitude.clear(); visualMaterials.clear(); animationTime = 0;
     const asset = instantiateFighterPackage(id), entry = fighterForPilot(id);
+    if (compactGlass) {
+      // At battle size the canopy occupies only a few pixels. Blend through
+      // those pixels in place, keeping the paint, reflection and clear coat.
+      for (const material of asset.materials.values()) {
+        if (!material.isMeshPhysicalMaterial || !material.transmission) continue;
+        material.opacity *= 1 - material.transmission;
+        material.transmission = 0;
+        material.transparent = true;
+      }
+    }
     equipment = createKestrelEquipment(asset);
     view.equipment = equipment;
     view.pilotId = id; view.fighterId = entry.slug;
@@ -109,6 +120,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
     const span = Math.max(asset.view.bounds.max[0]-asset.view.bounds.min[0], asset.view.bounds.max[2]-asset.view.bounds.min[2]);
     attitude.scale.setScalar(15.75509262084961 / span);
     const config = {...entry.defaults, ...aircraftFinishConfig(entry), cruise:false, firing:false, weaponFireEffects:false, altitude:0, scale:1, lightIntensity:asset.solid.userData.cleanAircraftSurface?entry.defaults.lightIntensity:0};
+    if (compactGlass) config.glassTransmission = 0;
     runtime = new ConfigFighter({ scene:attitude, asset, config, globals:{glow:1,particleCount:1} });
     // Find the package's explicit protection shell, not hull accents that also
     // react to shield state. Keep immutable scales and re-evaluate its bindings
@@ -165,7 +177,7 @@ export function createFighterView({ pilotId = 'pilot-01', size = 22, nativeSpace
       const next = Math.max(0, Number(nextTime) || 0);
       // New pilots start their cloth simulation now, without replaying the
       // previous pilot's entire session; tab wake-ups also have bounded work.
-      animationTime += Math.max(0, Math.min(0.05, next - time));
+      animationTime += Math.max(0, Math.min(maxAnimationDelta, next - time));
       time = next;
       // Undo the prior frame's parent fade/tint before evaluating local
       // bindings; otherwise phase transparency compounds until the ship fades out.

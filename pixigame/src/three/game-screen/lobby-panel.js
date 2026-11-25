@@ -4,6 +4,8 @@ import {createSurfaceTextCache,createThreeSurface} from '../../ui/three-surface.
 import {optimizeUiAssetUrls} from '../../ui/ui-image-source.js';
 
 const panelSources=new WeakMap();
+// Keep small icons available for back navigation without retaining whole screens of portraits.
+const unusedArtworkPixels=512*1024;
 const inside=(r,x,y)=>r&&x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h;
 const limit=(n,min,max)=>Math.max(min,Math.min(max,n));
 function intersection(a,b){
@@ -201,6 +203,9 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
       loadArtwork(key,rank,progressive).then(image=>{
         const [w,h]=artworkSize(image);done(w>0&&h>0?image:null);
       },()=>done(null));
+    }else if(nativeInput&&progressive&&!currentArtwork.has(t)){
+      // Map iteration now visits the least recently displayed textures first.
+      textures.delete(key);textures.set(key,t);
     }
     if(tracksArtwork)currentArtwork.add(t);
     if(prioritized)artworkPriorities.set(t,Math.max(priority,artworkPriorities.get(t)??0));
@@ -246,6 +251,25 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     }
     return mesh;
   }
+  function pruneArtwork(){
+    for(const t of deferredArtwork)if(!currentArtwork.has(t))deferredArtwork.delete(t);
+    const limited=nativeInput&&progressive;
+    let idlePixels=0;
+    for(const [key,t] of textures){
+      if(currentArtwork.has(t))continue;
+      const [w,h]=artworkSize(t.image||decodedArtwork.get(t));
+      const pixels=w*h;
+      if(t.userData.keepUnused===false||(limited&&(!pixels||pixels>unusedArtworkPixels))){
+        textures.delete(key);decodedArtwork.delete(t);t.dispose();
+      }else idlePixels+=pixels;
+    }
+    for(const [key,t] of textures){
+      if(textures.size<=96&&(!limited||idlePixels<=unusedArtworkPixels))break;
+      if(currentArtwork.has(t))continue;
+      const [w,h]=artworkSize(t.image||decodedArtwork.get(t));idlePixels-=w*h;
+      textures.delete(key);decodedArtwork.delete(t);t.dispose();
+    }
+  }
   function build(box,c){
     const x=c.x-box.x,y=c.y-box.y,w=c.width,h=c.height;
     if(dirty||box.width!==prevW||box.height!==prevH||prevFrame?.x!==x||prevFrame?.y!==y||prevFrame?.w!==w||prevFrame?.h!==h){
@@ -266,13 +290,7 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
         frame:fn=>frameEffects.push(fn),pressEffect:fn=>pressEffects.push(fn),offset:key=>regions.get(key)?.offset||0,waitForArt:()=>{pendingArt=true;},keyFocus:keyboard?focusId:null};
       activeScope=layout(data,box.width,box.height,tools)||'base';
       textCache?.prune();
-      if(tracksArtwork){
-        for(const t of deferredArtwork)if(!currentArtwork.has(t))deferredArtwork.delete(t);
-        for(const [key,t] of textures){
-          if(currentArtwork.has(t)||(textures.size<=96&&t.userData.keepUnused!==false))continue;
-          textures.delete(key);decodedArtwork.delete(t);t.dispose();
-        }
-      }
+      if(tracksArtwork)pruneArtwork();
       dirty=false;prevW=box.width;prevH=box.height;prevFrame=frameRect;
       releaseDeferredArtwork();
     }
@@ -465,6 +483,7 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     pick(e){if(staging)return;const p=pos(e.clientX,e.clientY);return hit(p.x,p.y)?.id;},get focused(){return focusId;},
     scroll:(zone,value,notify)=>setOffset(zone,typeof value==='number'?value:anchors.get(value)??0,notify),
     update(next,key,detailKey){
+    if(closed)return;
     if(identity!==detailKey){regions.delete('detail');identity=detailKey;focusId=null;keyboard=false;}
     if(data?.key===key)return;
     data={...next,key};request(true);
@@ -478,7 +497,10 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     if(screen.panel===view)screen.panel=underlay&&!underlay.closed?underlay:null;
     for(const p of layers)p.art.clear();for(const t of textures.values())t.dispose();
     textCache?.clear();
+    textures.clear();currentArtwork.clear();deferredArtwork.clear();
     decodedArtwork.clear();artworkPriorities.clear();layoutArtwork.clear();imageUpdates.clear();
+    layers.length=controls.length=animations.length=frameEffects.length=pressEffects.length=0;
+    regions.clear();activeRegions.clear();anchors.clear();press=clickTarget=data=null;
     if(!battle&&!parked)screen.repaintHome?.();
   }};
   if(!main&&!battle&&!parked){screen.panel=view;input.focus?.();}

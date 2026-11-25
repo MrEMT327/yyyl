@@ -20,7 +20,7 @@ export function psdPopupArtTextures(kind, priority) {
 export function preparePsdPopupArt(kind, priority) {
   return psdPopupArtTextures(kind, priority).every(combatArtworkSettled);
 }
-function paintPsdPopupFallback(surface,kind,x,y,width,height) {
+export function paintPsdPopupFallback(surface,kind,x,y,width,height) {
   surface.panel(x,y,width,height,{fill:'#d6e4ec',stroke:'#547e9e',opacity:1,radius:8});
   if(kind==='primary')surface.quad(x,y,width,Math.min(78,height),'#243c55');
 }

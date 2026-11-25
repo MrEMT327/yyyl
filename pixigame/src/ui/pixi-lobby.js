@@ -1,15 +1,18 @@
 import { createPsdCombatHud } from './psd-combat-hud.js';
 import { renderCombatPause } from './combat-pause-ui.js';
 import { updateReviveCountdown } from './defeat-result-motion.js';
-import { renderDefeatResult, updateDefeatResult } from './defeat-result-ui.js';
+import { createResultEntry,preloadDefeatArt,renderDefeatResult,updateDefeatResult } from './defeat-result-ui.js';
+import { retainResultTextures } from './result-icon-art.js';
 import { REVIVE_ART } from './revive-panel-art.js';
 import { renderRevivePanel, updateReviveTouchTargets, clearRevivePanel } from './revive-panel.js';
 import { prefersReducedMotion, revealChoiceCards } from './status-feedback.js';
 import { createBattleSupplyArtwork, renderBattleSupply, updateBattleSupply } from './battle-supply-ui.js';
 import { Container, Graphics, Point, Rectangle, Text } from '../three/display.js';
 import { renderFixedUpgradeUi } from './fixed-upgrade-ui.js';
+import { preloadPauseCategoryArt } from './pause-category-art.js';
+import { createUpgradeArtwork, preloadPsdChoiceFrames } from './psd-choice-art.js';
 import { COMBAT_UI, COMBAT_TYPE, combatButtonStyle } from './combat-theme.js';
-import { bindCombatButtonArt, paintCombatArt, prepareCombatButtonArt, setCombatArt } from './combat-art.js';
+import { bindCombatButtonArt, combatArtTexture, paintCombatArt, prepareCombatButtonArt, setCombatArt } from './combat-art.js';
 import { paintPsdPopup, preparePsdPopupArt } from './psd-popup-art.js';
 import { paintPsdPopupTitle } from './psd-popup-title.js';
 import { acquireFixedPartThumbnails } from './fixed-part-thumbnails.js';
@@ -309,7 +312,7 @@ function makeCombatButton(options) {
       button.onUp.connect(()=>setCombatArt(artwork,buttonArt));
       button.onUpOut.connect(()=>setCombatArt(artwork,buttonArt));
     }
-    bindCombatButtonArt(button, skin, artwork.material.map);
+    bindCombatButtonArt(button, skin, artwork.material.map, {showWhileLoading:options.pendingArtFallback});
   }
   return button;
 }
@@ -384,8 +387,8 @@ export function addCenteredCombatCard(root, {
   }));
 }
 
-function addFixedLevelUpUi(root, bridge, art) {
-  renderFixedUpgradeUi({ root, bridge, art, makeText: makeRawText, place,
+function addFixedLevelUpUi(root, bridge, art, artwork) {
+  renderFixedUpgradeUi({ root, bridge, art, artwork, makeText: makeRawText, place,
     makeButton: makeCombatButton, backdrop: addCombatBackdrop });
 }
 
@@ -394,10 +397,10 @@ function addReviveCombatUi(root, bridge, refs) {
     text:makeRawText,place,backdrop:addCombatBackdrop});
 }
 
-function addResultCombatUi(root, bridge) {
+function addResultCombatUi(root, bridge, prepared) {
   const victory = bridge.game.state === 'victory_result';
   return renderDefeatResult(root, bridge, {
-    surface: addVisualSurface, button: makeCombatButton, victory,
+    surface:addVisualSurface,button:options=>makeCombatButton({...options,pendingArtFallback:true}),victory,prepared,
     backdrop(target) {
       if (!bridge.presentation?.fullStageResultBackdrop) addCombatBackdrop(target, 0x12161c, .68);
     },
@@ -405,9 +408,10 @@ function addResultCombatUi(root, bridge) {
 }
 export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
   const reducedMotion=bridge.reducedMotion??prefersReducedMotion;
-  // Result and repair artwork load when their screen opens, after sortie assets.
   const fixedPartArt = bridge.presentation?.art ? {textures:bridge.presentation.art,release(){}} : acquireFixedPartThumbnails(bridge.app.renderer);
-  const supplyArt = createBattleSupplyArtwork(fixedPartArt.textures, bridge.warmSupplyTexture);
+  const warmPanelTexture=bridge.warmPanelTexture??bridge.warmSupplyTexture;
+  const supplyArt = createBattleSupplyArtwork(fixedPartArt.textures,warmPanelTexture,bridge.preparePanelTextures);
+  const releaseResultTextures=retainResultTextures();
   const root = new Container();
   root.label = 'shared-pixi-combat-ui';
   root.eventMode = 'static';
@@ -421,10 +425,13 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
   const pendingButtonArt = [];
   let structureKey = '';
   let lastOfferKey = '';
+  let choiceFramesPreloaded = false;
   let offerRevealAt = 0;
   let menuMotionKey = '';
   let menuRevealAt = 0;
   let exitArtReady = false;
+  let resultEntry,resultRun,resultState,resultWarmupQueued=false,hudRun;
+  let choiceRequest;
   const prepareExitArt = () => {
     if (exitArtReady) return true;
     const frame = preparePsdPopupArt('secondary');
@@ -435,23 +442,43 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
   };
   const collectButtons = (node, actionRoot, interactive = false) => {
     if (!node.visible) return;
-    if (node.prepareButtonArt) pendingButtonArt.push(node);
+    if (node.prepareButtonArt && !node.prepareButtonArt()) pendingButtonArt.push(node);
     interactive = (interactive || node === actionRoot) && node.eventMode !== 'none';
     if (interactive && node.__pixiUiAction) buttons.push(node);
     for (const child of node.children || []) collectButtons(child, actionRoot, interactive);
   };
   const render = () => {
     const state = bridge.game.state;
+    const showingResult=state==='victory_result'||state==='fixed_result'||state==='defeat_result';
+    let resultArt;
+    const now=performance.now();
+    const blockPreviousControls=()=>{buttonPress.clear();buttons=[];resetPress();return false;};
+    if(showingResult){
+      const run=bridge.presentation?.result?.runId??bridge.game.runId;
+      if(!resultEntry||resultRun!==run||resultState!==state){
+        resultEntry=createResultEntry(bridge,state==='victory_result',now);
+        resultRun=run;resultState=state;bridge.ui.defeatRewardPage=0;bridge.ui.defeatStats=false;
+      }
+      resultArt=resultEntry.prepare(now);
+      if(!resultArt)return refs.defeatPanel?false:blockPreviousControls();
+    }else resultEntry=null;
+    let choiceArtwork;
+    if(state==='levelup'&&bridge.presentation?.choices?.length){
+      const {offer}=bridge.game.fixedGrowth.state,{choices}=bridge.presentation;
+      if(choiceRequest?.offer!==offer||choiceRequest?.choices!==choices)
+        choiceRequest={offer,choices,prepare:createUpgradeArtwork(bridge,fixedPartArt.textures)};
+      choiceArtwork=choiceRequest.prepare(now);
+      if(!choiceArtwork)return blockPreviousControls();
+    }else choiceRequest=null;
     const exiting = state === 'paused' && bridge.game.pauseMode === 'exit';
     // Keep the pause menu usable while the complete exit dialog is prepared.
     if (exiting && !prepareExitArt()) return false;
     let supplyArtwork;
     if(state==='battle-supply'){
-      supplyArtwork=supplyArt.open(bridge.game.battleSupply,bridge.game.fixedLoadout?.weapons,performance.now());
+      supplyArtwork=supplyArt.open(bridge.game.battleSupply,bridge.game.fixedLoadout?.weapons,now);
       if(!supplyArtwork||supplyArtwork.failed){
-        buttonPress.clear();buttons=[];resetPress();
         if(supplyArtwork?.failed)bridge.finishSupplyWithoutArtwork?.(bridge.game.battleSupply);
-        return false;
+        return blockPreviousControls();
       }
     }else supplyArt.reset();
     buttonPress.clear();
@@ -461,11 +488,18 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
       bridge.presentation?.fullStageUpgradeBackdrop && bridge.game.state === 'levelup' ||
       bridge.presentation?.fullStageReviveBackdrop && bridge.game.state === 'revive-prompt' ||
       bridge.presentation?.fullStageSupplyBackdrop && bridge.game.state === 'battle-supply');
+    // The HUD is also visible behind choices, pause, supply and results. Those
+    // panels can change without discarding its canvases or uploading them again.
+    const run=bridge.game.runId??bridge.game.fixedGrowth?.state?.runId??bridge.game.peripheralSnapshot?.id;
+    const retainedHud=state!=='ready'&&hudRun===run&&refs.psdHud;
+    hudRun=run;
+    if(retainedHud)retainedHud.mount.removeFromParent();
     root.removeChildren().forEach(child => child.destroy({ children: true }));
     buttons = [];
     pendingButtonArt.length = 0;
     Object.keys(refs).forEach((key) => delete refs[key]);
-    refs.psdHud = createPsdCombatHud(root, bridge, flightGradeMeta);
+    refs.psdHud = retainedHud||createPsdCombatHud(root, bridge, flightGradeMeta);
+    if(retainedHud){retainedHud.mount.alpha=1;root.addChild(retainedHud.mount);}
     if (root.externalStageBackdrop || bridge.presentation?.fullStageResultBackdrop && ['victory_result','fixed_result','defeat_result'].includes(bridge.game.state))
       for (const child of root.children) child.alpha *= .32;
     const menuStart = root.children.length;
@@ -485,10 +519,10 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
         onPrimary: () => bridge.confirmExitRun(),
       });
     } else if (state === 'revive-prompt') addReviveCombatUi(root, bridge, refs);
-    else if (state === 'levelup') addFixedLevelUpUi(root, bridge, fixedPartArt.textures);
+    else if (state === 'levelup') addFixedLevelUpUi(root, bridge, fixedPartArt.textures, choiceArtwork);
     else if (state === 'battle-supply') renderBattleSupply({root,bridge,refs,artwork:supplyArtwork,
       place,text:makeRawText,button:makeCombatButton,backdrop:addCombatBackdrop,surface:addVisualSurface});
-    else if (['victory_result','fixed_result','defeat_result'].includes(state)) refs.defeatPanel=addResultCombatUi(root, bridge);
+    else if (showingResult) refs.defeatPanel=addResultCombatUi(root,bridge,resultArt);
     if (state === 'paused') {
       const key = `${state}:${bridge.game.pauseMode}`;
       const secondary = ['detail','settings','stats'].includes(bridge.game.pauseMode);
@@ -518,6 +552,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     }else lastOfferKey='';
     // The main ticker owns scene rendering; rebuilding HUD must not submit
     // another full world/bloom pass during the same frame.
+    structureKey=stateKey();
     return true;
   };
   const stateKey = () => {
@@ -527,12 +562,14 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     const choiceKey = game.state === 'levelup'
       ? growth?.offer?.offerId || (bridge.currentUpgradeChoices || []).map(skill => skill.id).join(',')
       : '';
+    const resultKey=['victory_result','fixed_result','defeat_result'].includes(game.state)
+      ? [presentation?.resultRevision??JSON.stringify(presentation?.result),bridge.ui.defeatRewardPage,bridge.ui.defeatStats].join(':')
+      : '';
     return [
       game.state, choiceKey, growth?.focus || '', game.battleSupply?.chestId || '',
       game.battleSupply?.phase || '', game.pauseMode, game.completionSummary?.stars || 0,
       game.reviveAdPending ? 'ad' : '', game.reviveDiamondPending ? 'diamond' : '',
-      ['victory_result', 'fixed_result', 'defeat_result'].includes(game.state) && presentation?.result
-        ? JSON.stringify(presentation.result) : '',
+      resultKey,
     ].join('|');
   };
   const updateDynamic = () => {
@@ -624,9 +661,21 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     root.visible = COMBAT_VISIBLE_STATES.has(bridge.game.state);
     if(bridge.game.state!=='revive-prompt')clearRevivePanel(refs);
     if (!root.visible) {supplyArt.reset();buttonPress.clear();structureKey='';return;}
-    if(bridge.game.state==='playing'&&bridge.game.elapsed>=1)supplyArt.prewarm();
-    const nextKey = stateKey();
-    if (nextKey !== structureKey && render()) structureKey = nextKey;
+    if (bridge.game.state === 'playing' && bridge.game.elapsed >= 1) {
+      if (!choiceFramesPreloaded) {
+        choiceFramesPreloaded = true;
+        preloadPsdChoiceFrames(warmPanelTexture,()=>bridge.game.state==='levelup'?2:-2);
+      }
+      supplyArt.prewarm();
+    }
+    if(!resultWarmupQueued&&bridge.queueResultWarmup&&bridge.game.state==='playing'&&bridge.game.elapsed>=1){
+      resultWarmupQueued=true;
+      preloadDefeatArt(bridge.queueResultWarmup,bridge.resultRaysUrl,()=>resultEntry?2:-2,bridge.resultRecommendations,warmPanelTexture);
+      const pausePriority=()=>bridge.game.state==='paused'?2:-2;
+      bridge.queueResultWarmup(()=>preloadPauseCategoryArt(pausePriority,warmPanelTexture));
+      for(const kind of ['pauseSlot','utility'])bridge.queueResultWarmup(()=>combatArtTexture(kind,pausePriority));
+    }
+    if (stateKey() !== structureKey) render();
     for (let i = pendingButtonArt.length - 1; i >= 0; i--) {
       if (!pendingButtonArt[i].prepareButtonArt()) continue;
       pendingButtonArt[i] = pendingButtonArt.at(-1);
@@ -678,6 +727,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
     document.fonts.load('20px PsdPopup').then(()=>{if(!root.destroyed)render();}).catch(()=>{});
   return {
     root, render, update, dispatchPress, handlePointer,
+    get resultPanel(){return refs.defeatPanel;},
     get battleSupplyVisible(){return Boolean(refs.battleSupplyBoard);},
     showNativeHud(){
       const hud=refs.psdHud;
@@ -709,6 +759,7 @@ export function createPixiCombatUi({ bridge, parent = bridge.scene }) {
       fixedPartArt.release();
       root.removeFromParent();
       root.destroy({ children: true });
+      releaseResultTextures();
     },
   };
 }

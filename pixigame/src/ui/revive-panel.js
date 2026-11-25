@@ -33,9 +33,11 @@ export function renderRevivePanel(root,bridge,refs,{surface,button,text,place,ba
     paintPsdPopupTitle(s,'primary','复活',x,y,width,height);
   });
   refs.reviveRing=new Graphics();panel.addChild(refs.reviveRing);
-  refs.revive=place(panel,text(String(state.countdown),{
+  const countdown=text(String(state.countdown),{
     size:72,fill:0xf0fbff,weight:'900',anchorX:.5,anchorY:.5,
-  }),REVIVE_ART.countdownX,REVIVE_ART.countdownY+17);
+  });
+  countdown.style.centerGlyph=true;
+  refs.revive=place(panel,countdown,REVIVE_ART.countdownX,REVIVE_ART.countdownY);
   const close=button({...REVIVE_PANEL.close,text:'',disabled:state.pending,
     onPress:()=>{const current=revivePanelState(bridge);if(current.visible&&!current.pending)bridge.declineRevive();}});
   close.label=close.__combatLabel='关闭复活';

@@ -10,14 +10,20 @@ const textures = new Map();
 export function pauseCategoryIconUrl(kind) {
   return paths[kind] ? `${cloudAssetBase}art/${paths[kind]}` : null;
 }
-export function paintPauseCategoryIcon(surface, kind, x, y, size) {
+function categoryTexture(kind, priority, onReady) {
   const url = pauseCategoryIconUrl(kind);
   if (!url) throw new Error('Unknown pause category: ' + kind);
   if (!textures.has(kind) || textures.get(kind).userData.artworkFailed) {
     textures.get(kind)?.dispose();
-    textures.set(kind, loadCombatUiTexture(url));
+    textures.set(kind, loadCombatUiTexture(url, false, priority, onReady));
   }
-  const mesh = surface.image(textures.get(kind), x, y, size, size);
+  return textures.get(kind);
+}
+export function preloadPauseCategoryArt(priority, onReady) {
+  for (const kind of Object.keys(paths)) categoryTexture(kind, priority, onReady);
+}
+export function paintPauseCategoryIcon(surface, kind, x, y, size) {
+  const mesh = surface.image(categoryTexture(kind), x, y, size, size);
   mesh.material.toneMapped = false;
   return mesh;
 }

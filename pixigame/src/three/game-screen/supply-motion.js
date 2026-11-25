@@ -1,6 +1,30 @@
 import {clamp,smooth,supplyChestPose,supplyCanopyTransform,traceSupplyCords} from "../../../replica-battle/kernel/supply-chest-pose";
 const SIZE=76;
-const canopyCordAnchors = [[0.08, 0.7869], [0.2743, 0.7642], [0.7257, 0.7642], [0.92, 0.7869]];
+const canopyCordAnchors = [
+    [0.1008, 0.7699], [0.183, 0.7358], [0.2927, 0.7131], [0.4132, 0.7017],
+    [0.5868, 0.7017], [0.7073, 0.7131], [0.817, 0.7358], [0.8992, 0.7699],
+];
+
+// Strap centers and top edge in the original crate texture.
+const strapHalfSpan = SIZE * .14;
+const strapTop = .082;
+const claspLayers = [
+    [-3.5, -.65, 3.5, 6.4, 0x17232b],
+    [-2.65, .12, 2.65, 5.5, 0xb7c4cc],
+    [-1.35, 1.52, 1.35, 3.95, 0x31434e],
+];
+
+function drawClasp(cords, {x, y}, cos, sin, alpha) {
+    for (const [left, top, right, bottom, color] of claspLayers) {
+        cords.quad(
+            x + left * cos - top * sin, y + left * sin + top * cos,
+            x + right * cos - top * sin, y + right * sin + top * cos,
+            x + right * cos - bottom * sin, y + right * sin + bottom * cos,
+            x + left * cos - bottom * sin, y + left * sin + bottom * cos,
+            color, alpha,
+        );
+    }
+}
 
 export function updateSupplyChestVisual(view, chest, duration, animationAge) {
     const pose = supplyChestPose(chest, duration, animationAge), image = view.userData['supplyChestBody'];
@@ -46,10 +70,20 @@ export function updateSupplyChestVisual(view, chest, duration, animationAge) {
 
     fx.cords.clear();
     if (fx.canopy.visible && canopy.cordAlpha > 0) {
+        const cos = Math.cos(pose.rotation) * pose.scale;
+        const sin = Math.sin(pose.rotation) * pose.scale;
+        const claspTop = (strapTop - .5) * bodyHeight - 5.4;
+        const x = pose.x - claspTop * sin;
+        const y = pose.y + claspTop * cos;
+        const sockets = [
+            {x: x - strapHalfSpan * cos, y: y - strapHalfSpan * sin},
+            {x: x + strapHalfSpan * cos, y: y + strapHalfSpan * sin},
+        ];
         traceSupplyCords(pose, bodyHeight, canopy, canopyCordAnchors, (x, y, endX, endY) => {
-            fx.cords.line(x, y, endX, endY, 2.6, 0x243b3b, canopy.cordAlpha * .65);
-            fx.cords.line(x, y, endX, endY, 1.1, 0xe6dec5, canopy.cordAlpha * .9);
-        });
+            fx.cords.line(x, y, endX, endY, 1.85, 0x242728, canopy.cordAlpha * .84);
+            fx.cords.line(x, y, endX, endY, .9, 0xdac9ac, canopy.cordAlpha * .96);
+        }, sockets);
+        for (const socket of sockets) drawClasp(fx.cords, socket, cos, sin, canopy.cordAlpha);
     }
     // Fixed-size pool, analytic simulation-age sampling. Pausing cannot emit
     // extra smoke; an early pickup hides all puffs in this same frame.

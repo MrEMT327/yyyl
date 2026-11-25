@@ -4,8 +4,14 @@ import {build} from 'esbuild';
 import atlas from '../src/three/game-screen/breakthrough-art.json' with {type:'json'};
 import {UPGRADE_SELECTION_TIMING as timing} from '../src/ui/upgrade-selection-timing.js';
 
-const bundle=await build({entryPoints:['src/ui/breakthrough-backdrop.js'],bundle:true,write:false,format:'esm',platform:'node'});
-const {sampleBreakthroughFrame}=await import('data:text/javascript;base64,'+Buffer.from(bundle.outputFiles[0].text).toString('base64'));
+const bundle=await build({stdin:{resolveDir:process.cwd(),contents:
+  "export {sampleBreakthroughFrame} from './src/ui/breakthrough-backdrop.js';" +
+  "export {BattleHudFlow} from './replica-battle/battle-hud-flow.ts';" +
+  "export {createThreeBreakthrough} from './src/three/game-screen/breakthrough.js';" +
+  "export {useArtworkLoader} from './src/three/game-screen/image-loading.js';",
+},bundle:true,write:false,format:'esm',platform:'node'});
+const {sampleBreakthroughFrame,BattleHudFlow,createThreeBreakthrough,useArtworkLoader}=await import('data:text/javascript;base64,'+
+  Buffer.from(bundle.outputFiles[0].text+'\n//# sourceURL=breakthrough-opening-bundle.mjs').toString('base64'));
 const release=(timing.burst-timing.reveal)/1000;
 const end=(timing.finish-timing.reveal)/1000;
 const accents=frame=>frame.surfaces.flatMap(surface=>surface.draws.filter(d=>d.material.name==='breakthrough-starlight').map(d=>d.sprite));
@@ -48,8 +54,6 @@ test('replays use deterministic accents, reduce-motion omits them and no light s
 
 
 test('the combat HUD opens the matching tier from each breakthrough card and commits once on its original cue',async t=>{
-  const hud=await build({entryPoints:['replica-battle/battle-hud-flow.ts'],bundle:true,write:false,format:'esm',platform:'node'});
-  const {BattleHudFlow}=await import('data:text/javascript;base64,'+Buffer.from(hud.outputFiles[0].text).toString('base64'));
   let now=0,scheduled;
   t.mock.method(performance,'now',()=>now);
   t.mock.method(globalThis,'setTimeout',(run,delay)=>{scheduled={run,at:now+delay};return 1;});
@@ -86,4 +90,97 @@ test('the combat HUD opens the matching tier from each breakthrough card and com
     assert.equal(seen.at(-1).accents,0);
     flow.dispose();
   }
+});
+
+function pendingRedChoice(t,burst) {
+  let now=0, scheduled;
+  t.mock.method(performance,'now',()=>now);
+  t.mock.method(globalThis,'setTimeout',(run,delay)=>{scheduled={run,at:now+delay};return 1;});
+  t.mock.method(globalThis,'clearTimeout',()=>{scheduled=undefined;});
+  const card={id:60,star:6,opensBreakthrough:true}, chosen=[], started=[];
+  const sim={runId:1,phase:'upgrade',choices:[card],sounds:[],player:{hp:100},
+    choose(id){chosen.push(id);this.phase='playing';}};
+  const audio={pause(){},resume(){},feedback(){return true;}};
+  const flow=new BattleHudFlow(undefined,sim,audio,()=>{},()=>undefined,undefined,burst,{active:()=>true,visible:()=>true});
+  t.after(()=>flow.dispose());
+  return {flow,chosen,started,
+    select:()=>flow.chooseFromHud(card.id,at=>started.push(at)),
+    advance(at){now=at;flow.update();},
+    get deadline(){return scheduled?.at;},
+    runTimer(){now=scheduled.at;scheduled.run();},
+  };
+}
+
+test('a cold red breakthrough waits past the old cutoff and starts its card and effect together',async t=>{
+  const image=Promise.withResolvers();
+  let requests=0,draws=0,priority;
+  const restore=useArtworkLoader((url,rank)=>{
+    assert.equal(url,atlas.image);
+    requests++;
+    priority=rank;
+    return image.promise;
+  });
+  t.after(restore);
+  const renderer={render(){draws++;}};
+  const burst=createThreeBreakthrough(renderer,null,{
+    bounds:()=>({width:390,height:844}),active:()=>true,reducedMotion:()=>false,
+  });
+  assert.equal(requests,1,'the atlas begins loading before the player selects a card');
+  assert.equal(priority(),-1);
+  const game=pendingRedChoice(t,burst);
+  assert(game.select());
+  assert.equal(game.select(),false);
+  assert.equal(requests,1);
+  assert.equal(priority(),1);
+  const available=Math.ceil(timing.finish)+200;
+  game.advance(available);
+  burst.paint('front');
+  assert.deepEqual(game.started,[]);
+  assert.deepEqual(game.chosen,[]);
+  assert.equal(draws,0);
+  const ready=burst.prepare();
+  image.resolve({width:1032,height:1032});
+  assert(await ready);
+  assert.deepEqual(game.started,[available]);
+  assert.equal(game.deadline,available+timing.breakthroughCommit);
+  game.advance(available+timing.reveal+500);
+  burst.paint('front');
+  assert(draws>0,'the delayed red effect reaches the renderer');
+  assert.deepEqual(game.chosen,[]);
+  game.runTimer();
+  assert.deepEqual(game.chosen,[60]);
+});
+
+test('a stalled atlas releases the selection and late completion never starts an old effect',async t=>{
+  const pending=Promise.withResolvers();
+  let draws=0;
+  const game=pendingRedChoice(t,{
+    prepare:()=>pending.promise,clear(){},remove(){},draw(){draws++;return true;},
+  });
+  assert(game.select());
+  const fallbackAt=game.deadline;
+  game.runTimer();
+  assert.deepEqual(game.started,[fallbackAt]);
+  assert.equal(game.deadline,fallbackAt+timing.breakthroughCommit);
+  pending.resolve(true);
+  await pending.promise;
+  game.advance(fallbackAt+timing.reveal+500);
+  assert.equal(draws,0);
+  assert.deepEqual(game.started,[fallbackAt]);
+  game.runTimer();
+  assert.deepEqual(game.chosen,[60]);
+});
+
+test('an atlas finishing after teardown cannot animate or commit the old card',async t=>{
+  const pending=Promise.withResolvers();
+  const game=pendingRedChoice(t,{
+    prepare:()=>pending.promise,clear(){},remove(){},draw(){assert.fail('the old effect was drawn');},
+  });
+  assert(game.select());
+  game.flow.dispose();
+  pending.resolve(true);
+  await pending.promise;
+  assert.equal(game.deadline,undefined);
+  assert.deepEqual(game.started,[]);
+  assert.deepEqual(game.chosen,[]);
 });

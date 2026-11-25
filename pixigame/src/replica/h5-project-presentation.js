@@ -53,7 +53,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
   const surface = renderer.domElement;
   let disposed = false, fighter, pose;
   let frame = { time: 0, clock: 0, camera: { x: 0, z: 0 }, mapCameraOffset: () => ({ x: 0, z: 0 }) };
-  let lastAircraftVisualClock = -1, lastRenderedFlightPose;
+  let lastAircraftVisualClock = -1, lastRenderedFlightPose, reusingSteadyPose=false;
   const flightPosition = createFlightPositionState();
   let lastAircraftClock = -1, lastWorldKey = '', lastRollSerial = 0;
   let lastWorldViewport=null,lastWorldRun=null,terrainDeferred=false;
@@ -198,7 +198,6 @@ export async function createH5Presentation({ content, appearance, onError, onGra
     battle.drawHull(aircraftScene,()=>renderWithAircraftStyle(renderer, () => {
       const draw=()=>aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
       if(fighter.runtime.asset.solid.userData.cleanAircraftSurface){
-        renderer.clear();
         renderer.toneMappingExposure=.92;
         aircraftFxRenderer.setColor(fighter.runtime.config.engineColor||'#66d7f0');
         aircraftFxRenderer.render(draw,aircraftTextureSize,aircraftTextureSize);
@@ -241,7 +240,8 @@ export async function createH5Presentation({ content, appearance, onError, onGra
     })).then(loaded), ...pendingTextures.map(task=>task.then(loaded))]);
     if(host?.loadingFrame)await host.loadingFrame();
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
-    fighter = createFighterView({ pilotId: appearance.aircraft.id, size: 1, nativeSpace: true });
+    fighter = createFighterView({ pilotId: appearance.aircraft.id, size: 1, nativeSpace: true, trackDisplayTint:false,
+      compactGlass:host?.compactAircraftGlass, maxAnimationDelta:staggerPresentation ? .1 : undefined });
     // The replica owns weapon identity and evolution. Saved host weapons
     // must never appear as extra pre-equipped guns.
     applyWeaponSkins();
@@ -319,8 +319,9 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       launchPresentation=value;
       if(!value)flightVisual.clock=null;
     },
-    update(next) {
+    update(next, timing) {
       if (disposed) return; frame = next;
+      const now=timing?.now;
       weather?.update(frame);
       const profile=weather?.profile;
       const night=profile?.id==='night';
@@ -354,23 +355,29 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       const view=battle.viewport,viewWidth=view.width,viewHeight=view.height;
       const worldRun=frame.runId??0;
       const worldKey = `${worldRun}/${backgroundTime}/${frame.camera.x}/${frame.camera.z}/${worldWeather}/${viewWidth}/${viewHeight}`;
-      if(budget&&replaceTerrain&&lastWorldViewport!==view)budget.reset();
-      budget?.observeFrame?.(frame.flight?.active&&!frame.victoryDeparture?frame.displayInterval:0);
+      if(budget&&replaceTerrain&&(lastWorldViewport!==view||lastWorldRun!==worldRun))budget.reset();
+      if(frame.flight?.active&&!frame.victoryDeparture)budget?.observeFrame?.(frame.displayInterval);
       const terrainPriority=lastWorldKey===worldKey?null:budget&&replaceTerrain
         ?budget.planTerrain(backgroundTime,worldRun,worldWeather,frame.camera.x,frame.camera.z):'regular';
       let worldDue=terrainPriority!==null;
       const moving = Math.abs(flightPose.bank) > .002 || flightPose.thrust > .02 || flightPose.rollActive;
       const scriptedPose = launchPresentation || passivePose.active || frame.victoryDeparture;
       const aircraftElapsed = visualClock - lastAircraftVisualClock;
+      // Only hold the cached 3D surface for a settled attitude. The live hull
+      // position, collision, muzzle, wingtip lights and trails still follow every frame.
+      const previous=lastRenderedFlightPose;
+      const steadyPose=staggerPresentation&&budget?.underLoad&&frame.flight?.active&&pose?.visible&&previous&&
+        !scriptedPose&&!flightPose.rollActive&&Math.abs(flightPose.bank-previous.bank)<.002&&
+        Math.abs(flightPose.pitch-previous.pitch)<.001&&Math.abs(flightPose.thrust-previous.thrust)<.01;
       const aircraftFrameDue = budget&&!scriptedPose&&!flightPose.rollActive
-        ?budget.shouldDrawAircraft(aircraftElapsed,replaceTerrain&&worldDue,moving)
+        ?budget.shouldDrawAircraft(aircraftElapsed,replaceTerrain&&worldDue,moving,steadyPose)
         :aircraftElapsed >= (scriptedPose || moving ? 1/60 : 1/30) - 1e-6;
       if (flightPose.rollSerial !== lastRollSerial) {
         lastRollSerial = flightPose.rollSerial;
         if (flightPose.rollActive) onFlightRoll?.();
       }
       updatePhantom(flightPose);
-      const poseChanged=flightPoseNeedsRefresh(lastRenderedFlightPose,flightPose);
+      const poseChanged=flightPoseNeedsRefresh(previous,flightPose)||(reusingSteadyPose&&!steadyPose)||weatherChanged||frame.clock<lastAircraftClock;
       let renderAircraft=pose&&(aircraftElapsed<0||aircraftFrameDue||weaponsDirty||launchDirty||passiveDirty||poseChanged);
       // Keep the two cached surfaces on separate frames during both normal and slow play.
       const split=staggerPresentation&&replaceTerrain&&terrainPriority==='regular'&&renderAircraft&&!poseChanged&&lastWorldViewport===view&&
@@ -379,6 +386,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       else{if(split)renderAircraft=false;terrainDeferred=false;}
       let landmarks;
       if (worldDue && replaceTerrain) {
+        const start=now?.();
         if (lastWorldViewport !== view) {
           if (coastCamera) {
             coastCamera.left=-365.625*viewWidth/WIDTH;coastCamera.right=-coastCamera.left;
@@ -401,10 +409,12 @@ export async function createH5Presentation({ content, appearance, onError, onGra
           if(view.left||view.top)landmarks=landmarks.map(p=>({...p,x:p.x+view.left,y:p.y+view.top,
             poolX:p.poolX===undefined?undefined:p.poolX+view.left,poolY:p.poolY===undefined?undefined:p.poolY+view.top}));
         }
+        if(now)timing.terrainMs+=now()-start;
       }
       // Only commit lighting after the current frame's landmarks are projected.
       weather?.setNightLandmarks(landmarks);
       if (renderAircraft) {
+        const start=now?.();
         if (frame.clock < lastAircraftClock) {
           fighter._disposeVisuals(); fighter.setPilot(appearance.aircraft.id);
           applyWeaponSkins();
@@ -412,15 +422,19 @@ export async function createH5Presentation({ content, appearance, onError, onGra
         }
         const visualPose=launchPresentation?{...flightPose,bank:0,pitch:-.045*launchPresentation.thrust,thrust:launchPresentation.thrust}:flightPose;
         renderAircraftTexture(visualClock, visualPose, Math.max(pose.width,pose.height));
+        if(now)timing.aircraftMs=now()-start;
         lastAircraftClock = frame.clock; lastAircraftVisualClock = visualClock; weaponsDirty = false;launchDirty=false;
       }
+      reusingSteadyPose=!renderAircraft&&Boolean(steadyPose);
       updateWingtipTrails(flightPose);
       if (!replaceTerrain) {
         lastWorldKey = worldKey;
         return;
       }
       if (!worldDue) return;
+      const groundStart=now?.();
       battle.drawGround(worldScene,coastCamera||camera,selectedScene.ground);
+      if(now)timing.terrainMs+=now()-groundStart;
       budget?.commitTerrain();
       if(host?.draws)host.draws.terrain++;
       lastWorldKey = worldKey;

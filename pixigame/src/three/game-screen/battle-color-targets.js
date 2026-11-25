@@ -29,12 +29,12 @@ export function prepareBattleColorMaterial(material){
 function prepareScene(scene){
   scene.traverseVisible(node=>{if(Array.isArray(node.material))node.material.forEach(prepareBattleColorMaterial);else prepareBattleColorMaterial(node.material);});
 }
-export function createBattleColorTargets(renderer,w,h,hullSize){
+export function createBattleColorTargets(renderer,w,h,hullSize,{multisampleGround=true}={}){
   const gl=renderer.getContext(),samples=Math.min(renderer.capabilities.maxSamples,gl.getParameter(gl.SAMPLES));
-  const make=(w,h,mipmaps=false)=>{const target=new WebGLRenderTarget(w,h,{
+  const make=(w,h,sampleCount,mipmaps=false)=>{const target=new WebGLRenderTarget(w,h,{
     minFilter:mipmaps?LinearMipmapLinearFilter:LinearFilter,magFilter:LinearFilter,
-    samples,depthBuffer:true,stencilBuffer:false,generateMipmaps:mipmaps});attachments.add(target);return target;};
-  const ground=make(w,h),hull=make(hullSize,hullSize,true),vp=new Vector4(),sc=new Vector4(),color=new Color(),background=new Color();
+    samples:sampleCount,depthBuffer:true,stencilBuffer:false,generateMipmaps:mipmaps});attachments.add(target);return target;};
+  const ground=make(w,h,multisampleGround?samples:0),hull=make(hullSize,hullSize,samples,true),vp=new Vector4(),sc=new Vector4(),color=new Color(),background=new Color();
   function withTarget(target,draw){
     const previous=renderer.getRenderTarget(),clip=renderer.getScissorTest();
     renderer.getViewport(vp);renderer.getScissor(sc);

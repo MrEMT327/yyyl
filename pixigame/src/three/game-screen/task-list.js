@@ -1,7 +1,7 @@
-import {area,box,pic,slice,words,clamp,titleFont} from './menu-art.js';
+import {area,box,pic,slice,words,clamp,bodyFont,titleFont} from './menu-art.js';
 import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {taskReward} from './task-model.js';
-import {createTextureCanvas} from '../../ui/three-surface.js';
+import {createTextureCanvas,surfaceFontFamily} from '../../ui/three-surface.js';
 
 let measureContext;
 export const taskMedal='/art/project-task-icons-v1/activity-medal.png';
@@ -105,4 +105,66 @@ export function taskList(s,rows,w,t,clip,zone,achievements=false,switched=0,init
     if(row.action)area(t,'action-'+row.id,row.label+'，'+row.name,b,row.action,row.payload,zone,Boolean(row.disabled));
   }
   taskPageFade(a,t,switched);
+}
+
+
+function carnivalTitleLines(name,width,ctx){
+  return name.split('\n').flatMap(paragraph=>{
+    const lines=[];
+    let line='';
+    for(const part of paragraph.match(/\d+(?:[.,]\d+)*[次级点章关件天个波星架枚万亿]?|./gu)??[]){
+      if(line&&ctx.measureText(line+part).width>width){lines.push(line.trimEnd());line='';}
+      if(line||part.trim())line+=part;
+    }
+    lines.push(line.trimEnd());
+    return lines;
+  });
+}
+
+export function carnivalTaskList(snapshot,rows,taskPrize,w,t,clip,zone){
+  const x=clip.x+.006*w,width=clip.w-.012*w,pad=.02*w+1,innerX=x+pad,right=x+width-pad,innerWidth=right-innerX;
+  const gap=clamp(w*.016,5,8),rowGap=.02*w,buttonW=clamp(width/3,44,80),buttonH=44;
+  const headingSize=clamp(w*.039,13,16),minHeadingSize=clamp(w*.033,11.5,13.5),counterSize=clamp(w*.03,11,14);
+  const rewardSize=clamp(w*.03,11,14),side=clamp(w*.048,14,20),reward=taskReward(taskPrize,snapshot);
+  const ctx=measureContext??=createTextureCanvas({measurement:true}).getContext('2d');
+  const headingFamily=surfaceFontFamily(titleFont);
+  let y=clip.y;
+  const positions=rows.map(row=>{
+    const counter=row.progress+' / '+row.target;
+    ctx.font='700 '+counterSize+'px '+bodyFont;
+    const counterW=Math.min(innerWidth*.37,Math.ceil(ctx.measureText(counter).width)+3);
+    ctx.font='400 '+headingSize+'px '+headingFamily;
+    const natural=ctx.measureText(row.name).width,inlineW=innerWidth-counterW-gap;
+    const inline=natural*minHeadingSize/headingSize<=inlineW;
+    const titleW=inline?inlineW:innerWidth;
+    const size=clamp(headingSize*titleW/Math.max(1,natural),minHeadingSize,headingSize);
+    ctx.font='400 '+size+'px '+headingFamily;
+    const lines=carnivalTitleLines(row.name,titleW,ctx),lineH=size*1.38;
+    const titleH=size*1.65+(lines.length-1)*lineH,headH=titleH+(inline?0:counterSize*1.45);
+    const counterY=y+pad+(inline?size*.825:titleH+counterSize*.725);
+    const footerY=y+pad+headH+gap,height=2*pad+headH+gap+buttonH;
+    const top=y;
+    y+=height+rowGap;
+    return {row,top,height,lines,size,lineH,titleW,counter,counterW,counterY,footerY};
+  });
+  t.region(zone,clip,Math.max(0,y-clip.y-rowGap),'y',{parent:'base',redrawStep:40});
+  const a=t.layer('task-list',zone).art,offset=t.offset(zone);
+  for(const {row,top,height,lines,size,lineH,titleW,counter,counterW,counterY,footerY} of positions){
+    const button=box(right-buttonW,footerY,buttonW,buttonH),midY=footerY+buttonH/2;
+    if(top+height>=clip.y+offset-45&&top<=clip.y+offset+clip.h+45){
+      taskPlate(a,box(x,top,width,height),row.ready,row.claimed);
+      for(const [i,line] of lines.entries())
+        words(a,line,innerX,top+pad+size*.825+i*lineH,size,{family:titleFont,color:'#1b354d',align:'left',maxWidth:titleW});
+      words(a,counter,right,counterY,counterSize,{align:'right',color:row.ready?'#236481':'#294c66',weight:700,maxWidth:counterW});
+      const pointsX=innerX+side+3,prizeX=innerX+(button.x-innerX-gap)*.5;
+      const opacity=row.claimed ? .6 : 1;
+      const medal=pic(a,t,taskMedal,box(innerX,midY-side/2,side,side),true);medal.material.opacity=opacity;
+      words(a,'+'+row.points,pointsX,midY,rewardSize,{align:'left',color:'#2f5872',maxWidth:prizeX-pointsX-2});
+      const item=pic(a,t,reward.image,box(prizeX,midY-side/2,side,side),true);item.material.opacity=opacity;
+      words(a,'×'+reward.amount,prizeX+side+3,midY,rewardSize,
+        {align:'left',color:'#284c65',maxWidth:button.x-prizeX-side-gap});
+      if(row.action)taskButton(a,t,w,button,row);
+    }
+    if(row.action)area(t,'action-'+row.id,row.label+'，'+row.name,button,row.action,row.payload,zone,Boolean(row.disabled));
+  }
 }

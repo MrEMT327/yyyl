@@ -3,7 +3,7 @@ import { createStartupScene } from '../../../../../../../pixigame/src/three/game
 export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) {
   const {renderer,display}=platform;
   let active=true,mode='loading',message='正在加载…',progress=0;
-  let id=null,controls=[],pressed=null,onEnter=null,resolveReady=null,copyLabel='复制诊断',automaticEntry=false;
+  let id=null,controls=[],pressed=null,onEnter=null,resolveReady=null,copyLabel='复制诊断',retryAction=retry;
   const scene=createStartupScene(renderer,schedule,{
     waitForBackdrop:true,backdrop:'entry-screens-v4/startup-wechat.jpg'
   });
@@ -14,13 +14,13 @@ export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) 
   function paint() {
     id=null;
     if(!active||!platform.visible)return;
-    if(mode==='ready'&&automaticEntry){choose('start');return;}
     const box=bounds(),dpr=platform.viewport.density;
     if(!box.width||!box.height)return;
     const bw=Math.max(1,Math.round(box.width*dpr)),bh=Math.max(1,Math.round(box.height*dpr));
     display.begin(box,bw,bh,schedule,true);
     controls=scene.paint(box,{dpr,bw,bh,mode,message,progress,pressId:pressed?.button,keyboard:false,copyLabel,
       safeBottom:Math.max(0,platform.viewport.safeBottom-(platform.viewport.screen.bottom-box.bottom))});
+    if(mode==='loading'&&onEnter){const run=onEnter;onEnter=null;run();}
   }
   function hit(x,y) {
     const box=bounds();
@@ -33,7 +33,7 @@ export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) 
       onEnter=null;
       close();
       run?.();
-    }else if(button==='retry'&&mode==='failed')retry();
+    }else if(button==='retry'&&mode==='failed')retryAction();
     else if(button==='copy'&&mode==='failed')Promise.resolve().then(copyReport).then(()=>{
       if(active){copyLabel='已复制';schedule();}
     },()=>{
@@ -63,23 +63,34 @@ export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) 
     onRelease();
     resolveReady?.();resolveReady=null;
   }
+  function stage(value,status){
+    if(mode==='failed')return;
+    progress=Math.min(3,Math.max(progress,value));
+    message=status;schedule();
+  }
+  function fail(error,tryAgain=retry){
+    mode='failed';message=error?.message||'加载失败，请重新进入游戏';
+    retryAction=tryAgain;onEnter=null;schedule();
+  }
   return {
-    stage(value,status){
-      if(mode==='failed')return;
-      progress=Math.min(3,Math.max(progress,value));
-      message=status;schedule();
-    },
-    ready(callback,{automatic=false}={}){
+    stage,fail,close,
+    ready(callback){
       if(!active||mode==='failed')return Promise.resolve();
-      automaticEntry=automatic;
       mode='ready';progress=3;message='准备就绪';onEnter=callback;schedule();
       return new Promise(resolve=>{resolveReady=resolve;});
     },
-    fail(error){
-      mode='failed';message=error?.message||'加载失败，请重新进入游戏';
-      onEnter=null;schedule();
+    startFirstSortie(callback){
+      if(!active||mode==='failed')return;
+      onEnter=callback;schedule();
     },
-    close,
+    firstSortieLoading(onDismiss){
+      mode='loading';progress=2;message='正在准备第一关…';controls=[];pressed=null;schedule();
+      return {
+        update:(value,status)=>stage(2+value,status),
+        fail(error){fail(error,error.onRetry??(()=>{close();onDismiss?.();}));},
+        close,
+      };
+    },
   };
 }
 
