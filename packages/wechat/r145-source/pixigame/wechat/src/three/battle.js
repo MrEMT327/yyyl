@@ -12,8 +12,9 @@ import { createBattleOverlays } from '../../../../../../../pixigame/src/three/ga
 import { artworkTexture } from '../../../../../../../pixigame/src/three/game-screen/image-loading.js';
 import { createSortieController } from '../../../../../../../pixigame/src/replica/sortie-controller.js';
 import { openWechatBattleSurface } from './battle-surface.js';
+import { createNativeBattleRenderBudget } from '../../../../../../../pixigame/src/replica/native-battle-render-budget.js';
 import { battleWidth,battleHeight,fullBattleFrame } from '../../../../../../../pixigame/src/three/game-screen/battle-frame-layout.js';
-import { prewarmBattleArtwork } from './frame-artwork.js';
+import { paceSortieData, prewarmBattleArtwork } from './frame-artwork.js';
 
 function createBattleTouch(platform,bounds,isTakingOff) {
   let hud,controls,canMove=()=>false,unlock=null,owner=null;
@@ -84,9 +85,23 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   const battleURL=battleAddress.href;
   const reducedMotion=()=>false;
   const lifetime=createBattleLifetime(null,services.makeAbort);
+  const warmTextures=prewarmBattleArtwork(platform);
+  lifetime.add(warmTextures.close);
   const endSortieLoad=services.beginSortieLoad?.();
   if(endSortieLoad)lifetime.add(endSortieLoad);
   let launchActive=false;
+  let warmLobby=chapterId===1?device.warmFirstSortieMenus:null,nextLobbyWarmup=0;
+  const loadingFrame=(frames=2)=>{
+    if(!device.cover||!platform.visible||lifetime.disposed)return;
+    return new Promise(resolve=>{
+      let frame=platform.requestFrame(frames===1?done:()=>{frame=platform.requestFrame(done);});
+      function done(){
+        platform.cancelFrame(frame);lifetime.signal.removeEventListener('abort',done);resolve();
+      }
+      lifetime.signal.addEventListener('abort',done,{once:true});
+    });
+  };
+  const paceDataWork=paceSortieData(loadingFrame,lifetime.signal);
   const touch=createBattleTouch(platform,bounds,()=>launchActive||Boolean(device.cover));
   lifetime.add(()=>touch.close());
   const visualHost={bounds,now:platform.now,reducedMotion,active:()=>!lifetime.disposed};
@@ -97,19 +112,29 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   const overlays=createBattleOverlays(device.three,{...visualHost,region:null,launching:()=>launchActive,
     density:()=>platform.viewport.density});
   lifetime.add(()=>overlays.destroy());
+  const draws=platform.debugLog?{terrain:0,aircraft:0,hud:0}:null;
+  let renderBudget;
   const skinHost={
-    baseURL,battleAssetBase:battleURL,staggerPresentation:true,
+    baseURL,battleAssetBase:battleURL,staggerPresentation:true,loadingFrame,
+    draws,createRenderBudget(worldWidth){
+      const {screen,density}=platform.viewport;
+      renderBudget=createNativeBattleRenderBudget({...screen,pixelRatio:density},worldWidth,{adaptive:true,
+        onPressureChange:limited=>platform.debugLog?.info('战斗绘制预算',{chapter:chapterId,mode:limited?'降载':'常规'})});
+      return renderBudget;
+    },
     aircraftCoverageStrength:.5,
     readFighterFile:services.readFighterFile,objectLoader:services.objectLoader,assetBytes:services.assetBytes,
-    openBattleSurface:()=>openWechatBattleSurface(device,platform,region),
+    openBattleSurface:budget=>openWechatBattleSurface(device,platform,region,budget),
     textureLoader:{load(path,loaded,_progress,failed){return artworkTexture(path,loaded,failed);}},
   };
   const hudHost={bounds,watchResize:platform.onViewport,bindInput:options=>touch.bindInput(options),
+    playingHudInterval:()=>renderBudget?.underLoad?75:50,now:platform.now,draws,
     safeInsets:()=>{
       const {safeTop:top,safeBottom:bottom,menuButton}=platform.viewport;
       return {top,bottom,menuButton};
     },
-    loadImageSurface:platform.loadArtwork};
+    loadImageSurface:platform.loadArtwork,
+    warmSupplyTexture:texture=>warmTextures.add('battle-supply',texture,true)};
   let skills;
   const rendering={
     mountCombatHud:mountThreeCombatHud,
@@ -119,13 +144,23 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       createH5Presentation({content,appearance,onError,onGraphicsContext,onProgress,onFlightRoll,host,aircraftReady}),
     createView(content,sim,ready,skin){
       const view=new CombatView(content,sim,ready,skin);
-      const frameSummary=platform.debugLog?.beginBattle?.(chapterId);
+      const frameSummary=platform.debugLog?.beginBattle?.(chapterId,draws);
       let lastReport=-Infinity,reports=0;
-      view.profileClock=platform.now;
+      view.profileClock=draws||warmLobby?platform.now:undefined;
       view.reportSlowFrame=stats=>{
-        if(sim.phase!=='playing'||launchActive||device.cover||!platform.visible){frameSummary?.reset();return;}
-        frameSummary?.sample(stats.interval,sim.wave,stats);
+        if(launchActive||device.cover||!platform.visible){frameSummary?.reset();return;}
         const now=platform.now(),cpu=stats.logic+stats.terrainAndPlane+stats.entitiesAndEffects+stats.draw;
+        const result=sim.phase==='won'||sim.phase==='lost';
+        if(warmLobby&&now>=nextLobbyWarmup&&(result||sim.phase==='playing'&&sim.clock>=1)&&stats.interval<38&&cpu<18){
+          nextLobbyWarmup=now+50;
+          if(!warmLobby(lifetime.signal)){
+            warmLobby=null;
+            if(!draws)view.profileClock=undefined;
+          }
+        }
+        if(!draws)return;
+        if(sim.phase!=='playing'){frameSummary?.reset();return;}
+        frameSummary?.sample(stats.interval,sim.wave,stats);
         if(reports>=16||now-lastReport<3000||(stats.interval<48&&cpu<28))return;
         reports++;lastReport=now;
         const timings=Object.fromEntries(Object.entries(stats).map(([key,value])=>[key,Math.round(value)]));
@@ -151,7 +186,7 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       const stop=scene.start(progress=>reportLoading('textures',progress),()=>{
         if(!scene.frameCount)endSortieLoad?.();
         scene.frameCount=(scene.frameCount||0)+1;renderedFrame();
-      },fail,{...platform,warmTextures:prewarmBattleArtwork(platform)});
+      },fail,{...platform,warmTextures,isVisible:()=>platform.visible,watchVisibility:fn=>watchVisibility(platform,fn)});
       lifetime.add(stop);
     },
   };
@@ -170,10 +205,20 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
     unlockOnPointer:unlock=>touch.setUnlock(unlock),
     watchVisibility:change=>watchVisibility(platform,change),
   };
-  const fetchResource=(path,options)=>services.fetchResource(new URL(path,battleURL).href,options);
+  const fetchResource=(path,options)=>services.fetchResource(new URL(path,battleURL).href,{
+    ...options,signal:options?.signal??lifetime.signal,paceDataWork,
+  });
+  // Shared loadout reads can also belong to the lobby. A sortie closing
+  // releases the frame wait without invalidating the shared result.
+  const paceSharedData=(size,work)=>paceDataWork(size,work,{shared:true});
   try{return mountSharedBattleSession({bindings,hudHost,skinHost,fetchResource,
-    canvas:platform.display.canvas,readSharedLoadoutJSON:services.readSharedLoadoutJSON,loadBattleData:services.loadBattleData,
-    warmBattleTerrain:platform.warmArtworkFiles,
+    canvas:platform.display.canvas,
+    readSharedLoadoutJSON:services.readSharedLoadoutJSON&&
+      (name=>services.readSharedLoadoutJSON(name,paceSharedData)),
+    loadBattleData:services.loadBattleData&&((id,signal,prepare)=>services.loadBattleData(id,signal,prepare,{
+      loadingFrame:()=>loadingFrame(1),now:platform.now,
+    })),
+    warmBattleTerrain:platform.warmArtworkFiles,loadingFrame,
     warmBattleImages:(urls,signal)=>platform.warmArtworkFiles(urls.slice(0,24),signal,3),
     memoryContext:{page:battleAddress.pathname,canvases:Number(Boolean(platform.display.canvas)),storage:services.storage},
     setNotice:overlays.notice,setLoadingMessage:overlays.notice},rendering);}
@@ -184,6 +229,7 @@ export function createWechatSortieBridge(platform,device,services,baseURL,option
   let sequence=0;
   const host={
     baseURL,now:platform.now,hidden:()=>!platform.visible,
+    prepareResultReturn:isCurrent=>device.prepareFirstSortieEquipment?.(isCurrent),
     makeSessionId:()=>Date.now().toString(36)+'-'+(++sequence).toString(36),
     setLaunching(){},
     bind({visibility}){return watchVisibility(platform,visibility);},

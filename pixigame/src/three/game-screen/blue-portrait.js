@@ -22,10 +22,13 @@ async function readArtwork(base,signal,output){
     signal.throwIfAborted();
     if(!images.has(spec.texture))images.set(spec.texture,await image(spec.texture));
     const frames={};
-    for(const motion of ['main3','idle']){
-      const url=spec[motion];
-      if(!streams.has(url))streams.set(url,new Float32Array(await read(url,'arrayBuffer')));
-      frames[motion]=streams.get(url);
+    // Projected parts derive every vertex from the authored 3D pose tracks.
+    if(!spec.rigidProjectionModel){
+      for(const motion of ['main3','idle']){
+        const url=spec[motion];
+        if(!streams.has(url))streams.set(url,new Float32Array(await read(url,'arrayBuffer')));
+        frames[motion]=streams.get(url);
+      }
     }
     const projectionModel=spec.rigidProjectionModel?await read(spec.rigidProjectionModel,'json'):null;
     parts.push({...spec,rest:new Float32Array(spec.rest.flat()),uv:new Float32Array(spec.uv??spec.rest.flatMap(([x,y])=>[x/1568,y/1003])),

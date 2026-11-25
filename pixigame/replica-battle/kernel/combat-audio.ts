@@ -5,7 +5,7 @@ const files: Record<string,string> = {
   gun:'shots/gun_shot.wav', sniper:'shots/sniper_shot.wav', cannon:'shots/cannon_shot.wav',
   grenade:'shots/grenade_launcher.wav', shotgun:'shots/shotgun.wav', sword:'shots/sword_slash.wav',
   lightning:'shots/lightning.wav', laser:'shots/laser_shot.wav', laserLoop:'shots/wall_spider_laser_looped.wav',
-  impact:'shot_hit.wav', hit:'enemy_hit1.wav', playerHit:'player_hit2.wav', death:'enemy_death_normal.wav', heavyDeath:'enemy_death_long.wav',
+  impact:'shot_hit.wav', hit:'enemy_hit1.wav', death:'enemy_death_normal.wav', heavyDeath:'enemy_death_long.wav',
   hit2:'enemy_hit2.wav', hit3:'enemy_hit3.wav', hit4:'enemy_hit4.wav', enemyShot:'shots/macrophage_shot.wav', deflect:'shots/deflect_shot.wav',
   charge:'shots/noise_charge.wav', laserCharge:'shots/beholder_laser_charge.wav', swordHit:'shots/sword_impact_gore2.wav',
   explosion:'shots/Explosion.wav',
@@ -18,6 +18,7 @@ const files: Record<string,string> = {
 export const pathogenicAudioManifest = { ...Object.fromEntries(Object.entries(files).map(([key,file])=>[
   `pathogenic:${key}`, {url:`/audio/pathogenic/${file}`, ...(key==='laserLoop'?{pingPong:{begin:10000,end:110000,sampleRate:44100}}:{})}
 ])),
+  'freesound:playerHit':{url:'/audio/freesound/player-hit-781094.wav'},
   'mixkit:ice':{url:'/audio/mixkit/ice-sparkle-2350.wav'},
   'mixkit:iceShot':{url:'/audio/mixkit/ice-shot-2350-v1.wav'},
   'mixkit:acid':{url:'/audio/mixkit/acid-bubble-3000.wav'},
@@ -51,14 +52,16 @@ export const combatCues: Record<number,Cue> = {
   100007:cue('bossArrival',.14,3),
   270001:cue('revive',.24,.5), 270012:cue('burn',.065,.3), 270015:cue('specialPickup',.16,.25),
   260002:cue('pickup',.24,.07), 260003:cue('heal',.36,.3), 410001:cue('upgrade',.38,.4),
-  330001:cue('playerHit',.38,.20), 330002:cue('hit',.075,.12),330003:cue('hit',.075,.12),330004:cue('hit',.075,.12),
+  330001:{key:'freesound:playerHit',volume:.38,interval:.20},
+  330002:cue('hit',.075,.12),330003:cue('hit',.075,.12),330004:cue('hit',.075,.12),
   330005:cue('death',.15,.14),330006:cue('death',.15,.14),330007:cue('heavyDeath',.21,.25),
   330008:cue('heavyDeath',.21,.25),210001:cue('heavyDeath',.21,.25),
 };
-// CharacterTag 103 identifies mechanical enemies independently of their rank.
-export function enemyDeathSound(enemy: Pick<Enemy,'boss'|'elite'>, tags: readonly number[] = []) {
+export function enemyDeathSound(enemy: Pick<Enemy,'boss'|'elite'|'modelId'>, tags: readonly number[], chapterId: number) {
   if(enemy.boss)return -26;
-  if(tags.includes(103))return -29;
+  // The first chapter's Bionic Wing and Patrol Drone retain their legacy combat tags.
+  const chapterOneMechanical=chapterId===1&&(enemy.modelId===120130||enemy.modelId===120137);
+  if(chapterOneMechanical||tags.includes(103))return -29;
   return enemy.elite ? -11 : -12;
 }
 // Verified skill projectiles, not a global replacement of original sound IDs.

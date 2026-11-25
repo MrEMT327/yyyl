@@ -22,9 +22,10 @@ export function createEliteScatter(scene, modelId, px, prefab, sprites) {
     if (!renderer || !sprite)
         return undefined;
     const texture = scene.art.get(textureKey);
-    for (const [name, rect] of Object.entries(regions))
+    const sx = texture.width / 1254, sy = texture.height / 1254;
+    for (const [name, [x,y,w,h]] of Object.entries(regions))
         if (!texture.frames.has(name))
-            texture.frames.set(name,[rect[0],rect[1],rect[2],rect[3]]);
+            texture.frames.set(name, [x*sx,y*sy,w*sx,h*sy]);
     const matrix = renderer.matrix;
     const a = matrix ? matrix[0][0] : renderer.scaleX;
     const b = matrix ? -matrix[2][0] : 0;

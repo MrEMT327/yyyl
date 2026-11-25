@@ -1,16 +1,15 @@
 import {createLobbyPanel} from './lobby-panel.js';
 import {paintLobbyPaper} from './panel-paper.js';
 import {area,box,pic,slice,words,clamp,titleFont} from './menu-art.js';
-import {DAILY_TABS,hasReady} from '../../ui/daily-tabs.js';
+import {DAILY_TABS,availableDailyTabs,hasReady,resolveDailyPeriod} from '../../ui/daily-tabs.js';
 import {taskChestArt,taskChestModel} from '../../ui/task-chest-model.js';
 import {paintPsdPopup,preparePsdPopupArt} from '../../ui/psd-popup-art.js';
 import {paintItemDetail} from './item-details.js';
 import {pendingNotice} from './chapter-rewards.js';
 import {activityModel,signInCard,achievementRows} from './task-model.js';
-import {taskList,rewardSlot,taskPageFade} from './task-list.js';
+import {taskList,rewardSlot,taskPageFade,taskTab,taskMedal} from './task-list.js';
 import art from './receipt-art.json';
 import {artworkSize} from './image-loading.js';
-const medal='/art/project-task-icons-v1/activity-medal.png';
 
 function drawChest(t,a,w,g,row,model,data){
   const side=(row.step===100?.13:.12)*w,cy=g.top+.065*w,cx=g.x;
@@ -38,7 +37,7 @@ function activity(data,w,t,r){
   const pad=.025*w+1,head=Math.max(.055*w,20),chestTop=r.y+pad+head+.01*w,ix=r.x+pad,iw=r.w-2*pad-.06*w;
   const height=chestTop-r.y+.20*w+.015*w+1,barY=chestTop+.13*w,barH=Math.max(4,w*.016);
   a.panel(r.x,r.y,r.w,height,{fill:'#29485e',bottomColor:'#1d3549',stroke:'#708fa5',opacity:1,cut:0});
-  pic(a,t,medal,box(ix,r.y+pad,.045*w,head),true);
+  pic(a,t,taskMedal,box(ix,r.y+pad,.045*w,head),true);
   const label=words(a,m.label,ix+.055*w,r.y+pad+head/2,clamp(.027*w,10,14),{color:'#d9e8f1',align:'left',weight:500});
   const value=words(a,m.value,label.position.x+label.scale.x/2+.01*w-4,r.y+pad+head/2,clamp(w*.045,15,22),{color:'#b8efff',align:'left',weight:700});
   words(a,'/ '+m.max,value.position.x+value.scale.x/2-2,r.y+pad+head*.58,clamp(.026*w,10,13),{align:'left',color:'#91adbf',weight:400});
@@ -46,9 +45,12 @@ function activity(data,w,t,r){
   a.quad(ix,barY,iw,barH,'#58798f');a.quad(ix+1,barY+1,iw-2,barH-2,'#12293a');
   if(m.value>0)a.quad(ix+1,barY+1,(iw-2)*m.value/m.max,barH-2,'#70cbe7');
   for(const row of m.milestones)drawChest(t,a,w,{x:ix+iw*row.step/m.max,top:chestTop},row,m,data);
-  const note=clamp(.03*w,11,15),noteH=Math.max(note*1.2,.04*w),noteY=r.y+height+.015*w;
-  words(a,m.reset,r.x+r.w,noteY+noteH/2,note,{align:'right',color:'#425c72'});
-  const top=noteY+noteH+.015*w;
+  let top=r.y+height+.015*w;
+  if(m.notice){
+    const size=clamp(.03*w,11,15),noteH=Math.max(size*1.2,.04*w);
+    words(a,m.notice,r.x+r.w,top+noteH/2,size,{align:'right',color:'#425c72'});
+    top+=noteH+.015*w;
+  }
   taskList(s,m.tasks,w,t,box(r.x,top,r.w,Math.max(1,r.y+r.h-top)),period,false,data.switched,data.initial);
 }
 
@@ -59,10 +61,6 @@ function frameDay(a,t,b,today){
 function signIn(data,w,t,clip){
   const s=data.snapshot,a=t.layer('sign-in','signin').art,x=clip.x+.006*w,width=clip.w-.012*w,gap=.013*w,gapY=.016*w,cell=(width-2*gap)/3;
   let y=clip.y+.012*w,column=0,rowHeight=0;
-  if(s.signIn?.gate?.reached===false){
-    const height=Math.max(clamp(.03*w,11,15)*1.2,.04*w);
-    words(a,s.signIn.gate.reason,x+width,y+height/2,clamp(.03*w,11,15),{align:'right',color:'#425c72'});y+=height;
-  }
   for(const original of s.signIn?.days||[]){
     const day=signInCard(original,s),wide=day.final,heading=.064*w;
     if(wide&&column){y+=rowHeight+gapY;column=0;rowHeight=0;}
@@ -108,13 +106,13 @@ function signIn(data,w,t,clip){
 }
 function tasks(data,w,h,t){
   const width=.92*w,height=Math.min(w*1.5,h*.9),p=paintLobbyPaper(t,{...data,paperFace:art.taskFace},w,h,width,height,w/6,'任务');
-  const margin=40*w/750,x=p.x+margin,bw=width-2*margin,step=bw/4,faceH=step*32/70;
+  const margin=40*w/750,x=p.x+margin,bw=width-2*margin,step=bw/DAILY_TABS.length,faceH=Math.min(44,step*32/70);
   for(const [i,tab] of DAILY_TABS.entries()){
     const current=data.period===tab.id,left=x+step*i,center=p.top+24;
-    pic(p.a,t,'/art/project-tabs-v1/tab-'+(current?'active':'inactive')+'.png',box(left,center-faceH/2,step,faceH));
-    words(p.a,tab.label,left+step/2,center,clamp(w*.038,14,18),{family:titleFont,color:current?'#163650':'#d1dce8'});
-    if(hasReady(data.snapshot,tab.id))p.a.panel(left+step-14,p.top+3,7,7,{radius:4,cut:0,fill:'#ee5767',stroke:'#80313c',opacity:1});
-    area(t,'tab-'+tab.id,tab.label,box(left,p.top,step,48),'taskPeriod',{period:tab.id});
+    const locked=!data.tabs.some(available=>available.id===tab.id);
+    taskTab(p.a,t,box(left,center-faceH/2,step,faceH),tab.label,current,clamp(w*.038,14,18),locked||undefined);
+    if(!locked&&hasReady(data.snapshot,tab.id))p.a.panel(left+step-14,p.top+3,7,7,{radius:4,cut:0,fill:'#ee5767',stroke:'#80313c',opacity:1});
+    area(t,'tab-'+tab.id,locked?tab.label+'，未解锁':tab.label,box(left,p.top,step,48),'taskPeriod',{period:tab.id});
   }
   let top=p.top+48+.015*w;top+=pendingNotice(data.snapshot,p.a,t,w,x,top,bw,null);
   const rect=box(x,top,bw,Math.max(1,p.y+height-52*w/750-top));
@@ -150,15 +148,16 @@ export function openTaskPanel(screen,host,send,kind,scrollPositions,options){
   panel.surface?.addEventListener('keydown',keyTab,true);
   function keyTab(e){
     if(inspect||tip||!panel.focused?.startsWith('tab-')||!['Home','End','ArrowLeft','ArrowRight'].includes(e.key))return;
-    const index=DAILY_TABS.findIndex(d=>d.id===latest.period),i=e.key==='Home'?0:e.key==='End'?3:(index+(e.key==='ArrowLeft'?3:1))%4;
-    e.preventDefault();e.stopImmediatePropagation();send('taskPeriod',{period:DAILY_TABS[i].id},host);
+    const {tabs,period}=latest,index=tabs.findIndex(tab=>tab.id===period);
+    const i=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowLeft'?-1:1)+tabs.length)%tabs.length;
+    e.preventDefault();e.stopImmediatePropagation();send('taskPeriod',{period:tabs[i].id},host);
   }
   function refresh(){const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);panel.update({...latest,source,bounds:panel.bounds,entered,inspect,reduced,switched:reduced?0:switched},
-    [latest.signature,latest.period,latest.id,inspect?.itemId,inspect?.name].join('|'),kind);}
+    [latest.signature,latest.period,latest.tabs.map(tab=>tab.id).join(','),latest.snapshot.pilotSupply?.clockRollback,latest.id,inspect?.itemId,inspect?.name].join('|'),kind);}
   return {host,prepareOffscreen:panel.prepareOffscreen,activate:panel.activate,
     close(){panel.surface?.removeEventListener('keydown',keyTab,true);panel.close();},update(snapshot,modal,signature){
-    const period=modal.period||'daily';
+    const period=tip?(modal.period||'daily'):resolveDailyPeriod(snapshot,modal.period),tabs=availableDailyTabs(snapshot);
     if(latest&&latest.period!==period)switched=performance.now()/1000;
-    latest={snapshot,signature,period,id:modal.id,initial:scrollPositions?.get(period)||0};refresh();
+    latest={snapshot,signature,period,tabs,id:modal.id,initial:scrollPositions?.get(period)||0};refresh();
   }};
 }

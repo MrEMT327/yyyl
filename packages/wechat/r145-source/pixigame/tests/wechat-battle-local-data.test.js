@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { gzipSync } from 'node:zlib';
 import { createWechatResources } from '../wechat/src/full/resources.js';
+import { paceSortieData } from '../wechat/src/three/frame-artwork.js';
+import { createBattleDataCache } from '../wechat/src/full/battle-data-cache.js';
 
 const source = 'replica-battle/data/chapter1.json';
 const remote = source + '.wx.gz';
@@ -11,7 +13,7 @@ const original = JSON.stringify({ chapter: 1, enemies: [11, 42] });
 const arrayBuffer = input => Uint8Array.from(input).buffer;
 const compressed = arrayBuffer(gzipSync(original));
 
-function fixture({ pack = false, damaged = false } = {}) {
+function fixture({ pack = false, damaged = false, size = Buffer.byteLength(original) } = {}) {
   const requests = [], reads = [], loaded = [];
   const api = {
     getFileSystemManager: () => ({
@@ -25,7 +27,7 @@ function fixture({ pack = false, damaged = false } = {}) {
   const resources = createWechatResources(api, {
     assetOrigin: 'https://game.example', cdnBase: cdn, requirePublicNetwork: true,
     cdnFiles: [remote], cacheVersion: 'test',
-    assetTransfers: { [source]: { path: remote, encoding: 'gzip', bytes: Buffer.byteLength(original) } },
+    assetTransfers: { [source]: { path: remote, encoding: 'gzip', bytes: size } },
     localFiles: pack ? { [source]: bundled } : {},
     loadPackage: async name => loaded.push(name),
   });
@@ -50,6 +52,41 @@ test('damaged packaged gzip falls back to the original gzip over the CDN', async
   assert.equal(f.requests[0].url, cdn + remote);
   f.requests[0].success({ statusCode: 200, data: compressed });
   assert.equal(Buffer.from(await bytes).toString('utf8'), original);
+});
+
+test('larger sortie data waits for separate paints and leaves queued work behind on abort', async t => {
+  const data = JSON.stringify({ chart: 'x'.repeat(1024 * 1024) });
+  const f = fixture({ size: Buffer.byteLength(data) });
+  t.after(() => f.resources.dispose());
+  const controller = new AbortController(), paints = [];
+  const paceDataWork = paceSortieData(() => new Promise(resolve => paints.push(resolve)), controller.signal);
+  const bytes = f.resources.readBytes('/' + source, { signal: controller.signal, paceDataWork });
+  f.requests[0].success({ statusCode: 200, data: arrayBuffer(gzipSync(data)) });
+  await new Promise(setImmediate);
+  assert.equal(paints.length, 1);
+  const queued = paceDataWork(1280 * 1024, () => assert.fail('aborted data reached the decoder'));
+  const rejects = assert.rejects(queued, { name: 'AbortError' });
+
+  await paceDataWork(128, () => assert.equal(paints.length, 1));
+  paints.shift()();
+  assert.equal(Buffer.from(await bytes).toString('utf8'), data);
+  await new Promise(setImmediate);
+  assert.equal(paints.length, 1);
+  controller.abort();
+  paints.shift()();
+  await rejects;
+  assert.equal(await paceDataWork(1280 * 1024, () => 'lobby data', { shared: true }), 'lobby data');
+});
+
+test('battle data cache freezes across frames before reusing the prepared result', async () => {
+  const cache = createBattleDataCache(), signal = new AbortController().signal;
+  const data = { rows: Array.from({ length: 400 }, () => ({ stats: { hp: 1 } })) };
+  let frames = 0, time = 0;
+  const options = { loadingFrame() { frames++; }, now: () => time += 9 };
+  assert.equal(await cache.load(1, signal, async () => data, options), data);
+  assert(frames > 1);
+  assert(data.rows.every(row => Object.isFrozen(row) && Object.isFrozen(row.stats)));
+  assert.equal(await cache.load(1, signal, () => assert.fail('cache miss')), data);
 });
 
 test('a timed-out static GET retries with a fresh key and shares the recovered cache', async t => {

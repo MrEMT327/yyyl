@@ -271,11 +271,6 @@
       "svgSha256": "c4d210612fa5355d502a105a96122b34d6edc58f1c164268527ba1f0d83ccacb"
     },
     {
-      "path": "art/project-toast-v1/toast-frame.svg",
-      "file": "7fd5465c3a95c13ff628.png",
-      "svgSha256": "80eec97c1c5f5d5884281c0c2f2c8a3fd82b6f23bfe651c6dfd9ba65e8af10f2"
-    },
-    {
       "path": "art/psd-popup-v1/task-face.svg",
       "file": "f7967a677f6d690312e5.png",
       "svgSha256": "a67ec18cf3c107312ce926d6018091359ce09954b9da1221bcbe2ee75659012e"
@@ -388,6 +383,31 @@
     }
   ],
   "localImages": [
+    {
+      "path": "art/entry-screens-v4/startup-wechat.jpg",
+      "sha256": "7e678c9dfced357e735e2c621692be5479b41629a4cc9b284790b0b84c21fed0",
+      "file": "9c35e2b0f84ac9dc6943.jpg"
+    },
+    {
+      "path": "art/psd-combat-v1/health-track.png",
+      "sha256": "107e6c62c98e79cbcb244aec35d54c551ca4ec07927c75cadc78ef74d1b34cb8",
+      "file": "107e6c62c98e79cbcb24.png"
+    },
+    {
+      "path": "art/psd-combat-v1/health-fill.png",
+      "sha256": "0839f0870ba3a979a9447a079809086ad4e7bc0d75f1fa57df8bcdc19e3919e4",
+      "file": "0839f0870ba3a979a944.png"
+    },
+    {
+      "path": "art/project-encounter-warnings-v3/elite.png",
+      "sha256": "cdbd8abf487b02ec38b630a7724f2296db7f2cecaa145739b6c62bbd376768aa",
+      "file": "cdbd8abf487b02ec38b6.png"
+    },
+    {
+      "path": "art/project-encounter-warnings-v3/boss-dark-edge.png",
+      "sha256": "dd0c944c83d90578eb70d806314092b9018e4cd7d4bb8a9170b4ac6cb930ca63",
+      "file": "dd0c944c83d90578eb70.png"
+    },
     {
       "path": "art/battle-skill-icons-v4/10000001.webp",
       "sha256": "bfe087f77680ad754dad160f9e71119ad8ce1b5d8ebb0bf12e7fc409ad752f1d",
@@ -570,8 +590,8 @@
     },
     {
       "path": "art/project-supply-parachute-v2/canopy.webp",
-      "sha256": "0b33154fe0d75d0b00ce0cd2226ccbbefe69b895ce306eb6d4849a66073f7aaa",
-      "file": "13d3f36e7067987b4331.png"
+      "sha256": "44e2017cee50ad1ceab4b4931a65e224f0ee7c200f3f15f28290754a82a89f39",
+      "file": "91802d57f576335a63e3.png"
     },
     {
       "path": "replica-battle/assets/missile-v3/body.png",
@@ -582,133 +602,26 @@
       "path": "replica-battle/assets/missile-v2/exhaust.png",
       "sha256": "78d64ba8a1853740fc3797069c89f94e2539fff05eb71fcad6985b27406887db",
       "file": "8b633927969febaeace8.png"
+    },
+    {
+      "path": "art/sortie-hangar-v1/shaft-section.webp",
+      "sha256": "d737afacde101885ec13f7548db2deed3d32b3932edb834e0fbe917a578b5dd7",
+      "file": "5cecdfc37a9d6d07581e.jpg"
+    },
+    {
+      "path": "art/sortie-hangar-v1/lift-front.webp",
+      "sha256": "07c973ee10cba2a4b5986e8b092221a32d2c9696fc2db531469e1e7dd83ac515",
+      "file": "76ffce8dbd08e61cd9bd.png"
+    },
+    {
+      "path": "art/three-ui/three-art-97c5902d1541.png",
+      "sha256": "97c5902d154108d7a865b5d59b4753b1c4b8f65dc6427692cf6ded968a937e93",
+      "file": "142936231bf6969854a5.png"
+    },
+    {
+      "path": "replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png",
+      "sha256": "0173015a26f2f97a67a0fa3ab027e229fe4a8f7f3408dbf2c2573da6858a00ef",
+      "file": "e4c2bc7cbb47a28917c7.png"
     }
-  ],
-  "recruitPreview": {
-    "path": "art/recruit-portraits-v2/wechat-preview.webp",
-    "file": "123de9c092d0e950a341.png",
-    "layoutSha256": "dc9e244c8210ecb5aa99805e1d7e81321e97ad1d1c97d6fb91344a32194e1659",
-    "sources": [
-      {
-        "path": "art/recruit-portraits-v2/pilot-01.png",
-        "sha256": "4a3581137b231604c22063da27a7638fb3a4853ca51bb1e375957b5849943f32"
-      },
-      {
-        "path": "art/three-ui/three-art-fbc3f67c0f5e.png",
-        "sha256": "fbc3f67c0f5e6087976cf626a83fd7ee1d4e6fe116c0881bc9d8074ab273fff7"
-      },
-      {
-        "path": "art/three-ui/three-art-f24a5f8330ef.png",
-        "sha256": "f24a5f8330ef5a8c5606f0706c91c9612fa44cbc6faca033ff20e55dd011a4a4"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-02.png",
-        "sha256": "9a40dcc451b9b8172c78ff8d608426bcf8d269c9de9d119c16d16eac0591a1d2"
-      },
-      {
-        "path": "art/three-ui/three-art-1c212200539c.png",
-        "sha256": "1c212200539cf3d3402924451027f91ef9718b7285af4a6124f7fdab05263a2f"
-      },
-      {
-        "path": "art/three-ui/three-art-9e2b4433374e.png",
-        "sha256": "9e2b4433374ea12a0140b931d872fba50ce60f4184ab05de22c3cf798f7d686a"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-03.png",
-        "sha256": "f83937535a95a9c8b80317f0018a9b3703ba7cf946f83feb73a0ec3283c23e8f"
-      },
-      {
-        "path": "art/three-ui/three-art-105d8349377e.png",
-        "sha256": "105d8349377e310b21b39443a412f182aab668209c2fb1bc8cd6329671e1f6f7"
-      },
-      {
-        "path": "art/three-ui/three-art-b2803ba4d3cb.png",
-        "sha256": "b2803ba4d3cbe2185840f436df02bad9112bd0b150580b5ab8bdeb2419c55fc2"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-04.png",
-        "sha256": "134c49ba24b5f2335f336630dc21ea01afcb86f43c5654c22eac9bcb2cc72255"
-      },
-      {
-        "path": "art/three-ui/three-art-eec50ada4cbe.png",
-        "sha256": "eec50ada4cbea0d56ccbfa5c5a90909d8789c6a9a04d0a55adc5727d268cd55b"
-      },
-      {
-        "path": "art/three-ui/three-art-488112ef8e15.png",
-        "sha256": "488112ef8e15fa6ab3e2e1b85093c78dd20922cf618695436b61f5eefaefd087"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-05.png",
-        "sha256": "d17e33b27a57610d050095ce22f219086d7bdfbd141744d62a63f321360659bd"
-      },
-      {
-        "path": "art/three-ui/three-art-95baf4601103.png",
-        "sha256": "95baf460110346ac1887253fc926068d930518f1069f1b26227b64ef3ae0d206"
-      },
-      {
-        "path": "art/three-ui/three-art-a7670ae32260.png",
-        "sha256": "a7670ae32260eadf1c67c3af91bc17cfe492cab517ff7097ad9d3a3c94e4bd06"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-06.png",
-        "sha256": "8bf7bd497f5d5cbd787e2493941830186c19ea6b3bf7cced452c66fa9278798f"
-      },
-      {
-        "path": "art/three-ui/three-art-66660d66f4f1.png",
-        "sha256": "66660d66f4f1240e62d5d326e09033dcb8035f3d7e7e2c025067ba228fb5839d"
-      },
-      {
-        "path": "art/three-ui/three-art-66ac68e4878d.png",
-        "sha256": "66ac68e4878d9cdafd31e00ad406601c5de713e5a7f8e0826424fb90dccc541e"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-07.png",
-        "sha256": "7e09a5039b90e855df65ce9a1ca9f55e4391124571fa88880cdf38a230e39b02"
-      },
-      {
-        "path": "art/three-ui/three-art-b407fa923c48.png",
-        "sha256": "b407fa923c4819db9e3cf5b41aa1a47785d4fd1362216553fe3fee9b8b4f06f9"
-      },
-      {
-        "path": "art/three-ui/three-art-8e34fb5809b8.png",
-        "sha256": "8e34fb5809b8b0936e492378a6c856fcd3c0a6e415a5c15fe638380b76df09be"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-08.png",
-        "sha256": "8d265dc2a2d527aec5c55e89c47d0d0b534384d116d11c90052237652ce9f330"
-      },
-      {
-        "path": "art/three-ui/three-art-54cd5fdfe976.png",
-        "sha256": "54cd5fdfe9760deb59036b9224fc30d9486a616a1b73e011a35d9d946e3d61b6"
-      },
-      {
-        "path": "art/three-ui/three-art-8fd03ebb23f8.png",
-        "sha256": "8fd03ebb23f851bbef22c392a8e96d9bdc31dab6073cf3de32b6e9b2492fe369"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-09.png",
-        "sha256": "70b7bb7dfa40f16c5c32432232eb253e542618315bab93df2d793946142c912d"
-      },
-      {
-        "path": "art/three-ui/three-art-c0dd7a1ccab9.png",
-        "sha256": "c0dd7a1ccab97f0b173d9b584d7d12fbd7afc7fc7397cb01dffffbf47b6c2e0e"
-      },
-      {
-        "path": "art/three-ui/three-art-c848364e08fd.png",
-        "sha256": "c848364e08fd2c436f26bb83a131993e86f0feb01be0926b64793c08ee5615b1"
-      },
-      {
-        "path": "art/recruit-portraits-v2/pilot-10.png",
-        "sha256": "1e3a2845a806a920ce1a44b930e01f58842362282f75f4a5444c829c536020eb"
-      },
-      {
-        "path": "art/three-ui/three-art-8d473660c07a.png",
-        "sha256": "8d473660c07af000b8a2328a8f67b7b3c569f5a2c3db0cd79ed75a01da958b3f"
-      },
-      {
-        "path": "art/three-ui/three-art-370738947b03.png",
-        "sha256": "370738947b03b750b92e6f8fffbdec4c23867fe0d7e2af18d6787868af084521"
-      }
-    ]
-  }
+  ]
 }

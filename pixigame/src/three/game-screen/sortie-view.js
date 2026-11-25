@@ -60,20 +60,21 @@ export function createSortieViewForOutput(device,outputHost,aircraftId,stageName
   const environment=screenPass(shaftFragment,shaft),transition=screenPass(revealFragment,reveal,true);
   const oldVp=new Vector4(),oldSc=new Vector4(),oldColor=new Color(),output=new Vector4();
   let width=0,height=0,wPixels=0,hPixels=0,sceneLayout=null,key='',controls=[],titleNode=null;
-  let deck=null,plane=null,disposed=false,artVersion=0,combatTarget=null,battleVisible=false;
+  let deck=null,plane=null,planeY=0,disposed=false,artVersion=0,combatTarget=null,battleVisible=false;
+  let hangarStart=null;
 
   function load(key,url,raw=false,fallbackUrl){
     const texture=artworkTexture(url,()=>{
       if(disposed)return;
-      if(key==='shaft'){shaft.shaft.value=texture;shaft.sourceSize.value.set(texture.image.width,texture.image.height);shaft.available.value=1;}
+      if(key==='shaft'){shaft.shaft.value=texture;shaft.sourceSize.value.set(texture.image.width,texture.image.height);}
       artVersion++;redraw();
-    },()=>{if(!disposed&&fallbackUrl){texture.dispose();load(key,fallbackUrl,raw);}});
+    },()=>{if(!disposed&&fallbackUrl){texture.dispose();load(key,fallbackUrl,raw);}},key==='shaft'||key==='deck'?2:undefined);
     texture.colorSpace=raw?NoColorSpace:SRGBColorSpace;texture.minFilter=LinearMipmapLinearFilter;texture.magFilter=LinearFilter;
     textures.set(key,texture);
   }
   const base=import.meta.env.BASE_URL+'art/';
   load('shaft',base+'sortie-hangar-v1/shaft-section.webp',true,base+'psd-main-v1/main-background.png');
-  load('deck',base+'sortie-hangar-v1/lift-front.webp');load('plane',sortieAircraftImageUrl(aircraftId));
+  load('deck',base+'sortie-hangar-v1/lift-front.webp');
   function paintButton(label,b,focus){
     const tex=textures.get(label==='返回'?'blue':'gold');
     if(tex?.image){
@@ -95,7 +96,10 @@ export function createSortieViewForOutput(device,outputHost,aircraftId,stageName
     sceneLayout.deckHeight=deckHeight;const deckX=hangar.x+hangar.w*.07,hangarBottom=hangar.y+hangar.h;
     deck=im?platform.image(textures.get('deck'),deckX,hangarBottom-deckHeight,deckWidth,deckHeight):null;
     const p=sortieAircraftImageLayout(aircraftId,{width:hangar.w,height:hangar.h,deckHeight});
-    plane=textures.get('plane').image?platform.image(textures.get('plane'),hangar.x+p.left-p.width/2,hangarBottom-p.bottom-p.height,p.width,p.height):null;
+    if(!state.model&&!textures.has('plane'))load('plane',sortieAircraftImageUrl(aircraftId));
+    const fallback=textures.get('plane');
+    plane=!state.model&&fallback?.image?platform.image(fallback,hangar.x+p.left-p.width/2,hangarBottom-p.bottom-p.height,p.width,p.height):null;
+    planeY=plane?.position.y??0;
     state.model?.resize(hangar.w,hangar.h,deckHeight,false);
     const size=clamp(pw*.055,19,26);
     titleNode=labels.text(stageName,text.x+text.w/2,text.top+9+size*.675,{size,weight:700,family:'"PingFang SC","Microsoft YaHei",sans-serif',
@@ -126,24 +130,34 @@ export function createSortieViewForOutput(device,outputHost,aircraftId,stageName
     const signature=[width,height,state.failed,state.message&&state.failed?state.message:'',state.retry,state.focus,state.keyboard,!!state.model,artVersion].join('|');
     if(signature!==key){key=signature;rebuild(state);}
     const {panel,hangar,deckHeight}=sceneLayout;
+    const hangarReady=Boolean(deck&&textures.get('shaft')?.image);
+    if(hangarReady&&!hangarStart)hangarStart={seconds:state.seconds,modelSeconds:state.modelSeconds};
+    const seconds=hangarStart?Math.max(0,state.seconds-hangarStart.seconds):0;
+    const modelSeconds=hangarStart?Math.max(0,state.modelSeconds-hangarStart.modelSeconds):0;
     const target=r.getRenderTarget(),clipped=r.getScissorTest(),clear=r.autoClear,alpha=r.getClearAlpha(),tone=r.toneMapping,exposure=r.toneMappingExposure;
     r.getViewport(oldVp);r.getScissor(oldSc);r.getClearColor(oldColor);
     try{
       output.copy(outputHost.begin(wPixels,hPixels,redraw));
       r.autoClear=false;r.setClearColor(0x071520,1);r.clear();
-      viewport(panel.x,0,panel.w,height);shaft.still.value=Number(state.reduced);shaft.seconds.value=state.seconds;
+      viewport(panel.x,0,panel.w,height);shaft.still.value=Number(state.reduced);shaft.seconds.value=seconds;
+      shaft.available.value=Number(hangarReady);
       r.render(environment.scene,screenCamera);
-      const distance=state.model?hangar.h*.325*hangarPose(state.modelSeconds,state.reduced).lift:0;
+      const pose=hangarPose(state.animatePlaceholder?seconds:modelSeconds,state.reduced);
+      const distance=state.model||state.animatePlaceholder?hangar.h*.325*pose.lift:0;
       if(deck)deck.position.y=hangar.y+hangar.h-deckHeight/2-distance;
-      if(plane)plane.visible=!state.model;
-      r.render(equipment,camera);
-      if(state.model){
+      if(plane){
+        plane.visible=!state.model;
+        plane.position.y=planeY-distance;
+        if(state.animatePlaceholder&&!state.reduced)plane.rotation.y=.38*Math.sin(pose.yaw*2);
+      }
+      if(hangarReady)r.render(equipment,camera);
+      if(hangarReady&&state.model){
         viewport(panel.x+hangar.x,hangar.y-distance,hangar.w,hangar.h);
         r.clearDepth();r.toneMapping=ACESFilmicToneMapping;r.toneMappingExposure=AIRCRAFT_RENDER_STYLE.exposure;
-        state.model.draw(state.modelSeconds,state.reduced);
+        state.model.draw(modelSeconds,state.reduced);
         viewport(panel.x,0,panel.w,height);
       }
-      titleNode.material.opacity=state.titleOpacity;r.render(front,camera);
+      titleNode.material.opacity=hangarReady?state.titleOpacity:1;r.render(front,camera);
       if(state.reveal>0){
         const b=device.battle?.bounds?.();
         if(b)reveal.rect.value.set((b.x-rect.x)/width,(b.y-rect.y)/height,b.width/width,b.height/height);

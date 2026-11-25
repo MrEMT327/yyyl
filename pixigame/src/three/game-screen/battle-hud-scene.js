@@ -31,7 +31,9 @@ class BattleHudScene {
 export function mountThreeCombatHud(options){
   const {screen,onGraphicsContext}=options,renderer=new BattleHudScene(screen),canvas=screen.canvas;
   canvas?.setAttribute?.('aria-label','战斗界面');onGraphicsContext?.(screen.renderer.domElement,screen.renderer.getContext());
-  screen.stage.drawHud=()=>renderer.draw();
-  return bindCombatHud(options,{canvas,renderer,setPhase:value=>screen.stage.setModalPhase?.(value),
-    draw:scene=>renderer.prepare(scene),disposeRenderer(){screen.stage.drawHud=null;renderer.destroy();}});
+  const {stage}=screen;
+  stage.drawHud=()=>renderer.draw();
+  return bindCombatHud(options,{canvas,renderer,setPhase(value,showingResult){
+    stage.showingResult=showingResult;stage.setModalPhase?.(value);
+  },draw:scene=>renderer.prepare(scene),disposeRenderer(){stage.drawHud=null;renderer.destroy();}});
 }

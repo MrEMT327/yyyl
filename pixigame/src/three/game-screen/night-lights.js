@@ -10,7 +10,7 @@ const flowCode=`
     if(flowMode>1.5&&flowMode<2.5)warp*=2.;
     float phase=dot(coords,direction)+warp-phases.x+flowSeed;
     float current=pow(max(0.,sin(phase*6.2831853)),7.);
-    gl_FragColor.rgb*=.87+.34*current+.055*sin((coords.x*4.3-coords.y*2.1+phases.y)*6.2831853);
+    color.rgb*=.87+.34*current+.055*sin((coords.x*4.3-coords.y*2.1+phases.y)*6.2831853);
   }`;
 function flowMaterial(mesh){
   const material=mesh.material,u=material.uniforms;

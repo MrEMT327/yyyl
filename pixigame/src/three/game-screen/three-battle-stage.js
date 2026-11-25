@@ -48,7 +48,11 @@ const fragment = `precision highp float;
     }
   #else
     vec4 sampleArt(){
-      vec4 tex=texture(art,coords);
+      #ifdef HULL_MIP_LOD_BIAS
+        vec4 tex=texture(art,coords,HULL_MIP_LOD_BIAS);
+      #else
+        vec4 tex=texture(art,coords);
+      #endif
       tex.rgb*=mix(tex.a,1.,premult);
       return tex;
     }
@@ -60,13 +64,14 @@ const fragment = `precision highp float;
     color=vec4(rgb,tex.a)*opacity;
   }`;
 
-export function createBattleStage(renderer,{smoothEnemyMinification=false,outputScale=1}={}) {
+export function createBattleStage(renderer,{smoothEnemyMinification=false,outputScale=1,terrainScale=1,renderBudget}={}) {
   const scene=new T.Scene(),camera=new T.OrthographicCamera(0,width,0,height,-10,10);
   const quad=new T.PlaneGeometry(1,1),spriteMeshes=new Set(),glow=createBattleGlow(renderer,width,height,outputScale);
   const white=new T.DataTexture(new Uint8Array([255,255,255,255]),1,1);
   white.needsUpdate=true;
   const whiteBinding={texture:white,width:1,height:1};
-  const colorTargets=createBattleColorTargets(renderer,width,height,256);
+  const terrainPixels=n=>Math.max(1,Math.round(n*terrainScale));
+  const colorTargets=createBattleColorTargets(renderer,terrainPixels(width),terrainPixels(height),256);
   function makeSprite(binding,layer,parent=scene) {
     const material=new T.RawShaderMaterial({
       vertexShader:vertex,fragmentShader:fragment,glslVersion:T.GLSL3,transparent:true,depthWrite:false,depthTest:false,
@@ -96,6 +101,8 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,output
   const ground=makeSprite({texture:colorTargets.ground,width,height,framebuffer:true,premultiplied:true},-1000);
   ground.material.uniforms.pivot.value.set(0,0);ground.visible=false;
   const hull=makeSprite({texture:colorTargets.hull,width:256,height:256,framebuffer:true,premultiplied:true},25);
+  // Preserve panel detail while keeping trilinear filtering for the moving hull.
+  hull.material.defines.HULL_MIP_LOD_BIAS=-.5;
   hull.visible=false;
   const stage={scene,camera,renderer,glow,white: whiteBinding,makeSprite,remove,tint,ground,hull,width,height,viewport:authoredBattleFrame,
     smoothEnemySprite:smoothEnemyMinification?mesh=>{mesh.material.defines.ENEMY_MINIFICATION=1;}:undefined,
@@ -105,7 +112,7 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,output
       this.viewport=frame;
       camera.left=frame.left;camera.right=frame.left+frame.width;
       camera.top=frame.top;camera.bottom=frame.top+frame.height;camera.updateProjectionMatrix();
-      colorTargets.resizeGround(frame.width,frame.height);glow.resize(frame);
+      colorTargets.resizeGround(terrainPixels(frame.width),terrainPixels(frame.height));glow.resize(frame);
       ground.position.set(frame.left,frame.top,0);
       ground.material.uniforms.size.value.set(frame.width,frame.height);
     },
@@ -134,7 +141,7 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,output
           if(node.layers.mask&4)hasForeground=true;
         });
         const start=profile?.();
-        glow.paint(scene,camera,output,this.beginOutput,hasForeground);
+        glow.paint(scene,camera,output,this.beginOutput,hasForeground,renderBudget?.underLoad);
         const overlay=profile?.();
         this.drawBackdrop?.();this.drawBreakthrough?.('rear');this.drawHud?.();
         this.drawBreakthrough?.('front');this.drawMovementGuide?.();this.drawNotice?.();this.drawDeveloperSkills?.();

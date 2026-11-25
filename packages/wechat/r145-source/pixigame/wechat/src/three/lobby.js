@@ -5,25 +5,32 @@ import { createLobbyFeedback } from '../../../../../../../pixigame/src/three/gam
 import { createLobbyToast } from '../../../../../../../pixigame/src/three/game-screen/lobby-toast.js';
 import { createLobbyPanel } from '../../../../../../../pixigame/src/three/game-screen/lobby-panel.js';
 import { paintItemDetail } from '../../../../../../../pixigame/src/three/game-screen/item-details.js';
+import { compactPilotAvatar } from '../../../../../../../pixigame/src/pilot-avatar-icons.js';
+import { battleChapterIndex } from '../../../../../../../pixigame/src/ui/battle-chapter-index.js';
 import { mountWechatHome } from './home-surface.js';
 import { mountWechatMenu } from './menu-surface.js';
 import { createWechatTextField } from './text-field.js';
 import { createMenuArtworkWarmup, frameWork } from './frame-artwork.js';
 
 const activityKinds=['tasks','carnival'];
+const mainTabOrder=['assembly','supply','shop','research'];
 
-export function mountWechatLobby(api, platform, device, { bridge, system, deferPortraits, portraits, openAircraft, openVideo, settingsStorage }) {
-  let startupWarmup=null,queueCatalogs=null,queueWorkshops=null,queueRecruit=null,warmupQueued=false,visible=true,location={tab:'battle',subpage:''};
+export function mountWechatLobby(api, platform, device, { bridge, system, deferPortraits, deferFirstSortieLobby, portraits, openAircraft, openVideo, settingsStorage }) {
+  let startupWarmup=null,queueMainMenus=null,queueCatalogs=null,queueWorkshops=null,queueReturnMenus=null;
+  let returnedFromBattle=false;
+  let mountSettledEquipment=null,cancelReturnPreparation=null;
+  let warmPilotAvatars=null,avatarWarmup=null;
+  let firstSortieMenus=false,firstSortieQueued=false,warmupQueued=false,visible=true,deferSecondaryWarmup=false,location={tab:'battle',subpage:''};
   const full=()=>platform.viewport.screen;
   function bounds(){
     const {screen,safeTop}=platform.viewport;
     return {...screen,y:safeTop,top:safeTop,height:screen.height-safeTop};
   }
   const isVisible=()=>visible&&!device.battle&&!device.cover;
-  const warmup=frameWork(platform,()=>platform.visible&&visible&&!device.battle&&!device.preview&&
-    platform.inputIdle&&!device.panel?.fullscreen,40);
+  const warmup=frameWork(platform,()=>platform.visible&&visible&&!firstSortieMenus&&!device.battle&&!device.preview&&
+    platform.inputIdle&&!device.menuView?.preparing&&!device.panel?.fullscreen,40);
   function region(priority=0,overlay=false){
-    return {bounds,frameBounds:full,visible:isVisible,overlay,priority};
+    return {bounds,frameBounds:full,visible:isVisible,accepts:isVisible,overlay,priority};
   }
   const modalRoot=region(10),receiptRegion=region(20,true),inspection=region(30,true);
   const activityPreviews=new Map(),prepareActivityArtwork=createMenuArtworkWarmup(platform);
@@ -31,7 +38,8 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
   const home={...region(),stageEntry:true,getBounds:full,openPortrait:id=>portraits.openHome(id,device)};
   const menu={...region(),openPortrait:(refresh,paint)=>portraits.openCatalog(device,bounds,refresh,paint),
     openAircraft:(...args)=>openAircraft(device,bounds,...args)};
-  const mainPages=new Map(['supply','assembly','shop','research'].map(tab=>[tab,{...menu,main:true,recruit:tab==='supply'}]));
+  const mainPages=new Map(mainTabOrder.map(tab=>[tab,{...menu,main:true,completeEntry:tab==='assembly'||tab==='supply'}]));
+  mainPages.get('assembly').allowAircraftStill=()=>returnedFromBattle;
   const catalogPages=new Map(['weapon','aircraft','pilot'].map(key=>[key,{...menu,catalog:true}]));
   const workshopPages=new Map(['gear','weapon'].map(kind=>[kind,{...menu,workshop:kind}]));
   const retainedViews=new Map();
@@ -39,6 +47,7 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
   function drop(page,slot){slot.view.close();retainedViews.delete(page);}
   function retain(page,mount,active=true){
     let slot=retainedViews.get(page);
+    if(slot?.view.entryFailed){drop(page,slot);slot=null;}
     if(!slot){
       slot={active};
       const shown=()=>slot.active&&page.visible();
@@ -56,7 +65,7 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
   }
   function retainMenu(host,send,interactive,setSection,active=true){
     return retain(host,page=>mountWechatMenu(device,platform,page,send,interactive,setSection,
-      {atomicEntry:!active||host.catalog||host.recruit||host.workshop,parked:!active}),active);
+      {atomicEntry:!active||host.completeEntry||host.catalog||host.workshop,parked:!active,sortieWarmup:!active&&firstSortieMenus}),active);
   }
   function finishStartupWarmup(){
     if(!startupWarmup)return;
@@ -74,7 +83,7 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
   }
   function queueMenuWarmup(pages,read,send,interactive,setSection){
     for(const [tab,host] of pages){
-      if(retainedViews.has(host)||pendingWarmup.has(host))continue;
+      if((deferSecondaryWarmup||firstSortieMenus)&&!host.main||retainedViews.has(host)||pendingWarmup.has(host))continue;
       pendingWarmup.set(host,{tab,mount(){
         const {data,key}=read(tab);
         const view=retainMenu(host,send,interactive,setSection,false);
@@ -84,14 +93,14 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     }
     resumeWarmup();
   }
-  function warmNextMenu(){
+  function warmNextMenu(maxUploads){
     const next=pendingWarmup.entries().next().value;
     if(!next)return;
     const [host,job]=next;
     pendingWarmup.delete(host);
     try{
       const view=job.view??=job.mount();
-      if(!view.prepareOffscreen())pendingWarmup.set(host,job);
+      if(!view.prepareOffscreen(maxUploads))pendingWarmup.set(host,job);
       else if(host.workshop)platform.debugLog?.info('改装间首屏预热',{kind:host.workshop});
       else if(host.catalog)platform.debugLog?.info('目录首屏预热',{page:job.tab});
       else warmedTabs.push(job.tab);
@@ -102,6 +111,12 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     }
     if(pendingWarmup.size)resumeWarmup();
     else finishStartupWarmup();
+  }
+  function queuePilotAvatars(){
+    if(firstSortieMenus||!warmPilotAvatars)return;
+    warmup.push(()=>warmPilotAvatars?.({
+      get aborted(){return !platform.visible||!isVisible();}
+    }));
   }
   const copyText=text=>new Promise(resolve=>{
     api.setClipboardData({data:String(text),success:()=>resolve(true),fail:()=>resolve(false)});
@@ -125,8 +140,14 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     for(const slot of activityPreviews.values())slot.view?.close();
     activityPreviews.clear();
   }
+  function releaseIdleViews(includeMain=true){
+    for(const page of pendingWarmup.keys())if(includeMain||!page.main)pendingWarmup.delete(page);
+    if(!pendingWarmup.size)finishStartupWarmup();
+    clearActivityPreviews();
+    for(const [page,slot] of retainedViews)if(!slot.active&&page!==home&&(includeMain||!page.main))drop(page,slot);
+  }
   function queueActivityPanels(){
-    if(!visible||!activityWarmup)return;
+    if(!visible||deferSecondaryWarmup||firstSortieMenus||!activityWarmup)return;
     const {read,send,scroll}=activityWarmup;
     for(const kind of activityKinds){
       if(activityPreviews.has(kind)||!read(kind))continue;
@@ -163,23 +184,98 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
       return {...view,close(){view.close();queueActivityPanels();}};
     },
     supportsMenu,
-    mountHome(host,send,interactive){
-      const view=retain(host,page=>mountWechatHome(device,platform,page,send,interactive));
+    mountHome(host,send,interactive,active=true){
+      const view=retain(host,page=>mountWechatHome(device,platform,page,send,interactive),active);
       view.selectPilot(device.homeState.pilotId);
       return view;
     },
-    prepareMenus(read,send,interactive,setSection){
-      queueRecruit=()=>queueMenuWarmup([['supply',mainPages.get('supply')]],read,send,interactive,setSection);
+    prepareMenus(read,send,interactive,setSection,{firstSortieRequired=false}={}){
+      warmPilotAvatars=signal=>{
+        if(!platform.warmArtworkFiles||avatarWarmup||signal.aborted)return;
+        const {snapshot}=read('assembly').data;
+        const rows=snapshot.pilots??[],selected=rows.find(pilot=>pilot.id===snapshot.pilotId);
+        const pilots=[selected,...rows.filter(pilot=>pilot.owned&&pilot!==selected)].filter(Boolean);
+        const urls=pilots.map(pilot=>compactPilotAvatar(pilot.avatar||pilot.image).src).filter(Boolean);
+        if(urls.length)avatarWarmup=platform.warmArtworkFiles(urls,signal).finally(()=>{avatarWarmup=null;});
+      };
+      queueMainMenus=()=>queueMenuWarmup(mainPages,read,send,interactive,setSection);
+      queueReturnMenus=()=>queueMenuWarmup(['assembly','supply'].map(tab=>[tab,mainPages.get(tab)]),read,send,interactive,setSection);
+      if(firstSortieRequired){
+        firstSortieMenus=true;
+        mountSettledEquipment=()=>{
+          const {data,key}=read('assembly',true);
+          if(data.snapshot.firstSortieRequired)return null;
+          const page=mainPages.get('assembly');
+          pendingWarmup.delete(page);
+          const view=retainMenu(page,send,interactive,setSection,false);
+          view.update(data,key);
+          let preparingHome;
+          if(deferFirstSortieLobby&&!retainedViews.has(home)){
+            const {snapshot}=data;
+            device.publishHome(snapshot,battleChapterIndex(snapshot),bridge.debugToolsEnabled);
+            preparingHome=device.mountHome(home,send,interactive,false).prepareEntry().catch(error=>{
+              if(!visible&&device.battle)console.warn('[Three 首战返回大厅预热]',error?.message||error);
+            });
+          }
+          return {view,preparingHome};
+        };
+        return [];
+      }
       return new Promise(resolve=>{
         const timer=setTimeout(finishStartupWarmup,1600);
         startupWarmup={resolve,timer};
-        queueMenuWarmup(mainPages,read,send,interactive,setSection);
+        queueMainMenus();
         if(!pendingWarmup.size)finishStartupWarmup();
       });
     },
+    prepareFirstSortieEquipment(isCurrent){
+      if(!firstSortieMenus||deferSecondaryWarmup||visible||!isCurrent())return;
+      cancelReturnPreparation?.();
+      const prepared=mountSettledEquipment?.();
+      if(!prepared)return;
+      const {view,preparingHome}=prepared;
+      let homeReady=!preparingHome;
+      void preparingHome?.then(()=>{homeReady=true;});
+      return new Promise(resolve=>{
+        let frame=null;
+        const timer=setTimeout(finish,8000);
+        function finish(){
+          clearTimeout(timer);
+          if(frame!==null)platform.cancelFrame(frame);
+          if(cancelReturnPreparation===finish)cancelReturnPreparation=null;
+          resolve();
+        }
+        function step(){
+          frame=null;
+          if(visible||deferSecondaryWarmup||!isCurrent()){finish();return;}
+          if(platform.visible&&!device.cover){
+            try{
+              if(view.prepareOffscreen(1,true)&&homeReady){
+                platform.debugLog?.info('结算时装备首屏已准备');
+                finish();return;
+              }
+            }catch(error){
+              const page=mainPages.get('assembly'),slot=retainedViews.get(page);
+              if(slot?.controller===view)drop(page,slot);
+              console.warn('[Three 装备首屏预热]',error?.message||error);
+              finish();return;
+            }
+          }
+          frame=platform.requestFrame(step);
+        }
+        cancelReturnPreparation=finish;
+        frame=platform.requestFrame(step);
+      });
+    },
+    warmFirstSortieMenus(signal){
+      if(!firstSortieMenus||cancelReturnPreparation||deferSecondaryWarmup||visible||signal.aborted||!platform.visible||device.cover)return false;
+      if(!firstSortieQueued){firstSortieQueued=true;queueMainMenus?.();warmPilotAvatars?.(signal);}
+      if(pendingWarmup.size)warmNextMenu(1);
+      return pendingWarmup.size>0;
+    },
     prepareCatalogs(read,send,interactive,setSection){
       queueCatalogs=()=>queueMenuWarmup(catalogPages,read,send,interactive,setSection);
-      queueCatalogs();
+      queueCatalogs();queuePilotAvatars();
     },
     prepareWorkshops(read,send,interactive,setSection){
       queueWorkshops=()=>queueMenuWarmup(workshopPages,read,send,interactive,setSection);
@@ -204,20 +300,19 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     reducedMotion:device.reducedMotion,layout:()=>({...location,bounds:full(),hidden:!isVisible()})});
   const presentation={
     modalRoot,inspection,portraitPlayer:{...portraits,setVisible(value,options){
-      portraits.setVisible(value&&(location.tab==='battle'&&!location.subpage||location.subpage==='pilot'),options);
+      const portraitPage=location.tab==='battle'&&!location.subpage||location.subpage==='pilot';
+      portraits.setVisible(value&&portraitPage,{...options,leavePage:!portraitPage});
     }},settingsStorage,
     hidden:()=>!visible||!platform.visible,
     busy(){},
     setVisible(value){
       const returning=value&&!visible;
       visible=value;
-      // Parked pages only live for the current lobby visit.
-      if(!value){
-        pendingWarmup.clear();finishStartupWarmup();
-        clearActivityPreviews();
-        for(const [page,slot] of retainedViews)if(!slot.active&&page!==home)drop(page,slot);
-      }else if(returning){
-        queueRecruit?.();queueActivityPanels();queueWorkshops?.();queueCatalogs?.();
+      if(!value&&!firstSortieMenus)releaseIdleViews();
+      else if(returning){
+        cancelReturnPreparation?.();
+        deferSecondaryWarmup=false;
+        if(!firstSortieMenus){returnedFromBattle=true;queueReturnMenus?.();queueActivityPanels();queueWorkshops?.();queueCatalogs?.();}
       }
       device.repaintHome?.();
     },
@@ -226,24 +321,37 @@ export function mountWechatLobby(api, platform, device, { bridge, system, deferP
     retainModal:()=>({overlay:receiptRegion,restore(){}}),
     async copyReport(_host,report){device.toast.show(await copyText(report)?'已复制':'复制失败');},
     showPage({tab,subpage,nativeHome,workshopKind}){
+      if(subpage==='pilot'&&location.subpage!=='pilot')queuePilotAvatars();
       location={tab,subpage};device.lobbyLocation=location;
       if(subpage==='workshop')return workshopPages.get(workshopKind)??menu;
       return nativeHome?home:subpage?(catalogPages.get(subpage)??menu):mainPages.get(tab)??menu;
     },
     requestFrame:platform.requestFrame,cancelFrame:platform.cancelFrame,
     close(){
+      cancelReturnPreparation?.();mountSettledEquipment=warmPilotAvatars=null;
       pendingWarmup.clear();finishStartupWarmup();warmup.close();
       clearActivityPreviews();activityWarmup=null;
-      queueWorkshops=queueCatalogs=queueRecruit=null;
+      queueMainMenus=queueWorkshops=queueCatalogs=queueReturnMenus=null;
+      firstSortieMenus=false;
       visible=false;for(const [page,slot] of retainedViews)drop(page,slot);
       device.feedback.close();device.toast.close();
     },
   };
   try{
-    const controller=createThreeLobbyController({bridge,system,presentation,deferPortraits});
+    const controller=createThreeLobbyController({bridge,system,presentation,deferPortraits,deferFirstSortieLobby});
+    controller.trimMemory=()=>{
+      deferSecondaryWarmup=true;cancelReturnPreparation?.();releaseIdleViews(!visible);
+      const equipment=retainedViews.get(mainPages.get('assembly'));
+      if(equipment&&!equipment.active)equipment.view.trimAircraft();
+      if(!visible)firstSortieQueued=false;
+    };
     const update=controller.update.bind(controller);
     controller.update=step=>{
       const result=update(step);
+      if(firstSortieMenus&&visible&&!controller.snapshot?.firstSortieRequired){
+        firstSortieMenus=false;mountSettledEquipment=null;
+        queuePilotAvatars();queueMainMenus?.();queueActivityPanels();queueWorkshops?.();queueCatalogs?.();
+      }
       warmup.resume();return result;
     };
     return controller;

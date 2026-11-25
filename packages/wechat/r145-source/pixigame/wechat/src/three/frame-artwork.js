@@ -14,8 +14,32 @@ export function frameWork(platform,active,fastInterval=28){
     if(interval<fastInterval||interval>80)jobs.shift()();
     resume();
   }
-  return {push(job){if(!closed){jobs.push(job);resume();}},resume,
-    close(){closed=true;jobs.length=0;if(request!==null)platform.cancelFrame(request);request=null;}};
+  function clear(){
+    jobs.length=0;last=null;
+    if(request!==null)platform.cancelFrame(request);
+    request=null;
+  }
+  return {push(job){if(!closed){jobs.push(job);resume();}},resume,clear,
+    close(){closed=true;clear();}};
+}
+
+// Large battle data reads can finish together. Let the turntable paint between
+// their synchronous decompression and JSON work while requests stay parallel.
+export function paceSortieData(waitForPaint,signal){
+  let tail=Promise.resolve();
+  return (byteLength,operation,{shared=false}={})=>{
+    const run=()=>{
+      if(signal.aborted&&!shared)throw signal.reason??Object.assign(new Error('Battle closed'),{name:'AbortError'});
+      return operation();
+    };
+    if(byteLength<1024*1024)return Promise.resolve().then(run);
+    const job=tail.then(async()=>{
+      if(!signal.aborted)await waitForPaint();
+      return run();
+    });
+    tail=job.catch(()=>{});
+    return job;
+  };
 }
 
 function upload(platform,texture,maxPixels){
@@ -27,13 +51,13 @@ function upload(platform,texture,maxPixels){
 
 export function createMenuArtworkWarmup(platform){
   const uploaded=new WeakSet();
-  return function prepare(textures){
+  return function prepare(textures,maxUploads=4){
     let count=0,pixels=0;
     for(const texture of textures){
       const image=texture.image;
       if(!image||uploaded.has(texture))continue;
       const area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);
-      if(count&&(count>=4||pixels+area>400000))return false;
+      if(count&&(count>=maxUploads||pixels+area>400000))return false;
       uploaded.add(texture);
       if(upload(platform,texture,1600000)){count++;pixels+=area;}
     }
@@ -45,6 +69,7 @@ export function createMenuArtworkWarmup(platform){
 const earlyBattleArt=new Set(['coins','digits','combat-labels','medkit','shell','modules','crate']);
 export function prewarmBattleArtwork(platform){
   const work=frameWork(platform,()=>platform.visible,40);
+  const unwatch=platform.onViewport?.(work.resume);
   let count=0,pixels=0;
   return {add(key,texture,priority=false){
     if(count>=36||!(priority||earlyBattleArt.has(key)||/^host:\/\/(?:ice-weapons|ice-particles|warm-energy-shots)/.test(key)))return;
@@ -54,5 +79,8 @@ export function prewarmBattleArtwork(platform){
   },push(job){work.push(()=>{
     try{if(!platform.renderer.getContext().isContextLost())job();}
     catch(error){console.warn('[Three 战斗预热]',error?.message||error);}
-  });},close:work.close};
+  });},
+    reset(){work.clear();count=pixels=0;},
+    close(){work.close();unwatch?.();},
+  };
 }

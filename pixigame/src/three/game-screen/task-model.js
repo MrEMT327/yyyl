@@ -1,4 +1,5 @@
 import {taskDisplayOrder} from '../../ui/task-display-order.js';
+import {isDailyTabAvailable} from '../../ui/daily-tabs.js';
 import {taskChestModel} from '../../ui/task-chest-model.js';
 import {rewardItemModel} from '../../ui/reward-item-model.js';
 import {nativeItemArt} from '../../replica/native-item-presentation.js';
@@ -40,7 +41,7 @@ export function activityModel(s,period){
       claimed:weekly?complete:r.claimed,ready:!weekly&&r.canClaim,disabled:blocked||r.claimed||(!go&&!r.canClaim),rewards:[]};
   });
   return {weekly,value,max,milestones,tasks,revision:supply?.revision,label:weekly?'每周活跃':'每日活跃',
-    reset:supply?.taskGate?.reached===false?supply.taskGate.reason:(weekly?'每周一':'每日')+' 00:00 刷新'};
+    notice:supply?.clockRollback?supply.taskGate?.reason:''};
 }
 export function signInCard(day,s){
   const recorded=day.rewards?.length?day.rewards:[day];
@@ -51,10 +52,12 @@ export function signInCard(day,s){
     pilot:pilot?{name:pilot.name,image:nativeCollectionArt(pilot.nativeRow,'preview')}:null};
 }
 export function achievementRows(s){
+  const signInAvailable=isDailyTabAvailable(s,'signin');
   return taskDisplayOrder(s.achievements?.items||[]).map(r=>{
     const reached=r.progress>=r.target;
     const label=r.claimed?'已完成':r.pending||s.rewardPending?'待恢复':reached?(r.claimable?'领取':'未达成'):'前往';
-    return {...r,label,action:reached?'claimAchievement':'dailyGo',payload:{id:r.id,destination:r.destination},ready:r.claimable,
+    const action=reached?'claimAchievement':r.destination==='signin'&&!signInAvailable?null:'dailyGo';
+    return {...r,label,action,payload:{id:r.id,destination:r.destination},ready:r.claimable,
       disabled:r.claimed||r.pending||s.rewardPending||s.rewardBusy||reached&&!r.claimable,
       rewards:rewardRows(r.rewardItems||r.reward)};
   });

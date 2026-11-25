@@ -1,4 +1,4 @@
-import {area,box,clamp,pic,slice,titleFont,words} from './menu-art.js';
+import {area,box,button,clamp,paintNavigationInset,pic,slice,titleFont,verticalSlice,words} from './menu-art.js';
 import atlas from './catalog-art.json';
 import {projectIconUrl} from '../../ui/project-ui-art.js';
 import {skillIconBackgroundArt} from '../../replica/skill-element-background-art.js';
@@ -73,24 +73,31 @@ export function catalogGrid(d,t,w,bounds,windowed=false){
     if(chosen)selection(a,t,b);
     select();
     if(gun){
-      if(btn){pic(a,t,atlas['card-action'],btn);
-        words(a,label,x+size/2,btn.y+btn.h*.76,clamp(w*.032,10,16),{family:titleFont});
+      if(btn){
+        button(a,t,box(btn.x,btn.y+btn.h*.5,btn.w,btn.h*.5),{title:label,gold:true,titleSize:clamp(w*.032,10,16)});
         area(t,'detail-'+it.id,label,btn,'nativeCollectionDetail',{id:it.actualId,kind:group},zone);
       }else words(a,it.name,x+size/2,y+sideY+11,clamp(w*.035,11,16),{family:titleFont,maxWidth:size});}
   });
 }
-export function bottomNav(a,t,d,w,rect,progressive){
-  const plate=pic(a,t,atlas[d.kind+'-'+(d.ui.skillTab?'skill':'list')+'-footer'],rect);
+export function bottomNav(a,t,d,w,{top,height,inset,hitHeight},progressive){
+  const url=atlas[d.kind+'-'+(d.ui.skillTab?'skill':'list')+'-footer'];
+  let plate;
+  if(inset>0){
+    // Cut just below the labels of the 124-pixel footer so the icons keep their scale.
+    const trimStart=117/124,body=height*trimStart;
+    plate=verticalSlice(a,t,url,box(0,top,w,body),0,trimStart);
+    paintNavigationInset(a,t,w,{fillY:top+body,fillHeight:inset,trimY:top+body+inset,trim:height-body});
+  }else plate=pic(a,t,url,box(0,top,w,height));
   const button=Math.max(44,166*w/1080),gap=6*w/1080,pad=10*w/1080,theBack=d.kind==='weapon'&&d.ui.skillTab&&d.slot!=null;
   const label={weapon:'武器',aircraft:'战机',pilot:'驾驶员'}[d.kind];
   if(progressive&&!plate.visible){
-    a.quad(0,rect.y,w,rect.h,'#172735');
-    const y=rect.y+rect.h/2;
+    a.quad(0,top,w,height+inset,'#172735');
+    const y=top+hitHeight/2;
     words(a,'返回',pad+24,y,14);
     words(a,label,w-pad-1.5*button-gap,y,14);
     words(a,'技能',w-pad-.5*button,y,14);
   }
-  area(t,'back',theBack?'返回技能列表':'返回装备',box(pad,rect.y,Math.max(48,.13*w),rect.h),theBack?'nativeWeaponSkillBrowse':'catalogBack',theBack?{id:d.skillWeapon.id}:{});
-  area(t,'mode-list',label,box(w-pad-2*button-gap,rect.y,button,rect.h),'catalogMode',{mode:'list'});
-  area(t,'mode-skills','技能',box(w-pad-button,rect.y,button,rect.h),'catalogMode',{mode:'skills'});
+  area(t,'back',theBack?'返回技能列表':'返回装备',box(pad,top,Math.max(48,.13*w),hitHeight),theBack?'nativeWeaponSkillBrowse':'catalogBack',theBack?{id:d.skillWeapon.id}:{});
+  area(t,'mode-list',label,box(w-pad-2*button-gap,top,button,hitHeight),'catalogMode',{mode:'list'});
+  area(t,'mode-skills','技能',box(w-pad-button,top,button,hitHeight),'catalogMode',{mode:'skills'});
 }

@@ -31,17 +31,18 @@ function displayRarityRates() {
   return Object.freeze(Object.fromEntries(Object.entries(rates).map(([key,value])=>[key,Number(value.toFixed(10))])));
 }
 export const DIRECT_RECRUIT_RATES=displayRarityRates();
-// The historical direct-character chance and ten-draw guarantee, combined
-// with existing project resources. Weights add up to 100 per unforced draw.
-export const DIRECT_RECRUIT_PILOT_WEIGHT=20;
+const RECRUIT_PITY=Object.freeze({pilot:10,ssr:30,ur:70});
+const TEN_RECRUIT_DOUBLE_PILOT_PERCENT=10;
+const averagePilotRate=(1+TEN_RECRUIT_DOUBLE_PILOT_PERCENT/100)/RECRUIT_PITY.pilot;
+const tenPilotSummary=`每10抽 1名 ${100-TEN_RECRUIT_DOUBLE_PILOT_PERCENT}% · 2名 ${TEN_RECRUIT_DOUBLE_PILOT_PERCENT}%`;
 export const DIRECT_RECRUIT_RESOURCES=Object.freeze([
   Object.freeze({id:1,amount:1000,weight:40,name:'金币'}),
   Object.freeze({id:113,amount:1,weight:20,name:'普通箱券'}),
   Object.freeze({id:'blueprint',amount:10,weight:15,name:'随机装备图纸'}),
   Object.freeze({id:112,amount:1,weight:5,name:'高级箱券'}),
 ]);
+const resourceWeight=DIRECT_RECRUIT_RESOURCES.reduce((sum,row)=>sum+row.weight,0);
 const pilotRecruitCost = () => globalThis.__THUNDER_RUNTIME_GLOBALS__?.platformKind === 'wechat' ? 120 : 100;
-const RECRUIT_PITY=Object.freeze({pilot:10,ssr:30,ur:70});
 const RESOURCE_KEYS={1:'coins',113:'basicKey',blueprint:'blueprint',112:'advancedKey'};
 const blueprints=[105,106,107,108,109];
 const activitySteps=[20,40,60,80,100];
@@ -74,6 +75,9 @@ function ledger(raw,time) {
   // character miss count is exactly zero; retain existing high-rarity pity.
   l.directRecruit.pilot??=0;
   if(![l.directRecruit.pilot,l.directRecruit.ssr,l.directRecruit.ur,l.directRecruit.total].every(safe)||Object.entries(RECRUIT_PITY).some(([key,limit])=>l.directRecruit[key]>=limit))throw Error('招募保底记录无效');
+  const pilotSlots=l.directRecruit.pilotSlots;
+  if(pilotSlots!==undefined&&(!Array.isArray(pilotSlots)||pilotSlots.length!==2||
+    !pilotSlots.every(slot=>safe(slot)&&slot<RECRUIT_PITY.pilot)||pilotSlots[0]===pilotSlots[1]))throw Error('招募保底记录无效');
   // Preserve points already earned under the previous three-task schedule.
   if(l.daily&&l.daily.taskVersion===undefined){
     const claimed=Array.isArray(l.daily.claimed)?l.daily.claimed:[];
@@ -248,18 +252,19 @@ export function pilotSupplySnapshot(raw,rawInventory,rawProgression,time,campaig
     clockRollback,taskGate:{...gate,reached:unlocked,...(clockRollback?{reason:'日期异常，请恢复设备日期'}:{})},growth:growthSupplySnapshot(progression,inventory,l,campaign),
     pool:{id:'pilot',mixed:false,direct:true,originLabel:'驾驶员招募',development:UNLOCK_ALL_CONTENT,
       singleCost:UNLOCK_ALL_CONTENT?0:singleCost,tenCost:UNLOCK_ALL_CONTENT?0:tenCost,totalPulls:l.total,directTotalPulls:l.directRecruit.total,
-      probabilities:{pilot:DIRECT_RECRUIT_PILOT_WEIGHT/100,...Object.fromEntries(DIRECT_RECRUIT_RESOURCES.map(row=>[RESOURCE_KEYS[row.id],row.weight/100]))},
+      probabilities:{pilot:averagePilotRate,...Object.fromEntries(DIRECT_RECRUIT_RESOURCES.map(row=>[RESOURCE_KEYS[row.id],(1-averagePilotRate)*row.weight/resourceWeight]))},
       probabilityLabels:{pilot:'驾驶员',coins:'金币 ×1000',basicKey:'普通箱券 ×1',blueprint:'随机装备图纸 ×10',advancedKey:'高级箱券 ×1'},
-      rarityProbabilities:DIRECT_RECRUIT_RATES,
+      rarityProbabilities:DIRECT_RECRUIT_RATES,tenPilotSummary,
       resources:DIRECT_RECRUIT_RESOURCES.map(r=>({...r,image:nativeItemArt(r.id==='blueprint'?10010007:r.id)})),
       pity:{pilot:l.directRecruit.pilot,ssr:l.directRecruit.ssr,ur:l.directRecruit.ur},
       pityDetails:[{id:'pilot',triggerAt:RECRUIT_PITY.pilot}],
       guaranteeText:`${RECRUIT_PITY.pilot}抽内必得驾驶员`,
       duplicateText:'重复获得同名卡，用于手动升星；满星后转为积分。',
       rules:[`单次${singleCost}钻石，十次${tenCost}钻石。`,
-        `基础概率：驾驶员${DIRECT_RECRUIT_PILOT_WEIGHT}%、${DIRECT_RECRUIT_RESOURCES.map(row=>row.name+row.weight+'%').join('、')}。`,
+        tenPilotSummary+'，其余位置发放资源。',
+        '单抽和十连共享招募进度。',
         `驾驶员稀有度条件概率：${Object.keys(DIRECT_RECRUIT_RATES).join('／')}为${Object.values(DIRECT_RECRUIT_RATES).map(rate=>rate*100+'%').join('／')}。`,
-        `${RECRUIT_PITY.pilot}抽内必得驾驶员。单抽与十连共享保底。`,
+        `${RECRUIT_PITY.pilot}抽内必得驾驶员。`,
         '首次获得激活驾驶员；重复获得同名卡，在驾驶员界面手动升星。满星后重复获得转为积分。']},
     candidates:roster.map(row=>({id:row.id,skinId:NATIVE_PILOT_SKINS[row.id],name:pilotName(row),
       owned:progression.pilots.some(p=>p.id===row.id&&p.active),
@@ -296,11 +301,23 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
   if(operation.action==='draw') {
     const count=operation.count;if(![1,10].includes(count))throw Error('请选择单次或十次招募');
     cost=UNLOCK_ALL_CONTENT?0:count*pilotRecruitCost();debit(2,cost);
+    const pity=l.directRecruit;
+    const interval=RECRUIT_PITY.pilot,position=pity.total%interval;
+    const remaining=pity.pilotSlots?(pity.pilotSlots[0]-position+interval)%interval+1:Infinity;
+    if(remaining>interval-pity.pilot){
+      // Adopt saved pity before choosing the guarantee. Older clients may have
+      // advanced the total without these slots, so honor the saved deadline again.
+      const untilGuarantee=Math.min(...Object.entries(RECRUIT_PITY).map(([key,limit])=>limit-pity[key]));
+      const guaranteed=(position+randomTicket(untilGuarantee))%interval;
+      const bonus=(guaranteed+1+randomTicket(interval-1))%interval;
+      pity.pilotSlots=[guaranteed,bonus];
+    }
+    const [guaranteed,bonus]=pity.pilotSlots;
+    // Any ten consecutive positions contain one guarantee and one bonus roll,
+    // even if the player changes draw mode in the middle.
     for(let i=0;i<count;i++){
-      const pity=l.directRecruit;
-      const forced=Object.entries(RECRUIT_PITY).some(([key,limit])=>pity[key]>=limit-1);
-      const bucket=forced?0:randomTicket(100);
-      if(bucket<DIRECT_RECRUIT_PILOT_WEIGHT){
+      const slot=pity.total%interval;
+      if(slot===guaranteed||(slot===bonus&&randomTicket(100)<TEN_RECRUIT_DOUBLE_PILOT_PERCENT)){
         const roll=randomTicket(10000)/10000;
         const rates=LEGACY_GROUP_RATES;
         let remaining=Math.round(roll*10000);
@@ -320,11 +337,14 @@ export function planPilotSupply(rawProgression,rawInventory,rawRecord,operation,
         pity.ssr=['SSR','UR'].includes(group)?0:pity.ssr+1;
         pity.ur=group==='UR'?0:pity.ur+1;
       }else{
-        let cursor=bucket-DIRECT_RECRUIT_PILOT_WEIGHT;
+        let cursor=randomTicket(resourceWeight);
         const resource=DIRECT_RECRUIT_RESOURCES.find(r=>(cursor-=r.weight)<0);
         if(!resource)throw Error('招募资源配置无效');
         add(resource.id==='blueprint'?blueprints[randomTicket(blueprints.length)]:resource.id,resource.amount);
-        pity.pilot++;pity.ssr++;pity.ur++;
+        // A rarity guarantee reached in a resource slot applies to the next pilot.
+        pity.pilot++;
+        pity.ssr=Math.min(pity.ssr+1,RECRUIT_PITY.ssr-1);
+        pity.ur=Math.min(pity.ur+1,RECRUIT_PITY.ur-1);
       }
       pity.total++;
     }

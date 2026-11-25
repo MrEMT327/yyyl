@@ -117,9 +117,22 @@ export function createAssetTransport(api, { accepts, decode = (_url, bytes) => b
     for (const subscriber of job.subscribers) deliver(subscriber, error, result);
     job.subscribers.clear(); drain();
   }
-  function validate(url, result) {
-    if (!(result.data instanceof ArrayBuffer)) throw new Error(`资源未以二进制返回：${url}`);
-    return { ...result, data: result.statusCode >= 200 && result.statusCode < 300 ? decode(url, result.data) : result.data };
+  function validate(job, result) {
+    if (!(result.data instanceof ArrayBuffer)) throw new Error(`资源未以二进制返回：${job.url}`);
+    if (result.statusCode < 200 || result.statusCode >= 300) return result;
+    const owner = [...job.subscribers].find(subscriber => subscriber.options.paceDataWork);
+    const schedule = owner && ((size, operation) => owner.options.paceDataWork(size, () => {
+      if (!job.done) return operation();
+    }));
+    const withData = data => ({ ...result, data });
+    const decoded = decode(job.url, result.data, schedule);
+    if (!decoded?.then) return withData(decoded);
+    return decoded.then(withData, error => {
+      // A cancelled paced subscriber can share the same download with
+      // another consumer that still needs its validated bytes.
+      if (owner?.done && !job.done) return withData(decode(job.url, result.data));
+      throw error;
+    });
   }
   function drain() {
     while (!disposed && active < concurrency && queue.length) {
@@ -129,11 +142,21 @@ export function createAssetTransport(api, { accepts, decode = (_url, bytes) => b
         job.task = upstream.request({ url: job.url, retryURL, method: 'GET', responseType: 'arraybuffer', dataType: 'text', timeout: job.timeout,
           success(result) {
             if (job.done) return;
-            try {
-              const validated = validate(job.url, result);
+            function accept(validated) {
+              if (job.done) return;
               if (result.statusCode === 200) { stats.downloadedBytes += result.data.byteLength; retain(job.url, validated); saveDisk(job.key, result); }
               finish(job, null, validated);
-            } catch (error) { finish(job, { errMsg: error.message }); }
+            }
+            const reject = error => finish(job, { errMsg: error?.message || String(error) });
+            try {
+              const validated = validate(job, result);
+              if (!validated?.then) { accept(validated); return; }
+              // Decompression is waiting for a paint, so let the next
+              // network request use this transport slot in the meantime.
+              if (job.active) { active--; job.active = false; }
+              void validated.then(accept).catch(reject);
+              drain();
+            } catch (error) { reject(error); }
           }, fail: error => finish(job, error),
         });
       } catch (error) { finish(job, { errMsg: error.message }); }
@@ -147,10 +170,10 @@ export function createAssetTransport(api, { accepts, decode = (_url, bytes) => b
       try {
         const result = await io('readFile', { filePath: `${folder}/${job.key}.bin` });
         if (!(result.data instanceof ArrayBuffer) || result.data.byteLength !== row.size) throw new Error('Invalid cached bytes');
-        const validated = validate(job.url, { statusCode: 200, header: row.header, data: result.data });
+        const validated = await validate(job, { statusCode: 200, header: row.header, data: result.data });
         if (job.done || disposed) return;
         row.used = Date.now(); stats.diskHits++; scheduleIndex(); retain(job.url, validated); finish(job, null, validated); return;
-      } catch { await removeDisk(job.key); }
+      } catch { if (!job.done && !disposed) await removeDisk(job.key); }
     }
     if (!job.done && !disposed) { queue.push(job); drain(); }
   }
@@ -160,7 +183,10 @@ export function createAssetTransport(api, { accepts, decode = (_url, bytes) => b
       && accepts?.(options.url);
   }
   function request(options) {
-    if (!eligible(options)) return upstream.request(options);
+    if (!eligible(options)) {
+      const { paceDataWork, ...upstreamOptions } = options;
+      return upstream.request(upstreamOptions);
+    }
     const url = options.url.split('#')[0], subscriber = { options, done: false };
     let job;
     const handle = { abort() {

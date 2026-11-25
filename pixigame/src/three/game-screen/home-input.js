@@ -1,11 +1,13 @@
 import {createButtonPressMotion} from '../../ui/button-press-motion.js';
 import {homePictures} from './home-stage.js';
+import {PILOT_AFFECTION_VISIBLE} from '../../peripheral/pilot-affection.js';
 import {homeArtOffset,homeInsets,navBounds,carnivalEntryBox,affectionY} from './home-navigation.js';
 
 const commands=[
   ['profile','查看名片','playerInfo'],['chapter-prev','上一章','chapterPrev'],
   ['chapter-title','查看当前关卡详情','chapterDetails'],['chapter-next','下一章','chapterNext'],
-  ['tasks','查看航线任务','tasks'],['carnival','七日嘉年华','carnival'],['affection','好感度','pilotAffection'],
+  ['tasks','查看航线任务','tasks'],['carnival','七日嘉年华','carnival'],
+  ...(PILOT_AFFECTION_VISIBLE?[['affection','好感度','pilotAffection']]:[]),
   ['star-rewards','查看章节奖励','chapterChest'],['switch-pilot','切换驾驶员','catalog',{kind:'pilot'}],
   ['patrol','航线巡逻','patrol'],['backpack','打开背包','backpack'],['start','开始战役，消耗体力×5','start'],
   ['stamina','体力','stamina'],['coins','金币','shopSection',{section:'resources'}],['diamonds','钻石','shopSection',{section:'supply'}],
@@ -18,7 +20,8 @@ const artBounds=new Map(homePictures.map(([id,,art,hit=art])=>[id,hit]));
 export function homeControls(state,viewport,portrait){
   const unit=750/viewport.width,layout=homeInsets(viewport);
   const boxes=new Map(artBounds);
-  boxes.set('chapter-title',[172,143,413,70]);boxes.set('affection',[6,affectionY(state.carnival),101,99]);
+  boxes.set('chapter-title',[172,143,413,70]);
+  if(PILOT_AFFECTION_VISIBLE)boxes.set('affection',[6,affectionY(state.carnival),101,99]);
   if(state.carnival)boxes.set('carnival',carnivalEntryBox);
   for(const id of ['stamina','coins','diamonds'])boxes.set(id,artBounds.get(id+'-background'));
   const width=Math.max(105,44*unit);

@@ -1,0 +1,224 @@
+[
+  {
+    "key": "art/engineer-ee76/idle-inner-hem-v5-packed.mp4",
+    "file": "portrait-5dc44dadec015c3c9fbd.mp4",
+    "sha256": "5dc44dadec015c3c9fbddff108f2a0594304d4e9cba61a924358270b005b659b",
+    "sourceSha256": "ada64084fcd3c8208a907d8ae22689462c383a5ce728ab8cc9be630cbd242824"
+  },
+  {
+    "key": "art/engineer-ee76/touch_core-inner-hem-v5-packed.mp4",
+    "file": "portrait-1fc5d6ed35ec80bff773.mp4",
+    "sha256": "1fc5d6ed35ec80bff77318ca5bff05e9c1016534807f2d8517756f84737cce26",
+    "sourceSha256": "0bf1c23c301ec3b2a8f4d89fe39f592e7a86fa09aa63b7be3beb455d3766bef4"
+  },
+  {
+    "key": "art/violet-astra-v31/idle-rgba.mp4",
+    "file": "portrait-e8962c61f978cace8216.mp4",
+    "sha256": "e8962c61f978cace8216877ac2e4c5b2062d5a85e4379235bab1039f3aeb928e",
+    "sourceSha256": "be73a5d9a6458663ce101ccd4a18d1b5a4e10e0769c8221ae9a2460fb17d8316"
+  },
+  {
+    "key": "art/violet-astra-v31/touch-head-rgba.mp4",
+    "file": "portrait-4729d6fcdb0c97408987.mp4",
+    "sha256": "4729d6fcdb0c97408987f1ce1557af3f574baa9e9ab80ae53839196840afc051",
+    "sourceSha256": "02c7b43b29d10a8bafadf8f5e7a6c8c0a5b7917ee1dbb85ca813b7f3dc1631c0"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/left_upper_hidden_back.png",
+    "file": "portrait-cb4b7f6467315d679242.png",
+    "sha256": "cb4b7f6467315d6792423a666033999e7dfb9f4870a8ede3ab5ae08257c9aa27",
+    "sourceSha256": "00ce3015d02b47bb3e03ce7b6eb941895afcfa55af3ebb2898f581bb79bbb11a"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/body.png",
+    "file": "portrait-1c0d56271b5d7a4c1334.png",
+    "sha256": "1c0d56271b5d7a4c133462d20cecb296320a0bfc8c24759f8acd9e67e9af2cd1",
+    "sourceSha256": "f114aa9dc8ab6082c108712b3941a4196f48908c6569ba87d12c2bde8a8ce2de"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/right_arm.png",
+    "file": "portrait-d6811502dbfc0912e3d3.png",
+    "sha256": "d6811502dbfc0912e3d39d0fc770cdea3e5bf1c7a99da273a4171a57aadc20da",
+    "sourceSha256": "d7a877e52c4709568cd02d1227b68e180e857a87a4ef24bd143de10e59c8a897"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/left_upper.png",
+    "file": "portrait-cb4b7f6467315d679242.png",
+    "sha256": "cb4b7f6467315d6792423a666033999e7dfb9f4870a8ede3ab5ae08257c9aa27",
+    "sourceSha256": "00ce3015d02b47bb3e03ce7b6eb941895afcfa55af3ebb2898f581bb79bbb11a"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/left_forearm.png",
+    "file": "portrait-2fb03f86897ab2911f31.png",
+    "sha256": "2fb03f86897ab2911f314d381c9d01c4d238f6cb18db6eb9d9318e35a2017b7b",
+    "sourceSha256": "1053c5da21518f86a67ef3ecff1623e013f74875d9e7398c02aafa750883db4a"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/cup.png",
+    "file": "portrait-8647042336559df76d38.png",
+    "sha256": "8647042336559df76d387c6209568741d1193cfc5df5e810b6612be04ed61851",
+    "sourceSha256": "49c393f2e75e84dfb46d31377e7775bb350072c5f7c122044cafb48ba52963d7"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/front_fingers.png",
+    "file": "portrait-6832b5b0af0b972b6df5.png",
+    "sha256": "6832b5b0af0b972b6df5baa88b3fce5fd53ebf68dd36aef0854a53e6fc5e96c4",
+    "sourceSha256": "2ca18409e0c8a0210bb0eabb4c541b6af62884c89f6fb23e22b13690343338db"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/arm_edge_shadow.png",
+    "file": "portrait-47f5200746cb2808802c.png",
+    "sha256": "47f5200746cb2808802c1c2613d065c040028088f498470c410aeaa2dd589702",
+    "sourceSha256": "55fb785b42a24f963301c8c1a8f77c0d1f8fd49fc203c92d02d835253636e02b"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/support_contact_shadow.png",
+    "file": "portrait-5d9a93e69da4d13835ff.png",
+    "sha256": "5d9a93e69da4d13835ffdd76873effaa52b68099870b1c6188166fb24698675e",
+    "sourceSha256": "0c018ff45e565c0cd53c077005fdca28381829db508107a9b54775e7eb6e2583"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/support_hand.png",
+    "file": "portrait-77a6599e573b053fed6a.png",
+    "sha256": "77a6599e573b053fed6a43df131e1babb2555232233d22d63b529a9d893ccf4c",
+    "sourceSha256": "b0acc333ee9fe69f25f4bff87f06d9fc9ca94272ae31ea2f167e7dc9da92d93a"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/head_base.png",
+    "file": "portrait-8587d4a6087b39a7fc8b.png",
+    "sha256": "8587d4a6087b39a7fc8b8ba469dfa68b6b0d419b290b21af2bfee7ca2babfff6",
+    "sourceSha256": "a500472586285bb38a91b14507894c1f25a27445e11888fec9cd2d89c0d791c6"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_R_white.png",
+    "file": "portrait-27bd847067cbc889dfcc.png",
+    "sha256": "27bd847067cbc889dfccc990c6f6ed8b665e3c6e7eff3d20cf2dde0182bcb89d",
+    "sourceSha256": "4b9c01678dc7f2c03a8e40636729e5dcd5e14cab9d4994a6f476927c2e2cd42b"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_R_iris.png",
+    "file": "portrait-62adb296bcbd41d3eae1.png",
+    "sha256": "62adb296bcbd41d3eae1811d4a8846949776d709498e4c3db698e95a75cbbdd8",
+    "sourceSha256": "4f2e594520bde2e5ef75552dc1c865750088a28590a9d6e279b8b5e53d5bb029"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_R_upper.png",
+    "file": "portrait-e4ff9d45ea2497d7d8dd.png",
+    "sha256": "e4ff9d45ea2497d7d8ddbbaafb6a8a05c9f0a8120eb66c6631358a7283e3d740",
+    "sourceSha256": "cf14d4a3ece5e68a098b968a4281a0cc1f85ba2a93e450e3f7b0a2ca0898ffa0"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_R_lower.png",
+    "file": "portrait-caf96265ff7da48a3d18.png",
+    "sha256": "caf96265ff7da48a3d181a4ab495e64055e557a562db59c3c04ed646072ab034",
+    "sourceSha256": "5b2eaa5dd5bb220929e8aa903db03c3090d70a03183bc9ec918913257287b051"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_R_fold.png",
+    "file": "portrait-5cc0636894e023d89a71.png",
+    "sha256": "5cc0636894e023d89a71f91711afc6afd6a4f56439086b15d5d72ad508aa8531",
+    "sourceSha256": "eb62d979cec46ab758627e4d88c6f417dfd57d94a5a195b301612ca7094d2349"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/brow_R.png",
+    "file": "portrait-2cb30f2eeaef9bba287e.png",
+    "sha256": "2cb30f2eeaef9bba287e63fb7de8b3c8bb845f853a8a5824bdd2c317bc6d2f25",
+    "sourceSha256": "e4c877f3dc28c9d63b2e9b0e728f75fc1ee6f1388a539a95e37a25a13ed27a59"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_L_white.png",
+    "file": "portrait-8d00e5f096b5a203670e.png",
+    "sha256": "8d00e5f096b5a203670ed585e05ac5d0214418fbc0d9aafcce9a8b2d3da76231",
+    "sourceSha256": "386918f344f5e817792afc48e0af00e4d51910ab54eaddedc2cdd4d5fa685752"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_L_iris.png",
+    "file": "portrait-aed1f877123575b40e0d.png",
+    "sha256": "aed1f877123575b40e0d658267c228f9e4d99febef7cb40d409e7bb2ecc22ae9",
+    "sourceSha256": "2e71ff14529942f5044e8a8c448471aa6c226261296472689e206e3a39dda0b5"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_L_upper.png",
+    "file": "portrait-ff9b18fa182ab4f4e053.png",
+    "sha256": "ff9b18fa182ab4f4e05314aac0dfb494bed1d61e87c70aa6c4df3c0bcd51affa",
+    "sourceSha256": "e06a77f818ce9d45aa35d8db0100dfe3c33468d6d6ca93cf4f1e6b70ece6a137"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_L_lower.png",
+    "file": "portrait-6af8025c2c53e38ca379.png",
+    "sha256": "6af8025c2c53e38ca379f31ddd912fe69d6b5e4bf3f2285b8428a46bd61d6f68",
+    "sourceSha256": "c7230d423a1524093f3fb72402ae9537c7a0f6b6829eabbdcb2a21f6ed94d5c7"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/eye_L_fold.png",
+    "file": "portrait-edd3f06f853b65466287.png",
+    "sha256": "edd3f06f853b65466287689d7d452f0650bd103e72d7be6b353a0600a4b5c86e",
+    "sourceSha256": "0ad609086384d69c467902ca77aed27c0ae46094f89bf67d9d7ef850c659c13b"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/brow_L.png",
+    "file": "portrait-7dfd9045fb9eab275585.png",
+    "sha256": "7dfd9045fb9eab275585d9534de985ec845a1dd222b9bc30a031129b5e044e33",
+    "sourceSha256": "d61f35b351c38b03056c2490cc7e4453d8677dcc7b740d6b4f04c665e0f72e2c"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/mouth_smile.png",
+    "file": "portrait-b67dd3e3dc6bb6f65531.png",
+    "sha256": "b67dd3e3dc6bb6f65531bc29313ac459998bca015c5a18cd875201be2aac5823",
+    "sourceSha256": "5a08eee1f24f797d11780834146c9596a8856fb113cc8800e50e0b22ece08306"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/hair_R_lower.png",
+    "file": "portrait-3097710a7aadffc8f15b.png",
+    "sha256": "3097710a7aadffc8f15bd4af6a51b9cd49948aac8578113d7f182e3a92a21c8e",
+    "sourceSha256": "4fa8f6529cdf9d2a3e4af01d75186917ca03428df6d9ccf6b32dd54ea3f84c56"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/hair_L_lower.png",
+    "file": "portrait-637466295379998fbfba.png",
+    "sha256": "637466295379998fbfbab667a4fa0520692e4e6b70b240be355b9c750047419f",
+    "sourceSha256": "43a3b33d3f65ecb4be2c09189017f02b38a9c0f82b162a16912d810351d14e13"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/hair_fringe_foreground.png",
+    "file": "portrait-aaec4af54b079ac8df64.png",
+    "sha256": "aaec4af54b079ac8df647503583db556aa2ecca6978eb76bd2769284fd742424",
+    "sourceSha256": "fdbdb078e189516e9ac74574bd880872000a075989713b36f4cc555a9c018498"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/upper_original_ownership_mask.png",
+    "file": "portrait-de330f201530673b61fb.png",
+    "sha256": "de330f201530673b61fbbbb0b6693223896cbcbf8e57c91a890612584704579e",
+    "sourceSha256": "80ca1098d96cbdde0605862ad980f39eacf862ddd4b49f96794e187af698e418"
+  },
+  {
+    "key": "art/golden-yoga-v12/textures/reference-style-v1/torso_occlusion_fill.png",
+    "file": "portrait-61579cc40f59049a7d94.png",
+    "sha256": "61579cc40f59049a7d9493fdc250f74966690b510233830f6ab01fdcd048c22e",
+    "sourceSha256": "fc84f91f5f4112991cb3b6634ec85708dae76f10ecf9a79b3696f654f22c4767"
+  },
+  {
+    "key": "art/engineer-ee76/idle-inner-hem-v5-packed.compact.mp4",
+    "file": "portrait-42d39206a7b2d136f198.mp4",
+    "sha256": "42d39206a7b2d136f19863a85f26ab5367c2a80a85807a510bac317ad3f7b4c7",
+    "sourceSha256": "ada64084fcd3c8208a907d8ae22689462c383a5ce728ab8cc9be630cbd242824"
+  },
+  {
+    "key": "art/engineer-ee76/touch_core-inner-hem-v5-packed.compact.mp4",
+    "file": "portrait-bdc5fe4b54f41931f03f.mp4",
+    "sha256": "bdc5fe4b54f41931f03f4d36f50dd2cdc498ea67e7adb6a28093ddf1d8466317",
+    "sourceSha256": "0bf1c23c301ec3b2a8f4d89fe39f592e7a86fa09aa63b7be3beb455d3766bef4"
+  },
+  {
+    "key": "art/violet-astra-v31/idle-rgba.compact.mp4",
+    "file": "portrait-3e91395bdd1169e75277.mp4",
+    "sha256": "3e91395bdd1169e75277ac90c1073b527eab0dc7dcc7e6720cf6df707ade854d",
+    "sourceSha256": "be73a5d9a6458663ce101ccd4a18d1b5a4e10e0769c8221ae9a2460fb17d8316"
+  },
+  {
+    "key": "art/violet-astra-v31/touch-head-rgba.compact.mp4",
+    "file": "portrait-634b651dc2b620b181fa.mp4",
+    "sha256": "634b651dc2b620b181fac0d745f057c64a720dd73d6c2053ff0eb770084fb261",
+    "sourceSha256": "02c7b43b29d10a8bafadf8f5e7a6c8c0a5b7917ee1dbb85ca813b7f3dc1631c0"
+  }
+]

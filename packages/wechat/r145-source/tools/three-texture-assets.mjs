@@ -1,11 +1,23 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { recruitPreview as previewLayout } from '../../../../pixigame/src/three/game-screen/recruit-preview-atlas.js';
 
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+const startupBackdrop = 'art/entry-screens-v4/startup-wechat.jpg';
+const startupArt = new Map([
+  [startupBackdrop, 'jpg'],
+  ['art/psd-combat-v1/health-track.png', 'png'],
+  ['art/psd-combat-v1/health-fill.png', 'png'],
+]);
+const sortieArt = new Map([
+  ['art/sortie-hangar-v1/shaft-section.webp', 'jpg'],
+  ['art/sortie-hangar-v1/lift-front.webp', 'png'],
+  ['art/three-ui/three-art-97c5902d1541.png', 'png'],
+  ['replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png', 'png'],
+]);
 const supplyCanopyPath = 'art/project-supply-parachute-v2/canopy.webp';
-const localBattleArt = new Set([supplyCanopyPath,
+const warningArt = ['boss-dark-edge', 'elite'].map(name => 'art/project-encounter-warnings-v3/' + name + '.png');
+const localBattleArt = new Set([supplyCanopyPath, ...warningArt,
   'replica-battle/assets/project-airdrop-supply/airdrop-crate-front-v1.png',
   'replica-battle/assets/missile-v3/body.png',
   'replica-battle/assets/missile-v2/exhaust.png',
@@ -13,19 +25,18 @@ const localBattleArt = new Set([supplyCanopyPath,
 
 export async function loadThreeTextureAssets(inputs, publicDirectory) {
   const directory = join(inputs, 'three-textures');
-  const { rasters, fallbacks = [], localImages = [], recruitPreview } = JSON.parse(await readFile(join(directory, 'manifest.json'), 'utf8'));
+  const { rasters, fallbacks = [], localImages = [] } = JSON.parse(await readFile(join(directory, 'manifest.json'), 'utf8'));
   const files = new Map();
   const aliases = {}, fallbackAliases = {};
 
-  async function readTexture(path, file, format = 'png', size) {
+  async function readTexture(path, file, format = 'png') {
     const pattern = new RegExp('^[a-f0-9]{20}\\.'+format+'$');
     if (!pattern.test(file)) throw new Error('无效的微信纹理文件名 ' + file);
     const source = await readFile(join(directory, file));
     const signature = source.length >= 30 && (format === 'jpg'
       ? source.readUInt16BE(0) === 0xffd8 && source.readUInt16BE(source.length - 2) === 0xffd9
       : source.readUInt32BE(0) === 0x89504e47 && source.readUInt32BE(4) === 0x0d0a1a0a &&
-        source.toString('ascii',12,16) === 'IHDR' &&
-        (!size || source.readUInt32BE(16) === size.width && source.readUInt32BE(20) === size.height));
+        source.toString('ascii',12,16) === 'IHDR');
     if (!signature || sha256(source).slice(0, 20) + '.' + format !== file) {
       throw new Error('微信纹理校验失败 ' + path);
     }
@@ -42,48 +53,46 @@ export async function loadThreeTextureAssets(inputs, publicDirectory) {
   for (const { path, sha256: expected, file } of localImages) {
     const skill = /^art\/(?:battle-skill-icons-v4|weapon-variant-skill-icons-v5)\/[\w-]+\.webp$/.test(path);
     const pageArt = /^art\/three-ui\/three-art-[a-f0-9]{12}\.png$/.test(path);
-    if ((!skill && !pageArt && !localBattleArt.has(path)) || Object.hasOwn(aliases, path)) {
+    const localFormat = startupArt.get(path) ?? sortieArt.get(path);
+    if ((!skill && !pageArt && !localFormat && !localBattleArt.has(path)) || Object.hasOwn(aliases, path)) {
       throw new Error('无效或重复的本地微信图片 ' + path);
     }
-    const source = await readFile(join(publicDirectory, path));
+    const original = path === startupBackdrop ? 'art/entry-screens-v4/startup.png' : path;
+    const source = await readFile(join(publicDirectory, original));
     if (sha256(source) !== expected) throw new Error('图片原件已更新，请同步微信纹理 ' + path);
-    aliases[path] = await readTexture(path, file, pageArt ? 'jpg' : 'png');
+    const format = localFormat ?? (pageArt ? 'jpg' : 'png');
+    aliases[path] = await readTexture(path, file, format);
   }
   for (const { path, file } of fallbacks) fallbackAliases[path] = await readTexture(path, file);
-  if (recruitPreview) {
-    const {path,file,layoutSha256,sources}=recruitPreview;
-    if (path!==previewLayout.path || sources.length!==3*previewLayout.tiles.size ||
-        layoutSha256!==sha256(JSON.stringify([...previewLayout.tiles]))) throw new Error('微信招募预览清单无效');
-    for (const item of sources) {
-      if (!/^art\/(?:recruit-portraits-v2\/pilot-\d{2}|three-ui\/three-art-[a-f0-9]{12})\.png$/.test(item.path)) {
-        throw new Error('无效的招募预览原图路径 '+item.path);
-      }
-      if (sha256(await readFile(join(publicDirectory,item.path)))!==item.sha256) {
-        throw new Error('招募原图已更新，请同步微信预览 '+item.path);
-      }
-    }
-    aliases[path]=await readTexture(path,file,'png',previewLayout);
-  }
   const entries = [...files.values()];
   return { aliases, fallbackAliases, files: entries, bytes: entries.reduce((total, row) => total + row.source.length, 0) };
 }
 
 // IDs are selected dynamically, so a first-sortie network trace won't cover them.
 export async function checkThreeUiTextureCoverage(h5, textures, cdnFiles, transfers) {
-  for (const key of [previewLayout.path, supplyCanopyPath]) {
-    if (!textures.aliases[key]?.endsWith('.png')) throw new Error('微信包内缺少 PNG 贴图 ' + key);
+  for (const [path, format] of startupArt) {
+    if (!textures.aliases[path]?.endsWith('.' + format)) throw new Error('微信包内缺少启动贴图 ' + path);
   }
-  const [icons, fleet, blueprints, recruits] = await Promise.all([
+  for (const [path, format] of sortieArt) {
+    if (!textures.aliases[path]?.endsWith('.' + format)) throw new Error('微信包内缺少出击贴图 ' + path);
+  }
+  if (!textures.aliases[supplyCanopyPath]?.endsWith('.png')) throw new Error('微信包内缺少 PNG 贴图 ' + supplyCanopyPath);
+  for (const path of warningArt) {
+    if (!textures.aliases[path]?.endsWith('.png')) throw new Error('微信包内缺少警示贴图 ' + path);
+  }
+  const [icons, fleet, blueprints, recruits, menuArt] = await Promise.all([
     'src/replica/skill-icon-art.json',
     'src/replica/native-fleet-skill-art.json',
     'public/art/project-research-blueprints-v2/manifest.json',
     'public/art/recruit-portraits-v2/manifest.json',
+    'src/three/game-screen/menu-art.json',
   ].map(async file => JSON.parse(await readFile(join(h5, file), 'utf8'))));
   const keys = [
     ...icons.assets.map(row => `art/${row.pack || 'battle-skill-icons-v4'}/${row.file}`),
     ...fleet.assets.map(row => `art/${fleet.pack}/${row.file}`),
     ...blueprints.assets.map(row => `art/project-research-blueprints-v2/${row.file}`),
     ...recruits.entries.map(row => `art/recruit-portraits-v2/${row.file}`),
+    ...Object.entries(menuArt).filter(([key])=>key.startsWith('roster-')).map(([,url])=>url.slice(1)),
     'art/project-equipment-blueprints-v2/equipment-blueprints.svg',
     'art/project-material-groups-v1/equipment-blueprints.svg',
     'art/project-material-groups-v1/research-blueprints.svg',

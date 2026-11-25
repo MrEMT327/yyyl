@@ -21,8 +21,8 @@ import {createAircraftFxRenderer} from '../three/aircraft/aircraft-fx-renderer.j
 import {sampleCombatEngineWake} from './combat-engine-wake.js';
 import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails} from './project-wingtip-trails.js';
 import {projectMissileWingMounts} from './project-missile-mounts.js';
+import {sampleBattleFlightTrail} from './project-victory-trail.js';
 import {nativeWeather} from '../three/game-screen/three-combat-weather.js';
-import {sampleVictoryTrail} from './project-victory-trail.js';
 
 const WIDTH = 540, HEIGHT = 960;
 // Presentation only; native hit shapes, movement and weapon timing keep their scale.
@@ -36,7 +36,8 @@ export async function createH5Presentation({ content, appearance, onError, onGra
   const assetBase = new URL(appearance.assetBase, host?.baseURL ?? location.href);
   const stage = host?.stage;
   const events = host?.events;
-  const screen = host?.openBattleSurface ? host.openBattleSurface() : openBattleScreen((stage??document.getElementById('stage')).querySelector('#canvas'),host.screen);
+  const budget = host?.createRenderBudget?.(content.world.width);
+  const screen = host?.openBattleSurface ? host.openBattleSurface(budget) : openBattleScreen((stage??document.getElementById('stage')).querySelector('#canvas'),host.screen);
   const renderer = screen.renderer, battle = screen.stage;
   const aircraftTextureSize = 256, terrainWidth = WIDTH, terrainHeight = HEIGHT;
   onGraphicsContext?.(renderer.domElement, renderer.getContext());
@@ -62,7 +63,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
   const worldLost = () => {worldContextReady = false;};
   const worldRestored = () => {
     const oldLighting=lighting;lighting=makeLighting();aircraftScene.environment=lighting.texture;oldLighting.dispose();
-    worldContextReady=true;lastWorldKey='';lastWorldViewport=null;terrainDeferred=false;weaponsDirty=true;
+    worldContextReady=true;lastWorldKey='';lastWorldViewport=null;terrainDeferred=false;weaponsDirty=true;budget?.reset();
   };
   surface.addEventListener('webglcontextlost',worldLost);
   surface.addEventListener('webglcontextrestored',worldRestored);
@@ -74,7 +75,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
     battle.ghosts(samplePhantomTrail(phantomTrail,{...frame,pose,rollActive:flightPose.rollActive}));
   }
   function updateWingtipTrails(flightPose) {
-    const tips=projectWingtipPositions(fighter,aircraftCamera,pose);
+    const tips=frame.victoryDeparture?[]:projectWingtipPositions(fighter,aircraftCamera,pose);
     battle.wings(sampleWingtipTrails(wingtipTrail,{
       ...frame,pose,tips,pilotId:fighter.pilotId,pixelsPerUnit:WIDTH/content.world.width,
       rollActive:flightPose.rollActive,thrust:flightPose.thrust,
@@ -209,6 +210,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
     }):[];
     battle.engineWake(wake);
     lastRenderedFlightPose={...visualPose};lastRenderedPassive={...passivePose};
+    if(host?.draws)host.draws.aircraft++;
   }
 
   function dispose() {
@@ -237,6 +239,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       objectLoader: host?.objectLoader,
       assetBytes: host?.assetBytes,
     })).then(loaded), ...pendingTextures.map(task=>task.then(loaded))]);
+    if(host?.loadingFrame)await host.loadingFrame();
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
     fighter = createFighterView({ pilotId: appearance.aircraft.id, size: 1, nativeSpace: true });
     // The replica owns weapon identity and evolution. Saved host weapons
@@ -270,10 +273,18 @@ export async function createH5Presentation({ content, appearance, onError, onGra
     icons = createWeaponIcons(renderer, aircraftScene, content);
     const hdr=fighter.runtime.asset.solid.userData.cleanAircraftSurface;
     const isActive=()=>!disposed;
-    await Promise.all([
-      renderWithAircraftStyle(renderer,()=>aircraftRenderer.warmup(aircraftScene,aircraftCamera,fighter,hdr,isActive)),
-      ...(replaceTerrain?[battle.warmGround(worldScene,()=>warmRenderPrograms(renderer,worldScene,coastCamera||camera,isActive))]:[]),
-    ]);
+    const warmups=[
+      ()=>renderWithAircraftStyle(renderer,()=>aircraftRenderer.warmup(aircraftScene,aircraftCamera,fighter,hdr,isActive)),
+      ...(replaceTerrain?[()=>battle.warmGround(worldScene,()=>warmRenderPrograms(renderer,worldScene,coastCamera||camera,isActive))]:[]),
+    ];
+    if(host?.loadingFrame){
+      for(const warm of warmups){
+        await host.loadingFrame();
+        if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
+        await warm();
+      }
+      await host.loadingFrame();
+    }else await Promise.all(warmups.map(warm=>warm()));
     if (disposed) throw new DOMException('Battle closed during loading', 'AbortError');
     renderAircraftTexture(0, { bank: 0, pitch: 0, roll: 0, thrust: 0 });
   } catch (error) { dispose(); throw error; }
@@ -334,9 +345,8 @@ export async function createH5Presentation({ content, appearance, onError, onGra
           y:pose.y-(position.z-frame.flight.z)*WIDTH/content.world.width};
         battle.hull.position.set(pose.x,pose.y,0);
       }
-      const departure=frame.victoryDeparture;
-      battle.victory(sampleVictoryTrail({departure,pose,from:departure&&frame.flight?frame.projectPoint?.(frame.flight.x,departure.fromZ):null}));
-      passivePose=samplePassiveDeployment(passiveState,{...frame,aircraftId:appearance.aircraft.id,visible:pose?.visible??false});
+      battle.victory(sampleBattleFlightTrail(frame,pose,launchPresentation));
+      passivePose=samplePassiveDeployment(passiveState,{...frame,aircraftId:appearance.aircraft.id,visible:!frame.victoryDeparture&&!!pose?.visible});
       const passiveDirty=passivePose.serial!==lastRenderedPassive?.serial||passivePose.progress!==lastRenderedPassive?.progress;
       const visualClock=flightVisual.visualClock+(launchPresentation?.time||0);
       const backgroundTime = frame.coastBackgroundTime ?? frame.time;
@@ -344,11 +354,17 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       const view=battle.viewport,viewWidth=view.width,viewHeight=view.height;
       const worldRun=frame.runId??0;
       const worldKey = `${worldRun}/${backgroundTime}/${frame.camera.x}/${frame.camera.z}/${worldWeather}/${viewWidth}/${viewHeight}`;
-      let worldDue = lastWorldKey !== worldKey;
+      if(budget&&replaceTerrain&&lastWorldViewport!==view)budget.reset();
+      budget?.observeFrame?.(frame.flight?.active&&!frame.victoryDeparture?frame.displayInterval:0);
+      const terrainPriority=lastWorldKey===worldKey?null:budget&&replaceTerrain
+        ?budget.planTerrain(backgroundTime,worldRun,worldWeather,frame.camera.x,frame.camera.z):'regular';
+      let worldDue=terrainPriority!==null;
       const moving = Math.abs(flightPose.bank) > .002 || flightPose.thrust > .02 || flightPose.rollActive;
       const scriptedPose = launchPresentation || passivePose.active || frame.victoryDeparture;
       const aircraftElapsed = visualClock - lastAircraftVisualClock;
-      const aircraftFrameDue = aircraftElapsed >= (scriptedPose || moving ? 1/60 : 1/30) - 1e-6;
+      const aircraftFrameDue = budget&&!scriptedPose&&!flightPose.rollActive
+        ?budget.shouldDrawAircraft(aircraftElapsed,replaceTerrain&&worldDue,moving)
+        :aircraftElapsed >= (scriptedPose || moving ? 1/60 : 1/30) - 1e-6;
       if (flightPose.rollSerial !== lastRollSerial) {
         lastRollSerial = flightPose.rollSerial;
         if (flightPose.rollActive) onFlightRoll?.();
@@ -357,7 +373,7 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       const poseChanged=flightPoseNeedsRefresh(lastRenderedFlightPose,flightPose);
       let renderAircraft=pose&&(aircraftElapsed<0||aircraftFrameDue||weaponsDirty||launchDirty||passiveDirty||poseChanged);
       // Keep the two cached surfaces on separate frames during both normal and slow play.
-      const split=staggerPresentation&&replaceTerrain&&worldDue&&renderAircraft&&lastWorldViewport===view&&
+      const split=staggerPresentation&&replaceTerrain&&terrainPriority==='regular'&&renderAircraft&&!poseChanged&&lastWorldViewport===view&&
         lastWorldRun===worldRun&&!weatherChanged&&frame.displayInterval>0&&!scriptedPose&&!weaponsDirty&&!launchDirty&&!passiveDirty&&!flightPose.rollActive;
       if(split&&!terrainDeferred){worldDue=false;terrainDeferred=true;}
       else{if(split)renderAircraft=false;terrainDeferred=false;}
@@ -405,6 +421,8 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       }
       if (!worldDue) return;
       battle.drawGround(worldScene,coastCamera||camera,selectedScene.ground);
+      budget?.commitTerrain();
+      if(host?.draws)host.draws.terrain++;
       lastWorldKey = worldKey;
       lastWorldViewport=view;
       lastWorldRun=worldRun;

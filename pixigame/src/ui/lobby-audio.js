@@ -53,7 +53,10 @@ export function lobbyResultCue(action,payload,result,before,after) {
   if(action==='shopRefresh')return after.shop?.refresh?.count>before.shop?.refresh?.count?'confirm':null;
   if(action==='renamePlayer')return before.playerName!==after.playerName?'confirm':null;
   if(['gearMerge','gearBatch'].includes(action))return !same(before.equipment?.items,after.equipment?.items)?'combine':null;
-  if(['gearLock','gearUpgrade','gearUpgradeAll','gearDowngrade'].includes(action))return !same(before.equipment?.items,after.equipment?.items)||!same(before.equipment?.levels,after.equipment?.levels)?'confirm':null;
+  if(['gearLock','gearUpgrade','gearUpgradeAll','gearDowngrade'].includes(action)){
+    const changed=!same(before.equipment?.items,after.equipment?.items)||!same(before.equipment?.levels,after.equipment?.levels);
+    return changed?(action.startsWith('gearUpgrade')?'upgrade':'confirm'):null;
+  }
   if(supported.has(action))return !same(selection(before),selection(after))?'equip':null;
   return null;
 }

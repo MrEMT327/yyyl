@@ -1,0 +1,22 @@
+{
+  "source": "Freesound, user-downloaded WAV",
+  "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "assets": [
+    {
+      "source": "videogame sci-fi / fantasy damage efect",
+      "creator": "saangosu",
+      "sourceUrl": "https://freesound.org/people/saangosu/sounds/781094/",
+      "sourceSha256": "fa76d2361fbc4827bf4343f4aff92537f37da41b518213fb7f2319009c608c18",
+      "file": "player-hit-781094.wav",
+      "sha256": "d5115040e45d9eea7cca65267e223a66a3ce305f368aa5e7926cc131d0016f58",
+      "edit": {
+        "startSeconds": 0,
+        "durationSeconds": 0.4,
+        "fadeInSeconds": 0.003,
+        "fadeOutSeconds": 0.06,
+        "peak": 0.55,
+        "channels": 1
+      }
+    }
+  ]
+}

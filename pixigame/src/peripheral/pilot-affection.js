@@ -1,9 +1,15 @@
+export const PILOT_AFFECTION_VISIBLE = false;
 export const PILOT_AFFECTION_MAX = 100;
 export const PILOT_AFFECTION_VICTORY = 5;
 export const PILOT_AFFECTION_DEFEAT = 2;
 export const PILOT_AFFECTION_MIN_WAVE = 5;
 
 const videos = new Map([['pilot-01', 'art/pilot-affection-v1/pilot-01.mp4']]);
+const affectionActions = new Set(['pilotAffection', 'browseAffectionPilot', 'playAffectionVideo', 'developerAffectionMax']);
+
+export function isHiddenPilotAffectionAction(action) {
+  return !PILOT_AFFECTION_VISIBLE && affectionActions.has(action);
+}
 
 export function pilotAffectionVideo(pilotId) {
   return videos.get(pilotId);

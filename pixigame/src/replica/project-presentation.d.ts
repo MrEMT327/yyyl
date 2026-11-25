@@ -1,5 +1,6 @@
 import type { GameContent } from '../../replica-battle/kernel/model';
 import type { BattleAppearance } from '../../replica-battle/appearance-types';
+import type { BattleLaunchVisual } from '../../replica-battle/battle-launch.js';
 export function createProjectPresentation(options: {
   content: GameContent;
   appearance: Record<string, any>;
@@ -32,5 +33,5 @@ export function createProjectPresentation(options: {
   };
 }): Promise<BattleAppearance & {
   dispose(): void;
-  setLaunchPresentation(value:{time:number;thrust:number}|null):void;
+  setLaunchPresentation(value:BattleLaunchVisual|null):void;
 }>;

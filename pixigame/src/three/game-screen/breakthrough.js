@@ -5,47 +5,67 @@ import profile from '../../ui/breakthrough-native-particles.json';
 import art from './breakthrough-art.json';
 
 const corners=[[0,0],[0,1],[1,0],[1,0],[0,1],[1,1]];
+const materialSampling=new WeakMap();
+function samplingFor(material){
+  let sampling=materialSampling.get(material);
+  if(sampling)return sampling;
+  const main=material.textures.find(t=>t.slot==='_MainTex');
+  const mask=material.textures.find(t=>t.slot==='_MaskTex'),tile=mask&&art.tiles[mask.key];
+  sampling={sx:main?.scale?.x??1,sy:main?.scale?.y??1,ox:main?.offset?.x??0,oy:main?.offset?.y??0,
+    maskX:tile?tile[0]+(mask.offset?.x??0)*tile[2]:-1,maskY:tile?1-tile[1]-(mask.offset?.y??0)*tile[3]:-1,
+    maskW:tile?tile[2]*(mask.scale?.x??1):0,maskH:tile?tile[3]*(mask.scale?.y??1):0};
+  materialSampling.set(material,sampling);
+  return sampling;
+}
+
 function batch(texture,blend,order){
   const geometry=new BufferGeometry();
   const material=new ShaderMaterial({uniforms:{atlas:{value:texture}},depthTest:false,depthWrite:false,transparent:true,toneMapped:false,
-    blending:blend==='add'?AdditiveBlending:NormalBlending,side:DoubleSide,forceSinglePass:true,
-    vertexShader:`attribute vec4 ink;varying vec4 dye;varying vec2 optical;
-      void main(){dye=ink;optical=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
-    fragmentShader:`uniform sampler2D atlas;varying vec4 dye;varying vec2 optical;
-      void main(){gl_FragColor=vec4(dye.rgb,dye.a*texture2D(atlas,optical).a);}`});
+    blending:blend==='add'?AdditiveBlending:NormalBlending,premultipliedAlpha:blend==='add',side:DoubleSide,forceSinglePass:true,
+    vertexShader:`attribute vec4 ink;attribute vec2 maskUv;varying vec4 dye;varying vec2 optical;varying vec2 maskAt;
+      void main(){dye=ink;optical=uv;maskAt=maskUv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+    fragmentShader:`uniform sampler2D atlas;varying vec4 dye;varying vec2 optical;varying vec2 maskAt;
+      void main(){
+        float light=dye.a*texture2D(atlas,optical).a;
+        if(maskAt.x>=0.)light*=texture2D(atlas,maskAt).a;
+        #ifdef PREMULTIPLIED_ALPHA
+          gl_FragColor=vec4(dye.rgb*light,light);
+        #else
+          gl_FragColor=vec4(dye.rgb,light);
+        #endif
+      }`});
   const mesh=new Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=order;
-  let capacity=0,count=0,pos,uv,colors;
+  let capacity=0,count=0,pos,uv,maskUv,colors;
   function reserve(required){
     if(capacity>=required)return;
     capacity=Math.max(8,2**Math.ceil(Math.log2(required)));
-    pos=new Float32Array(capacity*18);uv=new Float32Array(capacity*12);colors=new Float32Array(capacity*24);
+    pos=new Float32Array(capacity*18);uv=new Float32Array(capacity*12);maskUv=new Float32Array(capacity*12);colors=new Float32Array(capacity*24);
     // Dispose the old GPU allocation before replacing its attributes. The mesh can keep the geometry.
     geometry.dispose();
-    for(const [key,data,size] of [['position',pos,3],['uv',uv,2],['ink',colors,4]])
+    for(const [key,data,size] of [['position',pos,3],['uv',uv,2],['maskUv',maskUv,2],['ink',colors,4]])
       geometry.setAttribute(key,new BufferAttribute(data,size).setUsage(DynamicDrawUsage));
   }
   return {mesh,fill(draws,cx,cy,unit){
     count=0;
-    const repeats=draws.reduce((sum,{sprite:s})=>sum+Math.ceil(s.blend==='add'?(s.tintGain||1):1),0);
-    reserve(repeats);mesh.visible=repeats>0;
+    reserve(draws.length);
     for(const {sprite:s,material} of draws){
       const tex=profile.data.textures[s.key],tile=art.tiles[s.key];if(!tex||!tile||!s.width||!s.height)continue;
-      const main=material.textures.find(t=>t.slot==='_MainTex');
+      const {sx,sy,ox,oy,maskX,maskY,maskW,maskH}=samplingFor(material);
       const crop=s.crop,ux=(crop?.x||0)/tex.width,uy=(crop?.y||0)/tex.height;
       const uw=(crop?.width??tex.width)/tex.width,uh=(crop?.height??tex.height)/tex.height;
-      const sx=main?.scale?.x??1,sy=main?.scale?.y??1,ox=main?.offset?.x||0,oy=main?.offset?.y||0;
       const sn=Math.sin(s.rotation),cs=Math.cos(s.rotation),gain=s.tintGain||1,add=s.blend==='add';
       const channel=shift=>Math.min(255,Math.round(((s.tint>>shift)&255)*(add?1:gain)))/255;
       const red=channel(16),green=channel(8),blue=channel(0);
-      for(let left=add?gain:1;left>1e-6;left-=1){
-        const alpha=Math.max(0,Math.min(1,s.alpha*Math.min(1,left)));
-        for(const [u,v] of corners){
-          const dx=(u-s.originX)*s.width,dy=(v-s.originY)*s.height;
-          const i3=count*3,i2=count*2,i4=count*4;
-          pos[i3]=cx+(s.x+cs*dx-sn*dy)*unit;pos[i3+1]=cy+(-s.z+sn*dx+cs*dy)*unit;
-          uv[i2]=tile[0]+((ux+uw*u)*sx+ox)*tile[2];uv[i2+1]=1-tile[1]-((uy+uh*v)*sy+oy)*tile[3];
-          colors[i4]=red;colors[i4+1]=green;colors[i4+2]=blue;colors[i4+3]=alpha;count++;
-        }
+      // Fold additive intensity into the emitted light so each atlas sprite needs one quad.
+      const alpha=Math.max(0,Math.min(1,s.alpha))*(add?gain:1);
+      for(const [u,v] of corners){
+        const dx=(u-s.originX)*s.width,dy=(v-s.originY)*s.height;
+        const i3=count*3,i2=count*2,i4=count*4;
+        pos[i3]=cx+(s.x+cs*dx-sn*dy)*unit;pos[i3+1]=cy+(-s.z+sn*dx+cs*dy)*unit;
+        uv[i2]=tile[0]+((ux+uw*u)*sx+ox)*tile[2];uv[i2+1]=1-tile[1]-((uy+uh*v)*sy+oy)*tile[3];
+        maskUv[i2]=maskX+u*maskW;
+        maskUv[i2+1]=maskY-v*maskH;
+        colors[i4]=red;colors[i4+1]=green;colors[i4+2]=blue;colors[i4+3]=alpha;count++;
       }
     }
     geometry.setDrawRange(0,count);

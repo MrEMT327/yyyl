@@ -2,48 +2,75 @@ import profile from './breakthrough-native-particles.json';
 import {sampleOriginalEffect} from '../../replica-battle/kernel/original-effects.ts';
 import {samplePresentedShow,upgradeEffectOpacity} from './upgrade-transition-motion.js';
 import {drawNativeGeometrySprite} from './breakthrough-effect-sprites.js';
+import {appendBreakthroughOpening,breakthroughFocus} from './breakthrough-opening.js';
 const plans=new Map();
 const softEntry=t=>{t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);};
+
 function plan(tier){
-  tier=profile.tiers[tier]?tier:'y';if(plans.has(tier))return plans.get(tier);
-  const groups=profile.tiers[tier],surfaces=[];
-  for(const side of ['rear','front'])for(const group of groups[side]){
-    const effect=profile.data.effects[group.effectId],rank=new Map(effect.particleOrder.map((id,i)=>[String(id),i]));
-    const ordered=effect.layers.filter(l=>l.materials.length).sort((a,b)=>rank.get(String(a.id))-rank.get(String(b.id)));
-    let run=null;
-    for(const layer of ordered){const blend=layer.materials[0].blend;
-      if(!run||run.blend!==blend){run={key:`${group.effectId}-${surfaces.length}`,side,blend,group,layerIds:[]};surfaces.push(run);}run.layerIds.push(String(layer.id));
+  tier=profile.tiers[tier]?tier:'y';
+  if(plans.has(tier))return plans.get(tier);
+  const groups=[],surfaces=[];
+  for(const side of ['rear','front'])for(const group of profile.tiers[tier][side]){
+    const effect=profile.data.effects[group.effectId];
+    const rank=new Map(effect.particleOrder.map((id,i)=>[String(id),i]));
+    const ordered=effect.layers.filter(layer=>layer.materials.length).sort((a,b)=>rank.get(String(a.id))-rank.get(String(b.id)));
+    const layers=[];
+    let run;
+    for(const layer of ordered){
+      const material=layer.materials[0],id=String(layer.id);
+      if(!run||run.blend!==material.blend){
+        run={key:group.effectId+'-'+surfaces.length,side,blend:material.blend,group,layerIds:[]};
+        surfaces.push(run);
+      }
+      run.layerIds.push(id);
+      layers.push({id,material,surface:surfaces.length-1});
     }
+    groups.push({group,side,layers});
   }
-  plans.set(tier,surfaces);return surfaces;
+  const layout={groups,surfaces,front:surfaces.findIndex(s=>s.side==='front'&&s.blend==='add')};
+  plans.set(tier,layout);
+  return layout;
 }
 export function breakthroughBackdropPose(seconds){
   const t=Number.isFinite(seconds)?Math.fround(seconds):-1,end=profile.tiers.y.hostEndTime;
   return {visible:t>=0&&t<end,seconds:t,frontActive:t>=profile.tiers.y.front[0].enableTime&&t<end,rearActive:t>=profile.tiers.y.rear[0].enableTime&&t<end};
 }
 export function sampleBreakthroughFrame(seconds,tier='y',reducedMotion=false,shaderTime=seconds){
-  const pose=breakthroughBackdropPose(seconds),surfaces=plan(tier).map(p=>({...p,draws:[]})),sampled=new Map();
+  const pose=breakthroughBackdropPose(seconds),layout=plan(tier),surfaces=layout.surfaces.map(s=>({...s,draws:[]}));
+  const focus=reducedMotion?0:breakthroughFocus(pose.seconds),tail=upgradeEffectOpacity(pose.seconds);
   let flashAlpha=0,particleCount=0;
-  if(pose.visible)for(const surface of surfaces){
-    const {group}=surface;if(pose.seconds<group.enableTime||pose.seconds>=group.hostEndTime)continue;
-    if(!sampled.has(group.effectId)){
-      const effect=profile.data.effects[group.effectId],layers=new Map(effect.layers.map(l=>[String(l.id),l]));
-      const order=new Map(effect.particleOrder.map((id,i)=>[String(id),i]));
-      const draws=sampleOriginalEffect(profile.data,group.effectId,Math.max(0,pose.seconds-group.enableTime),71,{projection:'xy'})
-        .map(sprite=>({sprite,layer:layers.get(sprite.layerId.replace(/^mesh:/,''))}))
-        .filter(d=>d.layer).sort((a,b)=>order.get(String(a.layer.id))-order.get(String(b.layer.id)));
-      sampled.set(group.effectId,draws);
+  if(pose.visible)for(const {group,side,layers} of layout.groups){
+    if(pose.seconds<group.enableTime||pose.seconds>=group.hostEndTime||(reducedMotion&&side==='front'))continue;
+    const age=pose.seconds-group.enableTime;
+    const opacity=tail*(reducedMotion?.12:softEntry(age/(side==='front'?.09:.035)));
+    const byLayer=new Map();
+    for(const sprite of sampleOriginalEffect(profile.data,group.effectId,age,71,{projection:'xy'})){
+      const id=sprite.layerId.replace(/^mesh:/,'');
+      if(!byLayer.has(id))byLayer.set(id,[]);
+      byLayer.get(id).push(sprite);
     }
-    for(const draw of sampled.get(group.effectId))if(surface.layerIds.includes(String(draw.layer.id))){
-      const kind=profile.data.textures[draw.sprite.key]?.kind;
-      if(reducedMotion&&(surface.side==='front'||kind!=='softGlow'))continue;
-      const opacity=upgradeEffectOpacity(pose.seconds)*(reducedMotion?.12:softEntry((pose.seconds-group.enableTime)/(surface.side==='front'?.09:.035)));
-      // Retain the original full-size rays, colours and peak gain. Ease only
-      // their first frames so the light joins the card movement without a pop.
-      const sprite=opacity<1?{...draw.sprite,alpha:draw.sprite.alpha*opacity}:draw.sprite;
-      surface.draws.push({sprite,material:draw.layer.materials[0]});particleCount++;
-      if(kind==='whiteWash')flashAlpha=Math.max(flashAlpha,sprite.alpha);
+    // Preserve the authored order of normal-blended layers without sorting every frame.
+    for(const {id,material,surface} of layers){
+      const sprites=byLayer.get(id);
+      if(!sprites)continue;
+      for(const sprite of sprites){
+        const kind=profile.data.textures[sprite.key]?.kind;
+        if(reducedMotion&&kind!=='softGlow')continue;
+        if(side==='front'&&kind==='ray'){
+          sprite.width*=1-.46*focus;
+          sprite.alpha*=1-.29*focus;
+        }
+        sprite.alpha*=opacity*(kind==='whiteWash'?.72:1);
+        surfaces[surface].draws.push({sprite,material});
+        if(kind==='whiteWash')flashAlpha=Math.max(flashAlpha,sprite.alpha);
+        particleCount++;
+      }
     }
+  }
+  if(pose.frontActive&&!reducedMotion&&layout.front>=0){
+    const draws=surfaces[layout.front].draws,previous=draws.length;
+    appendBreakthroughOpening(draws,pose.seconds,tier);
+    particleCount+=draws.length-previous;
   }
   return {...pose,tier,surfaces,flashAlpha,particleCount,shaderTime,offset:samplePresentedShow(Math.max(0,pose.seconds),tier)};
 }

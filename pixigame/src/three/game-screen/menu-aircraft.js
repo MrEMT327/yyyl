@@ -2,6 +2,7 @@ import {ACESFilmicToneMapping,Color,DoubleSide,HalfFloatType,ShaderMaterial,SRGB
 import {createModelRenderer} from '../../ui/peripheral-models.js';
 import {measureScreen} from './screen-metrics.js';
 import {equipmentLayout} from './equipment-layout.js';
+import {peripheralModelLoadout,peripheralModelLoadoutKey} from '../../ui/peripheral-model-loadout.js';
 
 export function menuAircraft(screen,page,scene,refresh,request,active,{profile='equipment',rect=w=>equipmentLayout(w,0).preview,
   port=null,stageModel=false,prefetchModel=true,acceptOrbit=()=>true}={}){
@@ -27,7 +28,8 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
           #include <colorspace_fragment>
         }`});
   }
-  let closed=false,ready=false,fit='',model,wanted,settledFrames=0,queuedAircraft='';
+  let closed=false,ready=false,fit='',model,wanted,settledFrames=0,queuedAircraft='',queuedFit='';
+  let prepareStarted=null,showStill=false;
   const metrics=measureScreen(r,profile==='patrol'?'Three 巡逻战机':'Three 装备战机',()=>!closed&&active(),false);
   function bounds(){const p=port?port.bounds():page.getBoundingClientRect(),b=rect(p.width,p.height);return {width:b.w,height:b.h,left:p.left+b.x,top:p.top+b.y};}
   const interactive=profile==='equipment'||profile==='catalog';
@@ -52,19 +54,33 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
     model.showAircraft(aircraftId,snapshot);
   }
   if(!port)model=createModelRenderer({screen,embedded});
-  return {target,paint,get ready(){return ready;},update(snapshot,aircraftId=snapshot.aircraftId){
+  const view={target,paint,get ready(){return ready;},get usingStill(){return showStill;},update(snapshot,aircraftId=snapshot.aircraftId){
+    if(stageModel&&port&&profile==='equipment'){
+      const {width,height}=bounds();
+      const key=aircraftId+':'+width+':'+height+':'+peripheralModelLoadoutKey(peripheralModelLoadout(aircraftId,snapshot));
+      if(key!==queuedFit){queuedFit=key;ready=false;showStill=false;prepareStarted=null;}
+    }
     if(model&&!stageModel){wanted=null;configure(snapshot,aircraftId);}
     else{
       wanted=[snapshot,aircraftId];
       if(stageModel&&port&&aircraftId&&queuedAircraft!==aircraftId){
         ready=false;
         queuedAircraft=aircraftId;
-        // Catalogs can start the transfer while gathering artwork. Equipment
-        // starts it from tick() after the first interactive frame.
+        // Equipment prepares its first render only while opening the visible hangar.
         if(prefetchModel)void port.loadAircraft(aircraftId).catch(()=>{});
       }
     }
+  },prepare(now){
+    if(ready||showStill)return true;
+    prepareStarted??=now;
+    if(now-prepareStarted<4500){
+      try{view.tick(0);if(model?.available!==false)return ready;}
+      catch(error){console.warn('[Three 装备战机]',error?.message||error);}
+    }
+    // A finished still is used for this visit if the preview cannot be drawn.
+    model?.destroy();model=null;fit='';settledFrames=0;ready=false;showStill=true;return true;
   },tick(dt){
+    if(showStill)return;
     const visible=active();
     // Give the menu artwork its own frames before building the studio.
     if(!model){
@@ -73,7 +89,11 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
     }
     if(visible&&wanted){const next=wanted;wanted=null;configure(...next);}
     model.update(dt,visible);
-  },pause(){model?.update(0,false);
+  },pause(){model?.update(0,false);showStill=false;prepareStarted=null;
+  },releaseModel(){
+    model?.destroy();model=null;target.setSize(2,2);
+    fit='';settledFrames=0;ready=false;showStill=false;prepareStarted=null;
   },close(){closed=true;metrics.release();model?.destroy();target.dispose();
     if(canvas){delete canvas.dataset.modelReady;delete canvas.dataset.aircraftId;delete canvas.dataset.viewProfile;}}};
+  return view;
 }

@@ -26,6 +26,10 @@ export function reachedGuideProgress(campaign={}, chapter, wave=0) {
   let current=1;while(cleared.has(current))current++;
   return current>chapter||current===chapter&&Number(campaign.passedWaves?.[chapter]||0)>=wave;
 }
+export function finishedRealSortie(result){
+  return result&&!result.trial&&!result.debugRun&&!result.abandoned&&
+    (result.won||result.clock>0||result.endReason==='defeat'||result.endReason!=='quit'&&result.wave>0);
+}
 export function battleOnboarding(s,chapterId,trial=false){
   return {movement:!trial&&chapterId===1&&!guideFinished(s,1),firstChoice:!trial&&!guideFinished(s,4)};
 }
@@ -36,7 +40,8 @@ export function nextLobbyGuide(s, dismissed=[]) {
   const gearOpen=reachedGuideProgress(s.replicaCampaign,2);
   const items=s.equipment?.items||[];
   const wearable=items.find(i=>!i.equipped&&!s.equipment?.slots?.[i.type])||items.find(i=>!i.equipped);
-  if(pending(9)&&gearOpen&&wearable)return {group:9,uid:wearable.uid};
+  const equipmentUnlocked=!(s.firstSortieRequired??!gearOpen);
+  if(pending(9)&&equipmentUnlocked&&wearable)return {group:9,uid:wearable.uid};
   const box=s.nativeAcquisition?.equipmentBoxes?.find(b=>b.id===4);
   if(pending(8)&&reachedGuideProgress(s.replicaCampaign,2,4)&&box?.quotes?.some(q=>q.count===1&&q.canDraw))return {group:8,pool:'basic'};
   const upgrade=items.find(i=>i.equipped&&i.canUpgrade);

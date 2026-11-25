@@ -38,7 +38,7 @@ export function catalogPortrait(device,page,refresh,redraw,output=null){
     },
     setPose(canvas,w,h,paint,dirty){if(!owns(canvas))return;const first=!pose;
       pose={canvas,w,h,paint,dirty:first||dirty||pose.dirty||w!==pose.w||h!==pose.h};if(first)refresh();redraw();},
-    forget(canvas){if(pose?.canvas===canvas){pose=null;refresh();}},
+    forget(canvas){if(pose?.canvas===canvas){pose=null;target?.dispose();target=null;refresh();}},
     draw(a,t,w,h,item){if(!id)return;const b=framing(id,w,h),config=PILOT_PORTRAITS[id]||{};
       if(config.scene)pic(a,t,config.scene,b,true);
       if(!target||!pose)pic(a,t,config.image||item.image,b,true);

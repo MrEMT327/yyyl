@@ -9,7 +9,7 @@ export function mountWechatHome(device, platform, region, send, interactive) {
   let claimed = false, ready = false;
   const host = {
     page:region,stageEntry:region.stageEntry,now: platform.now, requestFrame: platform.requestFrame, cancelFrame: platform.cancelFrame,
-    visible: () => platform.visible&&region.visible(), reducedMotion,
+    visible: () => platform.visible&&region.visible(), reducedMotion, idleHudInterval:1000/30,
     layout: () => ({ rect: getBounds(), density: platform.viewport.density, safeTop: platform.viewport.safeTop,
       safeBottom: platform.viewport.safeBottom, safeContentTop: platform.viewport.safeContentTop, menuButton: platform.viewport.menuButton }),
     onLayout: platform.onViewport,

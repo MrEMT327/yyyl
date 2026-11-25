@@ -86,7 +86,7 @@ export function createHomeStage(images) {
     const box=new T.Vector4(...bounds);
     const material=createMaterial(texture,box);
     const mesh=new T.Mesh(geometry,material);mesh.frustumCulled=false;mesh.renderOrder=i;
-    (id==='background'?behind:front).add(mesh);items.set(id,{id,texture,material,bounds,hit,box,scale:1});
+    (id==='background'?behind:front).add(mesh);items.set(id,{id,texture,material,mesh,bounds,hit,box,scale:1});
   }
   return {
     drawBehind(renderer){renderer.render(behind,camera);},
@@ -109,7 +109,10 @@ export function createHomeStage(images) {
       }
       personMat.uniforms.art.value=texture;personBox.copy(rect);renderer.render(character,camera);
     },
-    drawInFront(renderer){renderer.render(front,camera);},
+    drawInFront(renderer,hideStart=false){
+      items.get('start').mesh.visible=!hideStart;
+      renderer.render(front,camera);
+    },
     setButtonScale(id,scale){
       const item=items.get(id);if(!item)return;
       item.scale=scale;place(item);

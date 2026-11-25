@@ -1,7 +1,7 @@
 import { developerSkillsEnabled } from '../developer-battle-settings.js';
 import { DEVELOPER_CURRENCY_GRANTS } from '../developer-tools.js';
 import { nativeLabProgressGate } from '../replica/native-client-rules.js';
-import { PILOT_AFFECTION_MAX } from '../peripheral/pilot-affection.js';
+import { PILOT_AFFECTION_MAX, PILOT_AFFECTION_VISIBLE } from '../peripheral/pilot-affection.js';
 
 export function developerToolsDialog(snapshot, modal, { escape, number }) {
   const revision = snapshot.nativeAcquisition.revision;
@@ -9,7 +9,7 @@ export function developerToolsDialog(snapshot, modal, { escape, number }) {
   const pending = snapshot.rewardPending;
   const researchUnlocked = nativeLabProgressGate(snapshot.replicaCampaign).reached;
   const chaptersUnlocked = snapshot.replicaCampaign?.developmentChaptersUnlocked === true;
-  const pilot = snapshot.pilots?.find(row => row.id === snapshot.pilotId);
+  const pilot = PILOT_AFFECTION_VISIBLE ? snapshot.pilots?.find(row => row.id === snapshot.pilotId) : null;
   const affectionMaxed = pilot?.affection === PILOT_AFFECTION_MAX;
   const currencyButtons = Object.entries(DEVELOPER_CURRENCY_GRANTS).map(([currency, grant]) =>
     `<button type="button" class="wc-button" data-action="developerCurrency" data-currency="${currency}" data-revision="${revision}" ${busy || pending ? 'disabled' : ''}>${grant.name} +${number(grant.amount)}</button>`).join('');

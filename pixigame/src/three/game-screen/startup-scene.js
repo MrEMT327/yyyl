@@ -31,19 +31,28 @@ function entryLayout(w,h,safeBottom,mode,report){
   return {buttons,track,status,size,report:{x:w*.14,y:bottom-110,w:width,h:110}};
 }
 
-export function createStartupScene(renderer,schedule){
+export function createStartupScene(renderer,schedule,{waitForBackdrop=false,backdrop=startupArtFiles.backdrop}={}){
   const camera=new OrthographicCamera(0,1,0,1,-1,1),scene=new Scene(),surface=createThreeSurface();
   scene.add(surface.group);
-  const images=loadArt();
-  function loadArt(){
-    const result={};
-    for(const [key,path] of Object.entries(startupArtFiles)){
-      const texture=artworkTexture((import.meta.env.BASE_URL||'/')+'art/'+path,schedule,schedule);
-      texture.colorSpace=SRGBColorSpace;texture.generateMipmaps=key==='backdrop';
-      texture.minFilter=texture.generateMipmaps?LinearMipmapLinearFilter:LinearFilter;
-      result[key]=texture;
-    }
-    return result;
+  let backdropFailed=false,closed=false;
+  const images=Object.fromEntries(Object.entries(startupArtFiles).map(([key,path])=>
+    [key,loadTexture(key,key==='backdrop'?backdrop:path)]));
+  function loadTexture(key,path){
+    const texture=artworkTexture((import.meta.env.BASE_URL||'/')+'art/'+path,schedule,()=>{
+      if(closed)return;
+      if(key==='backdrop'){
+        if(path!==startupArtFiles.backdrop){
+          texture.dispose();
+          images.backdrop=loadTexture(key,startupArtFiles.backdrop);
+          return;
+        }
+        backdropFailed=true;
+      }
+      schedule();
+    });
+    texture.colorSpace=SRGBColorSpace;texture.generateMipmaps=key==='backdrop';
+    texture.minFilter=texture.generateMipmaps?LinearMipmapLinearFilter:LinearFilter;
+    return texture;
   }
   function paintSlice(texture,b,slice,corner){
     if(!texture?.image?.width||b.w<=0||b.h<=0)return;
@@ -56,10 +65,15 @@ export function createStartupScene(renderer,schedule){
     const w=b.width,h=b.height;
     renderer.setClearColor(0x122b3d,1);renderer.autoClear=false;
     camera.right=w;camera.bottom=h;camera.updateProjectionMatrix();surface.clear();
+    if(waitForBackdrop&&mode!=='failed'&&!images.backdrop.image&&!backdropFailed){
+      renderer.clear();
+      return [];
+    }
     const layout=entryLayout(w,h,safeBottom,mode,Boolean(drawReport));
     const buttons=layout.buttons;
     if(images.backdrop.image)surface.image(images.backdrop,0,0,w,h);
-    surface.text(message,w/2,layout.status-layout.size*.09,{size:layout.size,family:uiFont,weight:500,align:'center',color:'#fff',maxWidth:w*.72,
+    const status=waitForBackdrop&&backdropFailed&&mode==='ready'?'封面加载失败，可继续游戏':message;
+    surface.text(status,w/2,layout.status-layout.size*.09,{size:layout.size,family:uiFont,weight:500,align:'center',color:'#fff',maxWidth:w*.72,
       shadow:{color:'#14263e',y:1,blur:3}});
     if(layout.track){
       const t=layout.track;
@@ -85,5 +99,5 @@ export function createStartupScene(renderer,schedule){
     renderer.clear();renderer.render(scene,camera);
     return buttons;
   }
-  return {surface,paint,close(){surface.clear();for(const texture of Object.values(images))texture.dispose();}};
+  return {surface,paint,close(){closed=true;surface.clear();for(const texture of Object.values(images))texture.dispose();}};
 }

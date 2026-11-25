@@ -4,8 +4,6 @@ import {VfxMeshBuffer,boundsVisible} from './vfx-buffers.mjs';
 // This quiet, non-emissive envelope never participates in collision or damage.
 const ARCS=6,POINTS=(ARCS+1)*2,MAX_SEGMENTS=32;
 function palette(b){
- if(b.familyId===200171&&b.modelId===221001)return[.96,.52,.18];
- if(b.familyId===200121&&b.modelId===220009)return[.18,.64,1];
  if(b.weaponId===200067&&b.modelId===220010)return[.24,.82,.28];
  return null;
 }

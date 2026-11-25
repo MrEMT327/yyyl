@@ -104,6 +104,7 @@ test-results/
 !/pixigame/tools/generate-combat-sfx.mjs
 !/pixigame/tools/build-orange-hip-materials.ps1
 !/pixigame/tools/build-aircraft-game-lod.mjs
+!/pixigame/tools/build-sortie-starter-preview.mjs
 !/pixigame/tools/build-sortie-data.mjs
 !/pixigame/tools/build-sortie-loading-art.py
 !/pixigame/tools/package-zh-release.mjs

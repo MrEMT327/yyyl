@@ -17,7 +17,7 @@ export function damageTextPresentation(fx,age=fx.age){
  const lift=strong?10*Math.sin(Math.min(1,t/.34)*Math.PI):4*Math.sin(Math.min(1,t/.30)*Math.PI);
  return {x:result?0:lane*spacing,y:-8-(result?0:Math.floor(id/5)%3*24)-t*(result?28:36)-lift,
   alpha:(strong?1:.92)*Math.pow(1-t,strong?.7:.85),scale,
-  fontSize:result?18:hurt?21:fx.critical?22:18,
+  fontSize:result?18:hurt?21:fx.critical?22:18,slant:result==='miss'?-.23:0,
   color:result?RESULT_COLORS[result]:hurt?'#ff7277':fx.critical?'#ffed91':ELEMENT_COLORS[meta.element]||'#f3f5ed',depth:42};
 }
 

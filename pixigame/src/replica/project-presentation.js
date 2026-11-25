@@ -22,7 +22,7 @@ import {createProjectAircraftTextureRefresh,createProjectAircraftCanvasSnapshot,
 import {createWingtipTrailState,projectWingtipPositions,sampleWingtipTrails,drawWingtipTrails,createWingtipHighlights} from './project-wingtip-trails.js';
 import {projectMissileWingMounts} from './project-missile-mounts.js';
 import {createProjectWeather} from './project-weather.js';
-import {sampleVictoryTrail,drawVictoryTrail} from './project-victory-trail.js';
+import {sampleBattleFlightTrail,drawVictoryTrail} from './project-victory-trail.js';
 import {createNativeBattleRenderBudget} from './native-battle-render-budget.js';
 
 const WIDTH = 540, HEIGHT = 960;
@@ -92,7 +92,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
   const wingtipTrail = createWingtipTrailState();
   function updateWingtipTrails(flightPose) {
     if (!wingtipGraphics) return;
-    const tips = projectWingtipPositions(fighter, aircraftCamera, pose);
+    const tips = frame.victoryDeparture ? [] : projectWingtipPositions(fighter, aircraftCamera, pose);
     drawWingtipTrails(wingtipGraphics, sampleWingtipTrails(wingtipTrail, {
       ...frame, pose, tips, pilotId: fighter.pilotId, pixelsPerUnit: WIDTH / content.world.width,
       rollActive: flightPose.rollActive, thrust: flightPose.thrust,
@@ -443,9 +443,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
           y:pose.y-(position.z-frame.flight.z)*WIDTH/content.world.width};
         playerImage?.setPosition(pose.x,pose.y);
       }
-      const departure=frame.victoryDeparture;
-      const trail=departure&&scene?sampleVictoryTrail({departure,pose,
-        from:frame.flight?frame.projectPoint?.(frame.flight.x,departure.fromZ):null}):null;
+      const trail=scene?sampleBattleFlightTrail(frame,pose,launchPresentation):null;
       if(trail){
         victoryBodyGraphics??=scene.add.graphics().setDepth(24.65).setName('project-victory-departure-body');
         victoryGraphics??=scene.add.graphics().setDepth(24.7).setName('project-victory-departure-trail').setBlendMode('ADD');
@@ -454,7 +452,7 @@ export async function createProjectPresentation({ content, appearance, onError, 
       }else if(victoryGraphics?.visible){
         victoryGraphics.clear().setVisible(false);victoryBodyGraphics.clear().setVisible(false);
       }
-      passivePose=samplePassiveDeployment(passiveState,{...frame,aircraftId:appearance.aircraft.id,visible:pose?.visible??false});
+      passivePose=samplePassiveDeployment(passiveState,{...frame,aircraftId:appearance.aircraft.id,visible:!frame.victoryDeparture&&!!pose?.visible});
       const passiveDirty=passivePose.serial!==lastRenderedPassive?.serial||passivePose.progress!==lastRenderedPassive?.progress;
       const visualClock=flightVisual.visualClock+(launchPresentation?.time||0);
       const backgroundTime = frame.coastBackgroundTime ?? frame.time;

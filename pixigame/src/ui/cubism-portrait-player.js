@@ -25,7 +25,21 @@ import { MOC_PACK_ENCODING } from './cubism-moc-codec.js';
 const BASE = import.meta.env?.BASE_URL ?? '/';
 let corePromise;
 let frameworkUsers = 0;
+let nativeLoads = 0, managedNative = false, trimNative = false;
 let metricsSerial = 0;
+
+function releaseIdleNativeCore() {
+  if (!managedNative || !trimNative || nativeLoads || frameworkUsers) return;
+  if (CubismFramework.isStarted()) CubismFramework.cleanUp();
+  // This core can only grow. Drop its instance so the next pilot can use a small heap.
+  globalThis.Live2DCubismCore = undefined;
+  corePromise = undefined;
+  managedNative = trimNative = false;
+}
+
+export function trimUnusedNativeCubismCore() {
+  if (managedNative) { trimNative = true; releaseIdleNativeCore(); }
+}
 
 function localUrl(path, base = location.href) {
   const url = new URL(path, base);
@@ -35,11 +49,11 @@ function localUrl(path, base = location.href) {
 
 function loadCore(coreUrl,loader) {
   const nativeLoader = loader ?? globalThis.__THUNDER_RUNTIME_GLOBALS__?.loadCubismCore;
-  const ready = () => new Promise((resolve, reject) => {
+  const ready = (core = globalThis.Live2DCubismCore) => new Promise((resolve, reject) => {
     const deadline = performance.now() + 10000;
     const check = () => {
       try {
-        if (globalThis.Live2DCubismCore?.Version.csmGetVersion() > 0) { resolve(); return; }
+        if (core?.Version.csmGetVersion() > 0) { resolve(); return; }
       } catch { /* Core's embedded runtime can finish after the script load event. */ }
       if (performance.now() >= deadline) reject(new Error('Cubism Core 初始化超时'));
       else setTimeout(check, 16);
@@ -48,10 +62,18 @@ function loadCore(coreUrl,loader) {
   });
   // Native subpackage loading only evaluates the script; its embedded core
   // still initializes asynchronously before the framework can call b.asm.
-  if (nativeLoader) return corePromise ||= nativeLoader().then(core => {
-    globalThis.Live2DCubismCore = core;
-    return ready();
-  });
+  if (nativeLoader) {
+    if (!corePromise) {
+      const attempt = Promise.resolve().then(nativeLoader).then(core => {
+        if (corePromise !== attempt) throw Object.assign(new Error('立绘已关闭'), {name:'AbortError'});
+        globalThis.Live2DCubismCore = core;
+        return ready(core);
+      });
+      corePromise = attempt;
+      attempt.catch(() => { if (corePromise === attempt) corePromise = undefined; });
+    }
+    return corePromise;
+  }
   if (globalThis.Live2DCubismCore?.Moc) return corePromise ||= ready();
   if (!corePromise) corePromise = new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -87,6 +109,7 @@ function retainFramework(initialMemoryBytes = 0) {
     released = true;
     frameworkUsers -= 1;
     if (frameworkUsers === 0 && CubismFramework.isInitialized()) CubismFramework.dispose();
+    releaseIdleNativeCore();
   };
 }
 
@@ -169,7 +192,7 @@ export function createCubismPortraitPlayer({
   if (!Number.isFinite(sampleFps) || sampleFps < 1 || sampleFps > 120) throw new RangeError('立绘采样帧率必须为 1–120');
   if (!Number.isFinite(transitionSeconds) || transitionSeconds < 0 || transitionSeconds > 2) throw new RangeError('立绘过渡时长必须为 0–2 秒');
   const step = 1 / sampleFps;
-  const canDrawFrame=createPortraitPaintGate();
+  const canDrawFrame=createPortraitPaintGate(geometryHost?.frameRate);
   const address=geometryHost ? (path,base=geometryHost.baseURL)=>new URL(path,base).href : localUrl;
   const hidden=geometryHost?.hidden??(()=>document.hidden);
   const request=geometryHost?.requestFrame??(callback=>requestAnimationFrame(callback));
@@ -512,9 +535,12 @@ export function createCubismPortraitPlayer({
     for (const [group, entries] of Object.entries(refs.Motions)) {
       if (entries[0]?.File) motionRefs.set(motionGroups[group] || group, entries[0]);
     }
-    releaseFramework = retainFramework(initialMemoryBytes);
+    const memoryBytes = geometryHost?.cubismMemoryBytes ?? initialMemoryBytes;
+    if (geometryHost?.loadCore && memoryBytes >= 64 * 1024 * 1024) trimNative = true;
+    releaseFramework = retainFramework(memoryBytes);
     const loadMoc=async()=>{
       const bytes=await read(refs.Moc);
+      if(destroyed)return null;
       if(!setting.MocEncoding)return bytes;
       if(setting.MocEncoding!==MOC_PACK_ENCODING)throw new Error('Cubism 模型压缩编码不支持');
       return decodePackedCubismMoc(bytes,{signal:controller.signal});
@@ -676,7 +702,13 @@ export function createCubismPortraitPlayer({
   function ensureLoaded() {
     if (destroyed || state === 'error') return Promise.resolve(false);
     if ((!host && !geometryPrepared) || !visible || hidden()) return Promise.resolve(state === 'ready');
-    if (!loading) loading = load().catch(reason => { fail(reason); return false; });
+    if (!loading) {
+      const native = Boolean(geometryHost?.loadCore);
+      if (native) { managedNative = true; nativeLoads++; }
+      loading = load().catch(reason => { fail(reason); return false; }).finally(() => {
+        if (native) { nativeLoads--; releaseIdleNativeCore(); }
+      });
+    }
     return loading;
   }
 

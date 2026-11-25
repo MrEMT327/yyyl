@@ -3,6 +3,7 @@ import {OrthographicCamera,Scene,Texture,Vector4,SRGBColorSpace,LinearFilter,Lin
 import {createSurfaceTextCache,createThreeSurface} from '../../ui/three-surface.js';
 import {optimizeUiAssetUrls} from '../../ui/ui-image-source.js';
 
+const panelSources=new WeakMap();
 const inside=(r,x,y)=>r&&x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h;
 const limit=(n,min,max)=>Math.max(min,Math.min(max,n));
 function intersection(a,b){
@@ -61,7 +62,7 @@ function browserPanelInput(screen,host,name,main) {
 // A panel paints above the retained lobby scene on the same Three device.
 // Its transparent H5 focus target only delivers pointer, wheel and IME input.
 export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,overlay=false,battle=false,fullscreen=false,onScroll,repaint,
-  prepareArtwork,entryWaitMs=120,progressive=Boolean(prepareArtwork),artworkVisible,backgroundPriority=-1,interactive=()=>true,allows=()=>true,handlesKey=()=>true}={}){
+  prepareArtwork,entryWaitMs=120,deferInput=false,progressive=Boolean(prepareArtwork),artworkVisible,backgroundPriority=-1,interactive=()=>true,allows=()=>true,handlesKey=()=>true}={}){
   const nativeInput=screen.createPanelInput?.(host,name,{main,overlay,battle});
   const input=nativeInput||browserPanelInput(screen,host,name,main);
   const underlay=overlay||input.overlay?screen.panel:null;
@@ -69,6 +70,7 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   const layers=[],controls=[],animations=[],frameEffects=[],pressEffects=[],regions=new Map(),activeRegions=new Set(),anchors=new Map(),scissor=new Vector4(),viewport=new Vector4();
   let data=null,dirty=true,closed=false,redraw=0,press=null,clickTarget=null,focusId=null,keyboard=false,field=null;
   let pendingArt=false,prevW=0,prevH=0,prevFrame=null,activeScope='base',identity='',artBatch=null;
+  let compiledLayers=0;
   let parked=Boolean(prepareArtwork),entering=null,staging=parked,artChanged=false,groupLateArtwork=false;
   const tracksArtwork=Boolean(repaint||prepareArtwork);
   const currentArtwork=new Set(),deferredArtwork=new Set(),decodedArtwork=new Map();
@@ -119,8 +121,14 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     controls.push({id,label,...rect,action,zone,scope,disabled,trackPointer,onPoint,onKey});
   }
   function installImage(t,image,inPlace=false){
-    if(image){t.image=image;t.needsUpdate=true;}
-    else t.userData.failed=true;
+    if(image){
+      const shared=panelSources.get(image);
+      // Mark the new texture before sharing the source so an already uploaded
+      // image keeps its version. Three owns the GPU reference counts.
+      t.needsUpdate=true;
+      if(shared)t.source=shared;
+      else{t.image=image;panelSources.set(image,t.source);}
+    }else t.userData.failed=true;
     if(inPlace){
       const updates=imageUpdates.get(t);
       imageUpdates.delete(t);
@@ -245,6 +253,7 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
       if(!batchesArtwork())installDecodedArtwork();
       currentArtwork.clear();artworkPriorities.clear();layoutArtwork.clear();imageUpdates.clear();artChanged=false;
       for(const p of layers)p.art.clear();layers.length=0;controls.length=0;animations.length=0;frameEffects.length=0;pressEffects.length=0;anchors.clear();activeRegions.clear();pendingArt=false;
+      compiledLayers=0;
       const frameRect={x,y,w,h};
       function backdrop(art,alpha,color='#000'){
         const index=layers.findIndex(layer=>layer.art===art);
@@ -322,8 +331,6 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     if(!c||c.disabled)return;
     focusId=c.id;input.label?.(name+'，'+c.label);
     if(c.action.type==='editNumber'){editNumber(c.action);return;}
-    const b=input.bounds(),z=placement(regions.get(c.zone));
-    screen.feedback?.capture({x:b.x+c.x-z.dx,y:b.y+c.y-z.dy,w:c.w,h:c.h});
     onAction(c.action);
   }
   function begin(screenX,screenY,pointerId){
@@ -391,11 +398,12 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
   function prepare(offscreen=false){
     const b=input.bounds(),c=input.frameBounds();
     if(closed||!data||!b.width||!c.width||!c.height)return false;
-    if(offscreen&&artBatch!==null){clearTimeout(artBatch);artBatch=null;}
+    if(offscreen&&artBatch!==null){clearTimeout(artBatch);artBatch=null;dirty=true;}
     if(batchesArtwork()&&installDecodedArtwork())dirty=true;
     if(prepareArtwork&&artChanged&&[...currentArtwork].every(textureReady))dirty=true;
     build(b,c);
-    return !pendingArt&&[...currentArtwork].every(textureReady);
+    const artwork=tracksArtwork?currentArtwork:textures.values();
+    return !pendingArt&&[...artwork].every(textureReady);
   }
   function prepareFirstFrame(){
     const ready=prepare(),textures=new Set(currentArtwork);
@@ -406,7 +414,9 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     return prepareArtwork(textures)&&ready;
   }
   const actions={begin,move,end,commit,cancel,wheel,key};
-  if(!parked)input.bind(actions);
+  let inputBound=false;
+  function bindInput(){if(!inputBound){inputBound=true;input.bind(actions);}}
+  if(!parked&&!deferInput)bindInput();
   const unwatch=input.watch(()=>request(true));
   const view={surface,bounds:input.bounds,name,fullscreen,draw(r){
     if(closed||parked)return;
@@ -431,9 +441,16 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
     activate(){
       if(closed||!parked)return;
       parked=false;entering=input.now();
-      input.bind(actions);screen.panel=view;input.focus?.();request();
+      bindInput();screen.panel=view;input.focus?.();request();
     },
     artwork:()=>currentArtwork,
+    warmPrograms(r){
+      if(typeof r.compile!=='function'||r.getContext().isContextLost())return true;
+      const layer=layers[compiledLayers];
+      if(!layer)return true;
+      r.compile(layer.scene,camera);
+      return ++compiledLayers>=layers.length;
+    },
     commit({batchLate=true,groupLate=false}={}){
       staging=false;groupLateArtwork=groupLate;
       const rebuild=artChanged||pendingArt;
@@ -443,7 +460,7 @@ export function createLobbyPanel(screen,host,name,layout,onAction,{main=false,ov
       if(rebuild||deferredArtwork.size)dirty=true;
       return dirty;
     },
-    cancelInput:cancel,
+    bindInput,cancelInput:cancel,
     setGuideTarget(id){guideTarget=id;},
     pick(e){if(staging)return;const p=pos(e.clientX,e.clientY);return hit(p.x,p.y)?.id;},get focused(){return focusId;},
     scroll:(zone,value,notify)=>setOffset(zone,typeof value==='number'?value:anchors.get(value)??0,notify),

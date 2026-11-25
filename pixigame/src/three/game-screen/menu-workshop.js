@@ -1,46 +1,47 @@
-import {area,art,box,clamp,pic,slice,titleFont,words} from './menu-art.js';
-import {atlas,psdAction,symbol} from './catalog-art.js';
+import {area,art,box,clamp,guideMascot,paintNavigationInset,pic,slice,titleFont,verticalSlice,words} from './menu-art.js';
+import {atlas,normalFit,psdAction,symbol} from './catalog-art.js';
+import {bottomNavigation,leftOfMenuCenterY,navArtwork,navBodyEnd} from './home-navigation.js';
 import {gearWorkshop} from './workshop-gear.js';
 import {weaponWorkshop} from './workshop-weapon.js';
 
-function mascot(t,a,b,reduced){
-  const sprite=pic(a,t,'/art/onboarding-assistant-v1/expressions.png',b);
-  const y=sprite.position.y,uv=sprite.geometry.attributes.uv,original=Array.from(uv.array);let last=-1;
-  const animate=now=>{
-    const phase=now/4.8%1,frame=reduced?0:(phase>=.14&&phase<.2||phase>=.28&&phase<.34)?3:(phase>=.62&&phase<.64||phase>=.67&&phase<.69)?1:phase>=.64&&phase<.67?2:0;
-    if(frame!==last){for(let i=0;i<uv.count;i++)uv.setX(i,(frame+1-original[i*2])/4);uv.needsUpdate=true;last=frame;}
-    sprite.position.y=y-(reduced?0:1-Math.cos(now*Math.PI*2/3))*1.5;
-  };
-  animate(0);if(!reduced)t.animate(animate);
-}
 export function workshopMenu(data,w,h,t){
   const a=t.layer('workshop').art,gear=data.workshop.kind==='gear',top=Math.max(12,w*.0325),stageH=(gear?.80:.704)*w;
   const barY=top+stageH,barH=gear?Math.max(50,w*117.9/1080):Math.max(44,w*.105),gridY=barY+barH;
-  const footH=(gear?Math.max(56,w*.15):Math.max(54,.16*w))+(data.safeBottom||0),footY=h-footH;
+  const safe=data.safeBottom||0,rail=gear?Math.max(56,w*.15):Math.max(54,.16*w);
+  const {top:footY,height:railH,inset,hitHeight}=data.native?bottomNavigation(w,h,safe,true):
+    {top:h-safe-rail,height:rail,inset:safe,hitHeight:rail};
   const bleed=t.topBleed||0;
   if(data.progressive)a.quad(0,-bleed,w,h+bleed,'#203247');
-  pic(a,t,atlas['workshop-wall'],bleed?box(0,-bleed,w,h+bleed):box(0,top,w,h-top));
-  pic(a,t,atlas['workshop-stage'],box(0,top,w,stageH));
-  const header=pic(a,t,atlas['workshop-header'],box(w*.03,top+.023*w,.94*w,w*.082));
-  if(data.progressive&&!header.visible)words(a,'改装间',w/2,top+w*.065,18,{family:titleFont});
+  pic(a,t,atlas['workshop-wall'],box(0,-bleed,w,h+bleed));
+  normalFit(a,t,atlas['workshop-stage'],box(0,-bleed,w,barY+bleed),true);
+  const heading=box(w*.03,top+.023*w,.94*w,w*.082);
+  // Only the left 191 pixels of the 694-pixel header contain the title plate.
+  const menuCenter=leftOfMenuCenterY(t.viewport,heading.x+heading.w*191/694);
+  if(menuCenter!==null)heading.y=menuCenter-bleed-heading.h/2;
+  const header=pic(a,t,atlas['workshop-header'],heading);
+  if(data.progressive&&!header.visible)words(a,'改装间',heading.x+8,heading.y+heading.h/2,18,{family:titleFont,align:'left'});
   pic(a,t,atlas['workshop-warehouse'],box(0,barY,w,barH));words(a,'仓库',w/2,barY+barH/2,clamp(.048*w,16,22),{family:titleFont});
   pic(a,t,art['gear-grid'],box(0,gridY,w,Math.max(1,footY-gridY)));
-  const foot=t.layer('workshop-footer').art,safe=data.safeBottom||0;
-  if(safe)foot.quad(0,h-safe,w,safe,'#101c23');
-  pic(foot,t,atlas['workshop-footer'],box(0,footY,w,footH-safe));
-  const dockY=footY+(footH-(data.safeBottom||0))/2;
+  const foot=t.layer('workshop-footer').art,footer=atlas['workshop-footer'];
+  if(data.progressive)foot.quad(0,footY,w,railH+inset,'#172735');
+  if(inset){
+    const skin=navArtwork(footY,railH,inset);
+    verticalSlice(foot,t,footer,box(0,footY,w,skin.body),0,navBodyEnd);
+    paintNavigationInset(foot,t,w,skin);
+  }else pic(foot,t,footer,box(0,footY,w,railH));
+  const dockY=footY+hitHeight/2,confirmH=Math.min(48,hitHeight);
   const back=box(10,dockY-22,48,44);slice(foot,t,'/art/project-return-button-v1/face.png',box(back.x,dockY-19,48,38),8);
   const arrow=symbol(foot,t,'chevron-right',box(back.x+11,dockY-13,26,26));arrow.rotation.z=Math.PI;
   if(data.progressive&&!arrow.visible)words(foot,'返回',back.x+back.w/2,dockY,13);
   area(t,'back',data.workshop.backLabel,back,'catalogBack');
   function button(id,label,cmd,place,disabled=false,payload={},opts={}){
     const confirm=place==='confirm',width=confirm?(gear?Math.min(160,w*.46):w*.70):Math.min(100,Math.max(80,.215*w));
-    const b=confirm?box(gear?(w-width)/2:w-width-.02*w,dockY-24,width,48):box(place==='left'?w*.025:w*.975-width,barY+(barH-44)/2,width,44);
+    const b=confirm?box(gear?(w-width)/2:w-width-.02*w,dockY-confirmH/2,width,confirmH):box(place==='left'?w*.025:w*.975-width,barY+(barH-44)/2,width,44);
     psdAction(confirm?foot:a,t,b,{id,label,cmd,data:payload,disabled,gold:confirm,size:confirm?clamp(w*.042,14,20):clamp(w*.034,12,16),...opts});
   }
   function assistant(rows,hasTarget){
     const size=Math.min(w*(gear?.34:.32),gear?148:144),by=top+stageH-(gear?.08*w:.03*w)-size;
-    mascot(t,a,box(w-size-(gear?.005:.05)*w,by,size,size),data.reduced);
+    guideMascot(t,a,box(w-size-(gear?.005:.05)*w,by,size,size),data.reduced);
     const x=w*(gear?.34:.35),y=top+stageH*(gear?.22:.18),bw=gear&&!hasTarget?Math.min(w*.63,26+9*clamp(.0355*w,13,16)):w*(gear?.63:.61);
     const maxH=Math.max(42,by-.0125*w-y),font=clamp(gear?.0355*w:.032*w,gear?13:11,gear?16:15);
     const layer=t.layer('assistant-text','message').art;let py=y+10;

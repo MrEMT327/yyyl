@@ -90,10 +90,8 @@ export function paintResearchDraw(d,w,h,t,viewportHeight=h){
   const a=t.layer('awakening-stage').art,open=d.flow.phase==='opening',short=viewportHeight<=650,head=short?52:70,foot=56+Math.max(.06*viewportHeight,d.safeBottom);
   t.backdrop(a,.667);area(t,'blank',open?'跳过动画':'点击空白处关闭',t.frameRect,open?'skip':'next');
   const cy=head+(h-head-foot)/2-.16*w,cw=clamp(.34*w,108,150),ch=cw*308/240;
-  if(open){const b=box((w-cw)/2,cy-ch/2,cw,ch);opening(d,t,a,b);
-    const skip=box(w-(short?16:18)-58,short?4:18,58,44);slice(a,t,'/art/psd-buttons-v1/button-blue.png',skip,10);
-    words(a,'跳过',skip.x+29,skip.y+22,14,{weight:500,color:'#dceef8'});area(t,'skip','跳过',skip,'skip');
-  }else spotlight(d,t,w,h,head,foot,cy,short);
+  if(open)opening(d,t,a,box((w-cw)/2,cy-ch/2,cw,ch));
+  else spotlight(d,t,w,h,head,foot,cy,short);
   const front=t.layer('awakening-footer').art,bw=Math.min(w*.84,360),b=box((w-bw)/2,h-foot+12,bw,44),caption=open?'点击任意位置跳过动画':'点击空白处关闭';
   words(front,caption,w/2,b.y+22,open?13:14,{weight:500,color:open?'#a7bfce':'#d0dce3',tracking:open?0:1});
   area(t,'confirm',open?'跳过':'确定',b,open?'skip':'next');

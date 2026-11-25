@@ -1,6 +1,24 @@
 import urgencySource from '../public/data/enemy-warning.json';
 import type {GameContent, RecordData} from './model';
 import {playerSpineLayers} from './player-appearance';
+import {chapterDeathCallParameters} from '../chapter-death-traits';
+
+export function battleEnemyModels(content: GameContent, includeWave: (wave: number) => boolean = () => true) {
+  const ids = new Set((content.spawns || []).filter(spawn => includeWave(spawn.wave)).map(spawn => spawn.entityId));
+  const models = new Set<number>();
+  for (const id of ids) {
+    const entity = content.chapter.entities[id];
+    if (!entity) continue;
+    if (entity.modelId !== undefined) models.add(entity.modelId);
+    const summons = entity.ai?.parameters?.CallMonsters;
+    if (Array.isArray(summons)) for (const call of summons) ids.add(Number(call?.CallMonsterId));
+    for (const trait of entity.raw?.SpecialTrait || []) {
+      const child = chapterDeathCallParameters(trait);
+      if (child) ids.add(child.callEntityID);
+    }
+  }
+  return models;
+}
 
 export function planBattleImages(content: GameContent, {
   playerLayers, replaceTerrain, nativeTerrain, bodyPoseOnly,
@@ -11,8 +29,7 @@ export function planBattleImages(content: GameContent, {
   bodyPoseOnly?: boolean;
 }) {
   const assets = content.assets;
-  const earlyModels = new Set(content.spawns.filter(spawn => spawn.wave === 1)
-    .map(spawn => content.chapter.entities[spawn.entityId]?.modelId));
+  const earlyModels = battleEnemyModels(content, wave => wave === 1);
   const playerModel = content.chapter.entities[content.chapter.player.entityId].modelId;
   earlyModels.add(playerModel);
   const prefabByModel = new Map<number, string>();

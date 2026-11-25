@@ -1,6 +1,6 @@
 const firstSounds = new Set([
   'pathogenic:gun', 'pathogenic:hit', 'pathogenic:hit2', 'pathogenic:hit3', 'pathogenic:hit4',
-  'pathogenic:enemyShot', 'pathogenic:playerHit', 'pathogenic:death', 'pathogenic:pickup','pathogenic:impact',
+  'pathogenic:enemyShot', 'freesound:playerHit', 'pathogenic:death', 'pathogenic:explosion', 'pathogenic:pickup','pathogenic:impact',
   'project:flight-roll', 'feedback:choice', 'feedback:upgrade',
 ]);
 

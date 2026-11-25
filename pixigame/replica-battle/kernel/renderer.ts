@@ -30,7 +30,7 @@ import { chapterOneBossAtlases, chapterOneDeferredAtlases, chapterOneWeaponArt }
 import type { Simulation } from './simulation';
 import { SpinePlayer, preloadPlayerSpine, spinePlugin } from './spine-player';
 import { unusedChapterEnemyProjectileArt } from './pathogenic/enemy-projectile-presentation.mjs';
-import { planBattleImages } from './battle-image-plan';
+import { battleEnemyModels, planBattleImages } from './battle-image-plan';
 import { installMissingSourceTexture } from './pathogenic/source-texture-regions.mjs';
 import { selectPlayerAppearance } from './player-appearance';
 import { OriginalParticlePipeline, OriginalParticleMesh } from './particle-pipeline';
@@ -43,7 +43,6 @@ import { nativeMapScrollZ, nativeMapSegmentPoses, NativeMapCameraOffsets, type N
 import { sampleNativeEnemyAnimation } from './native-enemy-animation';
 import { NativeViewPosition } from './native-view-position';
 import { preloadChapterOrbitArt, createChapterOrbitArt } from '../chapter-orbit-art';
-import { chapterDeathCallParameters } from '../chapter-death-traits';
 import { preloadScatterGunboat, createScatterGunboat, updateScatterGunboat } from '../scatter-gunboat-art';
 import { preloadPatrolDrone, createPatrolDrone, updatePatrolDrone } from '../patrol-drone-art';
 import { preloadHeavyScatter, createHeavyScatter, updateHeavyScatter } from '../heavy-scatter-art';
@@ -247,24 +246,7 @@ export class BattleView extends Phaser.Scene {
     if (family) return this.pathogenic.source.prepareTextures(chapterOneWeaponArt(family.entityId));
   }
   private enemyArtModels(wave?: number) {
-    const ids = new Set<number>();
-    for (const spawn of this.content.spawns) {
-      if (wave === undefined || spawn.wave === wave) ids.add(spawn.entityId);
-    }
-    const models = new Set<number>();
-    // Walk the same spawn routes used by the simulation, including children.
-    for (const id of ids) {
-      const entity = this.content.chapter.entities[id];
-      if (!entity) continue;
-      if (entity.modelId !== undefined) models.add(entity.modelId);
-      const summons = entity.ai?.parameters?.CallMonsters;
-      if (Array.isArray(summons)) for (const call of summons) ids.add(Number(call?.CallMonsterId));
-      for (const trait of entity.raw?.SpecialTrait || []) {
-        const child = chapterDeathCallParameters(trait);
-        if (child) ids.add(child.callEntityID);
-      }
-    }
-    return models;
+    return battleEnemyModels(this.content, number => wave === undefined || number === wave);
   }
   private warmNextWaveArt() {
     // Use the current wave as lead time for the next wave's optional atlases.
@@ -497,11 +479,13 @@ export class BattleView extends Phaser.Scene {
     // interpolation IS the display movement. No second follow/Lerp is applied.
     this.advanceCameraView(delta);
     const s = this.sim, live = this.liveViews; live.clear();
+    const departure = s.victoryDeparturePresentation;
+    const enemies = departure ? [] : s.enemies, projectiles = departure ? [] : s.projectiles, effects = departure ? [] : s.effects;
     const visualClock = this.renderSamples.beginFrame(s.clock,s.runId,s.phase,delta/1000);
     const statusIndex = this.statusIndex.update(s);
     const sourceCamera=this.screen(0,0);this.pathogenic.setCameraOffset(sourceCamera.x,sourceCamera.y);
-    const playerBulletCount = this.shotPresentation.update(s.enemies, s.projectiles, s.clock);
-    this.pathogenic.beginFrame(s.clock,s.runId,{playerBulletCount,visualClock,escortSwords:s.projectiles,escortPlayer:s.player});
+    const playerBulletCount = this.shotPresentation.update(enemies, projectiles, s.clock);
+    this.pathogenic.beginFrame(s.clock,s.runId,{playerBulletCount,visualClock,escortSwords:projectiles,escortPlayer:s.player,victoryDeparture:!!departure});
     if(this.vfxRunId!==s.runId||s.phase==='ready'){this.enemyViewPositions.clear();this.vfxRunId=s.runId;}
     this.drawNativeTerrain(live);
     const mapLength = this.content.assets.map.loopLength || 192;
@@ -521,27 +505,27 @@ export class BattleView extends Phaser.Scene {
       this.playerAppearanceKey = appearance.key;
     }
     const playerEntity = this.content.chapter.entities[this.content.chapter.player.entityId];
-    const phantomActive = s.playerPhantomActive;
-    const alpha = playerVisibility(s.clock,s.player.invincible,phantomActive);
+    const phantomActive = !departure && s.playerPhantomActive;
+    const alpha = departure ? 1 : playerVisibility(s.clock,s.player.invincible,phantomActive);
     if (this.playerSpine) this.playerSpine.update(s.clock, pp.x, pp.y, this.px, Number(appearance.plane?.modelScale ?? playerEntity.modelScale) * s.playerScale, s.player.hp > 0, alpha, s.playerMotion);
     else {
       const playerKey = 'player'; live.add(playerKey);
       let player = this.objects.get(playerKey) as Phaser.GameObjects.Container | undefined;
       if (!player) { player = this.model(playerEntity.modelId); player.setDepth(COMBAT_LAYERS.player); this.objects.set(playerKey, player); }
       player.setPosition(pp.x, pp.y).setScale(playerEntity.modelScale * s.playerScale).setVisible(s.player.hp > 0).setAlpha(alpha);
-      this.tint(player, s.phase === 'playing' && s.player.hitFlash > .14);
+      this.tint(player, !departure && s.phase === 'playing' && s.player.hitFlash > .14);
     }
     this.appearance?.update?.({ time: s.time, coastBackgroundTime: this.coastBackgroundTime, clock: s.clock, camera: this.cameraPosition, phantomActive, runId: s.runId,
-      victoryDeparture: s.victoryDeparturePresentation,
-      aircraftPassiveShot: aircraftPassiveShot(s.projectiles,s.clock),
-      lightingEffects: s.effects, projectPoint: this.projectPoint,
-      playerHitFlash: s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > .14,
+      victoryDeparture: departure,
+      aircraftPassiveShot: aircraftPassiveShot(projectiles,s.clock),
+      lightingEffects: effects, projectPoint: this.projectPoint,
+      playerHitFlash: !departure && s.phase === 'playing' && s.player.hp > 0 && s.player.hitFlash > .14,
       renderDelta: s.phase === 'playing' ? Math.max(delta / 1000, 0) : 0,
       displayInterval: s.phase === 'playing' ? this.game.loop.rawDelta / 1000 : 0,
       flight: { x: s.player.x, z: s.player.z, speed: s.playerMovementSpeed,
         radius: playerEntity.stats.shape[0] * s.playerScale, active: s.phase === 'playing' && s.player.hp > 0 },
       mapCameraOffset: layer => this.mapCameraOffsets.position(layer) });
-    if ((s.phase === 'playing' || s.player.hp <= 0) && s.phase !== 'ready' && s.player.hitFlash > 0) {
+    if (!departure && (s.phase === 'playing' || s.player.hp <= 0) && s.phase !== 'ready' && s.player.hitFlash > 0) {
       const graphics = this.playerDamage ??= this.add.graphics().setDepth(PLAYER_DAMAGE_VIGNETTE_DEPTH);
       graphics.clear().setVisible(true);
       drawPlayerDamageVignette(graphics, this.renderSamples.age(.3 - s.player.hitFlash), WIDTH, HEIGHT);
@@ -549,7 +533,7 @@ export class BattleView extends Phaser.Scene {
     const enemyIds = this.liveEnemyIds; enemyIds.clear();
     const renderDelta = s.phase === 'playing' ? Math.min(Math.max(delta / 1000, 0), .1) : 0;
     const recoilTimes = this.shotPresentation.recoilTimes;
-    for (const enemy of s.enemies) {
+    for (const enemy of enemies) {
       enemyIds.add(enemy.uid);
       const key = `enemy:${enemy.uid}`; live.add(key);
       let view = this.objects.get(key) as Phaser.GameObjects.Container | undefined;
@@ -633,7 +617,7 @@ export class BattleView extends Phaser.Scene {
       }
     }
     for (const uid of this.enemyViewPositions.keys()) if (!enemyIds.has(uid)) this.enemyViewPositions.delete(uid);
-    for (const chest of s.treasures) {
+    for (const chest of departure ? [] : s.treasures) {
       const key = `treasure:${chest.uid}`; live.add(key);
       let view = this.objects.get(key) as Phaser.GameObjects.Container | undefined;
       if (!view) { view = createSupplyChestVisual(this); view.setDepth(22); this.objects.set(key, view); }
@@ -645,8 +629,8 @@ export class BattleView extends Phaser.Scene {
     const missileMounts=this.appearance?.missileMounts?.().map(point=>({
       x:s.player.x+(point.x-pp.x)/this.px,z:s.player.z-(point.y-pp.y)/this.px,
     }));
-    this.missileWingMounts.beginFrame(s.clock,s.runId,s.projectiles,missileMounts);
-    for(const bullet of s.projectiles){
+    this.missileWingMounts.beginFrame(s.clock,s.runId,projectiles,missileMounts);
+    for(const bullet of projectiles){
       // Native primary-gun shots use familyId 0. Resolve only their view identity.
       const sourceBullet=thunderBeam(bullet)??bullet;
       const visualBullet=this.missileWingMounts.projectile(this.renderSamples.projectile(sourceBullet,this.content.chapter.player.weaponEntityId));
@@ -654,7 +638,7 @@ export class BattleView extends Phaser.Scene {
       this.pathogenic.equipmentAccent(visualBullet,s.equipmentProjectileAccent(bullet),this.projectPoint);
       this.pathogenic.projectile(visualBullet,this.projectPoint,Number(this.content.chapter.bullets[bullet.bulletId]?.parameters.Element??0));
     }
-    for (const sourcePickup of s.pickups) {
+    for (const sourcePickup of departure ? [] : s.pickups) {
       const pickup=this.renderSamples.pickup(sourcePickup);
       const expiryAlpha=pickupExpiryAlpha(pickup,this.content.assets.battleItems[pickup.itemId]);
       this.pathogenic.pickup(pickup,this.projectPoint,expiryAlpha);
@@ -670,7 +654,7 @@ export class BattleView extends Phaser.Scene {
         for (const child of view.list) if (child instanceof Phaser.GameObjects.Image && child.getData('sourceSprite') === sequence.rendererSprite) child.setTexture(frame).setOrigin(sprite.pivot.x, 1 - sprite.pivot.y);
       }
     }
-    const buffVisuals=statusIndex.visuals,visualTargets=statusIndex.targets;
+    const buffVisuals=departure?[]:statusIndex.visuals,visualTargets=statusIndex.targets;
     for(const sourceBuff of buffVisuals){
       const position=this.enemyViewPositions.get(sourceBuff.targetUid)?.view.position;
       const buff: RecordData={...sourceBuff,x:position?.x??sourceBuff.x,z:position?.z??sourceBuff.z,
@@ -684,14 +668,16 @@ export class BattleView extends Phaser.Scene {
           visualRadiusZ:target?.radiusZ??(shape[1]??shape[0])*s.playerScale},this.projectPoint);
       }else this.pathogenic.status(buff,this.projectPoint);
     }
-    for(const fx of s.effects)this.drawEffect(fx,live);
-    for(const receipt of sampleCombatResults(s))this.drawEffect(receipt,live);
-    for(const receipt of sampleSpecialWeaponFeedback(s))this.drawEffect(receipt,live);
-    const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
-    const coinReceiptVisual=sampleCoinPickupReceipt(s);if(coinReceiptVisual)this.drawEffect(coinReceiptVisual,live);
+    for(const fx of effects)this.drawEffect(fx,live);
+    if(!departure){
+      for(const receipt of sampleCombatResults(s))this.drawEffect(receipt,live);
+      for(const receipt of sampleSpecialWeaponFeedback(s))this.drawEffect(receipt,live);
+      const healReceiptVisual=sampleHealingReceipt(s);if(healReceiptVisual)this.drawEffect(healReceiptVisual,live);
+      const coinReceiptVisual=sampleCoinPickupReceipt(s);if(coinReceiptVisual)this.drawEffect(coinReceiptVisual,live);
+    }
     this.pathogenic.endFrame();
     for (const [key, view] of this.objects) if (!live.has(key)) {
-      if (s.phase !== 'ready' && view instanceof EnemyHealthBar && view.finishAfterDeath(visualClock)) continue;
+      if (!departure && s.phase !== 'ready' && view instanceof EnemyHealthBar && view.finishAfterDeath(visualClock)) continue;
       view.destroy(); this.objects.delete(key);
     }
   }

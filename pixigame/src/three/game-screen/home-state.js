@@ -9,7 +9,7 @@ export function homePresentation(snapshot,chapter,developer){
   return {chapter,stage,pilotId:snapshot.pilotId,pilotImage:snapshot.pilots?.find(p=>p.id===snapshot.pilotId)?.image,
     name:snapshot.playerName||'指挥官',power:Number.isFinite(snapshot.power)?snapshot.power.toLocaleString('zh-CN'):'—',
     total:rewards?rewards.filter(r=>r.claimed).length:stars?.total??0,maximum:rewards?rewards.length:stars?.maxStars||snapshot.stages?.length*3||0,
-    wallet:snapshot.wallet,avatar:optimizeUiAssetUrls(identity.source.src),frame:identity.frameArt,developer,
+    wallet:snapshot.wallet,avatar:optimizeUiAssetUrls(identity.source.src),frame:identity.frameArt,developer,firstSortieRequired:snapshot.firstSortieRequired,
     carnival:Boolean(snapshot.carnival&&!snapshot.carnival.expired),
     carnivalReady:Boolean(snapshot.carnival?.canClaim&&!snapshot.rewardBusy&&!snapshot.rewardPending),
     patrol:clock.status==='locked'?'':clock.home,patrolLocked:clock.status==='locked'};

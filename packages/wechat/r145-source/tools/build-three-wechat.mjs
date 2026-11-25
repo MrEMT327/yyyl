@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { gzipSync } from 'node:zlib';
+import { brotliCompressSync, constants, gzipSync } from 'node:zlib';
 import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
@@ -10,13 +10,16 @@ import { assertNativePackage } from '../pixigame/wechat/tools/native-syntax.mjs'
 import { wrapNativeCubismCore } from '../pixigame/wechat/tools/cubism-native.mjs';
 import { checkThreeUiTextureCoverage, loadThreeTextureAssets } from './three-texture-assets.mjs';
 import { loadThreeCompatMedia } from './three-compat-media.mjs';
+import { loadPortraitMedia } from './three-portrait-media.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const repo=resolve(root,'../../..'),h5=join(repo,'pixigame');
 const inputs=join(root,'build-inputs');
+const enemyAnimationData='replica-battle/data/enemy-local-animation-chapters.json';
 const bundledBattleData=[
   'replica-battle/data/chapter1.json',
   'replica-battle/data/enemy-health-bars-chapters.json',
+  enemyAnimationData,
 ];
 const requiredAssets=[
   'art/entry-screens-v4/startup.png',
@@ -50,10 +53,14 @@ export async function buildThreeWechat({output}={}){
   const networkAssets={cdnBase:cdnBase.href,assetTransfers,cdnFiles,cacheVersion};
   const textures=await loadThreeTextureAssets(inputs,join(h5,'public'));
   const compat=await loadThreeCompatMedia(inputs,h5);
+  const portraits=await loadPortraitMedia(inputs,join(h5,'public'));
   const battleData=await Promise.all(bundledBattleData.map(async path=>{
     const input=await readFile(join(h5,'public',path)),transfer=assetTransfers[path];
     if(transfer?.encoding!=='gzip'||transfer.bytes!==input.length)throw Error('包内关卡数据与 CDN 清单不一致 '+path);
-    return {path,filename:'battle-data-'+sha(input).slice(0,20)+'.json.gz',source:gzipSync(input,{level:9})};
+    // The native loader already handles Brotli and can fall back to the CDN's gzip file.
+    const gzip=path===enemyAnimationData;
+    const source=gzip?gzipSync(input,{level:9}):brotliCompressSync(input,{params:{[constants.BROTLI_PARAM_QUALITY]:11,[constants.BROTLI_PARAM_MODE]:constants.BROTLI_MODE_TEXT}});
+    return {path,filename:'battle-data-'+sha(input).slice(0,20)+(gzip?'.json.gz':'.json.br'),source};
   }));
   await checkThreeUiTextureCoverage(h5,textures,listed,assetTransfers);
   const uploadSizes=new Map(uploads.map(({path,bytes})=>[path,bytes]));
@@ -105,9 +112,10 @@ export async function buildThreeWechat({output}={}){
     const filename=name==='runtime'?'runtime.js':name==='cubism'?'cubism.js':name.replace('@native/','')+'.js';
     files[name]=place(filename,source);
   }
-  const texturePaths=new Map([...textures.files,...compat.files].sort((a,b)=>b.source.length-a.source.length)
+  const packagedMedia=[...textures.files,...compat.files,...portraits.files];
+  const texturePaths=new Map(packagedMedia.slice().sort((a,b)=>b.source.length-a.source.length)
     .map(({filename,source})=>[filename,place(filename,source)]));
-  const localFiles=Object.fromEntries(Object.entries({...textures.aliases,...compat.images,...compat.effects}).map(([path,filename])=>
+  const localFiles=Object.fromEntries(Object.entries({...textures.aliases,...compat.images,...compat.effects,...portraits.aliases}).map(([path,filename])=>
     [path,texturePaths.get(filename)]));
   for(const {path,filename,source} of battleData)localFiles[path]=place(filename,source);
   const musicFiles=Object.fromEntries(Object.entries(compat.music).map(([key,filename])=>[key,texturePaths.get(filename)]));
@@ -116,7 +124,7 @@ export async function buildThreeWechat({output}={}){
   const assets={...networkAssets,localFiles,fallbackFiles,musicFiles};
   const sourceDigest=createHash('sha256');
   for(const [name,source] of [...units].sort(([a],[b])=>a.localeCompare(b)))sourceDigest.update(name).update(source);
-  for(const {filename,source} of [...textures.files,...compat.files,...battleData])sourceDigest.update(filename).update(source);
+  for(const {filename,source} of [...packagedMedia,...battleData])sourceDigest.update(filename).update(source);
   sourceDigest.update(JSON.stringify(assets));
   const buildId='three-'+version+'-'+sourceDigest.digest('hex').slice(0,12);
 
@@ -134,7 +142,7 @@ export async function buildThreeWechat({output}={}){
       subpackages:packages.map(({name})=>({name,root:name+'/'})),
     };
     // Pack the complete CDN inventory and transfer map to leave room for local art.
-    const gzipJSON=value=>gzipSync(JSON.stringify(value),{level:9}).toString('base64');
+    const gzipJSON=value=>gzipSync(JSON.stringify(value),{level:9,memLevel:5}).toString('base64');
     const launchAssets={...assets,cdnFiles:undefined,assetTransfers:undefined,
       cdnFilesGzip:gzipJSON(cdnFiles),assetTransfersGzip:gzipJSON(assetTransfers),buildId};
     const launcher=[
@@ -159,14 +167,15 @@ export async function buildThreeWechat({output}={}){
     const manifestSource=JSON.stringify(manifest,null,2)+'\n';
     const projectSource=JSON.stringify({...config,compileType:'game',projectname:'少女航线 Three.js',setting:{...config.setting,urlCheck:true}},null,2)+'\n';
     const buildSource=JSON.stringify({buildId,source:version,renderer:'Three.js',mode:'wechat-cdn',
-      assets:cdnBase.href,modules:modules.length,packagedTextures:Object.keys(textures.aliases).length+Object.keys(compat.images).length+Object.keys(fallbackFiles).length,
+      assets:cdnBase.href,modules:modules.length,packagedTextures:Object.keys(textures.aliases).length+Object.keys(compat.images).length+Object.keys(fallbackFiles).length+Object.keys(portraits.aliases).length-portraits.videos,
+      packagedPortraitVideos:portraits.videos,
       packagedEffects:Object.keys(compat.effects).length,
       packagedMusic:Object.keys(musicFiles).length,packagedBattleData:battleData.length,packages:packages.map(({name,bytes})=>({name,bytes})),
       runtimeSha256:sha(parts.get('runtime')),threeSha256:sha(parts.get('@native/game-three')),cubismSha256:sha(cubismScript)},null,2)+'\n';
     const threeLicense=await readFile(join(h5,'node_modules/three/LICENSE'));
     const cubismLicense=await readFile(join(h5,'public/art/live2d-runtime/LIVE2D-PROPRIETARY-LICENSE.html'));
     const dataBytes=battleData.reduce((total,row)=>total+row.source.length,0);
-    const size=ordered.reduce((total,[,body])=>total+Buffer.byteLength(body),textures.bytes+compat.bytes+dataBytes)
+    const size=ordered.reduce((total,[,body])=>total+Buffer.byteLength(body),textures.bytes+compat.bytes+portraits.bytes+dataBytes)
       +Buffer.byteLength(launcher+manifestSource+projectSource+buildSource)+threeLicense.length+cubismLicense.length+packages.length*35;
     if(size>MAX_ALL_PACKAGES)throw Error('微信小游戏分包总大小超限 '+size);
     await Promise.all([

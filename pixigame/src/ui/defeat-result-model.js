@@ -1,5 +1,6 @@
 import { nativeRewardPresentation } from '../replica/native-item-presentation.js';
 import { resultRewardStatus } from './result-reward-status.js';
+import { PILOT_AFFECTION_VISIBLE } from '../peripheral/pilot-affection.js';
 import { projectIconUrl } from './project-ui-art.js';
 import { RESOURCE_ICONS } from './resource-icons.js';
 import { battleCardIconUrl } from '../replica/battle-card-art.js';
@@ -26,7 +27,7 @@ export function defeatResultModel(bridge, page = 0) {
     .filter(([type, amount]) => ['aircraftShards','weaponParts'].includes(type) && amount > 0)
     .map(([type, amount]) => ({type, label:type === 'weaponParts' ? '通用零件' : '飞机碎片', amount:'+'+amount}));
   const affection = result?.pilotAffection;
-  const affectionSummary = affection?.gained > 0
+  const affectionSummary = PILOT_AFFECTION_VISIBLE && affection?.gained > 0
     ? `好感度 +${affection.gained}${affection.videoUnlocked ? ' · 已解锁专属视频' : ''}`
     : '';
   const pageCount = Math.max(1, Math.ceil(rows.length / 10));

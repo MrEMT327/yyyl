@@ -7,7 +7,7 @@ import {planNativeStarterCore} from '../replica/native-starter-core.js';
 import {planNativeStarterPilot} from '../replica/native-starter-pilot.js';
 import {STARTER_PILOT_ID} from '../replica/native-pilot-roster.js';
 import {planRetiredPilotFragments} from '../replica/retired-pilot-fragments.js';
-import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide, reachedGuideProgress} from './onboarding.js';
+import {normalizeOnboarding, completeGuide, guideFinished, nextLobbyGuide, finishedRealSortie} from './onboarding.js';
 import { backpackUseRule, planBackpackUse } from '../replica/native-backpack-use.js';
 import { nativeStarRewardSnapshot, planNativeStarClaim } from '../replica/native-star-rewards.js';
 import { nativeAchievementSnapshot } from '../replica/native-achievements.js';
@@ -1325,6 +1325,7 @@ export function createPeripheralSystem({
       }
       pending.result.settlementRewards = [...settlement.rewards,...(accountExperience?.rewards||[])];
       state.processedRuns.push(pending.result.runId); state.processedRuns = state.processedRuns.slice(-50);
+      if(finishedRealSortie(pending.result)||!firstSortieRequired())state.firstSortieCompleted=true;
       state.replicaResults ||= []; state.replicaResults.push(pending.result); state.replicaResults = state.replicaResults.slice(-50);
       if (!pending.result.trial && !pending.result.abandoned && pending.result.endReason !== 'quit') {
         const time=currentTime();
@@ -1490,10 +1491,13 @@ export function createPeripheralSystem({
         Math.floor(seconds / lobbyProjection.interval) !== lobbyProjection.patrolBucket) return null;
     return { time, storedMinutes: seconds / 60, clockRollback };
   }
-  function gearEquipLockReason() {
-    // Earlier saves that already finished the equip tutorial retain access.
-    const unlocked = reachedGuideProgress(state.replicaCampaign, 2) || guideFinished(state, 9);
-    return unlocked ? '' : '通关第1章后可装备';
+  function firstSortieRequired() {
+    const campaign=state.replicaCampaign;
+    return !(state.firstSortieCompleted||guideFinished(state,9)||campaign.highestCleared>=0||
+      Object.values(campaign.passedWaves).some(Boolean)||state.replicaResults?.some(finishedRealSortie)||getCampaign().highestCleared>=0);
+  }
+  function gearEquipLockReason(required=firstSortieRequired()) {
+    return required ? '首战结束后可装备' : '';
   }
   function snapshot() {
     if (storageCurrent()) {
@@ -1547,6 +1551,7 @@ export function createPeripheralSystem({
     const achievements=currentAchievements();
     const nativeCollection = replicaCollectionSnapshot(state.replicaLoadout, state.replicaInventory, state.replicaCampaign);
     const identity = nativeCollectionIdentity(nativeCollection,state);
+    const needsFirstSortie=firstSortieRequired();
     const view = nativeEconomyView({
       version: 1, playerName:nativePlayerIdentity(state.replicaPlayerIdentity,profile.playerName).name,
       accountExperience:accountExperienceSnapshot(state.replicaLoadout,state.replicaAccountExperience),
@@ -1558,7 +1563,7 @@ export function createPeripheralSystem({
       replicaLoadout: copy(state.replicaLoadout),
       replicaCollection: nativeCollection,
       pilotSupply: {...pilotSupplySnapshot(state.pilotSupply,state.replicaInventory,state.replicaLoadout,time,state.replicaCampaign,taskCounters()),adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.pilotSupply),adAvailable:typeof playShopAd==='function'},
-      replicaCampaign: copy(state.replicaCampaign), onboarding: normalizeOnboarding(state.onboarding),
+      replicaCampaign: copy(state.replicaCampaign), onboarding: normalizeOnboarding(state.onboarding), firstSortieRequired:needsFirstSortie,
       nativeAcquisition: nativeAcquisitionSnapshot(state.replicaInventory,state.replicaCampaign,state.replicaClaims,state.equipment,time,state.replicaLoadout),
       flightRewards: {...flightRewards,adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd&&!pendingFlightAd.pilotSupply&&!pendingFlightAd.samplePatrol),adAvailable:typeof playShopAd==='function'},
       research: nativeResearchSnapshot(state.replicaLoadout, state.replicaInventory),
@@ -1611,7 +1616,7 @@ export function createPeripheralSystem({
       patrol: {...samplePatrolSnapshot(state.samplePatrol,state.replicaCampaign,time,state.replicaInventory.revision,state.replicaLoadout),
         adAvailable:typeof playPatrolAd==='function',adBusy:flightAdBusy,adPending:Boolean(pendingFlightAd?.samplePatrol),
         staminaUnlimited:UNLIMITED_RESOURCES},
-      equipment: {...replicaGearSnapshot(state.equipment,state.replicaInventory),equipLockReason:gearEquipLockReason()},
+      equipment: {...replicaGearSnapshot(state.equipment,state.replicaInventory),equipLockReason:gearEquipLockReason(needsFirstSortie)},
       equipmentBoxReceipt: copy(state.replicaEquipmentBoxReceipt || null),
       battleMaterials: battleMaterialSnapshot(state.replicaBattleMaterials),
       visualLoadout: { weapons: loadout.weapons.map(row => ({ itemId: row.itemId, slots: [...row.slots], innate: Boolean(row.innate) })) },

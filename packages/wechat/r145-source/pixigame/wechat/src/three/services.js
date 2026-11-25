@@ -1,7 +1,5 @@
 import { ObjectLoader, Source } from 'three';
-import { toByteArray } from 'base64-js';
-import { buf2string } from 'pako/lib/utils/strings.js';
-import inflateCodec from 'pako/lib/inflate.js';
+import { inflateJSON } from './packed-json.js';
 import { createWechatResources } from '../full/resources.js';
 import { createAssetCache } from '../full/asset-cache.js';
 import { createBattleDataCache } from '../full/battle-data-cache.js';
@@ -52,10 +50,6 @@ class NativeObjectLoader extends ObjectLoader {
   }
 }
 
-function inflateJSON(packed){
-  return packed?JSON.parse(buf2string(inflateCodec.inflate(toByteArray(packed)))):undefined;
-}
-
 export function createWechatServices(api,config){
   const cdn=new URL(config.cdnBase);
   if(cdn.protocol!=='https:'||cdn.username||cdn.password||cdn.search||cdn.hash||!cdn.pathname.endsWith('/')){
@@ -70,10 +64,12 @@ export function createWechatServices(api,config){
   const files=createAssetCache(api,resources),loadouts=new Map();
   const assetBytes=resources.createTextureScope(),battleData=createBattleDataCache();
   const resolve=(path,base=baseURL)=>resources.resolve(path,base);
-  async function fetchResource(path,{signal}={}){
+  async function fetchResource(path,{signal,paceDataWork}={}){
     try{
-      const bytes=await resources.readBytes(path,{signal,baseURL});
-      return {ok:true,status:200,arrayBuffer:async()=>bytes,json:async()=>JSON.parse(new TextDecoder().decode(bytes)),
+      const bytes=await resources.readBytes(path,{signal,baseURL,paceDataWork});
+      const parse=()=>JSON.parse(new TextDecoder().decode(bytes));
+      return {ok:true,status:200,arrayBuffer:async()=>bytes,
+        json:async()=>paceDataWork?paceDataWork(bytes.byteLength,parse):parse(),
         text:async()=>new TextDecoder().decode(bytes)};
     }catch(error){
       if(signal?.aborted)throw error;
@@ -82,10 +78,10 @@ export function createWechatServices(api,config){
       throw error;
     }
   }
-  const readSharedLoadoutJSON=name=>{
+  const readSharedLoadoutJSON=(name,paceDataWork)=>{
     if(!['loadout-catalog','loadout-runtime','player-appearances'].includes(name))throw Error('未知装备配置 '+name);
     if(loadouts.has(name))return loadouts.get(name);
-    const request=resources.readJSON('replica-battle/data/'+name+'.json',{baseURL}).catch(error=>{
+    const request=resources.readJSON('replica-battle/data/'+name+'.json',{baseURL,paceDataWork}).catch(error=>{
       if(loadouts.get(name)===request)loadouts.delete(name);
       throw error;
     });
@@ -98,8 +94,9 @@ export function createWechatServices(api,config){
     beginSortieLoad:()=>getWechatTransport(api).beginSortieLoad(),
     readSharedLoadoutJSON,readFighterFile,objectLoader,assetBytes,
     localFile:path=>files.localFile(path,baseURL),
-    loadBattleData:(id,signal,prepare)=>battleData.load(id,signal,prepare),
-    loadAircraft:pilotId=>loadFighterPackages({pilotIds:[pilotId],read:readFighterFile,objectLoader,assetBytes}),
+    loadBattleData:(id,signal,prepare,timing)=>battleData.load(id,signal,prepare,timing),clearBattleData:battleData.clear,
+    loadAircraft:(pilotId,{allowTextureFallback=false}={})=>
+      loadFighterPackages({pilotIds:[pilotId],allowTextureFallback,read:readFighterFile,objectLoader,assetBytes}),
     close(){loadouts.clear();battleData.clear();assetBytes.dispose();resources.dispose();},
   };
 }

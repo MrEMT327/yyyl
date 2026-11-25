@@ -18,7 +18,7 @@ export function createFlightLaunch({player,bounds,clearInput,onVisual,onComplete
     begin(){
       const b=bounds();targetX=(b.left+b.right)/2;targetZ=(b.top+b.bottom)/2;
       startZ=b.bottom-Math.max(3,(b.top-b.bottom)*.1);
-      active=true;revealed=false;elapsed=0;position(startZ);clearInput();onVisual({time:0,thrust:0});
+      active=true;revealed=false;elapsed=0;position(startZ);clearInput();onVisual({time:0,thrust:0,fromZ:startZ});
       onPhase('waiting');
     },
     reveal(){if(!active||revealed)return;revealed=true;onPhase('flying');if(reducedMotion())finish();},
@@ -27,7 +27,7 @@ export function createFlightLaunch({player,bounds,clearInput,onVisual,onComplete
       elapsed+=Math.max(0,Math.min(.08,Number(delta)||0));
       const t=Math.min(1,elapsed/BATTLE_LAUNCH_SECONDS),distance=launchProgress(elapsed);
       position(startZ+(targetZ-startZ)*distance);
-      onVisual({time:elapsed,thrust:Math.sin(Math.PI*t)});
+      onVisual({time:elapsed,thrust:Math.sin(Math.PI*t),fromZ:startZ});
       if(t>=1)finish();
     },
     destroy(){active=false;onPhase(null);onVisual(null);},

@@ -5,12 +5,16 @@ import {queueBattleArt,floatingText,pickupArt,treasureArt,supplyCanopyKey} from 
 import {healthAt,keepDyingBar,urgency,damageBorder} from './three-battle-feedback.js';
 import {enemyArt} from '../../../replica-battle/three-enemies/index.js';
 import {sampleNativeEnemyAnimation} from '../../../replica-battle/kernel/native-enemy-animation.ts';
+import {nativeIsBoss} from '../../../replica-battle/kernel/monster-abilities.ts';
 import {BattleShotPresentation} from '../../../replica-battle/kernel/enemy-recoil-shots.ts';
-import {battleTexturePaths} from '../../../replica-battle/kernel/pathogenic/battle-texture-dependencies.mjs';
+import {battleTexturePaths,chapterOneDeferredAtlases,chapterOneWeaponArt} from '../../../replica-battle/kernel/pathogenic/battle-texture-dependencies.mjs';
+import {battleEnemyModels} from '../../../replica-battle/kernel/battle-image-plan.ts';
+import {ELITE_SCATTER_MODEL} from '../../../replica-battle/kernel/enemy-recoil-models.ts';
 import {unusedChapterEnemyProjectileArt} from '../../../replica-battle/kernel/pathogenic/enemy-projectile-presentation.mjs';
 import {playerVisibility} from '../../../replica-battle/kernel/combat-readability.mjs';
 
 const width=540,height=960;
+const eliteAtlas='owned-enemy:elite-scatter-v1',eliteFallback='plane11_elite1_1';
 // Artwork for later effects, including the supply canopy, can load after the opening flight.
 export function deferWechatBattleArtwork(key,url){
   return key===supplyCanopyKey||key==='res://gfx/environment/explosion_dna.png'||key==='res://gfx/enemies/stomp_wave.png'||
@@ -41,10 +45,11 @@ export class NativeBattleView {
   async preload(progress,onDecoded,prioritize=false){
     const a=this.content.assets,need=key=>this.queue(key,a.sprites[key]?.url);
     const urgent=new Set();
+    const firstChapter=prioritize&&Number(this.content.chapter.chapter.id)===1;
+    this.streamChapterOne=firstChapter;
     queueBattleArt(this);for(const row of this.source.urgencyNodes)if(row.sprite)need(row.sprite);
     if(prioritize){
-      const earlyModels=[...new Set((this.content.spawns||[]).filter(row=>row.wave<=3)
-        .map(row=>this.content.chapter.entities[row.entityId]?.modelId).filter(Number.isFinite))];
+      const earlyModels=battleEnemyModels(this.content,wave=>wave<=3);
       const queueForWarmup={art:this.art,queue:(key,url)=>{urgent.add(key);this.queue(key,url);}};
       for(const author of enemyArt)author.preload(queueForWarmup,earlyModels);
       for(const model of earlyModels){
@@ -66,7 +71,8 @@ export class NativeBattleView {
       if(routed&&!routed.has(path))this.art.defer(path,t.url);
       else this.queue(path,t.url);
     }
-    for(const author of enemyArt)author.preload(this,Array.from(this.models.keys()));
+    const models=firstChapter?battleEnemyModels(this.content):[...this.models.keys()];
+    for(const author of enemyArt)author.preload(this,models);
     for(const r of a.enemyLocalAnimation?.spriteReferences||[])need(this.paths.get(String(r.pathId)));
     for(const [name,prefab] of Object.entries(a.prefabs)){
       if(this.appearance.replaceTerrain&&name===a.map.prefab)continue;
@@ -79,13 +85,52 @@ export class NativeBattleView {
     }
     for(const [key,sprite] of Object.entries(a.enemyHealthBars?.sprites||{}))this.queue(key,sprite.url);
     if(!this.appearance.replaceTerrain)for(const r of a.map.nativeLayers?.renderers||[])need(r.sprite);
+    const deferred=new Set(firstChapter?chapterOneDeferredAtlases:[]);
+    if(firstChapter){
+      deferred.add(eliteAtlas);deferred.add(eliteFallback);
+      const equipped=new Set(this.content.combat.studyLoadout?.battleSkillIds||[]);
+      for(const family of Object.values(this.content.combat.families))
+        if(family.stages.some(stage=>equipped.has(stage.skillId)))
+          for(const key of chapterOneWeaponArt(family.entityId))deferred.delete(key);
+    }
     const required=new Map(),later=new Map();
-    for(const [key,url] of this.pendingArt)(prioritize&&!urgent.has(key)&&deferWechatBattleArtwork(key,url)?later:required).set(key,url);
+    for(const [key,url] of this.pendingArt){
+      if(prioritize&&!urgent.has(key)&&(deferred.has(key)||deferWechatBattleArtwork(key,url))){
+        later.set(key,url);this.art.defer(key,url);
+      }else required.set(key,url);
+    }
     await this.art.loadAll(required,progress,(key,texture)=>onDecoded?.(key,texture,urgent.has(key)));
     if(this.closed)return;this.ready();
-    if(later.size)void this.art.loadAll(later,null,null,{workers:2,onFailure:(key,error)=>{
+    if(later.size)void this.art.loadAll(later,null,key=>this.refreshLateEnemyArt(key),{workers:2,priority:-1,onFailure:(key,error)=>{
       if(!this.closed)console.warn('[Three 延后贴图]',key,error?.message||error);
     }});
+  }
+  refreshLateEnemyArt(key){
+    if(key!==eliteAtlas&&(key!==eliteFallback||this.art.get(eliteAtlas)))return;
+    for(const enemy of this.sim.enemies){
+      if(enemy.dead||enemy.modelId!==ELITE_SCATTER_MODEL)continue;
+      const id='enemy:'+enemy.uid,group=this.objects.get(id);
+      if(group){this.stage.remove(group);this.objects.delete(id);}
+    }
+  }
+  prepareChoiceArt(choice){
+    if(!this.streamChapterOne)return;
+    const family=this.content.combat.families[choice.group];
+    for(const key of chapterOneWeaponArt(family?.entityId))this.art.get(key);
+  }
+  warmBossArtwork(warmup){
+    const bossModels=new Set(),textures=new Set();
+    for(const {entityId} of this.content.spawns||[]){
+      const entity=this.content.chapter.entities[entityId];
+      if(nativeIsBoss(entity?.raw?.Type))bossModels.add(entity.modelId);
+    }
+    // Read the actual part bindings so we upload only the selected skins or their fallbacks.
+    for(const model of bossModels){
+      const group=this.prefab(model,20);
+      for(const part of group.children)textures.add(part.material.uniforms.art.value);
+      this.stage.remove(group);
+    }
+    for(const texture of textures)warmup.add('boss',texture,true);
   }
   prefab(id,depth){
     const key=this.models.get(id),a=this.content.assets,p=a.prefabs[key];
@@ -202,39 +247,42 @@ export class NativeBattleView {
     this.onFrame?.(delta);this.advanceCameraView(delta);
     const t1=now?.();
     const sim=this.sim,c=this.content,dt=sim.phase==='playing'?Math.min(Math.max(delta/1000,0),.1):0;
+    const departure=sim.victoryDeparturePresentation;
+    const enemies=departure?[]:sim.enemies,projectiles=departure?[]:sim.projectiles,effects=departure?[]:sim.effects;
+    const phantomActive=!departure&&sim.playerPhantomActive;
     this.active.clear();
     const clock=this.renderSamples.beginFrame(sim.clock,sim.runId,sim.phase,delta/1000,this.interpolationFraction),status=this.statusIndex.update(sim);
     const origin=this.project(0,0);this.fx.setCameraOffset(origin.x,origin.y);
-    const count=this.shots.update(sim.enemies,sim.projectiles,sim.clock);
-    this.fx.beginFrame(sim.clock,sim.runId,{playerBulletCount:count,visualClock:clock,escortSwords:sim.projectiles,escortPlayer:sim.player});
+    const count=this.shots.update(enemies,projectiles,sim.clock);
+    this.fx.beginFrame(sim.clock,sim.runId,{playerBulletCount:count,visualClock:clock,escortSwords:projectiles,escortPlayer:sim.player,victoryDeparture:!!departure});
     const player=sim.player,p=this.project(player.x,player.z),selection=this.source.player(c);
     const entity=c.chapter.entities[c.chapter.player.entityId],profile=selection.layers[0];
     if(profile){
       const scale=this.px*profile.scale*Number(selection.plane?.modelScale??entity.modelScale)*sim.playerScale*Number(profile.transformScale??1);
       const body=this.appearance.playerSkin;
       body.update({clock:sim.clock,x:p.x,y:p.y,width:body.width*scale,height:body.height*scale,scaleX:1,scaleY:1,
-        shearX:0,alpha:playerVisibility(sim.clock,player.invincible,sim.playerPhantomActive),visible:player.hp>0});
+        shearX:0,alpha:departure?1:playerVisibility(sim.clock,player.invincible,phantomActive),visible:player.hp>0});
     }
     this.appearance.update({time:sim.time,coastBackgroundTime:this.coastBackgroundTime,clock:sim.clock,camera:this.cameraPosition,
-      phantomActive:sim.playerPhantomActive,runId:sim.runId,victoryDeparture:sim.victoryDeparturePresentation,
-      aircraftPassiveShot:this.source.passiveShot(sim.projectiles,sim.clock),lightingEffects:sim.effects,projectPoint:this.project,
-      playerHitFlash:sim.phase==='playing'&&player.hp>0&&player.hitFlash>.14,renderDelta:dt,displayInterval:this.rawDelta/1000,
+      phantomActive,runId:sim.runId,victoryDeparture:departure,
+      aircraftPassiveShot:this.source.passiveShot(projectiles,sim.clock),lightingEffects:effects,projectPoint:this.project,
+      playerHitFlash:!departure&&sim.phase==='playing'&&player.hp>0&&player.hitFlash>.14,renderDelta:dt,displayInterval:this.rawDelta/1000,
       flight:{x:player.x,z:player.z,speed:sim.playerMovementSpeed,radius:entity.stats.shape[0]*sim.playerScale,active:sim.phase==='playing'&&player.hp>0},
       mapCameraOffset:layer=>this.mapCameraOffsets.position(layer)});
     const t2=now?.();
-    damageBorder(this,(sim.phase==='playing'||player.hp<=0)&&sim.phase!=='ready'&&player.hitFlash>0?this.renderSamples.age(.3-player.hitFlash):-1);
-    for(const e of sim.enemies)this.enemy(e,dt,clock,status);
-    for(const t of sim.treasures)treasureArt(this,t,this.renderSamples.age(t.animationAge));
+    damageBorder(this,!departure&&(sim.phase==='playing'||player.hp<=0)&&sim.phase!=='ready'&&player.hitFlash>0?this.renderSamples.age(.3-player.hitFlash):-1);
+    for(const e of enemies)this.enemy(e,dt,clock,status);
+    for(const t of departure?[]:sim.treasures)treasureArt(this,t,this.renderSamples.age(t.animationAge));
     for(const uid of this.enemyPositions.keys())if(!this.active.has('enemy:'+uid))this.enemyPositions.delete(uid);
-    this.missileMounts.beginFrame(sim.clock,sim.runId,sim.projectiles,()=>this.appearance.missileMounts()?.map(m=>({
+    this.missileMounts.beginFrame(sim.clock,sim.runId,projectiles,()=>this.appearance.missileMounts()?.map(m=>({
       x:player.x+(m.x-p.x)/this.px,z:player.z-(m.y-p.y)/this.px,
     })));
-    for(const b of sim.projectiles){
+    for(const b of projectiles){
       const bullet=this.missileMounts.projectile(this.renderSamples.projectile(this.source.thunder(b)??b,c.chapter.player.weaponEntityId));
       this.fx.equipmentAccent(bullet,sim.equipmentProjectileAccent(b),this.project);
       if(!this.fx.weaponSkinProjectile(bullet,this.project))this.fx.projectile(bullet,this.project,Number(c.chapter.bullets[b.bulletId]?.parameters.Element??0));
     }
-    for(const source of sim.pickups){
+    for(const source of departure?[]:sim.pickups){
       const pickup=this.renderSamples.pickup(source),alpha=this.source.pickupAlpha(pickup,c.assets.battleItems[pickup.itemId]);
       this.fx.pickup(pickup,this.project,alpha);
       if(pickupArt(this,pickup,alpha))continue;
@@ -244,7 +292,7 @@ export class NativeBattleView {
       for(const child of view.children)child.material.uniforms.opacity.value=alpha;
       this.sequence(view,pickup.modelId,pickup.age-pickup.delay);
     }
-    for(const buff of status.visuals){
+    for(const buff of departure?[]:status.visuals){
       const point=this.enemyPositions.get(buff.targetUid);
       const body=buff.targetUid?status.targets.get(buff.targetUid):null,shape=entity.stats.shape;
       const size=[170002,170001,170004,170012,220022,170000].includes(buff.modelId)?
@@ -252,11 +300,11 @@ export class NativeBattleView {
       this.fx.status({...buff,...size,x:point?.x??buff.x,z:point?.z??buff.z,age:Number.isFinite(buff.age)?this.renderSamples.age(buff.age):buff.age,
         ...(Number.isFinite(buff.remaining)?{remaining:buff.remaining+Math.max(0,sim.clock-clock)}:{})},this.project);
     }
-    for(const effect of sim.effects)this.effect(effect);
-    for(const effect of this.source.feedback(sim))this.effect(effect);
+    for(const effect of effects)this.effect(effect);
+    if(!departure)for(const effect of this.source.feedback(sim))this.effect(effect);
     this.fx.endFrame();
     for(const [key,obj] of this.objects)if(!this.active.has(key)){
-      if(sim.phase!=='ready'&&keepDyingBar(obj,clock))continue;
+      if(!departure&&sim.phase!=='ready'&&keepDyingBar(obj,clock))continue;
       this.stage.remove(obj);this.objects.delete(key);
     }
     const t3=now?.(),passes=this.stage.render(now);
@@ -272,17 +320,35 @@ export class NativeBattleView {
   }
   // Hosts can wrap the update to measure renderer timing.
   paintFrame(update){return update();}
-  start(progress,frame,fail,{now=()=>performance.now(),requestFrame=callback=>requestAnimationFrame(callback),cancelFrame=id=>cancelAnimationFrame(id),warmTextures}={}){
-    let last=now(),id=0;
+  start(progress,frame,fail,{now=()=>performance.now(),requestFrame=callback=>requestAnimationFrame(callback),cancelFrame=id=>cancelAnimationFrame(id),
+    warmTextures,isVisible=()=>true,watchVisibility}={}){
+    let last=now(),id=null,ready=false,dispatch=null;
+    const schedule=()=>{if(ready&&!this.closed&&isVisible()&&id===null)id=requestFrame(dispatch);};
     const tick=time=>{
-      if(this.closed)return;
+      id=null;
+      if(this.closed||!isVisible())return;
       try{this.rawDelta=Math.max(0,time-last);last=time;this.paintFrame(()=>this.update(this.scaledDelta?this.scaledDelta(this.rawDelta):this.rawDelta));
-        frame();id=requestFrame(tick);}catch(error){fail(error);}
+        frame();schedule();}catch(error){ready=false;fail(error);}
     };
+    const restart=()=>{
+      if(id!==null)cancelFrame(id);
+      id=null;last=now();
+      // An already dispatched callback from before suspension cannot claim the new frame.
+      const next=time=>{if(dispatch===next)tick(time);};
+      dispatch=next;schedule();
+    };
+    const unwatch=watchVisibility?.(restart);
     for(const job of warmTextures?this.stage.warmupJobs():[])warmTextures.push(job);
-    this.preload(progress,warmTextures?.add,Boolean(warmTextures)).then(()=>{warmTextures?.close();if(!this.closed){last=now();id=requestFrame(tick);}})
-      .catch(error=>{warmTextures?.close();fail(error);});
-    return ()=>{this.closed=true;warmTextures?.close();cancelFrame(id);this.fx.destroy();this.art.dispose();
+    this.preload(progress,warmTextures?.add,Boolean(warmTextures)).then(()=>{
+      if(this.closed)return;
+      if(warmTextures){
+        warmTextures.reset();
+        warmTextures.push(()=>this.warmBossArtwork(warmTextures));
+      }
+      ready=true;restart();
+    })
+      .catch(error=>{warmTextures?.close();if(!this.closed)fail(error);});
+    return ()=>{this.closed=true;ready=false;dispatch=null;unwatch?.();warmTextures?.close();if(id!==null)cancelFrame(id);this.fx.destroy();this.art.dispose();
       this.stage.remove(this.damageBorder);for(const obj of this.objects.values())this.stage.remove(obj);this.objects.clear();};
   }
 }

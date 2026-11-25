@@ -47,6 +47,7 @@ export async function startLobbySession({
 }={}){
   const host=sessionHost||browserLobbyHost(scope);
   const {storage,sessionStorage}=host;
+  const deferFirstSortieLobby=Boolean(host.showFirstSortieRetry);
   if(!host.isCurrent())throw Error('当前页面已停止运行，请重新进入游戏');
   const stages=tuneMainlineCampaign(SOURCE_CAMPAIGN);
   const profile=loadProfileState(storage),campaign=loadCampaignState(storage,stages,DIFFICULTIES);
@@ -114,7 +115,9 @@ export async function startLobbySession({
   const bridge={buildIdentity:BUILD_IDENTITY,gameplayVersion:sessionHost?'three-wechat':platformKind==='h5'?'three-h5':'wechat-lobby-v2',platformKind,app,game,profileState:profile,campaignState:campaign,
     debugToolsEnabled:true,getActivePilot,get activeLobbyTab(){return activeTab;},get selectedStageIndex(){return selectedStage;},
     getPeripheralSnapshot(){
-      const value=system.snapshot();observedRevision=stateRevision;scheduleDetails();return value;
+      const value=system.snapshot();observedRevision=stateRevision;
+      if(!deferFirstSortieLobby||game.state==='menu'&&!value.firstSortieRequired)scheduleDetails();
+      return value;
     },
     getPeripheralClock(){return observedRevision===stateRevision ? system.lobbyClock?.() : null;},
     getReplicaLoadoutDetails:getLoadoutDetails,
@@ -158,12 +161,23 @@ export async function startLobbySession({
   };
   battle=createBattle({peripheral:()=>system,requestReviveAd:playAd,onProgress:recordProgress,onState(){},
     onEnter(){if(closed)return;audio.feedback.stop();game.state='replica-battle';frames?.stop();lobby?.setVisible(false);audio.sync();},
-    onLeave(){if(closed||closing)return;game.state='menu';activeTab='battle';lobby?.switchTab('battle');lobby?.setVisible(true);frames?.start();audio.sync();},
+    onLeave(){
+      if(closed||closing)return;
+      game.state='menu';
+      const firstSortie=deferFirstSortieLobby&&lobby?.snapshot?.firstSortieRequired;
+      if(firstSortie&&system.snapshot().firstSortieRequired){
+        host.showFirstSortieRetry();
+        return;
+      }
+      activeTab='battle';lobby?.switchTab('battle');lobby?.setVisible(true);frames?.start();
+      if(firstSortie){audio.unlock();lobby?.startPortraits?.();}
+      audio.sync();
+    },
     onError(message){console.error('[replica battle]',message);toast(message);},
   });
   try{
     host.showLobby?.();
-    lobby=mountLobby({bridge,parent:host.parent,system,deferPortraits});bridge.pixiLobby=lobby;
+    lobby=mountLobby({bridge,parent:host.parent,system,deferPortraits,deferFirstSortieLobby});bridge.pixiLobby=lobby;
     frames=frameLoop((_time,delta)=>lobby.update(delta/1000),host.frames);
     frames.start();scope.__THUNDER_ORIGINAL_GAME__=bridge;return bridge;
   }catch(error){bridge.closeGameSession({save:false});throw error;}

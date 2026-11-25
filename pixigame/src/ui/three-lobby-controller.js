@@ -1,4 +1,5 @@
 import {createThreeLobbyGuide} from './three-lobby-guide.js';
+import {nextLobbyGuide} from '../peripheral/onboarding.js';
 import {weaponCatalogSkills} from './weapon-catalog-skills.js';
 
 import {committedFeedbackRecords,collectionFeedbackRecords,progressionFeedbackRecords} from './process-feedback-model.js';
@@ -35,7 +36,7 @@ import {hasLobbyGrowthFeedback} from './lobby-growth-actions.js';
 import { actionRewards, rewardReturnModal } from './reward-feedback-policy.js';
 
 import {battleChapterIndex} from './battle-chapter-index.js';
-import { PILOT_AFFECTION_MAX, pilotAffectionVideo } from '../peripheral/pilot-affection.js';
+import { PILOT_AFFECTION_MAX, isHiddenPilotAffectionAction, pilotAffectionVideo } from '../peripheral/pilot-affection.js';
 
 import { portraitPresentation } from './character-portraits.js';
 
@@ -48,13 +49,13 @@ import {backpackItems,BACKPACK_TABS} from './backpack-model.js';
 
 import {patrolRenderSignature} from './patrol-clock.js';
 
-import {DAILY_TABS} from './daily-tabs.js';
+import {DAILY_TABS,dailyTabUnlockMessage,isDailyTabAvailable,resolveDailyPeriod} from './daily-tabs.js';
 import {taskChestModel} from './task-chest-model.js';
 
 import {emptyGearMerge,gearMergeDraft,pickGearMergeItem,removeGearMergeMaterial} from './gear-merge-selection.js';
 
 const TABS = [{ id: 'shop', title: '商城', icon: 'shop' }, { id: 'assembly', title: '装备', icon: 'weapon' }, { id: 'battle', title: '战役', icon: 'plane' }, { id: 'research', title: '科技研究', icon: 'research' }, { id: 'supply', title: '招募', icon: 'crate' }];
-export function createThreeLobbyController({bridge,system,presentation,deferPortraits=false}) {
+export function createThreeLobbyController({bridge,system,presentation,deferPortraits=false,deferFirstSortieLobby=false}) {
   if (!bridge) throw new TypeError('mountPeripheralLobby requires a bridge');
   const { root, modalRoot, portraitPlayer, focus } = presentation;
   const captureFocus=(region,target)=>focus?.capture(region,target);
@@ -82,7 +83,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
   let battleChapter = null;
   let selectedRecruitPilot = null;
   let modalOpener = null, renderedModalKey = '', recruitScroll = 0;
-  let pendingModalBackgroundRefresh = false;
+  let pendingModalBackgroundRefresh = false, researchDrawPending = false;
   let processSequence=0,pendingProcessRecords=[];
   const polishedTab = () => ['shop','assembly','battle','research','supply'].includes(tab);
   let weaponSkillSlot=-1;
@@ -133,7 +134,10 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     }
   }
   async function act(action, payload = {}) {
-    if (busy) return null; busy = true; presentation.busy(true,polishedTab());
+    if (busy) return null;
+    busy = true;
+    researchDrawPending = action === 'researchDraw';
+    presentation.busy(true,polishedTab());
     const growthBefore = hasLobbyGrowthFeedback(action) ? snapshot : null;
     const walletBefore = { ...snapshot.wallet };
     const motionBefore=snapshot;
@@ -181,6 +185,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       if(result?.ok&&snapshot.replicaCollection&&['replicaCollection','selectReplicaLoadout','gearEquip','gearUnequip','gearUpgrade','gearUpgradeAll','gearDowngrade','gearMerge','gearBatch'].includes(action)) {
         await refreshLoadoutPower();
       }
+      researchDrawPending = false;
       if(feedbackRecords.length&&['replicaCollection','gearMerge','gearBatch','fleetActivate','fleetStarUp'].includes(action)){
         // Freeze the existing page through the result. The committed state is
         // used by the overlay; source controls refresh only after it closes.
@@ -200,12 +205,11 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
         if(action==='claimTask')actionFeedback.pulse('task-'+payload.id);
         if(growthBefore)actionFeedback.pulse('workshop-target',action.startsWith('synthesize')?480:0);
       }
-      if (result?.ok===false) actionFeedback.failure();
       onboarding.result(action,payload,result);
       return result;
-    } catch (error) { console.error('[peripheral action]', action, error); toast('操作失败，请稍后重试'); actionFeedback.failure(); return { ok: false }; }
+    } catch (error) { console.error('[peripheral action]', action, error); toast('操作失败，请稍后重试'); return { ok: false }; }
     finally {
-      busy = false; presentation.busy(false);
+      busy = false; researchDrawPending = false; presentation.busy(false);
       if(screen.toast.message==='正在处理，请稍候…')screen.toast.clear();
     }
   }
@@ -225,6 +229,11 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     modal={type:'processFeedback',id:`process-${++processSequence}`,records,index:0,view:'0',opener:captureFocus(root),...(returnTo?{returnTo}:{})};
     screen.toast.clear();
     renderModal();return true;
+  }
+  function showPendingProcessRecords(){
+    if(!visible||modal||!pendingProcessRecords.length||nextLobbyGuide(snapshot)?.group===9)return false;
+    const records=pendingProcessRecords;pendingProcessRecords=[];
+    return showProcessRecords(records);
   }
   function presentBoxReceipt(result,pool,count,returnTo=null){
     const gear=result.gearResult;
@@ -351,6 +360,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       modalHost=rewardLayer.layers.overlay;renderedModalKey='';
     }
     if(modal?.type==='collectionSupplyChoice')modal=null;
+    if(modal?.type==='tasks')modal.period=resolveDailyPeriod(snapshot,modal.period);
     if(modal&&isResourceShortage(modal.error))modal={...modal,error:''};
     if(modal?.type==='shopConfirm'){
       const result=reconcileShopReview(modal,snapshot);
@@ -364,7 +374,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     const modalKey = modalIdentity(previewWeapon?{...modal,id:previewWeapon.baseGunId||previewWeapon.id}:modal);
     if (!modal) {
       const returnFocus=modalOpener;
-      if(visible&&pendingProcessRecords.length){const records=pendingProcessRecords;pendingProcessRecords=[];showProcessRecords(records);return;}
+      if(showPendingProcessRecords())return;
       presentation.clearModal(modalHost);
       presentation.blockPage(false);
       if (polishedTab()) restoreFocus(root, modalOpener);
@@ -447,15 +457,19 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     return performanceMonitor.measure('ui-render',()=>renderContent(force,currentSnapshot));
   }
   function renderContent(force = false, currentSnapshot = null) {
-    if (destroyed) return;
+    if (destroyed || researchDrawPending) return;
     const next = currentSnapshot || read();
+    if(next.firstSortieRequired){
+      tab='battle';subpage='';if(modal?.type!=='firstSortie')modal={type:'firstSortie'};
+    }else if(modal?.type==='firstSortie')modal=null;
     if(tab==='battle'&&!subpage)bridge.app?.renderer?.publishHome?.(next,battleChapterIndex(next,battleChapter),bridge.debugToolsEnabled);
     // Switching tabs reuses the current data; skip serializing the whole economy.
     const nextSignature=next===snapshot ? signature : patrolRenderSignature(next);
     if(!busy&&snapshot&&snapshot!==next)pendingProcessRecords.push(...collectionFeedbackRecords(snapshot,next,{stars:false}),...progressionFeedbackRecords(snapshot,next));
     nativeDialog?.clock?.(next.patrol);
-    if (!force && nextSignature === signature) { snapshot=next;if(visible&&!modal&&pendingProcessRecords.length){const records=pendingProcessRecords;pendingProcessRecords=[];showProcessRecords(records);}return; }
-    if(isRetainedModalLayer(modal)&&rewardLayer){
+    if (!force && nextSignature === signature) { snapshot=next;showPendingProcessRecords();return; }
+    // Awakening uses the committed snapshot in the reveal while the talent page keeps its previous frame.
+    if(modal?.type==='researchResult'||(isRetainedModalLayer(modal)&&rewardLayer)){
       pendingModalBackgroundRefresh=true;signature=nextSignature;snapshot=next;
       renderModal();return;
     }
@@ -506,6 +520,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
   }
   function scrollShopSection(value){shopSection=shopSectionId(value);if(tab==='shop')menuView?.section(shopSection);}
   function switchTab(value, requestedShopSection) {
+    if(snapshot?.firstSortieRequired)return;
     const previousTab = tab, previousSubpage = subpage;
     if (value === 'missions') { modal = {type:'tasks',period:'daily'}; renderModal(); return; }
     if (value === 'loadout') { openCatalog('pilot'); return; }
@@ -524,7 +539,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     bridge.switchLobbyTab?.(value); render(true,snapshot); focus?.pageScroll(tabScroll[value]||0);
     if (value === 'shop') scrollShopSection(shopSection);
     if (value==='assembly' && previousSubpage) { focusEquipmentSource(equipmentReturnFocus); equipmentReturnFocus=null; }
-    if(previousTab!==tab&&bridge.platformKind!=='wechat')actionFeedback.pulse('nav-'+value);
+    if(previousTab!==tab)actionFeedback.pulse('nav-'+value);
   }
   function returnFromCatalog() {
     if(subpage==='workshop'&&workshopKind==='gear'&&gearWorkshopOrigin){
@@ -569,7 +584,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     modal={type:'growthSupplyChoice',period,opener:captureFocus(root,target),...(modal?{returnTo:{...modal}}:{})};renderModal();
   }
   async function runLobbyCommand(action,data,target,direct=true){
-    if(busy||!visible)return;
+    if(busy||!visible||isHiddenPilotAffectionAction(action)||snapshot.firstSortieRequired&&action!=='start')return;
     if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(data.resourceShort));return;}
     if(action==='inspect'){itemDescriptions.open(data,target);return;}
     if(action==='gearSort'&&['quality','part','level'].includes(data.value)){gearSort=data.value;render(true);return;}
@@ -807,6 +822,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       if(operation==='gearSupply')modal={...current,type:'gearSources',drawn:result.gearResult.drawn.map(item=>item.uid),revision:snapshot.equipment.revision};
       else if(operation==='gearBatch')modal={type:'gearMergeList',steps:result.gearResult.steps.length,revision:snapshot.equipment.revision};
       else modal={type:'gearDetail',id:itemId,detailOrigin:current?.detailOrigin||'warehouse',revision:snapshot.equipment.revision,
+        upgradeAt:result.gearResult?.toLevel>result.gearResult?.fromLevel?performance.now()/1000:undefined,
         ...(current?.type==='gearDetail'&&current.returnTo?{returnTo:current.returnTo}:current?.returnTo?.type==='gearMergeList'?{returnTo:current.returnTo}:{})};
       renderModal();return;
     }
@@ -964,10 +980,11 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if (['chapterChest','activities'].includes(action)) { modal={type:action}; renderModal(); return; }
     if (action === 'claimStarReward') { await act('claimStarReward',{mode:data.mode,id:Number(id),expectedRevision:Number(data.revision)});return; }
     if (action === 'taskPeriod') {
-      if(modal?.type==='tasks' && DAILY_TABS.some(t=>t.id===data.period) && modal.period!==data.period) {
-        modal.period=data.period;delete modal.milestoneId;renderModal();actionFeedback.pulse('period-'+data.period);
-        selectModal(modalHost,`.dc-tab[data-period="${modal.period}"]`)?.focus({preventScroll:true});
-      }
+      const {period}=data;
+      if(modal?.type!=='tasks'||modal.period===period||!DAILY_TABS.some(tab=>tab.id===period))return;
+      if(!isDailyTabAvailable(snapshot,period)){toast(dailyTabUnlockMessage(period));return;}
+      modal.period=period;delete modal.milestoneId;renderModal();actionFeedback.pulse('period-'+period);
+      selectModal(modalHost,`.dc-tab[data-period="${period}"]`)?.focus({preventScroll:true});
       return;
     }
     if(action==='taskChest') {
@@ -995,7 +1012,10 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if (action === 'recoverDailyRewards') {await act(action);return;}
     if (action === 'dailyGo') {
       const destination=data.destination;
-      if(destination==='signin'){modal.period='signin';renderModal();return;}
+      if(destination==='signin'){
+        if(modal?.type==='tasks'&&isDailyTabAvailable(snapshot,'signin')){modal.period='signin';renderModal();}
+        return;
+      }
       if(destination==='shopBoxes'){shopSection='boxes';switchTab('shop');return;}
       if(destination==='patrol'){modal={type:'patrol',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
       if(destination==='chapters'){modal={type:'chapters',returnTo:{...modal,childOpener:captureFocus(modalHost,target)}};renderModal();return;}
@@ -1161,13 +1181,13 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     if (action === 'claimTask') { const result=await act('claimTask', { id });if(result?.ok)selectModal(modalHost,`[data-task-id="${id}"]`)?.focus({preventScroll:true});return; }
     if (['claimPatrol','quickPatrol','quickPatrolAd','devPatrolSample'].includes(action)) { await act(action,{expectedRevision:Number(data.revision)}); return; }
     if (action === 'start') {
-      const index = battleChapterIndex(snapshot, battleChapter);
+      const index = snapshot.firstSortieRequired ? 0 : battleChapterIndex(snapshot, battleChapter);
       const result = await act('start', { index, stageIndex: index });
       if (result?.ok && !result.started) bridge.startGame?.();
     }
   }
   function keydown(event) {
-    if (!visible) return;
+    if (!visible||snapshot?.firstSortieRequired) return;
     if(event.defaultPrevented||event.target?.matches?.('input,textarea'))return;
     const fleetState=fleetUi[subpage];
     if (event.key !== 'Escape') return;
@@ -1185,7 +1205,12 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     else if (subpage) returnFromCatalog();
   }
   const removeKeyboard=presentation.bindBack?.(keydown);
-  render(true);
+  const initial=read();
+  if(deferFirstSortieLobby&&initial.firstSortieRequired){
+    snapshot=initial;tab='battle';visible=false;
+    presentation.setVisible(false);
+    portraitPlayer.setVisible(false,{suspendLoading:true});
+  }else render(true,initial);
   return {
     root,
     get tab() { return tab; }, get snapshot() { return snapshot; },
@@ -1193,7 +1218,12 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     switchTab, render() { render(true); }, refresh() { render(true); },
     prepareMenus(){
       if(!destroyed&&snapshot){
-        return screen.prepareMenus?.(page=>({data:menuData(page),key:signature}),sendMenuAction,menuInteractive,selectShopSection);
+        return screen.prepareMenus?.((page,afterSettlement=false)=>{
+          const data=menuData(page);
+          if(!afterSettlement)return {data,key:signature};
+          const next=read();
+          return {data:{...data,snapshot:next},key:patrolRenderSignature(next)};
+        },sendMenuAction,menuInteractive,selectShopSection,{firstSortieRequired:snapshot.firstSortieRequired});
       }
     },
     prepareCatalogs(){
@@ -1230,11 +1260,15 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       });
     },
     setVisible(value) {
+      const returningFromFirstSortie=value&&!visible&&snapshot?.firstSortieRequired;
       visible = Boolean(value);presentation.setVisible(visible);
       if(!visible&&modal?.type==='pilotAffectionVideo')returnToParentModal();
       portraitPlayer.setVisible(visible&&!modal,{suspendLoading:!visible});
       if(!visible){
         onboarding.hide();actionFeedback.clear();screen.toast.clear();itemDescriptions.close();
+      }else if(returningFromFirstSortie){
+        render(true);
+        onboarding.tick(0);
       }else render();
     },
     update(ticker) { if (destroyed || !visible || presentation.hidden()) return; performanceMonitor.frame('lobby'); return performanceMonitor.measure('ui',()=>{const dt = typeof ticker === 'number' ? ticker : (ticker?.deltaMS || 16.67) / 1000; elapsed += dt; onboarding.tick(dt);homeView?.tick();menuView?.tick();nativeDialog?.tick?.(dt);

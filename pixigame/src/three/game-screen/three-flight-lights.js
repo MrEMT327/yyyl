@@ -3,7 +3,8 @@ import {BattleGeometry} from './three-battle-geometry.js';
 export function flightLights(stage){
   const {scene,hull}=stage;
   const wake=new BattleGeometry(scene,24.92,true),trail=new BattleGeometry(scene,24.6,true);
-  const body=new BattleGeometry(scene,24.65),exit=new BattleGeometry(scene,24.7,true),tips=new BattleGeometry(scene,25.05,true);
+  const tips=new BattleGeometry(scene,25.05,true);
+  let body,exit;
   const ghosts=[24.8,24.85].map(depth=>stage.makeSprite(hull.userData.binding,depth));
   ghosts.forEach(node=>node.visible=false);
   return {
@@ -59,29 +60,34 @@ export function flightLights(stage){
       tips.flush();
     },
     victory(s){
+      if(!s){
+        if(body?.visible)body.clear();
+        if(exit?.visible)exit.clear();
+        return;
+      }
+      body??=new BattleGeometry(scene,24.65);
+      exit??=new BattleGeometry(scene,24.7,true);
       body.clear();exit.clear();
-      if(s){
-        for(const a of s.segments)body.line(a.x1,a.y1,a.x2,a.y2,a.width*3.2,0x245bdb,a.alpha*.24*a.flow);
-        for(const [w,c,opacity] of [[12,0x246dff,.07],[6.5,0x278fff,.15],[2.4,0x55caff,.72],[.85,0xe5faff,1]]){
-          for(const a of s.segments)exit.line(a.x1,a.y1,a.x2,a.y2,a.width*w,c,a.alpha*opacity*(w<3?a.flow:1));
-        }
-        const {head,width,power,separation,flash}=s;
-        for(const side of [-1,1]){
-          const x=head.x+side*separation;
-          for(let i=8;i>=1;i--){const t=i/8,r=width*7*t;exit.ellipse(x,head.y,r,r,0x41afff,power*.2*Math.exp(-3*t*t));}
-          exit.ellipse(x,head.y,width*1.1,width*1.1,0xe5fbff,power*.95);
-        }
-        if(flash>.001){
-          for(let i=8;i>=1;i--){const t=i/8;exit.ellipse(head.x,head.y,width*17*t,width*3*t,0x4abfff,power*flash*.12*Math.exp(-3*t*t));}
-          exit.line(head.x-width*11,head.y,head.x+width*11,head.y,width*.8,0xefffff,power*flash*.95);
-        }
-        for(const p of s.sparks)for(const [size,c,a] of [[3.3,0x329fff,.15],[1,0xa1e9ff,.9],[.4,0xf0fdff,1]]){
-          exit.ellipse(p.x,p.y,p.radius*size,p.radius*size,c,p.alpha*a);
-        }
+      for(const a of s.segments)body.line(a.x1,a.y1,a.x2,a.y2,a.width*3.2,0x245bdb,a.alpha*.24*a.flow);
+      for(const [w,c,opacity] of [[12,0x246dff,.07],[6.5,0x278fff,.15],[2.4,0x55caff,.72],[.85,0xe5faff,1]]){
+        for(const a of s.segments)exit.line(a.x1,a.y1,a.x2,a.y2,a.width*w,c,a.alpha*opacity*(w<3?a.flow:1));
+      }
+      const {head,width,power,separation,flash}=s;
+      for(const side of [-1,1]){
+        const x=head.x+side*separation;
+        for(let i=8;i>=1;i--){const t=i/8,r=width*7*t;exit.ellipse(x,head.y,r,r,0x41afff,power*.2*Math.exp(-3*t*t));}
+        exit.ellipse(x,head.y,width*1.1,width*1.1,0xe5fbff,power*.95);
+      }
+      if(flash>.001){
+        for(let i=8;i>=1;i--){const t=i/8;exit.ellipse(head.x,head.y,width*17*t,width*3*t,0x4abfff,power*flash*.12*Math.exp(-3*t*t));}
+        exit.line(head.x-width*11,head.y,head.x+width*11,head.y,width*.8,0xefffff,power*flash*.95);
+      }
+      for(const p of s.sparks)for(const [size,c,a] of [[3.3,0x329fff,.15],[1,0xa1e9ff,.9],[.4,0xf0fdff,1]]){
+        exit.ellipse(p.x,p.y,p.radius*size,p.radius*size,c,p.alpha*a);
       }
       body.flush();exit.flush();
     },
-    disposeLights(){for(const n of [wake,trail,body,exit,tips,...ghosts])stage.remove(n);},
+    disposeLights(){for(const n of [wake,trail,tips,body,exit,...ghosts])if(n)stage.remove(n);},
   };
 }
 

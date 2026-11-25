@@ -6,7 +6,7 @@ import {isWechatPortrait,portraitRenderSize} from './portrait-render-budget.js';
 // frame, so their timestamps cannot drift and browser alpha-video support is unnecessary.
 export const PORTRAIT_VERTEX=`attribute vec2 position;uniform vec2 fit;varying vec2 uv;void main(){uv=vec2(position.x*.5+.5,.5-position.y*.5);gl_Position=vec4(position*fit,0.,1.);}`;
 export const PORTRAIT_FRAGMENT=`precision highp float;
-uniform sampler2D frame;uniform vec2 packedSize;uniform float repairShirtHoles;varying vec2 uv;
+uniform sampler2D frame;uniform vec2 packedSize,repairSourceSize;uniform float repairShirtHoles;varying vec2 uv;
 float opacity(vec2 p){return clamp((texture2D(frame,p+vec2(.5,0.)).r-1./255.)/(253./255.),0.,1.);}
 void main(){
  vec2 p=vec2(clamp(uv.x*.5,.5/packedSize.x,.5-.5/packedSize.x),clamp(uv.y,.5/packedSize.y,1.-.5/packedSize.y));
@@ -15,14 +15,15 @@ void main(){
  // Restrict the repair to the blouse area and require opaque, pale material on
  // all four sides, so silhouette edges and actual cutouts remain untouched.
  if(repairShirtHoles>.5&&(a<.98||min(min(rgb.r,rgb.g),rgb.b)<.65)&&uv.x>.25&&uv.x<.78&&uv.y>.13&&uv.y<.47){
-  vec2 dx=vec2(8./packedSize.x,0.),dy=vec2(0.,26./packedSize.y);
+  vec2 repairSize=max(packedSize,repairSourceSize);
+  vec2 dx=vec2(8./repairSize.x,0.),dy=vec2(0.,26./repairSize.y);
   vec2 p0=p-dx,p1=p+dx,p2=p-dy,p3=p+dy;
   if(min(opacity(p0),opacity(p1))>.96&&min(opacity(p2),opacity(p3))>.96){
    vec3 c0=texture2D(frame,p0).rgb,c1=texture2D(frame,p1).rgb,c2=texture2D(frame,p2).rgb,c3=texture2D(frame,p3).rgb;
    float pale=min(min(min(c0.r,c0.g),c0.b),min(min(min(c1.r,c1.g),c1.b),min(min(min(c2.r,c2.g),c2.b),min(min(c3.r,c3.g),c3.b))));
    if(pale>.68){
     float nearAlpha=1.;
-    if(a>=.98){vec2 ex=vec2(4./packedSize.x,0.),ey=vec2(0.,10./packedSize.y);nearAlpha=min(min(opacity(p-ex),opacity(p+ex)),min(opacity(p-ey),opacity(p+ey)));}
+    if(a>=.98){vec2 ex=vec2(4./repairSize.x,0.),ey=vec2(0.,10./repairSize.y);nearAlpha=min(min(opacity(p-ex),opacity(p+ex)),min(opacity(p-ey),opacity(p+ey)));}
     if(a<.98||nearAlpha<.98){rgb=(c0+c1+c2+c3)*.25;a=1.;}
    }
   }

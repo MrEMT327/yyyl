@@ -8,11 +8,12 @@ import { loadArtwork } from '../../../../../../../pixigame/src/three/game-screen
 import { createWechatVideoPortrait } from './video.js';
 
 function rendererOutput(device,token,model){
-  let w=1,h=1,frame=null,closed=false;
+  let w=1,h=1,frame=null,owner=null,closed=false;
   function submit(){
     if(closed||!frame)return;
-    const owner=device.homeView?.owns(token)?device.homeView:device.menuView?.owns(token)?device.menuView:null;
-    if(!owner)return;
+    const view=device.homeView?.owns(token)?device.homeView:device.menuView?.owns(token)?device.menuView:null;
+    if(!view)return;
+    owner=view;
     const pose=frame;
     owner.setPose(token,w,h,()=>model.draw(...pose,w,h),true);
   }
@@ -27,7 +28,7 @@ function rendererOutput(device,token,model){
     destroy(){
       if(closed)return;
       closed=true;frame=null;
-      device.homeView?.forget(token);device.menuView?.forget(token);model.dispose();
+      owner?.forget(token);owner=null;model.dispose();
     },
   };
 }
@@ -36,10 +37,12 @@ export function createWechatPortraits(api,platform,services,device,baseURL,loadC
   let allowed=true,active=null;
   function open(id){
     const surface=Symbol(id),watchers=new Set();
-    let rect={width:0,height:0},closed=false,player=null,pendingFeedback=false,enabled=allowed;
+    let rect={width:0,height:0},closed=false,player=null,pendingFeedback=null,enabled=allowed;
+    let generation=0,attaching=false;
     const portraitHost={
-      baseURL,hidden:()=>!platform.visible,
-      makeAbort:services.makeAbort,loadCore,fetchResource:services.fetchResource,loadImage:loadArtwork,
+      baseURL,frameRate:30,hidden:()=>!platform.visible,
+      makeAbort:services.makeAbort,loadCore,fetchResource:services.fetchResource,
+      cubismMemoryBytes:id==='pilot-01'||id==='pilot-07'?16*1024*1024:undefined,
       bounds:()=>rect,requestFrame:platform.requestFrame,cancelFrame:platform.cancelFrame,
       watchVisibility(fn){
         let before=platform.visible;
@@ -56,36 +59,51 @@ export function createWechatPortraits(api,platform,services,device,baseURL,loadC
         return {...output,dispose:output.destroy};
       },
       render:model=>rendererOutput(device,surface,model),
-      createBlue:options=>createBluePortraitForOutput(device.three,options,portraitHost),
     };
     function sync(){
       if(closed||!enabled||!rect.width||!rect.height||!PILOT_PORTRAITS[id])return;
       if(!player){
         try{
-          player=id==='pilot-02'||id==='pilot-08'
-            ?createWechatVideoPortrait(api,services,device,portraitHost,id)
-            :createPilotPortraitPlayer(id,{assetBase:baseURL,output:portraitHost});
-          Promise.resolve(player.attach(surface)).catch(error=>{
-            if(!closed&&error?.name!=='AbortError')console.warn('[Three 立绘]',error);
-          });
-        }catch(error){console.warn('[Three 立绘]',error);}
+          const ticket=++generation;
+          const priority=()=>ticket===generation?0:-Infinity;
+          const host={...portraitHost,loadImage:url=>loadArtwork(url,priority)};
+          host.createBlue=options=>createBluePortraitForOutput(device.three,options,host);
+          const next=id==='pilot-02'||id==='pilot-08'
+            ?createWechatVideoPortrait(api,services,device,host,id)
+            :createPilotPortraitPlayer(id,{assetBase:baseURL,output:host});
+          player=next;attaching=true;
+          Promise.resolve(next.attach(surface)).catch(error=>{
+            if(player===next&&error?.name!=='AbortError')console.warn('[Three 立绘]',id,error);
+          }).finally(()=>{if(player===next)attaching=false;});
+        }catch(error){releasePlayer();console.warn('[Three 立绘]',id,error);}
       }
       player?.setVisible(enabled);
     }
+    function releasePlayer(){
+      generation++;attaching=false;
+      const previous=player;player=null;pendingFeedback=null;previous?.destroy();
+    }
     const handle={
-      id,surface,sync,get closed(){return closed;},
+      id,surface,sync,releasePlayer,get closed(){return closed;},
       layout(bounds){rect=bounds;for(const resize of watchers)resize();sync();},
-      setVisible(value){enabled=value;player?.setVisible(value);if(value)sync();},
+      setVisible(value,leavePage=false){
+        enabled=value;
+        if(value)sync();
+        else if(player&&(attaching||leavePage))releasePlayer();
+        else player?.setVisible(false);
+      },
       feedback(){
         const name=PILOT_PORTRAITS[id]?.feedback;
         if(!player||!name||pendingFeedback||!enabled||player.playing&&player.motionName===name)return false;
-        pendingFeedback=true;
-        return Promise.resolve(player.playMotion(name,{returnToIdle:true})).finally(()=>{pendingFeedback=false;});
+        const ticket={};pendingFeedback=ticket;
+        return Promise.resolve(player.playMotion(name,{returnToIdle:true})).finally(()=>{
+          if(pendingFeedback===ticket)pendingFeedback=null;
+        });
       },
       close(){
         if(closed)return;closed=true;
         if(active===handle)active=null;
-        player?.destroy();player=null;watchers.clear();
+        releasePlayer();watchers.clear();
       },
     };
     active?.close();active=handle;
@@ -96,7 +114,9 @@ export function createWechatPortraits(api,platform,services,device,baseURL,loadC
     openCatalog(_device,bounds,refresh,paint){return catalogPortrait(device,null,refresh,paint,{bounds,open});},
     sync(){active?.sync();},
     feedback(id){return active?.id===id?active.feedback():false;},
-    setVisible(next){allowed=Boolean(next);active?.setVisible(allowed);},
+    setVisible(next,{leavePage=false}={}){allowed=Boolean(next);active?.setVisible(allowed,leavePage);},
+    get pilotId(){return active?.id??null;},
+    releaseHidden(){if(!allowed)active?.releasePlayer();},
     destroy(){active?.close();active=null;},
   };
 }

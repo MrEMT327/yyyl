@@ -1,4 +1,5 @@
 import {VfxMeshBuffer,boundsVisible} from './vfx-buffers.mjs';
+import {laserThicknessScale} from './pathogenic-host-presentation.mjs';
 import {WEAPON_SKIN_FAMILIES,weaponSkinMatches} from '../weapon-skin-identity.mjs';
 export {withWeaponSkinResources} from './weapon-skin-materials.mjs';
 
@@ -223,12 +224,14 @@ export class WeaponSkinVfx{
     for(let i=0;i<4;i++){const f=fract(t*.45+i*.25),angle=i*2.4-t*1.4,d=r*(1.45-f*.9);g.star(p.x+Math.cos(angle)*d,p.y+Math.sin(angle)*d*.72,3.5*(1-f*.5),i%2?CYAN:GOLD,a*(1-f)*.66,angle);}
   }
   beam(b,screen){const g=this.brush,id=this.skinId,color=THEMES[id],segments=b.segments||[],electric=[20602,21002].includes(id),fan=segments.length>12;
+    const thickness=id===20302||id===20702?laserThicknessScale(b):1;
     for(let j=0;j<segments.length;j++){
       if(fan&&j%3&&j!==segments.length-1)continue;
       const seg=segments[j],a=screen(seg.from.x,seg.from.z),z=screen(seg.to.x,seg.to.z),dx=z.x-a.x,dy=z.y-a.y,len=Math.hypot(dx,dy);
       if(![a.x,a.y,z.x,z.y,len].every(Number.isFinite)||len<.1||!boundsVisible(Math.min(a.x,z.x)-20,Math.min(a.y,z.y)-20,Math.max(a.x,z.x)+20,Math.max(a.y,z.y)+20,this.viewport))continue;
       const span=screen(b.x+b.radiusX,b.z),origin=screen(b.x,b.z),halfWidth=Math.hypot(span.x-origin.x,span.y-origin.y);
-      const nx=-dy/len,ny=dx/len,point=(f,off=0)=>[a.x+dx*f+nx*off,a.y+dy*f+ny*off],width=electric?2.1:clamp(halfWidth*.7,id===20702?4:2.5,id===20702?12:8);
+      const nx=-dy/len,ny=dx/len,point=(f,off=0)=>[a.x+dx*f+nx*off,a.y+dy*f+ny*off];
+      const width=electric?2.1:clamp(halfWidth*.7/thickness,id===20702?4:2.5,id===20702?12:8)*thickness;
       g.line(point(0),point(1),width*4.2,color,.15);g.line(point(0),point(1),width*1.75,color,.80);g.line(point(0),point(1),Math.max(1,width*.27),WHITE,.7);
       if(electric){
         const n=Math.min(16,Math.max(3,Math.ceil(len/24))),points=[];

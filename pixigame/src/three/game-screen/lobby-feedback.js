@@ -5,6 +5,7 @@ import {slicedFrameGeometry} from '../../ui/nine-slice-geometry.js';
 import {walletGains} from '../../ui/reward-feedback-policy.js';
 import {POWER_NOTICE_DURATION,powerNoticeCount,powerNoticePose} from '../../ui/power-notice-motion.js';
 import {clamp,words} from './menu-art.js';
+import {bottomNavigation,homeInsets} from './home-navigation.js';
 import art from './utility-art.json';
 
 const compact=new Intl.NumberFormat('zh-CN',{notation:'compact',maximumFractionDigits:1,useGrouping:false});
@@ -15,8 +16,8 @@ export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFra
   const ink=createThreeSurface(),marks=createThreeSurface();
   const quiet=reducedMotion?{get matches(){return reducedMotion();}}:matchMedia('(prefers-reduced-motion:reduce)');
   scene.add(ink.group,marks.group);
-  let frame=null,skin=null,ready=false,power=null,signature='',count=null,zoom=null,touch=null,closed=false;
-  let effects=[];
+  let frame=null,skin=null,ready=false,power=null,signature='',count=null,zoom=null,closed=false;
+  let effects=[],pendingTab=null;
   function request(){if(!closed)screen.repaintHome?.();}
   function root(){return (screen.homeView||screen.menuView)?.page?.closest?.('#gui-casual-lobby');}
   function key(){const page=layout?layout():root()?.dataset;return page?[page.tab,page.subpage,screen.panel?.name].join('|'):'';}
@@ -24,12 +25,23 @@ export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFra
   function rectFor(id){
     const b=bounds();if(!b)return;
     const owner=screen.panel?.state().controls.find(x=>x.id===id)||screen.menuView?.state().controls.find(x=>x.id===id);
-    if(owner)return {x:owner.x-b.x,y:owner.y-b.y,w:owner.w,h:owner.h};
-    const entry=screen.homeView?.controls().find(x=>x.id===id)?.box;if(entry)return {x:entry[0]*b.width/750,y:entry[1]*b.height/1624,w:entry[2]*b.width/750,h:entry[3]*b.height/1624};
+    // Enclose both the icon and the caption using the painted rail height.
+    const navHeight=id.startsWith('nav-')?(owner||layout
+      ?bottomNavigation(b.width,b.height).height:homeInsets(b).height*b.height/1624):null;
+    if(owner)return {x:owner.x-b.x,y:owner.y-b.y,w:owner.w,h:navHeight??owner.h};
+    const entry=screen.homeView?.controls().find(x=>x.id===id)?.box;
+    if(entry)return {x:entry[0]*b.width/750,y:entry[1]*b.height/1624,w:entry[2]*b.width/750,h:navHeight??entry[3]*b.height/1624};
   }
-  function mark(box,color,duration,delay=0){if(!box||!box.w||!box.h)return;effects.push({box,color,duration,t:now()+delay});effects=effects.slice(-28);request();}
+  function mark(box,color,duration,delay=0,tab=false){if(!box||!box.w||!box.h)return;effects.push({box,color,duration,t:now()+delay,tab});effects=effects.slice(-28);request();}
+  function beginTabFeedback(){
+    if(!pendingTab)return;
+    if(pendingTab.page!==key()){pendingTab=null;return;}
+    const box=rectFor(pendingTab.id);if(!box)return;
+    mark(box,'#ffe18a',450,pendingTab.delay,true);
+    pendingTab=null;
+  }
   function endPower(){power=null;ink.clear();signature='';count=zoom=null;}
-  function clear(){if(frame!==null)cancelFrame(frame);frame=null;endPower();effects=[];marks.clear();touch=null;request();}
+  function clear(){if(frame!==null)cancelFrame(frame);frame=null;endPower();effects=[];pendingTab=null;marks.clear();request();}
   function show(before,after){
     if(!Number.isFinite(before)||!Number.isFinite(after)||!bounds()||(layout?layout()?.hidden:root()?.hidden))return;
     before=Math.round(before);after=Math.round(after);if(before===after)return;
@@ -57,17 +69,22 @@ export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFra
     const pose=quiet.matches?{rise:0,scale:1,pulse:1}:powerNoticePose(elapsed/1000);
     ink.group.scale.set(pose.scale,pose.scale,1);ink.group.position.set(w/2,h/2-(200+pose.rise)*w/1080,0);count.scale.copy(zoom).multiplyScalar(pose.pulse);
   }
-  return {capture(b){const r=bounds();if(r&&b)touch={x:b.x-r.x,y:b.y-r.y,w:b.w??b.width,h:b.h??b.height};},
+  return {
     wallet(before,after){const gains=walletGains(before,after);if(!screen.panel&&!quiet.matches)for(const {type} of gains)mark(rectFor(type),'#e1f4ff',300);return gains.length>0;},
-    failure(){mark(touch,'#ff967f',500);},
     equip(slot){mark(rectFor('slot-'+slot)||rectFor(slot),'#8bf4db',650);},
-    pulse(id,delay=0){if(!quiet.matches)mark(rectFor(id),'#ffe18a',450,delay);},
+    pulse(id,delay=0){
+      if(quiet.matches)return;
+      if(!id.startsWith('nav-')){mark(rectFor(id),'#ffe18a',450,delay);return;}
+      // An offscreen or warming page may not have its footer controls yet.
+      effects=effects.filter(effect=>!effect.tab);
+      pendingTab={id,delay,page:key()};request();
+    },
     power(before,after){if(!Number.isFinite(before)||!Number.isFinite(after)||before===after)return;
       if(frame!==null)cancelFrame(frame);frame=requestFrame(()=>{frame=null;show(before,after);});},
-    get active(){return !!power||effects.length>0;},
-    draw(renderer,w,h){if(!power&&!effects.length)return;const t=now();drawPower(w,h,t);marks.clear();
+    get active(){return !!power||!!pendingTab||effects.length>0;},
+    draw(renderer,w,h){beginTabFeedback();if(!power&&!effects.length)return;const t=now();drawPower(w,h,t);marks.clear();
       effects=effects.filter(e=>t-e.t<e.duration);for(const e of effects){const p=(t-e.t)/e.duration;if(p<0)continue;
-        const a=Math.max(0,Math.min(p/.2,(1-p)/.8)),b=e.box;for(const [x,y,ww,hh] of [[b.x,b.y,b.w,2],[b.x,b.y+b.h-2,b.w,2],[b.x,b.y,2,b.h],[b.x+b.w-2,b.y,2,b.h]])marks.quad(x,y,ww,hh,e.color,a*.9);}
+        const a=Math.max(0,Math.min(e.tab?1:p/.2,(1-p)/.8)),b=e.box;for(const [x,y,ww,hh] of [[b.x,b.y,b.w,2],[b.x,b.y+b.h-2,b.w,2],[b.x,b.y,2,b.h],[b.x+b.w-2,b.y,2,b.h]])marks.quad(x,y,ww,hh,e.color,a*.9);}
       camera.right=w;camera.bottom=h;camera.updateProjectionMatrix();const auto=renderer.autoClear;renderer.autoClear=false;
       try{renderer.render(scene,camera);}finally{renderer.autoClear=auto;}if(power||effects.length)request();},
     clear,close(){closed=true;clear();skin?.dispose();}};

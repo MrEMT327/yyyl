@@ -1,3 +1,9 @@
+const plates=[
+  {accent:0x82c9ed},
+  {accent:0xff7166,gradient:[0x91373e,0x91373e]},
+  {accent:0xc9abff,gradient:[0x3578a6,0x884db2]},
+];
+
 // A view of the existing draw receipt, in draw order. Repeated weapon names
 // can represent different upgrades and must remain separate rows.
 export function supplyResultRows(rewards) {
@@ -5,8 +11,9 @@ export function supplyResultRows(rewards) {
     const star=Math.max(1,Number(card.star)||1);
     const passive=Number(card.nativeSkillId??card.id)>=11000000;
     const tier=passive?0:Math.min(2,Math.floor((star-1)/3));
+    const plate=plates[passive?0:card.breakthroughs>=2?2:card.breakthroughs>=1?1:0];
     return {card,name:card.weaponName||card.name,description:card.description||'武器强化',
-      breakthrough:Boolean(card.opensBreakthrough),
+      plate,breakthrough:Boolean(card.opensBreakthrough),
       tier,lit:passive?star:(star-1)%3+1,
       marks:passive?Math.max(star,Number(card.raw?.MaxStar)||2):3};
   });

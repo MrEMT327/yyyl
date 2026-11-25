@@ -1,13 +1,12 @@
-import {artworkTexture} from '../three/game-screen/image-loading.js';
+import {icon,resultTexture} from './result-icon-art.js';
 import { Container, Rectangle } from '../three/display.js';
-import { CanvasTexture, SRGBColorSpace, LinearFilter } from 'three';
+import { CanvasTexture, SRGBColorSpace } from 'three';
 import { createTextureCanvas } from './three-surface.js';
 import { prefersReducedMotion } from './status-feedback.js';
 import { paintPsdPopup } from './psd-popup-art.js';
 import { paintPsdPopupTitle } from './psd-popup-title.js';
 import { drawUiSymbol } from './ui-symbols.js';
 import { defeatResultModel } from './defeat-result-model.js';
-import { upgradeIconLayout } from './upgrade-icon-layout.js';
 import { defeatResultLayout } from './defeat-result-layout.js';
 import { defeatMotion } from './defeat-result-motion.js';
 import { paintRewardItemSlot } from './reward-item-art.js';
@@ -17,7 +16,6 @@ import { nineSliceGeometry } from './nine-slice-geometry.js';
 import { victoryResultModel } from './victory-result-model.js';
 import { victoryMotion } from './victory-result-motion.js';
 
-const textures = new Map();
 const defeatHeaderUrl = `${cloudAssetBase}art/defeat-header-v1/damaged-aircraft.png`;
 const defeatBadgeUrl = `${cloudAssetBase}art/defeat-wave-badge-v1/badge.png`;
 const victoryHeaderUrl = `${cloudAssetBase}art/victory-result-v1/victory-aircraft.png`;
@@ -25,14 +23,7 @@ const victoryBadgeUrl = `${cloudAssetBase}art/victory-result-v1/wave-badge.png`;
 const victoryStarUrl = `${cloudAssetBase}art/project-ui-icons-v1/star.png`;
 const victoryRaysUrl = `${cloudAssetBase}art/project-research-draw-reference-v5/reveal-rays.png`;
 export function preloadDefeatArt() {
-  for (const url of [defeatHeaderUrl,defeatBadgeUrl,victoryHeaderUrl,victoryBadgeUrl,victoryStarUrl,victoryRaysUrl]) {
-    if (textures.has(url)) continue;
-    const texture = artworkTexture(url,undefined,()=>{});
-    texture.colorSpace = SRGBColorSpace;
-    texture.generateMipmaps = false;
-    texture.minFilter = LinearFilter;
-    textures.set(url, texture);
-  }
+  for (const url of [defeatHeaderUrl,defeatBadgeUrl,victoryHeaderUrl,victoryBadgeUrl,victoryStarUrl,victoryRaysUrl]) resultTexture(url);
 }
 let smokeTexture;
 function smokeArt() {
@@ -42,36 +33,7 @@ function smokeArt() {
   gradient.addColorStop(0,'rgba(166,170,181,.8)');gradient.addColorStop(.45,'rgba(111,119,133,.5)');gradient.addColorStop(1,'rgba(64,74,89,0)');
   ctx.fillStyle=gradient;ctx.fillRect(0,0,96,96);smokeTexture=new CanvasTexture(canvas);smokeTexture.colorSpace=SRGBColorSpace;return smokeTexture;
 }
-export function icon(surface, url, x, y, width, height, fit = true) {
-  if (!textures.has(url)) {
-    const texture = artworkTexture(url,undefined,()=>{});
-    texture.colorSpace = SRGBColorSpace;
-    texture.generateMipmaps = false;
-    texture.minFilter = LinearFilter;
-    texture.userData.inventoryIcon = true;
-    texture.userData.skillIconUrl = url;
-    textures.set(url, texture);
-  }
-  const texture = textures.get(url);
-  const mesh = surface.image(texture, x, y, width, height);
-  if (!fit) return mesh;
-  let fittedImage;
-  mesh.onBeforeRender = () => {
-    const image = texture.image;
-    if (!image?.width || !image?.height || fittedImage === image) return;
-    fittedImage = image;
-    const fit = upgradeIconLayout(texture, {x,y,width,height});
-    mesh.position.set(fit.x + fit.width / 2, fit.y + fit.height / 2, 0);
-    mesh.scale.set(fit.width, -fit.height, 1);
-    if (fit.crop) {
-      const coordinates = mesh.geometry.attributes.uv, crop = fit.crop;
-      for (let index = 0; index < coordinates.count; index++) coordinates.setXY(index,
-        crop.x + coordinates.getX(index) * crop.width, 1 - crop.y - (1 - coordinates.getY(index)) * crop.height);
-      coordinates.needsUpdate = true;
-    }
-  };
-  return mesh;
-}
+export {icon} from './result-icon-art.js';
 
 export function renderDefeatResult(root, bridge, {surface, button, backdrop, victory=false}) {
   const key=bridge.presentation?.result?.runId??bridge.game.runId??(victory?bridge.game.completionSummary:bridge.game.defeatReward);
@@ -205,7 +167,7 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, vic
       if(!rows.length)s.text('暂无伤害记录',300,610,{size:26,color:'#29465c',align:'center'});
       rows.slice(0,victory?5:6).forEach((r,i)=>{
         const y=(victory?592:486)+i*(victory?44:54);
-        if(r.itemId)icon(s,r.itemId,80,y-21,42,42);
+        if(r.itemId)icon(s,r.itemId,77,y-21,48,42);
         s.text(r.name,136,y,{size:23,color:'#173449',maxWidth:190});
         s.text(`${Math.round(r.damage)} · ${Math.round(total?r.damage/total*100:0)}%`,518,y,{size:22,color:'#173449',align:'right',maxWidth:180});
       });

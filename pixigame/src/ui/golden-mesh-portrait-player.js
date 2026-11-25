@@ -2,6 +2,7 @@ import { createGoldenPositionRefiner } from './golden-position-refiner.js';
 import { createGoldenMeshRenderer } from './golden-mesh-renderer.js';
 import { releaseOwnedCanvas } from './release-owned-canvas.js';
 import { createPortraitPaintGate, portraitRenderSize } from './portrait-render-budget.js';
+import { streamPortraitGzip } from './portrait-gzip.js';
 
 // Plays the delivered target rig. Stored 60 Hz states stay discrete; only the
 // explicit native target transitions blend geometry and effective opacity.
@@ -10,7 +11,7 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
   const sameOrigin=path=>{const u=new URL(path,assetRoot);if(u.origin!==assetRoot.origin)throw new Error('角色只允许读取同源资源');return u.href;};
   const manifestUrl=sameOrigin(manifestPath),folder=new URL('./',manifestUrl),controller=output?.makeAbort?.()??new AbortController();
   const records=new Map(),images=new Map(),reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const canDrawFrame=createPortraitPaintGate();
+  const canDrawFrame=createPortraitPaintGate(output?.frameRate);
   let host=null,canvas=null,renderer=null,manifest=null,loading=null,current=null,currentName='idle';
   let state='idle',error=null,visible=true,paused=false,destroyed=false,explicit=false,returnToIdle=true;
   let positions=null,rest=null,opacities=null,orders=null,visibilities=null,transition=null,positionRefiner=null;
@@ -88,32 +89,40 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
     const record={spec,data:null,promise:null};records.set(name,record);
     record.promise=(async()=>{
       let bytes=await fetchBytes(spec.file);
-      if(bytes[0]===0x1f&&bytes[1]===0x8b){const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));bytes=new Uint8Array(await new Response(stream).arrayBuffer());}
+      if(destroyed)return null;
       const expected=spec.frames*manifest.strideInt16*2;
+      if(bytes[0]===0x1f&&bytes[1]===0x8b){
+        const frames=new Uint8Array(expected);let offset=0;
+        await streamPortraitGzip(bytes,chunk=>{frames.set(chunk,offset);offset+=chunk.length;},{signal:controller.signal});
+        if(offset!==expected)throw new Error('角色动作状态长度不符');
+        bytes=frames;
+      }
+      if(destroyed)return null;
       if(bytes.byteLength!==expected)throw new Error('角色动作状态长度不符');
       const data=new Int16Array(bytes.buffer,bytes.byteOffset,bytes.byteLength/2);
       if(manifest.temporalDelta)for(let i=manifest.strideInt16;i<data.length;i++)data[i]+=data[i-manifest.strideInt16];
       if(destroyed)throw new DOMException('角色已关闭','AbortError');
       record.data=data;return record;
-    })();
+    })().catch(error=>{if(records.get(name)===record)records.delete(name);throw error;});
     return record.promise;
   }
   async function initialize(){
     state='loading';updateHost();const response=await (output?.fetchResource??fetch)(manifestUrl,{signal:controller.signal});if(!response.ok)throw new Error('角色资源清单读取失败');manifest=await response.json();
+    if(destroyed)return;
     if(manifest.schema!=='golden-target-mesh-v1'||manifest.encoding!=='int16-rest-delta'||manifest.fps!==60||!manifest.clips?.idle||manifest.strideInt16!==manifest.positionFloatCount+manifest.meshes.length*3)throw new Error('角色资源格式无效');
     rest=new Float32Array(manifest.positionFloatCount);
     for(const mesh of manifest.meshes)rest.set(mesh.vertices,mesh.stateOffset);
     positionRefiner=createGoldenPositionRefiner(manifest);
     positions=rest.slice();opacities=new Float32Array(manifest.meshes.length);orders=new Float32Array(manifest.meshes.length);visibilities=new Uint8Array(manifest.meshes.length);
     await Promise.all(Object.entries(manifest.textures).map(async([id,path])=>{const url=sameOrigin(new URL(path,folder).href);
-      if(output)images.set(id,await output.loadImage(url));
+      if(output){const image=await output.loadImage(url);if(!destroyed)images.set(id,image);}
       else{const image=new Image();image.src=url;await image.decode();images.set(id,image);}
     }));
     if(destroyed)return;
     if(!output){canvas=document.createElement('canvas');canvas.setAttribute('aria-hidden','true');}
     renderer=output?output.createMesh(manifest,images):createGoldenMeshRenderer(canvas,manifest,images);canvas?.addEventListener('webglcontextlost',event=>{event.preventDefault();fail(new Error('角色画布连接已中断'));},{signal:controller.signal});
     current=await loadClip('idle');if(destroyed)return;currentName='idle';clock=0;applyFrame(0);state='ready';if(host&&canvas)host.append(canvas);resize();sync();
-    for(const name of Object.keys(manifest.clips))if(name!=='idle')void loadClip(name).catch(()=>{});
+    if(!output)for(const name of Object.keys(manifest.clips))if(name!=='idle')void loadClip(name).catch(()=>{});
   }
   const observer=!output&&typeof ResizeObserver==='function'?new ResizeObserver(resize):null;
   const visibility=()=>sync(),unresize=output?.watchBounds?.(resize);
@@ -126,7 +135,7 @@ export function createGoldenMeshPortraitPlayer({ assetBase=import.meta.env?.BASE
     },
     async playMotion(name,options={}){
       if(!ready()||!manifest.clips[name])return false;const ticket=++request;explicit=true;
-      try{const record=await loadClip(name);if(destroyed||ticket!==request)return false;stop();beginTransition(0);current=record;currentName=name;clock=0;frameIndex=0;returnToIdle=options.returnToIdle!==false;paused=false;applyFrame(0);draw();sync();return true;}catch(reason){fail(reason);return false;}
+      try{const record=await loadClip(name);if(destroyed||ticket!==request)return false;stop();beginTransition(0);current=record;currentName=name;clock=0;frameIndex=0;returnToIdle=options.returnToIdle!==false;paused=false;applyFrame(0);draw();sync();return true;}catch(reason){if(!destroyed&&ticket===request)console.warn('立绘动作读取失败',name,reason);return false;}
     },
     seekFrame(index){if(!ready()||!Number.isFinite(index))return false;paused=true;transition=null;clock=Math.max(0,Math.min(current.spec.frames-1,Math.floor(index)))/manifest.fps;applyFrame(Math.floor(clock*manifest.fps+1e-6));draw();sync();return true;},
     restart(){return api.playMotion(currentName,{returnToIdle});},

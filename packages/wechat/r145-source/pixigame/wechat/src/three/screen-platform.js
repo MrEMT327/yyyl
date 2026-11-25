@@ -195,8 +195,8 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog) {
       handler(viewport, foreground);
       return () => subscriptions.delete(handler);
     },
-    bindTouches(handler,priority=0,accepts=()=>true) {
-      cancelTouches();
+    bindTouches(handler,priority=0,accepts=()=>true,{preserveActive=false}={}) {
+      if(!preserveActive)cancelTouches();
       const route={handler,priority,accepts};
       const next=surfaces.findIndex(surface=>surface.priority>priority);
       if(next<0)surfaces.push(route);else surfaces.splice(next,0,route);

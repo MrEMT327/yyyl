@@ -6,8 +6,7 @@ import {resizeCombatViewport,resizeCloudCombatViewport} from './cloud-combat-vie
 import { createUpgradeSelectionLayer } from '../src/ui/upgrade-selection-layer.js';
 import { Container } from '../src/three/display.js';
 import { createPixiCombatUi } from '../src/ui/pixi-lobby.js';
-import { SRGBColorSpace } from 'three';
-import {artworkTexture} from '../src/three/game-screen/image-loading.js';
+import {loadCombatUiTexture} from '../src/ui/combat-art.js';
 import { battleCardIconUrl } from '../src/replica/battle-card-art.js';
 import { battleSkillDescription as description } from './battle-hud-flow';
 import { assessReplicaBattle } from '../src/replica/native-battle-rating.js';
@@ -18,6 +17,7 @@ import { nativeResultRows, nativeResultRecommendations } from './result-presenta
 import { aircraftUiImage } from '../src/aircraft-ui-images.js';
 import { cloudAssetBase } from '../src/ui/cloud-asset-base.js';
 import { BATTLE_REVIVE_DIAMONDS } from '../src/replica/battle-revive-purchase.js';
+import { readWeaponAppearances } from './weapon-appearance';
 
 export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,requestDiamondRevive,aircraftId,hudHost,reducedMotion},
   {canvas,renderer,pixelRatio,nativeHudTiles,mount,draw,setPhase,disposeRenderer}){
@@ -26,7 +26,12 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   const selectionLayer=createUpgradeSelectionLayer(scene);
   const keyFor=card=>{
     const url=battleCardIconUrl(card),key=url;
-    if(url&&!textures.has(key)){const texture=artworkTexture(url,undefined,()=>{});texture.colorSpace=SRGBColorSpace;texture.userData.inventoryIcon=true;texture.userData.skillIconUrl=url;textures.set(key,texture);}
+    if(url&&!textures.has(key)){
+      const texture=loadCombatUiTexture(url,true);
+      texture.userData.inventoryIcon=true;
+      texture.userData.skillIconUrl=url;
+      textures.set(key,texture);
+    }
     return key;
   };
   const currentWeapons=()=>ui.equippedWeapons().map(weapon=>{
@@ -52,7 +57,7 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   const game={state:'ready',stageIndex:sim.content.chapter.chapter.id-1,
     fixedGrowth:{state:{nodes:{},pendingLevels:1,rerolls:0}},fixedLoadout:{weapons:[]},pauseMode:'pause'};
   const bridge={game,presentation,scene,selectionLayer,nativeHudTiles,app:{renderer},ui:{},runStats:{},reducedMotion,
-    loadImageSurface:hudHost?.loadImageSurface,
+    loadImageSurface:hudHost?.loadImageSurface,warmSupplyTexture:hudHost?.warmSupplyTexture,
     showPauseMenu(){
       if(sim.phase!=='playing'&&sim.phase!=='paused')return;
       game.pauseMode='pause';
@@ -76,8 +81,17 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     },
     rerollFixedUpgrade(){if(!ui.selecting&&sim.rerollUpgrade())ui.update();},
     startBattleSupply(){ui.advanceBattleSupply();},skipBattleSupply(){ui.advanceBattleSupply();},claimBattleSupply(){ui.advanceBattleSupply();},
+    finishSupplyWithoutArtwork(pickup){
+      // The treasure has already applied its rewards; only close its presentation.
+      Promise.resolve().then(()=>{
+        if(disposed||sim.phase!=='treasure'||game.battleSupply!==pickup)return;
+        sim.closeTreasure();
+        sim.announce(pickup.rewards.length?'战斗补给已领取':'当前武器已无可用强化');
+        audio.resume();ui.update();
+      });
+    },
   };
-  let lastSupply='',supply={},lastPhase='',disposed=false,settlement=null;
+  let lastSupply='',supply={},lastPhase='',displayPhase='',disposed=false,settlement=null;
   let resultRecommendations, equipmentRevision=-1, offeredChoices, offeredIds='', supplyWeapons=[];
   let offerRemaining, offerRun, offerBuild;
   function sync(){
@@ -85,7 +99,6 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
     const phaseChanged=lastPhase!==sim.phase;
     if(lastPhase!==sim.phase){
       game.state=({ready:'ready',playing:'playing',paused:'paused',upgrade:'levelup',treasure:'battle-supply',revive:'revive-prompt',won:'victory_result',lost:'fixed_result'})[sim.phase]||'playing';
-      setPhase(sim.phase,showingResult);
       if(sim.phase==='paused')game.pauseMode='pause';
       if(sim.phase==='revive'||sim.phase==='lost')audio.pause();
       if(sim.phase==='lost')audio.effect('project:defeat',.32,1);
@@ -167,9 +180,13 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
         lastSupply=key;
         const rewards=sim.treasureRewards,reward=rewards[0]||{icon:'',name:'当前武器已无可用强化'};
         const rewardNames=rewards.map(c=>nativeWeaponDisplayText(c.name)).join('、');
+        const weapons=readWeaponAppearances(sim);
         const wrap=(card,index)=>({...card,nativeSkillId:card.id,weaponName:nativeWeaponDisplayText(sim.content.combat.families[card.group]?.name||card.name),name:nativeWeaponDisplayText(card.name),description:description(card),id:`supply:${index}`,ownerId:`supply:${index}`,itemId:keyFor(card),ownerName:rewardNames,key:''});
         supply={chestId:key,phase:board.stage==='result'?'ready':board.stage==='rolling'?'rolling':'idle',
-          slots:board.slots.map(wrap),reward:wrap(reward,16),rewards:rewards.map((card,index)=>wrap(card,16+index)),pickupAt:board.started,revealedAt:board.phaseStarted,
+          slots:board.slots.map(wrap),reward:wrap(reward,16),
+          rewards:rewards.map((card,index)=>({...wrap(card,16+index),
+            breakthroughs:weapons.find(weapon=>weapon.familyId===card.group)?.breakthroughs??0})),
+          pickupAt:board.started,revealedAt:board.phaseStarted,
           subtitle:'本局武装强化',rewardNames};
       }
       supply.presentationMotion=board.motion;
@@ -191,7 +208,20 @@ export function bindCombatHud({stage,ui,sim,audio,signal,requestReviveAd,request
   const input=hudHost?hudHost.bindInput(inputOptions):bindCloudPointerInput({surface:stage,canvas,...inputOptions});
   const stopResize=hudHost?hudHost.watchResize(resize):(()=>{const observer=new ResizeObserver(resize);observer.observe(stage);return ()=>observer.disconnect();})();
   resize();
-  const frame=createBattleUiFrame(()=>{sync();cloud.update();draw(scene,cloud,selectionLayer);});
+  const frame=createBattleUiFrame(()=>{
+    sync();cloud.update();
+    const phase=sim.phase==='treasure'&&!cloud.battleSupplyVisible?'playing':sim.phase;
+    if(displayPhase!==phase){
+      displayPhase=phase;setPhase(phase,phase==='won'||phase==='lost');
+    }
+    draw(scene,cloud,selectionLayer);
+    if(hudHost?.draws)hudHost.draws.hud++;
+  },{
+    interval:hudHost?.playingHudInterval,now:hudHost?.now,
+    canDefer:()=>sim.phase==='playing'&&lastPhase===sim.phase&&game.runId===sim.runId&&game.waveIndex===sim.wave&&
+      game.hp===sim.player.hp&&game.level===sim.level&&equipmentRevision===sim.equipmentRevision&&
+      presentation.bossWarning===ui.bossWarningPresentation,
+  });
   const update=()=>{if(!disposed)frame.request();};
   const nativeUpdate=ui.update.bind(ui);ui.update=()=>{nativeUpdate();update();};
   const destroy=()=>{if(disposed)return;disposed=true;frame.destroy();if(!hudHost)window.removeEventListener('pagehide',destroy);ui.update=nativeUpdate;stopResize();input.destroy();selectionLayer.destroy();cloud.destroy();for(const texture of textures.values())texture.dispose();textures.clear();disposeRenderer();};

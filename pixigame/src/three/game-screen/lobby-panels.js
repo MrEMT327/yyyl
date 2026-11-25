@@ -12,6 +12,7 @@ import {openProcessFeedback} from './process-feedback.js';
 import {openRecruitPreview} from './recruit-preview.js';
 import {openRecruitResults} from './recruit-results.js';
 import {openAffection} from './affection.js';
+import {PILOT_AFFECTION_VISIBLE} from '../../peripheral/pilot-affection.js';
 import {openResearchPanel} from './research-panel.js';
 import {openLabPanel} from './lab-panel.js';
 import {openProfilePanel} from './profile-panel.js';
@@ -20,11 +21,15 @@ import {openCarnivalPanel} from './carnival-panel.js';
 import {openPatrolPanel} from './patrol-panel.js';
 import {openShopPanel,supportsShopPanel} from './shop-panels.js';
 
+const lobbyPanelTypes=['tasks','carnival','patrol','quickPatrol','playerInfo','recruitRewards',
+  'researchSummary','researchCard','researchResult','nativeLab','nativeStats',
+  ...(PILOT_AFFECTION_VISIBLE?['pilotAffection','pilotAffectionVideo']:[])];
+
 export function lobbyPanels(device, {openVideo, inspectItems = (container,read)=>createItemInspection(device,container,read)}={}){
   return {
     openBackpack:(host,action)=>openBackpack(device,host,action),
     inspectItems,
-    lobbyPanelKind:(type,snapshot)=>supportsFleetPanel(type)?'fleet':supportsUtilityPanel(type)?'utility':supportsSupplyPanel(type)?'supply':supportsCollectionPanel(type)?'collection':supportsGearPanel(type)?'gear':['tasks','carnival','patrol','quickPatrol','playerInfo','recruitRewards','pilotAffection','pilotAffectionVideo','researchSummary','researchCard','researchResult','nativeLab','nativeStats'].includes(type)||supportsShopPanel(type)||supportsChapterPanel(type,snapshot)?type:null,
+    lobbyPanelKind:(type,snapshot)=>supportsFleetPanel(type)?'fleet':supportsUtilityPanel(type)?'utility':supportsSupplyPanel(type)?'supply':supportsCollectionPanel(type)?'collection':supportsGearPanel(type)?'gear':lobbyPanelTypes.includes(type)||supportsShopPanel(type)||supportsChapterPanel(type,snapshot)?type:null,
     openLobbyPanel(kind,host,send,scrollPositions,sound,options){
       if(kind==='fleet')return openFleetPanel(device,host,send);
       if(kind==='utility')return openUtilityPanel(device,host,send);
@@ -35,8 +40,8 @@ export function lobbyPanels(device, {openVideo, inspectItems = (container,read)=
       if(kind==='gear')return openGearPanel(device,host,send);
       if(kind==='playerInfo')return openProfilePanel(device,host,send);
       if(kind==='recruitRewards')return openRecruitPreview(device,host,send);
-      if(kind==='pilotAffection')return openAffection(device,host,send);
-      if(kind==='pilotAffectionVideo')return openVideo(host,send);
+      if(kind==='pilotAffection')return PILOT_AFFECTION_VISIBLE?openAffection(device,host,send):null;
+      if(kind==='pilotAffectionVideo')return PILOT_AFFECTION_VISIBLE?openVideo(host,send):null;
       if(supportsShopPanel(kind))return openShopPanel(device,host,send,kind);
       if(kind==='tasks')return openTaskPanel(device,host,send,kind,scrollPositions,options);
       if(kind==='carnival')return openCarnivalPanel(device,host,send,options);

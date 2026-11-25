@@ -25,6 +25,7 @@
 !/tests/sortie-hangar-centering.test.js
 !/tests/sortie-hangar-controller.test.js
 !/tests/aircraft-preview-history.test.js
+!/tests/breakthrough-opening.test.mjs
 !/tests/common-weapon-icons.test.js
 !/tests/weapon-icon-retirement.test.js
 !/tools/process-weapon-clean-art.py

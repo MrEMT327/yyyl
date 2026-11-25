@@ -15,7 +15,7 @@ export function createThreeLobbyGuide({hidden,context,mark,home}){
     }
     if(c.subpage)return;
     if(g===8){if(c.tab!=='shop')return ['nav-shop','进入商城'];if(c.shopSection!=='boxes')return ['section-boxes','查看装备宝箱'];return ['open-'+active.pool+'-1','开启1次'];}
-    if(c.tab!=='assembly')return ['nav-assembly','进入装备页'];if(c.gearFilter!=='all')return ['clear-filter','查看全部装备'];
+    if(c.tab!=='assembly')return ['nav-assembly','点击装备'];if(c.gearFilter!=='all')return ['clear-filter','查看全部装备'];
     return ['gear-'+active.uid,g===9?'查看这件装备':'点击已装配的装备'];
   }
   return {hide,hideWeakHint(){if(!active)hide();},tick(dt){

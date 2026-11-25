@@ -1,11 +1,32 @@
-function freezeData(value) {
-  if (!value || typeof value !== 'object' || Object.isFrozen(value)) return;
-  Object.freeze(value);
-  if (Array.isArray(value)) {
-    for (const child of value) freezeData(child);
-    return;
+function freezeBatch(pending, outOfTime) {
+  let visited = 0;
+  while (pending.length) {
+    const value = pending.pop();
+    if (!value || typeof value !== 'object' || Object.isFrozen(value)) continue;
+    Object.freeze(value);
+    for (const child of Array.isArray(value) ? value : Object.values(value)) {
+      if (child && typeof child === 'object') pending.push(child);
+    }
+    if (++visited % 128 === 0 && outOfTime?.()) return;
   }
-  for (const key of Object.keys(value)) freezeData(value[key]);
+}
+
+function freezeData(value) {
+  freezeBatch([value]);
+}
+
+function checkActive(signal) {
+  if (signal.aborted) throw signal.reason ?? Object.assign(new Error('Battle closed'), { name: 'AbortError' });
+}
+
+async function freezeForCache(data, signal, loadingFrame, now) {
+  const pending = [data];
+  while (pending.length) {
+    await loadingFrame();
+    checkActive(signal);
+    const deadline = now() + 8;
+    freezeBatch(pending, () => now() >= deadline);
+  }
 }
 
 // The lobby and sorties only share these immutable versioned inputs.
@@ -43,18 +64,19 @@ export function createBattleDataCache() {
   }
   return {
     clear,
-    async load(key, signal, prepare) {
-      if (signal.aborted) throw signal.reason ?? Object.assign(new Error('Battle closed'), { name: 'AbortError' });
+    async load(key, signal, prepare, { loadingFrame, now = () => performance.now() } = {}) {
+      checkActive(signal);
       if (cached?.key === key) return cached.data;
       clear();
       const ticket = generation;
       const data = await prepare();
-      if (signal.aborted) throw signal.reason ?? Object.assign(new Error('Battle closed'), { name: 'AbortError' });
+      checkActive(signal);
       // A closed frame, a chapter change or a memory warning can retire a
       // request while its inputs are still arriving. It cannot seed the cache.
       if (ticket === generation) {
-        freezeData(data);
-        cached = { key, data };
+        if (loadingFrame) await freezeForCache(data, signal, loadingFrame, now);
+        else freezeData(data);
+        if (ticket === generation) cached = { key, data };
       }
       return data;
     },

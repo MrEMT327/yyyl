@@ -7,20 +7,20 @@ const frames = {
 };
 const popupTextures = new Map();
 const tileUrl = (kind,row,col) => `${cloudAssetBase}art/psd-popup-v1/${kind}-${row}-${col}.png`;
-function texturesFor(kind) {
+export function psdPopupArtTextures(kind, priority) {
   if (!popupTextures.has(kind)) {
     const tiles = [];
     for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) {
-      tiles.push(loadCombatUiTexture(tileUrl(kind,row,col)));
+      tiles.push(loadCombatUiTexture(tileUrl(kind,row,col), false, priority));
     }
     popupTextures.set(kind, tiles);
   }
   return popupTextures.get(kind);
 }
-export function preparePsdPopupArt(kind) {
-  return texturesFor(kind).every(combatArtworkSettled);
+export function preparePsdPopupArt(kind, priority) {
+  return psdPopupArtTextures(kind, priority).every(combatArtworkSettled);
 }
-function drawFallback(surface,kind,x,y,width,height) {
+function paintPsdPopupFallback(surface,kind,x,y,width,height) {
   surface.panel(x,y,width,height,{fill:'#d6e4ec',stroke:'#547e9e',opacity:1,radius:8});
   if(kind==='primary')surface.quad(x,y,width,Math.min(78,height),'#243c55');
 }
@@ -28,9 +28,9 @@ function drawFallback(surface,kind,x,y,width,height) {
 // the middle spans. Cached textures outlive individual dialog surface meshes.
 export function paintPsdPopup(surface, kind, x, y, width, height, cornerScale, paintImage) {
   if (!frames[kind]) kind = 'primary';
-  const textures = paintImage ? null : texturesFor(kind);
+  const textures = paintImage ? null : psdPopupArtTextures(kind);
   if (textures?.some(art => art.userData.artworkFailed)) {
-    drawFallback(surface,kind,x,y,width,height);
+    paintPsdPopupFallback(surface,kind,x,y,width,height);
     return;
   }
   const frame = frames[kind];
@@ -51,6 +51,6 @@ export function paintPsdPopup(surface, kind, x, y, width, height, cornerScale, p
   }
   if(tiles.some(tile=>!tile.visible)){
     for(const tile of tiles)tile.visible=false;
-    drawFallback(surface,kind,x,y,width,height);
+    paintPsdPopupFallback(surface,kind,x,y,width,height);
   }
 }

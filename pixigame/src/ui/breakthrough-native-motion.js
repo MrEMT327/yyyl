@@ -1,4 +1,4 @@
-import profile from './breakthrough-native-motion.json';
+import profile from './breakthrough-native-motion.json' with { type: 'json' };
 export const NATIVE_BREAKTHROUGH_MOTION=profile;
 export function sampleNativeTrack(track,time,duration=Infinity){
   if(track.source==='m_ConstantClip')return track.value;

@@ -14,7 +14,8 @@ export function recruitPreviewModel(snapshot){
     const pilots=recruitBoxItems(s).map(p=>{const art=portraitPresentation(p);
       return {name:p.name.replace('·','\n'),detail:qualityDisplayLabel(p.rarity,p.qualityKnown),image:art.avatar||art.image};});
     const resources=(info.resources||[]).map(r=>({name:r.name==='随机装备图纸'?'随机\n装备图纸':r.name,detail:'×'+r.amount,image:r.image}));
-    return {title:'招募奖励',direct:true,sections:[{heading:'驾驶员',rows:pilots},{heading:'资源',rows:resources}]};
+    const heading=info.tenPilotSummary||'驾驶员';
+    return {title:'招募奖励',direct:true,sections:[{heading,rows:pilots},{heading:'资源',rows:resources}]};
   }
   const short={1:'金币',112:'高级箱券',113:'普通箱券',blueprint:'随机图纸'};
   const rows=Object.entries(info.probabilities||{}).filter(([id,n])=>!['925','926'].includes(id)&&!/角色箱/.test(info.probabilityLabels?.[id]||'')&&Number.isFinite(Number(n))).map(([id])=>{

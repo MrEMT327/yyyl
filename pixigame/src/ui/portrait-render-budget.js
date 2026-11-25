@@ -1,5 +1,4 @@
 const maxWechatPixels = 840_000;
-const wechatFrameInterval = 1000 / 30 - 1;
 
 export function isWechatPortrait() {
   return globalThis.__THUNDER_RUNTIME_GLOBALS__?.platformKind === 'wechat';
@@ -13,8 +12,8 @@ export function portraitRenderSize(width, height, ratio = 2) {
 }
 
 // The motion clock continues at its authored rate when a render is skipped.
-export function createPortraitPaintGate() {
-  const interval = isWechatPortrait() ? wechatFrameInterval : 0;
+export function createPortraitPaintGate(fps = isWechatPortrait() ? 30 : 0) {
+  const interval = fps > 0 ? 1000/fps - 1 : 0;
   let lastPaint = -Infinity;
   return now => {
     if (now - lastPaint < interval) return false;

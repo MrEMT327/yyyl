@@ -14,7 +14,12 @@ export const catalogRepairs=[
   ['art/audio-switch-v2/track-off.png',256,true],
   ['art/audio-switch-v2/thumb.png',96,true],
 ];
-export const firstEffects=['audio/pathogenic/shots/gun_shot.wav','audio/pathogenic/pickup_sound.wav','audio/pathogenic/shot_hit.wav'];
+export const firstEffects=[
+  'audio/pathogenic/shots/gun_shot.wav',
+  'audio/pathogenic/pickup_sound.wav',
+  'audio/pathogenic/shot_hit.wav',
+  'audio/freesound/player-hit-781094.wav',
+];
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 
 export async function loadThreeCompatMedia(inputs,h5){

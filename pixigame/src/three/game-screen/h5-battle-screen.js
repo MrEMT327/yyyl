@@ -2,6 +2,10 @@ import {loadArtwork} from './image-loading.js';
 import * as T from 'three';
 import {createBattleStage} from './three-battle-stage.js';
 import {MISSILE_ART_KEYS} from '../../../replica-battle/kernel/pathogenic/missile-presentation.mjs';
+import {prepareEnemyHealthIcon} from '../../ui/enemy-health-icon.js';
+import {releaseOwnedCanvas} from '../../ui/release-owned-canvas.js';
+
+const ELITE_HEALTH_ICON='original_hp_progress_icon_EliteMonster';
 
 export function openBattleScreen(slot,device) {
   const canvas=device.display.input,css=canvas.getAttribute('style');
@@ -58,24 +62,27 @@ export class BattleArt {
     this.records=records;this.bindings=new Map();this.pending=new Map();this.authoredSizes=new Map();this.onDemand=new Map();this.closed=false;
   }
    expectSize(key,width,height){if(width>0&&height>0)this.authoredSizes.set(key,[width,height]);}
-  preload(key,url=this.records[key]?.url) {
+  preload(key,url=this.records[key]?.url,priority) {
     if(!url||this.closed)return;
     if(this.bindings.has(key))return this.bindings.get(key);
     if(this.pending.has(key))return this.pending.get(key);
-    const loaded=loadArtwork(new URL(url,this.baseURL).href).then(image=>{
+    const loaded=loadArtwork(new URL(url,this.baseURL).href,priority).then(image=>{
       if(this.closed)return;
-      const texture=new T.Texture(image);
-      const width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;
+      const eliteMarker=key===ELITE_HEALTH_ICON;
+      const source=eliteMarker?prepareEnemyHealthIcon(image):image;
+      const texture=new T.Texture(source);
+      const width=source.naturalWidth||source.width,height=source.naturalHeight||source.height;
       const size=this.authoredSizes.get(key);
       const compactMissile=Boolean(size&&width<size[0]&&height<size[1]&&MISSILE_ART_KEYS.includes(key));
       // The compact body uses mipmaps for its solid outline. The exhaust keeps its soft alpha from the prepared image.
-      const minFilter=key==='coins'?T.LinearMipmapLinearFilter:
+      const minFilter=key==='coins'||eliteMarker?T.LinearMipmapLinearFilter:
         compactMissile&&key===MISSILE_ART_KEYS[0]?T.LinearMipmapNearestFilter:T.LinearFilter;
       const mipmaps=minFilter!==T.LinearFilter,premultiplied=mipmaps||compactMissile;
       texture.flipY=false;texture.premultiplyAlpha=premultiplied;texture.generateMipmaps=mipmaps;
       texture.minFilter=minFilter;texture.magFilter=T.LinearFilter;
       texture.colorSpace=T.NoColorSpace;texture.needsUpdate=true;
       const result={texture,premultiplied,width,height,frames:new Map()};
+      if(source!==image)result.ownedCanvas=source;
       if(size&&(size[0]!==result.width||size[1]!==result.height))result.pathogenicLogicalSize=size;
       this.bindings.set(key,result);return result;
     }).finally(()=>this.pending.delete(key));
@@ -90,19 +97,26 @@ export class BattleArt {
     }
     return loaded;
   }
-  async loadAll(entries,progress,onDecoded,{workers=12,onFailure}={}){
+  async loadAll(entries,progress,onDecoded,{workers=12,onFailure,priority}={}){
     const queue=Array.from(new Map(entries));
     let next=0,done=0;progress?.(0);
     await Promise.all(Array.from({length:Math.min(queue.length,workers)},async()=>{
       while(!this.closed&&next<queue.length){
         const [key,url]=queue[next++];
         try{
-          const entry=await this.preload(key,url);
+          const entry=await this.preload(key,url,priority);
           if(entry)onDecoded?.(key,entry.texture);
         }catch(error){if(!onFailure)throw error;onFailure(key,error);}
         if(!this.closed)progress?.(++done/queue.length);
       }
     }));
   }
-  dispose(){this.closed=true;for(const b of this.bindings.values())b.texture.dispose();this.bindings.clear();this.onDemand.clear();}
+  dispose(){
+    this.closed=true;
+    for(const binding of this.bindings.values()){
+      binding.texture.dispose();
+      releaseOwnedCanvas(binding.ownedCanvas);
+    }
+    this.bindings.clear();this.onDemand.clear();
+  }
 }

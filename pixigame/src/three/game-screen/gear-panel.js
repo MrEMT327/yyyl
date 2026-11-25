@@ -31,6 +31,26 @@ function attributes(data,w,h,t){
   });
 }
 const skillColors={20:'#26766b',30:'#2872a6',40:'#8550af',50:'#a66e1c',60:'#b74750'};
+function upgradeFlash(t,a,started,x,y,w,h) {
+  const duration=.5;
+  if(!Number.isFinite(started)||performance.now()/1000>=started+duration)return;
+  const light=a.quad(x,y,w,h,'#fff3cb',0),sweep={value:0};
+  light.material.onBeforeCompile=shader=>{
+    shader.uniforms.gearSweep=sweep;
+    shader.vertexShader='varying vec2 gearUv;\n'+shader.vertexShader.replace(
+      '#include <begin_vertex>','#include <begin_vertex>\ngearUv=position.xy+0.5;');
+    shader.fragmentShader='varying vec2 gearUv;uniform float gearSweep;\n'+shader.fragmentShader.replace(
+      '#include <opaque_fragment>',
+      'diffuseColor.a*=.18+.82*(1.-smoothstep(.025,.19,abs(gearUv.x+.28*gearUv.y-gearSweep)));\n#include <opaque_fragment>');
+  };
+  t.animate(now=>{
+    const progress=clamp((now-started)/duration,0,1);
+    sweep.value=1.68*progress-.2;
+    light.material.opacity=.82*Math.sin(Math.PI*progress);
+    light.visible=progress<1;
+    return light.visible;
+  });
+}
 function detail(data,w,h,t){
   const s=data.snapshot,g=s.equipment,item=g.items.find(i=>i.uid===data.modal.id),u=w/369.453,width=.92*w;
   if(!item){
@@ -42,11 +62,13 @@ function detail(data,w,h,t){
   const bodyX=(w-width)/2+23.7*u,bw=width-47.4*u,block=t.layer('gear-content','base');
   const a=block.art,left=bodyX,header=49.3*u,ink='#203b51',quality=qualityInk[item.qualityRank]||qualityInk[0];
   const heroH=item.canDowngrade&&item.equipped?141:97.7;
+  const flash=(...rect)=>upgradeFlash(t,a,data.upgradeAt,...rect);
   const commands=[];
   a.quad(left,0,bw,heroH,'#bdcfdb');a.quad(left,heroH-1,bw,1,'#8aa2b3');
   const side=72,ix=left+10,iy=(heroH-side)/2,tx=ix+side+12,ty=10;
   slice(a,t,qualityFrame(item.qualityRank),box(ix,iy,side,side),10,18);
   pic(a,t,'/'+equipmentArtPath(item.art),box(ix+side*.08,iy+side*.155,side*.84,side*.69),true);
+  flash(ix,iy,side,side);
   pic(a,t,art['slot-badge-'+item.type],box(ix-9.8,iy-9.8,32.5,32.5));
   const text=(v,x,y,size,opts={})=>words(a,v,x,y,size,{align:'left',weight:400,color:ink,...opts});
   text(item.name,tx,ty+13,clamp(w*.046,17,20),{family:titleFont,color:'#17374e',maxWidth:left+bw-tx-10});
@@ -54,6 +76,7 @@ function detail(data,w,h,t){
   a.panel(gradeBox.x,gradeBox.y,gradeBox.w,gradeBox.h,{cut:0,fill:'#e0edf1',stroke:quality,opacity:1});
   text(item.qualityName,tx+8,ty+41,12,{color:quality,weight:700});
   text((item.equipped?'已装配':'未装配')+(item.locked?' · 已锁定':''),tx+gradeBox.w+8,ty+41,12,{color:'#344f63'});
+  flash(tx-4,ty+53,112,24);
   text('等级',tx,ty+65,13,{color:'#344f63'});text('Lv.'+item.level+' / '+item.maxLevel,tx+36,ty+65,13,{color:quality,weight:700});
   if(item.canDowngrade&&item.equipped){
     const b=box(tx,ty+80,Math.min(106,left+bw-tx-6),42);button(a,t,b,{title:'降阶',titleSize:13});
@@ -61,6 +84,7 @@ function detail(data,w,h,t){
   }
   let y=heroH+8;
   a.quad(left,y,bw,37.6,'#dce8ef');
+  flash(left,y,bw,37.6);
   const stat=text(item.attributeName+' +'+fmt(item.attribute),left+11,y+19,16,{weight:700});
   const inc=gearDetailIncrease(item);
   if(inc!=null)text('(+'+fmt(inc)+')',stat.position.x+stat.scale.x/2+8,y+19,16,{color:'#23734a',weight:700});
@@ -128,8 +152,9 @@ export function openGearPanel(screen,host,send){
   },command=>{if(command.type!=='none')send(command.type,command.data||{},host);});
   return {host,close:panel.close,update(snapshot,modal,signature){
     const id=modal.type+'|'+(modal.id||'')+'|'+(modal.part||'')+'|'+(modal.quality||'');
-    panel.update({snapshot,modal:{...modal},sheetMetrics:metrics,
+    const reduced=screen.reducedMotion?.()??globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    panel.update({snapshot,modal:{...modal},sheetMetrics:metrics,upgradeAt:reduced?undefined:modal.upgradeAt,
       safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)},
-      [signature,id,modal.revision,modal.error,snapshot.equipment?.revision,modal.mode,modal.filter,modal.tokens,modal.materialIds?.join(','),modal.plan?.token,modal.drawn?.join(',')].join('|'),id);
+      [signature,id,modal.revision,modal.upgradeAt,modal.error,snapshot.equipment?.revision,modal.mode,modal.filter,modal.tokens,modal.materialIds?.join(','),modal.plan?.token,modal.drawn?.join(',')].join('|'),id);
   }};
 }

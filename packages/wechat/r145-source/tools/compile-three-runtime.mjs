@@ -3,6 +3,7 @@ import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
+import { gzipSync } from 'node:zlib';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const source=fileURLToPath(new URL('../../../pixigame/',pathToFileURL(root)));
@@ -34,7 +35,7 @@ export async function compileWechatThreeRuntime({origin,entry=join(game,'wechat/
   if(url.protocol!=='https:')throw Error('小游戏资源入口需要使用 HTTPS');
   const assetOrigin=url.origin;
   const audioPaths=await deployedAudioPaths();
-  const imagePaths=new Set(),dataModules=new Map();
+  const imagePaths=new Set(),dataModules=new Map(),packedData=new Set();
   const threeRoot=join(source,'node_modules/three');
   const urlImports={
     name:'three-native-asset-urls',
@@ -45,6 +46,11 @@ export async function compileWechatThreeRuntime({origin,entry=join(game,'wechat/
         const libraryPath=name.replace(/^three\/addons\//,'examples/jsm/').replace(/^three\//,'');
         return {path:join(threeRoot,libraryPath)};
       });
+      plugin.onResolve({filter:/^@native\/data-/},args=>({path:args.path,external:true}));
+      plugin.onLoad({filter:/.*/,namespace:'wechat-packed-json'},args=>({
+        resolveDir:join(game,'wechat/src/three'),loader:'js',
+        contents:'const {inflateJSON}=require("./packed-json.js");module.exports=inflateJSON(require('+JSON.stringify(args.path)+'));',
+      }));
       if(split)plugin.onResolve({filter:/\.json$/},async args=>{
         if(!args.path.startsWith('.'))return;
         const path=resolve(args.resolveDir,args.path),key=slash(relative(source,path));
@@ -52,7 +58,17 @@ export async function compileWechatThreeRuntime({origin,entry=join(game,'wechat/
         const bytes=await readFile(path);
         if(bytes.byteLength<16000)return;
         const id=createHash('sha256').update(key).digest('hex').slice(0,16),name='@native/data-'+id;
-        if(!dataModules.has(name))dataModules.set(name,'module.exports='+JSON.stringify(JSON.parse(bytes.toString('utf8')))+';\n');
+        if(!dataModules.has(name)){
+          let literal=JSON.stringify(JSON.parse(bytes.toString('utf8')));
+          const size=Buffer.byteLength(literal);
+          // Only large, repetitive tables justify an inflate on first use.
+          if(size>=192*1024){
+            const packed=gzipSync(literal,{level:9}).toString('base64');
+            if(packed.length<size/2){literal=JSON.stringify(packed);packedData.add(name);}
+          }
+          dataModules.set(name,'module.exports='+literal+';\n');
+        }
+        if(packedData.has(name))return {path:name,namespace:'wechat-packed-json'};
         return {path:name,external:true};
       });
       plugin.onLoad({filter:/\.[cm]?[jt]s$/},async info=>{

@@ -1,10 +1,11 @@
 import {updateBossHealth} from './boss-health.js';
 import {updateBossHitMotion} from './boss-hit-motion.js';
-import {BOSS_BAR,BOSS_WARNING_LAYER,bossWarningFrame,drawBossWarning,drawBossHealthBar} from './boss-encounter-hud.js';
+import {BOSS_BAR,BOSS_WARNING_LAYER,bossWarningFrame,drawBossHealthBar,prepareBossHealthIcon} from './boss-encounter-hud.js';
 import {projectBattleInterfaceIcon} from './project-battle-interface-art.js';
 import { cloudAssetBase } from './cloud-asset-base.js';
 import { Container, Rectangle, Sprite, Texture } from '../three/display.js';
 import { releaseOwnedCanvas } from './release-owned-canvas.js';
+import { drawNineSlice } from './canvas-surface.js';
 import { battleProgress } from './battle-progress.js';
 import { COMBAT_TYPE } from './combat-theme.js';
 import { PLAYER_LOW_HEALTH_RATIO,PLAYER_LOW_HEALTH_COLOR,playerHealthFrame } from '../replica/player-health-display.js';
@@ -14,8 +15,10 @@ import { leftOfMenuCenterY } from '../three/game-screen/home-navigation.js';
 
 // PSD coordinates are authoritative. Only the presentation is scaled to the
 // existing 600 × 1300 combat scene; the world and flight input stay untouched.
-const W = 750, H = 1624, TOP_HEIGHT = 460;
+const W = 750, H = 1624, TOP_HEIGHT = 460, PLAYER_HUD_TOP = 1500;
 const PLAYER_HEALTH_FILL_WIDTH = 694;
+// Include the title, icon and their hit recoil around the bar.
+const BOSS_STRIP_TOP = BOSS_BAR.y - 40, BOSS_STRIP_HEIGHT = 96;
 const assets = new Map();
 const loaded = new Set();
 let loadedImages=new Map(), loadedImageCount=-1;
@@ -28,30 +31,34 @@ const definitions = {
   pause:[4,16,132,132], stats:[460,36,273,111], grade:[133,50,163,63],
   'stats-coins':[460,36,273,111], coins:[469,99,35,40],
   wave:[182,193,387,47], combo:[266,250,218,68],
-  'progress-track':[472,152,248,14], 'progress-fill':[472,152,206,14],
   'health-track':[29,1550,688,39], 'health-fill':[31,1550,557,39],
   heart:[42,1542,58,50], 'level-decoration':[70,1518,34,35],
 };
 const extraAssets={
+  'progress-track':`${cloudAssetBase}art/psd-combat-v1/progress-track.png`,
+  'progress-fill':`${cloudAssetBase}art/psd-combat-v1/progress-fill.png`,
   'encounter-boss':projectBattleInterfaceIcon('bossProgress_icon'),
-  'encounter-warning':`${cloudAssetBase}art/project-enemy-markers-v1/warning.svg`,
+  'warning-boss':`${cloudAssetBase}art/project-encounter-warnings-v3/boss-dark-edge.png`,
+  'warning-elite':`${cloudAssetBase}art/project-encounter-warnings-v3/elite.png`,
 };
 function loadAssets(loadImageSurface) {
   for (const name of [...Object.keys(definitions),...Object.keys(extraAssets)]) {
     if (assets.has(name)) continue;
     const url = name === 'coins' ? RESOURCE_ICONS.coins.url : extraAssets[name] || `${cloudAssetBase}art/psd-combat-v1/${name}.png`;
+    const accept=image=>{
+      assets.set(name,image);
+      if(name==='encounter-boss')assets.set('boss-health-icon',prepareBossHealthIcon(image));
+      loaded.add(name);
+    };
     if (loadImageSurface) {
       // Reserve the slot while the shared loader resolves the package or CDN.
       assets.set(name, null);
-      loadImageSurface(url).then(image => {
-        assets.set(name, image);
-        loaded.add(name);
-      }, () => assets.delete(name));
+      loadImageSurface(url).then(accept, () => assets.delete(name));
       continue;
     }
     const image = new Image();
     assets.set(name, image);
-    image.onload = () => loaded.add(name);
+    image.onload = () => accept(image);
     image.onerror = () => assets.delete(name);
     image.src = url;
   }
@@ -118,6 +125,19 @@ function drawPlayerHealthBar(ctx, ratio, offsetY) {
   artwork(ctx,'health-fill',offsetY,PLAYER_HEALTH_FILL_WIDTH*ratio/definitions['health-fill'][2],ratio<=PLAYER_LOW_HEALTH_RATIO);
   ctx.restore();
 }
+function drawPlayerExperienceBar(ctx, fillWidth) {
+  const [x, healthY, width, healthHeight] = definitions['health-track'];
+  const y = healthY + healthHeight + 8 - PLAYER_HUD_TOP, height = 14;
+  const slices = [0, 14, 0, 14];
+  if (loaded.has('progress-track')) drawNineSlice(ctx, assets.get('progress-track'), x, y, width, height, slices);
+  if (fillWidth <= 0 || !loaded.has('progress-fill')) return;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, fillWidth, height);
+  ctx.clip();
+  drawNineSlice(ctx, assets.get('progress-fill'), x, y, width, height, slices);
+  ctx.restore();
+}
 function text(ctx, value, x, y, size, {align='left', color='#fff', glow='', stroke=0}={}) {
   ctx.save();
   // Dynamic HUD values share the lobby's upright font family.
@@ -153,9 +173,8 @@ function topHudLayout(mount, viewport, screen) {
   const canvasWidth=Math.ceil(span),pixelX=canvasWidth/width;
   const statsTop=(Math.max(safeTop,menuButton.bottom)+6-surfaceTop)*unitY;
   const [statsX,statsY,statsWidth,statsHeight]=definitions.stats;
-  const [,progressY,,progressHeight]=definitions['progress-track'];
   const gap=6*unitY,waveTop=definitions.wave[1];
-  const waveY=statsTop-statsY+progressY+progressHeight+gap-waveTop;
+  const waveY=statsTop+statsHeight+gap-waveTop;
   const bossY=statsTop+statsHeight+gap-(BOSS_BAR.y-28);
   const bossWaveY=bossY+BOSS_BAR.y+BOSS_BAR.height+gap-waveTop;
   return {
@@ -175,16 +194,17 @@ function resizeLayer(layer,width,height) {
   layer.sprite.texture=Texture.from(layer.canvas);previous.destroy(true);layer.key=null;
 }
 
-// Keep the warning and its side margins inside the actual combat viewport.
-function fitWarningViewport(layer,mount,bridge) {
+// Keep both rails at the screen edges throughout the entrance pulse.
+function fitWarningViewport(sprite,mount,bridge,{offsetY,scale}) {
+  const {y,height}=BOSS_WARNING_LAYER;
   const screenWidth=Number(bridge.app?.screen?.width??bridge.app?.renderer?.screen?.width);
-  if(!(screenWidth>0))return;
-  const left=mount.toLocal({x:0,y:0}).x,right=mount.toLocal({x:screenWidth,y:0}).x;
-  const width=right-left;if(!Number.isFinite(width)||width<=0)return;
-  const scale=Math.min(1,width/layer.canvas.width);
-  layer.sprite.x=left+(width-layer.canvas.width*scale)/2;
-  layer.sprite.y=BOSS_WARNING_LAYER.y+layer.canvas.height*(1-scale)/2;
-  layer.sprite.scale.set(scale,scale);
+  const left=screenWidth>0?mount.toLocal({x:0,y:0}).x:0;
+  const right=screenWidth>0?mount.toLocal({x:screenWidth,y:0}).x:W;
+  const span=right-left;if(!Number.isFinite(span)||span<=0)return;
+  const scaleX=span/sprite.texture.width;
+  const scaleY=Math.min(scaleX,height/sprite.texture.height);
+  sprite.position.set((left+right)/2,y+height/2+offsetY*Math.min(1,span/W));
+  sprite.scale.set(scaleX,scaleY*scale);
 }
 function repaint(layer,key,draw) {
   if (layer.key===key) return;
@@ -196,16 +216,27 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
   const mount = new Container(); mount.label='psd-combat-hud';
   mount.scale.set(600/W,1300/H);root.addChild(mount);
   const nativeTiles=bridge.nativeHudTiles;
-  const top=canvasLayer(mount,0,TOP_HEIGHT,W,nativeTiles), bottom=canvasLayer(mount,1500,124,W,nativeTiles);
-  const warningLayer=canvasLayer(mount,BOSS_WARNING_LAYER.y,BOSS_WARNING_LAYER.height,BOSS_WARNING_LAYER.width);
-  warningLayer.sprite.x=(W-BOSS_WARNING_LAYER.width)/2;
-  warningLayer.sprite.visible=false;
+  const top=canvasLayer(mount,0,TOP_HEIGHT,W,nativeTiles);
+  const bottom=canvasLayer(mount,PLAYER_HUD_TOP,H-PLAYER_HUD_TOP,W,nativeTiles);
+  const bossLayer=canvasLayer(mount,BOSS_STRIP_TOP,BOSS_STRIP_HEIGHT,W,nativeTiles);
+  bossLayer.sprite.visible=false;
+  if(nativeTiles)bossLayer.canvas.hidden=true;
+  const warningSprite=new Sprite(),warningTextures=new Map();
+  warningSprite.label='encounter-warning';
+  warningSprite.anchor.set(.5);warningSprite.visible=false;
+  const destroyWarning=warningSprite.destroy.bind(warningSprite);
+  warningSprite.destroy=options=>{
+    for(const texture of warningTextures.values())texture.destroy(true);
+    warningTextures.clear();destroyWarning(options);
+  };
+  mount.addChild(warningSprite);
   const [pauseX,pauseY,pauseWidth,pauseHeight]=definitions.pause;
   const pause = new Container(); pause.label='暂停';pause.position.set(pauseX,pauseY);
   pause.hitArea=new Rectangle(0,0,pauseWidth,pauseHeight);pause.enabled=true;pause.eventMode='static';
   pause.__pixiUiAction=()=>bridge.showPauseMenu();mount.addChild(pause);
   const pauseFace=canvasLayer(pause,0,pauseHeight,pauseWidth,nativeTiles);
   let tileLayout,viewport,layout=defaultTopLayout;
+  let bossOffsetX=0,bossOffsetY=-BOSS_STRIP_TOP;
   function reflow() {
     if(viewport===bridge.hudViewport)return false;
     viewport=bridge.hudViewport;
@@ -214,12 +245,18 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     resizeLayer(top,surface.width,surface.height);
     top.sprite.position.set(surface.x,surface.y);
     top.sprite.scale.x=surface.scaleX;
+    // Use the top canvas pixel grid so moving the bar to its own surface preserves its rasterization.
+    const bossLeft=Math.floor(layout.centerX),bossTop=Math.floor(layout.bossY)+BOSS_STRIP_TOP;
+    bossLayer.sprite.position.set(surface.x+bossLeft*surface.scaleX,surface.y+bossTop);
+    bossLayer.sprite.scale.x=surface.scaleX;
+    bossOffsetX=layout.centerX-bossLeft;bossOffsetY=layout.bossY-bossTop;
+    bossLayer.key=null;
     pause.position.set(button.x,button.y);pause.scale.set(button.scale);
     top.key=null;tileLayout=null;
     return true;
   }
   function showNativeTiles(){
-    if(!nativeTiles||warningLayer.sprite.visible)return false;
+    if(!nativeTiles||warningSprite.visible)return false;
     const {width,height}=bridge.app.renderer.screen;
     if(!(width>0&&height>0))return false;
     const origin=mount.toGlobal({x:0,y:0});
@@ -234,6 +271,7 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
       if(tile.parentNode!==nativeTiles)nativeTiles.append(tile);
     };
     place(top,top.sprite.x,top.sprite.y,top.sprite.scale.x,1);
+    place(bossLayer,bossLayer.sprite.x,bossLayer.sprite.y,bossLayer.sprite.scale.x,1);
     place(bottom,0,bottom.sprite.y);
     place(pauseFace,pause.x+(press?.x??0)*(1-factor)*pause.scale.x,
       pause.y+(press?.y??0)*(1-factor)*pause.scale.y,factor*pause.scale.x);
@@ -247,6 +285,9 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const game=bridge.game, boss=bridge.boss, stats=bridge.runStats||{};
     if(loadedImageCount!==loaded.size){
       loadedImages=new Map([...loaded].map(name=>[name,assets.get(name)]));
+      const fill=loadedImages.get('health-fill'),icon=assets.get('boss-health-icon');
+      if(fill)loadedImages.set('boss-health-fill',lowHealthFill(fill));
+      if(icon)loadedImages.set('boss-health-icon',icon);
       loadedImageCount=loaded.size;
     }
     const images=loadedImages;
@@ -254,23 +295,34 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
       if(loaded.has('pause'))ctx.drawImage(assets.get('pause'),0,0,pauseWidth,pauseHeight);
     });
     const warning=game.state==='playing'?bossWarningFrame(bridge.presentation?.bossWarning,bridge.reducedMotion?.()??reducedMotion?.matches??false):null;
-    warningLayer.sprite.visible=Boolean(warning);
-    if(warning)fitWarningViewport(warningLayer,mount,bridge);
-    const icon=warning&&images.get(warning.type===2?'encounter-boss':'encounter-warning');
-    const animating=warning&&(warning.alpha<1||warning.sweep<1);
-    repaint(warningLayer,warning?`${warning.type}:${animating?Math.floor(warning.elapsed*30):'hold'}:${Boolean(icon)}`:'',
-      ctx=>drawBossWarning(ctx,warning,icon));
+    const warningImage=warning&&images.get(warning.type===2?'warning-boss':'warning-elite');
+    warningSprite.visible=Boolean(warningImage&&warning.alpha>0);
+    if(warningSprite.visible){
+      if(!warningTextures.has(warning.type))warningTextures.set(warning.type,Texture.from(warningImage));
+      warningSprite.texture=warningTextures.get(warning.type);
+      warningSprite.alpha=warning.alpha;
+      fitWarningViewport(warningSprite,mount,bridge,warning);
+    }
     const bossActive=!!boss&&!boss.dead&&boss.hp>0&&!['ready','victory_result','fixed_result','defeat_result'].includes(game.state);
     const nextBoss=updateBossHealth(bossDisplay,bossActive?boss:null,Number.isFinite(game.elapsed)?game.elapsed*1000:now,reducedMotion?.matches??false);
     const nextMotion=updateBossHitMotion(bossMotion,bossActive?boss:null,Number.isFinite(game.elapsed)?game.elapsed*1000:now,reducedMotion?.matches??false);
-    const bossChanged=bossDisplay?.boss!==nextBoss.boss||bossDisplay?.ratio!==nextBoss.ratio||(bossMotion?.active&&!nextMotion.active);
+    const bossChanged=bossLayer.sprite.visible!==bossActive;
+    bossLayer.sprite.visible=bossActive;
+    if(bossChanged&&nativeTiles)bossLayer.canvas.hidden=!bossActive;
     bossMotion=nextMotion;bossHitStates.set(bridge,nextMotion);
     bossDisplay=nextBoss;bossHealthStates.set(bridge,nextBoss);
+    const ready=loaded.size;
+    if(bossActive){
+      const name=boss.visualSpec?.name||boss.config?.title||boss.config?.name;
+      const {x,y,iconX,iconY}=bossMotion;
+      const key=JSON.stringify([ready,name,Math.ceil(bossDisplay.ratio*100),Math.round(bossDisplay.bar*BOSS_BAR.width),
+        Math.round(bossDisplay.trail*BOSS_BAR.width),...[x,y,iconX,iconY].map(offset=>Math.round(offset*BOSS_BAR.width*4))]);
+      repaint(bossLayer,key,ctx=>drawBossHealthBar(ctx,boss,bossDisplay,images,bossMotion,bossOffsetX,bossOffsetY));
+    }
     const maxHp=Math.max(1,Number(stats.maxHp)||100),hp=Math.min(maxHp,Math.max(0,Number(game.hp)||0));
     const healthChanged=!healthDisplay||healthDisplay.hp!==hp||healthDisplay.maxHp!==maxHp;
     healthDisplay=playerHealthFrame(healthDisplay,hp,maxHp,Number(game.elapsed)||0,game.fixedGrowth?.state?.runId??game.peripheralSnapshot?.id??null,reducedMotion?.matches??false);
-    if (!layoutChanged&&!healthChanged&&!bossChanged&&now-lastUpdate<(healthDisplay.animating||bossDisplay.animating||bossMotion.active?1000/30:80)) return;lastUpdate=now;
-    const ready=loaded.size;
+    if (!layoutChanged&&!healthChanged&&!bossChanged&&now-lastUpdate<(healthDisplay.animating?1000/30:80)) return;lastUpdate=now;
     const seconds=Math.max(0,Math.floor(game.elapsed||0));
     const time=`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
     const coins=bridge.presentation?.hudCoins;
@@ -278,32 +330,21 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
     const kills=String(Math.round(game.kills||0)).padStart(3,'0');
     const grade=bridge.presentation?.grade ?? gradeFor(game.flightQuality).id;
     const combo=game.flightChainTimer>0 && game.flightQuality>0;
-    const progress=bridge.presentation?.progress ?? battleProgress(game,boss,stageDuration());
-    if(bossActive&&images.has('health-fill'))images.set('boss-health-fill',lowHealthFill(images.get('health-fill')));
-    const bossRatio=bossDisplay.ratio;
     const notice=game.battleNotice;
     const showNotice=game.state==='playing'&&notice&&game.elapsed-notice.at>=0&&game.elapsed-notice.at<notice.duration;
     const waveAlpha=waveNoticeAlpha(game);
-    const values=[ready,time,score,kills,grade,combo,game.flightQuality,game.flightChain,game.flightLastPoints,game.waveIndex,game.waveStatus?.total,waveAlpha,progress,bossActive,bossRatio,Math.round(bossDisplay.bar*BOSS_BAR.width),Math.round(bossDisplay.trail*BOSS_BAR.width),boss?.visualSpec?.name,showNotice?notice.text:'',...['x','y','iconX','iconY'].map(key=>Math.round(bossMotion[key]*BOSS_BAR.width*4))];
+    const values=[ready,time,score,kills,grade,combo,game.flightQuality,game.flightChain,game.flightLastPoints,
+      game.waveIndex,game.waveStatus?.total,waveAlpha,bossActive,showNotice?notice.text:''];
     repaint(top,JSON.stringify(values),ctx=>{
       ctx.save();ctx.translate(...layout.stats);
       artwork(ctx,Number.isFinite(coins)?'stats-coins':'stats');
       if(Number.isFinite(coins))artwork(ctx,'coins');
-      if(!bossActive){
-        artwork(ctx,'progress-track');
-        ctx.save();ctx.beginPath();ctx.rect(472,152,248*progress,14);ctx.clip();artwork(ctx,'progress-fill',0,248/206);ctx.restore();
-      }
       text(ctx,time,713,49,36,{align:'right',glow:'#00cfff'});
       text(ctx,score,510,106,24);text(ctx,kills,713,106,24,{align:'right'});
       ctx.restore();
       ctx.save();ctx.translate(...layout.grade);
       artwork(ctx,'grade');text(ctx,grade,255,59,48,{align:'center',glow:'#00cfff'});
       ctx.restore();
-      if(bossActive){
-        ctx.save();ctx.translate(layout.centerX,layout.bossY);
-        drawBossHealthBar(ctx,boss,bossDisplay,images,bossMotion);
-        ctx.restore();
-      }
       ctx.save();ctx.translate(layout.centerX,bossActive?layout.bossWaveY:layout.waveY);
       if(waveAlpha>0){
         ctx.save();ctx.globalAlpha=waveAlpha;
@@ -321,9 +362,12 @@ export function createPsdCombatHud(root, bridge, gradeFor, stageDuration = () =>
       ctx.restore();
     });
     const ratio=healthDisplay.value,shownHp=Math.ceil(ratio*maxHp),level=Math.max(1,Math.round(game.level||1));
-    repaint(bottom,JSON.stringify([ready,shownHp,maxHp,level,Math.round(ratio*PLAYER_HEALTH_FILL_WIDTH)]),ctx=>{
-      drawPlayerHealthBar(ctx,ratio,1500);
-      artwork(ctx,'heart',1500);artwork(ctx,'level-decoration',1500);
+    const progress=bridge.presentation?.progress ?? battleProgress(game,boss,stageDuration());
+    const experienceWidth=Math.round(definitions['health-track'][2]*Math.max(0,Math.min(1,Number(progress)||0)));
+    repaint(bottom,JSON.stringify([ready,shownHp,maxHp,level,Math.round(ratio*PLAYER_HEALTH_FILL_WIDTH),experienceWidth]),ctx=>{
+      drawPlayerHealthBar(ctx,ratio,PLAYER_HUD_TOP);
+      drawPlayerExperienceBar(ctx,experienceWidth);
+      artwork(ctx,'heart',PLAYER_HUD_TOP);artwork(ctx,'level-decoration',PLAYER_HUD_TOP);
       text(ctx,`等级  ${level}`,105,17,30,{glow:'#00cfff'});
       text(ctx,`生命 ${shownHp}/${Math.ceil(maxHp)}`,705,24,24,{align:'right',glow:'#ff4568'});
       text(ctx,`${Math.round(ratio*100)}%`,375,49,36,{align:'center',stroke:7});

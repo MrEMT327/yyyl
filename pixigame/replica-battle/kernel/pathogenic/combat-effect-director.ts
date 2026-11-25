@@ -49,6 +49,7 @@ const graphRoot=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>
 const rootProps=(graph:Row,path:string)=>graph.scenes[path].nodes.find((n:Row)=>n.path==='.').properties;
 /** Combat/raycast stay in the host; sourcePixelScale converts source pixels to screen pixels. */
 export class CombatEffectDirector {
+  private departing=false;
   private magnetic=new MagneticDischarges();
   private feedback=new CombatFeedback();
   private bursts=new LayeredCombatBursts();
@@ -76,7 +77,26 @@ export class CombatEffectDirector {
   setCameraOffset(x:number,y:number){this.camera=[x,y];this.source.setCameraOffset(x,y);}
   configureHost(host:BattleEffectsHost){this.host={...this.host,...host};}
   preload(urlFor:(p:string,t:Row)=>string,deferred?:ReadonlySet<string>){this.source.preload(urlFor,battleTexturePaths(this.graph),deferred);}
-  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];escortPlayer?:{x:number;z:number;hp?:number}}={}){if(run!==this.run||clock<this.clock){this.reset();this.run=run;}this.revision++;this.clock=clock;this.hitAdmission.beginFrame(clock);this.viewport.width=(this.scene.stage?.width ?? this.scene.scale?.width)??NaN;this.viewport.height=(this.scene.stage?.height ?? this.scene.scale?.height)??NaN;this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport);this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;this.magnetic.beginFrame(clock-this.visualLag,this.viewport);this.source.beginFrame(clock-this.visualLag);this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);}
+  beginFrame(clock:number,run:number,frame:{playerBulletCount?:number;visualClock?:number;escortSwords?:Projectile[];
+    escortPlayer?:{x:number;z:number;hp?:number};victoryDeparture?:boolean}={}){
+    const departing=frame.victoryDeparture===true;
+    // The battle clock stops during flyaway, so cached effects cannot expire on their own.
+    if(run!==this.run||clock<this.clock||(departing&&!this.departing)){this.reset();this.run=run;}
+    this.departing=departing;
+    this.clock=clock;
+    if(departing){this.source.beginFrame(clock);return;}
+    this.revision++;this.hitAdmission.beginFrame(clock);
+    this.viewport.width=(this.scene.stage?.width??this.scene.scale?.width)??NaN;
+    this.viewport.height=(this.scene.stage?.height??this.scene.scale?.height)??NaN;
+    this.feedback.beginFrame(this.viewport);this.bursts.beginFrame(this.viewport);this.impacts.beginFrame(this.viewport);
+    this.missileImpacts.beginFrame(this.viewport);this.missileSmoke.beginFrame(clock,this.viewport);
+    this.skinVfx.beginFrame(this.host.weaponSkinId?.()??0,clock,this.viewport);this.volumeMeshes.beginFrame();
+    this.motionAccents.beginFrame(this.viewport);this.equipmentAccentCount=0;this.frameCount=frame.playerBulletCount;
+    this.visualLag=Number.isFinite(frame.visualClock)?Math.max(0,Math.min(2184/65536,clock-frame.visualClock!)):0;
+    this.magnetic.beginFrame(clock-this.visualLag,this.viewport);this.source.beginFrame(clock-this.visualLag);
+    this.iceTrails.beginFrame(clock,this.camera);this.swordTrails.beginFrame(clock,this.camera);this.iaido.beginFrame(clock,this.camera);
+    this.escortSwords.beginFrame(clock,run,frame.escortSwords,frame.escortPlayer,clock-this.visualLag,this.viewport);
+  }
   private recordAuditEvent(event:Row){
     const events=this.audit.events;
     if(events.length>=1024){const removed=events.length-512;events.splice(0,removed);this.audit.eventsDropped+=removed;}
@@ -430,6 +450,7 @@ export class CombatEffectDirector {
   }
   warning(uid:number,index:number,remaining:number,from:ScreenPoint,to:ScreenPoint){const id=`warning:${uid}:${index}`,old=this.entries.get(id),age=old?old.age+this.clock-old.lastSeen:0,dx=to.x-from.x,dy=to.y-from.y,length=Math.hypot(dx,dy)/this.sourcePixelScale;this.prefire(id,uid,age,age+Math.max(0,remaining),{rootTransform:this.pose(from,Math.atan2(dy,dx)-Math.PI/2,1),beamLength:length,localEndpoint:[0,length]});}
   endFrame(){
+    if(this.departing){this.source.endFrame();return;}
     // Iteration includes newly appended children in original generation order.
     for(const[id,entry]of this.entries){
       if(entry.independent){entry.age=this.clock-entry.bornAt;if(entry.age<0)continue;}

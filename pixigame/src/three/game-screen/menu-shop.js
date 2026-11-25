@@ -132,15 +132,12 @@ export function shopMenu(data,w,h,t,chrome,scrollTo=null){
     if(!inWindow(y,157.7*u))return;
     const [type,amount]=Object.entries(o.reward)[0],id=shopItemId(type),x=(14.8+i%3*116.8)*u,b=box(x,y,108.4*u,157.7*u);
     const short=!blocked&&isResourceShortage(actual.reason),cost=actual.cost,reason=blocked?(s.rewardPending?'奖励待保存':'奖励处理中'):availabilityMessage(actual.reason);
-    // The PSD frame is only a border; restore the solid card face and its
-    // original bottom pattern, instead of showing the hangar through the card.
     rows.panel(x,y,b.w,b.h,{fill:'#20394b',stroke:null,opacity:1,cut:7*u});
     pic(rows,t,'/art/weapon-catalog-psd-v1/triangles-blue.png',b,false,{...artwork,onImage(mesh){
       const image=mesh.material.map.image, height=b.w*(image.naturalHeight||image.height)/(image.naturalWidth||image.width);
       mesh.position.y=y+b.h-height/2;
       mesh.scale.y=-height;
     }});
-    slice(rows,t,'/art/weapon-catalog-psd-v1/frame-blue.png',b,10*u,18,artwork);
     words(rows,label,x+5*u,y+15*u,12*u,{align:'left',maxWidth:102*u});
     const path=shopProductImage(type,amount);
     const preview=box(x+5*u,y+31*u,98*u,77*u);pic(rows,t,path,box(preview.x+8*u,preview.y+7*u,82*u,63*u),true,artwork);

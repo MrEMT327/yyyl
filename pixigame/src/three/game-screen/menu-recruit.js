@@ -7,26 +7,12 @@ import {pilotCardQuality} from '../../ui/pilot-card-quality.js';
 import {supplyPool} from '../../ui/supply-pools.js';
 import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
 import {recruitCardLight} from './recruit-card-light.js';
-import {recruitPreview} from './recruit-preview-atlas.js';
 
 const focusX={'pilot-01':.70,'pilot-04':.53,'pilot-05':.54,'pilot-07':.60,'pilot-08':.43,'pilot-10':.61};
-function recruitImage(a,t,url,b,{atlas,tile,showOriginal,contain,artwork,onReplace}){
-  if(!atlas)return pic(a,t,url,b,contain,artwork);
-  let thumbnail;
-  const original=showOriginal||!tile||atlas?.userData.failed?pic(a,t,url,b,contain,{...artwork,onImage(){
-    if(thumbnail)thumbnail.visible=false;
-    onReplace?.();
-  }}):null;
-  if(original?.visible||!atlas?.image||!tile)return original;
-  const {width,height,padding}=recruitPreview,side=tile.size-2*padding;
-  thumbnail=a.image(atlas,b.x,b.y,b.w,b.h,{x:(tile.x+padding)/width,y:(tile.y+padding)/height,width:side/width,height:side/height});
-  return thumbnail;
-}
 
 export function recruitMenu(data,w,h,t,chrome){
   const s=cloudNativeRecruitSnapshot(data.snapshot),pool=supplyPool(s,'pilot'),pilot=recruitFeatured(s,data.selected);
-  const {artwork,primary,recruitAtlas}=chrome;
-  const showOriginal=!recruitAtlas||data.recruitDetail;
+  const {artwork,primary}=chrome;
   const u=w/369.453,foot=48+15+(s.storageWarning?18:0)+(s.rewardPending?32:0),fy=chrome.navY-foot;
   const side=w*.2455,gap=8,stripH=side+17,sy=fy-stripH,vTop=chrome.top,vh=sy-vTop;
   t.region('portrait-stage',box(0,vTop,w,vh),vh);
@@ -36,8 +22,7 @@ export function recruitMenu(data,w,h,t,chrome){
     const scale=id==='pilot-01' ? .525 : id==='pilot-08' ? .50 : .6;
     const span=f?vh*(id==='pilot-08'?1.65:1.95)*scale*f.displayScale/(f.bounds[3]-f.headY):w;
     const x=w*(w<=360 ? .76 : .68)-(focusX[id]||.5)*span,y=vTop+vh*(id==='pilot-01' ? .22 : .12)-(f?.headY||0)*span;
-    recruitImage(stage,t,p.image,box(x,y,span,span),{atlas:recruitAtlas,tile:recruitPreview.tiles.get(id)?.portrait,
-      showOriginal,contain:true,artwork:recruitAtlas?{...primary,keepUnused:false}:primary});
+    pic(stage,t,p.image,box(x,y,span,span),true,{...primary,keepUnused:false});
     const left=w*.04,top=vTop+(['pilot-01','pilot-10'].includes(id)?w*.04:vh*.17);
     const style=pilotCardQuality(pilot.rarity,pilot.qualityRank,pilot.qualityKnown);
     stage.quad(left,top,3,18,style.color);
@@ -61,21 +46,13 @@ export function recruitMenu(data,w,h,t,chrome){
   area(t,'rewards','奖励预览',box(w-68*u,iy,58*u,44),'recruitRewards');
   const zone=box(w*.03,sy+5,w*.94,side+6),cards=t.layer('roster','roster').art;
   const step=side+gap;
-  t.region('roster',zone,Math.max(0,s.pilots.length*step-gap),'x',{redrawStep:data.prioritizedArtwork?step:0});
-  const visibleCards=data.prioritizedArtwork?t.scrollWindow('roster'):null;
+  t.region('roster',zone,Math.max(0,s.pilots.length*step-gap),'x');
   s.pilots.forEach((row,i)=>{
     const selected=pilot?.id===row.id,b=box(zone.x+i*step,zone.y+3,side,side);
     t.anchor('roster-'+row.id,i*step);
     area(t,'pilot-'+row.id,row.name,b,'recruitPreview',{id:row.id},'roster');
-    if(visibleCards&&(b.x+b.w<=visibleCards.left||b.x>=visibleCards.right))return;
     const tex=art[(selected?'roster-active-':'roster-')+row.id];
-    if(tex){
-      let fallback;
-      const tile=recruitPreview.tiles.get(row.id)?.[selected?'selected':'card'];
-      const face=recruitImage(cards,t,tex,b,{atlas:recruitAtlas,tile,showOriginal,contain:false,artwork,
-        onReplace(){if(fallback)fallback.visible=false;}});
-      if(data.progressive&&!face?.visible)fallback=words(cards,row.name,b.x+b.w/2,b.y+b.h/2,12,{maxWidth:b.w-6});
-    }
+    if(tex)pic(cards,t,tex,b,false,artwork);
     else{
       const grade=pilotCardQuality(row.rarity,row.qualityRank,row.qualityKnown);
       pic(cards,t,'/art/psd-choice-v1/'+grade.choiceFrame,b,false,artwork);pic(cards,t,row.avatar,box(b.x+side*.06,b.y+side*.06,side*.88,side*.88),true,artwork);

@@ -10,7 +10,7 @@ export function createWechatOrbit(platform,region,{onChange,onDragEnd}){
     pitch=Math.min(maxPitch,Math.max(-maxPitch,pitch+(point.y-last.y)/width*Math.PI));
     yaw+=(point.x-last.x)/width*Math.PI*2;yaw=Math.atan2(Math.sin(yaw),Math.cos(yaw));
     last=point;interacted=true;onChange();
-  },1,point=>region.hit({clientX:point.x,clientY:point.y}));
+  },1,point=>region.hit({clientX:point.x,clientY:point.y}),{preserveActive:true});
   return {get pitch(){return pitch;},get yaw(){return yaw;},get dragging(){return Boolean(last);},
     get interacted(){return interacted;},cancel,destroy(){unbind();cancel();}};
 }

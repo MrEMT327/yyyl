@@ -1,6 +1,6 @@
 import {clamp,smooth,supplyChestPose,supplyCanopyTransform,traceSupplyCords} from "../../../replica-battle/kernel/supply-chest-pose";
 const SIZE=76;
-const canopyCordAnchors = [[0.08,0.7586],[0.2743,0.7816],[0.7257,0.7701],[0.92,0.7586]];
+const canopyCordAnchors = [[0.08, 0.7869], [0.2743, 0.7642], [0.7257, 0.7642], [0.92, 0.7869]];
 
 export function updateSupplyChestVisual(view, chest, duration, animationAge) {
     const pose = supplyChestPose(chest, duration, animationAge), image = view.userData['supplyChestBody'];

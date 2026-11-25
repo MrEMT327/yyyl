@@ -1,14 +1,97 @@
 import {Container, Graphics} from '../three/display.js';
-import {DataTexture, LinearFilter} from 'three';
+import {Color, DataTexture, LinearFilter} from 'three';
 import {SUPPLY_RING, supplyMotion} from './battle-supply-motion.js';
 import {upgradeIconLayout} from './upgrade-icon-layout.js';
 import {upgradeFeedbackProfile} from './upgrade-feedback-profile.js';
-import {paintPsdPopup} from './psd-popup-art.js';
+import {paintPsdPopup,psdPopupArtTextures} from './psd-popup-art.js';
 import {paintPsdPopupTitle} from './psd-popup-title.js';
-import {paintCombatArt} from './combat-art.js';
+import {combatArtTexture,paintCombatArt,retryCombatArtwork} from './combat-art.js';
 import {supplyResultRows,supplyResultLayout} from './battle-supply-results.js';
 
-function renderSupplyResults({host,bridge,refs,supply,art,place,text,button,surface,symbol}) {
+const SUPPLY_ART_WAIT_MS=5000;
+const unavailable=Object.freeze({failed:true});
+const iconKey=(card,weapons)=>card?.itemId??weapons?.find(weapon=>weapon.id===card?.ownerId)?.itemId;
+const ready=texture=>texture?.image?.width>0&&texture.image.height>0&&!texture.userData.artworkFailed;
+const showsReceipts=supply=>supply.phase==='ready'&&Array.isArray(supply.rewards);
+
+export function createBattleSupplyArtwork(textures,warmTexture){
+  let shared,request;
+  const uploads=new Set();
+  const priority=()=>request&&!request.result?2:-1;
+  function prewarm(){
+    if(!shared){
+      const frame=psdPopupArtTextures('primary',priority);
+      const card=combatArtTexture('card',priority),slot=combatArtTexture('slot',priority);
+      const button=combatArtTexture('primary',priority);
+      shared={frame,card,slot,button};
+      if(warmTexture)for(const texture of [...frame,card,slot,button])uploads.add(texture);
+    }
+    for(const texture of uploads){
+      if(!ready(texture))continue;
+      uploads.delete(texture);
+      warmTexture(texture);
+    }
+  }
+  return {
+    prewarm,
+    reset(){request=undefined;},
+    open(supply,weapons,now){
+      if(!supply)return null;
+      const id=supply.pickupAt??supply.chestId??supply;
+      if(id!==request?.id){
+        prewarm();
+        const wheel=!showsReceipts(supply);
+        const slots=supply.slots??[];
+        const cards=wheel?[...slots,...(supply.reward?[supply.reward]:[]),...(supply.rewards??[])]:supply.rewards;
+        const icons=new Map(cards.map(card=>{
+          const key=iconKey(card,weapons);
+          return [key,textures.get(key)];
+        }));
+        const {frame,card,slot,button}=shared;
+        const required=[button,...(wheel?frame:[]),...(cards.length?[card,slot]:[]),...icons.values()];
+        request={id,startedAt:now,required,icons,retried:new Set(),result:wheel&&!slots.length?unavailable:null};
+      }
+      if(request.result)return request.result;
+      if(request.required.every(ready)){
+        request.result={icons:request.icons,shownAt:now};
+        return request.result;
+      }
+      if(now-request.startedAt>=SUPPLY_ART_WAIT_MS||request.required.some(texture=>!texture)){
+        return request.result=unavailable;
+      }
+      for(const texture of request.required){
+        if(!texture.userData.artworkFailed)continue;
+        if(request.retried.has(texture)||!retryCombatArtwork(texture,priority)){
+          return request.result=unavailable;
+        }
+        request.retried.add(texture);
+      }
+      return null;
+    },
+  };
+}
+
+function paintSupplyPlate(surface,width,height,gradient) {
+  const mesh=paintCombatArt(surface,'card',0,0,width,height);
+  if(!gradient)return;
+  const {material}=mesh;
+  const [left,right]=gradient.map(value=>new Color(value));
+  // Keep the PSD highlights and cut corners. Blend out its original blue fill
+  // before applying the new color so the darker text area stays neutral.
+  material.onBeforeCompile=shader=>{
+    shader.uniforms.supplyColorLeft={value:left};
+    shader.uniforms.supplyColorRight={value:right};
+    shader.fragmentShader='uniform vec3 supplyColorLeft;\nuniform vec3 supplyColorRight;\n'+
+      shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+        float down = 1.0 - vMapUv.y;
+        vec3 body = mix(diffuseColor.rgb, vec3(.006,.009,.015), smoothstep(.34,.59,down));
+        vec3 tint = mix(supplyColorLeft, supplyColorRight, smoothstep(0.0,1.0,vMapUv.x));
+        diffuseColor.rgb = mix(body, tint, smoothstep(.53,1.0,down));`);
+  };
+  material.customProgramCacheKey=()=> 'supply-plate-gradient';
+}
+
+function renderSupplyResults({host,bridge,refs,supply,icons,place,text,button,surface}) {
   const rows=supplyResultRows(supply.rewards),layout=supplyResultLayout(rows.length);
   const root=new Container();root.label='supply-result-summary';host.addChild(root);
   place(root,text('补给奖励',{size:34,weight:'900',fill:0xf4f7fb,anchorX:.5}),300,186);
@@ -16,21 +99,20 @@ function renderSupplyResults({host,bridge,refs,supply,art,place,text,button,surf
   for(const [i,row] of rows.entries()){
     const node=new Container();node.label='supply-result-row';
     node.position.set(layout.x,layout.top+i*(layout.height+layout.gap));root.addChild(node);
-    const h=layout.height,w=layout.width,accent=row.breakthrough?0xffd55e:0x82c9ed;
+    const h=layout.height,w=layout.width,{gradient,accent}=row.plate;
     const outline=[16,0,w-24,0,w,24,w,h-16,w-16,h,0,h,0,16];
     const glow=new Graphics();glow.eventMode='none';
     if(row.breakthrough)glow.poly(outline).stroke({color:accent,width:13,alpha:.12}).stroke({color:accent,width:6,alpha:.3});
     node.addChild(glow);
-    surface(node,s=>paintCombatArt(s,'card',0,0,w,h));
+    surface(node,s=>paintSupplyPlate(s,w,h,gradient));
     const border=new Graphics().poly(outline).stroke({color:accent,width:2,alpha:.95});node.addChild(border);
     const size=Math.min(128,h-22),iconY=(h-size)/2;
     surface(node,s=>paintCombatArt(s,'slot',12,iconY,size,size));
-    const texture=art?.get(row.card.itemId);
-    if(texture)surface(node,s=>{
+    const texture=icons.get(iconKey(row.card,bridge.game.fixedLoadout?.weapons));
+    surface(node,s=>{
       const fit=upgradeIconLayout(texture,{x:22,y:iconY+10,width:size-20,height:size-20});
       s.image(texture,fit.x,fit.y,fit.width,fit.height,fit.crop);
     });
-    else symbol(node,'star',36,iconY+24,size-48,'#ffdb64');
     const left=158,contentWidth=w-left-18;
     const title=text(row.name,{size:27,fill:0xf5f8fa,weight:'900'});
     if(title.width>contentWidth)title.scale.set(contentWidth/title.width);
@@ -117,16 +199,17 @@ function updateWeaponLight(board, now, supply, reduced) {
   core.alpha = (.17 + .07 * breath) * brightness;
 }
 
-export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,backdrop,surface,symbol}) {
+export function renderBattleSupply({root:host,bridge,refs,artwork,place,text,button,backdrop,surface}) {
   const supply=bridge.game.battleSupply;
-  if(!supply)return;
+  if(!supply||!artwork?.icons)return;
+  const {icons,shownAt}=artwork;
   const ready=supply.phase==='ready',rolling=supply.phase==='rolling';
   const gold=0xffda42;
   // Native UI_Punchboard has a stretched black Image with alpha 192/255.
   // The embedded battle owns its full-stage dimmer; no narrow black panel.
   backdrop(host,0x000000,192/255);
-  if(ready&&Array.isArray(supply.rewards)){
-    renderSupplyResults({host,bridge,refs,supply,art,place,text,button,surface,symbol});return;
+  if(showsReceipts(supply)){
+    renderSupplyResults({host,bridge,refs,supply,icons,place,text,button,surface});return;
   }
   const root=new Container();root.label='supply-entry-panel';host.addChild(root);
   const pickup=supply.pickupView;
@@ -145,13 +228,11 @@ export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,
   surface(root,s=>paintPsdPopupTitle(s,'primary','战斗补给',28,190,544,676));
   label(root,supply.subtitle || (supply.evolutionExhausted?'形态已满 · 获得武装强化':'精英击破 · 必得形态强化'),300,289,18,0x23415a);
   const icon=(parent,card,x,y,size)=>{
-    const weapon=bridge.game.fixedLoadout.weapons.find(w=>w.id===card.ownerId);
-    const texture=art?.get(weapon?.itemId);
-    if(texture)surface(parent,s=>{
+    const texture=icons.get(iconKey(card,bridge.game.fixedLoadout.weapons));
+    surface(parent,s=>{
       const fit=upgradeIconLayout(texture,{x,y,width:size,height:size});
       s.image(texture,fit.x,fit.y,fit.width,fit.height,fit.crop);
     });
-    else symbol(parent,card.key==='cadence'?'cadence':card.key==='power'?'power':'star',x+size*.2,y+size*.2,size*.6,'#ffdb64');
   };
   const cells=[];
   SUPPLY_RING.forEach(([col,row],i)=>{
@@ -178,7 +259,7 @@ export function renderBattleSupply({root:host,bridge,refs,art,place,text,button,
   root.addChild(button({x:104,y:922,width:392,height:92,variant:'primary',
     text:ready?'继续战斗':rolling?'点击跳过':'开始',fontSize:34,
     onPress:()=>{if(supply.disabled)return;return ready?bridge.claimBattleSupply():rolling?bridge.skipBattleSupply():bridge.startBattleSupply();}}));
-  refs.battleSupplyBoard={cells,light,hero,sparks,rewardProfile,lastStep:-1,entry:root,pickup,
+  refs.battleSupplyBoard={cells,light,hero,sparks,rewardProfile,lastStep:-1,entry:root,shownAt,pickup,
     pickupScale:pickup?.scale.x||1,pickupX:supply.pickupX,pickupY:supply.pickupY};
 }
 
@@ -194,7 +275,7 @@ export function updateBattleSupply(refs,supply,now,onTick) {
       glow.alpha=reduced?1:.83+.17*Math.sin(age*3-i*.4);
     });return;
   }
-  const entryT=reduced?1:Math.max(0,Math.min(1,(now-(supply.pickupAt??-Infinity))/360));
+  const entryT=reduced?1:Math.max(0,Math.min(1,(now-(board.shownAt??supply.pickupAt??-Infinity))/360));
   board.entry.alpha=.2+.8*entryT;
   board.entry.pivot.set(300,650);board.entry.position.set(300,650);
   board.entry.scale.set(.96+.04*entryT);

@@ -48,6 +48,7 @@ export type BattlePlatform = {
   readSharedLoadoutJSON?: ReadSharedLoadoutJSON;
   warmBattleImages?: (urls: string[], signal: AbortSignal) => Promise<void>;
   warmBattleTerrain?: (urls: string[], signal: AbortSignal) => Promise<unknown>;
+  loadingFrame?: () => Promise<void> | void;
   loadBattleData?: (chapterId: number, signal: AbortSignal, prepare: () => Promise<PreparedBattleData>) => Promise<PreparedBattleData>;
   hudHost?: unknown;
   skinHost?: Parameters<typeof import('../src/replica/project-presentation.js').createProjectPresentation>[0]['host'];
@@ -127,6 +128,9 @@ function fail(error: unknown) {
 
 async function initialize(appearance: any, initialConfiguration?: unknown) {
   if (!requestedChapter) throw new Error('出击关卡不存在');
+  // Present the loading animation before local battle data starts decoding.
+  if(platform.loadingFrame)await platform.loadingFrame();
+  if(lifetime.disposed)return;
   checkpointMemory('battle-load-start');
   reportLoading('data',0);
   const fetchResource = platform.fetchResource;
@@ -144,6 +148,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     chapterId, baseURL: battleURL, fetchResource, signal: lifetime.signal,
     loadCatalog: platform.loadCatalog,
     readSharedLoadoutJSON: platform.readSharedLoadoutJSON,
+    loadingFrame: platform.loadingFrame,
     onProgress: (completed, total) => reportLoading('data', completed / total),
   });
 
@@ -154,6 +159,7 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     void platform.warmBattleTerrain(sources, lifetime.signal);
   }
   const data = await battleData;
+  if(platform.loadingFrame)await platform.loadingFrame();
   if (lifetime.disposed) return;
   const content = createBattleRunContent(data.content), { catalog } = data;
   checkpointMemory('battle-data-ready');
@@ -201,6 +207,8 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
   lifetime.add(() => graphics.destroy());
   const watchGraphics=(canvas:HTMLCanvasElement,context:WebGLRenderingContext|WebGL2RenderingContext)=>{graphics.watch(canvas,context);battlePerformance?.watch(canvas,context);};
   reportLoading('appearance',0);
+  if(platform.loadingFrame)await platform.loadingFrame();
+  if(lifetime.disposed)return;
   const appearanceReady = engine.createAppearance(content, appearance, fail, watchGraphics,
     (completed,total)=>reportLoading('appearance',completed/total),
     ()=>audio.effect('project:flight-roll',.22,.5),platform.skinHost,aircraftReady).then(skin => {
@@ -437,6 +445,8 @@ async function initialize(appearance: any, initialConfiguration?: unknown) {
     });
     lifetime.add(bindings.watchVisibility(frameReuse.invalidate,lifetime.signal));
   }
+  if(platform.loadingFrame)await platform.loadingFrame();
+  if(lifetime.disposed)return;
   engine.start({scene,platform,lifetime,frameReuse,graphics,battlePerformance,
     reportLoading,fail,renderedFrame(){
       if(lifetime.disposed||hidden()||graphics.blocked())return;

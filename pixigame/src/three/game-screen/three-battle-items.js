@@ -47,6 +47,12 @@ export function floatingText(host,fx,layout){
   const pt=host.project(fx.x,fx.z),margin=node.userData.width*layout.scale/2+4,color=parseInt(layout.color.slice(1),16);
   locate(node,Math.max(margin,Math.min(540-margin,pt.x+layout.x)),Math.max(30,Math.min(948,pt.y+layout.y)));
   node.scale.set(layout.scale,layout.scale,1);
+  node.matrixAutoUpdate=!layout.slant;
+  if(layout.slant){
+    node.updateMatrix();
+    // Give the Chinese label the same forward lean as the damage digits.
+    node.matrix.elements[4]=layout.slant*layout.scale;
+  }
   for(const glyph of node.children){host.stage.tint(glyph,color);opacity(glyph,layout.alpha);}
 }
 
@@ -88,8 +94,8 @@ export function pickupArt(host,pickup,alpha){
   }else{
     const mesh=node.userData.art;opacity(mesh,alpha);
     if(type==='coins'){
-      const p=host.source.coinPose(pickup),s=baked.coinSize;
-      region(mesh,host.art.get(type),(p.frame%8)*s,Math.floor(p.frame/8)*s,s,s);sized(mesh,p.width,p.height);
+      const p=host.source.coinPose(pickup),atlas=host.art.get(type),s=atlas.width/8;
+      region(mesh,atlas,(p.frame%8)*s,Math.floor(p.frame/8)*s,s,s);sized(mesh,p.width,p.height);
     }
   }
   return true;

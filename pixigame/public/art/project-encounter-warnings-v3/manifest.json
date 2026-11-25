@@ -1,0 +1,38 @@
+{
+  "source": "Built-in ImageGen",
+  "references": [
+    "Prior full-width battle preview",
+    "Red flight HUD banner drafts",
+    "art/psd-combat-v1/stats-coins.png",
+    "art/project-enemy-markers-v1/elite.png"
+  ],
+  "prompts": {
+    "elite": "Gently simplify Image 1, the existing original RED flight-game encounter warning banner for 少女航线. This is a small definite refinement, not a new layout: keep the crisp white centered text, clear center emblem raised above the shoulders, the same straight side-to-side full-bleed crimson glass strip, upward central bracket silhouette and title placement, and realistic glow baked into game art. Match its height and dimensions. Both rails and the red backing must meet the left and right image boundaries, flush with no vertical end-caps or horizontal inset. Remove the extra secondary reticle at far left if present, ornate thin stepped outline traces on both ends, small diagonal calibration ticks, clutter under the headline, and most small specular hotspots. Use smoother large dark burgundy surfaces, delicate steel top facets on the central brackets, two crisp warmly lit edge rails, and one thin tapered inset line on each side of the headline. Keep a little depth and the sporty emergency atmosphere, with cleaner outer thirds and the same dramatic span. The entire sprite is about 3.6:1 in width to visible height. Above and below the banner, and around the raised emblem, use genuine transparent pixels, no solid background, no screenshot, no checkerboard pattern, no other words or graphics. Preserve readability at phone size.\n\nKeep the original central triangle with bright exclamation mark and the refined round red optical reticle. Simplify a small amount only. Keep the warmth distinction of the original strong-enemy warning. The title must be precisely 强敌来袭, characters 强 敌 来 袭, no punctuation or extra title.",
+    "boss": "Gently simplify Image 1, the existing original RED flight-game encounter warning banner for 少女航线. This is a small definite refinement, not a new layout: keep the crisp white centered text, clear center emblem raised above the shoulders, the same straight side-to-side full-bleed crimson glass strip, upward central bracket silhouette and title placement, and realistic glow baked into game art. Match its height and dimensions. Both rails and the red backing must meet the left and right image boundaries, flush with no vertical end-caps or horizontal inset. Remove the extra secondary reticle at far left if present, ornate thin stepped outline traces on both ends, small diagonal calibration ticks, clutter under the headline, and most small specular hotspots. Use smoother large dark burgundy surfaces, delicate steel top facets on the central brackets, two crisp warmly lit edge rails, and one thin tapered inset line on each side of the headline. Keep a little depth and the sporty emergency atmosphere, with cleaner outer thirds and the same dramatic span. The entire sprite is about 3.6:1 in width to visible height. Above and below the banner, and around the raised emblem, use genuine transparent pixels, no solid background, no screenshot, no checkerboard pattern, no other words or graphics. Preserve readability at phone size.\n\nMake one specific icon swap: Image 2 is the exact original transparent mascot from the project, and should replace the spaceship in the raised central holder. Insert the exact flat cartoon asset as-is: small round plum/magenta devil head, two short purple horns, narrow orange eyes, two small white triangular teeth and the thin pale outline, retaining the same contours, expression and colors. Do not redesign or render the cartoon in 3D and do not add another facial mark, helmet, creature body, ship or ornament. It sits centered in the original red flight HUD frame, with air around it and slightly above the headline. Clean up the scattered mini highlights and tiny markings in the bar, retaining the richer crimson severity. The headline must be precisely 首领来袭, characters 首 领 来 袭, no punctuation or extra title.",
+    "bossDarkEdge": "Precise object edit to the first image, an existing transparent wide PNG game HUD sprite. The second image is only the user's close-up identifying the small plum devil emblem and its thin white outer outline. Make exactly one local change to Image 1: remove the bright white/gray sticker-like outline around the silhouette of the devil's head and both horns. Keep the devil's own existing narrow dark purple contour, with a restrained deep aubergine edge (#261124 to #39182F) where the white line was. All of the outer edge must read as dark, never as white, grey or light pink. The eyes remain vivid orange, the two fangs remain white, and the plum skin, horns, expression, black internal lines, size, position and proportions remain identical. Keep the red brackets, their red highlights, the edge-to-edge horizontal band and fine red rails, all spacing, lighting, transparency and the four white Chinese title characters 首领来袭 exactly as in Image 1. Preserve the same wide landscape framing and pixel geometry. True RGBA alpha outside the artwork, with no black rectangle, checkerboard pattern or other backdrop. Return the complete revised banner, no extra versions or graphic elements."
+  },
+  "files": [
+    {
+      "file": "elite.png",
+      "width": 768,
+      "height": 199,
+      "sha256": "cdbd8abf487b02ec38b630a7724f2296db7f2cecaa145739b6c62bbd376768aa",
+      "masterSha256": "daebcda6b3f119510f1a5cea8144b4550b96b7d745642bb7b773a2b8ed9dd3f9"
+    },
+    {
+      "file": "boss.png",
+      "width": 768,
+      "height": 226,
+      "sha256": "577b3327850cbc153326dc12281aac6b8abef0d926f69527cdcf7577bfaca38b",
+      "masterSha256": "e697c5cee0c978ebeb3ed514fcd63c62d5e5a3e17e8b3627067b629c42f0141b"
+    },
+    {
+      "file": "boss-dark-edge.png",
+      "width": 768,
+      "height": 226,
+      "sha256": "dd0c944c83d90578eb70d806314092b9018e4cd7d4bb8a9170b4ac6cb930ca63",
+      "masterSha256": "9b2fb1f449c54faf753eccb635884c638885378a5f69cf61df30d3243a8028df",
+      "editSource": "boss.png"
+    }
+  ]
+}

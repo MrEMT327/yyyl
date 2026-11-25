@@ -125,6 +125,8 @@ type EnemyBehavior = {
   rebound?: NativeEnemyReboundState; reboundTaskReady?: boolean;
 };
 
+const DODGE_FEEDBACK_WINDOW = 0.2;
+
 export class Simulation {
   private readonly statuses: EnemyStatusEffects;
   private readonly playerStatuses: EnemyStatusEffects;
@@ -209,6 +211,8 @@ export class Simulation {
   bestCombo = 0;
   player = { x: 0, z: -10, oldX: 0, oldZ: -10, hp: 600, maxHp: 600, attack: 100, invincible: 0, fireAt: 0, hitFlash: 0 };
   playerMotion = { x: 0, z: 0, rawX: 0 };
+  private readonly dodgeOrigin = { x: 0, z: 0, until: -Infinity };
+  private readonly dodgedProjectiles = new WeakSet<Projectile>();
   enemies: Enemy[] = [];
   projectiles: Projectile[] = [];
   pickups: Pickup[] = [];
@@ -412,6 +416,7 @@ export class Simulation {
     this.lastCompletedWave = 0;
     this.wave = this.level = 1; this.serial = 1; this.shots = []; this.pendingLevels = 0; this.seed = 0x1badf00d;
     this.playerBulletHurtCount = 0;
+    this.dodgeOrigin.until = -Infinity;
     this.rerollsUsed = 0; this.skillChoiceCategory.index = 0; this.breakthroughChoice = false;
     this.fallbackPool.reset(); this.fallbackLearned.clear();
     this.currentMissionId = 0; this.runId++; this.waveUIRequest = undefined; this.completedWaveUI = undefined;
@@ -657,7 +662,14 @@ export class Simulation {
     // SetTargetPosition clamps the INPUT target. A moving camera must not
     // re-clamp an already accepted, unchanged drag target every logic tick.
     p.x += movement.x; p.z += movement.z;
-    if (p.x !== p.oldX || p.z !== p.oldZ) this.scrollCamera?.setTargetPosition(p);
+    if (p.x !== p.oldX || p.z !== p.oldZ) {
+      this.scrollCamera?.setTargetPosition(p);
+      if (this.clock >= this.dodgeOrigin.until) {
+        this.dodgeOrigin.x = p.oldX;
+        this.dodgeOrigin.z = p.oldZ;
+        this.dodgeOrigin.until = this.clock + DODGE_FEEDBACK_WINDOW;
+      }
+    }
     p.invincible = Math.max(0, p.invincible - dt); p.hitFlash = Math.max(0, p.hitFlash - dt);
     this.applyStatusPulses(this.statuses.advance(dt, uid => this.enemies.some(enemy => enemy.uid === uid && !enemy.dead), () => this.random()));
     // Type-5 buff first ticks on the next frame, before this frame's new entries.
@@ -893,6 +905,7 @@ export class Simulation {
     }
   }
   private beginPlayerDeath() {
+    this.dodgeOrigin.until = -Infinity;
     // GetRebornType/ReduceReborn@6f8a800/6f8a984: skill1 (type4) wins
     // over manual/ad revival and consumes its count at death-state entry.
     const revives = (this.installedWeaponActions.get(0) || []).filter(command => command.action === 191);
@@ -3662,7 +3675,10 @@ export class Simulation {
     }
   }
   private collisions(onlyBullet?: Projectile, directTarget = false, deathExplosion?: { radius: number; multiplier: number }) {
-    const p = this.player;
+    const p = this.player, origin = this.dodgeOrigin;
+    const checkDodge = !onlyBullet && this.clock < origin.until && (p.x !== origin.x || p.z !== origin.z);
+    let dodged: Projectile | undefined;
+    let previousCollider: Collider | undefined;
     for (const b of this.projectiles) {
       if (onlyBullet && b !== onlyBullet) continue;
       if ((b.dead && !deathExplosion) || b.collisionDisabled || this.arcChains.get(b)?.waiting || this.ejections.get(b)?.waiting || b.age < b.warmup) continue;
@@ -3848,6 +3864,16 @@ export class Simulation {
             if (b.pierce-- <= 0) b.dead = true;
             else if (b.throughDamage !== 0) b.throughScale = advanceThroughScale(b.throughScale, b.throughDamage);
           }
+        } else if (checkDodge && !dodged && !p.invincible && !b.damageDisabled && b.damage * b.throughScale > 0 &&
+            !b.hit.has(0) && !this.dodgedProjectiles.has(b)) {
+          // Count a dodge when the real flight path clears a shot that would have hit the recent position.
+          const extent = radius + (box ? radiusX + radiusZ : radiusX);
+          const stationary = previousCollider ??= { ...playerCollider, x: origin.x, z: origin.z, oldX: origin.x, oldZ: origin.z };
+          if (segments.some(({ from, to }) => {
+            if (origin.x < Math.min(from.x, to.x) - extent || origin.x > Math.max(from.x, to.x) + extent ||
+                origin.z < Math.min(from.z, to.z) - extent || origin.z > Math.max(from.z, to.z) + extent) return false;
+            return sweep({ x: to.x, z: to.z, oldX: from.x, oldZ: from.z, radiusX, radiusZ, box, angle }, stationary) !== null;
+          })) dodged = b;
         }
       }
     }
@@ -3860,6 +3886,10 @@ export class Simulation {
       if (sweep({ ...p, radiusX: radius, radiusZ: radius, box: false, angle: 0 }, e) !== null) {
           this.damagePlayer(e.bodyAttack, true, undefined, e); break;
       }
+    }
+    if (dodged && !p.invincible && p.hp > 0 && !this.playerStatuses.modifiers(0).invincible) {
+      this.dodgedProjectiles.add(dodged);
+      recordCombatResult(this, p, 'miss');
     }
   }
   private damageEnemy(e: Enemy, damage: number, critical: boolean, sourceEntityId: number, element = 0, traits = 0, projectile?: Projectile, hurtType = 1, hitAttributes?: Record<string, number>) {
@@ -3978,7 +4008,7 @@ export class Simulation {
       e.deathRemaining = 4 * nativeLogicDelta;
       this.playEnemyDeathEffect(e, effectId).age = -3 * nativeLogicDelta;
     }
-    e.deathSound = enemyDeathSound(e, raw.Tag || []);
+    e.deathSound = enemyDeathSound(e, raw.Tag || [], this.content.chapter.chapter.id);
   }
   private playEnemyDeathEffect(enemy: Enemy, effectId: number) {
     const effect = this.effect('explosion', enemy.x, enemy.z, enemy.boss ? 1.2 : 0.55,

@@ -104,6 +104,14 @@ export function createSortieController({peripheral,onEnter,onLeave,onProgress,on
     send(session, 'settled', {runId:result.runId,rewards:receipt.rewards,trial:receipt.replica.trial,
       pilotAffection:receipt.replica.pilotAffection});
     if (!session.trial && !receipt.replica.abandoned) onProgress(receipt.replica);
+    if (host.prepareResultReturn && session.firstSortie && !session.trial && !receipt.replica.abandoned &&
+        (result.won || result.endReason === 'defeat')) {
+      const current = () => active === session && session.returnPreparation === preparation;
+      const preparation = Promise.resolve().then(() => {
+        if (current()) return host.prepareResultReturn(current);
+      }).catch(error => console.warn('[Three 结算装备预热]', error?.message || error));
+      session.returnPreparation = preparation;
+    }
   }
 
   async function reviveAd(session, message) {
@@ -176,17 +184,21 @@ export function createSortieController({peripheral,onEnter,onLeave,onProgress,on
     const chapterLabel = chapterPresentationForStage(chapter.stageIndex).chapterName;
     const snapshot = peripheral()?.snapshot();
     if (!snapshot) return false;
+    if(snapshot.firstSortieRequired&&(trial||chapter.id!==1)){onError('请先挑战第一关');return false;}
     const appearance = appearanceOf(snapshot, chapter, host.baseURL);
     const aircraft = appearance.aircraft;
     const loadingOptions = {
       screen,
       stageName: chapterLabel,
       aircraftId: aircraft.id,
+      chapterId: chapter.id,
+      firstSortie:Boolean(snapshot.firstSortieRequired),
       resourceCount: 1,
       indeterminate: true,
     };
     const id=host.makeSessionId(),surface=host.createSurface(chapterLabel);
     const session = { id, surface, generation:0, controller:null, queued:[], loading:null, trial, chapter, run:null, settled:false,
+      firstSortie:loadingOptions.firstSortie,returnPreparation:null,returning:false,
       lastCheckpoint:null, abandon:null, timer:null, removeListeners:null,
       configurationSerial:0, pendingConfiguration:null, entry:null, leavePage:null, resumePage:null,
       preparationFailed:false, startAcknowledged:false, retrying:false, armPreparation:null };
@@ -367,14 +379,23 @@ export function createSortieController({peripheral,onEnter,onLeave,onProgress,on
             case 'revive-diamond': reviveDiamond(session,message); break;
             case 'result': settle(session, message.result); break;
             case 'retry':
+              if(session.returning)break;
               if (!session.settled && session.lastResult) settle(session, session.lastResult);
+              session.returnPreparation=null;
               if (session.settled) requestConfiguration(session);
               break;
             case 'home':
               // Explicit quit carries the current earned balance. A missing
               // result (loading cancellation/crash) still uses abandon().
+              if(session.returning)break;
               if(message.result) settle(session,message.result);
-              session.abandon(); close(session); resolve(false); break;
+              session.abandon();
+              if(!session.returnPreparation){close(session);resolve(false);break;}
+              session.returning=true;
+              void session.returnPreparation.then(()=>{
+                if(active===session){close(session);resolve(false);}
+              }).catch(error=>onError(error.message));
+              break;
             case 'error': session.pendingConfiguration = null; throw new Error(message.message || chapterLabel + '资源加载失败');
           }
         } catch (error) {

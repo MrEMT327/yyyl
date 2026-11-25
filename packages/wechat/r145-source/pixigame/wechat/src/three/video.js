@@ -4,33 +4,43 @@ import { affectionVideoLayout } from '../../../../../../../pixigame/src/three/ga
 import { createLobbyPanel } from '../../../../../../../pixigame/src/three/game-screen/lobby-panel.js';
 import { pilotAffectionVideo } from '../../../../../../../pixigame/src/peripheral/pilot-affection.js';
 import { createInlineNativeVideo, retireNativeVideo } from '../full/video-player.js';
+import { compactPortraitClip } from './portrait-clip.js';
 
 const decoderWork=new WeakMap();
+const compactPilots=new WeakMap();
 function queueDecoder(api,run){
   const next=(decoderWork.get(api)??Promise.resolve()).then(run);
   decoderWork.set(api,next.catch(()=>{}));
   return next;
 }
 
-export function openWechatPortraitDecoder(api,platform,services,onFrame,onEnd,onError){
+export function openWechatPortraitDecoder(api,platform,services,onFrame,onEnd,onError,fps=0){
   let decoder=null;
   let generation=0,frame=0,active=false,closed=false,loaded=false;
-  let position=0,source='';
+  let position=0,source='',nextPoll=-Infinity;
+  const interval=fps>0?1000/fps:0;
   function schedule(){if(active&&!closed&&!frame)frame=platform.requestFrame(tick);}
-  function tick(){
+  function tick(now){
     frame=0;
     if(closed||!active)return;
-    let next,bytes;
-    try{
-      next=decoder.getFrameData();
-      const data=next?.data;
-      if(data)bytes=new Uint8Array(data);
-    }catch(error){
-      cancelPlayback();void queueDecoder(api,release);onError(error);return;
+    if(interval&&Number.isFinite(now)){
+      if(now+1<nextPoll){schedule();return;}
+      // Keep the clip clock on uneven displays and never read missed frames in a burst.
+      nextPoll=nextPoll>now-interval?nextPoll+interval:now+interval;
     }
-    if(bytes&&next.width>0&&next.height>0&&bytes.length===next.width*next.height*4){
-      position=Math.max(0,Number(next.pkPts)||0)/1000;
-      onFrame(bytes,next.width,next.height,position);
+    let stage='frame';
+    try{
+      const next=decoder.getFrameData();
+      const data=next?.data;
+      if(data){
+        const bytes=ArrayBuffer.isView(data)?new Uint8Array(data.buffer,data.byteOffset,data.byteLength):new Uint8Array(data);
+        if(next.width>0&&next.height>0&&bytes.length===next.width*next.height*4){
+          position=Math.max(0,Number(next.pkPts)||0)/1000;
+          stage='upload';onFrame(bytes,next.width,next.height,position);
+        }
+      }
+    }catch(error){
+      cancelPlayback();void queueDecoder(api,release);onError(error,stage);return;
     }
     schedule();
   }
@@ -49,25 +59,28 @@ export function openWechatPortraitDecoder(api,platform,services,onFrame,onEnd,on
   async function play(path=source,time=position){
     const id=++generation;active=false;
     const stale=()=>closed||id!==generation;
+    let stage='file';
     try{
       const file=await services.localFile(path);
       if(stale())return;
       await queueDecoder(api,async()=>{
         if(stale())return;
         try{
+          stage='stop';
           await stop();
           if(stale())return;
+          stage='start';
           decoder??=createDecoder();
           source=path;
           await decoder.start({source:file,mode:0,abortAudio:true});
           loaded=true;
           if(stale())return;
-          if(time>0)await decoder.seek(time*1000);
+          if(time>0){stage='seek';await decoder.seek(time*1000);}
           if(stale())return;
-          position=time;active=true;schedule();
+          position=time;nextPoll=-Infinity;active=true;schedule();
         }catch(error){await release();throw error;}
       });
-    }catch(error){if(!stale())onError(error);}
+    }catch(error){if(!stale())onError(error,stage);}
   }
   function cancelPlayback(){
     active=false;generation++;
@@ -81,7 +94,7 @@ export function openWechatPortraitDecoder(api,platform,services,onFrame,onEnd,on
     void queueDecoder(api,async()=>{
       if(closed||id!==generation)return;
       try{await stop();}
-      catch(error){await release();if(!closed&&id===generation)onError(error);}
+      catch(error){await release();if(!closed&&id===generation)onError(error,'stop');}
     });
   }
   return {play,pause,get position(){return position;},get active(){return active;},
@@ -91,6 +104,7 @@ export function openWechatPortraitDecoder(api,platform,services,onFrame,onEnd,on
 function packedPortraitModel(renderer,manifest){
   const scene=new Scene(),camera=new Camera(),geometry=new PlaneGeometry(2,2);
   const uniforms={frame:{value:null},fit:{value:new Vector2(1,1)},packedSize:{value:new Vector2()},
+    repairSourceSize:{value:new Vector2(manifest.packedWidth,manifest.height)},
     repairShirtHoles:{value:manifest.interiorHoleRepair==='blouse-v1'?1:0}};
   const material=new RawShaderMaterial({vertexShader:PORTRAIT_VERTEX,fragmentShader:PORTRAIT_FRAGMENT,uniforms,
     depthTest:false,depthWrite:false,toneMapped:false,blending:NoBlending});
@@ -101,6 +115,8 @@ function packedPortraitModel(renderer,manifest){
       if(!texture||texture.image.width!==width||texture.image.height!==height){
         texture?.dispose();texture=new DataTexture(bytes,width,height,RGBAFormat,UnsignedByteType);
         texture.flipY=false;texture.colorSpace=NoColorSpace;texture.minFilter=texture.magFilter=LinearFilter;
+        // The GPU owns this frame after upload. Release the WeChat bridge buffer.
+        texture.onUpdate=uploaded=>{uploaded.image.data=null;};
         uniforms.frame.value=texture;uniforms.packedSize.value.set(width,height);
       }else texture.image.data=bytes;
       texture.needsUpdate=true;
@@ -119,14 +135,29 @@ export function createWechatVideoPortrait(api,services,device,host,id){
   const path=id==='pilot-02'?'art/engineer-ee76/runtime.json?v=inner-hem-v5':'art/violet-astra-v31/runtime.json';
   const asset=new URL(path,host.baseURL),abort=host.makeAbort();
   let manifest,model,output,decoder,loading,closed=false,visible=true,motion='idle',pausedAt=0,returnToIdle=false;
+  let compact=compactPilots.get(api)?.has(id)??false;
   const platform={requestFrame:host.requestFrame,cancelFrame:host.cancelFrame};
   function fit(){if(output){const {width,height}=host.bounds();output.resize(...host.renderSize(width,height));}}
   const unresize=host.watchBounds(fit),unwatch=host.watchVisibility(update);
   function clip(){return manifest?.clips[motion];}
+  function fail(error,stage){
+    if(closed)return;
+    if(!compact&&stage!=='file'&&/insertNativeArrayBuffer failed/i.test(error?.errMsg||error?.message||String(error))){
+      compact=true;
+      if(!compactPilots.has(api))compactPilots.set(api,new Set());
+      compactPilots.get(api).add(id);
+      if(stage==='frame'||stage==='upload')pausedAt=decoder.position;
+      console.info('[Three 立绘降载]',id,motion,stage);
+      if(visible&&!host.hidden())update();
+      return;
+    }
+    decoder?.close();decoder=null;output?.destroy();output=null;model=null;
+    console.warn('[Three 立绘]',id,motion,stage,error);
+  }
   function update(){
     if(!decoder||closed)return;
     const spec=clip();
-    if(visible&&!host.hidden())void decoder.play(new URL(spec.file,asset).href,pausedAt);
+    if(visible&&!host.hidden())void decoder.play(new URL(compact?compactPortraitClip(spec.file):spec.file,asset).href,pausedAt);
     else{pausedAt=decoder.position;decoder.pause();}
   }
   async function initialize(){
@@ -136,7 +167,9 @@ export function createWechatVideoPortrait(api,services,device,host,id){
     if(closed)return;
     model=packedPortraitModel(device.three,manifest);output=host.render(model);fit();
     decoder=openWechatPortraitDecoder(api,platform,services,(bytes,w,h)=>{
-      if(w!==manifest.packedWidth||h!==manifest.height){decoder.pause();console.warn('[Three 立绘] 视频尺寸不符');return;}
+      const original=w===manifest.packedWidth&&h===manifest.height;
+      const scale=compact?4:2;
+      if(!(original&&!compact)&&(w*scale!==manifest.packedWidth||h*scale!==manifest.height))throw new Error('视频尺寸不符');
       model.setFrame(bytes,w,h);output.draw();
     },()=>{
       const spec=clip();
@@ -144,7 +177,7 @@ export function createWechatVideoPortrait(api,services,device,host,id){
       else if(returnToIdle){motion='idle';pausedAt=(spec.returnToIdleFrame??clip().startFrame??0)/manifest.fps;}
       else return;
       update();
-    },error=>console.warn('[Three 立绘]',error));
+    },fail,manifest.fps);
     pausedAt=(clip().startFrame??0)/manifest.fps;update();
   }
   return {
@@ -152,7 +185,7 @@ export function createWechatVideoPortrait(api,services,device,host,id){
     setVisible(next){if(visible!==Boolean(next)){visible=Boolean(next);update();}},
     async playMotion(name,options){
       try{await loading;}catch{return false;}
-      if(closed||!manifest?.clips[name])return false;
+      if(closed||!decoder||!manifest?.clips[name])return false;
       motion=name;returnToIdle=options?.returnToIdle===true;pausedAt=(clip().startFrame??0)/manifest.fps;update();return true;
     },
     get playing(){return Boolean(decoder?.active);},get motionName(){return motion;},

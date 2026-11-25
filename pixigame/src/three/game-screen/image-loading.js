@@ -14,6 +14,12 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
   const pending=new Map(),queue=[];
   const decoded=cachePixels>0?new Map():null;
   let active=0,scheduled=false,cachedPixels=0;
+  const canceled=()=>Object.assign(new Error('贴图读取已取消'),{name:'AbortError'});
+  function rank(job){
+    let value=-Infinity;
+    for(const priority of job.priorities)value=Math.max(value,typeof priority==='function'?priority():priority);
+    return value;
+  }
   function remember(key,image){
     const [w,h]=artworkSize(image),area=w*h;
     if(!(area>0)||area>cachePixels/4)return;
@@ -27,9 +33,8 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
     while(active<6&&queue.length){
       let first=0,best=-Infinity;
       for(const [index,job] of queue.entries()){
-        let rank=-Infinity;
-        for(const priority of job.priorities)rank=Math.max(rank,typeof priority==='function'?priority():priority);
-        if(rank>best){first=index;best=rank;}
+        const value=rank(job);
+        if(value>best){first=index;best=value;}
         if(best===2)break;
       }
       if(best===-Infinity){
@@ -40,7 +45,7 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
       // Catalog prefetch yields to the startup views and leaves transport slots free.
       if((best<-1&&active>=2)||(best<0&&active===5))return;
       const [job]=queue.splice(first,1);
-      job.priorities=null;active++;
+      active++;
       job.run().finally(()=>{active--;pump();});
     }
   }
@@ -51,7 +56,7 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
     // A layout submits all its requests before this turn's priorities are read.
     Promise.resolve().then(()=>{scheduled=false;pump();});
   }
-  return function loadArtwork(url,priority,reuseDecoded=false){
+  function loadArtwork(url,priority,reuseDecoded=false){
     let key;
     try{key=address(url);}catch(error){onFailure?.(url,error);return Promise.reject(error);}
     const reuse=Boolean(decoded&&reuseDecoded);
@@ -60,25 +65,36 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
     const existing=pending.get(key);
     if(existing){
       existing.reuse||=reuse;
-      if(existing.priorities){existing.priorities.add(priority??0);schedule(priority);}
+      existing.priorities.add(priority??0);schedule(priority);
       return existing.promise;
     }
     const job={key,priorities:new Set([priority??0]),reuse};
     job.promise=new Promise((resolve,reject)=>{
-      job.cancel=()=>reject(new Error('贴图读取已取消'));
+      job.cancel=()=>reject(canceled());
       job.run=async()=>{
         try{
           let image;
           try{image=await openImage(key);}
-          catch{await new Promise(done=>setTimeout(done,220));image=await openImage(key);}
+          catch{
+            if(rank(job)===-Infinity)throw canceled();
+            await new Promise(done=>setTimeout(done,220));
+            if(rank(job)===-Infinity)throw canceled();
+            image=await openImage(key);
+          }
+          if(rank(job)===-Infinity)throw canceled();
           if(job.reuse)remember(key,image);
           resolve(image);
-        }catch(error){reject(error);onFailure?.(key,error);}
+        }catch(error){reject(error);if(error?.name!=='AbortError')onFailure?.(key,error);}
         finally{pending.delete(key);}
       };
     });
     pending.set(key,job);queue.push(job);schedule(priority);return job.promise;
+  }
+  loadArtwork.clearDecoded=()=>{
+    decoded?.clear();cachedPixels=0;
+    for(const job of pending.values())job.reuse=false;
   };
+  return loadArtwork;
 }
 
 const browserArtwork=createArtworkLoader({address:url=>new URL(url,document.baseURI).href,openImage:readImage});
@@ -94,8 +110,8 @@ export function artworkSize(image){
   return [image?.naturalWidth||image?.width||0,image?.naturalHeight||image?.height||0];
 }
 
-export function artworkTexture(url,ready,failed){
+export function artworkTexture(url,ready,failed,priority){
   const texture=new Texture();
-  loadArtwork(url).then(image=>{texture.image=image;texture.needsUpdate=true;ready?.(texture);},failed);
+  loadArtwork(url,priority).then(image=>{texture.image=image;texture.needsUpdate=true;ready?.(texture);},failed);
   return texture;
 }

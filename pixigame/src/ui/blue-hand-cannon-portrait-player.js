@@ -47,7 +47,7 @@ export function advanceSourceMotion(clock, seconds, renderer) {
 }
 
 export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?.BASE_URL ?? '/', runtimePath = 'art/blue-hand-cannon-v28-socket/', createRenderer,output=null} = {}) {
-  const canDrawFrame=createPortraitPaintGate();
+  const canDrawFrame=createPortraitPaintGate(output?.frameRate);
   const assetRoot = new URL(assetBase,output?.baseURL??location.href);
   const root = new URL(runtimePath, assetRoot);
   if (root.origin !== assetRoot.origin) throw new Error('角色只允许读取同源资源');
@@ -90,8 +90,8 @@ export function createBlueHandCannonPortraitPlayer({assetBase = import.meta.env?
       if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;}
     // Preserve the source camera's scale and foot line. Extra space is letterbox,
     // never a change to character proportions, cannon scale or motion geometry.
-    const scale = Math.min(canvas.width / 824, canvas.height / 1054);
-    const w = canvas.width / scale, h = canvas.height / scale;
+    const scale = Math.min(width / 824, height / 1054);
+    const w = width / scale, h = height / scale;
     renderer.view = [372 - (w - 824) / 2, -35 - (h - 1054), w, h];
     draw();
   }

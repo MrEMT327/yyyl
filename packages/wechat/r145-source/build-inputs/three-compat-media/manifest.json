@@ -118,5 +118,11 @@
     "filename": "effect-4895cbd5259521e55216.wav",
     "sha256": "4895cbd5259521e55216d415c946ad539194d5a46e4badd3d8f8d6282af06572",
     "sourceSha256": "1facce99ea8fed74737e902d9e3f8a584fd4f10a186e9e2b7dc1192bd6445981"
+  },
+  {
+    "key": "audio/freesound/player-hit-781094.wav",
+    "filename": "effect-959bec712134fa41e14f.wav",
+    "sha256": "959bec712134fa41e14f2c918c6d344a1f18812f69820f06c4ff92b6223c3f11",
+    "sourceSha256": "d5115040e45d9eea7cca65267e223a66a3ce305f368aa5e7926cc131d0016f58"
   }
 ]

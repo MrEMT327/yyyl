@@ -23,7 +23,7 @@ import { studioWidth, studioHeight, studioCubeUv } from './aircraft-preview-stud
 
 const shaderWarmupMs = 2500;
 
-function bakedStudioEnvironment() {
+export function bakedStudioEnvironment() {
   const data = gunzipSync(toByteArray(studioCubeUv));
   const area = studioWidth * studioHeight;
   const pixels = new Uint16Array(area * 4);
@@ -142,7 +142,9 @@ export function createModelRenderer({onReady=()=>{},images=new Map(),captureThum
   }
   metadata("modelReady",'false');
   const exhaustRenderer = singlePass ? null : createCombatAircraftRenderer(renderer, 1, 1);
-  const fxRenderer = singlePass ? null : createAircraftFxRenderer(renderer,{samples:port?0:AIRCRAFT_PREVIEW_SAMPLES,stableCoverage:true,temporalCoverage:!captureThumbnail});
+  // The 2x WeChat equipment preview keeps spatial antialiasing without softening seams across frames.
+  const temporalCoverage = !captureThumbnail && !(port && embedded.profile === 'equipment');
+  const fxRenderer = singlePass ? null : createAircraftFxRenderer(renderer,{samples:port?0:AIRCRAFT_PREVIEW_SAMPLES,stableCoverage:true,temporalCoverage});
   const drawingSize = new THREE.Vector2();
   const exhaustFighter = {runtime:null};
   const reducedMotion = port ? {matches:false} : window.matchMedia('(prefers-reduced-motion: reduce)');

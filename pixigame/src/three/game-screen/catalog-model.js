@@ -7,6 +7,7 @@ import {nativePilotAppearance} from '../../replica/native-pilot-presentation.js'
 import {NATIVE_AIRCRAFT_SKINS} from '../../replica/native-aircraft-skins.js';
 import {NATIVE_PILOT_SKINS} from '../../replica/native-pilot-roster.js';
 import {collectionQualityRank} from '../../replica/native-quality.js';
+import {bottomNavigation} from './home-navigation.js';
 
 const groups={weapon:'guns',aircraft:'skins',pilot:'pilots'};
 export const isCatalog=page=>Object.hasOwn(groups,page);
@@ -35,10 +36,13 @@ export function catalogModel(data){
   const appearance=kind==='pilot'?nativePilotAppearance(displayed.id):null,plane=kind==='aircraft'&&(displayed.row.baseAppearanceId||NATIVE_AIRCRAFT_SKINS[displayed.id]);
   return {kind,group,items,raw,skillWeapon,deployed,selected,displayed,slot,slots,choice,bank,plane,appearance,ui,s,collection};
 }
-export function catalogBounds(w,h,safe=0){
+export function catalogBounds(w,h,safe=0,native=false){
   const top=Math.max(12,w*.03),content=h-top,hero=content/2+.03148148*w,head=Math.max(44,.14266667*w),divider=top+hero;
   const slot=Math.max(44,.15*w),btn=Math.max(44,.137*w),slotY=divider-.06*w-slot,controls=slotY+(slot-btn)/2;
-  const footer=Math.max(54,182*w/1080)+safe;
-  return {top,content,hero,divider,head,slot,slotY,controls,btn,list:divider+head,end:h-footer,footer};
+  const rail=Math.max(54,182*w/1080);
+  const {top:end,hitHeight}=native?bottomNavigation(w,h,safe,true):{top:h-safe-rail,hitHeight:rail};
+  const height=Math.min(rail,h-end);
+  const footer={top:end,height,hitHeight,inset:h-end-height};
+  return {top,content,hero,divider,head,slot,slotY,controls,btn,list:divider+head,end,footer};
 }
 export function catalogAircraftRect(w,h){const v=catalogBounds(w,h);return {x:.02*w,y:v.top+v.content/2-.8823*w,w:.96*w,h:.70*w};}

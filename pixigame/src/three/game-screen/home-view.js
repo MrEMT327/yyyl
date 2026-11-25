@@ -2,21 +2,29 @@ import {Color,LinearFilter,Vector4,WebGLRenderTarget} from 'three';
 import {createHomeStage,homePictures,viewportPixel} from './home-stage.js';
 import {createHomeHud} from './three-home-hud.js';
 import {homeControls,bindHomeInput} from './home-input.js';
+import {homeInsets} from './home-navigation.js';
 import {PILOT_PORTRAITS} from '../../ui/character-portraits.js';
 import {PORTRAIT_FRAMING} from '../../ui/portrait-framing.js';
 import {optimizeUiAssetUrls} from '../../ui/ui-image-source.js';
 import {loadArtwork} from './image-loading.js';
 import {measureScreen} from './screen-metrics.js';
 
-function loadImage(url){return loadArtwork(optimizeUiAssetUrls(url));}
-function portraitSize(id,w,h){
+const chapterRewardsBox=homePictures.find(([id])=>id==='star-rewards')[2];
+
+function loadImage(url,priority){return loadArtwork(optimizeUiAssetUrls(url),priority);}
+export function homePortraitSize(id,view){
+  const {width:w,height:h}=view;
+  const [,rewardY,,rewardHeight]=chapterRewardsBox;
+  const minimumTop=(rewardY+rewardHeight+20+homeInsets(view).top)*h/1624;
   const f=PORTRAIT_FRAMING[id];
-  if(!f)return [-w*.125,h*.13,1.25*w,1.25*w*1407/1118];
-  const [left,,right]=f.bounds,violet=id==='pilot-08';
+  if(!f)return [-w*.125,Math.max(h*.13,minimumTop),1.25*w,1.25*w*1407/1118];
+  const [left,top,right]=f.bounds,violet=id==='pilot-08';
   const height=w*1.36/(f.groundY-f.headY);
   const side=id==='pilot-04'?height:Math.min(height,w*(violet ? 1.06 : .98)/(right-left));
   const ground={'pilot-01':.80,'pilot-08':.77,'pilot-10':.755}[id]??.815;
-  return [w*(violet ? .49 : .5)-(left+right)/2*side,h*ground-f.groundY*side,side,side];
+  // The measured top includes movement above the resting head position.
+  const y=Math.max(h*ground-f.groundY*side,minimumTop-top*side);
+  return [w*(violet ? .49 : .5)-(left+right)/2*side,y,side,side];
 }
 function browserHomeHost(device,page){
   const canvas=device.display.input,reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,9 +61,10 @@ export function mountThreeHome(device,host,send,interactive){
   const renderer=device.three,actor=new Vector4();
   const previous={color:renderer.getClearColor(new Color()),alpha:renderer.getClearAlpha(),clear:renderer.autoClear};
   let stage=null,hud=null,viewport=null,controls=[],pilot=null,marker=null,generation=0,guide=null,pose=null,target=null,frame=0,closed=false;
-  let still=null,scenery=null,active=false;
-  let firstPaint=false,stillPending=false;
-  const opened=host.now();
+  let still=null,scenery=null,active=false,portraitReady;
+  let entryFrame=null,cancelEntry=null,lastHomePaint=-Infinity;
+  const load=(url,priority)=>loadImage(url,priority??(host.stageEntry?1:undefined));
+  function releasePose(){pose=null;target?.dispose();target=null;}
   function available(){return !closed&&host.visible()&&!device.battle&&!device.cover&&!device.preview;}
   const metrics=measureScreen(renderer,'Three 大厅',available);
   function schedule(){if(!frame&&available())frame=host.requestFrame(paint);}
@@ -76,7 +85,7 @@ export function mountThreeHome(device,host,send,interactive){
     const wNative=viewportPixel(p.right,ratio)-x0,hNative=viewportPixel(p.bottom,ratio)-y0;
     if(!wNative||!hNative)return;
     viewport={width:p.width,height:p.height,left:p.left,top:p.top,ratio,wNative,hNative,safeBottom,safeTop,safeContentTop,menuButton};
-    const [x,y,w,h]=portraitSize(pilot,p.width,p.height);
+    const [x,y,w,h]=homePortraitSize(pilot,viewport);
     if(marker)host.movePortrait(marker,x,y,w,h);
     const ax=viewportPixel(p.x+x,ratio)-x0,ay=viewportPixel(p.y+y,ratio)-y0;
     actor.set(ax*750/wNative,ay*1624/hNative,(viewportPixel(p.x+x+w,ratio)-x0-ax)*750/wNative,(viewportPixel(p.y+y+h,ratio)-y0-ay)*1624/hNative);
@@ -92,17 +101,16 @@ export function mountThreeHome(device,host,send,interactive){
     stage?.setPortraitStill(null);stage?.setPortraitScenery(null);
     if(marker)host.dropPortrait(marker);marker=host.newPortrait(id);
     const config=PILOT_PORTRAITS[id]||{},token=generation;
-    stillPending=Boolean(config.image||device.homeState.pilotImage);
-    function load(url,scene){
-      if(url)loadImage(url).then(image=>{
+    function loadPortrait(url,scene){
+      if(!url)return;
+      return load(url).then(image=>{
         if(closed||generation!==token)return;
         if(scene){scenery=image;stage?.setPortraitScenery(image);}else{still=image;stage?.setPortraitStill(image);}
         schedule();
-      }).catch(e=>{if(!closed&&generation===token)console.error(e);}).finally(()=>{
-        if(!closed&&generation===token&&!scene){stillPending=false;schedule();}
       });
     }
-    load(config.scene,true);load(config.image||device.homeState.pilotImage,false);
+    portraitReady=Promise.all([loadPortrait(config.scene,true),loadPortrait(config.image||device.homeState.pilotImage,false)]);
+    portraitReady.catch(error=>{if(!closed&&generation===token)console.error(error);});
     position();return true;
   }
   function sync(){
@@ -112,10 +120,8 @@ export function mountThreeHome(device,host,send,interactive){
   }
   function paint(){
     frame=0;if(!available()||!viewport)return;
-    if(host.stageEntry&&!firstPaint&&(!stage||!hud||stillPending)&&host.now()-opened<900){schedule();return;}
-    firstPaint=true;
     metrics.draw(drawFrame);
-    if(!device.panel?.fullscreen)device.display.present();
+    if(!device.panel?.fullscreen&&!device.homeState.firstSortieRequired)device.display.present();
   }
   function drawFrame(){
     take();
@@ -134,14 +140,59 @@ export function mountThreeHome(device,host,send,interactive){
       try{pose.paint();pose.dirty=false;}finally{renderer.setRenderTarget(null);}
     }
     host.begin(wNative,hNative,schedule);renderer.clear();
-    if(stage){
-      stage.drawBehind(renderer);stage.drawCharacter(renderer,pose&&target?target.texture:null,actor);
-      stage.drawInFront(renderer);hud?.paint(renderer,host.now()/1000);
-    }
-    device.panel?.draw(renderer);
+    lastHomePaint=host.now();
+    drawContents(panel,pose&&target?target.texture:null,lastHomePaint);
     device.feedback?.draw(renderer,viewport.width,viewport.height);
     device.toast?.draw(renderer,viewport.width,viewport.height);
     if(stage&&hud)host.ready(true);
+  }
+  function drawContents(panel,portrait=null,time=host.now()){
+    if(stage){
+      stage.drawBehind(renderer);stage.drawCharacter(renderer,portrait,actor);
+      stage.drawInFront(renderer,device.homeState.firstSortieRequired);
+    }
+    hud?.paint(renderer,time/1000);
+    panel?.draw(renderer);
+  }
+  function warmEntry(panel){
+    // Warm the exact lobby layers without touching the startup drawing buffer.
+    const output=renderer.getRenderTarget(),clip=renderer.getScissorTest(),clear=renderer.autoClear;
+    const oldViewport=new Vector4(),scissor=new Vector4();
+    renderer.getViewport(oldViewport);renderer.getScissor(scissor);
+    const buffer=new WebGLRenderTarget(1,1,{depthBuffer:false,stencilBuffer:false});
+    try{
+      renderer.setRenderTarget(buffer);renderer.setViewport(0,0,1,1);renderer.setScissorTest(false);
+      renderer.autoClear=false;
+      drawContents(panel);
+    }finally{
+      renderer.setRenderTarget(output);renderer.setViewport(oldViewport);renderer.setScissor(scissor);
+      renderer.setScissorTest(clip);renderer.autoClear=clear;buffer.dispose();
+    }
+  }
+  async function prepareEntry(){
+    await Promise.all([stageReady,hudReady]);
+    let portrait;
+    do{portrait=portraitReady;await portrait;}while(!closed&&portrait!==portraitReady);
+    if(closed)throw Error('大厅已关闭');
+    return new Promise((resolve,reject)=>{
+      function finish(error){
+        if(entryFrame!==null)host.cancelFrame(entryFrame);
+        entryFrame=cancelEntry=null;
+        if(error)reject(error);else resolve();
+      }
+      function prepare(){
+        entryFrame=null;
+        try{
+          const panel=device.panel;
+          if(viewport&&!renderer.getContext().isContextLost()&&hud.ready()&&(!panel||panel.prepare(true))){
+            warmEntry(panel);finish();return;
+          }
+          entryFrame=host.requestFrame(prepare);
+        }catch(error){finish(error);}
+      }
+      cancelEntry=()=>finish(Error('大厅已关闭'));
+      entryFrame=host.requestFrame(prepare);
+    });
   }
   const unbind=host.bindInput({controls:()=>controls,enabled:()=>available()&&host.ownsOutput()&&interactive()&&!device.panel&&!!hud,
     guide:()=>guide,activate:c=>send(c.action,c.data,host.anchor),focus:box=>{hud?.setFocus(box);schedule();},
@@ -152,7 +203,8 @@ export function mountThreeHome(device,host,send,interactive){
       hud?.setPress(id,k,control.box);schedule();
     }});
   const removeLayout=host.onLayout(position),removeState=device.subscribeHome(sync);
-  const view={page:host.page,selectPilot,owns:surface=>!!marker&&host.ownsPortrait(marker,surface),
+  const view={page:host.page,selectPilot,prepareEntry,owns:surface=>!!marker&&host.ownsPortrait(marker,surface),
+    paintNow(){host.cancelFrame(frame);paint();},
     activate(){device.homeView=view;device.repaintHome=schedule;schedule();},
     park(){
       host.cancelFrame(frame);frame=0;active=false;host.release();
@@ -164,19 +216,25 @@ export function mountThreeHome(device,host,send,interactive){
       const dirty=changed||!pose||pose.dirty||w!==pose.w||h!==pose.h;
       pose={surface,w,h,paint:paintPose,dirty};schedule();
     },
-    forget(surface){if(pose?.surface===surface){pose=null;schedule();}},
+    forget(surface){if(view.owns(surface)||pose?.surface===surface){releasePose();schedule();}},
     setGuide(g){
       if(guide?.id===g?.id&&guide?.text===g?.text&&guide?.strong===g?.strong)return;
       guide=g;updateGuide();schedule();
     },
-    tick(){if(!host.reducedMotion()&&!device.panel&&interactive()||!host.ownsOutput())schedule();},
+    tick(){
+      if(!host.ownsOutput()){schedule();return;}
+      if(host.reducedMotion()||device.panel||!interactive())return;
+      if(!host.idleHudInterval){schedule();return;}
+      const now=host.now();
+      if(now-lastHomePaint>=host.idleHudInterval-1&&hud?.animationDue(lastHomePaint/1000,now/1000))schedule();
+    },
     controls:()=>controls.map(({id,label,box})=>({id,label,box})),get guide(){return guide;},
     close(){
-      if(closed)return;closed=true;metrics.release();host.cancelFrame(frame);removeLayout();removeState();unbind();
+      if(closed)return;closed=true;cancelEntry?.();metrics.release();host.cancelFrame(frame);removeLayout();removeState();unbind();
       if(device.homeView===view)device.homeView=null;
       if(device.repaintHome===schedule)device.repaintHome=null;
-      host.ready(false);if(marker)host.dropPortrait(marker);pose=null;generation++;
-      hud?.dispose();stage?.dispose();target?.dispose();
+      host.ready(false);if(marker)host.dropPortrait(marker);releasePose();generation++;
+      hud?.dispose();stage?.dispose();
       if(host.ownsOutput()){
         host.release();
         renderer.setRenderTarget(null);
@@ -186,11 +244,11 @@ export function mountThreeHome(device,host,send,interactive){
   device.homeView=view;device.repaintHome=schedule;
   selectPilot(device.homeState.pilotId);position();
   if(available())take();
-  Promise.all(homePictures.map(async([id,file])=>[id,await loadImage(file.startsWith('/')?file:'/art/psd-main-v1/'+file)]))
-    .then(entries=>{if(closed)return;stage=createHomeStage(new Map(entries));stage.setPortraitScenery(scenery);stage.setPortraitStill(still);position();sync();})
-    .catch(e=>{if(!closed)console.error(e);});
-  createHomeHud(loadImage,model(),schedule).then(result=>{
+  const stageReady=Promise.all(homePictures.map(async([id,file])=>[id,await load(file.startsWith('/')?file:'/art/psd-main-v1/'+file)]))
+    .then(entries=>{if(closed)return;stage=createHomeStage(new Map(entries));stage.setPortraitScenery(scenery);stage.setPortraitStill(still);position();sync();});
+  const hudReady=createHomeHud(load,model(),schedule).then(result=>{
     if(closed){result.dispose();return;}hud=result;position();sync();
-  }).catch(e=>{if(!closed)console.error(e);});
+  });
+  for(const work of [stageReady,hudReady])work.catch(error=>{if(!closed)console.error(error);});
   return view;
 }

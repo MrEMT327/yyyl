@@ -83,10 +83,14 @@ export function createWechatDebugLog(api, buildId) {
     return trace;
   }
 
-  function beginBattle(chapter) {
+  function beginBattle(chapter,draws) {
     let frames=0,elapsed=0,over33ms=0,maxGap=0;
     let previous,previousWave,gapFrame,gapWave;
-    function resetWindow(){frames=elapsed=over33ms=maxGap=0;gapFrame=gapWave=undefined;}
+    let terrain=draws?.terrain,aircraft=draws?.aircraft,hud=draws?.hud;
+    function resetWindow(){
+      frames=elapsed=over33ms=maxGap=0;gapFrame=gapWave=undefined;
+      if(draws){terrain=draws.terrain;aircraft=draws.aircraft;hud=draws.hud;}
+    }
     return {reset(){resetWindow();previous=previousWave=undefined;},sample(interval,wave,stats){
       if(!(interval>0&&Number.isFinite(interval)))return;
       frames++;elapsed+=interval;
@@ -99,8 +103,11 @@ export function createWechatDebugLog(api, buildId) {
       if(elapsed<battleSampleMs)return;
       const frameBeforeMaxGap=gapFrame&&{wave:gapWave,logic:ms(gapFrame.logic),terrainAndPlane:ms(gapFrame.terrainAndPlane),
         entitiesAndEffects:ms(gapFrame.entitiesAndEffects),draw:ms(gapFrame.draw),worldDraw:ms(gapFrame.worldDraw),uiDraw:ms(gapFrame.uiDraw)};
-      info('局内帧率',{chapter,wave,frames,elapsedMs:ms(elapsed),fps:Math.round(10000*frames/elapsed)/10,
-        framesOver33ms:over33ms,maxGapMs:ms(maxGap),frameBeforeMaxGap});
+      const perSecond=count=>Math.round(10000*count/elapsed)/10;
+      const visualHz=draws?{terrain:perSecond(draws.terrain-terrain),aircraft:perSecond(draws.aircraft-aircraft),
+        hud:perSecond(draws.hud-hud)}:undefined;
+      info('局内帧率',{chapter,wave,frames,elapsedMs:ms(elapsed),fps:perSecond(frames),
+        framesOver33ms:over33ms,maxGapMs:ms(maxGap),frameBeforeMaxGap,visualHz});
       resetWindow();
     }};
   }

@@ -5,7 +5,7 @@ import {normalFit,stars,symbol} from './catalog-art.js';
 import {actions,headingValue,hit,label,notice} from './supply-cards.js';
 import {developerSkillsEnabled} from '../../developer-battle-settings.js';
 import {DEVELOPER_CURRENCY_GRANTS} from '../../developer-tools.js';
-import {PILOT_AFFECTION_MAX} from '../../peripheral/pilot-affection.js';
+import {PILOT_AFFECTION_MAX,PILOT_AFFECTION_VISIBLE} from '../../peripheral/pilot-affection.js';
 import {nativeLabProgressGate} from '../../replica/native-client-rules.js';
 import {copyDiagnosticReport} from '../../diagnostic-log.js';
 import {campaignMapForStage} from '../campaign-map-catalog.js';
@@ -18,7 +18,8 @@ import utilityArt from './utility-art.json';
 const titles={debug:'开发工具',developerDiagnostics:'诊断日志',formation:'出战阵容',activities:'活动',mail:'航线邮件',chapters:'章节地图',stages:'章节地图'};
 export const supportsUtilityPanel=type=>Object.hasOwn(titles,type);
 function developer(r,d){
-  const {snapshot:s,modal:m}=d,revision=s.nativeAcquisition.revision,busy=s.rewardBusy,pending=s.rewardPending,p=s.pilots?.find(v=>v.id===s.pilotId);
+  const {snapshot:s,modal:m}=d,revision=s.nativeAcquisition.revision,busy=s.rewardBusy,pending=s.rewardPending;
+  const p=PILOT_AFFECTION_VISIBLE?s.pilots?.find(v=>v.id===s.pilotId):null;
   const lab=nativeLabProgressGate(s.replicaCampaign).reached,chap=s.replicaCampaign?.developmentChaptersUnlocked===true;
   const command=(id,text,cmd,args={},disabled=false)=>r.action(id,text,cmd,args,{height:44,disabled,titleSize:15});
   r.text('开发资源按需领取，局内技能可单独开启。下方领取的资源会写入当前存档，正常消费。');r.gap(12);

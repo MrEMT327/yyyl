@@ -7,7 +7,7 @@ const asset = 'replica-battle/assets/owned-enemies/elite-scatter-v1/parts.png';
 const cdn = 'https://cdn.example/game/';
 const userDirectory = 'wxfile://usr';
 
-function fixture() {
+function fixture(assetKey = asset) {
   const downloads = [], requests = [], disk = new Map();
   const files = {
     mkdirSync() {},
@@ -24,18 +24,20 @@ function fixture() {
   };
   const resources = createWechatResources(api, {
     assetOrigin: 'https://game.example', cdnBase: cdn, requirePublicNetwork: true,
-    cdnFiles: [asset],
-    assetTransfers: { [asset]: { path: asset, encoding: 'identity', version: '3' } },
+    cdnFiles: [assetKey],
+    assetTransfers: { [assetKey]: { path: assetKey, encoding: 'identity', version: '3' } },
   });
   return { cache: createAssetCache(api, resources), resources, downloads, requests, disk };
 }
 
-for (const error of ['downloadFile:fail Error: aborted', 'downloadFile:fail errcode:-354 net::ERR_CONTENT_LENGTH_MISMATCH']) {
-  test('recovers a truncated native image with a fresh CDN request and caches it: ' + error, async t => {
-    const f = fixture();
+const incomplete = 'downloadFile:fail errcode:-354 net::ERR_CONTENT_LENGTH_MISMATCH';
+for (const [assetKey, error] of [[asset, 'downloadFile:fail Error: aborted'], [asset, incomplete],
+  ['assets/skin_calm-3kTuTHUa.mp3', incomplete]]) {
+  test('recovers a truncated transfer with a fresh CDN request and caches it: ' + assetKey + ' ' + error, async t => {
+    const f = fixture(assetKey);
     t.after(() => f.resources.dispose());
-    const source = '/' + asset + '?quality=1';
-    const expected = cdn + asset + '?quality=1&v=3';
+    const source = '/' + assetKey + '?quality=1';
+    const expected = cdn + assetKey + '?quality=1&v=3';
     assert.equal(f.resources.resolve(source), expected);
     const file = f.cache.localFile(source);
     assert.equal(f.cache.localFile(source), file);

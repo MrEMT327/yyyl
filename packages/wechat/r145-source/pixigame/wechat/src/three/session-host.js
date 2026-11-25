@@ -39,7 +39,7 @@ function temporaryStorage() {
 }
 
 export function startWechatLobbySession(api,platform,{ device, mountLobby, createBattle, createAudio, restart,
-  playAd, readSharedLoadoutJSON, loadDetails }) {
+  playAd, readSharedLoadoutJSON, loadDetails, showFirstSortieRetry }) {
   let current=true;
   prepareWechatRandom(api)?.catch(error=>console.warn('[Three 随机数准备]',error?.message||error));
   const sessionHost={
@@ -65,7 +65,7 @@ export function startWechatLobbySession(api,platform,{ device, mountLobby, creat
     readSharedLoadoutJSON,
     prepareAction(action,payload){if(drawsRandomReward(action,payload))return prepareWechatRandom(api);},
     playAd,
-    restart,
+    restart,showFirstSortieRetry,
     dispose(){current=false;},
   };
   return startLobbySession({sessionHost,platformKind:'wechat',app:{renderer:device},

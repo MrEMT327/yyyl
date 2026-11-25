@@ -1,6 +1,6 @@
 import { cloudAssetBase } from './cloud-asset-base.js';
-import { SRGBColorSpace, LinearFilter, LinearMipmapLinearFilter, PlaneGeometry } from 'three';
-import {artworkTexture} from '../three/game-screen/image-loading.js';
+import { SRGBColorSpace, LinearFilter, LinearMipmapLinearFilter, PlaneGeometry, Texture } from 'three';
+import {loadArtwork} from '../three/game-screen/image-loading.js';
 import { nineSliceGeometry } from './nine-slice-geometry.js';
 
 // Combat uses the same original metal controls as the current project UI.
@@ -21,21 +21,37 @@ export const COMBAT_ART_PATHS = Object.freeze({
 const textures = new Map();
 const frames={primary:[198,67,18],secondary:[219,85,18],card:[224,562,24],slot:[128,128,18],utility:[182,92,32],statsControl:[182,92,32],pauseSlot:[128,128,18],audioOn:[348,152,0],audioOff:[348,152,0],audioThumb:[120,120,0]};
 const isAudioSwitch=kind=>['audioOn','audioOff','audioThumb'].includes(kind);
-export function loadCombatUiTexture(url, mipmaps = false) {
-  const art = artworkTexture(url, undefined, () => { art.userData.artworkFailed = true; });
+function readCombatArtwork(art, priority) {
+  art.userData.artworkFailed = false;
+  loadArtwork(art.userData.artworkUrl, priority).then(image => {
+    art.image = image;
+    art.needsUpdate = true;
+  }, () => { art.userData.artworkFailed = true; });
+}
+export function loadCombatUiTexture(url, mipmaps = false, priority) {
+  const art = new Texture();
+  art.userData.artworkUrl = url;
+  readCombatArtwork(art, priority);
   art.colorSpace = SRGBColorSpace;
   art.generateMipmaps = mipmaps;
   art.minFilter = mipmaps ? LinearMipmapLinearFilter : LinearFilter;
   art.magFilter = LinearFilter;
   return art;
 }
-function texture(kind) {
+export function retryCombatArtwork(art, priority) {
+  if (!art?.userData.artworkFailed || !art.userData.artworkUrl) return false;
+  readCombatArtwork(art, priority);
+  return true;
+}
+function texture(kind, priority) {
   if (!COMBAT_ART_PATHS[kind]) throw new Error(`Unknown combat art: ${kind}`);
   if (!textures.has(kind)) {
-    textures.set(kind,loadCombatUiTexture(`${cloudAssetBase}art/${COMBAT_ART_PATHS[kind]}`,isAudioSwitch(kind)));
+    textures.set(kind,loadCombatUiTexture(`${cloudAssetBase}art/${COMBAT_ART_PATHS[kind]}`,isAudioSwitch(kind),priority));
   }
   return textures.get(kind);
 }
+export {texture as combatArtTexture};
+
 export function combatArtworkSettled(art) {
   return art.image?.width > 0 || art.userData.artworkFailed === true;
 }

@@ -1,16 +1,28 @@
+import {BATTLE_LAUNCH_SECONDS} from '../../replica-battle/battle-launch.js';
+
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
 
-// Project-authored light only. Endpoints follow the real departure and camera;
-// no wall-clock timer, history, gameplay callback or original media is needed.
+export function sampleBattleFlightTrail({victoryDeparture,flight,projectPoint},pose,launch){
+  const motion=victoryDeparture??launch;
+  if(!motion||!flight||!projectPoint)return null;
+  const from=projectPoint(flight.x,motion.fromZ);
+  return victoryDeparture
+    ?sampleVictoryTrail({departure:victoryDeparture,pose,from})
+    :sampleFlightTrail(launch.time,BATTLE_LAUNCH_SECONDS,pose,from);
+}
+
 export function sampleVictoryTrail({departure,pose,from}){
-  if(!departure||!pose?.visible||!from)return null;
-  const {elapsed}=departure;
-  if(![elapsed,pose.x,pose.y,pose.height,pose.scaleY,from.x,from.y].every(Number.isFinite)||elapsed<0||elapsed>=1.3)return null;
+  return sampleFlightTrail(departure?.elapsed,1.3,pose,from);
+}
+
+// Project the scripted flight into the current camera on each frame.
+function sampleFlightTrail(elapsed,duration,pose,from){
+  if(!pose?.visible||!from||!Number.isFinite(elapsed)||elapsed<=0||elapsed>=duration)return null;
+  if(![pose.x,pose.y,pose.height,pose.scaleY,from.x,from.y].every(Number.isFinite))return null;
   const size=Math.abs(pose.height*pose.scaleY),offset=size*.17;
   const head={x:pose.x,y:pose.y+offset};
   const tail={x:from.x,y:from.y+offset+size*.5*clamp(1-elapsed/.45,0,1)};
-  const fade=clamp((1.3-elapsed)/.3,0,1),power=clamp(elapsed/.045,0,1)*fade;
-  if(power<=0)return null;
+  const fade=clamp((duration-elapsed)/.3,0,1),power=clamp(elapsed/.045,0,1)*fade;
   const length=Math.hypot(head.x-tail.x,head.y-tail.y);
   const width=clamp(size/70,.65,1.5)*2,separation=clamp(size*.085,3.5,10),segments=[],sparks=[];
   for(const side of [-1,1]){

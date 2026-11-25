@@ -8,7 +8,8 @@ function sliced(mesh,binding,frame){
   u.sourceSize={value:new T.Vector2(binding.width,binding.height)};
   u.cut={value:new T.Vector4(frame.x,frame.w,frame.z,frame.y)};
   u.logical={value:new T.Vector2()};
-  mat.fragmentShader=mat.fragmentShader.replace('void main(){',`
+  mat.fragmentShader=mat.fragmentShader.replace('uniform sampler2D art;',`
+  uniform sampler2D art;
   uniform vec2 sourceSize,logical;
   uniform vec4 cut;
   float sliceCoord(float uv,float source,float target,float low,float high){
@@ -17,7 +18,7 @@ function sliced(mesh,binding,frame){
     if(p>=dest-high)return (source-(dest-p))/source;
     return (low+(p-low)*(source-low-high)/max(.00001,dest-low-high))/source;
   }
-  void main(){`).replace('texture2D(art,coords)','texture2D(art,vec2(sliceCoord(coords.x,sourceSize.x,logical.x,cut.x,cut.z),sliceCoord(coords.y,sourceSize.y,logical.y,cut.y,cut.w)))');
+  `).replace('texture(art,coords)','texture(art,vec2(sliceCoord(coords.x,sourceSize.x,logical.x,cut.x,cut.z),sliceCoord(coords.y,sourceSize.y,logical.y,cut.y,cut.w)))');
 }
 function makeBar(host,source,entity){
   const root=new T.Group(),layers=[];

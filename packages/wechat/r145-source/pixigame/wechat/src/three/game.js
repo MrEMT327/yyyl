@@ -3,6 +3,7 @@ import { createWechatThreeRuntime } from './runtime.js';
 import { createWechatDebugLog } from './debug-log.js';
 import { createWechatServices } from './services.js';
 import { createWechatPortraits } from './portraits.js';
+import { trimUnusedNativeCubismCore } from '../../../../../../../pixigame/src/ui/cubism-portrait-player.js';
 import { openWechatAffectionVideo } from './video.js';
 import { createWechatBattleAudio, wechatMusicTrack } from './battle-audio.js';
 import { showWechatSortie } from './sortie-cover.js';
@@ -18,8 +19,8 @@ import { diagnosticReport, recordDiagnostic } from '../../../../../../../pixigam
 import { playFreeRewardedAd } from '../../../../../../../pixigame/src/platform/local-rewarded-ad-runtime.js';
 
 export function openWechatGame(api,config){
-  let active=null,cubism;
-  const loadCubism=()=>cubism??=config.loadCubism().then(createCore=>createCore({console,atob,TextDecoder}));
+  let active=null;
+  const loadCubism=()=>config.loadCubism().then(createCore=>createCore({console,atob,TextDecoder}));
   async function boot(){
     active?.close();
     const debugLog=createWechatDebugLog(api,config.buildId);
@@ -29,15 +30,37 @@ export function openWechatGame(api,config){
     const {platform,device}=runtime;
     const startTime=debugLog?platform.now():0;
     const portraits=createWechatPortraits(api,platform,services,device,baseURL,loadCubism);
-    const entry={close(){try{runtime.close();}finally{portraits.destroy();services.close();setPopupSurfaceFont(null);}}};
-    active=entry;
+    let game,trimOnLobbyStart=false;
+    function memoryWarning(event){
+      if(active!==entry)return;
+      const memory=platform.renderer.info.memory,texturesBefore=memory.textures;
+      if(game)game.pixiLobby.trimMemory();else trimOnLobbyStart=true;
+      portraits.releaseHidden();
+      trimUnusedNativeCubismCore();
+      services.clearBattleData();platform.loadArtwork.clearDecoded();
+      const detail=JSON.stringify({level:event?.level,state:game?.game.state,page:device.lobbyLocation,
+        pilot:portraits.pilotId,texturesBefore,textures:memory.textures});
+      recordDiagnostic('微信内存告警',detail);console.warn('[Three 内存告警]',detail);
+    }
+    const entry={close(){
+      api.offMemoryWarning?.(memoryWarning);
+      try{runtime.close();}finally{portraits.destroy();services.close();setPopupSurfaceFont(null);}
+    }};
+    active=entry;api.onMemoryWarning?.(memoryWarning);
     const report=error=>{
       if(active!==entry)return;
       recordDiagnostic('微信小游戏启动',error?.message||String(error));
       console.error('[Three 小游戏]',error);
     };
-    const startup=runtime.showStartup({bounds:()=>platform.viewport.screen,retry:()=>void boot(),
-      copyReport:()=>new Promise((resolve,reject)=>api.setClipboardData({data:diagnosticReport(),success:resolve,fail:reject}))});
+    const startupOptions={bounds:()=>platform.viewport.screen,retry:()=>void boot(),
+      copyReport:()=>new Promise((resolve,reject)=>api.setClipboardData({data:diagnosticReport(),success:resolve,fail:reject}))};
+    const startup=runtime.showStartup(startupOptions);
+    let firstSortieRetry;
+    function showFirstSortieRetry(message){
+      if(active!==entry)return;
+      firstSortieRetry??=runtime.showStartup(startupOptions);
+      firstSortieRetry.fail({message:message||'首战尚未完成，请重试'});
+    }
     startup.stage(1,'正在读取游戏资源…');
     try{
       const font=api.loadFont&&services.localFile('art/psd-combat-v1/FZY4JW.ttf').then(file=>{
@@ -50,7 +73,7 @@ export function openWechatGame(api,config){
           region,createRaster:()=>api.createCanvas(),watch:platform.onViewport,
         }),
       };
-      const game=await runtime.startLobby({
+      game=await runtime.startLobby({
         portraits,
         openVideo:(screen,region,command)=>openWechatAffectionVideo(api,platform,services,screen,region,command),
         openAircraft:(screen,bounds,panel,refresh,request,available,options)=>{
@@ -61,22 +84,40 @@ export function openWechatGame(api,config){
         battleServices,
         readSharedLoadoutJSON:services.readSharedLoadoutJSON,
         createAudio:options=>openLobbySound(api,platform,services,options),
-        restart:()=>void boot(),
+        restart:()=>void boot(),showFirstSortieRetry,
         playAd:config.playRewardedAd??playFreeRewardedAd,
       });
-      await font;
-      if(active===entry){
-        startup.stage(2,'正在准备大厅界面…');
-        const preparing=platform.now();
-        const ready=await game.pixiLobby.prepareMenus();
-        if(active!==entry)return;
-        debugLog?.info('大厅首屏预热',{ready,elapsedMs:Math.round(platform.now()-preparing)});
-        debugLog?.info('大厅就绪',{loadMs:Math.round(platform.now()-startTime)});
-        game.pixiLobby.prepareActivityPanels();
-        game.pixiLobby.prepareWorkshops();
-        game.pixiLobby.prepareCatalogs();
-        await startup.ready(()=>{game.unlockAudio();game.pixiLobby.startPortraits();device.repaintHome?.();});
+      if(active!==entry)return;
+      const lobby=game.pixiLobby;
+      if(trimOnLobbyStart)lobby.trimMemory();
+      function prepareLaterMenus(){
+        lobby.prepareActivityPanels();lobby.prepareWorkshops();lobby.prepareCatalogs();
       }
+      if(lobby.snapshot.firstSortieRequired){
+        // Register return-screen preparation before the battle starts.
+        lobby.prepareMenus();
+        prepareLaterMenus();
+        startup.stage(2,'正在准备第一关…');
+        await startup.ready(()=>{
+          if(active!==entry)return;
+          void Promise.resolve().then(()=>game.peripheralAction('start',{index:0})).then(result=>{
+            if(!result?.ok&&game.game.state==='menu')showFirstSortieRetry(result?.message);
+          }).catch(error=>{report(error);showFirstSortieRetry(error.message);});
+        },{automatic:true});
+        return;
+      }
+      await font;
+      if(active!==entry)return;
+      startup.stage(2,'正在准备大厅界面…');
+      const preparing=platform.now();
+      const home=device.homeView;
+      if(!home)throw Error('无法打开大厅，请重试');
+      const [,ready]=await Promise.all([home.prepareEntry(),lobby.prepareMenus()]);
+      if(active!==entry)return;
+      debugLog?.info('大厅首屏预热',{ready,elapsedMs:Math.round(platform.now()-preparing)});
+      debugLog?.info('大厅就绪',{loadMs:Math.round(platform.now()-startTime)});
+      prepareLaterMenus();
+      await startup.ready(()=>{home.paintNow();game.unlockAudio();lobby.startPortraits();});
     }catch(error){report(error);if(active===entry)startup.fail(error);}
   }
   void boot().catch(error=>{
@@ -88,7 +129,8 @@ export function openWechatGame(api,config){
 
 export function openLobbySound(api,platform,services,{game,storage}){
   const preferences=readAudioPreferences(storage);
-  let track=null,context=null,unlocked=false,closed=false,returned=false;
+  let track=null,musicLoad=null,retryMusicAt=0,context=null,unlocked=false,closed=false,returned=false;
+  const wantsMusic=()=>unlocked&&preferences.music&&platform.visible&&!closed&&game.state==='menu';
   const enabled=()=>!closed&&preferences.effects&&platform.visible&&game.state==='menu';
   function ensureContext(){
     if(!enabled())return null;
@@ -104,10 +146,18 @@ export function openLobbySound(api,platform,services,{game,storage}){
       return;
     }
     if(returned){returned=false;Object.assign(preferences,readAudioPreferences(storage));}
-    if(unlocked&&preferences.music&&platform.visible&&!closed&&game.state==='menu'){
-      track??=wechatMusicTrack(api,services.resolve(LOBBY_MUSIC_URL),'lobby');
-      track.loop=true;track.volume=1;if(track.paused)void track.play().catch(()=>{});
-    }else track?.pause();
+    if(!wantsMusic()){track?.pause();return;}
+    if(track){if(track.paused)void track.play().catch(()=>{});return;}
+    if(musicLoad||platform.now()<retryMusicAt)return;
+    musicLoad=Promise.resolve().then(()=>services.localFile(LOBBY_MUSIC_URL)).then(file=>{
+      if(!wantsMusic())return;
+      track=wechatMusicTrack(api,file,'lobby');
+      track.loop=true;track.volume=1;void track.play().catch(()=>{});
+    }).catch(error=>{
+      if(closed)return;
+      retryMusicAt=platform.now()+2000;
+      console.warn('[Three 大厅音乐]',error?.message||error);
+    }).finally(()=>musicLoad=null);
   }
   function unlock(){unlocked=true;ensureContext()?.resume().catch(()=>{});sync();}
   let previous=platform.visible;

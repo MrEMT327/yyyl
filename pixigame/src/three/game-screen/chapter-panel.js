@@ -1,16 +1,48 @@
 import {createLobbyPanel} from './lobby-panel.js';
 import {paintLobbyPaper} from './panel-paper.js';
-import {area,box,button,pic,slice,words,titleFont,clamp} from './menu-art.js';
+import {area,box,button,pic,slice,words,titleFont,clamp,guideMascot,qualityFrame} from './menu-art.js';
+import {homePictures} from './home-stage.js';
+import {homeArtOffset,homeInsets} from './home-navigation.js';
 import {chapterDetailModel} from '../../ui/chapter-detail-model.js';
 import {paintRewardItemSlot} from '../../ui/reward-item-art.js';
 import {paintItemDetail} from './item-details.js';
 import {nativeItemPresentation} from '../../replica/native-item-presentation.js';
 import {pendingNotice,rewardPage,starPage} from './chapter-rewards.js';
 import portraits from './chapter-art.json';
+import homeArt from './home-art.json';
 
-const titles={chapterDetails:'关卡详情',chapterChest:'通关奖励',chapterRewards:'通关奖励',chapterCoreRewards:'通关奖励',nativeStarRewards:'星级奖励'};
+const [,startFile,startBounds]=homePictures.find(([id])=>id==='start');
+const titles={firstSortie:'首战引导',chapterDetails:'关卡详情',chapterChest:'通关奖励',chapterRewards:'通关奖励',chapterCoreRewards:'通关奖励',nativeStarRewards:'星级奖励'};
 export function supportsChapterPanel(type,snapshot){
   return Object.hasOwn(titles,type);
+}
+
+function firstSortie(data,t){
+  const a=t.layer('first-sortie').art,frame=t.frameRect;
+  const [x,y,w,h]=startBounds,sx=frame.w/750,sy=frame.h/1624;
+  const insets=homeInsets({width:frame.w,height:frame.h,safeTop:t.viewport?.safeTop,safeBottom:data.safeBottom});
+  const start=box(frame.x+x*sx,frame.y+(y+homeArtOffset('start',insets))*sy,w*sx,h*sy);
+  const cx=start.x+start.w/2,padding=4;
+  const ring=box(start.x-padding,start.y-padding,start.w+2*padding,start.h+2*padding);
+  t.backdrop(a,.6,'#020b13');
+  if(!pic(a,t,'/art/psd-main-v1/'+startFile,start).visible){
+    a.quad(start.x,start.y,start.w,start.h,'#b35c1f');
+    words(a,'开始 ×5',cx,start.y+start.h/2,18,{family:titleFont});
+  }
+  if(!slice(a,t,qualityFrame(4),ring,6,18,{fill:false}).visible){
+    const {x,y,w,h}=ring;
+    a.line([[x,y],[x+w,y],[x+w,y+h],[x,y+h],[x,y]],'#ffd971',1,2);
+  }
+
+  const side=Math.min(frame.w*.24,100),cue=box(cx-16,ring.y-29,32,24);
+  const captionW=114,captionH=56,gap=4;
+  const left=cx-(side+gap+captionW)/2,centerY=cue.y-5-side/2;
+  const caption=box(left+side+gap,centerY-captionH/2,captionW,captionH);
+  const plate=slice(a,t,'/art/onboarding-dialogue-v2/panel.webp',caption,18,64);
+  guideMascot(t,a,box(left,centerY-side/2,side,side),data.reduced);
+  words(a,'第一关',caption.x+caption.w/2,centerY,16,{color:plate.visible?'#233b53':'#fff'});
+  pic(a,t,homeArt.pointer,cue,true);
+  area(t,'start','进入第一关，消耗体力×5',start,'start');
 }
 
 function details(data,w,h,t){
@@ -54,7 +86,8 @@ export function openChapterPanel(screen,host,send,kind){
   let latest,signature,inspect=null;
   const entered=performance.now()/1000;
   const panel=createLobbyPanel(screen,host,titles[kind],(data,w,h,t)=>{
-    if(kind==='chapterDetails')details(data,w,h,t);
+    if(kind==='firstSortie')firstSortie(data,t);
+    else if(kind==='chapterDetails')details(data,w,h,t);
     else if(kind==='nativeStarRewards'||kind==='chapterChest'&&!data.snapshot.nativeAcquisition)starPage(data,w,h,t);
     else rewardPage(data,w,h,t);
     if(data.inspect){paintItemDetail(data,w,h,t);return 'inspect';}
@@ -72,5 +105,6 @@ export function openChapterPanel(screen,host,send,kind){
   return {host,close:panel.close,update(snapshot,modal,key){
     latest={snapshot,modal:{...modal},backdropAlpha:.55,safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)};
     signature=key;refresh();
+    if(kind==='firstSortie')panel.prepare();
   }};
 }

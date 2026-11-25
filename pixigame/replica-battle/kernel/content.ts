@@ -14,6 +14,7 @@ interface ContentHost {
   chapterId: number;
   fetchResource: typeof fetch;
   readSharedLoadoutJSON?: ReadSharedLoadoutJSON;
+  loadingFrame?: () => Promise<void> | void;
 }
 
 export async function loadContent(onProgress: ((completed: number, total: number) => void) | undefined, host: ContentHost): Promise<GameContent> {
@@ -59,6 +60,7 @@ export async function loadContent(onProgress: ((completed: number, total: number
     ].map(read).concat(loadLoadoutRuntime(fetchResource, host.readSharedLoadoutJSON).then(loaded),
       loadPlayerAppearances(fetchResource, host.readSharedLoadoutJSON).then(loaded))),
   ]);
+  if (host.loadingFrame) await host.loadingFrame();
   const { catalog, requested, entry } = selection;
   const [chapter, geometry, chapterResources] = chapterData;
   const [assets, combat, originalEffects, bossAnimation, enemyHealthBars, beamEffects,
@@ -110,6 +112,7 @@ export async function loadContent(onProgress: ((completed: number, total: number
     key === 'url' && /^\/?assets\//.test(value) && !/[?&]rev=chapters12-15-native(?:&|$)/.test(value)
       ? `${value}${value.includes('?') ? '&' : '?'}rev=chapters12-15-native`
       : value);
+  if (host.loadingFrame) await host.loadingFrame();
   for (const [key, raw] of Object.entries(combat.entities) as [string, RecordData][]) {
     if (chapter.entities[key]) continue;
     chapter.entities[key] = { id: raw.ID, modelId: raw.ModelID, modelScale: raw.ModelScale, stats: { hp: raw.HP, attack: raw.Attack, speed: raw.MoveSpeed, shape: raw.Shape, fireInterval: raw.FireCD, bodyAttack: raw.BodyAttack, hitInterval: raw.HittedInterval, expWeight: raw.expWeight }, ai: { type: raw.WaveAIId || raw.AIId, parameters: parse(raw.WaveAIParameters || raw.AIParameters), leaveParameters: parse(raw.WaveleaveParameters || raw.leaveParameters), bornParameters: parse(raw.bornParameters) }, weaponIds: raw.WeaponID, raw };
@@ -143,12 +146,20 @@ export async function loadContent(onProgress: ((completed: number, total: number
   for (const [key, choice] of Object.entries(geometry.layoutChoices || {}) as [string, RecordData][]) {
     selectedLayouts.set(key, Math.floor(spawnRandom() * choice.resources.length));
   }
+  const nonSpawnEvents = new Set(geometry.nonSpawnEvents);
+  const pointsByMission = new Map<number, RecordData[]>();
+  for (const point of geometry.spawnPoints) {
+    if (point.layoutChoice && selectedLayouts.get(point.layoutChoice) !== point.layoutChoiceIndex) continue;
+    const points = pointsByMission.get(point.missionId);
+    if (points) points.push(point);
+    else pointsByMission.set(point.missionId, [point]);
+  }
   for (const wave of chapter.waves) {
     const waveSpawns: Spawn[] = [];
     for (const event of [...wave.events].sort((a, b) => (a.baseTime ?? a.time) - (b.baseTime ?? b.time) || a.id - b.id)) {
       // Non-spawn missions remain in the chapter timeline, but have no enemy positions.
-      if (geometry.nonSpawnEvents.includes(event.id)) continue;
-      const layoutPoints = geometry.spawnPoints.filter((point: RecordData) => point.missionId === event.id && (!point.layoutChoice || selectedLayouts.get(point.layoutChoice) === point.layoutChoiceIndex));
+      if (nonSpawnEvents.has(event.id)) continue;
+      const layoutPoints = pointsByMission.get(event.id) ?? [];
       const randomConfig = geometry.randomSpawns[event.id];
       if (!layoutPoints.length && !randomConfig) throw new Error(`缺少原版出怪坐标：${event.id}`);
       const appendPoint = (point: RecordData, repeatDelay: number, repeat: number, randomPlacement = false) => {

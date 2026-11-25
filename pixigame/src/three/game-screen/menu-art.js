@@ -3,7 +3,6 @@ import {RESOURCE_ICONS} from '../../ui/resource-icons.js';
 import {leftOfMenuCenterY,bottomNavigation,navArtwork,navBodyEnd,navFillStart,walletTop} from './home-navigation.js';
 import {artworkSize} from './image-loading.js';
 import {equipmentLayout} from './equipment-layout.js';
-import {recruitPreview} from './recruit-preview-atlas.js';
 import art from './menu-art.json';
 
 export {art};
@@ -16,15 +15,25 @@ export function words(a,value,x,y,size,opts={}){
   return a.text(String(value??''),x,y,{size,weight:opts.family===titleFont?400:600,align:'center',family:bodyFont,...opts});
 }
 export function pic(a,t,url,b,contain=false,options){return t.image(a,url,b.x,b.y,b.w,b.h,contain,options);}
-function fitSlice(mesh,b,edge,cut){
+export function guideMascot(t,a,b,reduced){
+  const sprite=pic(a,t,'/art/onboarding-assistant-v1/expressions.png',b);
+  const y=sprite.position.y,uv=sprite.geometry.attributes.uv,original=Array.from(uv.array);let last=-1;
+  const animate=now=>{
+    const phase=now/4.8%1,frame=reduced?0:(phase>=.14&&phase<.2||phase>=.28&&phase<.34)?3:(phase>=.62&&phase<.64||phase>=.67&&phase<.69)?1:phase>=.64&&phase<.67?2:0;
+    if(frame!==last){for(let i=0;i<uv.count;i++)uv.setX(i,(frame+1-original[i*2])/4);uv.needsUpdate=true;last=frame;}
+    sprite.position.y=y-(reduced?0:1-Math.cos(now*Math.PI*2/3))*1.5;
+  };
+  animate(0);if(!reduced)t.animate(animate);
+}
+function fitSlice(mesh,b,edge,cut,fill){
   const [iw,ih]=artworkSize(mesh.material.map?.image);
   mesh.geometry.dispose();
-  mesh.geometry=nineSliceGeometry(b.w,b.h,iw||219,ih||85,cut,edge);
+  mesh.geometry=nineSliceGeometry(b.w,b.h,iw||219,ih||85,cut,edge,fill);
 }
-export function slice(a,t,url,b,edge=10,cut=18,{updateInPlace=false}={}){
-  const options=updateInPlace?{updateInPlace,onImage:mesh=>fitSlice(mesh,b,edge,cut)}:undefined;
+export function slice(a,t,url,b,edge=10,cut=18,{updateInPlace=false,fill=true}={}){
+  const options=updateInPlace?{updateInPlace,onImage:mesh=>fitSlice(mesh,b,edge,cut,fill)}:undefined;
   const mesh=pic(a,t,url,b,false,options);
-  if(!updateInPlace||!mesh.visible)fitSlice(mesh,b,edge,cut);
+  if(!updateInPlace||!mesh.visible)fitSlice(mesh,b,edge,cut,fill);
   return mesh;
 }
 export function button(a,t,b,{title,price,icon,gold=false,short=false,disabled=false,skin,titleColor='#fff',shortColor='#ffb59a',family=titleFont,titleSize=clamp(b.w*.092,12,17),priceSize=Math.min(14,b.w*.10),priceColor='#fff',artwork}){
@@ -66,14 +75,19 @@ function equipmentRoom(root,t,w,h,bleed,layout,primary){
   band(bottom-divider,divider,originalEnd-divider,divider);
   band(bottom,height-originalEnd,originalEnd,height-originalEnd);
 }
-function verticalSlice(front,t,url,b,top,bottom,options){
-  const {uv}=pic(front,t,url,b,false,options).geometry.attributes;
+export function verticalSlice(front,t,url,b,top,bottom,options){
+  const mesh=pic(front,t,url,b,false,options),{uv}=mesh.geometry.attributes;
   for(let i=0;i<uv.count;i++)uv.setY(i,1-bottom+uv.getY(i)*(bottom-top));
+  return mesh;
+}
+export function paintNavigationInset(a,t,w,{fillY,fillHeight,trimY,trim},artwork){
+  const background='/art/project-navigation-v2/background.png';
+  verticalSlice(a,t,background,box(0,fillY,w,fillHeight),navFillStart,navBodyEnd,artwork);
+  verticalSlice(a,t,background,box(0,trimY,w,trim),navBodyEnd,1,artwork);
 }
 const tabLabels={shop:'商城',assembly:'装备',battle:'战役',research:'天赋',supply:'招募'};
 export function chrome(data,w,h,t){
   const tab=data.tab,s=data.snapshot,u=w/369.453,root=t.layer('room').art;
-  const recruitAtlas=data.progressive&&tab==='supply'?t.texture('/'+recruitPreview.path,true,2):null;
   const {top:navY,height:railH,inset,hitHeight}=bottomNavigation(w,h,data.safeBottom,data.native);
   const bleed=t.topBleed||0,equipment=tab==='assembly'?equipmentLayout(w,navY,data.native):null;
   const artwork=data.prioritizedArtwork?{updateInPlace:true}:undefined;
@@ -106,17 +120,16 @@ export function chrome(data,w,h,t){
   const defaultTop=tab==='assembly'?w*.125:Math.max(12,w*.0325)+w*(tab==='supply' ? .125 : .1805);
   const top=tab==='assembly'||menuCenter===null?defaultTop:
     Math.max(walletY+Math.max(44,46*w/750)+8,defaultTop+walletY-defaultWalletY);
-  return {top,navY,equipment,artwork,primary,recruitAtlas,
+  return {top,navY,equipment,artwork,primary,
     footer(){
       const front=t.layer('footer').art;
       const url=footerUrl,fallback=[];
       const options=footerReady?primary:{...primary,onImage:()=>{for(const mesh of fallback)mesh.visible=false;}};
       if(!footerReady)fallback.push(front.quad(0,navY,w,railH+inset,'#172735'));
       if(inset){
-        const skin=navArtwork(navY,railH,inset),background='/art/project-navigation-v2/background.png';
+        const skin=navArtwork(navY,railH,inset);
         verticalSlice(front,t,url,box(0,navY,w,skin.body),0,navBodyEnd,options);
-        verticalSlice(front,t,background,box(0,skin.fillY,w,skin.fillHeight),navFillStart,navBodyEnd,artwork);
-        verticalSlice(front,t,background,box(0,skin.trimY,w,skin.trim),navBodyEnd,1,artwork);
+        paintNavigationInset(front,t,w,skin,artwork);
       }else pic(front,t,url,box(0,navY,w,railH),false,options);
       let x=0;for(const [key,label] of Object.entries(tabLabels)){
         const width=w*(key===tab ? .2506 : .18735);
@@ -124,11 +137,18 @@ export function chrome(data,w,h,t){
         area(t,'nav-'+key,label,box(x,navY,width,hitHeight),'tab',{tab:key});x+=width;
       }
       if(data.native){
-        const tint=front.quad(0,navY,1,hitHeight,'#ffe8a7',.18);
-        tint.visible=false;
+        const outline=front.quad(0,navY,1,railH,'#ffe18a',.9);
+        outline.visible=false;
+        let outlineWidth=0;
         t.frame((_time,control)=>{
-          tint.visible=control?.action.type==='tab';
-          if(tint.visible){tint.position.x=control.x+control.w/2;tint.scale.x=control.w;}
+          outline.visible=control?.action.type==='tab';
+          if(!outline.visible)return;
+          if(outlineWidth!==control.w){
+            outlineWidth=control.w;
+            outline.geometry.dispose();
+            outline.geometry=nineSliceGeometry(outlineWidth,railH,1,1,0,2,false);
+          }
+          outline.position.x=control.x+outlineWidth/2;outline.scale.x=outlineWidth;
         });
       }
     }};

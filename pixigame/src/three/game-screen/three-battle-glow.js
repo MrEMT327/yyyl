@@ -61,7 +61,7 @@ export function createBattleGlow(renderer,w,h,outputScale=1){
     },
     begin(){cuts.length=0;this.needsBackground=false;},
     addCut(cut){let i=cuts.findIndex(v=>v.uid===cut.uid);if(i<0){if(cuts.length===3)cuts.shift();i=cuts.length;}cuts[i]=cut;},
-    paint(content,view,output=null,beginOutput,hasForeground=true){
+    paint(content,view,output=null,beginOutput,hasForeground=true,underLoad=false){
       const autoUpdate=content.matrixWorldAutoUpdate;
       if(autoUpdate)content.updateMatrixWorld();
       content.matrixWorldAutoUpdate=false;
@@ -71,11 +71,13 @@ export function createBattleGlow(renderer,w,h,outputScale=1){
           view.layers.mask=1;renderer.render(content,view);pass(back,world.texture,0);
           bindWorld();view.layers.mask=2;renderer.render(content,view);
         }else{view.layers.mask=3;renderer.render(content,view);}
-        for(let i=0;i<down.length;i++)pass(down[i],i?down[i-1].texture:world.texture,i?2:1);
-        for(let i=up.length-1;i>=0;i--)pass(up[i],i===up.length-1?down.at(-1).texture:up[i+1].texture,3);
+        const levels=underLoad&&!cuts.length&&!this.needsBackground?2:down.length;
+        let bloom=world.texture;
+        for(let i=0;i<levels;i++){pass(down[i],bloom,i?2:1);bloom=down[i].texture;}
+        for(let i=levels-2;i>=0;i--){pass(up[i],bloom,3);bloom=up[i].texture;}
         u.uDimensionCount.value=cuts.length;
         cuts.forEach(({line,shape,style},i)=>{u.uDimensionLine.value[i].set(line[0]-left,line[1]-top,line[2],line[3]);u.uDimensionShape.value[i].fromArray(shape);u.uDimensionStyle.value[i].fromArray(style);});
-        pass(output,up[0].texture,4,beginOutput);
+        pass(output,bloom,4,beginOutput);
         if(hasForeground){view.layers.mask=4;renderer.render(content,view);}
       }finally{
         view.layers.mask=1;content.matrixWorldAutoUpdate=autoUpdate;

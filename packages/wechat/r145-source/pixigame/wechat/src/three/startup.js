@@ -3,8 +3,10 @@ import { createStartupScene } from '../../../../../../../pixigame/src/three/game
 export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) {
   const {renderer,display}=platform;
   let active=true,mode='loading',message='正在加载…',progress=0;
-  let id=null,controls=[],pressed=null,onEnter=null,resolveReady=null,copyLabel='复制诊断';
-  const scene=createStartupScene(renderer,schedule);
+  let id=null,controls=[],pressed=null,onEnter=null,resolveReady=null,copyLabel='复制诊断',automaticEntry=false;
+  const scene=createStartupScene(renderer,schedule,{
+    waitForBackdrop:true,backdrop:'entry-screens-v4/startup-wechat.jpg'
+  });
 
   function schedule() {
     if(active&&platform.visible&&id===null)id=platform.requestFrame(paint);
@@ -12,6 +14,7 @@ export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) 
   function paint() {
     id=null;
     if(!active||!platform.visible)return;
+    if(mode==='ready'&&automaticEntry){choose('start');return;}
     const box=bounds(),dpr=platform.viewport.density;
     if(!box.width||!box.height)return;
     const bw=Math.max(1,Math.round(box.width*dpr)),bh=Math.max(1,Math.round(box.height*dpr));
@@ -66,8 +69,9 @@ export function showWechatStartup(platform,{bounds,retry,copyReport,onRelease}) 
       progress=Math.min(3,Math.max(progress,value));
       message=status;schedule();
     },
-    ready(callback){
+    ready(callback,{automatic=false}={}){
       if(!active||mode==='failed')return Promise.resolve();
+      automaticEntry=automatic;
       mode='ready';progress=3;message='准备就绪';onEnter=callback;schedule();
       return new Promise(resolve=>{resolveReady=resolve;});
     },

@@ -100,12 +100,21 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, fallb
 
   // Only explicitly mapped transport files are decoded. Existing game .gz
   // files retain their bytes for the game's own DecompressionStream loader.
-  function decodeBytes(url, data) {
-    if (!remote || !/^https?:/.test(url)) return data;
+  function compressedSize(url) {
+    if (!remote || !/^https?:/.test(url)) return;
     const address = new URL(url);
-    if (address.origin !== remote.origin || !address.pathname.startsWith(remote.pathname)) return data;
-    const expected = compressed.get(decodeURIComponent(address.pathname.slice(remote.pathname.length)));
-    return expected === undefined ? data : decodeGzip(url, data, expected);
+    if (address.origin !== remote.origin || !address.pathname.startsWith(remote.pathname)) return;
+    return compressed.get(decodeURIComponent(address.pathname.slice(remote.pathname.length)));
+  }
+
+  function decodeBytes(url, data, paceDataWork) {
+    return decodePayload(url, data, compressedSize(url), paceDataWork);
+  }
+
+  function decodePayload(url, data, expected, paceDataWork) {
+    if (expected === undefined) return data;
+    const decode = () => decodeGzip(url, data, expected);
+    return paceDataWork && data?.byteLength !== expected ? paceDataWork(expected, decode) : decode();
   }
 
   function decodeGzip(url, data, expected) {
@@ -141,7 +150,7 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, fallb
     }
   }
 
-  async function readBytes(path, { signal, baseURL, fresh = false } = {}) {
+  async function readBytes(path, { signal, baseURL, fresh = false, paceDataWork } = {}) {
     if (disposed || signal?.aborted) return Promise.reject(abortError());
     let url = resolve(path, baseURL);
     if (fresh && /^https?:/i.test(url)) url = freshURL(url);
@@ -161,18 +170,29 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, fallb
       };
       pending.add(cancel);
       signal?.addEventListener('abort', cancel, { once: true });
+      function finishData(data, source, expected, onError = finish) {
+        if (settled) return;
+        const pace = paceDataWork && ((size, decode) => paceDataWork(size, () => {
+          if (!settled) return decode();
+        }));
+        try {
+          const decoded = decodePayload(source, data, expected, pace);
+          if (decoded?.then) void decoded.then(bytes => finish(null, bytes), onError);
+          else finish(null, decoded);
+        } catch (error) { onError(error); }
+      }
       function requestBytes(url) {
           if (settled) return;
           task = transport.request({
             url, method: 'GET', dataType: 'text', responseType: 'arraybuffer', timeout: 30000,
-            ...(fresh ? { cache: 'no-store', retryURL: freshURL } : {}),
+            ...(fresh ? { cache: 'no-store', retryURL: freshURL } : {}), paceDataWork,
             success(result) {
               if (result.statusCode < 200 || result.statusCode >= 300) {
                 finish(new Error(`资源加载失败 (${result.statusCode})：${url}`));
               } else if (!(result.data instanceof ArrayBuffer)) {
                 finish(new Error(`资源未以二进制返回：${url}`));
               } else {
-                try { finish(null, decodeBytes(url, result.data)); } catch (error) { finish(error); }
+                try { finishData(result.data, url, compressedSize(url)); } catch (error) { finish(error); }
               }
             },
             fail(error) { finish(new Error(`资源加载失败：${url} · ${error.errMsg || ''}`)); },
@@ -198,7 +218,8 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, fallb
               filePath: url,
               success(result) {
                 try {
-                  finish(null, key && url.endsWith('.gz') ? decodeGzip(url, result.data, assetTransfers[key].bytes) : result.data);
+                  const expected = key && url.endsWith('.gz') ? assetTransfers[key].bytes : undefined;
+                  finishData(result.data, url, expected, localFailure);
                 } catch (error) { localFailure(error); }
               },
               fail(error) { localFailure(new Error(`包内资源读取失败：${url} · ${error.errMsg || ''}`)); },
@@ -286,7 +307,11 @@ export function createWechatResources(api, { assetOrigin, localFiles = {}, fallb
   return {
     resolve, canLoad, releaseAssets: Boolean(releaseFiles), readBytes, decodeBytes, readyLocalFile, readyFallbackFile, preloadAssetPackage, isVersionedBattleData,
     requestAsset: transport.request, cacheStats: transport.stats, flushCache: transport.flush,
-    async readJSON(path, options) { return JSON.parse(buf2string(new Uint8Array(await readBytes(path, options)))); },
+    async readJSON(path, options) {
+      const bytes = await readBytes(path, options);
+      const parse = () => JSON.parse(buf2string(new Uint8Array(bytes)));
+      return options?.paceDataWork ? options.paceDataWork(bytes.byteLength, parse) : parse();
+    },
     createAssetBytesUrl, createVerifiedAssetBytesUrl, revokeAssetBytesUrl, createTextureScope,
     dispose() {
       if (disposed) return;

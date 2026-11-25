@@ -73,7 +73,7 @@ import './equipment-page.css';
 import './recruit-page.css';
 import './peripheral-quality.css';
 import { battlePage, battleHeader, battleChapterIndex, battleSupplementalModal, pilotAffectionDialog } from './battle-page.js';
-import { PILOT_AFFECTION_MAX, pilotAffectionVideo } from '../peripheral/pilot-affection.js';
+import { PILOT_AFFECTION_MAX, isHiddenPilotAffectionAction, pilotAffectionVideo } from '../peripheral/pilot-affection.js';
 import { mountPilotVideoControls } from './pilot-video-controls.js';
 import { releaseOwnedVideo } from './release-owned-video.js';
 import './battle-supplemental.css';
@@ -1192,7 +1192,7 @@ export function mountPeripheralLobby({ bridge, parent = document.body, system, d
     await runLobbyCommand(target.dataset.action,target.dataset,target,event.target===target);
   });
   async function runLobbyCommand(action,data,target,direct=true){
-    if(busy||!visible)return;
+    if(busy||!visible||isHiddenPilotAffectionAction(action))return;
     if(data.resourceShort){if(!snapshot.rewardPending&&!snapshot.rewardBusy)toast(shortageToast(data.resourceShort));return;}
     if(action==='inspect'){itemDescriptions.open(data,target);return;}
     if(action==='gearSort'&&['quality','part','level'].includes(data.value)){gearSort=data.value;render(true);return;}

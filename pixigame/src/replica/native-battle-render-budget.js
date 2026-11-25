@@ -1,4 +1,4 @@
-export function createNativeBattleRenderBudget({width, height, pixelRatio}, worldWidth) {
+export function createNativeBattleRenderBudget({width, height, pixelRatio}, worldWidth, {adaptive=false,onPressureChange}={}) {
   const screenWidth = Math.min(width, height * 540 / 960) * pixelRatio;
   const phone = screenWidth <= 900;
   const aircraftTextureSize = phone ? 192 : 256;
@@ -11,18 +11,39 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
   let previousTerrain, pendingTerrain;
   let frameSeconds = 1 / 60;
   let deferredRender;
+  let underLoad=false,displayAverage=1/60,evidence=0;
+
+  function setPressure(next){
+    if(underLoad===next)return;
+    underLoad=next;evidence=0;
+    onPressureChange?.(next);
+  }
+  function observeFrame(seconds){
+    if(!adaptive||!phone)return;
+    if(!(seconds>0)||seconds>=.5){
+      displayAverage=1/60;evidence=0;setPressure(false);return;
+    }
+    // Measure wall time. Slow-motion gameplay and a single stall must not change quality.
+    const sample=Math.min(seconds,.1);
+    displayAverage+=(sample-displayAverage)*.12;
+    const qualifies=underLoad?displayAverage<1/47:displayAverage>1/38;
+    evidence=qualifies?evidence+sample:Math.max(0,evidence-sample*2);
+    if(evidence>=(underLoad?4:1.5))setPressure(!underLoad);
+  }
 
   function planTerrain(time, run, weather, x, z) {
     pendingTerrain = undefined;
-    const tick = Math.floor(time * terrainRate + 0.001);
-    const fastTick = Math.floor(time * 30 + 0.001);
+    const rate=underLoad?15:terrainRate, fastRate=underLoad?24:30;
+    const tick = Math.floor(time * rate + 0.001);
+    const fastTick = Math.floor(time * fastRate + 0.001);
     const previous = previousTerrain;
     const sameScene = previous && previous.run === run && previous.weather === weather && time >= previous.time;
     const moved = sameScene ? Math.hypot(x - previous.x, z - previous.z) * cameraPixels : Infinity;
     const urgent = moved >= 24;
     // Coast scrolling runs at 20 Hz on phones. Camera motion can use 30 Hz.
-    if (!urgent && (fastTick === previous.fastTick || (tick === previous.tick && moved < 6))) return null;
-    pendingTerrain = { time, tick, fastTick, run, weather, x, z };
+    if (!urgent && (fastTick === Math.floor(previous.time*fastRate+.001) ||
+      (tick === Math.floor(previous.time*rate+.001) && moved < 6))) return null;
+    pendingTerrain = { time, run, weather, x, z };
     return urgent ? 'immediate' : 'regular';
   }
 
@@ -33,9 +54,11 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
 
   return {
     aircraftTextureSize, terrainWidth, terrainHeight,
+    observeFrame,get underLoad(){return underLoad;},
     combatBloomLevels: phone ? 2 : undefined,
     shouldDrawAircraft(elapsed, terrainDue, moving) {
       if (!phone) return elapsed >= (moving ? 1/60 : 1/30) - 1e-6;
+      if (underLoad) return elapsed >= (moving && !terrainDue ? 1/24 : 1/15) - .001;
       // Position and input update on each display frame. Let regular aircraft
       // texture updates fall between terrain uploads, with a 50 ms deadline.
       return elapsed >= (terrainDue ? 1/20 : 1/30) - .001;
@@ -67,6 +90,7 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
       previousTerrain = pendingTerrain = undefined;
       frameSeconds = 1 / 60;
       deferredRender = null;
+      evidence=0;displayAverage=1/60;setPressure(false);
     },
   };
 }

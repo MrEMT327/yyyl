@@ -3707,7 +3707,14 @@
       {"path":"replica-battle/three-h5-variants/9020f40876430731ddbb.png","sha256":"9020f40876430731ddbbf3942fe0d93451d608d5cb584750a94b0428729fe083","bytes":453013},
       {"path":"replica-battle/three-h5-variants/a8681abccbde9595f5c8.png","sha256":"a8681abccbde9595f5c80133f704452f0dd87899792d9f41d1f3782107a9929f","bytes":2072719},
       {"path":"replica-battle/three-h5-variants/ed170e7edf3a547f5770.png","sha256":"ed170e7edf3a547f5770c8994a19ae39f719501a333c360c5435f9e47076bec5","bytes":821683},
-      {"path":"replica-battle/three-h5-variants/f5dcc73bc8c129e6b044.png","sha256":"f5dcc73bc8c129e6b0448b9612a6826a549260b120d97ee811c20f6de1625649","bytes":443013}
+      {"path":"replica-battle/three-h5-variants/f5dcc73bc8c129e6b044.png","sha256":"f5dcc73bc8c129e6b0448b9612a6826a549260b120d97ee811c20f6de1625649","bytes":443013},
+      {"path":"art/forest-canopy-v1/canopy-ground.png","sha256":"b5b639f0298f8d266b0c815f142b5936e03972148f7b81cf8144bab64568122c","bytes":1965443},
+      {"path":"art/forest-canopy-v1/crown-grove.png","sha256":"1d9179e1e45635ebba1ef899f9a4707f0ad484006a809c10316c8c99fad0fe5a","bytes":1795523},
+      {"path":"art/forest-clearings-v1/relay-clearing.png","sha256":"aa4e37f26f377b880549ce90e3b73cd3908b7c3329225bcecf7c068351133145","bytes":2379430},
+      {"path":"art/forest-clearings-v1/ruins-clearing.png","sha256":"265732ac04d4bd231e669f2b80cd1c0dd22c1b89be8a72aa26ebdd2d35903f0b","bytes":2252645},
+      {"path":"replica-battle/assets/owned-enemies/chapter3-rush-missile-v1/parts.png","sha256":"c44cc6e98f25d2061a84cc6210e25184427afdebfd288810a02fd286f2e1b9b3","bytes":728687},
+      {"path":"replica-battle/assets/owned-enemies/chapter15-obsidian-shard-skimmer-v1/parts.png","sha256":"45f220e1fbf2bcaecd9a004d0334ea3f15106472dd59ebdb76aa22366796acff","bytes":1085607},
+      {"path":"replica-battle/assets/owned-enemies/chapter26-reef-skimmer-v1/parts.png","sha256":"eeac0971f0af525fa95968a6f71383a1a1324c678c75d9950e3dc0baa3269d8f","bytes":1679385}
     ],
     "transfers": {
       "art/luna-maid-v1/source/heitaizi_2.physics3.json": {"path":"art/luna-maid-v1/source/heitaizi_2.physics3.json.wx.gz","encoding":"gzip","bytes":11831},

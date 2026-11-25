@@ -8,7 +8,7 @@ import { lobbyNavigation } from './lobby-navigation.js';
 import { lobbyResources } from './lobby-resources.js';
 import { starGoals } from '../campaign-stars.js';
 import { STAR_RESOURCE_NAMES } from '../peripheral/star-rewards.js';
-import { PILOT_AFFECTION_MAX, pilotAffectionPoints, pilotAffectionVideo } from '../peripheral/pilot-affection.js';
+import { PILOT_AFFECTION_MAX, PILOT_AFFECTION_VISIBLE, pilotAffectionPoints, pilotAffectionVideo } from '../peripheral/pilot-affection.js';
 import { pilotVideoMarkup } from './pilot-video-controls.js';
 import { characterPortrait, portraitPresentation } from './character-portraits.js';
 // Keep the PSD scenery and controls around an independently animated portrait.
@@ -63,10 +63,10 @@ export function battlePage(ctx,requestedChapter) {
     hotspot('chapter-prev','上一章','chapterPrev',[136,159,36,39]),
     hotspot('chapter-next','下一章','chapterNext',[585,159,36,39]),
     hotspot('tasks','查看航线任务','tasks',[6,232,101,102],{faceBox:[6,227,101,107]}),
-    hotspot('affection','好感度','pilotAffection',[6,338,101,99],{
+    PILOT_AFFECTION_VISIBLE ? hotspot('affection','好感度','pilotAffection',[6,338,101,99],{
       face:'',data:'aria-haspopup="dialog"',
       content:`<span class="psd-main-affection"><img src="${art}psd-combat-v1/heart.png" alt="" draggable="false"><strong>好感度</strong></span>`,
-    }),
+    }) : '',
     hotspot('star-rewards',s.nativeAcquisition?'查看章节奖励':'查看星级奖励','chapterChest',[240,239,289,45],{
       content:`<img class="psd-main-face-art psd-main-star-chest" src="${art}psd-main-v1/buttons/star-rewards-chest.png" alt="" draggable="false"><span class="psd-main-star-total">累计${starTotal}/${starMaximum}</span>`,
     }),

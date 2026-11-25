@@ -135,6 +135,10 @@
     "sha256": "8a62f7e4b16a9e9e3655800e981787b1c545551687d1017175e57dfe2f8a0162",
     "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
   },
+  "replica-battle/assets/owned-enemies/chapter15-obsidian-shard-skimmer-v1/parts.png": {
+    "sha256": "45f220e1fbf2bcaecd9a004d0334ea3f15106472dd59ebdb76aa22366796acff",
+    "evidence": "pixigame/replica-battle/research/chapter15-enemy-art.md，模型 120139 的原创生图部件图集"
+  },
   "replica-battle/assets/owned-enemies/chapter16-bronze-tide-warden-v1/parts.png": {
     "sha256": "449f9690b5935370d75b80c0e3672f23357f700f833f73014e684805301af27c",
     "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
@@ -239,6 +243,10 @@
     "sha256": "d1b983e49d0dcf4c1ec99602101835a8a2f6dc7d9b242f1441749af16cc5e913",
     "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
   },
+  "replica-battle/assets/owned-enemies/chapter26-reef-skimmer-v1/parts.png": {
+    "sha256": "eeac0971f0af525fa95968a6f71383a1a1324c678c75d9950e3dc0baa3269d8f",
+    "evidence": "pixigame/replica-battle/research/chapter26-enemy-art.md，模型 120169 的原创生图部件图集"
+  },
   "replica-battle/assets/owned-enemies/chapter27-jade-sweep-v1/parts.png": {
     "sha256": "41751f7f9149c9b57d8e390c6395ed398742be87382e886423e18f1ef69811b4",
     "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
@@ -270,6 +278,10 @@
   "replica-battle/assets/owned-enemies/chapter3-burst-hover-v1/parts.png": {
     "sha256": "fa7eb29f09c5af3a707f27fbd1792bc8cdf0957953eb3f94fcd3e353b5b75475",
     "evidence": "本项目各章敌机分层图及项目敌机外观适配器"
+  },
+  "replica-battle/assets/owned-enemies/chapter3-rush-missile-v1/parts.png": {
+    "sha256": "c44cc6e98f25d2061a84cc6210e25184427afdebfd288810a02fd286f2e1b9b3",
+    "evidence": "pixigame/replica-battle/research/chapter3-enemy-art.md，模型 120153 的原创生图部件图集"
   },
   "replica-battle/assets/owned-enemies/chapter31-windfield-aegis-v1/parts.png": {
     "sha256": "2823b02e42ea7d60289a42e3daafbbb793fc8935696f53ff8bd094402de82122",

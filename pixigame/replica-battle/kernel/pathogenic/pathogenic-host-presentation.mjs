@@ -24,6 +24,12 @@ export function projectilePresentation(b){
     presentation.pose.hideBodyOnHostExit=true;
   return presentation;
 }
+export function laserThicknessScale({radiusX,radiusZ}){
+  // LaserThickness% changes only the transverse collision radius. The
+  // longitudinal radius still includes the projectile's ordinary scale.
+  const ratio=radiusX/radiusZ;
+  return radiusX>0&&radiusZ>0&&Number.isFinite(ratio)?ratio:1;
+}
 function sampleProjectilePresentation(b){
   // Native magnetic fans keep the harpoon model ID but draw a beam scene.
   // Select their electric material before the ordinary circle-body adapter.
@@ -40,7 +46,7 @@ function sampleProjectilePresentation(b){
   if(b.owner==='player'&&b.familyId===200121&&[220009,220006].includes(b.modelId))return{
     scale:1,retireImmediately:false,pose:{overrides:{
       Visual:{position:[0,0]},
-      'Visual/Line2D':{scale:[1,1],texture:{$ref:LASER+'texture'},material:{$ref:LASER+'material'}},
+      'Visual/Line2D':{scale:[laserThicknessScale(b),1],texture:{$ref:LASER+'texture'},material:{$ref:LASER+'material'}},
     }},
   };
   if(b.owner==='player'&&b.familyId===200141&&b.modelId===200011)return{
@@ -63,7 +69,7 @@ function sampleProjectilePresentation(b){
     pose:{held:true,skipPrefire:true,compactImpact:true,
       fireTimeMultiplier:Math.min(1,Math.max(.08,((b.lifetime??3)-(b.warmup??0))/.8)),overrides:{
       Visual:{position:[0,0]},
-      'Visual/Line2D':{texture:{$ref:SCORCH+'fire-texture'},material:{$ref:SCORCH+'flow'},begin_cap_mode:2,end_cap_mode:2},
+      'Visual/Line2D':{width:120*laserThicknessScale(b),texture:{$ref:SCORCH+'fire-texture'},material:{$ref:SCORCH+'flow'},begin_cap_mode:2,end_cap_mode:2},
       'Visual/PrefireLine2D':{width:48,texture:{$ref:SCORCH+'charge-texture'},material:{$ref:SCORCH+'flow'}},
     }},
   };
