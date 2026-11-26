@@ -18,6 +18,8 @@ import {createLobbyToast} from './lobby-toast.js';
 import {createLobbyFeedback} from './lobby-feedback.js';
 import {openAffectionVideo} from './affection-video.js';
 import {lobbyPanels} from './lobby-panels.js';
+import {createMenuArtworkWarmup,loadArtwork} from './image-loading.js';
+import {lobbyMenuArtwork} from './menu-screen-core.js';
 
 export async function startH5Game(startup) {
   document.documentElement.dataset.gameRenderer='three';
@@ -39,7 +41,8 @@ export async function startH5Game(startup) {
       this.homeState=next;
       for(const listener of homeListeners)listener();
     }};
-  Object.assign(device,lobbyPanels(device,{openVideo:(host,send)=>openAffectionVideo(device,host,send)}));
+  Object.assign(device,lobbyPanels(device,{openVideo:(host,send)=>openAffectionVideo(device,host,send),
+    preparePanelArtwork:createMenuArtworkWarmup({renderer:three})}));
   device.toast=createLobbyToast(()=>device.repaintHome?.());
   device.feedback=createLobbyFeedback(device);
   startup.attach(device);
@@ -60,6 +63,9 @@ export async function startH5Game(startup) {
     const bridge=await startLobbySession({platformKind:'h5',app:{renderer:device},mountLobby:mountThreeLobby,createBattle});
     const close=bridge.closeGameSession;
     let closed=false;
+    for(const url of lobbyMenuArtwork(bridge.pixiLobby.snapshot)){
+      void loadArtwork(url,()=>closed?-Infinity:-2,true).catch(()=>{});
+    }
     bridge.closeGameSession=options=>{
       if(closed)return;
       closed=true;

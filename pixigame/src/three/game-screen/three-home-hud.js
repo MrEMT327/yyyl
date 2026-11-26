@@ -11,7 +11,11 @@ const files={...(PILOT_AFFECTION_VISIBLE?{heart:'/art/psd-combat-v1/heart.png'}:
   gold:'/art/psd-equipment-v1/frame-gold.png',caption:'/art/onboarding-dialogue-v2/panel.webp',
   mascot:'/art/onboarding-assistant-v1/expressions.png',pointer:baked.pointer,carnival:carnivalMedal};
 import {bottomNavigation,homeInsets,navEdges,navBounds,navArtwork,navBodyEnd,navFillStart,carnivalEntryBox,affectionY,profileFrame} from './home-navigation.js';
+const guideKeys=['gold','caption','mascot','pointer'];
+export const homeGuideFiles=[baked.nav.assembly,baked.fonts.system.image,...guideKeys.map(key=>files[key])];
 const tabs=[['shop',28.75,1507,84,84],['assembly',176.25,1510,69,86],['battle',320,1483,114,99],['research',491.25,1507,92,96],['supply',642.75,1512,80,91]];
+const tabNames=['商城','装备','战役','天赋','招募'];
+const battleWeights=[0,0,1,0,0];
 const vert=`precision highp float;attribute vec3 position;attribute vec2 uv;uniform mat4 modelViewMatrix,projectionMatrix;varying vec2 coords;void main(){coords=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
 const frag=`precision highp float;uniform sampler2D art;uniform vec4 region,splice;uniform vec2 pixels,box;uniform vec3 tint;uniform float alpha,octagon;varying vec2 coords;
 float cut(float q,float src,float dst){float d=min(splice.y,dst*.5),s=min(splice.x,src*.5),p=q*dst;
@@ -32,7 +36,7 @@ const mixKeys=(p,keys)=>{const j=keys.findIndex(row=>row[0]>=p);if(j<=0)return k
 const walletValue=(value,unlimited)=>unlimited?'9999':value>=1e8?(+(value/1e8).toFixed(1))+'亿':value>=1e4?(+(value/1e4).toFixed(1))+'万':Number(value??0).toLocaleString('zh-CN');
 function chapterNumber(value){const d='零一二三四五六七八九';return value<10?d[value]:value<20?'十'+(d[value%10]&&value%10?d[value%10]:''):value<100?d[Math.floor(value/10)]+'十'+(value%10?d[value%10]:''):String(value);}
 
-export async function createHomeHud(load,model,redraw){
+export async function createHomeHud(load,model,redraw,{guideOnly=false}={}){
   const scene=new T.Scene(),camera=new T.OrthographicCamera(0,750,0,1624,-1,1),maps=new Map(),sprites=new Map(),labels=new Map(),pending=new Map();
   const rect=new T.BufferGeometry();rect.setAttribute('position',new T.BufferAttribute(quad,3));rect.setAttribute('uv',new T.BufferAttribute(quadUv,2));
   const pressScales=new Map();
@@ -75,12 +79,17 @@ export async function createHomeHud(load,model,redraw){
   floor.material.uniforms.region.value.set(0,navFillStart,1,navBodyEnd-navFillStart);
   trim.material.uniforms.region.value.set(0,navBodyEnd,1,1-navBodyEnd);
   const dividers=Array.from({length:4},(_,i)=>sprite('gap'+i,'divider',12));
+  const selectedFaces=guideOnly?[]:tabs.map(([name])=>{
+    const face=sprite('selected-'+name,'solid',11.5);
+    solidColor(face.material.uniforms.tint.value,0x85d8ed);face.visible=false;return face;
+  });
   for(const [name] of tabs)sprite(name,'nav-'+name,13);
   const ring=sprite('guide-ring','gold',30),bubble=sprite('guide-panel','caption',31),mascot=sprite('guide-bot','mascot',32);
   const arrows=[0,1].map(i=>sprite('guide-arrow'+i,'pointer',33));
   const dim=Array.from({length:4},(_,i)=>sprite('guide-shade'+i,'solid',29));
   for(const m of dim){solidColor(m.material.uniforms.tint.value,0x020b13);m.material.uniforms.alpha.value=.6;}
   const outline=Array.from({length:4},(_,i)=>sprite('focus-edge'+i,'solid',27));
+  for(const node of [shade,rail,floor,trim,...selectedFaces,...dividers,...tabs.map(([name])=>sprites.get(name)),...outline])node.layers.enable(1);
   const hideGuide=()=>{for(const m of [ring,bubble,mascot,...arrows,...dim])m.visible=false;for(const m of labels.get('guide')?.nodes||[])m.visible=false;};
   hideGuide();
   function disposeLabel(label){
@@ -89,7 +98,7 @@ export async function createHomeHud(load,model,redraw){
     else{for(const node of label.nodes)node.material.dispose();label.geometry.dispose();}
   }
   const cssColor=rgb=>'#'+rgb.toString(16).padStart(6,'0');
-  function label(id,text,x,center,size,{font='system',color=0xffffff,align='center',order=18,maxWidth=Infinity,shadow=0,shadeY=1.5}={}){
+  function label(id,text,x,center,size,{font='system',color=0xffffff,align='center',order=18,maxWidth=Infinity,shadow=0,shadeY=1.5,layer=0}={}){
     const value=String(text??''),f=baked.fonts[font],s=size/f.size,t=textures['font-'+font];
     const key=JSON.stringify([value,size,font,maxWidth,color,shadow,shadeY,Boolean(t)]);let l=labels.get(id);
     if(!value){for(const node of l?.nodes??[])node.visible=false;return 0;}
@@ -99,6 +108,7 @@ export async function createHomeHud(load,model,redraw){
       const mesh=fallback.text(value,0,0,{size,maxWidth:Math.min(maxWidth,camera.right),weight:700,color:cssColor(color),
         shadow:shadow?{color:cssColor(shadow),y:shadeY,blur:0}:undefined});
       mesh.renderOrder=order;scene.add(fallback.group);
+      if(layer)fallback.group.traverse(node=>node.layers.enable(layer));
       labels.set(id,l={key,fallback,nodes:[fallback.group],width:mesh.scale.x});
     }
     if(!l){
@@ -123,6 +133,7 @@ export async function createHomeHud(load,model,redraw){
       const nodes=[];for(const [idx,ink] of (shadow?[shadow,color]:[color]).entries()){
         const m=new T.Mesh(geom,material(t));solidColor(m.material.uniforms.tint.value,ink);
         m.frustumCulled=false;m.renderOrder=order+idx*.001;m.userData.offset=shadow&&idx===0?shadeY:0;scene.add(m);nodes.push(m);
+        if(layer)m.layers.enable(layer);
       }
       labels.set(id,l={key,geometry:geom,nodes,width});
     }
@@ -140,16 +151,21 @@ export async function createHomeHud(load,model,redraw){
         const u=node.material.uniforms;u.art.value=b.map;u.pixels.value.set(b.w,b.h);u.tint.value.set(1,1,1);
       }
       redraw();
-    }).catch(()=>{});
+    }).catch(()=>{if(!disposed)redraw();});
   }
   function updateModel(m){
     for(const key of ['avatar','frame'])if(state[key]!==m[key])requestTexture(key,m[key]);
     state=m;
   }
-  for(const [id,font] of Object.entries(baked.fonts))requestTexture('font-'+id,font.image,2);
-  for(const [id,url] of Object.entries(files))requestTexture(id,url,id==='mascot'?1:undefined);
-  for(const [id,url] of Object.entries(baked.nav))requestTexture('nav-'+id,url);
-  for(const key of ['avatar','frame'])requestTexture(key,model[key]);
+  if(guideOnly){
+    requestTexture('font-system',baked.fonts.system.image,2);
+    for(const key of guideKeys)requestTexture(key,files[key],1);
+  }else{
+    for(const [id,font] of Object.entries(baked.fonts))requestTexture('font-'+id,font.image,2);
+    for(const [id,url] of Object.entries(files))requestTexture(id,url,id==='mascot'?1:undefined);
+    for(const [id,url] of Object.entries(baked.nav))requestTexture('nav-'+id,url);
+    for(const key of ['avatar','frame'])requestTexture(key,model[key]);
+  }
   function guide(g,now,unit,navHeight){
     if(!g||!g.text||!g.target){hideGuide();return;}
     const unitPx=1/unit,r=g.target, bounds={left:0,top:0,right:750*unitPx,bottom:1624*unitPx,width:750*unitPx,height:1624*unitPx};
@@ -178,20 +194,8 @@ export async function createHomeHud(load,model,redraw){
       a.material.uniforms.region.value.set(0,(1-visible)/2,1,visible);
     }
   }
-  function paint(renderer,now){
-    if(!view||disposed)return;
-    const s=state,unit=750/view.width,l=homeInsets(view),top=l.top,ny=y=>l.nav+(y-1473)*l.height/151;
-    const eventY=carnivalEntryBox[1]+top;
-    const [frameX,frameY,frameW,frameH]=profileFrame;
-    place(avatar,25.8,31.8+l.profile,63.2,63.2);place(frame,frameX,frameY+l.profile,frameW,frameH);
-    if(s.carnival){
-      const icon=textures.carnival??transparent,iconH=50*icon.h/icon.w;
-      place(carnival,31.5,eventY+36-iconH/2,50,iconH);
-      if(s.carnivalReady)place(carnivalReady,76,eventY+11,14,14);else carnivalReady.visible=false;
-    }else carnival.visible=carnivalReady.visible=false;
-    const p=s.reduced?0:chestPhase(now),angle=mixKeys(p,chestAngles)*Math.PI/180;
-    const shift=mixKeys(p,chestOffsets)*61;
-    const ox=30.5,oy=43*.85;place(chest,264+shift+ox-ox*Math.cos(angle)+oy*Math.sin(angle),239+top+oy-ox*Math.sin(angle)-oy*Math.cos(angle),61,43);chest.rotation.z=angle;
+  function navigation(l,unit,pose){
+    const edges=pose?.edges??navEdges,weights=pose?.weights??battleWeights,sy=l.height/151;
     const {inset}=l,skin=navArtwork(l.nav,l.height,inset);
     shade.material.uniforms.region.value.w=inset?navBodyEnd:1;
     place(shade,0,l.nav,750,inset?skin.body:l.height);
@@ -205,13 +209,62 @@ export async function createHomeHud(load,model,redraw){
       floor.visible=trim.visible=false;rail.material.uniforms.region.value.w=1;
       place(rail,0,l.nav,750,l.height*148/151);
     }
-    for(let i=0;i<dividers.length;i++)place(dividers[i],navEdges[i+1],l.nav,3,l.height*148/151);
+    for(let i=0;i<dividers.length;i++)place(dividers[i],edges[i+1],l.nav,3,l.height*148/151);
     for(const [index,[name,x,y,w,h]] of tabs.entries()){
-      place(sprites.get(name),x-30,ny(y-30),w+60,(h+60)*l.height/151);
-      if(name!=='battle')label('nav-'+name,textures['nav-'+name]?'':['商城','装备','','天赋','招募'][index],x+w/2,ny(1556),22);
+      const weight=weights[index],center=(edges[index]+edges[index+1])/2;
+      const face=selectedFaces[index];
+      if(face){
+        if(pose&&weight>0){
+          place(face,edges[index],l.nav,edges[index+1]-edges[index],skin.body);
+          face.material.uniforms.alpha.value=.06*weight;
+        }else face.visible=false;
+      }
+      const dx=center-(navEdges[index]+navEdges[index+1])/2;
+      const activeH=index<2?92:99,scale=1+weight*(Math.min(114/w,activeH/h)-1);
+      const passiveY=index===2?34:y-1473;
+      const cy=passiveY+h/2+weight*((index<2?8:10)+activeH/2-passiveY-h/2);
+      const sw=(w+60)*scale,sh=(h+60)*scale;
+      place(sprites.get(name),x+w/2+dx-sw/2,l.nav+(cy-sh/2)*sy,sw,sh*sy);
+      const id='nav-'+name,missing=!textures[id]&&index!==2;
+      label(id,weight>0||missing?tabNames[index]:'',center,l.nav+(missing&&!weight?83:121)*sy,missing&&!weight?22:28,
+        {order:15,shadow:0x111111,shadeY:2*unit,layer:1});
+      for(const node of labels.get(id)?.nodes??[]){
+        node.scale.y=sy;node.userData.navScale=sy;
+        if(node.material)node.material.uniforms.alpha.value=missing?1:weight;
+      }
     }
-    label('nav','战役',375,ny(1594),28,{order:15,shadow:0x111111,shadeY:2*unit});
-    for(const m of labels.get('nav').nodes)m.userData.navScale=l.height/151;
+  }
+  function patrolLabel(l,offset){
+    label('patrol',state.patrol||'',117,1343+l.dock+offset,17.25,{order:8,shadow:0x101923,layer:2});
+  }
+  function highlight(box,height,unit,pressed){
+    for(const m of outline)m.visible=false;
+    if(!box)return;
+    const [x,y,w]=box,t=2*unit;
+    const edges=[[x,y,w,t],[x,y+height-t,w,t],[x,y,t,height],[x+w-t,y,t,height]];
+    outline.forEach((m,i)=>{
+      solidColor(m.material.uniforms.tint.value,pressed?0xffe18a:0xe8fb93);place(m,...edges[i]);
+    });
+  }
+  function renderLayer(renderer,layer){
+    camera.layers.set(layer);
+    try{renderer.render(scene,camera);}finally{camera.layers.set(0);}
+  }
+  function paint(renderer,now,pose,dockOffset=0){
+    if(!view||disposed)return;
+    const s=state,unit=750/view.width,l=homeInsets(view),top=l.top;
+    const eventY=carnivalEntryBox[1]+top;
+    const [frameX,frameY,frameW,frameH]=profileFrame;
+    place(avatar,25.8,31.8+l.profile,63.2,63.2);place(frame,frameX,frameY+l.profile,frameW,frameH);
+    if(s.carnival){
+      const icon=textures.carnival??transparent,iconH=50*icon.h/icon.w;
+      place(carnival,31.5,eventY+36-iconH/2,50,iconH);
+      if(s.carnivalReady)place(carnivalReady,76,eventY+11,14,14);else carnivalReady.visible=false;
+    }else carnival.visible=carnivalReady.visible=false;
+    const p=s.reduced?0:chestPhase(now),angle=mixKeys(p,chestAngles)*Math.PI/180;
+    const shift=mixKeys(p,chestOffsets)*61;
+    const ox=30.5,oy=43*.85;place(chest,264+shift+ox-ox*Math.cos(angle)+oy*Math.sin(angle),239+top+oy-ox*Math.sin(angle)-oy*Math.cos(angle),61,43);chest.rotation.z=angle;
+    navigation(l,unit,pose);
     const heading=s.stage?.chapterName?.replace(/^(?:第\s*[\d零一二三四五六七八九十百]+\s*章)\s*·?\s*/,'')||'蔚蓝海岸';
     label('chapter','第'+chapterNumber(s.chapter+1)+'章·'+heading,376,161.5+top,30,{font:'title',shadow:0x102132});
     label('waves',(s.stage?.waveCount||15)+'波·'+(s.stage?.bestCleared?'已通关':s.stage?.unlocked===false?'未解锁':'待挑战'),375,197.5+top,24,{color:0x81efff,shadow:0x102132});
@@ -233,14 +286,14 @@ export async function createHomeHud(load,model,redraw){
     if(s.developer){place(dev,736.5-dw,470.96+top,dw,dh);dev.material.uniforms.splice.value.set(18,21,0,0);}
     else dev.visible=false;
     label('developer',s.developer?'开发':'',736.5-dw/2,470.96+dh/2+top,clamp(25.5,12*unit,17*unit),{font:'title',color:0xedf4f7,shadow:0x07131f});
-    label('patrol',s.patrol||'',117,1343+l.dock,17.25,{shadow:0x101923});
+    patrolLabel(l,dockOffset);
     const groups=[
       ['profile',['avatar','frame'],['profile','power-title','power']],
       ['chapter-title',[],['chapter','waves']],['star-rewards',['chest'],['stars']],
       ['carnival',['carnival','carnival-ready'],['carnival']],['affection',['heart'],['affection']],
       ['developer',['dev'],['developer']],['patrol',[],['patrol']],
       ...['stamina','coins','diamonds'].map(id=>[id,[],[id]]),
-      ...tabs.map(([id])=>['nav-'+id,[id],id==='battle'?['nav']:[]])
+      ...tabs.map(([id])=>['nav-'+id,[id],['nav-'+id]])
     ];
     for(const [id,artIds,textIds] of groups){
       const p=pressScales.get(id);
@@ -254,23 +307,26 @@ export async function createHomeHud(load,model,redraw){
       for(const a of artIds)apply(sprites.get(a),false);
       for(const a of textIds)for(const m of labels.get(a)?.nodes||[])apply(m,true);
     }
-    for(const m of outline)m.visible=false;
     const pressedTab=tabs.findIndex(([name])=>lastGuide?.id!=='nav-'+name&&pressScales.has('nav-'+name));
-    const tabPressed=pressedTab>=0,highlight=tabPressed?navBounds(pressedTab,l):focusBox;
-    if(highlight){
-      const [x,y,w,hitHeight]=highlight,h=tabPressed?l.height:hitHeight,t=2*unit;
-      const edges=[[x,y,w,t],[x,y+h-t,w,t],[x,y,t,h],[x+w-t,y,t,h]];
-      outline.forEach((m,i)=>{
-        solidColor(m.material.uniforms.tint.value,tabPressed?0xffe18a:0xe8fb93);
-        place(m,...edges[i]);
-      });
-    }
+    const tabPressed=pressedTab>=0,box=tabPressed?navBounds(pressedTab,l,pose?.edges):focusBox;
+    highlight(box,tabPressed?l.height:box?.[3],unit,tabPressed);
     guide(lastGuide,now,unit,l.height);renderer.render(scene,camera);
   }
   return {updateModel,ready:()=>pending.size===0,animationDue:(previous,now)=>Boolean(lastGuide)||chestMoving(now)||chestMoving(previous),
     setGuide(g){lastGuide=g;},setFocus(box){focusBox=box;},setPress(id,k,[x,y,w,h]){
     if(k===1)pressScales.delete(id);else pressScales.set(id,{k,x:x+w/2,y:y+h/2});
   },layout(v){view=v;},paint,
+    paintNavigation(renderer,pose,pressed){
+      if(!view||disposed||!textures['font-system']||!textures.navBackground||!textures.navFrame||!textures.divider||tabs.some(([id])=>!textures['nav-'+id]))return false;
+      const l=homeInsets(view),unit=750/view.width,index=tabs.findIndex(([name])=>pressed==='nav-'+name);
+      navigation(l,unit,pose);
+      highlight(index>=0?navBounds(index,l,pose.edges):null,l.height,unit,true);
+      renderLayer(renderer,1);return true;
+    },
+    paintDockLabel(renderer,offset){
+      if(!view||disposed||!state.patrol)return;
+      patrolLabel(homeInsets(view),offset);renderLayer(renderer,2);
+    },
     paintGuide(renderer,now,g,{width,height}){
       for(const node of scene.children)node.visible=false;
       if(g){

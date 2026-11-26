@@ -1,6 +1,7 @@
 import { mountThreeMenu } from './menu-screen-core.js';
 import { catalogPortrait } from './catalog-portrait.js';
 import { menuAircraft } from './menu-aircraft.js';
+import { createMenuArtworkWarmup } from './image-loading.js';
 
 export { supportsMenu } from './menu-screen-core.js';
 
@@ -9,7 +10,7 @@ export function mountMenuScreen(device,page,send,interactive,setSection){
   const className=canvas.className;
   const attrs=['style','role','aria-label','aria-modal','tabindex'].map(key=>[key,canvas.getAttribute(key)]);
   return mountThreeMenu(device, {
-    page,region:page,anchor:canvas,
+    page,region:page,anchor:canvas,progressiveEntry:true,prepareArtwork:createMenuArtworkWarmup({renderer:device.three}),
     visible:()=>page.isConnected&&!page.closest('[hidden]')&&!document.hidden,
     ownsOutput:()=>canvas.parentElement===page,
     layout:()=>({rect:page.getBoundingClientRect(),density:devicePixelRatio||1,

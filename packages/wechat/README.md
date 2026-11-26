@@ -21,7 +21,7 @@ r92 测试包由 `a4c9b8d` 加入，对应源码由 `42e24c5` 加入。`503bff6`
 
 Three.js 构建直接使用外层 H5 的大厅和战斗源码。微信资源由 `build-inputs/cdn-manifest.json` 配置，启动图、立绘、出击数据和特效从同一 HTTPS CDN 读取。同步 CDN 素材时更新这份清单。
 
-微信 iOS 的 InnerAudio 不支持 OGG。`build-inputs/three-compat-media/` 保存同一批完整战斗曲目的包内 AAC 版本、首波 PCM 音效、目录小图和音频开关；不改变 H5 的原文件。修改源文件后用 `node tools/prepare-three-compat-media.mjs <ffmpeg路径>` 重新生成，然后构建会同时核对源文件和兼容文件哈希。
+微信 iOS 的 InnerAudio 不支持 OGG。第一章战斗曲和通用 Boss 曲使用包内 44.1 kHz 立体声 AAC。后续的六首战斗曲在大厅空闲时逐首缓存，下载前由包内第一章曲目提供背景音乐。`node tools/prepare-three-compat-media.mjs <ffmpeg路径> --music-only` 生成包内曲目和 `out/music-cdn/audio/battle-music-hd-v1/` 中的六首 M4A。将后者按原文件名部署到 CDN 同名目录即可启用预下载。构建会核对包内兼容资产和原始音频的哈希。
 
 ## 性能优化基线
 

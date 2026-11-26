@@ -16,12 +16,14 @@ const busy=s=>Boolean(s.rewardPending||s.rewardBusy);
 export const supportsShopPanel=type=>Object.hasOwn(actions,type);
 const resource=id=>RESOURCE_ICONS[id]?.url;
 function action(a,t,b,id,text,cmd,data={},opts={}){
+  const first=a.group.children.length;
   const {gold=false,disabled=false,icon,iw=0,ih=iw,gap=0,size=14,corner=9,aria=text}=opts;
   const m=slice(a,t,gold?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,corner);
   if(disabled)m.material.onBeforeCompile=s=>{s.fragmentShader=s.fragmentShader.replace('#include <map_fragment>',
     '#include <map_fragment>\nvec3 c=sRGBTransferOETF(diffuseColor).rgb;float gray=dot(c,vec3(.2126,.7152,.0722))*.65;diffuseColor.rgb=sRGBTransferEOTF(vec4(vec3(gray),1.)).rgb;');};
   const label=words(a,text,b.x+b.w/2+(iw+gap)/2,b.y+b.h/2,size,{weight:600,color:disabled?'#bac8d2':'#edf4f7',maxWidth:Math.max(10,b.w-iw-gap-3)});
   if(icon)pic(a,t,icon,box(label.position.x-label.scale.x/2+2-gap-iw,b.y+(b.h-ih)/2,iw,ih),true);
+  if(!disabled)t.buttonFace?.(id,b,a,first);
   area(t,id,aria,b,cmd,data,'base',disabled);
 }
 function wrapText(a,text,width,size,opts={}){
@@ -32,7 +34,7 @@ function wrapText(a,text,width,size,opts={}){
 function column(t,pw,w,h,header,extent,kind,title,data){
   const u=w/750,exchange=kind==='shopConfirm',bottom=(exchange?22:40)*u,padding=(exchange?6:12)*u;
   const ph=Math.min((h-.1*w)*.86,header+bottom+extent+padding);
-  const paper=paintSecondaryPaper(t,w,h,pw,ph,title,{header,inkY:(header+(exchange?10:14)*u)/2,alpha:.6,a:data.paper});
+  const paper=paintSecondaryPaper(t,w,h,pw,ph,title,{header,inkY:(header+(exchange?10:14)*u)/2,alpha:.6,motion:{style:'small'},a:data.paper});
   const x=paper.x+40*u,bw=pw-80*u;
   t.region('base',box(x-12*u,paper.top,bw+24*u,Math.max(1,ph-header-bottom)),extent+padding,'y',{parent:'shop-room'});
   return {x,bw,y:paper.top,visibleBody:ph-header-bottom-padding};
@@ -102,7 +104,7 @@ function boxConfirm(data,w,h,t){
   const error=msg?wrapText(surface,msg,bw-32,13,{color:'#8d303c'}):null;
   const bH=Math.max(48,92*u),notice=busy(s)?42:0;
   const extent=notice+(q?15+20+(unavailable?9+unavailable.height:0)+(error?21+error.height:0)+16+bH+12:23);
-  const ph=Math.min((h-.1*w)*.86,head+extent+52*u),p=paintLobbyPaper(t,{...data,backdropAlpha:.55},w,h,pw,ph,head,title,data.paper);
+  const ph=Math.min((h-.1*w)*.86,head+extent+52*u),p=paintLobbyPaper(t,{...data,backdropAlpha:.55,popupMotion:{style:'small'}},w,h,pw,ph,head,title,data.paper);
   const x=p.x+40*u,y=p.top;
   t.region('base',box(x-12*u,y,bw+24*u,ph-head-40*u),extent+12*u,'y',{parent:'shop-room'});
   let sy=y+pendingNotice(s,a,t,w,x,y,bw,'base');

@@ -78,12 +78,14 @@ function chest(data,w,t,rows,y,pool,{artwork,primary}){
     const q=state?.quotes?.find(row=>row.count===count),keys=gear.keys?.[pool]||0;
     const short=q?.payment==='diamond'&&!s.wallet.unlimited&&s.wallet.diamonds<q.amount||q?.payment==='key'&&keys<q.amount;
     const price=q?.payment==='free'?'免费开启':q?.amount==null?'—':q.payment==='key'?fmt(keys)+'/'+fmt(q.amount):fmt(q.amount);
-    const b=r(69+i*120,135.5,112,48);
+    const b=r(69+i*120,135.5,112,48),first=rows.group.children.length,id='open-'+pool+'-'+count;
     const ico=q?.payment==='key'?nativeItemArt(q.itemId):q?.payment==='diamond'?source('diamonds'):null;
     button(rows,t,b,{title:'开启'+count+'次',price,icon:ico,gold:i===1,short,disabled:busy||!q?.canDraw,
       family:bodyFont,titleSize:12*u,priceSize:10.8*u,priceColor:q?.payment==='free'?'#9ff6ff':'#fff',artwork});
     if(count===1&&['free','key'].includes(q?.payment)&&!busy)rows.panel(b.x+b.w-8,b.y,7,7,{fill:'#ff586c',stroke:'#401c2b',radius:3.5});
-    cmd('open-'+pool+'-'+count,'开启'+count+'次',b,'shopBoxConfirm',{pool,count,payment:q?.payment,resourceShort:short?(q.payment==='key'?'箱券':'钻石'):null},busy||!short&&!q?.canDraw);
+    const disabled=busy||!short&&!q?.canDraw;
+    if(!disabled)t.buttonFace?.(id,b,rows,first);
+    cmd(id,'开启'+count+'次',b,'shopBoxConfirm',{pool,count,payment:q?.payment,resourceShort:short?(q.payment==='key'?'箱券':'钻石'):null},disabled);
   }
 }
 export function shopProductImage(type,amount){

@@ -1,51 +1,83 @@
 [
   {
     "key": "brain_fight",
-    "filename": "music-f8db23dcc27dd37169ae.m4a",
-    "sha256": "f8db23dcc27dd37169ae56c73f4d743ce27206d94ccd73aaa6a62260465e4f51",
-    "sourceSha256": "c6ed37db3db001d5133695ded934824a543039036a74f5579774f38eaa7687a0"
+    "filename": "music-d98f5593ecf678dc876b.m4a",
+    "sha256": "d98f5593ecf678dc876b7f8c7586351079442486f5aaaeb533f46f7eb0574123",
+    "sourceSha256": "c6ed37db3db001d5133695ded934824a543039036a74f5579774f38eaa7687a0",
+    "playbackGain": 1.4705882352941175
   },
   {
     "key": "heart_fight",
-    "filename": "music-9d361ca4ab929ea15632.m4a",
-    "sha256": "9d361ca4ab929ea15632adca9bfbe075725c52667baca89d8af99326186666e0",
-    "sourceSha256": "c335674999a7d796b092b673c85a78f74a1c7a3bafec9fa7a50dac81161f5e0c"
+    "filename": "heart_fight-cac87722984301b418a0.m4a",
+    "sha256": "cac87722984301b418a0aff46ed2449c97d227cc770a5a05287f09e983c57e07",
+    "sourceSha256": "c335674999a7d796b092b673c85a78f74a1c7a3bafec9fa7a50dac81161f5e0c",
+    "playbackGain": 1.4705882352941175,
+    "download": {
+      "path": "audio/battle-music-hd-v1/heart_fight-cac87722984301b418a0.m4a",
+      "bytes": 698366
+    }
   },
   {
     "key": "intestine_fight",
-    "filename": "music-f70022783211157a4cee.m4a",
-    "sha256": "f70022783211157a4cee65059fa94097a02cbe6af1125169ff6af6b538aaea3c",
-    "sourceSha256": "9bde47d5f4d3443e8302c44f093649d441ae12ec4800775b196c796a7095c4be"
+    "filename": "intestine_fight-a815870e47dbea7c535b.m4a",
+    "sha256": "a815870e47dbea7c535b769755855f654cd69827e102ba52a26752b7a3b32023",
+    "sourceSha256": "9bde47d5f4d3443e8302c44f093649d441ae12ec4800775b196c796a7095c4be",
+    "playbackGain": 1.4705882352941175,
+    "download": {
+      "path": "audio/battle-music-hd-v1/intestine_fight-a815870e47dbea7c535b.m4a",
+      "bytes": 624165
+    }
   },
   {
     "key": "liver_fight",
-    "filename": "music-b28b32475d1316862a8e.m4a",
-    "sha256": "b28b32475d1316862a8ec2c2dc19794062c9296e918f8073e2bcdeff5ef6dd6a",
-    "sourceSha256": "5cd04a3d0394644fc008bae000bdd38bb1a429850de6d33e4c58dc4ed6dd1124"
+    "filename": "liver_fight-0e10fdf0c337f8afbe8b.m4a",
+    "sha256": "0e10fdf0c337f8afbe8b935475e3e2f9ccdc8a00f9bf3ec879d17f6eb4c7015d",
+    "sourceSha256": "5cd04a3d0394644fc008bae000bdd38bb1a429850de6d33e4c58dc4ed6dd1124",
+    "playbackGain": 1.4705882352941175,
+    "download": {
+      "path": "audio/battle-music-hd-v1/liver_fight-0e10fdf0c337f8afbe8b.m4a",
+      "bytes": 675380
+    }
   },
   {
     "key": "lungs_fight",
-    "filename": "music-e832693d63a8f2fbb984.m4a",
-    "sha256": "e832693d63a8f2fbb98466d21bf61962687d0b86368bd9e17c7b6addf6f5059e",
-    "sourceSha256": "35824d6f95c2a3b9c6444a15c42db8cb2756b5264f0b82739a76d2279ef1d270"
+    "filename": "lungs_fight-2d755a80cac4426e187b.m4a",
+    "sha256": "2d755a80cac4426e187b4424d126e95b6852007a80639d2325c1734ad40ffe06",
+    "sourceSha256": "35824d6f95c2a3b9c6444a15c42db8cb2756b5264f0b82739a76d2279ef1d270",
+    "playbackGain": 1.4705882352941175,
+    "download": {
+      "path": "audio/battle-music-hd-v1/lungs_fight-2d755a80cac4426e187b.m4a",
+      "bytes": 950237
+    }
   },
   {
     "key": "skin_fight",
-    "filename": "music-21a2c54ebf2fc7a3f471.m4a",
-    "sha256": "21a2c54ebf2fc7a3f471abd89e9944906633a8cd31cd9c190071918e2102cd39",
-    "sourceSha256": "c39820a5a431b2c9b1df9e7f295fda721c9da29b30c0e814d3c19814259fcf8f"
+    "filename": "skin_fight-c8ddd377c26c89a66021.m4a",
+    "sha256": "c8ddd377c26c89a6602156e3b7ec432007c2a949224beb5de958a26928bd951c",
+    "sourceSha256": "c39820a5a431b2c9b1df9e7f295fda721c9da29b30c0e814d3c19814259fcf8f",
+    "playbackGain": 1.4705882352941175,
+    "download": {
+      "path": "audio/battle-music-hd-v1/skin_fight-c8ddd377c26c89a66021.m4a",
+      "bytes": 983692
+    }
   },
   {
     "key": "stomach_fight",
-    "filename": "music-5cc99e9885c68a6001ac.m4a",
-    "sha256": "5cc99e9885c68a6001aca263c30000807ac7246df9a62fb3b5606f6ba3ce9ea7",
-    "sourceSha256": "c63915a0c1bb6a76b4d750ea19f2d0f4450dc2539450b6686ca95f7ee7cdc13c"
+    "filename": "stomach_fight-7d79105d1bd6438a0a17.m4a",
+    "sha256": "7d79105d1bd6438a0a17e017d083878c469d5fb2012509a940d7de54708b8e9e",
+    "sourceSha256": "c63915a0c1bb6a76b4d750ea19f2d0f4450dc2539450b6686ca95f7ee7cdc13c",
+    "playbackGain": 1.4705882352941175,
+    "download": {
+      "path": "audio/battle-music-hd-v1/stomach_fight-7d79105d1bd6438a0a17.m4a",
+      "bytes": 796872
+    }
   },
   {
     "key": "heart_boss",
-    "filename": "music-bfd7360e177848ba21fb.m4a",
-    "sha256": "bfd7360e177848ba21fb896df6568d3fe3eb2a02a1248eaaf204c0f394375e91",
-    "sourceSha256": "240faf979251d0c5fc1f22a780f26c2a0f9e583c8d20bd517281f4438eb02a95"
+    "filename": "music-21a0b39efcbdf2a78fd8.m4a",
+    "sha256": "21a0b39efcbdf2a78fd8227e188372db385be1bb693ad3aa7a83468bad808191",
+    "sourceSha256": "240faf979251d0c5fc1f22a780f26c2a0f9e583c8d20bd517281f4438eb02a95",
+    "playbackGain": 1.4705882352941175
   },
   {
     "key": "art/pilot-head-icons-v1/pilot-06.png",

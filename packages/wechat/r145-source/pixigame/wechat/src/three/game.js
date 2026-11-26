@@ -15,6 +15,7 @@ import { createLobbyFeedback, createLobbySoundPlayer } from '../../../../../../.
 import { LOBBY_MUSIC_URL } from '../../../../../../../pixigame/src/lobby-runtime/audio.js';
 import { readAudioPreferences, saveAudioPreferences } from '../../../../../../../pixigame/src/audio-preferences.js';
 import { diagnosticReport, recordDiagnostic } from '../../../../../../../pixigame/src/diagnostic-log.js';
+import { readJsHeapMemory } from '../../../../../../../pixigame/src/replica/memory-checkpoints.js';
 import { playFreeRewardedAd } from '../../../../../../../pixigame/src/platform/local-rewarded-ad-runtime.js';
 
 export function openWechatGame(api,config){
@@ -31,12 +32,13 @@ export function openWechatGame(api,config){
     const startTime=debugLog?platform.now():0;
     const portraits=createWechatPortraits(api,platform,services,device,baseURL,loadCubism);
     let game,trimOnLobbyStart=false;
+    const readMemory=()=>({...readJsHeapMemory(),resources:platform.readMemoryResources()});
     function memoryWarning(event){
       if(active!==entry)return;
-      const memory=platform.renderer.info.memory;
-      const warning={buildId:config.buildId,at:Date.now(),level:event?.level,state:game?.game.state,
+      const memoryBefore=readMemory();
+      const warning={buildId:config.buildId,at:Date.now(),level:event?.level??null,state:game?.game.state,
         page:device.lobbyLocation,modal:game?.pixiLobby.state.modal,pilot:portraits.pilotId,
-        texturesBefore:memory.textures,geometriesBefore:memory.geometries};
+        texturesBefore:memoryBefore.resources.textures,geometriesBefore:memoryBefore.resources.geometries,memoryBefore};
       rememberMemoryWarning(api,warning);
       if(game)game.pixiLobby.trimMemory();else trimOnLobbyStart=true;
       portraits.trimMemory();
@@ -44,7 +46,9 @@ export function openWechatGame(api,config){
       else services.clearBattleData();
       platform.loadArtwork.clearDecoded();
       files.clearMemory();
-      const detail=JSON.stringify({...warning,textures:memory.textures,geometries:memory.geometries});
+      const memoryAfter=readMemory();
+      const detail=JSON.stringify({...warning,textures:memoryAfter.resources.textures,
+        geometries:memoryAfter.resources.geometries,memoryAfter});
       recordDiagnostic('微信内存告警',detail);console.warn('[Three 内存告警]',detail);
     }
     const entry={close(){
@@ -89,20 +93,22 @@ export function openWechatGame(api,config){
         },
         battleServices,
         readSharedLoadoutJSON:services.readSharedLoadoutJSON,
-        createAudio:options=>openLobbySound(api,platform,services,options),
+        createAudio:options=>openLobbySound(api,platform,services,{...options,
+          idle:()=>!device.cover&&!device.menuView?.preparing&&!device.panel?.preparing&&platform.inputIdle,
+        }),
         restart:()=>void boot(),showFirstSortieRetry,
         playAd:config.playRewardedAd??playFreeRewardedAd,
       });
       if(active!==entry)return;
       const lobby=game.pixiLobby;
       if(trimOnLobbyStart)lobby.trimMemory();
-      function prepareLaterMenus(){
-        lobby.prepareActivityPanels();lobby.prepareWorkshops();lobby.prepareCatalogs();
+      function prepareEquipmentPages(){
+        lobby.prepareWorkshops();lobby.prepareCatalogs();
       }
       if(lobby.snapshot.firstSortieRequired){
         // Register return-screen preparation before the battle starts.
         lobby.prepareMenus();
-        prepareLaterMenus();
+        lobby.prepareActivityPanels();prepareEquipmentPages();
         startup.stage(2,'正在准备第一关…');
         startup.startFirstSortie(()=>{
           if(active!==entry)return;
@@ -118,11 +124,17 @@ export function openWechatGame(api,config){
       const preparing=platform.now();
       const home=device.homeView;
       if(!home)throw Error('无法打开大厅，请重试');
-      const [,ready]=await Promise.all([home.prepareEntry(),lobby.prepareMenus()]);
+      // Warm likely destinations behind the startup cover while the home view prepares.
+      void Promise.resolve(lobby.prepareMenus()).then(ready=>{
+        if(active===entry)debugLog?.info('大厅功能页预热',{ready,elapsedMs:Math.round(platform.now()-preparing)});
+      }).catch(error=>{
+        if(active===entry)console.warn('[Three 大厅功能页预热]',error?.message||error);
+      });
+      lobby.prepareActivityPanels();
+      await home.prepareEntry();
       if(active!==entry)return;
-      debugLog?.info('大厅首屏预热',{ready,elapsedMs:Math.round(platform.now()-preparing)});
-      debugLog?.info('大厅就绪',{loadMs:Math.round(platform.now()-startTime)});
-      prepareLaterMenus();
+      debugLog?.info('大厅就绪',{loadMs:Math.round(platform.now()-startTime),memory:readMemory()});
+      prepareEquipmentPages();
       await startup.ready(()=>{home.paintNow();game.unlockAudio();lobby.startPortraits();});
     }catch(error){report(error);if(active===entry)startup.fail(error);}
   }
@@ -133,11 +145,15 @@ export function openWechatGame(api,config){
   return {close(){const previous=active;active=null;previous?.close();}};
 }
 
-export function openLobbySound(api,platform,services,{game,storage}){
+export function openLobbySound(api,platform,services,{game,storage,idle=()=>platform.inputIdle!==false}){
   const preferences=readAudioPreferences(storage);
   let track=null,musicLoad=null,retryMusicAt=0,context=null,unlocked=false,closed=false,returned=false;
   const wantsMusic=()=>unlocked&&preferences.music&&platform.visible&&!closed&&game.state==='menu';
   const enabled=()=>!closed&&preferences.effects&&platform.visible&&game.state==='menu';
+  const preload=services.battleMusic?.preloadInLobby({idle,
+    loaded:(track,bytes)=>platform.debugLog?.info('战斗音乐已缓存',{track,bytes}),
+    failed:(track,error)=>platform.debugLog?.info('战斗音乐缓存失败',{track,status:error?.statusCode,reason:error?.message}),
+  });
   function ensureContext(){
     if(!enabled())return null;
     try{return context??=wrapNativeAudioContext(api.createWebAudioContext());}
@@ -147,12 +163,14 @@ export function openLobbySound(api,platform,services,{game,storage}){
   const feedback=createLobbyFeedback({play:key=>void sounds.play(key),stop:sounds.stop,prepare:sounds.prepare,enabled});
   function sync(){
     if(game.state!=='menu'){
+      preload?.setActive(false);
       returned=true;const old=track;track=null;old?.destroy();
       if(context){sounds.clear();const previous=context;context=null;void previous.close().catch(()=>{});}
       return;
     }
     if(returned){returned=false;Object.assign(preferences,readAudioPreferences(storage));}
-    if(!wantsMusic()){track?.pause();return;}
+    const active=wantsMusic();preload?.setActive(active);
+    if(!active){track?.pause();return;}
     if(track){if(track.paused)void track.play().catch(()=>{});return;}
     if(musicLoad||platform.now()<retryMusicAt)return;
     musicLoad=Promise.resolve().then(()=>services.localFile(LOBBY_MUSIC_URL)).then(file=>{
@@ -176,6 +194,6 @@ export function openLobbySound(api,platform,services,{game,storage}){
       if(!preferences.effects)feedback.stop();
       sync();return {...preferences};
     },
-    destroy(){if(closed)return;closed=true;stop();feedback.stop();track?.destroy();context?.close().catch(()=>{});},
+    destroy(){if(closed)return;closed=true;preload?.setActive(false);stop();feedback.stop();track?.destroy();context?.close().catch(()=>{});},
   };
 }

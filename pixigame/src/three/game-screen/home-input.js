@@ -1,7 +1,7 @@
 import {createButtonPressMotion} from '../../ui/button-press-motion.js';
 import {homePictures} from './home-stage.js';
 import {PILOT_AFFECTION_VISIBLE} from '../../peripheral/pilot-affection.js';
-import {homeArtOffset,homeInsets,navBounds,carnivalEntryBox,affectionY} from './home-navigation.js';
+import {campaignButtons,homeArtOffset,homeInsets,navBounds,carnivalEntryBox,affectionY} from './home-navigation.js';
 
 const commands=[
   ['profile','查看名片','playerInfo'],['chapter-prev','上一章','chapterPrev'],
@@ -35,7 +35,7 @@ export function homeControls(state,viewport,portrait){
 }
 // Shared command hit testing and press animation in the lobby's design coordinates.
 export function createHomePointer({bounds,controls,enabled,guide,scale,immediateTabs=false},clock){
-  let held=null;
+  let held=null,lastDockButton=null;
   const motion=createButtonPressMotion(scale,enabled,clock);
   const allowed=()=>{const g=guide();return controls().filter(c=>!g?.strong||c.id===g.id);};
   function hit(x,y){
@@ -46,11 +46,18 @@ export function createHomePointer({bounds,controls,enabled,guide,scale,immediate
   function release(){
     if(held.immediate)scale(held.control.id,1);else motion.release(held.control.id);
   }
-  function reset(){if(held&&!held.moved)release();held=null;}
+  function cancel(){
+    if(held?.immediate)scale(held.control.id,1);
+    held=null;lastDockButton=null;motion.clear();
+  }
   return {allowed,
     start(x,y,pointer){
       if(!enabled()||held)return;
       const control=hit(x,y);if(!control)return;
+      if(immediateTabs&&campaignButtons.includes(control.id)){
+        if(lastDockButton&&lastDockButton!==control.id)motion.cancel(lastDockButton);
+        lastDockButton=control.id;
+      }
       const immediate=immediateTabs&&control.action==='tab';
       held={control,pointer,x,y,moved:false,immediate};
       if(immediate)scale(control.id,.94);else motion.start(control.id);
@@ -62,11 +69,11 @@ export function createHomePointer({bounds,controls,enabled,guide,scale,immediate
     },
     end(x,y,pointer){
       if(held?.pointer!==pointer)return;
-      const {control,moved}=held;reset();
+      const {control,moved}=held;if(!moved)release();held=null;
       if(enabled()&&!moved&&hit(x,y)?.id===control.id)return control;
     },
-    reset,
-    close(){reset();motion.clear();},
+    reset(){if(held)cancel();},
+    cancel,close:cancel,
   };
 }
 

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {ParticlePlayer,sampleParticles} from '../replica-battle/kernel/pathogenic/pathogenic-particles.mjs';
+import {ParticlePlayer as SharedParticlePlayer} from '../../../../../pixigame/replica-battle/kernel/pathogenic/pathogenic-particles.mjs';
 import {IceWeaponTrails} from '../replica-battle/kernel/pathogenic/ice-weapon-trails.mjs';
 
 const graph={resources:{frost:{type:'ParticleProcessMaterial',properties:{
@@ -29,6 +30,22 @@ test('a previously sampled particle age still honors a changed frame budget',()=
   assert.equal(full.instances.length,8);
   assert.deepEqual(limited.instances,full.instances.slice(0,2));
   assert.deepEqual(restored.instances,full.instances);
+});
+
+test('the shared Three battle sampler preserves live particles across a changing budget',()=>{
+  for(const trail of [false,true]){
+    const node={...emitter,properties:{...emitter.properties,trail_enabled:trail,trail_lifetime:.15}};
+    const shared=new SharedParticlePlayer(),native=new ParticlePlayer();
+    for(const age of [0,.03,.167,.45,.8,1.1,1.996,2.2,.8]){
+      const full=shared.sampleReadOnly(graph,node,age,9,{historyRevision:0});
+      const reference=native.sample(graph,node,age,9);
+      assert.deepEqual(full,reference);
+      const capped=shared.sampleReadOnly(graph,node,age,9,{historyRevision:0,particleLimit:8});
+      assert.deepEqual(capped.instances,full.instances.filter(p=>p.number%5===2));
+      assert.deepEqual(capped.trails,full.trails.filter(p=>p.number%5===2));
+      assert.deepEqual(shared.sampleReadOnly(graph,node,age,9,{historyRevision:0}),full);
+    }
+  }
 });
 
 test('a crowded ice build uses bounded texture batches and frees their old render data',()=>{

@@ -30,6 +30,7 @@ export function selection(a,t,b){
   edge.geometry.setIndex(Array.from({length:54},(_,i)=>i).filter(i=>i<24||i>=30));
 }
 export function psdAction(a,t,b,{id,label,cmd,data={},zone=null,disabled=false,gold=false,price,icon,short=false,size=14}){
+  const first=t.buttonFace&&a.group.children.length;
   const m=slice(a,t,gold?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,10);
   if(disabled)m.material.onBeforeCompile=s=>{s.fragmentShader=s.fragmentShader.replace('#include <map_fragment>','#include <map_fragment>\nvec3 rgb=sRGBTransferOETF(diffuseColor).rgb;float gray=dot(rgb,vec3(.2126,.7152,.0722))*.65;diffuseColor.rgb=sRGBTransferEOTF(vec4(vec3(gray),1.)).rgb;');};
   words(a,label,b.x+b.w/2,b.y+b.h*(price==null?.5:.33),size,{family:titleFont,maxWidth:b.w-6,color:disabled?'#bac8d2':'#fff'});
@@ -38,6 +39,7 @@ export function psdAction(a,t,b,{id,label,cmd,data={},zone=null,disabled=false,g
     const text=words(a,price,b.x+b.w/2+imageW/2,cy,fs,{color:short?'#ffbba6':'#f5f9ff',maxWidth:b.w-imageW-4,weight:700});
     if(icon)normalFit(a,t,icon,box(text.position.x-text.scale.x/2-imageW,cy-imageW/2,imageW,imageW));}
   area(t,id,label,b,cmd,data,zone,disabled);
+  if(!disabled)t.buttonFace?.(id,b,a,first);
 }
 export function catalogGrid(d,t,w,bounds,windowed=false){
   const {kind,items,selected,group}=d,gun=kind==='weapon',pilot=kind==='pilot';
@@ -74,7 +76,9 @@ export function catalogGrid(d,t,w,bounds,windowed=false){
     select();
     if(gun){
       if(btn){
-        button(a,t,box(btn.x,btn.y+btn.h*.5,btn.w,btn.h*.5),{title:label,gold:true,titleSize:clamp(w*.032,10,16)});
+        const face=box(btn.x,btn.y+btn.h*.5,btn.w,btn.h*.5),first=t.buttonFace&&a.group.children.length;
+        button(a,t,face,{title:label,gold:true,titleSize:clamp(w*.032,10,16)});
+        t.buttonFace?.('detail-'+it.id,face,a,first);
         area(t,'detail-'+it.id,label,btn,'nativeCollectionDetail',{id:it.actualId,kind:group},zone);
       }else words(a,it.name,x+size/2,y+sideY+11,clamp(w*.035,11,16),{family:titleFont,maxWidth:size});}
   });

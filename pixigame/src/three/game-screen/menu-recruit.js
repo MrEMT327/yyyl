@@ -67,8 +67,10 @@ export function recruitMenu(data,w,h,t,chrome){
     const title=i?(pool.rookieAvailable?'新手十连':'十次招募'):'单次招募';
     const locked=s.rewardPending||s.rewardBusy,ink=i?'#172e40':'#f3f6f8';
     const skin=art['recruit-button-'+(locked?'off-':'')+(i?'ten':'single')];
+    const first=footArt.group.children.length,id='draw-'+count;
     button(footArt,t,b,{title,price:'×'+fmt(cost),icon:RESOURCE_ICONS.diamonds.url,skin,titleColor:ink,priceColor:ink,shortColor:'#ff9b91',gold:i===1,short,disabled:locked,artwork});
-    area(t,'draw-'+count,title,b,'recruit',{count,resourceShort:short?'钻石':null},null,s.rewardPending||s.rewardBusy);
+    if(!locked)t.buttonFace?.(id,b,footArt,first);
+    area(t,id,title,b,'recruit',{count,resourceShort:short?'钻石':null},null,locked);
   });
   if(s.rewardPending){words(footArt,'已有奖励待保存',w*.3,fy+68,12);words(footArt,'重试保存',w*.72,fy+68,12);
     area(t,'retry','重试保存',box(w*.5,fy+54,w*.45,28),'recoverDailyRewards',{},null,s.rewardBusy);}

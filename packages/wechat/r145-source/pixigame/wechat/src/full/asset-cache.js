@@ -20,30 +20,44 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
     temporary.delete(url);
   }
   function clearMemory(){generation++;temporary.clear();temporaryChars=0;}
-  function nonEmpty(path) {
+  function nonEmpty(path,expectedBytes) {
     files.accessSync(path);
-    if(typeof files.statSync==='function' && files.statSync(path).size===0) return false;
-    return true;
+    const size=files.statSync?.(path)?.size;
+    return size!==0&&(expectedBytes===undefined||size===expectedBytes);
   }
-  function localFile(source,baseURL) {
+  function fileSuffix(url){return /\.([a-z0-9]{1,8})(?:[?#]|$)/i.exec(url)?.[1]||'bin';}
+  function cachePath(url,suffix){return `${folder}/${sha256Fallback(string2buf(url).buffer)}.${suffix}`;}
+  function cached(url,path,expectedBytes,discardInvalid=false){
+    if(temporary.has(url)){
+      const file=temporary.get(url);
+      try{if((expectedBytes===undefined&&file.startsWith('data:'))||nonEmpty(file,expectedBytes)){
+        temporary.delete(url);temporary.set(url,file);return file;
+      }}catch{}
+      forgetTemporary(url);
+    }
+    try{
+      if(nonEmpty(path,expectedBytes)){budget.touch(path);return path;}
+      if(discardInvalid)files.unlinkSync(path);
+    }catch{}
+  }
+  function cachedLocalFile(source,baseURL,expectedBytes){
+    const url=resources.resolve(source,baseURL);
+    if(pending.has(url))return;
+    return cached(url,cachePath(url,fileSuffix(url)),expectedBytes);
+  }
+  function localFile(source,baseURL,{signal,expectedBytes}={}) {
+    if(signal?.aborted)return Promise.reject(signal.reason);
     const url = resources.resolve(source, baseURL);
     if (url.startsWith(userFiles)) return Promise.resolve(url);
     if (!/^https?:/i.test(url)) return resources.readyLocalFile ? resources.readyLocalFile(url) : Promise.resolve(url);
     if(pending.has(url))return pending.get(url);
-    if(temporary.has(url)){
-      const file=temporary.get(url);
-      try{if(file.startsWith('data:')||nonEmpty(file)){
-        temporary.delete(url);temporary.set(url,file);return Promise.resolve(file);
-      }}catch{}
-      forgetTemporary(url);
-    }
-    const suffix=/\.([a-z0-9]{1,8})(?:[?#]|$)/i.exec(url)?.[1] || 'bin';
-    const imageType=imageContentTypes[suffix.toLowerCase()];
-    const path=`${folder}/${sha256Fallback(string2buf(url).buffer)}.${suffix}`;
+    const suffix=fileSuffix(url),imageType=imageContentTypes[suffix.toLowerCase()],path=cachePath(url,suffix);
+    const ready=cached(url,path,expectedBytes,true);
+    if(ready)return Promise.resolve(ready);
+    budget.forget(path);
     const started=generation;
+    let abort;
     const task=new Promise((resolve,reject)=>{
-      try{if(nonEmpty(path)){budget.touch(path);resolve(path);return;}files.unlinkSync(path);}catch{}
-      budget.forget(path);
       const failure=(phase,error)=>new Error(`${phase}：${url} · ${error?.errMsg || error?.message || String(error)}`);
       const useTemporary=file=>{
         // An interrupted image download can yield an entire base64 image instead of a short native path.
@@ -58,8 +72,10 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
       // Recover an incomplete transfer without retaining any partial file.
       const recoverDownloadBytes=async (original,fresh=false)=>{
         try{
-          const bytes=await resources.readBytes(url,{fresh});
+          const bytes=await resources.readBytes(url,{fresh,signal});
+          if(signal?.aborted)throw signal.reason;
           if(!(bytes instanceof ArrayBuffer) || bytes.byteLength===0)throw new Error('服务器返回了空文件');
+          if(expectedBytes!==undefined&&bytes.byteLength!==expectedBytes)throw new Error('下载文件大小不匹配');
           if(!writesFull&&budget.reserve(path,bytes.byteLength)){
             try{files.writeFileSync(path,bytes);resolve(path);return;}
             catch(error){discardPartial();if(!isStorageQuotaError(error))throw error;writesFull=true;}
@@ -72,7 +88,8 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
           reject(failed);
         }
       };
-      transport.downloadFile({url,timeout:imageType?15000:60000,success(result){
+      const download=transport.downloadFile({url,timeout:imageType||signal?15000:60000,success(result){
+        if(signal?.aborted){reject(signal.reason);return;}
         if(result.statusCode!==200){
           reject(Object.assign(new Error(`下载失败 ${result.statusCode} ${url}`),{statusCode:result.statusCode}));
           return;
@@ -81,6 +98,7 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
           if(!result.tempFilePath || !nonEmpty(result.tempFilePath)){recoverDownloadBytes(new Error('下载文件为空'));return;}
         }catch(error){reject(failure('下载临时文件读取失败',error));return;}
         let size;try{size=files.statSync(result.tempFilePath).size;}catch{}
+        if(expectedBytes!==undefined&&size!==expectedBytes){reject(new Error('下载文件大小不匹配'));return;}
         if(writesFull||!budget.reserve(path,size)){useTemporary(result.tempFilePath);return;}
         const saveFailed=error=>{
           discardPartial();if(isStorageQuotaError(error))writesFull=true;
@@ -92,10 +110,16 @@ export function createAssetCache(api,resources,{diskLimit=48*1024*1024}={}) {
         try{files.saveFile({tempFilePath:result.tempFilePath,filePath:path,success:()=>resolve(path),fail:saveFailed});}
         catch(error){saveFailed(error);}
       },fail:error=>{
+        if(signal?.aborted){reject(signal.reason);return;}
         if(isIncompleteDownload(error,url))recoverDownloadBytes(error,Boolean(imageType)||suffix.toLowerCase()==='mp3');
         else reject(failure('资源下载失败',error));
       }});
-    }).finally(()=>pending.delete(url));pending.set(url,task);return task;
+      if(signal){
+        abort=()=>download.abort();
+        if(signal.aborted)abort();else signal.addEventListener('abort',abort,{once:true});
+      }
+    }).finally(()=>{if(abort)signal.removeEventListener('abort',abort);pending.delete(url);});
+    pending.set(url,task);return task;
   }
-  return {localFile,clearMemory,get diskBytes(){return budget.bytes;}};
+  return {localFile,cachedLocalFile,clearMemory,get diskBytes(){return budget.bytes;}};
 }

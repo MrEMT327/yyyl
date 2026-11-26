@@ -9,6 +9,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
   const r=screen.three,canvas=screen.display.input,color=new Color(),viewport=new Vector4(),scissor=new Vector4();
   const target=new WebGLRenderTarget(2,2,{type:HalfFloatType,depthBuffer:true,stencilBuffer:false,samples:port?0:Math.min(4,r.capabilities.maxSamples)});
   const exposureUniform={value:1.12};
+  const liveHangar=Boolean(port&&stageModel&&profile==='equipment');
   // Three applies the display transform only on screen. Keep the intermediate
   // HDR and apply the aircraft's own exposure when painting it over the hangar.
   function paint(art,x,y,w,h){
@@ -27,6 +28,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
           gl_FragColor=vec4(ACESFilmicToneMapping(color.rgb/max(color.a,0.00001)),color.a);
           #include <colorspace_fragment>
         }`});
+    return mesh;
   }
   let closed=false,ready=false,fit='',model,wanted,settledFrames=0,queuedAircraft='',queuedFit='';
   let prepareStarted=null,showStill=false;
@@ -46,7 +48,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
         r.setRenderTarget(before);r.setViewport(viewport);r.setScissor(scissor);r.setScissorTest(clip);r.setClearColor(color,alpha);
         r.autoClear=clear;r.toneMapping=tone;r.toneMappingExposure=power;r.outputColorSpace=space;
       }
-      if(!ready){ready=true;refresh();}request();
+      if(!ready){ready=true;if(!liveHangar)refresh();}request();
     }};
   function configure(snapshot,aircraftId){
     const {width,height}=bounds(),next=aircraftId+'-'+width+'-'+height;
@@ -54,7 +56,7 @@ export function menuAircraft(screen,page,scene,refresh,request,active,{profile='
     model.showAircraft(aircraftId,snapshot);
   }
   if(!port)model=createModelRenderer({screen,embedded});
-  const view={target,paint,get ready(){return ready;},get usingStill(){return showStill;},update(snapshot,aircraftId=snapshot.aircraftId){
+  const view={target,paint,updatesInPlace:liveHangar,get ready(){return ready&&!closed;},get usingStill(){return showStill;},update(snapshot,aircraftId=snapshot.aircraftId){
     if(stageModel&&port&&profile==='equipment'){
       const {width,height}=bounds();
       const key=aircraftId+':'+width+':'+height+':'+peripheralModelLoadoutKey(peripheralModelLoadout(aircraftId,snapshot));

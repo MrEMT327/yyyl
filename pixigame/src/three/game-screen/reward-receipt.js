@@ -21,6 +21,8 @@ function receipt(data,w,h,t){
   const paper=t.layer('receipt-paper').art,items=t.layer('receipt-items','base').art;
   const pw=.94*w,x=(w-pw)/2,bw=pw-.12*w,header=w/6,g=gridFor(w,data.items.length,bw);
   const live=data.liveBox;
+  const now=performance.now()/1000;
+  const rewardStart=data.rewardMotion?(data.rewardMotion.start??=now):null;
   if(live){g.font=.03*w;if(data.items.length===10)g.rowGap=.05*w;}
   const textGap=w*(live ? .012 : .015),lineHeight=g.font*(live?1.45:1.3);
   const rows=[];
@@ -55,8 +57,21 @@ function receipt(data,w,h,t){
       paintRewardItemSlot(items,item,{x:sx,y:top,size:g.side},t.image);
       label.position.y=top+g.side+textGap+labelTextH/2;
       if(status)status.position.y=top+g.side+2*textGap+labelH+statusH/2;
-      if(live)animateMeshes(t,[label,...items.group.children.slice(start)],cx,top+height/2,{entered:data.entered,reduced:data.reduced,
-        delay:.16+.075*index,duration:.34,curve:[.2,.7,.25,1],frames:[{at:0,opacity:0,y:16,scale:.8},{at:1}]});
+      if(live&&rewardStart!==null){
+        const accent=index===data.accent;
+        animateMeshes(t,[label,...items.group.children.slice(start)],cx,top+g.side/2,{entered:rewardStart,
+          delay:.16+.075*index,duration:accent ? .44 : .34,curve:[.2,.7,.25,1],
+          frames:accent?[{at:0,opacity:0,y:16,scale:.8},{at:.6,scale:1.09},{at:1}]:[{at:0,opacity:0,y:16,scale:.8},{at:1}]});
+      }
+      else if(rewardStart!==null){
+        const delay=Math.min(index,6)*.04;
+        if(now<rewardStart+delay+.1){
+          const meshes=items.group.children.slice(start);
+          meshes.push(label);if(status)meshes.push(status);
+          animateMeshes(t,meshes,cx,top+g.side/2,{entered:rewardStart,delay,duration:.1,
+            curve:[.25,.46,.45,.94],frames:[{at:0,scale:1.5,opacity:0},{at:1}]});
+        }
+      }
       if(item.gearUid)area(t,'gear-'+index,'查看当前装备',box(cx-g.cell/2,top,g.cell,height),'gearDetail',{id:item.gearUid},'base');
       area(t,'receipt-item-'+index,item.name,box(sx,top,g.side,g.side),'inspect',{index},'base');
     }
@@ -71,7 +86,7 @@ function receipt(data,w,h,t){
 }
 
 export function openRewardReceipt(screen,host,send,sound){
-  let latest,inspectIndex=null,identity,entered;
+  let latest,inspectIndex=null,identity,rewardMotion;
   const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);
   const panel=createLobbyPanel(screen,host,'获得奖励',receipt,command=>{
     if(command.type==='inspect'){inspectIndex=command.data.index;refresh();return;}
@@ -84,11 +99,18 @@ export function openRewardReceipt(screen,host,send,sound){
   }
   return {host,close:panel.close,update(snapshot,modal,signature){
     const isBox=modal.type==='shopBoxResult',liveBox=isBox&&!modal.history;
-    const next=modal.id??modal.receipt?.id??modal.type;
-    if(next!==identity){identity=next;inspectIndex=null;entered=performance.now()/1000;if(liveBox&&!reduced)sound?.('upgrade');}
+    const receiptId=modal.id??modal.receipt?.id??modal.type,next=isBox&&modal.history?'history-'+receiptId:receiptId;
+    if(next!==identity){
+      identity=next;inspectIndex=null;
+      rewardMotion=!modal.history&&!reduced?{}:null;
+      if(liveBox&&!reduced)sound?.('upgrade');
+    }
     const rewards=isBox?shopBoxRewards(modal,snapshot).rewards:modal.rewards||[];
-    latest={snapshot,signature,liveBox,pool:modal.pool,actions:isBox?boxActions(modal,snapshot):[],reduced,entered,
-      title:isBox&&modal.history?'上次开箱结果':modal.title||'获得奖励',items:rewards.map(r=>rewardItemModel(r,snapshot))};
+    const items=rewards.map(r=>rewardItemModel(r,snapshot));
+    let accent=-1,best=2;
+    if(liveBox)items.forEach((item,i)=>{if(item.qualityRank>best){best=item.qualityRank;accent=i;}});
+    latest={snapshot,signature,liveBox,pool:modal.pool,actions:isBox?boxActions(modal,snapshot):[],accent,rewardMotion,
+      title:isBox&&modal.history?'上次开箱结果':modal.title||'获得奖励',items};
     refresh();
   }};
 }

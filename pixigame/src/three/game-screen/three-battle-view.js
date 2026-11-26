@@ -249,7 +249,9 @@ export class NativeBattleView {
   update(delta){
     const now=this.profileClock,t0=now?.();
     const timing=now?(this.presentationTiming??={now}):null;
-    if(timing){timing.terrainMs=0;timing.aircraftMs=0;timing.textEffects=0;}
+    if(timing){
+      timing.terrainMs=0;timing.terrainDrawCpuMs=undefined;timing.aircraftMs=0;timing.textEffects=0;
+    }
     this.stage.refreshViewport?.();
     this.onFrame?.(delta);this.advanceCameraView(delta);
     const t1=now?.();
@@ -320,7 +322,8 @@ export class NativeBattleView {
     }
     const t3=now?.(),passes=this.stage.render(now);
     if(now)this.reportSlowFrame?.({interval:this.rawDelta,logic:t1-t0,terrainAndPlane:t2-t1,entitiesAndEffects:t3-t2,draw:now()-t3,...passes,
-      terrainMs:timing.terrainMs,aircraftMs:timing.aircraftMs,enemiesMs:afterEnemies-t2,projectilesMs:afterProjectiles-afterEnemies,
+      terrainMs:timing.terrainMs,terrainDrawCpuMs:timing.terrainDrawCpuMs,
+      aircraftMs:timing.aircraftMs,enemiesMs:afterEnemies-t2,projectilesMs:afterProjectiles-afterEnemies,
       pickupsAndEffectsMs:t3-afterProjectiles,pickupMs:afterPickups-afterProjectiles,statusAndEffectsMs:afterEffects-afterPickups,
       effectCleanupMs:t3-afterEffects,textEffects:timing.textEffects});
   }
@@ -340,23 +343,36 @@ export class NativeBattleView {
   start(progress,frame,fail,{now=()=>performance.now(),requestFrame=callback=>requestAnimationFrame(callback),cancelFrame=id=>cancelAnimationFrame(id),
     warmTextures,isVisible=()=>true,watchVisibility}={}){
     let last=now(),id=null,ready=false,dispatch=null,afterFirstBattleFrame=null;
+    const profile=this.profileClock,delivery=profile?{}:null;
+    let previousEnd,callbackMs,afterPaintMs;
     const schedule=()=>{if(ready&&!this.closed&&isVisible()&&id===null)id=requestFrame(dispatch);};
     const tick=time=>{
       id=null;
       if(this.closed||!isVisible())return;
       try{
+        const started=profile?.(),current=dispatch;
+        if(delivery&&previousEnd!==undefined){
+          delivery.callbackMs=callbackMs;delivery.afterPaintMs=afterPaintMs;
+          delivery.waitMs=Math.max(0,started-previousEnd);
+          this.frameDelivery=delivery;
+        }
         this.rawDelta=Math.max(0,time-last);last=time;
         this.paintFrame(()=>this.update(this.scaledDelta?this.scaledDelta(this.rawDelta):this.rawDelta));
+        const painted=profile?.();
         frame();
         if(afterFirstBattleFrame&&this.sim.phase!=='ready'){
           const warm=afterFirstBattleFrame;afterFirstBattleFrame=null;warm();
         }
         schedule();
+        if(profile&&current===dispatch){
+          previousEnd=profile();callbackMs=previousEnd-started;afterPaintMs=previousEnd-painted;
+        }
       }catch(error){ready=false;fail(error);}
     };
     const restart=()=>{
       if(id!==null)cancelFrame(id);
       id=null;last=now();
+      if(delivery){previousEnd=undefined;this.frameDelivery=undefined;}
       // An already dispatched callback from before suspension cannot claim the new frame.
       const next=time=>{if(dispatch===next)tick(time);};
       dispatch=next;schedule();

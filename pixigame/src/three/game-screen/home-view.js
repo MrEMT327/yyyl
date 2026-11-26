@@ -1,8 +1,8 @@
 import {Color,LinearFilter,Vector4,WebGLRenderTarget} from 'three';
 import {createHomeStage,homePictures,viewportPixel} from './home-stage.js';
-import {createHomeHud} from './three-home-hud.js';
+import {createHomeHud,homeGuideFiles} from './three-home-hud.js';
 import {homeControls,bindHomeInput} from './home-input.js';
-import {homeInsets} from './home-navigation.js';
+import {campaignButtons,homeInsets,navTabs} from './home-navigation.js';
 import {PILOT_PORTRAITS} from '../../ui/character-portraits.js';
 import {PORTRAIT_FRAMING} from '../../ui/portrait-framing.js';
 import {optimizeUiAssetUrls} from '../../ui/ui-image-source.js';
@@ -10,8 +10,15 @@ import {loadArtwork} from './image-loading.js';
 import {measureScreen} from './screen-metrics.js';
 
 const chapterRewardsBox=homePictures.find(([id])=>id==='star-rewards')[2];
+const homePictureUrl=file=>file.startsWith('/')?file:'/art/psd-main-v1/'+file;
 
-function loadImage(url,priority){return loadArtwork(optimizeUiAssetUrls(url),priority);}
+export function homeEntryFiles(pilotId){
+  const pilot=PILOT_PORTRAITS[pilotId]||{};
+  const stage=homePictures.map(([,file])=>homePictureUrl(file));
+  return [stage[0],pilot.image,...homeGuideFiles,pilot.scene,...stage.slice(1)].filter(Boolean).map(optimizeUiAssetUrls);
+}
+
+function loadImage(url,priority){return loadArtwork(optimizeUiAssetUrls(url),priority,true);}
 export function homePortraitSize(id,view){
   const {width:w,height:h}=view;
   const [,rewardY,,rewardHeight]=chapterRewardsBox;
@@ -61,8 +68,36 @@ export function mountThreeHome(device,host,send,interactive){
   const renderer=device.three,actor=new Vector4();
   const previous={color:renderer.getClearColor(new Color()),alpha:renderer.getClearAlpha(),clear:renderer.autoClear};
   let stage=null,hud=null,viewport=null,controls=[],pilot=null,marker=null,generation=0,guide=null,pose=null,target=null,frame=0,closed=false;
-  let still=null,scenery=null,active=false,portraitReady;
-  let entryFrame=null,cancelEntry=null,lastHomePaint=-Infinity;
+  let still=null,scenery=null,active=false,portraitReady,stageComplete=false;
+  let entryFrame=null,cancelEntry=null,lastHomePaint=-Infinity,portraitSettled=false,painted=false;
+  const mountedAt=host.now();
+  const guideFace=[0,0,0,0];
+  let hudGuide=null;
+  const navigation=device.lobbyNavigation;
+  const dockOffset=pose=>pose?(1-pose.dock)*166:0;
+  function positionControls(pose,offset){
+    const top=homeInsets(viewport).nav;
+    for(const control of controls){
+      const box=control.box;
+      if(campaignButtons.includes(control.id)){
+        control.dockY??=box[1];control.dockH??=box[3];
+        box[1]=control.dockY+offset;
+        box[3]=Math.max(0,Math.min(control.dockH,top-box[1]));
+      }else if(control.id.startsWith('nav-')){
+        const i=navTabs.indexOf(control.data.tab);
+        box[0]=pose.edges[i];box[2]=pose.edges[i+1]-box[0];
+      }
+    }
+  }
+  const homeArtwork={
+    navigation:(renderer,pose,pressed)=>hud?.paintNavigation(renderer,pose,pressed),
+    dock(renderer,pose){
+      if(!stage||!viewport)return;
+      const offset=dockOffset(pose);
+      stage.setDockOffset(offset);stage.drawDock(renderer);hud?.paintDockLabel(renderer,offset);
+    },
+  };
+  if(navigation)navigation.homeArtwork=homeArtwork;
   const load=(url,priority)=>loadImage(url,priority??(host.stageEntry?1:undefined));
   function releasePose(){pose=null;target?.dispose();target=null;}
   function available(){return !closed&&host.visible()&&!device.battle&&!device.cover&&!device.preview;}
@@ -77,7 +112,16 @@ export function mountThreeHome(device,host,send,interactive){
   function model(){return {...device.homeState,safeBottom:viewport?.safeBottom||0,reduced:host.reducedMotion()};}
   function updateGuide(){
     const control=guide&&controls.find(c=>c.id===guide.id);
-    hud?.setGuide(control?{...guide,target:control.box,reduced:host.reducedMotion()}:null);
+    hudGuide=control?{...guide,target:campaignButtons.includes(control.id)?guideFace:control.box,reduced:host.reducedMotion()}:null;
+  }
+  function presentedGuide(panel){
+    if(!hudGuide||panel)return null;
+    if(hudGuide.target!==guideFace)return hudGuide;
+    // The touch area stays generous while pressing. Follow the actual painted
+    // face for the ring and arrows, including the dock slide and the press scale.
+    if(!stage?.readButtonFace(hudGuide.id,guideFace))return null;
+    const padding=4*750/viewport.width;
+    return guideFace[1]+guideFace[3]+padding<=homeInsets(viewport).nav?hudGuide:null;
   }
   function position(){
     const {rect:p,density:ratio,safeBottom,safeTop,safeContentTop,menuButton}=host.layout();if(!p.width||!p.height)return;
@@ -90,6 +134,7 @@ export function mountThreeHome(device,host,send,interactive){
     const ax=viewportPixel(p.x+x,ratio)-x0,ay=viewportPixel(p.y+y,ratio)-y0;
     actor.set(ax*750/wNative,ay*1624/hNative,(viewportPixel(p.x+x+w,ratio)-x0-ax)*750/wNative,(viewportPixel(p.y+y+h,ratio)-y0-ay)*1624/hNative);
     controls=homeControls(model(),viewport,actor.toArray());
+    if(navigation)positionControls(navigation.pose,dockOffset(navigation.pose));
     stage?.layout(viewport);hud?.layout(viewport);updateGuide();schedule();
   }
   function selectPilot(id){
@@ -97,7 +142,7 @@ export function mountThreeHome(device,host,send,interactive){
       if(!marker?.closed)return false;
       pose=null;marker=host.newPortrait(id);position();return true;
     }
-    pilot=id;generation++;pose=null;still=null;scenery=null;
+    pilot=id;generation++;pose=null;still=null;scenery=null;portraitSettled=false;
     stage?.setPortraitStill(null);stage?.setPortraitScenery(null);
     if(marker)host.dropPortrait(marker);marker=host.newPortrait(id);
     const config=PILOT_PORTRAITS[id]||{},token=generation;
@@ -110,17 +155,26 @@ export function mountThreeHome(device,host,send,interactive){
       });
     }
     portraitReady=Promise.all([loadPortrait(config.scene,true),loadPortrait(config.image||device.homeState.pilotImage,false)]);
-    portraitReady.catch(error=>{if(!closed&&generation===token)console.error(error);});
+    function settlePortrait(){if(!closed&&generation===token){portraitSettled=true;schedule();}}
+    void portraitReady.then(settlePortrait,error=>{if(!closed&&generation===token)console.error(error);settlePortrait();});
     position();return true;
   }
   function sync(){
     hud?.updateModel(model());stage?.setGrade('patrol',device.homeState.patrolLocked?1:0,device.homeState.patrolLocked ? .65 : 1);
-    if(viewport)controls=homeControls(model(),viewport,actor.toArray());
+    if(viewport){
+      controls=homeControls(model(),viewport,actor.toArray());
+      if(navigation)positionControls(navigation.pose,dockOffset(navigation.pose));
+      updateGuide();
+    }
     schedule();
   }
   function paint(){
     frame=0;if(!available()||!viewport)return;
-    metrics.draw(drawFrame);
+    if(device.panel||!interactive())unbind.cancel?.();
+    if(!painted&&host.stageEntry&&!device.panel&&(!stage||!hud))return;
+    if(!host.stageEntry&&!painted&&(!stageComplete||!hud?.ready()||!portraitSettled)&&host.now()-mountedAt<12000){schedule();return;}
+    if(device.panel?.prepareFrame?.()===false)return;
+    metrics.draw(drawFrame);painted=true;
     if(!device.panel?.fullscreen&&!device.homeState.firstSortieRequired)device.display.present();
   }
   function drawFrame(){
@@ -141,17 +195,22 @@ export function mountThreeHome(device,host,send,interactive){
     }
     host.begin(wNative,hNative,schedule);renderer.clear();
     lastHomePaint=host.now();
-    drawContents(panel,pose&&target?target.texture:null,lastHomePaint);
+    const motion=navigation?.frame(lastHomePaint);
+    if(motion)positionControls(motion,dockOffset(motion));
+    drawContents(panel,pose&&target?target.texture:null,lastHomePaint,motion);
+    if(motion?.navMoving||motion?.dockMoving)schedule();
     device.feedback?.draw(renderer,viewport.width,viewport.height);
     device.toast?.draw(renderer,viewport.width,viewport.height);
     if(stage&&hud)host.ready(true);
   }
-  function drawContents(panel,portrait=null,time=host.now()){
+  function drawContents(panel,portrait=null,time=host.now(),motion){
+    const offset=dockOffset(motion);
     if(stage){
+      stage.setDockOffset(offset);
       stage.drawBehind(renderer);stage.drawCharacter(renderer,portrait,actor);
       stage.drawInFront(renderer,device.homeState.firstSortieRequired,device.homeState.showTasks);
     }
-    hud?.paint(renderer,time/1000);
+    if(hud){hud.setGuide(presentedGuide(panel));hud.paint(renderer,time/1000,motion,offset);}
     panel?.draw(renderer);
   }
   function warmEntry(panel){
@@ -194,7 +253,7 @@ export function mountThreeHome(device,host,send,interactive){
       entryFrame=host.requestFrame(prepare);
     });
   }
-  const unbind=host.bindInput({controls:()=>controls,enabled:()=>available()&&host.ownsOutput()&&interactive()&&!device.panel&&!!hud,
+  const unbind=host.bindInput({controls:()=>controls,enabled:()=>available()&&host.ownsOutput()&&interactive()&&!device.panel&&!!hud&&painted,
     guide:()=>guide,activate:c=>send(c.action,c.data,host.anchor),focus:box=>{hud?.setFocus(box);schedule();},
     scale(id,k){
       const control=controls.find(c=>c.id===id);if(!control)return;
@@ -202,11 +261,13 @@ export function mountThreeHome(device,host,send,interactive){
       if(['coins','stamina','diamonds'].includes(id))for(const part of ['background','icon','plus'])stage?.setButtonScale(id+'-'+part,k);
       hud?.setPress(id,k,control.box);schedule();
     }});
-  const removeLayout=host.onLayout(position),removeState=device.subscribeHome(sync);
+  const removeLayout=host.onLayout((_view,foreground)=>{if(foreground===false)unbind.cancel?.();position();});
+  const removeState=device.subscribeHome(sync);
   const view={page:host.page,selectPilot,prepareEntry,owns:surface=>!!marker&&host.ownsPortrait(marker,surface),
     paintNow(){host.cancelFrame(frame);paint();},
     activate(){device.homeView=view;device.repaintHome=schedule;schedule();},
     park(){
+      unbind.cancel?.();
       host.cancelFrame(frame);frame=0;active=false;host.release();
       if(device.homeView===view)device.homeView=null;
       if(device.repaintHome===schedule)device.repaintHome=null;
@@ -231,6 +292,7 @@ export function mountThreeHome(device,host,send,interactive){
     controls:()=>controls.map(({id,label,box})=>({id,label,box})),get guide(){return guide;},
     close(){
       if(closed)return;closed=true;cancelEntry?.();metrics.release();host.cancelFrame(frame);removeLayout();removeState();unbind();
+      if(navigation?.homeArtwork===homeArtwork)navigation.homeArtwork=null;
       if(device.homeView===view)device.homeView=null;
       if(device.repaintHome===schedule)device.repaintHome=null;
       host.ready(false);if(marker)host.dropPortrait(marker);releasePose();generation++;
@@ -244,8 +306,22 @@ export function mountThreeHome(device,host,send,interactive){
   device.homeView=view;device.repaintHome=schedule;
   selectPilot(device.homeState.pilotId);position();
   if(available())take();
-  const stageReady=Promise.all(homePictures.map(async([id,file])=>[id,await load(file.startsWith('/')?file:'/art/psd-main-v1/'+file)]))
-    .then(entries=>{if(closed)return;stage=createHomeStage(new Map(entries));stage.setPortraitScenery(scenery);stage.setPortraitStill(still);position();sync();});
+  const initialImages=new Map();
+  const stageReady=Promise.all(homePictures.map(async([id,file])=>{
+    let image;
+    try{image=await load(homePictureUrl(file),id==='background'&&host.stageEntry?2:undefined);}
+    catch(error){if(!closed)console.warn('[Three 大厅贴图]',file,error?.message||error);}
+    if(closed)return;
+    if(stage){
+      if(image){stage.setArtwork(id,image);schedule();}
+      return;
+    }
+    if(image)initialImages.set(id,image);
+    if(id==='background'){
+      stage=createHomeStage(initialImages);initialImages.clear();
+      stage.setPortraitScenery(scenery);stage.setPortraitStill(still);position();sync();
+    }
+  })).then(()=>{stageComplete=true;schedule();});
   const hudReady=createHomeHud(load,model(),schedule).then(result=>{
     if(closed){result.dispose();return;}hud=result;position();sync();
   });

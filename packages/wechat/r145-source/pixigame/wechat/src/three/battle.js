@@ -13,6 +13,7 @@ import { artworkTexture } from '../../../../../../../pixigame/src/three/game-scr
 import { createSortieController } from '../../../../../../../pixigame/src/replica/sortie-controller.js';
 import { openWechatBattleSurface } from './battle-surface.js';
 import { createNativeBattleRenderBudget } from '../../../../../../../pixigame/src/replica/native-battle-render-budget.js';
+import { memoryMiB, readJsHeapMemory } from '../../../../../../../pixigame/src/replica/memory-checkpoints.js';
 import { battleWidth,battleHeight,fullBattleFrame } from '../../../../../../../pixigame/src/three/game-screen/battle-frame-layout.js';
 import { paceSortieData, prewarmBattleArtwork } from './frame-artwork.js';
 
@@ -85,13 +86,22 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
   const battleURL=battleAddress.href;
   const reducedMotion=()=>false;
   const lifetime=createBattleLifetime(null,services.makeAbort);
+  let battleAudio;
+  function readResources(){
+    const pcm=battleAudio?.readPcmStats();
+    return {...platform.readMemoryResources(),battleAudioBuffers:pcm?.buffers??0,
+      battleAudioPcmMiB:pcm?memoryMiB(pcm.bytes):0};
+  }
+  const readMemory=()=>({...readJsHeapMemory(),resources:readResources()});
+  // This callback runs after the battle's other cleanup callbacks.
+  if(platform.debugLog)lifetime.add(()=>platform.debugLog.info('战斗释放后内存',{chapter:chapterId,...readMemory()}));
   const warmTextures=prewarmBattleArtwork(platform);
   lifetime.add(warmTextures.close);
   const endSortieLoad=services.beginSortieLoad?.();
   if(endSortieLoad)lifetime.add(endSortieLoad);
   let launchActive=false;
-  let warmLobby=chapterId===1?device.warmFirstSortieMenus:null,nextLobbyWarmup=0;
   const firstSortie=Boolean(device.cover?.firstSortieLoading);
+  let warmHome=firstSortie?device.warmFirstSortieHomeFiles:null;
   const loadingFrame=(frames=firstSortie?1:2)=>{
     if(!device.cover||!platform.visible||lifetime.disposed)return;
     return new Promise(resolve=>{
@@ -121,8 +131,9 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
     baseURL,battleAssetBase:battleURL,staggerPresentation:true,loadingFrame,
     draws,createRenderBudget(worldWidth){
       const {screen,density}=platform.viewport;
-      return createNativeBattleRenderBudget({...screen,pixelRatio:density},worldWidth,{adaptive:true,
-        onPressureChange:limited=>platform.debugLog?.info('战斗绘制预算',{chapter:chapterId,mode:limited?'降载':'常规'})});
+      return createNativeBattleRenderBudget({...screen,pixelRatio:density},worldWidth,{adaptive:true,phoneTerrainWidth:504,
+        onPressureChange:limited=>platform.debugLog?.info('战斗绘制预算',{chapter:chapterId,mode:limited?'降载':'常规'}),
+        onSustainedLoadChange:limited=>platform.debugLog?.info('持续低帧降载',{chapter:chapterId,mode:limited?'启用':'恢复'})});
     },
     aircraftCoverageStrength:.5,compactAircraftGlass:true,
     loadAircraft:services.loadAircraft,readFighterFile:services.readFighterFile,objectLoader:services.objectLoader,assetBytes:services.assetBytes,
@@ -149,7 +160,11 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       createH5Presentation({content,appearance,onError,onGraphicsContext,onProgress,onFlightRoll,host,aircraftReady}),
     createView(content,sim,ready,skin){
       const view=new CombatView(content,sim,ready,skin);
-      const frameSummary=platform.debugLog?.beginBattle?.(chapterId,draws);
+      const frameSummary=platform.debugLog?.beginBattle?.(chapterId,draws,()=>{
+        const {width,height,samples}=view.stage.ground.userData.binding.texture.renderTarget;
+        const {outputSize:output,worldSize:world}=view.stage.glow;
+        return {terrain:[width,height],output:[output.width,output.height],world:[world.width,world.height],terrainSamples:samples};
+      },readMemory);
       let lastReport=-Infinity,reports=0;
       view.profileClock=draws?platform.now:undefined;
       view.reportSlowFrame=stats=>{
@@ -163,7 +178,7 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
           stats.textures=info.memory.textures;stats.geometries=info.memory.geometries;
           stats.enemies=sim.enemies.length;stats.projectiles=sim.projectiles.length;stats.pickups=sim.pickups.length;
         }
-        frameSummary?.sample(stats.interval,sim.wave,stats,sim.runId);
+        frameSummary?.sample(stats.interval,sim.wave,stats,sim.runId,view.frameDelivery);
         if(reports>=16||now-lastReport<3000||(stats.interval<48&&cpu<28))return;
         reports++;lastReport=now;
         const timings=Object.fromEntries(Object.entries(stats).map(([key,value])=>[key,Math.round(value)]));
@@ -189,36 +204,35 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
       // Hold the startup artwork while configuration is still pending.
       const canPaint=()=>scene.sim.phase!=='ready'||!device.cover?.firstSortieLoading;
       const info=draws&&platform.renderer?.info;
+      let paintStarted;
       scene.paintFrame=update=>{
         if(!canPaint())return;
+        paintStarted=platform.now();
         if(!info?.render)return update();
         const auto=info.autoReset;if(auto)info.reset();info.autoReset=false;
         drawBase=info.render.calls;triangleBase=info.render.triangles;
         try{return update();}finally{info.autoReset=auto;}
       };
-      let width=0,height=0;
+      let width=0,height=0,worldWidth=0;
       const stop=scene.start(progress=>reportLoading('textures',progress),()=>{
         if(!canPaint())return;
         if(!scene.frameCount)endSortieLoad?.();
         scene.frameCount=(scene.frameCount||0)+1;renderedFrame();
         if(draws&&!device.cover&&platform.visible){
-          const size=scene.stage.glow.outputSize;
-          if(width!==size.width||height!==size.height){
-            width=size.width;height=size.height;
-            platform.debugLog.info('战场分辨率',{chapter:chapterId,width,height});
+          const {outputSize:size,worldSize:world}=scene.stage.glow;
+          if(width!==size.width||height!==size.height||worldWidth!==world.width){
+            width=size.width;height=size.height;worldWidth=world.width;
+            platform.debugLog.info('战场分辨率',{chapter:chapterId,width,height,world:[worldWidth,world.height]});
           }
           if(scene.sim.phase==='playing'&&scene.sim.victoryDeparturePresentation)resultTrace?.departure(scene.sim.runId);
         }
         const ending=scene.sim.phase==='won'||scene.sim.phase==='lost';
         const panel=ending&&!device.cover&&platform.visible?readResultPanel?.():null;
         if(panel){resultTrace?.painted(panel);if(panel.motion.ready){onResultVisible?.();onResultVisible=null;}}
-        if(warmLobby&&panel?.motion.ready&&scene.rawDelta<38){
-          const now=platform.now();
-          if(now>=nextLobbyWarmup){
-            nextLobbyWarmup=now+50;
-            if(!warmLobby(lifetime.signal))warmLobby=null;
-          }
+        if(warmHome&&scene.sim.phase==='playing'&&!device.cover&&platform.visible&&scene.rawDelta<32&&platform.now()-paintStarted<12){
+          warmHome(lifetime.signal);warmHome=null;
         }
+        if(!device.cover)warmTextures.afterPaint(scene.rawDelta,platform.now()-paintStarted,scene.sim.phase==='playing');
       },fail,{...platform,warmTextures,isVisible:()=>platform.visible,watchVisibility:fn=>watchVisibility(platform,fn)});
       lifetime.add(stop);
     },
@@ -229,9 +243,11 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
     createLifetime:()=>lifetime,
     bind(){},
     createGuide:()=>guide,
-    createAudio:manifest=>services.createBattleAudio(manifest,battleURL),
+    createAudio:manifest=>(battleAudio=services.createBattleAudio(manifest,battleURL)),
     prepareAudio:audio=>{void audio.unlock(true).catch(error=>console.warn('[Three 战斗音效]',error?.message||error));},
-    disposeAudio:audio=>audio.dispose(),
+    disposeAudio(audio){
+      try{audio.dispose();}finally{battleAudio=undefined;}
+    },
     createLaunch:options=>createFlightLaunch({...options,onPhase(phase){launchActive=phase==='waiting'||phase==='flying';}}),
     createControls:ready=>touch.controls(ready),
     onActivity:options=>createActivity(platform,options),
@@ -253,7 +269,8 @@ export function mountWechatBattle({platform,device,services,id,chapterId,emit,ba
     })),
     warmBattleTerrain:platform.warmArtworkFiles,loadingFrame,
     warmBattleImages:(urls,signal)=>platform.warmArtworkFiles(urls.slice(0,24),signal,3),
-    memoryContext:{page:battleAddress.pathname,canvases:Number(Boolean(platform.display.canvas)),storage:services.storage},
+    memoryContext:{page:battleAddress.pathname,chapter:chapterId,canvases:Number(Boolean(platform.display.canvas)),
+      storage:services.storage,readResources},
     setNotice:overlays.notice,setLoadingMessage:overlays.notice},rendering);}
   catch(error){lifetime.dispose();throw error;}
 }

@@ -222,9 +222,12 @@ export function renderDefeatResult(root, bridge, {surface, button, backdrop, vic
     }
     if(model.pageCount>1)s.text(`${model.page+1} / ${model.pageCount}`,300,layout.pagerTop+24,{size:22,align:'center'});
   });
-  const control=o=>{const n=paintButton({...o,onPress:()=>{if(panel.motion.ready&&!statsOpen)o.onPress();}});panel.addChild(n);panel.motion.buttons.push({n,disabled:!!o.disabled});return n;};
+  function control(o,immediate=false){
+    const n=paintButton({...o,onPress:()=>{if((immediate||panel.motion.ready)&&!statsOpen)o.onPress();}});
+    panel.addChild(n);panel.motion.buttons.push({n,immediate,disabled:!!o.disabled});return n;
+  }
   if(model.pageCount>1)for(const [text,dir,x]of[['‹',-1,164],['›',1,366]])control({x,y:layout.pagerTop+4,width:70,height:44,text,fontSize:30,variant:'secondary',disabled:model.page+dir<0||model.page+dir>=model.pageCount,onPress:()=>{bridge.ui.defeatRewardPage=model.page+dir;bridge.pixiCombatUi?.render();}});
-  control({...layout.confirm,text:model.pending?'保存并返回':'确定',fontSize:35,variant:'primary',onPress:()=>{bridge.ui.defeatRewardPage=0;bridge.finishBattleResult();}});
+  control({...layout.confirm,text:model.pending?'保存并返回':'确定',fontSize:35,variant:'primary',onPress:()=>{bridge.ui.defeatRewardPage=0;bridge.finishBattleResult();}},true);
   const statsButton=control({...layout.stats,text:'',art:'statsControl',artCorner:14,variant:'secondary',onPress:()=>{bridge.ui.defeatStats=true;bridge.pixiCombatUi?.render();}});
   statsButton.hitArea=new Rectangle((layout.stats.width-112)/2,(layout.stats.height-112)/2,112,112);
   const statsIconSize=52;
@@ -273,5 +276,7 @@ export function updateDefeatResult(panel,now,bridge) {
   }
   m.banner.pivot.set(300,370);m.banner.position.set(300,370);m.banner.scale.set(p.bannerScale);
   for(const {n,index}of m.smoke){const f=(p.smokeTime*.24+index/6)%1;n.position.set(351+Math.sin(index*2+f*3)*9,213-f*76);n.scale.set(.23+f*.38);n.alpha=reduced?0:(1-f)*.36*p.reveal(.05);}
-  for(const {n,disabled}of m.buttons){n.alpha=p.reveal(.045);n.enabled=p.ready&&!disabled&&!m.statsOpen;}
+  for(const {n,disabled,immediate}of m.buttons){
+    n.alpha=immediate?1:p.reveal(.045);n.enabled=(immediate||p.ready)&&!disabled&&!m.statsOpen;
+  }
 }

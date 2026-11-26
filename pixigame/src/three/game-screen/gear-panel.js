@@ -7,6 +7,7 @@ import {nativeItemArt} from '../../replica/native-item-presentation.js';
 import {equipmentArtPath} from '../../replica/equipment-art.js';
 import {workshopPanel,workshopTitles} from './workshop-panels.js';
 import {sheetMetrics} from './detail-sheet.js';
+import {animateMeshes} from './ui-motion.js';
 
 const titles={gearAttributes:'战斗属性',gearDetail:'装备详情',gearMaterialInfo:'合成材料'};
 const qualityInk=['#557080','#337e55','#296a91','#754a96','#93601c','#a43f42'];
@@ -51,8 +52,18 @@ function upgradeFlash(t,a,started,x,y,w,h) {
     return light.visible;
   });
 }
+function gearDetailData(snapshot,id){
+  const g=snapshot.equipment,item=g.items.find(i=>i.uid===id);
+  if(!item)return {item:null};
+  const costs=item.equipped&&item.cost,wallet=g.wallet||snapshot.wallet;
+  const equipDisabled=Boolean(g.equipLockReason);
+  const equipLabel=item.equipped?null:g.equipLockReason||(g.items.some(i=>i.type===item.type&&i.equipped)?'替换':'装备');
+  return {item,equipLabel,equipDisabled,
+    coins:costs?(wallet.unlimited?'∞':wallet.coins):undefined,
+    blueprints:costs?(g.blueprints.find(p=>p.type===item.type)?.count||0):undefined};
+}
 function detail(data,w,h,t){
-  const s=data.snapshot,g=s.equipment,item=g.items.find(i=>i.uid===data.modal.id),u=w/369.453,width=.92*w;
+  const {item,coins,blueprints,equipLabel,equipDisabled}=data.gearDetail,u=w/369.453,width=.92*w;
   if(!item){
     const p=paper(t,data,w,h,width,162*u,61.6*u);
     words(p.a,'装备已变化，请关闭后重新选择。',w/2,p.top+24*u,14,{color:'#425d71'});return;
@@ -76,8 +87,8 @@ function detail(data,w,h,t){
   a.panel(gradeBox.x,gradeBox.y,gradeBox.w,gradeBox.h,{cut:0,fill:'#e0edf1',stroke:quality,opacity:1});
   text(item.qualityName,tx+8,ty+41,12,{color:quality,weight:700});
   text((item.equipped?'已装配':'未装配')+(item.locked?' · 已锁定':''),tx+gradeBox.w+8,ty+41,12,{color:'#344f63'});
-  flash(tx-4,ty+53,112,24);
-  text('等级',tx,ty+65,13,{color:'#344f63'});text('Lv.'+item.level+' / '+item.maxLevel,tx+36,ty+65,13,{color:quality,weight:700});
+  text('等级',tx,ty+65,13,{color:'#344f63'});
+  const level=text('Lv.'+item.level+' / '+item.maxLevel,tx+36,ty+65,13,{color:quality,weight:700});
   if(item.canDowngrade&&item.equipped){
     const b=box(tx,ty+80,Math.min(106,left+bw-tx-6),42);button(a,t,b,{title:'降阶',titleSize:13});
     commands.push({id:'downgrade',label:'降阶',b,type:'gearDowngradePreview'});
@@ -107,13 +118,17 @@ function detail(data,w,h,t){
   const ph=Math.min(h*.85,header+y+footH+25.7*u);
   const p=paper(t,data,w,h,width,ph,header,frame);
   for(const mesh of a.group.children)mesh.position.y+=p.top;
+  if(Number.isFinite(data.upgradeAt)&&performance.now()/1000<data.upgradeAt+.32){
+    animateMeshes(t,[level],tx+36,level.position.y,{entered:data.upgradeAt,duration:.32,
+      frames:[{at:0,scale:.96},{at:.38,scale:1.17},{at:1}]});
+  }
   const innerH=Math.max(1,ph-header-footH-25.7*u);
   t.region('base',box(left,p.top,bw,innerH),y);
   for(const c of commands)area(t,c.id,c.label,{...c.b,y:c.b.y+p.top},c.type,{id:item.uid},'base');
   const foot=t.layer('gear-actions').art,fy=p.top+innerH+14;
   if(showCosts){
-    const part=g.blueprints.find(p=>p.type===item.type),blueprint=GEAR_PARTS.find(p=>p.type===item.type)?.blueprintId,coins=g.wallet||s.wallet;
-    const rows=[[nativeItemArt(blueprint),part?.count||0,item.cost.blueprints],[nativeItemArt(1),coins.unlimited?'∞':coins.coins,item.cost.coins]];
+    const blueprint=GEAR_PARTS.find(p=>p.type===item.type)?.blueprintId;
+    const rows=[[nativeItemArt(blueprint),blueprints,item.cost.blueprints],[nativeItemArt(1),coins,item.cost.coins]];
     rows.forEach(([url,current,cost],i)=>{
       const x=w/2+(i?4:-78)*u;pic(foot,t,url,box(x,fy,24,26),true);
       const m=words(foot,current==='∞'?current:fmt(current),x+27,fy+13,14,{align:'left',color:Number(current)<cost?'#ad3b3b':'#247349',weight:700});
@@ -121,14 +136,16 @@ function detail(data,w,h,t){
     });
   }
   const actions=item.equipped?[['gearUnequip','卸下'],['gearUpgrade','升级',!item.canUpgrade],['gearUpgradeAll','一键升级',!item.canUpgrade]]:
-    [['gearEquip',g.equipLockReason||(g.items.some(i=>i.type===item.type&&i.equipped)?'替换':'装备'),Boolean(g.equipLockReason)]];
+    [['gearEquip',equipLabel,equipDisabled]];
   const full=bw+4*u,bwidth=item.equipped?(full-16)/3:full*.58;
   actions.forEach(([type,title,disabled],i)=>{
     const b=box(item.equipped?left-2*u+i*(bwidth+8):(w-bwidth)/2,fy+(showCosts?36:0),bwidth,48);
-    const upgrade=type==='gearUpgrade'||type==='gearUpgradeAll';
+    const first=foot.group.children.length,upgrade=type==='gearUpgrade'||type==='gearUpgradeAll';
     const plate=slice(foot,t,upgrade||!item.equipped?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,9);
+    if(!plate.visible)foot.panel(b.x,b.y,b.w,b.h,{fill:disabled?'#687784':'#725011',stroke:'#abc0cc',opacity:1});
     if(disabled)plate.material.color.set(0x87939e);
     words(foot,title,b.x+b.w/2,b.y+24,item.equipped||disabled?clamp(w*.035,12,16):20,{family:titleFont,color:disabled?'#bac8d2':'#edf4f7',maxWidth:b.w-12});
+    if(!disabled)t.buttonFace?.(type,b,foot,first);
     area(t,type,title,b,type,{id:item.uid},null,disabled);
   });
 }
@@ -141,7 +158,7 @@ function material(data,w,h,t){
     words(p.a,text,x,p.top+[14,46,83,125][i]*w/369.453,size,{align:'left',color:'#344f63',weight,wrap:true,maxWidth:bw});
   });
 }
-export function openGearPanel(screen,host,send){
+export function openGearPanel(screen,host,send,options){
   const metrics=sheetMetrics();
   const panel=createLobbyPanel(screen,host,'装备',(data,w,h,t)=>{
     if(Object.hasOwn(workshopTitles,data.modal.type))workshopPanel(data,w,h,t);
@@ -149,12 +166,17 @@ export function openGearPanel(screen,host,send){
     else if(data.modal.type==='gearMaterialInfo')material(data,w,h,t);
     else detail(data,w,h,t);
     return 'base';
-  },command=>{if(command.type!=='none')send(command.type,command.data||{},host);});
-  return {host,close:panel.close,update(snapshot,modal,signature){
+  },command=>{if(command.type!=='none')send(command.type,command.data||{},host);},options);
+  return {host,close:panel.close,park:panel.park,prepareOffscreen:panel.prepareOffscreen,activate:panel.activate,update(snapshot,modal,signature){
     const id=modal.type+'|'+(modal.id||'')+'|'+(modal.part||'')+'|'+(modal.quality||'');
+    const isDetail=modal.type==='gearDetail';
+    const artworkKey=isDetail?id+'|'+snapshot.equipment?.revision:undefined;
     const reduced=screen.reducedMotion?.()??globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-    panel.update({snapshot,modal:{...modal},sheetMetrics:metrics,upgradeAt:reduced?undefined:modal.upgradeAt,
-      safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)},
-      [signature,id,modal.revision,modal.upgradeAt,modal.error,snapshot.equipment?.revision,modal.mode,modal.filter,modal.tokens,modal.materialIds?.join(','),modal.plan?.token,modal.drawn?.join(',')].join('|'),id);
+    const upgradeAt=reduced?undefined:modal.upgradeAt,gearDetail=isDetail?gearDetailData(snapshot,modal.id):null;
+    // The cover can prepare details before the lobby clock and wallet refresh.
+    const key=isDetail?JSON.stringify([artworkKey,modal.error,upgradeAt,gearDetail]):
+      [signature,id,modal.revision,modal.upgradeAt,modal.error,snapshot.equipment?.revision,modal.mode,modal.filter,modal.tokens,modal.materialIds?.join(','),modal.plan?.token,modal.drawn?.join(',')].join('|');
+    panel.update({snapshot,modal:{...modal},gearDetail,sheetMetrics:metrics,upgradeAt,
+      safeBottom:screen.safeBottom?.() ?? (parseFloat(getComputedStyle(host).paddingBottom)||0)},key,id,artworkKey);
   }};
 }

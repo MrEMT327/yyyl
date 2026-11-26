@@ -2,6 +2,7 @@ import { WebGLRenderer } from 'three';
 import { createGameDisplay } from '../../../../../../../pixigame/src/three/game-screen/page-display.js';
 import { createArtworkLoader, useArtworkLoader } from '../../../../../../../pixigame/src/three/game-screen/image-loading.js';
 import { createAssetCache } from '../full/asset-cache.js';
+import { memoryMiB } from '../../../../../../../pixigame/src/replica/memory-checkpoints.js';
 
 function canvasTarget(canvas) {
   if (typeof canvas.addEventListener === 'function' && typeof canvas.removeEventListener === 'function') return canvas;
@@ -132,6 +133,15 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog, localFi
     }));
   }
 
+  function readMemoryResources() {
+    const {textures, geometries} = renderer.info.memory;
+    const {images, pixels} = loadArtwork.decodedCacheStats();
+    const {width, height} = nativeCanvas;
+    return {textures, geometries, programs:renderer.info.programs?.length??null,
+      canvasPixels:[width,height], canvasRgbaMiB:memoryMiB(width*height*4),
+      cachedArtworkImages:images, cachedArtworkRgbaMiB:memoryMiB(pixels*4)};
+  }
+
   const restoreArtwork = useArtworkLoader(loadArtwork);
 
   function notifyViewport() {
@@ -190,7 +200,7 @@ export function openWechatThreeScreen(api, resources, baseURL, debugLog, localFi
   on('onHide', 'offHide', () => { foreground = false; cancelTouches(); notifyViewport(); });
   on('onShow', 'offShow', () => { foreground = true; notifyViewport(); });
   return {
-    renderer, display, loadArtwork, warmArtworkFiles, now, debugLog,
+    renderer, display, loadArtwork, warmArtworkFiles, now, debugLog, readMemoryResources,
     get viewport() { return viewport; },
     get visible() { return foreground; },
     get inputIdle() { return !heldPointers.size && now() - lastTouchAt >= 100; },

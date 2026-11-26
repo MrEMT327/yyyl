@@ -15,11 +15,19 @@ const white=[1,1,1,1],neutral=[0,0,0,0],fullUV=[0,0,1,1];
 const identity3=[1,0,0,0,1,0,0,0,1],identity4=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
 const uniform=value=>({value});
 
+function uploadPrefix(attribute,count){
+  // Retain earlier writes if an effect is submitted again before it is drawn.
+  const pending=attribute.updateRanges[0];
+  if(pending)pending.count=Math.max(pending.count,count);
+  else attribute.addUpdateRange(0,count);
+  attribute.needsUpdate=true;
+}
+
 export function createBattleEffectPass(renderer,width,height,scene=new Three.Scene()) {
   const camera=new Three.Camera();
   const meshes=new Map(),litPrograms=new Map(),unlitPrograms=new Map(),pool=new Map();
   const projection=new Three.Matrix4(),resolution=new Three.Vector2();
-  let frame=0,pooled=0;
+  let frame=0,pooled=0,pooledBytes=0;
   function resize(w,h,left=0,top=0){
     resolution.set(w,h);
     projection.set(2/w,0,0,-1-2*left/w, 0,-2/h,0,1+2*top/h, 0,0,0,0, 0,0,0,1);
@@ -87,15 +95,22 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
   }
   function releaseEntry(entry){
     const g=entry.mesh.geometry;
-    if(pooled>=96||g.getAttribute('inPosition')?.count>64||g.index?.count>192){disposeEntry(entry);return;}
+    // Position and UV are two floats each, with four colour bytes per vertex.
+    const bytes=(g.getAttribute('inPosition')?.count??0)*20+(g.index?.array.byteLength??0);
+    if(pooled>=96||bytes>48*1024||pooledBytes+bytes>384*1024){disposeEntry(entry);return;}
+    entry.pooledBytes=bytes;pooledBytes+=bytes;
     entry.mesh.removeFromParent();
     const list=pool.get(entry.program)??[];
     list.push(entry);pool.set(entry.program,list);pooled++;
   }
-  function acquire(program){
-    const entry=pool.get(program)?.pop();
-    if(!entry)return make(program);
-    pooled--;scene.add(entry.mesh);return entry;
+  function acquire(program,vertices,indices){
+    const list=pool.get(program);
+    if(!list?.length)return make(program);
+    const fit=list.findIndex(({mesh:{geometry}})=>
+      geometry.getAttribute('inPosition').count>=vertices&&geometry.index.count>=indices);
+    const entry=fit<0?list.pop():list.splice(fit,1)[0];
+    pooled--;pooledBytes-=entry.pooledBytes;
+    scene.add(entry.mesh);return entry;
   }
   // Inputs are the source sampler's pixel-space vertices; batches with a
   // gradient retain their independent vertex colours, opacity and HDR gain.
@@ -106,7 +121,7 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     let entry=meshes.get(id);
     if(!entry||entry.program!==program){
       if(entry)releaseEntry(entry);
-      entry=acquire(program);meshes.set(id,entry);
+      entry=acquire(program,vertices.length,indices.length);meshes.set(id,entry);
     }
     const {mesh}=entry,g=mesh.geometry,u=mesh.material.uniforms;
     mesh.visible=true;mesh.renderOrder=depth;entry.frame=frame;
@@ -121,16 +136,18 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     const [logicalWidth,logicalHeight]=main.pathogenicLogicalSize??[main.width,main.height];
     // Sprite colour is a uniform. Only gradient lines need a per-vertex tint upload.
     if(line)entry.whiteTint=null;
-    else if(entry.whiteTint!==tint){tint.array.fill(255);tint.needsUpdate=true;entry.whiteTint=tint;}
-    let uvDirty=false,tintDirty=false;
+    else if(entry.whiteTint!==tint){tint.array.fill(255);uploadPrefix(tint,tint.array.length);entry.whiteTint=tint;}
+    let positionsDirty=false,uvDirty=false,tintDirty=false;
     if(line&&gain===undefined){
       gain=1;
       for(const {color} of vertices)gain=Math.max(gain,color[0],color[1],color[2]);
     }
     let red,green,blue,alpha,r8,g8,b8,a8;
     for(let i=0;i<vertices.length;i++){
-      const vertex=vertices[i],[x,y]=vertex.uv;
-      position.setXY(i,vertex.position[0],vertex.position[1]);
+      const vertex=vertices[i],[x,y]=vertex.uv,[px,py]=vertex.position;
+      if(positionsDirty||!Object.is(position.array[i*2],Math.fround(px))||!Object.is(position.array[i*2+1],Math.fround(py))){
+        position.setXY(i,px,py);positionsDirty=true;
+      }
       const uCoord=Math.fround(line?x:(x-ox)/logicalWidth),vCoord=Math.fround(line?y:(y-oy)/logicalHeight);
       if(uvDirty||uv.array[i*2]!==uCoord||uv.array[i*2+1]!==vCoord){
         uv.setXY(i,uCoord,vCoord);uvDirty=true;
@@ -150,16 +167,16 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
         bytes[offset]=b8;bytes[offset+1]=g8;bytes[offset+2]=r8;bytes[offset+3]=a8;tintDirty=true;
       }
     }
-    position.needsUpdate=true;
-    if(uvDirty)uv.needsUpdate=true;
-    if(tintDirty)tint.needsUpdate=true;
+    if(positionsDirty)uploadPrefix(position,vertices.length*2);
+    if(uvDirty)uploadPrefix(uv,vertices.length*2);
+    if(tintDirty)uploadPrefix(tint,vertices.length*4);
     let index=g.index;
     if(!index||index.count<indices.length){
       let capacity=6;while(capacity<indices.length)capacity*=2;
       index=new Three.Uint32BufferAttribute(capacity,1).setUsage(Three.DynamicDrawUsage);g.setIndex(index);
     }
-    if(g.drawRange.count!==indices.length||!indices.every((n,i)=>n===index.array[i])){
-      index.array.set(indices);index.needsUpdate=true;
+    if(!indices.every((n,i)=>n===index.array[i])){
+      index.array.set(indices);uploadPrefix(index,indices.length);
     }
     g.setDrawRange(0,indices.length);
     u.uPgTime.value=draw.time;u.uPgColor.value=draw.color||white;
@@ -186,6 +203,6 @@ export function createBattleEffectPass(renderer,width,height,scene=new Three.Sce
     draw(){finish();renderer.render(scene,camera);},
     dispose(){for(const entry of meshes.values())disposeEntry(entry);
       for(const list of pool.values())for(const entry of list)disposeEntry(entry);
-      pooled=0;pool.clear();meshes.clear();litPrograms.clear();unlitPrograms.clear();}
+      pooled=pooledBytes=0;pool.clear();meshes.clear();litPrograms.clear();unlitPrograms.clear();}
   };
 }

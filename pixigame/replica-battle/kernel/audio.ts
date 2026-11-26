@@ -46,6 +46,15 @@ export class GameAudio {
       else {const enabled=storage.getItem('danke-audio')!=='off';this.preferences={music:enabled,effects:enabled};}
     } catch { /* private storage */ }
   }
+  readPcmStats() {
+    const buffers = new Set(this.buffers.values());
+    let bytes = 0;
+    for (const {length, numberOfChannels} of buffers) {
+      if (!Number.isFinite(length) || !Number.isFinite(numberOfChannels)) return {buffers:buffers.size, bytes:null};
+      bytes += length * numberOfChannels * Float32Array.BYTES_PER_ELEMENT;
+    }
+    return {buffers:buffers.size, bytes};
+  }
   async unlock(openingOnly=false) {
     if (this.disposed||this.host.hidden?.()) return;
     // Retry blocked HTML music inside this gesture, before WebAudio resume or

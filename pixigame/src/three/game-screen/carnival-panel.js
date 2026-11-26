@@ -70,7 +70,7 @@ function paintRewards(a,t,{activity,countdown,unavailable,blocked},x,y,width,u){
 
 function paint(data,w,h,t){
   const {activity:s,modal}=data,ph=Math.min(h-18,w*1.55),pw=w*.94,u=Math.min(w/390,h/550),
-    header=clamp(64*u,41,67),p=paintLobbyPaper(t,{paperFace:art.taskFace},w,h,pw,ph,header,'七日嘉年华');
+    header=clamp(64*u,41,67),p=paintLobbyPaper(t,{paperFace:art.taskFace,popupMotion:{style:'large'}},w,h,pw,ph,header,'七日嘉年华');
   if(!s||ph<=0)return;
   const a=p.a,x=p.x+18*u,r=p.x+pw-18*u,iw=r-x;
   const day=s.days.find(row=>row.day===modal.day&&row.unlocked)??s.days[s.day-1];
@@ -83,6 +83,7 @@ function paint(data,w,h,t){
   for(const [i,row] of s.days.entries()){
     const b=box(x,listY+i*(tabH+tabGap),tabW,tabH),selectedDay=row.day===day.day;
     const dayLabel=`第${row.day}天`,locked=!row.unlocked;
+    const first=a.group.children.length;
     taskTab(a,t,b,dayLabel,selectedDay,Math.max(10,12*u),locked);
     if(locked){
       const size=Math.min(17*u,b.h*.48);
@@ -90,6 +91,7 @@ function paint(data,w,h,t){
     }else if(!blocked&&row.tasks.some(task=>task.canClaim)){
       pic(a,t,badge,box(x+tabW-11*u,b.y+3*u,8*u,8*u),true);
     }
+    if(!locked)t.buttonFace?.('day-'+row.day,b,a,first);
     area(t,'day-'+row.day,dayLabel+(locked?'，未解锁':''),b,'carnivalDay',{id:row.day},null,locked);
   }
   const listX=x+tabW+10*u;
@@ -129,7 +131,7 @@ export function openCarnivalPanel(screen,host,send,options){
     if(cmd.type==='close'&&inspect!==null){inspect=null;refresh();return;}
     if(cmd.type!=='none')send(cmd.type,cmd.data||{},host);
   },options);
-  const refresh=()=>panel.update({...data,inspect},++revision,'carnival');
+  const refresh=()=>panel.update({...data,inspect},++revision,'carnival',inspect===null?'day-'+data.modal.day:'reward-'+inspect);
   return {host,close:panel.close,prepareOffscreen:panel.prepareOffscreen,activate:panel.activate,update(snapshot,modal,signature){
     const activity=snapshot.carnival,time=activity?.observedAt,countdown=activity?timer(activity,time):'';
     const next=[signature,activity?.day,modal.day,countdown].join('|');

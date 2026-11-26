@@ -195,15 +195,16 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       fighter.runtime.config.deployed=passivePose.target;
     }
     updateFlightFighter(fighter, visualClock, visualPose);
+    const composite=fighter.runtime.asset.solid.userData.cleanAircraftSurface;
     battle.drawHull(aircraftScene,()=>renderWithAircraftStyle(renderer, () => {
       const draw=()=>aircraftRenderer.render(aircraftScene, aircraftCamera, fighter);
-      if(fighter.runtime.asset.solid.userData.cleanAircraftSurface){
+      if(composite){
         renderer.toneMappingExposure=.92;
         aircraftFxRenderer.setColor(fighter.runtime.config.engineColor||'#66d7f0');
         aircraftFxRenderer.render(draw,aircraftTextureSize,aircraftTextureSize);
       }
       else draw();
-    }));
+    }),composite);
     const wake=displaySize>0?sampleCombatEngineWake(fighter,aircraftCamera,{
       clock:visualClock,displaySize,textureSize:aircraftTextureSize,thrust:visualPose.thrust,matricesReady:true,
     }):[];
@@ -348,7 +349,6 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       }
       battle.victory(sampleBattleFlightTrail(frame,pose,launchPresentation));
       passivePose=samplePassiveDeployment(passiveState,{...frame,aircraftId:appearance.aircraft.id,visible:!frame.victoryDeparture&&!!pose?.visible});
-      const passiveDirty=passivePose.serial!==lastRenderedPassive?.serial||passivePose.progress!==lastRenderedPassive?.progress;
       const visualClock=flightVisual.visualClock+(launchPresentation?.time||0);
       const backgroundTime = frame.coastBackgroundTime ?? frame.time;
       const worldWeather = weather?.profile?.id ?? 'clear';
@@ -360,8 +360,13 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       const terrainPriority=lastWorldKey===worldKey?null:budget&&replaceTerrain
         ?budget.planTerrain(backgroundTime,worldRun,worldWeather,frame.camera.x,frame.camera.z):'regular';
       let worldDue=terrainPriority!==null;
-      const moving = Math.abs(flightPose.bank) > .002 || flightPose.thrust > .02 || flightPose.rollActive;
-      const scriptedPose = launchPresentation || passivePose.active || frame.victoryDeparture;
+      const rolling=flightPose.rollActive;
+      const moving = Math.abs(flightPose.bank) > .002 || flightPose.thrust > .02 || rolling;
+      const cutscene=launchPresentation||frame.victoryDeparture;
+      const limited=budget?.sustainedLoad&&frame.flight?.active&&pose?.visible&&!cutscene;
+      const scriptedPose=cutscene||(!limited&&passivePose.active);
+      const passiveDirty=passivePose.serial!==lastRenderedPassive?.serial||(limited
+        ?passivePose.active!==lastRenderedPassive?.active:passivePose.progress!==lastRenderedPassive?.progress);
       const aircraftElapsed = visualClock - lastAircraftVisualClock;
       // Only hold the cached 3D surface for a settled attitude. The live hull
       // position, collision, muzzle, wingtip lights and trails still follow every frame.
@@ -369,19 +374,22 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       const steadyPose=staggerPresentation&&budget?.underLoad&&frame.flight?.active&&pose?.visible&&previous&&
         !scriptedPose&&!flightPose.rollActive&&Math.abs(flightPose.bank-previous.bank)<.002&&
         Math.abs(flightPose.pitch-previous.pitch)<.001&&Math.abs(flightPose.thrust-previous.thrust)<.01;
-      const aircraftFrameDue = budget&&!scriptedPose&&!flightPose.rollActive
-        ?budget.shouldDrawAircraft(aircraftElapsed,replaceTerrain&&worldDue,moving,steadyPose)
+      // During sustained pressure rolls, steady-pose transitions and
+      // in-progress deployment all go through the same redraw budget.
+      const aircraftFrameDue = budget&&!scriptedPose&&(limited||!rolling)
+        ?budget.shouldDrawAircraft(aircraftElapsed,replaceTerrain&&worldDue,moving,steadyPose,rolling)
         :aircraftElapsed >= (scriptedPose || moving ? 1/60 : 1/30) - 1e-6;
       if (flightPose.rollSerial !== lastRollSerial) {
         lastRollSerial = flightPose.rollSerial;
         if (flightPose.rollActive) onFlightRoll?.();
       }
       updatePhantom(flightPose);
-      const poseChanged=flightPoseNeedsRefresh(previous,flightPose)||(reusingSteadyPose&&!steadyPose)||weatherChanged||frame.clock<lastAircraftClock;
+      const poseChanged=flightPoseNeedsRefresh(previous,flightPose,!limited)||
+        (!limited&&reusingSteadyPose&&!steadyPose)||weatherChanged||frame.clock<lastAircraftClock;
       let renderAircraft=pose&&(aircraftElapsed<0||aircraftFrameDue||weaponsDirty||launchDirty||passiveDirty||poseChanged);
       // Keep the two cached surfaces on separate frames during both normal and slow play.
       const split=staggerPresentation&&replaceTerrain&&terrainPriority==='regular'&&renderAircraft&&!poseChanged&&lastWorldViewport===view&&
-        lastWorldRun===worldRun&&!weatherChanged&&frame.displayInterval>0&&!scriptedPose&&!weaponsDirty&&!launchDirty&&!passiveDirty&&!flightPose.rollActive;
+        lastWorldRun===worldRun&&!weatherChanged&&frame.displayInterval>0&&!scriptedPose&&!weaponsDirty&&!launchDirty&&!passiveDirty&&(limited||!rolling);
       if(split&&!terrainDeferred){worldDue=false;terrainDeferred=true;}
       else{if(split)renderAircraft=false;terrainDeferred=false;}
       let landmarks;
@@ -434,7 +442,10 @@ export async function createH5Presentation({ content, appearance, onError, onGra
       if (!worldDue) return;
       const groundStart=now?.();
       battle.drawGround(worldScene,coastCamera||camera,selectedScene.ground);
-      if(now)timing.terrainMs+=now()-groundStart;
+      if(now){
+        timing.terrainDrawCpuMs=now()-groundStart;
+        timing.terrainMs+=timing.terrainDrawCpuMs;
+      }
       budget?.commitTerrain();
       if(host?.draws)host.draws.terrain++;
       lastWorldKey = worldKey;

@@ -1,26 +1,31 @@
+import { uploadArtwork } from '../../../../../../../pixigame/src/three/game-screen/image-loading.js';
+export { createMenuArtworkWarmup } from '../../../../../../../pixigame/src/three/game-screen/image-loading.js';
+
 // Optional work on the existing renderer: one job per turn, yielding when
 // the previous frame was slow. Never force the foreground view to wait.
-export function frameWork(platform,active,fastInterval=28){
-  let request=null,last=null,closed=false;
+export function frameWork(platform,active,fastInterval=28,covered=()=>false){
+  let request=null,last=null,closed=false,ownFrame=true;
   const jobs=[];
   function resume(){
-    if(!closed&&request===null&&jobs.length&&active())request=platform.requestFrame(run);
+    if(ownFrame&&!closed&&request===null&&jobs.length&&active())request=platform.requestFrame(run);
   }
   function run(time){
     request=null;
-    if(closed||!active())return;
+    if(!ownFrame||closed||!active())return;
     const interval=last===null?Infinity:time-last;
     last=time;
-    if(interval>=0&&interval<fastInterval)jobs.shift()();
+    // A startup cover can prepare one job even at a slower frame rate.
+    if(interval>=0&&(interval<fastInterval||covered()))jobs.shift()();
     resume();
   }
-  function clear(interval=fastInterval){
-    fastInterval=interval;
+  function clear(){
     jobs.length=0;last=null;
     if(request!==null)platform.cancelFrame(request);
     request=null;
   }
   return {push(job){if(!closed){jobs.push(job);resume();}},resume,clear,
+    followForeground(){clear();ownFrame=false;},
+    step(){if(!closed&&active())jobs.shift()?.();},
     close(){closed=true;clear();}};
 }
 
@@ -43,41 +48,17 @@ export function paceSortieData(waitForPaint,signal){
   };
 }
 
-function upload(platform,texture,maxPixels){
-  const r=platform.renderer,image=texture.image,limit=r.capabilities.maxTextureSize;
-  const w=image?.naturalWidth||image?.width,h=image?.naturalHeight||image?.height;
-  if(!w||!h||w>limit||h>limit||w*h>maxPixels||r.getContext().isContextLost())return false;
-  try{r.initTexture(texture);return true;}catch{return false;}
-}
-
-export function createMenuArtworkWarmup(platform){
-  const uploaded=new WeakSet();
-  return function prepare(textures,maxUploads=4){
-    let count=0,pixels=0;
-    for(const texture of textures){
-      const image=texture.image;
-      if(!image||uploaded.has(texture))continue;
-      const area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);
-      if(count&&(count>=maxUploads||pixels+area>400000))return false;
-      uploaded.add(texture);
-      if(upload(platform,texture,1600000)){count++;pixels+=area;}
-    }
-    // Do not stack the first complete screen draw on an upload frame.
-    return count===0;
-  };
-}
-
 const earlyBattleArt=new Set(['coins','digits','combat-labels','medkit','shell','modules','crate']);
 export function prewarmBattleArtwork(platform){
   const work=frameWork(platform,()=>platform.visible,40);
   const unwatch=platform.onViewport?.(work.resume);
   const uploaded=new WeakMap();
-  let count=0,pixels=0,queued=new WeakMap();
+  let count=0,pixels=0,quietFrames=0,queued=new WeakMap();
   const areaOf=({image})=>(image?.naturalWidth||image?.width||0)*(image?.naturalHeight||image?.height||0);
   function warm(texture){
     if(uploaded.get(texture)===texture.version||!areaOf(texture))return false;
     uploaded.set(texture,texture.version);
-    return upload(platform,texture,2400000);
+    return uploadArtwork(platform.renderer,texture,2400000);
   }
   return {add(key,texture,priority=false){
     if(count>=36||!(priority||earlyBattleArt.has(key)||/^host:\/\/(?:ice-weapons|ice-particles|warm-energy-shots)/.test(key)))return;
@@ -104,8 +85,15 @@ export function prewarmBattleArtwork(platform){
     try{if(!platform.renderer.getContext().isContextLost())job();}
     catch(error){console.warn('[Three 战斗预热]',error?.message||error);}
   });},
-    // Loading can use 40 ms frames. Once combat starts, uploads wait for a faster frame.
-    reset(){work.clear(25);count=pixels=0;queued=new WeakMap();},
+    // After loading, the battle owns the only frame callback for GPU work.
+    reset(){work.followForeground();count=pixels=quietFrames=0;queued=new WeakMap();},
+    afterPaint(interval,workMs,playing){
+      if(!(interval>0&&interval<(playing?25:40))||workMs>(playing?11:20)){
+        quietFrames=0;
+        return;
+      }
+      if(++quietFrames>=(playing?3:1)){quietFrames=0;work.step();}
+    },
     close(){work.close();unwatch?.();},
   };
 }

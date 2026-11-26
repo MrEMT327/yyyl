@@ -5,7 +5,7 @@ import {slicedFrameGeometry} from '../../ui/nine-slice-geometry.js';
 import {walletGains} from '../../ui/reward-feedback-policy.js';
 import {POWER_NOTICE_DURATION,powerNoticeCount,powerNoticePose} from '../../ui/power-notice-motion.js';
 import {clamp,words} from './menu-art.js';
-import {bottomNavigation,homeInsets} from './home-navigation.js';
+import {bottomNavigation,homeInsets,navTabs} from './home-navigation.js';
 import art from './utility-art.json';
 
 const compact=new Intl.NumberFormat('zh-CN',{notation:'compact',maximumFractionDigits:1,useGrouping:false});
@@ -32,12 +32,12 @@ export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFra
     const entry=screen.homeView?.controls().find(x=>x.id===id)?.box;
     if(entry)return {x:entry[0]*b.width/750,y:entry[1]*b.height/1624,w:entry[2]*b.width/750,h:navHeight??entry[3]*b.height/1624};
   }
-  function mark(box,color,duration,delay=0,tab=false){if(!box||!box.w||!box.h)return;effects.push({box,color,duration,t:now()+delay,tab});effects=effects.slice(-28);request();}
+  function mark(box,color,duration,delay=0,tab=false,page){if(!box||!box.w||!box.h)return;effects.push({box,color,duration,t:now()+delay,tab,page});effects=effects.slice(-28);request();}
   function beginTabFeedback(){
     if(!pendingTab)return;
     if(pendingTab.page!==key()){pendingTab=null;return;}
     const box=rectFor(pendingTab.id);if(!box)return;
-    mark(box,'#ffe18a',450,pendingTab.delay,true);
+    mark(box,'#ffe18a',450,pendingTab.delay,pendingTab.id);
     pendingTab=null;
   }
   function endPower(){power=null;ink.clear();signature='';count=zoom=null;}
@@ -72,6 +72,12 @@ export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFra
   return {
     wallet(before,after){const gains=walletGains(before,after);if(!screen.panel&&!quiet.matches)for(const {type} of gains)mark(rectFor(type),'#e1f4ff',300);return gains.length>0;},
     equip(slot){mark(rectFor('slot-'+slot)||rectFor(slot),'#8bf4db',650);},
+    gearSlot(part){
+      if(quiet.matches||screen.panel)return;
+      const r=screen.menuView?.anchorRect?.('gear-slot-'+part),b=bounds();if(!r||!b)return;
+      effects=effects.filter(e=>e.page===undefined);
+      mark({...r,x:r.x-b.x,y:r.y-b.y},'#8bf4db',380,0,false,key());
+    },
     pulse(id,delay=0){
       if(quiet.matches)return;
       if(!id.startsWith('nav-')){mark(rectFor(id),'#ffe18a',450,delay);return;}
@@ -82,9 +88,19 @@ export function createLobbyFeedback(screen,{now=()=>performance.now(),requestFra
     power(before,after){if(!Number.isFinite(before)||!Number.isFinite(after)||before===after)return;
       if(frame!==null)cancelFrame(frame);frame=requestFrame(()=>{frame=null;show(before,after);});},
     get active(){return !!power||!!pendingTab||effects.length>0;},
-    draw(renderer,w,h){beginTabFeedback();if(!power&&!effects.length)return;const t=now();drawPower(w,h,t);marks.clear();
-      effects=effects.filter(e=>t-e.t<e.duration);for(const e of effects){const p=(t-e.t)/e.duration;if(p<0)continue;
-        const a=Math.max(0,Math.min(e.tab?1:p/.2,(1-p)/.8)),b=e.box;for(const [x,y,ww,hh] of [[b.x,b.y,b.w,2],[b.x,b.y+b.h-2,b.w,2],[b.x,b.y,2,b.h],[b.x+b.w-2,b.y,2,b.h]])marks.quad(x,y,ww,hh,e.color,a*.9);}
+    draw(renderer,w,h){beginTabFeedback();if(!power&&!effects.length)return;const t=now();drawPower(w,h,t);
+      let used=0;
+      effects=effects.filter(e=>t-e.t<e.duration&&(e.page===undefined||e.page===key()));for(const e of effects){const p=(t-e.t)/e.duration;if(p<0)continue;
+        const a=Math.max(0,Math.min(e.tab?1:p/.2,(1-p)/.8)),b=e.box;
+        const edges=screen.lobbyNavigation?.pose.edges,i=e.tab?navTabs.indexOf(e.tab.slice(4)):-1;
+        if(edges&&i>=0){b.x=edges[i]*w/750;b.w=(edges[i+1]-edges[i])*w/750;}
+        for(const [x,y,ww,hh] of [[b.x,b.y,b.w,2],[b.x,b.y+b.h-2,b.w,2],[b.x,b.y,2,b.h],[b.x+b.w-2,b.y,2,b.h]]){
+          const mesh=marks.group.children[used++]??marks.quad(0,0,1,1);
+          mesh.visible=true;mesh.position.set(x+ww/2,y+hh/2,0);mesh.scale.set(ww,-hh,1);
+          mesh.material.color.set(e.color);mesh.material.opacity=a*.9;
+        }
+      }
+      for(let i=used;i<marks.group.children.length;i++)marks.group.children[i].visible=false;
       camera.right=w;camera.bottom=h;camera.updateProjectionMatrix();const auto=renderer.autoClear;renderer.autoClear=false;
       try{renderer.render(scene,camera);}finally{renderer.autoClear=auto;}if(power||effects.length)request();},
     clear,close(){closed=true;clear();skin?.dispose();}};

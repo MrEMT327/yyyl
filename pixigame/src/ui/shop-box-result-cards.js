@@ -1,6 +1,14 @@
 import {equipmentArtPath} from '../replica/equipment-art.js';
 import { equipmentBoxReceiptItems } from '../replica/native-equipment-box-receipt.js';
 import { nativeCollectionDisplayName } from '../replica/native-collection-names.js';
+import { nativeItemDisplayQuality } from '../replica/item-display-quality.js';
+
+export function boxOpeningRank(gear){
+  let best=gear.drawn.reduce((rank,row)=>Math.max(rank,Math.floor((row.quality||10)/10)-1),0);
+  const outcomes=gear.receipt?.outcomes??[...(gear.weaponRewards||[]),...(gear.aircraftRewards||[]),...(gear.pilotRewards||[])];
+  for(const row of outcomes)best=Math.max(best,nativeItemDisplayQuality(row.id)?.qualityRank??0);
+  return best;
+}
 
 export function shopBoxRewards(modal,s) {
   const recorded=Boolean(modal.receipt),view=recorded?equipmentBoxReceiptItems(modal.receipt):null;

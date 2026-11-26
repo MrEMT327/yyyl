@@ -54,7 +54,7 @@ export function button(a,t,b,{title,price,icon,gold=false,short=false,disabled=f
 }
 export const qualityFrame=rank=>'/art/psd-equipment-v1/frame-'+(['gray','green','blue','purple','gold','red'][rank]||'gray')+'.png';
 export function area(t,id,label,b,action,data={},zone=null,disabled=false){
-  t.control(id,label,b,{type:action,data},{zone,disabled});
+  return t.control(id,label,b,{type:action,data},{zone,disabled});
 }
 function equipmentRoom(root,t,w,h,bleed,layout,primary){
   // Keep the divider at the toolbar boundary, preserving the shape of the
@@ -122,7 +122,7 @@ export function chrome(data,w,h,t){
     Math.max(walletY+Math.max(44,46*w/750)+8,defaultTop+walletY-defaultWalletY);
   return {top,navY,equipment,artwork,primary,
     footer(){
-      const front=t.layer('footer').art;
+      const footer=t.layer('footer'),front=footer.art;
       const url=footerUrl,fallback=[];
       const options=footerReady?primary:{...primary,onImage:()=>{for(const mesh of fallback)mesh.visible=false;}};
       if(!footerReady)fallback.push(front.quad(0,navY,w,railH+inset,'#172735'));
@@ -131,24 +131,48 @@ export function chrome(data,w,h,t){
         verticalSlice(front,t,url,box(0,navY,w,skin.body),0,navBodyEnd,options);
         paintNavigationInset(front,t,w,skin,artwork);
       }else pic(front,t,url,box(0,navY,w,railH),false,options);
+      const hits=[];
       let x=0;for(const [key,label] of Object.entries(tabLabels)){
         const width=w*(key===tab ? .2506 : .18735);
         if(!footerReady)fallback.push(words(front,label,x+width/2,navY+railH/2,14*u,{color:key===tab?'#ffd28a':'#e0effb'}));
-        area(t,'nav-'+key,label,box(x,navY,width,hitHeight),'tab',{tab:key});x+=width;
+        const control=area(t,'nav-'+key,label,box(x,navY,width,hitHeight),'tab',{tab:key});
+        hits.push({control,x,width});x+=width;
+      }
+      if(data.navigation){
+        const selectedIndex=Object.keys(tabLabels).indexOf(tab),selected=hits[selectedIndex];
+        front.quad(selected.x,navY,selected.width,railH*navBodyEnd,'#85d8ed',.06);
+        const plates=front.group.children.map(mesh=>[mesh.material,mesh.material.opacity]);
+        let wasMoving=false,lastOpacity=1;
+        footer.drawInstead=(renderer,pressed)=>{
+          const {pose,homeArtwork}=data.navigation;
+          if(pose.dockMoving&&pose.dock>0)homeArtwork?.dock(renderer,pose);
+          const moving=pose.navMoving&&Boolean(homeArtwork?.navigation(renderer,pose,pressed?.id));
+          if(moving||wasMoving)for(const [i,{control,x,width}] of hits.entries()){
+            control.x=moving?pose.edges[i]*w/750:x;
+            control.w=moving?(pose.edges[i+1]-pose.edges[i])*w/750:width;
+          }
+          // Meet the existing baked glow and lettering over the last few frames.
+          const opacity=moving?clamp((pose.weights[selectedIndex]-.9)/.1,0,1):1;
+          if(lastOpacity!==opacity){
+            for(const [material,alpha] of plates)material.opacity=alpha*opacity;
+            lastOpacity=opacity;
+          }
+          wasMoving=moving;return moving&&opacity===0;
+        };
       }
       if(data.native){
         const outline=front.quad(0,navY,1,railH,'#ffe18a',.9);
         outline.visible=false;
-        let outlineWidth=0;
+        let outlineReady=false;
         t.frame((_time,control)=>{
           outline.visible=control?.action.type==='tab';
           if(!outline.visible)return;
-          if(outlineWidth!==control.w){
-            outlineWidth=control.w;
+          if(!outlineReady){
             outline.geometry.dispose();
-            outline.geometry=nineSliceGeometry(outlineWidth,railH,1,1,0,2,false);
+            outline.geometry=nineSliceGeometry(control.w,railH,1,1,0,2,false);
+            outlineReady=true;
           }
-          outline.position.x=control.x+outlineWidth/2;outline.scale.x=outlineWidth;
+          outline.position.x=control.x+control.w/2;outline.scale.x=control.w;
         });
       }
     }};

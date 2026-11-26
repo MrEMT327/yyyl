@@ -74,6 +74,7 @@ function fleetHero(data,d,a,t,w,h,v){
     payload={kind:d.group,operation:op,id:select?selected.access.selectionId:selected.id,revision:d.collection.revision,shortage:costs.some(c=>c.available<c.count)};
     const disabled=select?!selected.access.available||selected.access.using:row.maxed||d.s.rewardPending||d.s.rewardBusy;
     if(!costs.length){psdAction(a,t,opBox,{id:op,label:title,cmd:'nativeOperation',data:payload,disabled,gold:plane&&!select});return;}
+    const first=t.buttonFace&&a.group.children.length;
     const skin=slice(a,t,plane?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',opBox,10);
     if(disabled)skin.material.color.set(0x87939e);
     if(costs.length===1){
@@ -88,6 +89,7 @@ function fleetHero(data,d,a,t,w,h,v){
       fleetCostIcon(a,t,c.id,box(iconX,cy-iconSize/2,iconSize,iconSize));
       amount.position.x=iconX+iconSize+gap+amount.scale.x/2;
       area(t,op,title,opBox,'nativeOperation',payload,null,disabled);
+      if(!disabled)t.buttonFace?.(op,opBox,a,first);
       return;
     }
     words(a,title,opBox.x+bwBtn/2,opBox.y+bh*.30,clamp(w*.038,13,19),{family:titleFont});area(t,op,title,opBox,'nativeOperation',payload,null,disabled);
@@ -96,7 +98,9 @@ function fleetHero(data,d,a,t,w,h,v){
       const value=words(a,c.available+'/'+c.count,ix+isz/2,cy,clamp(.029*w,10,14),{weight:700,maxWidth:budget-isz,color:c.available<c.count?'#ffafa2':'#f2f8fb'});
       const b=box(value.position.x-value.scale.x/2-isz,cy-isz/2,isz,isz);
       if(fleetCostIcon(a,t,c.id,b))area(t,'cost-'+c.id,c.name,b,'inspect',{itemId:c.id});
-    });});
+    });
+    if(!disabled)t.buttonFace?.(op,opBox,a,first);
+  });
 }
 export function catalogMenu(data,w,h,t){
   const d=data.catalogView,v=catalogBounds(w,h,data.safeBottom,data.native),kind=data.tab,a=t.layer('catalog-room').art,tech=d?.ui.skillTab;
@@ -109,6 +113,10 @@ export function catalogMenu(data,w,h,t){
   const edge=t.layer('catalog-section').art;pic(edge,t,'/art/psd-equipment-v1/hangar-divider.png',box(0,v.divider-.08*w,w,.08*w));
   pic(edge,t,atlas[kind+'-'+(tech?'skill':'list')+'-heading'],box(0,v.divider,w,v.head));
   if(!tech)catalogGrid(d,t,w,v,data.windowedCatalog);else if(kind==='weapon')weaponSkills(d,t,w,v);else fleetSkills(d,t,w,v);
-  const foot=t.layer('catalog-navigation').art;
-  bottomNav(foot,t,d,w,v.footer,data.progressive);
+  const foot=t.layer('catalog-navigation');
+  if(data.navigation)foot.drawInstead=renderer=>{
+    const {pose,homeArtwork}=data.navigation;
+    if(pose.dockMoving&&pose.dock>0)homeArtwork?.dock(renderer,pose);
+  };
+  bottomNav(foot.art,t,d,w,v.footer,data.progressive);
 }

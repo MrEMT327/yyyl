@@ -1,5 +1,5 @@
 import { resolveTexture, sampleSceneForRender, resource } from '../../../replica-battle/kernel/pathogenic/source-scene-sampler.mjs';
-import { trimEmitterHistory } from '../../../replica-battle/kernel/combat-readability.mjs';
+import { COMBAT_LAYERS, trimEmitterHistory } from '../../../replica-battle/kernel/combat-readability.mjs';
 import { spriteGeometry, lineGeometry } from '../../../replica-battle/kernel/pathogenic/pathogenic-geometry.mjs';
 import { ParticlePlayer } from '../../../replica-battle/kernel/pathogenic/pathogenic-particles.mjs';
 import { particleTrailGeometry } from '../../../replica-battle/kernel/pathogenic/pathogenic-particle-trails.mjs';
@@ -58,6 +58,8 @@ export class CombatEffectsView extends BattleEffectsView {
                 throw new SourceCoverageError(geometry.unsupported.map((code) => ({ code, scene: path, node: line.nodePath })));
             this.mesh(`${id}:${line.nodePath}`, line, geometry, this.clock, true, ctx.projectilePalette, ctx);
         }
+        const denseDecoration = this.host.stage.sustainedLoad && ctx.presentationDepth !== COMBAT_LAYERS.warning &&
+            (result.sprites.length || result.lines.length || ctx.presentationDepth === COMBAT_LAYERS.impact);
         let player = this.players.get(id);
         if (result.particles.length) {
             if (!player) {
@@ -84,8 +86,10 @@ export class CombatEffectsView extends BattleEffectsView {
                 stored.revision++;
             this.histories.set(key, stored);
             this.liveHistories.add(key);
+            // Keep particle-only threats and warnings at their authored density.
+            const particleLimit = denseDecoration ? (node.properties.trail_enabled ? 8 : 16) : undefined;
             const particles = player.sampleReadOnly(this.graph, worldNode, ctx.time, ctx.seed ?? 1, { history, historyRevision: stored.revision,
-                stopAge: ctx.stopAge, emitting: ctx.emit ?? node.properties.emitting });
+                stopAge: ctx.stopAge, emitting: ctx.emit ?? node.properties.emitting, particleLimit });
             const ribbons = particleTrailGeometry(this.graph, worldNode, particles.trails, worldNode.matrix, { strict: true });
             if (ribbons.unsupported.length)
                 throw new SourceCoverageError(ribbons.unsupported);

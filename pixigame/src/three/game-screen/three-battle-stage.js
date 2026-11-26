@@ -1,5 +1,6 @@
 import * as T from 'three';
 import {createBattleGlow} from './three-battle-glow.js';
+import {createBattleLabelBatch,minLabelsToBatch} from './three-battle-label-batch.js';
 import {createBattleColorTargets} from './battle-color-targets.js';
 import {flightLights} from './three-flight-lights.js';
 import {authoredBattleFrame,battleWidth as width,battleHeight as height} from './battle-frame-layout.js';
@@ -12,7 +13,17 @@ const vertex = `precision highp float;
   uniform vec2 size, pivot;
   uniform float invert;
   out vec2 coords;
+  #ifdef GLYPH_BATCH
+    in vec4 glyphColor;
+    in float glyphAtlas;
+    flat out vec4 labelColor;
+    flat out float labelAtlas;
+  #endif
   void main(){
+  #ifdef GLYPH_BATCH
+    labelColor=glyphColor;
+    labelAtlas=glyphAtlas;
+  #endif
   #ifdef GLYPH_RUN
     coords=uv;
     gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);
@@ -29,7 +40,24 @@ const fragment = `precision highp float;
   uniform float opacity,fill,premult;
   in vec2 coords;
   out vec4 color;
-  #ifdef ENEMY_MINIFICATION
+  #ifdef GLYPH_BATCH
+    uniform sampler2D otherArt;
+    uniform float otherPremult;
+    flat in vec4 labelColor;
+    flat in float labelAtlas;
+
+    vec4 sampleArt(){
+      vec2 dx=dFdx(coords),dy=dFdy(coords);
+      if(labelAtlas<.5){
+        vec4 tex=textureGrad(art,coords,dx,dy);
+        tex.rgb*=mix(tex.a,1.,premult);
+        return tex;
+      }
+      vec4 tex=textureGrad(otherArt,coords,dx,dy);
+      tex.rgb*=mix(tex.a,1.,otherPremult);
+      return tex;
+    }
+  #elif defined(ENEMY_MINIFICATION)
     uniform vec4 region;
 
     vec4 enemyTap(vec2 uv,vec2 lo,vec2 hi){
@@ -51,6 +79,14 @@ const fragment = `precision highp float;
       }
       return enemyTap(coords,lo,hi);
     }
+  #elif defined(TERRAIN_MAGNIFICATION)
+    vec4 sampleArt(){
+      vec2 pixels=vec2(textureSize(art,0));
+      vec2 phase=fract(coords*pixels-.5);
+      // Give the closer texel more weight while keeping one bilinear sample.
+      vec2 offset=phase*(1.-phase)*(phase-.5);
+      return texture(art,coords+offset/pixels);
+    }
   #else
     vec4 sampleArt(){
       #ifdef HULL_MIP_LOD_BIAS
@@ -64,9 +100,13 @@ const fragment = `precision highp float;
   #endif
   void main(){
     vec4 tex=sampleArt();
+  #ifdef GLYPH_BATCH
+    color=vec4(tex.rgb*labelColor.rgb,tex.a)*labelColor.a;
+  #else
     vec3 rgb=mix(tex.rgb*tint,tex.a*tint,fill);
     rgb=mix(rgb,tex.a*statusTint.rgb,statusTint.a);
     color=vec4(rgb,tex.a)*opacity;
+  #endif
   }`;
 
 export function createBattleStage(renderer,{smoothEnemyMinification=false,compactGlow=false,outputScale=1,terrainScale=1,renderBudget}={}) {
@@ -76,8 +116,9 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,compac
   white.needsUpdate=true;
   const whiteBinding={texture:white,width:1,height:1};
   const terrainPixels=n=>Math.max(1,Math.round(n*terrainScale));
-  const colorTargets=createBattleColorTargets(renderer,terrainPixels(width),terrainPixels(height),256,{multisampleGround:terrainScale>=1});
+  const colorTargets=createBattleColorTargets(renderer,terrainPixels(width),terrainPixels(height),256,{multisampleGround:terrainScale>=1,compactHull:compactGlow});
   const spareLabels=[];
+  let labelCount=0;
   function makeSprite(binding,layer,parent=scene,reuse) {
     const material=reuse?.material??new T.RawShaderMaterial({
       vertexShader:vertex,fragmentShader:fragment,glslVersion:T.GLSL3,transparent:true,depthWrite:false,depthTest:false,
@@ -100,7 +141,7 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,compac
   function makeLabelSprite(binding,layer,parent){
     const reuse=spareLabels.pop(),mesh=makeSprite(binding,layer,parent,reuse);
     if(!reuse){mesh.geometry=new T.BufferGeometry();mesh.material.defines.GLYPH_RUN=1;}
-    mesh.userData.ownsGeometry=true;
+    mesh.userData.ownsGeometry=true;labelCount++;
     return mesh;
   }
   function tint(mesh,color,fill=false) {
@@ -111,8 +152,9 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,compac
     if(!mesh)return;
     mesh.removeFromParent();mesh.traverse(n=>{
       if(n.material){
-        spriteMeshes.delete(n);
-        if(n.material.defines?.GLYPH_RUN&&spareLabels.length<24&&(n.geometry.getAttribute('position')?.count??0)<=128){
+        const label=n.material.defines?.GLYPH_RUN&&!n.material.defines.GLYPH_BATCH;
+        if(spriteMeshes.delete(n)&&label)labelCount--;
+        if(label&&spareLabels.length<24&&(n.geometry.getAttribute('position')?.count??0)<=128){
           n.material.uniforms.art.value=null;
           spareLabels.push({geometry:n.geometry,material:n.material});
           return;
@@ -124,11 +166,14 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,compac
   }
   const ground=makeSprite({texture:colorTargets.ground,width,height,framebuffer:true,premultiplied:true},-1000);
   ground.material.uniforms.pivot.value.set(0,0);ground.visible=false;
+  if(outputScale>terrainScale)ground.material.defines.TERRAIN_MAGNIFICATION=1;
   const hull=makeSprite({texture:colorTargets.hull,width:256,height:256,framebuffer:true,premultiplied:true},25);
   // Preserve panel detail while keeping trilinear filtering for the moving hull.
   hull.material.defines.HULL_MIP_LOD_BIAS=-.5;
   hull.visible=false;
+  const labelBatch=renderBudget&&createBattleLabelBatch(scene,makeSprite(whiteBinding,0));
   const stage={scene,camera,renderer,glow,white: whiteBinding,makeSprite,makeLabelSprite,remove,tint,ground,hull,width,height,viewport:authoredBattleFrame,
+    get sustainedLoad(){return renderBudget?.sustainedLoad??false;},
     smoothEnemySprite:smoothEnemyMinification?mesh=>{mesh.material.defines.ENEMY_MINIFICATION=1;}:undefined,
     setViewport(frame){
       const previous=this.viewport;
@@ -161,22 +206,29 @@ export function createBattleStage(renderer,{smoothEnemyMinification=false,compac
       renderer.setScissorTest(false);
       const output=this.outputTarget?.()??null;
       const clear=renderer.autoClear;renderer.autoClear=false;
-      let worldDraw=0,uiDraw=0;
+      const underLoad=renderBudget?.underLoad;
+      // Skip collecting world meshes when too few labels can form a batch.
+      const batch=underLoad&&labelCount>=minLabelsToBatch&&renderer.sortObjects!==false?labelBatch:null;
+      let worldDraw=0,uiDraw=0,labelDrawsSaved=0;
       try{
         let hasForeground=false;
         scene.traverseVisible(node=>{
-          if(node.isMesh)node.layers.set(node.renderOrder>=49.9?2:node.renderOrder>=29?1:0);
+          if(node.isMesh){
+            node.layers.set(node.renderOrder>=49.9?2:node.renderOrder>=29?1:0);
+            batch?.collect(node);
+          }
           if(node.layers.mask&4)hasForeground=true;
         });
         const start=profile?.();
-        glow.paint(scene,camera,output,this.beginOutput,hasForeground,renderBudget?.underLoad);
+        if(batch)labelDrawsSaved=batch.prepare();
+        glow.paint(scene,camera,output,this.beginOutput,hasForeground,underLoad,this.sustainedLoad);
         const overlay=profile?.();
         this.drawBackdrop?.();this.drawBreakthrough?.('rear');this.drawHud?.();
         this.drawBreakthrough?.('front');this.drawMovementGuide?.();this.drawNotice?.();this.drawDeveloperSkills?.();
         if(profile){worldDraw=overlay-start;uiDraw=profile()-overlay;}
-      }finally{renderer.autoClear=clear;if(output)renderer.setRenderTarget(null);}
+      }finally{batch?.restore();renderer.autoClear=clear;if(output)renderer.setRenderTarget(null);}
       this.afterFrame?.();
-      if(profile)return {worldDraw,uiDraw};
+      if(profile)return {worldDraw,uiDraw,labelDrawsSaved};
     },
     dispose(){this.disposeLights();for (const mesh of spriteMeshes){mesh.material.dispose();if(mesh.userData.ownsGeometry)mesh.geometry.dispose();}spriteMeshes.clear();
       for(const {geometry,material} of spareLabels){geometry.dispose();material.dispose();}spareLabels.length=0;

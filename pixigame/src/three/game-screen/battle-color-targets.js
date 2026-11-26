@@ -29,7 +29,7 @@ export function prepareBattleColorMaterial(material){
 function prepareScene(scene){
   scene.traverseVisible(node=>{if(Array.isArray(node.material))node.material.forEach(prepareBattleColorMaterial);else prepareBattleColorMaterial(node.material);});
 }
-export function createBattleColorTargets(renderer,w,h,hullSize,{multisampleGround=true}={}){
+export function createBattleColorTargets(renderer,w,h,hullSize,{multisampleGround=true,compactHull=false}={}){
   const gl=renderer.getContext(),samples=Math.min(renderer.capabilities.maxSamples,gl.getParameter(gl.SAMPLES));
   const make=(w,h,sampleCount,mipmaps=false)=>{const target=new WebGLRenderTarget(w,h,{
     minFilter:mipmaps?LinearMipmapLinearFilter:LinearFilter,magFilter:LinearFilter,
@@ -64,6 +64,17 @@ export function createBattleColorTargets(renderer,w,h,hullSize,{multisampleGroun
     resizeGround(w,h){ground.setSize(w,h);},
     warmGround(scene,warm){prepareScene(scene);return withTarget(ground,warm);},
     drawGround(scene,camera,backdrop){paint(ground,scene,backdrop,1,()=>renderer.render(scene,camera));},
-    drawHull(scene,draw){paint(hull,scene,0,0,draw);},
+    drawHull(scene,draw,fullscreenComposite=false){
+      const composite=compactHull&&fullscreenComposite;
+      if(hull.depthBuffer===composite){
+        hull.dispose();
+        hull.depthBuffer=!composite;
+        hull.samples=composite?0:samples;
+      }
+      // The HDR renderer's final quad overwrites every pixel with no depth
+      // test. Resolve and clear only for models rendered directly to hull.
+      if(composite)withTarget(hull,draw);
+      else paint(hull,scene,0,0,draw);
+    },
     dispose(){ground.dispose();hull.dispose();}};
 }

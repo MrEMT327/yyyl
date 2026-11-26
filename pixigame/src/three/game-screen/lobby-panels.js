@@ -25,11 +25,11 @@ const lobbyPanelTypes=['tasks','carnival','patrol','quickPatrol','playerInfo','r
   'researchSummary','researchCard','researchResult','nativeLab','nativeStats',
   ...(PILOT_AFFECTION_VISIBLE?['pilotAffection','pilotAffectionVideo']:[])];
 
-export function lobbyPanels(device, {openVideo, inspectItems = (container,read)=>createItemInspection(device,container,read)}={}){
+export function lobbyPanels(device, {openVideo, preparePanelArtwork, inspectItems = (container,read)=>createItemInspection(device,container,read)}={}){
   return {
     openBackpack:(host,action)=>openBackpack(device,host,action),
     inspectItems,
-    lobbyPanelKind:(type,snapshot)=>supportsFleetPanel(type)?'fleet':supportsUtilityPanel(type)?'utility':supportsSupplyPanel(type)?'supply':supportsCollectionPanel(type)?'collection':supportsGearPanel(type)?'gear':lobbyPanelTypes.includes(type)||supportsShopPanel(type)||supportsChapterPanel(type,snapshot)?type:null,
+    lobbyPanelKind:(type,snapshot)=>supportsFleetPanel(type)?'fleet':supportsUtilityPanel(type)?'utility':supportsSupplyPanel(type)?'supply':supportsCollectionPanel(type)?'collection':type==='gearDetail'?type:supportsGearPanel(type)?'gear':lobbyPanelTypes.includes(type)||supportsShopPanel(type)||supportsChapterPanel(type,snapshot)?type:null,
     openLobbyPanel(kind,host,send,scrollPositions,sound,options){
       if(kind==='fleet')return openFleetPanel(device,host,send);
       if(kind==='utility')return openUtilityPanel(device,host,send);
@@ -43,8 +43,14 @@ export function lobbyPanels(device, {openVideo, inspectItems = (container,read)=
       if(kind==='pilotAffection')return PILOT_AFFECTION_VISIBLE?openAffection(device,host,send):null;
       if(kind==='pilotAffectionVideo')return PILOT_AFFECTION_VISIBLE?openVideo(host,send):null;
       if(supportsShopPanel(kind))return openShopPanel(device,host,send,kind);
-      if(kind==='tasks')return openTaskPanel(device,host,send,kind,scrollPositions,options);
-      if(kind==='carnival')return openCarnivalPanel(device,host,send,options);
+      if(kind==='tasks'||kind==='carnival'||kind==='gearDetail'){
+        const activate=Boolean(preparePanelArtwork&&!options?.prepareArtwork);
+        const config=activate?{prepareArtwork:preparePanelArtwork,completeEntry:true}:options;
+        const panel=kind==='gearDetail'?openGearPanel(device,host,send,{allowMissingArtwork:true,...config}):
+          kind==='tasks'?openTaskPanel(device,host,send,kind,scrollPositions,config):openCarnivalPanel(device,host,send,config);
+        if(activate)panel.activate();
+        return panel;
+      }
       if(kind==='patrol'||kind==='quickPatrol')return openPatrolPanel(device,host,send,kind,scrollPositions);
       return openChapterPanel(device,host,send,kind);
     },

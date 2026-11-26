@@ -1,4 +1,6 @@
 export const navEdges=[0,139,279.5,467.5,608,750];
+export const navTabs=['shop','assembly','battle','research','supply'];
+export const campaignButtons=['patrol','start','backpack'];
 export const navBodyEnd=139/151,navFillStart=.79;
 export const carnivalEntryBox=[6,338,101,99];
 export const affectionY=carnival=>carnival?445:338;
@@ -41,7 +43,7 @@ export function homeArtOffset(id,layout){
   if(/^(stamina|coins|diamonds)(-|$)/.test(id))return layout.wallet;
   return layout.top;
 }
-export function navBounds(index,layout){
-  const x=navEdges[index];
-  return [x,layout.nav,navEdges[index+1]-x,(layout.native?layout.floor:1624)-layout.nav];
+export function navBounds(index,layout,edges=navEdges){
+  const x=edges[index];
+  return [x,layout.nav,edges[index+1]-x,(layout.native?layout.floor:1624)-layout.nav];
 }

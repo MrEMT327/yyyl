@@ -20,6 +20,7 @@ export function paintBoxActions(a,t,w,x,y,bw,pool,actions){
   const gap=w*.04,h=Math.max(48,.12*w),width=(bw-(actions.length-1)*gap)/actions.length;
   actions.forEach(({title,count,price,icon,disabled},i)=>{
     const b=box(x+i*(width+gap),y,width,h),cx=b.x+width/2,sz=w*.044,small=w*.033,ih=w*.034;
+    const first=a.group.children.length,id=count?'again-'+count:'confirm';
     const plate=slice(a,t,count===10?'/art/psd-equipment-v1/button-gold.png':'/art/psd-buttons-v1/button-blue.png',b,w*.025);
     if(disabled)plate.material.color.setRGB(.38,.38,.38);
     const color=disabled?'#bac8d2':'#edf4f7',line=price==null?0:1.2*small+w*.005,mid=y+h/2;
@@ -29,6 +30,7 @@ export function paintBoxActions(a,t,w,x,y,bw,pool,actions){
       const label=words(a,price,cx+offset,py,small,{family:titleFont,color,maxWidth:width-2*offset-8});
       if(icon)pic(a,t,icon,box(label.position.x-label.scale.x/2+2-ih-.01*w,py-ih/2,ih,ih),true);
     }
-    area(t,count?'again-'+count:'confirm',title,b,count?'processBoxAgain':'close',count?{pool,count}:{},'base',disabled);
+    if(!disabled)t.buttonFace?.(id,b,a,first);
+    area(t,id,title,b,count?'processBoxAgain':'close',count?{pool,count}:{},'base',disabled);
   });
 }

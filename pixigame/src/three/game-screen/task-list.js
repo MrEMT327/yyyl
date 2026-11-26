@@ -31,10 +31,12 @@ export function taskPlate(a,b,ready,claimed){
   a.quad(b.x+1,b.y+1,b.w-2,b.h-2,claimed?'#b6cad8':ready?'#e0f0f6':'#cbdde9');
 }
 export function taskButton(a,t,w,b,row){
+  const first=a.group.children.length;
   const file=row.label==='前往'?'/art/psd-equipment-v1/button-gold.png':row.label==='领取'&&row.payload?.operation!=='weeklyTask'?'/art/project-action-buttons-v1/task-claim.png':'/art/psd-buttons-v1/button-blue.png';
   const m=slice(a,t,file,box(b.x,b.y+3,b.w,b.h-6),10);
   if(row.disabled)m.material.onBeforeCompile=disabledSkin;
   words(a,row.label,b.x+b.w/2,b.y+b.h/2,clamp(w*.036,13,16),{family:titleFont,weight:700,color:row.disabled?'#bac8d2':'#edf4f7',shadow:{color:'#233744',y:1,blur:2}});
+  if(!row.disabled)t.buttonFace?.('action-'+row.id,b,a,first);
 }
 export function taskProgress(a,b,w,row){
   a.quad(b.x,b.y,b.w,b.h,'#6e8ca4');a.quad(b.x+1,b.y+1,b.w-2,b.h-2,'#9eb6c9');

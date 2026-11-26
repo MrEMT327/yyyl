@@ -74,8 +74,9 @@ function reflections(a,b,u){
     float alpha=min(1.,edge*(.35+.20*cos((p.x+p.y)*3.14+seconds*.8))+band+gloss+foil+sparkle);
     diffuseColor=vec4(sRGBTransferEOTF(vec4(mix(light,vec3(1.),sparkle),1.)).rgb,alpha*opacity);`);
 }
-export function recruitCard(a,t,b,entry,{small,index,zone,data}){
+export function recruitCard(a,t,b,entry,{small,index,zone,data,spotlight=false}){
   const {pilot,item,grade,rarity,note,raw}=entry,begin=a.group.children.length,id='draw-card-'+index;
+  const delay=spotlight?0:.065*Math.min(9,index);
   if(!pilot){
     slice(a,t,'/art/psd-choice-v1/'+(item.qualityRank===5?'card-red.png':'card-blue.png'),b,9,24);
     const side=.82*b.w,ix=b.x+.09*b.w,iy=b.y+.17*b.h;
@@ -102,18 +103,28 @@ export function recruitCard(a,t,b,entry,{small,index,zone,data}){
     t.control(id,[pilot.name,rarity,raw.isNew?'新获得':note].filter(Boolean).join('，'),b,{type:'holo'},{zone,trackPointer:true});
     const meshes=a.group.children.slice(begin);meshes.forEach(m=>tiltMaterial(m,rot,center));
     if(!data.reduced){
-      let handX=0,handY=0,active=0,release=0;
+      const sweepDuration=small ? .52 : 1.45,releaseDuration=small ? .2 : .4;
+      let handX=0,handY=0,active=0,release=-1,held=false,settling=false;
       t.pressEffect((press,now)=>{const captured=press?.id===id;
-        if(captured){active=1;release=now;handX=press.x-.5;handY=press.y-.5;}
-        const elapsed=now-data.entered-.065*index-.4,sway=Math.cos(Math.max(0,elapsed)/5.8*Math.PI*2);
-        if(!captured)active=Math.max(0,1-(now-release)/.4);
-        u.seconds.value=Math.max(0,now-data.entered);input.value.set(handX,handY,active);
+        if(captured){active=1;handX=press.x-.5;handY=press.y-.5;}
+        else{
+          if(held){
+            release=now;
+            if(!settling){settling=true;t.animate(time=>{settling=time-release<releaseDuration;return settling;});}
+          }
+          active=Math.max(0,1-(now-release)/releaseDuration);
+        }
+        held=captured;
+        const seconds=data.flow.instant?sweepDuration:clamp(now-data.entered-delay,0,sweepDuration);
+        const sway=small?0:1-seconds/sweepDuration;
+        u.seconds.value=seconds;input.value.set(handX,handY,active);
         rot.value.set(((-1.5*sway)*(1-active)-handY*17*active)*Math.PI/180,((-4*sway)*(1-active)+handX*21*active)*Math.PI/180,0);
         center.value.y=b.y+b.h/2-(zone?t.offset(zone):0);
       });
-      t.animate(()=>true);
+      if(!small&&!data.flow.instant)t.animate(now=>now<data.entered+delay+sweepDuration);
     }
   }
-  animateMeshes(t,a.group.children.slice(begin),b.x+b.w/2,b.y+b.h/2,{entered:data.entered,reduced:data.reduced,delay:.065*Math.min(9,index),duration:.42,
-    curve:[0,0,.58,1],frames:[{at:0,y:12,scale:.96,opacity:0},{at:1}]});
+  const accent=index===data.accent&&!data.flow.review;
+  animateMeshes(t,a.group.children.slice(begin),b.x+b.w/2,b.y+b.h/2,{entered:data.entered,reduced:data.reduced||data.flow.instant,delay,duration:accent ? .52 : .42,
+    curve:[0,0,.58,1],frames:accent?[{at:0,y:12,scale:.88,opacity:0},{at:.57,scale:1.06},{at:1}]:[{at:0,y:12,scale:.96,opacity:0},{at:1}]});
 }

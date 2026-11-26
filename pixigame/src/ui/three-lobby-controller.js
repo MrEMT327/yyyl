@@ -24,6 +24,7 @@ import { performanceMonitor } from '../performance-monitor.js';
 import {cloudNativeRecruitSnapshot} from '../replica/recruit-snapshot.js';
 
 import {WORKSHOP_FILTERS} from './workshop-filters.js';
+import {boxOpeningRank} from './shop-box-result-cards.js';
 import {recruitItems,recruitFeatured} from './recruit-selection.js';
 
 import {isRecruitResult} from './reward-modal-model.js';
@@ -239,7 +240,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     const gear=result.gearResult;
     const resultModal={type:'shopBoxResult',id:`box-${++processSequence}`,pool,count:Number(count)||gear.receipt?.count||1,drawn:gear.drawn.map(row=>row.uid),receipt:gear.receipt,
       pilots:gear.pilotRewards||[],weapons:gear.weaponRewards||[],aircraft:gear.aircraftRewards||[],...(returnTo?{returnTo}:{}),feedbackRecords:result.uiFeedbackRecords||[]};
-    modal={type:'boxOpening',id:resultModal.id,pool,resultModal,...(returnTo?{returnTo}:{})};renderModal();
+    modal={type:'boxOpening',id:resultModal.id,pool,gearRank:boxOpeningRank(gear),resultModal,...(returnTo?{returnTo}:{})};renderModal();
   }
   function finishBoxPresentation(){
     if(modal?.type!=='boxOpening')return;
@@ -426,7 +427,8 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       if(presenter?.host!==modalHost||presenter.kind!==panelKind){
         const scroll=panelKind==='tasks'?dailyScrollPositions:patrolScrollPositions;
         if(overlayDialog)releaseOverlayDialog();else releaseNativeDialog();
-        presenter=screen.openLobbyPanel(panelKind,modalHost,runLobbyCommand,scroll,k=>bridge.playUiFeedback?.(k));presenter.kind=panelKind;
+        const entry=['tasks','carnival','gearDetail'].includes(panelKind)?{snapshot,modal,signature}:undefined;
+        presenter=screen.openLobbyPanel(panelKind,modalHost,runLobbyCommand,scroll,k=>bridge.playUiFeedback?.(k),entry);presenter.kind=panelKind;
         if(overlayDialog)nativeOverlayDialog=presenter;else nativeDialog=presenter;
       }
       const panelModal=modal.type==='workshopFilter'?{...modal,filter:workshopFilter,mode:workshopKind==='gear'?'gear':workshopMode}:
@@ -502,7 +504,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
     }
     pendingModalBackgroundRefresh=false;signature=nextSignature;snapshot=next;
     const nativeHome=usesHomeCanvas(),nativeMenu=usesMenuCanvas();
-    if(!nativeMenu&&menuView){menuView.close();menuView=null;}
+    if(!nativeMenu&&menuView){menuView.close({returningHome:nativeHome});menuView=null;}
     if(!nativeHome&&homeView){homeView.close();homeView=null;}
     if(tab==='research'&&researchSection==='lab'&&researchUnlockMessage(snapshot.replicaCampaign))researchSection='talent';
     const page=presentation.showPage({tab,subpage,nativeHome,nativeMenu,workshopKind,polished:polishedTab()});
@@ -797,7 +799,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       const open=(type,extra={})=>{
         modal={type,id:itemId,revision:snapshot.equipment.revision,...(current?.type?.startsWith('gear')||current?.type==='shopBoxResult'?{returnTo:{...current,childOpener:captureFocus(modalHost,target)}}:{}),...extra};renderModal();
       };
-      if(action==='gearDetail'){open('gearDetail',{detailOrigin:data.gearOrigin==='slot'?'slot':'warehouse'});return;}
+      if(action==='gearDetail'){open('gearDetail',{detailOrigin:data.gearOrigin==='slot'?'slot':'warehouse'});onboarding.tick(0);return;}
       if(action==='gearReplace'){if(item){gearFilter=String(item.type);pendingEquipmentScroll=0;switchTab('assembly');}return;}
       if(action==='gearMaterialInfo'){open('gearMaterialInfo',{id:undefined,part:Number(data.part),quality:Number(data.quality)});return;}
       if(action==='gearAttributes'||action==='gearSources'||action==='gearMergeList'){open(action,{id:undefined});return;}
@@ -826,7 +828,13 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
       const result=await act(operation,{id:itemId,expectedRevision:current?.revision??snapshot.equipment.revision,
         materialIds:current?.materialIds||[],tokens:current?.tokens||0,count:Number(data.count)||1});
       if(!result?.ok){if(modal){modal.error=result?.message;renderModal();}return;}
-      if(operation==='gearEquip'||operation==='gearUnequip'){if(!returnToParentModal()){modal=null;render(true);}return;}
+      if(operation==='gearEquip'||operation==='gearUnequip'){
+        if(!returnToParentModal()){
+          modal=null;render(true);
+          if(item&&tab==='assembly'&&!subpage)actionFeedback.gearSlot?.(item.type);
+        }
+        return;
+      }
       if(operation==='gearBatch'&&subpage==='workshop'&&workshopKind==='gear'){gearWorkshop=emptyGearMerge(snapshot.equipment.revision);modal=null;if(!showProcessRecords(result.uiFeedbackRecords))render(true);return;}
       if(['gearMerge','gearBatch'].includes(operation)&&result.uiFeedbackRecords?.length){showProcessRecords(result.uiFeedbackRecords,current?.returnTo);return;}
       if(operation==='gearSupply')modal={...current,type:'gearSources',drawn:result.gearResult.drawn.map(item=>item.uid),revision:snapshot.equipment.revision};
@@ -1235,7 +1243,7 @@ export function createThreeLobbyController({bridge,system,presentation,deferPort
           if(!afterSettlement)return {data,key:signature};
           const next=read();
           return {data:{...data,snapshot:next},key:patrolRenderSignature(next)};
-        },sendMenuAction,menuInteractive,selectShopSection,{firstSortieRequired:snapshot.firstSortieRequired});
+        },sendMenuAction,menuInteractive,selectShopSection,{firstSortieRequired:snapshot.firstSortieRequired,sendPanel:runLobbyCommand});
       }
     },
     prepareCatalogs(){

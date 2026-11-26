@@ -47,12 +47,12 @@ export async function buildThreeWechat({output}={}){
   const extra=cdn.three;
   const assetTransfers={...cdn.transfers,...extra?.transfers};
   const uploads=extra?.uploads??[];
-  const listed=new Set([...cdn.entries,...(extra?.entries??[]),...uploads].map(row=>row.path));
+  const compat=await loadThreeCompatMedia(inputs,h5);
+  const listed=new Set([...cdn.entries,...(extra?.entries??[]),...uploads,...Object.values(compat.musicDownloads)].map(row=>row.path));
   const cdnFiles=[...listed];
   const cacheVersion=sha(JSON.stringify([cdn.cacheVersion,extra]));
   const networkAssets={cdnBase:cdnBase.href,assetTransfers,cdnFiles,cacheVersion};
   const textures=await loadThreeTextureAssets(inputs,join(h5,'public'));
-  const compat=await loadThreeCompatMedia(inputs,h5);
   const portraits=await loadPortraitMedia(inputs,join(h5,'public'));
   const battleData=await Promise.all(bundledBattleData.map(async path=>{
     const input=await readFile(join(h5,'public',path)),transfer=assetTransfers[path];
@@ -121,7 +121,7 @@ export async function buildThreeWechat({output}={}){
   const musicFiles=Object.fromEntries(Object.entries(compat.music).map(([key,filename])=>[key,texturePaths.get(filename)]));
   const fallbackFiles=Object.fromEntries(Object.entries(textures.fallbackAliases).map(([path,filename])=>
     [assetTransfers[path]?.path??path,texturePaths.get(filename)]));
-  const assets={...networkAssets,localFiles,fallbackFiles,musicFiles};
+  const assets={...networkAssets,localFiles,fallbackFiles,musicFiles,musicGains:compat.musicGains,musicDownloads:compat.musicDownloads};
   const sourceDigest=createHash('sha256');
   for(const [name,source] of [...units].sort(([a],[b])=>a.localeCompare(b)))sourceDigest.update(name).update(source);
   for(const {filename,source} of [...packagedMedia,...battleData])sourceDigest.update(filename).update(source);
@@ -141,10 +141,10 @@ export async function buildThreeWechat({output}={}){
       deviceOrientation:'portrait',showStatusBar:false,iOSHighPerformance:true,
       subpackages:packages.map(({name})=>({name,root:name+'/'})),
     };
-    // Pack the complete CDN inventory and transfer map to leave room for local art.
+    // Compress the lookup tables once at build time. Media files keep their original bytes.
     const gzipJSON=value=>gzipSync(JSON.stringify(value),{level:9,memLevel:5}).toString('base64');
-    const launchAssets={...assets,cdnFiles:undefined,assetTransfers:undefined,
-      cdnFilesGzip:gzipJSON(cdnFiles),assetTransfersGzip:gzipJSON(assetTransfers),buildId};
+    const launchAssets={...assets,cdnFiles:undefined,assetTransfers:undefined,localFiles:undefined,
+      cdnFilesGzip:gzipJSON(cdnFiles),assetTransfersGzip:gzipJSON(assetTransfers),localFilesGzip:gzipJSON(localFiles),buildId};
     const launcher=[
       'const load={\n'+map+'\n};',
       'const modules=new Map();',

@@ -26,7 +26,9 @@ function label(art,text,x,y,size,color,maxWidth,align='left',weight=400,family=b
   return art.text(text,x,y,{size,color,maxWidth,align,weight,family});
 }
 function closeButton(art,tools,scope,r,text){
+  const first=art.group.children.length;
   tools.image(art,closeArt,r.x,r.y,r.w,r.h);
+  tools.buttonFace?.('close',r,art,first,scope);
   tools.control('close',text,r,{type:'close'},{scope});
 }
 function button(art,tools,r,command){
@@ -36,7 +38,7 @@ function button(art,tools,r,command){
   label(art,command.label,r.x+r.w/2,r.y+r.h/2,13,'#fff',r.w-10,'center',700);
 }
 function backdrop(art,tools,panel,scope,alpha){
-  tools.backdrop(art,alpha);
+  tools.backdrop(art,alpha,undefined,{style:scope==='base'?'large':'small',scope,cx:panel.x+panel.w/2,cy:panel.y+panel.h/2});
   tools.control('outside','返回',tools.frameRect,{type:'close'},{scope});
   tools.control('paper','',panel,{type:'none'},{scope});
 }

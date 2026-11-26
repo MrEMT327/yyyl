@@ -1,12 +1,12 @@
 import { GameAudio } from '../../../../../../../pixigame/replica-battle/kernel/audio';
 import { wrapNativeAudioContext } from '../full/web-audio.js';
+import { resolveBattleMusic } from './battle-music-cache.js';
 
 export function wechatMusicSource(path,services,baseURL){
-  const match=String(path).match(/(?:^|\/)([a-z]+_(?:fight|boss))(?:-[\w-]+)?\.ogg(?:[?#]|$)/i);
-  return match&&services.musicFiles?.[match[1]]||services.resolve(path,baseURL);
+  return resolveBattleMusic(path,services,baseURL).source;
 }
 
-export function wechatMusicTrack(api,source,channel='battle'){
+export function wechatMusicTrack(api,source,channel='battle',gain=1){
   const track=api.createInnerAudioContext();
   let wanted=false,disposed=false,reported=false,failed=false,requestedAt=-Infinity;
   const asset=source.split(/[?#]/,1)[0].split('/').at(-1);
@@ -29,7 +29,7 @@ export function wechatMusicTrack(api,source,channel='battle'){
   return {
     get paused(){return !wanted||track.paused;},
     set loop(value){if(!disposed)track.loop=Boolean(value);},
-    set volume(value){if(!disposed)track.volume=value;},
+    set volume(value){if(!disposed)track.volume=Math.min(1,value*gain);},
     set currentTime(value){
       if(!disposed)try{
         if(!Number.isFinite(track.currentTime)||Math.abs(track.currentTime-value)>.02)track.seek(value);
@@ -60,7 +60,11 @@ export function createWechatBattleAudio(api,platform,services,manifest,battleURL
     fetchResource:(path,options)=>services.fetchResource(new URL(path,battleURL).href,options),
     makeAbort:services.makeAbort,
     createContext:()=>wrapNativeAudioContext(api.createWebAudioContext(),{openingPcm:true,decodeTimeout:6000}),
-    createTrack:path=>wechatMusicTrack(api,wechatMusicSource(path,services,battleURL)),
+    createTrack:path=>{
+      const {source,gain}=resolveBattleMusic(path,services,battleURL);
+      platform.debugLog?.info('战斗音乐选曲',{track:path.split('/').at(-1),file:source.split('/').at(-1)});
+      return wechatMusicTrack(api,source,'battle',gain);
+    },
     audioDiagnostic(state,detail){
       const message=detail?.errMsg||detail?.message||detail;
       const key=state+':'+String(message??'');

@@ -33,8 +33,10 @@ function room(a,t,variant){
 }
 function action(a,t,b,title,id,cmd,opts={}){
   const {original=false,zone=null,data={}}=opts;
+  const first=a.group.children.length;
   slice(a,t,original?'/art/psd-choice-v1/reroll.png':'/art/psd-buttons-v1/button-blue.png',b,10,original?17:18);
   words(a,title,b.x+b.w/2,b.y+b.h/2,original?18:14,{family:titleFont,color:'#f4fbff',shadow:{color:'#153650',y:2,blur:0}});
+  t.buttonFace?.(id,b,a,first);
   area(t,id,title,b,cmd,data,zone);
 }
 function staged(data,w,h,t){
@@ -53,7 +55,7 @@ function staged(data,w,h,t){
     }
   }else if(row){
     const cw=Math.min(w*.55,285,(h-220)/1.8),ch=cw*1.80,b=box((w-cw)/2,(h-ch)/2,cw,ch);
-    recruitCard(a,t,b,row,{small:false,index:i,zone:null,data:{...data,reduced:flow.instant||data.reduced}});
+    recruitCard(a,t,b,row,{small:false,index:i,zone:null,data,spotlight:true});
     if(plan.entries[i].isNew)words(a,'首次获得',w/2,b.y-22,16,{family:titleFont,color:'#ffe59d'});
     const end=flow.cursor+1>=order.length? '查看结果':'继续',bw=Math.min(w-60,340);
     action(a,t,box((w-bw)/2,h-data.safeBottom-76,bw,52),end,'next','next');
@@ -101,7 +103,9 @@ export function openRecruitResults(screen,host,send,sound){
     if(c.type==='close'&&flow.phase==='summary'){send('close',{},host);return;}
     if(c.type==='review-card'){flow={phase:'spotlight',cursor:c.data.index,review:true};transition();return;}
     const cmd=c.type==='close'?'skip':c.type;
-    flow=advanceDrawPresentation(flow,cmd,latest.plan);transition();
+    flow=advanceDrawPresentation(flow,cmd,latest.plan);
+    if(cmd==='skip')flow.instant=true;
+    transition();
   },{overlay:true});
   const cues=new Set();
   function transition(){
@@ -120,7 +124,14 @@ export function openRecruitResults(screen,host,send,sound){
     if(receipt===modal)return;
     receipt=modal;cues.clear();
     const plan=drawPresentationPlan(modal,snapshot);
-    latest={snapshot,modal,plan,entries:recruitResultsModel(snapshot,modal)};
+    const entries=recruitResultsModel(snapshot,modal);
+    let accent=-1,best=2;
+    entries.forEach((row,i)=>{
+      const rank=Math.max(plan.entries[i].rank,row.rarity==='SSR'?3:row.item?.qualityRank||0);
+      const priority=(row.raw.isNew?8:0)+rank;
+      if(priority>best){best=priority;accent=i;}
+    });
+    latest={snapshot,modal,plan,entries,accent};
     inspect=null;flow=initialDrawPresentation(plan,reduced);transition();
   }};
 }

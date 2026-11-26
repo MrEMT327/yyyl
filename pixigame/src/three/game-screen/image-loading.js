@@ -92,6 +92,7 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
     });
     pending.set(key,job);queue.push(job);schedule(priority);return job.promise;
   }
+  loadArtwork.decodedCacheStats=()=>({images:decoded?.size??0, pixels:cachedPixels});
   loadArtwork.clearDecoded=()=>{
     decoded?.clear();cachedPixels=0;
     for(const job of pending.values())job.reuse=false;
@@ -99,7 +100,7 @@ export function createArtworkLoader({address,openImage,onFailure,cachePixels=0})
   return loadArtwork;
 }
 
-const browserArtwork=createArtworkLoader({address:url=>new URL(url,document.baseURI).href,openImage:readImage});
+const browserArtwork=createArtworkLoader({address:url=>new URL(url,document.baseURI).href,openImage:readImage,cachePixels:6400000});
 let runtimeArtwork=browserArtwork;
 export function useArtworkLoader(loader){
   const original=runtimeArtwork;
@@ -110,6 +111,31 @@ export function loadArtwork(url,priority,reuseDecoded){return runtimeArtwork(url
 
 export function artworkSize(image){
   return [image?.naturalWidth||image?.width||0,image?.naturalHeight||image?.height||0];
+}
+
+export function uploadArtwork(r,texture,maxPixels){
+  const image=texture.image,limit=r.capabilities.maxTextureSize;
+  const w=image?.naturalWidth||image?.width,h=image?.naturalHeight||image?.height;
+  if(!w||!h||w>limit||h>limit||w*h>maxPixels||r.getContext().isContextLost())return false;
+  try{r.initTexture(texture);return true;}catch{return false;}
+}
+
+export function createMenuArtworkWarmup(platform){
+  const uploaded=new WeakSet();
+  return function prepare(textures,maxUploads=4,finishOnSmallUpload=false){
+    let count=0,pixels=0;
+    for(const texture of textures){
+      const image=texture.image;
+      if(!image||uploaded.has(texture))continue;
+      const area=(image.naturalWidth||image.width)*(image.naturalHeight||image.height);
+      if(count&&(count>=maxUploads||pixels+area>400000))return false;
+      uploaded.add(texture);
+      if(uploadArtwork(platform.renderer,texture,1600000)){count++;pixels+=area;}
+    }
+    // A small final batch can finish the visible page now. Keep larger
+    // uploads and offscreen shader warmup on separate frames.
+    return count===0||finishOnSmallUpload&&pixels<=65536;
+  };
 }
 
 export function artworkTexture(url,ready,failed,priority){

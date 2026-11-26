@@ -44,10 +44,11 @@ export function sampleFlightVisual(state,{clock,runId,flight,visible=true,render
 }
 
 // Endpoints must reach the texture even when cadence changes from 60 to 30 Hz
-// or a choice modal pauses the next frame. Unchanged paused poses stay cached.
-export function flightPoseNeedsRefresh(previous,next){
+// or a choice modal pauses the next frame. While combat is under sustained
+// pressure, ordinary stops can use the next scheduled texture refresh.
+export function flightPoseNeedsRefresh(previous,next,refreshMotionStop=true){
   return !previous||previous.rollActive!==next.rollActive||previous.rollSerial!==next.rollSerial
-    ||['bank','pitch','thrust'].some(key=>next[key]===0&&previous[key]!==0);
+    ||refreshMotionStop&&['bank','pitch','thrust'].some(key=>next[key]===0&&previous[key]!==0);
 }
 // Spine's local scale/shear is its old 2D banking illusion. The rendered 3D
 // hull already rolls rigidly, so inheriting that deformation banks it twice

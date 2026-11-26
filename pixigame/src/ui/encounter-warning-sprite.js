@@ -21,6 +21,11 @@ const warningFragment = `
   float wingMask = 1. - smoothstep(wingReach - .019, wingReach + .021, wingDistance);
   float rails = smoothstep(.012, .114, chroma) * wingMask;
   float plate = max(smoothstep(.004, .031, chroma), smoothstep(.028, .111, peak));
+  // Key the neutral PNG matte at the silhouette, but keep dark red behind the
+  // lettering opaque. Otherwise changes in the scenery show through the plaque.
+  float backing = smoothstep(.20, .25, wingDistance) * smoothstep(.20, .33, warningUv.y)
+    * (1. - smoothstep(.76, .88, warningUv.y));
+  plate = max(plate, backing * smoothstep(.0025, .011, warningArt.r - warningArt.g));
   float artAlpha = warningArt.a * softEdge * mix(rails, plate * warningPose.x, plaque);
 
   float warningGlow = 0.;
@@ -55,7 +60,13 @@ const warningFragment = `
     warningGlow = max(warningGlow, warningLights.w * bottom * middle);
   }
   vec3 tint = mix(vec3(1., .62, .40), vec3(1., .78, .48), warningBoss);
-  vec3 litArt = warningArt.rgb + (1. - warningArt.rgb) * tint * clamp(warningGlow, 0., 1.);
+  // Tighten the sampled white glyph edges without sharpening the authored glow.
+  float titleBand = smoothstep(.335, .355, wingDistance) * smoothstep(.36, .405, warningUv.y)
+    * (1. - smoothstep(.735, .78, warningUv.y));
+  float ink = min(warningArt.g, warningArt.b);
+  float edgeContrast = (smoothstep(.065, .85, ink) - ink) * smoothstep(.03, .13, ink);
+  vec3 face = clamp(warningArt.rgb + .72 * titleBand * edgeContrast, 0., 1.);
+  vec3 litArt = face + (1. - face) * tint * clamp(warningGlow, 0., 1.);
   vec2 shadeDistance = (warningUv - vec2(.5, .53)) / vec2(.44, .49);
   float shade = warningPose.z * (1. - smoothstep(.18, 1., dot(shadeDistance, shadeDistance)));
   float shadeBehindArt = shade * (1. - artAlpha);

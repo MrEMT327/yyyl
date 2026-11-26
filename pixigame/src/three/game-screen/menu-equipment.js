@@ -19,7 +19,21 @@ export function equipmentMenu(data,w,h,t,chrome){
   pic(main,t,art['equipment-deck'],box(0,layout.top,w,layout.bottom-layout.top+.1*u),false,artwork);
   const pilot=s.pilots.find(i=>i.id===s.pilotId),a=s.aircraft.find(i=>i.id===s.aircraftId);
   const b=layout.preview,target=data.preview;
-  if(target?.ready){
+  if(data.native&&target?.updatesInPlace){
+    const still=pic(main,t,'/art/aircraft-ui-v1/'+s.aircraftId+'-hangar.webp',b,true,primary);
+    const model=target.paint(main,b.x,b.y,b.w,b.h);
+    model.visible=false;
+    t.frame(()=>{
+      model.visible=target.ready;
+      if(model.visible){
+        still.visible=false;still.material.opacity=0;
+        const ratio=target.target.width/target.target.height,width=Math.min(b.w,b.h*ratio);
+        model.scale.set(width,-width/ratio,1);
+      }else if(still.material.opacity===0){
+        still.visible=Boolean(still.material.map?.image);still.material.opacity=1;
+      }
+    });
+  }else if(target?.ready){
     const ratio=target.target.width/target.target.height,width=Math.min(b.w,b.h*ratio),height=width/ratio;
     target.paint(main,b.x+(b.w-width)/2,b.y+(b.h-height)/2,width,height);
   }else pic(main,t,'/art/aircraft-ui-v1/'+s.aircraftId+'-hangar.webp',b,true,primary);
@@ -43,6 +57,7 @@ export function equipmentMenu(data,w,h,t,chrome){
   function card(target,b,item,slot,zone,visible=true){
     const {x,y,w:side}=b,part=GEAR_PARTS.find(p=>p.type===(item?.type||slot));
     const hit=slot?touch(b,84.4*scale):b;
+    if(slot)t.anchor('gear-slot-'+slot,b);
     if(item)area(t,'gear-'+item.uid,item.name,hit,'gearDetail',{id:item.uid,gearOrigin:slot?'slot':'warehouse'},zone);
     else area(t,'slot-'+slot,part?.name||'空槽',hit,'gearChoosePart',{part:String(slot)},zone);
     if(!visible)return;

@@ -6,6 +6,7 @@ import { createBattleDataCache } from '../full/battle-data-cache.js';
 import { loadArtwork } from '../../../../../../../pixigame/src/three/game-screen/image-loading.js';
 import { createFighterPackageSelection } from '../../../../../../../pixigame/src/three/aircraft/fighter-packages.js';
 import { getWechatTransport } from '../full/transport.js';
+import { createBattleMusicCache } from './battle-music-cache.js';
 
 function makeAbort(){
   if(typeof globalThis.AbortController==='function')return new globalThis.AbortController();
@@ -58,10 +59,12 @@ export function createWechatServices(api,config){
   const baseURL=new URL('/',cdn).href;
   const cdnFiles=config.cdnFiles??inflateJSON(config.cdnFilesGzip);
   const assetTransfers=config.assetTransfers??inflateJSON(config.assetTransfersGzip);
+  const localFiles=config.localFiles??inflateJSON(config.localFilesGzip);
   const resources=createWechatResources(api,{assetOrigin:baseURL,cdnBase:cdn.href,cdnFiles,
-    assetTransfers,localFiles:config.localFiles,fallbackFiles:config.fallbackFiles,requirePublicNetwork:true,
+    assetTransfers,localFiles,fallbackFiles:config.fallbackFiles,requirePublicNetwork:true,
     cacheVersion:config.cacheVersion??config.buildId,loadPackage:config.loadPackage});
   const files=createAssetCache(api,resources),loadouts=new Map();
+  const battleMusic=createBattleMusicCache(config.musicDownloads,files,baseURL,makeAbort);
   const assetBytes=resources.createTextureScope(),battleData=createBattleDataCache();
   const resolve=(path,base=baseURL)=>resources.resolve(path,base);
   async function fetchResource(path,{signal,paceDataWork}={}){
@@ -92,7 +95,7 @@ export function createWechatServices(api,config){
   const createAircraftSelection=()=>createFighterPackageSelection({read:readFighterFile,objectLoader,assetBytes,makeAbort});
   const sortieAircraft=createAircraftSelection();
   return {
-    baseURL,resources,files,resolve,fetchResource,makeAbort,storage:persistentStorage(api),musicFiles:config.musicFiles,
+    baseURL,resources,files,resolve,fetchResource,makeAbort,storage:persistentStorage(api),musicFiles:config.musicFiles,musicGains:config.musicGains,battleMusic,
     beginSortieLoad:()=>getWechatTransport(api).beginSortieLoad(),
     readSharedLoadoutJSON,readFighterFile,objectLoader,assetBytes,
     localFile:path=>files.localFile(path,baseURL),

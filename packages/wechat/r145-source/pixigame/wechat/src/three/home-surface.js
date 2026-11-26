@@ -28,11 +28,14 @@ export function mountWechatHome(device, platform, region, send, interactive) {
         else if (phase === 'end') {
           const control = input.end(x, y, pointerId);
           if (control) handlers.activate(control);
-        } else input.reset();
+        } else input.cancel();
       },region.priority,region.accepts);
-      return () => { unsubscribe(); input.close(); };
+      return Object.assign(() => { unsubscribe(); input.close(); },{cancel:input.cancel});
     },
-    begin: (w,h,refresh) => platform.display.begin(getBounds(),w,h,refresh),
+    begin(w,h,refresh) {
+      if(!device.panel)platform.debugLog?.markMenuVisible?.('battle');
+      return platform.display.begin(getBounds(),w,h,refresh);
+    },
     ready(value) {
       if (value === ready) return;
       ready = value;

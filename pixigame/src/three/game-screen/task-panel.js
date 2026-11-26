@@ -106,12 +106,14 @@ function signIn(data,w,t,clip){
 }
 function tasks(data,w,h,t){
   if(!data.period)return;
-  const width=.92*w,height=Math.min(w*1.5,h*.9),p=paintLobbyPaper(t,{...data,paperFace:art.taskFace},w,h,width,height,w/6,'任务');
+  const width=.92*w,height=Math.min(w*1.5,h*.9),p=paintLobbyPaper(t,{...data,paperFace:art.taskFace,popupMotion:{style:'large'}},w,h,width,height,w/6,'任务');
   const margin=40*w/750,x=p.x+margin,bw=width-2*margin,step=bw/data.tabs.length,faceH=Math.min(44,step*32/70);
   for(const [i,tab] of data.tabs.entries()){
     const current=data.period===tab.id,left=x+step*i,center=p.top+24;
-    taskTab(p.a,t,box(left,center-faceH/2,step,faceH),tab.label,current,clamp(w*.038,14,18));
+    const face=box(left,center-faceH/2,step,faceH),first=p.a.group.children.length;
+    taskTab(p.a,t,face,tab.label,current,clamp(w*.038,14,18));
     if(hasReady(data.snapshot,tab.id))p.a.panel(left+step-14,p.top+3,7,7,{radius:4,cut:0,fill:'#ee5767',stroke:'#80313c',opacity:1});
+    t.buttonFace?.('tab-'+tab.id,face,p.a,first);
     area(t,'tab-'+tab.id,tab.label,box(left,p.top,step,48),'taskPeriod',{period:tab.id});
   }
   let top=p.top+48+.015*w;top+=pendingNotice(data.snapshot,p.a,t,w,x,top,bw,null);
@@ -153,7 +155,7 @@ export function openTaskPanel(screen,host,send,kind,scrollPositions,options){
     e.preventDefault();e.stopImmediatePropagation();send('taskPeriod',{period:tabs[i].id},host);
   }
   function refresh(){const reduced=(screen.reducedMotion?.() ?? matchMedia('(prefers-reduced-motion: reduce)').matches);panel.update({...latest,source,bounds:panel.bounds,entered,inspect,reduced,switched:reduced?0:switched},
-    [latest.signature,latest.period,latest.tabs.map(tab=>tab.id).join(','),latest.snapshot.pilotSupply?.clockRollback,latest.id,inspect?.itemId,inspect?.name].join('|'),kind);}
+    [latest.signature,latest.period,latest.tabs.map(tab=>tab.id).join(','),latest.snapshot.pilotSupply?.clockRollback,latest.id,inspect?.itemId,inspect?.name].join('|'),kind,inspect??latest.period);}
   return {host,prepareOffscreen:panel.prepareOffscreen,activate:panel.activate,
     close(){panel.surface?.removeEventListener('keydown',keyTab,true);panel.close();},update(snapshot,modal,signature){
     const period=tip?(modal.period||'daily'):resolveDailyPeriod(snapshot,modal.period),tabs=availableDailyTabs(snapshot);

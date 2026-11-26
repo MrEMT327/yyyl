@@ -1,10 +1,10 @@
-export function createNativeBattleRenderBudget({width, height, pixelRatio}, worldWidth, {adaptive=false,onPressureChange}={}) {
+export function createNativeBattleRenderBudget({width, height, pixelRatio}, worldWidth, {adaptive=false,onPressureChange,onSustainedLoadChange,phoneTerrainWidth=450}={}) {
   const screenWidth = Math.min(width, height * 540 / 960) * pixelRatio;
   const phone = screenWidth <= 900;
   const aircraftTextureSize = phone ? 192 : 256;
   // Scenery is uploaded between graphics contexts. Use a smaller 9:16 image
   // on phones while keeping the Phaser battle and aircraft sizes independent.
-  const terrainWidth = phone ? 450 : 540;
+  const terrainWidth = phone ? phoneTerrainWidth : 540;
   const terrainHeight = terrainWidth * 16 / 9;
   const terrainRate = phone ? 20 : 30;
   const cameraPixels = 540 / worldWidth;
@@ -12,16 +12,23 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
   let frameSeconds = 1 / 60;
   let deferredRender;
   let underLoad=false,displayAverage=1/60,evidence=0;
+  let sustainedLoad=false,sustainedEvidence=0;
 
   function setPressure(next){
     if(underLoad===next)return;
     underLoad=next;evidence=0;
     onPressureChange?.(next);
   }
+  function setSustainedLoad(next){
+    if(sustainedLoad===next)return;
+    sustainedLoad=next;sustainedEvidence=0;
+    onSustainedLoadChange?.(next);
+  }
   function observeFrame(seconds){
     if(!adaptive||!phone)return;
     if(!(seconds>0)||seconds>=.5){
-      displayAverage=1/60;evidence=0;setPressure(false);return;
+      displayAverage=1/60;evidence=sustainedEvidence=0;
+      setPressure(false);setSustainedLoad(false);return;
     }
     // Measure wall time. Slow-motion gameplay and a single stall must not change quality.
     const sample=Math.min(seconds,.1);
@@ -29,19 +36,25 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
     const qualifies=underLoad?displayAverage<1/55:displayAverage>1/50;
     evidence=qualifies?evidence+sample:Math.max(0,evidence-sample*2);
     if(evidence>=(underLoad?4:1.5))setPressure(!underLoad);
+    // Hold the lower redraw rates until frame delivery has recovered for a while.
+    const qualifiesForSustained=sustainedLoad?displayAverage<1/52:displayAverage>1/46;
+    sustainedEvidence=qualifiesForSustained?sustainedEvidence+sample:Math.max(0,sustainedEvidence-sample*2);
+    if(sustainedEvidence>=(sustainedLoad?5:2.5))setSustainedLoad(!sustainedLoad);
   }
 
+  const tickAt = (time, rate) => Math.floor(time * rate + 0.001);
   function planTerrain(time, run, weather, x, z) {
     pendingTerrain = undefined;
-    const tick = Math.floor(time * terrainRate + 0.001);
-    const fastTick = Math.floor(time * 30 + 0.001);
+    const refreshRate = sustainedLoad ? 16 : terrainRate;
+    const cameraRate = sustainedLoad ? 24 : 30;
     const previous = previousTerrain;
     const sameScene = previous && previous.run === run && previous.weather === weather && time >= previous.time;
     const moved = sameScene ? Math.hypot(x - previous.x, z - previous.z) * cameraPixels : Infinity;
     const urgent = moved >= 24;
-    // Coast scrolling runs at 20 Hz on phones. Camera motion can use 30 Hz.
-    if (!urgent && (fastTick === previous.fastTick || (tick === previous.tick && moved < 6))) return null;
-    pendingTerrain = { time, tick, fastTick, run, weather, x, z };
+    // Bucket both samples with the current rate so switching rates cannot force a redraw.
+    if (!urgent && (tickAt(time,cameraRate)===tickAt(previous.time,cameraRate) ||
+      (moved<6 && tickAt(time,refreshRate)===tickAt(previous.time,refreshRate)))) return null;
+    pendingTerrain = { time, run, weather, x, z };
     return urgent ? 'immediate' : 'regular';
   }
 
@@ -52,10 +65,11 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
 
   return {
     aircraftTextureSize, terrainWidth, terrainHeight,
-    observeFrame,get underLoad(){return underLoad;},
+    observeFrame,get underLoad(){return underLoad;},get sustainedLoad(){return sustainedLoad;},
     combatBloomLevels: phone ? 2 : undefined,
-    shouldDrawAircraft(elapsed, terrainDue, moving, steadyPose=false) {
+    shouldDrawAircraft(elapsed, terrainDue, moving, steadyPose=false, rolling=false) {
       if (!phone) return elapsed >= (moving ? 1/60 : 1/30) - 1e-6;
+      if (sustainedLoad) return elapsed >= 1/(rolling ? 24 : steadyPose && !moving ? 15 : 16) - 1e-6;
       if (underLoad && steadyPose) return elapsed >= (moving ? 1/20 : 1/15) - .001;
       // Position and input update on each display frame. Let regular aircraft
       // texture updates fall between terrain uploads, with a 50 ms deadline.
@@ -88,7 +102,7 @@ export function createNativeBattleRenderBudget({width, height, pixelRatio}, worl
       previousTerrain = pendingTerrain = undefined;
       frameSeconds = 1 / 60;
       deferredRender = null;
-      evidence=0;displayAverage=1/60;setPressure(false);
+      evidence=sustainedEvidence=0;displayAverage=1/60;setPressure(false);setSustainedLoad(false);
     },
   };
 }

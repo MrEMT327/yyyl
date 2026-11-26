@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {build} from 'esbuild';
 import {PORTRAIT_FRAMING} from '../../../../../pixigame/src/ui/portrait-framing.js';
+import {createLobbyNavigationMotion} from '../../../../../pixigame/src/three/game-screen/lobby-navigation-motion.js';
 import {pilotSupplySnapshot} from '../../../../../pixigame/src/replica/pilot-supply.js';
 import {SECOND_SORTIE_GUIDE} from '../../../../../pixigame/src/peripheral/onboarding.js';
 import {createWechatDebugLog,rememberMemoryWarning,reportPreviousMemoryWarning} from '../wechat/src/three/debug-log.js';
@@ -15,6 +16,7 @@ const root=fileURLToPath(new URL('../../../../../',import.meta.url));
 const {outputFiles:[bundle]}=await build({
   stdin:{resolveDir:root,contents:`
     export {mountWechatMenu} from './packages/wechat/r145-source/pixigame/wechat/src/three/menu-surface.js';
+    export {mountWechatHome} from './packages/wechat/r145-source/pixigame/wechat/src/three/home-surface.js';
     export {showWechatStartup} from './packages/wechat/r145-source/pixigame/wechat/src/three/startup.js';
     export {showWechatSortie} from './packages/wechat/r145-source/pixigame/wechat/src/three/sortie-cover.js';
     export {createSortieController} from './pixigame/src/replica/sortie-controller.js';
@@ -44,6 +46,7 @@ const {outputFiles:[bundle]}=await build({
     export {flightRewardsSnapshot} from './pixigame/src/replica/flight-rewards.js';
     export {openCarnivalPanel} from './pixigame/src/three/game-screen/carnival-panel.js';
     export {openRecruitResults} from './pixigame/src/three/game-screen/recruit-results.js';
+    export {boxOpeningRank} from './pixigame/src/ui/shop-box-result-cards.js';
     export {DRAW_GATE_ART} from './pixigame/src/ui/draw-gate.js';
     export {createArtworkLoader,useArtworkLoader} from './pixigame/src/three/game-screen/image-loading.js';
     export {openWechatPortraitDecoder} from './packages/wechat/r145-source/pixigame/wechat/src/three/video.js';
@@ -215,7 +218,13 @@ function fixture(t,debugLog,options={}) {
     const ctx={measureText:value=>({width:value.length*9}),scale(){},fillText(){},strokeText(){}};
     return {getContext:()=>ctx};
   }};
-  const restore=useArtworkLoader(url=>new Promise(resolve=>requests.set(url,resolve)));
+  const pending=new Map();
+  const restore=useArtworkLoader(url=>{
+    if(pending.has(url))return pending.get(url);
+    const image=new Promise(resolve=>requests.set(url,resolve));
+    if(options.reuseArtwork)pending.set(url,image);
+    return image;
+  });
   const platform={
     visible:true,viewport:{screen,density:2,safeBottom:34,...options.viewport},now:()=>now,debugLog,
     requestFrame(fn){frames.set(++nextFrame,fn);return nextFrame;},
@@ -274,6 +283,126 @@ function fixture(t,debugLog,options={}) {
     activate(){visible=true;view.activate();},
   };
 }
+
+test('lobby navigation starts on presentation and reverses from the last visible pose',()=>{
+  const motion=createLobbyNavigationMotion();
+  motion.select('battle',true,false);
+  motion.select('assembly',false);
+  const pose=motion.frame(5000);
+  assert.equal(pose.weights[2],1);assert.equal(pose.dock,1);
+  motion.frame(5100);assert.equal(pose.weights[1],.5);
+  const before=[...pose.edges],dock=pose.dock;
+  motion.select('supply',false);motion.select('battle',true);
+  motion.frame(5300);assert.deepEqual(pose.edges,before);assert.equal(pose.dock,dock);
+  motion.frame(5500);assert.deepEqual(pose.edges,[0,139,279.5,467.5,608,750]);
+  assert.equal(pose.navMoving,false);assert(pose.dockMoving);
+  motion.frame(5767);assert.equal(pose.dock,1);assert.equal(pose.dockMoving,false);
+  motion.select('research',false);motion.frame(5800);motion.frame(6133);
+  assert.equal(pose.dock,0);assert.equal(pose.dockMoving,false);
+  motion.select('shop',false,false);assert.deepEqual(pose.weights,[1,0,0,0,0]);
+});
+
+test('navigation diagnostics join quick reversals and omit the time spent in background',()=>{
+  const samples=[],motion=createLobbyNavigationMotion(row=>samples.push(row));
+  motion.select('battle',true,false);
+  motion.select('assembly',false,true,0);motion.frame(12);motion.frame(32);
+  motion.select('battle',true,true,40);motion.frame(84);motion.frame(552);
+  assert.deepEqual(samples,[{tab:'battle',changes:2,frames:4,firstPaintMs:12,maxFrameGapMs:468,framesOver40Ms:2}]);
+  motion.select('assembly',false,true,600);motion.frame(612);motion.resetTiming();
+  motion.frame(15000);motion.frame(16000);
+  assert.equal(samples.length,1);
+});
+
+test('the moving footer shares its visible cell bounds with touch and returns to cached art',t=>{
+  const f=fixture(t,undefined,{main:true}),motion=f.device.lobbyNavigation=createLobbyNavigationMotion();
+  let animated=0,exits=0;
+  motion.homeArtwork={navigation(){animated++;return true;},dock(){exits++;}};
+  motion.select('battle',true,false);motion.select('shop',false);
+  f.view.update({tab:'shop',shopSection:'coins',snapshot:shopSnapshot()},'shop');
+  f.paint();
+  const first=f.control('nav-shop'),originalCanvases=f.canvases;
+  assert(Math.abs(first.w-139*screen.width/750)<1e-6);
+  f.paint(100);
+  const middle=f.control('nav-shop');assert(middle.w>first.w&&middle.w<188*screen.width/750);
+  f.point('start',middle.w-1,middle.y+15);f.point('end',middle.w-1,middle.y+15);
+  assert.equal(f.commands.at(-1)[1].tab,'shop');
+  f.paint(100);assert.equal(animated,2);assert(exits>=3);
+  assert(Math.abs(f.control('nav-shop').w-screen.width*.2506)<1e-6);
+  f.paint(140);
+  assert.equal(f.canvases,originalCanvases);
+  const idle=f.events.length;f.paint(1000);assert.equal(f.events.length,idle);
+});
+
+test('weapon detail button shrinks its face and label without changing the hit or repeating a command',async t=>{
+  const f=fixture(t,undefined,{catalog:true}),data=catalogFixture('weapon');
+  f.view.update({tab:'weapon',...data},'weapon');
+  f.paint();
+  for(const [url,decode] of f.requests)decode({url,width:128,height:96});
+  await new Promise(resolve=>setImmediate(resolve));f.paint();
+  const hit=f.view.state().controls.find(c=>c.id.startsWith('detail-'));
+  assert(hit);const label=f.textMeshes.get(hit.label),width=label.scale.x;
+  const x=hit.x+hit.w/2,y=hit.y+hit.h*.75;
+  f.point('start',x,y);f.paint(112);f.paint(16);
+  assert(Math.abs(label.scale.x/width-.9)<1e-6);assert.deepEqual(f.control(hit.id),hit);
+  f.point('end',x,y);f.paint(160);
+  assert.equal(label.scale.x,width);assert.equal(f.commands.filter(([id])=>id==='nativeCollectionDetail').length,1);
+  f.point('start',x,y);f.paint(100);f.point('move',x,y-20);f.point('end',x,y-20);
+  assert.equal(label.scale.x,width);assert.equal(f.commands.length,1);
+  f.point('start',x,y);f.paint(100);f.park();assert.equal(label.scale.x,width);
+});
+
+test('campaign guide follows the visible button through a state refresh, repeated touches and page changes',async t=>{
+  const f=fixture(t),motion=f.device.lobbyNavigation=createLobbyNavigationMotion(),ids=['patrol','start','backpack'];
+  const bounds=new Map(),commands=[];
+  let sync,ring;
+  Object.assign(f.device,{homeState:{pilotId:'guide-test',chapter:0,total:0,maximum:3,showTasks:true},
+    subscribeHome(fn){sync=fn;return ()=>{};}});
+  f.platform.viewport.safeTop=48;
+  Object.assign(f.renderer,{setPixelRatio(){},setRenderTarget(){},render(scene,camera){
+    scene.traverseVisible(mesh=>{
+      if(!mesh.isMesh||!mesh.layers.test(camera.layers))return;
+      const u=mesh.material.uniforms,path=u?.art?.value?.image?.url;
+      const id=ids.find(key=>path?.includes('/buttons/'+key+'.'));
+      if(id&&u.box?.value?.isVector4)bounds.set(id,u.box.value.toArray());
+      if(mesh.userData.art==='gold')ring=[mesh.position.x,mesh.position.y,mesh.scale.x,mesh.scale.y];
+    });
+  }});
+  motion.select('battle',true);
+  const home=mod.exports.mountWechatHome(f.device,f.platform,{stageEntry:true,getBounds:()=>screen,
+    visible:()=>true,accepts:()=>true,openPortrait:()=>({surface:{},layout(){},close(){}})},
+    action=>commands.push(action),()=>true);
+  t.after(()=>home.close());
+  for(let i=0;i<3;i++){
+    for(const [url,resolve] of f.requests)resolve({url,width:256,height:256});
+    await new Promise(resolve=>setImmediate(resolve));
+  }
+  function paint(delta=0){f.paint(delta);ring=null;bounds.clear();home.paintNow();}
+  function guide(id){home.setGuide({id,text:'点击按钮',strong:false});}
+  function touch(phase,id){
+    const [x,y,w,h]=bounds.get(id);
+    f.point(phase,(x+w/2)*screen.width/750,(y+h/2)*screen.height/1624);
+  }
+  function encloses(id){
+    const [x,y,w,h]=bounds.get(id),padding=4*750/screen.width;
+    assert(ring,'visible button should have a guide');
+    [x-padding,y-padding,w+2*padding,h+2*padding].forEach((v,i)=>assert(Math.abs(v-ring[i])<1e-5,id+' guide edge '+i));
+  }
+  guide('start');paint();assert(bounds.has('start'));assert.equal(ring,null);
+  paint(260);sync();paint();assert.equal(ring,null,'partly hidden face must not cover the tab bar with a guide');
+  paint(210);encloses('start');
+  for(const id of ids){
+    guide(id);paint();
+    const rest=bounds.get(id)[2];
+    touch('start',id);paint(115);assert(bounds.get(id)[2]<rest*.92);encloses(id);
+    sync();paint();encloses(id);
+    touch('end',id);
+    const next=ids[(ids.indexOf(id)+1)%ids.length];touch('start',next);
+    paint(20);assert.equal(bounds.get(id)[2],rest,'another dock button cancels the previous rebound');
+    home.park();home.activate();paint();touch('end',next);
+    assert.equal(commands.at(-1),id);
+  }
+  assert.deepEqual(commands,ids);
+});
 
 test('WeChat startup waits for its backdrop before painting or accepting the start button',async t=>{
   const f=fixture(t);
@@ -506,6 +635,44 @@ test('WeChat first visible lobby is complete for a returning pilot',async t=>{
   for(const url of [...held,nav,start])assert(first.art.has(url),url);
 });
 
+test('WeChat prepares returning lobby menus behind the cover even on slow frames',async t=>{
+  let modelSteps=0;
+  const aircraftPreview=()=>({ready:false,target:{width:100,height:80},update(){},tick(){},pause(){},close(){},
+    prepare(){modelSteps++;return false;}});
+  const f=fixture(t,undefined,{viewport:{safeTop:content.top},aircraftPreview,reuseArtwork:true});
+  const {platform,renderer,device}=f;
+  platform.inputIdle=true;
+  Object.assign(renderer,{setPixelRatio(){},setRenderTarget(){}});
+  Object.assign(device,{subscribeHome:()=>()=>{},
+    publishHome(snapshot,chapter,developer){device.homeState=homePresentation(snapshot,chapter,developer);}});
+  const snapshot={...shopSnapshot(),...equipmentSnapshot(),stages:[],research:{cards:[]},replicaCollection:{pilots:[]}};
+  const bridge={app:{renderer:device},getPeripheralSnapshot:()=>snapshot};
+  const portraits={openHome:()=>({layout(){},close(){}}),openCatalog:(...args)=>f.region.openPortrait(...args),
+    setVisible(){},sync(){},destroy(){}};
+  device.cover={};
+  const lobby=mountWechatLobby({},platform,device,{bridge,portraits,deferPortraits:true,
+    openAircraft:(_device,_bounds,...args)=>f.region.openAircraft(...args)});
+  t.after(lobby.destroy);
+  let ready;
+  void lobby.prepareMenus().then(pages=>{ready=pages;});
+  for(let frame=0;frame<96&&!ready;frame++){
+    f.paint(54);
+    for(const [url,resolve] of f.requests)resolve({url,width:96,height:80});
+    await new Promise(setImmediate);
+  }
+  assert.deepEqual(new Set(ready),new Set(['assembly','shop','supply','research']),
+    'the main destination frames warm before the cover is released');
+  assert.deepEqual(f.events,[]);
+  assert.equal(modelSteps,0);
+  device.cover=null;
+  lobby.switchTab('assembly');f.paint();
+  const still=optimizeUiAssetUrls('/art/aircraft-ui-v1/'+snapshot.aircraftId+'-hangar.webp');
+  assert(f.images.has(still),'equipment displays its complete still on the first frame');
+  assert.equal(modelSteps,0,'the studio does not block the first equipment frame');
+  lobby.update(.016);
+  assert(modelSteps>0,'the live model starts after the complete equipment frame');
+});
+
 test('WeChat startup waits for the original backdrop if its packaged image fails',async t=>{
   const f=fixture(t);
   const packaged='/art/entry-screens-v4/startup-wechat.jpg';
@@ -667,6 +834,38 @@ test('Memory pressure releases parked main and secondary pages and stops backgro
   assert.deepEqual(await lobby.prepareMenus(),[]);
 });
 
+test('WeChat keeps one prepared 2D page across a sortie and drops it on memory pressure',async t=>{
+  const f=fixture(t,undefined,{viewport:{safeTop:content.top}}),{platform,renderer,device}=f;
+  platform.inputIdle=false;
+  Object.assign(renderer,{setPixelRatio(){},setRenderTarget(){}});
+  Object.assign(device,{subscribeHome:()=>()=>{},publishHome(snapshot,chapter,developer){device.homeState=homePresentation(snapshot,chapter,developer);}});
+  const snapshot={...shopSnapshot(),stages:[],research:{cards:[],owned:0},pilots:[]};
+  const bridge={app:{renderer:device},getPeripheralSnapshot:()=>snapshot};
+  const portraits={openHome:()=>({layout(){},close(){}}),openCatalog:(...args)=>f.region.openPortrait(...args),
+    setVisible(){},sync(){},destroy(){}};
+  const lobby=mountWechatLobby({},platform,device,{bridge,portraits,deferPortraits:true});
+  t.after(lobby.destroy);
+  async function finish(){
+    for(let frame=0;frame<35&&!device.menuView.state().ready;frame++){
+      for(const [url,resolve] of f.requests)resolve({url,width:96,height:80});
+      await Promise.resolve();f.paint();
+    }
+    assert(device.menuView.state().ready);
+  }
+  lobby.switchTab('research');await finish();const research=device.menuView;
+  lobby.switchTab('shop');await finish();const shop=device.menuView;
+  assert(f.texts.has('装备宝箱'));
+  lobby.switchTab('battle');lobby.setVisible(false);lobby.setVisible(true);
+  lobby.switchTab('shop');
+  assert.equal(device.menuView,shop);
+  assert.equal(device.menuView.preparing,false);
+  f.paint();
+  assert(f.texts.has('装备宝箱'));
+  lobby.switchTab('research');assert.notEqual(device.menuView,research);
+  lobby.switchTab('battle');lobby.setVisible(false);lobby.trimMemory();lobby.setVisible(true);
+  lobby.switchTab('shop');assert.notEqual(device.menuView,shop);
+});
+
 test('the next launch reports the last memory warning once, including the equipment subpage',t=>{
   const rows=new Map(),messages=[];
   const api={getStorageSync:key=>rows.get(key),setStorageSync:(key,value)=>rows.set(key,value),removeStorageSync:key=>rows.delete(key)};
@@ -681,7 +880,7 @@ test('the next launch reports the last memory warning once, including the equipm
 test('a post-battle tour of aircraft, weapons and pilots never retains a hidden 3D studio',async t=>{
   const f=fixture(t,undefined,{viewport:{safeTop:content.top}});
   const {device,renderer,platform}=f,routes=new Set(),live=new Set(),decoded=new Set();
-  let cacheReleases=0,lowMemory=false;
+  let cacheReleases=0,lowMemory=false,aircraftBuilds=0,portraitBuilds=0,portraitLoaded=false;
   platform.bindTouches=(handler,priority=0,accepts=()=>true)=>{
     const route={handler,priority,accepts};routes.add(route);return ()=>routes.delete(route);
   };
@@ -689,10 +888,14 @@ test('a post-battle tour of aircraft, weapons and pilots never retains a hidden 
   Object.assign(device,{subscribeHome:()=>()=>{},publishHome(snapshot,chapter,developer){device.homeState=homePresentation(snapshot,chapter,developer);}});
   const snapshot={...shopSnapshot(),...equipmentSnapshot(),...catalogFixture('pilot').snapshot,stages:[]};
   const bridge={app:{renderer:device},getPeripheralSnapshot:()=>snapshot};
-  const portraits={openHome:()=>({layout(){},close(){}}),openCatalog:(_d,_b,...args)=>f.region.openPortrait(...args),setVisible(){},sync(){},destroy(){}};
+  const portraits={openHome:()=>({layout(){},close(){}}),openCatalog:(_d,_b,...args)=>f.region.openPortrait(...args),sync(){},destroy(){},
+    setVisible(show,{leavePage,suspendLoading}={}){
+      if(show&&!portraitLoaded){assert.equal(live.size,0);portraitBuilds++;portraitLoaded=true;}
+      if(!show&&(leavePage||suspendLoading))portraitLoaded=false;
+    }};
   function openAircraft(_device,_bounds,_panel,refresh){
     const preview={ready:false,target:{width:200,height:120},update(){},paint(){},pause(){},
-      tick(){if(!this.ready){this.ready=true;live.add(this);refresh();}assert.equal(live.size,1);},
+      tick(){if(!this.ready){this.ready=true;aircraftBuilds++;live.add(this);refresh();}assert.equal(live.size,1);},
       prepare(){this.tick();return true;},releaseModel(){live.delete(this);this.ready=false;},close(){this.releaseModel();}};
     return preview;
   }
@@ -702,8 +905,8 @@ test('a post-battle tour of aircraft, weapons and pilots never retains a hidden 
   assert.equal(cacheReleases,0,'the battle cache can still serve an immediate replay');
   lobby.switchTab('assembly');
   assert.equal(cacheReleases,1,'release the battle cache before creating the equipment preview');
-  async function settle(){
-    for(let i=0;i<18;i++){
+  async function settle(frames=48){
+    for(let i=0;i<frames;i++){
       for(const [url,resolve] of f.requests)if(!decoded.has(resolve)){decoded.add(resolve);resolve({url,width:96,height:80});}
       await Promise.resolve();f.paint();lobby.update(.016);
     }
@@ -715,6 +918,36 @@ test('a post-battle tour of aircraft, weapons and pilots never retains a hidden 
     const route=[...routes].filter(row=>row.accepts(point)).sort((a,b)=>b.priority-a.priority)[0];
     route.handler(point);route.handler({...point,phase:'end'});
   }
+  await t.test('rapid home and equipment reversals reuse the ready owner until the player stays on a page',async()=>{
+    await settle();
+    assert.equal(live.size,1);
+    const firstPreview=aircraftBuilds,initialPortraits=portraitBuilds;
+    for(let i=0;i<8;i++){
+      lobby.switchTab('battle');await settle(4);
+      lobby.switchTab('assembly');await settle(5);
+    }
+    assert.equal(aircraftBuilds,firstPreview);
+    assert.equal(portraitBuilds,initialPortraits);
+    assert.equal(live.size,1);
+    lobby.switchTab('battle');await settle();
+    assert.equal(live.size,0);
+    assert.equal(portraitLoaded,true);
+    const homePortrait=portraitBuilds;
+    for(let i=0;i<8;i++){
+      lobby.switchTab('assembly');await settle(4);
+      assert(device.menuView.state().controls.some(c=>c.id==='catalog-aircraft'));
+      lobby.switchTab('battle');await settle(5);
+    }
+    await settle();
+    assert.equal(portraitBuilds,homePortrait);
+    assert.equal(aircraftBuilds,firstPreview);
+    lobby.switchTab('assembly');await settle();
+    assert.equal(aircraftBuilds,firstPreview+1);
+    assert.equal(portraitLoaded,false);
+    lobby.switchTab('battle');await settle(2);assert.equal(live.size,1);
+    lobby.setVisible(false);assert.equal(live.size,0,'starting a sortie cancels the brief hold');
+    lobby.setVisible(true);lobby.switchTab('assembly');await settle();
+  });
   for(let tour=0;tour<3;tour++){
     for(const page of ['aircraft','weapon','pilot']){
       await settle();assert.equal(live.size,lowMemory?0:1,'visible hangar');
@@ -733,7 +966,7 @@ test('a post-battle tour of aircraft, weapons and pilots never retains a hidden 
       tap('back');assert.equal(lobby.state.subpage,'');
     }
   }
-  assert.equal(cacheReleases,1);
+  assert.equal(cacheReleases,2);
   lobby.switchTab('research');assert.equal(live.size,0);
 });
 
@@ -769,19 +1002,59 @@ test('WeChat first-sortie dialog returns touch routing to battle when the lobby 
   assert.equal(target().priority,10);
 });
 
+for(const won of [false,true])test('first '+(won?'victory':'defeat')+' can return once saved even if background work never finishes',async t=>{
+  const configuration=createReplicaConfiguration({items:[],slots:{},levels:{}},createReplicaProgression());
+  const snapshot={...equipmentSnapshot(),firstSortieRequired:true};
+  let emit,current,leaves=0,grants=0,saveAvailable=won;
+  const errors=[],messages=[];
+  const runId='run',session='first';
+  const store={snapshot:()=>snapshot,replicaConfiguration:()=>configuration,
+    prepareSortie:()=>({ok:true,snapshot:{id:runId,replicaConfiguration:configuration}}),
+    recordSortie(result){
+      if(!saveAvailable)return {ok:false,message:'保存失败'};
+      grants++;return {ok:true,rewards:[],replica:result};
+    }};
+  const sortie=createSortieController({peripheral:()=>store,onProgress(){},onState(){},onEnter(){},
+    onLeave(){leaves++;},onError:message=>errors.push(message),screen:{},
+    host:{baseURL:'https://example.invalid/',now:()=>0,hidden:()=>false,setLaunching(){},makeSessionId:()=>session,bind:()=>()=>{},
+      prepareResultReturn(isCurrent){current=isCurrent;return new Promise(()=>{});},
+      createSurface:()=>({show(){},close(){},mount(request){emit=request.emit;return {receive:m=>messages.push(m),dispose(){}};}})},
+    showSortieLoading:()=>({update(){},close(){},fail(){}})});
+  t.after(sortie.dispose);
+  const started=sortie.start({chapterId:1});
+  const send=(type,data={})=>emit({channel:'shnh-replica-battle-v1',session,type,...data});
+  await send('ready');
+  const {requestId,configurationKey}=messages.find(m=>m.type==='configure');
+  await send('configured',{requestId,configurationKey});await send('started',{runId,configurationKey});await started;
+  const result={runId,chapterId:1,won,endReason:won?'victory':'defeat'};
+  if(!saveAvailable)t.mock.method(console,'error',()=>{});
+  await send('result',{result});
+  if(!saveAvailable){
+    await send('home',{result});
+    assert.equal(leaves,0);assert.equal(grants,0);assert(errors.includes('保存失败'));
+    saveAvailable=true;
+    await send('result',{result});
+  }
+  assert.equal(current(),true);
+  await Promise.all([send('home',{result}),send('home',{result})]);
+  assert.equal(current(),false);
+  assert.equal(leaves,1);assert.equal(grants,1);
+});
+
 test('first sortie prepares the equipment still at settlement and starts the 3D studio only after opening equipment',async t=>{
   let modelReady=false,modelSteps=0,modelLayouts=0;
   const aircraftPreview=refresh=>({ready:false,target:{width:100,height:80},update(){},tick(){},pause(){},close(){},
     prepare(){modelSteps++;if(modelReady&&!this.ready){this.ready=true;refresh();}return this.ready;},paint(){modelLayouts++;}});
-  const f=fixture(t,undefined,{viewport:{safeTop:content.top},aircraftPreview});
+  const {debug,lines}=captureDebug(t);
+  const f=fixture(t,debug,{viewport:{safeTop:content.top},aircraftPreview,reuseArtwork:true});
   const {platform,renderer,device,region}=f;
   const routes=new Set();
   platform.bindTouches=(handler,priority=0,accepts=()=>true)=>{
     const route={handler,priority,accepts};routes.add(route);return ()=>routes.delete(route);
   };
   platform.inputIdle=false;
-  const warmAvatars=[];
-  platform.warmArtworkFiles=async (urls,signal)=>{warmAvatars.push({urls,signal});};
+  const fileReads=[];
+  platform.warmArtworkFiles=async (urls,signal)=>{fileReads.push({urls,signal});};
   let output=null;
   Object.assign(renderer,{setPixelRatio(){},setViewport(){},getRenderTarget:()=>output,setRenderTarget:value=>{output=value;}});
   Object.assign(device,{subscribeHome:()=>()=>{},
@@ -790,8 +1063,9 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
     onboarding:{version:1,completed:[1,4]},stages:[{index:0,unlocked:true}],pilots:[{id:'pilot-01',name:'夜莺',rarity:'R'}],
     pools:{pilot:{singleCost:10}},research:{cards:[]}};
   const bridge={app:{renderer:device},getPeripheralSnapshot:()=>snapshot};
+  const portraitVisibility=[];
   const portraits={openHome:()=>({layout(){},close(){}}),openCatalog(){return region.openPortrait(()=>{},()=>{});},
-    setVisible(){},sync(){},destroy(){}};
+    setVisible(value){portraitVisibility.push(value);},sync(){},destroy(){}};
   const loading=[];
   const api={showLoading(){loading.push('show');},hideLoading(){loading.push('hide');}};
   const lobby=mountWechatLobby(api,platform,device,{bridge,portraits,deferPortraits:true,deferFirstSortieLobby:true,
@@ -799,7 +1073,8 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
   t.after(lobby.destroy);
   const signal={aborted:false},uploads=new Set(),settled=new Set();
   const homeBackdrop=optimizeUiAssetUrls('/art/psd-main-v1/main-background.png');
-  let releaseHome=false;
+  const lateButton=optimizeUiAssetUrls('/art/psd-main-v1/buttons/patrol.png');
+  let releaseHome=false,releaseButton=false;
   renderer.initTexture=texture=>uploads.add(texture.image.url);
   const gear=optimizeUiAssetUrls('/art/psd-equipment-v1/equipment-background.webp');
   const aircraft=optimizeUiAssetUrls('/art/aircraft-ui-v1/'+snapshot.aircraftId+'-hangar.webp');
@@ -809,37 +1084,30 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
   assert(!f.requests.has(homeBackdrop));
   const touches=routes.size;
   device.cover={};
-  assert.equal(device.warmFirstSortieMenus(signal),false);
-  assert.equal(f.requests.has(gear),false,'the rotating loading cover owns the renderer');
-  assert.deepEqual(warmAvatars,[]);
+  device.warmFirstSortieHomeFiles(signal);
+  assert.deepEqual(fileReads,[]);
   device.cover=null;
   function decode(){
-    for(const [url,resolve] of f.requests)if(!settled.has(resolve)&&(releaseHome||url!==homeBackdrop)){
+    for(const [url,resolve] of f.requests)if(!settled.has(resolve)&&(releaseHome||url!==homeBackdrop)&&(releaseButton||url!==lateButton)){
       settled.add(resolve);
       resolve({url,width:256,height:256});
     }
   }
-  assert.equal(device.warmFirstSortieMenus(signal),true);
-  assert(f.requests.has(gear));
-  assert.equal(f.requests.has(portrait),false,'equipment work starts before recruitment');
-  assert.equal(warmAvatars.length,1,'equipment portrait files are warmed during play');
-  assert.equal(warmAvatars[0].signal,signal);
-  assert(warmAvatars[0].urls[0].endsWith('/pilot-01-320.png'));
+  device.warmFirstSortieHomeFiles(signal);
+  assert.equal(fileReads.length,1);
+  assert.equal(fileReads[0].urls[0],homeBackdrop);
+  assert(fileReads[0].urls.includes(optimizeUiAssetUrls('/art/onboarding-dialogue-v2/panel.webp')));
+  assert(fileReads[0].urls.includes(lateButton));
+  assert.equal(fileReads[0].signal.aborted,false);
   platform.visible=false;
-  assert.equal(device.warmFirstSortieMenus(signal),false);
+  assert.equal(fileReads[0].signal.aborted,true);
+  device.warmFirstSortieHomeFiles(signal);
+  assert.equal(fileReads.length,1);
   platform.visible=true;
-  let pending=true;
-  for(let frame=0;frame<180&&pending;frame++){
-    decode();await Promise.resolve();
-    const before=uploads.size;
-    pending=device.warmFirstSortieMenus(signal);
-    assert(uploads.size-before<=1,'each battle frame uploads at most one background texture');
-  }
-  assert.equal(pending,false);
+  assert.equal(uploads.size,0);
   assert.equal(routes.size,touches,'hidden menus never interrupt combat touches');
-  for(const url of [gear,aircraft])assert(uploads.has(url),url);
   const otherMenus=[portrait,...['shop','research'].map(tab=>optimizeUiAssetUrls(art[tab+'-background']))];
-  for(const url of otherMenus)assert(!f.requests.has(url),'another menu was loaded over the battle: '+url);
+  for(const url of [gear,aircraft,...otherMenus])assert(!f.requests.has(url),url);
   assert.equal(lobby.state.visible,false);
   assert(!f.requests.has(homeBackdrop),'the active fight does not load lobby art');
   assert.equal(modelSteps,0,'active combat only prepares 2D menu artwork');
@@ -851,6 +1119,8 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
     recordSortie(result){
       const equipment=structuredClone(snapshot.equipment),item=equipment.items[0];
       item.art='saint-ring-v4/4110100';item.equipped=true;equipment.slots[1]=item.uid;
+      equipment.items[1]=tutorialGear(equipment.items[1]);
+      const other=equipment.items.at(-1);other.equipped=true;equipment.slots[other.type]=other.uid;
       snapshot={...snapshot,firstSortieRequired:false,equipment};
       return {ok:true,rewards:[],replica:result};
     }};
@@ -869,9 +1139,8 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
   await send('started',{runId:'first-run',configurationKey:config.configurationKey});
   assert.equal(await started,true);
   await send('result',{result:{runId:'first-run',chapterId:1,won:false,endReason:'defeat'}});
-  await send('home');await send('home');
   assert.equal(leaveCount,0);
-  assert.equal(lobby.state.visible,false,'an immediate return keeps the result view active');
+  assert.equal(lobby.state.visible,false);
   f.events.length=0;
   const equippedIcon=optimizeUiAssetUrls('/art/project-flight-gear-v1/saint-ring-v4/4110100.webp');
   for(let frame=0;frame<30;frame++){f.paint();decode();await Promise.resolve();}
@@ -881,14 +1150,31 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
   assert(f.requests.has(homeBackdrop),'the returning lobby is prepared after settlement');
   assert([...routes].every(route=>!route.accepts({x:100,y:100})));
   assert.deepEqual(f.events,[]);
-  for(let frame=0;frame<8;frame++){f.paint();decode();await new Promise(setImmediate);}
-  assert.equal(leaveCount,0,'flight results stay visible while the returning lobby art is pending');
-  releaseHome=true;
-  for(let frame=0;frame<40&&!leaveCount;frame++){f.paint();decode();await new Promise(setImmediate);}
+  for(let frame=0;frame<120&&!details(lines,'结算时装备详情已准备').length;frame++){
+    f.paint();decode();await new Promise(setImmediate);
+  }
+  assert(details(lines,'结算时装备详情已准备').length);
+  assert(f.requests.has(gearSkillIcon),'idle receipt frames prepare the exact tutorial item');
+  t.mock.timers.enable({apis:['setTimeout']});
+  await Promise.all([send('home'),send('home')]);
   assert.equal(leaveCount,1);
+  assert.equal(lobby.state.visible,true,'confirmation returns even while the home background is pending');
+  assert(!portraitVisibility.includes(true),'the animated portrait cannot compete with the first home frame');
+  f.paint();
+  assert(!f.events.includes('paint'),'keep the previous frame until the lobby can draw its backdrop');
+  t.mock.timers.tick(150);
+  assert.deepEqual(loading,['show']);
+  releaseHome=true;
+  for(let frame=0;frame<5;frame++){decode();await new Promise(setImmediate);f.paint();}
+  assert(f.events.includes('paint'),'an unrelated missing button cannot hold the first lobby frame');
+  lobby.update(.016);
+  assert.equal(portraitVisibility.at(-1),true);
+  releaseButton=true;
   assert.deepEqual(errors,[]);
   assert.equal(lobby.tab,'battle');
   assert.equal(device.homeView.guide?.id,'nav-assembly');
+  snapshot={...snapshot,wallet:{...snapshot.wallet,stamina:96}};
+  lobby.refresh();
   for(let frame=0;frame<4;frame++){decode();await new Promise(setImmediate);f.paint();}
   function tapHome(id){
     const [x,y,w,h]=device.homeView.controls().find(control=>control.id===id).box;
@@ -906,7 +1192,61 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
   modelReady=true;
   for(let frame=0;frame<8&&!modelLayouts;frame++){lobby.update(.016);f.paint();}
   assert(modelLayouts>0);
-  assert.deepEqual(loading,[]);
+  assert.deepEqual(loading,['show','hide']);
+  lobby.update(.016);f.paint();
+  const openPanel=device.openLobbyPanel;
+  let detailOptions;
+  device.openLobbyPanel=(kind,...options)=>{
+    if(kind==='gearDetail')detailOptions=options;
+    return openPanel(kind,...options);
+  };
+  const gearCard=device.menuView.state().controls.find(control=>control.id==='gear-002');
+  const point={phase:'start',x:gearCard.x+gearCard.w/2,y:gearCard.y+gearCard.h/2,pointerId:1};
+  const route=[...routes].filter(entry=>entry.accepts(point)).sort((a,b)=>b.priority-a.priority)[0];
+  route.handler(point);route.handler({...point,phase:'end'});
+  assert.equal(lobby.state.modal,'gearDetail');
+  f.paint();
+  assert(f.texts.has('装备详情'));
+  assert(f.texts.has('替换'));
+  for(const url of [...activityFrames,activityClose,gearSkillIcon])assert(f.images.has(url),url);
+  const frame=details(lines,'页面首帧').find(row=>row.page==='gearDetail');
+  assert.equal(frame?.artwork.pending,0);
+  const entry=details(lines,'页面切换').find(row=>row.page==='gearDetail');
+  assert.equal(entry?.prepared,true);
+  bridge.peripheralAction=(action,{id})=>{
+    assert.equal(action,'gearEquip');assert.equal(id,'002');
+    const equipment=structuredClone(snapshot.equipment);
+    equipment.items[0].equipped=false;equipment.items[1].equipped=true;equipment.slots[1]=id;
+    snapshot={...snapshot,equipment,onboarding:{version:1,completed:[1,4,9]}};
+    return {ok:true};
+  };
+  const preparedDetail=device.panel;
+  const slotPulse=t.mock.method(device.feedback,'gearSlot');
+  const replace=preparedDetail.state().controls.find(control=>control.id==='gearEquip');
+  const tap={phase:'start',x:replace.x+replace.w/2,y:replace.y+replace.h/2,pointerId:2};
+  const dialogRoute=[...routes].find(entry=>entry.priority===10&&entry.accepts(tap));
+  dialogRoute.handler(tap);dialogRoute.handler({...tap,phase:'end'});
+  await new Promise(setImmediate);
+  assert.equal(lobby.state.modal,null);
+  assert.equal(lobby.snapshot.equipment.slots[1],'002');
+  assert.deepEqual(slotPulse.mock.calls.map(call=>call.arguments),[[1]]);
+  assert(!routes.has(dialogRoute),'a closed detail releases its touch route');
+  const [detailHost,sendDetail,scrollDetail,soundDetail,detailEntry]=detailOptions;
+  const reopened=openPanel('gearDetail',detailHost,sendDetail,scrollDetail,soundDetail,{
+    ...detailEntry,snapshot:lobby.snapshot,modal:{...detailEntry.modal,detailOrigin:'slot'},
+  });
+  assert.equal(device.panel,preparedDetail,'another visit keeps the uploaded detail artwork');
+  for(let frame=0;frame<24&&device.panel.preparing;frame++){
+    f.paint();decode();await new Promise(setImmediate);
+  }
+  assert(!device.panel.preparing);
+  assert(device.panel.state().controls.some(c=>c.id==='gearUnequip'),'the reused panel displays the equipped state');
+  assert.equal(details(lines,'页面切换').filter(row=>row.page==='gearDetail').at(-1)?.retained,true);
+  const secondRoute=[...routes].find(entry=>entry.priority===10);
+  assert(secondRoute);
+  reopened.close();reopened.close();
+  assert.equal(device.panel,null);
+  assert(!routes.has(secondRoute));
   platform.inputIdle=true;
   for(let frame=0;frame<180;frame++){
     lobby.update(.016);f.paint(16);decode();await new Promise(setImmediate);
@@ -915,7 +1255,7 @@ test('first sortie prepares the equipment still at settlement and starts the 3D 
   lobby.switchTab('supply');f.paint();
   assert(f.images.has(portrait),'the full portrait is ready on entry');
   lobby.update(.016);lobby.setVisible(false);
-  assert.equal(device.warmFirstSortieMenus(signal),false);
+  const count=fileReads.length;device.warmFirstSortieHomeFiles(signal);assert.equal(fileReads.length,count);
 });
 
 test('WeChat shows a locked-stage message without flashing the last navigation button',async t=>{
@@ -1444,6 +1784,200 @@ for(const [width,height] of [[390,844],[320,640]]){
   });
 }
 
+test('carnival starts on its first visible frame, scales the whole button and cancels a drag',async t=>{
+  const f=fixture(t),{dialog}=makeActivityDialog(t,f,'carnival');
+  f.device.reducedMotion=()=>false;
+  dialog.prepareOffscreen();
+  for(const [url,resolve] of f.requests)resolve({url,width:90,height:70});
+  await Promise.resolve();
+  for(let i=0;i<50&&!dialog.prepareOffscreen();i++){}
+  f.paint(2000);
+  dialog.activate();
+  const panel=f.device.panel,draw=()=>panel.draw(f.renderer);
+  const control=id=>panel.state().controls.find(c=>c.id===id);
+  const mesh=name=>f.textMeshes.get(name);
+  draw();
+  assert.equal(mesh('七日嘉年华').parent.scale.x,.5);
+  assert.equal(control('outside').w,screen.width);
+  const canvases=f.canvases;
+  f.paint(200);draw();
+  assert(Math.abs(mesh('七日嘉年华').parent.scale.x-1.1)<.001);
+  f.paint(150);draw();
+  assert.equal(mesh('七日嘉年华').parent.scale.x,1);
+  const date=control('day-1'),label=mesh('第1天'),plate=f.images.get(optimizeUiAssetUrls('/art/project-tabs-v1/tab-active.png'));
+  const lw=label.scale.x,pw=plate.scale.x,x=date.x+date.w/2,y=date.y+date.h/2;
+  f.point('start',x,y);f.paint(115);draw();
+  assert(Math.abs(label.scale.x/lw-.9)<.001&&Math.abs(plate.scale.x/pw-.9)<.001);
+  f.point('move',x,y-28);f.point('end',x,y-28);draw();
+  assert.equal(f.commands.length,0);assert.equal(label.scale.x,lw);
+  f.click(control('day-2'));assert.equal(f.commands.length,0);
+  f.click(control('action-ready'));assert.equal(f.commands[0][0],'carnivalClaim');
+  f.paint(180);draw();
+  assert.equal(f.canvases,canvases);
+  assert.equal(panel.animated,false);
+});
+
+test('a nested popup keeps its full-screen shade, dismisses once and restores the parent at rest',t=>{
+  const f=fixture(t),commands=[];
+  let detail=false;
+  const panel=createLobbyPanel(f.device,f.region,'任务',(data,w,h,t)=>{
+    function paper(scope,style){
+      const a=t.layer(scope).art;
+      t.backdrop(a,.6,undefined,{scope,style});
+      a.quad(70,70,w-140,h-140,'#fff');
+      t.control(scope+'-outside','关闭',t.frameRect,{type:'close'},{scope});
+      t.control(scope+'-paper','',{x:70,y:70,w:w-140,h:h-140},{type:'none'},{scope});
+    }
+    paper('base','large');
+    if(data.detail){paper('inspect','small');return 'inspect';}
+    t.control('open','详情',{x:100,y:100,w:70,h:40},{type:'open'});
+    return 'base';
+  },cmd=>{
+    commands.push(cmd.type);
+    detail=cmd.type==='open';panel.update({detail},commands.length,'tasks');
+  });
+  t.after(panel.close);
+  let sizes=[];
+  f.renderer.render=scene=>{
+    const group=scene.children[0],mesh=group.children[0];
+    sizes.push([group.scale.x,Math.abs(mesh.scale.x),Math.abs(mesh.scale.y)]);
+  };
+  const draw=()=>{sizes=[];panel.draw(f.renderer);};
+  const control=id=>panel.state().controls.find(c=>c.id===id);
+  panel.update({detail},0,'tasks');draw();
+  assert.deepEqual(sizes[0],[1,screen.width,screen.height]);
+  f.paint(350);draw();f.click(control('open'));draw();
+  assert.equal(sizes[1][0],1);assert.equal(sizes[3][0],.9);
+  assert.deepEqual(sizes[2],[1,screen.width,screen.height]);
+  const outside=()=>{f.point('start',3,3);f.point('end',3,3);};
+  outside();outside();assert.deepEqual(commands,['open']);
+  f.paint(140);draw();draw();
+  assert.deepEqual(commands,['open','close']);
+  assert.equal(sizes.length,2);assert.equal(sizes[1][0],1);assert.equal(panel.animated,false);
+});
+
+test('ordinary reward items settle in sequence and stay settled on a receipt refresh',t=>{
+  const f=fixture(t);
+  f.device.reducedMotion=()=>false;
+  t.mock.method(globalThis.performance,'now',f.platform.now);
+  const receipt=lobbyPanels(f.device).openRewardReceipt(f.region,()=>{});
+  t.after(receipt.close);
+  const snapshot={weapons:[],aircraft:[],pilots:[]};
+  const modal={type:'rewards',id:'daily-claim',rewards:[{type:'coins',amount:100},{type:'diamonds',amount:5}]};
+  receipt.update(snapshot,modal,1);
+  const panel=f.device.panel,draw=()=>panel.draw(f.renderer),label=name=>f.textMeshes.get(name);
+  draw();
+  const startWidth=label('金币').scale.x;
+  assert.equal(label('金币').material.opacity,0);assert.equal(label('钻石').material.opacity,0);
+  f.paint(35);draw();
+  assert(label('金币').material.opacity>0&&label('金币').material.opacity<1);
+  assert.equal(label('钻石').material.opacity,0);
+  f.paint(125);draw();
+  assert.equal(label('钻石').material.opacity,1);
+  assert(Math.abs(startWidth/label('金币').scale.x-1.5)<.001);
+  receipt.update(snapshot,modal,2);draw();
+  assert.equal(label('金币').material.opacity,1);assert.equal(panel.animated,false);
+});
+
+test('equipment box light follows the committed grade and skipping twice advances one receipt',t=>{
+  assert.equal(mod.exports.boxOpeningRank({drawn:[{quality:20}],receipt:{outcomes:[{id:20101}]}}),4);
+  assert.equal(mod.exports.boxOpeningRank({drawn:[{quality:61}]}),5);
+  const f=fixture(t),advanced=[];
+  f.device.reducedMotion=()=>false;
+  t.mock.method(performance,'now',f.platform.now);
+  t.mock.timers.enable({apis:['setTimeout']});
+  const handle=lobbyPanels(f.device).openBoxOpening(f.region,cmd=>advanced.push(cmd));
+  t.after(handle.close);
+  let light;
+  f.renderer.render=scene=>{
+    for(const mesh of scene.children[0].children)if(mesh.material.premultipliedAlpha)light=mesh.material.color.getHexString();
+  };
+  for(const [rank,color] of [[0,'e8f2ff'],[3,'de9cff'],[4,'ffce70']]){
+    handle.update({},{id:'box-'+rank,pool:'basic',gearRank:rank});
+    const count=advanced.length;t.mock.timers.tick(2100);assert.equal(advanced.length,count);
+    f.device.panel.draw(f.renderer);assert.equal(light,color);
+    const skip=f.device.panel.state().controls.find(c=>c.id==='skip');
+    f.click(skip);f.click(skip);t.mock.timers.tick(2000);
+  }
+  assert.deepEqual(advanced,Array(3).fill('processSkipBox'));
+});
+
+test('a live ten-box receipt accents its highest grade and the history opens fully settled',t=>{
+  const f=fixture(t),s={...equipmentSnapshot(),weapons:[]};
+  f.device.reducedMotion=()=>false;t.mock.method(performance,'now',f.platform.now);
+  const batch=s.equipment.items.slice(0,10);
+  batch.forEach((row,i)=>{row.uid='crate-'+i;row.quality=i===1?50:10;});
+  const handle=lobbyPanels(f.device).openRewardReceipt(f.region,()=>{});
+  t.after(handle.close);
+  const modal={type:'shopBoxResult',id:'test-box',drawn:batch.map(r=>r.uid)};
+  handle.update(s,modal,1);
+  let labels=[];
+  f.renderer.render=scene=>{
+    const wrapped=scene.children[0].children.filter(mesh=>mesh.userData.uiTextLines);
+    if(wrapped.length===batch.length)labels=wrapped;
+  };
+  const panel=f.device.panel,draw=()=>panel.draw(f.renderer);draw();
+  assert.equal(panel.state().controls.filter(c=>c.id.startsWith('receipt-item-')).length,10);
+  f.paint(500);draw();assert.equal(labels.length,10);const peak=labels[1].scale.x;
+  handle.update(s,{...modal,history:true},2);draw();
+  assert(peak>labels[1].scale.x*1.08);
+  for(const mesh of labels)assert.equal(mesh.material.opacity,1);
+  assert.equal(panel.animated,false);
+});
+
+test('ten-draw highlights the new card once and rests again after a touch',t=>{
+  const f=fixture(t),done=[];
+  f.device.reducedMotion=()=>false;f.device.viewportHeight=()=>screen.height;
+  t.mock.method(performance,'now',f.platform.now);
+  const handle=openRecruitResults(f.device,f.region,cmd=>done.push(cmd));
+  t.after(handle.close);
+  const pilot={id:'pilot-01',name:'测试驾驶员',rarity:'SSR'};
+  const rewards=[{type:'pilot',pilotId:pilot.id,isNew:true},...Array.from({length:9},()=>({type:'coins',amount:10}))];
+  handle.update({pilots:[pilot],weapons:[],aircraft:[]},{type:'rewards',recruit:true,recruitGrid:true,rewards});
+  const panel=f.device.panel,draw=()=>panel.draw(f.renderer);draw();
+  f.paint(295);draw();const peak=f.textMeshes.get('SSR').scale.x;
+  f.paint(1000);draw();assert(peak>f.textMeshes.get('SSR').scale.x*1.05);
+  assert.equal(panel.animated,false);
+  const card=panel.state().controls.find(c=>c.id==='draw-card-0'),x=card.x+card.w*.7,y=card.y+card.h*.4;
+  f.point('start',x,y);draw();f.point('end',x,y);draw();
+  assert.equal(panel.animated,true);
+  f.paint(220);draw();assert.equal(panel.animated,false);assert.deepEqual(done,[]);
+  f.click(panel.state().controls.find(c=>c.id==='confirm'));assert.deepEqual(done,['close']);
+});
+
+test('equipment level settles on the committed number and ordinary refreshes stay still',t=>{
+  const f=fixture(t),s=equipmentSnapshot();
+  f.device.reducedMotion=()=>false;f.device.safeBottom=()=>34;
+  t.mock.method(performance,'now',f.platform.now);
+  const item=tutorialGear(s.equipment.items[0]);item.equipped=true;s.equipment.items[0]=item;
+  const handle=lobbyPanels(f.device).openLobbyPanel('gear',f.region,()=>{});
+  t.after(handle.close);
+  const modal={type:'gearDetail',id:item.uid},panel=f.device.panel,draw=()=>panel.draw(f.renderer);
+  handle.update(s,modal,1);draw();f.paint(500);draw();
+  item.level=8;modal.upgradeAt=f.platform.now()/1000;
+  handle.update(s,modal,2);draw();f.paint(120);draw();const peak=f.textMeshes.get('Lv.8 / 20').scale.x;
+  f.paint(450);draw();const width=f.textMeshes.get('Lv.8 / 20').scale.x;
+  assert(peak>width*1.15);
+  handle.update(s,{...modal,error:'材料不足'},3);draw();assert.equal(f.textMeshes.get('Lv.8 / 20').scale.x,width);
+  f.device.reducedMotion=()=>true;item.level=9;
+  handle.update(s,{...modal,upgradeAt:f.platform.now()/1000},4);draw();
+  const quiet=f.textMeshes.get('Lv.9 / 20').scale.x;f.paint(120);draw();assert.equal(f.textMeshes.get('Lv.9 / 20').scale.x,quiet);
+});
+
+test('gear feedback uses the painted slot, coalesces repeats and clears on navigation',t=>{
+  const f=fixture(t),snapshot=equipmentSnapshot();
+  f.view.update({tab:'assembly',gearFilter:'all',gearSort:'quality',snapshot},1);f.paint();
+  const r=f.view.anchorRect('gear-slot-1');assert(r&&r.w>0);
+  let tab='assembly',time=0,quiet=false,edges=[];
+  const feedback=createLobbyFeedback(f.device,{now:()=>time,reducedMotion:()=>quiet,layout:()=>({tab,bounds:screen})});
+  t.after(feedback.close);
+  const draw=()=>feedback.draw({render(scene){edges=scene.children[1].children.filter(m=>m.visible);}},screen.width,screen.height);
+  feedback.gearSlot(1);feedback.gearSlot(1);time=90;draw();
+  assert.equal(edges.length,4);assert.equal(edges[0].position.x,r.x+r.w/2);assert.equal(edges[0].position.y,r.y+1);
+  tab='battle';draw();assert.equal(edges.length,0);assert.equal(feedback.active,false);
+  quiet=true;feedback.gearSlot(1);assert.equal(feedback.active,false);
+});
+
 test('WeChat task dialog has a complete fallback frame and reveals slow artwork together',async t=>{
   const f=fixture(t),{dialog}=makeActivityDialog(t,f,'tasks',{entryWaitMs:0});
   dialog.activate();
@@ -1563,22 +2097,46 @@ test('WeChat tasks reveal the lobby entry and tabs at their chapter milestones',
   assert.deepEqual(messages,[]);
 });
 
-test('WeChat unlocked sign-in shows late reward artwork after switching tabs',async t=>{
-  const f=fixture(t),prepareArtwork=createMenuArtworkWarmup(f.platform);
+test('WeChat traces a decoded dialog as cold while its texture upload is pending',async t=>{
+  const {debug,lines}=captureDebug(t),f=fixture(t,debug);
+  const view=createLobbyPanel(f.device,f.region,'测试',(data,w,h,t)=>{
+    t.image(t.layer('body').art,data.art,0,0,w,h);return 'base';
+  },()=>{},{prepareArtwork:()=>false,completeEntry:true,
+    beginEntryTrace:(section,prepared)=>debug.beginMenu(f.platform.now,'carnival',false,undefined,{section,prepared})});
+  t.after(view.close);
+  view.update({art:'/art/equipment-skill-lock-v1/30.webp'},'a','carnival','day-1');
+  assert.equal(view.prepareOffscreen(),false);
+  for(const [url,resolve] of f.requests)resolve({url,width:64,height:64});
+  await Promise.resolve();
+  assert.equal(view.prepareOffscreen(),false);
+  view.activate();
+  assert.equal(details(lines,'页面切换').at(-1).prepared,false);
+  assert(view.preparing);
+});
+
+test('WeChat holds the daily screen until all sign-in rewards are ready',async t=>{
+  const {debug,lines}=captureDebug(t),f=fixture(t,debug),prepareArtwork=createMenuArtworkWarmup(f.platform),drawn=[];
   f.device.reducedMotion=()=>true;
-  f.device.repaintHome=()=>f.device.panel?.draw(f.renderer);
+  f.device.repaintHome=()=>{
+    const panel=f.device.panel;
+    if(!panel?.prepareFrame())return;
+    panel.draw(f.renderer);drawn.push([...f.texts]);
+  };
   const {signIn}=flightRewardsSnapshot(undefined, {items:{}}, {passedWaves:{2:14}}, Date.UTC(2026,0,1));
   const snapshot={weapons:[],aircraft:[],pilots:[],signIn};
   const dialog=openTaskPanel(f.device,f.region,(action,data)=>{
     if(action==='taskPeriod')update(data.period);
     else if(action==='close')dialog.close();
-  },'tasks',new Map(),{prepareArtwork,entryWaitMs:0});
+  },'tasks',new Map(),{prepareArtwork,completeEntry:true,
+    beginEntryTrace:(section,prepared)=>debug.beginMenu(f.platform.now,'tasks',false,undefined,{section,prepared})});
   t.after(dialog.close);
   function update(period){dialog.update(snapshot,{type:'tasks',period},'lobby');}
   const control=id=>f.device.panel.state().controls.find(c=>c.id===id);
-  async function resolveRequests(){
-    for(const [url,resolve] of f.requests)resolve({url,width:90,height:70});
-    f.requests.clear();
+  async function resolveRequests(hold){
+    for(const [url,resolve] of f.requests){
+      if(url===hold)continue;
+      resolve({url,width:90,height:70});f.requests.delete(url);
+    }
     await Promise.resolve();
   }
   update('daily');
@@ -1587,28 +2145,67 @@ test('WeChat unlocked sign-in shows late reward artwork after switching tabs',as
   let ready=false;
   for(let frame=0;frame<50&&!ready;frame++)ready=dialog.prepareOffscreen();
   assert(ready);
-  dialog.activate();
-  f.paint();
-  f.click(control('tab-signin'));
-  f.paint();
-  assert(!f.texts.has(signIn.gate.reason));
-  assert.equal(control('day-1').disabled,false);
+  dialog.activate();f.paint();
+  assert(drawn[0].includes('每日活跃'));
+  f.click(control('tab-signin'));f.paint(1600);
+  assert.equal(drawn.length,1);
   const rewards=new Set(signIn.days.flatMap(day=>day.rewards.map(row=>optimizeUiAssetUrls(taskReward(row,snapshot,true).image))));
   assert(rewards.size>4);
   for(const url of rewards)assert(f.requests.has(url),url);
-  f.click(control('tab-weekly'));
-  f.paint();
-  assert(f.texts.has('每周活跃'));
-  f.click(control('tab-signin'));
-  f.paint();
+  const last=[...rewards].at(-1);
+  await resolveRequests(last);f.paint(1600);
+  assert.equal(drawn.length,1);
   await resolveRequests();
-  await new Promise(resolve=>setTimeout(resolve,65));
-  for(let frame=0;frame<12&&!f.device.panel.state().ready;frame++)f.paint();
+  for(let frame=0;frame<30&&drawn.length<2;frame++)f.paint();
+  assert.equal(drawn.length,2);
+  assert(drawn[1].includes('第 1 天'));
+  assert.equal(control('day-1').disabled,false);
   for(const url of rewards)assert(f.images.has(url),url);
-  assert(f.device.panel.state().ready);
-  f.click(control('close'));
-  assert.equal(f.device.panel,null);
+  const switches=details(lines,'页面切换'),firstFrames=details(lines,'页面首帧');
+  assert.deepEqual(switches.map(row=>row.section),['daily','signin']);
+  assert(switches[0].prepared);assert(!switches[1].prepared);
+  assert.deepEqual(firstFrames.map(row=>row.artwork.pending),[0,0]);
+  assert.deepEqual(details(lines,'切页补图'),[]);
+  f.click(control('close'));assert.equal(f.device.panel,null);
 });
+
+const gearSkillIcon=optimizeUiAssetUrls('/art/equipment-skill-lock-v1/30.webp');
+function tutorialGear(item){
+  return {...item,quality:20,qualityRank:1,qualityName:'优秀',maxLevel:20,attributeName:'耐久',attribute:10,
+    features:[{quality:30,text:'耐久 +5%'}]};
+}
+
+for(const failSkin of [false,true]){
+  test('WeChat gear detail prepares the replacement action '+(failSkin?'with a missing button skin':'with a slow skill icon'),async t=>{
+    const f=fixture(t),snapshot=equipmentSnapshot(),[equipped,candidate]=snapshot.equipment.items;
+    f.device.safeBottom=()=>f.platform.viewport.safeBottom;
+    equipped.equipped=true;snapshot.equipment.slots[1]=equipped.uid;
+    snapshot.equipment.items[1]=tutorialGear(candidate);
+    const panels=lobbyPanels(f.device,{preparePanelArtwork:createMenuArtworkWarmup(f.platform)});
+    const dialog=panels.openLobbyPanel('gearDetail',f.region,(...args)=>f.commands.push(args));
+    t.after(dialog.close);
+    dialog.update(snapshot,{type:'gearDetail',id:candidate.uid,detailOrigin:'warehouse'},'gear');
+    const view=f.device.panel,draw=()=>view.draw(f.renderer);
+    const gold=optimizeUiAssetUrls('/art/psd-equipment-v1/button-gold.png');
+    const waitFor=failSkin?gold:gearSkillIcon;
+    draw();
+    const equip=view.state().controls.find(control=>control.id==='gearEquip');
+    assert.equal(equip.label,'替换');
+    for(const [url,resolve] of f.requests)if(url!==waitFor)resolve({url,width:90,height:70});
+    await Promise.resolve();
+    for(let frame=0;frame<8;frame++)draw();
+    assert.equal(f.texts.size,0);
+    f.click(equip);
+    assert.equal(f.commands.length,0);
+    f.requests.get(waitFor)(failSkin?null:{url:waitFor,width:90,height:70});
+    await Promise.resolve();
+    for(let frame=0;frame<30&&!f.texts.has('装备详情');frame++)draw();
+    assert(f.texts.has('替换'));
+    for(const url of [...activityFrames,activityClose,gearSkillIcon,...(failSkin?[]:[gold])])assert(f.images.has(url),url);
+    f.click(equip);
+    assert.deepEqual(f.commands.at(-1).slice(0,2),['gearEquip',{id:candidate.uid}]);
+  });
+}
 
 function equipmentSnapshot(){
   const items=Array.from({length:80},(_,i)=>({
@@ -2027,6 +2624,19 @@ test('WeChat equipment can be used before images and 3D, then loads additional r
   assert(f.texts.has('Lv.80'),'retained equipment keeps the warehouse position');
 });
 
+test('menu texture warming can complete a small final visible upload in the same frame',t=>{
+  const f=fixture(t),uploads=[];
+  f.renderer.initTexture=texture=>uploads.push(texture);
+  const prepare=createMenuArtworkWarmup(f.platform);
+  const small=()=>({image:{width:128,height:128}});
+  const icons=[small(),small()],background={image:{width:700,height:600}};
+  assert.equal(prepare(icons,4,true),true);
+  assert.deepEqual(uploads,icons);
+  assert.equal(prepare([background],4,true),false);
+  assert.equal(prepare([background],4,true),true);
+  assert.equal(prepare([small()],1),false);
+});
+
 test('WeChat prepares the parked hangar before the first visible equipment frame',async t=>{
   const f=fixture(t,undefined,{main:true,atomicEntry:true,parked:true});
   let compiled=0;
@@ -2110,6 +2720,30 @@ test('post-battle equipment presents the equipped aircraft still and controls wh
   f.park();f.view.tick();assert.equal(steps,0);
   f.activate();f.paint();f.view.tick();assert(steps>0);assert.equal(draws,0);
   ready=true;f.view.tick();f.paint();assert(draws>0);assert(!f.images.has(still));
+});
+
+test('the equipment still and live frame swap in place without rebuilding the warehouse',async t=>{
+  let preview,model;
+  const aircraftPreview=()=>preview={ready:false,updatesInPlace:true,target:{width:200,height:100},
+    update(){},prepare(){return this.ready;},pause(){},close(){},releaseModel(){this.ready=false;},
+    paint(art,x,y,w,h){return model=art.quad(x,y,w,h);}};
+  const f=fixture(t,undefined,{main:true,atomicEntry:true,aircraftPreview});
+  f.region.allowAircraftStill=()=>true;
+  const snapshot=equipmentSnapshot(),still=optimizeUiAssetUrls('/art/aircraft-ui-v1/'+snapshot.aircraftId+'-hangar.webp');
+  f.view.update({tab:'assembly',gearFilter:'all',gearSort:'quality',snapshot},'hangar');
+  f.paint();
+  for(const [url,resolve] of f.requests)resolve({url,width:96,height:80});
+  await Promise.resolve();
+  for(let i=0;i<18&&!f.events.length;i++)f.paint();
+  assert(f.images.has(still));assert.equal(model.visible,false);
+  const pilotLabel=f.textMeshes.get('驾驶员'),plane=model,canvases=f.canvases;
+  assert(pilotLabel);
+  preview.ready=true;f.device.repaintHome();f.paint();
+  assert.equal(model,plane);assert.equal(model.visible,true);assert(!f.images.has(still));
+  assert.equal(model.scale.x/-model.scale.y,2);
+  f.view.trimAircraft();f.paint();
+  assert.equal(model,plane);assert.equal(model.visible,false);assert(f.images.has(still));
+  assert.equal(f.textMeshes.get('驾驶员'),pilotLabel);assert.equal(f.canvases,canvases);
 });
 
 function catalogFixture(tab,owned=true){
@@ -2244,19 +2878,27 @@ for(const page of [
   ...firstScreens.filter(page=>!page.catalog),
   {tab:'assembly',data:()=>({gearFilter:'all',gearSort:'quality',snapshot:equipmentSnapshot()})},
 ]){
-  test(`WeChat ${page.tab} opens with usable tabs before its prewarm finishes`,t=>{
-    const completeEntry=page.tab==='supply'||page.tab==='assembly';
-    const f=fixture(t,undefined,{main:true,atomicEntry:true,parked:true,completeEntry});
+  test(`WeChat ${page.tab} holds its first frame while keeping the bottom tabs usable`,async t=>{
+    const f=fixture(t,undefined,{main:true,atomicEntry:true,parked:true});
     f.view.update({tab:page.tab,...page.data()},page.tab);
     assert.equal(f.view.prepareOffscreen(),false);
-    f.activate();f.paint();
-    if(completeEntry)f.paint(1250);
-    assert.deepEqual(f.events,completeEntry?[]:['paint']);
+    f.activate();f.paint(1600);
+    assert.deepEqual(f.events,[]);
     assert.equal(f.images.size,0);
     for(const tab of ['shop','assembly','battle','research','supply']){
       f.click(f.control('nav-'+tab));
       assert.deepEqual(f.commands.at(-1).slice(0,2),['tab',{tab}]);
     }
+    const background=optimizeUiAssetUrls(page.tab==='assembly'?'/art/psd-equipment-v1/equipment-background.webp':art[page.tab+'-background']);
+    assert(f.requests.has(background));
+    for(const [url,resolve] of f.requests)if(url!==background)resolve({url,width:96,height:80});
+    await Promise.resolve();f.paint(1200);
+    assert.deepEqual(f.events,[],'a delayed backdrop must not expose the destination controls or the other loaded images');
+    f.requests.get(background)({url:background,width:96,height:80});
+    await Promise.resolve();
+    for(let step=0;step<36&&!f.events.length;step++)f.paint();
+    assert.deepEqual(f.events,['paint']);
+    assert(f.images.has(background));
   });
 }
 
@@ -2420,11 +3062,11 @@ test('WeChat weapon workshop stages the real selection before revealing a prepar
   assert.deepEqual(f.commands.at(-1).slice(0,2),['workshopSelect',{id:ids.at(-1)}]);
 });
 
-test('WeChat lets an early catalog tap open before slow background artwork finishes',t=>{
+test('WeChat holds a cold catalog offscreen and keeps its back control usable',t=>{
   const f=fixture(t,undefined,{atomicEntry:true,catalog:true});
   f.view.update({tab:'aircraft',...catalogFixture('aircraft')},'aircraft');
-  for(let step=0;step<9;step++)f.paint();
-  assert.deepEqual(f.events,['paint']);
+  f.paint(1600);
+  assert.deepEqual(f.events,[]);
   assert.equal(f.images.size,0);
   f.click(f.control('back'));
   assert.equal(f.commands.at(-1)[0],'catalogBack');
@@ -2493,6 +3135,32 @@ test('WeChat shop paints the requested section first and can return to the box c
   assert(!f.texts.has('一箱金币'));
   f.click(f.control('open-advanced-1'));
   assert.equal(f.commands.at(-1)[0],'shopBoxConfirm');
+});
+
+test('a warm shop reuses the same first screen after an unrelated page setting changes',async t=>{
+  const f=fixture(t,undefined,{main:true,atomicEntry:true,parked:true});
+  const data={tab:'shop',shopSection:'boxes',snapshot:shopSnapshot(),gearSort:'quality',section:'talent'};
+  f.view.update(data,'same-snapshot');
+  assert.equal(f.view.prepareOffscreen(),false);
+  for(const [url,resolve] of f.requests)resolve({url,width:96,height:80});
+  await Promise.resolve();
+  let ready=false;
+  for(let frame=0;frame<40&&!ready;frame++)ready=f.view.prepareOffscreen();
+  assert(ready);
+  f.activate();f.paint();
+  const previous=f.textMeshes.get('装备宝箱');assert(previous);
+  f.park();
+  f.view.update({...data,gearSort:'level',section:'lab',selected:'pilot-03'},'same-snapshot');
+  f.activate();f.paint();
+  assert.equal(f.textMeshes.get('装备宝箱'),previous,'the warmed shop layout is reused');
+  f.view.update({...data,shopSection:'coins'},'same-snapshot');f.paint();
+  assert.equal(f.events.length,2,'a cold section keeps the complete current screen');
+  const coin=optimizeUiAssetUrls('/art/shop-coin-tiers-v2/coins-safe.png');
+  assert(f.requests.has(coin));
+  for(const [url,resolve] of f.requests)resolve({url,width:96,height:80});
+  await Promise.resolve();
+  for(let frame=0;frame<24&&f.events.length<3;frame++)f.paint();
+  assert(f.texts.has('一箱金币'));assert(f.images.has(coin));
 });
 
 test('WeChat shop reveals decoded artwork in small batches and reuses unchanged text',async t=>{
@@ -2621,27 +3289,37 @@ test('normal mobile play leaves diagnostics off while the native debug switch en
   assert.deepEqual(details(enabled.native,'环境'),[{buildId:'three-test',platform:'ios',sdk:'3.8.0'}]);
 });
 
-test('debug timing separates the menu paint, initial images and 3D, and bounds slow asset output',t=>{
+test('menu logs name missing artwork and count each frame that fills it in',t=>{
+  t.mock.timers.enable({apis:['setTimeout']});
   const {debug,lines,native}=captureDebug(t);
   let now=100;
-  const trace=debug.beginMenu(()=>now,'assembly',false);
-  const loading={userData:{}},discarded={userData:{}};
+  debug.markMenuVisible('shop','boxes');
+  const trace=debug.beginMenu(()=>now,'assembly',false,undefined,{section:'all',prepared:false});
+  const loading={userData:{assetPath:'/art/hangar/deck.webp?v=test'}},discarded={userData:{assetPath:'/art/hangar/slot.png'}};
+  const late={userData:{assetPath:'https://example.invalid/art/hangar/icon.png?session=secret'}};
   trace.prepare(3);
   now=116;
-  assert(trace.paint(new Set([loading,discarded]),false,undefined,6));
-  assert.deepEqual(details(lines,'页面首帧'),[{entry:1,page:'assembly',retained:false,firstPaintMs:16,paintCpuMs:6,prepareCpuMs:3,
-    artwork:{ready:0,pending:2,failed:0,skipped:0},modelReady:false}]);
+  assert(trace.paint(new Map([[loading,'pending'],[discarded,'pending']]),false,6));
+  const context={entry:1,fromPage:'shop',fromSection:'boxes',page:'assembly',section:'all',retained:false,prepared:false};
+  assert.deepEqual(details(lines,'页面切换'),[context]);
+  assert.deepEqual(details(lines,'页面首帧'),[{...context,firstPaintMs:16,paintCpuMs:6,prepareCpuMs:3,
+    artwork:{ready:0,pending:2,failed:0,skipped:0},missingAssets:['art/hangar/deck.webp','art/hangar/slot.png'],modelReady:false}]);
   for(let i=0;i<8;i++)trace.slowArtwork('https://example.invalid/art/room.png?internal=1','CDN/缓存',175,8);
   const slow=details(lines,'慢贴图');
   assert.equal(slow.length,6);
   assert.deepEqual(slow[0],{entry:1,page:'assembly',asset:'art/room.png',source:'CDN/缓存',fileMs:175,decodeMs:8});
-  now=200;loading.image={};
-  const artwork=new Set([loading]);
-  assert(trace.paint(artwork,false,undefined,12));
-  now=280;
-  assert.equal(trace.paint(artwork,true,undefined,8),false);
-  assert.deepEqual(details(lines,'页面首进结果'),[{entry:1,page:'assembly',retained:false,status:'完成',elapsedMs:180,firstPaintMs:16,
-    artworkMs:100,modelMs:180,artwork:{ready:1,pending:0,failed:0,skipped:1},maxPaintCpuMs:12}]);
+  now=200;assert(trace.paint(new Map([[loading,'ready']]),false,12));
+  const complete=new Map([[loading,'ready'],[late,'ready']]);
+  now=260;assert(trace.paint(complete,false,8));
+  now=280;assert(trace.paint(complete,true,8));
+  assert.deepEqual(details(lines,'切页补图'),[
+    {...context,batch:1,afterFirstPaintMs:84,count:1,assets:['art/hangar/deck.webp']},
+    {...context,batch:2,afterFirstPaintMs:144,count:1,assets:['art/hangar/icon.png']},
+  ]);
+  now=1780;t.mock.timers.tick(1500);
+  assert.deepEqual(details(lines,'页面首进结果'),[{...context,status:'完成',elapsedMs:1680,firstPaintMs:16,
+    artworkMs:100,modelMs:180,artwork:{ready:1,pending:0,failed:0,skipped:1},maxPaintCpuMs:12,
+    lateBatches:2,lateAssets:2,lastLateMs:144}]);
   assert.deepEqual(native,lines);
   assert.equal(debug.activeMenu,null);
 });
@@ -2674,15 +3352,33 @@ test('a stalled entry still reports a timeout without another draw',t=>{
   const {debug,lines}=captureDebug(t);
   let now=0;
   const trace=debug.beginMenu(()=>now,'shop',false);
-  now=6000;t.mock.timers.tick(6000);
+  trace.wait('贴图未齐',new Set([{userData:{assetPath:'/art/shop/boxes.webp'}}]));
+  now=14000;t.mock.timers.tick(14000);
   const [result]=details(lines,'页面首进结果');
   assert.equal(result.status,'超时');
   assert.equal(result.firstPaintMs,null);
   assert.equal(debug.activeMenu,null);
-  assert.equal(trace.paint(new Set(),undefined,'boxes',1),false);
+  assert.equal(result.waitingFor,'贴图未齐');
+  assert.deepEqual(result.waitingAssets,['art/shop/boxes.webp']);
+  assert.equal(trace.paint(new Map(),undefined,1),false);
 });
 
-test('shop logs the first paint while assets are pending and distinguishes a retained return',t=>{
+test('a prepared footer fading in after navigation is not logged as late artwork',async t=>{
+  const {debug,lines}=captureDebug(t),f=fixture(t,debug,{main:true,atomicEntry:true});
+  const navigation=f.device.lobbyNavigation=createLobbyNavigationMotion();
+  navigation.homeArtwork={navigation:()=>true};
+  navigation.select('shop',false);
+  f.view.update({tab:'shop',shopSection:'boxes',snapshot:shopSnapshot()},'shop');
+  f.paint();
+  for(const [url,resolve] of f.requests)resolve({url,width:90,height:70});
+  await Promise.resolve();
+  for(let frame=0;frame<45;frame++)f.paint(16);
+  assert(f.texts.has('装备宝箱'));
+  assert.equal(details(lines,'页面首帧').length,1);
+  assert.deepEqual(details(lines,'切页补图'),[]);
+});
+
+test('shop logs artwork actually drawn after opening and gives section changes their own trace',async t=>{
   const {debug,lines}=captureDebug(t);
   const f=fixture(t,debug);
   f.view.update({tab:'shop',shopSection:'daily',snapshot:shopSnapshot()},'shop');
@@ -2693,9 +3389,24 @@ test('shop logs the first paint while assets are pending and distinguishes a ret
   assert.equal(first.section,'daily');
   assert.equal(first.retained,false);
   assert(first.artwork.pending>0);
+  assert(first.missingAssets.length>0);
+  const background=optimizeUiAssetUrls(art['shop-background']);
+  f.requests.get(background)({url:background,width:96,height:80});
+  await Promise.resolve();f.paint(240);
+  const [shown]=details(lines,'切页补图');
+  assert.equal(shown.entry,first.entry);
+  assert.equal(shown.count,1);
+  assert.equal(shown.afterFirstPaintMs,240);
+  assert(f.images.has(background));
+  f.view.section('coins');f.paint();
+  const [from,to]=details(lines,'页面切换');
+  assert.equal(from.section,'daily');
+  assert.equal(to.section,'coins');
+  assert.equal(to.fromSection,'daily');
+  assert.notEqual(to.entry,from.entry);
   f.park();
-  assert.equal(details(lines,'页面首进结果')[0].status,'离开页面');
+  assert.equal(details(lines,'页面首进结果').at(-1).status,'离开页面');
   f.activate();f.paint();
-  assert.equal(details(lines,'页面首帧')[1].retained,true);
+  assert.equal(details(lines,'页面首帧').at(-1).retained,true);
   f.park();
 });
